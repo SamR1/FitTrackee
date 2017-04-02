@@ -1,0 +1,10 @@
+.leaflet-control-liveupdate a {
+  background:#fff url(liveupdate.png) no-repeat 0 0;
+  background-size:26px 52px;
+}
+.leaflet-liveupdate-on .leaflet-control-liveupdate a {
+    background-position:0 -26px;
+}
+.leaflet-liveupdate-on a {
+    background-position:0 -26px;
+}
