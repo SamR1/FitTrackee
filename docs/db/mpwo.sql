@@ -28,7 +28,7 @@ CREATE TABLE activities (
 id int(4) UNSIGNED NOT NULL AUTO_INCREMENT, 
 user_id int(4) UNSIGNED NOT NULL,
 sport_id int(4) UNSIGNED NOT NULL,
-gpx_id int(4),
+gpx_id int(4) UNSIGNED,
 activity_date datetime NOT NULL,
 duration int(4) NOT NULL,
 pauses int(4),
@@ -43,7 +43,9 @@ PRIMARY KEY (id),
 FOREIGN KEY (user_id)
     REFERENCES users(id),
 FOREIGN KEY (sport_id)
-    REFERENCES sports(id)
+    REFERENCES sports(id),
+FOREIGN KEY (gpx_id)
+	REFERENCES gpx(id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE personalRecords ( 
