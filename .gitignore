@@ -1,3 +1,5 @@
 # Created by .ignore support plugin (hsz.mobi)
 .idea
 .idea/vcs.xml
+__pycache__/
+/mpwo_api/venv/
