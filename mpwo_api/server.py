@@ -16,16 +16,9 @@ def recreate_db():
 @app.cli.command()
 def seed_db():
     """Seeds the database."""
-    db.session.add(User(
-        username='test',
-        email='test@test.com',
-        password='test'
-    ))
-    db.session.add(User(
-        username='test2',
-        email='test2@test.com',
-        password='test2'
-    ))
+    admin = User(username='admin', email='admin@example.com', password='admin')
+    admin.admin = True
+    db.session.add(admin)
     db.session.commit()
 
 

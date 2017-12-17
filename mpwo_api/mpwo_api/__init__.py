@@ -27,7 +27,7 @@ app.register_blueprint(users_blueprint, url_prefix='/api')
 app.register_blueprint(auth_blueprint, url_prefix='/api')
 
 if app.debug:
-    logging.getLogger('sqlalchemy').setLevel(logging.INFO)
+    logging.getLogger('sqlalchemy').setLevel(logging.WARNING)
     logging.getLogger('sqlalchemy'
                       ).handlers = logging.getLogger('werkzeug').handlers
     logging.getLogger('sqlalchemy.orm').setLevel(logging.WARNING)

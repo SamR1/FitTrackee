@@ -1,8 +1,8 @@
 import json
 
 from mpwo_api.tests.base import BaseTestCase
-from mpwo_api.users.models import User
 from mpwo_api.tests.utils import add_user
+from mpwo_api.users.models import User
 
 
 class TestUserService(BaseTestCase):

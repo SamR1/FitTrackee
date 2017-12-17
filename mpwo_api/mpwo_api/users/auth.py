@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from sqlalchemy import exc, or_
 
-from mpwo_api import bcrypt, db
+from mpwo_api import appLog, bcrypt, db
 
 from .models import User
 
@@ -51,6 +51,7 @@ def register_user():
     # handler errors
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
         db.session.rollback()
+        appLog.error(e)
         response_object = {
             'status': 'error',
             'message': 'Invalid payload.'
@@ -91,6 +92,7 @@ def login_user():
     # handler errors
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
         db.session.rollback()
+        appLog.error(e)
         response_object = {
             'status': 'error',
             'message': 'Try again'

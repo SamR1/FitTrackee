@@ -39,7 +39,8 @@ class TestAuthBlueprint(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'error')
-            self.assertTrue(data['message'] == 'Sorry. That user already exists.')
+            self.assertTrue(
+                data['message'] == 'Sorry. That user already exists.')
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 400)
 
