@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 export default class NavBar extends React.Component {
   constructor(props) {
@@ -26,7 +27,14 @@ export default class NavBar extends React.Component {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav mr-auto">
             <li className="nav-item">
-              <a className="nav-link" href="/">Home</a>
+              <Link
+                className="nav-link"
+                to={{
+                  pathname: '/',
+                }}
+              >
+                Home
+              </Link>
             </li>
           </ul>
         </div>

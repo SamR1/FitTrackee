@@ -2,12 +2,12 @@
 import { createBrowserHistory } from 'history'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Provider } from 'react-redux'
 import { routerMiddleware } from 'react-router-redux'
 import { applyMiddleware, createStore, compose } from 'redux'
 import thunk from 'redux-thunk'
 
 import App from './components/App'
+import Root from './components/Root'
 import registerServiceWorker from './registerServiceWorker'
 import reducers from './reducers'
 
@@ -25,9 +25,9 @@ export const store = createStore(
 )
 
 ReactDOM.render(
-  <Provider store={store} history={history}>
+  <Root store={store} history={history}>
     <App />
-  </Provider>,
+  </Root>,
   rootNode
 )
 registerServiceWorker()
