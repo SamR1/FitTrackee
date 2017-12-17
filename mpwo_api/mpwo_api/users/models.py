@@ -28,7 +28,8 @@ class User(db.Model):
         ).decode()
         self.created_at = created_at
 
-    def encode_auth_token(self, user_id):
+    @staticmethod
+    def encode_auth_token(user_id):
         """Generates the auth token"""
         try:
             payload = {
