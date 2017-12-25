@@ -28,7 +28,7 @@ function NavBar (props) {
                   pathname: '/',
                 }}
               >
-                Home
+                Dashboard
               </Link>
             </li>
             {!props.user.isAuthenticated && (
