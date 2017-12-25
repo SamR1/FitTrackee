@@ -24,7 +24,7 @@ export const store = createStore(
   )
 )
 
-if (window.localStorage.getItem('authToken') !== null) {
+if (window.localStorage.authToken !== null) {
   store.dispatch(loadProfile())
 }
 

@@ -1,22 +1,30 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
 
 import Form from './Form'
 import { handleFormChange, handleUserFormSubmit } from '../../actions'
+import { isLoggedIn } from '../../utils'
 
 function UserForm(props) {
   return (
     <div>
-     {props.message !== '' && (
-       <code>{props.message}</code>
-     )}
-     <Form
-        formType={props.formType}
-        userForm={props.formData}
-        onHandleFormChange={event => props.onHandleFormChange(event)}
-        handleUserFormSubmit={(event, formType) =>
-            props.onHandleUserFormSubmit(event, formType)}
-     />
+      {isLoggedIn() ? (
+        <Redirect to="/" />
+      ) : (
+        <div>
+          { props.message !== '' && (
+            <code>{props.message}</code>
+          )}
+          <Form
+            formType={props.formType}
+            userForm={props.formData}
+            onHandleFormChange={event => props.onHandleFormChange(event)}
+            handleUserFormSubmit={(event, formType) =>
+              props.onHandleUserFormSubmit(event, formType)}
+          />
+        </div>
+      )}
     </div>
   )
 }

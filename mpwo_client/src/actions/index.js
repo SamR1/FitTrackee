@@ -33,6 +33,7 @@ export function getProfile(dispatch) {
     .then(ret => {
       if (ret.status === 'success') {
         dispatch(ProfileSuccess(ret))
+        // window.location.href = '/'
       } else {
         dispatch(ProfileError(ret.message))
       }
@@ -95,7 +96,7 @@ export function handleUserFormSubmit(event, formType) {
   event.preventDefault()
   return (dispatch, getState) => {
     const state = getState()
-    let { formData } = state.formData
+    const { formData } = state.formData
     formData.formData = state.formData.formData
     if (formType === 'Login') {
       dispatch(login(formData.formData))
