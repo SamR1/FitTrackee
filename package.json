@@ -15,10 +15,10 @@
   },
   "scripts": {
     "start": "cd mpwo_client && react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "lint": "eslint --cache --ext .jsx --ext .js src"
+    "build": "cd mpwo_client && react-scripts build",
+    "test": "cd mpwo_client && react-scripts test --env=jsdom",
+    "eject": "cd mpwo_client && react-scripts eject",
+    "lint": "cd mpwo_client && eslint --cache --ext .jsx --ext .js src"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.3",
