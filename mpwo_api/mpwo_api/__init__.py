@@ -32,3 +32,16 @@ if app.debug:
                       ).handlers = logging.getLogger('werkzeug').handlers
     logging.getLogger('sqlalchemy.orm').setLevel(logging.WARNING)
     appLog.setLevel(logging.DEBUG)
+
+if app.debug :
+    # Enable CORS
+    @app.after_request
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add(
+            'Access-Control-Allow-Headers', 'Content-Type,Authorization'
+        )
+        response.headers.add(
+            'Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+        )
+        return response

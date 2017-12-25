@@ -10,7 +10,7 @@ import App from './components/App'
 import Root from './components/Root'
 import registerServiceWorker from './registerServiceWorker'
 import reducers from './reducers'
-
+import { loadProfile } from './actions'
 
 export const history = createBrowserHistory()
 
@@ -23,6 +23,10 @@ export const store = createStore(
     applyMiddleware(routerMiddleware(history), thunk)
   )
 )
+
+if (window.localStorage.getItem('authToken') !== null) {
+  store.dispatch(loadProfile())
+}
 
 ReactDOM.render(
   <Root store={store} history={history}>

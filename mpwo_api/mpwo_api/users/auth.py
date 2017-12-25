@@ -4,6 +4,7 @@ from sqlalchemy import exc, or_
 from mpwo_api import appLog, bcrypt, db
 
 from .models import User
+from .utils import authenticate
 
 auth_blueprint = Blueprint('auth', __name__)
 
@@ -12,7 +13,9 @@ auth_blueprint = Blueprint('auth', __name__)
 def register_user():
     # get post data
     post_data = request.get_json()
-    if not post_data:
+    if not post_data or post_data.get('username') is None \
+            or post_data.get('email') is None \
+            or post_data.get('password') is None:
         response_object = {
             'status': 'error',
             'message': 'Invalid payload.'
@@ -52,9 +55,10 @@ def register_user():
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
         db.session.rollback()
         appLog.error(e)
+
         response_object = {
             'status': 'error',
-            'message': 'Invalid payload.'
+            'message': 'Error. Please try again or contact the administrator.'
         }
         return jsonify(response_object), 400
 
@@ -95,19 +99,20 @@ def login_user():
         appLog.error(e)
         response_object = {
             'status': 'error',
-            'message': 'Try again'
+            'message': 'Error. Please try again or contact the administrator.'
         }
         return jsonify(response_object), 500
 
 
 @auth_blueprint.route('/auth/logout', methods=['GET'])
-def logout_user():
+@authenticate
+def logout_user(user_id):
     # get auth token
     auth_header = request.headers.get('Authorization')
     if auth_header:
         auth_token = auth_header.split(" ")[1]
         resp = User.decode_auth_token(auth_token)
-        if not isinstance(resp, str):
+        if not isinstance(user_id, str):
             response_object = {
                 'status': 'success',
                 'message': 'Successfully logged out.'
@@ -125,3 +130,20 @@ def logout_user():
             'message': 'Provide a valid auth token.'
         }
         return jsonify(response_object), 403
+
+
+@auth_blueprint.route('/auth/profile', methods=['GET'])
+@authenticate
+def get_user_status(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    response_object = {
+        'status': 'success',
+        'data': {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+            'created_at': user.created_at,
+            'admin': user.admin,
+        }
+    }
+    return jsonify(response_object), 200

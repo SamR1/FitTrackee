@@ -1,14 +1,9 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-export default class NavBar extends React.Component {
-  constructor(props) {
-    super(props)
-    this.props = props
-  }
-
-  render() {
-    return (
+function NavBar (props) {
+  return (
     <header>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <span className="navbar-brand">mpwo</span>
@@ -36,10 +31,50 @@ export default class NavBar extends React.Component {
                 Home
               </Link>
             </li>
+            {!props.user.isAuthenticated && (
+              <li className="nav-item">
+                <Link
+                  className="nav-link"
+                  to={{
+                    pathname: '/login',
+                  }}
+                >
+                  Login
+                </Link>
+              </li>
+            )}
+            {!props.user.isAuthenticated && (
+              <li className="nav-item">
+                <Link
+                  className="nav-link"
+                  to={{
+                    pathname: '/register',
+                  }}
+                >
+                  Register
+                </Link>
+              </li>
+            )}
+            {props.user.isAuthenticated && (
+            <li className="nav-item">
+              <Link
+                className="nav-link"
+                to={{
+                  pathname: '/logout',
+                }}
+              >
+                Logout
+              </Link>
+            </li>
+            )}
           </ul>
         </div>
       </nav>
     </header>
-    )
-  }
+  )
 }
+export default connect(
+  state => ({
+    user: state.user,
+  })
+)(NavBar)
