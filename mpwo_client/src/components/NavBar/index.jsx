@@ -18,7 +18,6 @@ function NavBar (props) {
         >
           <span className="navbar-toggler-icon" />
         </button>
-
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav mr-auto">
             <li className="nav-item">
@@ -31,6 +30,20 @@ function NavBar (props) {
                 Dashboard
               </Link>
             </li>
+          </ul>
+          <ul className="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            {!props.user.isAuthenticated && (
+              <li className="nav-item">
+                <Link
+                  className="nav-link"
+                  to={{
+                    pathname: '/register',
+                  }}
+                >
+                  Register
+                </Link>
+              </li>
+            )}
             {!props.user.isAuthenticated && (
               <li className="nav-item">
                 <Link
@@ -43,17 +56,10 @@ function NavBar (props) {
                 </Link>
               </li>
             )}
-            {!props.user.isAuthenticated && (
-              <li className="nav-item">
-                <Link
-                  className="nav-link"
-                  to={{
-                    pathname: '/register',
-                  }}
-                >
-                  Register
-                </Link>
-              </li>
+            {props.user.isAuthenticated && (
+            <li className="nav-item">
+              <a className="nav-link">{props.user.username}</a>
+            </li>
             )}
             {props.user.isAuthenticated && (
             <li className="nav-item">
