@@ -6,7 +6,7 @@ class Logout extends React.Component {
   render() {
     return (
       <div>
-        <h1>Dashboard</h1>
+        <h1 className="page-title">Dashboard</h1>
       </div>
     )
   }

@@ -3,8 +3,9 @@ import { Redirect, Route, Switch } from 'react-router-dom'
 
 import './App.css'
 import Dashboard from './Dashboard'
-import Logout from './Logout'
+import Logout from './User/Logout'
 import NavBar from './NavBar'
+import Profile from './User/Profile'
 import UserForm from './User/UserForm'
 import { isLoggedIn } from '../utils'
 
@@ -55,6 +56,18 @@ export default class App extends React.Component {
             )}
           />
           <Route exact path="/logout" component={Logout} />
+          <Route
+            exact path="/profile"
+            render={() => (
+              isLoggedIn() ? (
+                <Profile />
+              ) : (
+                <UserForm
+                  formType={'Login'}
+                />
+              )
+            )}
+          />
         </Switch>
      </div>
     )

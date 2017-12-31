@@ -58,7 +58,14 @@ function NavBar (props) {
             )}
             {props.user.isAuthenticated && (
             <li className="nav-item">
-              <a className="nav-link">{props.user.username}</a>
+              <Link
+                className="nav-link"
+                to={{
+                  pathname: '/profile',
+                }}
+              >
+                {props.user.username}
+              </Link>
             </li>
             )}
             {props.user.isAuthenticated && (
