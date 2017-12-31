@@ -1,4 +1,5 @@
 import React from 'react'
+import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 
 class Logout extends React.Component {
@@ -6,6 +7,9 @@ class Logout extends React.Component {
   render() {
     return (
       <div>
+        <Helmet>
+          <title>mpwo - Dashboard</title>
+        </Helmet>
         <h1 className="page-title">Dashboard</h1>
       </div>
     )

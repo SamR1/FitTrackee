@@ -5,6 +5,7 @@ import './App.css'
 import Dashboard from './Dashboard'
 import Logout from './User/Logout'
 import NavBar from './NavBar'
+import NotFound from './NotFound'
 import Profile from './User/Profile'
 import UserForm from './User/UserForm'
 import { isLoggedIn } from '../utils'
@@ -68,6 +69,7 @@ export default class App extends React.Component {
               )
             )}
           />
+          <Route component={NotFound} />
         </Switch>
      </div>
     )
