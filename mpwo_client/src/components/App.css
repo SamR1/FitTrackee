@@ -31,6 +31,14 @@
   text-align: left;
 }
 
+label {
+  width: 100%;
+}
+
+input, textarea {
+  width: 100%;
+}
+
 .page-title {
   font-size: 2em;
   margin: 1em;

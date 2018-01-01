@@ -1,5 +1,7 @@
 import keyIndex from 'react-key-index'
+
 import mpwoApi from '../mpwoApi'
+import { history } from '../index'
 
 function AuthError(message) {
   return { type: 'AUTH_ERROR', message }
@@ -17,25 +19,21 @@ function ProfileError(message) {
   return { type: 'PROFILE_ERROR', message }
 }
 
-const updateFormDataEmail = value => ({
-  type: 'UPDATE_FORMDATA_EMAIL',
-  email: value,
+export const handleFormChange = (target, value) => ({
+  type: 'UPDATE_USER_FORMDATA',
+  target,
+  value,
 })
 
-const updateFormDataUsername = value => ({
-  type: 'UPDATE_FORMDATA_USERNAME',
-  username: value,
+export const updateProfileFormData = (target, value) => ({
+  type: 'UPDATE_PROFILE_FORMDATA',
+  target,
+  value,
 })
 
-const updateFormDataPassword = value => ({
-  type: 'UPDATE_FORMDATA_PASSWORD',
-  password: value,
-})
-
-const updateFormDataPasswordConf = value => ({
-  type: 'UPDATE_FORMDATA_PASSWORD_CONF',
-  passwordConf: value,
-})
+function initProfileFormData(user) {
+  return { type: 'INIT_PROFILE_FORM', user }
+}
 
 export function getProfile(dispatch) {
   return mpwoApi
@@ -43,7 +41,6 @@ export function getProfile(dispatch) {
     .then(ret => {
       if (ret.status === 'success') {
         dispatch(ProfileSuccess(ret))
-        // window.location.href = '/'
       } else {
         dispatch(ProfileError(ret.message))
       }
@@ -139,15 +136,29 @@ export function handleUserFormSubmit(event, formType) {
   }
 }
 
-export const handleFormChange = event => dispatch => {
-  switch (event.target.name) {
-    case 'email':
-      return dispatch(updateFormDataEmail(event.target.value))
-    case 'username':
-      return dispatch(updateFormDataUsername(event.target.value))
-    case 'password':
-      return dispatch(updateFormDataPassword(event.target.value))
-    default: // case 'password-conf':
-      return dispatch(updateFormDataPasswordConf(event.target.value))
+export function initProfileForm () {
+  return (dispatch, getState) => {
+    const state = getState()
+    dispatch(initProfileFormData(state.user))
+  }
+}
+
+export function handleProfileFormSubmit(event) {
+  event.preventDefault()
+  return (dispatch, getState) => {
+    const state = getState()
+    return mpwoApi
+      .updateProfile(state.formProfile.formProfile)
+      .then(ret => {
+        if (ret.status === 'success') {
+          getProfile(dispatch)
+          history.push('/profile')
+        } else {
+          dispatch(AuthError(ret.message))
+        }
+      })
+      .catch(error => {
+        throw error
+      })
   }
 }

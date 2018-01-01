@@ -7,6 +7,7 @@ import Logout from './User/Logout'
 import NavBar from './NavBar'
 import NotFound from './NotFound'
 import Profile from './User/Profile'
+import ProfileEdit from './User/ProfileEdit'
 import UserForm from './User/UserForm'
 import { isLoggedIn } from '../utils'
 
@@ -57,6 +58,18 @@ export default class App extends React.Component {
             )}
           />
           <Route exact path="/logout" component={Logout} />
+          <Route
+            exact path="/profile/edit"
+            render={() => (
+              isLoggedIn() ? (
+                <ProfileEdit />
+              ) : (
+                <UserForm
+                  formType={'Login'}
+                />
+              )
+            )}
+          />
           <Route
             exact path="/profile"
             render={() => (

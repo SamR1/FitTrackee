@@ -9,18 +9,23 @@ from mpwo_api import bcrypt, db
 class User(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
+    username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
     admin = db.Column(db.Boolean, default=False, nullable=False)
+    first_name = db.Column(db.String(80), nullable=True)
+    last_name = db.Column(db.String(80), nullable=True)
+    birth_date = db.Column(db.DateTime, nullable=True)
+    location = db.Column(db.String(80), nullable=True)
+    bio = db.Column(db.String(200), nullable=True)
 
     def __repr__(self):
         return '<User %r>' % self.username
 
     def __init__(
             self, username, email, password,
-            created_at=datetime.datetime.utcnow()):
+            created_at=datetime.datetime.now()):
         self.username = username
         self.email = email
         self.password = bcrypt.generate_password_hash(
@@ -30,7 +35,11 @@ class User(db.Model):
 
     @staticmethod
     def encode_auth_token(user_id):
-        """Generates the auth token"""
+        """
+        Generates the auth token
+        :param user_id: -
+        :return: JWToken
+        """
         try:
             payload = {
                 'exp': datetime.datetime.utcnow() + datetime.timedelta(

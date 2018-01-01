@@ -46,4 +46,23 @@ export default class MpwoApi {
       .then(response => response.json())
       .catch(error => error)
   }
+  static updateProfile(form) {
+    const request = new Request(`${apiUrl}auth/profile/edit`, {
+      method: 'POST',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${window.localStorage.getItem('authToken')}`,
+      }),
+      body: JSON.stringify({
+        first_name: form.firstName,
+        last_name: form.lastName,
+        bio: form.bio,
+        location: form.location,
+        birth_date: form.birthdate,
+      }),
+    })
+    return fetch(request)
+      .then(response => response.json())
+      .catch(error => error)
+  }
 }

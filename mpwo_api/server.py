@@ -5,21 +5,18 @@ from mpwo_api.users.models import User
 
 
 @app.cli.command()
-def recreate_db():
-    """Recreates a database."""
+def init_db():
+    """Init the database."""
     db.drop_all()
     db.create_all()
-    db.session.commit()
-    print('Database (re)creation done.')
-
-
-@app.cli.command()
-def seed_db():
-    """Seeds the database."""
-    admin = User(username='admin', email='admin@example.com', password='admin')
+    admin = User(
+        username='admin',
+        email='admin@example.com',
+        password='mpwoadmin')
     admin.admin = True
     db.session.add(admin)
     db.session.commit()
+    print('Database initialization done.')
 
 
 @app.cli.command()

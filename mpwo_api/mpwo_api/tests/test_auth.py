@@ -2,7 +2,7 @@ import json
 import time
 
 from mpwo_api.tests.base import BaseTestCase
-from mpwo_api.tests.utils import add_user
+from mpwo_api.tests.utils import add_user, add_user_full
 
 
 class TestAuthBlueprint(BaseTestCase):
@@ -328,14 +328,14 @@ class TestAuthBlueprint(BaseTestCase):
                 data['message'] == 'Invalid token. Please log in again.')
             self.assertEqual(response.status_code, 401)
 
-    def test_user_profile(self):
-        add_user('test', 'test@test.com', 'test')
+    def test_user_profile_minimal(self):
+        add_user('test', 'test@test.com', '12345678')
         with self.client:
             resp_login = self.client.post(
                 '/api/auth/login',
                 data=json.dumps(dict(
                     email='test@test.com',
-                    password='test'
+                    password='12345678'
                 )),
                 content_type='application/json'
             )
@@ -356,6 +356,39 @@ class TestAuthBlueprint(BaseTestCase):
             self.assertFalse(data['data']['admin'])
             self.assertEqual(response.status_code, 200)
 
+    def test_user_profile_full(self):
+        add_user_full('test', 'test@test.com', '12345678')
+        with self.client:
+            resp_login = self.client.post(
+                '/api/auth/login',
+                data=json.dumps(dict(
+                    email='test@test.com',
+                    password='12345678'
+                )),
+                content_type='application/json'
+            )
+            response = self.client.get(
+                '/api/auth/profile',
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_login.data.decode()
+                    )['auth_token']
+                )
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'success')
+            self.assertTrue(data['data'] is not None)
+            self.assertTrue(data['data']['username'] == 'test')
+            self.assertTrue(data['data']['email'] == 'test@test.com')
+            self.assertTrue(data['data']['created_at'])
+            self.assertFalse(data['data']['admin'])
+            self.assertTrue(data['data']['first_name'] == 'John')
+            self.assertTrue(data['data']['last_name'] == 'Doe')
+            self.assertTrue(data['data']['birth_date'])
+            self.assertTrue(data['data']['bio'] == 'just a random guy')
+            self.assertTrue(data['data']['location'] == 'somewhere')
+            self.assertEqual(response.status_code, 200)
+
     def test_invalid_profile(self):
         with self.client:
             response = self.client.get(
@@ -366,3 +399,89 @@ class TestAuthBlueprint(BaseTestCase):
             self.assertTrue(
                 data['message'] == 'Invalid token. Please log in again.')
             self.assertEqual(response.status_code, 401)
+
+    def test_user_profile_valid_update(self):
+        add_user('test', 'test@test.com', '12345678')
+        with self.client:
+            resp_login = self.client.post(
+                '/api/auth/login',
+                data=json.dumps(dict(
+                    email='test@test.com',
+                    password='12345678'
+                )),
+                content_type='application/json'
+            )
+            response = self.client.post(
+                '/api/auth/profile/edit',
+                content_type='application/json',
+                data=json.dumps(dict(
+                    first_name='John',
+                    last_name='Doe',
+                    location='Somewhere',
+                    bio='just a random guy',
+                    birth_date='01/01/1980'
+                )),
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_login.data.decode()
+                    )['auth_token']
+                )
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'success')
+            self.assertTrue(data['message'] == 'User profile updated.')
+            self.assertEqual(response.status_code, 200)
+
+    def test_user_profile_valid_update_with_one_field(self):
+        add_user('test', 'test@test.com', '12345678')
+        with self.client:
+            resp_login = self.client.post(
+                '/api/auth/login',
+                data=json.dumps(dict(
+                    email='test@test.com',
+                    password='12345678'
+                )),
+                content_type='application/json'
+            )
+            response = self.client.post(
+                '/api/auth/profile/edit',
+                content_type='application/json',
+                data=json.dumps(dict(
+                    first_name='John'
+                )),
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_login.data.decode()
+                    )['auth_token']
+                )
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'success')
+            self.assertTrue(data['message'] == 'User profile updated.')
+            self.assertEqual(response.status_code, 200)
+
+    def test_user_profile_update_invalid_json(self):
+        add_user('test', 'test@test.com', '12345678')
+        with self.client:
+            resp_login = self.client.post(
+                '/api/auth/login',
+                data=json.dumps(dict(
+                    email='test@test.com',
+                    password='12345678'
+                )),
+                content_type='application/json'
+            )
+            response = self.client.post(
+                '/api/auth/profile/edit',
+                content_type='application/json',
+                data=json.dumps(dict()),
+                headers=dict(
+                    Authorization='Bearer ' + json.loads(
+                        resp_login.data.decode()
+                    )['auth_token']
+                )
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 400)
+            self.assertIn('Invalid payload.', data['message'])
+            self.assertIn('error', data['status'])

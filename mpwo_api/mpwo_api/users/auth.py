@@ -1,3 +1,4 @@
+import datetime
 from flask import Blueprint, jsonify, request
 from sqlalchemy import exc, or_
 
@@ -155,6 +156,57 @@ def get_user_status(user_id):
             'email': user.email,
             'created_at': user.created_at,
             'admin': user.admin,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'bio': user.bio,
+            'location': user.location,
+            'birth_date': user.birth_date,
         }
     }
     return jsonify(response_object), 200
+
+
+@auth_blueprint.route('/auth/profile/edit', methods=['POST'])
+@authenticate
+def edit_user(user_id):
+    # get post data
+    post_data = request.get_json()
+    if not post_data:
+        response_object = {
+            'status': 'error',
+            'message': 'Invalid payload.'
+        }
+        return jsonify(response_object), 400
+    first_name = post_data.get('first_name')
+    last_name = post_data.get('last_name')
+    bio = post_data.get('bio')
+    birth_date = post_data.get('birth_date')
+    location = post_data.get('location')
+    try:
+        user = User.query.filter_by(id=user_id).first()
+        user.first_name = first_name
+        user.last_name = last_name
+        user.bio = bio
+        user.location = location
+        user.birth_date = (
+            datetime.datetime.strptime(birth_date, '%d/%m/%Y')
+            if birth_date
+            else None
+        )
+        db.session.commit()
+
+        response_object = {
+            'status': 'success',
+            'message': 'User profile updated.'
+        }
+        return jsonify(response_object), 200
+
+    # handler errors
+    except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
+        db.session.rollback()
+        appLog.error(e)
+        response_object = {
+            'status': 'error',
+            'message': 'Error. Please try again or contact the administrator.'
+        }
+        return jsonify(response_object), 500

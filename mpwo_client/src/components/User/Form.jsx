@@ -51,10 +51,10 @@ export default function Form (props) {
             {props.formType === 'Register' &&
             <div className="form-group">
               <input
-                name="password-conf"
+                name="passwordConf"
                 className="form-control input-lg"
                 type="password"
-                placeholder="Enter password confirmation"
+                placeholder="Enter the password confirmation"
                 required
                 onChange={props.onHandleFormChange}
               />

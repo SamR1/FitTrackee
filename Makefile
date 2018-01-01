@@ -2,6 +2,9 @@ include Makefile.config
 -include Makefile.custom.config
 .SILENT:
 
+init-db:
+	$(FLASK) init_db
+
 make-p:
 	# Launch all P targets in parallel and exit as soon as one exits.
 	set -m; (for p in $(P); do ($(MAKE) $$p || kill 0)& done; wait)

@@ -28,7 +28,12 @@ function Profile ({ user }) {
                 <div className="row">
                   <div className="col-md-8">
                     <p>Email : {user.email}</p>
-                    <p>Registration date : {user.createdAt}</p>
+                    <p>Registration Date : {user.createdAt}</p>
+                    <p>First Name : {user.firstName}</p>
+                    <p>Last Name : {user.lastName}</p>
+                    <p>Birth Date : {user.birthDate}</p>
+                    <p>Location : {user.location}</p>
+                    <p>Bio : {user.bio}</p>
                   </div>
                 </div>
               </div>

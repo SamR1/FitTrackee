@@ -47,7 +47,7 @@ export default connect(
   }),
   dispatch => ({
     onHandleFormChange: event => {
-      dispatch(handleFormChange(event))
+      dispatch(handleFormChange(event.target.name, event.target.value))
     },
     onHandleUserFormSubmit: (event, formType) => {
       dispatch(handleUserFormSubmit(event, formType))

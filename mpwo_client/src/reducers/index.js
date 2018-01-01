@@ -4,36 +4,42 @@ import initial from './initial'
 
 const formData = (state = initial.formData, action) => {
   switch (action.type) {
-    case 'UPDATE_FORMDATA_EMAIL':
+    case 'UPDATE_USER_FORMDATA':
       return {
         formData: {
           ...state.formData,
-          email: action.email
-        },
-      }
-    case 'UPDATE_FORMDATA_USERNAME':
-      return {
-        formData: {
-          ...state.formData,
-          username: action.username
-        },
-      }
-    case 'UPDATE_FORMDATA_PASSWORD':
-      return {
-        formData: {
-          ...state.formData,
-          password: action.password
-        },
-      }
-    case 'UPDATE_FORMDATA_PASSWORD_CONF':
-      return {
-        formData: {
-          ...state.formData,
-          passwordConf: action.passwordConf
+          [action.target]: action.value
         },
       }
     case 'PROFILE_SUCCESS':
       return initial.formData
+    default:
+      return state
+  }
+}
+
+const formProfile = (state = initial.formProfile, action) => {
+  switch (action.type) {
+    case 'UPDATE_PROFILE_FORMDATA':
+      return {
+        formProfile: {
+          ...state.formProfile,
+          [action.target]: action.value
+        },
+      }
+    case 'INIT_PROFILE_FORM':
+      return {
+        formProfile: {
+          ...state.formProfile,
+          firstName: action.user.firstName,
+          lastName: action.user.lastName,
+          birthDate: action.user.birthDate,
+          location: action.user.location,
+          bio: action.user.bio,
+        },
+      }
+    case 'PROFILE_SUCCESS':
+      return initial.formProfile
     default:
       return state
   }
@@ -73,14 +79,29 @@ const user = (state = initial.user, action) => {
     case 'LOGOUT':
       window.localStorage.removeItem('authToken')
       return initial.user
-    case 'PROFILE_SUCCESS':
+      case 'PROFILE_SUCCESS':
       return {
         id: action.message.data.id,
         username: action.message.data.username,
         email: action.message.data.email,
         isAdmin: action.message.data.admin,
         createdAt: action.message.data.created_at,
-        isAuthenticated: true
+        isAuthenticated: true,
+        firstName: action.message.data.first_name
+                   ? action.message.data.first_name
+                   : '',
+        lastName: action.message.data.last_name
+                   ? action.message.data.last_name
+                   : '',
+        bio: action.message.data.bio
+                   ? action.message.data.bio
+                   : '',
+        location: action.message.data.location
+                   ? action.message.data.location
+                   : '',
+        birthDate: action.message.data.birth_date
+                   ? action.message.data.birth_date
+                   : '',
       }
     default:
       return state
@@ -89,6 +110,7 @@ const user = (state = initial.user, action) => {
 
 const reducers = combineReducers({
   formData,
+  formProfile,
   message,
   messages,
   user,
