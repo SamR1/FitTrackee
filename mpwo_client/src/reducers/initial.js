@@ -1,5 +1,6 @@
 export default {
   message: '',
+  messages: [],
   user: {
     id: '',
     username: '',
@@ -12,7 +13,8 @@ export default {
     formData: {
     username: '',
     email: '',
-    password: ''
+    password: '',
+    passwordConf: '',
     }
   },
 }

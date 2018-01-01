@@ -16,6 +16,17 @@ function UserForm(props) {
           { props.message !== '' && (
             <code>{props.message}</code>
           )}
+          { props.messages.length > 0 && (
+            <code>
+              <ul>
+                {props.messages.map(msg => (
+                  <li key={msg.id}>
+                    {msg.value}
+                  </li>
+                ))}
+              </ul>
+            </code>
+          )}
           <Form
             formType={props.formType}
             userForm={props.formData}
@@ -32,6 +43,7 @@ export default connect(
   state => ({
     formData: state.formData,
     message: state.message,
+    messages: state.messages,
   }),
   dispatch => ({
     onHandleFormChange: event => {

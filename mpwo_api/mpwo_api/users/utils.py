@@ -1,4 +1,5 @@
 from functools import wraps
+import re
 
 from flask import request, jsonify
 
@@ -33,3 +34,21 @@ def authenticate(f):
 def is_admin(user_id):
     user = User.query.filter_by(id=user_id).first()
     return user.admin
+
+
+def is_valid_email(email):
+    mail_pattern = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+    return re.match(mail_pattern, email) is not None
+
+
+def register_controls(username, email, password, password_conf):
+    ret = ''
+    if not 2 < len(username) < 13:
+        ret += 'Username: 3 to 12 characters required.\n'
+    if not is_valid_email(email):
+        ret += 'Valid email must be provided.\n'
+    if password != password_conf:
+        ret += 'Password and password confirmation don\'t match.\n'
+    if len(password) < 8:
+        ret += 'Password: 8 characters required.\n'
+    return ret

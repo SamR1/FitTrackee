@@ -17,7 +17,7 @@ export default class MpwoApi {
       .then(response => response.json())
       .catch(error => error)
   }
-  static register(username, email, password) {
+  static register(username, email, password, passwordConf) {
     const request = new Request(`${apiUrl}auth/register`, {
       method: 'POST',
       headers: new Headers({
@@ -27,6 +27,7 @@ export default class MpwoApi {
         username: username,
         email: email,
         password: password,
+        password_conf: passwordConf,
       }),
     })
     return fetch(request)

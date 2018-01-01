@@ -14,7 +14,8 @@ class TestAuthBlueprint(BaseTestCase):
                 data=json.dumps(dict(
                     username='justatest',
                     email='test@test.com',
-                    password='123456'
+                    password='12345678',
+                    password_conf='12345678'
                 )),
                 content_type='application/json'
             )
@@ -26,14 +27,15 @@ class TestAuthBlueprint(BaseTestCase):
             self.assertEqual(response.status_code, 201)
 
     def test_user_registration_user_already_exists(self):
-        add_user('test', 'test@test.com', 'test')
+        add_user('test', 'test@test.com', '12345678')
         with self.client:
             response = self.client.post(
                 '/api/auth/register',
                 data=json.dumps(dict(
                     username='test',
                     email='test@test.com',
-                    password='test'
+                    password='12345678',
+                    password_conf='12345678'
                 )),
                 content_type='application/json'
             )
@@ -41,6 +43,101 @@ class TestAuthBlueprint(BaseTestCase):
             self.assertTrue(data['status'] == 'error')
             self.assertTrue(
                 data['message'] == 'Sorry. That user already exists.')
+            self.assertTrue(response.content_type == 'application/json')
+            self.assertEqual(response.status_code, 400)
+
+    def test_user_registration_invalid_short_username(self):
+        with self.client:
+            response = self.client.post(
+                '/api/auth/register',
+                data=json.dumps(dict(
+                    username='t',
+                    email='test@test.com',
+                    password='12345678',
+                    password_conf='12345678'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'error')
+            self.assertTrue(
+                data['message'] == "Errors: Username: 3 to 12 characters required.\n")
+            self.assertTrue(response.content_type == 'application/json')
+            self.assertEqual(response.status_code, 400)
+
+    def test_user_registration_invalid_long_username(self):
+        with self.client:
+            response = self.client.post(
+                '/api/auth/register',
+                data=json.dumps(dict(
+                    username='testestestestestest',
+                    email='test@test.com',
+                    password='12345678',
+                    password_conf='12345678'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'error')
+            self.assertTrue(
+                data['message'] == "Errors: Username: 3 to 12 characters required.\n")
+            self.assertTrue(response.content_type == 'application/json')
+            self.assertEqual(response.status_code, 400)
+
+    def test_user_registration_invalid_email(self):
+        with self.client:
+            response = self.client.post(
+                '/api/auth/register',
+                data=json.dumps(dict(
+                    username='test',
+                    email='test@test',
+                    password='12345678',
+                    password_conf='12345678'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'error')
+            self.assertTrue(
+                data['message'] == "Errors: Valid email must be provided.\n")
+            self.assertTrue(response.content_type == 'application/json')
+            self.assertEqual(response.status_code, 400)
+
+    def test_user_registration_invalid_short_password(self):
+        with self.client:
+            response = self.client.post(
+                '/api/auth/register',
+                data=json.dumps(dict(
+                    username='test',
+                    email='test@test.com',
+                    password='1234567',
+                    password_conf='1234567'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'error')
+            self.assertTrue(
+                data['message'] == "Errors: Password: 8 characters required.\n")
+            self.assertTrue(response.content_type == 'application/json')
+            self.assertEqual(response.status_code, 400)
+
+    def test_user_registration_mismatched_password(self):
+        with self.client:
+            response = self.client.post(
+                '/api/auth/register',
+                data=json.dumps(dict(
+                    username='test',
+                    email='test@test.com',
+                    password='12345678',
+                    password_conf='87654321'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'error')
+            self.assertTrue(
+                data['message'] == "Errors: Password and password confirmation don\'t match.\n")
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 400)
 
@@ -60,7 +157,10 @@ class TestAuthBlueprint(BaseTestCase):
         with self.client:
             response = self.client.post(
                 '/api/auth/register',
-                data=json.dumps(dict(email='test@test.com', password='test')),
+                data=json.dumps(dict(
+                    email='test@test.com',
+                    password='12345678',
+                    password_conf='12345678')),
                 content_type='application/json',
             )
             data = json.loads(response.data.decode())
@@ -73,7 +173,9 @@ class TestAuthBlueprint(BaseTestCase):
             response = self.client.post(
                 '/api/auth/register',
                 data=json.dumps(dict(
-                    username='test', password='test')),
+                    username='test',
+                    password='12345678',
+                    password_conf='12345678')),
                 content_type='application/json',
             )
             data = json.loads(response.data.decode())
@@ -86,7 +188,24 @@ class TestAuthBlueprint(BaseTestCase):
             response = self.client.post(
                 '/api/auth/register',
                 data=json.dumps(dict(
-                    username='test', email='test@test.com')),
+                    username='test',
+                    email='test@test.com',
+                    password_conf='12345678')),
+                content_type='application/json',
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 400)
+            self.assertIn('Invalid payload.', data['message'])
+            self.assertIn('error', data['status'])
+
+    def test_user_registration_invalid_json_keys_no_password_conf(self):
+        with self.client:
+            response = self.client.post(
+                '/api/auth/register',
+                data=json.dumps(dict(
+                    username='test',
+                    email='test@test.com',
+                    password='12345678')),
                 content_type='application/json',
             )
             data = json.loads(response.data.decode())
@@ -96,12 +215,12 @@ class TestAuthBlueprint(BaseTestCase):
 
     def test_registered_user_login(self):
         with self.client:
-            add_user('test', 'test@test.com', 'test')
+            add_user('test', 'test@test.com', '12345678')
             response = self.client.post(
                 '/api/auth/login',
                 data=json.dumps(dict(
                     email='test@test.com',
-                    password='test'
+                    password='12345678'
                 )),
                 content_type='application/json'
             )
@@ -118,25 +237,42 @@ class TestAuthBlueprint(BaseTestCase):
                 '/api/auth/login',
                 data=json.dumps(dict(
                     email='test@test.com',
-                    password='test'
+                    password='12345678'
                 )),
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'error')
-            self.assertTrue(data['message'] == 'User does not exist.')
+            self.assertTrue(data['message'] == 'Invalid credentials.')
+            self.assertTrue(response.content_type == 'application/json')
+            self.assertEqual(response.status_code, 404)
+
+    def test_registered_user_login_invalid_password(self):
+        add_user('test', 'test@test.com', '12345678')
+        with self.client:
+            response = self.client.post(
+                '/api/auth/login',
+                data=json.dumps(dict(
+                    email='test@test.com',
+                    password='123456789'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'error')
+            self.assertTrue(data['message'] == 'Invalid credentials.')
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 404)
 
     def test_valid_logout(self):
-        add_user('test', 'test@test.com', 'test')
+        add_user('test', 'test@test.com', '12345678')
         with self.client:
             # user login
             resp_login = self.client.post(
                 '/api/auth/login',
                 data=json.dumps(dict(
                     email='test@test.com',
-                    password='test'
+                    password='12345678'
                 )),
                 content_type='application/json'
             )
@@ -155,13 +291,13 @@ class TestAuthBlueprint(BaseTestCase):
             self.assertEqual(response.status_code, 200)
 
     def test_invalid_logout_expired_token(self):
-        add_user('test', 'test@test.com', 'test')
+        add_user('test', 'test@test.com', '12345678')
         with self.client:
             resp_login = self.client.post(
                 '/api/auth/login',
                 data=json.dumps(dict(
                     email='test@test.com',
-                    password='test'
+                    password='12345678'
                 )),
                 content_type='application/json'
             )

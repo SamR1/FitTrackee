@@ -4,7 +4,7 @@ from sqlalchemy import exc, or_
 from mpwo_api import appLog, bcrypt, db
 
 from .models import User
-from .utils import authenticate
+from .utils import authenticate, register_controls
 
 auth_blueprint = Blueprint('auth', __name__)
 
@@ -15,7 +15,8 @@ def register_user():
     post_data = request.get_json()
     if not post_data or post_data.get('username') is None \
             or post_data.get('email') is None \
-            or post_data.get('password') is None:
+            or post_data.get('password') is None \
+            or post_data.get('password_conf') is None:
         response_object = {
             'status': 'error',
             'message': 'Invalid payload.'
@@ -24,6 +25,16 @@ def register_user():
     username = post_data.get('username')
     email = post_data.get('email')
     password = post_data.get('password')
+    password_conf = post_data.get('password_conf')
+
+    ret = register_controls(username, email, password, password_conf)
+    if ret != '':
+        response_object = {
+            'status': 'error',
+            'message': 'Errors: ' + ret
+        }
+        return jsonify(response_object), 400
+
     try:
         # check for existing user
         user = User.query.filter(
@@ -90,7 +101,7 @@ def login_user():
         else:
             response_object = {
                 'status': 'error',
-                'message': 'User does not exist.'
+                'message': 'Invalid credentials.'
             }
             return jsonify(response_object), 404
     # handler errors

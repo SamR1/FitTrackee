@@ -14,3 +14,6 @@ serve-react:
 
 serve:
 	$(MAKE) P="serve-react serve-python" make-p
+
+test-python:
+	$(FLASK) test

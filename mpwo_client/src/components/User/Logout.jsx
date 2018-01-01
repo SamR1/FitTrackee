@@ -11,7 +11,7 @@ class Logout extends React.Component {
   render() {
     return (
       <div>
-        <p>
+        <p className="App-center">
           You are now logged out.
           Click <Link to="/login">here</Link> to log back in.</p>
       </div>
