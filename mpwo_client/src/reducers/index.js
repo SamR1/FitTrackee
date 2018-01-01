@@ -1,3 +1,4 @@
+import { format } from 'date-fns'
 import { combineReducers } from 'redux'
 
 import initial from './initial'
@@ -49,7 +50,7 @@ const message = (state = initial.message, action) => {
   switch (action.type) {
     case 'AUTH_ERROR':
     case 'PROFILE_ERROR':
-    case 'PWD_ERROR':
+    case 'PROFILE_UPDATE_ERROR':
     case 'PICTURE_ERROR':
       return action.message
     case 'LOGOUT':
@@ -102,7 +103,8 @@ const user = (state = initial.user, action) => {
                    ? action.message.data.location
                    : '',
         birthDate: action.message.data.birth_date
-                   ? action.message.data.birth_date
+                   ? format(new Date(action.message.data.birth_date),
+                            'DD/MM/YYYY')
                    : '',
         picture: action.message.data.picture === true
                    ? action.message.data.picture

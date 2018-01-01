@@ -1,6 +1,6 @@
 import datetime
 import os
-from flask import Blueprint, current_app, jsonify, request, send_from_directory
+from flask import Blueprint, current_app, jsonify, request
 from sqlalchemy import exc, or_
 from werkzeug.utils import secure_filename
 

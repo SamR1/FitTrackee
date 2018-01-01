@@ -1,3 +1,4 @@
+import { format } from 'date-fns'
 import React from 'react'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
@@ -33,13 +34,15 @@ function Profile ({ message, onDeletePicture, onUploadPicture, user }) {
               <div className="card-body">
                 <div className="row">
                   <div className="col-md-8">
-                    <p>Email : {user.email}</p>
-                    <p>Registration Date : {user.createdAt}</p>
-                    <p>First Name : {user.firstName}</p>
-                    <p>Last Name : {user.lastName}</p>
-                    <p>Birth Date : {user.birthDate}</p>
-                    <p>Location : {user.location}</p>
-                    <p>Bio : {user.bio}</p>
+                    <p>Email: {user.email}</p>
+                    <p>Registration Date: {
+                         format(new Date(user.createdAt), 'DD/MM/YYYY HH:mm')
+                       }</p>
+                    <p>First Name: {user.firstName}</p>
+                    <p>Last Name: {user.lastName}</p>
+                    <p>Birth Date: {user.birthDate}</p>
+                    <p>Location: {user.location}</p>
+                    <p>Bio: {user.bio}</p>
                   </div>
                   <div className="col-md-4">
                     { user.picture === true && (

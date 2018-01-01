@@ -120,6 +120,8 @@ class ProfileEdit extends React.Component {
                             name="birthDate"
                             className="form-control input-lg"
                             type="text"
+                            pattern="\d{1,2}/\d{1,2}/\d{4}"
+                            placeholder="dd/mm/yyyy"
                             value={formProfile.birthDate}
                             onChange={onHandleFormChange}
                           />
