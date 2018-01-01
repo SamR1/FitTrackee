@@ -28,7 +28,9 @@ export default {
       lastName: '',
       bio: '',
       location: '',
-      birthDate: ''
+      birthDate: '',
+      password: '',
+      passwordConf: ''
     }
   },
 }

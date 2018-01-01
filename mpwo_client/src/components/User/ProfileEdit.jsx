@@ -17,6 +17,7 @@ class ProfileEdit extends React.Component {
     const { formProfile,
             onHandleFormChange,
             onHandleProfileFormSubmit,
+            message,
             user
     } = this.props
     return (
@@ -24,6 +25,9 @@ class ProfileEdit extends React.Component {
         <Helmet>
           <title>mpwo - {user.username} - Edit Profile</title>
         </Helmet>
+        { message !== '' && (
+            <code>{message}</code>
+          )}
         <div className="container">
           <h1 className="page-title">Profile Edition</h1>
           <div className="row">
@@ -62,6 +66,29 @@ class ProfileEdit extends React.Component {
                           />
                         </label>
                       </div>
+                      <div className="form-group">
+                        <label>
+                          Password:
+                          <input
+                            name="password"
+                            className="form-control input-lg"
+                            type="password"
+                            onChange={onHandleFormChange}
+                          />
+                        </label>
+                      </div>
+                        <div className="form-group">
+                        <label>
+                          Password Confirmation:
+                          <input
+                            name="passwordConf"
+                            className="form-control input-lg"
+                            type="password"
+                            onChange={onHandleFormChange}
+                          />
+                        </label>
+                      </div>
+                      <hr />
                       <div className="form-group">
                         <label>
                           First Name:
@@ -146,6 +173,7 @@ class ProfileEdit extends React.Component {
 export default connect(
   state => ({
     formProfile: state.formProfile.formProfile,
+    message: state.message,
     user: state.user,
   }),
   dispatch => ({

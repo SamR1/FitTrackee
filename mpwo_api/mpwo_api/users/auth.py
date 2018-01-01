@@ -1,5 +1,5 @@
 import datetime
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, current_app, jsonify, request
 from sqlalchemy import exc, or_
 
 from mpwo_api import appLog, bcrypt, db
@@ -182,6 +182,21 @@ def edit_user(user_id):
     bio = post_data.get('bio')
     birth_date = post_data.get('birth_date')
     location = post_data.get('location')
+    password = post_data.get('password')
+    password_conf = post_data.get('password_conf')
+
+    if password is not None and password != '':
+        if password_conf != password:
+            response_object = {
+                'status': 'error',
+                'message': 'Password and password confirmation don\'t match.\n'
+            }
+            return jsonify(response_object), 400
+        else:
+            password = bcrypt.generate_password_hash(
+                password, current_app.config.get('BCRYPT_LOG_ROUNDS')
+            ).decode()
+
     try:
         user = User.query.filter_by(id=user_id).first()
         user.first_name = first_name
@@ -193,6 +208,8 @@ def edit_user(user_id):
             if birth_date
             else None
         )
+        if password is not None and password != '':
+            user.password = password
         db.session.commit()
 
         response_object = {

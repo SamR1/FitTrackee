@@ -49,6 +49,7 @@ const message = (state = initial.message, action) => {
   switch (action.type) {
     case 'AUTH_ERROR':
     case 'PROFILE_ERROR':
+    case 'PWD_ERROR':
       return action.message
     case 'LOGOUT':
     case 'PROFILE_SUCCESS':

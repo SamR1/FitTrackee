@@ -19,6 +19,14 @@ function ProfileError(message) {
   return { type: 'PROFILE_ERROR', message }
 }
 
+function PwdError(message) {
+  return { type: 'PWD_ERROR', message }
+}
+
+function initProfileFormData(user) {
+  return { type: 'INIT_PROFILE_FORM', user }
+}
+
 export const handleFormChange = (target, value) => ({
   type: 'UPDATE_USER_FORMDATA',
   target,
@@ -30,10 +38,6 @@ export const updateProfileFormData = (target, value) => ({
   target,
   value,
 })
-
-function initProfileFormData(user) {
-  return { type: 'INIT_PROFILE_FORM', user }
-}
 
 export function getProfile(dispatch) {
   return mpwoApi
@@ -147,7 +151,11 @@ export function handleProfileFormSubmit(event) {
   event.preventDefault()
   return (dispatch, getState) => {
     const state = getState()
-    return mpwoApi
+    if (state.formProfile.formProfile.password !==
+        state.formProfile.formProfile.passwordConf) {
+      dispatch(PwdError('Password and password confirmation don\'t match.'))
+    } else {
+      return mpwoApi
       .updateProfile(state.formProfile.formProfile)
       .then(ret => {
         if (ret.status === 'success') {
@@ -160,5 +168,7 @@ export function handleProfileFormSubmit(event) {
       .catch(error => {
         throw error
       })
+    }
+
   }
 }

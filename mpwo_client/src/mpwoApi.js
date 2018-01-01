@@ -58,7 +58,9 @@ export default class MpwoApi {
         last_name: form.lastName,
         bio: form.bio,
         location: form.location,
-        birth_date: form.birthdate,
+        birth_date: form.birthDate,
+        password: form.password,
+        password_conf: form.passwordConf,
       }),
     })
     return fetch(request)
