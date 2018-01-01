@@ -19,6 +19,7 @@ class User(db.Model):
     birth_date = db.Column(db.DateTime, nullable=True)
     location = db.Column(db.String(80), nullable=True)
     bio = db.Column(db.String(200), nullable=True)
+    picture = db.Column(db.String(255), nullable=True)
 
     def __repr__(self):
         return '<User %r>' % self.username

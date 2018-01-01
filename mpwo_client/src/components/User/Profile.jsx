@@ -3,12 +3,18 @@ import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-function Profile ({ user }) {
+import mpwoApi from '../../mpwoApi'
+import { deletePicture, uploadPicture } from '../../actions'
+
+function Profile ({ message, onDeletePicture, onUploadPicture, user }) {
   return (
     <div>
       <Helmet>
         <title>mpwo - {user.username} - Profile</title>
       </Helmet>
+      { message !== '' && (
+        <code>{message}</code>
+      )}
       <div className="container">
         <h1 className="page-title">Profile</h1>
         <div className="row">
@@ -35,6 +41,38 @@ function Profile ({ user }) {
                     <p>Location : {user.location}</p>
                     <p>Bio : {user.bio}</p>
                   </div>
+                  <div className="col-md-4">
+                    { user.picture === true && (
+                    <div>
+                      <img
+                        alt="Profile"
+                        src={`${mpwoApi.getApiUrl()}users/${user.id}/picture` +
+                             `?${Date.now()}`}
+                        className="img-fluid App-profile-img-small"
+                      />
+                      <br />
+                      <button
+                        type="submit"
+                        onClick={() => onDeletePicture()}
+                      >
+                        Delete picture
+                      </button>
+                      <br /><br />
+                    </div>
+                    )}
+                    <form
+                      encType="multipart/form-data"
+                      onSubmit={event => onUploadPicture(event)}
+                    >
+                      <input
+                          type="file"
+                          name="picture"
+                          accept=".png,.jpg,.gif"
+                      />
+                      <br />
+                      <button type="submit">Send</button>
+                    </form>
+                  </div>
                 </div>
               </div>
             </div>
@@ -55,6 +93,15 @@ function Profile ({ user }) {
 
 export default connect(
   state => ({
+    message: state.message,
     user: state.user,
+  }),
+  dispatch => ({
+    onDeletePicture: () => {
+      dispatch(deletePicture())
+    },
+    onUploadPicture: event => {
+      dispatch(uploadPicture(event))
+    },
   })
 )(Profile)

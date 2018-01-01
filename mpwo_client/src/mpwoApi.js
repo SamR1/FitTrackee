@@ -67,4 +67,30 @@ export default class MpwoApi {
       .then(response => response.json())
       .catch(error => error)
   }
+  static updatePicture(form) {
+    const request = new Request(`${apiUrl}auth/picture`, {
+      method: 'POST',
+      headers: new Headers({
+        Authorization: `Bearer ${window.localStorage.getItem('authToken')}`,
+      }),
+      body: form,
+    })
+    return fetch(request)
+      .then(response => response.json())
+      .catch(error => error)
+  }
+  static deletePicture() {
+    const request = new Request(`${apiUrl}auth/picture`, {
+      method: 'DELETE',
+      headers: new Headers({
+        Authorization: `Bearer ${window.localStorage.getItem('authToken')}`,
+      }),
+    })
+    return fetch(request)
+      .then(response => response.json())
+      .catch(error => error)
+  }
+  static getApiUrl() {
+    return apiUrl
+  }
 }

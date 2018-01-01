@@ -1,9 +1,15 @@
 from functools import wraps
 import re
 
-from flask import request, jsonify
+from flask import current_app, jsonify, request
 
 from .models import User
+
+
+def allowed_picture(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in \
+           current_app.config.get('PICTURE_ALLOWED_EXTENSIONS')
 
 
 def authenticate(f):

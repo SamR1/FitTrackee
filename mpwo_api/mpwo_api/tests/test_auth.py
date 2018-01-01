@@ -1,5 +1,6 @@
 import json
 import time
+from io import BytesIO
 
 from mpwo_api.tests.base import BaseTestCase
 from mpwo_api.tests.utils import add_user, add_user_full
@@ -485,3 +486,31 @@ class TestAuthBlueprint(BaseTestCase):
             self.assertEqual(response.status_code, 400)
             self.assertIn('Invalid payload.', data['message'])
             self.assertIn('error', data['status'])
+
+    def test_update_user_picture(self):
+        add_user('test', 'test@test.com', '12345678')
+
+        with self.client:
+            resp_login = self.client.post(
+                '/api/auth/login',
+                data=json.dumps(dict(
+                    email='test@test.com',
+                    password='12345678'
+                )),
+                content_type='application/json'
+            )
+            response = self.client.post(
+                '/api/auth/picture',
+                data=dict(
+                    file=(BytesIO(b'avatar'), 'avatar.png')
+                ),
+                headers=dict(
+                    content_type='multipart/form-data',
+                    authorization='Bearer ' +
+                    json.loads(resp_login.data.decode())['auth_token']
+                )
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'success')
+            self.assertTrue(data['message'] == 'User picture updated.')
+            self.assertEqual(response.status_code, 200)

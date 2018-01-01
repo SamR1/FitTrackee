@@ -11,6 +11,10 @@ function AuthErrors(messages) {
   return { type: 'AUTH_ERRORS', messages }
 }
 
+function PictureError(message) {
+  return { type: 'PICTURE_ERROR', message }
+}
+
 function ProfileSuccess(message) {
   return { type: 'PROFILE_SUCCESS', message }
 }
@@ -151,7 +155,7 @@ export function handleProfileFormSubmit(event) {
   event.preventDefault()
   return (dispatch, getState) => {
     const state = getState()
-    if (state.formProfile.formProfile.password !==
+    if (!state.formProfile.formProfile.password ===
         state.formProfile.formProfile.passwordConf) {
       dispatch(PwdError('Password and password confirmation don\'t match.'))
     } else {
@@ -170,5 +174,43 @@ export function handleProfileFormSubmit(event) {
       })
     }
 
+  }
+}
+
+export function uploadPicture (event) {
+  event.preventDefault()
+  const form = new FormData()
+  form.append('file', event.target.picture.files[0])
+  event.target.reset()
+  return function(dispatch) {
+    return mpwoApi
+      .updatePicture(form)
+      .then(ret => {
+        if (ret.status === 'success') {
+          getProfile(dispatch)
+        } else {
+          dispatch(PictureError(ret.message))
+        }
+      })
+      .catch(error => {
+        throw error
+      })
+  }
+}
+
+export function deletePicture() {
+  return function(dispatch) {
+  return mpwoApi
+    .deletePicture()
+    .then(ret => {
+      if (ret.status === 'success') {
+        getProfile(dispatch)
+      } else {
+        dispatch(PictureError(ret.message))
+      }
+    })
+    .catch(error => {
+      throw error
+    })
   }
 }

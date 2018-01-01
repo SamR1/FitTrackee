@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, send_file
 
 from .models import User
 
@@ -48,6 +48,22 @@ def get_single_user(user_id):
                 }
             }
             return jsonify(response_object), 200
+    except ValueError:
+        return jsonify(response_object), 404
+
+
+@users_blueprint.route('/users/<user_id>/picture', methods=['GET'])
+def get_picture(user_id):
+    response_object = {
+        'status': 'fail',
+        'message': 'User does not exist'
+    }
+    try:
+        user = User.query.filter_by(id=int(user_id)).first()
+        if not user:
+            return jsonify(response_object), 404
+        else:
+            return send_file(user.picture)
     except ValueError:
         return jsonify(response_object), 404
 

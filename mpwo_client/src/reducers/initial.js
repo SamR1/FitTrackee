@@ -12,7 +12,8 @@ export default {
     lastName: '',
     bio: '',
     location: '',
-    birthDate: ''
+    birthDate: '',
+    picture: false
   },
   formData: {
     formData: {
@@ -30,7 +31,7 @@ export default {
       location: '',
       birthDate: '',
       password: '',
-      passwordConf: ''
+      passwordConf: '',
     }
   },
 }

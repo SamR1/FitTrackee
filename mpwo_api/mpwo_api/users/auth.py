@@ -1,11 +1,13 @@
 import datetime
-from flask import Blueprint, current_app, jsonify, request
+import os
+from flask import Blueprint, current_app, jsonify, request, send_from_directory
 from sqlalchemy import exc, or_
+from werkzeug.utils import secure_filename
 
 from mpwo_api import appLog, bcrypt, db
 
 from .models import User
-from .utils import authenticate, register_controls
+from .utils import allowed_picture, authenticate, register_controls
 
 auth_blueprint = Blueprint('auth', __name__)
 
@@ -161,6 +163,7 @@ def get_user_status(user_id):
             'bio': user.bio,
             'location': user.location,
             'birth_date': user.birth_date,
+            'picture': True if user.picture else False,
         }
     }
     return jsonify(response_object), 200
@@ -225,5 +228,83 @@ def edit_user(user_id):
         response_object = {
             'status': 'error',
             'message': 'Error. Please try again or contact the administrator.'
+        }
+        return jsonify(response_object), 500
+
+
+@auth_blueprint.route('/auth/picture', methods=['POST'])
+@authenticate
+def edit_picture(user_id):
+    code = 400
+    if 'file' not in request.files:
+        response_object = {'status': 'fail', 'message': 'No file part.'}
+        return jsonify(response_object), code
+    file = request.files['file']
+    if file.filename == '':
+        response_object = {'status': 'fail', 'message': 'No selected file.'}
+        return jsonify(response_object), code
+    if not allowed_picture(file.filename):
+        response_object = {
+            'status': 'fail',
+            'message': 'File extension not allowed.'
+        }
+        return jsonify(response_object), code
+
+    filename = secure_filename(file.filename)
+    dirpath = os.path.join(
+        current_app.config['UPLOAD_FOLDER'],
+        'pictures',
+        str(user_id)
+    )
+    if not os.path.exists(dirpath):
+        os.makedirs(dirpath)
+    filepath = os.path.join(dirpath, filename)
+
+    try:
+        user = User.query.filter_by(id=user_id).first()
+        if user.picture is not None and os.path.isfile(user.picture):
+            os.remove(user.picture)
+        file.save(filepath)
+        user.picture = filepath
+        db.session.commit()
+
+        response_object = {
+            'status': 'success',
+            'message': 'User picture updated.'
+        }
+        return jsonify(response_object), 200
+
+    except (exc.IntegrityError, ValueError) as e:
+        db.session.rollback()
+        appLog.error(e)
+        response_object = {
+            'status': 'fail',
+            'message': 'Error during picture update.'
+        }
+        return jsonify(response_object), 500
+
+
+@auth_blueprint.route('/auth/picture', methods=['DELETE'])
+@authenticate
+def del_picture(user_id):
+    try:
+        user = User.query.filter_by(id=user_id).first()
+        if os.path.isfile(user.picture):
+            os.remove(user.picture)
+        user.picture = None
+        db.session.commit()
+
+        response_object = {
+            'status': 'success',
+            'message': 'User picture delete.'
+        }
+        return jsonify(response_object), 200
+
+    except (exc.IntegrityError, ValueError) as e:
+        db.session.rollback()
+        appLog.error(e)
+        response_object = {
+            'status': 'fail',
+            'message': 'Error during picture deletion.'
         }
         return jsonify(response_object), 500

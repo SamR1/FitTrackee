@@ -22,6 +22,18 @@
   font-size: large;
 }
 
+.App-nav-profile-img {
+    max-width: 35px;
+    max-height: 35px;
+    border-radius: 50%;
+}
+
+.App-profile-img-small {
+    max-width: 150px;
+    max-height: 150px;
+    border-radius: 50%;
+}
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

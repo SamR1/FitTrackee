@@ -2,6 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
+import mpwoApi from '../../mpwoApi'
+
+
 function NavBar (props) {
   return (
     <header>
@@ -55,6 +58,14 @@ function NavBar (props) {
                   Login
                 </Link>
               </li>
+            )}
+            {props.user.picture === true && (
+            <img
+              alt="Profile"
+              src={`${mpwoApi.getApiUrl()}users/${props.user.id}/picture` +
+                  `?${Date.now()}`}
+              className="img-fluid App-nav-profile-img"
+            />
             )}
             {props.user.isAuthenticated && (
             <li className="nav-item">

@@ -1,3 +1,7 @@
+import os
+from flask import current_app
+
+
 class BaseConfig:
     """Base configuration"""
     DEBUG = False
@@ -6,6 +10,10 @@ class BaseConfig:
     BCRYPT_LOG_ROUNDS = 13
     TOKEN_EXPIRATION_DAYS = 30
     TOKEN_EXPIRATION_SECONDS = 0
+    UPLOAD_FOLDER = os.path.join(
+        current_app.root_path, 'uploads'
+    )
+    PICTURE_ALLOWED_EXTENSIONS = {'jpg', 'png', 'gif'}
 
 
 class DevelopmentConfig(BaseConfig):

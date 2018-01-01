@@ -50,6 +50,7 @@ const message = (state = initial.message, action) => {
     case 'AUTH_ERROR':
     case 'PROFILE_ERROR':
     case 'PWD_ERROR':
+    case 'PICTURE_ERROR':
       return action.message
     case 'LOGOUT':
     case 'PROFILE_SUCCESS':
@@ -103,6 +104,9 @@ const user = (state = initial.user, action) => {
         birthDate: action.message.data.birth_date
                    ? action.message.data.birth_date
                    : '',
+        picture: action.message.data.picture === true
+                   ? action.message.data.picture
+                   : false,
       }
     default:
       return state
