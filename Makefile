@@ -15,6 +15,7 @@ install-client:
 	$(NPM) install
 
 install-python:
+	test -d $(VENV) || virtualenv $(VENV) -p $(PYTHON_VERSION)
 	$(PIP) install -r $(REQUIREMENTS)
 
 serve-python:

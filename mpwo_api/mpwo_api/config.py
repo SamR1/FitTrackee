@@ -20,7 +20,7 @@ class DevelopmentConfig(BaseConfig):
     """Development configuration"""
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = \
-        'mysql+mysqldb://mpwo:mpwo@127.0.0.1:3306/mpwo'
+        os.environ.get('DATABASE_URL')
     SECRET_KEY = 'development key'
     USERNAME = 'admin'
     PASSWORD = 'default'
@@ -31,7 +31,7 @@ class TestingConfig(BaseConfig):
     """Development configuration"""
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = \
-        'mysql+mysqldb://mpwo:mpwo@127.0.0.1:3306/mpwo_test'
+        os.environ.get('DATABASE_TEST_URL')
     SECRET_KEY = 'test key'
     USERNAME = 'admin'
     PASSWORD = 'default'
