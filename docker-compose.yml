@@ -1,0 +1,31 @@
+version: '3.3'
+
+services:
+
+  db:
+    container_name: db
+    build:
+      context: ./mpwo_api/db
+      dockerfile: Dockerfile
+    ports:
+      - 5435:5432
+    environment:
+      - POSTGRES_USER=mpwo
+      - POSTGRES_PASSWORD=mpwo
+
+  api:
+    container_name: api
+    build:
+      context: ./mpwo_api
+      dockerfile: Dockerfile-dev
+    ports:
+      - 5001:5000
+    environment:
+      - FLASK_APP=server.py
+      - FLASK_DEBUG=1
+      - APP_SETTINGS=mpwo_api.config.DevelopmentConfig
+      - DATABASE_URL=postgres://mpwo:mpwo@db:5432/mpwo
+    depends_on:
+      - db
+    links:
+      - db
