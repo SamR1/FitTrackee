@@ -29,3 +29,18 @@ services:
       - db
     links:
       - db
+
+  client:
+    container_name: client
+    build:
+      context: ./
+      dockerfile: ./mpwo_client/Dockerfile-dev
+      args:
+        - NODE_ENV=development
+        - REACT_APP_USERS_SERVICE_URL=${REACT_APP_USERS_SERVICE_URL}
+    ports:
+    - 3007:3000
+    depends_on:
+      - api
+    links:
+      - api
