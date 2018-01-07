@@ -2,12 +2,20 @@ include Makefile.config
 -include Makefile.custom.config
 .SILENT:
 
-init-db:
-	$(FLASK) init_db
-
 make-p:
 	# Launch all P targets in parallel and exit as soon as one exits.
 	set -m; (for p in $(P); do ($(MAKE) $$p || kill 0)& done; wait)
+
+init-db:
+	$(FLASK) init_db
+
+install: install-client install-python
+
+install-client:
+	$(NPM) install
+
+install-python:
+	$(PIP) install -r $(REQUIREMENTS)
 
 serve-python:
 	$(FLASK) run --with-threads -h $(HOST) -p $(API_PORT)
@@ -17,6 +25,9 @@ serve-react:
 
 serve:
 	$(MAKE) P="serve-react serve-python" make-p
+
+test-e2e:
+	$(NPM) test
 
 test-python:
 	$(FLASK) test
