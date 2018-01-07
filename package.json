@@ -29,6 +29,7 @@
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-react": "^7.5.1",
     "eslint-plugin-testcafe": "^0.2.1",
+    "randomstring": "^1.1.5",
     "testcafe": "^0.18.6"
   }
 }
