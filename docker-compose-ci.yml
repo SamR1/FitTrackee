@@ -1,0 +1,44 @@
+version: '3.3'
+
+services:
+
+  db:
+    container_name: db
+    build: https://github.com/SamR1/mpwo.git#master:mpwo_api/db
+    ports:
+      - 5435:5432
+    environment:
+      - POSTGRES_USER=mpwo
+      - POSTGRES_PASSWORD=mpwo
+
+  api:
+    container_name: api
+    build:
+      context: https://github.com/SamR1/mpwo.git#master:mpwo_api
+      dockerfile: Dockerfile-ci
+    ports:
+      - 5001:5000
+    environment:
+      - FLASK_APP=server.py
+      - FLASK_DEBUG=1
+      - APP_SETTINGS=mpwo_api.config.TestingConfig
+      - DATABASE_URL=postgres://mpwo:mpwo@db:5432/mpwo_test
+    depends_on:
+      - db
+    links:
+      - db
+
+  client:
+    container_name: client
+    build:
+      context: https://github.com/SamR1/mpwo.git
+      dockerfile: ./mpwo_client/Dockerfile-ci
+      args:
+        - NODE_ENV=development
+        - REACT_APP_USERS_SERVICE_URL=${REACT_APP_USERS_SERVICE_URL}
+    ports:
+    - 3007:3000
+    depends_on:
+      - api
+    links:
+      - api

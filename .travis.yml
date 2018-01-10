@@ -1,0 +1,26 @@
+sudo: required
+
+services:
+  - docker
+
+env:
+  global:
+    - DOCKER_COMPOSE_VERSION=1.14.0
+
+before_install:
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+
+before_script:
+  - export APP_SETTINGS="project.config.TestingConfig"
+  - export DATABASE_TEST_URL=postgresql://postgres:@localhost/users_test
+  - export REACT_APP_USERS_SERVICE_URL=http://127.0.0.1:3000/api/
+  - docker-compose -f docker-compose-ci.yml up --build -d
+
+script:
+  - docker-compose -f docker-compose-ci.yml run api flask init_db
+
+after_script:
+- docker-compose down
