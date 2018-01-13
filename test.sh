@@ -11,6 +11,9 @@ inspect() {
 docker-compose -f docker-compose-ci.yml run api flask test
 inspect $? api
 
+testcafe chrome mpwo_client/e2e
+inspect $? e2e
+
 if [ -n "${fails}" ];
   then
     echo "Tests failed: ${fails}"

@@ -1,4 +1,14 @@
+language: node_js
+node_js: '9'
+
 sudo: required
+
+addons:
+  apt:
+    sources:
+     - google-chrome
+    packages:
+     - google-chrome-stable
 
 services:
   - docker
@@ -17,11 +27,16 @@ before_script:
   - export DATABASE_TEST_URL=postgres://postgres:@localhost:5432/mpwo_test
   - export APP_SETTINGS=mpwo_api.config.TestingConfig
   - export REACT_APP_USERS_SERVICE_URL=http://localhost:3000/api/
+  - export DISPLAY=:99.0
+  - export NODE_ENV=development
+  - sh -e /etc/init.d/xvfb start
+  - sleep 3
   - docker-compose -f docker-compose-ci.yml up --build -d
 
 script:
   - psql -c 'create database mpwo_test;' -U postgres
   - docker-compose -f docker-compose-ci.yml run api flask init_db
+  - echo $NODE_ENV
   - sh test.sh
 
 after_script:
