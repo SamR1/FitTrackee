@@ -31,4 +31,4 @@ test-e2e:
 	$(NPM) test
 
 test-python:
-	$(FLASK) test
+	$(FLASK) test_local

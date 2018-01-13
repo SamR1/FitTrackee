@@ -19,15 +19,26 @@ def init_db():
     print('Database initialization done.')
 
 
-@app.cli.command()
-def test():
+def run_test(test_path='mpwo_api/tests'):
     """Runs the tests without code coverage."""
     tests = unittest.TestLoader().discover(
-        'mpwo_api/mpwo_api/tests', pattern='test*.py')
+        test_path, pattern='test*.py')
     result = unittest.TextTestRunner(verbosity=2).run(tests)
     if result.wasSuccessful():
         return 0
     return 1
+
+
+@app.cli.command()
+def test(test_path='mpwo_api/tests'):
+    """Runs the tests without code coverage."""
+    run_test()
+
+
+@app.cli.command()
+def test_local():
+    """Runs the tests without code coverage in local machine w/ make."""
+    run_test('mpwo_api/mpwo_api/tests')
 
 
 if __name__ == '__main__':

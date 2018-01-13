@@ -21,9 +21,8 @@ before_script:
 
 script:
   - psql -c 'create database mpwo_test;' -U postgres
-  - echo $DATABASE_TEST_URL
-  - psql -c '\list' -U postgres
   - docker-compose -f docker-compose-ci.yml run api flask init_db
+  - sh test.sh
 
 after_script:
 - docker-compose down
