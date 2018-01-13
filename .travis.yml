@@ -26,9 +26,10 @@ before_install:
 before_script:
   - export DATABASE_TEST_URL=postgres://postgres:@localhost:5432/mpwo_test
   - export APP_SETTINGS=mpwo_api.config.TestingConfig
-  - export REACT_APP_USERS_SERVICE_URL=http://localhost:3000/api/
-  - export DISPLAY=:99.0
+  - export REACT_APP_USERS_SERVICE_URL=http://127.0.0.1:5000/api/
   - export NODE_ENV=development
+  - export TEST_URL=http://127.0.0.1:3000
+  - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
   - sleep 3
   - docker-compose -f docker-compose-ci.yml up --build -d
