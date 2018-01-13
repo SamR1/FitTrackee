@@ -14,13 +14,15 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 
 before_script:
-  - export APP_SETTINGS="project.config.TestingConfig"
-  - export DATABASE_TEST_URL=postgresql://postgres:@localhost/users_test
-  - export REACT_APP_USERS_SERVICE_URL=http://127.0.0.1:3000/api/
+  - export DATABASE_TEST_URL=postgres://postgres:@localhost:5432/mpwo_test
+  - export APP_SETTINGS=mpwo_api.config.TestingConfig
+  - export REACT_APP_USERS_SERVICE_URL=http://localhost:3000/api/
   - docker-compose -f docker-compose-ci.yml up --build -d
 
 script:
   - psql -c 'create database mpwo_test;' -U postgres
+  - echo $DATABASE_TEST_URL
+  - psql -c '\list' -U postgres
   - docker-compose -f docker-compose-ci.yml run api flask init_db
 
 after_script:
