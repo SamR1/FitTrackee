@@ -19,9 +19,9 @@ function Profile ({ message, onDeletePicture, onUploadPicture, user }) {
       <div className="container">
         <h1 className="page-title">Profile</h1>
         <div className="row">
-          <div className="col-md-8">
+          <div className="col-md-12">
             <div className="card">
-              <div className="card-header">
+              <div className="card-header userName">
                 {user.username} {' '}
                 <Link
                   to={{
@@ -78,14 +78,6 @@ function Profile ({ message, onDeletePicture, onUploadPicture, user }) {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="col-md-4">
-            <div className="card">
-              <div className="card-header">
-                Last activities
-              </div>
-              <div className="card-body" />
             </div>
           </div>
         </div>
