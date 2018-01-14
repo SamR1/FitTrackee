@@ -1,6 +1,10 @@
 language: node_js
 node_js: '9'
 
+before_install:
+  - stty cols 80
+
+dist: trusty
 sudo: required
 
 addons:
@@ -8,7 +12,7 @@ addons:
     sources:
      - google-chrome
     packages:
-     - google-chrome-stable
+     - google-chrome-stable fluxbox
 
 services:
   - docker
@@ -26,12 +30,13 @@ before_install:
 before_script:
   - export DATABASE_TEST_URL=postgres://postgres:@localhost:5432/mpwo_test
   - export APP_SETTINGS=mpwo_api.config.TestingConfig
-  - export REACT_APP_API_URL=http://localhost:5000/api/
+  - export REACT_APP_API_URL=http://127.0.0.1:5000/api/
   - export NODE_ENV=development
-  - export TEST_URL=http://localhost:3000
+  - export TEST_URL=http://127.0.0.1:3000
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
   - sleep 3
+  - fluxbox >/dev/null 2>&1 &
   - docker-compose -f docker-compose-ci.yml up --build -d
 
 script:
