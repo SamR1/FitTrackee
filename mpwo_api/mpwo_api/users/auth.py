@@ -1,10 +1,10 @@
 import datetime
 import os
+
 from flask import Blueprint, current_app, jsonify, request
+from mpwo_api import appLog, bcrypt, db
 from sqlalchemy import exc, or_
 from werkzeug.utils import secure_filename
-
-from mpwo_api import appLog, bcrypt, db
 
 from .models import User
 from .utils import allowed_picture, authenticate, register_controls

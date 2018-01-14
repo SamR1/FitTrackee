@@ -21,14 +21,17 @@
     "build": "cd mpwo_client && react-scripts build",
     "test": "cd mpwo_client && testcafe firefox e2e",
     "eject": "cd mpwo_client && react-scripts eject",
-    "lint": "cd mpwo_client && eslint --cache --ext .jsx --ext .js src"
+    "lint": "eslint --cache --ext .jsx --ext .js mpwo/src",
+    "lint-all": "make lint-all"
   },
+  "pre-commit": "lint-all",
   "devDependencies": {
     "babel-eslint": "^8.0.3",
     "eslint": "^4.13.1",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-react": "^7.5.1",
     "eslint-plugin-testcafe": "^0.2.1",
+    "pre-commit": "^1.2.2",
     "randomstring": "^1.1.5",
     "testcafe": "^0.18.6"
   }

@@ -62,7 +62,7 @@ class TestAuthBlueprint(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'error')
             self.assertTrue(
-                data['message'] == "Errors: Username: 3 to 12 characters required.\n")
+                data['message'] == "Errors: Username: 3 to 12 characters required.\n")  # noqa
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 400)
 
@@ -81,7 +81,7 @@ class TestAuthBlueprint(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'error')
             self.assertTrue(
-                data['message'] == "Errors: Username: 3 to 12 characters required.\n")
+                data['message'] == "Errors: Username: 3 to 12 characters required.\n")  # noqa
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 400)
 
@@ -100,7 +100,7 @@ class TestAuthBlueprint(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'error')
             self.assertTrue(
-                data['message'] == "Errors: Valid email must be provided.\n")
+                data['message'] == "Errors: Valid email must be provided.\n")  # noqa
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 400)
 
@@ -119,7 +119,7 @@ class TestAuthBlueprint(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'error')
             self.assertTrue(
-                data['message'] == "Errors: Password: 8 characters required.\n")
+                data['message'] == "Errors: Password: 8 characters required.\n")  # noqa
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 400)
 
@@ -138,7 +138,7 @@ class TestAuthBlueprint(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'error')
             self.assertTrue(
-                data['message'] == "Errors: Password and password confirmation don\'t match.\n")
+                data['message'] == "Errors: Password and password confirmation don\'t match.\n")  # noqa
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 400)
 

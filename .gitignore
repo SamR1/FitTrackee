@@ -6,7 +6,8 @@
 ###############
 __pycache__
 /mpwo_api/venv/
-
+uploads
+.cache
 
 # MPWO_CLIENT
 ###############
@@ -31,4 +32,3 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .eslintcache
-uploads

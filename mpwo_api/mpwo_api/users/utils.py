@@ -1,5 +1,5 @@
-from functools import wraps
 import re
+from functools import wraps
 
 from flask import current_app, jsonify, request
 

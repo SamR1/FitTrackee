@@ -18,6 +18,14 @@ install-python:
 	test -d $(VENV) || virtualenv $(VENV) -p $(PYTHON_VERSION)
 	$(PIP) install -r $(REQUIREMENTS)
 
+lint-all: lint-python lint-react
+
+lint-python:
+	$(PYTEST) --flake8 --isort -m "flake8 or isort" mpwo_api
+
+lint-react:
+	$(NPM) lint
+
 serve-python:
 	$(FLASK) run --with-threads -h $(HOST) -p $(API_PORT)
 

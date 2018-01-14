@@ -31,9 +31,10 @@ if app.debug:
     logging.getLogger('sqlalchemy'
                       ).handlers = logging.getLogger('werkzeug').handlers
     logging.getLogger('sqlalchemy.orm').setLevel(logging.WARNING)
+    logging.getLogger('flake8').propagate = False
     appLog.setLevel(logging.DEBUG)
 
-if app.debug :
+if app.debug:
     # Enable CORS
     @app.after_request
     def after_request(response):

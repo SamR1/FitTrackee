@@ -1,5 +1,4 @@
 from flask_testing import TestCase
-
 from mpwo_api import app, db
 
 

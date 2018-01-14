@@ -2,7 +2,6 @@ import datetime
 
 import jwt
 from flask import current_app
-
 from mpwo_api import bcrypt, db
 
 

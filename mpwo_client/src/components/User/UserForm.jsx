@@ -3,7 +3,11 @@ import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 
 import Form from './Form'
-import { emptyForm, handleFormChange, handleUserFormSubmit } from '../../actions'
+import {
+  emptyForm,
+  handleFormChange,
+  handleUserFormSubmit
+} from '../../actions'
 import { isLoggedIn } from '../../utils'
 
 class UserForm extends React.Component {
