@@ -1,4 +1,5 @@
 import { format } from 'date-fns'
+import { routerReducer } from 'react-router-redux'
 import { combineReducers } from 'redux'
 
 import initial from './initial'
@@ -13,6 +14,7 @@ const formData = (state = initial.formData, action) => {
         },
       }
     case 'PROFILE_SUCCESS':
+    case 'EMPTY_USER_FORMDATA':
       return initial.formData
     default:
       return state
@@ -120,6 +122,7 @@ const reducers = combineReducers({
   formProfile,
   message,
   messages,
+  router: routerReducer,
   user,
 })
 

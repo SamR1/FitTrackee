@@ -31,6 +31,10 @@ function initProfileFormData(user) {
   return { type: 'INIT_PROFILE_FORM', user }
 }
 
+export const emptyForm = () => ({
+  type: 'EMPTY_USER_FORMDATA'
+})
+
 export const handleFormChange = (target, value) => ({
   type: 'UPDATE_USER_FORMDATA',
   target,

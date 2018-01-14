@@ -19,43 +19,47 @@ export default function Form (props) {
             {props.formType === 'Register' &&
             <div className="form-group">
               <input
-                name="username"
                 className="form-control input-lg"
-                type="text"
+                name="username"
                 placeholder="Enter a username"
                 required
+                type="text"
+                value={props.userForm.username}
                 onChange={props.onHandleFormChange}
               />
             </div>
             }
             <div className="form-group">
               <input
-                name="email"
                 className="form-control input-lg"
-                type="email"
+                name="email"
                 placeholder="Enter an email address"
                 required
+                type="email"
+                value={props.userForm.email}
                 onChange={props.onHandleFormChange}
               />
             </div>
             <div className="form-group">
               <input
-                name="password"
                 className="form-control input-lg"
-                type="password"
+                name="password"
                 placeholder="Enter a password"
                 required
+                type="password"
+                value={props.userForm.password}
                 onChange={props.onHandleFormChange}
               />
             </div>
             {props.formType === 'Register' &&
             <div className="form-group">
               <input
-                name="passwordConf"
                 className="form-control input-lg"
-                type="password"
+                name="passwordConf"
                 placeholder="Enter the password confirmation"
                 required
+                type="password"
+                value={props.userForm.passwordConf}
                 onChange={props.onHandleFormChange}
               />
             </div>
