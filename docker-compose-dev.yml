@@ -2,42 +2,39 @@ version: '3.3'
 
 services:
 
-  db:
-    container_name: db
-    build:
-      context: ./mpwo_api/db
-      dockerfile: Dockerfile
+  api-db:
+    container_name: api-db
+    build: ./mpwo_api/db
     ports:
       - 5435:5432
     environment:
-      - POSTGRES_USER=mpwo
-      - POSTGRES_PASSWORD=mpwo
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
 
   api:
     container_name: api
-    build:
-      context: ./mpwo_api
-      dockerfile: Dockerfile-dev
+    build: ./mpwo_api
     ports:
       - 5001:5000
     environment:
+      - DATABASE_URL=postgres://postgres:postgres@api-db:5432/mpwo
+      - DATABASE_TEST_URL=postgres://postgres:postgres@api-db:5432/mpwo_test
       - FLASK_APP=server.py
       - FLASK_DEBUG=1
       - APP_SETTINGS=mpwo_api.config.DevelopmentConfig
-      - DATABASE_URL=postgres://mpwo:mpwo@db:5432/mpwo
     depends_on:
-      - db
+      - api-db
     links:
-      - db
+      - api-db
 
   client:
     container_name: client
     build:
       context: ./
-      dockerfile: ./mpwo_client/Dockerfile-dev
+      dockerfile: ./mpwo_client/Dockerfile
       args:
         - NODE_ENV=development
-        - REACT_APP_USERS_SERVICE_URL=${REACT_APP_USERS_SERVICE_URL}
+        - REACT_APP_API_URL=${REACT_APP_API_URL}
     ports:
     - 3007:3000
     depends_on:

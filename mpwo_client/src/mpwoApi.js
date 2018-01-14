@@ -1,6 +1,5 @@
 const apiUrl = `${process.env.REACT_APP_API_URL}`
 
-
 export default class MpwoApi {
   static login(email, password) {
     const request = new Request(`${apiUrl}auth/login`, {

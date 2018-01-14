@@ -1,7 +1,7 @@
-import keyIndex from 'react-key-index'
-
 import mpwoApi from '../mpwoApi'
 import { history } from '../index'
+import { generateIds } from '../utils'
+
 
 function AuthError(message) {
   return { type: 'AUTH_ERROR', message }
@@ -138,7 +138,7 @@ export function handleUserFormSubmit(event, formType) {
       if (ret.length === 0) {
         dispatch(register(formData.formData))
       } else {
-        dispatch(AuthErrors(keyIndex(ret, 1)))
+        dispatch(AuthErrors(generateIds(ret)))
       }
     }
   }

@@ -13,9 +13,7 @@ services:
 
   api:
     container_name: api
-    build:
-      context: https://github.com/SamR1/mpwo.git#master:mpwo_api
-      dockerfile: Dockerfile-ci
+    build: https://github.com/SamR1/mpwo.git#master:mpwo_api
     ports:
       - 5001:5000
     environment:
@@ -33,10 +31,10 @@ services:
     container_name: client
     build:
       context: https://github.com/SamR1/mpwo.git
-      dockerfile: ./mpwo_client/Dockerfile-ci
+      dockerfile: ./mpwo_client/Dockerfile
       args:
         - NODE_ENV=development
-        - REACT_APP_USERS_SERVICE_URL=${REACT_APP_USERS_SERVICE_URL}
+        - REACT_APP_API_URL=${REACT_APP_API_URL}
     ports:
     - 3007:3000
     depends_on:
