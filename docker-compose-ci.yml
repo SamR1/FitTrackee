@@ -2,8 +2,8 @@ version: '3.3'
 
 services:
 
-  api-db:
-    container_name: api-db
+  mpwo-db:
+    container_name: mpwo-db
     build: https://github.com/SamR1/mpwo.git#master:mpwo_api/db
     ports:
       - 5435:5432
@@ -11,8 +11,8 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
 
-  api:
-    container_name: api
+  mpwo-api:
+    container_name: mpwo-api
     build: https://github.com/SamR1/mpwo.git#master:mpwo_api
     ports:
       - 5001:5000
@@ -23,12 +23,12 @@ services:
       - FLASK_DEBUG=1
       - APP_SETTINGS=mpwo_api.config.TestingConfig
     depends_on:
-      - api-db
+      - mpwo-db
     links:
-      - api-db
+      - mpwo-db
 
-  client:
-    container_name: client
+  mpwo-client:
+    container_name: mpwo-client
     build:
       context: https://github.com/SamR1/mpwo.git
       dockerfile: ./mpwo_client/Dockerfile
@@ -38,6 +38,18 @@ services:
     ports:
     - 3007:3000
     depends_on:
-      - api
+      - mpwo-api
     links:
-      - api
+      - mpwo-api
+
+  nginx:
+    container_name: nginx
+    build: ./nginx
+    restart: always
+    ports:
+      - 80:80
+    depends_on:
+      - mpwo-api
+      - mpwo-client
+    links:
+      - mpwo-api

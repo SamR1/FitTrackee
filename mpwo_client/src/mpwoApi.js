@@ -1,4 +1,4 @@
-const apiUrl = `${process.env.REACT_APP_API_URL}`
+const apiUrl = `${process.env.REACT_APP_API_URL}/api/`
 
 export default class MpwoApi {
   static login(email, password) {
