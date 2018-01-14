@@ -1,4 +1,6 @@
-FROM node:latest
+FROM node:9.4.0
+
+MAINTAINER SamR1
 
 # set working directory
 RUN mkdir /usr/src/app
@@ -14,12 +16,12 @@ ENV NODE_ENV $NODE_ENV
 ENV REACT_APP_API_URL $REACT_APP_API_URL
 
 # install and cache app dependencies
-ADD package.json /usr/src/app/package.json
+COPY package.json /usr/src/app/package.json
 RUN yarn install --silent
 RUN yarn global add react-scripts
 
 # add app
-ADD . /usr/src/app/
+COPY . /usr/src/app/
 
 # start app
 CMD yarn start

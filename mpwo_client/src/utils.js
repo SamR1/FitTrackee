@@ -1,13 +1,10 @@
-
-
 export const isLoggedIn = () => !!window.localStorage.authToken
 
 export function generateIds(arr) {
   let i = 0
-  let arrWithIds = arr.map(arr => {
-        const obj = { id: i, value: arr }
+  return arr.map(val => {
+        const obj = { id: i, value: val }
         i++
         return obj
     })
-    return arrWithIds
 }

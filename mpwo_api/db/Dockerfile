@@ -1,3 +1,5 @@
-FROM postgres
+FROM postgres:10.1
 
-ADD create.sql /docker-entrypoint-initdb.d
+MAINTAINER SamR1
+
+COPY create.sql /docker-entrypoint-initdb.d
