@@ -17,8 +17,8 @@ services:
     ports:
       - 5001:5000
     environment:
-      - DATABASE_URL=postgres://postgres:postgres@api-db:5432/mpwo
-      - DATABASE_TEST_URL=postgres://postgres:postgres@api-db:5432/mpwo_test
+      - DATABASE_URL=postgres://postgres:postgres@mpwo-db:5432/mpwo
+      - DATABASE_TEST_URL=postgres://postgres:postgres@mpwo-db:5432/mpwo_test
       - FLASK_APP=server.py
       - FLASK_DEBUG=1
       - APP_SETTINGS=mpwo_api.config.TestingConfig

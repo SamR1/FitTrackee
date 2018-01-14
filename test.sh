@@ -8,7 +8,7 @@ inspect() {
   fi
 }
 
-docker-compose -f docker-compose-ci.yml run api flask test
+docker-compose -f docker-compose-ci.yml run mpwo-api flask test
 inspect $? api
 
 testcafe chrome mpwo_client/e2e
