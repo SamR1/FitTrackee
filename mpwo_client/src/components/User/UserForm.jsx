@@ -53,8 +53,9 @@ class UserForm extends React.Component {
               formType={formType}
               userForm={formData}
               onHandleFormChange={event => onHandleFormChange(event)}
-              handleUserFormSubmit={(event, formType) =>
-              onHandleUserFormSubmit(event, formType)}
+              handleUserFormSubmit={event =>
+                onHandleUserFormSubmit(event, formType)
+              }
             />
           </div>
         )}
