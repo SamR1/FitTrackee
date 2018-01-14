@@ -1,6 +1,6 @@
 FROM node:9.4.0
 
-MAINTAINER SamR1
+MAINTAINER SamR1@users.noreply.github.com
 
 # set working directory
 RUN mkdir /usr/src/app

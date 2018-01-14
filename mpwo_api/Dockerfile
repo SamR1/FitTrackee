@@ -1,6 +1,6 @@
 FROM python:3.6.3
 
-MAINTAINER SamR1
+MAINTAINER SamR1@users.noreply.github.com
 
 # set working directory
 RUN mkdir -p /usr/src/app
