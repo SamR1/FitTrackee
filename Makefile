@@ -8,7 +8,7 @@ make-p:
 
 init-db:
 	$(FLASK) drop_db
-	$(FLASK) db upgrade
+	$(FLASK) db upgrade --directory $(MIGRATIONS)
 	$(FLASK) init_data
 
 install: install-client install-python
@@ -23,7 +23,7 @@ install-python:
 lint-all: lint-python lint-react
 
 lint-python:
-	$(PYTEST) --flake8 --isort -m "flake8 or isort" mpwo_api
+	$(PYTEST) --flake8 --isort -m "flake8 or isort" mpwo_api --ignore=mpwo_api/migrations
 
 lint-react:
 	$(NPM) lint
@@ -47,4 +47,4 @@ test-python:
 	$(FLASK) test_local
 
 upgrade-db:
-	$(FLASK) db upgrade
+	$(FLASK) db upgrade --directory $(MIGRATIONS)
