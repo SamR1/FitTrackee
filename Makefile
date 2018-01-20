@@ -8,7 +8,6 @@ make-p:
 
 init-db:
 	$(FLASK) drop_db
-	$(FLASK) db migrate
 	$(FLASK) db upgrade
 	$(FLASK) init_data
 
