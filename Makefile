@@ -7,7 +7,10 @@ make-p:
 	set -m; (for p in $(P); do ($(MAKE) $$p || kill 0)& done; wait)
 
 init-db:
-	$(FLASK) init_db
+	$(FLASK) drop_db
+	$(FLASK) db migrate
+	$(FLASK) db upgrade
+	$(FLASK) init_data
 
 install: install-client install-python
 
@@ -26,6 +29,9 @@ lint-python:
 lint-react:
 	$(NPM) lint
 
+migrate-db:
+	$(FLASK) db migrate
+
 serve-python:
 	$(FLASK) run --with-threads -h $(HOST) -p $(API_PORT)
 
@@ -40,3 +46,6 @@ test-e2e:
 
 test-python:
 	$(FLASK) test_local
+
+upgrade-db:
+	$(FLASK) db upgrade

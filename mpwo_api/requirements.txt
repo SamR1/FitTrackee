@@ -6,6 +6,7 @@ flake8-isort==2.2.2
 flake8-polyfill==1.0.1
 Flask==0.12.2
 Flask-Bcrypt==0.7.1
+Flask-Migrate==2.1.1
 Flask-SQLAlchemy==2.3.2
 Flask-Testing==0.6.2
 isort==4.2.15

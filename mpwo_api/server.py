@@ -5,10 +5,15 @@ from mpwo_api.users.models import User
 
 
 @app.cli.command()
-def init_db():
-    """Init the database."""
+def drop_db():
     db.drop_all()
-    db.create_all()
+    db.session.commit()
+    print('Database dropped.')
+
+
+@app.cli.command()
+def init_data():
+    """Init the database."""
     admin = User(
         username='admin',
         email='admin@example.com',
@@ -16,7 +21,7 @@ def init_db():
     admin.admin = True
     db.session.add(admin)
     db.session.commit()
-    print('Database initialization done.')
+    print('Admin created.')
 
 
 def run_test(test_path='mpwo_api/tests'):

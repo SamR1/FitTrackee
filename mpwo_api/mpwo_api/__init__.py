@@ -2,11 +2,13 @@ import logging
 
 from flask import Flask
 from flask_bcrypt import Bcrypt
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
+migrate = Migrate()
 appLog = logging.getLogger('mpwo_api')
 
 # instantiate the app
@@ -19,6 +21,7 @@ with app.app_context():
 # set up extensions
 db.init_app(app)
 bcrypt.init_app(app)
+migrate.init_app(app, db)
 
 from .users.auth import auth_blueprint  # noqa
 from .users.users import users_blueprint  # noqa
