@@ -25,9 +25,11 @@ migrate.init_app(app, db)
 
 from .users.auth import auth_blueprint  # noqa
 from .users.users import users_blueprint  # noqa
+from .activities.activities import activities_blueprint  # noqa
 
 app.register_blueprint(users_blueprint, url_prefix='/api')
 app.register_blueprint(auth_blueprint, url_prefix='/api')
+app.register_blueprint(activities_blueprint, url_prefix='/api')
 
 if app.debug:
     logging.getLogger('sqlalchemy').setLevel(logging.WARNING)

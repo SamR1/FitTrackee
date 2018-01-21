@@ -29,7 +29,7 @@ lint-react:
 	$(NPM) lint
 
 migrate-db:
-	$(FLASK) db migrate
+	$(FLASK) db migrate --directory $(MIGRATIONS)
 
 serve-python:
 	$(FLASK) run --with-threads -h $(HOST) -p $(API_PORT)

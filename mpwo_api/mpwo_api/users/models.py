@@ -19,6 +19,9 @@ class User(db.Model):
     location = db.Column(db.String(80), nullable=True)
     bio = db.Column(db.String(200), nullable=True)
     picture = db.Column(db.String(255), nullable=True)
+    activities = db.relationship('Activity',
+                                 lazy=True,
+                                 backref=db.backref('users', lazy='joined'))
 
     def __repr__(self):
         return '<User %r>' % self.username
