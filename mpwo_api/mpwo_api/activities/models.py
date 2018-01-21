@@ -51,7 +51,8 @@ class Activity(db.Model):
         return self.sport.label + \
                " - " + self.activity_date.strftime('%Y-%m-%d')
 
-    def __init__(self, user_id, sport_id, activity_date):
+    def __init__(self, user_id, sport_id, activity_date, duration):
         self.user_id = user_id
         self.sport_id = sport_id
         self.activity_date = activity_date
+        self.duration = duration
