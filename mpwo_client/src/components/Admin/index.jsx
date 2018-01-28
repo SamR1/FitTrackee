@@ -1,8 +1,13 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
+import { Redirect, Route, Switch } from 'react-router-dom'
 
+import AdminMenu from './AdminMenu'
+import AdminSports from './AdminSports'
 import AccessDenied from './../Others/AccessDenied'
+import NotFound from './../Others/NotFound'
+import { isLoggedIn } from '../../utils'
 
 class Admin extends React.Component {
   componentDidMount() {}
@@ -13,11 +18,17 @@ class Admin extends React.Component {
         <Helmet>
           <title>mpwo - Admin</title>
         </Helmet>
-        {!user.isAdmin ? (
+        {isLoggedIn() ? (
+          user.isAdmin ? (
+            <Switch>
+              <Route exact path="/admin" component={AdminMenu} />
+              <Route path="/admin/sports" component={AdminSports} />
+              <Route component={NotFound} />
+            </Switch>
+          ) : (
             <AccessDenied />
-        ) : (
-          <h1 className="page-title">Admin</h1>
-        )}
+          )
+        ) : (<Redirect to="/login" />)}
       </div>
     )
   }

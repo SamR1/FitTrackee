@@ -83,18 +83,7 @@ export default class App extends React.Component {
               )
             )}
           />
-          <Route
-            exact path="/admin"
-            render={() => (
-              isLoggedIn() ? (
-                <Admin />
-              ) : (
-                <UserForm
-                  formType={'Login'}
-                />
-              )
-            )}
-          />
+          <Route path="/admin" component={Admin} />
           <Route component={NotFound} />
         </Switch>
      </div>
