@@ -33,8 +33,10 @@ class Activity(db.Model):
         db.ForeignKey('sports.id'),
         nullable=False)
     gpx = db.Column(db.String(255), nullable=True)
-    creation_date = db.Column(db.DateTime, default=datetime.datetime.now)
-    modification_date = db.Column(db.DateTime, onupdate=datetime.datetime.now)
+    creation_date = db.Column(
+        db.DateTime, default=datetime.datetime.utcnow)
+    modification_date = db.Column(
+        db.DateTime, onupdate=datetime.datetime.utcnow)
     activity_date = db.Column(db.DateTime, nullable=False)
     duration = db.Column(db.Interval, nullable=False)
     pauses = db.Column(db.Interval, nullable=True)
