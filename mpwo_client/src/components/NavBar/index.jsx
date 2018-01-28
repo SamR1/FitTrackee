@@ -33,6 +33,18 @@ function NavBar (props) {
                 Dashboard
               </Link>
             </li>
+            {props.user.isAdmin && (
+            <li className="nav-item">
+              <Link
+                className="nav-link"
+                to={{
+                  pathname: '/admin',
+                }}
+              >
+                Admin
+              </Link>
+            </li>
+            )}
           </ul>
           <ul className="navbar-nav flex-row ml-md-auto d-none d-md-flex">
             {!props.user.isAuthenticated && (

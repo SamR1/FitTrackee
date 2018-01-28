@@ -2,10 +2,11 @@ import React from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 
 import './App.css'
+import Admin from './Admin'
 import Dashboard from './Dashboard'
 import Logout from './User/Logout'
 import NavBar from './NavBar'
-import NotFound from './NotFound'
+import NotFound from './Others/NotFound'
 import Profile from './User/Profile'
 import ProfileEdit from './User/ProfileEdit'
 import UserForm from './User/UserForm'
@@ -75,6 +76,18 @@ export default class App extends React.Component {
             render={() => (
               isLoggedIn() ? (
                 <Profile />
+              ) : (
+                <UserForm
+                  formType={'Login'}
+                />
+              )
+            )}
+          />
+          <Route
+            exact path="/admin"
+            render={() => (
+              isLoggedIn() ? (
+                <Admin />
               ) : (
                 <UserForm
                   formType={'Login'}

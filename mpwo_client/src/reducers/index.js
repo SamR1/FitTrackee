@@ -84,7 +84,7 @@ const user = (state = initial.user, action) => {
     case 'LOGOUT':
       window.localStorage.removeItem('authToken')
       return initial.user
-      case 'PROFILE_SUCCESS':
+    case 'PROFILE_SUCCESS':
       return {
         id: action.message.data.id,
         username: action.message.data.username,
