@@ -44,7 +44,7 @@ test-e2e:
 	$(NPM) test
 
 test-python:
-	$(FLASK) test_local
+	$(PYTEST) mpwo_api
 
 upgrade-db:
 	$(FLASK) db upgrade --directory $(MIGRATIONS)

@@ -42,15 +42,9 @@ def run_test(test_path='mpwo_api/tests'):
 
 
 @app.cli.command()
-def test(test_path='mpwo_api/tests'):
+def test():
     """Runs the tests without code coverage."""
     run_test()
-
-
-@app.cli.command()
-def test_local():
-    """Runs the tests without code coverage in local machine w/ make."""
-    run_test('mpwo_api/mpwo_api/tests')
 
 
 if __name__ == '__main__':
