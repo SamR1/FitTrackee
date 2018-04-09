@@ -1,8 +1,8 @@
-import unittest
-
-from mpwo_api import app, db
+from mpwo_api import create_app, db
 from mpwo_api.activities.models import Sport
 from mpwo_api.users.models import User
+
+app = create_app()
 
 
 @app.cli.command()
@@ -29,22 +29,6 @@ def init_data():
     db.session.add(Sport(label='Walking'))
     db.session.commit()
     print('Initial data stored in database.')
-
-
-def run_test(test_path='mpwo_api/tests'):
-    """Runs the tests without code coverage."""
-    tests = unittest.TestLoader().discover(
-        test_path, pattern='test*.py')
-    result = unittest.TextTestRunner(verbosity=2).run(tests)
-    if result.wasSuccessful():
-        return 0
-    return 1
-
-
-@app.cli.command()
-def test():
-    """Runs the tests without code coverage."""
-    run_test()
 
 
 if __name__ == '__main__':

@@ -6,6 +6,10 @@ make-p:
 	# Launch all P targets in parallel and exit as soon as one exits.
 	set -m; (for p in $(P); do ($(MAKE) $$p || kill 0)& done; wait)
 
+clean-install: clean
+	rm -fr $(NODE_MODULES)
+	rm -fr $(VENV)
+
 init-db:
 	$(FLASK) drop_db
 	$(FLASK) db upgrade --directory $(MIGRATIONS)
