@@ -6,7 +6,7 @@ make-p:
 	# Launch all P targets in parallel and exit as soon as one exits.
 	set -m; (for p in $(P); do ($(MAKE) $$p || kill 0)& done; wait)
 
-clean-install: clean
+clean-install:
 	rm -fr $(NODE_MODULES)
 	rm -fr $(VENV)
 
