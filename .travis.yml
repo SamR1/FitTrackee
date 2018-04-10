@@ -40,8 +40,6 @@ before_script:
   - docker-compose -f docker-compose-ci.yml up --build -d
 
 script:
-  - psql -c 'create database mpwo_test;' -U postgres
-  - docker-compose -f docker-compose-ci.yml run mpwo-api flask db upgrade
   - sh test.sh
 
 after_script:
