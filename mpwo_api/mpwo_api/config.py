@@ -29,7 +29,7 @@ class DevelopmentConfig(BaseConfig):
 
 
 class TestingConfig(BaseConfig):
-    """Development configuration"""
+    """Testing configuration"""
     DEBUG = True
     TESTING = True
     SQLALCHEMY_DATABASE_URI = \

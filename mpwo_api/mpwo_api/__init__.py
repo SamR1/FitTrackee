@@ -1,4 +1,5 @@
 import logging
+import os
 
 from flask import Flask
 from flask_bcrypt import Bcrypt
@@ -17,7 +18,8 @@ def create_app():
 
     # set config
     with app.app_context():
-        app.config.from_object('mpwo_api.config.DevelopmentConfig')
+        app_settings = os.getenv('APP_SETTINGS')
+        app.config.from_object(app_settings)
 
     # set up extensions
     db.init_app(app)
