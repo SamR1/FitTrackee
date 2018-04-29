@@ -20,7 +20,7 @@ class AdminSports extends React.Component {
           <div className="row">
             <div className="col-md-2" />
             <div className="col-md-8 card">
-              <ul>
+              <ul className="sport-items">
                 {sports.map(sport => (
                   <li key={sport.id}>
                       {sport.label}

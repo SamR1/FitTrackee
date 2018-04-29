@@ -16,9 +16,10 @@ class AdminMenu extends React.Component {
           <div className="row">
             <div className="col-md-2" />
             <div className="col-md-8 card">
-              <ul>
+              <ul className="admin-items">
                 <li>
                   <Link
+                    className="sports"
                     to={{
                       pathname: '/admin/sports',
                     }}

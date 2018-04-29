@@ -7,6 +7,8 @@ const randomstring = require('randomstring')
 const username = randomstring.generate(8)
 const email = `${username}@test.com`
 const password = 'lentghOk'
+
+// database must be initialiazed
 const adminEmail = 'admin@example.com'
 const adminPassword = 'mpwoadmin'
 
@@ -43,5 +45,6 @@ test('admin should be able to access admin page', async t => {
     .navigateTo(`${TEST_URL}/admin`)
     .expect(Selector('H1').withText('Access denied').exists).notOk()
     .expect(Selector('H1').withText('Administration').exists).ok()
+    .expect(Selector('.admin-items').withText('Sports').exists).ok()
 
 })
