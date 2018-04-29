@@ -4,6 +4,28 @@ import { combineReducers } from 'redux'
 
 import initial from './initial'
 
+const handleDataAndError = (state, type, action) => {
+  if (action.target !== type) {
+    return state
+  }
+  switch (action.type) {
+    case 'SET_DATA':
+      return {
+        ...state,
+        data: action.data[action.target],
+        error: null,
+      }
+    case 'SET_ERROR':
+      return {
+        ...state,
+        data: { ...initial[type].data },
+        error: action.error,
+      }
+    default:
+      return state
+  }
+}
+
 const formData = (state = initial.formData, action) => {
   switch (action.type) {
     case 'UPDATE_USER_FORMDATA':
@@ -77,6 +99,9 @@ const messages = (state = initial.messages, action) => {
   }
 }
 
+const sports = (state = initial.sports, action) =>
+  handleDataAndError(state, 'sports', action)
+
 const user = (state = initial.user, action) => {
   switch (action.type) {
     case 'AUTH_ERROR':
@@ -123,6 +148,7 @@ const reducers = combineReducers({
   message,
   messages,
   router: routerReducer,
+  sports,
   user,
 })
 

@@ -1,3 +1,8 @@
+const emptyData = {
+  data: [],
+  error: null,
+}
+
 export default {
   message: '',
   messages: [],
@@ -34,4 +39,7 @@ export default {
       passwordConf: '',
     }
   },
+  sports: {
+    ...emptyData,
+  }
 }
