@@ -1,4 +1,4 @@
-import mpwoApi from '../mpwoApi'
+import mpwoApiUser from '../mwpoApi/user'
 import { history } from '../index'
 import { generateIds } from '../utils'
 
@@ -48,7 +48,7 @@ export const updateProfileFormData = (target, value) => ({
 })
 
 export function getProfile(dispatch) {
-  return mpwoApi
+  return mpwoApiUser
     .getProfile()
     .then(ret => {
       if (ret.status === 'success') {
@@ -64,7 +64,7 @@ export function getProfile(dispatch) {
 
 export function register(formData) {
   return function(dispatch) {
-    return mpwoApi
+    return mpwoApiUser
       .register(
         formData.username,
         formData.email,
@@ -86,7 +86,7 @@ export function register(formData) {
 
 export function login(formData) {
   return function(dispatch) {
-    return mpwoApi
+    return mpwoApiUser
       .login(formData.email, formData.password)
       .then(ret => {
         if (ret.status === 'success') {
@@ -165,7 +165,7 @@ export function handleProfileFormSubmit(event) {
           'Password and password confirmation don\'t match.'
       ))
     } else {
-      return mpwoApi
+      return mpwoApiUser
       .updateProfile(state.formProfile.formProfile)
       .then(ret => {
         if (ret.status === 'success') {
@@ -189,7 +189,7 @@ export function uploadPicture (event) {
   form.append('file', event.target.picture.files[0])
   event.target.reset()
   return function(dispatch) {
-    return mpwoApi
+    return mpwoApiUser
       .updatePicture(form)
       .then(ret => {
         if (ret.status === 'success') {
@@ -206,7 +206,7 @@ export function uploadPicture (event) {
 
 export function deletePicture() {
   return function(dispatch) {
-  return mpwoApi
+  return mpwoApiUser
     .deletePicture()
     .then(ret => {
       if (ret.status === 'success') {

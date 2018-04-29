@@ -1,6 +1,7 @@
-const apiUrl = `${process.env.REACT_APP_API_URL}/api/`
+import { apiUrl } from '../utils'
 
-export default class MpwoApi {
+export default class MpwoApiUser {
+
   static login(email, password) {
     const request = new Request(`${apiUrl}auth/login`, {
       method: 'POST',
@@ -16,6 +17,7 @@ export default class MpwoApi {
       .then(response => response.json())
       .catch(error => error)
   }
+
   static register(username, email, password, passwordConf) {
     const request = new Request(`${apiUrl}auth/register`, {
       method: 'POST',
@@ -33,6 +35,7 @@ export default class MpwoApi {
       .then(response => response.json())
       .catch(error => error)
   }
+
   static getProfile() {
     const request = new Request(`${apiUrl}auth/profile`, {
       method: 'GET',
@@ -45,6 +48,7 @@ export default class MpwoApi {
       .then(response => response.json())
       .catch(error => error)
   }
+
   static updateProfile(form) {
     const request = new Request(`${apiUrl}auth/profile/edit`, {
       method: 'POST',
@@ -66,6 +70,7 @@ export default class MpwoApi {
       .then(response => response.json())
       .catch(error => error)
   }
+
   static updatePicture(form) {
     const request = new Request(`${apiUrl}auth/picture`, {
       method: 'POST',
@@ -78,6 +83,7 @@ export default class MpwoApi {
       .then(response => response.json())
       .catch(error => error)
   }
+
   static deletePicture() {
     const request = new Request(`${apiUrl}auth/picture`, {
       method: 'DELETE',
@@ -88,8 +94,5 @@ export default class MpwoApi {
     return fetch(request)
       .then(response => response.json())
       .catch(error => error)
-  }
-  static getApiUrl() {
-    return apiUrl
   }
 }

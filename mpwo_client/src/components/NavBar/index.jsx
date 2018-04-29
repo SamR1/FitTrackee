@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import mpwoApi from '../../mpwoApi'
+import { apiUrl } from '../../utils'
 
 
 function NavBar (props) {
@@ -74,7 +74,7 @@ function NavBar (props) {
             {props.user.picture === true && (
             <img
               alt="Profile"
-              src={`${mpwoApi.getApiUrl()}users/${props.user.id}/picture` +
+              src={`${apiUrl}users/${props.user.id}/picture` +
                   `?${Date.now()}`}
               className="img-fluid App-nav-profile-img"
             />

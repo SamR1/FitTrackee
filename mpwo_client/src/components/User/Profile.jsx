@@ -4,8 +4,8 @@ import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import mpwoApi from '../../mpwoApi'
 import { deletePicture, uploadPicture } from '../../actions'
+import { apiUrl } from '../../utils'
 
 function Profile ({ message, onDeletePicture, onUploadPicture, user }) {
   return (
@@ -49,7 +49,7 @@ function Profile ({ message, onDeletePicture, onUploadPicture, user }) {
                     <div>
                       <img
                         alt="Profile"
-                        src={`${mpwoApi.getApiUrl()}users/${user.id}/picture` +
+                        src={`${apiUrl}users/${user.id}/picture` +
                              `?${Date.now()}`}
                         className="img-fluid App-profile-img-small"
                       />
