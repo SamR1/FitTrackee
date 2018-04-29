@@ -73,7 +73,7 @@ function NavBar (props) {
             )}
             {props.user.picture === true && (
             <img
-              alt="Profile"
+              alt="Avatar"
               src={`${apiUrl}users/${props.user.id}/picture` +
                   `?${Date.now()}`}
               className="img-fluid App-nav-profile-img"
