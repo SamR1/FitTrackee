@@ -12,6 +12,7 @@ docker-compose -f docker-compose-ci.yml run mpwo-api py.test mpwo_api
 inspect $? api
 
 docker-compose -f docker-compose-ci.yml run mpwo-api flask db upgrade
+docker-compose -f docker-compose-ci.yml run mpwo-api flask init_data
 
 testcafe chrome mpwo_client/e2e
 inspect $? e2e
