@@ -7,7 +7,7 @@ import {
   emptyForm,
   handleFormChange,
   handleUserFormSubmit
-} from '../../actions'
+} from '../../actions/user'
 import { isLoggedIn } from '../../utils'
 
 class UserForm extends React.Component {

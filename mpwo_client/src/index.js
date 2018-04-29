@@ -10,7 +10,7 @@ import App from './components/App'
 import Root from './components/Root'
 import registerServiceWorker from './registerServiceWorker'
 import reducers from './reducers'
-import { loadProfile } from './actions'
+import { loadProfile } from './actions/user'
 
 export const history = createBrowserHistory()
 

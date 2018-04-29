@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import { deletePicture, uploadPicture } from '../../actions'
+import { deletePicture, uploadPicture } from '../../actions/user'
 import { apiUrl } from '../../utils'
 
 function Profile ({ message, onDeletePicture, onUploadPicture, user }) {

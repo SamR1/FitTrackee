@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import { logout } from '../../actions/index'
+import { logout } from '../../actions/user'
 
 class Logout extends React.Component {
   componentDidMount() {

@@ -6,7 +6,7 @@ import {
   initProfileForm,
   updateProfileFormData,
   handleProfileFormSubmit
-} from '../../actions'
+} from '../../actions/user'
 
 
 class ProfileEdit extends React.Component {
