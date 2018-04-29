@@ -23,9 +23,4 @@ test('admin should be able to access sports administration page', async t => {
     .expect(Selector('H1').withText('Administration - Sports').exists).ok()
     .expect(Selector('.sport-items').withText('Hiking').exists).ok()
 
-  await t
-    .navigateTo(`${TEST_URL}/admin`)
-    .click(Selector('.sports'))
-    .expect(Selector('.sport-items').withText('Hiking').exists).ok()
-
 })

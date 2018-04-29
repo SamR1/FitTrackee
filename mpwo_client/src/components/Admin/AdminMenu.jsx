@@ -19,7 +19,6 @@ class AdminMenu extends React.Component {
               <ul className="admin-items">
                 <li>
                   <Link
-                    className="sports"
                     to={{
                       pathname: '/admin/sports',
                     }}
