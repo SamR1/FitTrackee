@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import { updateData } from '../../../actions/index'
+import { deleteData, updateData } from '../../../actions/index'
 
 class AdminDetail extends React.Component {
 
@@ -18,6 +18,7 @@ class AdminDetail extends React.Component {
     const {
       message,
       onDataUpdate,
+      onDataDelete,
       results,
       target,
     } = this.props
@@ -92,12 +93,12 @@ class AdminDetail extends React.Component {
                         <input
                           type="submit"
                           className="btn btn-danger btn-lg btn-block"
+                          onClick={event => onDataDelete(event, target)}
                           value="Delete"
                         />
                       </div>
                     )}
                   </form>
-                  <Link to={`/admin/${target}`}>Back to the list</Link>
                 </div>
               </div>
               <div className="col-md-2" />
@@ -115,6 +116,10 @@ export default connect(
     message: state.message,
   }),
   dispatch => ({
+    onDataDelete: (e, target) => {
+      const id = e.target.form.id.value
+      dispatch(deleteData(target, id))
+    },
     onDataUpdate: (e, target) => {
       const data = [].slice
         .call(e.target.form.elements)

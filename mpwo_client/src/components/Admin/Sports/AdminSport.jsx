@@ -1,8 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { getData } from '../../actions/index'
-import AdminDetail from './generic/AdminDetail'
+import { getData } from '../../../actions/index'
+import AdminDetail from '../generic/AdminDetail'
 
 class AdminSports extends React.Component {
   componentDidMount() {

@@ -1,4 +1,5 @@
 import mpwoApi from '../mwpoApi/index'
+import { history } from '../index'
 
 
 export const setData = (target, data) => ({
@@ -30,6 +31,24 @@ export function getData(target, id = null) {
   }
 }
 
+export function addData(target, data) {
+  return function(dispatch) {
+    if (isNaN(data.id)) {
+      return dispatch(setError(target, `${target}: Incorrect id`))
+    }
+    return mpwoApi
+    .addData(target, data)
+    .then(ret => {
+      if (ret.status === 'created') {
+        dispatch(setData(target, ret.data))
+      } else {
+        dispatch(setError(`${target}: ${ret.status}`))
+      }
+    })
+    .catch(error => dispatch(setError(`${target}: ${error}`)))
+  }
+}
+
 export function updateData(target, data) {
   return function(dispatch) {
     if (isNaN(data.id)) {
@@ -40,6 +59,24 @@ export function updateData(target, data) {
     .then(ret => {
       if (ret.status === 'success') {
         dispatch(setData(target, ret.data))
+      } else {
+        dispatch(setError(`${target}: ${ret.status}`))
+      }
+    })
+    .catch(error => dispatch(setError(`${target}: ${error}`)))
+  }
+}
+
+export function deleteData(target, id) {
+  return function(dispatch) {
+    if (isNaN(id)) {
+      return dispatch(setError(target, `${target}: Incorrect id`))
+    }
+    return mpwoApi
+    .deleteData(target, id)
+    .then(ret => {
+      if (ret.status === 204) {
+        history.push(`/admin/${target}`)
       } else {
         dispatch(setError(`${target}: ${ret.status}`))
       }

@@ -58,6 +58,45 @@ def get_sport(auth_user_id, sport_id):
     return jsonify(response_object), code
 
 
+@activities_blueprint.route('/sports', methods=['POST'])
+@authenticate
+def post_sport(auth_user_id):
+    """Post a sport"""
+    sport_data = request.get_json()
+    if not sport_data or sport_data.get('label') is None:
+        response_object = {
+            'status': 'error',
+            'message': 'Invalid payload.'
+        }
+        return jsonify(response_object), 400
+
+    sports_list = []
+    try:
+        new_sport = Sport(label=sport_data.get('label'))
+        db.session.add(new_sport)
+        db.session.commit()
+        sports_list.append({
+            'id': new_sport.id,
+            'label': new_sport.label
+        })
+        response_object = {
+            'status': 'created',
+            'data': {
+                'sports': sports_list
+            }
+        }
+        code = 201
+    except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
+        db.session.rollback()
+        appLog.error(e)
+        response_object = {
+            'status': 'error',
+            'message': 'Error. Please try again or contact the administrator.'
+        }
+        code = 500
+    return jsonify(response_object), code
+
+
 @activities_blueprint.route('/sports/<int:sport_id>', methods=['PATCH'])
 @authenticate
 def update_sport(auth_user_id, sport_id):
@@ -87,6 +126,44 @@ def update_sport(auth_user_id, sport_id):
                 }
             }
             code = 200
+        else:
+            response_object = {
+                'status': 'not found',
+                'data': {
+                    'sports': sports_list
+                }
+            }
+            code = 404
+    except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
+        db.session.rollback()
+        appLog.error(e)
+        response_object = {
+            'status': 'error',
+            'message': 'Error. Please try again or contact the administrator.'
+        }
+        code = 500
+    return jsonify(response_object), code
+
+
+@activities_blueprint.route('/sports/<int:sport_id>', methods=['DELETE'])
+@authenticate
+def delete_sport(auth_user_id, sport_id):
+    """Delete a sport"""
+    sports_list = []
+    try:
+        sport = Sport.query.filter_by(id=sport_id).first()
+        if sport:
+            db.session.query(Sport).filter_by(id=sport_id).delete()
+            db.session.commit()
+            response_object = {
+                'status': 'no content',
+                'data': {
+                    'sports': sports_list
+                }
+            }
+            code = 204
+            print('OK')
+            print(response_object)
         else:
             response_object = {
                 'status': 'not found',

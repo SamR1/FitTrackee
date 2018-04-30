@@ -28,34 +28,37 @@ export default function AdminPage(props) {
           <div className="row">
             <div className="col-md-2" />
             <div className="col-md-8 card">
-              <table className="table">
-                <thead>
-                  <tr>
-                    {tbKeys.map(
-                      tbKey => <th key={tbKey} scope="col">{tbKey}</th>
-                    )}
-                  </tr>
-                </thead>
-                <tbody>
-                  { results.map((result, idx) => (
-                    <tr key={idx}>
-                      { Object.keys(result).map(key => {
-                        if (key === 'id') {
-                          return (
-                            <th key={key} scope="row">
-                            <Link to={`/admin/${detailLink}/${result[key]}`}>
-                              {result[key]}
-                            </Link>
-                            </th>
-                          )
-                        }
-                        return <td key={key}>{result[key]}</td>
-                        })
-                      }
+              <div className="card-body">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      {tbKeys.map(
+                        tbKey => <th key={tbKey} scope="col">{tbKey}</th>
+                      )}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    { results.map((result, idx) => (
+                      <tr key={idx}>
+                        { Object.keys(result).map(key => {
+                          if (key === 'id') {
+                            return (
+                              <th key={key} scope="row">
+                              <Link to={`/admin/${detailLink}/${result[key]}`}>
+                                {result[key]}
+                              </Link>
+                              </th>
+                            )
+                          }
+                          return <td key={key}>{result[key]}</td>
+                          })
+                        }
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <Link to={`/admin/${target}/add`}>Add new item</Link>
+              </div>
             </div>
           <div className="col-md-2" />
         </div>

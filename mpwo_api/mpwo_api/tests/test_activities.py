@@ -117,6 +117,39 @@ def test_get_a_sport(app):
     assert 'cycling' in data['data']['sports'][0]['label']
 
 
+def test_add_a_sport(app):
+    add_admin()
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='admin@example.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.post(
+        '/api/sports',
+        content_type='application/json',
+        data=json.dumps(dict(
+            label='surfing'
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 201
+    assert 'created' in data['status']
+
+    assert len(data['data']['sports']) == 1
+    assert 'surfing' in data['data']['sports'][0]['label']
+
+
 def test_update_a_sport(app):
     add_admin()
     add_sport('cycling')
@@ -149,3 +182,28 @@ def test_update_a_sport(app):
 
     assert len(data['data']['sports']) == 1
     assert 'cycling updated' in data['data']['sports'][0]['label']
+
+
+def test_delete_a_sport(app):
+    add_admin()
+    add_sport('cycling')
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='admin@example.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.delete(
+        '/api/sports/1',
+        content_type='application/json',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    assert response.status_code == 204
