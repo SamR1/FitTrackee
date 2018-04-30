@@ -1,8 +1,8 @@
 import React from 'react'
-import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 
 import { getData } from '../../actions/index'
+import AdminPage from './AdminPage'
 
 class AdminSports extends React.Component {
   componentDidMount() {
@@ -12,26 +12,10 @@ class AdminSports extends React.Component {
     const { sports } = this.props
     return (
       <div>
-        <Helmet>
-          <title>mpwo - Admin</title>
-        </Helmet>
-        <h1 className="page-title">Administration - Sports</h1>
-        <div className="container">
-          <div className="row">
-            <div className="col-md-2" />
-            <div className="col-md-8 card">
-              <ul className="sport-items">
-                {sports.map(sport => (
-                  <li key={sport.id}>
-                      {sport.label}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="col-md-2" />
-          </div>
-        </div>
-
+        <AdminPage
+          data={sports}
+          target="sports"
+        />
       </div>
     )
   }
@@ -39,7 +23,7 @@ class AdminSports extends React.Component {
 
 export default connect(
   state => ({
-    sports: state.sports.data,
+    sports: state.sports,
     user: state.user,
   }),
   dispatch => ({
