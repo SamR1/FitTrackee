@@ -1,7 +1,7 @@
 import datetime
 import json
 
-from mpwo_api.tests.utils import add_activity, add_sport, add_user
+from mpwo_api.tests.utils import add_activity, add_admin, add_sport, add_user
 
 
 def test_get_all_sports(app):
@@ -85,3 +85,67 @@ def test_get_all_activities(app):
     assert 2 == data['data']['activities'][1]['sport_id']
     assert 3600 == data['data']['activities'][0]['duration']
     assert 1024 == data['data']['activities'][1]['duration']
+
+
+def test_get_a_sport(app):
+    add_user('test', 'test@test.com', '12345678')
+    add_sport('cycling')
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        '/api/sports/1',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+
+    assert len(data['data']['sports']) == 1
+    assert 'cycling' in data['data']['sports'][0]['label']
+
+
+def test_update_a_sport(app):
+    add_admin()
+    add_sport('cycling')
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='admin@example.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.patch(
+        '/api/sports/1',
+        content_type='application/json',
+        data=json.dumps(dict(
+            label='cycling updated'
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+
+    assert len(data['data']['sports']) == 1
+    assert 'cycling updated' in data['data']['sports'][0]['label']

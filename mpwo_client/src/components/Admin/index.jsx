@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { Redirect, Route, Switch } from 'react-router-dom'
 
 import AdminMenu from './AdminMenu'
+import AdminSport from './AdminSport'
 import AdminSports from './AdminSports'
 import AccessDenied from './../Others/AccessDenied'
 import NotFound from './../Others/NotFound'
@@ -22,7 +23,8 @@ class Admin extends React.Component {
           user.isAdmin ? (
             <Switch>
               <Route exact path="/admin" component={AdminMenu} />
-              <Route path="/admin/sports" component={AdminSports} />
+              <Route exact path="/admin/sports" component={AdminSports} />
+              <Route path="/admin/sport" component={AdminSport} />
               <Route component={NotFound} />
             </Switch>
           ) : (

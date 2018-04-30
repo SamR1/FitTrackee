@@ -5,6 +5,18 @@ from mpwo_api.activities.models import Activity, Sport
 from mpwo_api.users.models import User
 
 
+def add_admin():
+    admin = User(
+        username="admin",
+        email="admin@example.com",
+        password="12345678"
+    )
+    admin.admin = True
+    db.session.add(admin)
+    db.session.commit()
+    return admin
+
+
 def add_user(username, email, password):
     user = User(username=username, email=email, password=password)
     db.session.add(user)

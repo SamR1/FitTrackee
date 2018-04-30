@@ -13,13 +13,6 @@ const handleDataAndError = (state, type, action) => {
       return {
         ...state,
         data: action.data[action.target],
-        error: null,
-      }
-    case 'SET_ERROR':
-      return {
-        ...state,
-        data: { ...initial[type].data },
-        error: action.error,
       }
     default:
       return state
@@ -76,9 +69,11 @@ const message = (state = initial.message, action) => {
     case 'PROFILE_ERROR':
     case 'PROFILE_UPDATE_ERROR':
     case 'PICTURE_ERROR':
+    case 'SET_ERROR':
       return action.message
     case 'LOGOUT':
     case 'PROFILE_SUCCESS':
+    case 'SET_RESULTS':
     case '@@router/LOCATION_CHANGE':
       return ''
     default:

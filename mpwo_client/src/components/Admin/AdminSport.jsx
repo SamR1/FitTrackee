@@ -2,20 +2,21 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { getData } from '../../actions/index'
-import AdminPage from './generic/AdminPage'
+import AdminDetail from './generic/AdminDetail'
 
 class AdminSports extends React.Component {
   componentDidMount() {
-      this.props.loadSports()
+    this.props.loadSport(
+      this.props.location.pathname.replace('/admin/sport/', '')
+    )
   }
   render() {
     const { sports } = this.props
 
     return (
       <div>
-        <AdminPage
-          data={sports}
-          detailLink="sport"
+        <AdminDetail
+          results={sports}
           target="sports"
         />
       </div>
@@ -25,12 +26,12 @@ class AdminSports extends React.Component {
 
 export default connect(
   state => ({
-    sports: state.sports,
+    sports: state.sports.data,
     user: state.user,
   }),
   dispatch => ({
-    loadSports: () => {
-      dispatch(getData('sports'))
+    loadSport: sportId => {
+      dispatch(getData('sports', sportId))
     },
   })
 )(AdminSports)

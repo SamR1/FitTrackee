@@ -7,25 +7,43 @@ export const setData = (target, data) => ({
   target,
 })
 
-export const setError = (target, error) => ({
+export const setError = message => ({
   type: 'SET_ERROR',
-  error,
-  target,
+  message,
 })
 
-export function getData(target) {
+export function getData(target, id = null) {
   return function(dispatch) {
+    if (id !== null && isNaN(id)) {
+      return dispatch(setError(target, `${target}: Incorrect id`))
+    }
     return mpwoApi
-      .getData(target)
+    .getData(target, id)
     .then(ret => {
       if (ret.status === 'success') {
         dispatch(setData(target, ret.data))
       } else {
-        dispatch(setError(target, ret.message))
+        dispatch(setError(`${target}: ${ret.status}`))
       }
     })
-    .catch(error => {
-      throw error
+    .catch(error => dispatch(setError(`${target}: ${error}`)))
+  }
+}
+
+export function updateData(target, data) {
+  return function(dispatch) {
+    if (isNaN(data.id)) {
+      return dispatch(setError(target, `${target}: Incorrect id`))
+    }
+    return mpwoApi
+    .updateData(target, data)
+    .then(ret => {
+      if (ret.status === 'success') {
+        dispatch(setData(target, ret.data))
+      } else {
+        dispatch(setError(`${target}: ${ret.status}`))
+      }
     })
+    .catch(error => dispatch(setError(`${target}: ${error}`)))
   }
 }

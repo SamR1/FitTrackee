@@ -1,4 +1,6 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
+from mpwo_api import appLog, db
+from sqlalchemy import exc
 
 from ..users.utils import authenticate
 from .models import Activity, Sport
@@ -10,7 +12,7 @@ activities_blueprint = Blueprint('activities', __name__)
 @authenticate
 def get_sports(auth_user_id):
     """Get all sports"""
-    sports = Sport.query.all()
+    sports = Sport.query.order_by(Sport.id).all()
     sports_list = []
     for sport in sports:
         sport_object = {
@@ -25,6 +27,83 @@ def get_sports(auth_user_id):
         }
     }
     return jsonify(response_object), 200
+
+
+@activities_blueprint.route('/sports/<int:sport_id>', methods=['GET'])
+@authenticate
+def get_sport(auth_user_id, sport_id):
+    """Get a sport"""
+    sport = Sport.query.filter_by(id=sport_id).first()
+    sports_list = []
+    if sport:
+        sports_list.append({
+            'id': sport.id,
+            'label': sport.label
+        })
+        response_object = {
+            'status': 'success',
+            'data': {
+                'sports': sports_list
+            }
+        }
+        code = 200
+    else:
+        response_object = {
+            'status': 'not found',
+            'data': {
+                'sports': sports_list
+            }
+        }
+        code = 404
+    return jsonify(response_object), code
+
+
+@activities_blueprint.route('/sports/<int:sport_id>', methods=['PATCH'])
+@authenticate
+def update_sport(auth_user_id, sport_id):
+    """Update a sport"""
+    sport_data = request.get_json()
+    if not sport_data or sport_data.get('label') is None:
+        response_object = {
+            'status': 'error',
+            'message': 'Invalid payload.'
+        }
+        return jsonify(response_object), 400
+
+    sports_list = []
+    try:
+        sport = Sport.query.filter_by(id=sport_id).first()
+        if sport:
+            sport.label = sport_data.get('label')
+            db.session.commit()
+            sports_list.append({
+                'id': sport.id,
+                'label': sport.label
+            })
+            response_object = {
+                'status': 'success',
+                'data': {
+                    'sports': sports_list
+                }
+            }
+            code = 200
+        else:
+            response_object = {
+                'status': 'not found',
+                'data': {
+                    'sports': sports_list
+                }
+            }
+            code = 404
+    except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
+        db.session.rollback()
+        appLog.error(e)
+        response_object = {
+            'status': 'error',
+            'message': 'Error. Please try again or contact the administrator.'
+        }
+        code = 500
+    return jsonify(response_object), code
 
 
 @activities_blueprint.route('/activities', methods=['GET'])

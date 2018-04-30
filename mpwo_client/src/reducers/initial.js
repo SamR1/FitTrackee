@@ -1,6 +1,5 @@
 const emptyData = {
   data: [],
-  error: null,
 }
 
 export default {
