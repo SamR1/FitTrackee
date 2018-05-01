@@ -67,14 +67,16 @@ class Activity(db.Model):
             "creation_date": self.creation_date,
             "modification_date": self.modification_date,
             "activity_date": self.activity_date,
-            "duration": self.duration.total_seconds(),
-            "pauses": self.pauses.total_seconds(),
-            "moving": self.moving.total_seconds(),
-            "distance": float(self.distance),
-            "min_alt": float(self.min_alt),
-            "max_alt": float(self.max_alt),
-            "descent": float(self.descent),
-            "ascent": float(self.ascent),
-            "max_speed": float(self.max_speed),
-            "ave_speed": float(self.ave_speed)
+            "duration": (self.duration.total_seconds()
+                         if self.duration
+                         else None),
+            "pauses": self.pauses.total_seconds() if self.pauses else None,
+            "moving": self.moving.total_seconds() if self.moving else None,
+            "distance": float(self.distance) if self.distance else None,
+            "min_alt": float(self.min_alt) if self.min_alt else None,
+            "max_alt": float(self.max_alt) if self.max_alt else None,
+            "descent": float(self.descent) if self.descent else None,
+            "ascent": float(self.ascent) if self.ascent else None,
+            "max_speed": float(self.max_speed) if self.max_speed else None,
+            "ave_speed": float(self.ave_speed) if self.ave_speed else None
         }
