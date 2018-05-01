@@ -33,6 +33,18 @@ function NavBar (props) {
                 Dashboard
               </Link>
             </li>
+            {props.user.isAuthenticated && (
+            <li className="nav-item">
+              <Link
+                className="nav-link"
+                to={{
+                  pathname: '/activities/add',
+                }}
+              >
+                Add a workout
+              </Link>
+            </li>
+            )}
             {props.user.isAdmin && (
             <li className="nav-item">
               <Link

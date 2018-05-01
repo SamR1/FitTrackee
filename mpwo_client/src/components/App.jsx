@@ -3,6 +3,7 @@ import { Redirect, Route, Switch } from 'react-router-dom'
 
 import './App.css'
 import Admin from './Admin'
+import AddWorkout from './Activities/AddActivity'
 import Dashboard from './Dashboard'
 import Logout from './User/Logout'
 import NavBar from './NavBar'
@@ -83,6 +84,7 @@ export default class App extends React.Component {
               )
             )}
           />
+          <Route exact path="/activities/add" component={AddWorkout} />
           <Route path="/admin" component={Admin} />
           <Route component={NotFound} />
         </Switch>

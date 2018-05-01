@@ -95,6 +95,7 @@ def post_activity(auth_user_id):
         new_activity.ascent = gpx_data['uphill']
         new_activity.max_speed = gpx_data['max_speed']
         new_activity.ave_speed = gpx_data['average_speed']
+        db.session.add(new_activity)
         db.session.commit()
 
         response_object = {

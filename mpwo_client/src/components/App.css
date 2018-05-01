@@ -56,3 +56,7 @@ input, textarea {
   margin: 1em;
   text-align: center;
 }
+
+.add-activity {
+  margin-top: 50px;
+}
