@@ -13,6 +13,7 @@ Flask-Bcrypt==0.7.1
 Flask-Migrate==2.1.1
 Flask-SQLAlchemy==2.3.2
 Flask-Testing==0.6.2
+gpxpy==1.2.0
 isort==4.2.15
 itsdangerous==0.24
 Jinja2==2.10

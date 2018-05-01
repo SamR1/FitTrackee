@@ -1,4 +1,3 @@
-import datetime
 import json
 
 from mpwo_api.tests.utils import add_admin, add_sport, add_user

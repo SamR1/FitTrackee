@@ -7,7 +7,7 @@ from sqlalchemy import exc, or_
 from werkzeug.utils import secure_filename
 
 from .models import User
-from .utils import allowed_picture, authenticate, register_controls
+from .utils import authenticate, register_controls, verify_extension
 
 auth_blueprint = Blueprint('auth', __name__)
 
@@ -236,20 +236,11 @@ def edit_user(user_id):
 @authenticate
 def edit_picture(user_id):
     code = 400
-    if 'file' not in request.files:
-        response_object = {'status': 'fail', 'message': 'No file part.'}
-        return jsonify(response_object), code
-    file = request.files['file']
-    if file.filename == '':
-        response_object = {'status': 'fail', 'message': 'No selected file.'}
-        return jsonify(response_object), code
-    if not allowed_picture(file.filename):
-        response_object = {
-            'status': 'fail',
-            'message': 'File extension not allowed.'
-        }
+    response_object = verify_extension('picture', request)
+    if response_object['status'] != 'success':
         return jsonify(response_object), code
 
+    file = request.files['file']
     filename = secure_filename(file.filename)
     dirpath = os.path.join(
         current_app.config['UPLOAD_FOLDER'],
