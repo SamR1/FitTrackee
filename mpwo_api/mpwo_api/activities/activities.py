@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from mpwo_api import appLog, db
 from sqlalchemy import exc
 
-from ..users.utils import authenticate
+from ..users.utils import authenticate, is_admin
 from .models import Activity, Sport
 
 activities_blueprint = Blueprint('activities', __name__)
@@ -62,6 +62,13 @@ def get_sport(auth_user_id, sport_id):
 @authenticate
 def post_sport(auth_user_id):
     """Post a sport"""
+    if not is_admin(auth_user_id):
+        response_object = {
+            'status': 'error',
+            'message': 'You do not have permissions.'
+        }
+        return jsonify(response_object), 401
+
     sport_data = request.get_json()
     if not sport_data or sport_data.get('label') is None:
         response_object = {
@@ -101,6 +108,13 @@ def post_sport(auth_user_id):
 @authenticate
 def update_sport(auth_user_id, sport_id):
     """Update a sport"""
+    if not is_admin(auth_user_id):
+        response_object = {
+            'status': 'error',
+            'message': 'You do not have permissions.'
+        }
+        return jsonify(response_object), 401
+
     sport_data = request.get_json()
     if not sport_data or sport_data.get('label') is None:
         response_object = {
@@ -149,6 +163,13 @@ def update_sport(auth_user_id, sport_id):
 @authenticate
 def delete_sport(auth_user_id, sport_id):
     """Delete a sport"""
+    if not is_admin(auth_user_id):
+        response_object = {
+            'status': 'error',
+            'message': 'You do not have permissions.'
+        }
+        return jsonify(response_object), 401
+
     sports_list = []
     try:
         sport = Sport.query.filter_by(id=sport_id).first()

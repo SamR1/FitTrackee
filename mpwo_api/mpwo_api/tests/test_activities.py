@@ -150,6 +150,38 @@ def test_add_a_sport(app):
     assert 'surfing' in data['data']['sports'][0]['label']
 
 
+def test_add_a_sport_not_admin(app):
+    add_user('test', 'test@test.com', '12345678')
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.post(
+        '/api/sports',
+        content_type='application/json',
+        data=json.dumps(dict(
+            label='surfing'
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 401
+    assert 'created' not in data['status']
+    assert 'error' in data['status']
+    assert 'You do not have permissions.' in data['message']
+
+
 def test_update_a_sport(app):
     add_admin()
     add_sport('cycling')
@@ -184,6 +216,39 @@ def test_update_a_sport(app):
     assert 'cycling updated' in data['data']['sports'][0]['label']
 
 
+def test_update_a_sport_not_admin(app):
+    add_user('test', 'test@test.com', '12345678')
+    add_sport('cycling')
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.patch(
+        '/api/sports/1',
+        content_type='application/json',
+        data=json.dumps(dict(
+            label='cycling updated'
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 401
+    assert 'success' not in data['status']
+    assert 'error' in data['status']
+    assert 'You do not have permissions.' in data['message']
+
+
 def test_delete_a_sport(app):
     add_admin()
     add_sport('cycling')
@@ -207,3 +272,32 @@ def test_delete_a_sport(app):
         )
     )
     assert response.status_code == 204
+
+
+def test_delete_a_sport_not_admin(app):
+    add_user('test', 'test@test.com', '12345678')
+    add_sport('cycling')
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.delete(
+        '/api/sports/1',
+        content_type='application/json',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 401
+    assert 'error' in data['status']
+    assert 'You do not have permissions.' in data['message']
