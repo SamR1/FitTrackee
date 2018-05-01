@@ -21,7 +21,7 @@
     "build": "cd mpwo_client && react-scripts build",
     "test": "cd mpwo_client && testcafe firefox e2e",
     "eject": "cd mpwo_client && react-scripts eject",
-    "lint": "eslint --cache --ext .jsx --ext .js mpwo/src"
+    "lint": "eslint --cache --ext .jsx --ext .js mpwo_client/src"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.3",

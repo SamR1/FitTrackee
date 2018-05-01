@@ -376,7 +376,13 @@
     "import/no-named-as-default": "warn",
     "import/no-named-as-default-member": "warn",
     "import/no-deprecated": "warn",
-    "import/no-extraneous-dependencies": "warn",
+    "import/no-extraneous-dependencies": [
+      "warn",
+      {
+        "devDependencies": true,
+        "packageDir": "."
+      }
+    ],
     "import/no-mutable-exports": "warn",
     "import/unambiguous": "off",
     "import/no-commonjs": "off",

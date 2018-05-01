@@ -39,6 +39,7 @@ export default function AdminPage(props) {
                   </thead>
                   <tbody>
                     { results.map((result, idx) => (
+                      // eslint-disable-next-line react/no-array-index-key
                       <tr key={idx}>
                         { Object.keys(result).map(key => {
                           if (key === 'id') {

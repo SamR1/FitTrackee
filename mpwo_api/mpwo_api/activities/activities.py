@@ -153,17 +153,12 @@ def delete_sport(auth_user_id, sport_id):
     try:
         sport = Sport.query.filter_by(id=sport_id).first()
         if sport:
-            db.session.query(Sport).filter_by(id=sport_id).delete()
+            db.session.delete(sport)
             db.session.commit()
             response_object = {
-                'status': 'no content',
-                'data': {
-                    'sports': sports_list
-                }
+                'status': 'no content'
             }
             code = 204
-            print('OK')
-            print(response_object)
         else:
             response_object = {
                 'status': 'not found',

@@ -1,7 +1,6 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 
 import { deleteData, updateData } from '../../../actions/index'
 

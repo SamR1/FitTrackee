@@ -1,11 +1,15 @@
+import os
+
 import pytest
 from mpwo_api import create_app, db
+
+os.environ["FLASK_ENV"] = 'testing'
+os.environ["APP_SETTINGS"] = 'mpwo_api.config.TestingConfig'
 
 
 @pytest.fixture
 def app():
     app = create_app()
-    app.config.from_object('mpwo_api.config.TestingConfig')
     with app.app_context():
         db.create_all()
         yield app
