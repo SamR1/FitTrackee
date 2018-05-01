@@ -6,18 +6,6 @@ from flask import current_app, jsonify, request
 from .models import User
 
 
-def allowed_activity(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in \
-           current_app.config.get('ACTIVITY_ALLOWED_EXTENSIONS')
-
-
-def allowed_picture(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in \
-           current_app.config.get('PICTURE_ALLOWED_EXTENSIONS')
-
-
 def verify_extension(file_type, req):
     response_object = {'status': 'success'}
 
@@ -30,8 +18,15 @@ def verify_extension(file_type, req):
         response_object = {'status': 'fail', 'message': 'No selected file.'}
         return response_object
 
-    if ((file_type == 'picture' and not allowed_picture(file.filename)) or
-            (file_type == 'activity' and not allowed_activity(file.filename))):
+    allowed_extensions = (
+        'ACTIVITY_ALLOWED_EXTENSIONS'
+        if file_type == 'activity'
+        else 'PICTURE_ALLOWED_EXTENSIONS'
+    )
+
+    if not ('.' in file.filename and
+            file.filename.rsplit('.', 1)[1].lower() in
+            current_app.config.get(allowed_extensions)):
         response_object = {
             'status': 'fail',
             'message': 'File extension not allowed.'
