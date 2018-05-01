@@ -50,7 +50,7 @@ class Activity(db.Model):
     ave_speed = db.Column(db.Numeric(5, 2), nullable=True)
 
     def __str__(self):
-        return self.sport.label + \
+        return str(self.sport_id) + \
                " - " + self.activity_date.strftime('%Y-%m-%d')
 
     def __init__(self, user_id, sport_id, activity_date, duration):
@@ -58,3 +58,23 @@ class Activity(db.Model):
         self.sport_id = sport_id
         self.activity_date = activity_date
         self.duration = duration
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "sport_id": self.sport_id,
+            "creation_date": self.creation_date,
+            "modification_date": self.modification_date,
+            "activity_date": self.activity_date,
+            "duration": self.duration.total_seconds(),
+            "pauses": self.pauses.total_seconds(),
+            "moving": self.moving.total_seconds(),
+            "distance": float(self.distance),
+            "min_alt": float(self.min_alt),
+            "max_alt": float(self.max_alt),
+            "descent": float(self.descent),
+            "ascent": float(self.ascent),
+            "max_speed": float(self.max_speed),
+            "ave_speed": float(self.ave_speed)
+        }

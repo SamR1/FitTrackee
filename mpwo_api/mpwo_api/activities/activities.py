@@ -21,15 +21,7 @@ def get_activities(auth_user_id):
     activities = Activity.query.all()
     activities_list = []
     for activity in activities:
-        activity_object = {
-            'id': activity.id,
-            'user_id': activity.user_id,
-            'sport_id': activity.sport_id,
-            'creation_date': activity.creation_date,
-            'activity_date': activity.activity_date,
-            'duration': activity.duration.seconds
-        }
-        activities_list.append(activity_object)
+        activities_list.append(activity.serialize())
     response_object = {
         'status': 'success',
         'data': {
@@ -37,6 +29,33 @@ def get_activities(auth_user_id):
         }
     }
     return jsonify(response_object), 200
+
+
+@activities_blueprint.route('/activities/<int:activity_id>', methods=['GET'])
+@authenticate
+def get_activity(auth_user_id, activity_id):
+    """Get an activity"""
+    activity = Activity.query.filter_by(id=activity_id).first()
+    activities_list = []
+
+    if activity:
+        activities_list.append(activity.serialize())
+        response_object = {
+            'status': 'success',
+            'data': {
+                'activities': activities_list
+            }
+        }
+        code = 200
+    else:
+        response_object = {
+            'status': 'not found',
+            'data': {
+                'activities': activities_list
+            }
+        }
+        code = 404
+    return jsonify(response_object), code
 
 
 @activities_blueprint.route('/activities', methods=['POST'])
