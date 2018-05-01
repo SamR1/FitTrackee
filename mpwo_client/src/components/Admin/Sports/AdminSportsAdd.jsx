@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 
 import { addData } from '../../../actions/index'
+import { history } from '../../../index'
 
 class AdminSportsAdd extends React.Component {
   componentDidMount() { }
@@ -16,7 +17,7 @@ class AdminSportsAdd extends React.Component {
           <title>mpwo - Admin</title>
         </Helmet>
         <h1 className="page-title">
-            Administration - Sport
+          Administration - Sport
         </h1>
         {message && (
           <code>{message}</code>
@@ -32,7 +33,7 @@ class AdminSportsAdd extends React.Component {
                 </div>
                 <div className="card-body">
                   <form onSubmit={event =>
-                   event.preventDefault()}
+                    event.preventDefault()}
                   >
                     <div className="form-group">
                       <label>
@@ -53,6 +54,7 @@ class AdminSportsAdd extends React.Component {
                     <input
                       type="submit"
                       className="btn btn-secondary btn-lg btn-block"
+                      onClick={() => history.push('/admin/sports')}
                       value="Cancel"
                     />
                   </form>

@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 
 import { deleteData, updateData } from '../../../actions/index'
+import { history } from '../../../index'
 
 class AdminDetail extends React.Component {
 
@@ -94,6 +95,12 @@ class AdminDetail extends React.Component {
                           className="btn btn-danger btn-lg btn-block"
                           onClick={event => onDataDelete(event, target)}
                           value="Delete"
+                        />
+                        <input
+                          type="submit"
+                          className="btn btn-secondary btn-lg btn-block"
+                          onClick={() => history.push(`/admin/${target}`)}
+                          value="Back to the list"
                         />
                       </div>
                     )}

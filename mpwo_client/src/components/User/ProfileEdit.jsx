@@ -7,6 +7,7 @@ import {
   updateProfileFormData,
   handleProfileFormSubmit
 } from '../../actions/user'
+import { history } from '../../index'
 
 
 class ProfileEdit extends React.Component {
@@ -156,6 +157,12 @@ class ProfileEdit extends React.Component {
                         type="submit"
                         className="btn btn-primary btn-lg btn-block"
                         value="Submit"
+                      />
+                      <input
+                        type="submit"
+                        className="btn btn-secondary btn-lg btn-block"
+                        onClick={() => history.push('/profile')}
+                        value="Cancel"
                       />
                     </form>
                     </div>

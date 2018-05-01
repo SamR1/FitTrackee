@@ -2,6 +2,8 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
+import { history } from '../../../index'
+
 export default function AdminPage(props) {
 
   const { data, detailLink, target } = props
@@ -58,7 +60,18 @@ export default function AdminPage(props) {
                     ))}
                   </tbody>
                 </table>
-                <Link to={`/admin/${target}/add`}>Add new item</Link>
+                <input
+                  type="submit"
+                  className="btn btn-primary btn-lg btn-block"
+                  onClick={() => history.push(`/admin/${target}/add`)}
+                  value="Add a new item"
+                />
+                <input
+                  type="submit"
+                  className="btn btn-secondary btn-lg btn-block"
+                  onClick={() => history.push('/admin/')}
+                  value="Back"
+                />
               </div>
             </div>
           <div className="col-md-2" />
