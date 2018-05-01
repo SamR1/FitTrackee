@@ -526,3 +526,58 @@ def test_update_user_picture(app):
     assert data['status'] == 'success'
     assert data['message'] == 'User picture updated.'
     assert response.status_code == 200
+
+
+def test_update_user_no_picture(app):
+    add_user('test', 'test@test.com', '12345678')
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.post(
+        '/api/auth/picture',
+        headers=dict(
+            content_type='multipart/form-data',
+            authorization='Bearer ' +
+            json.loads(resp_login.data.decode())['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+    assert data['status'] == 'fail'
+    assert data['message'] == 'No file part.'
+    assert response.status_code == 400
+
+
+def test_update_user_invalid_picture(app):
+    add_user('test', 'test@test.com', '12345678')
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.post(
+        '/api/auth/picture',
+        data=dict(
+            file=(BytesIO(b'avatar'), 'avatar.bmp')
+        ),
+        headers=dict(
+            content_type='multipart/form-data',
+            authorization='Bearer ' +
+            json.loads(resp_login.data.decode())['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+    assert data['status'] == 'fail'
+    assert data['message'] == 'File extension not allowed.'
+    assert response.status_code == 400
