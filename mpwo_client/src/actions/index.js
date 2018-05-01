@@ -33,14 +33,11 @@ export function getData(target, id = null) {
 
 export function addData(target, data) {
   return function(dispatch) {
-    if (isNaN(data.id)) {
-      return dispatch(setError(target, `${target}: Incorrect id`))
-    }
     return mpwoApi
     .addData(target, data)
     .then(ret => {
       if (ret.status === 'created') {
-        dispatch(setData(target, ret.data))
+        history.push(`/admin/${target}`)
       } else {
         dispatch(setError(`${target}: ${ret.status}`))
       }

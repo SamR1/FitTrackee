@@ -6,6 +6,7 @@ import { Redirect, Route, Switch } from 'react-router-dom'
 import AdminMenu from './Sports/AdminMenu'
 import AdminSport from './Sports/AdminSport'
 import AdminSports from './Sports/AdminSports'
+import AdminSportsAdd from './Sports/AdminSportsAdd'
 import AccessDenied from './../Others/AccessDenied'
 import NotFound from './../Others/NotFound'
 import { isLoggedIn } from '../../utils'
@@ -24,6 +25,10 @@ class Admin extends React.Component {
             <Switch>
               <Route exact path="/admin" component={AdminMenu} />
               <Route exact path="/admin/sports" component={AdminSports} />
+              <Route
+                exact path="/admin/sports/add"
+                component={AdminSportsAdd}
+              />
               <Route path="/admin/sport" component={AdminSport} />
               <Route component={NotFound} />
             </Switch>
