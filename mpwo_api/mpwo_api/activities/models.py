@@ -67,11 +67,9 @@ class Activity(db.Model):
             "creation_date": self.creation_date,
             "modification_date": self.modification_date,
             "activity_date": self.activity_date,
-            "duration": (self.duration.total_seconds()
-                         if self.duration
-                         else None),
-            "pauses": self.pauses.total_seconds() if self.pauses else None,
-            "moving": self.moving.total_seconds() if self.moving else None,
+            "duration": str(self.duration) if self.duration else None,
+            "pauses": str(self.pauses) if self.pauses else None,
+            "moving": str(self.moving) if self.moving else None,
             "distance": float(self.distance) if self.distance else None,
             "min_alt": float(self.min_alt) if self.min_alt else None,
             "max_alt": float(self.max_alt) if self.max_alt else None,

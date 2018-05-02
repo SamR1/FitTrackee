@@ -27,7 +27,7 @@ class ActivityDisplay extends React.Component {
           <div className="container">
           {activity && sports.length > 0 && (
             <div className="row">
-            <div className="col-md-12">
+            <div className="col-md-6">
               <div className="card">
                 <div className="card-header">
                   {sports.filter(sport => sport.id === activity.sport_id)
@@ -35,41 +35,44 @@ class ActivityDisplay extends React.Component {
                   {activity.activity_date}
                 </div>
                 <div className="card-body">
-                  <div className="row">
-                    <div className="col-md-8">
-                      <p>
-                        <i className="fa fa-calendar" aria-hidden="true" />{' '}
-                        Start at {activity.activity_date}
-                      </p>
-                      <p>
-                        <i className="fa fa-clock-o" aria-hidden="true" />{' '}
-                        Duration: {activity.duration} {' '}
-                        {activity.pauses > 0 && (
-                            `(pauses: ${activity.pauses})`
-                        )}
-                      </p>
-                      <p>
-                        <i className="fa fa-road" aria-hidden="true" />{' '}
-                        Distance: {activity.distance}km</p>
-                      <p>
-                        <i className="fa fa-tachometer" aria-hidden="true" />
-                        {' '}
-                        Average speed: {activity.ave_speed} km/h -{' '}
-                        Max speed : {activity.max_speed} km/h
-                      </p>
-                      <p><i className="fi-mountains" />{' '}
-                        Min altitude: {activity.min_alt}m -{' '}
-                        Max altitude: {activity.max_alt}m
-                      </p>
-                      <p><i className="fa fa-location-arrow" />{' '}
-                        Ascent: {activity.ascent}m -{' '}
-                        Descent: {activity.descent}m
-                      </p>
-                    </div>
-                    <div className="col-md-4">
-                      Map
-                    </div>
-                  </div>
+                  <p>
+                    <i className="fa fa-calendar" aria-hidden="true" />{' '}
+                    Start at {activity.activity_date}
+                  </p>
+                  <p>
+                    <i className="fa fa-clock-o" aria-hidden="true" />{' '}
+                    Duration: {activity.duration} {' '}
+                    {activity.pauses !== '0:00:00' && (
+                        `(pauses: ${activity.pauses})`
+                    )}
+                  </p>
+                  <p>
+                    <i className="fa fa-road" aria-hidden="true" />{' '}
+                    Distance: {activity.distance} km</p>
+                  <p>
+                    <i className="fa fa-tachometer" aria-hidden="true" />
+                    {' '}
+                    Average speed: {activity.ave_speed} km/h -{' '}
+                    Max speed : {activity.max_speed} km/h
+                  </p>
+                  <p><i className="fi-mountains" />{' '}
+                    Min altitude: {activity.min_alt}m -{' '}
+                    Max altitude: {activity.max_alt}m
+                  </p>
+                  <p><i className="fa fa-location-arrow" />{' '}
+                    Ascent: {activity.ascent}m -{' '}
+                    Descent: {activity.descent}m
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="card">
+                <div className="card-header">
+                  Map
+                </div>
+                <div className="card-body">
+                  to do
                 </div>
               </div>
             </div>
