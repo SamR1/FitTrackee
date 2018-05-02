@@ -38,6 +38,9 @@ export default {
       passwordConf: '',
     }
   },
+  activities: {
+    ...emptyData,
+  },
   sports: {
     ...emptyData,
   }

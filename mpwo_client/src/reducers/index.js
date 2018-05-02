@@ -19,6 +19,9 @@ const handleDataAndError = (state, type, action) => {
   }
 }
 
+const activities = (state = initial.activities, action) =>
+  handleDataAndError(state, 'activities', action)
+
 const formData = (state = initial.formData, action) => {
   switch (action.type) {
     case 'UPDATE_USER_FORMDATA':
@@ -138,6 +141,7 @@ const user = (state = initial.user, action) => {
 }
 
 const reducers = combineReducers({
+  activities,
   formData,
   formProfile,
   message,
