@@ -50,7 +50,7 @@ class Activity(db.Model):
     ave_speed = db.Column(db.Numeric(5, 2), nullable=True)
 
     def __str__(self):
-        return str(self.sport_id) + \
+        return str(self.sports.label) + \
                " - " + self.activity_date.strftime('%Y-%m-%d')
 
     def __init__(self, user_id, sport_id, activity_date, duration):

@@ -40,21 +40,18 @@ def get_activity(auth_user_id, activity_id):
 
     if activity:
         activities_list.append(activity.serialize())
-        response_object = {
-            'status': 'success',
-            'data': {
-                'activities': activities_list
-            }
-        }
+        status = 'success'
         code = 200
     else:
-        response_object = {
-            'status': 'not found',
-            'data': {
-                'activities': activities_list
-            }
-        }
+        status = 'not found'
         code = 404
+
+    response_object = {
+        'status': status,
+        'data': {
+            'activities': activities_list
+        }
+    }
     return jsonify(response_object), code
 
 
@@ -119,7 +116,9 @@ def post_activity(auth_user_id):
 
         response_object = {
             'status': 'created',
-            'message': 'Activity added.'
+            'data': {
+                'activities': [new_activity.serialize()]
+            }
         }
         return jsonify(response_object), 201
 
