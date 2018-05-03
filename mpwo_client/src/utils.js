@@ -1,4 +1,7 @@
 export const apiUrl = `${process.env.REACT_APP_API_URL}/api/`
+export const thunderforestApiKey = `${
+  process.env.REACT_APP_THUNDERFOREST_API_KEY
+}`
 
 export const isLoggedIn = () => !!window.localStorage.authToken
 

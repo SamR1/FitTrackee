@@ -60,3 +60,7 @@ input, textarea {
 .add-activity {
   margin-top: 50px;
 }
+
+.leaflet-container {
+  height: 240px;
+}

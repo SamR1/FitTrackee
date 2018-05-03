@@ -2,6 +2,7 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 
+import ActivityMap from './ActivityMap'
 import { getData } from '../../actions/index'
 
 class ActivityDisplay extends React.Component {
@@ -72,7 +73,7 @@ class ActivityDisplay extends React.Component {
                   Map
                 </div>
                 <div className="card-body">
-                  to do
+                  <ActivityMap />
                 </div>
               </div>
             </div>
