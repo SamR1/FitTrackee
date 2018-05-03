@@ -73,8 +73,8 @@ def test_get_all_activities(app):
     assert 1 == data['data']['activities'][1]['user_id']
     assert 1 == data['data']['activities'][0]['sport_id']
     assert 2 == data['data']['activities'][1]['sport_id']
-    assert 3600 == data['data']['activities'][0]['duration']
-    assert 1024 == data['data']['activities'][1]['duration']
+    assert '1:00:00' == data['data']['activities'][0]['duration']
+    assert '0:17:04' == data['data']['activities'][1]['duration']
 
 
 def test_add_an_activity(app):
