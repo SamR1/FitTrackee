@@ -15,4 +15,16 @@ export default class MpwoApi {
       .catch(error => error)
   }
 
+  static getActivityGpx(activityId) {
+    const request = new Request(`${apiUrl}activities/${activityId}/gpx`, {
+      method: 'GET',
+      headers: new Headers({
+        Authorization: `Bearer ${window.localStorage.getItem('authToken')}`,
+      }),
+    })
+    return fetch(request)
+      .then(response => response.json())
+      .catch(error => error)
+  }
+
 }

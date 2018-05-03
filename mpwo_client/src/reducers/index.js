@@ -66,6 +66,15 @@ const formProfile = (state = initial.formProfile, action) => {
   }
 }
 
+const gpx = (state = initial.gpx, action) => {
+  switch (action.type) {
+    case 'SET_GPX':
+      return action.gpxContent
+    default:
+      return state
+  }
+}
+
 const message = (state = initial.message, action) => {
   switch (action.type) {
     case 'AUTH_ERROR':
@@ -144,6 +153,7 @@ const reducers = combineReducers({
   activities,
   formData,
   formProfile,
+  gpx,
   message,
   messages,
   router: routerReducer,

@@ -73,7 +73,7 @@ class ActivityDisplay extends React.Component {
                   Map
                 </div>
                 <div className="card-body">
-                  <ActivityMap />
+                  <ActivityMap activity={activity} />
                 </div>
               </div>
             </div>

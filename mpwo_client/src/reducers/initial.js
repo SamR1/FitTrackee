@@ -41,6 +41,8 @@ export default {
   activities: {
     ...emptyData,
   },
+  // check if storing gpx content is OK
+  gpx: null,
   sports: {
     ...emptyData,
   }

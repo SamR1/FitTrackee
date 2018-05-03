@@ -55,6 +55,61 @@ def get_activity(auth_user_id, activity_id):
     return jsonify(response_object), code
 
 
+@activities_blueprint.route(
+    '/activities/<int:activity_id>/gpx',
+    methods=['GET']
+)
+@authenticate
+def get_activity_gpx(auth_user_id, activity_id):
+    """Get gpx file for an activity"""
+    activity = Activity.query.filter_by(id=activity_id).first()
+    gpx_content = ''
+
+    message = ''
+    code = 500
+    response_object = {
+        'status': 'error',
+        'message': 'internal error',
+        'data': {
+            'gpx': gpx_content
+        }
+    }
+
+    if activity:
+        if not activity.gpx or activity.gpx == '':
+            response_object = {
+                'status': 'fail',
+                'message': 'No gpx file for this activity (id: {})'.format(
+                    activity_id
+                )
+            }
+            code = 400
+            return jsonify(response_object), code
+
+        try:
+            with open(activity.gpx, encoding='utf-8') as f:
+                gpx_content = gpx_content + f.read()
+        except Exception as e:
+            appLog.error(e)
+            return jsonify(response_object), code
+
+        status = 'success'
+        code = 200
+    else:
+        status = 'not found'
+        message = 'Activity not found (id: {})'.format(activity_id)
+        code = 404
+
+    response_object = {
+        'status': status,
+        'message': message,
+        'data': {
+            'gpx': gpx_content
+        }
+    }
+    return jsonify(response_object), code
+
+
 @activities_blueprint.route('/activities', methods=['POST'])
 @authenticate
 def post_activity(auth_user_id):
