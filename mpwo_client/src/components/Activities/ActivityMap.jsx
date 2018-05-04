@@ -18,6 +18,10 @@ class ActivityMap extends React.Component {
     this.props.loadActivityGpx(this.props.activity.id)
   }
 
+  componentWillUnmount() {
+    this.props.loadActivityGpx(null)
+  }
+
   render() {
     const { gpxContent } = this.props
     const { jsonData, bounds } = getGeoJson(gpxContent)

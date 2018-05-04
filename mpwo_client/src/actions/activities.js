@@ -23,7 +23,8 @@ export function addActivity(form) {
 }
 
 export function getActivityGpx(activityId) {
-  return function(dispatch) {
+  if (activityId) {
+    return function(dispatch) {
     return mpwoApi
     .getActivityGpx(activityId)
     .then(ret => {
@@ -34,5 +35,9 @@ export function getActivityGpx(activityId) {
       }
     })
     .catch(error => dispatch(setError(`activities: ${error}`)))
+    }
+  }
+  return function(dispatch) {
+    dispatch(setGpx(null))
   }
 }
