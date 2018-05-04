@@ -3,33 +3,21 @@ import { history } from '../index'
 import { generateIds } from '../utils'
 
 
-function AuthError(message) {
-  return { type: 'AUTH_ERROR', message }
-}
+const AuthError = message => ({ type: 'AUTH_ERROR', message })
 
-function AuthErrors(messages) {
-  return { type: 'AUTH_ERRORS', messages }
-}
+const AuthErrors = messages => ({ type: 'AUTH_ERRORS', messages })
 
-function PictureError(message) {
-  return { type: 'PICTURE_ERROR', message }
-}
+const PictureError = message => ({ type: 'PICTURE_ERROR', message })
 
-function ProfileSuccess(message) {
-  return { type: 'PROFILE_SUCCESS', message }
-}
+const ProfileSuccess = message => ({ type: 'PROFILE_SUCCESS', message })
 
-function ProfileError(message) {
-  return { type: 'PROFILE_ERROR', message }
-}
+const ProfileError = message => ({ type: 'PROFILE_ERROR', message })
 
-function ProfileUpdateError(message) {
-  return { type: 'PROFILE_UPDATE_ERROR', message }
-}
+const ProfileUpdateError = message => ({
+  type: 'PROFILE_UPDATE_ERROR', message
+})
 
-function initProfileFormData(user) {
-  return { type: 'INIT_PROFILE_FORM', user }
-}
+const initProfileFormData = user => ({ type: 'INIT_PROFILE_FORM', user })
 
 export const emptyForm = () => ({
   type: 'EMPTY_USER_FORMDATA'
@@ -47,75 +35,60 @@ export const updateProfileFormData = (target, value) => ({
   value,
 })
 
-export function getProfile(dispatch) {
-  return mpwoApiUser
-    .getProfile()
-    .then(ret => {
-      if (ret.status === 'success') {
-        dispatch(ProfileSuccess(ret))
-      } else {
-        dispatch(ProfileError(ret.message))
-      }
-    })
-    .catch(error => {
-      throw error
-    })
-}
-
-export function register(formData) {
-  return function(dispatch) {
-    return mpwoApiUser
-      .register(
-        formData.username,
-        formData.email,
-        formData.password,
-        formData.passwordConf)
-      .then(ret => {
-        if (ret.status === 'success') {
-          window.localStorage.setItem('authToken', ret.auth_token)
-          getProfile(dispatch)
-        } else {
-          dispatch(AuthError(ret.message))
-        }
-      })
-      .catch(error => {
-        throw error
-      })
-  }
-}
-
-export function login(formData) {
-  return function(dispatch) {
-    return mpwoApiUser
-      .login(formData.email, formData.password)
-      .then(ret => {
-        if (ret.status === 'success') {
-          window.localStorage.setItem('authToken', ret.auth_token)
-          getProfile(dispatch)
-        } else {
-          dispatch(AuthError(ret.message))
-        }
-      })
-      .catch(error => {
-        throw error
-      })
-  }
-}
-
-export function loadProfile() {
-  if (window.localStorage.getItem('authToken')) {
-    return function(dispatch) {
-      getProfile(dispatch)
+export const getProfile = () => dispatch => mpwoApiUser
+  .getProfile()
+  .then(ret => {
+    if (ret.status === 'success') {
+      return dispatch(ProfileSuccess(ret))
     }
+    return dispatch(ProfileError(ret.message))
+  })
+  .catch(error => {
+    throw error
+  })
+
+
+export const register = formData => dispatch => mpwoApiUser
+  .register(
+    formData.username,
+    formData.email,
+    formData.password,
+    formData.passwordConf)
+  .then(ret => {
+    if (ret.status === 'success') {
+      window.localStorage.setItem('authToken', ret.auth_token)
+      return dispatch(getProfile())
+    }
+    return dispatch(AuthError(ret.message))
+  })
+  .catch(error => {
+    throw error
+  })
+
+
+export const login = formData => dispatch => mpwoApiUser
+  .login(formData.email, formData.password)
+  .then(ret => {
+    if (ret.status === 'success') {
+      window.localStorage.setItem('authToken', ret.auth_token)
+      return dispatch(getProfile())
+    }
+    return dispatch(AuthError(ret.message))
+  })
+  .catch(error => {
+    throw error
+  })
+
+export const loadProfile = () => dispatch => {
+  if (window.localStorage.getItem('authToken')) {
+    return dispatch(getProfile())
   }
   return { type: 'LOGOUT' }
 }
 
-export function logout() {
-  return { type: 'LOGOUT' }
-}
+export const logout = () => ({ type: 'LOGOUT' })
 
-function RegisterFormControl (formData) {
+const RegisterFormControl = formData => {
   const errMsg = []
   if (formData.username.length < 3 || formData.username.length > 12) {
     errMsg.push('Username: 3 to 12 characters required.')
@@ -129,94 +102,79 @@ function RegisterFormControl (formData) {
   return errMsg
 }
 
-export function handleUserFormSubmit(event, formType) {
+export const handleUserFormSubmit = (event, formType) => (
+  dispatch,
+  getState
+) => {
   event.preventDefault()
-  return (dispatch, getState) => {
-    const state = getState()
-    const { formData } = state.formData
-    formData.formData = state.formData.formData
-    if (formType === 'Login') {
-      dispatch(login(formData.formData))
-    } else { // formType === 'Register'
-      const ret = RegisterFormControl(formData.formData)
-      if (ret.length === 0) {
-        dispatch(register(formData.formData))
-      } else {
-        dispatch(AuthErrors(generateIds(ret)))
-      }
-    }
+  const state = getState()
+  const { formData } = state.formData
+  formData.formData = state.formData.formData
+  if (formType === 'Login') {
+    return dispatch(login(formData.formData))
   }
+  // formType === 'Register'
+  const ret = RegisterFormControl(formData.formData)
+  if (ret.length === 0) {
+    return dispatch(register(formData.formData))
+  }
+  return dispatch(AuthErrors(generateIds(ret)))
 }
 
-export function initProfileForm () {
-  return (dispatch, getState) => {
-    const state = getState()
-    dispatch(initProfileFormData(state.user))
-  }
+export const initProfileForm = () => (dispatch, getState) => {
+  const state = getState()
+  return dispatch(initProfileFormData(state.user))
 }
 
-export function handleProfileFormSubmit(event) {
+export const handleProfileFormSubmit = event => (dispatch, getState) => {
   event.preventDefault()
-  return (dispatch, getState) => {
-    const state = getState()
-    if (!state.formProfile.formProfile.password ===
-        state.formProfile.formProfile.passwordConf) {
-      dispatch(ProfileUpdateError(
-          'Password and password confirmation don\'t match.'
-      ))
-    } else {
-      return mpwoApiUser
-      .updateProfile(state.formProfile.formProfile)
-      .then(ret => {
-        if (ret.status === 'success') {
-          getProfile(dispatch)
-          history.push('/profile')
-        } else {
-          dispatch(ProfileUpdateError(ret.message))
-        }
-      })
-      .catch(error => {
-        throw error
-      })
-    }
-
+  const state = getState()
+  if (!state.formProfile.formProfile.password ===
+    state.formProfile.formProfile.passwordConf) {
+    return dispatch(ProfileUpdateError(
+      'Password and password confirmation don\'t match.'
+    ))
   }
-}
-
-export function uploadPicture (event) {
-  event.preventDefault()
-  const form = new FormData()
-  form.append('file', event.target.picture.files[0])
-  event.target.reset()
-  return function(dispatch) {
-    return mpwoApiUser
-      .updatePicture(form)
-      .then(ret => {
-        if (ret.status === 'success') {
-          getProfile(dispatch)
-        } else {
-          dispatch(PictureError(ret.message))
-        }
-      })
-      .catch(error => {
-        throw error
-      })
-  }
-}
-
-export function deletePicture() {
-  return function(dispatch) {
   return mpwoApiUser
-    .deletePicture()
+    .updateProfile(state.formProfile.formProfile)
     .then(ret => {
       if (ret.status === 'success') {
-        getProfile(dispatch)
-      } else {
-        dispatch(PictureError(ret.message))
+        dispatch(getProfile())
+        return history.push('/profile')
       }
+      dispatch(ProfileUpdateError(ret.message))
     })
     .catch(error => {
       throw error
     })
-  }
 }
+
+export const uploadPicture = event => dispatch => {
+  event.preventDefault()
+  const form = new FormData()
+  form.append('file', event.target.picture.files[0])
+  event.target.reset()
+  return mpwoApiUser
+    .updatePicture(form)
+    .then(ret => {
+      if (ret.status === 'success') {
+        return dispatch(getProfile())
+      }
+      return dispatch(PictureError(ret.message))
+    })
+    .catch(error => {
+      throw error
+    })
+}
+
+export const deletePicture = () => dispatch => mpwoApiUser
+  .deletePicture()
+  .then(ret => {
+    if (ret.status === 'success') {
+      return dispatch(getProfile())
+    }
+    dispatch(PictureError(ret.message))
+  })
+  .catch(error => {
+    throw error
+  })

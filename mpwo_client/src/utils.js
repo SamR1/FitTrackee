@@ -8,7 +8,7 @@ export const thunderforestApiKey = `${
 
 export const isLoggedIn = () => !!window.localStorage.authToken
 
-export function generateIds(arr) {
+export const generateIds = arr => {
   let i = 0
   return arr.map(val => {
         const obj = { id: i, value: val }
@@ -17,7 +17,7 @@ export function generateIds(arr) {
     })
 }
 
-export function getGeoJson(gpxContent) {
+export const getGeoJson = gpxContent => {
   let jsonData, bboxCorners
   let bounds = [[0, 0], [0, 0]]
   if (gpxContent) {

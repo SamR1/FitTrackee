@@ -7,24 +7,20 @@ export const setGpx = gpxContent => ({
   gpxContent,
 })
 
-export function addActivity(form) {
-  return function(dispatch) {
-    return mpwoApi
-    .addActivity(form)
-    .then(ret => {
-      if (ret.status === 'created') {
-        history.push('/')
-      } else {
-        dispatch(setError(`activities: ${ret.message}`))
-      }
-    })
-    .catch(error => dispatch(setError(`activities: ${error}`)))
-  }
-}
+export const addActivity = form => dispatch => mpwoApi
+  .addActivity(form)
+  .then(ret => {
+    if (ret.status === 'created') {
+      history.push('/')
+    } else {
+      dispatch(setError(`activities: ${ret.message}`))
+    }
+  })
+  .catch(error => dispatch(setError(`activities: ${error}`)))
 
-export function getActivityGpx(activityId) {
+
+export const getActivityGpx = activityId => dispatch => {
   if (activityId) {
-    return function(dispatch) {
     return mpwoApi
     .getActivityGpx(activityId)
     .then(ret => {
@@ -35,9 +31,6 @@ export function getActivityGpx(activityId) {
       }
     })
     .catch(error => dispatch(setError(`activities: ${error}`)))
-    }
   }
-  return function(dispatch) {
-    dispatch(setGpx(null))
-  }
+  dispatch(setGpx(null))
 }

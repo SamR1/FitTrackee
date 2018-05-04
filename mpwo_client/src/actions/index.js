@@ -13,71 +13,61 @@ export const setError = message => ({
   message,
 })
 
-export function getData(target, id = null) {
-  return function(dispatch) {
-    if (id !== null && isNaN(id)) {
-      return dispatch(setError(target, `${target}: Incorrect id`))
-    }
-    return mpwoApi
-    .getData(target, id)
-    .then(ret => {
-      if (ret.status === 'success') {
-        dispatch(setData(target, ret.data))
-      } else {
-        dispatch(setError(`${target}: ${ret.status}`))
-      }
-    })
-    .catch(error => dispatch(setError(`${target}: ${error}`)))
+export const getData = (target, id = null) => dispatch => {
+  if (id !== null && isNaN(id)) {
+    return dispatch(setError(target, `${target}: Incorrect id`))
   }
+  return mpwoApi
+  .getData(target, id)
+  .then(ret => {
+    if (ret.status === 'success') {
+      dispatch(setData(target, ret.data))
+    } else {
+      dispatch(setError(`${target}: ${ret.status}`))
+    }
+  })
+  .catch(error => dispatch(setError(`${target}: ${error}`)))
 }
 
-export function addData(target, data) {
-  return function(dispatch) {
-    return mpwoApi
-    .addData(target, data)
-    .then(ret => {
-      if (ret.status === 'created') {
-        history.push(`/admin/${target}`)
-      } else {
-        dispatch(setError(`${target}: ${ret.status}`))
-      }
-    })
-    .catch(error => dispatch(setError(`${target}: ${error}`)))
+export const addData = (target, data) => dispatch => mpwoApi
+  .addData(target, data)
+  .then(ret => {
+    if (ret.status === 'created') {
+      history.push(`/admin/${target}`)
+    } else {
+      dispatch(setError(`${target}: ${ret.status}`))
+    }
+  })
+  .catch(error => dispatch(setError(`${target}: ${error}`)))
+
+export const updateData = (target, data) => dispatch => {
+  if (isNaN(data.id)) {
+    return dispatch(setError(target, `${target}: Incorrect id`))
   }
+  return mpwoApi
+  .updateData(target, data)
+  .then(ret => {
+    if (ret.status === 'success') {
+      dispatch(setData(target, ret.data))
+    } else {
+      dispatch(setError(`${target}: ${ret.status}`))
+    }
+  })
+  .catch(error => dispatch(setError(`${target}: ${error}`)))
 }
 
-export function updateData(target, data) {
-  return function(dispatch) {
-    if (isNaN(data.id)) {
-      return dispatch(setError(target, `${target}: Incorrect id`))
-    }
-    return mpwoApi
-    .updateData(target, data)
-    .then(ret => {
-      if (ret.status === 'success') {
-        dispatch(setData(target, ret.data))
-      } else {
-        dispatch(setError(`${target}: ${ret.status}`))
-      }
-    })
-    .catch(error => dispatch(setError(`${target}: ${error}`)))
+export const deleteData = (target, id) => dispatch => {
+  if (isNaN(id)) {
+    return dispatch(setError(target, `${target}: Incorrect id`))
   }
-}
-
-export function deleteData(target, id) {
-  return function(dispatch) {
-    if (isNaN(id)) {
-      return dispatch(setError(target, `${target}: Incorrect id`))
+  return mpwoApi
+  .deleteData(target, id)
+  .then(ret => {
+    if (ret.status === 204) {
+      history.push(`/admin/${target}`)
+    } else {
+      dispatch(setError(`${target}: ${ret.status}`))
     }
-    return mpwoApi
-    .deleteData(target, id)
-    .then(ret => {
-      if (ret.status === 204) {
-        history.push(`/admin/${target}`)
-      } else {
-        dispatch(setError(`${target}: ${ret.status}`))
-      }
-    })
-    .catch(error => dispatch(setError(`${target}: ${error}`)))
-  }
+  })
+  .catch(error => dispatch(setError(`${target}: ${error}`)))
 }
