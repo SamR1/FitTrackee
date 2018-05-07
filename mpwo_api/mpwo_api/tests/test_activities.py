@@ -205,3 +205,88 @@ def test_add_an_activity_no_file(app):
     assert response.status_code == 400
     assert data['status'] == 'fail'
     assert data['message'] == 'No file part.'
+
+
+def test_get_an_activity_without_gpx(app):
+    add_user('test', 'test@test.com', '12345678')
+    add_sport('cycling')
+    add_activity(
+        1,
+        1,
+        datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
+        datetime.timedelta(seconds=1024))
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        '/api/activities/1',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['activities']) == 1
+    assert 'creation_date' in data['data']['activities'][0]
+    assert 'Mon, 01 Jan 2018 00:00:00 GMT' == data['data']['activities'][0]['activity_date']  # noqa
+    assert 1 == data['data']['activities'][0]['user_id']
+    assert 1 == data['data']['activities'][0]['sport_id']
+    assert '0:17:04' == data['data']['activities'][0]['duration']
+
+
+def test_get_an_activity_with_gpx(app):
+    add_user('test', 'test@test.com', '12345678')
+    add_sport('cycling')
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    client.post(
+        '/api/activities',
+        data=dict(
+            file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+            data='{"sport_id": 1}'
+        ),
+        headers=dict(
+            content_type='multipart/form-data',
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    response = client.get(
+        '/api/activities/1',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['activities']) == 1
+    assert 'creation_date' in data['data']['activities'][0]
+    assert 'Sun, 20 Sep 2015 13:48:44 GMT' == data['data']['activities'][0]['activity_date']  # noqa
+    assert 1 == data['data']['activities'][0]['user_id']
+    assert 1 == data['data']['activities'][0]['sport_id']
+    assert '0:00:02' == data['data']['activities'][0]['duration']
