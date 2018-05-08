@@ -31,21 +31,35 @@ function FormWithoutGpx (props) {
       <div className="form-group">
         <label>
           Activity Date:
-          <input
-            name="activity_date"
-            className="form-control input-lg"
-            type="date"
-          />
+          <div className="container">
+            <div className="row">
+              <input
+                name="activity_date"
+                className="form-control col-md"
+                required
+                type="date"
+              />
+              <input
+                name="activity_time"
+                className="form-control col-md"
+                required
+                type="time"
+              />
+            </div>
+          </div>
         </label>
       </div>
       <div className="form-group">
         <label>
           Duration:
-          <input
-            name="duration"
-            className="form-control input-lg"
-            type="text"
-          />
+            <input
+              name="duration"
+              className="form-control col-xs-4"
+              pattern="([0-2][0-3]):([0-5][0-9]):([0-5][0-9])"
+              placeholder="hh:mm:ss"
+              required
+              type="text"
+            />
         </label>
       </div>
       <div className="form-group">
@@ -54,6 +68,8 @@ function FormWithoutGpx (props) {
           <input
             name="distance"
             className="form-control input-lg"
+            min={0}
+            required
             type="number"
           />
         </label>
@@ -78,18 +94,18 @@ export default connect(
   () => ({ }),
   dispatch => ({
     onAddSport: e => {
-      const data = [].slice
-        .call(e.target.form.elements)
-        .reduce(function(map, obj) {
-          if (obj.name) {
-            if (obj.name === 'duration' || obj.name === 'distance') {
-              map[obj.name] = +obj.value
-            } else {
-              map[obj.name] = obj.value
-            }
-          }
-          return map
-        }, {})
+      const d = e.target.form.duration.value.split(':')
+      const duration = +d[0] * 60 * 60 + +d[1] * 60 + +d[2]
+
+      const activityDate = `${e.target.form.activity_date.value
+        } ${ e.target.form.activity_time.value}`
+
+      const data = {
+        activity_date: activityDate,
+        distance: +e.target.form.distance.value,
+        duration,
+        sport_id: +e.target.form.sport_id.value,
+      }
       dispatch(addActivityWithoutGpx(data))
     },
   })

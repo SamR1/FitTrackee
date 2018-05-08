@@ -207,7 +207,7 @@ def post_activity_no_gpx(auth_user_id):
             user_id=auth_user_id,
             sport_id=activity_data.get('sport_id'),
             activity_date=datetime.strptime(
-                activity_data.get('activity_date'), '%Y-%m-%d'),
+                activity_data.get('activity_date'), '%Y-%m-%d %H:%M'),
             duration=timedelta(seconds=activity_data.get('duration'))
         )
         new_activity.moving = new_activity.duration

@@ -270,7 +270,7 @@ def test_add_an_activity_no_gpx(app):
         data=json.dumps(dict(
             sport_id=1,
             duration=3600,
-            activity_date='2018-05-15',
+            activity_date='2018-05-15 14:05',
             distance=10
         )),
         headers=dict(
@@ -285,7 +285,7 @@ def test_add_an_activity_no_gpx(app):
     assert 'created' in data['status']
     assert len(data['data']['activities']) == 1
     assert 'creation_date' in data['data']['activities'][0]
-    assert data['data']['activities'][0]['activity_date'] == 'Tue, 15 May 2018 00:00:00 GMT'  # noqa
+    assert data['data']['activities'][0]['activity_date'] == 'Tue, 15 May 2018 14:05:00 GMT'  # noqa
     assert data['data']['activities'][0]['user_id'] == 1
     assert data['data']['activities'][0]['sport_id'] == 1
     assert data['data']['activities'][0]['duration'] == '1:00:00'
