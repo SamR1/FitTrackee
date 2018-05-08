@@ -429,7 +429,7 @@ def test_user_profile_valid_update(app):
             last_name='Doe',
             location='Somewhere',
             bio='just a random guy',
-            birth_date='01/01/1980'
+            birth_date='1980-01-01'
         )),
         headers=dict(
             Authorization='Bearer ' + json.loads(

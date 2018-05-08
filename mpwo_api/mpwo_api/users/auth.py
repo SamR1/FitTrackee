@@ -207,7 +207,7 @@ def edit_user(user_id):
         user.bio = bio
         user.location = location
         user.birth_date = (
-            datetime.datetime.strptime(birth_date, '%d/%m/%Y')
+            datetime.datetime.strptime(birth_date, '%Y-%m-%d')
             if birth_date
             else None
         )
