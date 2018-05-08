@@ -37,6 +37,6 @@ test('standard user should be add a workout (w/o gpx)', async t => {
   await t
     .expect(Selector('H1').withText('Dashboard').exists).notOk()
     .expect(Selector('H1').withText('Activity').exists).ok()
-    .expect(Selector('.card-header').withText('Cycling (Sport)').exists).ok()
+
 })
 
