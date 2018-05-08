@@ -11,7 +11,7 @@ export const addActivity = form => dispatch => mpwoApi
   .addActivity(form)
   .then(ret => {
     if (ret.status === 'created') {
-      history.push('/')
+      history.push(`/activities/${ret.data.activities[0].id}`)
     } else {
       dispatch(setError(`activities: ${ret.message}`))
     }
@@ -23,7 +23,7 @@ export const addActivityWithoutGpx = form => dispatch => mpwoApi
   .addActivityWithoutGpx(form)
   .then(ret => {
     if (ret.status === 'created') {
-      history.push('/')
+      history.push(`/activities/${ret.data.activities[0].id}`)
     } else {
       dispatch(setError(`activities: ${ret.message}`))
     }
