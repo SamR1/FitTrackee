@@ -76,5 +76,6 @@ class Activity(db.Model):
             "descent": float(self.descent) if self.descent else None,
             "ascent": float(self.ascent) if self.ascent else None,
             "max_speed": float(self.max_speed) if self.max_speed else None,
-            "ave_speed": float(self.ave_speed) if self.ave_speed else None
+            "ave_speed": float(self.ave_speed) if self.ave_speed else None,
+            "with_gpx": self.gpx is not None
         }

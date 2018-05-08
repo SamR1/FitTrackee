@@ -55,12 +55,14 @@ def test_get_all_activities_for_authenticated_user(app):
     assert 1 == data['data']['activities'][0]['user_id']
     assert 2 == data['data']['activities'][0]['sport_id']
     assert '0:17:04' == data['data']['activities'][0]['duration']
+    assert data['data']['activities'][0]['with_gpx'] is False
 
     assert 'creation_date' in data['data']['activities'][1]
     assert 'Sun, 01 Apr 2018 00:00:00 GMT' == data['data']['activities'][1]['activity_date']  # noqa
     assert 1 == data['data']['activities'][1]['user_id']
     assert 1 == data['data']['activities'][1]['sport_id']
     assert '1:40:00' == data['data']['activities'][1]['duration']
+    assert data['data']['activities'][0]['with_gpx'] is False
 
 
 def test_get_activities_for_authenticated_user_no_activity(app):
@@ -133,6 +135,22 @@ def test_add_an_activity_gpx(app):
 
     assert response.status_code == 201
     assert 'created' in data['status']
+    assert len(data['data']['activities']) == 1
+    assert 'creation_date' in data['data']['activities'][0]
+    assert 'Tue, 13 Mar 2018 12:44:45 GMT' == data['data']['activities'][0]['activity_date']  # noqa
+    assert 1 == data['data']['activities'][0]['user_id']
+    assert 1 == data['data']['activities'][0]['sport_id']
+    assert '0:04:10' == data['data']['activities'][0]['duration']
+    assert data['data']['activities'][0]['ascent'] == 0.4
+    assert data['data']['activities'][0]['ave_speed'] == 4.6
+    assert data['data']['activities'][0]['descent'] == 23.4
+    assert data['data']['activities'][0]['distance'] == 0.32
+    assert data['data']['activities'][0]['max_alt'] == 998.0
+    assert data['data']['activities'][0]['max_speed'] == 5.09
+    assert data['data']['activities'][0]['min_alt'] == 975.0
+    assert data['data']['activities'][0]['moving'] == '0:04:10'
+    assert data['data']['activities'][0]['pauses'] is None
+    assert data['data']['activities'][0]['with_gpx'] is True
 
 
 def test_add_an_activity_gpx_invalid_file(app):
@@ -252,7 +270,7 @@ def test_add_an_activity_no_gpx(app):
         data=json.dumps(dict(
             sport_id=1,
             duration=3600,
-            activity_date='15/05/2018',
+            activity_date='2018-05-15',
             distance=10
         )),
         headers=dict(
@@ -280,6 +298,7 @@ def test_add_an_activity_no_gpx(app):
     assert data['data']['activities'][0]['min_alt'] is None
     assert data['data']['activities'][0]['moving'] == '1:00:00'
     assert data['data']['activities'][0]['pauses'] is None
+    assert data['data']['activities'][0]['with_gpx'] is False
 
 
 def test_add_an_activity_no_gpx_invalid_payload(app):
@@ -396,6 +415,7 @@ def test_get_an_activity_without_gpx(app):
     assert data['data']['activities'][0]['min_alt'] is None
     assert data['data']['activities'][0]['moving'] is None
     assert data['data']['activities'][0]['pauses'] is None
+    assert data['data']['activities'][0]['with_gpx'] is False
 
 
 def test_get_an_activity_with_gpx(app):
@@ -452,3 +472,4 @@ def test_get_an_activity_with_gpx(app):
     assert data['data']['activities'][0]['min_alt'] == 975.0
     assert data['data']['activities'][0]['moving'] == '0:04:10'
     assert data['data']['activities'][0]['pauses'] is None
+    assert data['data']['activities'][0]['with_gpx'] is True

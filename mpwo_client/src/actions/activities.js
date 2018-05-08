@@ -19,6 +19,18 @@ export const addActivity = form => dispatch => mpwoApi
   .catch(error => dispatch(setError(`activities: ${error}`)))
 
 
+export const addActivityWithoutGpx = form => dispatch => mpwoApi
+  .addActivityWithoutGpx(form)
+  .then(ret => {
+    if (ret.status === 'created') {
+      history.push('/')
+    } else {
+      dispatch(setError(`activities: ${ret.message}`))
+    }
+  })
+  .catch(error => dispatch(setError(`activities: ${error}`)))
+
+
 export const getActivityGpx = activityId => dispatch => {
   if (activityId) {
     return mpwoApi

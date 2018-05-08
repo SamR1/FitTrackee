@@ -43,7 +43,8 @@ class ActivityDisplay extends React.Component {
                   <p>
                     <i className="fa fa-clock-o" aria-hidden="true" />{' '}
                     Duration: {activity.duration} {' '}
-                    {activity.pauses !== '0:00:00' && (
+                    {activity.pauses !== '0:00:00' &&
+                     activity.pauses !== null && (
                         `(pauses: ${activity.pauses})`
                     )}
                   </p>
@@ -56,14 +57,18 @@ class ActivityDisplay extends React.Component {
                     Average speed: {activity.ave_speed} km/h -{' '}
                     Max speed : {activity.max_speed} km/h
                   </p>
+                  {activity.min_alt && activity.max_alt && (
                   <p><i className="fi-mountains" />{' '}
                     Min altitude: {activity.min_alt}m -{' '}
                     Max altitude: {activity.max_alt}m
                   </p>
+                  )}
+                  {activity.ascent && activity.descent && (
                   <p><i className="fa fa-location-arrow" />{' '}
                     Ascent: {activity.ascent}m -{' '}
                     Descent: {activity.descent}m
                   </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -73,7 +78,11 @@ class ActivityDisplay extends React.Component {
                   Map
                 </div>
                 <div className="card-body">
-                  <ActivityMap activity={activity} />
+                  {activity.with_gpx ? (
+                    <ActivityMap activity={activity} />
+                  ) : (
+                    'No map'
+                  )}
                 </div>
               </div>
             </div>
