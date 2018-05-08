@@ -103,7 +103,7 @@ def test_get_activities_for_authenticated_user_no_activity(app):
     assert len(data['data']['activities']) == 0
 
 
-def test_add_an_activity(app):
+def test_add_an_activity_gpx(app):
     add_user('test', 'test@test.com', '12345678')
     add_sport('cycling')
 
@@ -135,7 +135,7 @@ def test_add_an_activity(app):
     assert 'created' in data['status']
 
 
-def test_add_an_activity_invalid_file(app):
+def test_add_an_activity_gpx_invalid_file(app):
     add_user('test', 'test@test.com', '12345678')
     add_sport('cycling')
 
@@ -168,7 +168,7 @@ def test_add_an_activity_invalid_file(app):
     assert data['message'] == 'File extension not allowed.'
 
 
-def test_add_an_activity_no_sport_id(app):
+def test_add_an_activity_gpx_no_sport_id(app):
     add_user('test', 'test@test.com', '12345678')
     add_sport('cycling')
 
@@ -201,7 +201,7 @@ def test_add_an_activity_no_sport_id(app):
     assert data['message'] == 'Invalid payload.'
 
 
-def test_add_an_activity_no_file(app):
+def test_add_an_activity_gpx_no_file(app):
     add_user('test', 'test@test.com', '12345678')
     add_sport('cycling')
 
@@ -231,6 +231,124 @@ def test_add_an_activity_no_file(app):
     assert response.status_code == 400
     assert data['status'] == 'fail'
     assert data['message'] == 'No file part.'
+
+
+def test_add_an_activity_no_gpx(app):
+    add_user('test', 'test@test.com', '12345678')
+    add_sport('cycling')
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.post(
+        '/api/activities/no_gpx',
+        content_type='application/json',
+        data=json.dumps(dict(
+            sport_id=1,
+            duration=3600,
+            activity_date='15/05/2018',
+            distance=10
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 201
+    assert 'created' in data['status']
+    assert len(data['data']['activities']) == 1
+    assert 'creation_date' in data['data']['activities'][0]
+    assert data['data']['activities'][0]['activity_date'] == 'Tue, 15 May 2018 00:00:00 GMT'  # noqa
+    assert data['data']['activities'][0]['user_id'] == 1
+    assert data['data']['activities'][0]['sport_id'] == 1
+    assert data['data']['activities'][0]['duration'] == '1:00:00'
+    assert data['data']['activities'][0]['ascent'] is None
+    assert data['data']['activities'][0]['ave_speed'] == 10.0
+    assert data['data']['activities'][0]['descent'] is None
+    assert data['data']['activities'][0]['distance'] == 10.0
+    assert data['data']['activities'][0]['max_alt'] is None
+    assert data['data']['activities'][0]['max_speed'] == 10.0
+    assert data['data']['activities'][0]['min_alt'] is None
+    assert data['data']['activities'][0]['moving'] == '1:00:00'
+    assert data['data']['activities'][0]['pauses'] is None
+
+
+def test_add_an_activity_no_gpx_invalid_payload(app):
+    add_user('test', 'test@test.com', '12345678')
+    add_sport('cycling')
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.post(
+        '/api/activities/no_gpx',
+        content_type='application/json',
+        data=json.dumps(dict(
+            sport_id=1,
+            duration=3600,
+            distance=10
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 400
+    assert 'error' in data['status']
+    assert 'Invalid payload.' in data['message']
+
+
+def test_add_an_activity_no_gpx_error(app):
+    add_user('test', 'test@test.com', '12345678')
+    add_sport('cycling')
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.post(
+        '/api/activities/no_gpx',
+        content_type='application/json',
+        data=json.dumps(dict(
+            sport_id=1,
+            duration=3600,
+            activity_date='15/2018',
+            distance=10
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 500
+    assert 'fail' in data['status']
+    assert 'Error during activity save.' in data['message']
 
 
 def test_get_an_activity_without_gpx(app):

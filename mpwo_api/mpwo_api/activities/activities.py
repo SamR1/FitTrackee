@@ -1,6 +1,6 @@
 import json
 import os
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from flask import Blueprint, current_app, jsonify, request
 from mpwo_api import appLog, db
@@ -166,6 +166,55 @@ def post_activity(auth_user_id):
         new_activity.ascent = gpx_data['uphill']
         new_activity.max_speed = gpx_data['max_speed']
         new_activity.ave_speed = gpx_data['average_speed']
+        db.session.add(new_activity)
+        db.session.commit()
+
+        response_object = {
+            'status': 'created',
+            'data': {
+                'activities': [new_activity.serialize()]
+            }
+        }
+        return jsonify(response_object), 201
+
+    except (exc.IntegrityError, ValueError) as e:
+        db.session.rollback()
+        appLog.error(e)
+        response_object = {
+            'status': 'fail',
+            'message': 'Error during activity save.'
+        }
+        return jsonify(response_object), 500
+
+
+@activities_blueprint.route('/activities/no_gpx', methods=['POST'])
+@authenticate
+def post_activity_no_gpx(auth_user_id):
+    """Post an activity without gpx file"""
+    activity_data = request.get_json()
+    if not activity_data or activity_data.get('sport_id') is None \
+            or activity_data.get('duration') is None \
+            or activity_data.get('distance') is None \
+            or activity_data.get('activity_date') is None:
+        response_object = {
+            'status': 'error',
+            'message': 'Invalid payload.'
+        }
+        return jsonify(response_object), 400
+
+    try:
+        new_activity = Activity(
+            user_id=auth_user_id,
+            sport_id=activity_data.get('sport_id'),
+            activity_date=datetime.strptime(
+                activity_data.get('activity_date'), '%d/%m/%Y'),
+            duration=timedelta(seconds=activity_data.get('duration'))
+        )
+        new_activity.moving = new_activity.duration
+        new_activity.distance = activity_data.get('distance')
+        new_activity.ave_speed = new_activity.distance / (
+            new_activity.duration.seconds / 3600)
+        new_activity.max_speed = new_activity.ave_speed
         db.session.add(new_activity)
         db.session.commit()
 
