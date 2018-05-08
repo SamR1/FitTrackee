@@ -17,8 +17,8 @@ activities_blueprint = Blueprint('activities', __name__)
 @activities_blueprint.route('/activities', methods=['GET'])
 @authenticate
 def get_activities(auth_user_id):
-    """Get all activities"""
-    activities = Activity.query.all()
+    """Get all activities for authenticated user"""
+    activities = Activity.query.filter_by(user_id=auth_user_id).all()
     activities_list = []
     for activity in activities:
         activities_list.append(activity.serialize())
