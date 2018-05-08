@@ -2,9 +2,8 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 
-import { addActivity } from '../../actions/activities'
+import FormWithGpx from './ActivityForms/FormWithGpx'
 import { getData } from '../../actions/index'
-import { history } from '../../index'
 
 
 class AddActivity extends React.Component {
@@ -13,8 +12,7 @@ class AddActivity extends React.Component {
   }
 
   render() {
-    const { message, onAddSport, sports } = this.props
-
+    const { message, sports } = this.props
     return (
       <div>
         <Helmet>
@@ -34,53 +32,7 @@ class AddActivity extends React.Component {
                   Add a sport
                 </h2>
                 <div className="card-body">
-                  <form
-                    encType="multipart/form-data"
-                    method="post"
-                    onSubmit={event => event.preventDefault()}
-                  >
-                    <div className="form-group">
-                      <label>
-                        Sport:
-                        <select
-                          className="form-control input-lg"
-                          name="sport"
-                          required
-                        >
-                          <option value="" />
-                          {sports.map(sport => (
-                            <option key={sport.id} value={sport.id}>
-                              {sport.label}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-                    </div>
-                    <div className="form-group">
-                      <label>
-                        GPX file:
-                        <input
-                          accept=".gpx"
-                          className="form-control input-lg"
-                          name="gpxFile"
-                          required
-                          type="file"
-                        />
-                      </label>
-                    </div>
-                    <input
-                      type="submit"
-                      className="btn btn-primary btn-lg btn-block"
-                      onClick={event => onAddSport(event)}
-                      value="Submit"
-                    />
-                    <input
-                      type="submit"
-                      className="btn btn-secondary btn-lg btn-block"
-                      onClick={() => history.go(-1)}
-                      value="Cancel"
-                    />
-                  </form>
+                  <FormWithGpx sports={sports} />
                 </div>
               </div>
             </div>
@@ -101,14 +53,6 @@ export default connect(
   dispatch => ({
     loadSports: () => {
       dispatch(getData('sports'))
-    },
-    onAddSport: event => {
-      const form = new FormData()
-      form.append('file', event.target.form.gpxFile.files[0])
-      form.append(
-        'data', `{"sport_id": ${event.target.form.sport.value}}`
-      )
-      dispatch(addActivity(form))
     },
   })
 )(AddActivity)
