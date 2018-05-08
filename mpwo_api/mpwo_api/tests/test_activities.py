@@ -3,27 +3,7 @@ import json
 from io import BytesIO
 
 from mpwo_api.tests.utils import add_activity, add_sport, add_user
-
-gpx_file = (
-    '<?xml version=\'1.0\' encoding=\'UTF-8\'?>'
-    '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
-    '  <metadata/>'
-    '  <trk>'
-    '    <trkseg>'
-    '      <trkpt lat="77.2261324" lon="-42.1223054">'
-    '        <time>2015-09-20T13:48:44+00:00</time>'
-    '      </trkpt>'
-    '      <trkpt lat="77.2261324" lon="-42.1223054">'
-    '        <time>2015-09-20T13:48:46+00:00</time>'
-    '        <ele>223.28399658203125</ele>'
-    '      </trkpt>'
-    '      <trkpt lat="77.2261324" lon="-42.1223054">'
-    '        <time>2015-09-20T13:48:46+00:00</time>'
-    '      </trkpt>'
-    '    </trkseg>'
-    '  </trk>'
-    '</gpx>'
-)
+from mpwo_api.tests.utils_gpx import gpx_file
 
 
 def test_get_all_activities_for_authenticated_user(app):
@@ -289,6 +269,15 @@ def test_get_an_activity_without_gpx(app):
     assert 1 == data['data']['activities'][0]['user_id']
     assert 1 == data['data']['activities'][0]['sport_id']
     assert '0:17:04' == data['data']['activities'][0]['duration']
+    assert data['data']['activities'][0]['ascent'] is None
+    assert data['data']['activities'][0]['ave_speed'] is None
+    assert data['data']['activities'][0]['descent'] is None
+    assert data['data']['activities'][0]['distance'] is None
+    assert data['data']['activities'][0]['max_alt'] is None
+    assert data['data']['activities'][0]['max_speed'] is None
+    assert data['data']['activities'][0]['min_alt'] is None
+    assert data['data']['activities'][0]['moving'] is None
+    assert data['data']['activities'][0]['pauses'] is None
 
 
 def test_get_an_activity_with_gpx(app):
@@ -332,7 +321,16 @@ def test_get_an_activity_with_gpx(app):
     assert 'success' in data['status']
     assert len(data['data']['activities']) == 1
     assert 'creation_date' in data['data']['activities'][0]
-    assert 'Sun, 20 Sep 2015 13:48:44 GMT' == data['data']['activities'][0]['activity_date']  # noqa
+    assert 'Tue, 13 Mar 2018 12:44:45 GMT' == data['data']['activities'][0]['activity_date']  # noqa
     assert 1 == data['data']['activities'][0]['user_id']
     assert 1 == data['data']['activities'][0]['sport_id']
-    assert '0:00:02' == data['data']['activities'][0]['duration']
+    assert '0:04:10' == data['data']['activities'][0]['duration']
+    assert data['data']['activities'][0]['ascent'] == 0.4
+    assert data['data']['activities'][0]['ave_speed'] == 4.6
+    assert data['data']['activities'][0]['descent'] == 23.4
+    assert data['data']['activities'][0]['distance'] == 0.32
+    assert data['data']['activities'][0]['max_alt'] == 998.0
+    assert data['data']['activities'][0]['max_speed'] == 5.09
+    assert data['data']['activities'][0]['min_alt'] == 975.0
+    assert data['data']['activities'][0]['moving'] == '0:04:10'
+    assert data['data']['activities'][0]['pauses'] is None
