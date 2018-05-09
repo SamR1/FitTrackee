@@ -1,6 +1,7 @@
+import datetime
 import json
 
-from mpwo_api.tests.utils import add_admin, add_sport, add_user
+from mpwo_api.tests.utils import add_activity, add_admin, add_sport, add_user
 
 
 def test_get_all_sports(app):
@@ -249,3 +250,39 @@ def test_delete_a_sport_not_admin(app):
     assert response.status_code == 401
     assert 'error' in data['status']
     assert 'You do not have permissions.' in data['message']
+
+
+def test_delete_a_sport_with_an_activity(app):
+    add_admin()
+    add_sport('cycling')
+    add_activity(
+        1,
+        1,
+        datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
+        datetime.timedelta(seconds=1024)
+    )
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='admin@example.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.delete(
+        '/api/sports/1',
+        content_type='application/json',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 500
+    assert 'error' in data['status']
+    assert 'Error. Associated activities exist.' in data['message']

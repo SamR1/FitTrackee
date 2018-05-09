@@ -157,7 +157,15 @@ def delete_sport(auth_user_id, sport_id):
                 }
             }
             code = 404
-    except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
+    except exc.IntegrityError as e:
+        db.session.rollback()
+        appLog.error(e)
+        response_object = {
+            'status': 'error',
+            'message': 'Error. Associated activities exist.'
+        }
+        code = 500
+    except (exc.OperationalError, ValueError) as e:
         db.session.rollback()
         appLog.error(e)
         response_object = {
