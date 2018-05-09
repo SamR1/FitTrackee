@@ -45,8 +45,9 @@ class AdminDetail extends React.Component {
                   <form onSubmit={event =>
                    event.preventDefault()}
                   >
-                    { results.map(result => (
-                      Object.keys(result).map(key => (
+                    { Object.keys(results[0])
+                        .filter(key => key.charAt(0) !== '_')
+                        .map(key => (
                         <div className="form-group" key={key}>
                           <label>
                             {key}:
@@ -54,12 +55,12 @@ class AdminDetail extends React.Component {
                               className="form-control input-lg"
                               name={key}
                               readOnly={key === 'id' || !isInEdition}
-                              defaultValue={result[key]}
+                              defaultValue={results[0][key]}
                             />
                           </label>
                         </div>
                       ))
-                    ))}
+                    }
                     {isInEdition ? (
                       <div>
                         <input
@@ -93,7 +94,11 @@ class AdminDetail extends React.Component {
                         <input
                           type="submit"
                           className="btn btn-danger btn-lg btn-block"
+                          disabled={!results[0]._can_be_deleted}
                           onClick={event => onDataDelete(event, target)}
+                          title={results[0]._can_be_deleted
+                            ? ''
+                            : 'Can\'t be deleted, associated data exist'}
                           value="Delete"
                         />
                         <input

@@ -20,7 +20,8 @@ class Sport(db.Model):
     def serialize(self):
         return {
             'id': self.id,
-            'label': self.label
+            'label': self.label,
+            '_can_be_deleted': len(self.activities) == 0
         }
 
 

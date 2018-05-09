@@ -11,7 +11,9 @@ export default function AdminPage(props) {
   const results = data.data
   const tbKeys = []
   if (results.length > 0) {
-    Object.keys(results[0]).map(key => tbKeys.push(key))
+    Object.keys(results[0])
+      .filter(key => key.charAt(0) !== '_')
+      .map(key => tbKeys.push(key))
   }
   const title = target.charAt(0).toUpperCase() + target.slice(1)
 
@@ -43,7 +45,9 @@ export default function AdminPage(props) {
                     { results.map((result, idx) => (
                       // eslint-disable-next-line react/no-array-index-key
                       <tr key={idx}>
-                        { Object.keys(result).map(key => {
+                        { Object.keys(result)
+                          .filter(key => key.charAt(0) !== '_')
+                          .map(key => {
                           if (key === 'id') {
                             return (
                               <th key={key} scope="row">
