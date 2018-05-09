@@ -16,6 +16,19 @@ def is_valid_email(email):
     return re.match(mail_pattern, email) is not None
 
 
+def register_controls(username, email, password, password_conf):
+    ret = ''
+    if not 2 < len(username) < 13:
+        ret += 'Username: 3 to 12 characters required.\n'
+    if not is_valid_email(email):
+        ret += 'Valid email must be provided.\n'
+    if password != password_conf:
+        ret += 'Password and password confirmation don\'t match.\n'
+    if len(password) < 8:
+        ret += 'Password: 8 characters required.\n'
+    return ret
+
+
 def verify_extension(file_type, req):
     response_object = {'status': 'success'}
 
@@ -45,26 +58,37 @@ def verify_extension(file_type, req):
     return response_object
 
 
+def verify_user(current_request, verify_admin):
+    response_object = {
+        'status': 'error',
+        'message': 'Something went wrong. Please contact us.'
+    }
+    code = 401
+    auth_header = current_request.headers.get('Authorization')
+    if not auth_header:
+        response_object['message'] = 'Provide a valid auth token.'
+        code = 403
+        return response_object, code, None
+    auth_token = auth_header.split(" ")[1]
+    resp = User.decode_auth_token(auth_token)
+    if isinstance(resp, str):
+        response_object['message'] = resp
+        return response_object, code, None
+    user = User.query.filter_by(id=resp).first()
+    if not user:
+        return response_object, code, None
+    if verify_admin and not is_admin(resp):
+        response_object['message'] = 'You do not have permissions.'
+        return response_object, code, None
+    return None, None, resp
+
+
 def authenticate(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        response_object = {
-            'status': 'error',
-            'message': 'Something went wrong. Please contact us.'
-        }
-        code = 401
-        auth_header = request.headers.get('Authorization')
-        if not auth_header:
-            response_object['message'] = 'Provide a valid auth token.'
-            code = 403
-            return jsonify(response_object), code
-        auth_token = auth_header.split(" ")[1]
-        resp = User.decode_auth_token(auth_token)
-        if isinstance(resp, str):
-            response_object['message'] = resp
-            return jsonify(response_object), code
-        user = User.query.filter_by(id=resp).first()
-        if not user:
+        verify_admin = False
+        response_object, code, resp = verify_user(request, verify_admin)
+        if response_object:
             return jsonify(response_object), code
         return f(resp, *args, **kwargs)
 
@@ -74,40 +98,10 @@ def authenticate(f):
 def authenticate_as_admin(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        response_object = {
-            'status': 'error',
-            'message': 'Something went wrong. Please contact us.'
-        }
-        code = 401
-        auth_header = request.headers.get('Authorization')
-        if not auth_header:
-            response_object['message'] = 'Provide a valid auth token.'
-            code = 403
-            return jsonify(response_object), code
-        auth_token = auth_header.split(" ")[1]
-        resp = User.decode_auth_token(auth_token)
-        if isinstance(resp, str):
-            response_object['message'] = resp
-            return jsonify(response_object), code
-        user = User.query.filter_by(id=resp).first()
-        if not user:
-            return jsonify(response_object), code
-        if not is_admin(resp):
-            response_object['message'] = 'You do not have permissions.'
+        verify_admin = True
+        response_object, code, resp = verify_user(request, verify_admin)
+        if response_object:
             return jsonify(response_object), code
         return f(resp, *args, **kwargs)
 
     return decorated_function
-
-
-def register_controls(username, email, password, password_conf):
-    ret = ''
-    if not 2 < len(username) < 13:
-        ret += 'Username: 3 to 12 characters required.\n'
-    if not is_valid_email(email):
-        ret += 'Valid email must be provided.\n'
-    if password != password_conf:
-        ret += 'Password and password confirmation don\'t match.\n'
-    if len(password) < 8:
-        ret += 'Password: 8 characters required.\n'
-    return ret
