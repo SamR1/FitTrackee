@@ -1,4 +1,47 @@
+import os
+from datetime import datetime, timedelta
+
 import gpxpy.gpx
+from flask import current_app
+from werkzeug.utils import secure_filename
+
+from .models import Activity
+
+
+def create_activity_with_gpx(auth_user_id, gpx_data, file_path, sport_id):
+    new_activity = Activity(
+        user_id=auth_user_id,
+        sport_id=sport_id,
+        activity_date=gpx_data['start'],
+        duration=timedelta(seconds=gpx_data['duration'])
+    )
+    new_activity.gpx = file_path
+    new_activity.pauses = timedelta(seconds=gpx_data['stop_time'])
+    new_activity.moving = timedelta(seconds=gpx_data['moving_time'])
+    new_activity.distance = gpx_data['distance']
+    new_activity.min_alt = gpx_data['elevation_min']
+    new_activity.max_alt = gpx_data['elevation_max']
+    new_activity.descent = gpx_data['downhill']
+    new_activity.ascent = gpx_data['uphill']
+    new_activity.max_speed = gpx_data['max_speed']
+    new_activity.ave_speed = gpx_data['average_speed']
+    return new_activity
+
+
+def create_activity_wo_gpx(auth_user_id, activity_data):
+    new_activity = Activity(
+        user_id=auth_user_id,
+        sport_id=activity_data.get('sport_id'),
+        activity_date=datetime.strptime(
+            activity_data.get('activity_date'), '%Y-%m-%d %H:%M'),
+        duration=timedelta(seconds=activity_data.get('duration'))
+    )
+    new_activity.moving = new_activity.duration
+    new_activity.distance = activity_data.get('distance')
+    new_activity.ave_speed = new_activity.distance / (
+        new_activity.duration.seconds / 3600)
+    new_activity.max_speed = new_activity.ave_speed
+    return new_activity
 
 
 def get_gpx_info(gpx_file):
@@ -47,3 +90,13 @@ def get_gpx_info(gpx_file):
     gpx_data['average_speed'] = (average_speed / 1000) * 3600
 
     return gpx_data
+
+
+def get_file_path(auth_user_id, activity_file):
+    filename = secure_filename(activity_file.filename)
+    dir_path = os.path.join(
+        current_app.config['UPLOAD_FOLDER'], 'activities', str(auth_user_id))
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
+    file_path = os.path.join(dir_path, filename)
+    return file_path
