@@ -140,7 +140,6 @@ def update_sport(auth_user_id, sport_id):
 @authenticate_as_admin
 def delete_sport(auth_user_id, sport_id):
     """Delete a sport"""
-    sports_list = []
     try:
         sport = Sport.query.filter_by(id=sport_id).first()
         if sport:
@@ -154,7 +153,7 @@ def delete_sport(auth_user_id, sport_id):
             response_object = {
                 'status': 'not found',
                 'data': {
-                    'sports': sports_list
+                    'sports': []
                 }
             }
             code = 404

@@ -1,4 +1,5 @@
 import json
+import os
 
 from flask import Blueprint, jsonify, request
 from mpwo_api import appLog, db
@@ -57,8 +58,7 @@ def get_activity(auth_user_id, activity_id):
 
 
 @activities_blueprint.route(
-    '/activities/<int:activity_id>/gpx',
-    methods=['GET']
+    '/activities/<int:activity_id>/gpx', methods=['GET']
 )
 @authenticate
 def get_activity_gpx(auth_user_id, activity_id):
@@ -196,3 +196,43 @@ def post_activity_no_gpx(auth_user_id):
             'message': 'Error during activity save.'
         }
         return jsonify(response_object), 500
+
+
+@activities_blueprint.route(
+    '/activities/<int:activity_id>', methods=['DELETE']
+)
+@authenticate
+def delete_activity(auth_user_id, activity_id):
+    """Delete an activity"""
+    try:
+        activity = Activity.query.filter_by(id=activity_id).first()
+        if activity:
+            gpx_filepath = activity.gpx
+            db.session.delete(activity)
+            db.session.commit()
+
+            if gpx_filepath:
+                os.remove(gpx_filepath)
+
+            response_object = {
+                'status': 'no content'
+            }
+            code = 204
+        else:
+            response_object = {
+                'status': 'not found',
+                'data': {
+                    'activities': []
+                }
+            }
+            code = 404
+    except (exc.IntegrityError, exc.OperationalError, ValueError, OSError) \
+            as e:
+        db.session.rollback()
+        appLog.error(e)
+        response_object = {
+            'status': 'error',
+            'message': 'Error. Please try again or contact the administrator.'
+        }
+        code = 500
+    return jsonify(response_object), code

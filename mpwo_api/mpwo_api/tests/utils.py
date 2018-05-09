@@ -52,3 +52,8 @@ def add_activity(user_id, sport_id, activity_date, duration):
     db.session.add(activity)
     db.session.commit()
     return activity
+
+
+def get_gpx_filepath(activity_id):
+    activity = Activity.query.filter_by(id=activity_id).first()
+    return activity.gpx
