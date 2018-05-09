@@ -51,18 +51,18 @@ def test_get_all_activities_for_authenticated_user(app):
     assert len(data['data']['activities']) == 2
 
     assert 'creation_date' in data['data']['activities'][0]
-    assert 'Mon, 01 Jan 2018 00:00:00 GMT' == data['data']['activities'][0]['activity_date']  # noqa
+    assert 'Sun, 01 Apr 2018 00:00:00 GMT' == data['data']['activities'][0]['activity_date']  # noqa
     assert 1 == data['data']['activities'][0]['user_id']
-    assert 2 == data['data']['activities'][0]['sport_id']
-    assert '0:17:04' == data['data']['activities'][0]['duration']
+    assert 1 == data['data']['activities'][0]['sport_id']
+    assert '1:40:00' == data['data']['activities'][0]['duration']
     assert data['data']['activities'][0]['with_gpx'] is False
 
     assert 'creation_date' in data['data']['activities'][1]
-    assert 'Sun, 01 Apr 2018 00:00:00 GMT' == data['data']['activities'][1]['activity_date']  # noqa
+    assert 'Mon, 01 Jan 2018 00:00:00 GMT' == data['data']['activities'][1]['activity_date']  # noqa
     assert 1 == data['data']['activities'][1]['user_id']
-    assert 1 == data['data']['activities'][1]['sport_id']
-    assert '1:40:00' == data['data']['activities'][1]['duration']
-    assert data['data']['activities'][0]['with_gpx'] is False
+    assert 2 == data['data']['activities'][1]['sport_id']
+    assert '0:17:04' == data['data']['activities'][1]['duration']
+    assert data['data']['activities'][1]['with_gpx'] is False
 
 
 def test_get_activities_for_authenticated_user_no_activity(app):

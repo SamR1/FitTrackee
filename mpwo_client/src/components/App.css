@@ -57,6 +57,10 @@ input, textarea {
   text-align: center;
 }
 
+.activity-card {
+    margin-bottom: 15px;
+}
+
 .add-activity {
   margin-top: 50px;
 }

@@ -2,15 +2,43 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 
+import ActivityCard from './ActivityCard'
+import Statistics from './Statistics'
+import { getData } from '../../actions/index'
+
 class DashBoard extends React.Component {
-  componentDidMount() {}
+  componentDidMount() {
+    this.props.loadActivities()
+  }
+
   render() {
+    const { activities, sports } = this.props
     return (
       <div>
         <Helmet>
           <title>mpwo - Dashboard</title>
         </Helmet>
         <h1 className="page-title">Dashboard</h1>
+        <div className="container">
+          <div className="row">
+            <div className="col-md-6">
+              {activities.length > 0 ? (
+                activities.map(activity => (
+                  <ActivityCard
+                    activity={activity}
+                    key={activity.id}
+                    sports={sports}
+                  />
+                ))
+              ) : (
+                'No activities for now'
+              )}
+            </div>
+            <div className="col-md-6">
+              <Statistics />
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
@@ -18,6 +46,15 @@ class DashBoard extends React.Component {
 
 export default connect(
   state => ({
+    activities: state.activities.data,
+    message: state.message,
+    sports: state.sports.data,
     user: state.user,
+  }),
+  dispatch => ({
+    loadActivities: () => {
+      dispatch(getData('activities'))
+      dispatch(getData('sports'))
+    },
   })
 )(DashBoard)

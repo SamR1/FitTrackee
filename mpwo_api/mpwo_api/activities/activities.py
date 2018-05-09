@@ -18,7 +18,8 @@ activities_blueprint = Blueprint('activities', __name__)
 @authenticate
 def get_activities(auth_user_id):
     """Get all activities for authenticated user"""
-    activities = Activity.query.filter_by(user_id=auth_user_id).all()
+    activities = Activity.query.filter_by(user_id=auth_user_id)\
+        .order_by(Activity.activity_date.desc()).all()
     activities_list = []
     for activity in activities:
         activities_list.append(activity.serialize())
