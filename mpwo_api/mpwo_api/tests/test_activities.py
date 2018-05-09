@@ -478,6 +478,230 @@ def test_get_an_activity_with_gpx(app):
     assert data['data']['activities'][0]['with_gpx'] is True
 
 
+def test_edit_an_activity_wo_gpx(app):
+    add_user('test', 'test@test.com', '12345678')
+    add_sport('cycling')
+    add_activity(
+        1,
+        1,
+        datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
+        datetime.timedelta(seconds=1024))
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.patch(
+        '/api/activities/1',
+        content_type='application/json',
+        data=json.dumps(dict(
+            sport_id=1,
+            duration=3600,
+            activity_date='2018-05-15 14:05',
+            distance=10
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['activities']) == 1
+    assert 'creation_date' in data['data']['activities'][0]
+    assert data['data']['activities'][0]['activity_date'] == 'Tue, 15 May 2018 14:05:00 GMT'  # noqa
+    assert data['data']['activities'][0]['user_id'] == 1
+    assert data['data']['activities'][0]['sport_id'] == 1
+    assert data['data']['activities'][0]['duration'] == '1:00:00'
+    assert data['data']['activities'][0]['ascent'] is None
+    assert data['data']['activities'][0]['ave_speed'] == 10.0
+    assert data['data']['activities'][0]['descent'] is None
+    assert data['data']['activities'][0]['distance'] == 10.0
+    assert data['data']['activities'][0]['max_alt'] is None
+    assert data['data']['activities'][0]['max_speed'] == 10.0
+    assert data['data']['activities'][0]['min_alt'] is None
+    assert data['data']['activities'][0]['moving'] == '1:00:00'
+    assert data['data']['activities'][0]['pauses'] is None
+    assert data['data']['activities'][0]['with_gpx'] is False
+
+
+def test_edit_an_activity_with_gpx(app):
+    add_user('test', 'test@test.com', '12345678')
+    add_sport('cycling')
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    client.post(
+        '/api/activities',
+        data=dict(
+            file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+            data='{"sport_id": 1}'
+        ),
+        headers=dict(
+            content_type='multipart/form-data',
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    response = client.patch(
+        '/api/activities/1',
+        content_type='application/json',
+        data=json.dumps(dict(
+            sport_id=1,
+            duration=3600,
+            activity_date='2018-05-15 14:05',
+            distance=10
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 500
+    assert 'error' in data['status']
+    assert ('You can not modify an activity with gpx file. '
+            'Please delete and re-import the gpx file.') in data['message']
+
+
+def test_edit_an_activity_wo_gpx_invalid_payload(app):
+    add_user('test', 'test@test.com', '12345678')
+    add_sport('cycling')
+    add_activity(
+        1,
+        1,
+        datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
+        datetime.timedelta(seconds=1024))
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.patch(
+        '/api/activities/1',
+        content_type='application/json',
+        data=json.dumps(dict(
+            sport_id=1,
+            activity_date='2018-05-15 14:05',
+            distance=10
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 400
+    assert 'error' in data['status']
+    assert 'Invalid payload.' in data['message']
+
+
+def test_edit_an_activity_wo_gpx_incorrect_data(app):
+    add_user('test', 'test@test.com', '12345678')
+    add_sport('cycling')
+    add_activity(
+        1,
+        1,
+        datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
+        datetime.timedelta(seconds=1024))
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.patch(
+        '/api/activities/1',
+        content_type='application/json',
+        data=json.dumps(dict(
+            sport_id=1,
+            duration=3600,
+            activity_date='15/2018',
+            distance=10
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 500
+    assert 'error' in data['status']
+    assert 'Error. Please try again or contact the administrator.' \
+           in data['message']
+
+
+def test_edit_an_activity_no_activity(app):
+    add_user('test', 'test@test.com', '12345678')
+    add_sport('cycling')
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.patch(
+        '/api/activities/1',
+        content_type='application/json',
+        data=json.dumps(dict(
+            sport_id=1,
+            duration=3600,
+            activity_date='2018-05-15 14:05',
+            distance=10
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 404
+    assert 'not found' in data['status']
+    assert len(data['data']['activities']) == 0
+
+
 def test_delete_an_activity_with_gpx(app):
     add_user('test', 'test@test.com', '12345678')
     add_sport('cycling')

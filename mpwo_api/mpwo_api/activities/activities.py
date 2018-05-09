@@ -8,8 +8,8 @@ from sqlalchemy import exc
 from ..users.utils import authenticate, verify_extension
 from .models import Activity
 from .utils import (
-    create_activity_with_gpx, create_activity_wo_gpx, get_file_path,
-    get_gpx_info
+    create_activity_with_gpx, create_activity_wo_gpx, edit_activity_wo_gpx,
+    get_file_path, get_gpx_info
 )
 
 activities_blueprint = Blueprint('activities', __name__)
@@ -196,6 +196,61 @@ def post_activity_no_gpx(auth_user_id):
             'message': 'Error during activity save.'
         }
         return jsonify(response_object), 500
+
+
+@activities_blueprint.route('/activities/<int:activity_id>', methods=['PATCH'])
+@authenticate
+def update_activity(auth_user_id, activity_id):
+    """Update an activity"""
+    activity_data = request.get_json()
+    if not activity_data or activity_data.get('sport_id') is None \
+            or activity_data.get('duration') is None \
+            or activity_data.get('distance') is None \
+            or activity_data.get('activity_date') is None:
+        response_object = {
+            'status': 'error',
+            'message': 'Invalid payload.'
+        }
+        return jsonify(response_object), 400
+
+    try:
+        activity = Activity.query.filter_by(id=activity_id).first()
+        if activity:
+            if activity.gpx:
+                response_object = {
+                    'status': 'error',
+                    'message': 'You can not modify an activity with gpx file. '
+                               'Please delete and re-import the gpx file.'
+                }
+                code = 500
+                return jsonify(response_object), code
+
+            activity = edit_activity_wo_gpx(activity, activity_data)
+            db.session.commit()
+            response_object = {
+                'status': 'success',
+                'data': {
+                    'activities': [activity.serialize()]
+                }
+            }
+            code = 200
+        else:
+            response_object = {
+                'status': 'not found',
+                'data': {
+                    'activities': []
+                }
+            }
+            code = 404
+    except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
+        db.session.rollback()
+        appLog.error(e)
+        response_object = {
+            'status': 'error',
+            'message': 'Error. Please try again or contact the administrator.'
+        }
+        code = 500
+    return jsonify(response_object), code
 
 
 @activities_blueprint.route(

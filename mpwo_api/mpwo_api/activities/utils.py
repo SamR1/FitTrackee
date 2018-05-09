@@ -44,6 +44,19 @@ def create_activity_wo_gpx(auth_user_id, activity_data):
     return new_activity
 
 
+def edit_activity_wo_gpx(activity, activity_data):
+    activity.sport_id = activity_data.get('sport_id')
+    activity.activity_date = datetime.strptime(
+            activity_data.get('activity_date'), '%Y-%m-%d %H:%M')
+    activity.duration = timedelta(seconds=activity_data.get('duration'))
+    activity.moving = activity.duration
+    activity.distance = activity_data.get('distance')
+    activity.ave_speed = activity.distance / (
+        activity.duration.seconds / 3600)
+    activity.max_speed = activity.ave_speed
+    return activity
+
+
 def get_gpx_info(gpx_file):
 
     gpx_data = {'filename': gpx_file}
