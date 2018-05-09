@@ -14,6 +14,52 @@ from .utils import get_gpx_info
 activities_blueprint = Blueprint('activities', __name__)
 
 
+def create_activity_with_gpx(auth_user_id, gpx_data, file_path, sport_id):
+    new_activity = Activity(
+        user_id=auth_user_id,
+        sport_id=sport_id,
+        activity_date=gpx_data['start'],
+        duration=timedelta(seconds=gpx_data['duration'])
+    )
+    new_activity.gpx = file_path
+    new_activity.pauses = timedelta(seconds=gpx_data['stop_time'])
+    new_activity.moving = timedelta(seconds=gpx_data['moving_time'])
+    new_activity.distance = gpx_data['distance']
+    new_activity.min_alt = gpx_data['elevation_min']
+    new_activity.max_alt = gpx_data['elevation_max']
+    new_activity.descent = gpx_data['downhill']
+    new_activity.ascent = gpx_data['uphill']
+    new_activity.max_speed = gpx_data['max_speed']
+    new_activity.ave_speed = gpx_data['average_speed']
+    return new_activity
+
+
+def create_activity_wo_gpx(auth_user_id, activity_data):
+    new_activity = Activity(
+        user_id=auth_user_id,
+        sport_id=activity_data.get('sport_id'),
+        activity_date=datetime.strptime(
+            activity_data.get('activity_date'), '%Y-%m-%d %H:%M'),
+        duration=timedelta(seconds=activity_data.get('duration'))
+    )
+    new_activity.moving = new_activity.duration
+    new_activity.distance = activity_data.get('distance')
+    new_activity.ave_speed = new_activity.distance / (
+        new_activity.duration.seconds / 3600)
+    new_activity.max_speed = new_activity.ave_speed
+    return new_activity
+
+
+def get_file_path(auth_user_id, activity_file):
+    filename = secure_filename(activity_file.filename)
+    dir_path = os.path.join(
+        current_app.config['UPLOAD_FOLDER'], 'activities', str(auth_user_id))
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
+    file_path = os.path.join(dir_path, filename)
+    return file_path
+
+
 @activities_blueprint.route('/activities', methods=['GET'])
 @authenticate
 def get_activities(auth_user_id):
@@ -64,18 +110,6 @@ def get_activity(auth_user_id, activity_id):
 def get_activity_gpx(auth_user_id, activity_id):
     """Get gpx file for an activity"""
     activity = Activity.query.filter_by(id=activity_id).first()
-    gpx_content = ''
-
-    message = ''
-    code = 500
-    response_object = {
-        'status': 'error',
-        'message': 'internal error',
-        'data': {
-            'gpx': gpx_content
-        }
-    }
-
     if activity:
         if not activity.gpx or activity.gpx == '':
             response_object = {
@@ -84,19 +118,27 @@ def get_activity_gpx(auth_user_id, activity_id):
                     activity_id
                 )
             }
-            code = 400
-            return jsonify(response_object), code
+            return jsonify(response_object), 400
 
         try:
             with open(activity.gpx, encoding='utf-8') as f:
-                gpx_content = gpx_content + f.read()
+                gpx_content = f.read()
         except Exception as e:
             appLog.error(e)
-            return jsonify(response_object), code
+            response_object = {
+                'status': 'error',
+                'message': 'internal error',
+                'data': {
+                    'gpx': ''
+                }
+            }
+            return jsonify(response_object), 500
 
         status = 'success'
+        message = ''
         code = 200
     else:
+        gpx_content = ''
         status = 'not found'
         message = 'Activity not found (id: {})'.format(activity_id)
         code = 404
@@ -115,10 +157,9 @@ def get_activity_gpx(auth_user_id, activity_id):
 @authenticate
 def post_activity(auth_user_id):
     """Post an activity"""
-    code = 400
     response_object = verify_extension('activity', request)
     if response_object['status'] != 'success':
-        return jsonify(response_object), code
+        return jsonify(response_object), 400
 
     activity_data = json.loads(request.form["data"])
     if not activity_data or activity_data.get('sport_id') is None:
@@ -129,19 +170,11 @@ def post_activity(auth_user_id):
         return jsonify(response_object), 400
 
     activity_file = request.files['file']
-    filename = secure_filename(activity_file.filename)
-    dirpath = os.path.join(
-        current_app.config['UPLOAD_FOLDER'],
-        'activities',
-        str(auth_user_id)
-    )
-    if not os.path.exists(dirpath):
-        os.makedirs(dirpath)
-    filepath = os.path.join(dirpath, filename)
+    file_path = get_file_path(auth_user_id, activity_file)
 
     try:
-        activity_file.save(filepath)
-        gpx_data = get_gpx_info(filepath)
+        activity_file.save(file_path)
+        gpx_data = get_gpx_info(file_path)
     except Exception as e:
         appLog.error(e)
         response_object = {
@@ -151,25 +184,10 @@ def post_activity(auth_user_id):
         return jsonify(response_object), 500
 
     try:
-        new_activity = Activity(
-            user_id=auth_user_id,
-            sport_id=activity_data.get('sport_id'),
-            activity_date=gpx_data['start'],
-            duration=timedelta(seconds=gpx_data['duration'])
-        )
-        new_activity.gpx = filepath
-        new_activity.pauses = timedelta(seconds=gpx_data['stop_time'])
-        new_activity.moving = timedelta(seconds=gpx_data['moving_time'])
-        new_activity.distance = gpx_data['distance']
-        new_activity.min_alt = gpx_data['elevation_min']
-        new_activity.max_alt = gpx_data['elevation_max']
-        new_activity.descent = gpx_data['downhill']
-        new_activity.ascent = gpx_data['uphill']
-        new_activity.max_speed = gpx_data['max_speed']
-        new_activity.ave_speed = gpx_data['average_speed']
+        new_activity = create_activity_with_gpx(
+            auth_user_id, gpx_data, file_path, activity_data.get('sport_id'))
         db.session.add(new_activity)
         db.session.commit()
-
         response_object = {
             'status': 'created',
             'data': {
@@ -204,18 +222,7 @@ def post_activity_no_gpx(auth_user_id):
         return jsonify(response_object), 400
 
     try:
-        new_activity = Activity(
-            user_id=auth_user_id,
-            sport_id=activity_data.get('sport_id'),
-            activity_date=datetime.strptime(
-                activity_data.get('activity_date'), '%Y-%m-%d %H:%M'),
-            duration=timedelta(seconds=activity_data.get('duration'))
-        )
-        new_activity.moving = new_activity.duration
-        new_activity.distance = activity_data.get('distance')
-        new_activity.ave_speed = new_activity.distance / (
-            new_activity.duration.seconds / 3600)
-        new_activity.max_speed = new_activity.ave_speed
+        new_activity = create_activity_wo_gpx(auth_user_id, activity_data)
         db.session.add(new_activity)
         db.session.commit()
 
