@@ -17,6 +17,12 @@ class Sport(db.Model):
     def __init__(self, label):
         self.label = label
 
+    def serialize(self):
+        return {
+            'id': self.id,
+            'label': self.label
+        }
+
 
 class Activity(db.Model):
     __tablename__ = "activities"
