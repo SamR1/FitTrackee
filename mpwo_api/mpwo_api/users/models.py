@@ -76,3 +76,18 @@ class User(db.Model):
             return 'Signature expired. Please log in again.'
         except jwt.InvalidTokenError:
             return 'Invalid token. Please log in again.'
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email,
+            'created_at': self.created_at,
+            'admin': self.admin,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'bio': self.bio,
+            'location': self.location,
+            'birth_date': self.birth_date,
+            'picture': self.picture is not None
+        }

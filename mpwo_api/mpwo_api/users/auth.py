@@ -152,19 +152,7 @@ def get_user_status(user_id):
     user = User.query.filter_by(id=user_id).first()
     response_object = {
         'status': 'success',
-        'data': {
-            'id': user.id,
-            'username': user.username,
-            'email': user.email,
-            'created_at': user.created_at,
-            'admin': user.admin,
-            'first_name': user.first_name,
-            'last_name': user.last_name,
-            'bio': user.bio,
-            'location': user.location,
-            'birth_date': user.birth_date,
-            'picture': True if user.picture else False,
-        }
+        'data': user.serialize()
     }
     return jsonify(response_object), 200
 
