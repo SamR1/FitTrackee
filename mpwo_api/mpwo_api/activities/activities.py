@@ -8,8 +8,7 @@ from sqlalchemy import exc
 from ..users.utils import authenticate, verify_extension
 from .models import Activity
 from .utils import (
-    create_activity_with_gpx, create_activity_wo_gpx, edit_activity_wo_gpx,
-    get_file_path, get_gpx_info
+    create_activity, edit_activity_wo_gpx, get_file_path, get_gpx_info
 )
 
 activities_blueprint = Blueprint('activities', __name__)
@@ -138,8 +137,8 @@ def post_activity(auth_user_id):
         return jsonify(response_object), 500
 
     try:
-        new_activity = create_activity_with_gpx(
-            auth_user_id, gpx_data, file_path, activity_data.get('sport_id'))
+        new_activity = create_activity(
+            auth_user_id, activity_data, gpx_data, file_path)
         db.session.add(new_activity)
         db.session.commit()
         response_object = {
@@ -176,7 +175,7 @@ def post_activity_no_gpx(auth_user_id):
         return jsonify(response_object), 400
 
     try:
-        new_activity = create_activity_wo_gpx(auth_user_id, activity_data)
+        new_activity = create_activity(auth_user_id, activity_data)
         db.session.add(new_activity)
         db.session.commit()
 
