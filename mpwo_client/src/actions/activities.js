@@ -48,6 +48,7 @@ export const getActivityGpx = activityId => dispatch => {
   dispatch(setGpx(null))
 }
 
+
 export const deleteActivity = id => dispatch => mpwoGenericApi
   .deleteData('activities', id)
   .then(ret => {
@@ -55,5 +56,17 @@ export const deleteActivity = id => dispatch => mpwoGenericApi
       history.push('/')
     }
       dispatch(setError(`activities: ${ret.status}`))
+  })
+  .catch(error => dispatch(setError(`activities: ${error}`)))
+
+
+export const editActivity = form => dispatch => mpwoGenericApi
+  .updateData('activities', form)
+  .then(ret => {
+    if (ret.status === 'success') {
+      history.push(`/activities/${ret.data.activities[0].id}`)
+    } else {
+      dispatch(setError(`activities: ${ret.message}`))
+    }
   })
   .catch(error => dispatch(setError(`activities: ${error}`)))

@@ -1,4 +1,5 @@
 import togeojson from '@mapbox/togeojson'
+import { format, parse } from 'date-fns'
 import bbox from 'geojson-bbox'
 
 export const apiUrl = `${process.env.REACT_APP_API_URL}/api/`
@@ -30,4 +31,12 @@ export const getGeoJson = gpxContent => {
     ]
   }
   return { jsonData, bounds }
+}
+
+export const formatActivityDate = activityDateTime => {
+  const dateTime = parse(activityDateTime)
+  return {
+    activity_date: format(dateTime, 'YYYY-MM-DD'),
+    activity_time: activityDateTime.match(/[0-2][0-9]:[0-5][0-9]/)[0]
+  }
 }

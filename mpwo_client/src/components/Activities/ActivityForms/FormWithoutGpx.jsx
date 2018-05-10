@@ -1,12 +1,22 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { addActivityWithoutGpx } from '../../../actions/activities'
+import {
+  addActivityWithoutGpx, editActivity
+} from '../../../actions/activities'
 import { history } from '../../../index'
-
+import { formatActivityDate } from '../../../utils'
 
 function FormWithoutGpx (props) {
-  const { onAddSport, sports } = props
+  const { activity, onAddOrEdit, sports } = props
+  let activityDate, activityTime, sportId = ''
+  if (activity) {
+    const activityDateTime = formatActivityDate(activity.activity_date)
+    activityDate = activityDateTime.activity_date
+    activityTime = activityDateTime.activity_time
+    sportId = activity.sport_id
+  }
+
   return (
     <form
       onSubmit={event => event.preventDefault()}
@@ -16,6 +26,7 @@ function FormWithoutGpx (props) {
           Sport:
           <select
             className="form-control input-lg"
+            defaultValue={sportId}
             name="sport_id"
             required
           >
@@ -35,12 +46,14 @@ function FormWithoutGpx (props) {
             <div className="row">
               <input
                 name="activity_date"
+                defaultValue={activityDate}
                 className="form-control col-md"
                 required
                 type="date"
               />
               <input
                 name="activity_time"
+                defaultValue={activityTime}
                 className="form-control col-md"
                 required
                 type="time"
@@ -54,8 +67,9 @@ function FormWithoutGpx (props) {
           Duration:
             <input
               name="duration"
+              defaultValue={activity ? activity.duration : ''}
               className="form-control col-xs-4"
-              pattern="([0-2][0-3]):([0-5][0-9]):([0-5][0-9])"
+              pattern="^([0-9]*[0-9]):([0-5][0-9]):([0-5][0-9])$"
               placeholder="hh:mm:ss"
               required
               type="text"
@@ -67,6 +81,7 @@ function FormWithoutGpx (props) {
           Distance (km):
           <input
             name="distance"
+            defaultValue={activity ? activity.distance : ''}
             className="form-control input-lg"
             min={0}
             required
@@ -77,7 +92,7 @@ function FormWithoutGpx (props) {
       <input
         type="submit"
         className="btn btn-primary btn-lg btn-block"
-        onClick={event => onAddSport(event)}
+        onClick={event => onAddOrEdit(event, activity)}
         value="Submit"
       />
       <input
@@ -93,7 +108,7 @@ function FormWithoutGpx (props) {
 export default connect(
   () => ({ }),
   dispatch => ({
-    onAddSport: e => {
+    onAddOrEdit: (e, activity) => {
       const d = e.target.form.duration.value.split(':')
       const duration = +d[0] * 60 * 60 + +d[1] * 60 + +d[2]
 
@@ -106,7 +121,12 @@ export default connect(
         duration,
         sport_id: +e.target.form.sport_id.value,
       }
-      dispatch(addActivityWithoutGpx(data))
+      if (activity) {
+        data.id = activity.id
+        dispatch(editActivity(data))
+      } else {
+        dispatch(addActivityWithoutGpx(data))
+      }
     },
   })
 )(FormWithoutGpx)

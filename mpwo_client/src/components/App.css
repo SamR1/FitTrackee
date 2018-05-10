@@ -91,3 +91,11 @@ input, textarea {
   padding: 50px;
   z-index: 1040;
 }
+
+.custom-fa {
+  margin-right: 5px;
+}
+
+.unlink {
+  color: black;
+}
