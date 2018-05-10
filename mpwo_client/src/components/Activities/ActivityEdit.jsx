@@ -1,5 +1,4 @@
 import React from 'react'
-import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 
 import ActivityAddOrEdit from './ActivityAddOrEdit'
@@ -18,16 +17,10 @@ class ActivityEdit extends React.Component {
     const [activity] = activities
     return (
       <div>
-        <Helmet>
-          <title>mpwo - Edit activity</title>
-        </Helmet>
-        <br /><br />
-        {message && (
-          <code>{message}</code>
-        )}
         {sports.length > 0 && (
           <ActivityAddOrEdit
             activity={activity}
+            message={message}
             sports={sports}
           />
         )}

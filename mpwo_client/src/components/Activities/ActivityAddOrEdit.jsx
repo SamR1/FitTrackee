@@ -21,14 +21,20 @@ export default class ActivityAddEdit extends React.Component {
   }
 
   render() {
-    const { activity, sports } = this.props
+    const { activity, message, sports } = this.props
     const { withGpx } = this.state
     return (
       <div>
         <Helmet>
-          <title>mpwo - Add an activity</title>
+          <title>mpwo - {activity
+            ? 'Edit an activity'
+            : 'Add an activity'}
+            </title>
         </Helmet>
         <br /><br />
+        {message && (
+          <code>{message}</code>
+        )}
         <div className="container">
           <div className="row">
             <div className="col-md-2" />

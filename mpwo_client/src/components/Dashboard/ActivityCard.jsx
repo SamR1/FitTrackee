@@ -5,7 +5,7 @@ export default function ActivityCard (props) {
   const { activity, sports } = props
 
   return (
-    <div className="card activity-card">
+    <div className="card activity-card text-center">
       <div className="card-header">
         <Link to={`/activities/${activity.id}`}>
         {sports.filter(sport => sport.id === activity.sport_id)
