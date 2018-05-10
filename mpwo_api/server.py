@@ -7,6 +7,8 @@ app = create_app()
 
 @app.cli.command()
 def drop_db():
+    """Empty database for dev environments."""
+    db.engine.execute("DROP TABLE IF EXISTS alembic_version;")
     db.drop_all()
     db.session.commit()
     print('Database dropped.')

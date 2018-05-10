@@ -19,26 +19,26 @@ class DashBoard extends React.Component {
           <title>mpwo - Dashboard</title>
         </Helmet>
         <h1 className="page-title">Dashboard</h1>
-        <div className="container">
-          <div className="row">
-            <div className="col-md-6">
-              {activities.length > 0 ? (
-                activities.map(activity => (
+        {activities.length > 0 ? (
+          <div className="container">
+            <div className="row">
+              <div className="col-md-6">
+                {activities.map(activity => (
                   <ActivityCard
                     activity={activity}
                     key={activity.id}
                     sports={sports}
                   />
-                ))
-              ) : (
-                'No activities for now'
-              )}
-            </div>
-            <div className="col-md-6">
-              <Statistics />
+                ))}
+              </div>
+              <div className="col-md-6">
+                <Statistics />
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          'No activities for now'
+        )}
       </div>
     )
   }
