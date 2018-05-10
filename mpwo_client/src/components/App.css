@@ -23,15 +23,15 @@
 }
 
 .App-nav-profile-img {
-    max-width: 35px;
-    max-height: 35px;
-    border-radius: 50%;
+  max-width: 35px;
+  max-height: 35px;
+  border-radius: 50%;
 }
 
 .App-profile-img-small {
-    max-width: 150px;
-    max-height: 150px;
-    border-radius: 50%;
+  max-width: 150px;
+  max-height: 150px;
+  border-radius: 50%;
 }
 
 @keyframes App-logo-spin {
@@ -71,4 +71,23 @@ input, textarea {
 
 .radioLabel {
   text-align: center;
+}
+
+.custom-modal {
+  background-color: #fff;
+  border-radius: 5px;
+  max-width: 500px;
+  margin: 20% auto;
+  z-index: 1050;
+}
+
+.custom-modal-backdrop {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.3);
+  padding: 50px;
+  z-index: 1040;
 }

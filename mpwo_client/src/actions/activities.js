@@ -1,3 +1,4 @@
+import mpwoGenericApi from '../mwpoApi'
 import mpwoApi from '../mwpoApi/activities'
 import { history } from '../index'
 import { setError } from './index'
@@ -46,3 +47,13 @@ export const getActivityGpx = activityId => dispatch => {
   }
   dispatch(setGpx(null))
 }
+
+export const deleteActivity = id => dispatch => mpwoGenericApi
+  .deleteData('activities', id)
+  .then(ret => {
+    if (ret.status === 204) {
+      history.push('/')
+    }
+      dispatch(setError(`activities: ${ret.status}`))
+  })
+  .catch(error => dispatch(setError(`activities: ${error}`)))

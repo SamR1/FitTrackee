@@ -3,16 +3,27 @@ import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 
 import ActivityMap from './ActivityMap'
+import CustomModal from './../Others/CustomModal'
 import { getData } from '../../actions/index'
+import { deleteActivity } from '../../actions/activities'
 
 class ActivityDisplay extends React.Component {
+  constructor(props, context) {
+    super(props, context)
+    this.state = {
+      displayModal: false,
+    }
+  }
+
   componentDidMount() {
     this.props.loadActivity(
       this.props.location.pathname.replace('/activities/', '')
     )
   }
+
   render() {
-    const { activities, message, sports } = this.props
+    const { activities, message, onDeleteActivity, sports } = this.props
+    const { displayModal } = this.state
     const [activity] = activities
     return (
       <div>
@@ -26,6 +37,16 @@ class ActivityDisplay extends React.Component {
           <code>{message}</code>
         ) : (
           <div className="container">
+            { displayModal &&
+            <CustomModal
+              title="Confirmation"
+              text="Are you sure you want to delete this activity?"
+              confirm={() => {
+                onDeleteActivity(activity.id)
+                this.setState({ displayModal: false })
+              }}
+              close={() => this.setState({ displayModal: false })}
+            />}
           {activity && sports.length > 0 && (
             <div className="row">
             <div className="col-md-6">
@@ -33,7 +54,13 @@ class ActivityDisplay extends React.Component {
                 <div className="card-header">
                   {sports.filter(sport => sport.id === activity.sport_id)
                          .map(sport => sport.label)} -{' '}
-                  {activity.activity_date}
+                  {activity.activity_date}{' '}
+                  <i className="fa fa-edit" aria-hidden="true" />{' '}
+                  <i
+                    className="fa fa-trash"
+                    aria-hidden="true"
+                    onClick={() => this.setState({ displayModal: true })}
+                  />{' '}
                 </div>
                 <div className="card-body">
                   <p>
@@ -103,6 +130,9 @@ export default connect(
     user: state.user,
   }),
   dispatch => ({
+    onDeleteActivity: activityId => {
+      dispatch(deleteActivity(activityId))
+    },
     loadActivity: activityId => {
       dispatch(getData('activities', activityId))
       dispatch(getData('sports'))
