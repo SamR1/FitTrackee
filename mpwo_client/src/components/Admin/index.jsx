@@ -29,7 +29,10 @@ class Admin extends React.Component {
                 exact path="/admin/sports/add"
                 component={AdminSportsAdd}
               />
-              <Route path="/admin/sport" component={AdminSport} />
+              <Route
+                exact path="/admin/sports/:sportId"
+                component={AdminSport}
+              />
               <Route component={NotFound} />
             </Switch>
           ) : (

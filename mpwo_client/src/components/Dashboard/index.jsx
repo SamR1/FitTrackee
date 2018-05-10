@@ -54,7 +54,6 @@ export default connect(
   dispatch => ({
     loadActivities: () => {
       dispatch(getData('activities'))
-      dispatch(getData('sports'))
     },
   })
 )(DashBoard)

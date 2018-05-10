@@ -6,9 +6,7 @@ import AdminDetail from '../generic/AdminDetail'
 
 class AdminSports extends React.Component {
   componentDidMount() {
-    this.props.loadSport(
-      this.props.location.pathname.replace('/admin/sport/', '')
-    )
+    this.props.loadSport(this.props.match.params.sportId)
   }
   render() {
     const { sports } = this.props

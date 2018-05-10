@@ -38,7 +38,6 @@ export default connect(
   }),
   dispatch => ({
     loadActivity: activityId => {
-      dispatch(getData('sports'))
       dispatch(getData('activities', activityId))
     },
   })

@@ -17,9 +17,7 @@ class ActivityDisplay extends React.Component {
   }
 
   componentDidMount() {
-    this.props.loadActivity(
-      this.props.match.params.activityId
-    )
+    this.props.loadActivity(this.props.match.params.activityId)
   }
 
   render() {
@@ -148,7 +146,6 @@ export default connect(
     },
     loadActivity: activityId => {
       dispatch(getData('activities', activityId))
-      dispatch(getData('sports'))
     },
   })
 )(ActivityDisplay)

@@ -1,6 +1,7 @@
 import mpwoApiUser from '../mwpoApi/user'
 import { history } from '../index'
 import { generateIds } from '../utils'
+import { getData } from './index'
 
 
 const AuthError = message => ({ type: 'AUTH_ERROR', message })
@@ -39,6 +40,7 @@ export const getProfile = () => dispatch => mpwoApiUser
   .getProfile()
   .then(ret => {
     if (ret.status === 'success') {
+      dispatch(getData('sports'))
       return dispatch(ProfileSuccess(ret))
     }
     return dispatch(ProfileError(ret.message))

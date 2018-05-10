@@ -6,7 +6,7 @@ import { history } from '../../../index'
 
 export default function AdminPage(props) {
 
-  const { data, detailLink, target } = props
+  const { data, target } = props
   const { error } = data
   const results = data.data
   const tbKeys = []
@@ -51,7 +51,7 @@ export default function AdminPage(props) {
                           if (key === 'id') {
                             return (
                               <th key={key} scope="row">
-                              <Link to={`/admin/${detailLink}/${result[key]}`}>
+                              <Link to={`/admin/${target}/${result[key]}`}>
                                 {result[key]}
                               </Link>
                               </th>
@@ -82,7 +82,6 @@ export default function AdminPage(props) {
         </div>
       </div>
       )}
-
     </div>
   )
 }

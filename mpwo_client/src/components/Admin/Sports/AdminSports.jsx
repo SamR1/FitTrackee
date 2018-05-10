@@ -15,7 +15,6 @@ class AdminSports extends React.Component {
       <div>
         <AdminPage
           data={sports}
-          detailLink="sport"
           target="sports"
         />
       </div>

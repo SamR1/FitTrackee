@@ -2,26 +2,19 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import ActivityAddOrEdit from './ActivityAddOrEdit'
-import { getData } from '../../actions/index'
 
 
-class ActivityAdd extends React.Component {
-  componentDidMount() {
-      this.props.loadSports()
-  }
-
-  render() {
-    const { message, sports } = this.props
-    return (
-      <div>
-        <ActivityAddOrEdit
-          activity={null}
-          message={message}
-          sports={sports}
-        />
-      </div>
-    )
-  }
+function ActivityAdd (props) {
+  const { message, sports } = props
+  return (
+    <div>
+      <ActivityAddOrEdit
+        activity={null}
+        message={message}
+        sports={sports}
+      />
+    </div>
+  )
 }
 
 export default connect(
@@ -30,9 +23,4 @@ export default connect(
     sports: state.sports.data,
     user: state.user,
   }),
-  dispatch => ({
-    loadSports: () => {
-      dispatch(getData('sports'))
-    },
-  })
 )(ActivityAdd)
