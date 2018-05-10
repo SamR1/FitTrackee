@@ -19,8 +19,22 @@ const handleDataAndError = (state, type, action) => {
   }
 }
 
-const activities = (state = initial.activities, action) =>
-  handleDataAndError(state, 'activities', action)
+const activities = (state = initial.activities, action) => {
+  switch (action.type) {
+    case 'END_PAGINATION':
+      return {
+        ...state,
+        pagination_end: true
+      }
+    case 'PUSH_ACTIVITIES':
+      return {
+        ...state,
+        data: state.data.concat(action.activities),
+      }
+    default:
+      return handleDataAndError(state, 'activities', action)
+  }
+}
 
 const formData = (state = initial.formData, action) => {
   switch (action.type) {

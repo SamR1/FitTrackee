@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 
 import ActivityMap from './ActivityMap'
 import CustomModal from './../Others/CustomModal'
-import { getData } from '../../actions/index'
+import { getData } from '../../actions'
 import { deleteActivity } from '../../actions/activities'
 
 class ActivityDisplay extends React.Component {

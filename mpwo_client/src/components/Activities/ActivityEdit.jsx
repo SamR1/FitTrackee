@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import ActivityAddOrEdit from './ActivityAddOrEdit'
-import { getData } from '../../actions/index'
+import { getData } from '../../actions'
 
 
 class ActivityEdit extends React.Component {

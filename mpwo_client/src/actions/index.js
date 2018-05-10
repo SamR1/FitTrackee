@@ -13,17 +13,17 @@ export const setError = message => ({
   message,
 })
 
-export const getData = (target, id = null) => dispatch => {
+export const getData = (target, id = null, data = null) => dispatch => {
   if (id !== null && isNaN(id)) {
     return dispatch(setError(target, `${target}: Incorrect id`))
   }
   return mpwoApi
-  .getData(target, id)
+  .getData(target, id, data)
   .then(ret => {
     if (ret.status === 'success') {
       dispatch(setData(target, ret.data))
     } else {
-      dispatch(setError(`${target}: ${ret.status}`))
+      dispatch(setError(`${target}: ${ret.message}`))
     }
   })
   .catch(error => dispatch(setError(`${target}: ${error}`)))
@@ -50,7 +50,7 @@ export const updateData = (target, data) => dispatch => {
     if (ret.status === 'success') {
       dispatch(setData(target, ret.data))
     } else {
-      dispatch(setError(`${target}: ${ret.status}`))
+      dispatch(setError(`${target}: ${ret.message}`))
     }
   })
   .catch(error => dispatch(setError(`${target}: ${error}`)))
@@ -66,7 +66,7 @@ export const deleteData = (target, id) => dispatch => {
     if (ret.status === 204) {
       history.push(`/admin/${target}`)
     } else {
-      dispatch(setError(`${target}: ${ret.status}`))
+      dispatch(setError(`${target}: ${ret.message}`))
     }
   })
   .catch(error => dispatch(setError(`${target}: ${error}`)))

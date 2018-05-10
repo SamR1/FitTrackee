@@ -2,8 +2,14 @@ import { apiUrl } from '../utils'
 
 export default class MpwoApi {
 
-  static getData(target, id = null) {
-    const request = new Request(`${apiUrl}${target}${id ? `/${id}` : ''}`, {
+  static getData(target, id = null, page = null) {
+    let url = `${apiUrl}${target}`
+    if (id) {
+      url = `${url}/${id}`
+    } else if (page) {
+      url = `${url}?page=${page}`
+    }
+    const request = new Request(url, {
       method: 'GET',
       headers: new Headers({
         'Content-Type': 'application/json',

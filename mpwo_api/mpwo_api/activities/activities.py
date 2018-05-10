@@ -18,18 +18,30 @@ activities_blueprint = Blueprint('activities', __name__)
 @authenticate
 def get_activities(auth_user_id):
     """Get all activities for authenticated user"""
-    activities = Activity.query.filter_by(user_id=auth_user_id)\
-        .order_by(Activity.activity_date.desc()).all()
-    activities_list = []
-    for activity in activities:
-        activities_list.append(activity.serialize())
-    response_object = {
-        'status': 'success',
-        'data': {
-            'activities': activities_list
+    try:
+        params = request.args.copy()
+        page = 1 if len(params) == 0 else int(params.pop('page'))
+        activities = Activity.query.filter_by(user_id=auth_user_id)\
+            .order_by(Activity.activity_date.desc()).paginate(
+            page, 5, False).items
+        activities_list = []
+        for activity in activities:
+            activities_list.append(activity.serialize())
+        response_object = {
+            'status': 'success',
+            'data': {
+                'activities': activities_list
+            }
         }
-    }
-    return jsonify(response_object), 200
+        code = 200
+    except Exception as e:
+        appLog.error(e)
+        response_object = {
+            'status': 'error',
+            'message': 'Error. Please try again or contact the administrator.'
+        }
+        code = 500
+    return jsonify(response_object), code
 
 
 @activities_blueprint.route('/activities/<int:activity_id>', methods=['GET'])

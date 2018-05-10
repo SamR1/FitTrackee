@@ -40,6 +40,7 @@ export default {
   },
   activities: {
     ...emptyData,
+    pagination_end: false
   },
   // check if storing gpx content is OK
   gpx: null,
