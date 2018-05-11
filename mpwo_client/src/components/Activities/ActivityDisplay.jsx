@@ -54,14 +54,12 @@ class ActivityDisplay extends React.Component {
                   {sports.filter(sport => sport.id === activity.sport_id)
                          .map(sport => sport.label)} -{' '}
                   {activity.activity_date}{' '}
-                  {!activity.with_gpx && (
-                    <Link
-                      className="unlink"
-                      to={`/activities/${activity.id}/edit`}
-                    >
-                      <i className="fa fa-edit custom-fa" aria-hidden="true" />
-                    </Link>
-                  )}
+                  <Link
+                    className="unlink"
+                    to={`/activities/${activity.id}/edit`}
+                  >
+                    <i className="fa fa-edit custom-fa" aria-hidden="true" />
+                  </Link>
                   <i
                     className="fa fa-trash custom-fa"
                     aria-hidden="true"

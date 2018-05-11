@@ -46,13 +46,9 @@ export default class ActivityAddEdit extends React.Component {
                 <div className="card-body">
                   {activity ? (
                     activity.with_gpx ? (
-                      'You can\'t modify this activity.' +
-                        ' Please delete and re-import gpx file.'
+                      <FormWithGpx activity={activity} sports={sports} />
                     ) : (
-                    <FormWithoutGpx
-                      activity={activity}
-                      sports={sports}
-                    />
+                      <FormWithoutGpx activity={activity} sports={sports} />
                     )
                   ) : (
                     <div>

@@ -60,10 +60,11 @@ class Activity(db.Model):
         return str(self.sports.label) + \
                " - " + self.activity_date.strftime('%Y-%m-%d')
 
-    def __init__(self, user_id, sport_id, activity_date, duration):
+    def __init__(self, user_id, sport_id, activity_date, distance, duration):
         self.user_id = user_id
         self.sport_id = sport_id
         self.activity_date = activity_date
+        self.distance = distance
         self.duration = duration
 
     def serialize(self):

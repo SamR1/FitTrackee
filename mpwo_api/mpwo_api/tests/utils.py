@@ -43,11 +43,12 @@ def add_sport(label):
     return sport
 
 
-def add_activity(user_id, sport_id, activity_date, duration):
+def add_activity(user_id, sport_id, activity_date, distance, duration):
     activity = Activity(
         user_id=user_id,
         sport_id=sport_id,
         activity_date=activity_date,
+        distance=distance,
         duration=duration)
     db.session.add(activity)
     db.session.commit()

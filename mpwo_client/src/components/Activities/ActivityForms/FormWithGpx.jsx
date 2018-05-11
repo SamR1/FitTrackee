@@ -1,12 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { addActivity } from '../../../actions/activities'
+import { addActivity, editActivity } from '../../../actions/activities'
 import { history } from '../../../index'
 
 
 function FormWithGpx (props) {
-  const { onAddSport, sports } = props
+  const { activity, onAddActivity, onEditActivity, sports } = props
+  const sportId = activity ? activity.sport_id : ''
   return (
     <form
       encType="multipart/form-data"
@@ -18,6 +19,7 @@ function FormWithGpx (props) {
           Sport:
           <select
             className="form-control input-lg"
+            defaultValue={sportId}
             name="sport"
             required
           >
@@ -30,22 +32,28 @@ function FormWithGpx (props) {
           </select>
         </label>
       </div>
-      <div className="form-group">
-        <label>
-          GPX file:
-          <input
-            accept=".gpx"
-            className="form-control input-lg"
-            name="gpxFile"
-            required
-            type="file"
-          />
-        </label>
-      </div>
+      {!activity && (
+        <div className="form-group">
+          <label>
+            GPX file:
+            <input
+              accept=".gpx"
+              className="form-control input-lg"
+              name="gpxFile"
+              required
+              type="file"
+            />
+          </label>
+        </div>
+      )}
       <input
         type="submit"
         className="btn btn-primary btn-lg btn-block"
-        onClick={event => onAddSport(event)}
+        onClick={
+          event => activity
+          ? onEditActivity(event, activity)
+          : onAddActivity(event)
+        }
         value="Submit"
       />
       <input
@@ -61,13 +69,19 @@ function FormWithGpx (props) {
 export default connect(
   () => ({ }),
   dispatch => ({
-    onAddSport: event => {
+    onAddActivity: e => {
       const form = new FormData()
-      form.append('file', event.target.form.gpxFile.files[0])
+      form.append('file', e.target.form.gpxFile.files[0])
       form.append(
-        'data', `{"sport_id": ${event.target.form.sport.value}}`
+        'data', `{"sport_id": ${e.target.form.sport.value}}`
       )
       dispatch(addActivity(form))
+    },
+    onEditActivity: (e, activity) => {
+      dispatch(editActivity({
+        id: activity.id,
+        sport_id: +e.target.form.sport.value
+      }))
     },
   })
 )(FormWithGpx)

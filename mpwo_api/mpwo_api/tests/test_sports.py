@@ -256,10 +256,11 @@ def test_delete_a_sport_with_an_activity(app):
     add_admin()
     add_sport('cycling')
     add_activity(
-        1,
-        1,
-        datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
-        datetime.timedelta(seconds=1024)
+        user_id=1,
+        sport_id=1,
+        activity_date=datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
+        distance=10,
+        duration=datetime.timedelta(seconds=1024)
     )
 
     client = app.test_client()

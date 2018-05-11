@@ -1,3 +1,5 @@
+import shutil
+
 from mpwo_api import create_app, db
 from mpwo_api.activities.models import Sport
 from mpwo_api.users.models import User
@@ -12,6 +14,8 @@ def drop_db():
     db.drop_all()
     db.session.commit()
     print('Database dropped.')
+    shutil.rmtree(app.config['UPLOAD_FOLDER'], ignore_errors=True)
+    print('Uploaded files deleted.')
 
 
 @app.cli.command()

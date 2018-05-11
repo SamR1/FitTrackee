@@ -8,7 +8,7 @@ from sqlalchemy import exc
 from ..users.utils import authenticate, verify_extension
 from .models import Activity, Sport
 from .utils import (
-    create_activity, edit_activity_wo_gpx, get_file_path, get_gpx_info,
+    create_activity, edit_activity, get_file_path, get_gpx_info,
     get_new_file_path
 )
 
@@ -225,10 +225,7 @@ def post_activity_no_gpx(auth_user_id):
 def update_activity(auth_user_id, activity_id):
     """Update an activity"""
     activity_data = request.get_json()
-    if not activity_data or activity_data.get('sport_id') is None \
-            or activity_data.get('duration') is None \
-            or activity_data.get('distance') is None \
-            or activity_data.get('activity_date') is None:
+    if not activity_data:
         response_object = {
             'status': 'error',
             'message': 'Invalid payload.'
@@ -238,16 +235,7 @@ def update_activity(auth_user_id, activity_id):
     try:
         activity = Activity.query.filter_by(id=activity_id).first()
         if activity:
-            if activity.gpx:
-                response_object = {
-                    'status': 'error',
-                    'message': 'You can not modify an activity with gpx file. '
-                               'Please delete and re-import the gpx file.'
-                }
-                code = 500
-                return jsonify(response_object), code
-
-            activity = edit_activity_wo_gpx(activity, activity_data)
+            activity = edit_activity(activity, activity_data)
             db.session.commit()
             response_object = {
                 'status': 'success',

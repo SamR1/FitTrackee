@@ -16,11 +16,14 @@ def create_activity(
         activity_data.get('activity_date'), '%Y-%m-%d %H:%M')
     duration = timedelta(seconds=gpx_data['duration']) if gpx_data \
         else timedelta(seconds=activity_data.get('duration'))
+    distance = gpx_data['distance'] if gpx_data \
+        else activity_data.get('distance')
 
     new_activity = Activity(
         user_id=auth_user_id,
         sport_id=activity_data.get('sport_id'),
         activity_date=activity_date,
+        distance=distance,
         duration=duration
     )
 
@@ -28,7 +31,6 @@ def create_activity(
         new_activity.gpx = gpx_data['filename']
         new_activity.pauses = timedelta(seconds=gpx_data['stop_time'])
         new_activity.moving = timedelta(seconds=gpx_data['moving_time'])
-        new_activity.distance = gpx_data['distance']
         new_activity.min_alt = gpx_data['elevation_min']
         new_activity.max_alt = gpx_data['elevation_max']
         new_activity.descent = gpx_data['downhill']
@@ -37,23 +39,26 @@ def create_activity(
         new_activity.ave_speed = gpx_data['average_speed']
     else:
         new_activity.moving = duration
-        new_activity.distance = activity_data.get('distance')
         new_activity.ave_speed = new_activity.distance / (
             duration.seconds / 3600)
         new_activity.max_speed = new_activity.ave_speed
     return new_activity
 
 
-def edit_activity_wo_gpx(activity, activity_data):
+def edit_activity(activity, activity_data):
     activity.sport_id = activity_data.get('sport_id')
-    activity.activity_date = datetime.strptime(
-            activity_data.get('activity_date'), '%Y-%m-%d %H:%M')
-    activity.duration = timedelta(seconds=activity_data.get('duration'))
-    activity.moving = activity.duration
-    activity.distance = activity_data.get('distance')
-    activity.ave_speed = activity.distance / (
-        activity.duration.seconds / 3600)
-    activity.max_speed = activity.ave_speed
+    if not activity.gpx:
+        if activity_data.get('activity_date'):
+            activity.activity_date = datetime.strptime(
+                activity_data.get('activity_date'), '%Y-%m-%d %H:%M')
+        if activity_data.get('duration'):
+            activity.duration = timedelta(seconds=activity_data.get('duration'))  # noqa
+            activity.moving = activity.duration
+        if activity_data.get('distance'):
+            activity.distance = activity_data.get('distance')
+        activity.ave_speed = activity.distance / (
+            activity.duration.seconds / 3600)
+        activity.max_speed = activity.ave_speed
     return activity
 
 
@@ -121,7 +126,7 @@ def get_file_path(auth_user_id, activity_file):
 def get_new_file_path(auth_user_id, activity_date, activity_file, sport):
     old_filename = secure_filename(activity_file.filename)
     extension = '.{}'.format(old_filename.rsplit('.', 1)[1].lower())
-    fi, new_filename = tempfile.mkstemp(
+    _, new_filename = tempfile.mkstemp(
         prefix='{}_{}_'.format(activity_date, sport),
         suffix=extension
     )
@@ -129,5 +134,5 @@ def get_new_file_path(auth_user_id, activity_date, activity_file, sport):
         current_app.config['UPLOAD_FOLDER'], 'activities', str(auth_user_id))
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
-    file_path = os.path.join(dir_path, new_filename.replace('/tmp/', ''))
+    file_path = os.path.join(dir_path, new_filename.replace('/tmp/', ''))  # noqa
     return file_path
