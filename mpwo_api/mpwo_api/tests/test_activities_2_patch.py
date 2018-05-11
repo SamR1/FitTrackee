@@ -58,11 +58,11 @@ def test_edit_an_activity_with_gpx(app):
     assert 2 == data['data']['activities'][0]['sport_id']
     assert '0:04:10' == data['data']['activities'][0]['duration']
     assert data['data']['activities'][0]['ascent'] == 0.4
-    assert data['data']['activities'][0]['ave_speed'] == 4.6
+    assert data['data']['activities'][0]['ave_speed'] == 4.602
     assert data['data']['activities'][0]['descent'] == 23.4
     assert data['data']['activities'][0]['distance'] == 0.32
     assert data['data']['activities'][0]['max_alt'] == 998.0
-    assert data['data']['activities'][0]['max_speed'] == 5.09
+    assert data['data']['activities'][0]['max_speed'] == 5.086
     assert data['data']['activities'][0]['min_alt'] == 975.0
     assert data['data']['activities'][0]['moving'] == '0:04:10'
     assert data['data']['activities'][0]['pauses'] is None
@@ -263,13 +263,13 @@ def test_edit_an_activity_wo_gpx_partial(app):
     assert data['data']['activities'][0]['sport_id'] == 1
     assert data['data']['activities'][0]['duration'] == '0:17:04'
     assert data['data']['activities'][0]['ascent'] is None
-    assert data['data']['activities'][0]['ave_speed'] == 35.16
+    assert data['data']['activities'][0]['ave_speed'] == 35.156
     assert data['data']['activities'][0]['descent'] is None
     assert data['data']['activities'][0]['distance'] == 10.0
     assert data['data']['activities'][0]['max_alt'] is None
-    assert data['data']['activities'][0]['max_speed'] == 35.16
+    assert data['data']['activities'][0]['max_speed'] == 35.156
     assert data['data']['activities'][0]['min_alt'] is None
-    assert data['data']['activities'][0]['moving'] is None  # no calculate
+    assert data['data']['activities'][0]['moving'] is None  # no calculated
     assert data['data']['activities'][0]['pauses'] is None
     assert data['data']['activities'][0]['with_gpx'] is False
 

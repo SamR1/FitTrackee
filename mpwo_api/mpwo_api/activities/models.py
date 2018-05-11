@@ -48,13 +48,13 @@ class Activity(db.Model):
     duration = db.Column(db.Interval, nullable=False)
     pauses = db.Column(db.Interval, nullable=True)
     moving = db.Column(db.Interval, nullable=True)
-    distance = db.Column(db.Numeric(5, 2), nullable=True)    # kilometers
+    distance = db.Column(db.Numeric(5, 3), nullable=True)    # kilometers
     min_alt = db.Column(db.Numeric(5, 2), nullable=True)     # meters
     max_alt = db.Column(db.Numeric(5, 2), nullable=True)     # meters
     descent = db.Column(db.Numeric(5, 2), nullable=True)     # meters
     ascent = db.Column(db.Numeric(5, 2), nullable=True)      # meters
-    max_speed = db.Column(db.Numeric(5, 2), nullable=True)   # km/h
-    ave_speed = db.Column(db.Numeric(5, 2), nullable=True)   # km/h
+    max_speed = db.Column(db.Numeric(5, 3), nullable=True)   # km/h
+    ave_speed = db.Column(db.Numeric(5, 3), nullable=True)   # km/h
 
     def __str__(self):
         return str(self.sports.label) + \

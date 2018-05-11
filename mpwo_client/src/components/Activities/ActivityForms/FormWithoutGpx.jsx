@@ -85,6 +85,7 @@ function FormWithoutGpx (props) {
             className="form-control input-lg"
             min={0}
             required
+            step="0.001"
             type="number"
           />
         </label>
