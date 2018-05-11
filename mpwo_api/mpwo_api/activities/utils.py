@@ -1,4 +1,5 @@
 import os
+import tempfile
 from datetime import datetime, timedelta
 
 import gpxpy.gpx
@@ -9,7 +10,7 @@ from .models import Activity
 
 
 def create_activity(
-        auth_user_id, activity_data, gpx_data=None, file_path=None
+        auth_user_id, activity_data, gpx_data=None
 ):
     activity_date = gpx_data['start'] if gpx_data else datetime.strptime(
         activity_data.get('activity_date'), '%Y-%m-%d %H:%M')
@@ -24,7 +25,7 @@ def create_activity(
     )
 
     if gpx_data:
-        new_activity.gpx = file_path
+        new_activity.gpx = gpx_data['filename']
         new_activity.pauses = timedelta(seconds=gpx_data['stop_time'])
         new_activity.moving = timedelta(seconds=gpx_data['moving_time'])
         new_activity.distance = gpx_data['distance']
@@ -58,7 +59,7 @@ def edit_activity_wo_gpx(activity, activity_data):
 
 def get_gpx_info(gpx_file):
 
-    gpx_data = {'filename': gpx_file}
+    gpx_data = {}
 
     gpx_file = open(gpx_file, 'r')
     gpx = gpxpy.parse(gpx_file)
@@ -107,8 +108,26 @@ def get_gpx_info(gpx_file):
 def get_file_path(auth_user_id, activity_file):
     filename = secure_filename(activity_file.filename)
     dir_path = os.path.join(
-        current_app.config['UPLOAD_FOLDER'], 'activities', str(auth_user_id))
+        current_app.config['UPLOAD_FOLDER'],
+        'activities',
+        str(auth_user_id),
+        'tmp')
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
     file_path = os.path.join(dir_path, filename)
+    return file_path
+
+
+def get_new_file_path(auth_user_id, activity_date, activity_file, sport):
+    old_filename = secure_filename(activity_file.filename)
+    extension = '.{}'.format(old_filename.rsplit('.', 1)[1].lower())
+    fi, new_filename = tempfile.mkstemp(
+        prefix='{}_{}_'.format(activity_date, sport),
+        suffix=extension
+    )
+    dir_path = os.path.join(
+        current_app.config['UPLOAD_FOLDER'], 'activities', str(auth_user_id))
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
+    file_path = os.path.join(dir_path, new_filename.replace('/tmp/', ''))
     return file_path

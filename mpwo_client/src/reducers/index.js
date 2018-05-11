@@ -24,7 +24,7 @@ const activities = (state = initial.activities, action) => {
     case 'END_PAGINATION':
       return {
         ...state,
-        pagination_end: true
+        pagination_end: action.status
       }
     case 'PUSH_ACTIVITIES':
       return {

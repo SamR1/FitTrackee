@@ -6,9 +6,10 @@ from mpwo_api import appLog, db
 from sqlalchemy import exc
 
 from ..users.utils import authenticate, verify_extension
-from .models import Activity
+from .models import Activity, Sport
 from .utils import (
-    create_activity, edit_activity_wo_gpx, get_file_path, get_gpx_info
+    create_activity, edit_activity_wo_gpx, get_file_path, get_gpx_info,
+    get_new_file_path
 )
 
 activities_blueprint = Blueprint('activities', __name__)
@@ -140,6 +141,16 @@ def post_activity(auth_user_id):
     try:
         activity_file.save(file_path)
         gpx_data = get_gpx_info(file_path)
+
+        sport = Sport.query.filter_by(id=activity_data.get('sport_id')).first()
+        new_filepath = get_new_file_path(
+            auth_user_id=auth_user_id,
+            activity_date=gpx_data['start'],
+            activity_file=activity_file,
+            sport=sport.label
+        )
+        os.rename(file_path, new_filepath)
+        gpx_data['filename'] = new_filepath
     except Exception as e:
         appLog.error(e)
         response_object = {
@@ -150,7 +161,7 @@ def post_activity(auth_user_id):
 
     try:
         new_activity = create_activity(
-            auth_user_id, activity_data, gpx_data, file_path)
+            auth_user_id, activity_data, gpx_data)
         db.session.add(new_activity)
         db.session.commit()
         response_object = {

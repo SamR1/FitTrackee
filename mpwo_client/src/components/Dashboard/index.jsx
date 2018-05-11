@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import ActivityCard from './ActivityCard'
 import Statistics from './Statistics'
 import { getData } from '../../actions'
-import { getMoreActivities } from '../../actions/activities'
+import { endPagination, getMoreActivities } from '../../actions/activities'
 
 class DashBoard extends React.Component {
   constructor(props, context) {
@@ -17,6 +17,10 @@ class DashBoard extends React.Component {
 
   componentDidMount() {
     this.props.loadActivities()
+  }
+
+  componentWillUnmount() {
+    this.props.resetPaginationStatus(false)
   }
 
   render() {
@@ -77,6 +81,9 @@ export default connect(
     sports: state.sports.data,
   }),
   dispatch => ({
+    resetPaginationStatus: () => {
+      dispatch(endPagination(false))
+    },
     loadActivities: () => {
       dispatch(getData('activities', null, 1))
     },
