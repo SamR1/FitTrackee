@@ -1,7 +1,7 @@
 import datetime
 
 from mpwo_api import db
-from mpwo_api.activities.models import Activity, Sport
+from mpwo_api.activities.models import Activity, Record, Sport
 from mpwo_api.users.models import User
 
 
@@ -58,3 +58,14 @@ def add_activity(user_id, sport_id, activity_date, distance, duration):
 def get_gpx_filepath(activity_id):
     activity = Activity.query.filter_by(id=activity_id).first()
     return activity.gpx
+
+
+def add_record(user_id, sport_id, activity, record_type):
+    record = Record(
+        user_id=user_id,
+        sport_id=sport_id,
+        activity=activity,
+        record_type=record_type)
+    db.session.add(record)
+    db.session.commit()
+    return record

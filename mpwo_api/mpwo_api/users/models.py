@@ -22,6 +22,9 @@ class User(db.Model):
     activities = db.relationship('Activity',
                                  lazy=True,
                                  backref=db.backref('users', lazy='joined'))
+    records = db.relationship('Record',
+                              lazy=True,
+                              backref=db.backref('users', lazy='joined'))
 
     def __repr__(self):
         return '<User %r>' % self.username

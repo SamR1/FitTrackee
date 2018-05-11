@@ -1,6 +1,14 @@
 import datetime
 
 from mpwo_api import db
+from sqlalchemy.types import Enum
+
+record_types = [
+    'AS',  # 'Best Average Speed'
+    'FD',  # 'Farthest Distance'
+    'LD',  # 'Longest Duration'
+    'MS',  # 'Max speed'
+]
 
 
 class Sport(db.Model):
@@ -10,6 +18,9 @@ class Sport(db.Model):
     activities = db.relationship('Activity',
                                  lazy=True,
                                  backref=db.backref('sports', lazy='joined'))
+    records = db.relationship('Record',
+                              lazy=True,
+                              backref=db.backref('sports', lazy='joined'))
 
     def __repr__(self):
         return self.label
@@ -55,6 +66,9 @@ class Activity(db.Model):
     ascent = db.Column(db.Numeric(5, 2), nullable=True)      # meters
     max_speed = db.Column(db.Numeric(5, 3), nullable=True)   # km/h
     ave_speed = db.Column(db.Numeric(5, 3), nullable=True)   # km/h
+    records = db.relationship('Record',
+                              lazy=True,
+                              backref=db.backref('activities', lazy='joined'))
 
     def __str__(self):
         return str(self.sports.label) + \
@@ -86,4 +100,56 @@ class Activity(db.Model):
             "max_speed": float(self.max_speed) if self.max_speed else None,
             "ave_speed": float(self.ave_speed) if self.ave_speed else None,
             "with_gpx": self.gpx is not None
+        }
+
+
+class Record(db.Model):
+    __tablename__ = "records"
+    __table_args__ = (db.UniqueConstraint(
+        'user_id', 'sport_id', 'record_type', name='user_sports_records'),)
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id'),
+        nullable=False)
+    sport_id = db.Column(
+        db.Integer,
+        db.ForeignKey('sports.id'),
+        nullable=False)
+    activity_id = db.Column(
+        db.Integer,
+        db.ForeignKey('activities.id'),
+        nullable=False)
+    record_type = db.Column(Enum(*record_types, name="record_types"))
+    activity_date = db.Column(db.DateTime, nullable=False)
+    value_interval = db.Column(db.Interval, nullable=True)
+    value_float = db.Column(db.Numeric(5, 3), nullable=True)
+
+    def __str__(self):
+        return str(self.sports.label) + \
+               " - " + self.record_type + \
+               " - " + self.activity_date.strftime('%Y-%m-%d')
+
+    def __init__(self, user_id, sport_id, activity, record_type):
+        self.user_id = user_id
+        self.sport_id = sport_id
+        self.activity_id = activity.id
+        self.record_type = record_type
+        self.activity_date = activity.activity_date
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "sport_id": self.sport_id,
+            "activity_id": self.activity_id,
+            "record_type": self.record_type,
+            "activity_date": self.activity_date,
+            "value_interval": str(
+                self.value_interval) if self.value_interval else None,
+            "value_float": str(
+                self.value_float) if self.value_float else None,
         }

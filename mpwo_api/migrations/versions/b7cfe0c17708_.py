@@ -1,4 +1,4 @@
-"""empty message
+"""create Activity & Sport tables
 
 Revision ID: b7cfe0c17708
 Revises: 9741fc7834da
