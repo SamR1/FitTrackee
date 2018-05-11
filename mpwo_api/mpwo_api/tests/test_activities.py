@@ -108,6 +108,139 @@ def test_get_activities_for_authenticated_user_no_activity(app):
     assert len(data['data']['activities']) == 0
 
 
+def test_get_activities_for_authenticated_user_no_authentication(app):
+    client = app.test_client()
+    response = client.get('/api/activities')
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 403
+    assert 'error' in data['status']
+    assert 'Provide a valid auth token.' in data['message']
+
+
+def test_get_activities_pagination(app):
+    add_user('test', 'test@test.com', '12345678')
+    add_sport('cycling')
+    add_activity(
+        1,
+        1,
+        datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
+        datetime.timedelta(seconds=1024))
+    add_activity(
+        1,
+        1,
+        datetime.datetime.strptime('01/04/2018', '%d/%m/%Y'),
+        datetime.timedelta(seconds=6000))
+    add_activity(
+        1,
+        1,
+        datetime.datetime.strptime('20/03/2017', '%d/%m/%Y'),
+        datetime.timedelta(seconds=1024))
+    add_activity(
+        1,
+        1,
+        datetime.datetime.strptime('09/05/2018', '%d/%m/%Y'),
+        datetime.timedelta(seconds=3000))
+    add_activity(
+        1,
+        1,
+        datetime.datetime.strptime('01/06/2017', '%d/%m/%Y'),
+        datetime.timedelta(seconds=3456))
+    add_activity(
+        1,
+        1,
+        datetime.datetime.strptime('23/02/2018', '%d/%m/%Y'),
+        datetime.timedelta(seconds=600))
+    add_activity(
+        1,
+        1,
+        datetime.datetime.strptime('23/02/2018', '%d/%m/%Y'),
+        datetime.timedelta(seconds=1000))
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        '/api/activities',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['activities']) == 5
+    assert 'creation_date' in data['data']['activities'][0]
+    assert 'Wed, 09 May 2018 00:00:00 GMT' == data['data']['activities'][0]['activity_date']  # noqa
+    assert '0:50:00' == data['data']['activities'][0]['duration']
+    assert 'creation_date' in data['data']['activities'][4]
+    assert 'Mon, 01 Jan 2018 00:00:00 GMT' == data['data']['activities'][4]['activity_date']  # noqa
+    assert '0:17:04' == data['data']['activities'][4]['duration']
+
+    response = client.get(
+        '/api/activities?page=1',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['activities']) == 5
+    assert 'creation_date' in data['data']['activities'][0]
+    assert 'Wed, 09 May 2018 00:00:00 GMT' == data['data']['activities'][0]['activity_date']  # noqa
+    assert '0:50:00' == data['data']['activities'][0]['duration']
+    assert 'creation_date' in data['data']['activities'][4]
+    assert 'Mon, 01 Jan 2018 00:00:00 GMT' == data['data']['activities'][4]['activity_date']  # noqa
+    assert '0:17:04' == data['data']['activities'][4]['duration']
+
+    response = client.get(
+        '/api/activities?page=2',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['activities']) == 2
+    assert 'creation_date' in data['data']['activities'][0]
+    assert 'Thu, 01 Jun 2017 00:00:00 GMT' == data['data']['activities'][0]['activity_date']  # noqa
+    assert '0:57:36' == data['data']['activities'][0]['duration']
+    assert 'creation_date' in data['data']['activities'][1]
+    assert 'Mon, 20 Mar 2017 00:00:00 GMT' == data['data']['activities'][1]['activity_date']  # noqa
+    assert '0:17:04' == data['data']['activities'][1]['duration']
+
+    response = client.get(
+        '/api/activities?page=3',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['activities']) == 0
+
+
 def test_add_an_activity_gpx(app):
     add_user('test', 'test@test.com', '12345678')
     add_sport('cycling')
