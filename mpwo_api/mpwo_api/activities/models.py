@@ -1,6 +1,7 @@
 import datetime
 
 from mpwo_api import db
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.types import Enum
 
 record_types = [
@@ -64,8 +65,8 @@ class Activity(db.Model):
     max_alt = db.Column(db.Numeric(5, 2), nullable=True)     # meters
     descent = db.Column(db.Numeric(5, 2), nullable=True)     # meters
     ascent = db.Column(db.Numeric(5, 2), nullable=True)      # meters
-    max_speed = db.Column(db.Numeric(5, 3), nullable=True)   # km/h
-    ave_speed = db.Column(db.Numeric(5, 3), nullable=True)   # km/h
+    max_speed = db.Column(db.Numeric(5, 2), nullable=True)   # km/h
+    ave_speed = db.Column(db.Numeric(5, 2), nullable=True)   # km/h
     records = db.relationship('Record',
                               lazy=True,
                               backref=db.backref('activities', lazy='joined'))
@@ -125,8 +126,7 @@ class Record(db.Model):
         nullable=False)
     record_type = db.Column(Enum(*record_types, name="record_types"))
     activity_date = db.Column(db.DateTime, nullable=False)
-    value_interval = db.Column(db.Interval, nullable=True)
-    value_float = db.Column(db.Numeric(5, 3), nullable=True)
+    _value = db.Column("value", db.Integer, nullable=True)
 
     def __str__(self):
         return str(self.sports.label) + \
@@ -140,7 +140,36 @@ class Record(db.Model):
         self.record_type = record_type
         self.activity_date = activity.activity_date
 
+    @hybrid_property
+    def value(self):
+        if self._value is None:
+            return None
+
+        if self.record_type == 'LD':
+            return datetime.timedelta(seconds=self._value)
+        elif self.record_type in ['AS', 'MS']:
+            return float(self._value / 100)
+        else:  # 'FD'
+            return float(self._value / 1000)
+
+    @value.setter
+    def value(self, val):
+        if self.record_type == 'LD':
+            hours, minutes, seconds = str(val).split(':')
+            self._value = int(hours) * 3600 + int(minutes) * 60 + int(seconds)
+        elif self.record_type in ['AS', 'MS']:
+            self._value = int(val * 100)
+        else:  # 'FD'
+            self._value = int(val * 1000)
+
     def serialize(self):
+        if self.value is None:
+            value = None
+        elif self.record_type in ['AS', 'FD', 'MS']:
+            value = float(self.value)
+        else:  # 'LD'
+            value = str(self.value)
+
         return {
             "id": self.id,
             "user_id": self.user_id,
@@ -148,8 +177,5 @@ class Record(db.Model):
             "activity_id": self.activity_id,
             "record_type": self.record_type,
             "activity_date": self.activity_date,
-            "value_interval": str(
-                self.value_interval) if self.value_interval else None,
-            "value_float": str(
-                self.value_float) if self.value_float else None,
+            "value": value,
         }

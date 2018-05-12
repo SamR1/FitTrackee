@@ -65,13 +65,11 @@ def test_get_all_activities_for_authenticated_user(app):
     assert 1 == data['data']['records'][0]['sport_id']
     assert 3 == data['data']['records'][0]['activity_id']
     assert 'FD' == data['data']['records'][0]['record_type']
-    assert 'value_interval' in data['data']['records'][0]
-    assert 'value_float' in data['data']['records'][0]
+    assert 'value' in data['data']['records'][0]
 
     assert 'Mon, 01 Jan 2018 00:00:00 GMT' == data['data']['records'][1]['activity_date']  # noqa
     assert 1 == data['data']['records'][1]['user_id']
     assert 2 == data['data']['records'][1]['sport_id']
     assert 1 == data['data']['records'][1]['activity_id']
     assert 'LD' == data['data']['records'][1]['record_type']
-    assert 'value_interval' in data['data']['records'][1]
-    assert 'value_float' in data['data']['records'][1]
+    assert 'value' in data['data']['records'][1]
