@@ -1,0 +1,4 @@
+[run]
+omit =
+    mpwo_api/venv/*
+    mpwo_api/mpwo_api/tests/*

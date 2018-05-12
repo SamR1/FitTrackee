@@ -48,7 +48,7 @@ test-e2e:
 	$(NPM) test
 
 test-python:
-	$(PYTEST) mpwo_api
+	$(PYTEST) mpwo_api --cov-config .coveragerc --cov=mpwo_api
 
 upgrade-db:
 	$(FLASK) db upgrade --directory $(MIGRATIONS)
