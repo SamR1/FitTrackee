@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 
 import gpxpy.gpx
 from flask import current_app
+from mpwo_api import appLog
 from werkzeug.utils import secure_filename
 
 from .models import Activity
@@ -14,7 +15,7 @@ def create_activity(
 ):
     activity_date = gpx_data['start'] if gpx_data else datetime.strptime(
         activity_data.get('activity_date'), '%Y-%m-%d %H:%M')
-    duration = timedelta(seconds=gpx_data['duration']) if gpx_data \
+    duration = gpx_data['duration'] if gpx_data \
         else timedelta(seconds=activity_data.get('duration'))
     distance = gpx_data['distance'] if gpx_data \
         else activity_data.get('distance')
@@ -29,8 +30,8 @@ def create_activity(
 
     if gpx_data:
         new_activity.gpx = gpx_data['filename']
-        new_activity.pauses = timedelta(seconds=gpx_data['stop_time'])
-        new_activity.moving = timedelta(seconds=gpx_data['moving_time'])
+        new_activity.pauses = gpx_data['stop_time']
+        new_activity.moving = gpx_data['moving_time']
         new_activity.min_alt = gpx_data['elevation_min']
         new_activity.max_alt = gpx_data['elevation_max']
         new_activity.descent = gpx_data['downhill']
@@ -62,50 +63,82 @@ def edit_activity(activity, activity_data):
     return activity
 
 
-def get_gpx_info(gpx_file):
+def get_gpx_data(parsed_gpx, max_speed, start):
 
-    gpx_data = {}
+    gpx_data = {'max_speed': (max_speed / 1000) * 3600, 'start': start}
 
-    gpx_file = open(gpx_file, 'r')
-    gpx = gpxpy.parse(gpx_file)
+    duration = parsed_gpx.get_duration()
+    gpx_data['duration'] = timedelta(seconds=duration)
 
-    max_speed = 0
-    start = 0
-
-    for track in gpx.tracks:
-        for segment in track.segments:
-            for point_idx, point in enumerate(segment.points):
-                if point_idx == 0:
-                    start = point.time
-                speed = segment.get_speed(point_idx)
-                try:
-                    if speed > max_speed:
-                        max_speed = speed
-                except Exception:
-                    pass
-
-    gpx_data['max_speed'] = (max_speed / 1000) * 3600
-    gpx_data['start'] = start
-
-    duration = gpx.get_duration()
-    gpx_data['duration'] = duration
-
-    ele = gpx.get_elevation_extremes()
+    ele = parsed_gpx.get_elevation_extremes()
     gpx_data['elevation_max'] = ele.maximum
     gpx_data['elevation_min'] = ele.minimum
 
-    hill = gpx.get_uphill_downhill()
+    hill = parsed_gpx.get_uphill_downhill()
     gpx_data['uphill'] = hill.uphill
     gpx_data['downhill'] = hill.downhill
 
-    mv = gpx.get_moving_data()
-    gpx_data['moving_time'] = mv.moving_time
-    gpx_data['stop_time'] = mv.stopped_time
+    mv = parsed_gpx.get_moving_data()
+    gpx_data['moving_time'] = timedelta(seconds=mv.moving_time)
+    gpx_data['stop_time'] = timedelta(seconds=mv.stopped_time)
     distance = mv.moving_distance + mv.stopped_distance
-    gpx_data['distance'] = distance/1000
+    gpx_data['distance'] = distance / 1000
 
-    average_speed = distance / duration
+    average_speed = distance / mv.moving_time
     gpx_data['average_speed'] = (average_speed / 1000) * 3600
+
+    return gpx_data
+
+
+def get_gpx_info(gpx_file):
+
+    gpx_file = open(gpx_file, 'r')
+
+    try:
+        gpx = gpxpy.parse(gpx_file)
+    except gpxpy.gpx.GPXXMLSyntaxException as e:
+        appLog.error(e)
+        return None
+
+    # handle only one track per file
+    if len(gpx.tracks) == 0:
+        return None
+
+    gpx_data = {
+        'name': gpx.tracks[0].name,
+        'segments': []}
+    max_speed = 0
+    start = 0
+
+    for segment_idx, segment in enumerate(gpx.tracks[0].segments):
+        segment_max_speed = 0
+        segment_start = 0
+        for point_idx, point in enumerate(segment.points):
+            if point_idx == 0:
+                segment_start = point.time
+                if start == 0:
+                    start = segment_start
+            segment_speed = segment.get_speed(point_idx)
+            if segment_speed > segment_max_speed:
+                segment_max_speed = segment_speed
+            if segment_max_speed > max_speed:
+                max_speed = segment_max_speed
+
+        segment_data = get_gpx_data(
+            segment, segment_max_speed, segment_start
+        )
+        segment_data['idx'] = segment_idx
+        gpx_data['segments'].append(segment_data)
+
+    gull_gpx_data = get_gpx_data(gpx, max_speed, start)
+    gpx_data = {**gpx_data, **gull_gpx_data}
+    bounds = gpx.get_bounds()
+    gpx_data['bounds'] = [
+        bounds.min_latitude,
+        bounds.min_longitude,
+        bounds.max_latitude,
+        bounds.max_longitude
+    ]
 
     return gpx_data
 
