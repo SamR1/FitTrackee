@@ -72,7 +72,7 @@ class Activity(db.Model):
 
     def __str__(self):
         return str(self.sports.label) + \
-               " - " + self.activity_date.strftime('%Y-%m-%d')
+               " - " + self.activity_date.strftime('%Y-%m-%d %H:%M:%S')
 
     def __init__(self, user_id, sport_id, activity_date, distance, duration):
         self.user_id = user_id
