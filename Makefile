@@ -48,7 +48,13 @@ test-e2e:
 	$(NPM) test
 
 test-python:
-	$(PYTEST) mpwo_api --cov-config .coveragerc --cov=mpwo_api
+	$(PYTEST) mpwo_api --cov-config .coveragerc --cov=mpwo_api --cov-report term-missing
+
+test-python-xml:
+	$(PYTEST) mpwo_api --cov-config .coveragerc --cov=mpwo_api --cov-report xml
+
+update-cov:
+	$(COV) -r coverage.xml
 
 upgrade-db:
 	$(FLASK) db upgrade --directory $(MIGRATIONS)

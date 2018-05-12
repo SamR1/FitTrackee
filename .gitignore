@@ -10,6 +10,7 @@ __pycache__
 uploads
 .cache
 .coverage
+coverage.xml
 
 # MPWO_CLIENT
 ###############

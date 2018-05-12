@@ -1,1 +1,4 @@
 export REACT_APP_THUNDERFOREST_API_KEY=
+
+# for dev env
+export CODACY_PROJECT_TOKEN=
