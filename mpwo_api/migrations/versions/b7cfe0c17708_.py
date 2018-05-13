@@ -28,6 +28,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('sport_id', sa.Integer(), nullable=False),
+    sa.Column('title', sa.String(length=255), nullable=True),
     sa.Column('gpx', sa.String(length=255), nullable=True),
     sa.Column('creation_date', sa.DateTime(), nullable=True),
     sa.Column('modification_date', sa.DateTime(), nullable=True),
@@ -40,8 +41,8 @@ def upgrade():
     sa.Column('max_alt', sa.Numeric(precision=5, scale=2), nullable=True),
     sa.Column('descent', sa.Numeric(precision=5, scale=2), nullable=True),
     sa.Column('ascent', sa.Numeric(precision=5, scale=2), nullable=True),
-    sa.Column('max_speed', sa.Numeric(precision=5, scale=3), nullable=True),
-    sa.Column('ave_speed', sa.Numeric(precision=5, scale=3), nullable=True),
+    sa.Column('max_speed', sa.Numeric(precision=5, scale=2), nullable=True),
+    sa.Column('ave_speed', sa.Numeric(precision=5, scale=2), nullable=True),
     sa.ForeignKeyConstraint(['sport_id'], ['sports.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')

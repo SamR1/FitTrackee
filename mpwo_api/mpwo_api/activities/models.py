@@ -24,7 +24,7 @@ class Sport(db.Model):
                               backref=db.backref('sports', lazy='joined'))
 
     def __repr__(self):
-        return self.label
+        return '<Sport {!r}>'.format(self.label)
 
     def __init__(self, label):
         self.label = label
@@ -51,6 +51,7 @@ class Activity(db.Model):
         db.Integer,
         db.ForeignKey('sports.id'),
         nullable=False)
+    title = db.Column(db.String(255), nullable=True)
     gpx = db.Column(db.String(255), nullable=True)
     creation_date = db.Column(
         db.DateTime, default=datetime.datetime.utcnow)
@@ -72,8 +73,8 @@ class Activity(db.Model):
                               backref=db.backref('activities', lazy='joined'))
 
     def __str__(self):
-        return str(self.sports.label) + \
-               " - " + self.activity_date.strftime('%Y-%m-%d %H:%M:%S')
+        return '<Activity \'{}\' - {}>'.format(
+            self.sports.label, self.activity_date, )
 
     def __init__(self, user_id, sport_id, activity_date, distance, duration):
         self.user_id = user_id
@@ -87,6 +88,7 @@ class Activity(db.Model):
             "id": self.id,
             "user_id": self.user_id,
             "sport_id": self.sport_id,
+            "title": self.title,
             "creation_date": self.creation_date,
             "modification_date": self.modification_date,
             "activity_date": self.activity_date,
@@ -129,9 +131,11 @@ class Record(db.Model):
     _value = db.Column("value", db.Integer, nullable=True)
 
     def __str__(self):
-        return str(self.sports.label) + \
-               " - " + self.record_type + \
-               " - " + self.activity_date.strftime('%Y-%m-%d')
+        return '<Record {} - {} - {}>'.format(
+            self.sports.label,
+            self.record_type,
+            self.activity_date.strftime('%Y-%m-%d')
+        )
 
     def __init__(self, user_id, sport_id, activity, record_type):
         self.user_id = user_id

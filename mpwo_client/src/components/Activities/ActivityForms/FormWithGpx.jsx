@@ -32,7 +32,18 @@ function FormWithGpx (props) {
           </select>
         </label>
       </div>
-      {!activity && (
+      {activity ? (
+        <div className="form-group">
+          <label>
+            Title:
+            <input
+              name="title"
+              defaultValue={activity ? activity.title : ''}
+              className="form-control input-lg"
+            />
+          </label>
+        </div>
+      ) : (
         <div className="form-group">
           <label>
             GPX file:
@@ -80,7 +91,8 @@ export default connect(
     onEditActivity: (e, activity) => {
       dispatch(editActivity({
         id: activity.id,
-        sport_id: +e.target.form.sport.value
+        sport_id: +e.target.form.sport.value,
+        title: e.target.form.title.value,
       }))
     },
   })

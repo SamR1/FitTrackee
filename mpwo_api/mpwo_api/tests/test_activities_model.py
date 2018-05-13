@@ -13,6 +13,7 @@ def test_add_activity(app):
         distance=10,
         duration=datetime.timedelta(seconds=1024)
     )
+    activity.title = 'Test'
 
     assert 1 == activity.id
     assert 1 == activity.user_id
@@ -20,4 +21,5 @@ def test_add_activity(app):
     assert '2018-01-01 13:36:00' == str(activity.activity_date)
     assert 10.0 == float(activity.distance)
     assert '0:17:04' == str(activity.duration)
-    assert 'cycling - 2018-01-01 13:36:00' == str(activity)
+    assert 'Test' == activity.title
+    assert '<Activity \'cycling\' - 2018-01-01 13:36:00>' == str(activity)

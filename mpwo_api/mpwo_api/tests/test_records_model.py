@@ -22,7 +22,7 @@ def test_add_record(app):
     assert 1 == record.activity_id
     assert 'LD' == record.record_type
     assert '2018-01-01 13:36:00' == str(record.activity_date)
-    assert 'cycling - LD - 2018-01-01' == str(record)
+    assert '<Record cycling - LD - 2018-01-01>' == str(record)
 
     record_serialize = record.serialize()
     assert 'id' in record_serialize

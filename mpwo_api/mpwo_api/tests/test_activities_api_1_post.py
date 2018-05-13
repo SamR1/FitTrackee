@@ -41,6 +41,7 @@ def test_add_an_activity_gpx(app):
     assert 1 == data['data']['activities'][0]['user_id']
     assert 1 == data['data']['activities'][0]['sport_id']
     assert '0:04:10' == data['data']['activities'][0]['duration']
+    assert 'cycling - 2018-03-13 12:44:45' == data['data']['activities'][0]['title']  # noqa
     assert data['data']['activities'][0]['ascent'] == 0.4
     assert data['data']['activities'][0]['ave_speed'] == 4.6
     assert data['data']['activities'][0]['descent'] == 23.4
@@ -98,6 +99,7 @@ def test_get_an_activity_with_gpx(app):
     assert 1 == data['data']['activities'][0]['user_id']
     assert 1 == data['data']['activities'][0]['sport_id']
     assert '0:04:10' == data['data']['activities'][0]['duration']
+    assert 'cycling - 2018-03-13 12:44:45' == data['data']['activities'][0]['title']  # noqa
     assert data['data']['activities'][0]['ascent'] == 0.4
     assert data['data']['activities'][0]['ave_speed'] == 4.6
     assert data['data']['activities'][0]['descent'] == 23.4
@@ -280,6 +282,7 @@ def test_add_an_activity_no_gpx(app):
     assert data['data']['activities'][0]['user_id'] == 1
     assert data['data']['activities'][0]['sport_id'] == 1
     assert data['data']['activities'][0]['duration'] == '1:00:00'
+    assert data['data']['activities'][0]['title'] == 'cycling - 2018-05-15 14:05:00'  # noqa
     assert data['data']['activities'][0]['ascent'] is None
     assert data['data']['activities'][0]['ave_speed'] == 10.0
     assert data['data']['activities'][0]['descent'] is None
@@ -338,6 +341,7 @@ def test_get_an_activity_wo_gpx(app):
     assert data['data']['activities'][0]['user_id'] == 1
     assert data['data']['activities'][0]['sport_id'] == 1
     assert data['data']['activities'][0]['duration'] == '1:00:00'
+    assert data['data']['activities'][0]['title'] == 'cycling - 2018-05-15 14:05:00'  # noqa
     assert data['data']['activities'][0]['ascent'] is None
     assert data['data']['activities'][0]['ave_speed'] == 10.0
     assert data['data']['activities'][0]['descent'] is None

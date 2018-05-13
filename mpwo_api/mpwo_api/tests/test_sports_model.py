@@ -7,4 +7,4 @@ def test_add_sport(app):
 
     assert 1 == sport.id
     assert 'cycling' == sport.label
-    assert 'cycling' == str(sport)
+    assert '<Sport \'cycling\'>' == str(sport)

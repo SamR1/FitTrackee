@@ -23,6 +23,16 @@ function FormWithoutGpx (props) {
     >
       <div className="form-group">
         <label>
+          Title:
+          <input
+            name="title"
+            defaultValue={activity ? activity.title : ''}
+            className="form-control input-lg"
+          />
+        </label>
+      </div>
+      <div className="form-group">
+        <label>
           Sport:
           <select
             className="form-control input-lg"
@@ -121,6 +131,7 @@ export default connect(
         distance: +e.target.form.distance.value,
         duration,
         sport_id: +e.target.form.sport_id.value,
+        title: e.target.form.title.value,
       }
       if (activity) {
         data.id = activity.id

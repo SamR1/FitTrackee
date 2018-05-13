@@ -7,7 +7,7 @@ from flask import current_app
 from mpwo_api import appLog
 from werkzeug.utils import secure_filename
 
-from .models import Activity
+from .models import Activity, Sport
 
 
 def create_activity(
@@ -19,6 +19,8 @@ def create_activity(
         else timedelta(seconds=activity_data.get('duration'))
     distance = gpx_data['distance'] if gpx_data \
         else activity_data.get('distance')
+    title = gpx_data['name'] if gpx_data \
+        else activity_data.get('title')
 
     new_activity = Activity(
         user_id=auth_user_id,
@@ -27,6 +29,13 @@ def create_activity(
         distance=distance,
         duration=duration
     )
+
+    if title is not None:
+        new_activity.title = title
+    else:
+        sport = Sport.query.filter_by(id=new_activity.sport_id).first()
+        new_activity.title = '{} - {}'.format(sport.label,
+                                              new_activity.activity_date)
 
     if gpx_data:
         new_activity.gpx = gpx_data['filename']
@@ -48,12 +57,15 @@ def create_activity(
 
 def edit_activity(activity, activity_data):
     activity.sport_id = activity_data.get('sport_id')
+    if activity_data.get('title'):
+        activity.title = activity_data.get('title')
     if not activity.gpx:
         if activity_data.get('activity_date'):
             activity.activity_date = datetime.strptime(
                 activity_data.get('activity_date'), '%Y-%m-%d %H:%M')
         if activity_data.get('duration'):
-            activity.duration = timedelta(seconds=activity_data.get('duration'))  # noqa
+            activity.duration = timedelta(
+                seconds=activity_data.get('duration'))
             activity.moving = activity.duration
         if activity_data.get('distance'):
             activity.distance = activity_data.get('distance')
@@ -64,7 +76,6 @@ def edit_activity(activity, activity_data):
 
 
 def get_gpx_data(parsed_gpx, max_speed, start):
-
     gpx_data = {'max_speed': (max_speed / 1000) * 3600, 'start': start}
 
     duration = parsed_gpx.get_duration()
@@ -91,7 +102,6 @@ def get_gpx_data(parsed_gpx, max_speed, start):
 
 
 def get_gpx_info(gpx_file):
-
     gpx_file = open(gpx_file, 'r')
 
     try:
@@ -167,5 +177,6 @@ def get_new_file_path(auth_user_id, activity_date, activity_file, sport):
         current_app.config['UPLOAD_FOLDER'], 'activities', str(auth_user_id))
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
-    file_path = os.path.join(dir_path, new_filename.replace('/tmp/', ''))  # noqa
+    file_path = os.path.join(dir_path,
+                             new_filename.replace('/tmp/', ''))
     return file_path
