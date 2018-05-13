@@ -30,7 +30,17 @@ def register_user():
     password = post_data.get('password')
     password_conf = post_data.get('password_conf')
 
-    ret = register_controls(username, email, password, password_conf)
+    try:
+        ret = register_controls(username, email, password, password_conf)
+    except TypeError as e:
+        db.session.rollback()
+        appLog.error(e)
+
+        response_object = {
+            'status': 'error',
+            'message': 'Error. Please try again or contact the administrator.'
+        }
+        return jsonify(response_object), 500
     if ret != '':
         response_object = {
             'status': 'error',
@@ -74,7 +84,7 @@ def register_user():
             'status': 'error',
             'message': 'Error. Please try again or contact the administrator.'
         }
-        return jsonify(response_object), 400
+        return jsonify(response_object), 500
 
 
 @auth_blueprint.route('/auth/login', methods=['POST'])
@@ -143,7 +153,7 @@ def logout_user(user_id):
             'status': 'error',
             'message': 'Provide a valid auth token.'
         }
-        return jsonify(response_object), 403
+        return jsonify(response_object), 401
 
 
 @auth_blueprint.route('/auth/profile', methods=['GET'])

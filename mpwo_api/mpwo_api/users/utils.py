@@ -67,7 +67,6 @@ def verify_user(current_request, verify_admin):
     auth_header = current_request.headers.get('Authorization')
     if not auth_header:
         response_object['message'] = 'Provide a valid auth token.'
-        code = 403
         return response_object, code, None
     auth_token = auth_header.split(" ")[1]
     resp = User.decode_auth_token(auth_token)
@@ -79,7 +78,7 @@ def verify_user(current_request, verify_admin):
         return response_object, code, None
     if verify_admin and not is_admin(resp):
         response_object['message'] = 'You do not have permissions.'
-        return response_object, code, None
+        return response_object, 403, None
     return None, None, resp
 
 

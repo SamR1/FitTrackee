@@ -1,6 +1,14 @@
-from mpwo_api.tests.utils import add_user
+def test_user_model(app, user_1):
+    assert '<User \'test\'>' == str(user_1)
 
-
-def test_add_user(app):
-    user = add_user('test', 'test@test.com', '12345678')
-    assert '<User \'test\'>' == str(user)
+    serialized_user = user_1.serialize()
+    assert 1 == serialized_user['id']
+    assert 'test' == serialized_user['username']
+    assert 'created_at' in serialized_user
+    assert serialized_user['admin'] is False
+    assert serialized_user['first_name'] is None
+    assert serialized_user['last_name'] is None
+    assert serialized_user['bio'] is None
+    assert serialized_user['location'] is None
+    assert serialized_user['birth_date'] is None
+    assert serialized_user['picture'] is False

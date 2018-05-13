@@ -2,8 +2,6 @@ import json
 import time
 from io import BytesIO
 
-from mpwo_api.tests.utils import add_user, add_user_full
-
 
 def test_user_registration(app):
     client = app.test_client()
@@ -25,8 +23,7 @@ def test_user_registration(app):
     assert response.status_code == 201
 
 
-def test_user_registration_user_already_exists(app):
-    add_user('test', 'test@test.com', '12345678')
+def test_user_registration_user_already_exists(app, user_1):
     client = app.test_client()
     response = client.post(
         '/api/auth/register',
@@ -217,9 +214,26 @@ def test_user_registration_invalid_json_keys_no_password_conf(app):
     assert 'error' in data['status']
 
 
-def test_registered_user_login(app):
+def test_user_registration_invalid_data(app):
     client = app.test_client()
-    add_user('test', 'test@test.com', '12345678')
+    response = client.post(
+        '/api/auth/register',
+        data=json.dumps(dict(
+            username=1,
+            email='test@test.com',
+            password='12345678',
+            password_conf='12345678'
+        )),
+        content_type='application/json',
+    )
+    data = json.loads(response.data.decode())
+    assert response.status_code == 500
+    assert 'Error. Please try again or contact the administrator.' in data['message']  # noqa
+    assert 'error' in data['status']
+
+
+def test_login_registered_user(app, user_1):
+    client = app.test_client()
     response = client.post(
         '/api/auth/login',
         data=json.dumps(dict(
@@ -236,7 +250,7 @@ def test_registered_user_login(app):
     assert response.status_code == 200
 
 
-def test_no_registered_user_login(app):
+def test_login_no_registered_user(app):
     client = app.test_client()
     response = client.post(
         '/api/auth/login',
@@ -253,8 +267,21 @@ def test_no_registered_user_login(app):
     assert response.status_code == 404
 
 
-def test_registered_user_login_invalid_password(app):
-    add_user('test', 'test@test.com', '12345678')
+def test_login_invalid_payload(app):
+    client = app.test_client()
+    response = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict()),
+        content_type='application/json'
+    )
+    data = json.loads(response.data.decode())
+    assert data['status'] == 'error'
+    assert data['message'] == 'Invalid payload.'
+    assert response.content_type == 'application/json'
+    assert response.status_code == 400
+
+
+def test_login_registered_user_invalid_password(app, user_1):
     client = app.test_client()
     response = client.post(
         '/api/auth/login',
@@ -271,8 +298,7 @@ def test_registered_user_login_invalid_password(app):
     assert response.status_code == 404
 
 
-def test_valid_logout(app):
-    add_user('test', 'test@test.com', '12345678')
+def test_logout(app, user_1):
     client = app.test_client()
     # user login
     resp_login = client.post(
@@ -298,8 +324,7 @@ def test_valid_logout(app):
     assert response.status_code == 200
 
 
-def test_invalid_logout_expired_token(app):
-    add_user('test', 'test@test.com', '12345678')
+def test_logout_expired_token(app, user_1):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
@@ -325,7 +350,7 @@ def test_invalid_logout_expired_token(app):
     assert response.status_code == 401
 
 
-def test_invalid_logout(app):
+def test_logout_invalid(app):
     client = app.test_client()
     response = client.get(
         '/api/auth/logout',
@@ -336,8 +361,18 @@ def test_invalid_logout(app):
     assert response.status_code == 401
 
 
-def test_user_profile_minimal(app):
-    add_user('test', 'test@test.com', '12345678')
+def test_logout_invalid_headers(app):
+    client = app.test_client()
+    response = client.get(
+        '/api/auth/logout',
+        headers=dict())
+    data = json.loads(response.data.decode())
+    assert data['status'] == 'error'
+    assert data['message'] == 'Provide a valid auth token.'
+    assert response.status_code == 401
+
+
+def test_user_profile_minimal(app, user_1):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
@@ -365,8 +400,7 @@ def test_user_profile_minimal(app):
     assert response.status_code == 200
 
 
-def test_user_profile_full(app):
-    add_user_full('test', 'test@test.com', '12345678')
+def test_user_profile_full(app, user_1_full):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
@@ -410,8 +444,41 @@ def test_invalid_profile(app):
     assert response.status_code == 401
 
 
-def test_user_profile_valid_update(app):
-    add_user('test', 'test@test.com', '12345678')
+def test_user_profile_valid_update(app, user_1):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.post(
+        '/api/auth/profile/edit',
+        content_type='application/json',
+        data=json.dumps(dict(
+            first_name='John',
+            last_name='Doe',
+            location='Somewhere',
+            bio='just a random guy',
+            birth_date='1980-01-01',
+            password='87654321',
+            password_conf='87654321'
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+    assert data['status'] == 'success'
+    assert data['message'] == 'User profile updated.'
+    assert response.status_code == 200
+
+
+def test_user_profile_valid_update_without_password(app, user_1):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
@@ -443,8 +510,7 @@ def test_user_profile_valid_update(app):
     assert response.status_code == 200
 
 
-def test_user_profile_valid_update_with_one_field(app):
-    add_user('test', 'test@test.com', '12345678')
+def test_user_profile_valid_update_with_one_field(app, user_1):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
@@ -472,8 +538,7 @@ def test_user_profile_valid_update_with_one_field(app):
     assert response.status_code == 200
 
 
-def test_user_profile_update_invalid_json(app):
-    add_user('test', 'test@test.com', '12345678')
+def test_user_profile_update_invalid_json(app, user_1):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
@@ -499,9 +564,74 @@ def test_user_profile_update_invalid_json(app):
     assert 'error' in data['status']
 
 
-def test_update_user_picture(app):
-    add_user('test', 'test@test.com', '12345678')
+def test_user_profile_invalid_password(app, user_1):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.post(
+        '/api/auth/profile/edit',
+        content_type='application/json',
+        data=json.dumps(dict(
+            first_name='John',
+            last_name='Doe',
+            location='Somewhere',
+            bio='just a random guy',
+            birth_date='1980-01-01',
+            password='87654321',
+            password_conf='876543210'
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+    assert data['status'] == 'error'
+    assert data['message'] == 'Password and password confirmation don\'t match.\n'  # noqa
+    assert response.status_code == 400
 
+
+def test_user_profile_missing_password_conf(app, user_1):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.post(
+        '/api/auth/profile/edit',
+        content_type='application/json',
+        data=json.dumps(dict(
+            first_name='John',
+            last_name='Doe',
+            location='Somewhere',
+            bio='just a random guy',
+            birth_date='1980-01-01',
+            password='87654321',
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+    assert data['status'] == 'error'
+    assert data['message'] == 'Password and password confirmation don\'t match.\n'  # noqa
+    assert response.status_code == 400
+
+
+def test_update_user_picture(app, user_1):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
@@ -528,9 +658,7 @@ def test_update_user_picture(app):
     assert response.status_code == 200
 
 
-def test_update_user_no_picture(app):
-    add_user('test', 'test@test.com', '12345678')
-
+def test_update_user_no_picture(app, user_1):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
@@ -554,9 +682,7 @@ def test_update_user_no_picture(app):
     assert response.status_code == 400
 
 
-def test_update_user_invalid_picture(app):
-    add_user('test', 'test@test.com', '12345678')
-
+def test_update_user_invalid_picture(app, user_1):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',

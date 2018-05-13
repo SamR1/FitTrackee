@@ -1,18 +1,16 @@
-import datetime
 import json
 import os
 from io import BytesIO
 
-from mpwo_api.tests.utils import (
-    add_activity, add_sport, add_user, get_gpx_filepath
-)
-from mpwo_api.tests.utils_gpx import gpx_file
+from mpwo_api.activities.models import Activity
 
 
-def test_delete_an_activity_with_gpx(app):
-    add_user('test', 'test@test.com', '12345678')
-    add_sport('cycling')
+def get_gpx_filepath(activity_id):
+    activity = Activity.query.filter_by(id=activity_id).first()
+    return activity.gpx
 
+
+def test_delete_an_activity_with_gpx(app, user_1, sport_1_cycling, gpx_file):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
@@ -47,17 +45,9 @@ def test_delete_an_activity_with_gpx(app):
     assert response.status_code == 204
 
 
-def test_delete_an_activity_wo_gpx(app):
-    add_user('test', 'test@test.com', '12345678')
-    add_sport('cycling')
-    add_activity(
-        user_id=1,
-        sport_id=1,
-        activity_date=datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
-        distance=10,
-        duration=datetime.timedelta(seconds=1024)
-    )
-
+def test_delete_an_activity_wo_gpx(
+        app, user_1, sport_1_cycling, activity_cycling_user_1
+):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
@@ -75,13 +65,10 @@ def test_delete_an_activity_wo_gpx(app):
             )['auth_token']
         )
     )
-
     assert response.status_code == 204
 
 
-def test_delete_an_activity_no_activityy(app):
-    add_user('test', 'test@test.com', '12345678')
-
+def test_delete_an_activity_no_activityy(app, user_1):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
@@ -99,17 +86,13 @@ def test_delete_an_activity_no_activityy(app):
             )['auth_token']
         )
     )
-
     data = json.loads(response.data.decode())
-
     assert response.status_code == 404
     assert 'not found' in data['status']
 
 
-def test_delete_an_activity_with_gpx_invalid_file(app):
-    add_user('test', 'test@test.com', '12345678')
-    add_sport('cycling')
-
+def test_delete_an_activity_with_gpx_invalid_file(
+        app, user_1, sport_1_cycling, gpx_file):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',

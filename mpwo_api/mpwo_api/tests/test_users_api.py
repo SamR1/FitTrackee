@@ -1,6 +1,5 @@
 import json
 
-from mpwo_api.tests.utils import add_user
 from mpwo_api.users.models import User
 
 
@@ -14,12 +13,11 @@ def test_ping(app):
     assert 'success' in data['status']
 
 
-def test_single_user(app):
+def test_single_user(app, user_1):
     """=> Get single user details"""
-    user = add_user('test', 'test@test.com', 'test')
     client = app.test_client()
 
-    response = client.get(f'/api/users/{user.id}')
+    response = client.get(f'/api/users/{user_1.id}')
     data = json.loads(response.data.decode())
 
     assert response.status_code == 200
@@ -52,10 +50,8 @@ def test_single_user_wrong_id(app):
     assert 'User does not exist' in data['message']
 
 
-def test_users_list(app):
+def test_users_list(app, user_1, user_2):
     """=> Ensure get single user behaves correctly."""
-    add_user('test', 'test@test.com', 'test')
-    add_user('toto', 'toto@toto.com', 'toto')
 
     client = app.test_client()
     response = client.get('/api/users')
@@ -73,15 +69,13 @@ def test_users_list(app):
     assert 'toto@toto.com' in data['data']['users'][1]['email']
 
 
-def test_encode_auth_token(app):
+def test_encode_auth_token(app, user_1):
     """=> Ensure correct auth token generation"""
-    user = add_user('test', 'test@test.com', 'test')
-    auth_token = user.encode_auth_token(user.id)
+    auth_token = user_1.encode_auth_token(user_1.id)
     assert isinstance(auth_token, bytes)
 
 
-def test_decode_auth_token(app):
-    user = add_user('test', 'test@test.com', 'test')
-    auth_token = user.encode_auth_token(user.id)
+def test_decode_auth_token(app, user_1):
+    auth_token = user_1.encode_auth_token(user_1.id)
     assert isinstance(auth_token, bytes)
-    assert User.decode_auth_token(auth_token) == user.id
+    assert User.decode_auth_token(auth_token) == user_1.id

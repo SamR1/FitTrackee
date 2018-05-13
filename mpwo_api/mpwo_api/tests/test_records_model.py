@@ -1,30 +1,18 @@
 import datetime
 
-from mpwo_api.tests.utils import add_activity, add_record, add_sport, add_user
 
+def test_record_model(
+    app,  user_1, sport_1_cycling, activity_cycling_user_1, record_ld
+):
+    assert 1 == record_ld.id
+    assert 1 == record_ld.user_id
+    assert 1 == record_ld.sport_id
+    assert 1 == record_ld.activity_id
+    assert 'LD' == record_ld.record_type
+    assert '2018-01-01 00:00:00' == str(record_ld.activity_date)
+    assert '<Record Cycling - LD - 2018-01-01>' == str(record_ld)
 
-def test_add_record(app):
-    add_user('test', 'test@test.com', '12345678')
-    add_sport('cycling')
-
-    activity = add_activity(
-        user_id=1,
-        sport_id=1,
-        activity_date=datetime.datetime.strptime('01/01/2018 13:36', '%d/%m/%Y %H:%M'),  # noqa
-        distance=10,
-        duration=datetime.timedelta(seconds=1024)
-    )
-    record = add_record(1, 1, activity, 'LD')
-
-    assert 1 == record.id
-    assert 1 == record.user_id
-    assert 1 == record.sport_id
-    assert 1 == record.activity_id
-    assert 'LD' == record.record_type
-    assert '2018-01-01 13:36:00' == str(record.activity_date)
-    assert '<Record cycling - LD - 2018-01-01>' == str(record)
-
-    record_serialize = record.serialize()
+    record_serialize = record_ld.serialize()
     assert 'id' in record_serialize
     assert 'user_id' in record_serialize
     assert 'sport_id' in record_serialize
@@ -34,137 +22,83 @@ def test_add_record(app):
     assert 'value' in record_serialize
 
 
-def test_add_records_no_value(app):
-    add_user('test', 'test@test.com', '12345678')
-    add_sport('cycling')
+def test_add_record_no_value(
+    app,  user_1, sport_1_cycling, activity_cycling_user_1, record_as
+):
+    assert record_as.value is None
+    assert record_as._value is None
 
-    activity = add_activity(
-        user_id=1,
-        sport_id=1,
-        activity_date=datetime.datetime.strptime('01/01/2018 13:36', '%d/%m/%Y %H:%M'),  # noqa
-        distance=10,
-        duration=datetime.timedelta(seconds=1024)
-    )
-    record = add_record(1, 1, activity, 'AS')
-
-    assert record.value is None
-    assert record._value is None
-
-    record_serialize = record.serialize()
+    record_serialize = record_as.serialize()
     assert record_serialize.get('value') is None
 
 
-def test_add_as_records(app):
-    add_user('test', 'test@test.com', '12345678')
-    add_sport('cycling')
-
-    activity = add_activity(
-        user_id=1,
-        sport_id=1,
-        activity_date=datetime.datetime.strptime('01/01/2018 13:36', '%d/%m/%Y %H:%M'),  # noqa
-        distance=10,
-        duration=datetime.timedelta(seconds=1024)
-    )
-    record = add_record(1, 1, activity, 'AS')
+def test_add_as_records(
+    app,  user_1, sport_1_cycling, activity_cycling_user_1, record_as
+):
     # record.value = 4.6
-    record.value = 4.61
+    record_as.value = 4.61
 
-    assert isinstance(record.value, float)
-    assert record.value == 4.61
-    assert record._value == 461
+    assert isinstance(record_as.value, float)
+    assert record_as.value == 4.61
+    assert record_as._value == 461
 
-    record_serialize = record.serialize()
+    record_serialize = record_as.serialize()
     assert record_serialize.get('value') == 4.61
     assert isinstance(record_serialize.get('value'), float)
 
 
-def test_add_fd_records(app):
-    add_user('test', 'test@test.com', '12345678')
-    add_sport('cycling')
+def test_add_fd_records(
+    app,  user_1, sport_1_cycling, activity_cycling_user_1, record_fd
+):
+    record_fd.value = 0.322
 
-    activity = add_activity(
-        user_id=1,
-        sport_id=1,
-        activity_date=datetime.datetime.strptime('01/01/2018 13:36', '%d/%m/%Y %H:%M'),  # noqa
-        distance=10,
-        duration=datetime.timedelta(seconds=1024)
-    )
-    record = add_record(1, 1, activity, 'FD')
-    record.value = 0.322
+    assert isinstance(record_fd.value, float)
+    assert record_fd.value == 0.322
+    assert record_fd._value == 322
 
-    assert isinstance(record.value, float)
-    assert record.value == 0.322
-    assert record._value == 322
-
-    record_serialize = record.serialize()
+    record_serialize = record_fd.serialize()
     assert record_serialize.get('value') == 0.322
     assert isinstance(record_serialize.get('value'), float)
 
 
-def test_add_ld_records(app):
-    add_user('test', 'test@test.com', '12345678')
-    add_sport('cycling')
+def test_add_ld_records(
+    app,  user_1, sport_1_cycling, activity_cycling_user_1, record_ld
+):
+    record_ld.value = activity_cycling_user_1.duration
 
-    activity = add_activity(
-        user_id=1,
-        sport_id=1,
-        activity_date=datetime.datetime.strptime('01/01/2018 13:36', '%d/%m/%Y %H:%M'),  # noqa
-        distance=10,
-        duration=datetime.timedelta(seconds=1024)
-    )
-    record = add_record(1, 1, activity, 'LD')
-    record.value = activity.duration
+    assert isinstance(record_ld.value, datetime.timedelta)
+    assert str(record_ld.value) == '0:17:04'
+    assert record_ld._value == 1024
 
-    assert isinstance(record.value, datetime.timedelta)
-    assert str(record.value) == '0:17:04'
-    assert record._value == 1024
-
-    record_serialize = record.serialize()
+    record_serialize = record_ld.serialize()
     assert record_serialize.get('value') == '0:17:04'
     assert isinstance(record_serialize.get('value'), str)
 
 
-def test_add_ld_records_zero(app):
-    add_user('test', 'test@test.com', '12345678')
-    add_sport('cycling')
+def test_add_ld_records_zero(
+    app,  user_1, sport_1_cycling, activity_cycling_user_1, record_ld
+):
+    activity_cycling_user_1.duration = datetime.timedelta(seconds=0)
+    record_ld.value = activity_cycling_user_1.duration
 
-    activity = add_activity(
-        user_id=1,
-        sport_id=1,
-        activity_date=datetime.datetime.strptime('01/01/2018 13:36', '%d/%m/%Y %H:%M'),  # noqa
-        distance=10,
-        duration=datetime.timedelta(seconds=0)
-    )
-    record = add_record(1, 1, activity, 'LD')
-    record.value = activity.duration
+    assert isinstance(record_ld.value, datetime.timedelta)
+    assert str(record_ld.value) == '0:00:00'
+    assert record_ld._value == 0
 
-    assert isinstance(record.value, datetime.timedelta)
-    assert str(record.value) == '0:00:00'
-    assert record._value == 0
-
-    record_serialize = record.serialize()
+    record_serialize = record_ld.serialize()
     assert record_serialize.get('value') == '0:00:00'
     assert isinstance(record_serialize.get('value'), str)
 
 
-def test_add_ms_records_no_value(app):
-    add_user('test', 'test@test.com', '12345678')
-    add_sport('cycling')
+def test_add_ms_records_no_value(
+    app,  user_1, sport_1_cycling, activity_cycling_user_1, record_ms
+):
+    record_ms.value = 23.5
 
-    activity = add_activity(
-        user_id=1,
-        sport_id=1,
-        activity_date=datetime.datetime.strptime('01/01/2018 13:36', '%d/%m/%Y %H:%M'),  # noqa
-        distance=10,
-        duration=datetime.timedelta(seconds=1024)
-    )
-    record = add_record(1, 1, activity, 'MS')
-    record.value = 23.5
+    assert isinstance(record_ms.value, float)
+    assert record_ms.value == 23.5
+    assert record_ms._value == 2350
 
-    assert isinstance(record.value, float)
-    assert record.value == 23.5
-    assert record._value == 2350
-
-    record_serialize = record.serialize()
+    record_serialize = record_ms.serialize()
     assert record_serialize.get('value') == 23.5
     assert isinstance(record_serialize.get('value'), float)

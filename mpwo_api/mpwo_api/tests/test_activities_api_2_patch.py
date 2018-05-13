@@ -1,16 +1,27 @@
-import datetime
 import json
 from io import BytesIO
 
-from mpwo_api.tests.utils import add_activity, add_sport, add_user
-from mpwo_api.tests.utils_gpx import gpx_file
+
+def assert_activity_data_with_gpx(data):
+    assert 'creation_date' in data['data']['activities'][0]
+    assert 'Tue, 13 Mar 2018 12:44:45 GMT' == data['data']['activities'][0]['activity_date']  # noqa
+    assert 1 == data['data']['activities'][0]['user_id']
+    assert '0:04:10' == data['data']['activities'][0]['duration']
+    assert data['data']['activities'][0]['ascent'] == 0.4
+    assert data['data']['activities'][0]['ave_speed'] == 4.6
+    assert data['data']['activities'][0]['descent'] == 23.4
+    assert data['data']['activities'][0]['distance'] == 0.32
+    assert data['data']['activities'][0]['max_alt'] == 998.0
+    assert data['data']['activities'][0]['max_speed'] == 5.09
+    assert data['data']['activities'][0]['min_alt'] == 975.0
+    assert data['data']['activities'][0]['moving'] == '0:04:10'
+    assert data['data']['activities'][0]['pauses'] is None
+    assert data['data']['activities'][0]['with_gpx'] is True
 
 
-def test_edit_an_activity_with_gpx(app):
-    add_user('test', 'test@test.com', '12345678')
-    add_sport('cycling')
-    add_sport('running')
-
+def test_edit_an_activity_with_gpx(
+    app, user_1, sport_1_cycling, sport_2_running, gpx_file
+):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
@@ -46,36 +57,19 @@ def test_edit_an_activity_with_gpx(app):
             )['auth_token']
         )
     )
-
     data = json.loads(response.data.decode())
 
     assert response.status_code == 200
     assert 'success' in data['status']
     assert len(data['data']['activities']) == 1
-
-    assert 'creation_date' in data['data']['activities'][0]
-    assert 'Tue, 13 Mar 2018 12:44:45 GMT' == data['data']['activities'][0]['activity_date']  # noqa
-    assert 1 == data['data']['activities'][0]['user_id']
     assert 2 == data['data']['activities'][0]['sport_id']
-    assert '0:04:10' == data['data']['activities'][0]['duration']
     assert data['data']['activities'][0]['title'] == 'Activity test'
-    assert data['data']['activities'][0]['ascent'] == 0.4
-    assert data['data']['activities'][0]['ave_speed'] == 4.6
-    assert data['data']['activities'][0]['descent'] == 23.4
-    assert data['data']['activities'][0]['distance'] == 0.32
-    assert data['data']['activities'][0]['max_alt'] == 998.0
-    assert data['data']['activities'][0]['max_speed'] == 5.09
-    assert data['data']['activities'][0]['min_alt'] == 975.0
-    assert data['data']['activities'][0]['moving'] == '0:04:10'
-    assert data['data']['activities'][0]['pauses'] is None
-    assert data['data']['activities'][0]['with_gpx'] is True
+    assert_activity_data_with_gpx(data)
 
 
-def test_edit_an_activity_with_gpx_partial(app):
-    add_user('test', 'test@test.com', '12345678')
-    add_sport('cycling')
-    add_sport('running')
-
+def test_edit_an_activity_with_gpx_partial(
+    app, user_1, sport_1_cycling, sport_2_running, gpx_file
+):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
@@ -110,36 +104,19 @@ def test_edit_an_activity_with_gpx_partial(app):
             )['auth_token']
         )
     )
-
     data = json.loads(response.data.decode())
 
     assert response.status_code == 200
     assert 'success' in data['status']
     assert len(data['data']['activities']) == 1
-
-    assert 'creation_date' in data['data']['activities'][0]
-    assert 'Tue, 13 Mar 2018 12:44:45 GMT' == data['data']['activities'][0]['activity_date']  # noqa
-    assert 1 == data['data']['activities'][0]['user_id']
     assert 2 == data['data']['activities'][0]['sport_id']
-    assert '0:04:10' == data['data']['activities'][0]['duration']
     assert data['data']['activities'][0]['title'] == 'just an activity'
-    assert data['data']['activities'][0]['ascent'] == 0.4
-    assert data['data']['activities'][0]['ave_speed'] == 4.6
-    assert data['data']['activities'][0]['descent'] == 23.4
-    assert data['data']['activities'][0]['distance'] == 0.32
-    assert data['data']['activities'][0]['max_alt'] == 998.0
-    assert data['data']['activities'][0]['max_speed'] == 5.09
-    assert data['data']['activities'][0]['min_alt'] == 975.0
-    assert data['data']['activities'][0]['moving'] == '0:04:10'
-    assert data['data']['activities'][0]['pauses'] is None
-    assert data['data']['activities'][0]['with_gpx'] is True
+    assert_activity_data_with_gpx(data)
 
 
-def test_edit_an_activity_with_gpx_invalid_payload(app):
-    add_user('test', 'test@test.com', '12345678')
-    add_sport('cycling')
-    add_sport('running')
-
+def test_edit_an_activity_with_gpx_invalid_payload(
+        app,  user_1, sport_1_cycling, gpx_file
+):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
@@ -180,10 +157,9 @@ def test_edit_an_activity_with_gpx_invalid_payload(app):
     assert 'Invalid payload.' in data['message']
 
 
-def test_edit_an_activity_with_gpx_incorrect_data(app):
-    add_user('test', 'test@test.com', '12345678')
-    add_sport('cycling')
-
+def test_edit_an_activity_with_gpx_incorrect_data(
+    app, user_1, sport_1_cycling, gpx_file
+):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
@@ -226,17 +202,10 @@ def test_edit_an_activity_with_gpx_incorrect_data(app):
     assert 'Error. Please try again or contact the administrator.' in data['message']  # noqa
 
 
-def test_edit_an_activity_wo_gpx(app):
-    add_user('test', 'test@test.com', '12345678')
-    add_sport('cycling')
-    activity = add_activity(
-        user_id=1,
-        sport_id=1,
-        activity_date=datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
-        distance=10,
-        duration=datetime.timedelta(seconds=1024)
-    )
-    activity.title = 'cycling - 2018-01-01 00:00:00'
+def test_edit_an_activity_wo_gpx(
+    app, user_1, sport_1_cycling, activity_cycling_user_1
+):
+    activity_cycling_user_1.title = 'cycling - 2018-01-01 00:00:00'
 
     client = app.test_client()
     resp_login = client.post(
@@ -263,7 +232,6 @@ def test_edit_an_activity_wo_gpx(app):
             )['auth_token']
         )
     )
-
     data = json.loads(response.data.decode())
 
     assert response.status_code == 200
@@ -287,17 +255,10 @@ def test_edit_an_activity_wo_gpx(app):
     assert data['data']['activities'][0]['with_gpx'] is False
 
 
-def test_edit_an_activity_wo_gpx_partial(app):
-    add_user('test', 'test@test.com', '12345678')
-    add_sport('cycling')
-    activity = add_activity(
-        user_id=1,
-        sport_id=1,
-        activity_date=datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
-        distance=10,
-        duration=datetime.timedelta(seconds=1024)
-    )
-    activity.title = 'cycling - 2018-01-01 00:00:00'
+def test_edit_an_activity_wo_gpx_partial(
+    app, user_1, sport_1_cycling, activity_cycling_user_1
+):
+    activity_cycling_user_1.title = 'cycling - 2018-01-01 00:00:00'
 
     client = app.test_client()
     resp_login = client.post(
@@ -345,17 +306,9 @@ def test_edit_an_activity_wo_gpx_partial(app):
     assert data['data']['activities'][0]['with_gpx'] is False
 
 
-def test_edit_an_activity_wo_gpx_invalid_payload(app):
-    add_user('test', 'test@test.com', '12345678')
-    add_sport('cycling')
-    add_activity(
-        user_id=1,
-        sport_id=1,
-        activity_date=datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
-        distance=10,
-        duration=datetime.timedelta(seconds=1024)
-    )
-
+def test_edit_an_activity_wo_gpx_invalid_payload(
+    app, user_1, sport_1_cycling, activity_cycling_user_1
+):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
@@ -383,17 +336,9 @@ def test_edit_an_activity_wo_gpx_invalid_payload(app):
     assert 'Invalid payload.' in data['message']
 
 
-def test_edit_an_activity_wo_gpx_incorrect_data(app):
-    add_user('test', 'test@test.com', '12345678')
-    add_sport('cycling')
-    add_activity(
-        user_id=1,
-        sport_id=1,
-        activity_date=datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
-        distance=10,
-        duration=datetime.timedelta(seconds=1024)
-    )
-
+def test_edit_an_activity_wo_gpx_incorrect_data(
+    app, user_1, sport_1_cycling, activity_cycling_user_1
+):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
@@ -427,10 +372,9 @@ def test_edit_an_activity_wo_gpx_incorrect_data(app):
            in data['message']
 
 
-def test_edit_an_activity_no_activity(app):
-    add_user('test', 'test@test.com', '12345678')
-    add_sport('cycling')
-
+def test_edit_an_activity_no_activity(
+    app, user_1, sport_1_cycling
+):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',

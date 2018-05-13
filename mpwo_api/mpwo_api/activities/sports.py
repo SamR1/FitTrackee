@@ -61,19 +61,14 @@ def post_sport(auth_user_id):
         }
         return jsonify(response_object), 400
 
-    sports_list = []
     try:
         new_sport = Sport(label=sport_data.get('label'))
         db.session.add(new_sport)
         db.session.commit()
-        sports_list.append({
-            'id': new_sport.id,
-            'label': new_sport.label
-        })
         response_object = {
             'status': 'created',
             'data': {
-                'sports': sports_list
+                'sports': [new_sport.serialize()]
             }
         }
         code = 201
