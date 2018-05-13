@@ -122,7 +122,7 @@ def test_edit_an_activity_with_gpx_partial(app):
     assert 1 == data['data']['activities'][0]['user_id']
     assert 2 == data['data']['activities'][0]['sport_id']
     assert '0:04:10' == data['data']['activities'][0]['duration']
-    assert data['data']['activities'][0]['title'] == 'cycling - 2018-03-13 12:44:45'  # noqa
+    assert data['data']['activities'][0]['title'] == 'just an activity'
     assert data['data']['activities'][0]['ascent'] == 0.4
     assert data['data']['activities'][0]['ave_speed'] == 4.6
     assert data['data']['activities'][0]['descent'] == 23.4
