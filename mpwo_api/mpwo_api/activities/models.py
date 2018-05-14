@@ -2,7 +2,7 @@ import datetime
 
 from mpwo_api import db
 from sqlalchemy.dialects import postgresql
-from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.hybrid import Comparator, hybrid_property
 from sqlalchemy.types import Enum
 
 record_types = [
@@ -11,6 +11,11 @@ record_types = [
     'LD',  # 'Longest Duration'
     'MS',  # 'Max speed'
 ]
+
+
+def convert_timedelta_to_integer(value):
+    hours, minutes, seconds = str(value).split(':')
+    return int(hours) * 3600 + int(minutes) * 60 + int(seconds)
 
 
 class Sport(db.Model):
@@ -79,7 +84,11 @@ class Activity(db.Model):
                                    single_parent=True))
     records = db.relationship('Record',
                               lazy=True,
-                              backref=db.backref('activities', lazy='joined'))
+                              cascade='all, delete',
+                              backref=db.backref(
+                                  'activities',
+                                  lazy='joined',
+                                  single_parent=True))
 
     def __str__(self):
         return '<Activity \'{}\' - {}>'.format(
@@ -162,6 +171,13 @@ class ActivitySegment(db.Model):
         }
 
 
+class ValueComparator(Comparator):
+    def operate(self, op, other):
+        if isinstance(other, datetime.timedelta):
+            other = convert_timedelta_to_integer(other)
+        return op(self.__clause_element__(), other)
+
+
 class Record(db.Model):
     __tablename__ = "records"
     __table_args__ = (db.UniqueConstraint(
@@ -215,12 +231,15 @@ class Record(db.Model):
     @value.setter
     def value(self, val):
         if self.record_type == 'LD':
-            hours, minutes, seconds = str(val).split(':')
-            self._value = int(hours) * 3600 + int(minutes) * 60 + int(seconds)
+            self._value = convert_timedelta_to_integer(val)
         elif self.record_type in ['AS', 'MS']:
             self._value = int(val * 100)
         else:  # 'FD'
             self._value = int(val * 1000)
+
+    @value.comparator
+    def value(cls):
+        return ValueComparator(cls._value)
 
     def serialize(self):
         if self.value is None:

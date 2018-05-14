@@ -8,8 +8,8 @@ from sqlalchemy import exc
 from ..users.utils import authenticate, verify_extension
 from .models import Activity, Sport
 from .utils import (
-    create_activity, create_segment, edit_activity, get_file_path,
-    get_gpx_info, get_new_file_path
+    check_records, create_activity, create_segment, edit_activity,
+    get_file_path, get_gpx_info, get_new_file_path
 )
 
 activities_blueprint = Blueprint('activities', __name__)
@@ -171,6 +171,11 @@ def post_activity(auth_user_id):
             auth_user_id, activity_data, gpx_data)
         db.session.add(new_activity)
         db.session.flush()
+
+        records = check_records(new_activity)
+        for record in records:
+            db.session.add(record)
+
         for segment_data in gpx_data['segments']:
             new_segment = create_segment(new_activity.id, segment_data)
             db.session.add(new_segment)
