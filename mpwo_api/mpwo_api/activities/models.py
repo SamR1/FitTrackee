@@ -1,6 +1,7 @@
 import datetime
 
 from mpwo_api import db
+from sqlalchemy.dialects import postgresql
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.types import Enum
 
@@ -68,6 +69,7 @@ class Activity(db.Model):
     ascent = db.Column(db.Numeric(5, 2), nullable=True)      # meters
     max_speed = db.Column(db.Numeric(5, 2), nullable=True)   # km/h
     ave_speed = db.Column(db.Numeric(5, 2), nullable=True)   # km/h
+    bounds = db.Column(postgresql.ARRAY(db.Float), nullable=True)
     segments = db.relationship('ActivitySegment',
                                lazy=True,
                                cascade='all, delete',
@@ -110,6 +112,7 @@ class Activity(db.Model):
             "max_speed": float(self.max_speed) if self.max_speed else None,
             "ave_speed": float(self.ave_speed) if self.ave_speed else None,
             "with_gpx": self.gpx is not None,
+            "bounds": [float(bound) for bound in self.bounds] if self.bounds else [],  # noqa
             "segments": [segment.serialize() for segment in self.segments]
         }
 

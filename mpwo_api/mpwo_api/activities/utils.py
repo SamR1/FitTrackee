@@ -52,6 +52,7 @@ def create_activity(
 
     if gpx_data:
         new_activity.gpx = gpx_data['filename']
+        new_activity.bounds = gpx_data['bounds']
         update_activity_data(new_activity, gpx_data)
     else:
         new_activity.moving = duration

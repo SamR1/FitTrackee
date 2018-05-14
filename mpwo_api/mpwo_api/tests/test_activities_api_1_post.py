@@ -18,6 +18,21 @@ def assert_activity_data_with_gpx(data):
     assert data['data']['activities'][0]['moving'] == '0:04:10'
     assert data['data']['activities'][0]['pauses'] is None
     assert data['data']['activities'][0]['with_gpx'] is True
+    assert len(data['data']['activities'][0]['segments']) == 1
+
+    segment = data['data']['activities'][0]['segments'][0]
+    assert segment['activity_id'] == 1
+    assert segment['segment_id'] == 0
+    assert segment['duration'] == '0:04:10'
+    assert segment['ascent'] == 0.4
+    assert segment['ave_speed'] == 4.6
+    assert segment['descent'] == 23.4
+    assert segment['distance'] == 0.32
+    assert segment['max_alt'] == 998.0
+    assert segment['max_speed'] == 5.09
+    assert segment['min_alt'] == 975.0
+    assert segment['moving'] == '0:04:10'
+    assert segment['pauses'] is None
 
 
 def assert_activity_data_wo_gpx(data):

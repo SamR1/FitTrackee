@@ -23,8 +23,12 @@ class ActivityMap extends React.Component {
   }
 
   render() {
-    const { gpxContent } = this.props
-    const { jsonData, bounds } = getGeoJson(gpxContent)
+    const { activity, gpxContent } = this.props
+    const { jsonData } = getGeoJson(gpxContent)
+    const bounds = [
+      [activity.bounds[0], activity.bounds[1]],
+      [activity.bounds[2], activity.bounds[3]]
+    ]
 
     return (
       <div>
@@ -32,7 +36,7 @@ class ActivityMap extends React.Component {
           <Map
             zoom={this.state.zoom}
             bounds={bounds}
-            boundsOptions={{ padding: [50, 50] }}
+            boundsOptions={{ padding: [20, 20] }}
           >
             <TileLayer
               // eslint-disable-next-line max-len

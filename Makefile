@@ -53,7 +53,7 @@ test-python:
 test-python-xml:
 	$(PYTEST) mpwo_api --cov-config .coveragerc --cov=mpwo_api --cov-report xml
 
-update-cov:
+update-cov:	test-python-xml
 	$(COV) -r coverage.xml
 
 upgrade-db:
