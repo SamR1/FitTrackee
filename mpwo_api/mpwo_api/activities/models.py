@@ -68,6 +68,13 @@ class Activity(db.Model):
     ascent = db.Column(db.Numeric(5, 2), nullable=True)      # meters
     max_speed = db.Column(db.Numeric(5, 2), nullable=True)   # km/h
     ave_speed = db.Column(db.Numeric(5, 2), nullable=True)   # km/h
+    segments = db.relationship('ActivitySegment',
+                               lazy=True,
+                               cascade='all, delete',
+                               backref=db.backref(
+                                   'activities',
+                                   lazy='joined',
+                                   single_parent=True))
     records = db.relationship('Record',
                               lazy=True,
                               backref=db.backref('activities', lazy='joined'))
@@ -102,7 +109,53 @@ class Activity(db.Model):
             "ascent": float(self.ascent) if self.ascent else None,
             "max_speed": float(self.max_speed) if self.max_speed else None,
             "ave_speed": float(self.ave_speed) if self.ave_speed else None,
-            "with_gpx": self.gpx is not None
+            "with_gpx": self.gpx is not None,
+            "segments": [segment.serialize() for segment in self.segments]
+        }
+
+
+class ActivitySegment(db.Model):
+    __tablename__ = "activity_segments"
+    activity_id = db.Column(
+        db.Integer,
+        db.ForeignKey('activities.id'),
+        primary_key=True)
+    segment_id = db.Column(
+        db.Integer,
+        primary_key=True)
+    duration = db.Column(db.Interval, nullable=False)
+    pauses = db.Column(db.Interval, nullable=True)
+    moving = db.Column(db.Interval, nullable=True)
+    distance = db.Column(db.Numeric(5, 3), nullable=True)    # kilometers
+    min_alt = db.Column(db.Numeric(5, 2), nullable=True)     # meters
+    max_alt = db.Column(db.Numeric(5, 2), nullable=True)     # meters
+    descent = db.Column(db.Numeric(5, 2), nullable=True)     # meters
+    ascent = db.Column(db.Numeric(5, 2), nullable=True)      # meters
+    max_speed = db.Column(db.Numeric(5, 2), nullable=True)   # km/h
+    ave_speed = db.Column(db.Numeric(5, 2), nullable=True)   # km/h
+
+    def __str__(self):
+        return '<Segment \'{}\' for activity \'{}\'>'.format(
+            self.segment_id, self.activity_id, )
+
+    def __init__(self, segment_id, activity_id):
+        self.segment_id = segment_id
+        self.activity_id = activity_id
+
+    def serialize(self):
+        return {
+            "activity_id": self.activity_id,
+            "segment_id": self.segment_id,
+            "duration": str(self.duration) if self.duration else None,
+            "pauses": str(self.pauses) if self.pauses else None,
+            "moving": str(self.moving) if self.moving else None,
+            "distance": float(self.distance) if self.distance else None,
+            "min_alt": float(self.min_alt) if self.min_alt else None,
+            "max_alt": float(self.max_alt) if self.max_alt else None,
+            "descent": float(self.descent) if self.descent else None,
+            "ascent": float(self.ascent) if self.ascent else None,
+            "max_speed": float(self.max_speed) if self.max_speed else None,
+            "ave_speed": float(self.ave_speed) if self.ave_speed else None
         }
 
 

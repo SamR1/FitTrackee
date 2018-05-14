@@ -3,7 +3,7 @@ import os
 
 import pytest
 from mpwo_api import create_app, db
-from mpwo_api.activities.models import Activity, Record, Sport
+from mpwo_api.activities.models import Activity, ActivitySegment, Record, Sport
 from mpwo_api.users.models import User
 
 os.environ["FLASK_ENV"] = 'testing'
@@ -91,6 +91,19 @@ def activity_cycling_user_1():
     db.session.add(activity)
     db.session.commit()
     return activity
+
+
+@pytest.fixture()
+def activity_cycling_user_1_segment():
+    activity_segment = ActivitySegment(
+        activity_id=1,
+        segment_id=0
+    )
+    activity_segment.duration = datetime.timedelta(seconds=6000)
+    activity_segment.distance = 5
+    db.session.add(activity_segment)
+    db.session.commit()
+    return activity_segment
 
 
 @pytest.fixture()

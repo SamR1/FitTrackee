@@ -7,7 +7,20 @@ from flask import current_app
 from mpwo_api import appLog
 from werkzeug.utils import secure_filename
 
-from .models import Activity, Sport
+from .models import Activity, ActivitySegment, Sport
+
+
+def update_activity_data(activity, gpx_data):
+    """activity could be a complete activity or an activity segment"""
+    activity.pauses = gpx_data['stop_time']
+    activity.moving = gpx_data['moving_time']
+    activity.min_alt = gpx_data['elevation_min']
+    activity.max_alt = gpx_data['elevation_max']
+    activity.descent = gpx_data['downhill']
+    activity.ascent = gpx_data['uphill']
+    activity.max_speed = gpx_data['max_speed']
+    activity.ave_speed = gpx_data['average_speed']
+    return activity
 
 
 def create_activity(
@@ -39,20 +52,24 @@ def create_activity(
 
     if gpx_data:
         new_activity.gpx = gpx_data['filename']
-        new_activity.pauses = gpx_data['stop_time']
-        new_activity.moving = gpx_data['moving_time']
-        new_activity.min_alt = gpx_data['elevation_min']
-        new_activity.max_alt = gpx_data['elevation_max']
-        new_activity.descent = gpx_data['downhill']
-        new_activity.ascent = gpx_data['uphill']
-        new_activity.max_speed = gpx_data['max_speed']
-        new_activity.ave_speed = gpx_data['average_speed']
+        update_activity_data(new_activity, gpx_data)
     else:
         new_activity.moving = duration
         new_activity.ave_speed = new_activity.distance / (
             duration.seconds / 3600)
         new_activity.max_speed = new_activity.ave_speed
     return new_activity
+
+
+def create_segment(activity_id, segment_data):
+    new_segment = ActivitySegment(
+        activity_id=activity_id,
+        segment_id=segment_data['idx']
+    )
+    new_segment.duration = segment_data['duration']
+    new_segment.distance = segment_data['distance']
+    update_activity_data(new_segment, segment_data)
+    return new_segment
 
 
 def edit_activity(activity, activity_data):

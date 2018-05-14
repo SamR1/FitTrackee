@@ -13,3 +13,10 @@ def test_add_activity(
     assert '0:17:04' == str(activity_cycling_user_1.duration)
     assert 'Test' == activity_cycling_user_1.title
     assert '<Activity \'Cycling\' - 2018-01-01 00:00:00>' == str(activity_cycling_user_1)  # noqa
+
+
+def test_add_segment(
+    app, sport_1_cycling, user_1, activity_cycling_user_1,
+    activity_cycling_user_1_segment
+):
+    assert '<Segment \'0\' for activity \'1\'>' == str(activity_cycling_user_1_segment)  # noqa

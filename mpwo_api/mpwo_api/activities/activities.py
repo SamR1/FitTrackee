@@ -8,8 +8,8 @@ from sqlalchemy import exc
 from ..users.utils import authenticate, verify_extension
 from .models import Activity, Sport
 from .utils import (
-    create_activity, edit_activity, get_file_path, get_gpx_info,
-    get_new_file_path
+    create_activity, create_segment, edit_activity, get_file_path,
+    get_gpx_info, get_new_file_path
 )
 
 activities_blueprint = Blueprint('activities', __name__)
@@ -170,6 +170,10 @@ def post_activity(auth_user_id):
         new_activity = create_activity(
             auth_user_id, activity_data, gpx_data)
         db.session.add(new_activity)
+        db.session.flush()
+        for segment_data in gpx_data['segments']:
+            new_segment = create_segment(new_activity.id, segment_data)
+            db.session.add(new_segment)
         db.session.commit()
         response_object = {
             'status': 'created',
@@ -178,7 +182,6 @@ def post_activity(auth_user_id):
             }
         }
         return jsonify(response_object), 201
-
     except (exc.IntegrityError, ValueError) as e:
         db.session.rollback()
         appLog.error(e)
