@@ -8,7 +8,6 @@ def assert_activity_data_with_gpx(data):
     assert 1 == data['data']['activities'][0]['user_id']
     assert 1 == data['data']['activities'][0]['sport_id']
     assert '0:04:10' == data['data']['activities'][0]['duration']
-    assert 'just an activity' == data['data']['activities'][0]['title']
     assert data['data']['activities'][0]['ascent'] == 0.4
     assert data['data']['activities'][0]['ave_speed'] == 4.6
     assert data['data']['activities'][0]['descent'] == 23.4
@@ -66,11 +65,13 @@ def test_add_an_activity_gpx(app, user_1, sport_1_cycling, gpx_file):
     data = json.loads(response.data.decode())
 
     assert response.status_code == 201
+    assert 'created' in data['status']
     assert len(data['data']['activities']) == 1
+    assert 'just an activity' == data['data']['activities'][0]['title']
     assert_activity_data_with_gpx(data)
 
 
-def test_get_an_activity_with_gpx(app, user_1, sport_1_cycling, gpx_file):
+def test_add_an_activity_with_gpx(app, user_1, sport_1_cycling, gpx_file):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
@@ -106,10 +107,78 @@ def test_get_an_activity_with_gpx(app, user_1, sport_1_cycling, gpx_file):
     assert response.status_code == 200
     assert 'success' in data['status']
     assert len(data['data']['activities']) == 1
+    assert 'just an activity' == data['data']['activities'][0]['title']
     assert_activity_data_with_gpx(data)
 
 
-def test_add_an_activity_gpx_invalid_file(
+def test_add_an_activity_with_gpx_without_name(
+    app, user_1, sport_1_cycling, gpx_file_wo_name
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.post(
+        '/api/activities',
+        data=dict(
+            file=(BytesIO(str.encode(gpx_file_wo_name)), 'example.gpx'),
+            data='{"sport_id": 1}'
+        ),
+        headers=dict(
+            content_type='multipart/form-data',
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 201
+    assert 'created' in data['status']
+    assert len(data['data']['activities']) == 1
+    assert 'Cycling - 2018-03-13 12:44:45' == data['data']['activities'][0]['title']  # noqa
+    assert_activity_data_with_gpx(data)
+
+
+def test_add_an_activity_with_gpx_invalid_file(
+    app, user_1, sport_1_cycling, gpx_file_wo_track
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.post(
+        '/api/activities',
+        data=dict(
+            file=(BytesIO(str.encode(gpx_file_wo_track)), 'example.gpx'),
+            data='{"sport_id": 1}'
+        ),
+        headers=dict(
+            content_type='multipart/form-data',
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 500
+    assert 'error' in data['status']
+    assert 'Error during gpx file parsing.' in data['message']
+    assert 'data' not in data
+
+
+def test_add_an_activity_gpx_invalid_extension(
     app, user_1, sport_1_cycling, gpx_file
 ):
     client = app.test_client()

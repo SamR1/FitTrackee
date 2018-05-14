@@ -116,7 +116,8 @@ def get_gpx_info(gpx_file):
 
     gpx_data = {
         'name': gpx.tracks[0].name,
-        'segments': []}
+        'segments': []
+    }
     max_speed = 0
     start = 0
 

@@ -122,7 +122,7 @@ def get_activity_gpx(auth_user_id, activity_id):
 @activities_blueprint.route('/activities', methods=['POST'])
 @authenticate
 def post_activity(auth_user_id):
-    """Post an activity"""
+    """Post an activity (with gpx file)"""
     response_object = verify_extension('activity', request)
     if response_object['status'] != 'success':
         return jsonify(response_object), 400
@@ -141,6 +141,13 @@ def post_activity(auth_user_id):
     try:
         activity_file.save(file_path)
         gpx_data = get_gpx_info(file_path)
+
+        if gpx_data is None:
+            response_object = {
+                'status': 'error',
+                'message': 'Error during gpx file parsing.'
+            }
+            return jsonify(response_object), 500
 
         sport = Sport.query.filter_by(id=activity_data.get('sport_id')).first()
         new_filepath = get_new_file_path(
