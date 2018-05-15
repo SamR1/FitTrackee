@@ -34,6 +34,29 @@ def assert_activity_data_with_gpx(data):
     assert segment['moving'] == '0:04:10'
     assert segment['pauses'] is None
 
+    records = data['data']['activities'][0]['records']
+    assert len(records) == 4
+    assert records[0]['sport_id'] == 1
+    assert records[0]['activity_id'] == 1
+    assert records[0]['record_type'] == 'MS'
+    assert records[0]['activity_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
+    assert records[0]['value'] == 5.09
+    assert records[1]['sport_id'] == 1
+    assert records[1]['activity_id'] == 1
+    assert records[1]['record_type'] == 'LD'
+    assert records[1]['activity_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
+    assert records[1]['value'] == '0:04:10'
+    assert records[2]['sport_id'] == 1
+    assert records[2]['activity_id'] == 1
+    assert records[2]['record_type'] == 'FD'
+    assert records[2]['activity_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
+    assert records[2]['value'] == 0.32
+    assert records[3]['sport_id'] == 1
+    assert records[3]['activity_id'] == 1
+    assert records[3]['record_type'] == 'AS'
+    assert records[3]['activity_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
+    assert records[3]['value'] == 4.6
+
 
 def assert_activity_data_wo_gpx(data):
     assert 'creation_date' in data['data']['activities'][0]
@@ -52,6 +75,31 @@ def assert_activity_data_wo_gpx(data):
     assert data['data']['activities'][0]['moving'] == '1:00:00'
     assert data['data']['activities'][0]['pauses'] is None
     assert data['data']['activities'][0]['with_gpx'] is False
+
+    assert len(data['data']['activities'][0]['segments']) == 0
+
+    records = data['data']['activities'][0]['records']
+    assert len(records) == 4
+    assert records[0]['sport_id'] == 1
+    assert records[0]['activity_id'] == 1
+    assert records[0]['record_type'] == 'MS'
+    assert records[0]['activity_date'] == 'Tue, 15 May 2018 14:05:00 GMT'
+    assert records[0]['value'] == 10.0
+    assert records[1]['sport_id'] == 1
+    assert records[1]['activity_id'] == 1
+    assert records[1]['record_type'] == 'LD'
+    assert records[1]['activity_date'] == 'Tue, 15 May 2018 14:05:00 GMT'
+    assert records[1]['value'] == '1:00:00'
+    assert records[2]['sport_id'] == 1
+    assert records[2]['activity_id'] == 1
+    assert records[2]['record_type'] == 'FD'
+    assert records[2]['activity_date'] == 'Tue, 15 May 2018 14:05:00 GMT'
+    assert records[2]['value'] == 10.0
+    assert records[3]['sport_id'] == 1
+    assert records[3]['activity_id'] == 1
+    assert records[3]['record_type'] == 'AS'
+    assert records[3]['activity_date'] == 'Tue, 15 May 2018 14:05:00 GMT'
+    assert records[3]['value'] == 10.0
 
 
 def test_add_an_activity_gpx(app, user_1, sport_1_cycling, gpx_file):

@@ -18,6 +18,29 @@ def assert_activity_data_with_gpx(data):
     assert data['data']['activities'][0]['pauses'] is None
     assert data['data']['activities'][0]['with_gpx'] is True
 
+    records = data['data']['activities'][0]['records']
+    assert len(records) == 4
+    assert records[0]['sport_id'] == 2
+    assert records[0]['activity_id'] == 1
+    assert records[0]['record_type'] == 'MS'
+    assert records[0]['activity_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
+    assert records[0]['value'] == 5.09
+    assert records[1]['sport_id'] == 2
+    assert records[1]['activity_id'] == 1
+    assert records[1]['record_type'] == 'LD'
+    assert records[1]['activity_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
+    assert records[1]['value'] == '0:04:10'
+    assert records[2]['sport_id'] == 2
+    assert records[2]['activity_id'] == 1
+    assert records[2]['record_type'] == 'FD'
+    assert records[2]['activity_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
+    assert records[2]['value'] == 0.32
+    assert records[3]['sport_id'] == 2
+    assert records[3]['activity_id'] == 1
+    assert records[3]['record_type'] == 'AS'
+    assert records[3]['activity_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
+    assert records[3]['value'] == 4.6
+
 
 def test_edit_an_activity_with_gpx(
     app, user_1, sport_1_cycling, sport_2_running, gpx_file
@@ -203,10 +226,8 @@ def test_edit_an_activity_with_gpx_incorrect_data(
 
 
 def test_edit_an_activity_wo_gpx(
-    app, user_1, sport_1_cycling, activity_cycling_user_1
+    app, user_1, sport_1_cycling, sport_2_running
 ):
-    activity_cycling_user_1.title = 'cycling - 2018-01-01 00:00:00'
-
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
@@ -216,14 +237,77 @@ def test_edit_an_activity_wo_gpx(
         )),
         content_type='application/json'
     )
-    response = client.patch(
-        '/api/activities/1',
+
+    response = client.post(
+        '/api/activities/no_gpx',
         content_type='application/json',
         data=json.dumps(dict(
             sport_id=1,
             duration=3600,
+            activity_date='2018-05-14 14:05',
+            distance=7,
+            title='Activity test'
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 201
+    assert 'created' in data['status']
+    assert len(data['data']['activities']) == 1
+    assert 'creation_date' in data['data']['activities'][0]
+    assert data['data']['activities'][0]['activity_date'] == 'Mon, 14 May 2018 14:05:00 GMT'  # noqa
+    assert data['data']['activities'][0]['user_id'] == 1
+    assert data['data']['activities'][0]['sport_id'] == 1
+    assert data['data']['activities'][0]['duration'] == '1:00:00'
+    assert data['data']['activities'][0]['title'] == 'Activity test'  # noqa
+    assert data['data']['activities'][0]['ascent'] is None
+    assert data['data']['activities'][0]['ave_speed'] == 7.0
+    assert data['data']['activities'][0]['descent'] is None
+    assert data['data']['activities'][0]['distance'] == 7.0
+    assert data['data']['activities'][0]['max_alt'] is None
+    assert data['data']['activities'][0]['max_speed'] == 7.0
+    assert data['data']['activities'][0]['min_alt'] is None
+    assert data['data']['activities'][0]['moving'] == '1:00:00'
+    assert data['data']['activities'][0]['pauses'] is None
+    assert data['data']['activities'][0]['with_gpx'] is False
+
+    records = data['data']['activities'][0]['records']
+    assert len(records) == 4
+    assert records[0]['sport_id'] == 1
+    assert records[0]['activity_id'] == 1
+    assert records[0]['record_type'] == 'MS'
+    assert records[0]['activity_date'] == 'Mon, 14 May 2018 14:05:00 GMT'
+    assert records[0]['value'] == 7.0
+    assert records[1]['sport_id'] == 1
+    assert records[1]['activity_id'] == 1
+    assert records[1]['record_type'] == 'LD'
+    assert records[1]['activity_date'] == 'Mon, 14 May 2018 14:05:00 GMT'
+    assert records[1]['value'] == '1:00:00'
+    assert records[2]['sport_id'] == 1
+    assert records[2]['activity_id'] == 1
+    assert records[2]['record_type'] == 'FD'
+    assert records[2]['activity_date'] == 'Mon, 14 May 2018 14:05:00 GMT'
+    assert records[2]['value'] == 7.0
+    assert records[3]['sport_id'] == 1
+    assert records[3]['activity_id'] == 1
+    assert records[3]['record_type'] == 'AS'
+    assert records[3]['activity_date'] == 'Mon, 14 May 2018 14:05:00 GMT'
+    assert records[3]['value'] == 7.0
+
+    response = client.patch(
+        '/api/activities/1',
+        content_type='application/json',
+        data=json.dumps(dict(
+            sport_id=2,
+            duration=3600,
             activity_date='2018-05-15 14:05',
-            distance=10,
+            distance=8,
             title='Activity test'
         )),
         headers=dict(
@@ -240,26 +324,47 @@ def test_edit_an_activity_wo_gpx(
     assert 'creation_date' in data['data']['activities'][0]
     assert data['data']['activities'][0]['activity_date'] == 'Tue, 15 May 2018 14:05:00 GMT'  # noqa
     assert data['data']['activities'][0]['user_id'] == 1
-    assert data['data']['activities'][0]['sport_id'] == 1
+    assert data['data']['activities'][0]['sport_id'] == 2
     assert data['data']['activities'][0]['duration'] == '1:00:00'
-    assert data['data']['activities'][0]['title'] == 'Activity test'  # noqa
+    assert data['data']['activities'][0]['title'] == 'Activity test'
     assert data['data']['activities'][0]['ascent'] is None
-    assert data['data']['activities'][0]['ave_speed'] == 10.0
+    assert data['data']['activities'][0]['ave_speed'] == 8.0
     assert data['data']['activities'][0]['descent'] is None
-    assert data['data']['activities'][0]['distance'] == 10.0
+    assert data['data']['activities'][0]['distance'] == 8.0
     assert data['data']['activities'][0]['max_alt'] is None
-    assert data['data']['activities'][0]['max_speed'] == 10.0
+    assert data['data']['activities'][0]['max_speed'] == 8.0
     assert data['data']['activities'][0]['min_alt'] is None
     assert data['data']['activities'][0]['moving'] == '1:00:00'
     assert data['data']['activities'][0]['pauses'] is None
     assert data['data']['activities'][0]['with_gpx'] is False
 
+    records = data['data']['activities'][0]['records']
+    assert len(records) == 4
+    assert records[0]['sport_id'] == 2
+    assert records[0]['activity_id'] == 1
+    assert records[0]['record_type'] == 'MS'
+    assert records[0]['activity_date'] == 'Tue, 15 May 2018 14:05:00 GMT'
+    assert records[0]['value'] == 8.0
+    assert records[1]['sport_id'] == 2
+    assert records[1]['activity_id'] == 1
+    assert records[1]['record_type'] == 'LD'
+    assert records[1]['activity_date'] == 'Tue, 15 May 2018 14:05:00 GMT'
+    assert records[1]['value'] == '1:00:00'
+    assert records[2]['sport_id'] == 2
+    assert records[2]['activity_id'] == 1
+    assert records[2]['record_type'] == 'FD'
+    assert records[2]['activity_date'] == 'Tue, 15 May 2018 14:05:00 GMT'
+    assert records[2]['value'] == 8.0
+    assert records[3]['sport_id'] == 2
+    assert records[3]['activity_id'] == 1
+    assert records[3]['record_type'] == 'AS'
+    assert records[3]['activity_date'] == 'Tue, 15 May 2018 14:05:00 GMT'
+    assert records[3]['value'] == 8.0
+
 
 def test_edit_an_activity_wo_gpx_partial(
-    app, user_1, sport_1_cycling, activity_cycling_user_1
+    app, user_1, sport_1_cycling
 ):
-    activity_cycling_user_1.title = 'cycling - 2018-01-01 00:00:00'
-
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
@@ -269,6 +374,68 @@ def test_edit_an_activity_wo_gpx_partial(
         )),
         content_type='application/json'
     )
+    response = client.post(
+        '/api/activities/no_gpx',
+        content_type='application/json',
+        data=json.dumps(dict(
+            sport_id=1,
+            duration=3600,
+            activity_date='2018-05-14 14:05',
+            distance=7
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 201
+    assert 'created' in data['status']
+    assert len(data['data']['activities']) == 1
+    assert 'creation_date' in data['data']['activities'][0]
+    assert data['data']['activities'][0][
+               'activity_date'] == 'Mon, 14 May 2018 14:05:00 GMT'  # noqa
+    assert data['data']['activities'][0]['user_id'] == 1
+    assert data['data']['activities'][0]['sport_id'] == 1
+    assert data['data']['activities'][0]['duration'] == '1:00:00'
+    assert data['data']['activities'][0]['title'] == 'Cycling - 2018-05-14 14:05:00'  # noqa
+    assert data['data']['activities'][0]['ascent'] is None
+    assert data['data']['activities'][0]['ave_speed'] == 7.0
+    assert data['data']['activities'][0]['descent'] is None
+    assert data['data']['activities'][0]['distance'] == 7.0
+    assert data['data']['activities'][0]['max_alt'] is None
+    assert data['data']['activities'][0]['max_speed'] == 7.0
+    assert data['data']['activities'][0]['min_alt'] is None
+    assert data['data']['activities'][0]['moving'] == '1:00:00'
+    assert data['data']['activities'][0]['pauses'] is None
+    assert data['data']['activities'][0]['with_gpx'] is False
+
+    records = data['data']['activities'][0]['records']
+    assert len(records) == 4
+    assert records[0]['sport_id'] == 1
+    assert records[0]['activity_id'] == 1
+    assert records[0]['record_type'] == 'MS'
+    assert records[0]['activity_date'] == 'Mon, 14 May 2018 14:05:00 GMT'
+    assert records[0]['value'] == 7.0
+    assert records[1]['sport_id'] == 1
+    assert records[1]['activity_id'] == 1
+    assert records[1]['record_type'] == 'LD'
+    assert records[1]['activity_date'] == 'Mon, 14 May 2018 14:05:00 GMT'
+    assert records[1]['value'] == '1:00:00'
+    assert records[2]['sport_id'] == 1
+    assert records[2]['activity_id'] == 1
+    assert records[2]['record_type'] == 'FD'
+    assert records[2]['activity_date'] == 'Mon, 14 May 2018 14:05:00 GMT'
+    assert records[2]['value'] == 7.0
+    assert records[3]['sport_id'] == 1
+    assert records[3]['activity_id'] == 1
+    assert records[3]['record_type'] == 'AS'
+    assert records[3]['activity_date'] == 'Mon, 14 May 2018 14:05:00 GMT'
+    assert records[3]['value'] == 7.0
+
     response = client.patch(
         '/api/activities/1',
         content_type='application/json',
@@ -289,21 +456,44 @@ def test_edit_an_activity_wo_gpx_partial(
     assert 'success' in data['status']
     assert len(data['data']['activities']) == 1
     assert 'creation_date' in data['data']['activities'][0]
-    assert data['data']['activities'][0]['activity_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'  # noqa
+    assert data['data']['activities'][0]['activity_date'] == 'Mon, 14 May 2018 14:05:00 GMT'  # noqa
     assert data['data']['activities'][0]['user_id'] == 1
     assert data['data']['activities'][0]['sport_id'] == 1
-    assert data['data']['activities'][0]['duration'] == '0:17:04'
-    assert data['data']['activities'][0]['title'] == 'cycling - 2018-01-01 00:00:00'  # noqa
+    assert data['data']['activities'][0]['duration'] == '1:00:00'
+    assert data['data']['activities'][0]['title'] == 'Cycling - 2018-05-14 14:05:00'  # noqa
     assert data['data']['activities'][0]['ascent'] is None
-    assert data['data']['activities'][0]['ave_speed'] == 35.16
+    assert data['data']['activities'][0]['ave_speed'] == 10.0
     assert data['data']['activities'][0]['descent'] is None
     assert data['data']['activities'][0]['distance'] == 10.0
     assert data['data']['activities'][0]['max_alt'] is None
-    assert data['data']['activities'][0]['max_speed'] == 35.16
+    assert data['data']['activities'][0]['max_speed'] == 10.0
     assert data['data']['activities'][0]['min_alt'] is None
-    assert data['data']['activities'][0]['moving'] is None  # no calculated
+    assert data['data']['activities'][0]['moving'] == '1:00:00'
     assert data['data']['activities'][0]['pauses'] is None
     assert data['data']['activities'][0]['with_gpx'] is False
+
+    records = data['data']['activities'][0]['records']
+    assert len(records) == 4
+    assert records[0]['sport_id'] == 1
+    assert records[0]['activity_id'] == 1
+    assert records[0]['record_type'] == 'MS'
+    assert records[0]['activity_date'] == 'Mon, 14 May 2018 14:05:00 GMT'
+    assert records[0]['value'] == 10.0
+    assert records[1]['sport_id'] == 1
+    assert records[1]['activity_id'] == 1
+    assert records[1]['record_type'] == 'LD'
+    assert records[1]['activity_date'] == 'Mon, 14 May 2018 14:05:00 GMT'
+    assert records[1]['value'] == '1:00:00'
+    assert records[2]['sport_id'] == 1
+    assert records[2]['activity_id'] == 1
+    assert records[2]['record_type'] == 'FD'
+    assert records[2]['activity_date'] == 'Mon, 14 May 2018 14:05:00 GMT'
+    assert records[2]['value'] == 10.0
+    assert records[3]['sport_id'] == 1
+    assert records[3]['activity_id'] == 1
+    assert records[3]['record_type'] == 'AS'
+    assert records[3]['activity_date'] == 'Mon, 14 May 2018 14:05:00 GMT'
+    assert records[3]['value'] == 10.0
 
 
 def test_edit_an_activity_wo_gpx_invalid_payload(

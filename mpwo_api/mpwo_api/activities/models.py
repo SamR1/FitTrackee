@@ -3,7 +3,7 @@ import datetime
 from mpwo_api import db
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.event import listens_for
-from sqlalchemy.ext.hybrid import Comparator, hybrid_property
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm.session import object_session
 from sqlalchemy.types import Enum
 
@@ -40,9 +40,9 @@ def update_records(activity, sport_id, connection, session):
     for record_type, record_data in new_records.items():
         if record_data['record_value']:
             record = Record.query.filter_by(
-                user_id=activity.user_id,
-                sport_id=activity.sport_id,
-                record_type=record_type,
+                        user_id=activity.user_id,
+                        sport_id=activity.sport_id,
+                        record_type=record_type,
             ).first()
             if record:
                 value = convert_value_to_integer(
@@ -61,6 +61,14 @@ def update_records(activity, sport_id, connection, session):
                 )
                 new_record.value = record_data['record_value']
                 session.add(new_record)
+        else:
+            connection.execute(record_table.delete().where(
+                record_table.c.user_id == activity.user_id,
+            ).where(
+                record_table.c.sport_id == sport_id,
+            ).where(
+                record_table.c.record_type == record_type,
+            ))
 
 
 class Sport(db.Model):
@@ -167,7 +175,8 @@ class Activity(db.Model):
             "ave_speed": float(self.ave_speed) if self.ave_speed else None,
             "with_gpx": self.gpx is not None,
             "bounds": [float(bound) for bound in self.bounds] if self.bounds else [],  # noqa
-            "segments": [segment.serialize() for segment in self.segments]
+            "segments": [segment.serialize() for segment in self.segments],
+            "records": [record.serialize() for record in self.records]
         }
 
     @classmethod
@@ -206,16 +215,15 @@ def on_activity_insert(mapper, connection, activity):
 @listens_for(Activity, 'after_update')
 def on_activity_update(mapper, connection, activity):
     if object_session(activity).is_modified(activity, include_collections=True):  # noqa
-        sports_list = []
-        records = Record.query.filter_by(
-            activity_id=activity.id,
-        ).all()
-        for rec in records:
-            if rec.sport_id not in sports_list:
-                sports_list.append(rec.sport_id)
-
         @listens_for(db.Session, 'after_flush', once=True)
         def receive_after_flush(session, context):
+            sports_list = [activity.sport_id]
+            records = Record.query.filter_by(
+                activity_id=activity.id,
+            ).all()
+            for rec in records:
+                if rec.sport_id not in sports_list:
+                    sports_list.append(rec.sport_id)
             for sport_id in sports_list:
                 update_records(activity, sport_id, connection, session)
 
@@ -265,13 +273,6 @@ class ActivitySegment(db.Model):
         }
 
 
-class ValueComparator(Comparator):
-    def operate(self, op, other):
-        if isinstance(other, datetime.timedelta):
-            other = convert_timedelta_to_integer(other)
-        return op(self.__clause_element__(), other)
-
-
 class Record(db.Model):
     __tablename__ = "records"
     __table_args__ = (db.UniqueConstraint(
@@ -314,7 +315,6 @@ class Record(db.Model):
     def value(self):
         if self._value is None:
             return None
-
         if self.record_type == 'LD':
             return datetime.timedelta(seconds=self._value)
         elif self.record_type in ['AS', 'MS']:
@@ -325,10 +325,6 @@ class Record(db.Model):
     @value.setter
     def value(self, val):
         self._value = convert_value_to_integer(self.record_type, val)
-
-    @value.comparator
-    def value(cls):
-        return ValueComparator(cls._value)
 
     def serialize(self):
         if self.value is None:
