@@ -3,7 +3,7 @@ import os
 
 import pytest
 from mpwo_api import create_app, db
-from mpwo_api.activities.models import Activity, ActivitySegment, Record, Sport
+from mpwo_api.activities.models import Activity, ActivitySegment, Sport
 from mpwo_api.users.models import User
 
 os.environ["FLASK_ENV"] = 'testing'
@@ -88,6 +88,8 @@ def activity_cycling_user_1():
         distance=10,
         duration=datetime.timedelta(seconds=1024)
     )
+    activity.max_speed = 10
+    activity.ave_speed = 10
     db.session.add(activity)
     db.session.commit()
     return activity
@@ -130,6 +132,7 @@ def seven_activities_user_1():
         duration=datetime.timedelta(seconds=1024)
     )
     db.session.add(activity)
+    db.session.flush()
     activity = Activity(
         user_id=1,
         sport_id=1,
@@ -138,6 +141,7 @@ def seven_activities_user_1():
         duration=datetime.timedelta(seconds=6000)
     )
     db.session.add(activity)
+    db.session.flush()
     activity = Activity(
         user_id=1,
         sport_id=1,
@@ -146,6 +150,7 @@ def seven_activities_user_1():
         duration=datetime.timedelta(seconds=1024)
     )
     db.session.add(activity)
+    db.session.flush()
     activity = Activity(
         user_id=1,
         sport_id=1,
@@ -154,6 +159,7 @@ def seven_activities_user_1():
         duration=datetime.timedelta(seconds=3000)
     )
     db.session.add(activity)
+    db.session.flush()
     activity = Activity(
         user_id=1,
         sport_id=1,
@@ -162,6 +168,7 @@ def seven_activities_user_1():
         duration=datetime.timedelta(seconds=3456)
     )
     db.session.add(activity)
+    db.session.flush()
     activity = Activity(
         user_id=1,
         sport_id=1,
@@ -170,6 +177,7 @@ def seven_activities_user_1():
         duration=datetime.timedelta(seconds=600)
     )
     db.session.add(activity)
+    db.session.flush()
     activity = Activity(
         user_id=1,
         sport_id=1,
@@ -194,78 +202,6 @@ def activity_cycling_user_2():
     db.session.add(activity)
     db.session.commit()
     return activity
-
-
-@pytest.fixture()
-def record_as(activity_cycling_user_1):
-    record = Record(
-        user_id=1,
-        sport_id=1,
-        activity=activity_cycling_user_1,
-        record_type='AS')
-    db.session.add(record)
-    db.session.commit()
-    return record
-
-
-@pytest.fixture()
-def record_fd(activity_cycling_user_1):
-    record = Record(
-        user_id=1,
-        sport_id=1,
-        activity=activity_cycling_user_1,
-        record_type='FD')
-    db.session.add(record)
-    db.session.commit()
-    return record
-
-
-@pytest.fixture()
-def record_fd_running(activity_running_user_1):
-    record = Record(
-        user_id=1,
-        sport_id=2,
-        activity=activity_running_user_1,
-        record_type='FD')
-    db.session.add(record)
-    db.session.commit()
-    return record
-
-
-@pytest.fixture()
-def record_ld(activity_cycling_user_1):
-    record = Record(
-        user_id=1,
-        sport_id=1,
-        activity=activity_cycling_user_1,
-        record_type='LD')
-    db.session.add(record)
-    db.session.commit()
-    return record
-
-
-@pytest.fixture()
-def record_ms(activity_cycling_user_1):
-    record = Record(
-        user_id=1,
-        sport_id=1,
-        activity=activity_cycling_user_1,
-        record_type='MS')
-    db.session.add(record)
-    db.session.commit()
-    return record
-
-
-@pytest.fixture()
-def record_ms_user_2_cycling(activity_cycling_user_2):
-    record = Record(
-        user_id=2,
-        sport_id=1,
-        activity=activity_cycling_user_2,
-        record_type='MS')
-    db.session.add(record)
-    db.session.commit()
-    return record
 
 
 @pytest.fixture()

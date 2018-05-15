@@ -1,10 +1,16 @@
 import datetime
 
+from mpwo_api.activities.models import Record
+
 
 def test_record_model(
-    app,  user_1, sport_1_cycling, activity_cycling_user_1, record_ld
+    app,  user_1, sport_1_cycling, activity_cycling_user_1
 ):
-    assert 1 == record_ld.id
+    record_ld = Record.query.filter_by(
+        user_id=activity_cycling_user_1.user_id,
+        sport_id=activity_cycling_user_1.sport_id,
+        record_type='LD',
+    ).first()
     assert 1 == record_ld.user_id
     assert 1 == record_ld.sport_id
     assert 1 == record_ld.activity_id
@@ -22,49 +28,50 @@ def test_record_model(
     assert 'value' in record_serialize
 
 
-def test_add_record_no_value(
-    app,  user_1, sport_1_cycling, activity_cycling_user_1, record_as
-):
-    assert record_as.value is None
-    assert record_as._value is None
-
-    record_serialize = record_as.serialize()
-    assert record_serialize.get('value') is None
-
-
 def test_add_as_records(
-    app,  user_1, sport_1_cycling, activity_cycling_user_1, record_as
+    app,  user_1, sport_1_cycling, activity_cycling_user_1
 ):
-    # record.value = 4.6
-    record_as.value = 4.61
+    record_as = Record.query.filter_by(
+        user_id=activity_cycling_user_1.user_id,
+        sport_id=activity_cycling_user_1.sport_id,
+        record_type='AS',
+    ).first()
 
     assert isinstance(record_as.value, float)
-    assert record_as.value == 4.61
-    assert record_as._value == 461
+    assert record_as.value == 10.0
+    assert record_as._value == 1000
 
     record_serialize = record_as.serialize()
-    assert record_serialize.get('value') == 4.61
+    assert record_serialize.get('value') == 10.0
     assert isinstance(record_serialize.get('value'), float)
 
 
 def test_add_fd_records(
-    app,  user_1, sport_1_cycling, activity_cycling_user_1, record_fd
+    app,  user_1, sport_1_cycling, activity_cycling_user_1
 ):
-    record_fd.value = 0.322
+    record_fd = Record.query.filter_by(
+        user_id=activity_cycling_user_1.user_id,
+        sport_id=activity_cycling_user_1.sport_id,
+        record_type='FD',
+    ).first()
 
     assert isinstance(record_fd.value, float)
-    assert record_fd.value == 0.322
-    assert record_fd._value == 322
+    assert record_fd.value == 10.0
+    assert record_fd._value == 10000
 
     record_serialize = record_fd.serialize()
-    assert record_serialize.get('value') == 0.322
+    assert record_serialize.get('value') == 10.0
     assert isinstance(record_serialize.get('value'), float)
 
 
 def test_add_ld_records(
-    app,  user_1, sport_1_cycling, activity_cycling_user_1, record_ld
+    app,  user_1, sport_1_cycling, activity_cycling_user_1
 ):
-    record_ld.value = activity_cycling_user_1.duration
+    record_ld = Record.query.filter_by(
+        user_id=activity_cycling_user_1.user_id,
+        sport_id=activity_cycling_user_1.sport_id,
+        record_type='LD',
+    ).first()
 
     assert isinstance(record_ld.value, datetime.timedelta)
     assert str(record_ld.value) == '0:17:04'
@@ -76,10 +83,14 @@ def test_add_ld_records(
 
 
 def test_add_ld_records_zero(
-    app,  user_1, sport_1_cycling, activity_cycling_user_1, record_ld
+    app,  user_1, sport_1_cycling, activity_cycling_user_1
 ):
-    activity_cycling_user_1.duration = datetime.timedelta(seconds=0)
-    record_ld.value = activity_cycling_user_1.duration
+    record_ld = Record.query.filter_by(
+        user_id=activity_cycling_user_1.user_id,
+        sport_id=activity_cycling_user_1.sport_id,
+        record_type='LD',
+    ).first()
+    record_ld.value = datetime.timedelta(seconds=0)
 
     assert isinstance(record_ld.value, datetime.timedelta)
     assert str(record_ld.value) == '0:00:00'
@@ -91,14 +102,18 @@ def test_add_ld_records_zero(
 
 
 def test_add_ms_records_no_value(
-    app,  user_1, sport_1_cycling, activity_cycling_user_1, record_ms
+    app,  user_1, sport_1_cycling, activity_cycling_user_1
 ):
-    record_ms.value = 23.5
+    record_ms = Record.query.filter_by(
+        user_id=activity_cycling_user_1.user_id,
+        sport_id=activity_cycling_user_1.sport_id,
+        record_type='MS',
+    ).first()
 
     assert isinstance(record_ms.value, float)
-    assert record_ms.value == 23.5
-    assert record_ms._value == 2350
+    assert record_ms.value == 10.0
+    assert record_ms._value == 1000
 
     record_serialize = record_ms.serialize()
-    assert record_serialize.get('value') == 23.5
+    assert record_serialize.get('value') == 10.0
     assert isinstance(record_serialize.get('value'), float)

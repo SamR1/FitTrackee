@@ -2,7 +2,9 @@ import datetime
 
 from mpwo_api import db
 from sqlalchemy.dialects import postgresql
+from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import Comparator, hybrid_property
+from sqlalchemy.orm.session import object_session
 from sqlalchemy.types import Enum
 
 record_types = [
@@ -16,6 +18,49 @@ record_types = [
 def convert_timedelta_to_integer(value):
     hours, minutes, seconds = str(value).split(':')
     return int(hours) * 3600 + int(minutes) * 60 + int(seconds)
+
+
+def convert_value_to_integer(record_type, val):
+    if val is None:
+        return None
+
+    if record_type == 'LD':
+        return convert_timedelta_to_integer(val)
+    elif record_type in ['AS', 'MS']:
+        return int(val * 100)
+    else:  # 'FD'
+        return int(val * 1000)
+
+
+def update_records(activity, sport_id, connection, session):
+    record_table = Record.__table__
+    new_records = Activity.get_user_activity_records(
+        activity.user_id,
+        sport_id)
+    for record_type, record_data in new_records.items():
+        if record_data['record_value']:
+            record = Record.query.filter_by(
+                user_id=activity.user_id,
+                sport_id=activity.sport_id,
+                record_type=record_type,
+            ).first()
+            if record:
+                value = convert_value_to_integer(
+                    record_type, record_data['record_value']
+                )
+                connection.execute(record_table.update().where(
+                    record_table.c.id == record.id,
+                ).values(
+                    value=value,
+                    activity_id=record_data['activity'].id
+                ))
+            else:
+                new_record = Record(
+                    activity=record_data['activity'],
+                    record_type=record_type
+                )
+                new_record.value = record_data['record_value']
+                session.add(new_record)
 
 
 class Sport(db.Model):
@@ -125,6 +170,55 @@ class Activity(db.Model):
             "segments": [segment.serialize() for segment in self.segments]
         }
 
+    @classmethod
+    def get_user_activity_records(cls, user_id, sport_id, as_integer=False):
+        record_types_columns = {
+            'AS': 'ave_speed',  # 'Average speed'
+            'FD': 'distance',   # 'Farthest Distance'
+            'LD': 'duration',   # 'Longest Duration'
+            'MS': 'max_speed',  # 'Max speed'
+        }
+        records = {}
+        for record_type, column in record_types_columns.items():
+            column_sorted = getattr(getattr(Activity, column), 'desc')()
+            record_activity = Activity.query.filter_by(
+                user_id=user_id,
+                sport_id=sport_id,
+            ).order_by(
+                column_sorted,
+                Activity.activity_date,
+            ).first()
+            records[record_type] = dict(
+                record_value=(getattr(record_activity, column)
+                              if record_activity else None),
+                activity=record_activity)
+        return records
+
+
+@listens_for(Activity, 'after_insert')
+def on_activity_insert(mapper, connection, activity):
+
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session, context):
+        update_records(activity, activity.sport_id, connection, session)
+
+
+@listens_for(Activity, 'after_update')
+def on_activity_update(mapper, connection, activity):
+    if object_session(activity).is_modified(activity, include_collections=True):  # noqa
+        sports_list = []
+        records = Record.query.filter_by(
+            activity_id=activity.id,
+        ).all()
+        for rec in records:
+            if rec.sport_id not in sports_list:
+                sports_list.append(rec.sport_id)
+
+        @listens_for(db.Session, 'after_flush', once=True)
+        def receive_after_flush(session, context):
+            for sport_id in sports_list:
+                update_records(activity, sport_id, connection, session)
+
 
 class ActivitySegment(db.Model):
     __tablename__ = "activity_segments"
@@ -209,9 +303,9 @@ class Record(db.Model):
             self.activity_date.strftime('%Y-%m-%d')
         )
 
-    def __init__(self, user_id, sport_id, activity, record_type):
-        self.user_id = user_id
-        self.sport_id = sport_id
+    def __init__(self, activity, record_type):
+        self.user_id = activity.user_id
+        self.sport_id = activity.sport_id
         self.activity_id = activity.id
         self.record_type = record_type
         self.activity_date = activity.activity_date
@@ -230,12 +324,7 @@ class Record(db.Model):
 
     @value.setter
     def value(self, val):
-        if self.record_type == 'LD':
-            self._value = convert_timedelta_to_integer(val)
-        elif self.record_type in ['AS', 'MS']:
-            self._value = int(val * 100)
-        else:  # 'FD'
-            self._value = int(val * 1000)
+        self._value = convert_value_to_integer(self.record_type, val)
 
     @value.comparator
     def value(cls):
@@ -258,3 +347,23 @@ class Record(db.Model):
             "activity_date": self.activity_date,
             "value": value,
         }
+
+
+@listens_for(Record, 'after_delete')
+def on_record_delete(mapper, connection, old_record):
+
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session, context):
+        activity = old_record.activities
+        new_records = Activity.get_user_activity_records(
+            activity.user_id,
+            activity.sport_id)
+        for record_type, record_data in new_records.items():
+            if record_data['record_value'] \
+                    and record_type == old_record.record_type:
+                new_record = Record(
+                    activity=record_data['activity'],
+                    record_type=record_type
+                )
+                new_record.value = record_data['record_value']
+                session.add(new_record)

@@ -1,10 +1,9 @@
 import json
 
 
-def test_get_all_records_for_authenticated_user(
+def test_get_records_for_authenticated_user(
     app, user_1, user_2, sport_1_cycling, sport_2_running,
-    activity_cycling_user_1, activity_cycling_user_2, activity_running_user_1,
-    record_ld, record_ms_user_2_cycling, record_fd_running
+    activity_cycling_user_1
 ):
     client = app.test_client()
     resp_login = client.post(
@@ -27,18 +26,32 @@ def test_get_all_records_for_authenticated_user(
 
     assert response.status_code == 200
     assert 'success' in data['status']
-    assert len(data['data']['records']) == 2
+    assert len(data['data']['records']) == 4
 
-    assert 'Sun, 01 Apr 2018 00:00:00 GMT' == data['data']['records'][0]['activity_date']  # noqa
+    assert 'Mon, 01 Jan 2018 00:00:00 GMT' == data['data']['records'][0]['activity_date']  # noqa
     assert 1 == data['data']['records'][0]['user_id']
-    assert 2 == data['data']['records'][0]['sport_id']
-    assert 3 == data['data']['records'][0]['activity_id']
-    assert 'FD' == data['data']['records'][0]['record_type']
+    assert 1 == data['data']['records'][0]['sport_id']
+    assert 1 == data['data']['records'][0]['activity_id']
+    assert 'AS' == data['data']['records'][0]['record_type']
     assert 'value' in data['data']['records'][0]
 
     assert 'Mon, 01 Jan 2018 00:00:00 GMT' == data['data']['records'][1]['activity_date']  # noqa
     assert 1 == data['data']['records'][1]['user_id']
     assert 1 == data['data']['records'][1]['sport_id']
     assert 1 == data['data']['records'][1]['activity_id']
-    assert 'LD' == data['data']['records'][1]['record_type']
+    assert 'FD' == data['data']['records'][1]['record_type']
     assert 'value' in data['data']['records'][1]
+
+    assert 'Mon, 01 Jan 2018 00:00:00 GMT' == data['data']['records'][2]['activity_date']  # noqa
+    assert 1 == data['data']['records'][2]['user_id']
+    assert 1 == data['data']['records'][2]['sport_id']
+    assert 1 == data['data']['records'][2]['activity_id']
+    assert 'LD' == data['data']['records'][2]['record_type']
+    assert 'value' in data['data']['records'][2]
+
+    assert 'Mon, 01 Jan 2018 00:00:00 GMT' == data['data']['records'][3]['activity_date']  # noqa
+    assert 1 == data['data']['records'][3]['user_id']
+    assert 1 == data['data']['records'][3]['sport_id']
+    assert 1 == data['data']['records'][3]['activity_id']
+    assert 'MS' == data['data']['records'][3]['record_type']
+    assert 'value' in data['data']['records'][3]

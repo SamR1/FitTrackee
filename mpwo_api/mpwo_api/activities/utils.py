@@ -7,7 +7,7 @@ from flask import current_app
 from mpwo_api import appLog
 from werkzeug.utils import secure_filename
 
-from .models import Activity, ActivitySegment, Record, Sport
+from .models import Activity, ActivitySegment, Sport
 
 
 def update_activity_data(activity, gpx_data):
@@ -21,33 +21,6 @@ def update_activity_data(activity, gpx_data):
     activity.max_speed = gpx_data['max_speed']
     activity.ave_speed = gpx_data['average_speed']
     return activity
-
-
-def check_records(activity):
-    record_types_columns = {
-        'AS': 'ave_speed',  # 'Average speed'
-        'FD': 'distance',   # 'Farthest Distance'
-        'LD': 'duration',   # 'Longest Duration'
-        'MS': 'max_speed',  # 'Max speed'
-    }
-    records = []
-    for record_type, column in record_types_columns.items():
-        print('{} = {}'.format(record_type, str(column)))
-        record = Activity.query.filter_by(
-            user_id=activity.user_id,
-            sport_id=activity.sport_id,
-        ).filter(Record.value > getattr(activity, column)).first()
-        print(record)
-        if not record:
-            new_record = Record(
-                user_id=activity.user_id,
-                sport_id=activity.sport_id,
-                activity=activity,
-                record_type=record_type,
-            )
-            new_record.value = getattr(activity, column)
-            records.append(new_record)
-    return records
 
 
 def create_activity(
