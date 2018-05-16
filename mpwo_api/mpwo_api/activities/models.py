@@ -52,7 +52,8 @@ def update_records(activity, sport_id, connection, session):
                     record_table.c.id == record.id,
                 ).values(
                     value=value,
-                    activity_id=record_data['activity'].id
+                    activity_id=record_data['activity'].id,
+                    activity_date=record_data['activity'].activity_date,
                 ))
             else:
                 new_record = Record(

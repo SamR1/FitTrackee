@@ -24,7 +24,7 @@ def update_activity_data(activity, gpx_data):
 
 
 def create_activity(
-    auth_user_id, activity_data, gpx_data=None
+        auth_user_id, activity_data, gpx_data=None
 ):
     activity_date = gpx_data['start'] if gpx_data else datetime.strptime(
         activity_data.get('activity_date'), '%Y-%m-%d %H:%M')
@@ -56,8 +56,10 @@ def create_activity(
         update_activity_data(new_activity, gpx_data)
     else:
         new_activity.moving = duration
-        new_activity.ave_speed = new_activity.distance / (
-            duration.seconds / 3600)
+        new_activity.ave_speed = (None
+                                  if duration.seconds == 0
+                                  else float(new_activity.distance) /
+                                  (duration.seconds / 3600))
         new_activity.max_speed = new_activity.ave_speed
     return new_activity
 
@@ -74,7 +76,8 @@ def create_segment(activity_id, segment_data):
 
 
 def edit_activity(activity, activity_data):
-    activity.sport_id = activity_data.get('sport_id')
+    if activity_data.get('sport_id'):
+        activity.sport_id = activity_data.get('sport_id')
     if activity_data.get('title'):
         activity.title = activity_data.get('title')
     if not activity.gpx:
@@ -87,8 +90,9 @@ def edit_activity(activity, activity_data):
             activity.moving = activity.duration
         if activity_data.get('distance'):
             activity.distance = activity_data.get('distance')
-        activity.ave_speed = activity.distance / (
-            activity.duration.seconds / 3600)
+        activity.ave_speed = (None if activity.duration.seconds == 0
+                              else float(activity.distance) /
+                              (activity.duration.seconds / 3600))
         activity.max_speed = activity.ave_speed
     return activity
 

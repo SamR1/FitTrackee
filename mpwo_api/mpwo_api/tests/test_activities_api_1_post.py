@@ -502,3 +502,57 @@ def test_add_an_activity_no_gpx_error(app, user_1, sport_1_cycling):
     assert response.status_code == 500
     assert 'fail' in data['status']
     assert 'Error during activity save.' in data['message']
+
+
+def test_add_activity_zero_value(
+    app, user_1, sport_1_cycling, sport_2_running
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.post(
+        '/api/activities/no_gpx',
+        content_type='application/json',
+        data=json.dumps(dict(
+            sport_id=1,
+            duration=0,
+            activity_date='2018-05-14 14:05',
+            distance=0,
+            title='Activity test'
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 201
+    assert 'created' in data['status']
+    assert len(data['data']['activities']) == 1
+    assert 'creation_date' in data['data']['activities'][0]
+    assert data['data']['activities'][0]['activity_date'] == 'Mon, 14 May 2018 14:05:00 GMT'  # noqa
+    assert data['data']['activities'][0]['user_id'] == 1
+    assert data['data']['activities'][0]['sport_id'] == 1
+    assert data['data']['activities'][0]['duration'] is None
+    assert data['data']['activities'][0]['title'] == 'Activity test'  # noqa
+    assert data['data']['activities'][0]['ascent'] is None
+    assert data['data']['activities'][0]['ave_speed'] is None
+    assert data['data']['activities'][0]['descent'] is None
+    assert data['data']['activities'][0]['distance'] is None
+    assert data['data']['activities'][0]['max_alt'] is None
+    assert data['data']['activities'][0]['max_speed'] is None
+    assert data['data']['activities'][0]['min_alt'] is None
+    assert data['data']['activities'][0]['moving'] is None
+    assert data['data']['activities'][0]['pauses'] is None
+    assert data['data']['activities'][0]['with_gpx'] is False
+
+    assert len(data['data']['activities'][0]['segments']) == 0
+    assert len(data['data']['activities'][0]['records']) == 0
