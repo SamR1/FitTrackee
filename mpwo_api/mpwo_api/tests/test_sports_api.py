@@ -3,12 +3,14 @@ import json
 expected_sport_1_cycling_result = {
     'id': 1,
     'label': 'Cycling',
+    'img': None,
     '_can_be_deleted': True
 }
 
 expected_sport_2_running_result = {
     'id': 2,
     'label': 'Running',
+    'img': None,
     '_can_be_deleted': True
 }
 

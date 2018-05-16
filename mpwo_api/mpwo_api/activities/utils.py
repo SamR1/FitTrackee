@@ -43,7 +43,7 @@ def create_activity(
         duration=duration
     )
 
-    if title is not None:
+    if title is not None and title != '':
         new_activity.title = title
     else:
         sport = Sport.query.filter_by(id=new_activity.sport_id).first()

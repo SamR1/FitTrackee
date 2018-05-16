@@ -56,6 +56,16 @@ export default function AdminPage(props) {
                               </Link>
                               </th>
                             )
+                          } else if (key === 'img') {
+                            return (<td key={key}>
+                              <img
+                                className="admin-img"
+                                src={result[key]
+                                  ? result[key]
+                                  : '/img/photo.png'}
+                                alt="logo"
+                              />
+                            </td>)
                           }
                           return <td key={key}>{result[key]}</td>
                           })

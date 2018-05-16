@@ -51,12 +51,21 @@ class AdminDetail extends React.Component {
                         <div className="form-group" key={key}>
                           <label>
                             {key}:
-                            <input
+                            {key === 'img' ? (
+                              <img
+                                src={results[0][key]
+                                  ? results[0][key]
+                                  : '/img/photo.png'}
+                                alt="property"
+                              />
+                            ) : (
+                             <input
                               className="form-control input-lg"
                               name={key}
                               readOnly={key === 'id' || !isInEdition}
                               defaultValue={results[0][key]}
-                            />
+                             />
+                            )}
                           </label>
                         </div>
                       ))

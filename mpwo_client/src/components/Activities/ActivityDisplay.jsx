@@ -7,6 +7,7 @@ import ActivityMap from './ActivityMap'
 import CustomModal from './../Others/CustomModal'
 import { getData } from '../../actions'
 import { deleteActivity } from '../../actions/activities'
+import { formatActivityDate } from '../../utils'
 
 class ActivityDisplay extends React.Component {
   constructor(props, context) {
@@ -24,14 +25,18 @@ class ActivityDisplay extends React.Component {
     const { activities, message, onDeleteActivity, sports } = this.props
     const { displayModal } = this.state
     const [activity] = activities
+    const title = activity ? activity.title : 'Activity'
+    const [sport] = activity
+      ? sports.filter(s => s.id === activity.sport_id)
+      : []
+    const activityDate = activity
+      ? formatActivityDate(activity.activity_date)
+      : null
     return (
-      <div>
+      <div className="activity-page">
         <Helmet>
-          <title>mpwo - Activity</title>
+          <title>mpwo - {title}</title>
         </Helmet>
-        <h1 className="page-title">
-            Activity
-        </h1>
         {message ? (
           <code>{message}</code>
         ) : (
@@ -46,79 +51,129 @@ class ActivityDisplay extends React.Component {
               }}
               close={() => this.setState({ displayModal: false })}
             />}
-          {activity && sports.length > 0 && (
+          {activity && sport && (
             <div className="row">
-            <div className="col-md-6">
+            <div className="col">
               <div className="card">
                 <div className="card-header">
-                  {sports.filter(sport => sport.id === activity.sport_id)
-                         .map(sport => sport.label)} -{' '}
-                  {activity.activity_date}{' '}
-                  <Link
-                    className="unlink"
-                    to={`/activities/${activity.id}/edit`}
-                  >
-                    <i className="fa fa-edit custom-fa" aria-hidden="true" />
-                  </Link>
-                  <i
-                    className="fa fa-trash custom-fa"
-                    aria-hidden="true"
-                    onClick={() => this.setState({ displayModal: true })}
-                  />
+                  <div className="row">
+                    <div className="col-auto col-activity-logo">
+                      <img
+                        className="sport-img-medium"
+                        src={sport.img}
+                        alt="sport logo"
+                      />
+                    </div>
+                    <div className="col">
+                      {title}{' '}
+                      <Link
+                        className="unlink"
+                        to={`/activities/${activity.id}/edit`}
+                      >
+                        <i
+                          className="fa fa-edit custom-fa"
+                          aria-hidden="true"
+                        />
+                      </Link>
+                      <i
+                        className="fa fa-trash custom-fa"
+                        aria-hidden="true"
+                        onClick={() => this.setState({ displayModal: true })}
+                      /><br />
+                      {activityDate && (
+                        <span className="activity-date">
+                          {`${activityDate.activity_date} - ${
+                            activityDate.activity_time}`}
+                        </span>
+                      )}
+                      </div>
+                    </div>
                 </div>
                 <div className="card-body">
-                  <p>
-                    <i
-                      className="fa fa-calendar custom-fa"
-                      aria-hidden="true"
-                    />
-                    Start at {activity.activity_date}
-                  </p>
-                  <p>
-                    <i className="fa fa-clock-o custom-fa" aria-hidden="true" />
-                    Duration: {activity.duration} {' '}
-                    {activity.pauses !== '0:00:00' &&
-                     activity.pauses !== null && (
-                        `(pauses: ${activity.pauses})`
+                  <div className="row">
+                    {activity.with_gpx && (
+                      <div className="col-8">
+                        <ActivityMap activity={activity} />
+                      </div>
                     )}
-                  </p>
-                  <p>
-                    <i className="fa fa-road custom-fa" aria-hidden="true" />
-                    Distance: {activity.distance} km</p>
-                  <p>
-                    <i
-                      className="fa fa-tachometer custom-fa"
-                      aria-hidden="true"
-                    />
-                    Average speed: {activity.ave_speed} km/h -{' '}
-                    Max speed : {activity.max_speed} km/h
-                  </p>
-                  {activity.min_alt && activity.max_alt && (
-                  <p><i className="fi-mountains custom-fa" />
-                    Min altitude: {activity.min_alt}m -{' '}
-                    Max altitude: {activity.max_alt}m
-                  </p>
-                  )}
-                  {activity.ascent && activity.descent && (
-                  <p><i className="fa fa-location-arrow custom-fa" />
-                    Ascent: {activity.ascent}m -{' '}
-                    Descent: {activity.descent}m
-                  </p>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6">
-              <div className="card">
-                <div className="card-header">
-                  Map
-                </div>
-                <div className="card-body">
-                  {activity.with_gpx ? (
-                    <ActivityMap activity={activity} />
-                  ) : (
-                    'No map'
-                  )}
+                      <div className="col">
+                      <p>
+                        <i
+                          className="fa fa-clock-o custom-fa"
+                          aria-hidden="true"
+                        />
+                        Duration: {activity.duration}
+                        {activity.records.find(r => r.record_type === 'LD') && (
+                          <sup>
+                            <i
+                              className="fa fa-trophy custom-fa"
+                              aria-hidden="true"
+                            />
+                          </sup>
+                        )} {' '}
+                        {activity.pauses !== '0:00:00' &&
+                         activity.pauses !== null && (
+                            `(pauses: ${activity.pauses})`
+                        )}
+                      </p>
+                      <p>
+                        <i
+                          className="fa fa-road custom-fa"
+                          aria-hidden="true"
+                        />
+                        Distance: {activity.distance} km
+                        {activity.records.find(r => r.record_type === 'FD') && (
+                          <sup>
+                            <i
+                              className="fa fa-trophy custom-fa"
+                              aria-hidden="true"
+                            />
+                          </sup>
+                        )}
+                      </p>
+                      <p>
+                        <i
+                          className="fa fa-tachometer custom-fa"
+                          aria-hidden="true"
+                        />
+                        Average speed: {activity.ave_speed} km/h
+                        {activity.records.find(r => r.record_type === 'AS') && (
+                          <sup>
+                            <i
+                              className="fa fa-trophy custom-fa"
+                              aria-hidden="true"
+                            />
+                          </sup>
+                        )}
+                        <br />
+                        Max speed : {activity.max_speed} km/h
+                        {activity.records.find(r => r.record_type === 'MS') && (
+                          <sup>
+                            <i
+                              className="fa fa-trophy custom-fa"
+                              aria-hidden="true"
+                            />
+                          </sup>
+                        )}
+                      </p>
+                      {activity.min_alt && activity.max_alt && (
+                      <p>
+                        <i className="fi-mountains custom-fa" />
+                        Min altitude: {activity.min_alt}m
+                        <br />
+                        Max altitude: {activity.max_alt}m
+                      </p>
+                      )}
+                      {activity.ascent && activity.descent && (
+                      <p>
+                        <i className="fa fa-location-arrow custom-fa" />
+                        Ascent: {activity.ascent}m
+                        <br />
+                        Descent: {activity.descent}m
+                      </p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

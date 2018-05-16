@@ -61,12 +61,33 @@ input, textarea {
   margin-bottom: 15px;
 }
 
+.activity-date {
+  font-size: 0.75em;
+}
+
+.activity-page {
+  margin-top: 20px;
+}
+
 .add-activity {
   margin-top: 50px;
 }
 
+.admin-img {
+  max-width: 35px;
+  max-height: 35px;
+}
+
+.col-activity-logo{
+  padding-right: 0;
+}
+
+.fa-trophy {
+  color: goldenrod;
+}
+
 .leaflet-container {
-  height: 240px;
+  height: 400px;
 }
 
 .radioLabel {
@@ -78,7 +99,7 @@ input, textarea {
   border-radius: 5px;
   max-width: 500px;
   margin: 20% auto;
-  z-index: 1050;
+  z-index: 100;
 }
 
 .custom-modal-backdrop {
@@ -89,11 +110,21 @@ input, textarea {
   right: 0;
   background-color: rgba(0,0,0,0.3);
   padding: 50px;
-  z-index: 1040;
+  z-index: 90;
 }
 
 .custom-fa {
   margin-right: 5px;
+}
+
+.sport-img {
+  max-width: 35px;
+  max-height: 35px;
+}
+
+.sport-img-medium {
+  max-width: 45px;
+  max-height: 45px;
 }
 
 .unlink {

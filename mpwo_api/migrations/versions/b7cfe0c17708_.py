@@ -21,6 +21,8 @@ def upgrade():
     op.create_table('sports',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('label', sa.String(length=50), nullable=False),
+    sa.Column('img', sa.String(length=255), nullable=True),
+    sa.Column('is_default', sa.Boolean(), default=False, nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('label')
     )

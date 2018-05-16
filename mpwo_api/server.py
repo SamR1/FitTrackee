@@ -27,12 +27,30 @@ def init_data():
         password='mpwoadmin')
     admin.admin = True
     db.session.add(admin)
-    db.session.add(Sport(label='Cycling (Sport)'))
-    db.session.add(Sport(label='Cycling (Transport)'))
-    db.session.add(Sport(label='Hiking'))
-    db.session.add(Sport(label='Mountain Biking'))
-    db.session.add(Sport(label='Running'))
-    db.session.add(Sport(label='Walking'))
+    sport = Sport(label='Cycling (Sport)')
+    sport.img = '/img/sports/cycling-sport.png'
+    sport.is_default = True
+    db.session.add(sport)
+    sport = Sport(label='Cycling (Transport)')
+    sport.img = '/img/sports/cycling-transport.png'
+    sport.is_default = True
+    db.session.add(sport)
+    sport = Sport(label='Hiking')
+    sport.img = '/img/sports/hiking.png'
+    sport.is_default = True
+    db.session.add(sport)
+    sport = Sport(label='Mountain Biking')
+    sport.img = '/img/sports/mountain-biking.png'
+    sport.is_default = True
+    db.session.add(sport)
+    sport = Sport(label='Running')
+    sport.img = '/img/sports/running.png'
+    sport.is_default = True
+    db.session.add(sport)
+    sport = Sport(label='Walking')
+    sport.img = '/img/sports/walking.png'
+    sport.is_default = True
+    db.session.add(sport)
     db.session.commit()
     print('Initial data stored in database.')
 

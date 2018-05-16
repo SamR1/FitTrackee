@@ -36,7 +36,7 @@ class ActivityMap extends React.Component {
           <Map
             zoom={this.state.zoom}
             bounds={bounds}
-            boundsOptions={{ padding: [20, 20] }}
+            boundsOptions={{ padding: [10, 10] }}
           >
             <TileLayer
               // eslint-disable-next-line max-len
