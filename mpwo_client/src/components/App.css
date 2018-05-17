@@ -124,6 +124,10 @@ input, textarea {
   max-height: 35px;
 }
 
+.inactive-link {
+  color: lightgrey;
+}
+
 .sport-img-medium {
   max-width: 45px;
   max-height: 45px;

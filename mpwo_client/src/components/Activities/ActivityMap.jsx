@@ -1,3 +1,4 @@
+import hash from 'object-hash'
 import React from 'react'
 import { GeoJSON, Map, TileLayer } from 'react-leaflet'
 import { connect } from 'react-redux'
@@ -16,6 +17,13 @@ class ActivityMap extends React.Component {
 
   componentDidMount() {
     this.props.loadActivityGpx(this.props.activity.id)
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.activity.id !==
+      this.props.activity.id) {
+        this.props.loadActivityGpx(this.props.activity.id)
+    }
   }
 
   componentWillUnmount() {
@@ -44,7 +52,11 @@ class ActivityMap extends React.Component {
               // eslint-disable-next-line max-len
               url={`https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=${thunderforestApiKey}`}
             />
-            <GeoJSON data={jsonData} />
+            <GeoJSON
+              // hash as a key to force re-rendering
+              key={hash(jsonData)}
+              data={jsonData}
+            />
           </Map>
         )}
       </div>
