@@ -160,6 +160,20 @@ class Activity(db.Model):
         self.duration = duration
 
     def serialize(self):
+        previous_activity = Activity.query.filter(
+            Activity.id != self.id,
+            Activity.user_id == self.user_id,
+            Activity.activity_date <= self.activity_date
+        ).order_by(
+            Activity.activity_date.desc()
+        ).first()
+        next_activity = Activity.query.filter(
+            Activity.id != self.id,
+            Activity.user_id == self.user_id,
+            Activity.activity_date >= self.activity_date
+        ).order_by(
+            Activity.activity_date.asc()
+        ).first()
         return {
             "id": self.id,
             "user_id": self.user_id,
@@ -180,6 +194,8 @@ class Activity(db.Model):
             "ave_speed": float(self.ave_speed) if self.ave_speed else None,
             "with_gpx": self.gpx is not None,
             "bounds": [float(bound) for bound in self.bounds] if self.bounds else [],  # noqa
+            "previous_activity": previous_activity.id if previous_activity else None,  # noqa
+            "next_activity": next_activity.id if next_activity else None,
             "segments": [segment.serialize() for segment in self.segments],
             "records": [record.serialize() for record in self.records]
         }

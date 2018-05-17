@@ -8,6 +8,10 @@ class AdminSports extends React.Component {
   componentDidMount() {
     this.props.loadSport(this.props.match.params.sportId)
   }
+  componentWillUnmount() {
+    // reload all Sports
+    this.props.loadSport(null)
+  }
   render() {
     const { sports } = this.props
 

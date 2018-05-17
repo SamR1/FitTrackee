@@ -1,4 +1,6 @@
 .App {
+  background-color: #eaeaea;
+  min-height: 100vh;
   text-align: center;
 }
 
@@ -99,7 +101,7 @@ input, textarea {
   border-radius: 5px;
   max-width: 500px;
   margin: 20% auto;
-  z-index: 100;
+  z-index: 1250;
 }
 
 .custom-modal-backdrop {
@@ -110,7 +112,7 @@ input, textarea {
   right: 0;
   background-color: rgba(0,0,0,0.3);
   padding: 50px;
-  z-index: 90;
+  z-index: 1240;
 }
 
 .custom-fa {

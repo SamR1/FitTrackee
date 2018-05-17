@@ -21,11 +21,6 @@ const handleDataAndError = (state, type, action) => {
 
 const activities = (state = initial.activities, action) => {
   switch (action.type) {
-    case 'END_PAGINATION':
-      return {
-        ...state,
-        pagination_end: action.status
-      }
     case 'PUSH_ACTIVITIES':
       return {
         ...state,

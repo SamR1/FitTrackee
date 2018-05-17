@@ -3,11 +3,6 @@ import mpwoApi from '../mwpoApi/activities'
 import { history } from '../index'
 import { setError } from './index'
 
-export const endPagination = status => ({
-  type: 'END_PAGINATION',
-  status,
-})
-
 export const pushActivities = activities => ({
   type: 'PUSH_ACTIVITIES',
   activities,
@@ -89,9 +84,6 @@ export const getMoreActivities = page => dispatch => mpwoGenericApi
     if (ret.status === 'success') {
       if (ret.data.activities.length > 0) {
         dispatch(pushActivities(ret.data.activities))
-      }
-      if (ret.data.activities.length < 5) {
-        dispatch(endPagination(true))
       }
     } else {
       dispatch(setError(`activities: ${ret.message}`))

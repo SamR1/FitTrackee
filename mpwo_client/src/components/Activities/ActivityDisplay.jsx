@@ -51,7 +51,7 @@ class ActivityDisplay extends React.Component {
               }}
               close={() => this.setState({ displayModal: false })}
             />}
-          {activity && sport && (
+          {activity && sport && activities.length === 1 && (
             <div className="row">
             <div className="col">
               <div className="card">
@@ -194,11 +194,11 @@ export default connect(
     user: state.user,
   }),
   dispatch => ({
-    onDeleteActivity: activityId => {
-      dispatch(deleteActivity(activityId))
-    },
     loadActivity: activityId => {
       dispatch(getData('activities', activityId))
+    },
+    onDeleteActivity: activityId => {
+      dispatch(deleteActivity(activityId))
     },
   })
 )(ActivityDisplay)
