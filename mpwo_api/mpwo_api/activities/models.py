@@ -32,16 +32,16 @@ def convert_value_to_integer(record_type, val):
         return int(val * 1000)
 
 
-def update_records(activity, sport_id, connection, session):
+def update_records(user_id, sport_id, connection, session):
     record_table = Record.__table__
     new_records = Activity.get_user_activity_records(
-        activity.user_id,
+        user_id,
         sport_id)
     for record_type, record_data in new_records.items():
         if record_data['record_value']:
             record = Record.query.filter_by(
-                        user_id=activity.user_id,
-                        sport_id=activity.sport_id,
+                        user_id=user_id,
+                        sport_id=sport_id,
                         record_type=record_type,
             ).first()
             if record:
@@ -64,7 +64,7 @@ def update_records(activity, sport_id, connection, session):
                 session.add(new_record)
         else:
             connection.execute(record_table.delete().where(
-                record_table.c.user_id == activity.user_id,
+                record_table.c.user_id == user_id,
             ).where(
                 record_table.c.sport_id == sport_id,
             ).where(
@@ -230,7 +230,7 @@ def on_activity_insert(mapper, connection, activity):
 
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session, context):
-        update_records(activity, activity.sport_id, connection, session)
+        update_records(activity.user_id, activity.sport_id, connection, session)  # noqa
 
 
 @listens_for(Activity, 'after_update')
@@ -246,7 +246,7 @@ def on_activity_update(mapper, connection, activity):
                 if rec.sport_id not in sports_list:
                     sports_list.append(rec.sport_id)
             for sport_id in sports_list:
-                update_records(activity, sport_id, connection, session)
+                update_records(activity.user_id, sport_id, connection, session)
 
 
 class ActivitySegment(db.Model):
