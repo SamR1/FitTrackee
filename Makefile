@@ -44,7 +44,7 @@ serve-react:
 serve:
 	$(MAKE) P="serve-react serve-python" make-p
 
-test-e2e:
+test-e2e: init-db
 	$(NPM) test
 
 test-python:

@@ -24,7 +24,7 @@ test('standard user should be able to add a workout (w/o gpx)', async t => {
   await t
     .navigateTo(`${TEST_URL}/activities/add`)
     .expect(Selector('H1').withText('Dashboard').exists).notOk()
-    .expect(Selector('H2').withText('Add an activity').exists).ok()
+    .expect(Selector('H2').withText('Add a workout').exists).ok()
     .click(Selector('input[name="withoutGpx"]'))
     .click(Selector('select').filter('[name="sport_id"]'))
     .click(Selector('option').filter('[value="1"]'))
