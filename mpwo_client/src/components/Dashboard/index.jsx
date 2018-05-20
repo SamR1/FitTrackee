@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 
 import ActivityCard from './ActivityCard'
+import Records from './Records'
 import Statistics from './Statistics'
 import { getData } from '../../actions'
 import { getMoreActivities } from '../../actions/activities'
@@ -21,7 +22,7 @@ class DashBoard extends React.Component {
 
   render() {
     const {
-      activities, loadMoreActivities, message, sports
+      activities, loadMoreActivities, message, records, sports
     } = this.props
     const paginationEnd = activities.length > 0
       ? activities[activities.length - 1].previous_activity === null
@@ -36,10 +37,14 @@ class DashBoard extends React.Component {
         {message ? (
           <code>{message}</code>
         ) : (
-          activities.length > 0 ? (
+          (activities.length > 0 && sports.length > 0) ? (
             <div className="container">
               <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-4">
+                  <Records records={records} sports={sports} />
+                  <Statistics />
+                </div>
+                <div className="col-md-8">
                   {activities.map(activity => (
                     <ActivityCard
                       activity={activity}
@@ -59,9 +64,6 @@ class DashBoard extends React.Component {
                     />
                   }
                 </div>
-                <div className="col-md-6">
-                  <Statistics />
-                </div>
               </div>
             </div>
         ) : (
@@ -76,11 +78,13 @@ export default connect(
   state => ({
     activities: state.activities.data,
     message: state.message,
+    records: state.records.data,
     sports: state.sports.data,
   }),
   dispatch => ({
     loadActivities: () => {
       dispatch(getData('activities', null, 1))
+      dispatch(getData('records'))
     },
     loadMoreActivities: page => {
       dispatch(getMoreActivities(page))

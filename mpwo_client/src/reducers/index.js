@@ -115,6 +115,9 @@ const messages = (state = initial.messages, action) => {
   }
 }
 
+const records = (state = initial.records, action) =>
+  handleDataAndError(state, 'records', action)
+
 const sports = (state = initial.sports, action) =>
   handleDataAndError(state, 'sports', action)
 
@@ -165,6 +168,7 @@ const reducers = combineReducers({
   gpx,
   message,
   messages,
+  records,
   router: routerReducer,
   sports,
   user,

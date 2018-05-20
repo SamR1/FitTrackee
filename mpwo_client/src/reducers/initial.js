@@ -43,6 +43,9 @@ export default {
   },
   // check if storing gpx content is OK
   gpx: null,
+  records: {
+    ...emptyData,
+  },
   sports: {
     ...emptyData,
   }

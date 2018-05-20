@@ -13,13 +13,10 @@ sports_blueprint = Blueprint('sports', __name__)
 def get_sports(auth_user_id):
     """Get all sports"""
     sports = Sport.query.order_by(Sport.id).all()
-    sports_list = []
-    for sport in sports:
-        sports_list.append(sport.serialize())
     response_object = {
         'status': 'success',
         'data': {
-            'sports': sports_list
+            'sports': [sport.serialize() for sport in sports]
         }
     }
     return jsonify(response_object), 200

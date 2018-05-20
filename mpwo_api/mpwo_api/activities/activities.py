@@ -25,13 +25,10 @@ def get_activities(auth_user_id):
         activities = Activity.query.filter_by(user_id=auth_user_id)\
             .order_by(Activity.activity_date.desc()).paginate(
             page, 5, False).items
-        activities_list = []
-        for activity in activities:
-            activities_list.append(activity.serialize())
         response_object = {
             'status': 'success',
             'data': {
-                'activities': activities_list
+                'activities': [activity.serialize() for activity in activities]
             }
         }
         code = 200

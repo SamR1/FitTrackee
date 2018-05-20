@@ -128,11 +128,21 @@ input, textarea {
   color: lightgrey;
 }
 
+.record-logo {
+  margin-right: 5px;
+  max-width: 25px;
+  max-height: 25px;
+}
+
+.record-table table, .record-table th, .record-table td{
+  font-size: 0.9em;
+  padding: 0.1em;
+}
+
 .sport-img-medium {
   max-width: 45px;
   max-height: 45px;
 }
-
 .unlink {
   color: black;
 }

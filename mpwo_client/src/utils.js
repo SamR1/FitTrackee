@@ -39,3 +39,28 @@ export const formatActivityDate = activityDateTime => {
     activity_time: null,
   }
 }
+
+export const formatRecord = record => {
+  let value, recordType = null
+  switch (record.record_type) {
+    case 'AS':
+    case 'MS':
+      value = `${record.value} km/h`
+      recordType = record.record_type === 'AS' ? 'Avg speed' : 'Max speed'
+      break
+    case 'FD':
+      value = `${record.value} km`
+      recordType = 'Farest distance'
+      break
+    default: // 'LD'
+      value = record.value // eslint-disable-line prefer-destructuring
+      recordType = 'Longest duration'
+  }
+  return {
+    activity_date: formatActivityDate(record.activity_date).activity_date,
+    activity_id: record.activity_id,
+    id: record.id,
+    record_type: recordType,
+    value: value,
+  }
+}
