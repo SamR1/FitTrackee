@@ -144,18 +144,16 @@ def get_gpx_info(gpx_file):
     start = 0
 
     for segment_idx, segment in enumerate(gpx.tracks[0].segments):
-        segment_max_speed = 0
         segment_start = 0
         for point_idx, point in enumerate(segment.points):
-            if point_idx == 0:
-                segment_start = point.time
-                if start == 0:
-                    start = segment_start
-            segment_speed = segment.get_speed(point_idx)
-            if segment_speed > segment_max_speed:
-                segment_max_speed = segment_speed
-            if segment_max_speed > max_speed:
-                max_speed = segment_max_speed
+            if point_idx == 0 and start == 0:
+                start = point.time
+        segment_max_speed = (segment.get_moving_data().max_speed
+                             if segment.get_moving_data().max_speed
+                             else 0)
+
+        if segment_max_speed > max_speed:
+            max_speed = segment_max_speed
 
         segment_data = get_gpx_data(
             segment, segment_max_speed, segment_start
@@ -163,8 +161,8 @@ def get_gpx_info(gpx_file):
         segment_data['idx'] = segment_idx
         gpx_data['segments'].append(segment_data)
 
-    gull_gpx_data = get_gpx_data(gpx, max_speed, start)
-    gpx_data = {**gpx_data, **gull_gpx_data}
+    full_gpx_data = get_gpx_data(gpx, max_speed, start)
+    gpx_data = {**gpx_data, **full_gpx_data}
     bounds = gpx.get_bounds()
     gpx_data['bounds'] = [
         bounds.min_latitude,
