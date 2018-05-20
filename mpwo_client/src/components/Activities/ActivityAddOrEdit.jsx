@@ -27,8 +27,8 @@ export default class ActivityAddEdit extends React.Component {
       <div>
         <Helmet>
           <title>mpwo - {activity
-            ? 'Edit an activity'
-            : 'Add an activity'}
+            ? 'Edit a workout'
+            : 'Add a workout'}
             </title>
         </Helmet>
         <br /><br />
@@ -41,7 +41,7 @@ export default class ActivityAddEdit extends React.Component {
             <div className="col-md-8">
               <div className="card add-activity">
                 <h2 className="card-header text-center">
-                  {activity ? 'Edit an activity' : 'Add an activity'}
+                  {activity ? 'Edit a workout' : 'Add a workout'}
                 </h2>
                 <div className="card-body">
                   {activity ? (

@@ -125,13 +125,13 @@ class Activity(db.Model):
     duration = db.Column(db.Interval, nullable=False)
     pauses = db.Column(db.Interval, nullable=True)
     moving = db.Column(db.Interval, nullable=True)
-    distance = db.Column(db.Numeric(5, 3), nullable=True)    # kilometers
-    min_alt = db.Column(db.Numeric(5, 2), nullable=True)     # meters
-    max_alt = db.Column(db.Numeric(5, 2), nullable=True)     # meters
-    descent = db.Column(db.Numeric(5, 2), nullable=True)     # meters
-    ascent = db.Column(db.Numeric(5, 2), nullable=True)      # meters
-    max_speed = db.Column(db.Numeric(5, 2), nullable=True)   # km/h
-    ave_speed = db.Column(db.Numeric(5, 2), nullable=True)   # km/h
+    distance = db.Column(db.Numeric(6, 3), nullable=True)    # kilometers
+    min_alt = db.Column(db.Numeric(6, 2), nullable=True)     # meters
+    max_alt = db.Column(db.Numeric(6, 2), nullable=True)     # meters
+    descent = db.Column(db.Numeric(6, 2), nullable=True)     # meters
+    ascent = db.Column(db.Numeric(6, 2), nullable=True)      # meters
+    max_speed = db.Column(db.Numeric(6, 2), nullable=True)   # km/h
+    ave_speed = db.Column(db.Numeric(6, 2), nullable=True)   # km/h
     bounds = db.Column(postgresql.ARRAY(db.Float), nullable=True)
     segments = db.relationship('ActivitySegment',
                                lazy=True,
@@ -261,13 +261,13 @@ class ActivitySegment(db.Model):
     duration = db.Column(db.Interval, nullable=False)
     pauses = db.Column(db.Interval, nullable=True)
     moving = db.Column(db.Interval, nullable=True)
-    distance = db.Column(db.Numeric(5, 3), nullable=True)    # kilometers
-    min_alt = db.Column(db.Numeric(5, 2), nullable=True)     # meters
-    max_alt = db.Column(db.Numeric(5, 2), nullable=True)     # meters
-    descent = db.Column(db.Numeric(5, 2), nullable=True)     # meters
-    ascent = db.Column(db.Numeric(5, 2), nullable=True)      # meters
-    max_speed = db.Column(db.Numeric(5, 2), nullable=True)   # km/h
-    ave_speed = db.Column(db.Numeric(5, 2), nullable=True)   # km/h
+    distance = db.Column(db.Numeric(6, 3), nullable=True)    # kilometers
+    min_alt = db.Column(db.Numeric(6, 2), nullable=True)     # meters
+    max_alt = db.Column(db.Numeric(6, 2), nullable=True)     # meters
+    descent = db.Column(db.Numeric(6, 2), nullable=True)     # meters
+    ascent = db.Column(db.Numeric(6, 2), nullable=True)      # meters
+    max_speed = db.Column(db.Numeric(6, 2), nullable=True)   # km/h
+    ave_speed = db.Column(db.Numeric(6, 2), nullable=True)   # km/h
 
     def __str__(self):
         return '<Segment \'{}\' for activity \'{}\'>'.format(
