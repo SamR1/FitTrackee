@@ -86,7 +86,7 @@ class Sport(db.Model):
                               backref=db.backref('sports', lazy='joined'))
 
     def __repr__(self):
-        return '<Sport {!r}>'.format(self.label)
+        return f'<Sport {self.label!r}>'
 
     def __init__(self, label):
         self.label = label
@@ -149,8 +149,7 @@ class Activity(db.Model):
                                   single_parent=True))
 
     def __str__(self):
-        return '<Activity \'{}\' - {}>'.format(
-            self.sports.label, self.activity_date, )
+        return f'<Activity \'{self.sports.label}\' - {self.activity_date}>'
 
     def __init__(self, user_id, sport_id, activity_date, distance, duration):
         self.user_id = user_id
@@ -270,8 +269,8 @@ class ActivitySegment(db.Model):
     ave_speed = db.Column(db.Numeric(6, 2), nullable=True)   # km/h
 
     def __str__(self):
-        return '<Segment \'{}\' for activity \'{}\'>'.format(
-            self.segment_id, self.activity_id, )
+        return (f'<Segment \'{self.segment_id}\' '
+                f'for activity \'{self.activity_id}\'>')
 
     def __init__(self, segment_id, activity_id):
         self.segment_id = segment_id
@@ -319,11 +318,9 @@ class Record(db.Model):
     _value = db.Column("value", db.Integer, nullable=True)
 
     def __str__(self):
-        return '<Record {} - {} - {}>'.format(
-            self.sports.label,
-            self.record_type,
-            self.activity_date.strftime('%Y-%m-%d')
-        )
+        return (f'<Record {self.sports.label} - '
+                f'{self.record_type} - '
+                f"{self.activity_date.strftime('%Y-%m-%d')}>")
 
     def __init__(self, activity, record_type):
         self.user_id = activity.user_id

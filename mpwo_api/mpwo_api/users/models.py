@@ -27,7 +27,7 @@ class User(db.Model):
                               backref=db.backref('users', lazy='joined'))
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return f'<User {self.username!r}>'
 
     def __init__(
             self, username, email, password,

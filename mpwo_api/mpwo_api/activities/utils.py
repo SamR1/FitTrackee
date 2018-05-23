@@ -47,8 +47,7 @@ def create_activity(
         new_activity.title = title
     else:
         sport = Sport.query.filter_by(id=new_activity.sport_id).first()
-        new_activity.title = '{} - {}'.format(sport.label,
-                                              new_activity.activity_date)
+        new_activity.title = f'{sport.label} - {new_activity.activity_date}'
 
     if gpx_data:
         new_activity.gpx = gpx_data['filename']
@@ -189,9 +188,9 @@ def get_file_path(auth_user_id, activity_file):
 
 def get_new_file_path(auth_user_id, activity_date, activity_file, sport):
     old_filename = secure_filename(activity_file.filename)
-    extension = '.{}'.format(old_filename.rsplit('.', 1)[1].lower())
+    extension = f".{old_filename.rsplit('.', 1)[1].lower()}"
     _, new_filename = tempfile.mkstemp(
-        prefix='{}_{}_'.format(activity_date, sport),
+        prefix=f'{activity_date}_sport_',
         suffix=extension
     )
     dir_path = os.path.join(

@@ -77,9 +77,7 @@ def get_activity_gpx(auth_user_id, activity_id):
         if not activity.gpx or activity.gpx == '':
             response_object = {
                 'status': 'fail',
-                'message': 'No gpx file for this activity (id: {})'.format(
-                    activity_id
-                )
+                'message': f'No gpx file for this activity (id: {activity_id})'
             }
             return jsonify(response_object), 400
 
@@ -103,7 +101,7 @@ def get_activity_gpx(auth_user_id, activity_id):
     else:
         gpx_content = ''
         status = 'not found'
-        message = 'Activity not found (id: {})'.format(activity_id)
+        message = f'Activity not found (id: {activity_id})'
         code = 404
 
     response_object = {
