@@ -11,6 +11,7 @@ uploads
 .cache
 .coverage
 coverage.xml
+.pytest_cache
 
 # MPWO_CLIENT
 ###############

@@ -1,5 +1,6 @@
 alembic==0.9.9
 apipkg==1.4
+atomicwrites==1.1.5
 attrs==17.4.0
 bcrypt==3.1.4
 certifi==2018.4.16
@@ -24,6 +25,7 @@ Jinja2==2.10
 Mako==1.0.7
 MarkupSafe==1.0
 mccabe==0.6.1
+more-itertools==4.2.0
 mysqlclient==1.3.12
 pluggy==0.6.0
 psycopg2==2.7.3.2
@@ -32,7 +34,7 @@ pycodestyle==2.3.1
 pycparser==2.18
 pyflakes==1.6.0
 PyJWT==1.6.1
-pytest==3.3.2
+pytest==3.6.0
 pytest-cache==1.0
 pytest-cov==2.5.1
 pytest-flake8==0.9.1
