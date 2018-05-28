@@ -129,7 +129,9 @@ class ActivityCharts extends React.Component {
                 </ComposedChart>
               </ResponsiveContainer>
             </div>
-            <div className="chart-info">data from gpx, without any cleaning</div>
+            <div className="chart-info">
+              data from gpx, without any cleaning
+            </div>
           </div>
         ) : (
           'No data to display'
