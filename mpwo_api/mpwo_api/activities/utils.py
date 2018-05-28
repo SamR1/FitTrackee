@@ -122,7 +122,7 @@ def get_gpx_data(parsed_gpx, max_speed, start):
     return gpx_data
 
 
-def get_gpx_info(gpx_file):
+def open_gpx_file(gpx_file):
     gpx_file = open(gpx_file, 'r')
 
     try:
@@ -131,8 +131,15 @@ def get_gpx_info(gpx_file):
         appLog.error(e)
         return None
 
-    # handle only one track per file
     if len(gpx.tracks) == 0:
+        return None
+
+    return gpx
+
+
+def get_gpx_info(gpx_file):
+    gpx = open_gpx_file(gpx_file)
+    if gpx is None:
         return None
 
     gpx_data = {
@@ -171,6 +178,42 @@ def get_gpx_info(gpx_file):
     ]
 
     return gpx_data
+
+
+def get_chart_data(gpx_file):
+    gpx = open_gpx_file(gpx_file)
+    if gpx is None:
+        return None
+
+    chart_data = []
+    first_point = None
+    previous_point = None
+    previous_distance = 0
+
+    for segment_idx, segment in enumerate(gpx.tracks[0].segments):
+        for point_idx, point in enumerate(segment.points):
+            if segment_idx == 0 and point_idx == 0:
+                first_point = point
+            distance = (point.distance_3d(previous_point)
+                        if (point.elevation
+                            and previous_point
+                            and previous_point.elevation)
+                        else point.distance_2d(previous_point)
+                        )
+            distance = 0 if distance is None else distance
+            distance += previous_distance
+            speed = round((segment.get_speed(point_idx) / 1000)*3600, 2)
+            chart_data.append({
+                'distance': round(distance / 1000, 2),
+                'duration': point.time_difference(first_point),
+                'elevation': round(point.elevation, 1),
+                'speed': speed,
+                'time': point.time,
+            })
+            previous_point = point
+            previous_distance = distance
+
+    return chart_data
 
 
 def get_file_path(auth_user_id, activity_file):

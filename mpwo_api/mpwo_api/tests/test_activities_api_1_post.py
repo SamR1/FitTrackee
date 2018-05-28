@@ -189,6 +189,47 @@ def test_get_an_activity_with_gpx(app, user_1, sport_1_cycling, gpx_file):
     assert len(data['data']['gpx']) != ''
 
 
+def test_get_chart_data_activty_with_gpx(
+        app, user_1, sport_1_cycling, gpx_file
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    client.post(
+        '/api/activities',
+        data=dict(
+            file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+            data='{"sport_id": 1}'
+        ),
+        headers=dict(
+            content_type='multipart/form-data',
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    response = client.get(
+        '/api/activities/1/chart_data',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert data['message'] == ''
+    assert data['data']['chart_data'] != ''
+
+
 def test_add_an_activity_with_gpx_without_name(
     app, user_1, sport_1_cycling, gpx_file_wo_name
 ):

@@ -8,8 +8,8 @@ from sqlalchemy import exc
 from ..users.utils import authenticate, verify_extension
 from .models import Activity, Sport
 from .utils import (
-    create_activity, create_segment, edit_activity, get_file_path,
-    get_gpx_info, get_new_file_path
+    create_activity, create_segment, edit_activity, get_chart_data,
+    get_file_path, get_gpx_info, get_new_file_path
 )
 
 activities_blueprint = Blueprint('activities', __name__)
@@ -109,6 +109,53 @@ def get_activity_gpx(auth_user_id, activity_id):
         'message': message,
         'data': {
             'gpx': gpx_content
+        }
+    }
+    return jsonify(response_object), code
+
+
+@activities_blueprint.route(
+    '/activities/<int:activity_id>/chart_data', methods=['GET']
+)
+@authenticate
+def get_activity_chart_data(auth_user_id, activity_id):
+    """Get chart data from an activity gpx file"""
+    activity = Activity.query.filter_by(id=activity_id).first()
+    if activity:
+        if not activity.gpx or activity.gpx == '':
+            response_object = {
+                'status': 'fail',
+                'message': f'No gpx file for this activity (id: {activity_id})'
+            }
+            return jsonify(response_object), 400
+
+        try:
+            chart_content = get_chart_data(activity.gpx)
+        except Exception as e:
+            appLog.error(e)
+            response_object = {
+                'status': 'error',
+                'message': 'internal error',
+                'data': {
+                    'chart_data': ''
+                }
+            }
+            return jsonify(response_object), 500
+
+        status = 'success'
+        message = ''
+        code = 200
+    else:
+        chart_content = ''
+        status = 'not found'
+        message = f'Activity not found (id: {activity_id})'
+        code = 404
+
+    response_object = {
+        'status': status,
+        'message': message,
+        'data': {
+            'chart_data': chart_content
         }
     }
     return jsonify(response_object), code

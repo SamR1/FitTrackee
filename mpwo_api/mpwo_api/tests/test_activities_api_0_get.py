@@ -254,8 +254,23 @@ def test_get_an_activity_no_actvity_no_gpx(app, user_1):
     assert 'Activity not found (id: 11)' in data['message']
     assert data['data']['gpx'] == ''
 
+    response = client.get(
+        '/api/activities/11/chart_data',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
 
-def test_get_an_activity_actvity_no_gpx(
+    assert response.status_code == 404
+    assert 'not found' in data['status']
+    assert 'Activity not found (id: 11)' in data['message']
+    assert data['data']['chart_data'] == ''
+
+
+def test_get_an_activity_activity_no_gpx(
         app, user_1, sport_1_cycling, activity_cycling_user_1
 ):
     client = app.test_client()
@@ -281,8 +296,22 @@ def test_get_an_activity_actvity_no_gpx(
     assert 'fail' in data['status']
     assert 'No gpx file for this activity (id: 1)' in data['message']
 
+    response = client.get(
+        '/api/activities/1/chart_data',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
 
-def test_get_an_activity_actvity_invalid_gpx(
+    assert response.status_code == 400
+    assert 'fail' in data['status']
+    assert 'No gpx file for this activity (id: 1)' in data['message']
+
+
+def test_get_an_activity_activity_invalid_gpx(
         app, user_1, sport_1_cycling, activity_cycling_user_1
 ):
     activity_cycling_user_1.gpx = "some path"
@@ -309,3 +338,18 @@ def test_get_an_activity_actvity_invalid_gpx(
     assert 'error' in data['status']
     assert 'internal error' in data['message']
     assert data['data']['gpx'] == ''
+
+    response = client.get(
+        '/api/activities/1/chart_data',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 500
+    assert 'error' in data['status']
+    assert 'internal error' in data['message']
+    assert data['data']['chart_data'] == ''
