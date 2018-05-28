@@ -28,6 +28,27 @@ def test_record_model(
     assert 'value' in record_serialize
 
 
+def test_record_model_none_value(
+    app,  user_1, sport_1_cycling, activity_cycling_user_1
+):
+    record_ld = Record.query.filter_by(
+        user_id=activity_cycling_user_1.user_id,
+        sport_id=activity_cycling_user_1.sport_id,
+        record_type='LD',
+    ).first()
+    record_ld.value = None
+    assert 1 == record_ld.user_id
+    assert 1 == record_ld.sport_id
+    assert 1 == record_ld.activity_id
+    assert 'LD' == record_ld.record_type
+    assert '2018-01-01 00:00:00' == str(record_ld.activity_date)
+    assert '<Record Cycling - LD - 2018-01-01>' == str(record_ld)
+    assert record_ld.value is None
+
+    record_serialize = record_ld.serialize()
+    assert record_serialize['value'] is None
+
+
 def test_add_as_records(
     app,  user_1, sport_1_cycling, activity_cycling_user_1
 ):

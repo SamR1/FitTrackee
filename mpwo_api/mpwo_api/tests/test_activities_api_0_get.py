@@ -227,3 +227,85 @@ def test_get_an_activity_invalid_id(app, user_1):
     assert response.status_code == 404
     assert 'not found' in data['status']
     assert len(data['data']['activities']) == 0
+
+
+def test_get_an_activity_no_actvity_no_gpx(app, user_1):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        '/api/activities/11/gpx',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 404
+    assert 'not found' in data['status']
+    assert 'Activity not found (id: 11)' in data['message']
+    assert data['data']['gpx'] == ''
+
+
+def test_get_an_activity_actvity_no_gpx(
+        app, user_1, sport_1_cycling, activity_cycling_user_1
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        '/api/activities/1/gpx',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 400
+    assert 'fail' in data['status']
+    assert 'No gpx file for this activity (id: 1)' in data['message']
+
+
+def test_get_an_activity_actvity_invalid_gpx(
+        app, user_1, sport_1_cycling, activity_cycling_user_1
+):
+    activity_cycling_user_1.gpx = "some path"
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        '/api/activities/1/gpx',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 500
+    assert 'error' in data['status']
+    assert 'internal error' in data['message']
+    assert data['data']['gpx'] == ''
