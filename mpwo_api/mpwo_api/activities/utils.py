@@ -202,7 +202,9 @@ def get_chart_data(gpx_file):
                         )
             distance = 0 if distance is None else distance
             distance += previous_distance
-            speed = round((segment.get_speed(point_idx) / 1000)*3600, 2)
+            speed = (round((segment.get_speed(point_idx) / 1000)*3600, 2)
+                     if segment.get_speed(point_idx) is not None
+                     else 0)
             chart_data.append({
                 'distance': round(distance / 1000, 2),
                 'duration': point.time_difference(first_point),

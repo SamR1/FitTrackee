@@ -43,6 +43,7 @@ class ActivityCharts extends React.Component {
   render() {
     const { chartData } = this.props
     const { displayDistance } = this.state
+    const xInterval = chartData ? parseInt(chartData.length / 10, 10) : 0
     let xDataKey, xScale
     if (displayDistance) {
       xDataKey = 'distance'
@@ -73,55 +74,66 @@ class ActivityCharts extends React.Component {
             duration
           </label>
         </div>
-        <div className="row chart">
-          <ResponsiveContainer height={300}>
-            <ComposedChart
-              data={chartData}
-              margin={{ top: 15, right: 30, left: 20, bottom: 15 }}
-            >
-              <XAxis
-                allowDecimals={false}
-                dataKey={xDataKey}
-                label={{ value: xDataKey, offset: 0, position: 'bottom' }}
-                scale={xScale}
-                tickFormatter={value => displayDistance
-                                        ? value
-                                        : format(value, 'HH:mm:ss')}
-                type="number"
-              />
-              <YAxis
-                label={{ value: 'speed (km/h)', angle: -90, position: 'left' }}
-                yAxisId="left"
-              />
-              <YAxis
-                label={{ value: 'altitude (m)', angle: -90, position: 'right' }}
-                yAxisId="right" orientation="right"
-              />
-              <Area
-                yAxisId="right"
-                type="linear"
-                dataKey="elevation"
-                fill="#e5e5e5"
-                stroke="#cccccc"
-                dot={false}
-              />
-              <Line
-                yAxisId="left"
-                type="linear"
-                dataKey="speed"
-                stroke="#8884d8"
-                strokeWidth={2}
-                dot={false}
-              />
-              <Tooltip
-                labelFormatter={value => displayDistance
-                                ? `distance: ${value} km`
-                                : `duration: ${format(value, 'HH:mm:ss')}`}
-              />
-            </ComposedChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="chart-info">data from gpx, without any cleaning</div>
+        {chartData && chartData.length > 0 ? (
+          <div>
+            <div className="row chart">
+              <ResponsiveContainer height={300}>
+                <ComposedChart
+                  data={chartData}
+                  margin={{ top: 15, right: 30, left: 20, bottom: 15 }}
+                >
+                  <XAxis
+                    allowDecimals={false}
+                    dataKey={xDataKey}
+                    label={{ value: xDataKey, offset: 0, position: 'bottom' }}
+                    scale={xScale}
+                    interval={xInterval}
+                    tickFormatter={value => displayDistance
+                                            ? value
+                                            : format(value, 'HH:mm:ss')}
+                    type="number"
+                  />
+                  <YAxis
+                    label={{
+                      value: 'speed (km/h)', angle: -90, position: 'left'
+                    }}
+                    yAxisId="left"
+                  />
+                  <YAxis
+                    label={{
+                      value: 'altitude (m)', angle: -90, position: 'right'
+                    }}
+                    yAxisId="right" orientation="right"
+                  />
+                  <Area
+                    yAxisId="right"
+                    type="linear"
+                    dataKey="elevation"
+                    fill="#e5e5e5"
+                    stroke="#cccccc"
+                    dot={false}
+                  />
+                  <Line
+                    yAxisId="left"
+                    type="linear"
+                    dataKey="speed"
+                    stroke="#8884d8"
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                  <Tooltip
+                    labelFormatter={value => displayDistance
+                                    ? `distance: ${value} km`
+                                    : `duration: ${format(value, 'HH:mm:ss')}`}
+                  />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="chart-info">data from gpx, without any cleaning</div>
+          </div>
+        ) : (
+          'No data to display'
+        )}
       </div>
     )
   }
