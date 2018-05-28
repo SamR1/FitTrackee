@@ -1,62 +1,51 @@
-import { apiUrl } from '../utils'
+import { apiUrl, createRequest } from '../utils'
 
 export default class MpwoApiUser {
 
   static login(email, password) {
-    const request = new Request(`${apiUrl}auth/login`, {
+    const params = {
+      url: `${apiUrl}auth/login`,
       method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-      }),
-      body: JSON.stringify({
+      noAuthorization: true,
+      body: {
         email: email,
         password: password,
-      }),
-    })
-    return fetch(request)
-      .then(response => response.json())
-      .catch(error => error)
+      },
+      type: 'application/json',
+    }
+    return createRequest(params)
   }
 
   static register(username, email, password, passwordConf) {
-    const request = new Request(`${apiUrl}auth/register`, {
+    const params = {
+      url: `${apiUrl}auth/register`,
       method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-      }),
-      body: JSON.stringify({
+      noAuthorization: true,
+      body: {
         username: username,
         email: email,
         password: password,
         password_conf: passwordConf,
-      }),
-    })
-    return fetch(request)
-      .then(response => response.json())
-      .catch(error => error)
+      },
+      type: 'application/json',
+    }
+    return createRequest(params)
   }
 
   static getProfile() {
-    const request = new Request(`${apiUrl}auth/profile`, {
+    const params = {
+      url: `${apiUrl}auth/profile`,
       method: 'GET',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${window.localStorage.getItem('authToken')}`,
-      }),
-    })
-    return fetch(request)
-      .then(response => response.json())
-      .catch(error => error)
+      type: 'application/json',
+    }
+    return createRequest(params)
   }
 
   static updateProfile(form) {
-    const request = new Request(`${apiUrl}auth/profile/edit`, {
+    const params = {
+      url: `${apiUrl}auth/profile/edit`,
       method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${window.localStorage.getItem('authToken')}`,
-      }),
-      body: JSON.stringify({
+      body: {
         first_name: form.firstName,
         last_name: form.lastName,
         bio: form.bio,
@@ -64,35 +53,26 @@ export default class MpwoApiUser {
         birth_date: form.birthDate,
         password: form.password,
         password_conf: form.passwordConf,
-      }),
-    })
-    return fetch(request)
-      .then(response => response.json())
-      .catch(error => error)
+      },
+      type: 'application/json',
+    }
+    return createRequest(params)
   }
 
   static updatePicture(form) {
-    const request = new Request(`${apiUrl}auth/picture`, {
+    const params = {
+      url: `${apiUrl}auth/picture`,
       method: 'POST',
-      headers: new Headers({
-        Authorization: `Bearer ${window.localStorage.getItem('authToken')}`,
-      }),
       body: form,
-    })
-    return fetch(request)
-      .then(response => response.json())
-      .catch(error => error)
+    }
+    return createRequest(params)
   }
 
   static deletePicture() {
-    const request = new Request(`${apiUrl}auth/picture`, {
+    const params = {
+      url: `${apiUrl}auth/picture`,
       method: 'DELETE',
-      headers: new Headers({
-        Authorization: `Bearer ${window.localStorage.getItem('authToken')}`,
-      }),
-    })
-    return fetch(request)
-      .then(response => response.json())
-      .catch(error => error)
+    }
+    return createRequest(params)
   }
 }

@@ -1,4 +1,4 @@
-import { apiUrl } from '../utils'
+import { apiUrl, createRequest } from '../utils'
 
 export default class MpwoApi {
 
@@ -9,56 +9,40 @@ export default class MpwoApi {
     } else if (page) {
       url = `${url}?page=${page}`
     }
-    const request = new Request(url, {
+    const params = {
+      url: url,
       method: 'GET',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${window.localStorage.getItem('authToken')}`,
-      }),
-    })
-    return fetch(request)
-      .then(response => response.json())
-      .catch(error => error)
+      type: 'application/json',
+    }
+    return createRequest(params)
   }
 
   static addData(target, data) {
-    const request = new Request(`${apiUrl}${target}`, {
+    const params = {
+      url: `${apiUrl}${target}`,
       method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${window.localStorage.getItem('authToken')}`,
-      }),
-      body: JSON.stringify(data)
-    })
-    return fetch(request)
-      .then(response => response.json())
-      .catch(error => error)
+      body: data,
+      type: 'application/json',
+    }
+    return createRequest(params)
   }
 
   static updateData(target, data) {
-    const request = new Request(`${apiUrl}${target}/${data.id}`, {
+    const params = {
+      url: `${apiUrl}${target}/${data.id}`,
       method: 'PATCH',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${window.localStorage.getItem('authToken')}`,
-      }),
-      body: JSON.stringify(data)
-    })
-    return fetch(request)
-      .then(response => response.json())
-      .catch(error => error)
+      body: data,
+      type: 'application/json',
+    }
+    return createRequest(params)
   }
 
   static deleteData(target, id) {
-    const request = new Request(`${apiUrl}${target}/${id}`, {
+    const params = {
+      url: `${apiUrl}${target}/${id}`,
       method: 'DELETE',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${window.localStorage.getItem('authToken')}`,
-      }),
-    })
-    return fetch(request)
-      .then(response => response)
-      .catch(error => error)
+      type: 'application/json',
+    }
+    return createRequest(params)
   }
 }

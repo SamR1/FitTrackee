@@ -1,44 +1,32 @@
-import { apiUrl } from '../utils'
+import { apiUrl, createRequest } from '../utils'
 
 export default class MpwoApi {
 
   static addActivity(formData) {
-    const request = new Request(`${apiUrl}activities`, {
+    const params = {
+      url: `${apiUrl}activities`,
       method: 'POST',
-      headers: new Headers({
-        Authorization: `Bearer ${window.localStorage.getItem('authToken')}`,
-      }),
       body: formData,
-    })
-    return fetch(request)
-      .then(response => response.json())
-      .catch(error => error)
+    }
+    return createRequest(params)
   }
 
   static addActivityWithoutGpx(data) {
-    const request = new Request(`${apiUrl}activities/no_gpx`, {
+    const params = {
+      url: `${apiUrl}activities/no_gpx`,
       method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${window.localStorage.getItem('authToken')}`,
-      }),
-      body: JSON.stringify(data)
-    })
-    return fetch(request)
-      .then(response => response.json())
-      .catch(error => error)
+      body: data,
+      type: 'application/json',
+    }
+    return createRequest(params)
   }
 
   static getActivityGpx(activityId) {
-    const request = new Request(`${apiUrl}activities/${activityId}/gpx`, {
+    const params = {
+      url: `${apiUrl}activities/${activityId}/gpx`,
       method: 'GET',
-      headers: new Headers({
-        Authorization: `Bearer ${window.localStorage.getItem('authToken')}`,
-      }),
-    })
-    return fetch(request)
-      .then(response => response.json())
-      .catch(error => error)
+    }
+    return createRequest(params)
   }
 
 }

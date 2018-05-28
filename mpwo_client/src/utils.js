@@ -17,6 +17,32 @@ export const generateIds = arr => {
     })
 }
 
+
+export const createRequest = params => {
+  const headers = {}
+  if (!params.noAuthorization) {
+    headers.Authorization = `Bearer ${
+      window.localStorage.getItem('authToken')}`
+  }
+  if (params.type) {
+    headers['Content-Type'] = params.type
+  }
+  const requestParams = {
+    method: params.method,
+    headers: headers,
+  }
+  if (params.type === 'application/json' && params.body) {
+    requestParams.body = JSON.stringify(params.body)
+  } else if (params.body) {
+    requestParams.body = params.body
+  }
+  const request = new Request(params.url, requestParams)
+  return fetch(request)
+    .then(response => response.json())
+    .catch(error => error)
+}
+
+
 export const getGeoJson = gpxContent => {
   let jsonData
   if (gpxContent) {
