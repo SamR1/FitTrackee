@@ -66,13 +66,10 @@ def get_activity(auth_user_id, activity_id):
     return jsonify(response_object), code
 
 
-@activities_blueprint.route(
-    '/activities/<int:activity_id>/gpx', methods=['GET']
-)
-@authenticate
-def get_activity_gpx(auth_user_id, activity_id):
-    """Get gpx file for an activity"""
+def get_activity_data(auth_user_id, activity_id, data_type):
+    """Get chart data from an activity gpx file"""
     activity = Activity.query.filter_by(id=activity_id).first()
+    content = ''
     if activity:
         if not activity.gpx or activity.gpx == '':
             response_object = {
@@ -82,36 +79,43 @@ def get_activity_gpx(auth_user_id, activity_id):
             return jsonify(response_object), 400
 
         try:
-            with open(activity.gpx, encoding='utf-8') as f:
-                gpx_content = f.read()
+            if data_type == 'chart':
+                content = get_chart_data(activity.gpx)
+            else:  # data_type == 'gpx'
+                with open(activity.gpx, encoding='utf-8') as f:
+                    content = f.read()
         except Exception as e:
             appLog.error(e)
-            response_object = {
-                'status': 'error',
-                'message': 'internal error',
-                'data': {
-                    'gpx': ''
-                }
-            }
+            response_object = {'status': 'error',
+                               'message': 'internal error',
+                               'data': ({'chart_data': content}
+                                        if data_type == 'chart'
+                                        else {'gpx': content})}
             return jsonify(response_object), 500
 
         status = 'success'
         message = ''
         code = 200
     else:
-        gpx_content = ''
         status = 'not found'
         message = f'Activity not found (id: {activity_id})'
         code = 404
 
-    response_object = {
-        'status': status,
-        'message': message,
-        'data': {
-            'gpx': gpx_content
-        }
-    }
+    response_object = {'status': status,
+                       'message': message,
+                       'data': ({'chart_data': content}
+                                if data_type == 'chart'
+                                else {'gpx': content})}
     return jsonify(response_object), code
+
+
+@activities_blueprint.route(
+    '/activities/<int:activity_id>/gpx', methods=['GET']
+)
+@authenticate
+def get_activity_gpx(auth_user_id, activity_id):
+    """Get gpx file for an activity"""
+    return get_activity_data(auth_user_id, activity_id, 'gpx')
 
 
 @activities_blueprint.route(
@@ -120,45 +124,7 @@ def get_activity_gpx(auth_user_id, activity_id):
 @authenticate
 def get_activity_chart_data(auth_user_id, activity_id):
     """Get chart data from an activity gpx file"""
-    activity = Activity.query.filter_by(id=activity_id).first()
-    if activity:
-        if not activity.gpx or activity.gpx == '':
-            response_object = {
-                'status': 'fail',
-                'message': f'No gpx file for this activity (id: {activity_id})'
-            }
-            return jsonify(response_object), 400
-
-        try:
-            chart_content = get_chart_data(activity.gpx)
-        except Exception as e:
-            appLog.error(e)
-            response_object = {
-                'status': 'error',
-                'message': 'internal error',
-                'data': {
-                    'chart_data': ''
-                }
-            }
-            return jsonify(response_object), 500
-
-        status = 'success'
-        message = ''
-        code = 200
-    else:
-        chart_content = ''
-        status = 'not found'
-        message = f'Activity not found (id: {activity_id})'
-        code = 404
-
-    response_object = {
-        'status': status,
-        'message': message,
-        'data': {
-            'chart_data': chart_content
-        }
-    }
-    return jsonify(response_object), code
+    return get_activity_data(auth_user_id, activity_id, 'chart')
 
 
 @activities_blueprint.route('/activities', methods=['POST'])
