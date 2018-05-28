@@ -95,6 +95,7 @@ class ActivityDisplay extends React.Component {
                       <div className="card-body">
                         <div className="row">
                           <div className="col">
+                            <div className="chart-title">Chart</div>
                             <ActivityCharts activity={activity} />
                           </div>
                         </div>

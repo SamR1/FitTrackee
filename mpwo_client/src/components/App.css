@@ -100,6 +100,11 @@ input, textarea {
   font-size: 0.9em;
 }
 
+.chart-info {
+  font-size: 0.8em;
+  font-style: italic;
+}
+
 .chart-radio {
   display: flex;
   font-size: 0.8em;
@@ -111,6 +116,11 @@ input, textarea {
 
 .chart-radio input {
   margin-right: 10px;
+}
+
+.chart-title {
+  font-size: 1.1em;
+  margin-bottom: 10px;
 }
 
 .custom-modal {

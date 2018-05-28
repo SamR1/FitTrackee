@@ -2,7 +2,7 @@ import { format } from 'date-fns'
 import React from 'react'
 import { connect } from 'react-redux'
 import {
-   Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis
+   Area, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis
 } from 'recharts'
 
 import { getActivityChartData } from '../../../actions/activities'
@@ -75,7 +75,7 @@ class ActivityCharts extends React.Component {
         </div>
         <div className="row chart">
           <ResponsiveContainer height={300}>
-            <LineChart
+            <ComposedChart
               data={chartData}
               margin={{ top: 15, right: 30, left: 20, bottom: 15 }}
             >
@@ -97,28 +97,31 @@ class ActivityCharts extends React.Component {
                 label={{ value: 'altitude (m)', angle: -90, position: 'right' }}
                 yAxisId="right" orientation="right"
               />
+              <Area
+                yAxisId="right"
+                type="linear"
+                dataKey="elevation"
+                fill="#e5e5e5"
+                stroke="#cccccc"
+                dot={false}
+              />
               <Line
                 yAxisId="left"
                 type="linear"
                 dataKey="speed"
                 stroke="#8884d8"
-                dot={false}
-              />
-              <Line
-                yAxisId="right"
-                type="linear"
-                dataKey="elevation"
-                stroke="#808080"
+                strokeWidth={2}
                 dot={false}
               />
               <Tooltip
                 labelFormatter={value => displayDistance
-                                ? `${value} km`
-                                : format(value, 'HH:mm:ss')}
+                                ? `distance: ${value} km`
+                                : `duration: ${format(value, 'HH:mm:ss')}`}
               />
-            </LineChart>
+            </ComposedChart>
           </ResponsiveContainer>
         </div>
+        <div className="chart-info">data from gpx, without any cleaning</div>
       </div>
     )
   }
