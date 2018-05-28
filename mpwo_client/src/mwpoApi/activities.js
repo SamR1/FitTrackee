@@ -29,4 +29,12 @@ export default class MpwoApi {
     return createRequest(params)
   }
 
+  static getActivityChartData(activityId) {
+    const params = {
+      url: `${apiUrl}activities/${activityId}/chart_data`,
+      method: 'GET',
+    }
+    return createRequest(params)
+  }
+
 }

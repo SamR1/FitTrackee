@@ -1,6 +1,7 @@
 import mpwoGenericApi from '../mwpoApi'
 import mpwoApi from '../mwpoApi/activities'
 import { history } from '../index'
+import { formatChartData } from '../utils'
 import { setError } from './index'
 
 export const pushActivities = activities => ({
@@ -11,6 +12,11 @@ export const pushActivities = activities => ({
 export const setGpx = gpxContent => ({
   type: 'SET_GPX',
   gpxContent,
+})
+
+export const setChartData = chartData => ({
+  type: 'SET_CHART_DATA',
+  chartData,
 })
 
 export const addActivity = form => dispatch => mpwoApi
@@ -51,6 +57,23 @@ export const getActivityGpx = activityId => dispatch => {
     .catch(error => dispatch(setError(`activities: ${error}`)))
   }
   dispatch(setGpx(null))
+}
+
+
+export const getActivityChartData = activityId => dispatch => {
+  if (activityId) {
+    return mpwoApi
+    .getActivityChartData(activityId)
+    .then(ret => {
+      if (ret.status === 'success') {
+         dispatch(setChartData(formatChartData(ret.data.chart_data)))
+      } else {
+        dispatch(setError(`activities: ${ret.message}`))
+      }
+    })
+    .catch(error => dispatch(setError(`activities: ${error}`)))
+  }
+  dispatch(setChartData(null))
 }
 
 

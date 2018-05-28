@@ -1,5 +1,5 @@
 import togeojson from '@mapbox/togeojson'
-import { format, parse } from 'date-fns'
+import { format, parse, subHours } from 'date-fns'
 
 export const apiUrl = `${process.env.REACT_APP_API_URL}/api/`
 export const thunderforestApiKey = `${
@@ -89,4 +89,18 @@ export const formatRecord = record => {
     record_type: recordType,
     value: value,
   }
+}
+
+const formatDuration = seconds => {
+    let newDate = new Date(0)
+    newDate = subHours(newDate.setSeconds(seconds), 1)
+    return newDate.getTime()
+}
+
+export const formatChartData = chartData => {
+  for (let i = 0; i < chartData.length; i++) {
+    chartData[i].time = new Date(chartData[i].time).getTime()
+    chartData[i].duration = formatDuration(chartData[i].duration)
+  }
+  return chartData
 }

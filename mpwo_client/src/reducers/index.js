@@ -31,6 +31,15 @@ const activities = (state = initial.activities, action) => {
   }
 }
 
+const chartData = (state = initial.chartData, action) => {
+  switch (action.type) {
+    case 'SET_CHART_DATA':
+      return action.chartData
+    default:
+      return state
+  }
+}
+
 const formData = (state = initial.formData, action) => {
   switch (action.type) {
     case 'UPDATE_USER_FORMDATA':
@@ -163,6 +172,7 @@ const user = (state = initial.user, action) => {
 
 const reducers = combineReducers({
   activities,
+  chartData,
   formData,
   formProfile,
   gpx,

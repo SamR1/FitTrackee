@@ -41,6 +41,7 @@ export default {
   activities: {
     ...emptyData,
   },
+  chartData: [],
   // check if storing gpx content is OK
   gpx: null,
   records: {
