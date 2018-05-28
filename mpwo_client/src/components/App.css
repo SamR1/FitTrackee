@@ -96,6 +96,23 @@ input, textarea {
   text-align: center;
 }
 
+.chart {
+  font-size: 0.9em;
+}
+
+.chart-radio {
+  display: flex;
+  font-size: 0.8em;
+}
+
+.chart-radio label {
+  display: flex;
+}
+
+.chart-radio input {
+  margin-right: 10px;
+}
+
 .custom-modal {
   background-color: #fff;
   border-radius: 5px;
