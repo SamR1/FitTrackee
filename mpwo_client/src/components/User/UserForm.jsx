@@ -12,9 +12,9 @@ import { isLoggedIn } from '../../utils'
 
 class UserForm extends React.Component {
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps) {
     if (
-      (nextProps.location.pathname !== this.props.location.pathname)
+      (prevProps.location.pathname !== this.props.location.pathname)
     ) {
       this.props.onEmptyForm()
     }
