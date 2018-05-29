@@ -38,7 +38,9 @@ export const createRequest = params => {
   }
   const request = new Request(params.url, requestParams)
   return fetch(request)
-    .then(response => response.json())
+    .then(response => params.method === 'DELETE'
+      ? response
+      : response.json())
     .catch(error => error)
 }
 

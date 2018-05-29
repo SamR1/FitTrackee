@@ -13,10 +13,10 @@ export default function ActivityCardHeader(props) {
     <div className="container">
       <div className="row">
         <div className="col-auto">
-          {activity.previous_activity ? (
+          {activity.next_activity ? (
             <Link
               className="unlink"
-              to={`/activities/${activity.previous_activity}`}
+              to={`/activities/${activity.next_activity}`}
             >
               <i
                 className="fa fa-chevron-left"
@@ -60,10 +60,10 @@ export default function ActivityCardHeader(props) {
           )}
         </div>
         <div className="col-auto">
-          {activity.next_activity ? (
+          {activity.previous_activity ? (
             <Link
               className="unlink"
-              to={`/activities/${activity.next_activity}`}
+              to={`/activities/${activity.previous_activity}`}
             >
               <i
                 className="fa fa-chevron-right"
