@@ -4,9 +4,18 @@ from datetime import datetime, timedelta
 
 import gpxpy.gpx
 from flask import current_app
-from mpwo_api import appLog
+from mpwo_api import db
+from sqlalchemy import exc
+from werkzeug.utils import secure_filename
 
 from .models import Activity, ActivitySegment, Sport
+
+
+class ActivityException(Exception):
+    def __init__(self, status, message, e):
+        self.status = status
+        self.message = message
+        self.e = e
 
 
 def update_activity_data(activity, gpx_data):
@@ -123,16 +132,9 @@ def get_gpx_data(parsed_gpx, max_speed, start):
 
 def open_gpx_file(gpx_file):
     gpx_file = open(gpx_file, 'r')
-
-    try:
-        gpx = gpxpy.parse(gpx_file)
-    except gpxpy.gpx.GPXXMLSyntaxException as e:
-        appLog.error(e)
-        return None
-
+    gpx = gpxpy.parse(gpx_file)
     if len(gpx.tracks) == 0:
         return None
-
     return gpx
 
 
@@ -242,3 +244,42 @@ def get_new_file_path(auth_user_id, activity_date, old_filename, sport):
     file_path = os.path.join(dir_path,
                              new_filename.replace('/tmp/', ''))
     return file_path
+
+
+def handle_one_activity(auth_user_id, activity_file, activity_data):
+    filename = secure_filename(activity_file.filename)
+    file_path = get_file_path(auth_user_id, filename)
+
+    try:
+        activity_file.save(file_path)
+        gpx_data = get_gpx_info(file_path)
+
+        sport = Sport.query.filter_by(id=activity_data.get('sport_id')).first()
+        new_filepath = get_new_file_path(
+            auth_user_id=auth_user_id,
+            activity_date=gpx_data['start'],
+            old_filename=filename,
+            sport=sport.label
+        )
+        os.rename(file_path, new_filepath)
+        gpx_data['filename'] = new_filepath
+    except (gpxpy.gpx.GPXXMLSyntaxException, TypeError) as e:
+        raise ActivityException('error', 'Error during gpx file parsing.', e)
+    except Exception as e:
+        raise ActivityException('error', 'Error during activity file save.', e)
+
+    try:
+        new_activity = create_activity(
+            auth_user_id, activity_data, gpx_data)
+        db.session.add(new_activity)
+        db.session.flush()
+
+        for segment_data in gpx_data['segments']:
+            new_segment = create_segment(new_activity.id, segment_data)
+            db.session.add(new_segment)
+        db.session.commit()
+        return new_activity
+    except (exc.IntegrityError, ValueError) as e:
+        raise ActivityException(
+            'fail', 'Error during activity save.', e
+        )

@@ -4,13 +4,12 @@ import os
 from flask import Blueprint, jsonify, request
 from mpwo_api import appLog, db
 from sqlalchemy import exc
-from werkzeug.utils import secure_filename
 
 from ..users.utils import authenticate, verify_extension
-from .models import Activity, Sport
+from .models import Activity
 from .utils import (
-    create_activity, create_segment, edit_activity, get_chart_data,
-    get_file_path, get_gpx_info, get_new_file_path
+    ActivityException, create_activity, edit_activity, get_chart_data,
+    handle_one_activity
 )
 
 activities_blueprint = Blueprint('activities', __name__)
@@ -145,47 +144,11 @@ def post_activity(auth_user_id):
         return jsonify(response_object), 400
 
     activity_file = request.files['file']
-    filename = secure_filename(activity_file.filename)
-    file_path = get_file_path(auth_user_id, filename)
 
     try:
-        activity_file.save(file_path)
-        gpx_data = get_gpx_info(file_path)
-
-        if gpx_data is None:
-            response_object = {
-                'status': 'error',
-                'message': 'Error during gpx file parsing.'
-            }
-            return jsonify(response_object), 500
-
-        sport = Sport.query.filter_by(id=activity_data.get('sport_id')).first()
-        new_filepath = get_new_file_path(
-            auth_user_id=auth_user_id,
-            activity_date=gpx_data['start'],
-            old_filename=filename,
-            sport=sport.label
+        new_activity = handle_one_activity(
+            auth_user_id, activity_file, activity_data
         )
-        os.rename(file_path, new_filepath)
-        gpx_data['filename'] = new_filepath
-    except Exception as e:
-        appLog.error(e)
-        response_object = {
-            'status': 'error',
-            'message': 'Error during activity file save.'
-        }
-        return jsonify(response_object), 500
-
-    try:
-        new_activity = create_activity(
-            auth_user_id, activity_data, gpx_data)
-        db.session.add(new_activity)
-        db.session.flush()
-
-        for segment_data in gpx_data['segments']:
-            new_segment = create_segment(new_activity.id, segment_data)
-            db.session.add(new_segment)
-        db.session.commit()
         response_object = {
             'status': 'created',
             'data': {
@@ -193,14 +156,16 @@ def post_activity(auth_user_id):
             }
         }
         return jsonify(response_object), 201
-    except (exc.IntegrityError, ValueError) as e:
+    except ActivityException as e:
         db.session.rollback()
-        appLog.error(e)
+        if e.e:
+            appLog.error(e.e)
         response_object = {
-            'status': 'fail',
-            'message': 'Error during activity save.'
+            'status': e.status,
+            'message': e.message,
         }
-        return jsonify(response_object), 500
+        code = 500 if e.status == 'error' else 400
+        return jsonify(response_object), code
 
 
 @activities_blueprint.route('/activities/no_gpx', methods=['POST'])
