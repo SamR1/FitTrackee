@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 import gpxpy.gpx
 from flask import current_app
 from mpwo_api import appLog
-from werkzeug.utils import secure_filename
 
 from .models import Activity, ActivitySegment, Sport
 
@@ -218,8 +217,7 @@ def get_chart_data(gpx_file):
     return chart_data
 
 
-def get_file_path(auth_user_id, activity_file):
-    filename = secure_filename(activity_file.filename)
+def get_file_path(auth_user_id, filename):
     dir_path = os.path.join(
         current_app.config['UPLOAD_FOLDER'],
         'activities',
@@ -231,11 +229,10 @@ def get_file_path(auth_user_id, activity_file):
     return file_path
 
 
-def get_new_file_path(auth_user_id, activity_date, activity_file, sport):
-    old_filename = secure_filename(activity_file.filename)
+def get_new_file_path(auth_user_id, activity_date, old_filename, sport):
     extension = f".{old_filename.rsplit('.', 1)[1].lower()}"
     _, new_filename = tempfile.mkstemp(
-        prefix=f'{activity_date}_sport_',
+        prefix=f'{activity_date}_{sport}_',
         suffix=extension
     )
     dir_path = os.path.join(

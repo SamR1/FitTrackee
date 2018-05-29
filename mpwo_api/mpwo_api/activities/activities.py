@@ -4,6 +4,7 @@ import os
 from flask import Blueprint, jsonify, request
 from mpwo_api import appLog, db
 from sqlalchemy import exc
+from werkzeug.utils import secure_filename
 
 from ..users.utils import authenticate, verify_extension
 from .models import Activity, Sport
@@ -144,7 +145,8 @@ def post_activity(auth_user_id):
         return jsonify(response_object), 400
 
     activity_file = request.files['file']
-    file_path = get_file_path(auth_user_id, activity_file)
+    filename = secure_filename(activity_file.filename)
+    file_path = get_file_path(auth_user_id, filename)
 
     try:
         activity_file.save(file_path)
@@ -161,7 +163,7 @@ def post_activity(auth_user_id):
         new_filepath = get_new_file_path(
             auth_user_id=auth_user_id,
             activity_date=gpx_data['start'],
-            activity_file=activity_file,
+            old_filename=filename,
             sport=sport.label
         )
         os.rename(file_path, new_filepath)
