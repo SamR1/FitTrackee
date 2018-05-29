@@ -124,7 +124,7 @@ def get_gpx_data(parsed_gpx, max_speed, start):
     distance = mv.moving_distance + mv.stopped_distance
     gpx_data['distance'] = distance / 1000
 
-    average_speed = distance / mv.moving_time
+    average_speed = distance / mv.moving_time if mv.moving_time > 0 else 0
     gpx_data['average_speed'] = (average_speed / 1000) * 3600
 
     return gpx_data
@@ -207,9 +207,11 @@ def get_chart_data(gpx_file):
                      if segment.get_speed(point_idx) is not None
                      else 0)
             chart_data.append({
-                'distance': round(distance / 1000, 2),
+                'distance': (round(distance / 1000, 2)
+                             if distance is not None else 0),
                 'duration': point.time_difference(first_point),
-                'elevation': round(point.elevation, 1),
+                'elevation': (round(point.elevation, 1)
+                              if point.elevation is not None else 0),
                 'speed': speed,
                 'time': point.time,
             })

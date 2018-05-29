@@ -128,8 +128,8 @@ class Activity(db.Model):
     distance = db.Column(db.Numeric(6, 3), nullable=True)    # kilometers
     min_alt = db.Column(db.Numeric(6, 2), nullable=True)     # meters
     max_alt = db.Column(db.Numeric(6, 2), nullable=True)     # meters
-    descent = db.Column(db.Numeric(6, 2), nullable=True)     # meters
-    ascent = db.Column(db.Numeric(6, 2), nullable=True)      # meters
+    descent = db.Column(db.Numeric(7, 2), nullable=True)     # meters
+    ascent = db.Column(db.Numeric(7, 2), nullable=True)      # meters
     max_speed = db.Column(db.Numeric(6, 2), nullable=True)   # km/h
     ave_speed = db.Column(db.Numeric(6, 2), nullable=True)   # km/h
     bounds = db.Column(postgresql.ARRAY(db.Float), nullable=True)
@@ -263,8 +263,8 @@ class ActivitySegment(db.Model):
     distance = db.Column(db.Numeric(6, 3), nullable=True)    # kilometers
     min_alt = db.Column(db.Numeric(6, 2), nullable=True)     # meters
     max_alt = db.Column(db.Numeric(6, 2), nullable=True)     # meters
-    descent = db.Column(db.Numeric(6, 2), nullable=True)     # meters
-    ascent = db.Column(db.Numeric(6, 2), nullable=True)      # meters
+    descent = db.Column(db.Numeric(7, 2), nullable=True)     # meters
+    ascent = db.Column(db.Numeric(7, 2), nullable=True)      # meters
     max_speed = db.Column(db.Numeric(6, 2), nullable=True)   # km/h
     ave_speed = db.Column(db.Numeric(6, 2), nullable=True)   # km/h
 
