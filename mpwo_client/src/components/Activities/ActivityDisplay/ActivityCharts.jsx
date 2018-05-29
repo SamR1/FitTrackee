@@ -13,6 +13,7 @@ class ActivityCharts extends React.Component {
     super(props, context)
     this.state = {
       displayDistance: true,
+      dataToHide: []
     }
   }
 
@@ -40,6 +41,22 @@ class ActivityCharts extends React.Component {
     })
   }
 
+  handleLegendChange (e) {
+    const { dataToHide } = this.state
+    const name = e.target.name // eslint-disable-line prefer-destructuring
+    if (dataToHide.find(d => d === name)) {
+      dataToHide.splice(dataToHide.indexOf(name), 1)
+    } else {
+      dataToHide.push(name)
+    }
+    this.setState({ dataToHide })
+  }
+
+  displayData (name) {
+    const { dataToHide } = this.state
+    return !dataToHide.find(d => d === name)
+  }
+
   render() {
     const { chartData } = this.props
     const { displayDistance } = this.state
@@ -54,28 +71,50 @@ class ActivityCharts extends React.Component {
     }
     return (
       <div className="container">
-        <div className="row chart-radio">
-          <label className="radioLabel col-md-1">
-            <input
-              type="radio"
-              name="distance"
-              checked={displayDistance}
-              onChange={event => this.handleRadioChange(event)}
-            />
-            distance
-          </label>
-          <label className="radioLabel col-md-1">
-            <input
-              type="radio"
-              name="duration"
-              checked={!displayDistance}
-              onChange={event => this.handleRadioChange(event)}
-            />
-            duration
-          </label>
-        </div>
         {chartData && chartData.length > 0 ? (
           <div>
+            <div className="row chart-radio">
+              <label className="radioLabel col-md-1">
+                <input
+                  type="radio"
+                  name="distance"
+                  checked={displayDistance}
+                  onChange={e => this.handleRadioChange(e)}
+                />
+                distance
+              </label>
+              <label className="radioLabel col-md-1">
+                <input
+                  type="radio"
+                  name="duration"
+                  checked={!displayDistance}
+                  onChange={e => this.handleRadioChange(e)}
+                />
+                duration
+              </label>
+            </div>
+            <div className="row chart-radio">
+              <div className="col-md-5" />
+              <label className="radioLabel col-md-1">
+                <input
+                  type="checkbox"
+                  name="speed"
+                  checked={this.displayData('speed')}
+                  onChange={e => this.handleLegendChange(e)}
+                />
+                speed
+              </label>
+              <label className="radioLabel col-md-1">
+                <input
+                  type="checkbox"
+                  name="elevation"
+                  checked={this.displayData('elevation')}
+                  onChange={e => this.handleLegendChange(e)}
+                />
+                elevation
+              </label>
+              <div className="col-md-5" />
+            </div>
             <div className="row chart">
               <ResponsiveContainer height={300}>
                 <ComposedChart
@@ -105,22 +144,26 @@ class ActivityCharts extends React.Component {
                     }}
                     yAxisId="right" orientation="right"
                   />
-                  <Area
-                    yAxisId="right"
-                    type="linear"
-                    dataKey="elevation"
-                    fill="#e5e5e5"
-                    stroke="#cccccc"
-                    dot={false}
-                  />
-                  <Line
-                    yAxisId="left"
-                    type="linear"
-                    dataKey="speed"
-                    stroke="#8884d8"
-                    strokeWidth={2}
-                    dot={false}
-                  />
+                  {this.displayData('elevation') && (
+                    <Area
+                      yAxisId="right"
+                      type="linear"
+                      dataKey="elevation"
+                      fill="#e5e5e5"
+                      stroke="#cccccc"
+                      dot={false}
+                    />
+                  )}
+                  {this.displayData('speed') && (
+                    <Line
+                      yAxisId="left"
+                      type="linear"
+                      dataKey="speed"
+                      stroke="#8884d8"
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                  )}
                   <Tooltip
                     labelFormatter={value => displayDistance
                                     ? `distance: ${value} km`
