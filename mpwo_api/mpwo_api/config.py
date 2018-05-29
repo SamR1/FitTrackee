@@ -15,7 +15,7 @@ class BaseConfig:
         current_app.root_path, 'uploads'
     )
     PICTURE_ALLOWED_EXTENSIONS = {'jpg', 'png', 'gif'}
-    ACTIVITY_ALLOWED_EXTENSIONS = {'gpx'}
+    ACTIVITY_ALLOWED_EXTENSIONS = {'gpx', 'zip'}
 
 
 class DevelopmentConfig(BaseConfig):

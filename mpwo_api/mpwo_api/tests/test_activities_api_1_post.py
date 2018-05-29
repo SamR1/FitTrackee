@@ -1,4 +1,5 @@
 import json
+import os
 from io import BytesIO
 
 
@@ -645,3 +646,109 @@ def test_add_activity_zero_value(
 
     assert len(data['data']['activities'][0]['segments']) == 0
     assert len(data['data']['activities'][0]['records']) == 0
+
+
+def test_get_an_activity_with_zip(app, user_1, sport_1_cycling):
+    file_path = os.path.join(app.root_path, 'tests/files/gpx_test.zip')
+    # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
+
+    with open(file_path, 'rb') as zip_file:
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(dict(
+                email='test@test.com',
+                password='12345678'
+            )),
+            content_type='application/json'
+        )
+        response = client.post(
+            '/api/activities',
+            data=dict(
+                file=(zip_file, 'gpx_test.zip'),
+                data='{"sport_id": 1}'
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization='Bearer ' + json.loads(
+                    resp_login.data.decode()
+                )['auth_token']
+            )
+        )
+        data = json.loads(response.data.decode())
+
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['activities']) == 3
+        assert 'just an activity' == data['data']['activities'][0]['title']
+        assert_activity_data_with_gpx(data)
+
+
+def test_get_an_activity_with_zip_folder(app, user_1, sport_1_cycling):
+    file_path = os.path.join(app.root_path, 'tests/files/gpx_test_folder.zip')
+    # 'gpx_test_folder.zip' contains 3 gpx files (same data) and 1 non-gpx file
+    # in a folder
+
+    with open(file_path, 'rb') as zip_file:
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(dict(
+                email='test@test.com',
+                password='12345678'
+            )),
+            content_type='application/json'
+        )
+        response = client.post(
+            '/api/activities',
+            data=dict(
+                file=(zip_file, 'gpx_test_folder.zip'),
+                data='{"sport_id": 1}'
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization='Bearer ' + json.loads(
+                    resp_login.data.decode()
+                )['auth_token']
+            )
+        )
+        data = json.loads(response.data.decode())
+
+        assert response.status_code == 400
+        assert 'fail' in data['status']
+        assert len(data['data']['activities']) == 0
+
+
+def test_get_an_activity_with_zip_incorrect_file(app, user_1, sport_1_cycling):
+    file_path = os.path.join(app.root_path, 'tests/files/gpx_test_incorrect.zip')  # noqa
+    # 'gpx_test_incorrect.zip' contains 2 gpx files, one is incorrect
+
+    with open(file_path, 'rb') as zip_file:
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(dict(
+                email='test@test.com',
+                password='12345678'
+            )),
+            content_type='application/json'
+        )
+        response = client.post(
+            '/api/activities',
+            data=dict(
+                file=(zip_file, 'gpx_test_incorrect.zip'),
+                data='{"sport_id": 1}'
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization='Bearer ' + json.loads(
+                    resp_login.data.decode()
+                )['auth_token']
+            )
+        )
+        data = json.loads(response.data.decode())
+
+        assert response.status_code == 500
+        assert 'error' in data['status']
+        assert 'Error during gpx file parsing.' in data['message']
+        assert 'data' not in data

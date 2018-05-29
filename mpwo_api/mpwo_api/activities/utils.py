@@ -1,5 +1,6 @@
 import os
 import tempfile
+import zipfile
 from datetime import datetime, timedelta
 
 import gpxpy.gpx
@@ -248,12 +249,8 @@ def get_new_file_path(auth_user_id, activity_date, old_filename, sport):
     return file_path
 
 
-def handle_one_activity(auth_user_id, activity_file, activity_data):
-    filename = secure_filename(activity_file.filename)
-    file_path = get_file_path(auth_user_id, filename)
-
+def process_one_gpx_file(auth_user_id, activity_data, file_path, filename):
     try:
-        activity_file.save(file_path)
         gpx_data = get_gpx_info(file_path)
 
         sport = Sport.query.filter_by(id=activity_data.get('sport_id')).first()
@@ -285,3 +282,43 @@ def handle_one_activity(auth_user_id, activity_file, activity_data):
         raise ActivityException(
             'fail', 'Error during activity save.', e
         )
+
+
+def process_zip_archive(auth_user_id, activity_data, zip_path):
+    extract_dir = os.path.join(
+        current_app.config['UPLOAD_FOLDER'],
+        'activities',
+        str(auth_user_id),
+        'extract')
+    with zipfile.ZipFile(zip_path, "r") as zip_ref:
+        zip_ref.extractall(extract_dir)
+
+    new_activities = []
+
+    for gpx_file in os.listdir(extract_dir):
+        if ('.' in gpx_file and gpx_file.rsplit('.', 1)[1].lower()
+                in current_app.config.get('ACTIVITY_ALLOWED_EXTENSIONS')):
+            file_path = os.path.join(extract_dir, gpx_file)
+            new_activity = process_one_gpx_file(auth_user_id, activity_data,
+                                                file_path, gpx_file)
+            new_activities.append(new_activity)
+
+    return new_activities
+
+
+def process_files(auth_user_id, activity_data, activity_file):
+    filename = secure_filename(activity_file.filename)
+    extension = f".{filename.rsplit('.', 1)[1].lower()}"
+    file_path = get_file_path(auth_user_id, filename)
+
+    try:
+        activity_file.save(file_path)
+    except Exception as e:
+        raise ActivityException('error', 'Error during activity file save.', e)
+
+    if extension == ".gpx":
+        return [process_one_gpx_file(
+            auth_user_id, activity_data, file_path, filename
+        )]
+    else:
+        return process_zip_archive(auth_user_id, activity_data, file_path)

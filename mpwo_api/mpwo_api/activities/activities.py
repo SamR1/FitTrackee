@@ -9,7 +9,7 @@ from ..users.utils import authenticate, verify_extension
 from .models import Activity
 from .utils import (
     ActivityException, create_activity, edit_activity, get_chart_data,
-    handle_one_activity
+    process_files
 )
 
 activities_blueprint = Blueprint('activities', __name__)
@@ -146,16 +146,27 @@ def post_activity(auth_user_id):
     activity_file = request.files['file']
 
     try:
-        new_activity = handle_one_activity(
-            auth_user_id, activity_file, activity_data
+        new_activities = process_files(
+            auth_user_id, activity_data, activity_file
         )
-        response_object = {
-            'status': 'created',
-            'data': {
-                'activities': [new_activity.serialize()]
+        if len(new_activities) > 0:
+            response_object = {
+                'status': 'created',
+                'data': {
+                    'activities': [new_activity.serialize()
+                                   for new_activity in new_activities]
+                }
             }
-        }
-        return jsonify(response_object), 201
+            code = 201
+        else:
+            response_object = {
+                'status': 'fail',
+                'data': {
+                    'activities': []
+                }
+            }
+            code = 400
+        return jsonify(response_object), code
     except ActivityException as e:
         db.session.rollback()
         if e.e:
