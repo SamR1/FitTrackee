@@ -1,10 +1,11 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
+import { connect } from 'react-redux'
 
 import FormWithGpx from './ActivityForms/FormWithGpx'
 import FormWithoutGpx from './ActivityForms/FormWithoutGpx'
 
-export default class ActivityAddEdit extends React.Component {
+class ActivityAddEdit extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
@@ -21,7 +22,7 @@ export default class ActivityAddEdit extends React.Component {
   }
 
   render() {
-    const { activity, message, sports } = this.props
+    const { activity, loading, message, sports } = this.props
     const { withGpx } = this.state
     return (
       <div>
@@ -59,6 +60,7 @@ export default class ActivityAddEdit extends React.Component {
                             <input
                               type="radio"
                               name="withGpx"
+                              disabled={loading}
                               checked={withGpx}
                               onChange={event => this.handleRadioChange(event)}
                             />
@@ -70,6 +72,7 @@ export default class ActivityAddEdit extends React.Component {
                             <input
                               type="radio"
                               name="withoutGpx"
+                              disabled={loading}
                               checked={!withGpx}
                               onChange={event => this.handleRadioChange(event)}
                             />
@@ -96,3 +99,8 @@ export default class ActivityAddEdit extends React.Component {
   }
 }
 
+export default connect(
+  state => ({
+    loading: state.loading
+  }),
+)(ActivityAddEdit)

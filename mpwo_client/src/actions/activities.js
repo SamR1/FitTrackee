@@ -2,7 +2,7 @@ import mpwoGenericApi from '../mwpoApi'
 import mpwoApi from '../mwpoApi/activities'
 import { history } from '../index'
 import { formatChartData } from '../utils'
-import { setError } from './index'
+import { setError, setLoading } from './index'
 
 export const pushActivities = activities => ({
   type: 'PUSH_ACTIVITIES',
@@ -23,10 +23,17 @@ export const addActivity = form => dispatch => mpwoApi
   .addActivity(form)
   .then(ret => {
     if (ret.status === 'created') {
-      history.push(`/activities/${ret.data.activities[0].id}`)
+      if (ret.data.activities.length === 0) {
+          dispatch(setError('activities: no correct file'))
+      } else if (ret.data.activities.length === 1) {
+          history.push(`/activities/${ret.data.activities[0].id}`)
+      } else { // ret.data.activities.length > 1
+          history.push('/')
+      }
     } else {
       dispatch(setError(`activities: ${ret.message}`))
     }
+    dispatch(setLoading())
   })
   .catch(error => dispatch(setError(`activities: ${error}`)))
 
@@ -97,6 +104,7 @@ export const editActivity = form => dispatch => mpwoGenericApi
     } else {
       dispatch(setError(`activities: ${ret.message}`))
     }
+    dispatch(setLoading())
   })
   .catch(error => dispatch(setError(`activities: ${error}`)))
 

@@ -93,6 +93,15 @@ const gpx = (state = initial.gpx, action) => {
   }
 }
 
+const loading = (state = initial.loading, action) => {
+  switch (action.type) {
+    case 'SET_LOADING':
+      return !state
+    default:
+      return state
+  }
+}
+
 const message = (state = initial.message, action) => {
   switch (action.type) {
     case 'AUTH_ERROR':
@@ -176,6 +185,7 @@ const reducers = combineReducers({
   formData,
   formProfile,
   gpx,
+  loading,
   message,
   messages,
   records,

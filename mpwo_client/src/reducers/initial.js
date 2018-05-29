@@ -44,6 +44,7 @@ export default {
   chartData: [],
   // check if storing gpx content is OK
   gpx: null,
+  loading: false,
   records: {
     ...emptyData,
   },

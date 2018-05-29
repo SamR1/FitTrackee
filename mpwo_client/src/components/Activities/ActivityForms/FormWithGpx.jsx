@@ -1,12 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import { setLoading } from '../../../actions/index'
 import { addActivity, editActivity } from '../../../actions/activities'
 import { history } from '../../../index'
 
 
 function FormWithGpx (props) {
-  const { activity, onAddActivity, onEditActivity, sports } = props
+  const {
+    activity, loading, onAddActivity, onEditActivity, sports
+  } = props
   const sportId = activity ? activity.sport_id : ''
   return (
     <form
@@ -20,6 +23,7 @@ function FormWithGpx (props) {
           <select
             className="form-control input-lg"
             defaultValue={sportId}
+            disabled={loading}
             name="sport"
             required
           >
@@ -39,6 +43,7 @@ function FormWithGpx (props) {
             <input
               name="title"
               defaultValue={activity ? activity.title : ''}
+              disabled={loading}
               className="form-control input-lg"
             />
           </label>
@@ -46,10 +51,12 @@ function FormWithGpx (props) {
       ) : (
         <div className="form-group">
           <label>
-            GPX file:
+            <strong>gpx</strong> file or <strong>zip</strong>{' '}
+            file containing <strong>gpx</strong> (no folder inside):
             <input
-              accept=".gpx"
+              accept=".gpx, .zip"
               className="form-control input-lg"
+              disabled={loading}
               name="gpxFile"
               required
               type="file"
@@ -57,30 +64,39 @@ function FormWithGpx (props) {
           </label>
         </div>
       )}
-      <input
-        type="submit"
-        className="btn btn-primary btn-lg btn-block"
-        onClick={
-          event => activity
-          ? onEditActivity(event, activity)
-          : onAddActivity(event)
-        }
-        value="Submit"
-      />
-      <input
-        type="submit"
-        className="btn btn-secondary btn-lg btn-block"
-        onClick={() => history.go(-1)}
-        value="Cancel"
-      />
+      {loading ? (
+        <div className="loader" />
+      ) : (
+        <div>
+          <input
+            type="submit"
+            className="btn btn-primary btn-lg btn-block"
+            onClick={
+              event => activity
+                ? onEditActivity(event, activity)
+                : onAddActivity(event)
+            }
+            value="Submit"
+          />
+          <input
+            type="submit"
+            className="btn btn-secondary btn-lg btn-block"
+            onClick={() => history.go(-1)}
+            value="Cancel"
+          />
+        </div>
+      )}
     </form>
   )
 }
 
 export default connect(
-  () => ({ }),
+  state => ({
+    loading: state.loading
+  }),
   dispatch => ({
     onAddActivity: e => {
+      dispatch(setLoading())
       const form = new FormData()
       form.append('file', e.target.form.gpxFile.files[0])
       form.append(
@@ -89,6 +105,7 @@ export default connect(
       dispatch(addActivity(form))
     },
     onEditActivity: (e, activity) => {
+      dispatch(setLoading())
       dispatch(editActivity({
         id: activity.id,
         sport_id: +e.target.form.sport.value,

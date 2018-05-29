@@ -173,3 +173,18 @@ input, textarea {
 .unlink {
   color: black;
 }
+
+.loader {
+  animation: spin 2s linear infinite;
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid #3498db;
+  border-radius: 50%;
+  height: 120px;
+  margin-left: 41%;
+  width: 120px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

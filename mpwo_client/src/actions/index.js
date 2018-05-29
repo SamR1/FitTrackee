@@ -13,6 +13,10 @@ export const setError = message => ({
   message,
 })
 
+export const setLoading = () => ({
+  type: 'SET_LOADING',
+})
+
 export const getData = (target, id = null, data = null) => dispatch => {
   if (id !== null && isNaN(id)) {
     return dispatch(setError(target, `${target}: Incorrect id`))
