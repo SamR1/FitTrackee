@@ -90,6 +90,7 @@ def activity_cycling_user_1():
     )
     activity.max_speed = 10
     activity.ave_speed = 10
+    activity.moving = activity.duration
     db.session.add(activity)
     db.session.commit()
     return activity

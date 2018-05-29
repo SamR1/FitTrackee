@@ -204,7 +204,7 @@ class Activity(db.Model):
         record_types_columns = {
             'AS': 'ave_speed',  # 'Average speed'
             'FD': 'distance',   # 'Farthest Distance'
-            'LD': 'duration',   # 'Longest Duration'
+            'LD': 'moving',     # 'Longest Duration'
             'MS': 'max_speed',  # 'Max speed'
         }
         records = {}

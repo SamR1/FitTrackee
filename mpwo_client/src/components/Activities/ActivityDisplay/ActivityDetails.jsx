@@ -2,6 +2,8 @@ import React from 'react'
 
 export default function ActivityDetails(props) {
   const { activity } = props
+  const withPauses = activity.pauses !== '0:00:00' && activity.pauses !== null
+  const recordLDexists = activity.records.find(r => r.record_type === 'LD')
   return (
     <div>
       <p>
@@ -10,18 +12,21 @@ export default function ActivityDetails(props) {
           aria-hidden="true"
         />
         Duration: {activity.duration}
-        {activity.records.find(r => r.record_type === 'LD'
-        ) && (
+        {withPauses && (
+          <span>
+            {' '}
+            (pauses: {activity.pauses})
+            <br />
+            Moving duration: {activity.moving}
+          </span>
+        )}
+        {recordLDexists && (
           <sup>
             <i
               className="fa fa-trophy custom-fa"
               aria-hidden="true"
             />
           </sup>
-        )} {' '}
-        {activity.pauses !== '0:00:00' &&
-        activity.pauses !== null && (
-          `(pauses: ${activity.pauses})`
         )}
       </p>
       <p>

@@ -89,20 +89,22 @@ class ActivityDisplay extends React.Component {
                     </div>
                   </div>
                 </div>
-                <div className="row">
-                  <div className="col">
-                    <div className="card">
-                      <div className="card-body">
-                        <div className="row">
-                          <div className="col">
-                            <div className="chart-title">Chart</div>
-                            <ActivityCharts activity={activity} />
+                {activity.with_gpx && (
+                  <div className="row">
+                    <div className="col">
+                      <div className="card">
+                        <div className="card-body">
+                          <div className="row">
+                            <div className="col">
+                              <div className="chart-title">Chart</div>
+                              <ActivityCharts activity={activity} />
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             )}
           </div>
