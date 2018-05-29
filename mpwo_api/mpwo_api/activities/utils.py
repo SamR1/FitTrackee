@@ -222,12 +222,7 @@ def get_chart_data(gpx_file):
     return chart_data
 
 
-def get_file_path(auth_user_id, filename):
-    dir_path = os.path.join(
-        current_app.config['UPLOAD_FOLDER'],
-        'activities',
-        str(auth_user_id),
-        'tmp')
+def get_file_path(auth_user_id, dir_path, filename):
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
     file_path = os.path.join(dir_path, filename)
@@ -284,12 +279,7 @@ def process_one_gpx_file(auth_user_id, activity_data, file_path, filename):
         )
 
 
-def process_zip_archive(auth_user_id, activity_data, zip_path):
-    extract_dir = os.path.join(
-        current_app.config['UPLOAD_FOLDER'],
-        'activities',
-        str(auth_user_id),
-        'extract')
+def process_zip_archive(auth_user_id, activity_data, zip_path, extract_dir):
     with zipfile.ZipFile(zip_path, "r") as zip_ref:
         zip_ref.extractall(extract_dir)
 
@@ -306,10 +296,10 @@ def process_zip_archive(auth_user_id, activity_data, zip_path):
     return new_activities
 
 
-def process_files(auth_user_id, activity_data, activity_file):
+def process_files(auth_user_id, activity_data, activity_file, folders):
     filename = secure_filename(activity_file.filename)
     extension = f".{filename.rsplit('.', 1)[1].lower()}"
-    file_path = get_file_path(auth_user_id, filename)
+    file_path = get_file_path(auth_user_id, folders['tmp_dir'], filename)
 
     try:
         activity_file.save(file_path)
@@ -321,4 +311,5 @@ def process_files(auth_user_id, activity_data, activity_file):
             auth_user_id, activity_data, file_path, filename
         )]
     else:
-        return process_zip_archive(auth_user_id, activity_data, file_path)
+        return process_zip_archive(
+            auth_user_id, activity_data, file_path, folders['extract_dir'])

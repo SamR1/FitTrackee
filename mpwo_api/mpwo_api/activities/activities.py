@@ -1,7 +1,8 @@
 import json
 import os
+import shutil
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, current_app, jsonify, request
 from mpwo_api import appLog, db
 from sqlalchemy import exc
 
@@ -144,10 +145,18 @@ def post_activity(auth_user_id):
         return jsonify(response_object), 400
 
     activity_file = request.files['file']
+    upload_dir = os.path.join(
+        current_app.config['UPLOAD_FOLDER'],
+        'activities',
+        str(auth_user_id))
+    folders = {
+        'extract_dir': os.path.join(upload_dir, 'extract'),
+        'tmp_dir': os.path.join(upload_dir, 'tmp'),
+    }
 
     try:
         new_activities = process_files(
-            auth_user_id, activity_data, activity_file
+            auth_user_id, activity_data, activity_file, folders
         )
         if len(new_activities) > 0:
             response_object = {
@@ -166,7 +175,6 @@ def post_activity(auth_user_id):
                 }
             }
             code = 400
-        return jsonify(response_object), code
     except ActivityException as e:
         db.session.rollback()
         if e.e:
@@ -176,7 +184,10 @@ def post_activity(auth_user_id):
             'message': e.message,
         }
         code = 500 if e.status == 'error' else 400
-        return jsonify(response_object), code
+
+    shutil.rmtree(folders['extract_dir'], ignore_errors=True)
+    shutil.rmtree(folders['tmp_dir'], ignore_errors=True)
+    return jsonify(response_object), code
 
 
 @activities_blueprint.route('/activities/no_gpx', methods=['POST'])
