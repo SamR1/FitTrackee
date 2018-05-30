@@ -2,7 +2,7 @@ import json
 import os
 import shutil
 
-from flask import Blueprint, current_app, jsonify, request
+from flask import Blueprint, current_app, jsonify, request, send_file
 from mpwo_api import appLog, db
 from sqlalchemy import exc
 
@@ -126,6 +126,27 @@ def get_activity_gpx(auth_user_id, activity_id):
 def get_activity_chart_data(auth_user_id, activity_id):
     """Get chart data from an activity gpx file"""
     return get_activity_data(auth_user_id, activity_id, 'chart')
+
+
+@activities_blueprint.route('/activities/map/<map_id>', methods=['GET'])
+def get_map(map_id):
+    try:
+        activity = Activity.query.filter_by(map_id=map_id).first()
+        if not activity:
+            response_object = {
+                'status': 'fail',
+                'message': 'Map does not exist'
+            }
+            return jsonify(response_object), 404
+        else:
+            return send_file(activity.map)
+    except Exception as e:
+        appLog.error(e)
+        response_object = {
+            'status': 'error',
+            'message': 'internal error.'
+        }
+        return jsonify(response_object), 500
 
 
 @activities_blueprint.route('/activities', methods=['POST'])

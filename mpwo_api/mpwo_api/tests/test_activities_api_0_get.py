@@ -169,6 +169,33 @@ def test_get_activities_pagination(
     assert len(data['data']['activities']) == 0
 
 
+def test_get_activities_pagination_error(
+    app, user_1, sport_1_cycling, seven_activities_user_1
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        '/api/activities?page=A',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 500
+    assert 'error' in data['status']
+    assert 'Error. Please try again or contact the administrator.' in data['message']  # noqa
+
+
 def test_get_an_activity(
     app, user_1, sport_1_cycling, activity_cycling_user_1
 ):
@@ -353,3 +380,30 @@ def test_get_an_activity_activity_invalid_gpx(
     assert 'error' in data['status']
     assert 'internal error' in data['message']
     assert data['data']['chart_data'] == ''
+
+
+def test_get_map_no_activity(
+        app, user_1
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        '/api/activities/map/123',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 404
+    assert 'fail' in data['status']
+    assert 'Map does not exist' in data['message']

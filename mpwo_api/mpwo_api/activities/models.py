@@ -135,6 +135,7 @@ class Activity(db.Model):
     ave_speed = db.Column(db.Numeric(6, 2), nullable=True)   # km/h
     bounds = db.Column(postgresql.ARRAY(db.Float), nullable=True)
     map = db.Column(db.String(255), nullable=True)
+    map_id = db.Column(db.String(50), nullable=True)
     segments = db.relationship('ActivitySegment',
                                lazy=True,
                                cascade='all, delete',
@@ -199,7 +200,7 @@ class Activity(db.Model):
             "next_activity": next_activity.id if next_activity else None,
             "segments": [segment.serialize() for segment in self.segments],
             "records": [record.serialize() for record in self.records],
-            "with_map": self.map is not None
+            "map": self.map_id if self.map else None
         }
 
     @classmethod

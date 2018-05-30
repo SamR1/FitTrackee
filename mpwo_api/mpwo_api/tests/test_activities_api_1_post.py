@@ -2,6 +2,8 @@ import json
 import os
 from io import BytesIO
 
+from mpwo_api.activities.models import Activity
+
 
 def assert_activity_data_with_gpx(data):
     assert 'creation_date' in data['data']['activities'][0]
@@ -19,7 +21,7 @@ def assert_activity_data_with_gpx(data):
     assert data['data']['activities'][0]['moving'] == '0:04:10'
     assert data['data']['activities'][0]['pauses'] is None
     assert data['data']['activities'][0]['with_gpx'] is True
-    assert data['data']['activities'][0]['with_map'] is True
+    assert data['data']['activities'][0]['map'] is not None
     assert len(data['data']['activities'][0]['segments']) == 1
 
     segment = data['data']['activities'][0]['segments'][0]
@@ -77,7 +79,7 @@ def assert_activity_data_wo_gpx(data):
     assert data['data']['activities'][0]['moving'] == '1:00:00'
     assert data['data']['activities'][0]['pauses'] is None
     assert data['data']['activities'][0]['with_gpx'] is False
-    assert data['data']['activities'][0]['with_map'] is False
+    assert data['data']['activities'][0]['map'] is None
 
     assert len(data['data']['activities'][0]['segments']) == 0
 
@@ -176,6 +178,8 @@ def test_get_an_activity_with_gpx(app, user_1, sport_1_cycling, gpx_file):
     assert 'just an activity' == data['data']['activities'][0]['title']
     assert_activity_data_with_gpx(data)
 
+    map_id = data['data']['activities'][0]['map']
+
     response = client.get(
         '/api/activities/1/gpx',
         headers=dict(
@@ -190,6 +194,39 @@ def test_get_an_activity_with_gpx(app, user_1, sport_1_cycling, gpx_file):
     assert 'success' in data['status']
     assert '' in data['message']
     assert len(data['data']['gpx']) != ''
+
+    response = client.get(
+        f'/api/activities/map/{map_id}',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    assert response.status_code == 200
+
+    # error case in the same test to avoid generate a new map file
+    activity = Activity.query.filter_by(id=1).first()
+    activity.map = 'incorrect path'
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert '' in data['message']
+    assert len(data['data']['gpx']) != ''
+
+    response = client.get(
+        f'/api/activities/map/{map_id}',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 500
+    assert data['status'] == 'error'
+    assert data['message'] == 'internal error.'
 
 
 def test_get_chart_data_activty_with_gpx(

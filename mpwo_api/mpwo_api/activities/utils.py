@@ -1,3 +1,4 @@
+import hashlib
 import os
 import tempfile
 import zipfile
@@ -260,6 +261,14 @@ def generate_map(map_filepath, map_data):
     image.save(map_filepath)
 
 
+def get_map_hash(map_filepath):
+    md5 = hashlib.md5()
+    with open(map_filepath, 'rb') as f:
+        for chunk in iter(lambda: f.read(128 * md5.block_size), b''):
+            md5.update(chunk)
+    return md5.hexdigest()
+
+
 def process_one_gpx_file(auth_user_id, activity_data, file_path, filename):
     try:
         gpx_data, map_data = get_gpx_info(file_path)
@@ -290,6 +299,8 @@ def process_one_gpx_file(auth_user_id, activity_data, file_path, filename):
         new_activity = create_activity(
             auth_user_id, activity_data, gpx_data)
         new_activity.map = map_filepath
+        new_activity.map_id = get_map_hash(map_filepath)
+        print(new_activity.map_id)
         db.session.add(new_activity)
         db.session.flush()
 

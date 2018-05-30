@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
+import { apiUrl } from '../../utils'
+
 export default function ActivityCard (props) {
   const { activity, sports } = props
 
@@ -14,16 +16,35 @@ export default function ActivityCard (props) {
         </Link>
       </div>
       <div className="card-body">
-        <p>
-          <i className="fa fa-calendar" aria-hidden="true" />{' '}
-          Start at {activity.activity_date}
-        </p>
-        <p>
-          <i className="fa fa-clock-o" aria-hidden="true" />{' '}
-          Duration: {activity.duration} -{' '}
-          <i className="fa fa-road" aria-hidden="true" />{' '}
-          Distance: {activity.distance} km
-        </p>
+        <div className="row">
+          {activity.map && (
+            <div className="col">
+              <img
+                alt="Map"
+                src={`${apiUrl}activities/map/${activity.map}` +
+                     `?${Date.now()}`}
+                className="img-fluid"
+              />
+            </div>
+          )}
+          <div className="col">
+            <p>
+              <i className="fa fa-calendar" aria-hidden="true" />{' '}
+              Start at {activity.activity_date}
+            </p>
+            <p>
+              <i className="fa fa-clock-o" aria-hidden="true" />{' '}
+              Duration: {activity.duration}
+              {activity.map ? (
+                <span><br /><br /></span>
+              ) : (
+                ' - '
+              )}
+              <i className="fa fa-road" aria-hidden="true" />{' '}
+              Distance: {activity.distance} km
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   )
