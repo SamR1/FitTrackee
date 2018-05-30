@@ -280,13 +280,8 @@ def delete_activity(auth_user_id, activity_id):
     try:
         activity = Activity.query.filter_by(id=activity_id).first()
         if activity:
-            gpx_filepath = activity.gpx
             db.session.delete(activity)
             db.session.commit()
-
-            if gpx_filepath:
-                os.remove(gpx_filepath)
-
             response_object = {
                 'status': 'no content'
             }

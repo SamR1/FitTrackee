@@ -1,4 +1,5 @@
 import datetime
+import os
 
 from mpwo_api import db
 from sqlalchemy.dialects import postgresql
@@ -133,6 +134,7 @@ class Activity(db.Model):
     max_speed = db.Column(db.Numeric(6, 2), nullable=True)   # km/h
     ave_speed = db.Column(db.Numeric(6, 2), nullable=True)   # km/h
     bounds = db.Column(postgresql.ARRAY(db.Float), nullable=True)
+    map = db.Column(db.String(255), nullable=True)
     segments = db.relationship('ActivitySegment',
                                lazy=True,
                                cascade='all, delete',
@@ -196,7 +198,8 @@ class Activity(db.Model):
             "previous_activity": previous_activity.id if previous_activity else None,  # noqa
             "next_activity": next_activity.id if next_activity else None,
             "segments": [segment.serialize() for segment in self.segments],
-            "records": [record.serialize() for record in self.records]
+            "records": [record.serialize() for record in self.records],
+            "with_map": self.map is not None
         }
 
     @classmethod
@@ -246,6 +249,17 @@ def on_activity_update(mapper, connection, activity):
                     sports_list.append(rec.sport_id)
             for sport_id in sports_list:
                 update_records(activity.user_id, sport_id, connection, session)
+
+
+@listens_for(Activity, 'after_delete')
+def on_activity_delete(mapper, connection, old_record):
+
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session, context):
+        if old_record.map:
+            os.remove(old_record.map)
+        if old_record.gpx:
+            os.remove(old_record.gpx)
 
 
 class ActivitySegment(db.Model):

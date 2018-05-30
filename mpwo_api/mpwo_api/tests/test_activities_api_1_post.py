@@ -19,6 +19,7 @@ def assert_activity_data_with_gpx(data):
     assert data['data']['activities'][0]['moving'] == '0:04:10'
     assert data['data']['activities'][0]['pauses'] is None
     assert data['data']['activities'][0]['with_gpx'] is True
+    assert data['data']['activities'][0]['with_map'] is True
     assert len(data['data']['activities'][0]['segments']) == 1
 
     segment = data['data']['activities'][0]['segments'][0]
@@ -76,6 +77,7 @@ def assert_activity_data_wo_gpx(data):
     assert data['data']['activities'][0]['moving'] == '1:00:00'
     assert data['data']['activities'][0]['pauses'] is None
     assert data['data']['activities'][0]['with_gpx'] is False
+    assert data['data']['activities'][0]['with_map'] is False
 
     assert len(data['data']['activities'][0]['segments']) == 0
 

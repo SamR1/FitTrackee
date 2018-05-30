@@ -762,8 +762,6 @@ def test_get_records_after_sport_change(
     )
     data = json.loads(response.data.decode())
 
-    print(data['data']['records'])
-
     assert response.status_code == 200
     assert 'success' in data['status']
     assert len(data['data']['records']) == 8

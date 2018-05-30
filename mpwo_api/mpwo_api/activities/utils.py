@@ -7,6 +7,7 @@ import gpxpy.gpx
 from flask import current_app
 from mpwo_api import db
 from sqlalchemy import exc
+from staticmap import Line, StaticMap
 from werkzeug.utils import secure_filename
 
 from .models import Activity, ActivitySegment, Sport
@@ -150,12 +151,16 @@ def get_gpx_info(gpx_file):
     }
     max_speed = 0
     start = 0
+    map_data = []
 
     for segment_idx, segment in enumerate(gpx.tracks[0].segments):
         segment_start = 0
         for point_idx, point in enumerate(segment.points):
             if point_idx == 0 and start == 0:
                 start = point.time
+            map_data.append([
+                point.longitude, point.latitude
+            ])
         segment_max_speed = (segment.get_moving_data().max_speed
                              if segment.get_moving_data().max_speed
                              else 0)
@@ -179,7 +184,7 @@ def get_gpx_info(gpx_file):
         bounds.max_longitude
     ]
 
-    return gpx_data
+    return gpx_data, map_data
 
 
 def get_chart_data(gpx_file):
@@ -229,8 +234,11 @@ def get_file_path(auth_user_id, dir_path, filename):
     return file_path
 
 
-def get_new_file_path(auth_user_id, activity_date, old_filename, sport):
-    extension = f".{old_filename.rsplit('.', 1)[1].lower()}"
+def get_new_file_path(
+        auth_user_id, activity_date, sport, old_filename=None, extension=None
+):
+    if not extension:
+        extension = f".{old_filename.rsplit('.', 1)[1].lower()}"
     _, new_filename = tempfile.mkstemp(
         prefix=f'{activity_date}_{sport}_',
         suffix=extension
@@ -244,9 +252,17 @@ def get_new_file_path(auth_user_id, activity_date, old_filename, sport):
     return file_path
 
 
+def generate_map(map_filepath, map_data):
+    m = StaticMap(400, 225, 10)
+    line = Line(map_data, '#3388FF', 4)
+    m.add_line(line)
+    image = m.render()
+    image.save(map_filepath)
+
+
 def process_one_gpx_file(auth_user_id, activity_data, file_path, filename):
     try:
-        gpx_data = get_gpx_info(file_path)
+        gpx_data, map_data = get_gpx_info(file_path)
 
         sport = Sport.query.filter_by(id=activity_data.get('sport_id')).first()
         new_filepath = get_new_file_path(
@@ -257,6 +273,14 @@ def process_one_gpx_file(auth_user_id, activity_data, file_path, filename):
         )
         os.rename(file_path, new_filepath)
         gpx_data['filename'] = new_filepath
+
+        map_filepath = get_new_file_path(
+            auth_user_id=auth_user_id,
+            activity_date=gpx_data['start'],
+            extension='.png',
+            sport=sport.label
+        )
+        generate_map(map_filepath, map_data)
     except (gpxpy.gpx.GPXXMLSyntaxException, TypeError) as e:
         raise ActivityException('error', 'Error during gpx file parsing.', e)
     except Exception as e:
@@ -265,6 +289,7 @@ def process_one_gpx_file(auth_user_id, activity_data, file_path, filename):
     try:
         new_activity = create_activity(
             auth_user_id, activity_data, gpx_data)
+        new_activity.map = map_filepath
         db.session.add(new_activity)
         db.session.flush()
 
