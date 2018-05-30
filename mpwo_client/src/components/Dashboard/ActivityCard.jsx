@@ -29,10 +29,6 @@ export default function ActivityCard (props) {
           )}
           <div className="col">
             <p>
-              <i className="fa fa-calendar" aria-hidden="true" />{' '}
-              Start at {activity.activity_date}
-            </p>
-            <p>
               <i className="fa fa-clock-o" aria-hidden="true" />{' '}
               Duration: {activity.duration}
               {activity.map ? (

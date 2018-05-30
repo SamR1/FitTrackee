@@ -37,7 +37,6 @@ test('should allow a user to register', async t => {
 
   // assert user is redirected to '/'
   await t
-    .expect(Selector('H1').withText('Dashboard').exists).ok()
     .expect(Selector('H1').withText('Register').exists).notOk()
 })
 
@@ -55,7 +54,6 @@ test('should throw an error if the username is taken', async t => {
   // assert user registration failed
   await t
     .expect(Selector('H1').withText('Register').exists).ok()
-    .expect(Selector('H1').withText('Dashboard').exists).notOk()
     .expect(Selector('code').withText(
       'Sorry. That user already exists.').exists).ok()
 })
@@ -76,7 +74,6 @@ test('should throw an error if the email is taken', async t => {
   // assert user registration failed
   await t
     .expect(Selector('H1').withText('Register').exists).ok()
-    .expect(Selector('H1').withText('Dashboard').exists).notOk()
     .expect(Selector('code').withText(
       'Sorry. That user already exists.').exists).ok()
 })
@@ -97,7 +94,6 @@ test('should throw an error if the username is too short', async t => {
   // assert user registration failed
   await t
     .expect(Selector('H1').withText('Register').exists).ok()
-    .expect(Selector('H1').withText('Dashboard').exists).notOk()
     .expect(Selector('code').withText(
       'Username: 3 to 12 characters required.').exists).ok()
 })
@@ -118,7 +114,6 @@ test('should throw an error if the user is too long', async t => {
   // assert user registration failed
   await t
     .expect(Selector('H1').withText('Register').exists).ok()
-    .expect(Selector('H1').withText('Dashboard').exists).notOk()
     .expect(Selector('code').withText(
       'Username: 3 to 12 characters required.').exists).ok()
 })
@@ -139,7 +134,6 @@ test('should throw an error if the email is invalid', async t => {
   // assert user registration failed
   await t
     .expect(Selector('H1').withText('Register').exists).ok()
-    .expect(Selector('H1').withText('Dashboard').exists).notOk()
     .expect(Selector('code').withText(
       'Valid email must be provided.').exists).ok()
 })
@@ -158,7 +152,6 @@ test('should throw an error if passwords don\'t match', async t => {
   // assert user registration failed
   await t
     .expect(Selector('H1').withText('Register').exists).ok()
-    .expect(Selector('H1').withText('Dashboard').exists).notOk()
     .expect(Selector('code').withText(
       'Password and password confirmation don\'t match.').exists).ok()
 })
@@ -179,7 +172,6 @@ test('should throw an error if the password is too short', async t => {
   // assert user registration failed
   await t
     .expect(Selector('H1').withText('Register').exists).ok()
-    .expect(Selector('H1').withText('Dashboard').exists).notOk()
     .expect(Selector('code').withText(
       'Password: 8 characters required.').exists).ok()
 })

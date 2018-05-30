@@ -262,6 +262,10 @@ def generate_map(map_filepath, map_data):
 
 
 def get_map_hash(map_filepath):
+    """
+    md5 hash is used as id instead of activity id, to retrieve map image
+    (maps are sensitive data)
+    """
     md5 = hashlib.md5()
     with open(map_filepath, 'rb') as f:
         for chunk in iter(lambda: f.read(128 * md5.block_size), b''):

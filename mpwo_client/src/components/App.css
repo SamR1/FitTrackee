@@ -146,6 +146,10 @@ input, textarea {
   margin-right: 5px;
 }
 
+.dashboard {
+  margin-top: 30px;
+}
+
 .sport-img {
   max-width: 35px;
   max-height: 35px;

@@ -35,7 +35,6 @@ test('should throw an error if the user is not registered', async t => {
   // assert user registration failed
   await t
     .expect(Selector('H1').withText('Login').exists).ok()
-    .expect(Selector('H1').withText('Dashboard').exists).notOk()
     .expect(Selector('code').withText(
       'Invalid credentials.').exists).ok()
 })
@@ -62,7 +61,6 @@ test('should allow a user to login', async t => {
     // assert user is redirected to '/'
   await t
     .expect(Selector('H1').withText('Login').exists).notOk()
-    .expect(Selector('H1').withText('Dashboard').exists).ok()
 
 })
 
@@ -78,7 +76,6 @@ test('should throw an error if the email is invalid', async t => {
   // assert user registration failed
   await t
     .expect(Selector('H1').withText('Login').exists).ok()
-    .expect(Selector('H1').withText('Dashboard').exists).notOk()
     .expect(Selector('code').withText(
       'Invalid credentials.').exists).ok()
 })
@@ -95,7 +92,6 @@ test('should throw an error if the password is invalid', async t => {
   // assert user registration failed
   await t
     .expect(Selector('H1').withText('Login').exists).ok()
-    .expect(Selector('H1').withText('Dashboard').exists).notOk()
     .expect(Selector('code').withText(
       'Invalid credentials.').exists).ok()
 })

@@ -33,12 +33,11 @@ class DashBoard extends React.Component {
         <Helmet>
           <title>mpwo - Dashboard</title>
         </Helmet>
-        <h1 className="page-title">Dashboard</h1>
         {message ? (
           <code>{message}</code>
         ) : (
           (activities.length > 0 && sports.length > 0) ? (
-            <div className="container">
+            <div className="container dashboard">
               <div className="row">
                 <div className="col-md-4">
                   <Records records={records} sports={sports} />
