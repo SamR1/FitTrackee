@@ -15,11 +15,14 @@ Several mobile apps can store workout data locally and export it into a gpx file
 Examples (for Android):  
 * [Runner Up](https://github.com/jonasoreland/runnerup) (GPL v3)  
 * [ForRunners](https://github.com/brvier/ForRunners)  (GPL v3)  
-* [AlpineQuest](https://www.alpinequest.net/) (Proprietary)  
-...
+* [AlpineQuest](https://www.alpinequest.net/) (Proprietary, [exodus privay report](https://reports.exodus-privacy.eu.org/reports/2975/))  
+...  
+
+
+Maps are displayed using [Open Street Map](https://www.openstreetmap.org).
 
 **Still under development (not ready for production).**  
-(see [issues](https://github.com/SamR1/mpwo/issues) and [Wiki](https://github.com/SamR1/mpwo/wiki) for more informations)  
+(see [issues](https://github.com/SamR1/mpwo/issues) and [wiki](https://github.com/SamR1/mpwo/wiki) for more informations)  
 
 ![mpwo screenshot](docs/images/mpwo_screenshot-01.png)
 
