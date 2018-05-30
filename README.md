@@ -19,7 +19,7 @@ Examples (for Android):
 ...
 
 **Still under development (not ready for production).**  
-(see [Wiki](https://github.com/SamR1/mpwo/wiki) for more informations)  
+(see [issues](https://github.com/SamR1/mpwo/issues) and [Wiki](https://github.com/SamR1/mpwo/wiki) for more informations)  
 
 ![mpwo screenshot](docs/images/mpwo_screenshot-01.png)
 
