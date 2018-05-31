@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 
 import ActivityCard from './ActivityCard'
+import Calendar from './../Others/Calendar'
 import Records from './Records'
 import Statistics from './Statistics'
 import { getData } from '../../actions'
@@ -40,6 +41,7 @@ class DashBoard extends React.Component {
             <div className="container dashboard">
               <div className="row">
                 <div className="col-md-4">
+                  <Calendar />
                   <Records records={records} sports={sports} />
                   <Statistics />
                 </div>
