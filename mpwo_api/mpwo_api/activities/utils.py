@@ -273,25 +273,23 @@ def get_map_hash(map_filepath):
     return md5.hexdigest()
 
 
-def process_one_gpx_file(auth_user_id, activity_data, file_path, filename):
+def process_one_gpx_file(params, filename):
     try:
-        gpx_data, map_data = get_gpx_info(file_path)
-
-        sport = Sport.query.filter_by(id=activity_data.get('sport_id')).first()
+        gpx_data, map_data = get_gpx_info(params['file_path'])
         new_filepath = get_new_file_path(
-            auth_user_id=auth_user_id,
+            auth_user_id=params['auth_user_id'],
             activity_date=gpx_data['start'],
             old_filename=filename,
-            sport=sport.label
+            sport=params['sport_label']
         )
-        os.rename(file_path, new_filepath)
+        os.rename(params['file_path'], new_filepath)
         gpx_data['filename'] = new_filepath
 
         map_filepath = get_new_file_path(
-            auth_user_id=auth_user_id,
+            auth_user_id=params['auth_user_id'],
             activity_date=gpx_data['start'],
             extension='.png',
-            sport=sport.label
+            sport=params['sport_label']
         )
         generate_map(map_filepath, map_data)
     except (gpxpy.gpx.GPXXMLSyntaxException, TypeError) as e:
@@ -301,10 +299,9 @@ def process_one_gpx_file(auth_user_id, activity_data, file_path, filename):
 
     try:
         new_activity = create_activity(
-            auth_user_id, activity_data, gpx_data)
+            params['auth_user_id'], params['activity_data'], gpx_data)
         new_activity.map = map_filepath
         new_activity.map_id = get_map_hash(map_filepath)
-        print(new_activity.map_id)
         db.session.add(new_activity)
         db.session.flush()
 
@@ -314,13 +311,11 @@ def process_one_gpx_file(auth_user_id, activity_data, file_path, filename):
         db.session.commit()
         return new_activity
     except (exc.IntegrityError, ValueError) as e:
-        raise ActivityException(
-            'fail', 'Error during activity save.', e
-        )
+        raise ActivityException('fail', 'Error during activity save.', e)
 
 
-def process_zip_archive(auth_user_id, activity_data, zip_path, extract_dir):
-    with zipfile.ZipFile(zip_path, "r") as zip_ref:
+def process_zip_archive(common_params, extract_dir):
+    with zipfile.ZipFile(common_params['file_path'], "r") as zip_ref:
         zip_ref.extractall(extract_dir)
 
     new_activities = []
@@ -329,8 +324,9 @@ def process_zip_archive(auth_user_id, activity_data, zip_path, extract_dir):
         if ('.' in gpx_file and gpx_file.rsplit('.', 1)[1].lower()
                 in current_app.config.get('ACTIVITY_ALLOWED_EXTENSIONS')):
             file_path = os.path.join(extract_dir, gpx_file)
-            new_activity = process_one_gpx_file(auth_user_id, activity_data,
-                                                file_path, gpx_file)
+            params = common_params
+            params['file_path'] = file_path
+            new_activity = process_one_gpx_file(params, gpx_file)
             new_activities.append(new_activity)
 
     return new_activities
@@ -340,6 +336,20 @@ def process_files(auth_user_id, activity_data, activity_file, folders):
     filename = secure_filename(activity_file.filename)
     extension = f".{filename.rsplit('.', 1)[1].lower()}"
     file_path = get_file_path(auth_user_id, folders['tmp_dir'], filename)
+    sport = Sport.query.filter_by(id=activity_data.get('sport_id')).first()
+    if not sport:
+        raise ActivityException(
+            'error',
+            f"Sport id: {activity_data.get('sport_id')} does not exist",
+            None
+        )
+
+    common_params = {
+        'auth_user_id': auth_user_id,
+        'activity_data': activity_data,
+        'file_path': file_path,
+        'sport_label': sport.label,
+    }
 
     try:
         activity_file.save(file_path)
@@ -347,9 +357,6 @@ def process_files(auth_user_id, activity_data, activity_file, folders):
         raise ActivityException('error', 'Error during activity file save.', e)
 
     if extension == ".gpx":
-        return [process_one_gpx_file(
-            auth_user_id, activity_data, file_path, filename
-        )]
+        return [process_one_gpx_file(common_params, filename)]
     else:
-        return process_zip_archive(
-            auth_user_id, activity_data, file_path, folders['extract_dir'])
+        return process_zip_archive(common_params, folders['extract_dir'])

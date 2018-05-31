@@ -463,8 +463,7 @@ def test_add_an_activity_gpx_incorrect_sport_id(
 
     assert response.status_code == 500
     assert data['status'] == 'error'
-    assert data['message'] == \
-        'Error during activity file save.'
+    assert data['message'] == 'Sport id: 2 does not exist'
 
 
 def test_add_an_activity_gpx_no_file(app, user_1, sport_1_cycling):
