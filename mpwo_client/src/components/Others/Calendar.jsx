@@ -70,8 +70,11 @@ class Calendar extends React.Component {
 
   filterActivities(day) {
     const { activities } = this.props
-    return activities
-      .filter(act => dateFns.isSameDay(act.activity_date, day))
+    if (activities) {
+      return activities
+        .filter(act => dateFns.isSameDay(act.activity_date, day))
+    }
+    return []
   }
 
   renderCells() {

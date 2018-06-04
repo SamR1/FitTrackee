@@ -7,24 +7,18 @@ export default class MpwoApi {
     let url = `${apiUrl}${target}`
     if (data.id) {
       url = `${url}/${data.id}`
-    } else if (data.page) {
-      url = `${url}?page=${data.page}`
-    }
-    if (data.start || data.end) {
-      url = `${url}${
-      data.page ? '' : '?'
+    } else if (Object.keys(data).length > 0) {
+      url = `${url}?${
+        data.page ? `&page=${data.page}` : ''
         }${
-      data.start && `&from=${data.start}`
+        data.start ? `&from=${data.start}` : ''
+          }${
+        data.end ? `&to=${data.end}` : ''
+          }${
+        data.order ? `&order=${data.order}` : ''
         }${
-      data.end && `&to=${data.end}`
+        data.per_page ? `$per_page=${data.per_page}` : ''
         }`
-    }
-    if (data.order) {
-      url = `${url}${
-        (data.page || data.start || data.end) ? '' : '?'
-      }${
-        `&order=${data.order}`
-      }`
     }
     const params = {
       url: url,

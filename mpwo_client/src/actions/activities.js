@@ -130,7 +130,7 @@ export const getMoreActivities = page => dispatch => mpwoGenericApi
   .catch(error => dispatch(setError(`activities: ${error}`)))
 
 export const getMonthActivities = (start, end) => dispatch => mpwoGenericApi
-  .getData('activities', { start, end, order: 'asc' })
+  .getData('activities', { start, end, order: 'asc', per_page: 100 })
   .then(ret => {
     if (ret.status === 'success') {
       if (ret.data.activities.length > 0) {
