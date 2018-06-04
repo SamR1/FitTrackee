@@ -2,13 +2,30 @@
 // source: https://blog.flowandform.agency/create-a-custom-calendar-in-react-3df1bfd0b728
 import dateFns from 'date-fns'
 import React from 'react'
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
-export default class Calendar extends React.Component {
+import { getMonthActivities } from '../../actions/activities'
+
+const getStartAndEndMonth = date => ({
+  start: dateFns.startOfMonth(date),
+  end: dateFns.endOfMonth(date),
+})
+
+
+class Calendar extends React.Component {
   constructor(props, context) {
     super(props, context)
+    const calendarDate = new Date()
     this.state = {
-      currentMonth: new Date(),
+      currentMonth: calendarDate,
+      monthStart: getStartAndEndMonth(calendarDate).start,
+      monthEnd: getStartAndEndMonth(calendarDate).end,
     }
+  }
+
+  componentDidMount() {
+    this.props.loadMonthActivities(this.state.monthStart, this.state.monthEnd)
   }
 
   renderHeader() {
@@ -51,10 +68,15 @@ export default class Calendar extends React.Component {
     return <div className="days row">{days}</div>
   }
 
+  filterActivities(day) {
+    const { activities } = this.props
+    return activities
+      .filter(act => dateFns.isSameDay(act.activity_date, day))
+  }
+
   renderCells() {
-    const { currentMonth, selectedDate } = this.state
-    const monthStart = dateFns.startOfMonth(currentMonth)
-    const monthEnd = dateFns.endOfMonth(monthStart)
+    const { monthStart, monthEnd } = this.state
+    const { sports } = this.props
     const startDate = dateFns.startOfWeek(monthStart)
     const endDate = dateFns.endOfWeek(monthEnd)
 
@@ -68,16 +90,21 @@ export default class Calendar extends React.Component {
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
         formattedDate = dateFns.format(day, dateFormat)
+        const dayActivities = this.filterActivities(day)
         days.push(
-          <div
-            className={`col cell ${
-              dateFns.isSameMonth(day, monthStart)
-                ? dateFns.isSameDay(day, selectedDate) ? 'selected' : ''
-                : 'disabled'
-            }`}
-            key={day}
-          >
+          <div className="col cell" key={day} >
             <span className="number">{formattedDate}</span>
+            {dayActivities.map(act => (
+              <Link key={act.id} to={`/activities/${act.id}`}>
+                <img
+                  className="activity-sport"
+                  src={sports
+                    .filter(s => s.id === act.sport_id)
+                    .map(s => s.img)}
+                  alt="activity sport logo"
+                />
+              </Link>
+            ))}
           </div>
         )
         day = dateFns.addDays(day, 1)
@@ -92,16 +119,24 @@ export default class Calendar extends React.Component {
     return <div className="body">{rows}</div>
   }
 
-  handleNextMonth () {
+  updateStateDate (calendarDate) {
+    const { start, end } = getStartAndEndMonth(calendarDate)
     this.setState({
-      currentMonth: dateFns.addMonths(this.state.currentMonth, 1)
+      currentMonth: calendarDate,
+      monthStart: start,
+      monthEnd: end,
     })
+    this.props.loadMonthActivities(start, end)
+  }
+
+  handleNextMonth () {
+    const calendarDate = dateFns.addMonths(this.state.currentMonth, 1)
+    this.updateStateDate(calendarDate)
   }
 
   handlePrevMonth () {
-    this.setState({
-      currentMonth: dateFns.subMonths(this.state.currentMonth, 1)
-    })
+    const calendarDate = dateFns.subMonths(this.state.currentMonth, 1)
+    this.updateStateDate(calendarDate)
   }
 
   render() {
@@ -116,3 +151,19 @@ export default class Calendar extends React.Component {
     )
   }
 }
+
+export default connect(
+  state => ({
+    activities: state.calendarActivities.data,
+    sports: state.sports.data,
+  }),
+  dispatch => ({
+    loadMonthActivities: (start, end) => {
+      const dateFormat = 'YYYY-MM-DD'
+      dispatch(getMonthActivities(
+        dateFns.format(start, dateFormat),
+        dateFns.format(end, dateFormat),
+      ))
+    },
+  })
+)(Calendar)

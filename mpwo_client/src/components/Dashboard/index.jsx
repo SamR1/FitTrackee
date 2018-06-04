@@ -37,22 +37,25 @@ class DashBoard extends React.Component {
         {message ? (
           <code>{message}</code>
         ) : (
-          (activities.length > 0 && sports.length > 0) ? (
+          (activities && sports.length > 0) && (
             <div className="container dashboard">
               <div className="row">
                 <div className="col-md-4">
-                  <Calendar />
                   <Records records={records} sports={sports} />
                   <Statistics />
                 </div>
                 <div className="col-md-8">
-                  {activities.map(activity => (
+                  <Calendar />
+                  {activities.length > 0 ? (
+                    activities.map(activity => (
                     <ActivityCard
                       activity={activity}
                       key={activity.id}
                       sports={sports}
-                    />
-                  ))}
+                    />)
+                  )) : (
+                    'No activities. Upload one !'
+                  )}
                   {!paginationEnd &&
                     <input
                       type="submit"
@@ -67,9 +70,8 @@ class DashBoard extends React.Component {
                 </div>
               </div>
             </div>
-        ) : (
-          'No activities for now'
-        ))}
+          )
+        )}
       </div>
     )
   }

@@ -23,42 +23,45 @@ export default function RecordsCard (props) {
         Personal records
       </div>
       <div className="card-body">
-        {Object.keys(recordsBySport).map(sportLabel => (
-          <table
-            className="table table-borderless record-table"
-            key={sportLabel}
-          >
-            <thead>
-              <tr>
-                <th colSpan="3">
-                  <img
-                    alt={`${sportLabel} logo`}
-                    className="record-logo"
-                    src={recordsBySport[sportLabel].img}
-                  />
-                  {sportLabel}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {recordsBySport[sportLabel].records.map(rec => (
-                <tr key={rec.id}>
-                  <td>
-                    {rec.record_type}
-                  </td>
-                  <td>
-                   {rec.value}
-                  </td>
-                  <td>
-                    <Link to={`/activities/${rec.activity_id}`}>
-                      {rec.activity_date}
-                    </Link>
-                  </td>
+        {Object.keys(recordsBySport).length === 0
+          ? 'No records.'
+          : (Object.keys(recordsBySport).map(sportLabel => (
+            <table
+              className="table table-borderless record-table"
+              key={sportLabel}
+            >
+              <thead>
+                <tr>
+                  <th colSpan="3">
+                    <img
+                      alt={`${sportLabel} logo`}
+                      className="record-logo"
+                      src={recordsBySport[sportLabel].img}
+                    />
+                    {sportLabel}
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        ))}
+              </thead>
+              <tbody>
+                {recordsBySport[sportLabel].records.map(rec => (
+                  <tr key={rec.id}>
+                    <td>
+                      {rec.record_type}
+                    </td>
+                    <td>
+                     {rec.value}
+                    </td>
+                    <td>
+                      <Link to={`/activities/${rec.activity_id}`}>
+                        {rec.activity_date}
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>))
+          )
+        }
       </div>
     </div>
   )

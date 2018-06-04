@@ -71,6 +71,12 @@ input, textarea {
   margin-top: 20px;
 }
 
+.activity-sport {
+  margin-right: 1px;
+  max-width: 20px;
+  max-height: 20px;
+}
+
 .add-activity {
   margin-top: 50px;
 }

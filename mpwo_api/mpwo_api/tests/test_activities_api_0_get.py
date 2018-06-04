@@ -344,6 +344,64 @@ def test_get_activities_date_filter_paginate(
     assert 'Mon, 20 Mar 2017 00:00:00 GMT' == data['data']['activities'][1]['activity_date']  # noqa
 
 
+def test_get_activities_order(
+    app, user_1, sport_1_cycling, seven_activities_user_1
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        '/api/activities?order=asc',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['activities']) == 5
+    assert 'Mon, 20 Mar 2017 00:00:00 GMT' == data['data']['activities'][0]['activity_date']  # noqa
+    assert 'Fri, 23 Feb 2018 00:00:00 GMT' == data['data']['activities'][4]['activity_date']  # noqa
+
+
+def test_get_activities_date_filter_paginate_order(
+    app, user_1, sport_1_cycling, seven_activities_user_1
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        '/api/activities?from=2017-01-01&page=2&order=asc',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['activities']) == 2
+    assert 'Sun, 01 Apr 2018 00:00:00 GMT' == data['data']['activities'][0]['activity_date']  # noqa
+    assert 'Wed, 09 May 2018 00:00:00 GMT' == data['data']['activities'][1]['activity_date']  # noqa
+
+
 def test_get_an_activity(
     app, user_1, sport_1_cycling, activity_cycling_user_1
 ):

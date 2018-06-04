@@ -31,6 +31,18 @@ const activities = (state = initial.activities, action) => {
   }
 }
 
+const calendarActivities = (state = initial.calendarActivities, action) => {
+  switch (action.type) {
+    case 'UPDATE_CALENDAR':
+      return {
+        ...state,
+        data: action.activities,
+      }
+    default:
+      return handleDataAndError(state, 'calendarActivities', action)
+  }
+}
+
 const chartData = (state = initial.chartData, action) => {
   switch (action.type) {
     case 'SET_CHART_DATA':
@@ -181,6 +193,7 @@ const user = (state = initial.user, action) => {
 
 const reducers = combineReducers({
   activities,
+  calendarActivities,
   chartData,
   formData,
   formProfile,

@@ -1,3 +1,5 @@
+import { parse } from 'date-fns'
+
 import mpwoGenericApi from '../mwpoApi'
 import mpwoApi from '../mwpoApi/activities'
 import { history } from '../index'
@@ -6,6 +8,11 @@ import { setError, setLoading } from './index'
 
 export const pushActivities = activities => ({
   type: 'PUSH_ACTIVITIES',
+  activities,
+})
+
+export const updateCalendar = activities => ({
+  type: 'UPDATE_CALENDAR',
   activities,
 })
 
@@ -115,6 +122,24 @@ export const getMoreActivities = page => dispatch => mpwoGenericApi
     if (ret.status === 'success') {
       if (ret.data.activities.length > 0) {
         dispatch(pushActivities(ret.data.activities))
+      }
+    } else {
+      dispatch(setError(`activities: ${ret.message}`))
+    }
+  })
+  .catch(error => dispatch(setError(`activities: ${error}`)))
+
+export const getMonthActivities = (start, end) => dispatch => mpwoGenericApi
+  .getData('activities', null, null, start, end, 'asc')
+  .then(ret => {
+    if (ret.status === 'success') {
+      if (ret.data.activities.length > 0) {
+        for (let i = 0; i < ret.data.activities.length; i++) {
+          ret.data.activities[i].activity_date = parse(
+            ret.data.activities[i].activity_date
+          )
+        }
+        dispatch(updateCalendar(ret.data.activities))
       }
     } else {
       dispatch(setError(`activities: ${ret.message}`))

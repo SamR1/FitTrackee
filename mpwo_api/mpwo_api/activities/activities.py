@@ -26,6 +26,7 @@ def get_activities(auth_user_id):
         page = 1 if 'page' not in params.keys() else int(params.get('page'))
         date_from = params.get('from')
         date_to = params.get('to')
+        order = params.get('order')
         activities = Activity.query.filter(
             Activity.user_id == auth_user_id,
             Activity.activity_date >= datetime.strptime(date_from, '%Y-%m-%d')
@@ -33,7 +34,9 @@ def get_activities(auth_user_id):
             Activity.activity_date <= datetime.strptime(date_to, '%Y-%m-%d')
             if date_to else True,
         ).order_by(
-            Activity.activity_date.desc()
+            Activity.activity_date.asc()
+            if order == 'asc'
+            else Activity.activity_date.desc()
         ).paginate(
             page, 5, False
         ).items
