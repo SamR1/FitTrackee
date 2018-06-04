@@ -165,6 +165,10 @@ input, textarea {
   color: lightgrey;
 }
 
+.img-disabled {
+  opacity: .4;
+}
+
 .record-logo {
   margin-right: 5px;
   max-width: 25px;

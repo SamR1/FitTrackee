@@ -7,10 +7,14 @@ import { Link } from 'react-router-dom'
 
 import { getMonthActivities } from '../../actions/activities'
 
-const getStartAndEndMonth = date => ({
-  start: dateFns.startOfMonth(date),
-  end: dateFns.endOfMonth(date),
-})
+const getStartAndEndMonth = date => {
+  const monthStart = dateFns.startOfMonth(date)
+  const monthEnd = dateFns.endOfMonth(date)
+  return {
+    start: dateFns.startOfWeek(monthStart),
+      end: dateFns.endOfWeek(monthEnd),
+  }
+}
 
 
 class Calendar extends React.Component {
@@ -19,13 +23,13 @@ class Calendar extends React.Component {
     const calendarDate = new Date()
     this.state = {
       currentMonth: calendarDate,
-      monthStart: getStartAndEndMonth(calendarDate).start,
-      monthEnd: getStartAndEndMonth(calendarDate).end,
+      startDate: getStartAndEndMonth(calendarDate).start,
+      endDate: getStartAndEndMonth(calendarDate).end,
     }
   }
 
   componentDidMount() {
-    this.props.loadMonthActivities(this.state.monthStart, this.state.monthEnd)
+    this.props.loadMonthActivities(this.state.startDate, this.state.endDate)
   }
 
   renderHeader() {
@@ -56,7 +60,7 @@ class Calendar extends React.Component {
   renderDays() {
     const dateFormat = 'ddd'
     const days = []
-    const startDate = dateFns.startOfWeek(this.state.currentMonth)
+    const { startDate } = this.state
 
     for (let i = 0; i < 7; i++) {
       days.push(
@@ -78,10 +82,8 @@ class Calendar extends React.Component {
   }
 
   renderCells() {
-    const { monthStart, monthEnd } = this.state
+    const { currentMonth, startDate, endDate } = this.state
     const { sports } = this.props
-    const startDate = dateFns.startOfWeek(monthStart)
-    const endDate = dateFns.endOfWeek(monthEnd)
 
     const dateFormat = 'D'
     const rows = []
@@ -94,13 +96,19 @@ class Calendar extends React.Component {
       for (let i = 0; i < 7; i++) {
         formattedDate = dateFns.format(day, dateFormat)
         const dayActivities = this.filterActivities(day)
+        const isDisabled = dateFns.isSameMonth(day, currentMonth)
+          ? ''
+          : 'disabled'
         days.push(
-          <div className="col cell" key={day} >
+          <div
+            className={`col cell img-${isDisabled}`}
+            key={day}
+          >
             <span className="number">{formattedDate}</span>
             {dayActivities.map(act => (
               <Link key={act.id} to={`/activities/${act.id}`}>
                 <img
-                  className="activity-sport"
+                  className={`activity-sport ${isDisabled}`}
                   src={sports
                     .filter(s => s.id === act.sport_id)
                     .map(s => s.img)}
@@ -126,8 +134,8 @@ class Calendar extends React.Component {
     const { start, end } = getStartAndEndMonth(calendarDate)
     this.setState({
       currentMonth: calendarDate,
-      monthStart: start,
-      monthEnd: end,
+      startDate: start,
+      endDate: end,
     })
     this.props.loadMonthActivities(start, end)
   }

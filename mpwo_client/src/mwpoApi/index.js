@@ -17,7 +17,7 @@ export default class MpwoApi {
           }${
         data.order ? `&order=${data.order}` : ''
         }${
-        data.per_page ? `$per_page=${data.per_page}` : ''
+        data.per_page ? `&per_page=${data.per_page}` : ''
         }`
     }
     const params = {

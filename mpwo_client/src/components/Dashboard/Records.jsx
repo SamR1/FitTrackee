@@ -24,7 +24,7 @@ export default function RecordsCard (props) {
       </div>
       <div className="card-body">
         {Object.keys(recordsBySport).length === 0
-          ? 'No records.'
+          ? 'No records'
           : (Object.keys(recordsBySport).map(sportLabel => (
             <table
               className="table table-borderless record-table"
