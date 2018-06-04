@@ -17,12 +17,12 @@ export const setLoading = () => ({
   type: 'SET_LOADING',
 })
 
-export const getData = (target, id = null, data = null) => dispatch => {
-  if (id !== null && isNaN(id)) {
+export const getData = (target, data) => dispatch => {
+  if (data && data.id && isNaN(data.id)) {
     return dispatch(setError(target, `${target}: Incorrect id`))
   }
   return mpwoApi
-  .getData(target, id, data)
+  .getData(target, data)
   .then(ret => {
     if (ret.status === 'success') {
       dispatch(setData(target, ret.data))

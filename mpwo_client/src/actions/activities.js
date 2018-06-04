@@ -117,7 +117,7 @@ export const editActivity = form => dispatch => mpwoGenericApi
 
 
 export const getMoreActivities = page => dispatch => mpwoGenericApi
-  .getData('activities', null, page)
+  .getData('activities', { page })
   .then(ret => {
     if (ret.status === 'success') {
       if (ret.data.activities.length > 0) {
@@ -130,7 +130,7 @@ export const getMoreActivities = page => dispatch => mpwoGenericApi
   .catch(error => dispatch(setError(`activities: ${error}`)))
 
 export const getMonthActivities = (start, end) => dispatch => mpwoGenericApi
-  .getData('activities', null, null, start, end, 'asc')
+  .getData('activities', { start, end, order: 'asc' })
   .then(ret => {
     if (ret.status === 'success') {
       if (ret.data.activities.length > 0) {

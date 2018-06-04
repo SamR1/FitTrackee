@@ -38,7 +38,7 @@ export default connect(
   }),
   dispatch => ({
     loadActivity: activityId => {
-      dispatch(getData('activities', activityId))
+      dispatch(getData('activities', { id: activityId }))
     },
   })
 )(ActivityEdit)

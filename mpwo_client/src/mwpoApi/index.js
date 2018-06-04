@@ -3,28 +3,28 @@ import { apiUrl, createRequest } from '../utils'
 export default class MpwoApi {
 
   static getData(target,
-                 id = null,
-                 page = null,
-                 start = null,
-                 end = null,
-                 order = null) {
+                 data = {}) {
     let url = `${apiUrl}${target}`
-    if (id) {
-      url = `${url}/${id}`
-    } else if (page) {
-      url = `${url}?page=${page}`
+    if (data.id) {
+      url = `${url}/${data.id}`
+    } else if (data.page) {
+      url = `${url}?page=${data.page}`
     }
-    if (start || end) {
+    if (data.start || data.end) {
       url = `${url}${
-      page ? '' : '?'
+      data.page ? '' : '?'
         }${
-      start && `&from=${start}`
+      data.start && `&from=${data.start}`
         }${
-      end && `&to=${end}`
+      data.end && `&to=${data.end}`
         }`
     }
-    if (order) {
-      url = `${url}${(page || start || end) ? '' : '?'}${`&order=${order}`}`
+    if (data.order) {
+      url = `${url}${
+        (data.page || data.start || data.end) ? '' : '?'
+      }${
+        `&order=${data.order}`
+      }`
     }
     const params = {
       url: url,

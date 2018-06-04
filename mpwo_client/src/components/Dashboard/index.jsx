@@ -86,7 +86,7 @@ export default connect(
   }),
   dispatch => ({
     loadActivities: () => {
-      dispatch(getData('activities', null, 1))
+      dispatch(getData('activities', { page: 1 }))
       dispatch(getData('records'))
     },
     loadMoreActivities: page => {

@@ -33,7 +33,7 @@ export default connect(
   }),
   dispatch => ({
     loadSport: sportId => {
-      dispatch(getData('sports', sportId))
+      dispatch(getData('sports', { id: sportId }))
     },
   })
 )(AdminSports)
