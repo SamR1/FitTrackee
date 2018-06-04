@@ -1,6 +1,7 @@
 import json
 import os
 import shutil
+from datetime import datetime
 
 from flask import Blueprint, current_app, jsonify, request, send_file
 from mpwo_api import appLog, db
@@ -22,10 +23,20 @@ def get_activities(auth_user_id):
     """Get all activities for authenticated user"""
     try:
         params = request.args.copy()
-        page = 1 if len(params) == 0 else int(params.pop('page'))
-        activities = Activity.query.filter_by(user_id=auth_user_id)\
-            .order_by(Activity.activity_date.desc()).paginate(
-            page, 5, False).items
+        page = 1 if 'page' not in params.keys() else int(params.get('page'))
+        date_from = params.get('from')
+        date_to = params.get('to')
+        activities = Activity.query.filter(
+            Activity.user_id == auth_user_id,
+            Activity.activity_date >= datetime.strptime(date_from, '%Y-%m-%d')
+            if date_from else True,
+            Activity.activity_date <= datetime.strptime(date_to, '%Y-%m-%d')
+            if date_to else True,
+        ).order_by(
+            Activity.activity_date.desc()
+        ).paginate(
+            page, 5, False
+        ).items
         response_object = {
             'status': 'success',
             'data': {
