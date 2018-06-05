@@ -185,6 +185,10 @@ const user = (state = initial.user, action) => {
         picture: action.message.data.picture === true
                    ? action.message.data.picture
                    : false,
+        nbActivities: action.message.data.nb_activities,
+        nbSports: action.message.data.nb_sports,
+        totalDistance: action.message.data.total_distance,
+        totalDuration: action.message.data.total_duration,
       }
     default:
       return state

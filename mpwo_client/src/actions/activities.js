@@ -5,6 +5,7 @@ import mpwoApi from '../mwpoApi/activities'
 import { history } from '../index'
 import { formatChartData } from '../utils'
 import { setError, setLoading } from './index'
+import { loadProfile } from './user'
 
 export const pushActivities = activities => ({
   type: 'PUSH_ACTIVITIES',
@@ -33,8 +34,10 @@ export const addActivity = form => dispatch => mpwoApi
       if (ret.data.activities.length === 0) {
           dispatch(setError('activities: no correct file'))
       } else if (ret.data.activities.length === 1) {
+          dispatch(loadProfile())
           history.push(`/activities/${ret.data.activities[0].id}`)
       } else { // ret.data.activities.length > 1
+          dispatch(loadProfile())
           history.push('/')
       }
     } else {
@@ -49,6 +52,7 @@ export const addActivityWithoutGpx = form => dispatch => mpwoApi
   .addActivityWithoutGpx(form)
   .then(ret => {
     if (ret.status === 'created') {
+      dispatch(loadProfile())
       history.push(`/activities/${ret.data.activities[0].id}`)
     } else {
       dispatch(setError(`activities: ${ret.message}`))
@@ -95,6 +99,7 @@ export const deleteActivity = id => dispatch => mpwoGenericApi
   .deleteData('activities', id)
   .then(ret => {
     if (ret.status === 204) {
+      dispatch(loadProfile())
       history.push('/')
     } else {
       dispatch(setError(`activities: ${ret.status}`))
@@ -107,6 +112,7 @@ export const editActivity = form => dispatch => mpwoGenericApi
   .updateData('activities', form)
   .then(ret => {
     if (ret.status === 'success') {
+      dispatch(loadProfile())
       history.push(`/activities/${ret.data.activities[0].id}`)
     } else {
       dispatch(setError(`activities: ${ret.message}`))

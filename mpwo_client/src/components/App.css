@@ -94,6 +94,10 @@ input, textarea {
   color: goldenrod;
 }
 
+.fa-color {
+  color: #405976;
+}
+
 .leaflet-container {
   height: 400px;
 }
@@ -159,6 +163,10 @@ input, textarea {
 .sport-img {
   max-width: 35px;
   max-height: 35px;
+}
+
+.huge {
+  font-size: 25px;
 }
 
 .inactive-link {

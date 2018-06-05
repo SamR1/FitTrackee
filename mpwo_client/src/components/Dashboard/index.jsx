@@ -6,6 +6,7 @@ import ActivityCard from './ActivityCard'
 import Calendar from './../Others/Calendar'
 import Records from './Records'
 import Statistics from './Statistics'
+import UserStatistics from './UserStatistics'
 import { getData } from '../../actions'
 import { getMoreActivities } from '../../actions/activities'
 
@@ -23,7 +24,7 @@ class DashBoard extends React.Component {
 
   render() {
     const {
-      activities, loadMoreActivities, message, records, sports
+      activities, loadMoreActivities, message, records, sports, user
     } = this.props
     const paginationEnd = activities.length > 0
       ? activities[activities.length - 1].previous_activity === null
@@ -39,6 +40,7 @@ class DashBoard extends React.Component {
         ) : (
           (activities && sports.length > 0) && (
             <div className="container dashboard">
+              <UserStatistics user={user} />
               <div className="row">
                 <div className="col-md-4">
                   <Records records={records} sports={sports} />
@@ -83,6 +85,7 @@ export default connect(
     message: state.message,
     records: state.records.data,
     sports: state.sports.data,
+    user: state.user,
   }),
   dispatch => ({
     loadActivities: () => {
