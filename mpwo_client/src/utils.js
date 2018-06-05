@@ -58,7 +58,7 @@ export const formatActivityDate = activityDateTime => {
   if (activityDateTime) {
     const dateTime = parse(activityDateTime)
     return {
-      activity_date: format(dateTime, 'YYYY-MM-DD'),
+      activity_date: format(dateTime, 'DD/MM/YYYY'),
       activity_time: activityDateTime.match(/[0-2][0-9]:[0-5][0-9]/)[0]
     }
   }
