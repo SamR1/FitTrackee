@@ -3,6 +3,9 @@ import datetime
 import jwt
 from flask import current_app
 from mpwo_api import bcrypt, db
+from sqlalchemy import func
+
+from ..activities.models import Activity
 
 
 class User(db.Model):
@@ -81,6 +84,18 @@ class User(db.Model):
             return 'Invalid token. Please log in again.'
 
     def serialize(self):
+        nb_activity = Activity.query.filter(
+            Activity.user_id == self.id
+        ).count()
+        sports = db.session.query(
+            func.count(Activity.sport_id)
+        ).group_by(
+            Activity.sport_id
+        ).all()
+        total = db.session.query(
+            func.sum(Activity.distance),
+            func.sum(Activity.duration)
+        ).first()
         return {
             'id': self.id,
             'username': self.username,
@@ -92,5 +107,9 @@ class User(db.Model):
             'bio': self.bio,
             'location': self.location,
             'birth_date': self.birth_date,
-            'picture': self.picture is not None
+            'picture': self.picture is not None,
+            'nb_activities': nb_activity,
+            'nb_sports': len(sports),
+            'total_distance': float(total[0]) if total[0] else 0,
+            'total_duration': str(total[1]) if total[1] else "0:00:00",
         }

@@ -397,6 +397,10 @@ def test_user_profile_minimal(app, user_1):
     assert data['data']['email'] == 'test@test.com'
     assert data['data']['created_at']
     assert not data['data']['admin']
+    assert data['data']['nb_activities'] == 0
+    assert data['data']['nb_sports'] == 0
+    assert data['data']['total_distance'] == 0
+    assert data['data']['total_duration'] == '0:00:00'
     assert response.status_code == 200
 
 
@@ -430,6 +434,45 @@ def test_user_profile_full(app, user_1_full):
     assert data['data']['birth_date']
     assert data['data']['bio'] == 'just a random guy'
     assert data['data']['location'] == 'somewhere'
+    assert data['data']['nb_activities'] == 0
+    assert data['data']['nb_sports'] == 0
+    assert data['data']['total_distance'] == 0
+    assert data['data']['total_duration'] == '0:00:00'
+    assert response.status_code == 200
+
+
+def test_user_profile_with_activities(
+        app, user_1, sport_1_cycling, sport_2_running,
+        activity_cycling_user_1, activity_running_user_1
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        '/api/auth/profile',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+    assert data['status'] == 'success'
+    assert data['data'] is not None
+    assert data['data']['username'] == 'test'
+    assert data['data']['email'] == 'test@test.com'
+    assert data['data']['created_at']
+    assert not data['data']['admin']
+    assert data['data']['nb_activities'] == 2
+    assert data['data']['nb_sports'] == 2
+    assert data['data']['total_distance'] == 22
+    assert data['data']['total_duration'] == '1:57:04'
     assert response.status_code == 200
 
 
