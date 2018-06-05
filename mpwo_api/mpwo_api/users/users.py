@@ -9,19 +9,10 @@ users_blueprint = Blueprint('users', __name__)
 def get_users():
     """Get all users"""
     users = User.query.all()
-    users_list = []
-    for user in users:
-        user_object = {
-            'id': user.id,
-            'username': user.username,
-            'email': user.email,
-            'created_at': user.created_at
-        }
-        users_list.append(user_object)
     response_object = {
         'status': 'success',
         'data': {
-            'users': users_list
+            'users': [user.serialize() for user in users]
         }
     }
     return jsonify(response_object), 200
@@ -41,11 +32,7 @@ def get_single_user(user_id):
         else:
             response_object = {
                 'status': 'success',
-                'data': {
-                    'username': user.username,
-                    'email': user.email,
-                    'created_at': user.created_at
-                }
+                'data': user.serialize()
             }
             return jsonify(response_object), 200
     except ValueError:
