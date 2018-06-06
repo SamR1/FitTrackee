@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flask import Blueprint, jsonify, request
 from mpwo_api import appLog
@@ -67,9 +67,17 @@ def get_activities(user_id, type):
 
             else:
                 if time == 'week':
-                    time_period = datetime.strftime(activity.activity_date, "%Y-W%U")  # noqa
+                    activity_date = activity.activity_date - timedelta(
+                        days=activity.activity_date.isoweekday()
+                    )
+                    time_period = datetime.strftime(activity_date,
+                                                    "%Y-%m-%d_W%U")
                 elif time == 'weekm':  # week start Monday
-                    time_period = datetime.strftime(activity.activity_date, "%Y-W%W")  # noqa
+                    activity_date = activity.activity_date - timedelta(
+                        days=activity.activity_date.weekday()
+                    )
+                    time_period = datetime.strftime(activity_date,
+                                                    "%Y-%m-%d_W%W")
                 elif time == 'month':
                     time_period = datetime.strftime(activity.activity_date, "%Y-%m")  # noqa
                 elif time == 'year' or not time:
