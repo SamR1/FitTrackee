@@ -53,5 +53,8 @@ export default {
   },
   sports: {
     ...emptyData,
-  }
+  },
+  statistics: {
+    data: {},
+  },
 }

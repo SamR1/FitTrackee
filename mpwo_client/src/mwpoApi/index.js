@@ -10,15 +10,15 @@ export default class MpwoApi {
     } else if (Object.keys(data).length > 0) {
       url = `${url}?${
         data.page ? `&page=${data.page}` : ''
-        }${
+      }${
         data.start ? `&from=${data.start}` : ''
-          }${
+      }${
         data.end ? `&to=${data.end}` : ''
-          }${
+      }${
         data.order ? `&order=${data.order}` : ''
-        }${
+      }${
         data.per_page ? `&per_page=${data.per_page}` : ''
-        }`
+      }`
     }
     const params = {
       url: url,

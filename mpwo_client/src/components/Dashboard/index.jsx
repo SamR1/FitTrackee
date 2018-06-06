@@ -43,8 +43,8 @@ class DashBoard extends React.Component {
               <UserStatistics user={user} />
               <div className="row">
                 <div className="col-md-4">
-                  <Records records={records} sports={sports} />
                   <Statistics />
+                  <Records records={records} sports={sports} />
                 </div>
                 <div className="col-md-8">
                   <Calendar />

@@ -195,6 +195,9 @@ const user = (state = initial.user, action) => {
   }
 }
 
+const statistics = (state = initial.statistics, action) =>
+  handleDataAndError(state, 'statistics', action)
+
 const reducers = combineReducers({
   activities,
   calendarActivities,
@@ -208,6 +211,7 @@ const reducers = combineReducers({
   records,
   router: routerReducer,
   sports,
+  statistics,
   user,
 })
 

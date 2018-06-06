@@ -1,5 +1,5 @@
 import togeojson from '@mapbox/togeojson'
-import { format, parse, subHours } from 'date-fns'
+import { addDays, format, parse, startOfWeek, subHours } from 'date-fns'
 
 export const apiUrl = `${process.env.REACT_APP_API_URL}/api/`
 export const thunderforestApiKey = `${
@@ -105,4 +105,39 @@ export const formatChartData = chartData => {
     chartData[i].duration = formatDuration(chartData[i].duration)
   }
   return chartData
+}
+
+export const formatStats = (stats, sports, startDate, endDate) => {
+  const nbActivitiesStats = []
+  const distanceStats = []
+  const durationStats = []
+
+  for (let day = startOfWeek(startDate);
+       day <= endDate;
+       day = addDays(day, 7)
+  ) {
+    const date = format(day, 'YYYY-MM-DD')
+    const dataNbActivities = { date }
+    const dataDistance = { date }
+    const dataDuration = { date }
+
+    if (stats[date]) {
+      Object.keys(stats[date]).map(sportId => {
+        const sportLabel = sports.filter(s => s.id === +sportId)[0].label
+        dataNbActivities[sportLabel] = stats[date][sportId].nb_activities
+        dataDistance[sportLabel] = stats[date][sportId].total_distance
+        dataDuration[sportLabel] = stats[date][sportId].total_duration
+        return null
+      })
+    }
+    nbActivitiesStats.push(dataNbActivities)
+    distanceStats.push(dataDistance)
+    durationStats.push(dataDuration)
+  }
+
+  return {
+    activities: nbActivitiesStats,
+    distance: distanceStats,
+    duration: durationStats
+  }
 }

@@ -70,14 +70,12 @@ def get_activities(user_id, type):
                     activity_date = activity.activity_date - timedelta(
                         days=activity.activity_date.isoweekday()
                     )
-                    time_period = datetime.strftime(activity_date,
-                                                    "%Y-%m-%d_W%U")
+                    time_period = datetime.strftime(activity_date, "%Y-%m-%d")
                 elif time == 'weekm':  # week start Monday
                     activity_date = activity.activity_date - timedelta(
                         days=activity.activity_date.weekday()
                     )
-                    time_period = datetime.strftime(activity_date,
-                                                    "%Y-%m-%d_W%W")
+                    time_period = datetime.strftime(activity_date, "%Y-%m-%d")
                 elif time == 'month':
                     time_period = datetime.strftime(activity.activity_date, "%Y-%m")  # noqa
                 elif time == 'year' or not time:

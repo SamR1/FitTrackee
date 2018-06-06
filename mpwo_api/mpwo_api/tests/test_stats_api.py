@@ -468,7 +468,7 @@ def test_get_stats_by_week_all_activities(
     assert 'success' in data['status']
     assert data['data']['statistics'] == \
         {
-            '2017-03-19_W12':
+            '2017-03-19':
                 {
                     '1':
                         {
@@ -477,7 +477,7 @@ def test_get_stats_by_week_all_activities(
                             'total_duration': 1024
                         }
                 },
-            '2017-05-28_W22':
+            '2017-05-28':
                 {
                     '1':
                         {
@@ -486,7 +486,7 @@ def test_get_stats_by_week_all_activities(
                             'total_duration': 3456
                         }
                 },
-            '2017-12-31_W53':
+            '2017-12-31':
                 {
                     '1':
                         {
@@ -495,7 +495,7 @@ def test_get_stats_by_week_all_activities(
                             'total_duration': 1024
                         }
                 },
-            '2018-02-18_W07':
+            '2018-02-18':
                 {
                     '1':
                         {
@@ -504,7 +504,7 @@ def test_get_stats_by_week_all_activities(
                             'total_duration': 1600
                         }
                 },
-            '2018-03-25_W12':
+            '2018-03-25':
                 {
                     '1':
                         {
@@ -519,7 +519,7 @@ def test_get_stats_by_week_all_activities(
                             'total_duration': 6000
                         }
                 },
-            '2018-05-06_W18':
+            '2018-05-06':
                 {
                     '1':
                         {
@@ -558,7 +558,7 @@ def test_get_stats_by_week_all_activities_week_13(
     assert 'success' in data['status']
     assert data['data']['statistics'] == \
         {
-            '2018-03-25_W12':
+            '2018-03-25':
                 {
                     '1':
                         {
@@ -603,7 +603,7 @@ def test_get_stats_by_weekm_all_activities(
     assert 'success' in data['status']
     assert data['data']['statistics'] == \
         {
-            '2017-03-20_W12':
+            '2017-03-20':
                 {
                     '1':
                         {
@@ -612,7 +612,7 @@ def test_get_stats_by_weekm_all_activities(
                             'total_duration': 1024
                         }
                 },
-            '2017-05-29_W22':
+            '2017-05-29':
                 {
                     '1':
                         {
@@ -621,7 +621,7 @@ def test_get_stats_by_weekm_all_activities(
                             'total_duration': 3456
                         }
                 },
-            '2018-01-01_W01':
+            '2018-01-01':
                 {
                     '1':
                         {
@@ -630,7 +630,7 @@ def test_get_stats_by_weekm_all_activities(
                             'total_duration': 1024
                         }
                 },
-            '2018-02-19_W08':
+            '2018-02-19':
                 {
                     '1':
                         {
@@ -639,7 +639,7 @@ def test_get_stats_by_weekm_all_activities(
                             'total_duration': 1600
                         }
                 },
-            '2018-03-26_W13':
+            '2018-03-26':
                 {
                     '1':
                         {
@@ -654,7 +654,7 @@ def test_get_stats_by_weekm_all_activities(
                             'total_duration': 6000
                         }
                 },
-            '2018-05-07_W19':
+            '2018-05-07':
                 {
                     '1':
                         {
@@ -693,7 +693,7 @@ def test_get_stats_by_weekm_all_activities_week_13(
     assert 'success' in data['status']
     assert data['data']['statistics'] == \
         {
-            '2018-03-26_W13':
+            '2018-03-26':
                 {
                     '1':
                         {
