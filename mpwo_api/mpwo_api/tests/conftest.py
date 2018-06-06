@@ -128,24 +128,6 @@ def seven_activities_user_1():
     activity = Activity(
         user_id=1,
         sport_id=1,
-        activity_date=datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
-        distance=10,
-        duration=datetime.timedelta(seconds=1024)
-    )
-    db.session.add(activity)
-    db.session.flush()
-    activity = Activity(
-        user_id=1,
-        sport_id=1,
-        activity_date=datetime.datetime.strptime('01/04/2018', '%d/%m/%Y'),
-        distance=8,
-        duration=datetime.timedelta(seconds=6000)
-    )
-    db.session.add(activity)
-    db.session.flush()
-    activity = Activity(
-        user_id=1,
-        sport_id=1,
         activity_date=datetime.datetime.strptime('20/03/2017', '%d/%m/%Y'),
         distance=5,
         duration=datetime.timedelta(seconds=1024)
@@ -155,18 +137,18 @@ def seven_activities_user_1():
     activity = Activity(
         user_id=1,
         sport_id=1,
-        activity_date=datetime.datetime.strptime('09/05/2018', '%d/%m/%Y'),
+        activity_date=datetime.datetime.strptime('01/06/2017', '%d/%m/%Y'),
         distance=10,
-        duration=datetime.timedelta(seconds=3000)
+        duration=datetime.timedelta(seconds=3456)
     )
     db.session.add(activity)
     db.session.flush()
     activity = Activity(
         user_id=1,
         sport_id=1,
-        activity_date=datetime.datetime.strptime('01/06/2017', '%d/%m/%Y'),
+        activity_date=datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
         distance=10,
-        duration=datetime.timedelta(seconds=3456)
+        duration=datetime.timedelta(seconds=1024)
     )
     db.session.add(activity)
     db.session.flush()
@@ -185,6 +167,24 @@ def seven_activities_user_1():
         activity_date=datetime.datetime.strptime('23/02/2018', '%d/%m/%Y'),
         distance=10,
         duration=datetime.timedelta(seconds=1000)
+    )
+    db.session.add(activity)
+    db.session.flush()
+    activity = Activity(
+        user_id=1,
+        sport_id=1,
+        activity_date=datetime.datetime.strptime('01/04/2018', '%d/%m/%Y'),
+        distance=8,
+        duration=datetime.timedelta(seconds=6000)
+    )
+    db.session.add(activity)
+    db.session.flush()
+    activity = Activity(
+        user_id=1,
+        sport_id=1,
+        activity_date=datetime.datetime.strptime('09/05/2018', '%d/%m/%Y'),
+        distance=10,
+        duration=datetime.timedelta(seconds=3000)
     )
     db.session.add(activity)
     db.session.commit()
