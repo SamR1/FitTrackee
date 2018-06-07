@@ -1,6 +1,7 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 import ActivityCard from './ActivityCard'
 import Calendar from './../Others/Calendar'
@@ -56,7 +57,14 @@ class DashBoard extends React.Component {
                       sports={sports}
                     />)
                   )) : (
-                    'No activities. Upload one !'
+                    <div className="card text-center">
+                      <div className="card-body">
+                        No workouts. {' '}
+                        <Link to={{ pathname: '/activities/add' }}>
+                          Upload one !
+                        </Link>
+                      </div>
+                    </div>
                   )}
                   {!paginationEnd &&
                     <input

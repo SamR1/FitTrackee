@@ -9,31 +9,28 @@ import ActivityEdit from './ActivityEdit'
 import NotFound from './../Others/NotFound'
 import { isLoggedIn } from '../../utils'
 
-class Activity extends React.Component {
-  componentDidMount() {}
-  render() {
-    return (
-      <div>
-        <Helmet>
-          <title>mpwo - Admin</title>
-        </Helmet>
-        {isLoggedIn() ? (
-          <Switch>
-            <Route exact path="/activities/add" component={ActivityAdd} />
-            <Route
-              exact path="/activities/:activityId"
-              component={ActivityDisplay}
-            />
-            <Route
-              exact path="/activities/:activityId/edit"
-              component={ActivityEdit}
-            />
-            <Route component={NotFound} />
-          </Switch>
-        ) : (<Redirect to="/login" />)}
-      </div>
-    )
-  }
+function Activity () {
+  return (
+    <div>
+      <Helmet>
+        <title>mpwo - Admin</title>
+      </Helmet>
+      {isLoggedIn() ? (
+        <Switch>
+          <Route exact path="/activities/add" component={ActivityAdd} />
+          <Route
+            exact path="/activities/:activityId"
+            component={ActivityDisplay}
+          />
+          <Route
+            exact path="/activities/:activityId/edit"
+            component={ActivityEdit}
+          />
+          <Route component={NotFound} />
+        </Switch>
+      ) : (<Redirect to="/login" />)}
+    </div>
+  )
 }
 
 export default connect(
