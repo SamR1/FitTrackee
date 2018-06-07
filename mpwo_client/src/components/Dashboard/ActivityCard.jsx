@@ -1,3 +1,4 @@
+import { format } from 'date-fns'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
@@ -12,7 +13,7 @@ export default function ActivityCard (props) {
         <Link to={`/activities/${activity.id}`}>
         {sports.filter(sport => sport.id === activity.sport_id)
                .map(sport => sport.label)} -{' '}
-        {activity.activity_date}
+        {format(activity.activity_date, 'DD/MM/YYYY HH:mm')}
         </Link>
       </div>
       <div className="card-body">

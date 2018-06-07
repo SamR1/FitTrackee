@@ -85,7 +85,6 @@ class Statistics extends React.Component {
                   <XAxis
                     dataKey="date"
                     interval={0} // to force to display all ticks
-                    label={{ value: 'date', offset: 0, position: 'bottom' }}
                   />
                   <YAxis
                     tickFormatter={value => displayedData === 'distance'

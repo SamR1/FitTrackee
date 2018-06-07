@@ -41,6 +41,10 @@
   to { transform: rotate(360deg); }
 }
 
+a {
+  color: #40578a;
+}
+
 .card {
   text-align: left;
 }
