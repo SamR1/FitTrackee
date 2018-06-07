@@ -2,8 +2,8 @@ version: '3.3'
 
 services:
 
-  mpwo-db:
-    container_name: mpwo-db
+  fittrackee-db:
+    container_name: fittrackee-db
     build: https://github.com/SamR1/mpwo.git#master:fittrackee_api/db
     ports:
       - 5435:5432
@@ -11,36 +11,36 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
 
-  mpwo-api:
-    container_name: mpwo-api
+  fittrackee-api:
+    container_name: fittrackee-api
     build: https://github.com/SamR1/mpwo.git#master:fittrackee_api
     ports:
       - 5001:5000
     environment:
-      - DATABASE_URL=postgres://postgres:postgres@mpwo-db:5432/mpwo
-      - DATABASE_TEST_URL=postgres://postgres:postgres@mpwo-db:5432/mpwo_test
+      - DATABASE_URL=postgres://postgres:postgres@fittrackee-db:5432/fittrackee
+      - DATABASE_TEST_URL=postgres://postgres:postgres@fittrackee-db:5432/fittrackee_test
       - FLASK_APP=server.py
       - FLASK_DEBUG=1
       - APP_SETTINGS=fittrackee_api.config.TestingConfig
     depends_on:
-      - mpwo-db
+      - fittrackee-db
     links:
-      - mpwo-db
+      - fittrackee-db
 
-  mpwo-client:
-    container_name: mpwo-client
+  fittrackee-client:
+    container_name: fittrackee-client
     build:
       context: https://github.com/SamR1/mpwo.git
-      dockerfile: ./mpwo_client/Dockerfile
+      dockerfile: ./fittrackee_client/Dockerfile
       args:
         - NODE_ENV=development
         - REACT_APP_API_URL=${REACT_APP_API_URL}
     ports:
     - 3007:3000
     depends_on:
-      - mpwo-api
+      - fittrackee-api
     links:
-      - mpwo-api
+      - fittrackee-api
 
   nginx:
     container_name: nginx
@@ -49,7 +49,7 @@ services:
     ports:
       - 80:80
     depends_on:
-      - mpwo-api
-      - mpwo-client
+      - fittrackee-api
+      - fittrackee-client
     links:
-      - mpwo-api
+      - fittrackee-api

@@ -8,13 +8,13 @@ inspect() {
   fi
 }
 
-docker-compose -f docker-compose-ci.yml run mpwo-api py.test mpwo_api
+docker-compose -f docker-compose-ci.yml run fittrackee-api py.test fittrackee_api
 inspect $? api
 
-docker-compose -f docker-compose-ci.yml run mpwo-api flask db upgrade
-docker-compose -f docker-compose-ci.yml run mpwo-api flask init_data
+docker-compose -f docker-compose-ci.yml run fittrackee-api flask db upgrade
+docker-compose -f docker-compose-ci.yml run fittrackee-api flask init_data
 
-testcafe chrome mpwo_client/e2e
+testcafe chrome fittrackee_client/e2e
 inspect $? e2e
 
 if [ -n "${fails}" ];

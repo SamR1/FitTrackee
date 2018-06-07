@@ -1,5 +1,5 @@
 {
-  "name": "mpwo_client",
+  "name": "fittrackee_client",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -22,11 +22,11 @@
     "redux-thunk": "^2.2.0"
   },
   "scripts": {
-    "start": "cd mpwo_client && react-scripts start",
-    "build": "cd mpwo_client && react-scripts build",
-    "test": "cd mpwo_client && testcafe firefox e2e",
-    "eject": "cd mpwo_client && react-scripts eject",
-    "lint": "eslint --cache --ext .jsx --ext .js mpwo_client/src"
+    "start": "cd fittrackee_client && react-scripts start",
+    "build": "cd fittrackee_client && react-scripts build",
+    "test": "cd fittrackee_client && testcafe firefox e2e",
+    "eject": "cd fittrackee_client && react-scripts eject",
+    "lint": "eslint --cache --ext .jsx --ext .js fittrackee_client/src"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.3",

@@ -28,7 +28,7 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 
 before_script:
-  - export DATABASE_TEST_URL=postgres://postgres:@localhost:5432/mpwo_test
+  - export DATABASE_TEST_URL=postgres://postgres:@localhost:5432/fittrackee_test
   - export APP_SETTINGS=fittrackee_api.config.TestingConfig
   - export REACT_APP_API_URL=http://127.0.0.1
   - export NODE_ENV=development
