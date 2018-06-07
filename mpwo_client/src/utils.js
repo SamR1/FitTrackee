@@ -5,6 +5,15 @@ export const apiUrl = `${process.env.REACT_APP_API_URL}/api/`
 export const thunderforestApiKey = `${
   process.env.REACT_APP_THUNDERFOREST_API_KEY
 }`
+export const activityColors = [
+  '#55a8a3',
+  '#98C3A9',
+  '#D0838A',
+  '#ECC77E',
+  '#926692',
+  '#929292',
+  '#428bca',
+]
 
 export const isLoggedIn = () => !!window.localStorage.authToken
 
@@ -117,9 +126,10 @@ export const formatStats = (stats, sports, startDate, endDate) => {
        day = addDays(day, 7)
   ) {
     const date = format(day, 'YYYY-MM-DD')
-    const dataNbActivities = { date }
-    const dataDistance = { date }
-    const dataDuration = { date }
+    const xAxis = format(day, 'DD/MM')
+    const dataNbActivities = { date: xAxis }
+    const dataDistance = { date: xAxis }
+    const dataDuration = { date: xAxis }
 
     if (stats[date]) {
       Object.keys(stats[date]).map(sportId => {

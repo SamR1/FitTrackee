@@ -6,7 +6,7 @@ import {
 } from 'recharts'
 
 import { getStats } from '../../actions/stats'
-import { formatStats } from '../../utils'
+import { activityColors, formatStats } from '../../utils'
 
 
 class Statistics extends React.Component {
@@ -34,72 +34,79 @@ class Statistics extends React.Component {
     })
   }
 
-
   render() {
     const { sports, statistics } = this.props
     const { displayedData, end, start } = this.state
-    const data = []
     const stats = formatStats(statistics, sports, start, end)
-    const colors = [
-      '#55a8a3',
-      '#98C3A9',
-      '#D0838A',
-      '#ECC77E',
-      '#926692',
-      '#929292'
-    ]
     return (
       <div className="card activity-card">
         <div className="card-header">
           This month
         </div>
-        <div className="card-body chart-month">
-          {data === [] ? (
-            'No activities'
+        <div className="card-body">
+          {Object.keys(statistics).length === 0 ? (
+            'No activities!'
           ) : (
-            <div>
-            <div className="row chart-radio">
-              <label className="radioLabel col">
-                <input
-                  type="radio"
-                  name="distance"
-                  checked={displayedData === 'distance'}
-                  onChange={e => this.handleRadioChange(e)}
-                />
-                distance
-              </label>
-              <label className="radioLabel col">
-                <input
-                  type="radio"
-                  name="duration"
-                  checked={displayedData === 'duration'}
-                  onChange={e => this.handleRadioChange(e)}
-                />
-                duration
-              </label>
-              <label className="radioLabel col">
-                <input
-                  type="radio"
-                  name="activities"
-                  checked={displayedData === 'activities'}
-                  onChange={e => this.handleRadioChange(e)}
-                />
-                activities
-              </label>
-            </div>
+            <div className="chart-month">
+              <div className="row chart-radio">
+                <label className="radioLabel col">
+                  <input
+                    type="radio"
+                    name="distance"
+                    checked={displayedData === 'distance'}
+                    onChange={e => this.handleRadioChange(e)}
+                  />
+                  distance
+                </label>
+                <label className="radioLabel col">
+                  <input
+                    type="radio"
+                    name="duration"
+                    checked={displayedData === 'duration'}
+                    onChange={e => this.handleRadioChange(e)}
+                  />
+                  duration
+                </label>
+                <label className="radioLabel col">
+                  <input
+                    type="radio"
+                    name="activities"
+                    checked={displayedData === 'activities'}
+                    onChange={e => this.handleRadioChange(e)}
+                  />
+                  activities
+                </label>
+              </div>
               <ResponsiveContainer height={300}>
                 <BarChart
                   data={stats[displayedData]}
+                  margin={{ top: 15, bottom: 15 }}
                 >
-                  <XAxis dataKey="date" />
-                  <YAxis />
+                  <XAxis
+                    dataKey="date"
+                    interval={0} // to force to display all ticks
+                    label={{ value: 'date', offset: 0, position: 'bottom' }}
+                  />
+                  <YAxis
+                    tickFormatter={value => displayedData === 'distance'
+                      ? `${value} km`
+                      : displayedData === 'duration'
+                        ? format(new Date(value * 1000), 'HH:mm')
+                        : value
+                    }
+                  />
                   <Tooltip />
                   {sports.map((s, i) => (
                     <Bar
                       key={s.id}
                       dataKey={s.label}
+                      formatter={value => displayedData === 'duration'
+                        ? format(new Date(value * 1000), 'HH:mm')
+                        : value
+                      }
                       stackId="a"
-                      fill={colors[i]}
+                      fill={activityColors[i]}
+                      unit={displayedData === 'distance' ? ' km' : ''}
                     />
                   ))}
                 </BarChart>
