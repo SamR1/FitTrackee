@@ -1,8 +1,8 @@
 import datetime
 
 import jwt
+from fittrackee_api import bcrypt, db
 from flask import current_app
-from mpwo_api import bcrypt, db
 from sqlalchemy import func
 
 from ..activities.models import Activity

@@ -1,8 +1,8 @@
 import shutil
 
-from mpwo_api import create_app, db
-from mpwo_api.activities.models import Sport
-from mpwo_api.users.models import User
+from fittrackee_api import create_app, db
+from fittrackee_api.activities.models import Sport
+from fittrackee_api.users.models import User
 
 app = create_app()
 

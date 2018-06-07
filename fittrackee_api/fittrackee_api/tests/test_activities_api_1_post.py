@@ -2,7 +2,7 @@ import json
 import os
 from io import BytesIO
 
-from mpwo_api.activities.models import Activity
+from fittrackee_api.activities.models import Activity
 
 
 def assert_activity_data_with_gpx(data):

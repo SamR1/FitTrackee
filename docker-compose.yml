@@ -4,7 +4,7 @@ services:
 
   mpwo-db:
     container_name: mpwo-db
-    build: ./mpwo_api/db
+    build: ./fittrackee_api/db
     ports:
       - 5435:5432
     environment:
@@ -13,7 +13,7 @@ services:
 
   mpwo-api:
     container_name: mpwo-api
-    build: ./mpwo_api
+    build: ./fittrackee_api
     ports:
       - 5001:5000
     environment:
@@ -21,7 +21,7 @@ services:
       - DATABASE_TEST_URL=postgres://postgres:postgres@mpwo-db:5432/mpwo_test
       - FLASK_APP=server.py
       - FLASK_DEBUG=1
-      - APP_SETTINGS=mpwo_api.config.DevelopmentConfig
+      - APP_SETTINGS=fittrackee_api.config.DevelopmentConfig
     depends_on:
       - mpwo-db
     links:

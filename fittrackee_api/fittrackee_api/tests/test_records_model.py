@@ -1,6 +1,6 @@
 import datetime
 
-from mpwo_api.activities.models import Record
+from fittrackee_api.activities.models import Record
 
 
 def test_record_model(

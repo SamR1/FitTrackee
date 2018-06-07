@@ -7,10 +7,10 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 # add requirements
-COPY ./requirements.txt /usr/src/app/mpwo_api/requirements.txt
+COPY ./requirements.txt /usr/src/app/fittrackee_api/requirements.txt
 
 # install requirements
-RUN pip install -r mpwo_api/requirements.txt
+RUN pip install -r fittrackee_api/requirements.txt
 
 # add app
 COPY . /usr/src/app

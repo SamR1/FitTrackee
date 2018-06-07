@@ -3,8 +3,8 @@ import os
 import shutil
 from datetime import datetime
 
+from fittrackee_api import appLog, db
 from flask import Blueprint, current_app, jsonify, request, send_file
-from mpwo_api import appLog, db
 from sqlalchemy import exc
 
 from ..users.utils import authenticate, verify_extension

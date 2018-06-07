@@ -5,8 +5,8 @@ import zipfile
 from datetime import datetime, timedelta
 
 import gpxpy.gpx
+from fittrackee_api import db
 from flask import current_app
-from mpwo_api import db
 from sqlalchemy import exc
 from staticmap import Line, StaticMap
 from werkzeug.utils import secure_filename

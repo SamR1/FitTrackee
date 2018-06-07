@@ -1,5 +1,5 @@
+from fittrackee_api import appLog, db
 from flask import Blueprint, jsonify, request
-from mpwo_api import appLog, db
 from sqlalchemy import exc
 
 from ..users.utils import authenticate, authenticate_as_admin

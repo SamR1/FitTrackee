@@ -24,9 +24,9 @@ Maps are displayed using [Open Street Map](https://www.openstreetmap.org).
 **Still under development (not ready for production).**  
 (see [issues](https://github.com/SamR1/mpwo/issues) and [wiki](https://github.com/SamR1/mpwo/wiki) for more informations)  
 
-![mpwo screenshot](docs/images/mpwo_screenshot-01.png)
+![FitTrackee screenshot](docs/images/fittrackee_screenshot-01.png)
 
-![mpwo screenshot](docs/images/mpwo_screenshot-02.png)
+![FitTrackee screenshot](docs/images/fittrackee_screenshot-02.png)
 ---
 
 Notes:  

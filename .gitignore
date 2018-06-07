@@ -6,7 +6,7 @@ Makefile.custom.config
 # MPWO_API
 ###############
 __pycache__
-/mpwo_api/venv/
+/fittrackee_api/venv/
 uploads
 .cache
 .coverage

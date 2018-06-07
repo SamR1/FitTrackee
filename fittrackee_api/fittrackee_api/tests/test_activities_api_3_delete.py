@@ -2,7 +2,7 @@ import json
 import os
 from io import BytesIO
 
-from mpwo_api.activities.models import Activity
+from fittrackee_api.activities.models import Activity
 
 
 def get_gpx_filepath(activity_id):

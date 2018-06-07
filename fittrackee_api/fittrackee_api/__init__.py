@@ -9,7 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 migrate = Migrate()
-appLog = logging.getLogger('mpwo_api')
+appLog = logging.getLogger('fittrackee_api')
 
 
 def create_app():

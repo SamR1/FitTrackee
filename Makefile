@@ -27,7 +27,7 @@ install-python:
 lint-all: lint-python lint-react
 
 lint-python:
-	$(PYTEST) --flake8 --isort -m "flake8 or isort" mpwo_api --ignore=mpwo_api/migrations
+	$(PYTEST) --flake8 --isort -m "flake8 or isort" fittrackee_api --ignore=fittrackee_api/migrations
 
 lint-react:
 	$(NPM) lint
@@ -48,10 +48,10 @@ test-e2e: init-db
 	$(NPM) test
 
 test-python:
-	$(PYTEST) mpwo_api --cov-config .coveragerc --cov=mpwo_api --cov-report term-missing
+	$(PYTEST) fittrackee_api --cov-config .coveragerc --cov=fittrackee_api --cov-report term-missing
 
 test-python-xml:
-	$(PYTEST) mpwo_api --cov-config .coveragerc --cov=mpwo_api --cov-report xml
+	$(PYTEST) fittrackee_api --cov-config .coveragerc --cov=fittrackee_api --cov-report xml
 
 update-cov:	test-python-xml
 	$(COV) -r coverage.xml

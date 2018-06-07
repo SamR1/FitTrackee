@@ -1,6 +1,6 @@
 import json
 
-from mpwo_api.users.models import User
+from fittrackee_api.users.models import User
 
 
 def test_ping(app):

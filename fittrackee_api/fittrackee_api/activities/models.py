@@ -1,7 +1,7 @@
 import datetime
 import os
 
-from mpwo_api import db
+from fittrackee_api import db
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property

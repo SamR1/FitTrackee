@@ -29,7 +29,7 @@ before_install:
 
 before_script:
   - export DATABASE_TEST_URL=postgres://postgres:@localhost:5432/mpwo_test
-  - export APP_SETTINGS=mpwo_api.config.TestingConfig
+  - export APP_SETTINGS=fittrackee_api.config.TestingConfig
   - export REACT_APP_API_URL=http://127.0.0.1
   - export NODE_ENV=development
   - export TEST_URL=http://127.0.0.1

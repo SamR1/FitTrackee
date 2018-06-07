@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
+from fittrackee_api import appLog
 from flask import Blueprint, jsonify, request
-from mpwo_api import appLog
 
 from ..users.models import User
 from ..users.utils import authenticate

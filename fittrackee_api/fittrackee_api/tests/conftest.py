@@ -2,12 +2,12 @@ import datetime
 import os
 
 import pytest
-from mpwo_api import create_app, db
-from mpwo_api.activities.models import Activity, ActivitySegment, Sport
-from mpwo_api.users.models import User
+from fittrackee_api import create_app, db
+from fittrackee_api.activities.models import Activity, ActivitySegment, Sport
+from fittrackee_api.users.models import User
 
 os.environ["FLASK_ENV"] = 'testing'
-os.environ["APP_SETTINGS"] = 'mpwo_api.config.TestingConfig'
+os.environ["APP_SETTINGS"] = 'fittrackee_api.config.TestingConfig'
 
 
 @pytest.fixture

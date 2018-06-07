@@ -1,8 +1,8 @@
 import datetime
 import os
 
+from fittrackee_api import appLog, bcrypt, db
 from flask import Blueprint, current_app, jsonify, request
-from mpwo_api import appLog, bcrypt, db
 from sqlalchemy import exc, or_
 from werkzeug.utils import secure_filename
 
