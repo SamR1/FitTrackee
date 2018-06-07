@@ -6,7 +6,7 @@ export default function ActivitiesList (props) {
   const { activities, sports } = props
   return (
     <div className="card">
-      <div className="card-bord">
+      <div className="card-body">
         <table className="table">
           <thead>
             <tr>

@@ -8,29 +8,14 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm.session import object_session
 from sqlalchemy.types import Enum
 
+from .utils_format import convert_in_duration, convert_value_to_integer
+
 record_types = [
     'AS',  # 'Best Average Speed'
     'FD',  # 'Farthest Distance'
     'LD',  # 'Longest Duration'
     'MS',  # 'Max speed'
 ]
-
-
-def convert_timedelta_to_integer(value):
-    hours, minutes, seconds = str(value).split(':')
-    return int(hours) * 3600 + int(minutes) * 60 + int(seconds)
-
-
-def convert_value_to_integer(record_type, val):
-    if val is None:
-        return None
-
-    if record_type == 'LD':
-        return convert_timedelta_to_integer(val)
-    elif record_type in ['AS', 'MS']:
-        return int(val * 100)
-    else:  # 'FD'
-        return int(val * 1000)
 
 
 def update_records(user_id, sport_id, connection, session):
@@ -161,18 +146,61 @@ class Activity(db.Model):
         self.distance = distance
         self.duration = duration
 
-    def serialize(self):
+    def serialize(self, params=None):
+        date_from = params.get('from') if params else None
+        date_to = params.get('to') if params else None
+        distance_from = params.get('distance_from') if params else None
+        distance_to = params.get('distance_to') if params else None
+        duration_from = params.get('duration_from') if params else None
+        duration_to = params.get('duration_to') if params else None
+        ave_speed_from = params.get('ave_speed_from') if params else None
+        ave_speed_to = params.get('ave_speed_to') if params else None
+        sport_id = params.get('sport_id') if params else None
         previous_activity = Activity.query.filter(
             Activity.id != self.id,
             Activity.user_id == self.user_id,
-            Activity.activity_date <= self.activity_date
+            Activity.sport_id == sport_id if sport_id else True,
+            Activity.activity_date <= self.activity_date,
+            Activity.activity_date >= datetime.datetime.strptime(
+                date_from, '%Y-%m-%d'
+            ) if date_from else True,
+            Activity.activity_date <= datetime.datetime.strptime(
+                date_to, '%Y-%m-%d'
+            ) if date_to else True,
+            Activity.distance >= int(distance_from) if distance_from else True,
+            Activity.distance <= int(distance_to) if distance_to else True,
+            Activity.duration >= convert_in_duration(duration_from)
+            if duration_from else True,
+            Activity.duration <= convert_in_duration(duration_to)
+            if duration_to else True,
+            Activity.ave_speed >= float(ave_speed_from)
+            if ave_speed_from else True,
+            Activity.ave_speed <= float(ave_speed_to)
+            if ave_speed_to else True,
         ).order_by(
             Activity.activity_date.desc()
         ).first()
         next_activity = Activity.query.filter(
             Activity.id != self.id,
             Activity.user_id == self.user_id,
-            Activity.activity_date >= self.activity_date
+            Activity.sport_id == sport_id if sport_id else True,
+            Activity.activity_date >= self.activity_date,
+            Activity.activity_date >= datetime.datetime.strptime(
+                date_from, '%Y-%m-%d'
+            ) if date_from else True,
+            Activity.activity_date <= datetime.datetime.strptime(
+                date_to, '%Y-%m-%d'
+            ) if date_to else True,
+            Activity.distance >= int(distance_from) if distance_from else True,
+            Activity.distance <= int(distance_to) if distance_to else True,
+            Activity.duration >= convert_in_duration(duration_from)
+            if duration_from else True,
+            Activity.duration <= convert_in_duration(duration_to)
+            if duration_to else True,
+            Activity.ave_speed >= float(ave_speed_from)
+            if ave_speed_from else True,
+            Activity.ave_speed <= float(ave_speed_to)
+            if ave_speed_to else True,
         ).order_by(
             Activity.activity_date.asc()
         ).first()

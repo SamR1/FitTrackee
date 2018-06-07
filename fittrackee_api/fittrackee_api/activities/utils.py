@@ -360,9 +360,3 @@ def process_files(auth_user_id, activity_data, activity_file, folders):
         return [process_one_gpx_file(common_params, filename)]
     else:
         return process_zip_archive(common_params, folders['extract_dir'])
-
-
-def convert_in_duration(value):
-    hours = int(value.split(':')[0])
-    minutes = int(value.split(':')[1])
-    return timedelta(seconds=(hours*3600 + minutes*60))

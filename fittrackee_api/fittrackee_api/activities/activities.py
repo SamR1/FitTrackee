@@ -10,9 +10,10 @@ from sqlalchemy import exc
 from ..users.utils import authenticate, verify_extension
 from .models import Activity
 from .utils import (
-    ActivityException, convert_in_duration, create_activity, edit_activity,
-    get_chart_data, process_files
+    ActivityException, create_activity, edit_activity, get_chart_data,
+    process_files
 )
+from .utils_format import convert_in_duration
 
 activities_blueprint = Blueprint('activities', __name__)
 
@@ -62,7 +63,8 @@ def get_activities(auth_user_id):
         response_object = {
             'status': 'success',
             'data': {
-                'activities': [activity.serialize() for activity in activities]
+                'activities': [activity.serialize(params)
+                               for activity in activities]
             }
         }
         code = 200

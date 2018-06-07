@@ -5,7 +5,8 @@ from flask import Blueprint, jsonify, request
 
 from ..users.models import User
 from ..users.utils import authenticate
-from .models import Activity, Sport, convert_timedelta_to_integer
+from .models import Activity, Sport
+from .utils_format import convert_timedelta_to_integer
 
 stats_blueprint = Blueprint('stats', __name__)
 

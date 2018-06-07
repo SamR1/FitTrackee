@@ -54,7 +54,7 @@ function NavBar(props) {
                       pathname: '/activities/add',
                     }}
                   >
-                    Add workout
+                    <strong>Add workout</strong>
                   </Link>
                 </li>
               )}
