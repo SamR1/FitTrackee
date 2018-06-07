@@ -11,7 +11,10 @@ function FormWithoutGpx (props) {
   const { activity, onAddOrEdit, sports } = props
   let activityDate, activityTime, sportId = ''
   if (activity) {
-    const activityDateTime = formatActivityDate(activity.activity_date)
+    const activityDateTime = formatActivityDate(
+      activity.activity_date,
+      'YYYY-MM-DD'
+    )
     activityDate = activityDateTime.activity_date
     activityTime = activityDateTime.activity_time
     sportId = activity.sport_id

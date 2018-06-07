@@ -1,7 +1,7 @@
 import json
 import os
 import shutil
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from fittrackee_api import appLog, db
 from flask import Blueprint, current_app, jsonify, request, send_file
@@ -41,8 +41,9 @@ def get_activities(auth_user_id):
             Activity.sport_id == sport_id if sport_id else True,
             Activity.activity_date >= datetime.strptime(date_from, '%Y-%m-%d')
             if date_from else True,
-            Activity.activity_date <= datetime.strptime(date_to, '%Y-%m-%d')
-            if date_to else True,
+            Activity.activity_date < (
+                datetime.strptime(date_to, '%Y-%m-%d') + timedelta(days=1)
+            ) if date_to else True,
             Activity.distance >= int(distance_from) if distance_from else True,
             Activity.distance <= int(distance_to) if distance_to else True,
             Activity.duration >= convert_in_duration(duration_from)

@@ -3,6 +3,13 @@ import React from 'react'
 
 export default function UserStatistics (props) {
   const { user } = props
+  const days = user.totalDuration.match(/day/g)
+    ? `${user.totalDuration.split(',')[0]},`
+    : '0 days,'
+  let duration = user.totalDuration.match(/day/g)
+    ? user.totalDuration.split(', ')[1]
+    : user.totalDuration
+  duration = `${duration.split(':')[0]}h ${duration.split(':')[1]}min`
   return (
     <div className="row">
       <div className="col">
@@ -26,7 +33,7 @@ export default function UserStatistics (props) {
             </div>
             <div className="col-9 text-right">
               <div className="huge">
-                {Math.round(user.totalDistance * 100) / 100}
+                {Number(user.totalDistance).toFixed(2)}
               </div>
               <div>km</div>
             </div>
@@ -40,8 +47,8 @@ export default function UserStatistics (props) {
               <i className="fa fa-clock-o fa-3x fa-color" />
             </div>
             <div className="col-9 text-right">
-              <div className="huge">{user.totalDuration}</div>
-              <div>total duration</div>
+              <div className="huge">{days}</div>
+              <div>{duration}</div>
             </div>
           </div>
         </div>

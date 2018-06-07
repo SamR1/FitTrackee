@@ -43,8 +43,9 @@ def get_activities(user_id, type):
             Activity.user_id == user_id,
             Activity.activity_date >= datetime.strptime(date_from, '%Y-%m-%d')
             if date_from else True,
-            Activity.activity_date <= datetime.strptime(date_to, '%Y-%m-%d')
-            if date_to else True,
+            Activity.activity_date < (
+                datetime.strptime(date_to, '%Y-%m-%d') + timedelta(days=1)
+            ) if date_to else True,
             Activity.sport_id == sport_id if sport_id else True,
         ).order_by(
             Activity.activity_date.asc()

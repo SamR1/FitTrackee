@@ -135,9 +135,9 @@ export const getMoreActivities = params => dispatch => FitTrackeeGenericApi
   })
   .catch(error => dispatch(setError(`activities: ${error}`)))
 
-export const getMonthActivities = (start, end) => dispatch =>
+export const getMonthActivities = (from, to) => dispatch =>
   FitTrackeeGenericApi
-  .getData('activities', { start, end, order: 'asc', per_page: 100 })
+  .getData('activities', { from, to, order: 'asc', per_page: 100 })
   .then(ret => {
     if (ret.status === 'success') {
       if (ret.data.activities.length > 0) {
@@ -146,8 +146,8 @@ export const getMonthActivities = (start, end) => dispatch =>
             ret.data.activities[i].activity_date
           )
         }
-        dispatch(updateCalendar(ret.data.activities))
       }
+      dispatch(updateCalendar(ret.data.activities))
     } else {
       dispatch(setError(`activities: ${ret.message}`))
     }

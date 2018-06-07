@@ -128,8 +128,8 @@ export default connect(
     loadMonthActivities: (userId, start, end) => {
       const dateFormat = 'YYYY-MM-DD'
       const params = {
-        start: format(start, dateFormat),
-        end: format(end, dateFormat),
+        from: format(start, dateFormat),
+        to: format(end, dateFormat),
         time: 'week'
       }
       dispatch(getStats(userId, 'by_time', params))

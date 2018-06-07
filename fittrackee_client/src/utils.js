@@ -63,11 +63,14 @@ export const getGeoJson = gpxContent => {
   return { jsonData }
 }
 
-export const formatActivityDate = activityDateTime => {
+export const formatActivityDate = (activityDateTime, dateFormat = null) => {
   if (activityDateTime) {
     const dateTime = parse(activityDateTime)
     return {
-      activity_date: format(dateTime, 'DD/MM/YYYY'),
+      activity_date: format(
+        dateTime,
+        dateFormat ? dateFormat : 'DD/MM/YYYY'
+      ),
       activity_time: activityDateTime.match(/[0-2][0-9]:[0-5][0-9]/)[0]
     }
   }

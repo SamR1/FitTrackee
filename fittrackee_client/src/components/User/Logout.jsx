@@ -10,10 +10,19 @@ class Logout extends React.Component {
   }
   render() {
     return (
-      <div>
-        <p className="App-center">
-          You are now logged out.
-          Click <Link to="/login">here</Link> to log back in.</p>
+      <div className="container dashboard">
+        <div className="row">
+          <div className="col-2" />
+          <div className="card col-8">
+            <div className="card-body">
+              <div className="text-center">
+                You are now logged out.
+                Click <Link to="/login">here</Link> to log back in.
+              </div>
+            </div>
+          </div>
+          <div className="col-2" />
+        </div>
       </div>
     )
   }
