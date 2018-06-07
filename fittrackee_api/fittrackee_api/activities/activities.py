@@ -10,8 +10,8 @@ from sqlalchemy import exc
 from ..users.utils import authenticate, verify_extension
 from .models import Activity
 from .utils import (
-    ActivityException, create_activity, edit_activity, get_chart_data,
-    process_files
+    ActivityException, convert_in_duration, create_activity, edit_activity,
+    get_chart_data, process_files
 )
 
 activities_blueprint = Blueprint('activities', __name__)
@@ -26,6 +26,12 @@ def get_activities(auth_user_id):
         page = 1 if 'page' not in params.keys() else int(params.get('page'))
         date_from = params.get('from')
         date_to = params.get('to')
+        distance_from = params.get('distance_from')
+        distance_to = params.get('distance_to')
+        duration_from = params.get('duration_from')
+        duration_to = params.get('duration_to')
+        ave_speed_from = params.get('ave_speed_from')
+        ave_speed_to = params.get('ave_speed_to')
         order = params.get('order')
         per_page = int(params.get('per_page')) if params.get('per_page') else 5
         activities = Activity.query.filter(
@@ -34,6 +40,16 @@ def get_activities(auth_user_id):
             if date_from else True,
             Activity.activity_date <= datetime.strptime(date_to, '%Y-%m-%d')
             if date_to else True,
+            Activity.distance >= int(distance_from) if distance_from else True,
+            Activity.distance <= int(distance_to) if distance_to else True,
+            Activity.duration >= convert_in_duration(duration_from)
+            if duration_from else True,
+            Activity.duration <= convert_in_duration(duration_to)
+            if duration_to else True,
+            Activity.ave_speed >= float(ave_speed_from)
+            if ave_speed_from else True,
+            Activity.ave_speed <= float(ave_speed_to)
+            if ave_speed_to else True,
         ).order_by(
             Activity.activity_date.asc()
             if order == 'asc'

@@ -8,17 +8,8 @@ export default class FitTrackeeApi {
     if (data.id) {
       url = `${url}/${data.id}`
     } else if (Object.keys(data).length > 0) {
-      url = `${url}?${
-        data.page ? `&page=${data.page}` : ''
-      }${
-        data.start ? `&from=${data.start}` : ''
-      }${
-        data.end ? `&to=${data.end}` : ''
-      }${
-        data.order ? `&order=${data.order}` : ''
-      }${
-        data.per_page ? `&per_page=${data.per_page}` : ''
-      }`
+      url += '?'
+      Object.keys(data).map(key => url += `&${key}=${data[key]}`)
     }
     const params = {
       url: url,
