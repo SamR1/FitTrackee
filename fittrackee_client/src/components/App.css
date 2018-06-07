@@ -71,6 +71,14 @@ input, textarea {
   font-size: 0.75em;
 }
 
+.activity-filter {
+  font-size: 0.9em;
+}
+
+.activity-filter .col-2, .col-5{
+  padding: 0;
+}
+
 .activity-page {
   margin-top: 20px;
 }

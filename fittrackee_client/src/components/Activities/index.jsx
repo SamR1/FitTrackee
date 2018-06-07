@@ -2,6 +2,7 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 
+import ActivitiesFilter from './ActivitiesFilter'
 import ActivitiesList from './ActivitiesList'
 import { getData } from '../../actions'
 import { getMoreActivities } from '../../actions/activities'
@@ -35,7 +36,11 @@ class Activities extends React.Component {
         ) : (
           <div className="container history">
             <div className="row">
-              <div className="col-md-3" />
+              <div className="col-md-3">
+                <ActivitiesFilter
+                  sports={sports}
+                />
+              </div>
               <div className="col-md-9">
                 <ActivitiesList
                   activities={activities}

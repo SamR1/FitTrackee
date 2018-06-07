@@ -36,10 +36,12 @@ export default function ActivitiesList (props) {
                     {activity.title}
                   </Link>
                   </td>
-                <td >{format(activity.activity_date, 'DD/MM/YYYY HH:mm')}</td>
-                <td >{activity.distance} km</td>
-                <td >{activity.duration}</td>
-                <td >{activity.ave_speed} km/h</td>
+                <td>{format(activity.activity_date, 'DD/MM/YYYY HH:mm')}</td>
+                <td className="text-right">
+                  {Number(activity.distance).toFixed(2)} km
+                </td>
+                <td className="text-right">{activity.duration}</td>
+                <td className="text-right">{activity.ave_speed} km/h</td>
               </tr>
             ))}
           </tbody>
