@@ -101,7 +101,7 @@ export default connect(
       dispatch(getData('records'))
     },
     loadMoreActivities: page => {
-      dispatch(getMoreActivities(page))
+      dispatch(getMoreActivities({ page }))
     },
   })
 )(DashBoard)

@@ -3,7 +3,8 @@ import { Redirect, Route, Switch } from 'react-router-dom'
 
 import './App.css'
 import Admin from './Admin'
-import Activity from './Activity/index'
+import Activity from './Activity'
+import Activities from './Activities'
 import Dashboard from './Dashboard'
 import Logout from './User/Logout'
 import NavBar from './NavBar'
@@ -83,6 +84,10 @@ export default class App extends React.Component {
                 />
               )
             )}
+          />
+          <Route
+            exact path="/activities/history"
+            component={Activities}
           />
           <Route path="/activities" component={Activity} />
           <Route path="/admin" component={Admin} />

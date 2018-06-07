@@ -122,8 +122,8 @@ export const editActivity = form => dispatch => FitTrackeeGenericApi
   .catch(error => dispatch(setError(`activities: ${error}`)))
 
 
-export const getMoreActivities = page => dispatch => FitTrackeeGenericApi
-  .getData('activities', { page })
+export const getMoreActivities = params => dispatch => FitTrackeeGenericApi
+  .getData('activities', params)
   .then(ret => {
     if (ret.status === 'success') {
       if (ret.data.activities.length > 0) {

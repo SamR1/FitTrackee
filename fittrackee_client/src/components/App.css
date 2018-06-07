@@ -164,7 +164,7 @@ input, textarea {
   margin-right: 5px;
 }
 
-.dashboard {
+.dashboard, .history {
   margin-top: 30px;
 }
 
