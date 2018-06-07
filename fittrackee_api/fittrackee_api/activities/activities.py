@@ -33,9 +33,11 @@ def get_activities(auth_user_id):
         ave_speed_from = params.get('ave_speed_from')
         ave_speed_to = params.get('ave_speed_to')
         order = params.get('order')
+        sport_id = params.get('sport_id')
         per_page = int(params.get('per_page')) if params.get('per_page') else 5
         activities = Activity.query.filter(
             Activity.user_id == auth_user_id,
+            Activity.sport_id == sport_id if sport_id else True,
             Activity.activity_date >= datetime.strptime(date_from, '%Y-%m-%d')
             if date_from else True,
             Activity.activity_date <= datetime.strptime(date_to, '%Y-%m-%d')

@@ -12,17 +12,32 @@ class Activities extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      page: 1,
+      params: {
+        page: 1,
+        per_page: 10,
+      },
     }
   }
 
   componentDidMount() {
-    this.props.loadActivities()
+    this.props.loadActivities(this.state.params)
   }
 
+  setParams(e) {
+    const { params } = this.state
+    if (e.target.value === '') {
+      delete params[e.target.name]
+    } else {
+      params[e.target.name] = e.target.value
+    }
+    params.page = 1
+    this.setState(params)
+  }
   render() {
-    const { activities, loadMoreActivities, message, sports } = this.props
-    const { page } = this.state
+    const {
+      activities, loadActivities, loadMoreActivities, message, sports
+    } = this.props
+    const { params } = this.state
     const paginationEnd = activities.length > 0
       ? activities[activities.length - 1].previous_activity === null
       : true
@@ -39,6 +54,8 @@ class Activities extends React.Component {
               <div className="col-md-3">
                 <ActivitiesFilter
                   sports={sports}
+                  loadActivities={() => loadActivities(params)}
+                  updateParams={e => this.setParams(e)}
                 />
               </div>
               <div className="col-md-9">
@@ -52,8 +69,9 @@ class Activities extends React.Component {
                     className="btn btn-default btn-md btn-block"
                     value="Load more activities"
                     onClick={() => {
-                      loadMoreActivities(page + 1)
-                      this.setState({ page: page + 1 })
+                      params.page += 1
+                      loadMoreActivities(params)
+                      this.setState(params)
                     }}
                   />
                 }
@@ -73,12 +91,11 @@ export default connect(
     sports: state.sports.data,
   }),
   dispatch => ({
-    loadActivities: () => {
-      dispatch(getData('activities', { page: 1, per_page: 10 }))
-      dispatch(getData('records'))
+    loadActivities: params => {
+      dispatch(getData('activities', params))
     },
-    loadMoreActivities: page => {
-      dispatch(getMoreActivities({ page, per_page: 10 }))
+    loadMoreActivities: params => {
+      dispatch(getMoreActivities(params))
     },
   })
 )(Activities)

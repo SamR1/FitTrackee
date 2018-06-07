@@ -1,7 +1,7 @@
 import React from 'react'
 
 export default function ActivitiesList (props) {
-  const { sports } = props
+  const { loadActivities, sports, updateParams } = props
   return (
     <div className="card">
       <div className="card-body activity-filter">
@@ -10,16 +10,18 @@ export default function ActivitiesList (props) {
             <label>
               From:
               <input
-                name="start"
                 className="form-control col-md"
+                name="from"
+                onChange={e => updateParams(e)}
                 type="date"
               />
             </label>
             <label>
               To:
               <input
-                name="end"
                 className="form-control col-md"
+                name="to"
+                onChange={e => updateParams(e)}
                 type="date"
               />
             </label>
@@ -30,6 +32,7 @@ export default function ActivitiesList (props) {
               <select
                 className="form-control input-lg"
                 name="sport_id"
+                onChange={e => updateParams(e)}
               >
                 <option value="" />
                 {sports.map(sport => (
@@ -47,9 +50,10 @@ export default function ActivitiesList (props) {
                 <div className="row">
                   <div className="col-5">
                     <input
-                      name="distance-from"
                       className="form-control"
                       min={0}
+                      name="distance_from"
+                      onChange={e => updateParams(e)}
                       step="1"
                       type="number"
                     />
@@ -57,9 +61,10 @@ export default function ActivitiesList (props) {
                   <div className="col-2 align-middle text-center">to</div>
                   <div className="col-5">
                     <input
-                      name="distance-to"
                       className="form-control"
                       min={0}
+                      name="distance_to"
+                      onChange={e => updateParams(e)}
                       step="1"
                       type="number"
                     />
@@ -75,8 +80,9 @@ export default function ActivitiesList (props) {
                 <div className="row">
                   <div className="col-5">
                     <input
-                      name="duration-from"
                       className="form-control"
+                      name="duration_from"
+                      onChange={e => updateParams(e)}
                       pattern="^([0-9]*[0-9]):([0-5][0-9])$"
                       placeholder="hh:mm"
                       type="text"
@@ -85,8 +91,9 @@ export default function ActivitiesList (props) {
                   <div className="col-2 align-middle text-center">to</div>
                   <div className="col-5">
                     <input
-                      name="duration-to"
                       className="form-control"
+                      name="duration_to"
+                      onChange={e => updateParams(e)}
                       pattern="^([0-9]*[0-9]):([0-5][0-9])$"
                       placeholder="hh:mm"
                       type="text"
@@ -103,9 +110,10 @@ export default function ActivitiesList (props) {
                 <div className="row">
                   <div className="col-5">
                     <input
-                      name="speed-from"
                       className="form-control"
                       min={0}
+                      name="ave_speed_from"
+                      onChange={e => updateParams(e)}
                       step="1"
                       type="number"
                     />
@@ -113,9 +121,10 @@ export default function ActivitiesList (props) {
                   <div className="col-2 align-middle text-center">to</div>
                   <div className="col-5">
                     <input
-                      name="speed-to"
                       className="form-control"
                       min={0}
+                      name="ave_speed_to"
+                      onChange={e => updateParams(e)}
                       step="1"
                       type="number"
                     />
@@ -125,8 +134,9 @@ export default function ActivitiesList (props) {
             </label>
           </div>
           <input
-            type="submit"
             className="btn btn-primary btn-lg btn-block"
+            onClick={() => loadActivities()}
+            type="submit"
             value="Filter"
           />
         </form>
