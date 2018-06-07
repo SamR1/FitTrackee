@@ -3,7 +3,7 @@ import { Redirect, Route, Switch } from 'react-router-dom'
 
 import './App.css'
 import Admin from './Admin'
-import Activity from './Activities/index'
+import Activity from './Activity/index'
 import Dashboard from './Dashboard'
 import Logout from './User/Logout'
 import NavBar from './NavBar'

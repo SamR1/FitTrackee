@@ -13,7 +13,7 @@ export default function UserStatistics (props) {
             </div>
             <div className="col-9 text-right">
               <div className="huge">{user.nbActivities}</div>
-              <div>{user.nbActivities === 1 ? 'activity' : 'activities'}</div>
+              <div>{`workout${user.nbActivities !== 1 && 's'}`}</div>
             </div>
           </div>
         </div>

@@ -45,7 +45,7 @@ class Statistics extends React.Component {
         </div>
         <div className="card-body">
           {Object.keys(statistics).length === 0 ? (
-            'No activities!'
+            'No workouts'
           ) : (
             <div className="chart-month">
               <div className="row chart-radio">
