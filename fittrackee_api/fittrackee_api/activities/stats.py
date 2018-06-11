@@ -6,6 +6,7 @@ from flask import Blueprint, jsonify, request
 from ..users.models import User
 from ..users.utils import authenticate
 from .models import Activity, Sport
+from .utils import get_datetime_with_tz
 from .utils_format import convert_timedelta_to_integer
 
 stats_blueprint = Blueprint('stats', __name__)
@@ -23,7 +24,14 @@ def get_activities(user_id, type):
 
         params = request.args.copy()
         date_from = params.get('from')
+        if date_from:
+            date_from = datetime.strptime(date_from, '%Y-%m-%d')
+            _, date_from = get_datetime_with_tz(user_id, date_from)
         date_to = params.get('to')
+        if date_to:
+            date_to = datetime.strptime(f'{date_to} 23:59:59',
+                                        '%Y-%m-%d %H:%M:%S')
+            _, date_to = get_datetime_with_tz(user_id, date_to)
         sport_id = params.get('sport_id')
         time = params.get('time')
 
@@ -41,11 +49,9 @@ def get_activities(user_id, type):
 
         activities = Activity.query.filter(
             Activity.user_id == user_id,
-            Activity.activity_date >= datetime.strptime(date_from, '%Y-%m-%d')
-            if date_from else True,
-            Activity.activity_date < (
-                datetime.strptime(date_to, '%Y-%m-%d') + timedelta(days=1)
-            ) if date_to else True,
+            Activity.activity_date >= date_from if date_from else True,
+            Activity.activity_date < date_to + timedelta(seconds=1)
+            if date_to else True,
             Activity.sport_id == sport_id if sport_id else True,
         ).order_by(
             Activity.activity_date.asc()

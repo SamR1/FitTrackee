@@ -117,7 +117,7 @@ export const formatRecord = (record, tz) => {
   }
 }
 
-const formatDuration = seconds => {
+export const formatDuration = seconds => {
     let newDate = new Date(0)
     newDate = subHours(newDate.setSeconds(seconds), 1)
     return newDate.getTime()

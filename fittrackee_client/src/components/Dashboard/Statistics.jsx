@@ -6,7 +6,7 @@ import {
 } from 'recharts'
 
 import { getStats } from '../../actions/stats'
-import { activityColors, formatStats } from '../../utils'
+import { activityColors, formatDuration, formatStats } from '../../utils'
 
 
 class Statistics extends React.Component {
@@ -90,7 +90,7 @@ class Statistics extends React.Component {
                     tickFormatter={value => displayedData === 'distance'
                       ? `${value} km`
                       : displayedData === 'duration'
-                        ? format(new Date(value * 1000), 'HH:mm')
+                        ? format(formatDuration(value), 'HH:mm')
                         : value
                     }
                   />
@@ -100,7 +100,7 @@ class Statistics extends React.Component {
                       key={s.id}
                       dataKey={s.label}
                       formatter={value => displayedData === 'duration'
-                        ? format(new Date(value * 1000), 'HH:mm')
+                        ? format(formatDuration(value), 'HH:mm')
                         : value
                       }
                       stackId="a"

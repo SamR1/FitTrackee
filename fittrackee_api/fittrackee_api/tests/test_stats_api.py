@@ -207,6 +207,51 @@ def test_get_stats_by_time_all_activities_april_2018(
         }
 
 
+def test_get_stats_by_time_all_activities_april_2018_paris(
+    app, user_1_paris, sport_1_cycling, sport_2_running,
+    seven_activities_user_1, activity_running_user_1
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        f'/api/stats/{user_1_paris.id}/by_time?from=2018-04-01&to=2018-04-30',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert data['data']['statistics'] == \
+        {
+            '2018':
+                {
+                    '1':
+                        {
+                            'nb_activities': 1,
+                            'total_distance': 8.0,
+                            'total_duration': 6000
+                        },
+                    '2':
+                        {
+                            'nb_activities': 1,
+                            'total_distance': 12.0,
+                            'total_duration': 6000
+                        }
+                }
+        }
+
+
 def test_get_stats_by_year_all_activities(
     app, user_1, sport_1_cycling, sport_2_running,
     seven_activities_user_1, activity_running_user_1
@@ -306,6 +351,51 @@ def test_get_stats_by_year_all_activities_april_2018(
         }
 
 
+def test_get_stats_by_year_all_activities_april_2018_paris(
+    app, user_1_paris, sport_1_cycling, sport_2_running,
+    seven_activities_user_1, activity_running_user_1
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        f'/api/stats/{user_1_paris.id}/by_time?from=2018-04-01&to=2018-04-30&time=year',  # noqa
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert data['data']['statistics'] == \
+        {
+            '2018':
+                {
+                    '1':
+                        {
+                            'nb_activities': 1,
+                            'total_distance': 8.0,
+                            'total_duration': 6000
+                        },
+                    '2':
+                        {
+                            'nb_activities': 1,
+                            'total_distance': 12.0,
+                            'total_duration': 6000
+                        }
+                }
+        }
+
+
 def test_get_stats_by_month_all_activities(
     app, user_1, sport_1_cycling, sport_2_running,
     seven_activities_user_1, activity_running_user_1
@@ -321,6 +411,96 @@ def test_get_stats_by_month_all_activities(
     )
     response = client.get(
         f'/api/stats/{user_1.id}/by_time?time=month',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert data['data']['statistics'] == \
+        {
+            '2017-03':
+                {
+                    '1':
+                        {
+                            'nb_activities': 1,
+                            'total_distance': 5.0,
+                            'total_duration': 1024
+                        }
+                },
+            '2017-06':
+                {
+                    '1':
+                        {
+                            'nb_activities': 1,
+                            'total_distance': 10.0,
+                            'total_duration': 3456
+                        }
+                },
+            '2018-01':
+                {
+                    '1':
+                        {
+                            'nb_activities': 1,
+                            'total_distance': 10.0,
+                            'total_duration': 1024
+                        }
+                },
+            '2018-02':
+                {
+                    '1':
+                        {
+                            'nb_activities': 2,
+                            'total_distance': 11.0,
+                            'total_duration': 1600
+                        }
+                },
+            '2018-04':
+                {
+                    '1':
+                        {
+                            'nb_activities': 1,
+                            'total_distance': 8.0,
+                            'total_duration': 6000
+                        },
+                    '2':
+                        {
+                            'nb_activities': 1,
+                            'total_distance': 12.0,
+                            'total_duration': 6000
+                        }
+                },
+            '2018-05':
+                {
+                    '1':
+                        {
+                            'nb_activities': 1,
+                            'total_distance': 10.0,
+                            'total_duration': 3000
+                        }
+                }
+        }
+
+
+def test_get_stats_by_month_all_activities_new_york(
+    app, user_1_full, sport_1_cycling, sport_2_running,
+    seven_activities_user_1, activity_running_user_1
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        f'/api/stats/{user_1_full.id}/by_time?time=month',
         headers=dict(
             Authorization='Bearer ' + json.loads(
                 resp_login.data.decode()
@@ -442,7 +622,7 @@ def test_get_stats_by_month_all_activities_april_2018(
 
 
 def test_get_stats_by_week_all_activities(
-    app, user_1, sport_1_cycling, sport_2_running,
+    app, user_1_full, sport_1_cycling, sport_2_running,
     seven_activities_user_1, activity_running_user_1
 ):
     client = app.test_client()
@@ -455,7 +635,7 @@ def test_get_stats_by_week_all_activities(
         content_type='application/json'
     )
     response = client.get(
-        f'/api/stats/{user_1.id}/by_time?time=week',
+        f'/api/stats/{user_1_full.id}/by_time?time=week',
         headers=dict(
             Authorization='Bearer ' + json.loads(
                 resp_login.data.decode()
