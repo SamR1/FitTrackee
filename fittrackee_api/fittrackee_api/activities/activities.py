@@ -300,7 +300,7 @@ def update_activity(auth_user_id, activity_id):
     try:
         activity = Activity.query.filter_by(id=activity_id).first()
         if activity:
-            activity = edit_activity(activity, activity_data)
+            activity = edit_activity(activity, activity_data, auth_user_id)
             db.session.commit()
             response_object = {
                 'status': 'success',

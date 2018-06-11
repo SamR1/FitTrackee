@@ -569,6 +569,49 @@ def test_get_an_activity_wo_gpx(app, user_1, sport_1_cycling):
     assert_activity_data_wo_gpx(data)
 
 
+def test_get_an_activity_wo_gpx_with_timezone(app, user_1, sport_1_cycling):
+    user_1.timezone = 'Europe/Paris'
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    client.post(
+        '/api/activities/no_gpx',
+        content_type='application/json',
+        data=json.dumps(dict(
+            sport_id=1,
+            duration=3600,
+            activity_date='2018-05-15 14:05',
+            distance=10
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    response = client.get(
+        '/api/activities/1',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['activities']) == 1
+    assert data['data']['activities'][0]['activity_date'] == 'Tue, 15 May 2018 12:05:00 GMT'  # noqa
+    assert data['data']['activities'][0]['title'] == 'Cycling - 2018-05-15 14:05:00'  # noqa
+
+
 def test_add_an_activity_no_gpx_invalid_payload(app, user_1, sport_1_cycling):
     client = app.test_client()
     resp_login = client.post(

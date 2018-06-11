@@ -5,12 +5,14 @@ import zipfile
 from datetime import datetime, timedelta
 
 import gpxpy.gpx
+import pytz
 from fittrackee_api import db
 from flask import current_app
 from sqlalchemy import exc
 from staticmap import Line, StaticMap
 from werkzeug.utils import secure_filename
 
+from ..users.models import User
 from .models import Activity, ActivitySegment, Sport
 
 
@@ -37,8 +39,20 @@ def update_activity_data(activity, gpx_data):
 def create_activity(
         auth_user_id, activity_data, gpx_data=None
 ):
+    user = User.query.filter_by(id=auth_user_id).first()
+
     activity_date = gpx_data['start'] if gpx_data else datetime.strptime(
         activity_data.get('activity_date'), '%Y-%m-%d %H:%M')
+    activity_date_tz = None
+    # activity date in gpx are directly in UTC
+    if user.timezone and not gpx_data:
+        user_tz = pytz.timezone(user.timezone)
+        activity_date_tz = user_tz.localize(activity_date)
+        if not gpx_data:
+            # make datetime 'naive' like in gpx file
+            activity_date = activity_date_tz.astimezone(pytz.utc)
+            activity_date = activity_date.replace(tzinfo=None)
+
     duration = gpx_data['duration'] if gpx_data \
         else timedelta(seconds=activity_data.get('duration'))
     distance = gpx_data['distance'] if gpx_data \
@@ -58,7 +72,12 @@ def create_activity(
         new_activity.title = title
     else:
         sport = Sport.query.filter_by(id=new_activity.sport_id).first()
-        new_activity.title = f'{sport.label} - {new_activity.activity_date}'
+        fmt = "%Y-%m-%d %H:%M:%S"
+        activity_datetime = (
+            activity_date_tz.strftime(fmt)
+            if activity_date_tz
+            else new_activity.activity_date.strftime(fmt))
+        new_activity.title = f'{sport.label} - {activity_datetime}'
 
     if gpx_data:
         new_activity.gpx = gpx_data['filename']
@@ -85,15 +104,23 @@ def create_segment(activity_id, segment_data):
     return new_segment
 
 
-def edit_activity(activity, activity_data):
+def edit_activity(activity, activity_data, auth_user_id):
     if activity_data.get('sport_id'):
         activity.sport_id = activity_data.get('sport_id')
     if activity_data.get('title'):
         activity.title = activity_data.get('title')
     if not activity.gpx:
         if activity_data.get('activity_date'):
-            activity.activity_date = datetime.strptime(
+            activity_date = datetime.strptime(
                 activity_data.get('activity_date'), '%Y-%m-%d %H:%M')
+            user = User.query.filter_by(id=auth_user_id).first()
+            if user.timezone:
+                # make datetime 'naive' like in gpx file
+                user_tz = pytz.timezone(user.timezone)
+                activity_date_tz = user_tz.localize(activity_date)
+                activity_date = activity_date_tz.astimezone(pytz.utc)
+                activity_date = activity_date.replace(tzinfo=None)
+            activity.activity_date = activity_date
         if activity_data.get('duration'):
             activity.duration = timedelta(
                 seconds=activity_data.get('duration'))

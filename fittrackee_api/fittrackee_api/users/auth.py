@@ -59,6 +59,7 @@ def register_user():
                 email=email,
                 password=password
             )
+            new_user.timezone = 'Europe/Paris'
             db.session.add(new_user)
             db.session.commit()
             # generate auth token
