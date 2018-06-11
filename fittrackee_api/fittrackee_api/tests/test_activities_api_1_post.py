@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import datetime
 from io import BytesIO
 
 from fittrackee_api.activities.models import Activity
@@ -610,6 +611,131 @@ def test_get_an_activity_wo_gpx_with_timezone(app, user_1, sport_1_cycling):
     assert len(data['data']['activities']) == 1
     assert data['data']['activities'][0]['activity_date'] == 'Tue, 15 May 2018 12:05:00 GMT'  # noqa
     assert data['data']['activities'][0]['title'] == 'Cycling - 2018-05-15 14:05:00'  # noqa
+
+
+def test_get_activities_date_filter_with_timezone_new_york(
+        app, user_1_full, sport_1_cycling
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    client.post(
+        '/api/activities/no_gpx',
+        content_type='application/json',
+        data=json.dumps(dict(
+            sport_id=1,
+            duration=3600,
+            activity_date='2018-01-01 00:00',
+            distance=10
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    response = client.get(
+        '/api/activities?from=2018-01-01&to=2018-01-31',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['activities']) == 1
+    assert 'Mon, 01 Jan 2018 05:00:00 GMT' == data['data']['activities'][0]['activity_date']  # noqa
+    assert 'Cycling - 2018-01-01 00:00:00' == data['data']['activities'][0]['title']  # noqa
+
+
+def test_get_activities_date_filter_with_timezone_paris(
+        app, user_1_paris, sport_1_cycling, activity_cycling_user_1
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    client.post(
+        '/api/activities/no_gpx',
+        content_type='application/json',
+        data=json.dumps(dict(
+            sport_id=1,
+            duration=3600,
+            activity_date='2017-31-12 23:59',
+            distance=10
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    client.post(
+        '/api/activities/no_gpx',
+        content_type='application/json',
+        data=json.dumps(dict(
+            sport_id=1,
+            duration=3600,
+            activity_date='2018-01-01 00:00',
+            distance=10
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+
+    activity_cycling_user_1.activity_date = datetime.strptime(
+        '31/01/2018 21:59:59', '%d/%m/%Y %H:%M:%S')
+    activity_cycling_user_1.title = 'Test'
+
+    client.post(
+        '/api/activities/no_gpx',
+        content_type='application/json',
+        data=json.dumps(dict(
+            sport_id=1,
+            duration=3600,
+            activity_date='2018-02-01 00:00',
+            distance=10
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    response = client.get(
+        '/api/activities?from=2018-01-01&to=2018-01-31',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['activities']) == 2
+    assert 'Wed, 31 Jan 2018 21:59:59 GMT' == data['data']['activities'][0]['activity_date']  # noqa
+    assert 'Test' == data['data']['activities'][0]['title']
+    assert 'Sun, 31 Dec 2017 23:00:00 GMT' == data['data']['activities'][1]['activity_date']  # noqa
+    assert 'Cycling - 2018-01-01 00:00:00' == data['data']['activities'][1]['title']  # noqa
 
 
 def test_add_an_activity_no_gpx_invalid_payload(app, user_1, sport_1_cycling):

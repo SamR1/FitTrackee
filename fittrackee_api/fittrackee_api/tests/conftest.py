@@ -57,6 +57,15 @@ def user_1_full():
 
 
 @pytest.fixture()
+def user_1_paris():
+    user = User(username='test', email='test@test.com', password='12345678')
+    user.timezone = 'Europe/Paris'
+    db.session.add(user)
+    db.session.commit()
+    return user
+
+
+@pytest.fixture()
 def user_2():
     user = User(username='toto', email='toto@toto.com', password='87654321')
     db.session.add(user)

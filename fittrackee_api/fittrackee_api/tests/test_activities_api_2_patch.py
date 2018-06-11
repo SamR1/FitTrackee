@@ -363,10 +363,9 @@ def test_edit_an_activity_wo_gpx(
 
 
 def test_edit_an_activity_wo_gpx_timezone(
-    app, user_1, sport_1_cycling, sport_2_running
+    app, user_1_paris, sport_1_cycling, sport_2_running
 ):
     client = app.test_client()
-    user_1.timezone = 'Europe/Paris'
     resp_login = client.post(
         '/api/auth/login',
         data=json.dumps(dict(

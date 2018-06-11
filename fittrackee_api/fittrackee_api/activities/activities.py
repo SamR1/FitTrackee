@@ -11,7 +11,7 @@ from ..users.utils import authenticate, verify_extension
 from .models import Activity
 from .utils import (
     ActivityException, create_activity, edit_activity, get_chart_data,
-    process_files
+    get_datetime_with_tz, process_files
 )
 from .utils_format import convert_in_duration
 
@@ -26,7 +26,14 @@ def get_activities(auth_user_id):
         params = request.args.copy()
         page = 1 if 'page' not in params.keys() else int(params.get('page'))
         date_from = params.get('from')
+        if date_from:
+            date_from = datetime.strptime(date_from, '%Y-%m-%d')
+            _, date_from = get_datetime_with_tz(auth_user_id, date_from)
         date_to = params.get('to')
+        if date_to:
+            date_to = datetime.strptime(f'{date_to} 23:59:59',
+                                        '%Y-%m-%d %H:%M:%S')
+            _, date_to = get_datetime_with_tz(auth_user_id, date_to)
         distance_from = params.get('distance_from')
         distance_to = params.get('distance_to')
         duration_from = params.get('duration_from')
@@ -39,11 +46,9 @@ def get_activities(auth_user_id):
         activities = Activity.query.filter(
             Activity.user_id == auth_user_id,
             Activity.sport_id == sport_id if sport_id else True,
-            Activity.activity_date >= datetime.strptime(date_from, '%Y-%m-%d')
-            if date_from else True,
-            Activity.activity_date < (
-                datetime.strptime(date_to, '%Y-%m-%d') + timedelta(days=1)
-            ) if date_to else True,
+            Activity.activity_date >= date_from if date_from else True,
+            Activity.activity_date < date_to + timedelta(seconds=1)
+            if date_to else True,
             Activity.distance >= int(distance_from) if distance_from else True,
             Activity.distance <= int(distance_to) if distance_to else True,
             Activity.duration >= convert_in_duration(duration_from)
