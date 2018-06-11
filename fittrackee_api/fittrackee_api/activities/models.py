@@ -155,6 +155,8 @@ class Activity(db.Model):
         duration_to = params.get('duration_to') if params else None
         ave_speed_from = params.get('ave_speed_from') if params else None
         ave_speed_to = params.get('ave_speed_to') if params else None
+        max_speed_from = params.get('max_speed_from') if params else None
+        max_speed_to = params.get('max_speed_to') if params else None
         sport_id = params.get('sport_id') if params else None
         previous_activity = Activity.query.filter(
             Activity.id != self.id,
@@ -177,6 +179,10 @@ class Activity(db.Model):
             if ave_speed_from else True,
             Activity.ave_speed <= float(ave_speed_to)
             if ave_speed_to else True,
+            Activity.max_speed >= float(max_speed_from)
+            if max_speed_from else True,
+            Activity.max_speed <= float(max_speed_to)
+            if max_speed_to else True,
         ).order_by(
             Activity.activity_date.desc()
         ).first()

@@ -41,6 +41,8 @@ def get_activities(auth_user_id):
         duration_to = params.get('duration_to')
         ave_speed_from = params.get('ave_speed_from')
         ave_speed_to = params.get('ave_speed_to')
+        max_speed_from = params.get('max_speed_from')
+        max_speed_to = params.get('max_speed_to')
         order = params.get('order')
         sport_id = params.get('sport_id')
         per_page = int(params.get('per_page')) if params.get('per_page') else 5
@@ -60,6 +62,10 @@ def get_activities(auth_user_id):
             if ave_speed_from else True,
             Activity.ave_speed <= float(ave_speed_to)
             if ave_speed_to else True,
+            Activity.max_speed >= float(max_speed_from)
+            if max_speed_from else True,
+            Activity.max_speed <= float(max_speed_to)
+            if max_speed_to else True,
         ).order_by(
             Activity.activity_date.asc()
             if order == 'asc'

@@ -7,7 +7,7 @@ import { getDateWithTZ } from '../../utils'
 export default function ActivitiesList (props) {
   const { activities, sports, user } = props
   return (
-    <div className="card">
+    <div className="card  activity-card">
       <div className="card-body">
         <table className="table">
           <thead>
@@ -18,6 +18,7 @@ export default function ActivitiesList (props) {
               <th scope="col">Distance</th>
               <th scope="col">Duration</th>
               <th scope="col">Ave. speed</th>
+              <th scope="col">Max. speed</th>
             </tr>
           </thead>
           <tbody>
@@ -49,6 +50,7 @@ export default function ActivitiesList (props) {
                 </td>
                 <td className="text-right">{activity.duration}</td>
                 <td className="text-right">{activity.ave_speed} km/h</td>
+                <td className="text-right">{activity.max_speed} km/h</td>
               </tr>
             ))}
           </tbody>

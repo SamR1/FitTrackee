@@ -59,7 +59,7 @@ class Activities extends React.Component {
                   updateParams={e => this.setParams(e)}
                 />
               </div>
-              <div className="col-md-9">
+              <div className="col-md-9 activities-result">
                 <ActivitiesList
                   activities={activities}
                   sports={sports}

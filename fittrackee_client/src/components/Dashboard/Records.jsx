@@ -48,10 +48,10 @@ export default function RecordsCard (props) {
                     <td>
                       {rec.record_type}
                     </td>
-                    <td>
+                    <td className="text-right">
                      {rec.value}
                     </td>
-                    <td>
+                    <td className="text-right">
                       <Link to={`/activities/${rec.activity_id}`}>
                         {rec.activity_date}
                       </Link>

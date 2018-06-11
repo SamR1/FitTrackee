@@ -487,6 +487,37 @@ def test_get_activities_ave_speed_filter(
     assert 'Fri, 23 Feb 2018 00:00:00 GMT' == data['data']['activities'][0]['activity_date']   # noqa
 
 
+def test_get_activities_max_speed_filter(
+    app, user_1, sport_1_cycling, sport_2_running, activity_cycling_user_1,
+    activity_running_user_1
+):
+    activity_cycling_user_1.max_speed = 25
+    activity_running_user_1.max_speed = 11
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        '/api/activities?max_speed_from=10&max_speed_to=20',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['activities']) == 1
+    assert 'Sun, 01 Apr 2018 00:00:00 GMT' == data['data']['activities'][0]['activity_date']   # noqa
+
+
 def test_get_activities_sport_filter(
     app, user_1, sport_1_cycling, seven_activities_user_1, sport_2_running,
     activity_running_user_1

@@ -133,6 +133,36 @@ export default function ActivitiesList (props) {
               </div>
             </label>
           </div>
+          <div className="form-group">
+            <label>
+              Max speed (km/h):
+              <div className="container">
+                <div className="row">
+                  <div className="col-5">
+                    <input
+                      className="form-control"
+                      min={0}
+                      name="max_speed_from"
+                      onChange={e => updateParams(e)}
+                      step="1"
+                      type="number"
+                    />
+                  </div>
+                  <div className="col-2 align-middle text-center">to</div>
+                  <div className="col-5">
+                    <input
+                      className="form-control"
+                      min={0}
+                      name="max_speed_to"
+                      onChange={e => updateParams(e)}
+                      step="1"
+                      type="number"
+                    />
+                  </div>
+                </div>
+              </div>
+            </label>
+          </div>
           <input
             className="btn btn-primary btn-lg btn-block"
             onClick={() => loadActivities()}
