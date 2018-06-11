@@ -208,6 +208,15 @@ input, textarea {
   max-width: 45px;
   max-height: 45px;
 }
+
+.timezone-picker {
+  padding: 0;
+}
+
+.timezone-picker-textfield {
+  font-size: 15px;
+}
+
 .unlink {
   color: black;
 }

@@ -185,6 +185,7 @@ def edit_user(user_id):
     location = post_data.get('location')
     password = post_data.get('password')
     password_conf = post_data.get('password_conf')
+    timezone = post_data.get('timezone')
 
     if password is not None and password != '':
         if password_conf != password:
@@ -211,6 +212,7 @@ def edit_user(user_id):
         )
         if password is not None and password != '':
             user.password = password
+        user.timezone = timezone
         db.session.commit()
 
         response_object = {

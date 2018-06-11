@@ -1,6 +1,7 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
+import TimezonePicker from 'react-timezone'
 
 import {
   initProfileForm,
@@ -148,6 +149,27 @@ class ProfileEdit extends React.Component {
                             type="text"
                             value={formProfile.bio}
                             onChange={onHandleFormChange}
+                          />
+                        </label>
+                      </div>
+                      <div className="form-group">
+                        <label>
+                          Timezone:
+                          <TimezonePicker
+                            className="form-control"
+                            onChange={tz => {
+                              const e = { target:
+                                {
+                                  name: 'timezone',
+                                  value: tz ? tz : 'Europe/Paris'
+                                }
+                              }
+                              onHandleFormChange(e)
+                            }}
+                            value={formProfile.timezone
+                              ? formProfile.timezone
+                              : 'Europe/Paris'
+                            }
                           />
                         </label>
                       </div>

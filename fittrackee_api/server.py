@@ -26,6 +26,7 @@ def init_data():
         email='admin@example.com',
         password='mpwoadmin')
     admin.admin = True
+    admin.timezone = 'Europe/Paris'
     db.session.add(admin)
     sport = Sport(label='Cycling (Sport)')
     sport.img = '/img/sports/cycling-sport.png'

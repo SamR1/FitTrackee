@@ -53,6 +53,7 @@ export default class FitTrackeeApi {
         birth_date: form.birthDate,
         password: form.password,
         password_conf: form.passwordConf,
+        timezone: form.timezone,
       },
       type: 'application/json',
     }

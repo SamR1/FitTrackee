@@ -12,6 +12,7 @@ def test_user_model(app, user_1):
     assert serialized_user['location'] is None
     assert serialized_user['birth_date'] is None
     assert serialized_user['picture'] is False
+    assert serialized_user['timezone'] is None
     assert serialized_user['nb_activities'] == 0
     assert serialized_user['nb_sports'] == 0
     assert serialized_user['total_distance'] == 0

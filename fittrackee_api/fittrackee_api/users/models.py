@@ -22,6 +22,7 @@ class User(db.Model):
     location = db.Column(db.String(80), nullable=True)
     bio = db.Column(db.String(200), nullable=True)
     picture = db.Column(db.String(255), nullable=True)
+    timezone = db.Column(db.String(50), nullable=True)
     activities = db.relationship('Activity',
                                  lazy=True,
                                  backref=db.backref('users', lazy='joined'))
@@ -111,6 +112,7 @@ class User(db.Model):
             'location': self.location,
             'birth_date': self.birth_date,
             'picture': self.picture is not None,
+            'timezone': self.timezone,
             'nb_activities': nb_activity,
             'nb_sports': len(sports),
             'total_distance': float(total[0]) if total[0] else 0,

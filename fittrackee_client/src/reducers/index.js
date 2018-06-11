@@ -87,6 +87,7 @@ const formProfile = (state = initial.formProfile, action) => {
           birthDate: action.user.birthDate,
           location: action.user.location,
           bio: action.user.bio,
+          timezone: action.user.timezone,
         },
       }
     case 'PROFILE_SUCCESS':
@@ -185,6 +186,9 @@ const user = (state = initial.user, action) => {
         picture: action.message.data.picture === true
                    ? action.message.data.picture
                    : false,
+        timezone: action.message.data.timezone
+                   ? action.message.data.timezone
+                   : '',
         nbActivities: action.message.data.nb_activities,
         nbSports: action.message.data.nb_sports,
         totalDistance: action.message.data.total_distance,

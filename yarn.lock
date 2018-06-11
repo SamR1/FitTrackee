@@ -1874,6 +1874,10 @@ classnames@2.2.5:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.5.tgz#fb3801d453467649ef3603c7d61a02bd129bde6d"
 
+classnames@^2.2.5:
+  version "2.2.6"
+  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
+
 clean-css@4.1.x:
   version "4.1.11"
   resolved "https://registry.yarnpkg.com/clean-css/-/clean-css-4.1.11.tgz#2ecdf145aba38f54740f26cefd0ff3e03e125d6a"
@@ -7266,6 +7270,13 @@ react-smooth@1.0.0:
     prop-types "^15.6.0"
     raf "^3.2.0"
     react-transition-group "^2.2.1"
+
+react-timezone@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/react-timezone/-/react-timezone-1.0.5.tgz#74ba4c9b2235ad8de3bb1303b66f70e6889337e8"
+  dependencies:
+    classnames "^2.2.5"
+    prop-types "^15.6.0"
 
 react-transition-group@^2.2.1:
   version "2.3.1"

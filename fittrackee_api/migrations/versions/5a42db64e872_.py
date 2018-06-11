@@ -1,4 +1,4 @@
-"""empty message
+"""add static map url to 'Activity' table
 
 Revision ID: 5a42db64e872
 Revises: 92adde6ac0d0

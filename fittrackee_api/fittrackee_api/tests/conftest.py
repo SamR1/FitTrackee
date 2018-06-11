@@ -49,6 +49,7 @@ def user_1_full():
     user.last_name = 'Doe'
     user.bio = 'just a random guy'
     user.location = 'somewhere'
+    user.timezone = 'America/New_York'
     user.birth_date = datetime.datetime.strptime('01/01/1980', '%d/%m/%Y')
     db.session.add(user)
     db.session.commit()

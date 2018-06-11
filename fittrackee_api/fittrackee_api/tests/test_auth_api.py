@@ -397,6 +397,7 @@ def test_user_profile_minimal(app, user_1):
     assert data['data']['email'] == 'test@test.com'
     assert data['data']['created_at']
     assert not data['data']['admin']
+    assert data['data']['timezone'] is None
     assert data['data']['nb_activities'] == 0
     assert data['data']['nb_sports'] == 0
     assert data['data']['total_distance'] == 0
@@ -434,6 +435,7 @@ def test_user_profile_full(app, user_1_full):
     assert data['data']['birth_date']
     assert data['data']['bio'] == 'just a random guy'
     assert data['data']['location'] == 'somewhere'
+    assert data['data']['timezone'] == 'America/New_York'
     assert data['data']['nb_activities'] == 0
     assert data['data']['nb_sports'] == 0
     assert data['data']['total_distance'] == 0
@@ -469,6 +471,7 @@ def test_user_profile_with_activities(
     assert data['data']['email'] == 'test@test.com'
     assert data['data']['created_at']
     assert not data['data']['admin']
+    assert data['data']['timezone'] is None
     assert data['data']['nb_activities'] == 2
     assert data['data']['nb_sports'] == 2
     assert data['data']['total_distance'] == 22
@@ -507,7 +510,8 @@ def test_user_profile_valid_update(app, user_1):
             bio='just a random guy',
             birth_date='1980-01-01',
             password='87654321',
-            password_conf='87654321'
+            password_conf='87654321',
+            timezone='America/New_York'
         )),
         headers=dict(
             Authorization='Bearer ' + json.loads(
@@ -627,7 +631,8 @@ def test_user_profile_invalid_password(app, user_1):
             bio='just a random guy',
             birth_date='1980-01-01',
             password='87654321',
-            password_conf='876543210'
+            password_conf='876543210',
+            timezone='America/New_York'
         )),
         headers=dict(
             Authorization='Bearer ' + json.loads(
@@ -661,6 +666,7 @@ def test_user_profile_missing_password_conf(app, user_1):
             bio='just a random guy',
             birth_date='1980-01-01',
             password='87654321',
+            timezone='America/New_York'
         )),
         headers=dict(
             Authorization='Bearer ' + json.loads(

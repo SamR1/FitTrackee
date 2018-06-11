@@ -43,6 +43,7 @@ function Profile ({ message, onDeletePicture, onUploadPicture, user }) {
                     <p>Birth Date: {user.birthDate}</p>
                     <p>Location: {user.location}</p>
                     <p>Bio: {user.bio}</p>
+                    <p>Time zone: {user.timezone}</p>
                   </div>
                   <div className="col-md-4">
                     { user.picture === true && (
