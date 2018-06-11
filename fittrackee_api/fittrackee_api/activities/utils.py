@@ -23,6 +23,21 @@ class ActivityException(Exception):
         self.e = e
 
 
+def get_datetime_with_tz(auth_user_id, activity_date, gpx_data=None):
+    user = User.query.filter_by(id=auth_user_id).first()
+    # activity date in gpx are directly in UTC
+    activity_date_tz = None
+    if user.timezone and not gpx_data:
+        user_tz = pytz.timezone(user.timezone)
+        activity_date_tz = user_tz.localize(activity_date)
+        if not gpx_data:
+            # make datetime 'naive' like in gpx file
+            activity_date = activity_date_tz.astimezone(pytz.utc)
+            activity_date = activity_date.replace(tzinfo=None)
+
+    return activity_date_tz, activity_date
+
+
 def update_activity_data(activity, gpx_data):
     """activity could be a complete activity or an activity segment"""
     activity.pauses = gpx_data['stop_time']
@@ -39,19 +54,10 @@ def update_activity_data(activity, gpx_data):
 def create_activity(
         auth_user_id, activity_data, gpx_data=None
 ):
-    user = User.query.filter_by(id=auth_user_id).first()
-
     activity_date = gpx_data['start'] if gpx_data else datetime.strptime(
         activity_data.get('activity_date'), '%Y-%m-%d %H:%M')
-    activity_date_tz = None
-    # activity date in gpx are directly in UTC
-    if user.timezone and not gpx_data:
-        user_tz = pytz.timezone(user.timezone)
-        activity_date_tz = user_tz.localize(activity_date)
-        if not gpx_data:
-            # make datetime 'naive' like in gpx file
-            activity_date = activity_date_tz.astimezone(pytz.utc)
-            activity_date = activity_date.replace(tzinfo=None)
+    activity_date_tz, activity_date = get_datetime_with_tz(
+        auth_user_id, activity_date, gpx_data)
 
     duration = gpx_data['duration'] if gpx_data \
         else timedelta(seconds=activity_data.get('duration'))
@@ -113,20 +119,17 @@ def edit_activity(activity, activity_data, auth_user_id):
         if activity_data.get('activity_date'):
             activity_date = datetime.strptime(
                 activity_data.get('activity_date'), '%Y-%m-%d %H:%M')
-            user = User.query.filter_by(id=auth_user_id).first()
-            if user.timezone:
-                # make datetime 'naive' like in gpx file
-                user_tz = pytz.timezone(user.timezone)
-                activity_date_tz = user_tz.localize(activity_date)
-                activity_date = activity_date_tz.astimezone(pytz.utc)
-                activity_date = activity_date.replace(tzinfo=None)
-            activity.activity_date = activity_date
+            _, activity.activity_date = get_datetime_with_tz(
+                auth_user_id, activity_date)
+
         if activity_data.get('duration'):
             activity.duration = timedelta(
                 seconds=activity_data.get('duration'))
             activity.moving = activity.duration
+
         if activity_data.get('distance'):
             activity.distance = activity_data.get('distance')
+
         activity.ave_speed = (None if activity.duration.seconds == 0
                               else float(activity.distance) /
                               (activity.duration.seconds / 3600))
