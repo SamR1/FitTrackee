@@ -109,7 +109,7 @@ const gpx = (state = initial.gpx, action) => {
 const loading = (state = initial.loading, action) => {
   switch (action.type) {
     case 'SET_LOADING':
-      return !state
+      return action.loading
     default:
       return state
   }

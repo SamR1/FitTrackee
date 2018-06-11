@@ -96,7 +96,7 @@ export default connect(
   }),
   dispatch => ({
     onAddActivity: e => {
-      dispatch(setLoading())
+      dispatch(setLoading(true))
       const form = new FormData()
       form.append('file', e.target.form.gpxFile.files[0])
       form.append(
@@ -105,7 +105,6 @@ export default connect(
       dispatch(addActivity(form))
     },
     onEditActivity: (e, activity) => {
-      dispatch(setLoading())
       dispatch(editActivity({
         id: activity.id,
         sport_id: +e.target.form.sport.value,

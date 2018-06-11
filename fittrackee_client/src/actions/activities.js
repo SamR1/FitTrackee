@@ -43,7 +43,7 @@ export const addActivity = form => dispatch => FitTrackeeApi
     } else {
       dispatch(setError(`activities: ${ret.message}`))
     }
-    dispatch(setLoading())
+    dispatch(setLoading(false))
   })
   .catch(error => dispatch(setError(`activities: ${error}`)))
 
@@ -117,7 +117,7 @@ export const editActivity = form => dispatch => FitTrackeeGenericApi
     } else {
       dispatch(setError(`activities: ${ret.message}`))
     }
-    dispatch(setLoading())
+    dispatch(setLoading(false))
   })
   .catch(error => dispatch(setError(`activities: ${error}`)))
 

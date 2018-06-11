@@ -13,8 +13,9 @@ export const setError = message => ({
   message,
 })
 
-export const setLoading = () => ({
+export const setLoading = loading => ({
   type: 'SET_LOADING',
+  loading
 })
 
 export const getData = (target, data) => dispatch => {
