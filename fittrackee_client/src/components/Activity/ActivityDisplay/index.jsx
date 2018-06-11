@@ -34,7 +34,7 @@ class ActivityDisplay extends React.Component {
   }
 
   render() {
-    const { activities, message, onDeleteActivity, sports } = this.props
+    const { activities, message, onDeleteActivity, sports, user } = this.props
     const { displayModal } = this.state
     const [activity] = activities
     const title = activity ? activity.title : 'Activity'
@@ -71,6 +71,7 @@ class ActivityDisplay extends React.Component {
                           activity={activity}
                           sport={sport}
                           title={title}
+                          user={user}
                           displayModal={() => this.displayModal(true)}
                         />
                       </div>

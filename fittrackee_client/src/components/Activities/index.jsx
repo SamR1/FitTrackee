@@ -36,7 +36,7 @@ class Activities extends React.Component {
   }
   render() {
     const {
-      activities, loadActivities, loadMoreActivities, message, sports
+      activities, loadActivities, loadMoreActivities, message, sports, user
     } = this.props
     const { params } = this.state
     const paginationEnd = activities.length > 0
@@ -63,6 +63,7 @@ class Activities extends React.Component {
                 <ActivitiesList
                   activities={activities}
                   sports={sports}
+                  user={user}
                 />
                 {!paginationEnd &&
                   <input
@@ -100,6 +101,7 @@ export default connect(
     activities: state.activities.data,
     message: state.message,
     sports: state.sports.data,
+    user: state.user,
   }),
   dispatch => ({
     loadActivities: params => {

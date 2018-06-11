@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { formatRecord } from '../../utils'
 
 export default function RecordsCard (props) {
-  const { records, sports } = props
+  const { records, sports, user } = props
   const recordsBySport = records.reduce((sportList, record) => {
       const sport = sports.find(s => s.id === record.sport_id)
       if (sportList[sport.label] === void 0) {
@@ -13,7 +13,7 @@ export default function RecordsCard (props) {
           records: [],
         }
       }
-      sportList[sport.label].records.push(formatRecord(record))
+      sportList[sport.label].records.push(formatRecord(record, user.timezone))
       return sportList
   }, {})
 

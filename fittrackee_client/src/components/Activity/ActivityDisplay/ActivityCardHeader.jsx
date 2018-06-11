@@ -1,13 +1,15 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import { formatActivityDate } from '../../../utils'
+import { formatActivityDate, getDateWithTZ } from '../../../utils'
 
 
 export default function ActivityCardHeader(props) {
-  const { activity, displayModal, sport, title } = props
+  const { activity, displayModal, sport, title, user } = props
   const activityDate = activity
-    ? formatActivityDate(activity.activity_date)
+    ? formatActivityDate(
+        getDateWithTZ(activity.activity_date, user.timezone)
+      )
     : null
   return (
     <div className="container">

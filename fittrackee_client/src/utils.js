@@ -1,5 +1,6 @@
 import togeojson from '@mapbox/togeojson'
 import { addDays, format, parse, startOfWeek, subHours } from 'date-fns'
+import { DateTime } from 'luxon'
 
 export const apiUrl = `${process.env.REACT_APP_API_URL}/api/`
 export const thunderforestApiKey = `${
@@ -63,24 +64,33 @@ export const getGeoJson = gpxContent => {
   return { jsonData }
 }
 
-export const formatActivityDate = (activityDateTime, dateFormat = null) => {
-  if (activityDateTime) {
-    const dateTime = parse(activityDateTime)
-    return {
-      activity_date: format(
-        dateTime,
-        dateFormat ? dateFormat : 'DD/MM/YYYY'
-      ),
-      activity_time: activityDateTime.match(/[0-2][0-9]:[0-5][0-9]/)[0]
-    }
+
+export const getDateWithTZ = (date, tz) => {
+  if (!date) {
+    return ''
+  }
+  const dt = DateTime.fromISO(format(date)).setZone(tz)
+  return parse(dt.toFormat('yyyy-MM-dd HH:mm:ss'))
+}
+
+export const formatActivityDate = (
+  dateTime,
+  dateFormat = null,
+  timeFormat = null,
+) => {
+  if (!dateFormat) {
+    dateFormat = 'DD/MM/YYYY'
+  }
+  if (!timeFormat) {
+    timeFormat = 'HH:mm'
   }
   return {
-    activity_date: null,
-    activity_time: null,
+    activity_date: dateTime ? format(dateTime, dateFormat) : null,
+    activity_time: dateTime ? format(dateTime, timeFormat) : null,
   }
 }
 
-export const formatRecord = record => {
+export const formatRecord = (record, tz) => {
   let value, recordType = null
   switch (record.record_type) {
     case 'AS':
@@ -97,7 +107,9 @@ export const formatRecord = record => {
       recordType = 'Longest duration'
   }
   return {
-    activity_date: formatActivityDate(record.activity_date).activity_date,
+    activity_date: formatActivityDate(
+      getDateWithTZ(record.activity_date, tz)
+    ).activity_date,
     activity_id: record.activity_id,
     id: record.id,
     record_type: recordType,

@@ -45,7 +45,7 @@ class DashBoard extends React.Component {
               <div className="row">
                 <div className="col-md-4">
                   <Statistics />
-                  <Records records={records} sports={sports} />
+                  <Records records={records} sports={sports} user={user} />
                 </div>
                 <div className="col-md-8">
                   <Calendar />
@@ -55,6 +55,7 @@ class DashBoard extends React.Component {
                       activity={activity}
                       key={activity.id}
                       sports={sports}
+                      user={user}
                     />)
                   )) : (
                     <div className="card text-center">

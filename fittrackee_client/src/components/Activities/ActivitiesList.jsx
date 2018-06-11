@@ -2,8 +2,10 @@ import { format } from 'date-fns'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
+import { getDateWithTZ } from '../../utils'
+
 export default function ActivitiesList (props) {
-  const { activities, sports } = props
+  const { activities, sports, user } = props
   return (
     <div className="card">
       <div className="card-body">
@@ -36,7 +38,12 @@ export default function ActivitiesList (props) {
                     {activity.title}
                   </Link>
                   </td>
-                <td>{format(activity.activity_date, 'DD/MM/YYYY HH:mm')}</td>
+                <td>
+                  {format(
+                    getDateWithTZ(activity.activity_date, user.timezone),
+                    'DD/MM/YYYY HH:mm'
+                  )}
+                </td>
                 <td className="text-right">
                   {Number(activity.distance).toFixed(2)} km
                 </td>

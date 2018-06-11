@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import { getMonthActivities } from '../../actions/activities'
+import { getDateWithTZ } from '../../utils'
 
 const getStartAndEndMonth = date => {
   const monthStart = dateFns.startOfMonth(date)
@@ -73,10 +74,13 @@ class Calendar extends React.Component {
   }
 
   filterActivities(day) {
-    const { activities } = this.props
+    const { activities, user } = this.props
     if (activities) {
       return activities
-        .filter(act => dateFns.isSameDay(act.activity_date, day))
+        .filter(act => dateFns.isSameDay(
+          getDateWithTZ(act.activity_date, user.timezone),
+          day
+        ))
     }
     return []
   }
@@ -108,11 +112,12 @@ class Calendar extends React.Component {
             {dayActivities.map(act => (
               <Link key={act.id} to={`/activities/${act.id}`}>
                 <img
+                  alt="activity sport logo"
                   className={`activity-sport ${isDisabled}`}
                   src={sports
                     .filter(s => s.id === act.sport_id)
                     .map(s => s.img)}
-                  alt="activity sport logo"
+                  title={act.title}
                 />
               </Link>
             ))}
@@ -167,6 +172,7 @@ export default connect(
   state => ({
     activities: state.calendarActivities.data,
     sports: state.sports.data,
+    user: state.user,
   }),
   dispatch => ({
     loadMonthActivities: (start, end) => {

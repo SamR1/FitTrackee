@@ -2,10 +2,10 @@ import { format } from 'date-fns'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import { apiUrl } from '../../utils'
+import { apiUrl, getDateWithTZ } from '../../utils'
 
 export default function ActivityCard (props) {
-  const { activity, sports } = props
+  const { activity, sports, user } = props
 
   return (
     <div className="card activity-card text-center">
@@ -13,7 +13,10 @@ export default function ActivityCard (props) {
         <Link to={`/activities/${activity.id}`}>
         {sports.filter(sport => sport.id === activity.sport_id)
                .map(sport => sport.label)} -{' '}
-        {format(activity.activity_date, 'DD/MM/YYYY HH:mm')}
+        {format(
+          getDateWithTZ(activity.activity_date, user.timezone),
+          'DD/MM/YYYY HH:mm'
+        )}
         </Link>
       </div>
       <div className="card-body">
