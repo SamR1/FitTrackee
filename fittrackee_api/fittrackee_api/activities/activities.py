@@ -7,7 +7,7 @@ from fittrackee_api import appLog, db
 from flask import Blueprint, current_app, jsonify, request, send_file
 from sqlalchemy import exc
 
-from ..users.utils import authenticate, verify_extension
+from ..users.utils import User, authenticate, verify_extension
 from .models import Activity
 from .utils import (
     ActivityException, create_activity, edit_activity, get_chart_data,
@@ -23,17 +23,18 @@ activities_blueprint = Blueprint('activities', __name__)
 def get_activities(auth_user_id):
     """Get all activities for authenticated user"""
     try:
+        user = User.query.filter_by(id=auth_user_id).first()
         params = request.args.copy()
         page = 1 if 'page' not in params.keys() else int(params.get('page'))
         date_from = params.get('from')
         if date_from:
             date_from = datetime.strptime(date_from, '%Y-%m-%d')
-            _, date_from = get_datetime_with_tz(auth_user_id, date_from)
+            _, date_from = get_datetime_with_tz(user.timezone, date_from)
         date_to = params.get('to')
         if date_to:
             date_to = datetime.strptime(f'{date_to} 23:59:59',
                                         '%Y-%m-%d %H:%M:%S')
-            _, date_to = get_datetime_with_tz(auth_user_id, date_to)
+            _, date_to = get_datetime_with_tz(user.timezone, date_to)
         distance_from = params.get('distance_from')
         distance_to = params.get('distance_to')
         duration_from = params.get('duration_from')
@@ -268,7 +269,8 @@ def post_activity_no_gpx(auth_user_id):
         return jsonify(response_object), 400
 
     try:
-        new_activity = create_activity(auth_user_id, activity_data)
+        user = User.query.filter_by(id=auth_user_id).first()
+        new_activity = create_activity(user, activity_data)
         db.session.add(new_activity)
         db.session.commit()
 

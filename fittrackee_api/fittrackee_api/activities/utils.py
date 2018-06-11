@@ -23,12 +23,11 @@ class ActivityException(Exception):
         self.e = e
 
 
-def get_datetime_with_tz(auth_user_id, activity_date, gpx_data=None):
-    user = User.query.filter_by(id=auth_user_id).first()
+def get_datetime_with_tz(timezone, activity_date, gpx_data=None):
     # activity date in gpx are directly in UTC
     activity_date_tz = None
-    if user.timezone and not gpx_data:
-        user_tz = pytz.timezone(user.timezone)
+    if timezone and not gpx_data:
+        user_tz = pytz.timezone(timezone)
         activity_date_tz = user_tz.localize(activity_date)
         if not gpx_data:
             # make datetime 'naive' like in gpx file
@@ -52,12 +51,12 @@ def update_activity_data(activity, gpx_data):
 
 
 def create_activity(
-        auth_user_id, activity_data, gpx_data=None
+        user, activity_data, gpx_data=None
 ):
     activity_date = gpx_data['start'] if gpx_data else datetime.strptime(
         activity_data.get('activity_date'), '%Y-%m-%d %H:%M')
     activity_date_tz, activity_date = get_datetime_with_tz(
-        auth_user_id, activity_date, gpx_data)
+        user.timezone, activity_date, gpx_data)
 
     duration = gpx_data['duration'] if gpx_data \
         else timedelta(seconds=activity_data.get('duration'))
@@ -67,7 +66,7 @@ def create_activity(
         else activity_data.get('title')
 
     new_activity = Activity(
-        user_id=auth_user_id,
+        user_id=user.id,
         sport_id=activity_data.get('sport_id'),
         activity_date=activity_date,
         distance=distance,
@@ -111,6 +110,7 @@ def create_segment(activity_id, segment_data):
 
 
 def edit_activity(activity, activity_data, auth_user_id):
+    user = User.query.filter_by(id=auth_user_id).first()
     if activity_data.get('sport_id'):
         activity.sport_id = activity_data.get('sport_id')
     if activity_data.get('title'):
@@ -120,7 +120,7 @@ def edit_activity(activity, activity_data, auth_user_id):
             activity_date = datetime.strptime(
                 activity_data.get('activity_date'), '%Y-%m-%d %H:%M')
             _, activity.activity_date = get_datetime_with_tz(
-                auth_user_id, activity_date)
+                user.timezone, activity_date)
 
         if activity_data.get('duration'):
             activity.duration = timedelta(
@@ -306,8 +306,9 @@ def get_map_hash(map_filepath):
 def process_one_gpx_file(params, filename):
     try:
         gpx_data, map_data = get_gpx_info(params['file_path'])
+        auth_user_id = params['user'].id
         new_filepath = get_new_file_path(
-            auth_user_id=params['auth_user_id'],
+            auth_user_id=auth_user_id,
             activity_date=gpx_data['start'],
             old_filename=filename,
             sport=params['sport_label']
@@ -316,7 +317,7 @@ def process_one_gpx_file(params, filename):
         gpx_data['filename'] = new_filepath
 
         map_filepath = get_new_file_path(
-            auth_user_id=params['auth_user_id'],
+            auth_user_id=auth_user_id,
             activity_date=gpx_data['start'],
             extension='.png',
             sport=params['sport_label']
@@ -329,7 +330,7 @@ def process_one_gpx_file(params, filename):
 
     try:
         new_activity = create_activity(
-            params['auth_user_id'], params['activity_data'], gpx_data)
+            params['user'], params['activity_data'], gpx_data)
         new_activity.map = map_filepath
         new_activity.map_id = get_map_hash(map_filepath)
         db.session.add(new_activity)
@@ -373,9 +374,10 @@ def process_files(auth_user_id, activity_data, activity_file, folders):
             f"Sport id: {activity_data.get('sport_id')} does not exist",
             None
         )
+    user = User.query.filter_by(id=auth_user_id).first()
 
     common_params = {
-        'auth_user_id': auth_user_id,
+        'user': user,
         'activity_data': activity_data,
         'file_path': file_path,
         'sport_label': sport.label,

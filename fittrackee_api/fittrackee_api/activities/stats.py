@@ -26,12 +26,12 @@ def get_activities(user_id, type):
         date_from = params.get('from')
         if date_from:
             date_from = datetime.strptime(date_from, '%Y-%m-%d')
-            _, date_from = get_datetime_with_tz(user_id, date_from)
+            _, date_from = get_datetime_with_tz(user.timezone, date_from)
         date_to = params.get('to')
         if date_to:
             date_to = datetime.strptime(f'{date_to} 23:59:59',
                                         '%Y-%m-%d %H:%M:%S')
-            _, date_to = get_datetime_with_tz(user_id, date_to)
+            _, date_to = get_datetime_with_tz(user.timezone, date_to)
         sport_id = params.get('sport_id')
         time = params.get('time')
 
