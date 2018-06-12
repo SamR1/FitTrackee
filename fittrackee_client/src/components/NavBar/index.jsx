@@ -58,7 +58,7 @@ function NavBar(props) {
                   </Link>
                 </li>
               )}
-              {props.user.isAdmin && (
+              {props.user.admin && (
                 <li className="nav-item">
                   <Link
                     className="nav-link"

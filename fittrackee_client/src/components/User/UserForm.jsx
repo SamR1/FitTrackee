@@ -3,32 +3,48 @@ import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 
 import Form from './Form'
-import {
-  emptyForm,
-  handleFormChange,
-  handleUserFormSubmit
-} from '../../actions/user'
+import { handleUserFormSubmit } from '../../actions/user'
 import { isLoggedIn } from '../../utils'
 
 class UserForm extends React.Component {
+  constructor(props, context) {
+    super(props, context)
+    this.state = {
+      formData: {
+        username: '',
+        email: '',
+        password: '',
+        password_conf: '',
+      }
+    }
+  }
 
   componentDidUpdate(prevProps) {
-    if (
-      (prevProps.location.pathname !== this.props.location.pathname)
-    ) {
-      this.props.onEmptyForm()
+    if (prevProps.location.pathname !== this.props.location.pathname) {
+      this.emptyForm()
     }
+  }
+
+  emptyForm() {
+    const { formData } = this.state
+    Object.keys(formData).map(k => formData[k] = '')
+    this.setState(formData)
+  }
+
+  onHandleFormChange(e) {
+    const { formData } = this.state
+    formData[e.target.name] = e.target.value
+    this.setState(formData)
   }
 
   render() {
     const {
-      formData,
       formType,
       message,
       messages,
-      onHandleFormChange,
       onHandleUserFormSubmit
     } = this.props
+    const { formData } = this.state
     return (
       <div>
         {isLoggedIn() ? (
@@ -52,10 +68,11 @@ class UserForm extends React.Component {
             <Form
               formType={formType}
               userForm={formData}
-              onHandleFormChange={event => onHandleFormChange(event)}
-              handleUserFormSubmit={event =>
-                onHandleUserFormSubmit(event, formType)
-              }
+              onHandleFormChange={event => this.onHandleFormChange(event)}
+              handleUserFormSubmit={event => {
+                  event.preventDefault()
+                  onHandleUserFormSubmit(formData, formType)
+              }}
             />
           </div>
         )}
@@ -65,20 +82,13 @@ class UserForm extends React.Component {
 }
 export default connect(
   state => ({
-    formData: state.formData.formData,
     location: state.router.location,
     message: state.message,
     messages: state.messages,
   }),
   dispatch => ({
-    onEmptyForm: () => {
-      dispatch(emptyForm())
-    },
-    onHandleFormChange: event => {
-      dispatch(handleFormChange(event.target.name, event.target.value))
-    },
-    onHandleUserFormSubmit: (event, formType) => {
-      dispatch(handleUserFormSubmit(event, formType))
+    onHandleUserFormSubmit: (formData, formType) => {
+      dispatch(handleUserFormSubmit(formData, formType))
     },
   })
 )(UserForm)

@@ -20,7 +20,7 @@ test('should display the registration form', async t => {
     .expect(Selector('input[name="username"]').exists).ok()
     .expect(Selector('input[name="email"]').exists).ok()
     .expect(Selector('input[name="password"]').exists).ok()
-    .expect(Selector('input[name="passwordConf"]').exists).ok()
+    .expect(Selector('input[name="password_conf"]').exists).ok()
 })
 
 test('should allow a user to register', async t => {
@@ -32,7 +32,7 @@ test('should allow a user to register', async t => {
     .typeText('input[name="username"]', username)
     .typeText('input[name="email"]', email)
     .typeText('input[name="password"]', password)
-    .typeText('input[name="passwordConf"]', password)
+    .typeText('input[name="password_conf"]', password)
     .click(Selector('input[type="submit"]'))
 
   // assert user is redirected to '/'
@@ -48,7 +48,7 @@ test('should throw an error if the username is taken', async t => {
     .typeText('input[name="username"]', username)
     .typeText('input[name="email"]', `${email}2`)
     .typeText('input[name="password"]', password)
-    .typeText('input[name="passwordConf"]', password)
+    .typeText('input[name="password_conf"]', password)
     .click(Selector('input[type="submit"]'))
 
   // assert user registration failed
@@ -68,7 +68,7 @@ test('should throw an error if the email is taken', async t => {
     .typeText('input[name="username"]', `${username}2`)
     .typeText('input[name="email"]', email)
     .typeText('input[name="password"]', password)
-    .typeText('input[name="passwordConf"]', password)
+    .typeText('input[name="password_conf"]', password)
     .click(Selector('input[type="submit"]'))
 
   // assert user registration failed
@@ -88,7 +88,7 @@ test('should throw an error if the username is too short', async t => {
     .typeText('input[name="username"]', `${shortUsername}`)
     .typeText('input[name="email"]', email)
     .typeText('input[name="password"]', password)
-    .typeText('input[name="passwordConf"]', password)
+    .typeText('input[name="password_conf"]', password)
     .click(Selector('input[type="submit"]'))
 
   // assert user registration failed
@@ -108,7 +108,7 @@ test('should throw an error if the user is too long', async t => {
     .typeText('input[name="username"]', `${longUsername}`)
     .typeText('input[name="email"]', email)
     .typeText('input[name="password"]', password)
-    .typeText('input[name="passwordConf"]', password)
+    .typeText('input[name="password_conf"]', password)
     .click(Selector('input[type="submit"]'))
 
   // assert user registration failed
@@ -128,7 +128,7 @@ test('should throw an error if the email is invalid', async t => {
     .typeText('input[name="username"]', username)
     .typeText('input[name="email"]', invalidEmail)
     .typeText('input[name="password"]', password)
-    .typeText('input[name="passwordConf"]', password)
+    .typeText('input[name="password_conf"]', password)
     .click(Selector('input[type="submit"]'))
 
   // assert user registration failed
@@ -146,7 +146,7 @@ test('should throw an error if passwords don\'t match', async t => {
     .typeText('input[name="username"]', username)
     .typeText('input[name="email"]', email)
     .typeText('input[name="password"]', password)
-    .typeText('input[name="passwordConf"]', `${password}2`)
+    .typeText('input[name="password_conf"]', `${password}2`)
     .click(Selector('input[type="submit"]'))
 
   // assert user registration failed
@@ -166,7 +166,7 @@ test('should throw an error if the password is too short', async t => {
     .typeText('input[name="username"]', username)
     .typeText('input[name="email"]', email)
     .typeText('input[name="password"]', invalidPassword)
-    .typeText('input[name="passwordConf"]', invalidPassword)
+    .typeText('input[name="password_conf"]', invalidPassword)
     .click(Selector('input[type="submit"]'))
 
   // assert user registration failed

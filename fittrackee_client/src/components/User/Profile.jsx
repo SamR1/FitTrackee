@@ -11,7 +11,7 @@ function Profile ({ message, onDeletePicture, onUploadPicture, user }) {
   return (
     <div>
       <Helmet>
-        <title>FitTrackee - {user.username} - Profile</title>
+        <title>FitTrackee - Profile</title>
       </Helmet>
       { message !== '' && (
         <code>{message}</code>
@@ -36,11 +36,16 @@ function Profile ({ message, onDeletePicture, onUploadPicture, user }) {
                   <div className="col-md-8">
                     <p>Email: {user.email}</p>
                     <p>Registration Date: {
-                         format(new Date(user.createdAt), 'DD/MM/YYYY HH:mm')
-                       }</p>
-                    <p>First Name: {user.firstName}</p>
-                    <p>Last Name: {user.lastName}</p>
-                    <p>Birth Date: {user.birthDate}</p>
+                         format(new Date(user.created_at), 'DD/MM/YYYY HH:mm')
+                       }
+                    </p>
+                    <p>First Name: {user.first_name}</p>
+                    <p>Last Name: {user.last_name}</p>
+                    <p>Birth Date: {user.birth_date
+                        ? format(new Date(user.birth_date), 'DD/MM/YYYY')
+                        : ''
+                      }
+                    </p>
                     <p>Location: {user.location}</p>
                     <p>Bio: {user.bio}</p>
                     <p>Time zone: {user.timezone}</p>

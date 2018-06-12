@@ -12,7 +12,7 @@ from .utils_format import convert_timedelta_to_integer
 stats_blueprint = Blueprint('stats', __name__)
 
 
-def get_activities(user_id, type):
+def get_activities(user_id, filter_type):
     try:
         user = User.query.filter_by(id=user_id).first()
         if not user:
@@ -35,7 +35,7 @@ def get_activities(user_id, type):
         sport_id = params.get('sport_id')
         time = params.get('time')
 
-        if type == 'by_sport':
+        if filter_type == 'by_sport':
             sport_id = params.get('sport_id')
             if sport_id:
                 sport = Sport.query.filter_by(id=sport_id).first()
@@ -59,7 +59,7 @@ def get_activities(user_id, type):
 
         activities_list = {}
         for activity in activities:
-            if type == 'by_sport':
+            if filter_type == 'by_sport':
                 sport_id = activity.sport_id
                 if sport_id not in activities_list:
                     activities_list[sport_id] = {

@@ -23,7 +23,7 @@ test('standard user should not be able to access admin page', async t => {
     .typeText('input[name="username"]', username)
     .typeText('input[name="email"]', email)
     .typeText('input[name="password"]', password)
-    .typeText('input[name="passwordConf"]', password)
+    .typeText('input[name="password_conf"]', password)
     .click(Selector('input[type="submit"]'))
 
   await t

@@ -2,31 +2,23 @@ import { apiUrl, createRequest } from '../utils'
 
 export default class FitTrackeeApi {
 
-  static login(email, password) {
+  static login(data) {
     const params = {
       url: `${apiUrl}auth/login`,
       method: 'POST',
       noAuthorization: true,
-      body: {
-        email: email,
-        password: password,
-      },
+      body: data,
       type: 'application/json',
     }
     return createRequest(params)
   }
 
-  static register(username, email, password, passwordConf) {
+  static register(data) {
     const params = {
       url: `${apiUrl}auth/register`,
       method: 'POST',
       noAuthorization: true,
-      body: {
-        username: username,
-        email: email,
-        password: password,
-        password_conf: passwordConf,
-      },
+      body: data,
       type: 'application/json',
     }
     return createRequest(params)
@@ -41,20 +33,11 @@ export default class FitTrackeeApi {
     return createRequest(params)
   }
 
-  static updateProfile(form) {
+  static updateProfile(data) {
     const params = {
       url: `${apiUrl}auth/profile/edit`,
       method: 'POST',
-      body: {
-        first_name: form.firstName,
-        last_name: form.lastName,
-        bio: form.bio,
-        location: form.location,
-        birth_date: form.birthDate,
-        password: form.password,
-        password_conf: form.passwordConf,
-        timezone: form.timezone,
-      },
+      body: data,
       type: 'application/json',
     }
     return createRequest(params)

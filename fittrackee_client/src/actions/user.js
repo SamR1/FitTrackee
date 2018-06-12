@@ -10,7 +10,7 @@ const AuthErrors = messages => ({ type: 'AUTH_ERRORS', messages })
 
 const PictureError = message => ({ type: 'PICTURE_ERROR', message })
 
-const ProfileSuccess = message => ({ type: 'PROFILE_SUCCESS', message })
+const ProfileSuccess = profil => ({ type: 'PROFILE_SUCCESS', profil })
 
 const ProfileError = message => ({ type: 'PROFILE_ERROR', message })
 
@@ -18,30 +18,13 @@ const ProfileUpdateError = message => ({
   type: 'PROFILE_UPDATE_ERROR', message
 })
 
-const initProfileFormData = user => ({ type: 'INIT_PROFILE_FORM', user })
-
-export const emptyForm = () => ({
-  type: 'EMPTY_USER_FORMDATA'
-})
-
-export const handleFormChange = (target, value) => ({
-  type: 'UPDATE_USER_FORMDATA',
-  target,
-  value,
-})
-
-export const updateProfileFormData = (target, value) => ({
-  type: 'UPDATE_PROFILE_FORMDATA',
-  target,
-  value,
-})
-
 export const getProfile = () => dispatch => FitTrackeeApi
   .getProfile()
   .then(ret => {
     if (ret.status === 'success') {
       dispatch(getData('sports'))
-      return dispatch(ProfileSuccess(ret))
+      ret.data.isAuthenticated = true
+      return dispatch(ProfileSuccess(ret.data))
     }
     return dispatch(ProfileError(ret.message))
   })
@@ -51,11 +34,7 @@ export const getProfile = () => dispatch => FitTrackeeApi
 
 
 export const register = formData => dispatch => FitTrackeeApi
-  .register(
-    formData.username,
-    formData.email,
-    formData.password,
-    formData.passwordConf)
+  .register(formData)
   .then(ret => {
     if (ret.status === 'success') {
       window.localStorage.setItem('authToken', ret.auth_token)
@@ -69,7 +48,7 @@ export const register = formData => dispatch => FitTrackeeApi
 
 
 export const login = formData => dispatch => FitTrackeeApi
-  .login(formData.email, formData.password)
+  .login(formData)
   .then(ret => {
     if (ret.status === 'success') {
       window.localStorage.setItem('authToken', ret.auth_token)
@@ -95,7 +74,7 @@ const RegisterFormControl = formData => {
   if (formData.username.length < 3 || formData.username.length > 12) {
     errMsg.push('Username: 3 to 12 characters required.')
   }
-  if (formData.password !== formData.passwordConf) {
+  if (formData.password !== formData.password_conf) {
     errMsg.push('Password and password confirmation don\'t match.')
   }
   if (formData.password.length < 8) {
@@ -104,41 +83,26 @@ const RegisterFormControl = formData => {
   return errMsg
 }
 
-export const handleUserFormSubmit = (event, formType) => (
-  dispatch,
-  getState
-) => {
-  event.preventDefault()
-  const state = getState()
-  const { formData } = state.formData
-  formData.formData = state.formData.formData
+export const handleUserFormSubmit = (formData, formType) => dispatch => {
   if (formType === 'Login') {
-    return dispatch(login(formData.formData))
+    return dispatch(login(formData))
   }
   // formType === 'Register'
-  const ret = RegisterFormControl(formData.formData)
+  const ret = RegisterFormControl(formData)
   if (ret.length === 0) {
-    return dispatch(register(formData.formData))
+    return dispatch(register(formData))
   }
   return dispatch(AuthErrors(generateIds(ret)))
 }
 
-export const initProfileForm = () => (dispatch, getState) => {
-  const state = getState()
-  return dispatch(initProfileFormData(state.user))
-}
-
-export const handleProfileFormSubmit = event => (dispatch, getState) => {
-  event.preventDefault()
-  const state = getState()
-  if (!state.formProfile.formProfile.password ===
-    state.formProfile.formProfile.passwordConf) {
+export const handleProfileFormSubmit = formData => dispatch => {
+  if (!formData.password === formData.password_conf) {
     return dispatch(ProfileUpdateError(
       'Password and password confirmation don\'t match.'
     ))
   }
   return FitTrackeeApi
-    .updateProfile(state.formProfile.formProfile)
+    .updateProfile(formData)
     .then(ret => {
       if (ret.status === 'success') {
         dispatch(getProfile())

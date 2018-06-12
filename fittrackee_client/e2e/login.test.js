@@ -20,7 +20,7 @@ test('should display the registration form', async t => {
     .expect(Selector('input[name="username"]').exists).notOk()
     .expect(Selector('input[name="email"]').exists).ok()
     .expect(Selector('input[name="password"]').exists).ok()
-    .expect(Selector('input[name="passwordConf"]').exists).notOk()
+    .expect(Selector('input[name="password_conf"]').exists).notOk()
 })
 
 test('should throw an error if the user is not registered', async t => {
@@ -47,7 +47,7 @@ test('should allow a user to login', async t => {
     .typeText('input[name="username"]', username)
     .typeText('input[name="email"]', email)
     .typeText('input[name="password"]', password)
-    .typeText('input[name="passwordConf"]', password)
+    .typeText('input[name="password_conf"]', password)
     .click(Selector('input[type="submit"]'))
 
   await t

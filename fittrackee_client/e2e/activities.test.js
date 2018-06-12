@@ -18,7 +18,7 @@ test('standard user should be able to add a workout (w/o gpx)', async t => {
     .typeText('input[name="username"]', username)
     .typeText('input[name="email"]', email)
     .typeText('input[name="password"]', password)
-    .typeText('input[name="passwordConf"]', password)
+    .typeText('input[name="password_conf"]', password)
     .click(Selector('input[type="submit"]'))
 
   await t

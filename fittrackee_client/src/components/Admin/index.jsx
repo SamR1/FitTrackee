@@ -19,7 +19,7 @@ function Admin (props) {
         <title>FitTrackee - Admin</title>
       </Helmet>
       {isLoggedIn() ? (
-        user.isAdmin ? (
+        user.admin ? (
           <Switch>
             <Route exact path="/admin" component={AdminMenu} />
             <Route exact path="/admin/sports" component={AdminSports} />

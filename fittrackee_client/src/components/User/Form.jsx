@@ -55,11 +55,11 @@ export default function Form (props) {
             <div className="form-group">
               <input
                 className="form-control input-lg"
-                name="passwordConf"
+                name="password_conf"
                 placeholder="Enter the password confirmation"
                 required
                 type="password"
-                value={props.userForm.passwordConf}
+                value={props.userForm.password_conf}
                 onChange={props.onHandleFormChange}
               />
             </div>
