@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { getData } from '../../../actions'
+import { getOrUpdateData } from '../../../actions'
 import AdminDetail from '../generic/AdminDetail'
 
 class AdminSports extends React.Component {
@@ -33,7 +33,7 @@ export default connect(
   }),
   dispatch => ({
     loadSport: sportId => {
-      dispatch(getData('sports', { id: sportId }))
+      dispatch(getOrUpdateData('getData', 'sports', { id: sportId }))
     },
   })
 )(AdminSports)

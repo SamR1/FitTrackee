@@ -18,12 +18,11 @@ export const setLoading = loading => ({
   loading
 })
 
-export const getData = (target, data) => dispatch => {
+export const getOrUpdateData = (action, target, data) => dispatch => {
   if (data && data.id && isNaN(data.id)) {
     return dispatch(setError(target, `${target}: Incorrect id`))
   }
-  return FitTrackeeApi
-  .getData(target, data)
+  return FitTrackeeApi[action](target, data)
   .then(ret => {
     if (ret.status === 'success') {
       dispatch(setData(target, ret.data))
@@ -44,22 +43,6 @@ export const addData = (target, data) => dispatch => FitTrackeeApi
     }
   })
   .catch(error => dispatch(setError(`${target}: ${error}`)))
-
-export const updateData = (target, data) => dispatch => {
-  if (isNaN(data.id)) {
-    return dispatch(setError(target, `${target}: Incorrect id`))
-  }
-  return FitTrackeeApi
-  .updateData(target, data)
-  .then(ret => {
-    if (ret.status === 'success') {
-      dispatch(setData(target, ret.data))
-    } else {
-      dispatch(setError(`${target}: ${ret.message}`))
-    }
-  })
-  .catch(error => dispatch(setError(`${target}: ${error}`)))
-}
 
 export const deleteData = (target, id) => dispatch => {
   if (isNaN(id)) {

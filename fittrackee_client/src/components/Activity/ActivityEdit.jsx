@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import ActivityAddOrEdit from './ActivityAddOrEdit'
-import { getData } from '../../actions'
+import { getOrUpdateData } from '../../actions'
 
 
 class ActivityEdit extends React.Component {
@@ -38,7 +38,7 @@ export default connect(
   }),
   dispatch => ({
     loadActivity: activityId => {
-      dispatch(getData('activities', { id: activityId }))
+      dispatch(getOrUpdateData('getData', 'activities', { id: activityId }))
     },
   })
 )(ActivityEdit)

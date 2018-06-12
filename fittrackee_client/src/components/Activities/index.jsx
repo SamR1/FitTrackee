@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 
 import ActivitiesFilter from './ActivitiesFilter'
 import ActivitiesList from './ActivitiesList'
-import { getData } from '../../actions'
+import { getOrUpdateData } from '../../actions'
 import { getMoreActivities } from '../../actions/activities'
 
 
@@ -105,7 +105,7 @@ export default connect(
   }),
   dispatch => ({
     loadActivities: params => {
-      dispatch(getData('activities', params))
+      dispatch(getOrUpdateData('getData', 'activities', params))
     },
     loadMoreActivities: params => {
       dispatch(getMoreActivities(params))

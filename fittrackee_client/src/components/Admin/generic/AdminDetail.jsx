@@ -2,7 +2,7 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 
-import { deleteData, updateData } from '../../../actions/index'
+import { deleteData, getOrUpdateData } from '../../../actions/index'
 import { history } from '../../../index'
 
 class AdminDetail extends React.Component {
@@ -149,7 +149,7 @@ export default connect(
           }
           return map
         }, {})
-      dispatch(updateData(target, data))
+      dispatch(getOrUpdateData('updateData', target, data))
     },
   })
 )(AdminDetail)

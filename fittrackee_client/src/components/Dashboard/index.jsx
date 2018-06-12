@@ -8,7 +8,7 @@ import Calendar from './../Others/Calendar'
 import Records from './Records'
 import Statistics from './Statistics'
 import UserStatistics from './UserStatistics'
-import { getData } from '../../actions'
+import { getOrUpdateData } from '../../actions'
 import { getMoreActivities } from '../../actions/activities'
 
 class DashBoard extends React.Component {
@@ -98,8 +98,8 @@ export default connect(
   }),
   dispatch => ({
     loadActivities: () => {
-      dispatch(getData('activities', { page: 1 }))
-      dispatch(getData('records'))
+      dispatch(getOrUpdateData('getData', 'activities', { page: 1 }))
+      dispatch(getOrUpdateData('getData', 'records'))
     },
     loadMoreActivities: page => {
       dispatch(getMoreActivities({ page }))

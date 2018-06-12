@@ -7,7 +7,7 @@ import ActivityCharts from './ActivityCharts'
 import ActivityDetails from './ActivityDetails'
 import ActivityMap from './ActivityMap'
 import CustomModal from './../../Others/CustomModal'
-import { getData } from '../../../actions'
+import { getOrUpdateData } from '../../../actions'
 import { deleteActivity } from '../../../actions/activities'
 
 class ActivityDisplay extends React.Component {
@@ -124,7 +124,7 @@ export default connect(
   }),
   dispatch => ({
     loadActivity: activityId => {
-      dispatch(getData('activities', { id: activityId }))
+      dispatch(getOrUpdateData('getData', 'activities', { id: activityId }))
     },
     onDeleteActivity: activityId => {
       dispatch(deleteActivity(activityId))
