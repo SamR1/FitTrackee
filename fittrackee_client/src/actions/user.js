@@ -1,3 +1,4 @@
+import FitTrackeeGenericApi from '../fitTrackeeApi'
 import FitTrackeeApi from '../fitTrackeeApi/user'
 import { history } from '../index'
 import { generateIds } from '../utils'
@@ -18,8 +19,17 @@ const ProfileUpdateError = message => ({
   type: 'PROFILE_UPDATE_ERROR', message
 })
 
-export const getProfile = () => dispatch => FitTrackeeApi
-  .getProfile()
+export const logout = () => ({ type: 'LOGOUT' })
+
+export const loadProfile = () => dispatch => {
+  if (window.localStorage.getItem('authToken')) {
+    return dispatch(getProfile())
+  }
+  return { type: 'LOGOUT' }
+}
+
+export const getProfile = () => dispatch => FitTrackeeGenericApi
+  .getData('auth/profile')
   .then(ret => {
     if (ret.status === 'success') {
       dispatch(getData('sports'))
@@ -32,9 +42,8 @@ export const getProfile = () => dispatch => FitTrackeeApi
     throw error
   })
 
-
-export const register = formData => dispatch => FitTrackeeApi
-  .register(formData)
+export const loginOrRegister = (target, formData) => dispatch => FitTrackeeApi
+  .loginOrRegister(target, formData)
   .then(ret => {
     if (ret.status === 'success') {
       window.localStorage.setItem('authToken', ret.auth_token)
@@ -45,29 +54,6 @@ export const register = formData => dispatch => FitTrackeeApi
   .catch(error => {
     throw error
   })
-
-
-export const login = formData => dispatch => FitTrackeeApi
-  .login(formData)
-  .then(ret => {
-    if (ret.status === 'success') {
-      window.localStorage.setItem('authToken', ret.auth_token)
-      return dispatch(getProfile())
-    }
-    return dispatch(AuthError(ret.message))
-  })
-  .catch(error => {
-    throw error
-  })
-
-export const loadProfile = () => dispatch => {
-  if (window.localStorage.getItem('authToken')) {
-    return dispatch(getProfile())
-  }
-  return { type: 'LOGOUT' }
-}
-
-export const logout = () => ({ type: 'LOGOUT' })
 
 const RegisterFormControl = formData => {
   const errMsg = []
@@ -84,15 +70,13 @@ const RegisterFormControl = formData => {
 }
 
 export const handleUserFormSubmit = (formData, formType) => dispatch => {
-  if (formType === 'Login') {
-    return dispatch(login(formData))
+  if (formType === 'register') {
+    const ret = RegisterFormControl(formData)
+    if (ret.length > 0) {
+      return dispatch(AuthErrors(generateIds(ret)))
+    }
   }
-  // formType === 'Register'
-  const ret = RegisterFormControl(formData)
-  if (ret.length === 0) {
-    return dispatch(register(formData))
-  }
-  return dispatch(AuthErrors(generateIds(ret)))
+  return dispatch(loginOrRegister(formType, formData))
 }
 
 export const handleProfileFormSubmit = formData => dispatch => {
@@ -101,8 +85,8 @@ export const handleProfileFormSubmit = formData => dispatch => {
       'Password and password confirmation don\'t match.'
     ))
   }
-  return FitTrackeeApi
-    .updateProfile(formData)
+  return FitTrackeeGenericApi
+    .postData('auth/profile/edit', formData)
     .then(ret => {
       if (ret.status === 'success') {
         dispatch(getProfile())
@@ -120,8 +104,8 @@ export const uploadPicture = event => dispatch => {
   const form = new FormData()
   form.append('file', event.target.picture.files[0])
   event.target.reset()
-  return FitTrackeeApi
-    .updatePicture(form)
+  return FitTrackeeGenericApi
+    .addDataWithFile('auth/picture', form)
     .then(ret => {
       if (ret.status === 'success') {
         return dispatch(getProfile())
@@ -136,10 +120,10 @@ export const uploadPicture = event => dispatch => {
 export const deletePicture = () => dispatch => FitTrackeeApi
   .deletePicture()
   .then(ret => {
-    if (ret.status === 'success') {
+    if (ret.status === 204) {
       return dispatch(getProfile())
     }
-    dispatch(PictureError(ret.message))
+    return dispatch(PictureError(ret.message))
   })
   .catch(error => {
     throw error

@@ -43,7 +43,7 @@ export default class App extends React.Component {
                 <Redirect to="/" />
               ) : (
                 <UserForm
-                  formType={'Register'}
+                  formType={'register'}
                 />
               )
             )}
@@ -55,7 +55,7 @@ export default class App extends React.Component {
                 <Redirect to="/" />
               ) : (
                 <UserForm
-                  formType={'Login'}
+                  formType={'login'}
                 />
               )
             )}
@@ -68,7 +68,7 @@ export default class App extends React.Component {
                 <ProfileEdit />
               ) : (
                 <UserForm
-                  formType={'Login'}
+                  formType={'login'}
                 />
               )
             )}
@@ -80,7 +80,7 @@ export default class App extends React.Component {
                 <Profile />
               ) : (
                 <UserForm
-                  formType={'Login'}
+                  formType={'login'}
                 />
               )
             )}

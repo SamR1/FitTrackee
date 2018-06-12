@@ -1,7 +1,6 @@
 import { parse } from 'date-fns'
 
 import FitTrackeeGenericApi from '../fitTrackeeApi'
-import FitTrackeeApi from '../fitTrackeeApi/activities'
 import { history } from '../index'
 import { formatChartData } from '../utils'
 import { setError, setLoading } from './index'
@@ -27,8 +26,8 @@ export const setChartData = chartData => ({
   chartData,
 })
 
-export const addActivity = form => dispatch => FitTrackeeApi
-  .addActivity(form)
+export const addActivity = form => dispatch => FitTrackeeGenericApi
+  .addDataWithFile('activities', form)
   .then(ret => {
     if (ret.status === 'created') {
       if (ret.data.activities.length === 0) {
@@ -48,8 +47,8 @@ export const addActivity = form => dispatch => FitTrackeeApi
   .catch(error => dispatch(setError(`activities: ${error}`)))
 
 
-export const addActivityWithoutGpx = form => dispatch => FitTrackeeApi
-  .addActivityWithoutGpx(form)
+export const addActivityWithoutGpx = form => dispatch => FitTrackeeGenericApi
+  .addData('activities/no_gpx', form)
   .then(ret => {
     if (ret.status === 'created') {
       dispatch(loadProfile())
@@ -63,8 +62,8 @@ export const addActivityWithoutGpx = form => dispatch => FitTrackeeApi
 
 export const getActivityGpx = activityId => dispatch => {
   if (activityId) {
-    return FitTrackeeApi
-    .getActivityGpx(activityId)
+    return FitTrackeeGenericApi
+    .getData(`activities/${activityId}/gpx`)
     .then(ret => {
       if (ret.status === 'success') {
          dispatch(setGpx(ret.data.gpx))
@@ -80,8 +79,8 @@ export const getActivityGpx = activityId => dispatch => {
 
 export const getActivityChartData = activityId => dispatch => {
   if (activityId) {
-    return FitTrackeeApi
-    .getActivityChartData(activityId)
+    return FitTrackeeGenericApi
+    .getData(`activities/${activityId}/chart_data`)
     .then(ret => {
       if (ret.status === 'success') {
          dispatch(setChartData(formatChartData(ret.data.chart_data)))

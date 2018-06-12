@@ -29,6 +29,25 @@ export default class FitTrackeeApi {
     return createRequest(params)
   }
 
+  static addDataWithFile(target, data) {
+    const params = {
+      url: `${apiUrl}${target}`,
+      method: 'POST',
+      body: data,
+    }
+    return createRequest(params)
+  }
+
+  static postData(target, data) {
+    const params = {
+      url: `${apiUrl}${target}/${data.id}`,
+      method: 'POST',
+      body: data,
+      type: 'application/json',
+    }
+    return createRequest(params)
+  }
+
   static updateData(target, data) {
     const params = {
       url: `${apiUrl}${target}/${data.id}`,

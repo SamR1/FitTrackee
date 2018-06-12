@@ -7,7 +7,9 @@ export default function Form (props) {
       <Helmet>
         <title>FitTrackee - {props.formType}</title>
       </Helmet>
-      <h1 className="page-title">{props.formType}</h1>
+      <h1 className="page-title">
+        {`${props.formType.charAt(0).toUpperCase()}${props.formType.slice(1)}`}
+      </h1>
       <div className="container">
       <div className="row">
         <div className="col-md-3" />
@@ -16,7 +18,7 @@ export default function Form (props) {
           <form onSubmit={event =>
             props.handleUserFormSubmit(event, props.formType)}
           >
-            {props.formType === 'Register' &&
+            {props.formType === 'register' &&
             <div className="form-group">
               <input
                 className="form-control input-lg"
@@ -51,7 +53,7 @@ export default function Form (props) {
                 onChange={props.onHandleFormChange}
               />
             </div>
-            {props.formType === 'Register' &&
+            {props.formType === 'register' &&
             <div className="form-group">
               <input
                 className="form-control input-lg"

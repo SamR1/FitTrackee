@@ -287,10 +287,9 @@ def del_picture(user_id):
         db.session.commit()
 
         response_object = {
-            'status': 'success',
-            'message': 'User picture delete.'
+            'status': 'no content'
         }
-        return jsonify(response_object), 200
+        return jsonify(response_object), 204
 
     except (exc.IntegrityError, ValueError) as e:
         db.session.rollback()
