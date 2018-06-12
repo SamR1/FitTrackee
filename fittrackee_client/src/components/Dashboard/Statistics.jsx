@@ -80,7 +80,7 @@ class Statistics extends React.Component {
               <ResponsiveContainer height={300}>
                 <BarChart
                   data={stats[displayedData]}
-                  margin={{ top: 15, bottom: 15 }}
+                  margin={{ top: 15, bottom: 0 }}
                 >
                   <XAxis
                     dataKey="date"

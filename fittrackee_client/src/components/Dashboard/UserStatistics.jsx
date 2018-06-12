@@ -19,7 +19,7 @@ export default function UserStatistics (props) {
               <i className="fa fa-calendar fa-3x fa-color" />
             </div>
             <div className="col-9 text-right">
-              <div className="huge">{user.nbActivities}</div>
+              <div className="huge">{user.nb_activities}</div>
               <div>{`workout${user.nb_activities === 1 ? '' : 's'}`}</div>
             </div>
           </div>
