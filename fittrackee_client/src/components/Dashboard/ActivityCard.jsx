@@ -29,6 +29,21 @@ export default function ActivityCard (props) {
                      `?${Date.now()}`}
                 className="img-fluid"
               />
+              <div className="map-attribution text-right">
+                <div>
+                  <span className="map-attribution-text">
+                    ©
+                  </span>
+                  <a
+                    className="map-attribution-text"
+                    href="http://www.openstreetmap.org/copyright"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    OpenStreetMap
+                  </a>
+                </div>
+              </div>
             </div>
           )}
           <div className="col">

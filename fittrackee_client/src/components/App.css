@@ -45,22 +45,12 @@ a {
   color: #40578a;
 }
 
-.card {
-  text-align: left;
-}
-
-label {
-  width: 100%;
-}
-
 input, textarea {
   width: 100%;
 }
 
-.page-title {
-  font-size: 2em;
-  margin: 1em;
-  text-align: center;
+label {
+  width: 100%;
 }
 
 .activity-card {
@@ -105,24 +95,8 @@ input, textarea {
   max-height: 35px;
 }
 
-.col-activity-logo{
-  padding-right: 0;
-}
-
-.fa-trophy {
-  color: goldenrod;
-}
-
-.fa-color {
-  color: #405976;
-}
-
-.leaflet-container {
-  height: 400px;
-}
-
-.radioLabel {
-  text-align: center;
+.card {
+  text-align: left;
 }
 
 .chart {
@@ -156,6 +130,10 @@ input, textarea {
   margin-bottom: 10px;
 }
 
+.col-activity-logo{
+  padding-right: 0;
+}
+
 .custom-modal {
   background-color: #fff;
   border-radius: 5px;
@@ -183,9 +161,12 @@ input, textarea {
   margin-top: 30px;
 }
 
-.sport-img {
-  max-width: 35px;
-  max-height: 35px;
+.fa-trophy {
+  color: goldenrod;
+}
+
+.fa-color {
+  color: #405976;
 }
 
 .huge {
@@ -200,6 +181,47 @@ input, textarea {
   opacity: .4;
 }
 
+.leaflet-container {
+  height: 400px;
+}
+
+.loader {
+  animation: spin 2s linear infinite;
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid #3498db;
+  border-radius: 50%;
+  height: 120px;
+  margin-left: 41%;
+  width: 120px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.map-attribution {
+  font-size: 11px;
+  position:relative;
+  top: -15px;
+}
+
+.map-attribution-text {
+  background-color: rgba(255, 255, 255, .5);
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.page-title {
+  font-size: 2em;
+  margin: 1em;
+  text-align: center;
+}
+
+.radioLabel {
+  text-align: center;
+}
+
 .record-logo {
   margin-right: 5px;
   max-width: 25px;
@@ -209,6 +231,11 @@ input, textarea {
 .record-table table, .record-table th, .record-table td{
   font-size: 0.9em;
   padding: 0.1em;
+}
+
+.sport-img {
+  max-width: 35px;
+  max-height: 35px;
 }
 
 .sport-img-medium {
@@ -246,22 +273,6 @@ input, textarea {
   font-size: 0.9em;
   padding: 0.1em;
 }
-
-.loader {
-  animation: spin 2s linear infinite;
-  border: 16px solid #f3f3f3;
-  border-top: 16px solid #3498db;
-  border-radius: 50%;
-  height: 120px;
-  margin-left: 41%;
-  width: 120px;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
 
 /* calendar */
 :root {
