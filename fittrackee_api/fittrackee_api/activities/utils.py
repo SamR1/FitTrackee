@@ -14,6 +14,7 @@ from werkzeug.utils import secure_filename
 
 from ..users.models import User
 from .models import Activity, ActivitySegment, Sport
+from .utils_weather import get_weather
 
 
 class ActivityException(Exception):
@@ -183,12 +184,17 @@ def get_gpx_info(gpx_file):
     max_speed = 0
     start = 0
     map_data = []
+    weather_data = []
 
     for segment_idx, segment in enumerate(gpx.tracks[0].segments):
         segment_start = 0
         for point_idx, point in enumerate(segment.points):
             if point_idx == 0 and start == 0:
                 start = point.time
+                weather_data.append(get_weather(point))
+            if (point_idx == (len(segment.points) - 1) and
+                    segment_idx == (len(gpx.tracks[0].segments) - 1)):
+                weather_data.append(get_weather(point))
             map_data.append([
                 point.longitude, point.latitude
             ])
@@ -215,7 +221,7 @@ def get_gpx_info(gpx_file):
         bounds.max_longitude
     ]
 
-    return gpx_data, map_data
+    return gpx_data, map_data, weather_data
 
 
 def get_chart_data(gpx_file):
@@ -305,7 +311,7 @@ def get_map_hash(map_filepath):
 
 def process_one_gpx_file(params, filename):
     try:
-        gpx_data, map_data = get_gpx_info(params['file_path'])
+        gpx_data, map_data, weather_data = get_gpx_info(params['file_path'])
         auth_user_id = params['user'].id
         new_filepath = get_new_file_path(
             auth_user_id=auth_user_id,
@@ -333,6 +339,8 @@ def process_one_gpx_file(params, filename):
             params['user'], params['activity_data'], gpx_data)
         new_activity.map = map_filepath
         new_activity.map_id = get_map_hash(map_filepath)
+        new_activity.weather_start = weather_data[0]
+        new_activity.weather_end = weather_data[1]
         db.session.add(new_activity)
         db.session.flush()
 

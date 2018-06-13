@@ -6,7 +6,7 @@ from sqlalchemy.dialects import postgresql
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm.session import object_session
-from sqlalchemy.types import Enum
+from sqlalchemy.types import JSON, Enum
 
 from .utils_format import convert_in_duration, convert_value_to_integer
 
@@ -121,6 +121,8 @@ class Activity(db.Model):
     bounds = db.Column(postgresql.ARRAY(db.Float), nullable=True)
     map = db.Column(db.String(255), nullable=True)
     map_id = db.Column(db.String(50), nullable=True)
+    weather_start = db.Column(JSON, nullable=True)
+    weather_end = db.Column(JSON, nullable=True)
     segments = db.relationship('ActivitySegment',
                                lazy=True,
                                cascade='all, delete',
@@ -234,7 +236,9 @@ class Activity(db.Model):
             "next_activity": next_activity.id if next_activity else None,
             "segments": [segment.serialize() for segment in self.segments],
             "records": [record.serialize() for record in self.records],
-            "map": self.map_id if self.map else None
+            "map": self.map_id if self.map else None,
+            "weather_start": self.weather_start,
+            "weather_end": self.weather_end
         }
 
     @classmethod

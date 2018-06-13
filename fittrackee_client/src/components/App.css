@@ -67,6 +67,9 @@ input, textarea {
   margin-bottom: 15px;
 }
 
+.activity-details {
+  font-size: 0.95em;
+}
 .activity-date {
   font-size: 0.75em;
 }
@@ -223,6 +226,25 @@ input, textarea {
 
 .unlink {
   color: black;
+}
+
+.weather-img {
+  max-width: 35px;
+  max-height: 35px;
+}
+
+.weather-img-small {
+  max-width: 20px;
+  max-height: 20px;
+}
+
+.weather-table {
+  margin-bottom: 0;
+}
+
+.weather-table table, .weather-table th, .weather-table td{
+  font-size: 0.9em;
+  padding: 0.1em;
 }
 
 .loader {

@@ -1,11 +1,13 @@
 import React from 'react'
 
+import ActivityWeather from './ActivityWeather'
+
 export default function ActivityDetails(props) {
   const { activity } = props
   const withPauses = activity.pauses !== '0:00:00' && activity.pauses !== null
   const recordLDexists = activity.records.find(r => r.record_type === 'LD')
   return (
-    <div>
+    <div className="activity-details">
       <p>
         <i
           className="fa fa-clock-o custom-fa"
@@ -88,6 +90,7 @@ export default function ActivityDetails(props) {
           Descent: {activity.descent}m
         </p>
       )}
+      <ActivityWeather activity={activity} />
     </div>
   )
 }
