@@ -1,4 +1,4 @@
-"""empty message
+"""Add 'notes' column to 'Activity' table
 
 Revision ID: 096dd0b43beb
 Revises: 71093ac9ca44

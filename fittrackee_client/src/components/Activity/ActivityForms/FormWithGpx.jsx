@@ -64,6 +64,18 @@ function FormWithGpx (props) {
           </label>
         </div>
       )}
+      <div className="form-group">
+        <label>
+          Notes:
+          <textarea
+            name="notes"
+            defaultValue={activity ? activity.notes : ''}
+            disabled={loading}
+            className="form-control input-lg"
+            maxLength="500"
+          />
+        </label>
+      </div>
       {loading ? (
         <div className="loader" />
       ) : (
@@ -100,13 +112,16 @@ export default connect(
       const form = new FormData()
       form.append('file', e.target.form.gpxFile.files[0])
       form.append(
-        'data', `{"sport_id": ${e.target.form.sport.value}}`
+        'data',
+        `{"sport_id": ${e.target.form.sport.value
+        }, "notes": "${e.target.form.notes.value}"}`
       )
       dispatch(addActivity(form))
     },
     onEditActivity: (e, activity) => {
       dispatch(editActivity({
         id: activity.id,
+        notes: e.target.form.notes.value,
         sport_id: +e.target.form.sport.value,
         title: e.target.form.title.value,
       }))

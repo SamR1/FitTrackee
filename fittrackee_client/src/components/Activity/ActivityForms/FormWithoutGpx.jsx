@@ -103,6 +103,17 @@ function FormWithoutGpx (props) {
           />
         </label>
       </div>
+      <div className="form-group">
+        <label>
+          Notes:
+          <textarea
+            name="notes"
+            defaultValue={activity ? activity.notes : ''}
+            className="form-control input-lg"
+            maxLength="500"
+          />
+        </label>
+      </div>
       <input
         type="submit"
         className="btn btn-primary btn-lg btn-block"
@@ -133,6 +144,7 @@ export default connect(
         activity_date: activityDate,
         distance: +e.target.form.distance.value,
         duration,
+        notes: e.target.form.notes.value,
         sport_id: +e.target.form.sport_id.value,
         title: e.target.form.title.value,
       }

@@ -6,6 +6,7 @@ import ActivityCardHeader from './ActivityCardHeader'
 import ActivityCharts from './ActivityCharts'
 import ActivityDetails from './ActivityDetails'
 import ActivityMap from './ActivityMap'
+import ActivityNotes from './ActivityNotes'
 import CustomModal from './../../Others/CustomModal'
 import { getOrUpdateData } from '../../../actions'
 import { deleteActivity } from '../../../actions/activities'
@@ -106,6 +107,7 @@ class ActivityDisplay extends React.Component {
                     </div>
                   </div>
                 )}
+                <ActivityNotes notes={activity.notes} />
               </div>
             )}
           </div>

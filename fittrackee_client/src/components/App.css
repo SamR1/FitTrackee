@@ -72,6 +72,13 @@ label {
   padding: 0;
 }
 
+.activity-notes {
+  font-size: 0.9em;
+  font-style: italic;
+  margin-top: 10px;
+  padding: 5px;
+}
+
 .activity-page {
   margin-top: 20px;
 }

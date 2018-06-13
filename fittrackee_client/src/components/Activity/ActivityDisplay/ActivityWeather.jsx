@@ -43,10 +43,10 @@ export default function ActivityWeather(props) {
                 />
               </td>
               <td>
-                {activity.weather_start.temperature}°C
+                {Number(activity.weather_start.temperature).toFixed(1)}°C
               </td>
               <td>
-                {activity.weather_end.temperature}°C
+                {Number(activity.weather_end.temperature).toFixed(1)}°C
               </td>
             </tr>
             <tr>
@@ -58,10 +58,10 @@ export default function ActivityWeather(props) {
                 />
               </td>
               <td>
-                {activity.weather_start.humidity * 100}%
+                {Number(activity.weather_start.humidity * 100).toFixed(1)}%
               </td>
               <td>
-                {activity.weather_end.humidity * 100}%
+                {Number(activity.weather_end.humidity * 100).toFixed(1)}%
               </td>
             </tr>
             <tr>
@@ -73,10 +73,10 @@ export default function ActivityWeather(props) {
                 />
               </td>
               <td>
-                {activity.weather_start.wind}m/s
+                {Number(activity.weather_start.wind).toFixed(1)}m/s
               </td>
               <td>
-                {activity.weather_end.wind}m/s
+                {Number(activity.weather_end.wind).toFixed(1)}m/s
               </td>
             </tr>
           </tbody>
