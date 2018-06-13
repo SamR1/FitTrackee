@@ -123,6 +123,7 @@ class Activity(db.Model):
     map_id = db.Column(db.String(50), nullable=True)
     weather_start = db.Column(JSON, nullable=True)
     weather_end = db.Column(JSON, nullable=True)
+    notes = db.Column(db.String(500), nullable=True)
     segments = db.relationship('ActivitySegment',
                                lazy=True,
                                cascade='all, delete',
@@ -238,7 +239,8 @@ class Activity(db.Model):
             "records": [record.serialize() for record in self.records],
             "map": self.map_id if self.map else None,
             "weather_start": self.weather_start,
-            "weather_end": self.weather_end
+            "weather_end": self.weather_end,
+            "notes": self.notes
         }
 
     @classmethod

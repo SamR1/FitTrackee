@@ -73,6 +73,7 @@ def create_activity(
         distance=distance,
         duration=duration
     )
+    new_activity.notes = activity_data.get('notes')
 
     if title is not None and title != '':
         new_activity.title = title
@@ -116,6 +117,8 @@ def edit_activity(activity, activity_data, auth_user_id):
         activity.sport_id = activity_data.get('sport_id')
     if activity_data.get('title'):
         activity.title = activity_data.get('title')
+    if activity_data.get('notes'):
+        activity.notes = activity_data.get('notes')
     if not activity.gpx:
         if activity_data.get('activity_date'):
             activity_date = datetime.strptime(

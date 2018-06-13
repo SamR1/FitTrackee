@@ -40,6 +40,7 @@ def test_add_activity(
     assert serialized_activity['map'] is None
     assert serialized_activity['weather_start'] is None
     assert serialized_activity['weather_end'] is None
+    assert serialized_activity['notes'] is None
 
 
 def test_add_segment(
