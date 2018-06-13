@@ -1,5 +1,6 @@
 .App {
   background-color: #eaeaea;
+  padding-bottom: 20px;
   min-height: 100vh;
   text-align: center;
 }
@@ -84,7 +85,7 @@ label {
 }
 
 .activities-result {
-  font-size: 0.9em;
+  font-size: 0.85em;
 }
 
 .activity-sport {

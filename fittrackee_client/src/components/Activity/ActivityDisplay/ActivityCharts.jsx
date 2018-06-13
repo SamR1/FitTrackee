@@ -152,6 +152,7 @@ class ActivityCharts extends React.Component {
                       fill="#e5e5e5"
                       stroke="#cccccc"
                       dot={false}
+                      unit=" m"
                     />
                   )}
                   {this.displayData('speed') && (
@@ -162,6 +163,7 @@ class ActivityCharts extends React.Component {
                       stroke="#8884d8"
                       strokeWidth={2}
                       dot={false}
+                      unit=" km/h"
                     />
                   )}
                   <Tooltip

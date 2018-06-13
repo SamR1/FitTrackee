@@ -66,7 +66,7 @@ class ActivityDisplay extends React.Component {
               <div>
                 <div className="row">
                   <div className="col">
-                    <div className="card">
+                    <div className="card activity-card">
                       <div className="card-header">
                         <ActivityCardHeader
                           activity={activity}
@@ -94,7 +94,7 @@ class ActivityDisplay extends React.Component {
                 {activity.with_gpx && (
                   <div className="row">
                     <div className="col">
-                      <div className="card">
+                      <div className="card activity-card">
                         <div className="card-body">
                           <div className="row">
                             <div className="col">
