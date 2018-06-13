@@ -10,12 +10,12 @@
 
 ---
 
-This application allows you to track your sports activity from gpx files and keep your data on your own server.  
-Several mobile apps can store workout data locally and export it into a gpx file.  
+This application allows you to track your sport activities from gpx files and keep your data on your own server.  
+Several mobile apps can store workouts data locally and export it into a gpx file.  
 Examples (for Android):  
 * [Runner Up](https://github.com/jonasoreland/runnerup) (GPL v3)  
 * [ForRunners](https://github.com/brvier/ForRunners)  (GPL v3)  
-* [AlpineQuest](https://www.alpinequest.net/) (Proprietary, [exodus privay report](https://reports.exodus-privacy.eu.org/reports/2975/))  
+* [AlpineQuest](https://www.alpinequest.net/) (Proprietary, no trackers according to [exodus privay report](https://reports.exodus-privacy.eu.org/reports/2975/))  
 
 Maps are displayed using [Open Street Map](https://www.openstreetmap.org).
 
