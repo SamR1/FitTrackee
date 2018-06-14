@@ -40,7 +40,7 @@ export default class FitTrackeeApi {
 
   static postData(target, data) {
     const params = {
-      url: `${apiUrl}${target}/${data.id}`,
+      url: `${apiUrl}${target}${data.id ? `/${data.id}` : '' }`,
       method: 'POST',
       body: data,
       type: 'application/json',

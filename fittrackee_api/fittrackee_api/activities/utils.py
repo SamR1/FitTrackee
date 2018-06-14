@@ -25,14 +25,21 @@ class ActivityException(Exception):
 
 
 def get_datetime_with_tz(timezone, activity_date, gpx_data=None):
-    # activity date in gpx are directly in UTC
     activity_date_tz = None
-    if timezone and not gpx_data:
+    if timezone:
         user_tz = pytz.timezone(timezone)
-        activity_date_tz = user_tz.localize(activity_date)
-        if not gpx_data:
+        utc_tz = pytz.utc
+        if gpx_data:
+            # activity date in gpx is in UTC, but in naive datetime
+            fmt = '%Y-%m-%d %H:%M:%S'
+            activity_date_string = activity_date.strftime(fmt)
+            activity_date_tmp = utc_tz.localize(
+                datetime.strptime(activity_date_string, fmt))
+            activity_date_tz = activity_date_tmp.astimezone(user_tz)
+        else:
+            activity_date_tz = user_tz.localize(activity_date)
+            activity_date = activity_date_tz.astimezone(utc_tz)
             # make datetime 'naive' like in gpx file
-            activity_date = activity_date_tz.astimezone(pytz.utc)
             activity_date = activity_date.replace(tzinfo=None)
 
     return activity_date_tz, activity_date

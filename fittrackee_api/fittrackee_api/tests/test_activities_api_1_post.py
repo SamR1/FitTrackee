@@ -311,6 +311,41 @@ def test_add_an_activity_with_gpx_without_name(
     assert_activity_data_with_gpx(data)
 
 
+def test_add_an_activity_with_gpx_without_name_timezone(
+    app, user_1, sport_1_cycling, gpx_file_wo_name
+):
+    user_1.timezone = 'Europe/Paris'
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.post(
+        '/api/activities',
+        data=dict(
+            file=(BytesIO(str.encode(gpx_file_wo_name)), 'example.gpx'),
+            data='{"sport_id": 1}'
+        ),
+        headers=dict(
+            content_type='multipart/form-data',
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 201
+    assert 'created' in data['status']
+    assert len(data['data']['activities']) == 1
+    assert 'Cycling - 2018-03-13 13:44:45' == data['data']['activities'][0]['title']  # noqa
+    assert_activity_data_with_gpx(data)
+
+
 def test_get_an_activity_with_gpx_notes(
         app, user_1, sport_1_cycling, gpx_file
 ):

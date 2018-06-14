@@ -46,7 +46,7 @@ a {
   color: #40578a;
 }
 
-input, textarea {
+input[type="text"], textarea {
   width: 100%;
 }
 

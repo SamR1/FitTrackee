@@ -85,6 +85,7 @@ export const handleProfileFormSubmit = formData => dispatch => {
       'Password and password confirmation don\'t match.'
     ))
   }
+  delete formData.id
   return FitTrackeeGenericApi
     .postData('auth/profile/edit', formData)
     .then(ret => {

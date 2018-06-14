@@ -27,7 +27,7 @@ export default function RecordsCard (props) {
           ? 'No records'
           : (Object.keys(recordsBySport).map(sportLabel => (
             <table
-              className="table table-borderless record-table"
+              className="table table-borderless table-sm record-table"
               key={sportLabel}
             >
               <thead>
