@@ -8,7 +8,7 @@ from flask import Blueprint, current_app, jsonify, request, send_file
 from sqlalchemy import exc
 
 from ..users.utils import (
-    User, authenticate, verify_extension, can_view_activity
+    User, authenticate, can_view_activity, verify_extension
 )
 from .models import Activity
 from .utils import (
