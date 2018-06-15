@@ -58,6 +58,7 @@ class ActivityAddEdit extends React.Component {
                           <div className="col">
                             <label className="radioLabel">
                             <input
+                              className="add-activity-radio"
                               type="radio"
                               name="withGpx"
                               disabled={loading}
@@ -70,6 +71,7 @@ class ActivityAddEdit extends React.Component {
                           <div className="col">
                             <label className="radioLabel">
                             <input
+                              className="add-activity-radio"
                               type="radio"
                               name="withoutGpx"
                               disabled={loading}

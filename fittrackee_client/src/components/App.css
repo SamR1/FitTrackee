@@ -73,6 +73,14 @@ label {
   padding: 0;
 }
 
+.activity-no-map {
+  background-color: #eaeaea;
+  color: #666666;
+  font-style: italic;
+  height: 400px;
+  line-height: 400px;
+}
+
 .activity-notes {
   font-size: 0.9em;
   font-style: italic;
@@ -96,6 +104,10 @@ label {
 
 .add-activity {
   margin-top: 50px;
+}
+
+.add-activity-radio {
+  margin-right: 10px;
 }
 
 .admin-img {

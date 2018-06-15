@@ -6,6 +6,7 @@ import ActivityCardHeader from './ActivityCardHeader'
 import ActivityCharts from './ActivityCharts'
 import ActivityDetails from './ActivityDetails'
 import ActivityMap from './ActivityMap'
+import ActivityNoMap from './ActivityNoMap'
 import ActivityNotes from './ActivityNotes'
 import CustomModal from './../../Others/CustomModal'
 import { getOrUpdateData } from '../../../actions'
@@ -78,11 +79,13 @@ class ActivityDisplay extends React.Component {
                       </div>
                       <div className="card-body">
                         <div className="row">
-                          {activity.with_gpx && (
-                            <div className="col-8">
+                          <div className="col-8">
+                            {activity.with_gpx ? (
                               <ActivityMap activity={activity} />
-                            </div>
-                          )}
+                            ) : (
+                              <ActivityNoMap />
+                            )}
+                          </div>
                           <div className="col">
                             <ActivityDetails activity={activity} />
                           </div>
