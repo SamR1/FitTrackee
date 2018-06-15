@@ -104,3 +104,13 @@ def authenticate_as_admin(f):
         return f(resp, *args, **kwargs)
 
     return decorated_function
+
+
+def can_view_activity(auth_user_id, activity_user_id):
+    if auth_user_id != activity_user_id:
+        response_object = {
+            'status': 'error',
+            'message': 'You do not have permissions.'
+        }
+        return response_object, 403
+    return None, None

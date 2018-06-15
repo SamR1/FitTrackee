@@ -7,7 +7,9 @@ from fittrackee_api import appLog, db
 from flask import Blueprint, current_app, jsonify, request, send_file
 from sqlalchemy import exc
 
-from ..users.utils import User, authenticate, verify_extension
+from ..users.utils import (
+    User, authenticate, verify_extension, can_view_activity
+)
 from .models import Activity
 from .utils import (
     ActivityException, create_activity, edit_activity, get_chart_data,
@@ -99,6 +101,11 @@ def get_activity(auth_user_id, activity_id):
     activities_list = []
 
     if activity:
+        response_object, code = can_view_activity(
+            auth_user_id, activity.user_id)
+        if response_object:
+            return jsonify(response_object), code
+
         activities_list.append(activity.serialize())
         status = 'success'
         code = 200
@@ -120,6 +127,10 @@ def get_activity_data(auth_user_id, activity_id, data_type):
     activity = Activity.query.filter_by(id=activity_id).first()
     content = ''
     if activity:
+        response_object, code = can_view_activity(
+            auth_user_id, activity.user_id)
+        if response_object:
+            return jsonify(response_object), code
         if not activity.gpx or activity.gpx == '':
             response_object = {
                 'status': 'fail',
@@ -313,6 +324,11 @@ def update_activity(auth_user_id, activity_id):
     try:
         activity = Activity.query.filter_by(id=activity_id).first()
         if activity:
+            response_object, code = can_view_activity(
+                auth_user_id, activity.user_id)
+            if response_object:
+                return jsonify(response_object), code
+
             activity = edit_activity(activity, activity_data, auth_user_id)
             db.session.commit()
             response_object = {
@@ -350,6 +366,11 @@ def delete_activity(auth_user_id, activity_id):
     try:
         activity = Activity.query.filter_by(id=activity_id).first()
         if activity:
+            response_object, code = can_view_activity(
+                auth_user_id, activity.user_id)
+            if response_object:
+                return jsonify(response_object), code
+
             db.session.delete(activity)
             db.session.commit()
             response_object = {

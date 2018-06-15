@@ -110,6 +110,59 @@ def test_edit_an_activity_with_gpx(
     assert data['data']['activities'][0]['notes'] == 'test notes'
 
 
+def test_edit_an_activity_with_gpx_different_user(
+    app, user_1, user_2, sport_1_cycling, sport_2_running, gpx_file
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    client.post(
+        '/api/activities',
+        data=dict(
+            file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+            data='{"sport_id": 1}'
+        ),
+        headers=dict(
+            content_type='multipart/form-data',
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='toto@toto.com',
+            password='87654321'
+        )),
+        content_type='application/json'
+    )
+    response = client.patch(
+        '/api/activities/1',
+        content_type='application/json',
+        data=json.dumps(dict(
+            sport_id=2,
+            title="Activity test",
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 403
+    assert 'error' in data['status']
+    assert 'You do not have permissions.' in data['message']
+
+
 def test_edit_an_activity_with_gpx_partial(
     app, user_1, sport_1_cycling, sport_2_running, gpx_file
 ):
@@ -449,6 +502,66 @@ def test_edit_an_activity_wo_gpx(
     assert records[3]['record_type'] == 'AS'
     assert records[3]['activity_date'] == 'Tue, 15 May 2018 15:05:00 GMT'
     assert records[3]['value'] == 8.0
+
+
+def test_edit_an_activity_wo_gpx_different_user(
+    app, user_1, user_2, sport_1_cycling
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    client.post(
+        '/api/activities/no_gpx',
+        content_type='application/json',
+        data=json.dumps(dict(
+            sport_id=1,
+            duration=3600,
+            activity_date='2018-05-14 14:05',
+            distance=7,
+            title='Activity test'
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='toto@toto.com',
+            password='87654321'
+        )),
+        content_type='application/json'
+    )
+    response = client.patch(
+        '/api/activities/1',
+        content_type='application/json',
+        data=json.dumps(dict(
+            sport_id=2,
+            duration=3600,
+            activity_date='2018-05-15 15:05',
+            distance=8,
+            title='Activity test'
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 403
+    assert 'error' in data['status']
+    assert 'You do not have permissions.' in data['message']
 
 
 def test_edit_an_activity_wo_gpx_timezone(

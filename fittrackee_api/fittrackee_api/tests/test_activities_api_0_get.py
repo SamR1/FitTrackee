@@ -582,6 +582,34 @@ def test_get_an_activity(
     assert '0:17:04' == data['data']['activities'][0]['duration']
 
 
+def test_get_an_activity_different_user(
+    app, user_1, user_2, sport_1_cycling, activity_cycling_user_2
+):
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        '/api/activities/1',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 403
+    assert 'error' in data['status']
+    assert 'You do not have permissions.' in data['message']
+
+
 def test_get_activities_per_page(
     app, user_1, sport_1_cycling, seven_activities_user_1
 ):
@@ -652,7 +680,7 @@ def test_get_an_activity_invalid_id(app, user_1):
     assert len(data['data']['activities']) == 0
 
 
-def test_get_an_activity_no_actvity_no_gpx(app, user_1):
+def test_get_an_activity_no_activity_no_gpx(app, user_1):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',

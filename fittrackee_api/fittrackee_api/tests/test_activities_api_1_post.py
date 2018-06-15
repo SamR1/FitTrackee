@@ -236,6 +236,67 @@ def test_get_an_activity_with_gpx(app, user_1, sport_1_cycling, gpx_file):
     assert data['message'] == 'internal error.'
 
 
+def test_get_an_activity_with_gpx_different_user(
+        app, user_1, user_2, sport_1_cycling, gpx_file):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    client.post(
+        '/api/activities',
+        data=dict(
+            file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+            data='{"sport_id": 1}'
+        ),
+        headers=dict(
+            content_type='multipart/form-data',
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='toto@toto.com',
+            password='87654321'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        '/api/activities/1',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 403
+    assert 'error' in data['status']
+    assert 'You do not have permissions.' in data['message']
+
+    response = client.get(
+        '/api/activities/1/gpx',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 403
+    assert 'error' in data['status']
+    assert 'You do not have permissions.' in data['message']
+
+
 def test_get_chart_data_activty_with_gpx(
         app, user_1, sport_1_cycling, gpx_file
 ):
@@ -275,6 +336,54 @@ def test_get_chart_data_activty_with_gpx(
     assert 'success' in data['status']
     assert data['message'] == ''
     assert data['data']['chart_data'] != ''
+
+
+def test_get_chart_data_activty_with_gpx_different_user(
+        app, user_1, user_2, sport_1_cycling, gpx_file
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    client.post(
+        '/api/activities',
+        data=dict(
+            file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+            data='{"sport_id": 1}'
+        ),
+        headers=dict(
+            content_type='multipart/form-data',
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='toto@toto.com',
+            password='87654321'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        '/api/activities/1/chart_data',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 403
+    assert 'error' in data['status']
+    assert 'You do not have permissions.' in data['message']
 
 
 def test_add_an_activity_with_gpx_without_name(
