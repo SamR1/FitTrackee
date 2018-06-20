@@ -6,6 +6,9 @@ make-p:
 	# Launch all P targets in parallel and exit as soon as one exits.
 	set -m; (for p in $(P); do ($(MAKE) $$p || kill 0)& done; wait)
 
+build-client:
+	$(NPM) build
+
 clean-install:
 	rm -fr $(NODE_MODULES)
 	rm -fr $(VENV)
@@ -41,6 +44,15 @@ lint-react:
 
 migrate-db:
 	$(FLASK) db migrate --directory $(MIGRATIONS)
+
+run:
+	$(MAKE) P="run-server run-client" make-p
+
+run-client:
+	serve -s fittrackee_client/build -l 3000
+
+run-server:
+	cd fittrackee_api && $(GUNICORN) -b 127.0.0.1:5000 "fittrackee_api:create_app()"
 
 serve-python:
 	$(FLASK) run --with-threads -h $(HOST) -p $(API_PORT)

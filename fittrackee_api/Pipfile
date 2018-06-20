@@ -13,6 +13,7 @@ gpxpy = "==1.2.0"
 staticmap = "==0.5.3"
 pytz = "==2018.4"
 python-forecastio = "==1.4.0"
+gunicorn = "==19.8.1"
 
 [dev-packages]
 pytest = "==3.6.1"
