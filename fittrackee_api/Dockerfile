@@ -7,11 +7,12 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 # add requirements
-COPY ./requirements.txt /usr/src/app/fittrackee_api/requirements.txt
+COPY ./Pipfile /usr/src/app/Pipfile
+COPY ./Pipfile.lock /usr/src/app/Pipfile.lock
 
 # install requirements
 RUN pip install pipenv
-RUN pipenv install --system --deploy --ignore-pipfile
+RUN pipenv install --system --dev
 
 # add app
 COPY . /usr/src/app
