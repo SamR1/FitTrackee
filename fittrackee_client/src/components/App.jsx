@@ -2,7 +2,7 @@ import React from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 
 import './App.css'
-import Admin from './Admin'
+// import Admin from './Admin'
 import Activity from './Activity'
 import Activities from './Activities'
 import Dashboard from './Dashboard'
@@ -90,7 +90,7 @@ export default class App extends React.Component {
             component={Activities}
           />
           <Route path="/activities" component={Activity} />
-          <Route path="/admin" component={Admin} />
+          {/* <Route path="/admin" component={Admin} /> */}
           <Route component={NotFound} />
         </Switch>
      </div>
