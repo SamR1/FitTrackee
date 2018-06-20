@@ -10,7 +10,8 @@ WORKDIR /usr/src/app
 COPY ./requirements.txt /usr/src/app/fittrackee_api/requirements.txt
 
 # install requirements
-RUN pip install -r fittrackee_api/requirements.txt
+RUN pip install pipenv
+RUN pipenv install --system --deploy --ignore-pipfile
 
 # add app
 COPY . /usr/src/app

@@ -18,11 +18,18 @@ init-db:
 install: install-client install-python
 
 install-client:
+	$(NPM) install --prod
+
+install-client-dev:
 	$(NPM) install
 
-install-python:
-	test -d $(VENV) || virtualenv $(VENV) -p $(PYTHON_VERSION)
-	$(PIP) install -r $(REQUIREMENTS)
+install-dev: install-client-dev install-python-dev
+
+install-python: venv
+	$(PIPENV) install --deploy
+
+install-python-dev: venv
+	$(PIPENV) install --dev
 
 lint-all: lint-python lint-react
 
@@ -58,3 +65,6 @@ update-cov:	test-python-xml
 
 upgrade-db:
 	$(FLASK) db upgrade --directory $(MIGRATIONS)
+
+venv:
+	test -d $(VENV) || pipenv --python $(PYTHON_VERSION)
