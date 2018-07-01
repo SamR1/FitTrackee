@@ -368,8 +368,9 @@ def process_zip_archive(common_params, extract_dir):
         zip_ref.extractall(extract_dir)
 
     new_activities = []
-    if os.getenv('REACT_APP_GPX_LIMIT_IMPORT').isdigit():
-        gpx_files_limit = int(os.getenv('REACT_APP_GPX_LIMIT_IMPORT'))
+    gpx_files_limit = os.getenv('REACT_APP_GPX_LIMIT_IMPORT')
+    if gpx_files_limit and gpx_files_limit.isdigit():
+        gpx_files_limit = int(gpx_files_limit)
     else:
         gpx_files_limit = 10
         appLog.error('GPX limit not configured, set to 10.')
