@@ -49,10 +49,10 @@ run:
 	$(MAKE) P="run-server run-client" make-p
 
 run-client:
-	serve -s fittrackee_client/build -l 3000
+	serve -s fittrackee_client/build -l 3000 >> serve.log  2>&1
 
 run-server:
-	cd fittrackee_api && $(GUNICORN) -b 127.0.0.1:5000 "fittrackee_api:create_app()"
+	cd fittrackee_api && $(GUNICORN) -b 127.0.0.1:5000 "fittrackee_api:create_app()" --error-logfile ../gunicorn-error.log
 
 serve-python:
 	$(FLASK) run --with-threads -h $(HOST) -p $(API_PORT)

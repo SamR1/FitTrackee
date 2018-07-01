@@ -1,3 +1,4 @@
+export REACT_APP_API_URL = http://$(HOST):$(API_PORT)
 export REACT_APP_THUNDERFOREST_API_KEY=
 export WEATHER_API=
 
