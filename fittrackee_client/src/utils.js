@@ -6,6 +6,7 @@ export const apiUrl = `${process.env.REACT_APP_API_URL}/api/`
 export const thunderforestApiKey = `${
   process.env.REACT_APP_THUNDERFOREST_API_KEY
 }`
+export const gpxLimit = `${process.env.REACT_APP_GPX_LIMIT_IMPORT}`
 export const activityColors = [
   '#55a8a3',
   '#98C3A9',

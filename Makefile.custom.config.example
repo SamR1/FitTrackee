@@ -1,6 +1,7 @@
 export REACT_APP_API_URL = http://$(HOST):$(API_PORT)
 export REACT_APP_THUNDERFOREST_API_KEY=
 export WEATHER_API=
+export REACT_APP_GPX_LIMIT_IMPORT=10
 
 # for dev env
 export CODACY_PROJECT_TOKEN=

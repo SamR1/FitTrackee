@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { setLoading } from '../../../actions/index'
 import { addActivity, editActivity } from '../../../actions/activities'
 import { history } from '../../../index'
+import { gpxLimit } from '../../../utils'
 
 
 function FormWithGpx (props) {
@@ -52,7 +53,8 @@ function FormWithGpx (props) {
         <div className="form-group">
           <label>
             <strong>gpx</strong> file or <strong>zip</strong>{' '}
-            file containing <strong>gpx</strong> (no folder inside):
+            file containing <strong>gpx</strong> (no folder inside, {
+            gpxLimit} files max):
             <input
               accept=".gpx, .zip"
               className="form-control input-lg"

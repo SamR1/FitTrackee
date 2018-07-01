@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 import gpxpy.gpx
 import pytz
-from fittrackee_api import db
+from fittrackee_api import appLog, db
 from flask import current_app
 from sqlalchemy import exc
 from staticmap import Line, StaticMap
@@ -368,10 +368,19 @@ def process_zip_archive(common_params, extract_dir):
         zip_ref.extractall(extract_dir)
 
     new_activities = []
+    if os.getenv('REACT_APP_GPX_LIMIT_IMPORT').isdigit():
+        gpx_files_limit = int(os.getenv('REACT_APP_GPX_LIMIT_IMPORT'))
+    else:
+        gpx_files_limit = 10
+        appLog.error('GPX limit not configured, set to 10.')
+    gpx_files_ok = 0
 
     for gpx_file in os.listdir(extract_dir):
         if ('.' in gpx_file and gpx_file.rsplit('.', 1)[1].lower()
                 in current_app.config.get('ACTIVITY_ALLOWED_EXTENSIONS')):
+            gpx_files_ok += 1
+            if gpx_files_ok > gpx_files_limit:
+                break
             file_path = os.path.join(extract_dir, gpx_file)
             params = common_params
             params['file_path'] = file_path
