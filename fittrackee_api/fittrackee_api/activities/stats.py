@@ -76,7 +76,9 @@ def get_activities(user_id, filter_type):
             else:
                 if time == 'week':
                     activity_date = activity.activity_date - timedelta(
-                        days=activity.activity_date.isoweekday()
+                        days=(activity.activity_date.isoweekday()
+                              if activity.activity_date.isoweekday() < 7
+                              else 0)
                     )
                     time_period = datetime.strftime(activity_date, "%Y-%m-%d")
                 elif time == 'weekm':  # week start Monday

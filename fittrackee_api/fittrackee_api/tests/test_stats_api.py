@@ -684,7 +684,7 @@ def test_get_stats_by_week_all_activities(
                             'total_duration': 1600
                         }
                 },
-            '2018-03-25':
+            '2018-04-01':
                 {
                     '1':
                         {
@@ -738,7 +738,7 @@ def test_get_stats_by_week_all_activities_week_13(
     assert 'success' in data['status']
     assert data['data']['statistics'] == \
         {
-            '2018-03-25':
+            '2018-04-01':
                 {
                     '1':
                         {
