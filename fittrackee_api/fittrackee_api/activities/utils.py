@@ -14,6 +14,7 @@ from werkzeug.utils import secure_filename
 
 from ..users.models import User
 from .models import Activity, ActivitySegment, Sport
+from .utils_files import get_absolute_file_path
 from .utils_weather import get_weather
 
 
@@ -274,7 +275,7 @@ def get_chart_data(gpx_file):
     return chart_data
 
 
-def get_file_path(auth_user_id, dir_path, filename):
+def get_file_path(dir_path, filename):
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
     file_path = os.path.join(dir_path, filename)
@@ -290,8 +291,7 @@ def get_new_file_path(
         prefix=f'{activity_date}_{sport}_',
         suffix=extension
     )
-    dir_path = os.path.join(
-        current_app.config['UPLOAD_FOLDER'], 'activities', str(auth_user_id))
+    dir_path = os.path.join('activities', str(auth_user_id))
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
     file_path = os.path.join(dir_path,
@@ -313,7 +313,8 @@ def get_map_hash(map_filepath):
     (maps are sensitive data)
     """
     md5 = hashlib.md5()
-    with open(map_filepath, 'rb') as f:
+    absolute_map_filepath = get_absolute_file_path(map_filepath)
+    with open(absolute_map_filepath, 'rb') as f:
         for chunk in iter(lambda: f.read(128 * md5.block_size), b''):
             md5.update(chunk)
     return md5.hexdigest()
@@ -329,7 +330,8 @@ def process_one_gpx_file(params, filename):
             old_filename=filename,
             sport=params['sport_label']
         )
-        os.rename(params['file_path'], new_filepath)
+        absolute_gpx_filepath = get_absolute_file_path(new_filepath)
+        os.rename(params['file_path'], absolute_gpx_filepath)
         gpx_data['filename'] = new_filepath
 
         map_filepath = get_new_file_path(
@@ -338,7 +340,8 @@ def process_one_gpx_file(params, filename):
             extension='.png',
             sport=params['sport_label']
         )
-        generate_map(map_filepath, map_data)
+        absolute_map_filepath = get_absolute_file_path(map_filepath)
+        generate_map(absolute_map_filepath, map_data)
     except (gpxpy.gpx.GPXXMLSyntaxException, TypeError) as e:
         raise ActivityException('error', 'Error during gpx file parsing.', e)
     except Exception as e:
@@ -394,7 +397,7 @@ def process_zip_archive(common_params, extract_dir):
 def process_files(auth_user_id, activity_data, activity_file, folders):
     filename = secure_filename(activity_file.filename)
     extension = f".{filename.rsplit('.', 1)[1].lower()}"
-    file_path = get_file_path(auth_user_id, folders['tmp_dir'], filename)
+    file_path = get_file_path(folders['tmp_dir'], filename)
     sport = Sport.query.filter_by(id=activity_data.get('sport_id')).first()
     if not sport:
         raise ActivityException(

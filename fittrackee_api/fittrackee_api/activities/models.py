@@ -8,6 +8,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm.session import object_session
 from sqlalchemy.types import JSON, Enum
 
+from .utils_files import get_absolute_file_path
 from .utils_format import convert_in_duration, convert_value_to_integer
 
 record_types = [
@@ -298,9 +299,9 @@ def on_activity_delete(mapper, connection, old_record):
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session, context):
         if old_record.map:
-            os.remove(old_record.map)
+            os.remove(get_absolute_file_path(old_record.map))
         if old_record.gpx:
-            os.remove(old_record.gpx)
+            os.remove(get_absolute_file_path(old_record.gpx))
 
 
 class ActivitySegment(db.Model):

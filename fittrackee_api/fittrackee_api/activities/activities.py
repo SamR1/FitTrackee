@@ -12,8 +12,8 @@ from ..users.utils import (
 )
 from .models import Activity
 from .utils import (
-    ActivityException, create_activity, edit_activity, get_chart_data,
-    get_datetime_with_tz, process_files
+    ActivityException, create_activity, edit_activity, get_absolute_file_path,
+    get_chart_data, get_datetime_with_tz, process_files
 )
 from .utils_format import convert_in_duration
 
@@ -139,10 +139,11 @@ def get_activity_data(auth_user_id, activity_id, data_type):
             return jsonify(response_object), 400
 
         try:
+            absolute_gpx_filepath = get_absolute_file_path(activity.gpx)
             if data_type == 'chart':
-                content = get_chart_data(activity.gpx)
+                content = get_chart_data(absolute_gpx_filepath)
             else:  # data_type == 'gpx'
-                with open(activity.gpx, encoding='utf-8') as f:
+                with open(absolute_gpx_filepath, encoding='utf-8') as f:
                     content = f.read()
         except Exception as e:
             appLog.error(e)
@@ -198,7 +199,8 @@ def get_map(map_id):
             }
             return jsonify(response_object), 404
         else:
-            return send_file(activity.map)
+            absolute_map_filepath = get_absolute_file_path(activity.map)
+            return send_file(absolute_map_filepath)
     except Exception as e:
         appLog.error(e)
         response_object = {

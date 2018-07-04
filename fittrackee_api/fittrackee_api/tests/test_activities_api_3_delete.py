@@ -3,6 +3,7 @@ import os
 from io import BytesIO
 
 from fittrackee_api.activities.models import Activity
+from fittrackee_api.activities.utils import get_absolute_file_path
 
 
 def get_gpx_filepath(activity_id):
@@ -193,6 +194,7 @@ def test_delete_an_activity_with_gpx_invalid_file(
     )
 
     gpx_filepath = get_gpx_filepath(1)
+    gpx_filepath = get_absolute_file_path(gpx_filepath)
     os.remove(gpx_filepath)
 
     response = client.delete(
