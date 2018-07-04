@@ -40,7 +40,6 @@ def get_activities(user_id, filter_type):
             if sport_id:
                 sport = Sport.query.filter_by(id=sport_id).first()
                 if not sport:
-                    print('not sport')
                     response_object = {
                         'status': 'not found',
                         'message': 'Sport does not exist.'

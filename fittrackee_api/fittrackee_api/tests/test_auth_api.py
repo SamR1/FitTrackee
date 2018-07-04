@@ -705,6 +705,25 @@ def test_update_user_picture(app, user_1):
     assert data['status'] == 'success'
     assert data['message'] == 'User picture updated.'
     assert response.status_code == 200
+    assert 'avatar.png' in user_1.picture
+
+    response = client.post(
+        '/api/auth/picture',
+        data=dict(
+            file=(BytesIO(b'avatar2'), 'avatar2.png')
+        ),
+        headers=dict(
+            content_type='multipart/form-data',
+            authorization='Bearer ' +
+            json.loads(resp_login.data.decode())['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+    assert data['status'] == 'success'
+    assert data['message'] == 'User picture updated.'
+    assert response.status_code == 200
+    assert 'avatar.png' not in user_1.picture
+    assert 'avatar2.png' in user_1.picture
 
 
 def test_update_user_no_picture(app, user_1):

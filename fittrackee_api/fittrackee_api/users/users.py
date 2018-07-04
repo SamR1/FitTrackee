@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, send_file
 
+from ..activities.utils_files import get_absolute_file_path
 from .models import User
 
 users_blueprint = Blueprint('users', __name__)
@@ -50,7 +51,8 @@ def get_picture(user_id):
         if not user:
             return jsonify(response_object), 404
         else:
-            return send_file(user.picture)
+            picture_path = get_absolute_file_path(user.picture)
+            return send_file(picture_path)
     except ValueError:
         return jsonify(response_object), 404
 

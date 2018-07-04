@@ -6,6 +6,7 @@ from flask import Blueprint, current_app, jsonify, request
 from sqlalchemy import exc, or_
 from werkzeug.utils import secure_filename
 
+from ..activities.utils_files import get_absolute_file_path
 from .models import User
 from .utils import authenticate, register_controls, verify_extension
 
@@ -250,14 +251,21 @@ def edit_picture(user_id):
     )
     if not os.path.exists(dirpath):
         os.makedirs(dirpath)
-    filepath = os.path.join(dirpath, filename)
+    absolute_picture_path = os.path.join(dirpath, filename)
+    relative_picture_path = os.path.join(
+        'pictures',
+        str(user_id),
+        filename
+    )
 
     try:
         user = User.query.filter_by(id=user_id).first()
-        if user.picture is not None and os.path.isfile(user.picture):
-            os.remove(user.picture)
-        file.save(filepath)
-        user.picture = filepath
+        if user.picture is not None:
+            old_picture_path = get_absolute_file_path(user.picture)
+            if os.path.isfile(get_absolute_file_path(old_picture_path)):
+                os.remove(old_picture_path)
+        file.save(absolute_picture_path)
+        user.picture = relative_picture_path
         db.session.commit()
 
         response_object = {
@@ -281,8 +289,9 @@ def edit_picture(user_id):
 def del_picture(user_id):
     try:
         user = User.query.filter_by(id=user_id).first()
-        if os.path.isfile(user.picture):
-            os.remove(user.picture)
+        picture_path = get_absolute_file_path(user.picture)
+        if os.path.isfile(picture_path):
+            os.remove(picture_path)
         user.picture = None
         db.session.commit()
 
