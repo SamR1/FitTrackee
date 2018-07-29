@@ -98,8 +98,8 @@ label {
 
 .activity-sport {
   margin-right: 1px;
-  max-width: 20px;
-  max-height: 20px;
+  max-width: 18px;
+  max-height: 18px;
 }
 
 .add-activity {
@@ -175,6 +175,10 @@ label {
 
 .custom-fa {
   margin-right: 5px;
+}
+
+.custom-fa-small {
+  font-size: 0.8em;
 }
 
 .dashboard, .history {

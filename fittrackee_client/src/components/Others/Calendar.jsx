@@ -1,7 +1,7 @@
 // eslint-disable-next-line max-len
 // source: https://blog.flowandform.agency/create-a-custom-calendar-in-react-3df1bfd0b728
 import dateFns from 'date-fns'
-import React from 'react'
+import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
@@ -111,14 +111,25 @@ class Calendar extends React.Component {
             <span className="number">{formattedDate}</span>
             {dayActivities.map(act => (
               <Link key={act.id} to={`/activities/${act.id}`}>
-                <img
-                  alt="activity sport logo"
-                  className={`activity-sport ${isDisabled}`}
-                  src={sports
-                    .filter(s => s.id === act.sport_id)
-                    .map(s => s.img)}
-                  title={act.title}
-                />
+                <Fragment>
+                  <img
+                    alt="activity sport logo"
+                    className={`activity-sport ${isDisabled}`}
+                    src={sports
+                      .filter(s => s.id === act.sport_id)
+                      .map(s => s.img)}
+                    title={act.title}
+                  />
+                  {act.records.length > 0 && (
+                    <sup>
+                      <i
+                        className="fa fa-trophy custom-fa-small"
+                        aria-hidden="true"
+                        title={act.records.map(r => ` ${r.record_type}`)}
+                      />
+                    </sup>
+                  )}
+                </Fragment>
               </Link>
             ))}
           </div>
