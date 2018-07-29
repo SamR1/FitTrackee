@@ -101,7 +101,9 @@ class Statistics extends React.Component {
                       dataKey={s.label}
                       formatter={value => displayedData === 'duration'
                         ? format(formatDuration(value), 'HH:mm')
-                        : value
+                        : displayedData === 'distance'
+                          ? value.toFixed(3)
+                          : value
                       }
                       stackId="a"
                       fill={activityColors[i]}
