@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import { getMonthActivities } from '../../actions/activities'
-import { getDateWithTZ } from '../../utils'
+import { getDateWithTZ, recordsLabels } from '../../utils'
 
 const getStartAndEndMonth = date => {
   const monthStart = dateFns.startOfMonth(date)
@@ -125,7 +125,11 @@ class Calendar extends React.Component {
                       <i
                         className="fa fa-trophy custom-fa-small"
                         aria-hidden="true"
-                        title={act.records.map(r => ` ${r.record_type}`)}
+                        title={act.records.map(rec => ` ${
+                          recordsLabels.filter(
+                            r => r.record_type === rec.record_type
+                          )[0].label
+                        }`)}
                       />
                     </sup>
                   )}

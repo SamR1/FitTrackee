@@ -91,29 +91,34 @@ export const formatActivityDate = (
   }
 }
 
+export const recordsLabels = [
+  { record_type: 'AS', label: 'Avg speed' },
+  { record_type: 'FD', label: 'Farest distance' },
+  { record_type: 'LD', label: 'Longest duration' },
+  { record_type: 'MS', label: 'Max speed' },
+]
+
 export const formatRecord = (record, tz) => {
   let value, recordType = null
   switch (record.record_type) {
     case 'AS':
     case 'MS':
       value = `${record.value} km/h`
-      recordType = record.record_type === 'AS' ? 'Avg speed' : 'Max speed'
       break
     case 'FD':
       value = `${record.value} km`
-      recordType = 'Farest distance'
       break
     default: // 'LD'
       value = record.value // eslint-disable-line prefer-destructuring
-      recordType = 'Longest duration'
   }
+  [recordType] = recordsLabels.filter(r => r.record_type === record.record_type)
   return {
     activity_date: formatActivityDate(
       getDateWithTZ(record.activity_date, tz)
     ).activity_date,
     activity_id: record.activity_id,
     id: record.id,
-    record_type: recordType,
+    record_type: recordType.label,
     value: value,
   }
 }
