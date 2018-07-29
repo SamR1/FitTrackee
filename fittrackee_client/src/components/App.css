@@ -181,6 +181,20 @@ label {
   font-size: 0.8em;
 }
 
+.custom-tooltip {
+  background-color: #fff;
+  border: 1px solid lightgrey;
+  padding: 10px;
+}
+
+.custom-tooltip p {
+  margin: 5px;
+}
+
+.custom-tooltip-label {
+  font-weight: bold;
+}
+
 .dashboard, .history {
   margin-top: 30px;
 }

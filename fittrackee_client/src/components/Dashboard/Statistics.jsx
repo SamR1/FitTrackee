@@ -7,6 +7,7 @@ import {
 
 import { getStats } from '../../actions/stats'
 import { activityColors, formatDuration, formatStats } from '../../utils'
+import CustomTooltip from '../Others/CustomTooltip'
 
 
 class Statistics extends React.Component {
@@ -94,17 +95,16 @@ class Statistics extends React.Component {
                         : value
                     }
                   />
-                  <Tooltip />
+                  <Tooltip content={
+                    <CustomTooltip
+                      displayedData={displayedData}
+                    />
+                  }
+                  />
                   {sports.map((s, i) => (
                     <Bar
                       key={s.id}
                       dataKey={s.label}
-                      formatter={value => displayedData === 'duration'
-                        ? format(formatDuration(value), 'HH:mm')
-                        : displayedData === 'distance'
-                          ? value.toFixed(3)
-                          : value
-                      }
                       stackId="a"
                       fill={activityColors[i]}
                       unit={displayedData === 'distance' ? ' km' : ''}
