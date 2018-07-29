@@ -13,7 +13,7 @@ const getStartAndEndMonth = date => {
   const monthEnd = dateFns.endOfMonth(date)
   return {
     start: dateFns.startOfWeek(monthStart),
-      end: dateFns.endOfWeek(monthEnd),
+    end: dateFns.endOfWeek(monthEnd),
   }
 }
 
@@ -49,10 +49,10 @@ class Calendar extends React.Component {
           </span>
         </div>
         <div className="col col-end" onClick={() => this.handleNextMonth()}>
-            <i
-              className="fa fa-chevron-right"
-              aria-hidden="true"
-            />
+          <i
+            className="fa fa-chevron-right"
+            aria-hidden="true"
+          />
         </div>
       </div>
     )
@@ -129,7 +129,7 @@ class Calendar extends React.Component {
                           recordsLabels.filter(
                             r => r.record_type === rec.record_type
                           )[0].label
-                        }`)}
+                          }`)}
                       />
                     </sup>
                   )}
@@ -150,7 +150,7 @@ class Calendar extends React.Component {
     return <div className="body">{rows}</div>
   }
 
-  updateStateDate (calendarDate) {
+  updateStateDate(calendarDate) {
     const { start, end } = getStartAndEndMonth(calendarDate)
     this.setState({
       currentMonth: calendarDate,
@@ -160,12 +160,12 @@ class Calendar extends React.Component {
     this.props.loadMonthActivities(start, end)
   }
 
-  handleNextMonth () {
+  handleNextMonth() {
     const calendarDate = dateFns.addMonths(this.state.currentMonth, 1)
     this.updateStateDate(calendarDate)
   }
 
-  handlePrevMonth () {
+  handlePrevMonth() {
     const calendarDate = dateFns.subMonths(this.state.currentMonth, 1)
     this.updateStateDate(calendarDate)
   }

@@ -22,10 +22,10 @@ export const isLoggedIn = () => !!window.localStorage.authToken
 export const generateIds = arr => {
   let i = 0
   return arr.map(val => {
-        const obj = { id: i, value: val }
-        i++
-        return obj
-    })
+    const obj = { id: i, value: val }
+    i++
+    return obj
+  })
 }
 
 
@@ -124,9 +124,9 @@ export const formatRecord = (record, tz) => {
 }
 
 export const formatDuration = seconds => {
-    let newDate = new Date(0)
-    newDate = subHours(newDate.setSeconds(seconds), 1)
-    return newDate.getTime()
+  let newDate = new Date(0)
+  newDate = subHours(newDate.setSeconds(seconds), 1)
+  return newDate.getTime()
 }
 
 export const formatChartData = chartData => {
