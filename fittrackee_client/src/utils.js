@@ -1,5 +1,7 @@
 import togeojson from '@mapbox/togeojson'
-import { addDays, format, parse, startOfWeek, subHours } from 'date-fns'
+import {
+  addDays, addMonths, addYears, format, parse, startOfWeek, subHours
+} from 'date-fns'
 import { DateTime } from 'luxon'
 
 export const apiUrl = `${process.env.REACT_APP_API_URL}/api/`
@@ -137,17 +139,37 @@ export const formatChartData = chartData => {
   return chartData
 }
 
-export const formatStats = (stats, sports, startDate, endDate) => {
+const xAxisFormats = [
+  { duration: 'week', dateFormat: 'YYYY-MM-DD', xAxis: 'DD/MM' },
+  { duration: 'month', dateFormat: 'YYYY-MM', xAxis: 'MM/YYYY' },
+  { duration: 'year', dateFormat: 'YYYY', xAxis: 'YYYY' },
+]
+
+const dateIncrement = (duration, day) => {
+  switch (duration) {
+    case 'week':
+      return addDays(day, 7)
+    case 'month':
+      return addMonths(day, 1)
+    case 'year':
+      return addYears(day, 1)
+  }
+}
+
+export const formatStats = (
+  stats, sports, startDate, endDate, duration = 'week'
+) => {
   const nbActivitiesStats = []
   const distanceStats = []
   const durationStats = []
 
   for (let day = startOfWeek(startDate);
        day <= endDate;
-       day = addDays(day, 7)
+       day = dateIncrement(duration, day)
   ) {
-    const date = format(day, 'YYYY-MM-DD')
-    const xAxis = format(day, 'DD/MM')
+    const [xAxisFormat] = xAxisFormats.filter(x => x.duration === duration)
+    const date = format(day, xAxisFormat.dateFormat)
+    const xAxis = format(day, xAxisFormat.xAxis)
     const dataNbActivities = { date: xAxis }
     const dataDistance = { date: xAxis }
     const dataDuration = { date: xAxis }

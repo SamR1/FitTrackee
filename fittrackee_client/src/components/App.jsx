@@ -11,6 +11,7 @@ import NavBar from './NavBar'
 import NotFound from './Others/NotFound'
 import Profile from './User/Profile'
 import ProfileEdit from './User/ProfileEdit'
+import Statistics from './Statistics'
 import UserForm from './User/UserForm'
 import { isLoggedIn } from '../utils'
 
@@ -88,6 +89,10 @@ export default class App extends React.Component {
           <Route
             exact path="/activities/history"
             component={Activities}
+          />
+          <Route
+            exact path="/activities/statistics"
+            component={Statistics}
           />
           <Route path="/activities" component={Activity} />
           {/* <Route path="/admin" component={Admin} /> */}

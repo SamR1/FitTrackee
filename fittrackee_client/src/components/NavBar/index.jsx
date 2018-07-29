@@ -51,6 +51,18 @@ function NavBar(props) {
                   <Link
                     className="nav-link"
                     to={{
+                      pathname: '/activities/statistics',
+                    }}
+                  >
+                    Statistics
+                  </Link>
+                </li>
+              )}
+              {props.user.isAuthenticated && (
+                <li className="nav-item">
+                  <Link
+                    className="nav-link"
+                    to={{
                       pathname: '/activities/add',
                     }}
                   >
