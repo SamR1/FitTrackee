@@ -7,21 +7,21 @@
     "chalk": "2.4.1",
     "date-fns": "^1.29.0",
     "history": "^4.7.2",
-    "leaflet": "^1.3.1",
-    "luxon": "^1.2.1",
+    "leaflet": "^1.3.4",
+    "luxon": "^1.3.3",
     "object-hash": "^1.3.0",
-    "react": "^16.4.0",
-    "react-dom": "^16.4.0",
+    "react": "^16.5.0",
+    "react-dom": "^16.5.0",
     "react-helmet": "^5.2.0",
-    "react-leaflet": "^1.9.1",
+    "react-leaflet": "^2.0.1",
     "react-redux": "^5.0.7",
-    "react-router-dom": "^4.2.2",
+    "react-router-dom": "^4.3.1",
     "react-router-redux": "^5.0.0-alpha.9",
-    "react-scripts": "1.1.4",
-    "react-timezone": "^1.0.5",
-    "recharts": "^1.0.0-beta.10",
+    "react-scripts": "1.1.5",
+    "react-timezone": "^2.1.0",
+    "recharts": "^1.2.0",
     "redux": "4.0.0",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.3.0"
   },
   "scripts": {
     "start": "cd fittrackee_client && react-scripts start",
@@ -31,12 +31,12 @@
     "lint": "eslint --cache --ext .jsx --ext .js fittrackee_client/src"
   },
   "devDependencies": {
-    "babel-eslint": "^8.2.3",
-    "eslint": "^4.19.1",
-    "eslint-plugin-import": "^2.12.0",
-    "eslint-plugin-react": "^7.8.2",
+    "babel-eslint": "^9.0.0",
+    "eslint": "^5.5.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-react": "^7.11.1",
     "eslint-plugin-testcafe": "^0.2.1",
     "randomstring": "^1.1.5",
-    "testcafe": "^0.19.2"
+    "testcafe": "^0.22.0"
   }
 }
