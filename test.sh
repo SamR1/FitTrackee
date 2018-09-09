@@ -8,7 +8,7 @@ inspect() {
   fi
 }
 
-docker-compose -f docker-compose-ci.yml run fittrackee-api py.test fittrackee_api
+docker-compose -f docker-compose-ci.yml run fittrackee-api py.test fittrackee_api -p no:warnings
 inspect $? api
 
 docker-compose -f docker-compose-ci.yml run fittrackee-api flask db upgrade

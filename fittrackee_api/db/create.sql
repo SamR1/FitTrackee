@@ -1,6 +1,6 @@
 DROP DATABASE IF EXISTS fittrackee;
 DROP DATABASE IF EXISTS fittrackee_test;
-DROP USER fittrackee;
+DROP USER IF EXISTS fittrackee;
 
 CREATE DATABASE fittrackee;
 CREATE DATABASE fittrackee_test;
