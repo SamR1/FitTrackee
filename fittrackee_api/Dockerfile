@@ -1,4 +1,4 @@
-FROM python:3.6.3
+FROM python:3.7
 
 MAINTAINER SamR1@users.noreply.github.com
 
