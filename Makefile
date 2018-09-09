@@ -13,6 +13,11 @@ clean-install:
 	rm -fr $(NODE_MODULES)
 	rm -fr $(VENV)
 
+install-db:
+	psql -U postgres -f fittrackee_api/db/create.sql
+	$(FLASK) db upgrade --directory $(MIGRATIONS)
+	$(FLASK) init_data
+
 init-db:
 	$(FLASK) drop_db
 	$(FLASK) db upgrade --directory $(MIGRATIONS)
