@@ -8,11 +8,11 @@ def assert_activity_data_with_gpx(data):
     assert 1 == data['data']['activities'][0]['user_id']
     assert '0:04:10' == data['data']['activities'][0]['duration']
     assert data['data']['activities'][0]['ascent'] == 0.4
-    assert data['data']['activities'][0]['ave_speed'] == 4.6
+    assert data['data']['activities'][0]['ave_speed'] == 4.61
     assert data['data']['activities'][0]['descent'] == 23.4
     assert data['data']['activities'][0]['distance'] == 0.32
     assert data['data']['activities'][0]['max_alt'] == 998.0
-    assert data['data']['activities'][0]['max_speed'] == 5.11
+    assert data['data']['activities'][0]['max_speed'] == 5.12
     assert data['data']['activities'][0]['min_alt'] == 975.0
     assert data['data']['activities'][0]['moving'] == '0:04:10'
     assert data['data']['activities'][0]['pauses'] is None
@@ -24,7 +24,7 @@ def assert_activity_data_with_gpx(data):
     assert records[0]['activity_id'] == 1
     assert records[0]['record_type'] == 'MS'
     assert records[0]['activity_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
-    assert records[0]['value'] == 5.11
+    assert records[0]['value'] == 5.12
     assert records[1]['sport_id'] == 2
     assert records[1]['activity_id'] == 1
     assert records[1]['record_type'] == 'LD'
@@ -39,7 +39,7 @@ def assert_activity_data_with_gpx(data):
     assert records[3]['activity_id'] == 1
     assert records[3]['record_type'] == 'AS'
     assert records[3]['activity_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
-    assert records[3]['value'] == 4.6
+    assert records[3]['value'] == 4.61
 
 
 def test_edit_an_activity_with_gpx(
