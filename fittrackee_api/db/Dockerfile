@@ -1,4 +1,4 @@
-FROM postgres:10.1
+FROM postgres:10.5
 
 MAINTAINER SamR1@users.noreply.github.com
 
