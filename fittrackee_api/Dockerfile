@@ -11,6 +11,7 @@ COPY ./Pipfile /usr/src/app/Pipfile
 COPY ./Pipfile.lock /usr/src/app/Pipfile.lock
 
 # install requirements
+RUN pip install --upgrade pip
 RUN pip install pipenv
 RUN pipenv install --system --dev
 
