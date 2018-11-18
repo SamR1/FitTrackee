@@ -1,4 +1,4 @@
-import { routerReducer } from 'react-router-redux'
+import { connectRouter } from 'connected-react-router'
 import { combineReducers } from 'redux'
 
 import initial from './initial'
@@ -123,7 +123,7 @@ const user = (state = initial.user, action) => {
 const statistics = (state = initial.statistics, action) =>
   handleDataAndError(state, 'statistics', action)
 
-const reducers = combineReducers({
+export default (history) => combineReducers({
   activities,
   calendarActivities,
   chartData,
@@ -132,10 +132,8 @@ const reducers = combineReducers({
   message,
   messages,
   records,
-  router: routerReducer,
+  router: connectRouter(history),
   sports,
   statistics,
   user,
 })
-
-export default reducers

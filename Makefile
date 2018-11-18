@@ -16,12 +16,12 @@ clean-install:
 install-db:
 	psql -U postgres -f fittrackee_api/db/create.sql
 	$(FLASK) db upgrade --directory $(MIGRATIONS)
-	$(FLASK) init_data
+	$(FLASK) initdata
 
 init-db:
-	$(FLASK) drop_db
+	$(FLASK) drop-db
 	$(FLASK) db upgrade --directory $(MIGRATIONS)
-	$(FLASK) init_data
+	$(FLASK) initdata
 
 install: install-client install-python
 

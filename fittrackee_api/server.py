@@ -19,7 +19,7 @@ def drop_db():
 
 
 @app.cli.command()
-def init_data():
+def initdata():
     """Init the database."""
     admin = User(
         username='admin',
