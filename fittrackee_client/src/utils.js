@@ -149,10 +149,11 @@ const dateIncrement = (duration, day) => {
   switch (duration) {
     case 'week':
       return addDays(day, 7)
-    case 'month':
-      return addMonths(day, 1)
     case 'year':
       return addYears(day, 1)
+    case 'month':
+    default:
+      return addMonths(day, 1)
   }
 }
 
