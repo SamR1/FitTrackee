@@ -1,11 +1,11 @@
 import togeojson from '@mapbox/togeojson'
-import { addDays, format, parse, startOfWeek, subHours } from 'date-fns'
+import { addDays, format, parse, startOfWeek } from 'date-fns'
 import { DateTime } from 'luxon'
 
 export const apiUrl = `${process.env.REACT_APP_API_URL}/api/`
 export const thunderforestApiKey = `${
   process.env.REACT_APP_THUNDERFOREST_API_KEY
-}`
+  }`
 export const gpxLimit = `${process.env.REACT_APP_GPX_LIMIT_IMPORT}`
 export const activityColors = [
   '#55a8a3',
@@ -123,10 +123,24 @@ export const formatRecord = (record, tz) => {
   }
 }
 
-export const formatDuration = seconds => {
-  let newDate = new Date(0)
-  newDate = subHours(newDate.setSeconds(seconds), 1)
-  return newDate.getTime()
+export const formatDuration = (totalSeconds, formatWithDay = false) => {
+  let days = '0'
+  if (formatWithDay) {
+    days = String(Math.floor(totalSeconds / 86400))
+    totalSeconds %= 86400
+  }
+  const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0')
+  totalSeconds %= 3600
+  const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0')
+  const seconds = String(totalSeconds % 60).padStart(2, '0')
+  if (formatWithDay) {
+    return `${
+      days === '0' ? '' : `${days}d:`
+    }${
+      hours === '00' ? '' : `${hours}h:`
+    }${minutes}m:${seconds}s`
+  }
+  return `${hours === '00' ? '' : `${hours}:`}${minutes}:${seconds}`
 }
 
 export const formatChartData = chartData => {

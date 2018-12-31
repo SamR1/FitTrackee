@@ -1,10 +1,9 @@
 import React from 'react'
-import { format } from 'date-fns'
 
 import { formatDuration } from '../../utils'
 
 const formatValue = (displayedData, value) => displayedData === 'duration'
-  ? format(formatDuration(value), 'HH:mm')
+  ? formatDuration(value, true)
   : displayedData === 'distance'
     ? value.toFixed(3)
     : value

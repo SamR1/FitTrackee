@@ -417,6 +417,16 @@
       "node": {
         "extensions": [".js", ".jsx"]
       }
-    }
+    },
+    "react": {
+      "createClass": "createReactClass",
+      "pragma": "React",
+      "version": "16.6"
+    },
+    "propWrapperFunctions": [
+        "forbidExtraProps",
+        {"property": "freeze", "object": "Object"},
+        {"property": "myFavoriteWrapper"}
+    ]
   }
 }

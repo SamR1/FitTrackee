@@ -123,7 +123,7 @@ const user = (state = initial.user, action) => {
 const statistics = (state = initial.statistics, action) =>
   handleDataAndError(state, 'statistics', action)
 
-export default (history) => combineReducers({
+export default history => combineReducers({
   activities,
   calendarActivities,
   chartData,

@@ -91,7 +91,7 @@ class Statistics extends React.Component {
                     tickFormatter={value => displayedData === 'distance'
                       ? `${value} km`
                       : displayedData === 'duration'
-                        ? format(formatDuration(value), 'HH:mm')
+                        ? formatDuration(value)
                         : value
                     }
                   />
