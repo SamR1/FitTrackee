@@ -295,7 +295,7 @@ def get_new_file_path(
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
     file_path = os.path.join(dir_path,
-                             new_filename.replace('/tmp/', ''))
+                             new_filename.split('/')[-1])
     return file_path
 
 
