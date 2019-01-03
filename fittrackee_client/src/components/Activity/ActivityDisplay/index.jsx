@@ -8,7 +8,7 @@ import ActivityDetails from './ActivityDetails'
 import ActivityMap from './ActivityMap'
 import ActivityNoMap from './ActivityNoMap'
 import ActivityNotes from './ActivityNotes'
-import CustomModal from './../../Others/CustomModal'
+import CustomModal from '../../Common/CustomModal'
 import { getOrUpdateData } from '../../../actions'
 import { deleteActivity } from '../../../actions/activities'
 

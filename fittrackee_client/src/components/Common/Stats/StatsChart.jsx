@@ -4,7 +4,7 @@ import {
 } from 'recharts'
 
 import { activityColors, formatDuration } from '../../../utils'
-import CustomTooltip from '../CustomTooltip'
+import CustomTooltip from './CustomTooltip'
 
 
 export default class StatsCharts extends React.PureComponent {

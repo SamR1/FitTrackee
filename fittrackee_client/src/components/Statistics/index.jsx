@@ -1,7 +1,7 @@
 import { endOfMonth, startOfMonth, subMonths } from 'date-fns'
 import React from 'react'
 
-import Stats from '../Others/Stats'
+import Stats from '../Common/Stats'
 
 
 export default class Statistics extends React.Component {

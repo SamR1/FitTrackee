@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import ActivityCard from './ActivityCard'
-import Calendar from './../Others/Calendar'
+import Calendar from './Calendar'
 import Records from './Records'
 import Statistics from './Statistics'
 import UserStatistics from './UserStatistics'
