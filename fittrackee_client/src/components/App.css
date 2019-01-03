@@ -128,10 +128,6 @@ label {
   font-style: italic;
 }
 
-.chart-month {
-  font-size: 0.8em;
-}
-
 .chart-radio {
   display: flex;
   font-size: 0.9em;
@@ -143,6 +139,10 @@ label {
 
 .chart-radio input {
   margin-right: 10px;
+}
+
+.chart-stats {
+  font-size: 0.8em;
 }
 
 .chart-title {

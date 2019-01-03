@@ -172,17 +172,19 @@ const dateIncrement = (duration, day) => {
 }
 
 export const formatStats = (
-  stats, sports, startDate, endDate, duration = 'week'
+  stats, sports, params
 ) => {
   const nbActivitiesStats = []
   const distanceStats = []
   const durationStats = []
 
-  for (let day = startOfWeek(startDate);
-       day <= endDate;
-       day = dateIncrement(duration, day)
+  for (let day = startOfWeek(params.start);
+       day <= params.end;
+       day = dateIncrement(params.duration, day)
   ) {
-    const [xAxisFormat] = xAxisFormats.filter(x => x.duration === duration)
+    const [xAxisFormat] = xAxisFormats.filter(
+      x => x.duration === params.duration
+    )
     const date = format(day, xAxisFormat.dateFormat)
     const xAxis = format(day, xAxisFormat.xAxis)
     const dataNbActivities = { date: xAxis }
