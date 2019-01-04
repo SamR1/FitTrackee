@@ -9,10 +9,19 @@ import StatsChart from './StatsChart'
 
 class Statistics extends React.PureComponent {
   componentDidMount() {
-    this.props.loadMonthActivities(
+    this.props.loadActivities(
       this.props.user.id,
       this.props.statsParams,
     )
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.statsParams !== prevProps.statsParams) {
+      this.props.loadActivities(
+        this.props.user.id,
+        this.props.statsParams,
+      )
+    }
   }
 
   render() {
@@ -37,7 +46,7 @@ export default connect(
     user: state.user,
   }),
   dispatch => ({
-    loadMonthActivities: (userId, data) => {
+    loadActivities: (userId, data) => {
       const dateFormat = 'YYYY-MM-DD'
       const params = {
         from: format(data.start, dateFormat),
