@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { formatDuration } from '../../../utils'
+import { formatDuration } from '../../../utils/stats'
 
 const formatValue = (displayedData, value) => displayedData === 'duration'
   ? formatDuration(value, true)

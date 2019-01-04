@@ -5,7 +5,7 @@ import {
   addActivityWithoutGpx, editActivity
 } from '../../../actions/activities'
 import { history } from '../../../index'
-import { formatActivityDate } from '../../../utils'
+import { formatActivityDate } from '../../../utils/activities'
 
 function FormWithoutGpx (props) {
   const { activity, onAddOrEdit, sports } = props

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import { formatRecord } from '../../utils'
+import { formatRecord } from '../../utils/activities'
 
 export default function RecordsCard (props) {
   const { records, sports, user } = props

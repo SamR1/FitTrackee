@@ -1,7 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import { formatActivityDate, getDateWithTZ } from '../../../utils'
+import { getDateWithTZ } from '../../../utils'
+import { formatActivityDate } from '../../../utils/activities'
 
 
 export default function ActivityCardHeader(props) {

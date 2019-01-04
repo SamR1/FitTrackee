@@ -3,7 +3,8 @@ import {
    Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis
 } from 'recharts'
 
-import { activityColors, formatDuration } from '../../../utils'
+import { activityColors } from '../../../utils/activities'
+import { formatDuration } from '../../../utils/stats'
 import CustomTooltip from './CustomTooltip'
 
 

@@ -4,7 +4,8 @@ import { GeoJSON, Map, TileLayer } from 'react-leaflet'
 import { connect } from 'react-redux'
 
 import { getActivityGpx } from '../../../actions/activities'
-import { getGeoJson, thunderforestApiKey } from '../../../utils'
+import { thunderforestApiKey } from '../../../utils'
+import { getGeoJson } from '../../../utils/activities'
 
 class ActivityMap extends React.Component {
 

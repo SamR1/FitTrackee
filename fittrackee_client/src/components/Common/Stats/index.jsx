@@ -3,7 +3,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { getStats } from '../../../actions/stats'
-import { formatStats } from '../../../utils'
+import { formatStats } from '../../../utils/stats'
 import StatsChart from './StatsChart'
 
 

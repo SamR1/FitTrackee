@@ -6,7 +6,8 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import { getMonthActivities } from '../../actions/activities'
-import { getDateWithTZ, recordsLabels } from '../../utils'
+import { getDateWithTZ } from '../../utils'
+import { recordsLabels } from '../../utils/activities'
 
 const getStartAndEndMonth = date => {
   const monthStart = dateFns.startOfMonth(date)
