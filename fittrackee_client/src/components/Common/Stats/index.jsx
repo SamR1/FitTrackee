@@ -9,14 +9,19 @@ import StatsChart from './StatsChart'
 
 class Statistics extends React.PureComponent {
   componentDidMount() {
-    this.props.loadActivities(
-      this.props.user.id,
-      this.props.statsParams,
-    )
+    this.updateData()
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.statsParams !== prevProps.statsParams) {
+    if ((this.props.user.id && (this.props.user.id !== prevProps.user.id)) ||
+      this.props.statsParams !== prevProps.statsParams
+    ) {
+      this.updateData()
+    }
+  }
+
+  updateData() {
+    if (this.props.user.id) {
       this.props.loadActivities(
         this.props.user.id,
         this.props.statsParams,
@@ -26,19 +31,11 @@ class Statistics extends React.PureComponent {
 
   render() {
     const { displayedSports, sports, statistics, statsParams } = this.props
+    if (Object.keys(statistics).length === 0) {
+      return 'No workouts'
+    }
     const stats = formatStats(statistics, sports, statsParams, displayedSports)
-    return (
-      <>
-        {Object.keys(statistics).length === 0 ? (
-          'No workouts'
-        ) : (
-          <StatsChart
-            sports={sports}
-            stats={stats}
-          />
-          )}
-      </>
-    )
+    return (<StatsChart sports={sports} stats={stats} />)
   }
 }
 

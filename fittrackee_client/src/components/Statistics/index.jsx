@@ -30,6 +30,17 @@ class Statistics extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.sports !== prevProps.sports) {
+      this.updateDisplayedSports()
+    }
+  }
+
+  updateDisplayedSports() {
+    const { sports } = this.props
+    this.setState({ displayedSports: sports.map(sport => sport.id) })
+  }
+
   handleOnChangeDuration(e) {
     const duration = e.target.value
     const date = new Date()
