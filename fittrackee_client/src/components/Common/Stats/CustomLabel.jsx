@@ -2,8 +2,14 @@ import React from 'react'
 
 import { formatValue } from '../../../utils/stats'
 
+/**
+ * @return {null}
+ */
 export default function CustomLabel (props) {
   const { displayedData, x, y, width, value } = props
+  if (!value) {
+    return null
+  }
   const radius = 10
   const formattedValue = formatValue(displayedData, value)
 

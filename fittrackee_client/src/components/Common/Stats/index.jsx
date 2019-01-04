@@ -30,8 +30,10 @@ class Statistics extends React.PureComponent {
   }
 
   render() {
-    const { displayedSports, sports, statistics, statsParams } = this.props
-    if (Object.keys(statistics).length === 0) {
+    const {
+      displayedSports, sports, statistics, statsParams, displayEmpty
+    } = this.props
+    if (!displayEmpty && Object.keys(statistics).length === 0) {
       return 'No workouts'
     }
     const stats = formatStats(statistics, sports, statsParams, displayedSports)

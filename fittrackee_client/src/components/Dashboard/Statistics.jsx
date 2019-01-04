@@ -23,7 +23,7 @@ export default class Statistics extends React.Component {
           This month
         </div>
         <div className="card-body">
-          <Stats statsParams={this.state} />
+          <Stats displayEmpty={false} statsParams={this.state} />
         </div>
       </div>
     )

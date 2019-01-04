@@ -4,7 +4,12 @@ import {
   endOfYear,
   startOfMonth,
   startOfYear,
+  startOfWeek,
+  addMonths,
+  addWeeks,
+  addYears,
   subMonths,
+  subWeeks,
   subYears
 } from 'date-fns'
 import React from 'react'
@@ -70,6 +75,37 @@ class Statistics extends React.Component {
     }
   }
 
+  handleOnClickArrows(forward) {
+    const { start, end, duration } = this.state.statsParams
+    let newStart, newEnd
+    if (forward) {
+      newStart = duration === 'year'
+        ? startOfYear(subYears(start, 1))
+        : duration === 'week'
+          ? startOfWeek(subWeeks(start, 1))
+          : startOfMonth(subMonths(start, 1))
+      newEnd = duration === 'year'
+        ? endOfYear(subYears(end, 1))
+        : duration === 'week'
+          ? endOfWeek(subWeeks(end, 1))
+          : endOfMonth(subMonths(end, 1))
+    } else {
+      newStart = duration === 'year'
+        ? startOfYear(addYears(start, 1))
+        : duration === 'week'
+          ? startOfWeek(addWeeks(start, 1))
+          : startOfMonth(addMonths(start, 1))
+      newEnd = duration === 'year'
+        ? endOfYear(addYears(end, 1))
+        : duration === 'week'
+          ? endOfWeek(addWeeks(end, 1))
+          : endOfMonth(addMonths(end, 1))
+    }
+    this.setState({ statsParams:
+      { duration, end: newEnd, start: newStart, type: 'by_time' }
+    })
+  }
+
   render() {
     const { displayedSports, statsParams } = this.state
     const { sports } = this.props
@@ -81,6 +117,15 @@ class Statistics extends React.Component {
           </div>
           <div className="card-body">
             <div className="chart-filters row">
+              <div className="col">
+                <p className="text-center">
+                  <i
+                    className="fa fa-chevron-left"
+                    aria-hidden="true"
+                    onClick={() => this.handleOnClickArrows(true)}
+                  />
+                </p>
+              </div>
               <div className="col-md-3">
                 <select
                   className="form-control input-lg"
@@ -95,8 +140,18 @@ class Statistics extends React.Component {
                   ))}
                 </select>
               </div>
+              <div className="col">
+                <p className="text-center">
+                  <i
+                    className="fa fa-chevron-right"
+                    aria-hidden="true"
+                    onClick={() => this.handleOnClickArrows(false)}
+                  />
+                </p>
+                </div>
             </div>
             <Stats
+              displayEmpty
               displayedSports={displayedSports}
               statsParams={statsParams}
             />

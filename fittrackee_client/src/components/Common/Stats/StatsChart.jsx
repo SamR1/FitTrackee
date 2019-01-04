@@ -79,6 +79,9 @@ export default class StatsCharts extends React.PureComponent {
             />
             {sports.map((s, i) => (
               <Bar
+                // disable for now due to problems  w/ CustomLabel
+                // see https://github.com/recharts/recharts/issues/829
+                isAnimationActive={false}
                 key={s.id}
                 dataKey={s.label}
                 stackId="a"
