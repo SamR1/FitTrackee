@@ -13,7 +13,6 @@ const xAxisFormats = [
   { duration: 'year', dateFormat: 'YYYY', xAxis: 'YYYY' },
 ]
 
-
 export const formatDuration = (totalSeconds, formatWithDay = false) => {
   let days = '0'
   if (formatWithDay) {
@@ -33,6 +32,14 @@ export const formatDuration = (totalSeconds, formatWithDay = false) => {
   }
   return `${hours === '00' ? '' : `${hours}:`}${minutes}:${seconds}`
 }
+
+export const formatValue = (displayedData, value) => value === 0
+    ? ''
+    : displayedData === 'distance'
+      ? `${value.toFixed(2)} km`
+      : displayedData === 'duration'
+        ? formatDuration(value)
+        : value
 
 export const formatChartData = chartData => {
   for (let i = 0; i < chartData.length; i++) {

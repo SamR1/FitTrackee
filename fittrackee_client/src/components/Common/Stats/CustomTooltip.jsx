@@ -5,7 +5,7 @@ import { formatDuration } from '../../../utils/stats'
 const formatValue = (displayedData, value) => displayedData === 'duration'
   ? formatDuration(value, true)
   : displayedData === 'distance'
-    ? value.toFixed(3)
+    ? value.toFixed(2)
     : value
 
 
@@ -28,7 +28,7 @@ export default function CustomTooltip (props) {
         }
         {payload.length > 0 && (
           <p>
-            Total: {formatValue(displayedData, total)} {payload[0].unit}
+            Total: {formatValue(displayedData, total)}
           </p>
         )}
       </div>

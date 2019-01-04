@@ -4,8 +4,9 @@ import {
 } from 'recharts'
 
 import { activityColors } from '../../../utils/activities'
-import { formatDuration } from '../../../utils/stats'
+import { formatValue } from '../../../utils/stats'
 import CustomTooltip from './CustomTooltip'
+import CustomLabel from './CustomLabel'
 
 
 export default class StatsCharts extends React.PureComponent {
@@ -68,12 +69,7 @@ export default class StatsCharts extends React.PureComponent {
               interval={0} // to force to display all ticks
             />
             <YAxis
-              tickFormatter={value => displayedData === 'distance'
-                ? `${value} km`
-                : displayedData === 'duration'
-                  ? formatDuration(value)
-                  : value
-              }
+              tickFormatter={value => formatValue(displayedData, value)}
             />
             <Tooltip content={
               <CustomTooltip
@@ -87,7 +83,10 @@ export default class StatsCharts extends React.PureComponent {
                 dataKey={s.label}
                 stackId="a"
                 fill={activityColors[i]}
-                unit={displayedData === 'distance' ? ' km' : ''}
+                label={i === sports.length - 1
+                  ? <CustomLabel displayedData={displayedData} />
+                  : ''
+                }
               />
             ))}
           </BarChart>
