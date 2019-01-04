@@ -11,6 +11,11 @@ export const pushActivities = activities => ({
   activities,
 })
 
+export const removeActivity = activityId => ({
+  type: 'REMOVE_ACTIVITY',
+  activityId,
+})
+
 export const updateCalendar = activities => ({
   type: 'UPDATE_CALENDAR',
   activities,
@@ -98,8 +103,9 @@ export const deleteActivity = id => dispatch => FitTrackeeGenericApi
   .deleteData('activities', id)
   .then(ret => {
     if (ret.status === 204) {
-      dispatch(loadProfile())
-      history.push('/')
+      Promise.resolve(dispatch(removeActivity(id))).then(() =>
+        dispatch(loadProfile())
+      ).then(() => history.push('/'))
     } else {
       dispatch(setError(`activities: ${ret.status}`))
     }

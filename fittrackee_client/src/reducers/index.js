@@ -25,6 +25,11 @@ const activities = (state = initial.activities, action) => {
         ...state,
         data: state.data.concat(action.activities),
       }
+    case 'REMOVE_ACTIVITY':
+      return {
+        ...state,
+        data: state.data.filter(activity => activity.id !== action.activityId),
+      }
     default:
       return handleDataAndError(state, 'activities', action)
   }
