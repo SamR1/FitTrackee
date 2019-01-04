@@ -1,6 +1,7 @@
 import togeojson from '@mapbox/togeojson'
 import {
-  addDays, addMonths, addYears, format, parse, startOfWeek
+  addDays, addMonths, addYears, format, parse, startOfMonth, startOfWeek,
+  startOfYear
 } from 'date-fns'
 import { DateTime } from 'luxon'
 
@@ -171,6 +172,18 @@ const dateIncrement = (duration, day) => {
   }
 }
 
+const startDate = (duration, day) => {
+  switch (duration) {
+    case 'week':
+      return startOfWeek(day)
+    case 'year':
+      return startOfYear(day)
+    case 'month':
+    default:
+      return startOfMonth(day)
+  }
+}
+
 export const formatStats = (
   stats, sports, params
 ) => {
@@ -178,7 +191,7 @@ export const formatStats = (
   const distanceStats = []
   const durationStats = []
 
-  for (let day = startOfWeek(params.start);
+  for (let day = startDate(params.duration, params.start);
        day <= params.end;
        day = dateIncrement(params.duration, day)
   ) {

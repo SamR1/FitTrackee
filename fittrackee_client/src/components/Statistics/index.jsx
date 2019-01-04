@@ -9,7 +9,7 @@ export default class Statistics extends React.Component {
     super(props, context)
     const date = new Date()
     this.state = {
-      start: startOfMonth(subMonths(date, 12)),
+      start: startOfMonth(subMonths(date, 11)),
       end: endOfMonth(date),
       duration: 'month',
       type: 'by_time',
