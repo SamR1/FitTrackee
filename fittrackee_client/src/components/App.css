@@ -73,6 +73,17 @@ label {
   padding: 0;
 }
 
+.activity-label {
+  font-size: 0.8em;
+  color: #666
+}
+
+.activity-logo {
+  margin: 0 5px;
+  max-width: 20px;
+  max-height: 20px;
+}
+
 .activity-no-map {
   background-color: #eaeaea;
   color: #666666;
@@ -121,6 +132,10 @@ label {
 
 .chart {
   font-size: 0.9em;
+}
+
+.chart-activities {
+  margin-left: 60px;
 }
 
 .chart-filters {

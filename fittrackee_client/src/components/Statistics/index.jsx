@@ -8,24 +8,29 @@ import {
   subYears
 } from 'date-fns'
 import React from 'react'
+import { connect } from 'react-redux'
 
+import { activityColors } from '../../utils/activities'
 import Stats from '../Common/Stats'
 
 const durations = ['week', 'month', 'year']
 
-export default class Statistics extends React.Component {
+class Statistics extends React.Component {
   constructor(props, context) {
     super(props, context)
     const date = new Date()
     this.state = {
-      start: startOfMonth(subMonths(date, 11)),
-      end: endOfMonth(date),
-      duration: 'month',
-      type: 'by_time',
+      displayedSports: props.sports.map(sport => sport.id),
+      statsParams: {
+        start: startOfMonth(subMonths(date, 11)),
+        end: endOfMonth(date),
+        duration: 'month',
+        type: 'by_time',
+      }
     }
   }
 
-  handleOnChange(e) {
+  handleOnChangeDuration(e) {
     const duration = e.target.value
     const date = new Date()
     const start = duration === 'year'
@@ -38,11 +43,25 @@ export default class Statistics extends React.Component {
       : duration === 'week'
         ? endOfWeek(date)
         : endOfMonth(date)
-    this.setState({ duration, end, start })
+    this.setState({ statsParams:
+      { duration, end, start, type: 'by_time' }
+    })
+  }
+
+  handleOnChangeSports(sportId) {
+    const { displayedSports } = this.state
+    if (displayedSports.includes(sportId)) {
+      this.setState({
+        displayedSports: displayedSports.filter(s => s !== sportId)
+      })
+    } else {
+      this.setState({ displayedSports: displayedSports.concat([sportId]) })
+    }
   }
 
   render() {
-    const { duration } = this.state
+    const { displayedSports, statsParams } = this.state
+    const { sports } = this.props
     return (
       <div className="container dashboard">
         <div className="card activity-card">
@@ -55,8 +74,8 @@ export default class Statistics extends React.Component {
                 <select
                   className="form-control input-lg"
                   name="duration"
-                  defaultValue={duration}
-                  onChange={e => this.handleOnChange(e)}
+                  defaultValue={statsParams.duration}
+                  onChange={e => this.handleOnChangeDuration(e)}
                 >
                   {durations.map(d => (
                     <option key={d} value={d}>
@@ -66,10 +85,34 @@ export default class Statistics extends React.Component {
                 </select>
               </div>
             </div>
-            <Stats statsParams={this.state} />
+            <Stats
+              displayedSports={displayedSports}
+              statsParams={statsParams}
+            />
+            <div className="row chart-activities">
+              {sports.map(sport => (
+                <label className="col activity-label" key={sport.id}>
+                  <input
+                    type="checkbox"
+                    checked={displayedSports.includes(sport.id)}
+                    name={sport.label}
+                    onChange={() => this.handleOnChangeSports(sport.id)}
+                  />
+                  <span style={{ color: activityColors[sport.id - 1] }}>
+                    {` ${sport.label}`}
+                  </span>
+                </label>
+              ))}
+            </div>
           </div>
         </div>
       </div>
     )
   }
 }
+
+export default connect(
+  state => ({
+    sports: state.sports.data,
+  })
+)(Statistics)

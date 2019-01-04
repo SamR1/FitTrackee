@@ -74,7 +74,7 @@ const startDate = (duration, day) => {
 }
 
 export const formatStats = (
-  stats, sports, params
+  stats, sports, params, displayedSports
 ) => {
   const nbActivitiesStats = []
   const distanceStats = []
@@ -94,7 +94,9 @@ export const formatStats = (
     const dataDuration = { date: xAxis }
 
     if (stats[date]) {
-      Object.keys(stats[date]).map(sportId => {
+      Object.keys(stats[date]).filter(
+        sportId => displayedSports ? displayedSports.includes(+sportId) : true
+      ).map(sportId => {
         const sportLabel = sports.filter(s => s.id === +sportId)[0].label
         dataNbActivities[sportLabel] = stats[date][sportId].nb_activities
         dataDistance[sportLabel] = stats[date][sportId].total_distance

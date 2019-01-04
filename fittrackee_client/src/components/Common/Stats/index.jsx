@@ -25,14 +25,17 @@ class Statistics extends React.PureComponent {
   }
 
   render() {
-    const { sports, statistics, statsParams } = this.props
-    const stats = formatStats(statistics, sports, statsParams)
+    const { displayedSports, sports, statistics, statsParams } = this.props
+    const stats = formatStats(statistics, sports, statsParams, displayedSports)
     return (
       <>
         {Object.keys(statistics).length === 0 ? (
           'No workouts'
         ) : (
-          <StatsChart sports={sports} stats={stats} />
+          <StatsChart
+            sports={sports}
+            stats={stats}
+          />
           )}
       </>
     )
