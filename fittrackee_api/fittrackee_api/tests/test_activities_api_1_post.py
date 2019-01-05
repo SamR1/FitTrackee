@@ -215,7 +215,7 @@ def test_add_an_activity_gpx(app, user_1, sport_1_cycling, gpx_file):
     assert_activity_data_with_gpx(data)
 
 
-def test_get_an_activity_with_gpx(app, user_1, sport_1_cycling, gpx_file):
+def activity_assertion(app, user_1, sport_1_cycling, gpx_file, with_segments):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
@@ -252,7 +252,10 @@ def test_get_an_activity_with_gpx(app, user_1, sport_1_cycling, gpx_file):
     assert 'success' in data['status']
     assert len(data['data']['activities']) == 1
     assert 'just an activity' == data['data']['activities'][0]['title']
-    assert_activity_data_with_gpx(data)
+    if with_segments:
+        assert_activity_data_with_gpx_segments(data)
+    else:
+        assert_activity_data_with_gpx(data)
 
     map_id = data['data']['activities'][0]['map']
 
@@ -303,97 +306,16 @@ def test_get_an_activity_with_gpx(app, user_1, sport_1_cycling, gpx_file):
     assert response.status_code == 500
     assert data['status'] == 'error'
     assert data['message'] == 'internal error.'
+
+
+def test_get_an_activity_with_gpx(app, user_1, sport_1_cycling, gpx_file):
+    return activity_assertion(app, user_1, sport_1_cycling, gpx_file, False)
 
 
 def test_get_an_activity_with_gpx_segments(
         app, user_1, sport_1_cycling, gpx_file_with_segments):
-    client = app.test_client()
-    resp_login = client.post(
-        '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
-    )
-    client.post(
-        '/api/activities',
-        data=dict(
-            file=(BytesIO(str.encode(gpx_file_with_segments)), 'example.gpx'),
-            data='{"sport_id": 1}'
-        ),
-        headers=dict(
-            content_type='multipart/form-data',
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
-    )
-    response = client.get(
-        '/api/activities/1',
-        headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
-    )
-    data = json.loads(response.data.decode())
-
-    assert response.status_code == 200
-    assert 'success' in data['status']
-    assert len(data['data']['activities']) == 1
-    assert 'just an activity' == data['data']['activities'][0]['title']
-    assert_activity_data_with_gpx_segments(data)
-
-    map_id = data['data']['activities'][0]['map']
-
-    response = client.get(
-        '/api/activities/1/gpx',
-        headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
-    )
-    data = json.loads(response.data.decode())
-
-    assert response.status_code == 200
-    assert 'success' in data['status']
-    assert '' in data['message']
-    assert len(data['data']['gpx']) != ''
-
-    response = client.get(
-        f'/api/activities/map/{map_id}',
-        headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
-    )
-    assert response.status_code == 200
-
-    # error case in the same test to avoid generate a new map file
-    activity = Activity.query.filter_by(id=1).first()
-    activity.map = 'incorrect path'
-
-    assert response.status_code == 200
-    assert 'success' in data['status']
-    assert '' in data['message']
-    assert len(data['data']['gpx']) != ''
-
-    response = client.get(
-        f'/api/activities/map/{map_id}',
-        headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
-    )
-    data = json.loads(response.data.decode())
-
-    assert response.status_code == 500
-    assert data['status'] == 'error'
-    assert data['message'] == 'internal error.'
+    return activity_assertion(
+        app, user_1, sport_1_cycling, gpx_file_with_segments, True)
 
 
 def test_get_an_activity_with_gpx_different_user(
