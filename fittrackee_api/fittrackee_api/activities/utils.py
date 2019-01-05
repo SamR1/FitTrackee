@@ -149,11 +149,11 @@ def edit_activity(activity, activity_data, auth_user_id):
     return activity
 
 
-def get_gpx_data(parsed_gpx, max_speed, start):
+def get_gpx_data(parsed_gpx, max_speed, start, stopped_time_btwn_seg):
     gpx_data = {'max_speed': (max_speed / 1000) * 3600, 'start': start}
 
     duration = parsed_gpx.get_duration()
-    gpx_data['duration'] = timedelta(seconds=duration)
+    gpx_data['duration'] = timedelta(seconds=duration) + stopped_time_btwn_seg
 
     ele = parsed_gpx.get_elevation_extremes()
     gpx_data['elevation_max'] = ele.maximum
@@ -165,7 +165,8 @@ def get_gpx_data(parsed_gpx, max_speed, start):
 
     mv = parsed_gpx.get_moving_data()
     gpx_data['moving_time'] = timedelta(seconds=mv.moving_time)
-    gpx_data['stop_time'] = timedelta(seconds=mv.stopped_time)
+    gpx_data['stop_time'] = (timedelta(seconds=mv.stopped_time)
+                             + stopped_time_btwn_seg)
     distance = mv.moving_distance + mv.stopped_distance
     gpx_data['distance'] = distance / 1000
 
@@ -196,16 +197,33 @@ def get_gpx_info(gpx_file):
     start = 0
     map_data = []
     weather_data = []
+    segments_nb = len(gpx.tracks[0].segments)
+    prev_seg_last_point = None
+    no_stopped_time = timedelta(seconds=0)
+    stopped_time_btwn_seg = no_stopped_time
 
     for segment_idx, segment in enumerate(gpx.tracks[0].segments):
         segment_start = 0
+        segment_points_nb = len(segment.points)
         for point_idx, point in enumerate(segment.points):
-            if point_idx == 0 and start == 0:
-                start = point.time
-                weather_data.append(get_weather(point))
-            if (point_idx == (len(segment.points) - 1) and
-                    segment_idx == (len(gpx.tracks[0].segments) - 1)):
-                weather_data.append(get_weather(point))
+            if point_idx == 0:
+                # first gpx point => get weather
+                if start == 0:
+                    start = point.time
+                    weather_data.append(get_weather(point))
+
+                # if a previous segment exists, calculate stopped time between
+                # the two segments
+                if prev_seg_last_point:
+                    stopped_time_btwn_seg = point.time - prev_seg_last_point
+
+            # last segment point
+            if point_idx == (segment_points_nb - 1):
+                prev_seg_last_point = point.time
+
+                # last gpx point => get weather
+                if segment_idx == (segments_nb - 1):
+                    weather_data.append(get_weather(point))
             map_data.append([
                 point.longitude, point.latitude
             ])
@@ -217,12 +235,12 @@ def get_gpx_info(gpx_file):
             max_speed = segment_max_speed
 
         segment_data = get_gpx_data(
-            segment, segment_max_speed, segment_start
+            segment, segment_max_speed, segment_start, no_stopped_time
         )
         segment_data['idx'] = segment_idx
         gpx_data['segments'].append(segment_data)
 
-    full_gpx_data = get_gpx_data(gpx, max_speed, start)
+    full_gpx_data = get_gpx_data(gpx, max_speed, start, stopped_time_btwn_seg)
     gpx_data = {**gpx_data, **full_gpx_data}
     bounds = gpx.get_bounds()
     gpx_data['bounds'] = [
@@ -345,7 +363,7 @@ def process_one_gpx_file(params, filename):
     except (gpxpy.gpx.GPXXMLSyntaxException, TypeError) as e:
         raise ActivityException('error', 'Error during gpx file parsing.', e)
     except Exception as e:
-        raise ActivityException('error', 'Error during activity file save.', e)
+        raise ActivityException('error', 'Error during gpx processing.', e)
 
     try:
         new_activity = create_activity(

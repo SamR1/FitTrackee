@@ -66,6 +66,75 @@ def assert_activity_data_with_gpx(data):
     assert records[3]['value'] == 4.61
 
 
+def assert_activity_data_with_gpx_segments(data):
+    assert 'creation_date' in data['data']['activities'][0]
+    assert 'Tue, 13 Mar 2018 12:44:45 GMT' == data['data']['activities'][0]['activity_date']  # noqa
+    assert 1 == data['data']['activities'][0]['user_id']
+    assert 1 == data['data']['activities'][0]['sport_id']
+    assert '0:04:10' == data['data']['activities'][0]['duration']
+    assert data['data']['activities'][0]['ascent'] == 0.4
+    assert data['data']['activities'][0]['ave_speed'] == 4.59
+    assert data['data']['activities'][0]['descent'] == 23.4
+    assert data['data']['activities'][0]['distance'] == 0.3
+    assert data['data']['activities'][0]['max_alt'] == 998.0
+    assert data['data']['activities'][0]['max_speed'] is None  # not enough points  # noqa
+    assert data['data']['activities'][0]['min_alt'] == 975.0
+    assert data['data']['activities'][0]['moving'] == '0:03:55'
+    assert data['data']['activities'][0]['pauses'] == '0:00:15'
+    assert data['data']['activities'][0]['with_gpx'] is True
+    assert data['data']['activities'][0]['map'] is not None
+    assert data['data']['activities'][0]['weather_start'] is None
+    assert data['data']['activities'][0]['weather_end'] is None
+    assert data['data']['activities'][0]['notes'] is None
+    assert len(data['data']['activities'][0]['segments']) == 2
+
+    segment = data['data']['activities'][0]['segments'][0]
+    assert segment['activity_id'] == 1
+    assert segment['segment_id'] == 0
+    assert segment['duration'] == '0:01:30'
+    assert segment['ascent'] is None
+    assert segment['ave_speed'] == 4.53
+    assert segment['descent'] == 11.0
+    assert segment['distance'] == 0.113
+    assert segment['max_alt'] == 998.0
+    assert segment['max_speed'] is None
+    assert segment['min_alt'] == 987.0
+    assert segment['moving'] == '0:01:30'
+    assert segment['pauses'] is None
+
+    segment = data['data']['activities'][0]['segments'][1]
+    assert segment['activity_id'] == 1
+    assert segment['segment_id'] == 1
+    assert segment['duration'] == '0:02:25'
+    assert segment['ascent'] == 0.4
+    assert segment['ave_speed'] == 4.62
+    assert segment['descent'] == 12.4
+    assert segment['distance'] == 0.186
+    assert segment['max_alt'] == 987.0
+    assert segment['max_speed'] is None
+    assert segment['min_alt'] == 975.0
+    assert segment['moving'] == '0:02:25'
+    assert segment['pauses'] is None
+
+    records = data['data']['activities'][0]['records']
+    assert len(records) == 3
+    assert records[0]['sport_id'] == 1
+    assert records[0]['activity_id'] == 1
+    assert records[0]['record_type'] == 'LD'
+    assert records[0]['activity_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
+    assert records[0]['value'] == '0:03:55'
+    assert records[1]['sport_id'] == 1
+    assert records[1]['activity_id'] == 1
+    assert records[1]['record_type'] == 'FD'
+    assert records[1]['activity_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
+    assert records[1]['value'] == 0.3
+    assert records[2]['sport_id'] == 1
+    assert records[2]['activity_id'] == 1
+    assert records[2]['record_type'] == 'AS'
+    assert records[2]['activity_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
+    assert records[2]['value'] == 4.59
+
+
 def assert_activity_data_wo_gpx(data):
     assert 'creation_date' in data['data']['activities'][0]
     assert data['data']['activities'][0]['activity_date'] == 'Tue, 15 May 2018 14:05:00 GMT'  # noqa
@@ -184,6 +253,97 @@ def test_get_an_activity_with_gpx(app, user_1, sport_1_cycling, gpx_file):
     assert len(data['data']['activities']) == 1
     assert 'just an activity' == data['data']['activities'][0]['title']
     assert_activity_data_with_gpx(data)
+
+    map_id = data['data']['activities'][0]['map']
+
+    response = client.get(
+        '/api/activities/1/gpx',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert '' in data['message']
+    assert len(data['data']['gpx']) != ''
+
+    response = client.get(
+        f'/api/activities/map/{map_id}',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    assert response.status_code == 200
+
+    # error case in the same test to avoid generate a new map file
+    activity = Activity.query.filter_by(id=1).first()
+    activity.map = 'incorrect path'
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert '' in data['message']
+    assert len(data['data']['gpx']) != ''
+
+    response = client.get(
+        f'/api/activities/map/{map_id}',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 500
+    assert data['status'] == 'error'
+    assert data['message'] == 'internal error.'
+
+
+def test_get_an_activity_with_gpx_segments(
+        app, user_1, sport_1_cycling, gpx_file_with_segments):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    client.post(
+        '/api/activities',
+        data=dict(
+            file=(BytesIO(str.encode(gpx_file_with_segments)), 'example.gpx'),
+            data='{"sport_id": 1}'
+        ),
+        headers=dict(
+            content_type='multipart/form-data',
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    response = client.get(
+        '/api/activities/1',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['activities']) == 1
+    assert 'just an activity' == data['data']['activities'][0]['title']
+    assert_activity_data_with_gpx_segments(data)
 
     map_id = data['data']['activities'][0]['map']
 
