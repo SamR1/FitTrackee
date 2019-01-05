@@ -2,7 +2,7 @@ import { parse } from 'date-fns'
 
 import FitTrackeeGenericApi from '../fitTrackeeApi'
 import { history } from '../index'
-import { formatChartData } from '../utils/stats'
+import { formatChartData } from '../utils/activities'
 import { setError, setLoading } from './index'
 import { loadProfile } from './user'
 

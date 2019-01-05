@@ -41,14 +41,6 @@ export const formatValue = (displayedData, value) => value === 0
         ? formatDuration(value)
         : value
 
-export const formatChartData = chartData => {
-  for (let i = 0; i < chartData.length; i++) {
-    chartData[i].time = new Date(chartData[i].time).getTime()
-    chartData[i].duration = formatDuration(chartData[i].duration)
-  }
-  return chartData
-}
-
 const dateIncrement = (duration, day) => {
   switch (duration) {
     case 'week':

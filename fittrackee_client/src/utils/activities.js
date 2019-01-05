@@ -1,4 +1,4 @@
-import { format } from 'date-fns'
+import { format, subHours } from 'date-fns'
 import togeojson from '@mapbox/togeojson'
 
 import { getDateWithTZ } from './index'
@@ -44,6 +44,20 @@ export const formatActivityDate = (
     activity_date: dateTime ? format(dateTime, dateFormat) : null,
     activity_time: dateTime ? format(dateTime, timeFormat) : null,
   }
+}
+
+export const formatActivityDuration = seconds => {
+  let newDate = new Date(0)
+  newDate = subHours(newDate.setSeconds(seconds), 1)
+  return newDate.getTime()
+}
+
+export const formatChartData = chartData => {
+  for (let i = 0; i < chartData.length; i++) {
+    chartData[i].time = new Date(chartData[i].time).getTime()
+    chartData[i].duration = formatActivityDuration(chartData[i].duration)
+  }
+  return chartData
 }
 
 export const formatRecord = (record, tz) => {
