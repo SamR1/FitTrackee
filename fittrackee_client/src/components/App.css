@@ -138,6 +138,10 @@ label {
   margin-left: 60px;
 }
 
+.chart-arrows {
+  margin-top: 7px;
+}
+
 .chart-filters {
   padding-bottom: 10px;
 }
@@ -153,7 +157,7 @@ label {
 }
 
 .chart-radio label {
-  display: flex;
+  /* display: flex; */
 }
 
 .chart-radio input {

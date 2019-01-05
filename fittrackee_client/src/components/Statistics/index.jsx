@@ -13,6 +13,7 @@ import {
   subYears
 } from 'date-fns'
 import React from 'react'
+import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 
 import { activityColors } from '../../utils/activities'
@@ -110,69 +111,74 @@ class Statistics extends React.Component {
     const { displayedSports, statsParams } = this.state
     const { sports } = this.props
     return (
-      <div className="container dashboard">
-        <div className="card activity-card">
-          <div className="card-header">
-            Statistics
-          </div>
-          <div className="card-body">
-            <div className="chart-filters row">
-              <div className="col">
-                <p className="text-center">
-                  <i
-                    className="fa fa-chevron-left"
-                    aria-hidden="true"
-                    onClick={() => this.handleOnClickArrows(true)}
-                  />
-                </p>
-              </div>
-              <div className="col-md-3">
-                <select
-                  className="form-control input-lg"
-                  name="duration"
-                  defaultValue={statsParams.duration}
-                  onChange={e => this.handleOnChangeDuration(e)}
-                >
-                  {durations.map(d => (
-                    <option key={d} value={d}>
-                      {d}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="col">
-                <p className="text-center">
-                  <i
-                    className="fa fa-chevron-right"
-                    aria-hidden="true"
-                    onClick={() => this.handleOnClickArrows(false)}
-                  />
-                </p>
-                </div>
+      <>
+        <Helmet>
+          <title>FitTrackee - Statistics</title>
+        </Helmet>
+        <div className="container dashboard">
+          <div className="card activity-card">
+            <div className="card-header">
+              Statistics
             </div>
-            <Stats
-              displayEmpty
-              displayedSports={displayedSports}
-              statsParams={statsParams}
-            />
-            <div className="row chart-activities">
-              {sports.map(sport => (
-                <label className="col activity-label" key={sport.id}>
-                  <input
-                    type="checkbox"
-                    checked={displayedSports.includes(sport.id)}
-                    name={sport.label}
-                    onChange={() => this.handleOnChangeSports(sport.id)}
-                  />
-                  <span style={{ color: activityColors[sport.id - 1] }}>
-                    {` ${sport.label}`}
-                  </span>
-                </label>
-              ))}
+            <div className="card-body">
+              <div className="chart-filters row">
+                <div className="col chart-arrows">
+                  <p className="text-center">
+                    <i
+                      className="fa fa-chevron-left"
+                      aria-hidden="true"
+                      onClick={() => this.handleOnClickArrows(true)}
+                    />
+                  </p>
+                </div>
+                <div className="col-md-3">
+                  <select
+                    className="form-control input-lg"
+                    name="duration"
+                    defaultValue={statsParams.duration}
+                    onChange={e => this.handleOnChangeDuration(e)}
+                  >
+                    {durations.map(d => (
+                      <option key={d} value={d}>
+                        {d}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="col chart-arrows">
+                  <p className="text-center">
+                    <i
+                      className="fa fa-chevron-right"
+                      aria-hidden="true"
+                      onClick={() => this.handleOnClickArrows(false)}
+                    />
+                  </p>
+                </div>
+              </div>
+              <Stats
+                displayEmpty
+                displayedSports={displayedSports}
+                statsParams={statsParams}
+              />
+              <div className="row chart-activities">
+                {sports.map(sport => (
+                  <label className="col activity-label" key={sport.id}>
+                    <input
+                      type="checkbox"
+                      checked={displayedSports.includes(sport.id)}
+                      name={sport.label}
+                      onChange={() => this.handleOnChangeSports(sport.id)}
+                    />
+                    <span style={{ color: activityColors[sport.id - 1] }}>
+                      {` ${sport.label}`}
+                    </span>
+                  </label>
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </>
     )
   }
 }
