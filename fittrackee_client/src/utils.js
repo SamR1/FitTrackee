@@ -1,5 +1,5 @@
 import togeojson from '@mapbox/togeojson'
-import { addDays, format, parse, startOfWeek } from 'date-fns'
+import { addDays, format, parse, startOfWeek, subHours } from 'date-fns'
 import { DateTime } from 'luxon'
 
 export const apiUrl = `${process.env.REACT_APP_API_URL}/api/`
@@ -123,6 +123,12 @@ export const formatRecord = (record, tz) => {
   }
 }
 
+export const formatActivityDuration = seconds => {
+  let newDate = new Date(0)
+  newDate = subHours(newDate.setSeconds(seconds), 1)
+  return newDate.getTime()
+}
+
 export const formatDuration = (totalSeconds, formatWithDay = false) => {
   let days = '0'
   if (formatWithDay) {
@@ -146,7 +152,7 @@ export const formatDuration = (totalSeconds, formatWithDay = false) => {
 export const formatChartData = chartData => {
   for (let i = 0; i < chartData.length; i++) {
     chartData[i].time = new Date(chartData[i].time).getTime()
-    chartData[i].duration = formatDuration(chartData[i].duration)
+    chartData[i].duration = formatActivityDuration(chartData[i].duration)
   }
   return chartData
 }
