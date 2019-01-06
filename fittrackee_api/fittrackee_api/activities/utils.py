@@ -126,7 +126,8 @@ def update_activity(activity):
     In a next version, map_data and weather_data will be updated
     (case of a modified gpx file, see issue #7)
     """
-    gpx_data, _, _ = get_gpx_info(get_absolute_file_path(activity.gpx))
+    gpx_data, _, _ = get_gpx_info(
+        get_absolute_file_path(activity.gpx), False, False)
     updated_activity = update_activity_data(activity, gpx_data)
     updated_activity.duration = gpx_data['duration']
     updated_activity.distance = gpx_data['distance']
