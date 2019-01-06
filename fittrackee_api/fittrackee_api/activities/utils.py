@@ -119,8 +119,33 @@ def create_segment(activity_id, segment_data):
     return new_segment
 
 
+def update_activity(activity):
+    """
+    Note: only gpx_data is be updated for now (the gpx file is NOT modified)
+
+    In a next version, map_data and weather_data will be updated
+    (case of a modified gpx file, see issue #7)
+    """
+    gpx_data, _, _ = get_gpx_info(get_absolute_file_path(activity.gpx))
+    updated_activity = update_activity_data(activity, gpx_data)
+    updated_activity.duration = gpx_data['duration']
+    updated_activity.distance = gpx_data['distance']
+    db.session.flush()
+
+    for segment_idx, segment in enumerate(updated_activity.segments):
+        segment_data = gpx_data['segments'][segment_idx]
+        updated_segment = update_activity_data(segment, segment_data)
+        updated_segment.duration = segment_data['duration']
+        updated_segment.distance = segment_data['distance']
+        db.session.flush()
+
+    return updated_activity
+
+
 def edit_activity(activity, activity_data, auth_user_id):
     user = User.query.filter_by(id=auth_user_id).first()
+    if activity_data.get('refresh'):
+        activity = update_activity(activity)
     if activity_data.get('sport_id'):
         activity.sport_id = activity_data.get('sport_id')
     if activity_data.get('title'):
@@ -184,7 +209,7 @@ def open_gpx_file(gpx_file):
     return gpx
 
 
-def get_gpx_info(gpx_file):
+def get_gpx_info(gpx_file, update_map_data=True, update_weather_data=True):
     gpx = open_gpx_file(gpx_file)
     if gpx is None:
         return None
@@ -210,7 +235,8 @@ def get_gpx_info(gpx_file):
                 # first gpx point => get weather
                 if start == 0:
                     start = point.time
-                    weather_data.append(get_weather(point))
+                    if update_weather_data:
+                        weather_data.append(get_weather(point))
 
                 # if a previous segment exists, calculate stopped time between
                 # the two segments
@@ -222,11 +248,13 @@ def get_gpx_info(gpx_file):
                 prev_seg_last_point = point.time
 
                 # last gpx point => get weather
-                if segment_idx == (segments_nb - 1):
+                if segment_idx == (segments_nb - 1) and update_weather_data:
                     weather_data.append(get_weather(point))
-            map_data.append([
-                point.longitude, point.latitude
-            ])
+
+            if update_map_data:
+                map_data.append([
+                    point.longitude, point.latitude
+                ])
         segment_max_speed = (segment.get_moving_data().max_speed
                              if segment.get_moving_data().max_speed
                              else 0)
@@ -242,13 +270,15 @@ def get_gpx_info(gpx_file):
 
     full_gpx_data = get_gpx_data(gpx, max_speed, start, stopped_time_btwn_seg)
     gpx_data = {**gpx_data, **full_gpx_data}
-    bounds = gpx.get_bounds()
-    gpx_data['bounds'] = [
-        bounds.min_latitude,
-        bounds.min_longitude,
-        bounds.max_latitude,
-        bounds.max_longitude
-    ]
+
+    if update_map_data:
+        bounds = gpx.get_bounds()
+        gpx_data['bounds'] = [
+            bounds.min_latitude,
+            bounds.min_longitude,
+            bounds.max_latitude,
+            bounds.max_longitude
+        ]
 
     return gpx_data, map_data, weather_data
 

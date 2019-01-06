@@ -1,6 +1,8 @@
 import json
 from io import BytesIO
 
+from fittrackee_api.activities.models import Activity
+
 
 def assert_activity_data_with_gpx(data):
     assert 'creation_date' in data['data']['activities'][0]
@@ -933,3 +935,56 @@ def test_edit_an_activity_no_activity(
     assert response.status_code == 404
     assert 'not found' in data['status']
     assert len(data['data']['activities']) == 0
+
+
+def test_refresh_an_activity_with_gpx(
+    app, user_1, sport_1_cycling, sport_2_running, gpx_file
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    client.post(
+        '/api/activities',
+        data=dict(
+            file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+            data='{"sport_id": 1}'
+        ),
+        headers=dict(
+            content_type='multipart/form-data',
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+
+    # Edit some activity data
+    activity = Activity.query.filter_by(id=1).first()
+    activity.ascent = 1000
+    activity.min_alt = -100
+
+    response = client.patch(
+        '/api/activities/1',
+        content_type='application/json',
+        data=json.dumps(dict(
+            refresh=True,
+        )),
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['activities']) == 1
+    assert 1 == data['data']['activities'][0]['sport_id']
+    assert 0.4 == data['data']['activities'][0]['ascent']
+    assert 975.0 == data['data']['activities'][0]['min_alt']
