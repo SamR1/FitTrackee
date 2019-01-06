@@ -16,20 +16,22 @@ export default function ActivityCardHeader(props) {
     <div className="container">
       <div className="row">
         <div className="col-auto">
-          {activity.next_activity ? (
+          {activity.previous_activity ? (
             <Link
               className="unlink"
-              to={`/activities/${activity.next_activity}`}
+              to={`/activities/${activity.previous_activity}`}
             >
               <i
                 className="fa fa-chevron-left"
                 aria-hidden="true"
+                title="See previous activity"
               />
             </Link>
           ) : (
             <i
               className="fa fa-chevron-left inactive-link"
               aria-hidden="true"
+              title="No previous activity"
             />
           )}
         </div>
@@ -49,12 +51,14 @@ export default function ActivityCardHeader(props) {
             <i
               className="fa fa-edit custom-fa"
               aria-hidden="true"
+              title="Edit activity"
             />
           </Link>
           <i
             className="fa fa-trash custom-fa"
             aria-hidden="true"
             onClick={() => displayModal(true)}
+            title="Delete activity"
           /><br />
           {activityDate && (
             <span className="activity-date">
@@ -63,20 +67,22 @@ export default function ActivityCardHeader(props) {
           )}
         </div>
         <div className="col-auto">
-          {activity.previous_activity ? (
+          {activity.next_activity ? (
             <Link
               className="unlink"
-              to={`/activities/${activity.previous_activity}`}
+              to={`/activities/${activity.next_activity}`}
             >
               <i
                 className="fa fa-chevron-right"
                 aria-hidden="true"
+                title="See next activity"
               />
             </Link>
           ) : (
             <i
               className="fa fa-chevron-right inactive-link"
               aria-hidden="true"
+              title="No next activity"
             />
           )}
         </div>

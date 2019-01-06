@@ -6,6 +6,7 @@ import './App.css'
 import Activity from './Activity'
 import Activities from './Activities'
 import Dashboard from './Dashboard'
+import Footer from './Footer'
 import Logout from './User/Logout'
 import NavBar from './NavBar'
 import NotFound from './Others/NotFound'
@@ -98,6 +99,7 @@ export default class App extends React.Component {
           {/* <Route path="/admin" component={Admin} /> */}
           <Route component={NotFound} />
         </Switch>
+        <Footer />
      </div>
     )
   }

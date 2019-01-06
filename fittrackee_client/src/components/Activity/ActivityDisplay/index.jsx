@@ -79,7 +79,7 @@ class ActivityDisplay extends React.Component {
                       </div>
                       <div className="card-body">
                         <div className="row">
-                          <div className="col-8">
+                          <div className="col-md-8">
                             {activity.with_gpx ? (
                               <ActivityMap activity={activity} />
                             ) : (
