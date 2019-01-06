@@ -1,8 +1,10 @@
 import shutil
 
 from fittrackee_api import create_app, db
-from fittrackee_api.activities.models import Sport
+from fittrackee_api.activities.models import Activity, Sport
+from fittrackee_api.activities.utils import update_activity
 from fittrackee_api.users.models import User
+from tqdm import tqdm
 
 app = create_app()
 
@@ -54,6 +56,22 @@ def initdata():
     db.session.add(sport)
     db.session.commit()
     print('Initial data stored in database.')
+
+
+@app.cli.command()
+def recalculate():
+    print("Starting activities data refresh")
+    activities = Activity.query.filter(Activity.gpx != None).order_by(  # noqa
+        Activity.activity_date.asc()
+    ).all()
+    if len(activities) == 0:
+        print('➡️  no activities to upgrade.')
+        return None
+    pbar = tqdm(activities)
+    for activity in pbar:
+        update_activity(activity)
+        pbar.set_postfix(activitiy_id=activity.id)
+    db.session.commit()
 
 
 if __name__ == '__main__':
