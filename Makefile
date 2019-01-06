@@ -50,6 +50,9 @@ lint-react:
 migrate-db:
 	$(FLASK) db migrate --directory $(MIGRATIONS)
 
+recalculate:
+	$(FLASK) recalculate
+
 run:
 	$(MAKE) P="run-server run-client" make-p
 
