@@ -1,7 +1,17 @@
-.App {
+html {
+  height: 100vh;
+}
+
+body {
   background-color: #eaeaea;
-  padding-bottom: 20px;
+  margin: 0;
   min-height: 100vh;
+  padding-bottom: 50px;
+  position: relative;
+  }
+
+.App {
+  padding-bottom: 20px;
   text-align: center;
 }
 
@@ -205,6 +215,17 @@ label {
 
 .fa-color {
   color: #405976;
+}
+
+.footer {
+  background-color: #f8f9fa;
+  bottom: 0;
+  color: #8b8c8c;
+  font-size: 0.9em;
+  height: 50px;
+  line-height: 50px;
+  position: absolute;
+  width: 100%;
 }
 
 .huge {
