@@ -228,6 +228,10 @@ label {
   width: 100%;
 }
 
+.gpx-file {
+  height: inherit;
+}
+
 .huge {
   font-size: 25px;
 }
@@ -300,6 +304,10 @@ label {
 .sport-img-medium {
   max-width: 45px;
   max-height: 45px;
+}
+
+.timezone-custom-height {
+  height: calc(2.25rem + 14px);
 }
 
 .timezone-picker {
