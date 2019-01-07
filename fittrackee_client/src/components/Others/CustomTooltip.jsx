@@ -5,7 +5,7 @@ import { formatDuration } from '../../utils'
 const formatValue = (displayedData, value) => displayedData === 'duration'
   ? formatDuration(value, true)
   : displayedData === 'distance'
-    ? value.toFixed(3)
+    ? value.toFixed(2)
     : value
 
 
