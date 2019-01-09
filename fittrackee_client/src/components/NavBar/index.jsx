@@ -6,7 +6,7 @@ import { apiUrl } from '../../utils'
 
 class NavBar extends React.PureComponent {
   render() {
-    const { user } = this.props
+    const { id, isAuthenticated, picture, username } = this.props
     return (
       <header>
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -38,7 +38,7 @@ class NavBar extends React.PureComponent {
                     Dashboard
                   </Link>
                 </li>
-                {user.isAuthenticated && (
+                {isAuthenticated && (
                   <li className="nav-item">
                     <Link
                       className="nav-link"
@@ -50,7 +50,7 @@ class NavBar extends React.PureComponent {
                     </Link>
                   </li>
                 )}
-                {user.isAuthenticated && (
+                {isAuthenticated && (
                   <li className="nav-item">
                     <Link
                       className="nav-link"
@@ -76,7 +76,7 @@ class NavBar extends React.PureComponent {
                 {/* )} */}
               </ul>
               <ul className="navbar-nav flex-row ml-md-auto d-none d-md-flex">
-                {!user.isAuthenticated && (
+                {!isAuthenticated && (
                   <li className="nav-item">
                     <Link
                       className="nav-link"
@@ -88,7 +88,7 @@ class NavBar extends React.PureComponent {
                     </Link>
                   </li>
                 )}
-                {!user.isAuthenticated && (
+                {!isAuthenticated && (
                   <li className="nav-item">
                     <Link
                       className="nav-link"
@@ -100,15 +100,15 @@ class NavBar extends React.PureComponent {
                     </Link>
                   </li>
                 )}
-                {user.picture === true && (
+                {picture === true && (
                   <img
                     alt="Avatar"
-                    src={`${apiUrl}users/${user.id}/picture` +
+                    src={`${apiUrl}users/${id}/picture` +
                     `?${Date.now()}`}
                     className="img-fluid App-nav-profile-img"
                   />
                 )}
-                {user.isAuthenticated && (
+                {isAuthenticated && (
                   <li className="nav-item">
                     <Link
                       className="nav-link"
@@ -116,11 +116,11 @@ class NavBar extends React.PureComponent {
                         pathname: '/profile',
                       }}
                     >
-                      {user.username}
+                      {username}
                     </Link>
                   </li>
                 )}
-                {user.isAuthenticated && (
+                {isAuthenticated && (
                   <li className="nav-item">
                     <Link
                       className="nav-link"
@@ -142,7 +142,10 @@ class NavBar extends React.PureComponent {
 }
 
 export default connect(
-  state => ({
-    user: state.user,
+  ({ user }) => ({
+    id: user.id,
+    isAuthenticated: user.isAuthenticated,
+    picture: user.picture,
+    username: user.username,
   })
 )(NavBar)
