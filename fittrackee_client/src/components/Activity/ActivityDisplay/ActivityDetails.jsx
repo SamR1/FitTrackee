@@ -13,15 +13,7 @@ export default function ActivityDetails(props) {
           className="fa fa-clock-o custom-fa"
           aria-hidden="true"
         />
-        Duration: {activity.duration}
-        {withPauses && (
-          <span>
-            {' '}
-            (pauses: {activity.pauses})
-            <br />
-            Moving duration: {activity.moving}
-          </span>
-        )}
+        Duration: {activity.moving}
         {recordLDexists && (
           <sup>
             <i
@@ -29,6 +21,11 @@ export default function ActivityDetails(props) {
               aria-hidden="true"
             />
           </sup>
+        )}
+        {withPauses && (
+          <p>
+            (pauses: {activity.pauses}, total duration: {activity.duration})
+          </p>
         )}
       </p>
       <p>
