@@ -49,7 +49,7 @@ export default class ActivitiesList extends React.PureComponent {
                 <td className="text-right">
                   {Number(activity.distance).toFixed(2)} km
                 </td>
-                <td className="text-right">{activity.duration}</td>
+                <td className="text-right">{activity.moving}</td>
                 <td className="text-right">{activity.ave_speed} km/h</td>
                 <td className="text-right">{activity.max_speed} km/h</td>
               </tr>

@@ -23,9 +23,10 @@ export default function ActivityDetails(props) {
           </sup>
         )}
         {withPauses && (
-          <p>
+          <span>
+            <br />
             (pauses: {activity.pauses}, total duration: {activity.duration})
-          </p>
+          </span>
         )}
       </p>
       <p>
