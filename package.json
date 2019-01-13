@@ -4,8 +4,6 @@
   "private": true,
   "dependencies": {
     "@mapbox/togeojson": "^0.16.0",
-    "add": "^2.0.6",
-    "chalk": "^2.4.2",
     "connected-react-router": "^6.1.0",
     "date-fns": "^1.29.0",
     "history": "^4.7.2",
@@ -18,7 +16,7 @@
     "react-leaflet": "^2.1.2",
     "react-redux": "^6.0.0",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "^2.1.3",
+    "react-scripts": "2.1.2",
     "react-timezone": "^2.1.0",
     "recharts": "^1.4.2",
     "redux": "4.0.1",
