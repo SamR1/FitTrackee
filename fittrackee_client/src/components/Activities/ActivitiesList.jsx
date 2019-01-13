@@ -4,13 +4,14 @@ import { Link } from 'react-router-dom'
 
 import { getDateWithTZ } from '../../utils'
 
-export default function ActivitiesList (props) {
-  const { activities, sports, user } = props
-  return (
-    <div className="card  activity-card">
-      <div className="card-body">
-        <table className="table">
-          <thead>
+export default class ActivitiesList extends React.PureComponent {
+  render() {
+    const { activities, sports, user } = this.props
+    return (
+      <div className="card  activity-card">
+        <div className="card-body">
+          <table className="table">
+            <thead>
             <tr>
               <th scope="col" />
               <th scope="col">Workout</th>
@@ -20,12 +21,12 @@ export default function ActivitiesList (props) {
               <th scope="col">Ave. speed</th>
               <th scope="col">Max. speed</th>
             </tr>
-          </thead>
-          <tbody>
-            { sports && activities.map((activity, idx) => (
+            </thead>
+            <tbody>
+            {sports && activities.map((activity, idx) => (
               // eslint-disable-next-line react/no-array-index-key
               <tr key={idx}>
-                <td >
+                <td>
                   <img
                     className="activity-sport"
                     src={sports
@@ -34,11 +35,11 @@ export default function ActivitiesList (props) {
                     alt="activity sport logo"
                   />
                 </td>
-                <td >
+                <td>
                   <Link to={`/activities/${activity.id}`}>
                     {activity.title}
                   </Link>
-                  </td>
+                </td>
                 <td>
                   {format(
                     getDateWithTZ(activity.activity_date, user.timezone),
@@ -48,14 +49,15 @@ export default function ActivitiesList (props) {
                 <td className="text-right">
                   {Number(activity.distance).toFixed(2)} km
                 </td>
-                <td className="text-right">{activity.duration}</td>
+                <td className="text-right">{activity.moving}</td>
                 <td className="text-right">{activity.ave_speed} km/h</td>
                 <td className="text-right">{activity.max_speed} km/h</td>
               </tr>
             ))}
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 }

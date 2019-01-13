@@ -49,7 +49,7 @@ export default function ActivityCard (props) {
           <div className="col">
             <p>
               <i className="fa fa-clock-o" aria-hidden="true" />{' '}
-              Duration: {activity.duration}
+              Duration: {activity.moving}
               {activity.map ? (
                 <span><br /><br /></span>
               ) : (

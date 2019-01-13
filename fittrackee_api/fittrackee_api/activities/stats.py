@@ -70,7 +70,7 @@ def get_activities(user_id, filter_type):
                 activities_list[sport_id]['total_distance'] += \
                     float(activity.distance)
                 activities_list[sport_id]['total_duration'] += \
-                    convert_timedelta_to_integer(activity.duration)
+                    convert_timedelta_to_integer(activity.moving)
 
             else:
                 if time == 'week':
@@ -108,7 +108,7 @@ def get_activities(user_id, filter_type):
                 activities_list[time_period][sport_id]['total_distance'] += \
                     float(activity.distance)
                 activities_list[time_period][sport_id]['total_duration'] += \
-                    convert_timedelta_to_integer(activity.duration)
+                    convert_timedelta_to_integer(activity.moving)
 
         response_object = {
             'status': 'success',

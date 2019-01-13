@@ -56,9 +56,9 @@ def get_activities(auth_user_id):
             if date_to else True,
             Activity.distance >= int(distance_from) if distance_from else True,
             Activity.distance <= int(distance_to) if distance_to else True,
-            Activity.duration >= convert_in_duration(duration_from)
+            Activity.moving >= convert_in_duration(duration_from)
             if duration_from else True,
-            Activity.duration <= convert_in_duration(duration_to)
+            Activity.moving <= convert_in_duration(duration_to)
             if duration_to else True,
             Activity.ave_speed >= float(ave_speed_from)
             if ave_speed_from else True,

@@ -1,7 +1,7 @@
 import { format, parse } from 'date-fns'
 import { DateTime } from 'luxon'
 
-export const version = '0.2.0' // version stored in 'utils' for now
+export const version = '0.2.0-beta' // version stored in 'utils' for now
 export const apiUrl = `${process.env.REACT_APP_API_URL}/api/`
 export const thunderforestApiKey = `${
   process.env.REACT_APP_THUNDERFOREST_API_KEY

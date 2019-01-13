@@ -113,6 +113,7 @@ def activity_cycling_user_1_segment():
         segment_id=0
     )
     activity_segment.duration = datetime.timedelta(seconds=6000)
+    activity_segment.moving = activity_segment.duration
     activity_segment.distance = 5
     db.session.add(activity_segment)
     db.session.commit()
@@ -128,6 +129,7 @@ def activity_running_user_1():
         distance=12,
         duration=datetime.timedelta(seconds=6000)
     )
+    activity.moving = activity.duration
     db.session.add(activity)
     db.session.commit()
     return activity
@@ -143,6 +145,7 @@ def seven_activities_user_1():
         duration=datetime.timedelta(seconds=1024)
     )
     activity.ave_speed = float(activity.distance) / (1024 / 3600)
+    activity.moving = activity.duration
     db.session.add(activity)
     db.session.flush()
     activity = Activity(
@@ -153,6 +156,7 @@ def seven_activities_user_1():
         duration=datetime.timedelta(seconds=3456)
     )
     activity.ave_speed = float(activity.distance) / (3456 / 3600)
+    activity.moving = activity.duration
     db.session.add(activity)
     db.session.flush()
     activity = Activity(
@@ -163,6 +167,7 @@ def seven_activities_user_1():
         duration=datetime.timedelta(seconds=1024)
     )
     activity.ave_speed = float(activity.distance) / (1024 / 3600)
+    activity.moving = activity.duration
     db.session.add(activity)
     db.session.flush()
     activity = Activity(
@@ -173,6 +178,7 @@ def seven_activities_user_1():
         duration=datetime.timedelta(seconds=600)
     )
     activity.ave_speed = float(activity.distance) / (600 / 3600)
+    activity.moving = activity.duration
     db.session.add(activity)
     db.session.flush()
     activity = Activity(
@@ -183,6 +189,7 @@ def seven_activities_user_1():
         duration=datetime.timedelta(seconds=1000)
     )
     activity.ave_speed = float(activity.distance) / (1000 / 3600)
+    activity.moving = activity.duration
     db.session.add(activity)
     db.session.flush()
     activity = Activity(
@@ -193,6 +200,7 @@ def seven_activities_user_1():
         duration=datetime.timedelta(seconds=6000)
     )
     activity.ave_speed = float(activity.distance) / (6000 / 3600)
+    activity.moving = activity.duration
     db.session.add(activity)
     db.session.flush()
     activity = Activity(
@@ -203,6 +211,7 @@ def seven_activities_user_1():
         duration=datetime.timedelta(seconds=3000)
     )
     activity.ave_speed = float(activity.distance) / (3000 / 3600)
+    activity.moving = activity.duration
     db.session.add(activity)
     db.session.commit()
     return activity
@@ -217,6 +226,7 @@ def activity_cycling_user_2():
         distance=15,
         duration=datetime.timedelta(seconds=3600)
     )
+    activity.moving = activity.duration
     db.session.add(activity)
     db.session.commit()
     return activity

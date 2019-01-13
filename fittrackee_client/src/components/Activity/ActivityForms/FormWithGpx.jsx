@@ -57,7 +57,7 @@ function FormWithGpx (props) {
             gpxLimit} files max):
             <input
               accept=".gpx, .zip"
-              className="form-control input-lg"
+              className="form-control form-control-file gpx-file"
               disabled={loading}
               name="gpxFile"
               required
@@ -95,7 +95,7 @@ function FormWithGpx (props) {
           <input
             type="submit"
             className="btn btn-secondary btn-lg btn-block"
-            onClick={() => history.go(-1)}
+            onClick={() => history.push('/')}
             value="Cancel"
           />
         </div>

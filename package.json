@@ -4,8 +4,6 @@
   "private": true,
   "dependencies": {
     "@mapbox/togeojson": "^0.16.0",
-    "add": "^2.0.6",
-    "chalk": "2.4.1",
     "connected-react-router": "^6.1.0",
     "date-fns": "^1.29.0",
     "history": "^4.7.2",

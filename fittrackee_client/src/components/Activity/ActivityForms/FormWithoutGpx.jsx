@@ -123,7 +123,7 @@ function FormWithoutGpx (props) {
       <input
         type="submit"
         className="btn btn-secondary btn-lg btn-block"
-        onClick={() => history.go(-1)}
+        onClick={() => history.push('/')}
         value="Cancel"
       />
     </form>

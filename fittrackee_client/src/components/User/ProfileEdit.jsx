@@ -173,7 +173,6 @@ class ProfileEdit extends React.Component {
                               name="bio"
                               className="form-control input-lg"
                               maxLength="200"
-                              type="text"
                               value={formData.bio}
                               onChange={e => this.handleFormChange(e)}
                             />
@@ -183,7 +182,7 @@ class ProfileEdit extends React.Component {
                           <label>
                             Timezone:
                             <TimezonePicker
-                              className="form-control"
+                              className="form-control timezone-custom-height"
                               onChange={tz => {
                                 const e = { target:
                                   {

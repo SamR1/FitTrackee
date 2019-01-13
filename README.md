@@ -14,7 +14,7 @@ This web application allows you to track your outdoor activities from gpx files 
 No mobile app is developed yet, but several existing mobile apps can store workouts data locally and export them into a gpx file.  
 Examples (for Android):  
 * [Runner Up](https://github.com/jonasoreland/runnerup) (GPL v3)  
-* [ForRunners](https://github.com/brvier/ForRunners)  (GPL v3)  
+* [ForRunners](https://gitlab.com/brvier/ForRunners)  (GPL v3)  
 * [AlpineQuest](https://www.alpinequest.net/) (Proprietary, no trackers according to [exodus privay report](https://reports.exodus-privacy.eu.org/reports/2975/))  
 
 Maps are displayed using [Open Street Map](https://www.openstreetmap.org).  

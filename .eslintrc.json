@@ -320,7 +320,7 @@
     "react/no-unknown-property": "error",
     "react/no-unused-prop-types": "off",
     "react/prefer-es6-class": "error",
-    "react/prefer-stateless-function": "error",
+    "react/prefer-stateless-function": [1, { "ignorePureComponents": true }],
     "react/prop-types": "off",
     "react/react-in-jsx-scope": "error",
     "react/react-default-props": "off",
