@@ -1,23 +1,23 @@
-import { apiUrl, createRequest } from '../utils'
+import { createApiRequest } from '../utils'
 
 export default class FitTrackeeApi {
 
   static loginOrRegister(target, data) {
     const params = {
-      url: `${apiUrl}auth/${target}`,
+      url: `auth/${target}`,
       method: 'POST',
       noAuthorization: true,
       body: data,
       type: 'application/json',
     }
-    return createRequest(params)
+    return createApiRequest(params)
   }
 
   static deletePicture() {
     const params = {
-      url: `${apiUrl}auth/picture`,
+      url: 'auth/picture',
       method: 'DELETE',
     }
-    return createRequest(params)
+    return createApiRequest(params)
   }
 }

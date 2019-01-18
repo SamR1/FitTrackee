@@ -1,10 +1,9 @@
-import { apiUrl, createRequest } from '../utils'
+import { createApiRequest } from '../utils'
 
 export default class FitTrackeeApi {
 
-  static getData(target,
-                 data = {}) {
-    let url = `${apiUrl}${target}`
+  static getData(target, data = {}) {
+    let url = target
     if (data.id) {
       url = `${url}/${data.id}`
     } else if (Object.keys(data).length > 0) {
@@ -16,54 +15,54 @@ export default class FitTrackeeApi {
       method: 'GET',
       type: 'application/json',
     }
-    return createRequest(params)
+    return createApiRequest(params)
   }
 
   static addData(target, data) {
     const params = {
-      url: `${apiUrl}${target}`,
+      url: target,
       method: 'POST',
       body: data,
       type: 'application/json',
     }
-    return createRequest(params)
+    return createApiRequest(params)
   }
 
   static addDataWithFile(target, data) {
     const params = {
-      url: `${apiUrl}${target}`,
+      url: target,
       method: 'POST',
       body: data,
     }
-    return createRequest(params)
+    return createApiRequest(params)
   }
 
   static postData(target, data) {
     const params = {
-      url: `${apiUrl}${target}${data.id ? `/${data.id}` : '' }`,
+      url: `${target}${data.id ? `/${data.id}` : '' }`,
       method: 'POST',
       body: data,
       type: 'application/json',
     }
-    return createRequest(params)
+    return createApiRequest(params)
   }
 
   static updateData(target, data) {
     const params = {
-      url: `${apiUrl}${target}/${data.id}`,
+      url: `${target}/${data.id}`,
       method: 'PATCH',
       body: data,
       type: 'application/json',
     }
-    return createRequest(params)
+    return createApiRequest(params)
   }
 
   static deleteData(target, id) {
     const params = {
-      url: `${apiUrl}${target}/${id}`,
+      url: `${target}/${id}`,
       method: 'DELETE',
       type: 'application/json',
     }
-    return createRequest(params)
+    return createApiRequest(params)
   }
 }

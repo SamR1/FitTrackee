@@ -30,7 +30,7 @@ export const generateIds = arr => {
 }
 
 
-export const createRequest = params => {
+export const createApiRequest = params => {
   const headers = {}
   if (!params.noAuthorization) {
     headers.Authorization = `Bearer ${
@@ -48,12 +48,15 @@ export const createRequest = params => {
   } else if (params.body) {
     requestParams.body = params.body
   }
-  const request = new Request(params.url, requestParams)
+  const request = new Request(`${apiUrl}${params.url}`, requestParams)
   return fetch(request)
     .then(response => params.method === 'DELETE'
       ? response
       : response.json())
-    .catch(error => error)
+    .catch(error => {
+      console.error(error)
+      return new Error('An error occurred. Please contact the administrator.')
+    })
 }
 
 
