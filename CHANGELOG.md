@@ -1,22 +1,24 @@
 # Change log
 
-## Version 0.1.1 - Fix and improvements (2019/01/xx)
+## Version 0.1.1 - Fix and improvements (2019/02/07)
 
 ### Issues Closed
-
-#### Bugs Fixed
-
-* [#31](https://github.com/SamR1/FitTrackee/issues/31) - Use moving duration for stats
-* [#29](https://github.com/SamR1/FitTrackee/issues/29) - Pause duration calculation with segments
-* [#26](https://github.com/SamR1/FitTrackee/issues/26) - Total is incorrect in tooltip when duration is displayed
-* [#24](https://github.com/SamR1/FitTrackee/issues/24) - Some distances are not displayed correctly on current month statistics
 
 #### New Features
 
 * [#25](https://github.com/SamR1/FitTrackee/issues/25) - Display records on calendar
 * [#22](https://github.com/SamR1/FitTrackee/issues/22) - Add a total on current month statistics
 
-In this release 6 issues were closed.
+#### Bugs Fixed
+
+* [#31](https://github.com/SamR1/FitTrackee/issues/31) - Use moving duration for stats
+* [#29](https://github.com/SamR1/FitTrackee/issues/29) - Pause duration calculation with segments
+* [#28](https://github.com/SamR1/FitTrackee/issues/28) - Error on uploading gpx file
+* [#26](https://github.com/SamR1/FitTrackee/issues/26) - Total is incorrect in tooltip when duration is displayed
+* [#24](https://github.com/SamR1/FitTrackee/issues/24) - Some distances are not displayed correctly on current month statistics
+
+
+In this release 7 issues were closed.
 
 
 ## Version 0.1 - Minimal version (2018-07-04)
