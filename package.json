@@ -14,12 +14,12 @@
     "react-dom": "^16.6.3",
     "react-helmet": "^6.0.0-beta",
     "react-leaflet": "^2.1.2",
-    "react-redux": "^6.0.0",
-    "react-router-dom": "^4.3.1",
-    "react-scripts": "2.1.2",
+    "react-redux": "^7.0.3",
+    "react-router-dom": "^5.0.0",
+    "react-scripts": "^3.0.0",
     "react-timezone": "^2.1.0",
     "recharts": "^1.4.2",
-    "redux": "4.0.1",
+    "redux": "^4.0.1",
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
@@ -41,6 +41,6 @@
   "devDependencies": {
     "eslint-plugin-testcafe": "^0.2.1",
     "randomstring": "^1.1.5",
-    "testcafe": "^0.23.2"
+    "testcafe": "^1.1.3"
   }
 }
