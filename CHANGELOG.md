@@ -1,5 +1,16 @@
 # Change log
 
+## Version 0.2 - More statistics (2019/xx/xx)
+
+### Issues Closed
+
+#### New Features
+
+* [#13](https://github.com/SamR1/Fittrackee/issues/13) - Detailed statistics
+
+In this release 1 issue was closed.
+
+
 ## Version 0.1.1 - Fix and improvements (2019/02/07)
 
 ### Issues Closed
