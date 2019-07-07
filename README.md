@@ -29,6 +29,8 @@ It is also possible to add a workout without a gpx file.
 
 ![FitTrackee Activities](docs/images/fittrackee_screenshot-03.png)
 
+![FitTrackee Statistics](docs/images/fittrackee_screenshot-04.png)
+
 ---
 
 Notes:  

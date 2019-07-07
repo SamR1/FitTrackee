@@ -8,6 +8,10 @@
 
 * [#13](https://github.com/SamR1/Fittrackee/issues/13) - Detailed statistics
 
+#### Misc
+
+* Update dependencies
+
 In this release 1 issue was closed.
 
 
