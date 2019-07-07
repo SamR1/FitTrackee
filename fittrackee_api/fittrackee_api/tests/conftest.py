@@ -234,7 +234,7 @@ def activity_cycling_user_2():
 
 @pytest.fixture()
 def gpx_file():
-        return (
+    return (
         '<?xml version=\'1.0\' encoding=\'UTF-8\'?>'
         '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
         '  <metadata/>'
@@ -482,7 +482,7 @@ def gpx_file_invalid_xml():
 
 @pytest.fixture()
 def gpx_file_with_segments():
-        return (
+    return (
         '<?xml version=\'1.0\' encoding=\'UTF-8\'?>'
         '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
         '  <metadata/>'
