@@ -1,6 +1,6 @@
 # Change log
 
-## Version 0.2 - More statistics (2019/xx/xx)
+## Version 0.2 - Statistics (2019/07/07)
 
 ### Issues Closed
 
