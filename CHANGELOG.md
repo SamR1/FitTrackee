@@ -1,6 +1,14 @@
 # Change log
 
-## Version 0.2 - Statistics (2019/07/07)
+## Version 0.2.1 (2019/xx/xx)
+
+#### New Features
+
+
+#### Bugs Fixed
+
+
+## Version 0.2.0 - Statistics (2019/07/07)
 
 ### Issues Closed
 
