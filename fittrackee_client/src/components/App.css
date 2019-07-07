@@ -329,6 +329,36 @@ label {
   max-height: 45px;
 }
 
+.time-frames {
+  align-items: center;
+  display: inline-flex;
+}
+
+.time-frame label {
+  float: left;
+  padding: 0 5px;
+  width: 4em;
+}
+
+.time-frame label input {
+  display: none;
+}
+
+.time-frame label span {
+  border: #a9a9a9 solid 1px;
+  border-radius: 9%;
+  color: #7b7b7b;
+  display: block;
+  font-size: 0.9em;
+  padding: 2px 0;
+  text-align: center;
+}
+
+.time-frame input:checked + span {
+  background-color: #a9a9a9;
+  color: #ffffff;
+}
+
 .timezone-custom-height {
   height: calc(2.25rem + 14px);
 }

@@ -48,7 +48,8 @@ class Statistics extends React.Component {
   }
 
   handleOnChangeDuration(e) {
-    const duration = e.target.value
+    const duration = e.target.name
+
     const date = new Date()
     const start = duration === 'year'
       ? startOfYear(subYears(date, 9))
@@ -131,19 +132,21 @@ class Statistics extends React.Component {
                     />
                   </p>
                 </div>
-                <div className="col-md-3">
-                  <select
-                    className="form-control input-lg"
-                    name="duration"
-                    defaultValue={statsParams.duration}
-                    onChange={e => this.handleOnChangeDuration(e)}
-                  >
-                    {durations.map(d => (
-                      <option key={d} value={d}>
-                        {d}
-                      </option>
-                    ))}
-                  </select>
+                <div className="col-md-3 time-frames justify-content-around">
+                  {durations.map(d => (
+                    <div className="time-frame" key={d}>
+                      <label >
+                        <input
+                          type="radio"
+                          id={d}
+                          name={d}
+                          checked={d === statsParams.duration}
+                          onChange={e => this.handleOnChangeDuration(e)}
+                        />
+                        <span>{ d }</span>
+                      </label>
+                    </div>
+                  ))}
                 </div>
                 <div className="col chart-arrows">
                   <p className="text-center">
