@@ -38,7 +38,7 @@ def get_activities(auth_user_id):
 
     .. sourcecode:: http
 
-      GET /api/activities?&page=1&per_page=10&from=2019-07-02&to=2019-07-31&sport_id=1  HTTP/1.1
+      GET /api/activities?from=2019-07-02&to=2019-07-31&sport_id=1  HTTP/1.1
 
     **Example responses**:
 
@@ -140,7 +140,7 @@ def get_activities(auth_user_id):
     :param integer auth_user_id: authenticate user id
 
     :query integer page: page if using pagination (default: 1)
-    :query integer per_page: number of activities returned per page (default: 5)
+    :query integer per_page: number of activities per page (default: 5)
     :query integer sport_id: sport id
     :query string from: start date (format: `%Y-%m-%d`)
     :query string to: end date (format: `%Y-%m-%d`)
@@ -152,7 +152,7 @@ def get_activities(auth_user_id):
     :query float ave_speed_to: maximal average speed
     :query float max_speed_from: minimal max. speed
     :query float max_speed_to: maximal max. speed
-    :query string order: sorting order (default: 'desc')
+    :query string order: sorting order (default: `desc`)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
