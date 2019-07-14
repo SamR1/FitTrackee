@@ -36,7 +36,7 @@ In this release 1 issue was closed.
 In this release 7 issues were closed.
 
 
-## Version 0.1 - Minimal version (2018-07-04)
+## Version 0.1.0 - Minimal version (2018-07-04)
 
 ### Issues Closed
 

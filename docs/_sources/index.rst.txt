@@ -40,6 +40,7 @@ Table of contents
    installation
    features
    api/index
+   troubleshooting/index
    changelog
 
 
