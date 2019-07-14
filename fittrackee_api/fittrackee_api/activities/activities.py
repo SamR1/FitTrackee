@@ -23,7 +23,143 @@ activities_blueprint = Blueprint('activities', __name__)
 @activities_blueprint.route('/activities', methods=['GET'])
 @authenticate
 def get_activities(auth_user_id):
-    """Get all activities for authenticated user"""
+    """
+    Get activities for the authenticated user.
+
+    **Example requests**:
+
+    - minimal request
+
+    .. sourcecode:: http
+
+      GET /api/activities/ HTTP/1.1
+
+    - with some query parameters
+
+    .. sourcecode:: http
+
+      GET /api/activities?&page=1&per_page=10&from=2019-07-02&to=2019-07-31&sport_id=1  HTTP/1.1
+
+    **Example responses**:
+
+    - returning at least one activity
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "activities": [
+              {
+                "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                "ascent": null,
+                "ave_speed": 10.0,
+                "bounds": [],
+                "creation_date": "Sun, 14 Jul 2019 13:51:01 GMT",
+                "descent": null,
+                "distance": 10.0,
+                "duration": "0:17:04",
+                "id": 1,
+                "map": null,
+                "max_alt": null,
+                "max_speed": 10.0,
+                "min_alt": null,
+                "modification_date": null,
+                "moving": "0:17:04",
+                "next_activity": 3,
+                "notes": null,
+                "pauses": null,
+                "previous_activity": null,
+                "records": [
+                  {
+                    "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                    "activity_id": 1,
+                    "id": 4,
+                    "record_type": "MS",
+                    "sport_id": 1,
+                    "user_id": 1,
+                    "value": 10.0
+                  },
+                  {
+                    "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                    "activity_id": 1,
+                    "id": 3,
+                    "record_type": "LD",
+                    "sport_id": 1,
+                    "user_id": 1,
+                    "value": "0:17:04"
+                  },
+                  {
+                    "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                    "activity_id": 1,
+                    "id": 2,
+                    "record_type": "FD",
+                    "sport_id": 1,
+                    "user_id": 1,
+                    "value": 10.0
+                  },
+                  {
+                    "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                    "activity_id": 1,
+                    "id": 1,
+                    "record_type": "AS",
+                    "sport_id": 1,
+                    "user_id": 1,
+                    "value": 10.0
+                  }
+                ],
+                "segments": [],
+                "sport_id": 1,
+                "title": null,
+                "user_id": 1,
+                "weather_end": null,
+                "weather_start": null,
+                "with_gpx": false
+              }
+            ]
+          },
+          "status": "success"
+        }
+
+    - returning no activities
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+            "data": {
+                "activities": []
+            },
+            "status": "success"
+        }
+
+    :param integer auth_user_id: authenticate user id
+
+    :query integer page: page if using pagination (default: 1)
+    :query integer per_page: number of activities returned per page (default: 5)
+    :query integer sport_id: sport id
+    :query string from: start date (format: `%Y-%m-%d`)
+    :query string to: end date (format: `%Y-%m-%d`)
+    :query float distance_from: minimal distance
+    :query float distance_to: maximal distance
+    :query string duration_from: minimal duration (format: `%H:%M`)
+    :query string duration_to: maximal distance (format: `%H:%M`)
+    :query float ave_speed_from: minimal average speed
+    :query float ave_speed_to: maximal average speed
+    :query float max_speed_from: minimal max. speed
+    :query float max_speed_to: maximal max. speed
+    :query string order: sorting order (default: 'desc')
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: no error
+    :statuscode 500:
+
+    """
     try:
         user = User.query.filter_by(id=auth_user_id).first()
         params = request.args.copy()

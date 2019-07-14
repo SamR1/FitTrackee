@@ -10,7 +10,7 @@ Welcome to FitTrackee's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   api/endpoints
+   api/activities
 
 Indices and tables
 ==================
