@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Sports &#8212; FitTrackee 0.2.1-beta documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Statistics" href="stats.html" />
+    <link rel="prev" title="Records" href="records.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          FitTrackee</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../features.html">Features</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change log</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Sports</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="records.html" title="Previous Chapter: Records"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Records</span>
+    </a>
+  </li>
+  <li>
+    <a href="stats.html" title="Next Chapter: Statistics"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Statistics &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/api/sports.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="sports">
+<h1>Sports<a class="headerlink" href="#sports" title="Permalink to this headline">¶</a></h1>
+<dl class="get">
+<dt id="get--api-sports">
+<code class="sig-name descname">GET </code><code class="sig-name descname">/api/sports</code><a class="headerlink" href="#get--api-sports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all sports</p>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--api-sports-(int-sport_id)">
+<code class="sig-name descname">GET </code><code class="sig-name descname">/api/sports/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">sport_id</em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-sports-(int-sport_id)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a sport</p>
+</dd></dl>
+
+<dl class="post">
+<dt id="post--api-sports">
+<code class="sig-name descname">POST </code><code class="sig-name descname">/api/sports</code><a class="headerlink" href="#post--api-sports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post a sport</p>
+</dd></dl>
+
+<dl class="patch">
+<dt id="patch--api-sports-(int-sport_id)">
+<code class="sig-name descname">PATCH </code><code class="sig-name descname">/api/sports/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">sport_id</em><span class="sig-paren">)</span><a class="headerlink" href="#patch--api-sports-(int-sport_id)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update a sport</p>
+</dd></dl>
+
+<dl class="delete">
+<dt id="delete--api-sports-(int-sport_id)">
+<code class="sig-name descname">DELETE </code><code class="sig-name descname">/api/sports/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">sport_id</em><span class="sig-paren">)</span><a class="headerlink" href="#delete--api-sports-(int-sport_id)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a sport</p>
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2019, SamR1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

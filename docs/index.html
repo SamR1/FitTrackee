@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>FitTrackee &#8212; FitTrackee 0.2.1-beta documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">
+          FitTrackee</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Change log</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">FitTrackee</a></li>
+<li><a class="reference internal" href="#table-of-contents">Table of contents</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="installation.html" title="Next Chapter: Installation"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Installation &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/index.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="fittrackee">
+<h1>FitTrackee<a class="headerlink" href="#fittrackee" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://python.org"><img alt="Python Version" src="https://img.shields.io/badge/python-3.7-brightgreen.svg" /></a> <a class="reference external" href="http://flask.pocoo.org/"><img alt="Flask Version" src="https://img.shields.io/badge/flask-1.1-brightgreen.svg" /></a> <a class="reference external" href="https://reactjs.org/"><img alt="React Version" src="https://img.shields.io/badge/react-16.8-brightgreen.svg" /></a></div>
+<div class="line"><a class="reference external" href="https://www.codacy.com/app/SamR1/FitTrackee"><img alt="Codacy Badge" src="https://api.codacy.com/project/badge/Grade/290a285f22e94132904dc13b4dd19d1d" /></a> <a class="reference external" href="https://www.codacy.com/app/SamR1/FitTrackee"><img alt="Codacy Coverage Badge" src="https://api.codacy.com/project/badge/Coverage/290a285f22e94132904dc13b4dd19d1d" /></a>1 <a class="reference external" href="https://travis-ci.org/SamR1/FitTrackee"><img alt="Build Status" src="https://travis-ci.org/SamR1/FitTrackee.svg?branch=master" /></a></div>
+</div>
+<div class="line-block">
+<div class="line">This web application allows you to track your outdoor activities from
+gpx files and keep your data on your own server.</div>
+<div class="line">No mobile app is developed yet, but several existing mobile apps can
+store workouts data locally and export them into a gpx file.</div>
+<div class="line">Examples (for Android):</div>
+<div class="line">* <a class="reference external" href="https://github.com/jonasoreland/runnerup">Runner Up</a> (GPL v3)</div>
+<div class="line">* <a class="reference external" href="https://gitlab.com/brvier/ForRunners">ForRunners</a> (GPL v3)</div>
+<div class="line">* <a class="reference external" href="https://www.alpinequest.net/">AlpineQuest</a> (Proprietary, no
+trackers according to <a class="reference external" href="https://reports.exodus-privacy.eu.org/reports/2975/">exodus privay
+report</a>)</div>
+</div>
+<div class="line-block">
+<div class="line">Maps are displayed using <a class="reference external" href="https://www.openstreetmap.org">Open Street
+Map</a>.</div>
+<div class="line">It is also possible to add a workout without a gpx file.</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Still under development (not ready for production).</strong></div>
+<div class="line">(see <a class="reference external" href="https://github.com/SamR1/FitTrackee/issues">issues</a> for more information)</div>
+</div>
+<div class="figure align-default">
+<img alt="FitTrackee Dashboard" src="_images/fittrackee_screenshot-01.png" />
+</div>
+</div>
+<div class="section" id="table-of-contents">
+<h1>Table of contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#id1">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#upgrade">Upgrade</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="features.html#features-list">Features list</a></li>
+<li class="toctree-l2"><a class="reference internal" href="features.html#dashboard">Dashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="features.html#activity-workout-detail">Activity/workout detail</a></li>
+<li class="toctree-l2"><a class="reference internal" href="features.html#activities-workouts-list">Activities/workouts list</a></li>
+<li class="toctree-l2"><a class="reference internal" href="features.html#statistics">Statistics</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/activities.html">Activities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/auth.html">Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/records.html">Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/sports.html">Sports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/stats.html">Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/users.html">Users</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Change log</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-0-2-0-statistics-2019-07-07">Version 0.2.0 - Statistics (2019/07/07)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-0-1-1-fix-and-improvements-2019-02-07">Version 0.1.1 - Fix and improvements (2019/02/07)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-0-1-minimal-version-2018-07-04">Version 0.1 - Minimal version (2018-07-04)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2019, SamR1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

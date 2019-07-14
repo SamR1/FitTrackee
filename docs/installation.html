@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Installation &#8212; FitTrackee 0.2.1-beta documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Features" href="features.html" />
+    <link rel="prev" title="FitTrackee" href="index.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          FitTrackee</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Change log</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#id1">Installation</a><ul>
+<li><a class="reference internal" href="#dev-environment">Dev environment</a></li>
+<li><a class="reference internal" href="#prod-environment">Prod environment</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#upgrade">Upgrade</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="index.html" title="Previous Chapter: FitTrackee"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; FitTrackee</span>
+    </a>
+  </li>
+  <li>
+    <a href="features.html" title="Next Chapter: Features"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Features &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/installation.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>This application is written in Python (API) and Javascript (client):</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>API:</dt><dd><ul>
+<li><p>Flask</p></li>
+<li><p><a class="reference external" href="https://github.com/tkrajina/gpxpy">gpxpy</a> to parse gpx files</p></li>
+<li><p><a class="reference external" href="https://github.com/komoot/staticmap">staticmap</a> to generate a static map image from gpx coordinates</p></li>
+<li><p><a class="reference external" href="https://github.com/ZeevG/python-forecast.io">python-forecast.io</a> to fetch weather data from <a class="reference external" href="https://darksky.net">Dark Sky</a> (former forecast.io)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Client:</dt><dd><ul>
+<li><p>React/Redux</p></li>
+<li><p><a class="reference external" href="https://leafletjs.com/">Leaflet</a> to display map</p></li>
+<li><p><a class="reference external" href="https://github.com/recharts/recharts">Recharts</a> to display charts with elevation and speed</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Sports and weather icons are made by Freepik from www.flaticon.com.</p>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>PostgreSQL database (10+)</p></li>
+<li><p>Python 3.7+</p></li>
+<li><p><a class="reference external" href="https://yarnpkg.com">Yarn</a> and
+<a class="reference external" href="https://github.com/zeit/serve">serve</a></p></li>
+<li><p>API key from <a class="reference external" href="http://thunderforest.com">ThunderForest</a></p></li>
+<li><p>API key from <a class="reference external" href="https://darksky.net/dev">Dark Sky</a> [not mandatory]</p></li>
+</ul>
+</div>
+<div class="section" id="id1">
+<h2>Installation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">The following steps describe an installation on Linux systems (tested
+on Debian and Arch).</div>
+<div class="line">On other OS, some issues can be encountered and adaptations may be
+necessary.</div>
+</div>
+<div class="section" id="dev-environment">
+<h3>Dev environment<a class="headerlink" href="#dev-environment" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Clone this repo:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/SamR1/FitTrackee.git
+$ <span class="nb">cd</span> FitTrackee
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Update <strong>Makefile.config</strong> file if needed and copy/paste the
+<strong>ThunderForest</strong> and <strong>Dark Sky</strong> API keys value in
+<strong>Makefile.custom.config</strong> file (see example)</p></li>
+<li><p>Install Python virtualenv, React and all related packages and
+initialize the database:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make install-dev
+$ make install-db
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Start the server and the client:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make serve
+</pre></div>
+</div>
+<p>Open <a class="reference external" href="http://localhost:3000">http://localhost:3000</a> and login (the email is <code class="docutils literal notranslate"><span class="pre">admin&#64;example.com</span></code>
+and the password <code class="docutils literal notranslate"><span class="pre">mpwoadmin</span></code>) or register</p>
+</div>
+<div class="section" id="prod-environment">
+<h3>Prod environment<a class="headerlink" href="#prod-environment" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Download the last release (for now it is the beta release v0.2.1):</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.2.1-beta.tar.gz
+$ tar -xzf v0.1.1-beta.tar.gz
+$ mv FitTrackee-0.1.1-beta FitTrackee
+$ <span class="nb">cd</span> FitTrackee
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Update <strong>Makefile.config</strong> file if needed and copy/paste the
+<strong>ThunderForest</strong> and <strong>Dark Sky</strong> API keys value in
+<strong>Makefile.custom.config</strong> file (see example)</p></li>
+<li><p>Install Python virtualenv, React and all related packages and
+initialize the database:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make install
+$ make install-db
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Build the client:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make build-client
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Start the server and the client:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make run
+</pre></div>
+</div>
+<p>Open <a class="reference external" href="http://localhost:3000">http://localhost:3000</a>, log in as admin (the email is
+<code class="docutils literal notranslate"><span class="pre">admin&#64;example.com</span></code> and the password <code class="docutils literal notranslate"><span class="pre">mpwoadmin</span></code>) and change the
+password</p>
+</div>
+</div>
+<div class="section" id="upgrade">
+<h2>Upgrade<a class="headerlink" href="#upgrade" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">TODO</span></code></p>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2019, SamR1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
