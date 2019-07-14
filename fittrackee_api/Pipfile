@@ -25,6 +25,7 @@ pytest-isort = "*"
 codacy-coverage = "*"
 sphinx = "*"
 sphinxcontrib-httpdomain = "*"
+sphinx-bootstrap-theme = "*"
 
 [requires]
 python_version = "3.7"
