@@ -23,13 +23,13 @@ It is also possible to add a workout without a gpx file.
 **Still under development (not ready for production).**  
 (see [issues](https://github.com/SamR1/mpwo/issues) and [wiki](https://github.com/SamR1/mpwo/wiki) for more informations)  
 
-![FitTrackee Dashboard](docs/images/fittrackee_screenshot-01.png)
+![FitTrackee Dashboard](misc/images/fittrackee_screenshot-01.png)
 
-![FitTrackee Activity](docs/images/fittrackee_screenshot-02.png)
+![FitTrackee Activity](misc/images/fittrackee_screenshot-02.png)
 
-![FitTrackee Activities](docs/images/fittrackee_screenshot-03.png)
+![FitTrackee Activities](misc/images/fittrackee_screenshot-03.png)
 
-![FitTrackee Statistics](docs/images/fittrackee_screenshot-04.png)
+![FitTrackee Statistics](misc/images/fittrackee_screenshot-04.png)
 
 ---
 
