@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "a74a823223e2e48a35a7f08bfddcf89689a23448852fb7748c91fdd62d6ef35b"
+            "sha256": "6f03afa1186341d88c1067a26689ec53cfe871db2cfd380663f1e1056322ee5c"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -419,6 +419,13 @@
             "index": "pypi",
             "version": "==1.3.11"
         },
+        "commonmark": {
+            "hashes": [
+                "sha256:14c3df31e8c9c463377e287b2a1eefaa6019ab97b22dad36e2f32be59d61d68d",
+                "sha256:867fc5db078ede373ab811e16b6789e9d033b15ccd7296f370ca52d1ee792ce0"
+            ],
+            "version": "==0.9.0"
+        },
         "coverage": {
             "hashes": [
                 "sha256:3684fabf6b87a369017756b551cef29e505cb155ddb892a7a29277b978da88b9",
@@ -476,6 +483,12 @@
                 "sha256:8e9dfa3cecb2400b3738a42c54c3043e821682b9c840b0448c0503f781130696"
             ],
             "version": "==3.7.8"
+        },
+        "future": {
+            "hashes": [
+                "sha256:67045236dcfd6816dc439556d009594abf643e5eb48992e36beac09c2ca659b8"
+            ],
+            "version": "==0.17.1"
         },
         "idna": {
             "hashes": [
@@ -655,6 +668,14 @@
             ],
             "index": "pypi",
             "version": "==2019.1"
+        },
+        "recommonmark": {
+            "hashes": [
+                "sha256:a520b8d25071a51ae23a27cf6252f2fe387f51bdc913390d83b2b50617f5bb48",
+                "sha256:c85228b9b7aea7157662520e74b4e8791c5eacd375332ec68381b52bf10165be"
+            ],
+            "index": "pypi",
+            "version": "==0.5.0"
         },
         "requests": {
             "hashes": [

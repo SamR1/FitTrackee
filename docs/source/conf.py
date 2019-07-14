@@ -33,6 +33,7 @@ release = '0.2.1-beta'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'recommonmark',
     'sphinxcontrib.autohttp.flask'
 ]
 
@@ -60,4 +61,13 @@ html_static_path = ['_static']
 
 html_theme_options = {
     'bootswatch_theme': 'flatly',
+}
+
+
+# -- Sources configuration ---------------------------------------------------
+
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.txt': 'markdown',
+    '.md': 'markdown',
 }

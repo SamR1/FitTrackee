@@ -26,6 +26,7 @@ codacy-coverage = "*"
 sphinx = "*"
 sphinxcontrib-httpdomain = "*"
 sphinx-bootstrap-theme = "*"
+recommonmark = "*"
 
 [requires]
 python_version = "3.7"

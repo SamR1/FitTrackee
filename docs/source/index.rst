@@ -40,6 +40,7 @@ Table of contents
    installation
    features
    api/index
+   changelog
 
 
 .. |Python Version| image:: https://img.shields.io/badge/python-3.7-brightgreen.svg
