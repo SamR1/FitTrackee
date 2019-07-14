@@ -21,7 +21,7 @@ Maps are displayed using [Open Street Map](https://www.openstreetmap.org).
 It is also possible to add a workout without a gpx file.
 
 **Still under development (not ready for production).**  
-(see [issues](https://github.com/SamR1/mpwo/issues) and [wiki](https://github.com/SamR1/mpwo/wiki) for more informations)  
+(see [issues](https://github.com/SamR1/FitTrackee/issues) and [wiki](https://github.com/SamR1/FitTrackee/wiki) for more informations)  
 
 ![FitTrackee Dashboard](misc/images/fittrackee_screenshot-01.png)
 
