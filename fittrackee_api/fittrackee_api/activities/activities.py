@@ -28,7 +28,7 @@ def get_activities(auth_user_id):
 
     **Example requests**:
 
-    - minimal request
+    - without parameters
 
     .. sourcecode:: http
 
@@ -142,21 +142,22 @@ def get_activities(auth_user_id):
     :query integer page: page if using pagination (default: 1)
     :query integer per_page: number of activities per page (default: 5)
     :query integer sport_id: sport id
-    :query string from: start date (format: `%Y-%m-%d`)
-    :query string to: end date (format: `%Y-%m-%d`)
+    :query string from: start date (format: ``%Y-%m-%d``)
+    :query string to: end date (format: ``%Y-%m-%d``)
     :query float distance_from: minimal distance
     :query float distance_to: maximal distance
-    :query string duration_from: minimal duration (format: `%H:%M`)
-    :query string duration_to: maximal distance (format: `%H:%M`)
+    :query string duration_from: minimal duration (format: ``%H:%M``)
+    :query string duration_to: maximal distance (format: ``%H:%M``)
     :query float ave_speed_from: minimal average speed
     :query float ave_speed_to: maximal average speed
     :query float max_speed_from: minimal max. speed
     :query float max_speed_to: maximal max. speed
-    :query string order: sorting order (default: `desc`)
+    :query string order: sorting order (default: ``desc``)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: no error
+    :statuscode 401: invalid token
     :statuscode 500:
 
     """
@@ -232,7 +233,70 @@ def get_activities(auth_user_id):
 @activities_blueprint.route('/activities/<int:activity_id>', methods=['GET'])
 @authenticate
 def get_activity(auth_user_id, activity_id):
-    """Get an activity"""
+    """
+    Get an activity
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/activities/3 HTTP/1.1
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "activities": [
+              {
+                "activity_date": "Sun, 07 Jul 2019 07:00:00 GMT",
+                "ascent": null,
+                "ave_speed": 16,
+                "bounds": [],
+                "creation_date": "Sun, 14 Jul 2019 18:57:14 GMT",
+                "descent": null,
+                "distance": 12,
+                "duration": "0:45:00",
+                "id": 5,
+                "map": null,
+                "max_alt": null,
+                "max_speed": 16,
+                "min_alt": null,
+                "modification_date": "Sun, 14 Jul 2019 18:57:22 GMT",
+                "moving": "0:45:00",
+                "next_activity": 4,
+                "notes": "activity without gpx",
+                "pauses": null,
+                "previous_activity": 3,
+                "records": [],
+                "segments": [],
+                "sport_id": 1,
+                "title": "biking on sunday morning",
+                "user_id": 1,
+                "weather_end": null,
+                "weather_start": null,
+                "with_gpx": false
+              }
+            ]
+          },
+          "status": "success"
+        }
+
+    :param integer auth_user_id: authenticate user id
+    :param integer activity_id: activity id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: No error
+    :statuscode 401: Provide a valid auth token
+    :statuscode 403: You do not have permissions
+    :statuscode 404: Activity not found
+
+    """
     activity = Activity.query.filter_by(id=activity_id).first()
     activities_list = []
 
@@ -349,7 +413,110 @@ def get_map(map_id):
 @activities_blueprint.route('/activities', methods=['POST'])
 @authenticate
 def post_activity(auth_user_id):
-    """Post an activity (with gpx file)"""
+    """
+    Post an activity with a gpx file
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/activities/ HTTP/1.1
+      Content-Type: multipart/form-data
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 201 CREATED
+      Content-Type: application/json
+
+       {
+          "data": {
+            "activities": [
+              {
+                "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                "ascent": null,
+                "ave_speed": 10.0,
+                "bounds": [],
+                "creation_date": "Sun, 14 Jul 2019 13:51:01 GMT",
+                "descent": null,
+                "distance": 10.0,
+                "duration": "0:17:04",
+                "id": 1,
+                "map": null,
+                "max_alt": null,
+                "max_speed": 10.0,
+                "min_alt": null,
+                "modification_date": null,
+                "moving": "0:17:04",
+                "next_activity": 3,
+                "notes": null,
+                "pauses": null,
+                "previous_activity": null,
+                "records": [
+                  {
+                    "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                    "activity_id": 1,
+                    "id": 4,
+                    "record_type": "MS",
+                    "sport_id": 1,
+                    "user_id": 1,
+                    "value": 10.0
+                  },
+                  {
+                    "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                    "activity_id": 1,
+                    "id": 3,
+                    "record_type": "LD",
+                    "sport_id": 1,
+                    "user_id": 1,
+                    "value": "0:17:04"
+                  },
+                  {
+                    "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                    "activity_id": 1,
+                    "id": 2,
+                    "record_type": "FD",
+                    "sport_id": 1,
+                    "user_id": 1,
+                    "value": 10.0
+                  },
+                  {
+                    "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                    "activity_id": 1,
+                    "id": 1,
+                    "record_type": "AS",
+                    "sport_id": 1,
+                    "user_id": 1,
+                    "value": 10.0
+                  }
+                ],
+                "segments": [],
+                "sport_id": 1,
+                "title": null,
+                "user_id": 1,
+                "weather_end": null,
+                "weather_start": null,
+                "with_gpx": false
+              }
+            ]
+          },
+          "status": "success"
+        }
+
+    :param integer auth_user_id: authenticate user id
+
+    :form file: gpx file
+    :form data: sport id and notes (example: ``{"sport_id": 1, "notes": ""}``)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 201: activity created
+    :statuscode 400: invalid payload
+    :statuscode 401: invalid token
+    :statuscode 500:
+
+    """
     response_object = verify_extension('activity', request)
     if response_object['status'] != 'success':
         return jsonify(response_object), 400
@@ -411,7 +578,114 @@ def post_activity(auth_user_id):
 @activities_blueprint.route('/activities/no_gpx', methods=['POST'])
 @authenticate
 def post_activity_no_gpx(auth_user_id):
-    """Post an activity without gpx file"""
+    """
+    Post an activity without gpx file
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/activities/ HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 201 CREATED
+      Content-Type: application/json
+
+       {
+          "data": {
+            "activities": [
+              {
+                "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                "ascent": null,
+                "ave_speed": 10.0,
+                "bounds": [],
+                "creation_date": "Sun, 14 Jul 2019 13:51:01 GMT",
+                "descent": null,
+                "distance": 10.0,
+                "duration": "0:17:04",
+                "id": 1,
+                "map": null,
+                "max_alt": null,
+                "max_speed": 10.0,
+                "min_alt": null,
+                "modification_date": null,
+                "moving": "0:17:04",
+                "next_activity": 3,
+                "notes": null,
+                "pauses": null,
+                "previous_activity": null,
+                "records": [
+                  {
+                    "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                    "activity_id": 1,
+                    "id": 4,
+                    "record_type": "MS",
+                    "sport_id": 1,
+                    "user_id": 1,
+                    "value": 10.0
+                  },
+                  {
+                    "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                    "activity_id": 1,
+                    "id": 3,
+                    "record_type": "LD",
+                    "sport_id": 1,
+                    "user_id": 1,
+                    "value": "0:17:04"
+                  },
+                  {
+                    "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                    "activity_id": 1,
+                    "id": 2,
+                    "record_type": "FD",
+                    "sport_id": 1,
+                    "user_id": 1,
+                    "value": 10.0
+                  },
+                  {
+                    "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                    "activity_id": 1,
+                    "id": 1,
+                    "record_type": "AS",
+                    "sport_id": 1,
+                    "user_id": 1,
+                    "value": 10.0
+                  }
+                ],
+                "segments": [],
+                "sport_id": 1,
+                "title": null,
+                "user_id": 1,
+                "weather_end": null,
+                "weather_start": null,
+                "with_gpx": false
+              }
+            ]
+          },
+          "status": "success"
+        }
+
+    :param integer auth_user_id: authenticate user id
+
+    :<json string activity_date: activity date  (format: ``%Y-%m-%d %H:%M``)
+    :<json float distance: activity distance in km
+    :<json integer duration: activity duration in seconds
+    :<json string notes: notes
+    :<json integer sport_id: activity sport id
+    :<json string title: activity title
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 201: activity created
+    :statuscode 400: invalid payload
+    :statuscode 401: invalid token
+    :statuscode 500:
+
+    """
     activity_data = request.get_json()
     if not activity_data or activity_data.get('sport_id') is None \
             or activity_data.get('duration') is None \
