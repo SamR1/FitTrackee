@@ -13,6 +13,9 @@ clean-install:
 	rm -fr $(NODE_MODULES)
 	rm -fr $(VENV)
 
+html:
+	$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+
 install-db:
 	psql -U postgres -f fittrackee_api/db/create.sql
 	$(FLASK) db upgrade --directory $(MIGRATIONS)
