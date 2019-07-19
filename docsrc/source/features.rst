@@ -12,7 +12,7 @@ Features list
      - Running
      - Walking
 - Activity creation by uploading a gpx file. An activity can even be created without gpx (the user must enter date, time, duration and distance)
-- An activity can be displayed with map (if with gpx), weather (if the DarkSky API key is provided) and charts (speed and elevation)
+- An activity with a gpx file can be displayed with map, weather (if the DarkSky API key is provided) and charts (speed and elevation)
 - Activity edition and deletion. User can add a note
 - Dashboard with month calendar displaying activities and record
 - User statistics
@@ -24,6 +24,7 @@ Features list
 - Activities list and filter
 
 **Notes:**
+
 - only activity owner can see his activity
 - no administration for now
 
