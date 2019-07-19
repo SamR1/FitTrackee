@@ -261,7 +261,7 @@ def get_activity(auth_user_id, activity_id):
                 "descent": null,
                 "distance": 12,
                 "duration": "0:45:00",
-                "id": 5,
+                "id": 3,
                 "map": null,
                 "max_alt": null,
                 "max_speed": 16,

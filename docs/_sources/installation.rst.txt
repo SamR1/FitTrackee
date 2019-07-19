@@ -68,13 +68,13 @@ and the password ``mpwoadmin``) or register
 Prod environment
 ^^^^^^^^^^^^^^^^
 
--  Download the last release (for now it is the beta release v0.2.1):
+-  Download the last release (for now it is the beta release v0.2.0):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.2.1-beta.tar.gz
-   $ tar -xzf v0.1.1-beta.tar.gz
-   $ mv FitTrackee-0.1.1-beta FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.2.0-beta.tar.gz
+   $ tar -xzf v0.2.0-beta.tar.gz
+   $ mv FitTrackee-0.2.0-beta FitTrackee
    $ cd FitTrackee
 
 -  Update **Makefile.config** file if needed and copy/paste the
