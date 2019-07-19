@@ -156,7 +156,7 @@ def get_activities(auth_user_id):
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: no error
+    :statuscode 200: success
     :statuscode 401: invalid token
     :statuscode 500:
 
@@ -242,7 +242,9 @@ def get_activity(auth_user_id, activity_id):
 
       GET /api/activities/3 HTTP/1.1
 
-    **Example response**:
+    **Example responses**:
+
+    - success
 
     .. sourcecode:: http
 
@@ -286,15 +288,29 @@ def get_activity(auth_user_id, activity_id):
           "status": "success"
         }
 
+    - acitivity not found:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 404 NOT FOUND
+      Content-Type: application/json
+
+        {
+          "data": {
+            "activities": []
+          },
+          "status": "not found"
+        }
+
     :param integer auth_user_id: authenticate user id
     :param integer activity_id: activity id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: No error
+    :statuscode 200: success
     :statuscode 401: Provide a valid auth token
     :statuscode 403: You do not have permissions
-    :statuscode 404: Activity not found
+    :statuscode 404: activity not found
 
     """
     activity = Activity.query.filter_by(id=activity_id).first()
@@ -323,7 +339,7 @@ def get_activity(auth_user_id, activity_id):
 
 
 def get_activity_data(auth_user_id, activity_id, data_type):
-    """Get chart data from an activity gpx file"""
+    """Get data from an activity gpx file"""
     activity = Activity.query.filter_by(id=activity_id).first()
     content = ''
     if activity:
@@ -375,7 +391,43 @@ def get_activity_data(auth_user_id, activity_id, data_type):
 )
 @authenticate
 def get_activity_gpx(auth_user_id, activity_id):
-    """Get gpx file for an activity"""
+    """
+    Get gpx file for an activity displayed on map with Leaflet
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/activities/3/gpx HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "gpx": "gpx file content"
+        },
+        "message": "",
+        "status": "success"
+      }
+
+    :param integer auth_user_id: authenticate user id
+    :param integer activity_id: activity id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 400: no gpx file for this activity
+    :statuscode 401: invalid token
+    :statuscode 404: activity not found
+    :statuscode 500:
+
+    """
     return get_activity_data(auth_user_id, activity_id, 'gpx')
 
 
@@ -384,12 +436,92 @@ def get_activity_gpx(auth_user_id, activity_id):
 )
 @authenticate
 def get_activity_chart_data(auth_user_id, activity_id):
-    """Get chart data from an activity gpx file"""
+    """
+    Get chart data from an activity gpx file, to display it with Recharts
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/activities/3/chart HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "chart_data": [
+            {
+              "distance": 0,
+              "duration": 0,
+              "elevation": 279.4,
+              "speed": 8.63,
+              "time": "Fri, 14 Jul 2017 13:44:03 GMT"
+            },
+            {
+              "distance": 7.5,
+              "duration": 7380,
+              "elevation": 280,
+              "speed": 6.39,
+              "time": "Fri, 14 Jul 2017 15:47:03 GMT"
+            }
+          ]
+        },
+        "message": "",
+        "status": "success"
+      }
+
+    :param integer auth_user_id: authenticate user id
+    :param integer activity_id: activity id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 400: no gpx file for this activity
+    :statuscode 401: invalid token
+    :statuscode 404: activity not found
+    :statuscode 500:
+
+    """
     return get_activity_data(auth_user_id, activity_id, 'chart')
 
 
 @activities_blueprint.route('/activities/map/<map_id>', methods=['GET'])
 def get_map(map_id):
+    """
+    Get map image for activities with gpx
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/activities/map/fa33f4d996844a5c73ecd1ae24456ab8?1563529507772
+        HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: image/png
+
+    :param integer auth_user_id: authenticate user id
+    :param string map_id: activity map id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401: invalid token
+    :statuscode 404: map does not exist
+    :statuscode 500:
+
+    """
     try:
         activity = Activity.query.filter_by(map_id=map_id).first()
         if not activity:
@@ -674,7 +806,7 @@ def post_activity_no_gpx(auth_user_id):
     :<json string activity_date: activity date  (format: ``%Y-%m-%d %H:%M``)
     :<json float distance: activity distance in km
     :<json integer duration: activity duration in seconds
-    :<json string notes: notes
+    :<json string notes: notes (not mandatory)
     :<json integer sport_id: activity sport id
     :<json string title: activity title
 
@@ -724,7 +856,119 @@ def post_activity_no_gpx(auth_user_id):
 @activities_blueprint.route('/activities/<int:activity_id>', methods=['PATCH'])
 @authenticate
 def update_activity(auth_user_id, activity_id):
-    """Update an activity"""
+    """
+    Update an activity
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      PATCH /api/activities/1 HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+       {
+          "data": {
+            "activities": [
+              {
+                "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                "ascent": null,
+                "ave_speed": 10.0,
+                "bounds": [],
+                "creation_date": "Sun, 14 Jul 2019 13:51:01 GMT",
+                "descent": null,
+                "distance": 10.0,
+                "duration": "0:17:04",
+                "id": 1,
+                "map": null,
+                "max_alt": null,
+                "max_speed": 10.0,
+                "min_alt": null,
+                "modification_date": null,
+                "moving": "0:17:04",
+                "next_activity": 3,
+                "notes": null,
+                "pauses": null,
+                "previous_activity": null,
+                "records": [
+                  {
+                    "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                    "activity_id": 1,
+                    "id": 4,
+                    "record_type": "MS",
+                    "sport_id": 1,
+                    "user_id": 1,
+                    "value": 10.0
+                  },
+                  {
+                    "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                    "activity_id": 1,
+                    "id": 3,
+                    "record_type": "LD",
+                    "sport_id": 1,
+                    "user_id": 1,
+                    "value": "0:17:04"
+                  },
+                  {
+                    "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                    "activity_id": 1,
+                    "id": 2,
+                    "record_type": "FD",
+                    "sport_id": 1,
+                    "user_id": 1,
+                    "value": 10.0
+                  },
+                  {
+                    "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                    "activity_id": 1,
+                    "id": 1,
+                    "record_type": "AS",
+                    "sport_id": 1,
+                    "user_id": 1,
+                    "value": 10.0
+                  }
+                ],
+                "segments": [],
+                "sport_id": 1,
+                "title": null,
+                "user_id": 1,
+                "weather_end": null,
+                "weather_start": null,
+                "with_gpx": false
+              }
+            ]
+          },
+          "status": "success"
+        }
+
+    :param integer auth_user_id: authenticate user id
+    :param integer activity_id: activity id
+
+    :<json string activity_date: activity date  (format: ``%Y-%m-%d %H:%M``)
+        (only for activity without gpx)
+    :<json float distance: activity distance in km
+        (only for activity without gpx)
+    :<json integer duration: activity duration in seconds
+        (only for activity without gpx)
+    :<json string notes: notes
+    :<json integer sport_id: activity sport id
+    :<json string title: activity title
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: activity updated
+    :statuscode 400: invalid payload
+    :statuscode 401: invalid token
+    :statuscode 404: activity not found
+    :statuscode 500:
+
+    """
     activity_data = request.get_json()
     if not activity_data:
         response_object = {
@@ -774,7 +1018,35 @@ def update_activity(auth_user_id, activity_id):
 )
 @authenticate
 def delete_activity(auth_user_id, activity_id):
-    """Delete an activity"""
+    """
+    Delete an activity
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      DELETE /api/activities/1 HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 204 NO CONTENT
+      Content-Type: application/json
+
+    :param integer auth_user_id: authenticate user id
+    :param integer activity_id: activity id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 204: activity deleted
+    :statuscode 401: invalid token
+    :statuscode 404: activity not found
+    :statuscode 500:
+
+    """
+
     try:
         activity = Activity.query.filter_by(id=activity_id).first()
         if activity:
