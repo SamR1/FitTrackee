@@ -62,6 +62,9 @@ html_static_path = ['_static']
 html_theme_options = {
     'navbar_site_name': 'Docs',
     'bootswatch_theme': 'flatly',
+    'navbar_links': [
+        ('GitHub', 'https://github.com/SamR1/FitTrackee', True),
+    ],
 }
 
 
