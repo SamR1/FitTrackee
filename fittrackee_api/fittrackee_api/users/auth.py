@@ -15,6 +15,7 @@ auth_blueprint = Blueprint('auth', __name__)
 
 @auth_blueprint.route('/auth/register', methods=['POST'])
 def register_user():
+    """ register a user """
     # get post data
     post_data = request.get_json()
     if not post_data or post_data.get('username') is None \
@@ -91,6 +92,7 @@ def register_user():
 
 @auth_blueprint.route('/auth/login', methods=['POST'])
 def login_user():
+    """ user login """
     # get post data
     post_data = request.get_json()
     if not post_data:
@@ -133,6 +135,7 @@ def login_user():
 @auth_blueprint.route('/auth/logout', methods=['GET'])
 @authenticate
 def logout_user(user_id):
+    """ user logout """
     # get auth token
     auth_header = request.headers.get('Authorization')
     if auth_header:
@@ -161,6 +164,7 @@ def logout_user(user_id):
 @auth_blueprint.route('/auth/profile', methods=['GET'])
 @authenticate
 def get_user_status(user_id):
+    """ get authenticated user info """
     user = User.query.filter_by(id=user_id).first()
     response_object = {
         'status': 'success',
@@ -172,6 +176,7 @@ def get_user_status(user_id):
 @auth_blueprint.route('/auth/profile/edit', methods=['POST'])
 @authenticate
 def edit_user(user_id):
+    """ edit authenticated user """
     # get post data
     post_data = request.get_json()
     if not post_data:
@@ -237,6 +242,7 @@ def edit_user(user_id):
 @auth_blueprint.route('/auth/picture', methods=['POST'])
 @authenticate
 def edit_picture(user_id):
+    """ update authenticated user picture """
     code = 400
     response_object = verify_extension('picture', request)
     if response_object['status'] != 'success':
@@ -287,6 +293,7 @@ def edit_picture(user_id):
 @auth_blueprint.route('/auth/picture', methods=['DELETE'])
 @authenticate
 def del_picture(user_id):
+    """ delete authenticated user picture """
     try:
         user = User.query.filter_by(id=user_id).first()
         picture_path = get_absolute_file_path(user.picture)

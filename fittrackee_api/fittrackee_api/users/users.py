@@ -42,6 +42,7 @@ def get_single_user(user_id):
 
 @users_blueprint.route('/users/<user_id>/picture', methods=['GET'])
 def get_picture(user_id):
+    """ get user picture """
     response_object = {
         'status': 'fail',
         'message': 'User does not exist'
@@ -59,6 +60,7 @@ def get_picture(user_id):
 
 @users_blueprint.route('/ping', methods=['GET'])
 def ping_pong():
+    """ health check endpoint """
     return jsonify({
         'status': 'success',
         'message': 'pong!'

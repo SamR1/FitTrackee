@@ -130,11 +130,12 @@ def get_activities(user_id, filter_type):
 @stats_blueprint.route('/stats/<int:user_id>/by_time', methods=['GET'])
 @authenticate
 def get_activities_by_time(auth_user_id, user_id):
-    """Get activities statistics for a user"""
+    """Get activities statistics for a user by time"""
     return get_activities(user_id, 'by_time')
 
 
 @stats_blueprint.route('/stats/<int:user_id>/by_sport', methods=['GET'])
 @authenticate
 def get_activities_by_sport(auth_user_id, user_id):
+    """Get activities statistics for a user by sport"""
     return get_activities(user_id, 'by_sport')
