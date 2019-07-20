@@ -15,6 +15,8 @@ clean-install:
 
 html:
 	rm -rf docsrc/build
+	rm -rf docs/*
+	touch docs/.nojekyll
 	$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 	cp -a docsrc/build/html/. docs
 
