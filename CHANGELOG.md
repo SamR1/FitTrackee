@@ -4,6 +4,7 @@
 
 #### New Features
 
+* [#21](https://github.com/SamR1/Fittrackee/issues/21) - Document the API
 
 #### Bugs Fixed
 
