@@ -461,7 +461,7 @@
 </dd>
 <dt class="field-even">Form Parameters</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>file</strong> – gpx file</p></li>
+<li><p><strong>file</strong> – gpx file (allowed extensions: .gpx, .zip)</p></li>
 <li><p><strong>data</strong> – sport id and notes (example: <code class="docutils literal notranslate"><span class="pre">{&quot;sport_id&quot;:</span> <span class="pre">1,</span> <span class="pre">&quot;notes&quot;:</span> <span class="pre">&quot;&quot;}</span></code>)</p></li>
 </ul>
 </dd>
@@ -473,7 +473,13 @@
 <dt class="field-even">Status Codes</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.2">201 Created</a> – activity created</p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a> – invalid payload</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a> – <ul>
+<li><p>Invalid payload.</p></li>
+<li><p>No file part.</p></li>
+<li><p>No selected file.</p></li>
+<li><p>File extension not allowed.</p></li>
+</ul>
+</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – invalid token</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – </p></li>
 </ul>
@@ -757,7 +763,7 @@
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.5">204 No Content</a> – activity deleted</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – invalid token</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a> – activity not found</p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – </p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – Error. Please try again or contact the administrator.</p></li>
 </ul>
 </dd>
 </dl>

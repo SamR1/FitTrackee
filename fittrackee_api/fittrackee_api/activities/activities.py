@@ -638,13 +638,17 @@ def post_activity(auth_user_id):
 
     :param integer auth_user_id: authenticate user id
 
-    :form file: gpx file
+    :form file: gpx file (allowed extensions: .gpx, .zip)
     :form data: sport id and notes (example: ``{"sport_id": 1, "notes": ""}``)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 201: activity created
-    :statuscode 400: invalid payload
+    :statuscode 400:
+        - Invalid payload.
+        - No file part.
+        - No selected file.
+        - File extension not allowed.
     :statuscode 401: invalid token
     :statuscode 500:
 
@@ -1043,7 +1047,7 @@ def delete_activity(auth_user_id, activity_id):
     :statuscode 204: activity deleted
     :statuscode 401: invalid token
     :statuscode 404: activity not found
-    :statuscode 500:
+    :statuscode 500: Error. Please try again or contact the administrator.
 
     """
 

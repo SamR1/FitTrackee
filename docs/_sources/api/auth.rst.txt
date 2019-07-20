@@ -1,8 +1,6 @@
 Authentication
 ##############
 
-work in progress
-
 .. autoflask:: fittrackee_api:create_app()
    :endpoints:
     auth.register_user,

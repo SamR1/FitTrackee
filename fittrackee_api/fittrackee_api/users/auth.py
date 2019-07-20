@@ -15,7 +15,61 @@ auth_blueprint = Blueprint('auth', __name__)
 
 @auth_blueprint.route('/auth/register', methods=['POST'])
 def register_user():
-    """ register a user """
+    """
+    register a user
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /auth/register HTTP/1.1
+      Content-Type: application/json
+
+    **Example responses**:
+
+    - successful registration
+
+    .. sourcecode:: http
+
+      HTTP/1.1 201 CREATED
+      Content-Type: application/json
+
+      {
+        "auth_token": "JSON Web Token",
+        "message": "Successfully registered.",
+        "status": "success"
+      }
+
+    - error on registration
+
+    .. sourcecode:: http
+
+      HTTP/1.1 400 BAD REQUEST
+      Content-Type: application/json
+
+      {
+        "message": "Errors: Valid email must be provided.\\n",
+        "status": "error"
+      }
+
+    :<json string username: user name (3 to 12 characters required)
+    :<json string email: user email
+    :<json string password: password (8 characters required)
+    :<json string password_conf: password confirmation
+
+    :statuscode 201: Successfully registered.
+    :statuscode 400:
+        - Invalid payload.
+        - Sorry. That user already exists.
+        - Errors:
+            - Username: 3 to 12 characters required.
+            - Valid email must be provided.
+            - Password and password confirmation don't match.
+            - Password: 8 characters required.
+    :statuscode 500:
+        Error. Please try again or contact the administrator.
+
+    """
     # get post data
     post_data = request.get_json()
     if not post_data or post_data.get('username') is None \
@@ -92,7 +146,51 @@ def register_user():
 
 @auth_blueprint.route('/auth/login', methods=['POST'])
 def login_user():
-    """ user login """
+    """
+    user login
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /auth/login HTTP/1.1
+      Content-Type: application/json
+
+    **Example responses**:
+
+    - successful login
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "auth_token": "JSON Web Token",
+        "message": "Successfully logged in.",
+        "status": "success"
+      }
+
+    - error on login
+
+    .. sourcecode:: http
+
+      HTTP/1.1 404 NOT FOUND
+      Content-Type: application/json
+
+      {
+        "message": "Invalid credentials.",
+        "status": "error"
+      }
+
+    :<json string email: user email
+    :<json string password_conf: password confirmation
+
+    :statuscode 200: Successfully logged in.
+    :statuscode 404: Invalid credentials.
+    :statuscode 500: Error. Please try again or contact the administrator.
+
+    """
     # get post data
     post_data = request.get_json()
     if not post_data:
@@ -135,7 +233,48 @@ def login_user():
 @auth_blueprint.route('/auth/logout', methods=['GET'])
 @authenticate
 def logout_user(user_id):
-    """ user logout """
+    """
+    user logout
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /auth/logout HTTP/1.1
+      Content-Type: application/json
+
+    **Example responses**:
+
+    - successful logout
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "message": "Successfully logged out.",
+        "status": "success"
+      }
+
+    - error on login
+
+    .. sourcecode:: http
+
+      HTTP/1.1 401 UNAUTHORIZED
+      Content-Type: application/json
+
+      {
+        "message": "Provide a valid auth token.",
+        "status": "error"
+      }
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: Successfully logged out.
+    :statuscode 401: Provide a valid auth token.
+
+    """
     # get auth token
     auth_header = request.headers.get('Authorization')
     if auth_header:
@@ -164,7 +303,51 @@ def logout_user(user_id):
 @auth_blueprint.route('/auth/profile', methods=['GET'])
 @authenticate
 def get_user_status(user_id):
-    """ get authenticated user info """
+    """
+    get authenticated user info
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /auth/profile HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "admin": false,
+          "bio": null,
+          "birth_date": null,
+          "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+          "email": "admin@example.com",
+          "first_name": null,
+          "id": 2,
+          "last_name": null,
+          "location": null,
+          "nb_activities": 6,
+          "nb_sports": 3,
+          "picture": false,
+          "timezone": "Europe/Paris",
+          "total_distance": 67.895,
+          "total_duration": "6:50:27",
+          "username": "sam"
+        },
+        "status": "success"
+      }
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success.
+    :statuscode 401: Provide a valid auth token.
+
+    """
     user = User.query.filter_by(id=user_id).first()
     response_object = {
         'status': 'success',
@@ -176,7 +359,64 @@ def get_user_status(user_id):
 @auth_blueprint.route('/auth/profile/edit', methods=['POST'])
 @authenticate
 def edit_user(user_id):
-    """ edit authenticated user """
+    """
+    edit authenticated user
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /auth/profile/edit HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "admin": false,
+          "bio": null,
+          "birth_date": null,
+          "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+          "email": "admin@example.com",
+          "first_name": null,
+          "id": 2,
+          "last_name": null,
+          "location": null,
+          "nb_activities": 6,
+          "nb_sports": 3,
+          "picture": false,
+          "timezone": "Europe/Paris",
+          "total_distance": 67.895,
+          "total_duration": "6:50:27",
+          "username": "sam"
+        },
+        "status": "success"
+      }
+
+    :<json string first_name: user first name
+    :<json string last_name: user last name
+    :<json string location: user location
+    :<json string bio: user biography
+    :<json string birth_date: user birth date (format: ``%Y-%m-%d``)
+    :<json string password: user password
+    :<json string password_conf: user password confirmation
+    :<json string timezone: user time zone
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: User profile updated.
+    :statuscode 400:
+        - Invalid payload.
+        - Password and password confirmation don't match.
+    :statuscode 401: Provide a valid auth token.
+    :statuscode 500: Error. Please try again or contact the administrator.
+
+    """
     # get post data
     post_data = request.get_json()
     if not post_data:
@@ -242,7 +482,59 @@ def edit_user(user_id):
 @auth_blueprint.route('/auth/picture', methods=['POST'])
 @authenticate
 def edit_picture(user_id):
-    """ update authenticated user picture """
+    """
+    update authenticated user picture
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /auth/picture HTTP/1.1
+      Content-Type: multipart/form-data
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "admin": false,
+          "bio": null,
+          "birth_date": null,
+          "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+          "email": "admin@example.com",
+          "first_name": null,
+          "id": 2,
+          "last_name": null,
+          "location": null,
+          "nb_activities": 6,
+          "nb_sports": 3,
+          "picture": false,
+          "timezone": "Europe/Paris",
+          "total_distance": 67.895,
+          "total_duration": "6:50:27",
+          "username": "sam"
+        },
+        "status": "success"
+      }
+
+    :form file: image file (allowed extensions: .jpg, .png, .gif)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: User picture updated.
+    :statuscode 400:
+        - Invalid payload.
+        - No file part.
+        - No selected file.
+        - File extension not allowed.
+    :statuscode 401: Provide a valid auth token.
+    :statuscode 500: Error during picture update.
+
+    """
     code = 400
     response_object = verify_extension('picture', request)
     if response_object['status'] != 'success':
@@ -293,7 +585,30 @@ def edit_picture(user_id):
 @auth_blueprint.route('/auth/picture', methods=['DELETE'])
 @authenticate
 def del_picture(user_id):
-    """ delete authenticated user picture """
+    """
+    delete authenticated user picture
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      DELETE /auth/picture HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 204 NO CONTENT
+      Content-Type: application/json
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 204: picture deleted
+    :statuscode 401: Provide a valid auth token.
+    :statuscode 500: Error during picture deletion.
+
+    """
     try:
         user = User.query.filter_by(id=user_id).first()
         picture_path = get_absolute_file_path(user.picture)
