@@ -123,35 +123,159 @@
       
   <div class="section" id="sports">
 <h1>Sports<a class="headerlink" href="#sports" title="Permalink to this headline">¶</a></h1>
-<p>work in progress</p>
 <dl class="get">
 <dt id="get--api-sports">
 <code class="sig-name descname">GET </code><code class="sig-name descname">/api/sports</code><a class="headerlink" href="#get--api-sports" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all sports</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/sports</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;sports&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;_can_be_deleted&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="nt">&quot;img&quot;</span><span class="p">:</span> <span class="s2">&quot;/img/sports/cycling-sport.png&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Cycling (Sport)&quot;</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;_can_be_deleted&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="nt">&quot;img&quot;</span><span class="p">:</span> <span class="s2">&quot;/img/sports/cycling-transport.png&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Cycling (Transport)&quot;</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;_can_be_deleted&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="nt">&quot;img&quot;</span><span class="p">:</span> <span class="s2">&quot;/img/sports/hiking.png&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Hiking&quot;</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;_can_be_deleted&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="nt">&quot;img&quot;</span><span class="p">:</span> <span class="s2">&quot;/img/sports/mountain-biking.png&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Mountain Biking&quot;</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;_can_be_deleted&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="nt">&quot;img&quot;</span><span class="p">:</span> <span class="s2">&quot;/img/sports/running.png&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Running&quot;</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;_can_be_deleted&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+        <span class="nt">&quot;img&quot;</span><span class="p">:</span> <span class="s2">&quot;/img/sports/walking.png&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Walking&quot;</span>
+      <span class="p">}</span>
+    <span class="p">]</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Request Headers</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a> – OAuth 2.0 Bearer Token</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Status Codes</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – success</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
+<li><p>Provide a valid auth token.</p></li>
+<li><p>Signature expired. Please log in again.</p></li>
+<li><p>Invalid token. Please log in again.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="get">
 <dt id="get--api-sports-(int-sport_id)">
 <code class="sig-name descname">GET </code><code class="sig-name descname">/api/sports/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">sport_id</em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-sports-(int-sport_id)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a sport</p>
-</dd></dl>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/sports/1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<ul class="simple">
+<li><p>success</p></li>
+</ul>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
-<dl class="post">
-<dt id="post--api-sports">
-<code class="sig-name descname">POST </code><code class="sig-name descname">/api/sports</code><a class="headerlink" href="#post--api-sports" title="Permalink to this definition">¶</a></dt>
-<dd><p>Post a sport</p>
-</dd></dl>
+<span class="p">{</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;sports&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;_can_be_deleted&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="nt">&quot;img&quot;</span><span class="p">:</span> <span class="s2">&quot;/img/sports/cycling-sport.png&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Cycling (Sport)&quot;</span>
+      <span class="p">}</span>
+    <span class="p">]</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>sport not found</p></li>
+</ul>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">404</span> <span class="ne">NOT FOUND</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
-<dl class="patch">
-<dt id="patch--api-sports-(int-sport_id)">
-<code class="sig-name descname">PATCH </code><code class="sig-name descname">/api/sports/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">sport_id</em><span class="sig-paren">)</span><a class="headerlink" href="#patch--api-sports-(int-sport_id)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update a sport</p>
-</dd></dl>
-
-<dl class="delete">
-<dt id="delete--api-sports-(int-sport_id)">
-<code class="sig-name descname">DELETE </code><code class="sig-name descname">/api/sports/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">sport_id</em><span class="sig-paren">)</span><a class="headerlink" href="#delete--api-sports-(int-sport_id)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete a sport</p>
+<span class="p">{</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;sports&quot;</span><span class="p">:</span> <span class="p">[]</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;not found&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
+<li><p><strong>sport_id</strong> (<em>integer</em>) – sport id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Request Headers</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a> – OAuth 2.0 Bearer Token</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Status Codes</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – success</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
+<li><p>Provide a valid auth token.</p></li>
+<li><p>Signature expired. Please log in again.</p></li>
+<li><p>Invalid token. Please log in again.</p></li>
+</ul>
+</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a> – sport not found</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

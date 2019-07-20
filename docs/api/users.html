@@ -123,29 +123,221 @@
       
   <div class="section" id="users">
 <h1>Users<a class="headerlink" href="#users" title="Permalink to this headline">¶</a></h1>
-<p>work in progress</p>
 <dl class="get">
 <dt id="get--api-users">
 <code class="sig-name descname">GET </code><code class="sig-name descname">/api/users</code><a class="headerlink" href="#get--api-users" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all users</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/users</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;users&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;admin&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="nt">&quot;bio&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nt">&quot;birth_date&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nt">&quot;created_at&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 14 Jul 2019 14:09:58 GMT&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;admin@example.com&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;first_name&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="nt">&quot;last_name&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nt">&quot;location&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nt">&quot;nb_activities&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+        <span class="nt">&quot;nb_sports&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="nt">&quot;picture&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nt">&quot;timezone&quot;</span><span class="p">:</span> <span class="s2">&quot;Europe/Paris&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;total_distance&quot;</span><span class="p">:</span> <span class="mf">67.895</span><span class="p">,</span>
+        <span class="nt">&quot;total_duration&quot;</span><span class="p">:</span> <span class="s2">&quot;6:50:27&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;admin&quot;</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;admin&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nt">&quot;bio&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nt">&quot;birth_date&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nt">&quot;created_at&quot;</span><span class="p">:</span> <span class="s2">&quot;Sat, 20 Jul 2019 11:27:03 GMT&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;sam@example.com&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;first_name&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="nt">&quot;last_name&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nt">&quot;location&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nt">&quot;nb_activities&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="nt">&quot;nb_sports&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="nt">&quot;picture&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nt">&quot;timezone&quot;</span><span class="p">:</span> <span class="s2">&quot;Europe/Paris&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;total_distance&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="nt">&quot;total_duration&quot;</span><span class="p">:</span> <span class="s2">&quot;0:00:00&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;sam&quot;</span>
+      <span class="p">}</span>
+    <span class="p">]</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Request Headers</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a> – OAuth 2.0 Bearer Token</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Status Codes</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – success</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
+<li><p>Provide a valid auth token.</p></li>
+<li><p>Signature expired. Please log in again.</p></li>
+<li><p>Invalid token. Please log in again.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="get">
 <dt id="get--api-users-(user_id)">
 <code class="sig-name descname">GET </code><code class="sig-name descname">/api/users/</code><span class="sig-paren">(</span><em class="sig-param">user_id</em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-users-(user_id)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get single user details</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/users/1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;admin&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nt">&quot;bio&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+    <span class="nt">&quot;birth_date&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+    <span class="nt">&quot;created_at&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 14 Jul 2019 14:09:58 GMT&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;admin@example.com&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;first_name&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="nt">&quot;last_name&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+    <span class="nt">&quot;location&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+    <span class="nt">&quot;nb_activities&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+    <span class="nt">&quot;nb_sports&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="nt">&quot;picture&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nt">&quot;timezone&quot;</span><span class="p">:</span> <span class="s2">&quot;Europe/Paris&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;total_distance&quot;</span><span class="p">:</span> <span class="mf">67.895</span><span class="p">,</span>
+    <span class="nt">&quot;total_duration&quot;</span><span class="p">:</span> <span class="s2">&quot;6:50:27&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;admin&quot;</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
+<li><p><strong>user_id</strong> (<em>integer</em>) – user id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Request Headers</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a> – OAuth 2.0 Bearer Token</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Status Codes</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – success</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
+<li><p>Provide a valid auth token.</p></li>
+<li><p>Signature expired. Please log in again.</p></li>
+<li><p>Invalid token. Please log in again.</p></li>
+</ul>
+</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a> – <ul>
+<li><p>User does not exist</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="get">
 <dt id="get--api-users-(user_id)-picture">
 <code class="sig-name descname">GET </code><code class="sig-name descname">/api/users/</code><span class="sig-paren">(</span><em class="sig-param">user_id</em><span class="sig-paren">)</span><code class="sig-name descname">/picture</code><a class="headerlink" href="#get--api-users-(user_id)-picture" title="Permalink to this definition">¶</a></dt>
 <dd><p>get user picture</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/users/1/picture</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">image/jpeg</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
+<li><p><strong>user_id</strong> (<em>integer</em>) – user id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – success</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
+<li><p>Provide a valid auth token.</p></li>
+<li><p>Signature expired. Please log in again.</p></li>
+<li><p>Invalid token. Please log in again.</p></li>
+</ul>
+</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a> – <ul>
+<li><p>User does not exist</p></li>
+<li><p>No picture.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="get">
 <dt id="get--api-ping">
 <code class="sig-name descname">GET </code><code class="sig-name descname">/api/ping</code><a class="headerlink" href="#get--api-ping" title="Permalink to this definition">¶</a></dt>
 <dd><p>health check endpoint</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/ping</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+  <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;pong!&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – success</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

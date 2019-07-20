@@ -239,7 +239,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id</p></li>
+<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Query Parameters</dt>
@@ -268,7 +268,12 @@
 <dt class="field-even">Status Codes</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – success</p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – invalid token</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
+<li><p>Provide a valid auth token.</p></li>
+<li><p>Signature expired. Please log in again.</p></li>
+<li><p>Invalid token. Please log in again.</p></li>
+</ul>
+</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – </p></li>
 </ul>
 </dd>
@@ -345,7 +350,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id</p></li>
+<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
 <li><p><strong>activity_id</strong> (<em>integer</em>) – activity id</p></li>
 </ul>
 </dd>
@@ -357,7 +362,12 @@
 <dt class="field-odd">Status Codes</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – success</p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – Provide a valid auth token</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
+<li><p>Provide a valid auth token.</p></li>
+<li><p>Signature expired. Please log in again.</p></li>
+<li><p>Invalid token. Please log in again.</p></li>
+</ul>
+</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a> – You do not have permissions</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a> – activity not found</p></li>
 </ul>
@@ -456,7 +466,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id</p></li>
+<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Form Parameters</dt>
@@ -480,7 +490,12 @@
 <li><p>File extension not allowed.</p></li>
 </ul>
 </p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – invalid token</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
+<li><p>Provide a valid auth token.</p></li>
+<li><p>Signature expired. Please log in again.</p></li>
+<li><p>Invalid token. Please log in again.</p></li>
+</ul>
+</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – </p></li>
 </ul>
 </dd>
@@ -492,7 +507,7 @@
 <code class="sig-name descname">POST </code><code class="sig-name descname">/api/activities/no_gpx</code><a class="headerlink" href="#post--api-activities-no_gpx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Post an activity without gpx file</p>
 <p><strong>Example request</strong>:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/activities/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/activities/no_gpx</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
@@ -578,7 +593,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id</p></li>
+<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Request JSON Object</dt>
@@ -600,7 +615,12 @@
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.2">201 Created</a> – activity created</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a> – invalid payload</p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – invalid token</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
+<li><p>Provide a valid auth token.</p></li>
+<li><p>Signature expired. Please log in again.</p></li>
+<li><p>Invalid token. Please log in again.</p></li>
+</ul>
+</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – </p></li>
 </ul>
 </dd>
@@ -698,7 +718,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id</p></li>
+<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
 <li><p><strong>activity_id</strong> (<em>integer</em>) – activity id</p></li>
 </ul>
 </dd>
@@ -724,7 +744,12 @@
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – activity updated</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a> – invalid payload</p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – invalid token</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
+<li><p>Provide a valid auth token.</p></li>
+<li><p>Signature expired. Please log in again.</p></li>
+<li><p>Invalid token. Please log in again.</p></li>
+</ul>
+</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a> – activity not found</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – </p></li>
 </ul>
@@ -749,7 +774,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id</p></li>
+<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
 <li><p><strong>activity_id</strong> (<em>integer</em>) – activity id</p></li>
 </ul>
 </dd>
@@ -761,7 +786,12 @@
 <dt class="field-odd">Status Codes</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.5">204 No Content</a> – activity deleted</p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – invalid token</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
+<li><p>Provide a valid auth token.</p></li>
+<li><p>Signature expired. Please log in again.</p></li>
+<li><p>Invalid token. Please log in again.</p></li>
+</ul>
+</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a> – activity not found</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – Error. Please try again or contact the administrator.</p></li>
 </ul>
@@ -787,19 +817,18 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id</p></li>
 <li><p><strong>map_id</strong> (<em>string</em>) – activity map id</p></li>
 </ul>
 </dd>
-<dt class="field-even">Request Headers</dt>
+<dt class="field-even">Status Codes</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a> – OAuth 2.0 Bearer Token</p></li>
-</ul>
-</dd>
-<dt class="field-odd">Status Codes</dt>
-<dd class="field-odd"><ul class="simple">
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – success</p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – invalid token</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
+<li><p>Provide a valid auth token.</p></li>
+<li><p>Signature expired. Please log in again.</p></li>
+<li><p>Invalid token. Please log in again.</p></li>
+</ul>
+</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a> – map does not exist</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – </p></li>
 </ul>
@@ -832,7 +861,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id</p></li>
+<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
 <li><p><strong>activity_id</strong> (<em>integer</em>) – activity id</p></li>
 </ul>
 </dd>
@@ -845,7 +874,12 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – success</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a> – no gpx file for this activity</p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – invalid token</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
+<li><p>Provide a valid auth token.</p></li>
+<li><p>Signature expired. Please log in again.</p></li>
+<li><p>Invalid token. Please log in again.</p></li>
+</ul>
+</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a> – activity not found</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – </p></li>
 </ul>
@@ -893,7 +927,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id</p></li>
+<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
 <li><p><strong>activity_id</strong> (<em>integer</em>) – activity id</p></li>
 </ul>
 </dd>
@@ -906,7 +940,12 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – success</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a> – no gpx file for this activity</p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – invalid token</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
+<li><p>Provide a valid auth token.</p></li>
+<li><p>Signature expired. Please log in again.</p></li>
+<li><p>Invalid token. Please log in again.</p></li>
+</ul>
+</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a> – activity not found</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – </p></li>
 </ul>

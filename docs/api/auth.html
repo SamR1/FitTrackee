@@ -128,7 +128,7 @@
 <code class="sig-name descname">POST </code><code class="sig-name descname">/api/auth/register</code><a class="headerlink" href="#post--api-auth-register" title="Permalink to this definition">¶</a></dt>
 <dd><p>register a user</p>
 <p><strong>Example request</strong>:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/auth/register</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/register</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
@@ -196,7 +196,7 @@
 <code class="sig-name descname">POST </code><code class="sig-name descname">/api/auth/login</code><a class="headerlink" href="#post--api-auth-login" title="Permalink to this definition">¶</a></dt>
 <dd><p>user login</p>
 <p><strong>Example request</strong>:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/auth/login</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/login</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
@@ -248,7 +248,7 @@
 <code class="sig-name descname">GET </code><code class="sig-name descname">/api/auth/logout</code><a class="headerlink" href="#get--api-auth-logout" title="Permalink to this definition">¶</a></dt>
 <dd><p>user logout</p>
 <p><strong>Example request</strong>:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/auth/logout</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/auth/logout</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
@@ -297,7 +297,7 @@
 <code class="sig-name descname">GET </code><code class="sig-name descname">/api/auth/profile</code><a class="headerlink" href="#get--api-auth-profile" title="Permalink to this definition">¶</a></dt>
 <dd><p>get authenticated user info</p>
 <p><strong>Example request</strong>:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/auth/profile</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/auth/profile</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
@@ -337,7 +337,12 @@
 <dt class="field-even">Status Codes</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – success.</p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – Provide a valid auth token.</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
+<li><p>Provide a valid auth token.</p></li>
+<li><p>Signature expired. Please log in again.</p></li>
+<li><p>Invalid token. Please log in again.</p></li>
+</ul>
+</p></li>
 </ul>
 </dd>
 </dl>
@@ -348,7 +353,7 @@
 <code class="sig-name descname">POST </code><code class="sig-name descname">/api/auth/profile/edit</code><a class="headerlink" href="#post--api-auth-profile-edit" title="Permalink to this definition">¶</a></dt>
 <dd><p>edit authenticated user</p>
 <p><strong>Example request</strong>:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/auth/profile/edit</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/profile/edit</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
@@ -405,7 +410,12 @@
 <li><p>Password and password confirmation don’t match.</p></li>
 </ul>
 </p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – Provide a valid auth token.</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
+<li><p>Provide a valid auth token.</p></li>
+<li><p>Signature expired. Please log in again.</p></li>
+<li><p>Invalid token. Please log in again.</p></li>
+</ul>
+</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – Error. Please try again or contact the administrator.</p></li>
 </ul>
 </dd>
@@ -417,7 +427,7 @@
 <code class="sig-name descname">POST </code><code class="sig-name descname">/api/auth/picture</code><a class="headerlink" href="#post--api-auth-picture" title="Permalink to this definition">¶</a></dt>
 <dd><p>update authenticated user picture</p>
 <p><strong>Example request</strong>:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/auth/picture</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/picture</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">multipart/form-data</span>
 </pre></div>
 </div>
@@ -469,7 +479,12 @@
 <li><p>File extension not allowed.</p></li>
 </ul>
 </p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – Provide a valid auth token.</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
+<li><p>Provide a valid auth token.</p></li>
+<li><p>Signature expired. Please log in again.</p></li>
+<li><p>Invalid token. Please log in again.</p></li>
+</ul>
+</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – Error during picture update.</p></li>
 </ul>
 </dd>
@@ -481,7 +496,7 @@
 <code class="sig-name descname">DELETE </code><code class="sig-name descname">/api/auth/picture</code><a class="headerlink" href="#delete--api-auth-picture" title="Permalink to this definition">¶</a></dt>
 <dd><p>delete authenticated user picture</p>
 <p><strong>Example request</strong>:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/auth/picture</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/api/auth/picture</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
@@ -499,7 +514,12 @@
 <dt class="field-even">Status Codes</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.5">204 No Content</a> – picture deleted</p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – Provide a valid auth token.</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
+<li><p>Provide a valid auth token.</p></li>
+<li><p>Signature expired. Please log in again.</p></li>
+<li><p>Invalid token. Please log in again.</p></li>
+</ul>
+</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – Error during picture deletion.</p></li>
 </ul>
 </dd>

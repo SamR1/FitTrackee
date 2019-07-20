@@ -123,17 +123,212 @@
       
   <div class="section" id="statistics">
 <h1>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h1>
-<p>work in progress</p>
 <dl class="get">
 <dt id="get--api-stats-(int-user_id)-by_sport">
 <code class="sig-name descname">GET </code><code class="sig-name descname">/api/stats/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">user_id</em><span class="sig-paren">)</span><code class="sig-name descname">/by_sport</code><a class="headerlink" href="#get--api-stats-(int-user_id)-by_sport" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get activities statistics for a user by sport</p>
+<p><strong>Example requests</strong>:</p>
+<ul class="simple">
+<li><p>without parameters (get stats for all sports with activities)</p></li>
+</ul>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/stats/1/by_sport</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>with sport id</p></li>
+</ul>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/stats/1/by_sport?sport_id=1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Example responses</strong>:</p>
+<ul class="simple">
+<li><p>success</p></li>
+</ul>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;statistics&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;1&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;nb_activities&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="nt">&quot;total_distance&quot;</span><span class="p">:</span> <span class="mi">47</span><span class="p">,</span>
+        <span class="nt">&quot;total_duration&quot;</span><span class="p">:</span> <span class="mi">9960</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;2&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;nb_activities&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="nt">&quot;total_distance&quot;</span><span class="p">:</span> <span class="mf">5.613</span><span class="p">,</span>
+        <span class="nt">&quot;total_duration&quot;</span><span class="p">:</span> <span class="mi">1267</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;3&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;nb_activities&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="nt">&quot;total_distance&quot;</span><span class="p">:</span> <span class="mf">15.282</span><span class="p">,</span>
+        <span class="nt">&quot;total_duration&quot;</span><span class="p">:</span> <span class="mi">12341</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>no activities</p></li>
+</ul>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;statistics&quot;</span><span class="p">:</span> <span class="p">{}</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
+<li><p><strong>user_id</strong> (<em>integer</em>) – user id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Query Parameters</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>sport_id</strong> (<em>integer</em>) – sport id</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Request Headers</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a> – OAuth 2.0 Bearer Token</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – success</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
+<li><p>Provide a valid auth token.</p></li>
+<li><p>Signature expired. Please log in again.</p></li>
+<li><p>Invalid token. Please log in again.</p></li>
+</ul>
+</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a> – <ul>
+<li><p>User does not exist.</p></li>
+<li><p>Sport does not exist.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="get">
 <dt id="get--api-stats-(int-user_id)-by_time">
 <code class="sig-name descname">GET </code><code class="sig-name descname">/api/stats/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">user_id</em><span class="sig-paren">)</span><code class="sig-name descname">/by_time</code><a class="headerlink" href="#get--api-stats-(int-user_id)-by_time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get activities statistics for a user by time</p>
+<p><strong>Example requests</strong>:</p>
+<ul class="simple">
+<li><p>without parameters</p></li>
+</ul>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/stats/1/by_time</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>with parameters</p></li>
+</ul>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/stats/1/by_time?from=2018-01-01&amp;to=2018-06-30&amp;time=week</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Example responses</strong>:</p>
+<ul class="simple">
+<li><p>success</p></li>
+</ul>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;statistics&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;2017&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;3&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;nb_activities&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+          <span class="nt">&quot;total_distance&quot;</span><span class="p">:</span> <span class="mf">15.282</span><span class="p">,</span>
+          <span class="nt">&quot;total_duration&quot;</span><span class="p">:</span> <span class="mi">12341</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;2019&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;1&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;nb_activities&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+          <span class="nt">&quot;total_distance&quot;</span><span class="p">:</span> <span class="mi">47</span><span class="p">,</span>
+          <span class="nt">&quot;total_duration&quot;</span><span class="p">:</span> <span class="mi">9960</span>
+        <span class="p">},</span>
+        <span class="nt">&quot;2&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;nb_activities&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+          <span class="nt">&quot;total_distance&quot;</span><span class="p">:</span> <span class="mf">5.613</span><span class="p">,</span>
+          <span class="nt">&quot;total_duration&quot;</span><span class="p">:</span> <span class="mi">1267</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>no activities</p></li>
+</ul>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;statistics&quot;</span><span class="p">:</span> <span class="p">{}</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
+<li><p><strong>user_id</strong> (<em>integer</em>) – user id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Query Parameters</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>from</strong> (<em>string</em>) – start date (format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span></code>)</p></li>
+<li><p><strong>to</strong> (<em>string</em>) – end date (format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span></code>)</p></li>
+<li><p><strong>time</strong> (<em>string</em>) – <p>time frame:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">week</span></code>: week starting Sunday</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">weekm</span></code>: week starting Monday</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">month</span></code>: month</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">year</span></code>: year (default)</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Request Headers</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a> – OAuth 2.0 Bearer Token</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – success</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
+<li><p>Provide a valid auth token.</p></li>
+<li><p>Signature expired. Please log in again.</p></li>
+<li><p>Invalid token. Please log in again.</p></li>
+</ul>
+</p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a> – <ul>
+<li><p>User does not exist.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

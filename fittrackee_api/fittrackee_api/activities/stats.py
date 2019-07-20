@@ -130,12 +130,180 @@ def get_activities(user_id, filter_type):
 @stats_blueprint.route('/stats/<int:user_id>/by_time', methods=['GET'])
 @authenticate
 def get_activities_by_time(auth_user_id, user_id):
-    """Get activities statistics for a user by time"""
+    """
+    Get activities statistics for a user by time
+
+    **Example requests**:
+
+    - without parameters
+
+    .. sourcecode:: http
+
+      GET /api/stats/1/by_time HTTP/1.1
+
+    - with parameters
+
+    .. sourcecode:: http
+
+      GET /api/stats/1/by_time?from=2018-01-01&to=2018-06-30&time=week HTTP/1.1
+
+    **Example responses**:
+
+    - success
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "statistics": {
+            "2017": {
+              "3": {
+                "nb_activities": 2,
+                "total_distance": 15.282,
+                "total_duration": 12341
+              }
+            },
+            "2019": {
+              "1": {
+                "nb_activities": 3,
+                "total_distance": 47,
+                "total_duration": 9960
+              },
+              "2": {
+                "nb_activities": 1,
+                "total_distance": 5.613,
+                "total_duration": 1267
+              }
+            }
+          }
+        },
+        "status": "success"
+      }
+
+    - no activities
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+            "statistics": {}
+        },
+        "status": "success"
+      }
+
+    :param integer auth_user_id: authenticate user id (from JSON Web Token)
+    :param integer user_id: user id
+
+    :query string from: start date (format: ``%Y-%m-%d``)
+    :query string to: end date (format: ``%Y-%m-%d``)
+    :query string time: time frame:
+
+      - ``week``: week starting Sunday
+      - ``weekm``: week starting Monday
+      - ``month``: month
+      - ``year``: year (default)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - Provide a valid auth token.
+        - Signature expired. Please log in again.
+        - Invalid token. Please log in again.
+    :statuscode 404:
+        - User does not exist.
+
+    """
     return get_activities(user_id, 'by_time')
 
 
 @stats_blueprint.route('/stats/<int:user_id>/by_sport', methods=['GET'])
 @authenticate
 def get_activities_by_sport(auth_user_id, user_id):
-    """Get activities statistics for a user by sport"""
+    """
+    Get activities statistics for a user by sport
+
+    **Example requests**:
+
+    - without parameters (get stats for all sports with activities)
+
+    .. sourcecode:: http
+
+      GET /api/stats/1/by_sport HTTP/1.1
+
+    - with sport id
+
+    .. sourcecode:: http
+
+      GET /api/stats/1/by_sport?sport_id=1 HTTP/1.1
+
+    **Example responses**:
+
+    - success
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "statistics": {
+            "1": {
+              "nb_activities": 3,
+              "total_distance": 47,
+              "total_duration": 9960
+            },
+            "2": {
+              "nb_activities": 1,
+              "total_distance": 5.613,
+              "total_duration": 1267
+            },
+            "3": {
+              "nb_activities": 2,
+              "total_distance": 15.282,
+              "total_duration": 12341
+            }
+          }
+        },
+        "status": "success"
+      }
+
+    - no activities
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+            "statistics": {}
+        },
+        "status": "success"
+      }
+
+    :param integer auth_user_id: authenticate user id (from JSON Web Token)
+    :param integer user_id: user id
+
+    :query integer sport_id: sport id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - Provide a valid auth token.
+        - Signature expired. Please log in again.
+        - Invalid token. Please log in again.
+    :statuscode 404:
+        - User does not exist.
+        - Sport does not exist.
+
+    """
     return get_activities(user_id, 'by_sport')

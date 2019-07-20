@@ -22,7 +22,7 @@ def register_user():
 
     .. sourcecode:: http
 
-      POST /auth/register HTTP/1.1
+      POST /api/auth/register HTTP/1.1
       Content-Type: application/json
 
     **Example responses**:
@@ -153,7 +153,7 @@ def login_user():
 
     .. sourcecode:: http
 
-      POST /auth/login HTTP/1.1
+      POST /api/auth/login HTTP/1.1
       Content-Type: application/json
 
     **Example responses**:
@@ -240,7 +240,7 @@ def logout_user(user_id):
 
     .. sourcecode:: http
 
-      GET /auth/logout HTTP/1.1
+      GET /api/auth/logout HTTP/1.1
       Content-Type: application/json
 
     **Example responses**:
@@ -310,7 +310,7 @@ def get_user_status(user_id):
 
     .. sourcecode:: http
 
-      GET /auth/profile HTTP/1.1
+      GET /api/auth/profile HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -345,7 +345,10 @@ def get_user_status(user_id):
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: success.
-    :statuscode 401: Provide a valid auth token.
+    :statuscode 401:
+        - Provide a valid auth token.
+        - Signature expired. Please log in again.
+        - Invalid token. Please log in again.
 
     """
     user = User.query.filter_by(id=user_id).first()
@@ -366,7 +369,7 @@ def edit_user(user_id):
 
     .. sourcecode:: http
 
-      POST /auth/profile/edit HTTP/1.1
+      POST /api/auth/profile/edit HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -413,7 +416,10 @@ def edit_user(user_id):
     :statuscode 400:
         - Invalid payload.
         - Password and password confirmation don't match.
-    :statuscode 401: Provide a valid auth token.
+    :statuscode 401:
+        - Provide a valid auth token.
+        - Signature expired. Please log in again.
+        - Invalid token. Please log in again.
     :statuscode 500: Error. Please try again or contact the administrator.
 
     """
@@ -489,7 +495,7 @@ def edit_picture(user_id):
 
     .. sourcecode:: http
 
-      POST /auth/picture HTTP/1.1
+      POST /api/auth/picture HTTP/1.1
       Content-Type: multipart/form-data
 
     **Example response**:
@@ -531,7 +537,10 @@ def edit_picture(user_id):
         - No file part.
         - No selected file.
         - File extension not allowed.
-    :statuscode 401: Provide a valid auth token.
+    :statuscode 401:
+        - Provide a valid auth token.
+        - Signature expired. Please log in again.
+        - Invalid token. Please log in again.
     :statuscode 500: Error during picture update.
 
     """
@@ -592,7 +601,7 @@ def del_picture(user_id):
 
     .. sourcecode:: http
 
-      DELETE /auth/picture HTTP/1.1
+      DELETE /api/auth/picture HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -605,7 +614,10 @@ def del_picture(user_id):
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 204: picture deleted
-    :statuscode 401: Provide a valid auth token.
+    :statuscode 401:
+        - Provide a valid auth token.
+        - Signature expired. Please log in again.
+        - Invalid token. Please log in again.
     :statuscode 500: Error during picture deletion.
 
     """

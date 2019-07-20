@@ -11,7 +11,79 @@ sports_blueprint = Blueprint('sports', __name__)
 @sports_blueprint.route('/sports', methods=['GET'])
 @authenticate
 def get_sports(auth_user_id):
-    """Get all sports"""
+    """
+    Get all sports
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/sports HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "sports": [
+            {
+              "_can_be_deleted": false,
+              "id": 1,
+              "img": "/img/sports/cycling-sport.png",
+              "label": "Cycling (Sport)"
+            },
+            {
+              "_can_be_deleted": false,
+              "id": 2,
+              "img": "/img/sports/cycling-transport.png",
+              "label": "Cycling (Transport)"
+            },
+            {
+              "_can_be_deleted": false,
+              "id": 3,
+              "img": "/img/sports/hiking.png",
+              "label": "Hiking"
+            },
+            {
+              "_can_be_deleted": false,
+              "id": 4,
+              "img": "/img/sports/mountain-biking.png",
+              "label": "Mountain Biking"
+            },
+            {
+              "_can_be_deleted": false,
+              "id": 5,
+              "img": "/img/sports/running.png",
+              "label": "Running"
+            },
+            {
+              "_can_be_deleted": false,
+              "id": 6,
+              "img": "/img/sports/walking.png",
+              "label": "Walking"
+            }
+          ]
+        },
+        "status": "success"
+      }
+
+    :param integer auth_user_id: authenticate user id (from JSON Web Token)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - Provide a valid auth token.
+        - Signature expired. Please log in again.
+        - Invalid token. Please log in again.
+
+    """
+
     sports = Sport.query.order_by(Sport.id).all()
     response_object = {
         'status': 'success',
@@ -25,7 +97,66 @@ def get_sports(auth_user_id):
 @sports_blueprint.route('/sports/<int:sport_id>', methods=['GET'])
 @authenticate
 def get_sport(auth_user_id, sport_id):
-    """Get a sport"""
+    """Get a sport
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/sports/1 HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    - success
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "sports": [
+            {
+              "_can_be_deleted": false,
+              "id": 1,
+              "img": "/img/sports/cycling-sport.png",
+              "label": "Cycling (Sport)"
+            }
+          ]
+        },
+        "status": "success"
+      }
+
+    - sport not found
+
+    .. sourcecode:: http
+
+      HTTP/1.1 404 NOT FOUND
+      Content-Type: application/json
+
+      {
+        "data": {
+          "sports": []
+        },
+        "status": "not found"
+      }
+
+    :param integer auth_user_id: authenticate user id (from JSON Web Token)
+    :param integer sport_id: sport id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - Provide a valid auth token.
+        - Signature expired. Please log in again.
+        - Invalid token. Please log in again.
+    :statuscode 404: sport not found
+
+    """
+
     sport = Sport.query.filter_by(id=sport_id).first()
     if sport:
         response_object = {
@@ -45,6 +176,8 @@ def get_sport(auth_user_id, sport_id):
         code = 404
     return jsonify(response_object), code
 
+
+# no administration - no documentation for now
 
 @sports_blueprint.route('/sports', methods=['POST'])
 @authenticate_as_admin

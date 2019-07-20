@@ -16,8 +16,23 @@ def test_ping(app):
 def test_single_user(app, user_1):
     """=> Get single user details"""
     client = app.test_client()
-
-    response = client.get(f'/api/users/{user_1.id}')
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        f'/api/users/{user_1.id}',
+        content_type='application/json',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
     data = json.loads(response.data.decode())
 
     assert response.status_code == 200
@@ -45,8 +60,23 @@ def test_single_user_with_activities(
 ):
     """=> Get single user details"""
     client = app.test_client()
-
-    response = client.get(f'/api/users/{user_1.id}')
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        f'/api/users/{user_1.id}',
+        content_type='application/json',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
     data = json.loads(response.data.decode())
 
     assert response.status_code == 200
@@ -68,33 +98,80 @@ def test_single_user_with_activities(
     assert data['data']['total_duration'] == '1:57:04'
 
 
-def test_single_user_no_id(app):
+def test_single_user_no_id(app, user_1):
     """=> Ensure error is thrown if an id is not provided."""
     client = app.test_client()
-    response = client.get(f'/api/users/blah')
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        '/api/users/blah',
+        content_type='application/json',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
     data = json.loads(response.data.decode())
 
     assert response.status_code == 404
     assert 'fail' in data['status']
-    assert 'User does not exist' in data['message']
+    assert 'User does not exist.' in data['message']
 
 
-def test_single_user_wrong_id(app):
+def test_single_user_wrong_id(app, user_1):
     """=> Ensure error is thrown if the id does not exist."""
     client = app.test_client()
-    response = client.get(f'/api/users/99999999999')
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        '/api/users/99999999999',
+        content_type='application/json',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
     data = json.loads(response.data.decode())
 
     assert response.status_code == 404
     assert 'fail' in data['status']
-    assert 'User does not exist' in data['message']
+    assert 'User does not exist.' in data['message']
 
 
 def test_users_list(app, user_1, user_2):
     """=> Ensure get single user behaves correctly."""
 
     client = app.test_client()
-    response = client.get('/api/users')
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        '/api/users',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
     data = json.loads(response.data.decode())
 
     assert response.status_code == 200
@@ -129,3 +206,53 @@ def test_decode_auth_token(app, user_1):
     auth_token = user_1.encode_auth_token(user_1.id)
     assert isinstance(auth_token, bytes)
     assert User.decode_auth_token(auth_token) == user_1.id
+
+
+def test_user_no_picture(app, user_1):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        '/api/users/1/picture',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 404
+    assert 'not found' in data['status']
+    assert 'No picture.' in data['message']
+
+
+def test_user_picture_no_user(app, user_1):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(
+            email='test@test.com',
+            password='12345678'
+        )),
+        content_type='application/json'
+    )
+    response = client.get(
+        '/api/users/2/picture',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 404
+    assert 'fail' in data['status']
+    assert 'User does not exist.' in data['message']

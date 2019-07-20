@@ -137,7 +137,7 @@ def get_activities(auth_user_id):
             "status": "success"
         }
 
-    :param integer auth_user_id: authenticate user id
+    :param integer auth_user_id: authenticate user id (from JSON Web Token)
 
     :query integer page: page if using pagination (default: 1)
     :query integer per_page: number of activities per page (default: 5)
@@ -157,7 +157,10 @@ def get_activities(auth_user_id):
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: success
-    :statuscode 401: invalid token
+    :statuscode 401:
+        - Provide a valid auth token.
+        - Signature expired. Please log in again.
+        - Invalid token. Please log in again.
     :statuscode 500:
 
     """
@@ -302,13 +305,16 @@ def get_activity(auth_user_id, activity_id):
           "status": "not found"
         }
 
-    :param integer auth_user_id: authenticate user id
+    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param integer activity_id: activity id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: success
-    :statuscode 401: Provide a valid auth token
+    :statuscode 401:
+        - Provide a valid auth token.
+        - Signature expired. Please log in again.
+        - Invalid token. Please log in again.
     :statuscode 403: You do not have permissions
     :statuscode 404: activity not found
 
@@ -416,14 +422,17 @@ def get_activity_gpx(auth_user_id, activity_id):
         "status": "success"
       }
 
-    :param integer auth_user_id: authenticate user id
+    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param integer activity_id: activity id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: success
     :statuscode 400: no gpx file for this activity
-    :statuscode 401: invalid token
+    :statuscode 401:
+        - Provide a valid auth token.
+        - Signature expired. Please log in again.
+        - Invalid token. Please log in again.
     :statuscode 404: activity not found
     :statuscode 500:
 
@@ -476,14 +485,17 @@ def get_activity_chart_data(auth_user_id, activity_id):
         "status": "success"
       }
 
-    :param integer auth_user_id: authenticate user id
+    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param integer activity_id: activity id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: success
     :statuscode 400: no gpx file for this activity
-    :statuscode 401: invalid token
+    :statuscode 401:
+        - Provide a valid auth token.
+        - Signature expired. Please log in again.
+        - Invalid token. Please log in again.
     :statuscode 404: activity not found
     :statuscode 500:
 
@@ -511,13 +523,13 @@ def get_map(map_id):
       HTTP/1.1 200 OK
       Content-Type: image/png
 
-    :param integer auth_user_id: authenticate user id
     :param string map_id: activity map id
 
-    :reqheader Authorization: OAuth 2.0 Bearer Token
-
     :statuscode 200: success
-    :statuscode 401: invalid token
+    :statuscode 401:
+        - Provide a valid auth token.
+        - Signature expired. Please log in again.
+        - Invalid token. Please log in again.
     :statuscode 404: map does not exist
     :statuscode 500:
 
@@ -636,7 +648,7 @@ def post_activity(auth_user_id):
           "status": "success"
         }
 
-    :param integer auth_user_id: authenticate user id
+    :param integer auth_user_id: authenticate user id (from JSON Web Token)
 
     :form file: gpx file (allowed extensions: .gpx, .zip)
     :form data: sport id and notes (example: ``{"sport_id": 1, "notes": ""}``)
@@ -649,7 +661,10 @@ def post_activity(auth_user_id):
         - No file part.
         - No selected file.
         - File extension not allowed.
-    :statuscode 401: invalid token
+    :statuscode 401:
+        - Provide a valid auth token.
+        - Signature expired. Please log in again.
+        - Invalid token. Please log in again.
     :statuscode 500:
 
     """
@@ -721,7 +736,7 @@ def post_activity_no_gpx(auth_user_id):
 
     .. sourcecode:: http
 
-      POST /api/activities/ HTTP/1.1
+      POST /api/activities/no_gpx HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -805,7 +820,7 @@ def post_activity_no_gpx(auth_user_id):
           "status": "success"
         }
 
-    :param integer auth_user_id: authenticate user id
+    :param integer auth_user_id: authenticate user id (from JSON Web Token)
 
     :<json string activity_date: activity date  (format: ``%Y-%m-%d %H:%M``)
     :<json float distance: activity distance in km
@@ -818,7 +833,10 @@ def post_activity_no_gpx(auth_user_id):
 
     :statuscode 201: activity created
     :statuscode 400: invalid payload
-    :statuscode 401: invalid token
+    :statuscode 401:
+        - Provide a valid auth token.
+        - Signature expired. Please log in again.
+        - Invalid token. Please log in again.
     :statuscode 500:
 
     """
@@ -951,7 +969,7 @@ def update_activity(auth_user_id, activity_id):
           "status": "success"
         }
 
-    :param integer auth_user_id: authenticate user id
+    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param integer activity_id: activity id
 
     :<json string activity_date: activity date  (format: ``%Y-%m-%d %H:%M``)
@@ -968,7 +986,10 @@ def update_activity(auth_user_id, activity_id):
 
     :statuscode 200: activity updated
     :statuscode 400: invalid payload
-    :statuscode 401: invalid token
+    :statuscode 401:
+        - Provide a valid auth token.
+        - Signature expired. Please log in again.
+        - Invalid token. Please log in again.
     :statuscode 404: activity not found
     :statuscode 500:
 
@@ -1039,13 +1060,16 @@ def delete_activity(auth_user_id, activity_id):
       HTTP/1.1 204 NO CONTENT
       Content-Type: application/json
 
-    :param integer auth_user_id: authenticate user id
+    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param integer activity_id: activity id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 204: activity deleted
-    :statuscode 401: invalid token
+    :statuscode 401:
+        - Provide a valid auth token.
+        - Signature expired. Please log in again.
+        - Invalid token. Please log in again.
     :statuscode 404: activity not found
     :statuscode 500: Error. Please try again or contact the administrator.
 
