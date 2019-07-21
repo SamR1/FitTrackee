@@ -28,6 +28,8 @@ project = 'FitTrackee'
 copyright = '2018 - 2019, SamR1'
 author = 'SamR1'
 
+# The short X.Y version.
+version = '0.2.0'
 # The full version, including alpha/beta/rc tags
 release = '0.2.0-beta'
 
