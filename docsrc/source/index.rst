@@ -6,7 +6,7 @@ FitTrackee
 ==========
 
 | |Python Version| |Flask Version| |React Version|
-| |Codacy Badge| |Codacy Coverage Badge|\ 1 |Build Status|
+| |Codacy Badge| |Codacy Coverage Badge| [#f1]_ |Build Status|
 
 
 | This web application allows you to track your outdoor activities from
@@ -56,3 +56,6 @@ Table of contents
    :target: https://www.codacy.com/app/SamR1/FitTrackee
 .. |Build Status| image:: https://travis-ci.org/SamR1/FitTrackee.svg?branch=master
    :target: https://travis-ci.org/SamR1/FitTrackee
+
+.. rubric:: Notes
+.. [#f1] Test coverage: only for Python API
