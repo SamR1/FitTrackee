@@ -13,7 +13,7 @@ This application is written in Python (API) and Javascript (client):
     - `Leaflet <https://leafletjs.com/>`__ to display map
     - `Recharts <https://github.com/recharts/recharts>`__ to display charts with elevation and speed
 
-Sports and weather icons are made by Freepik from www.flaticon.com.
+Sports and weather icons are made by `Freepik <https://www.freepik.com/>`__ from `www.flaticon.com <https://www.flaticon.com/>`__.
 
 Prerequisites
 ~~~~~~~~~~~~~
@@ -107,6 +107,39 @@ password
 
 Upgrade
 ~~~~~~~
+
+.. warning::
+    | Before upgrading, make a backup of all data:
+    | - database (with `pg_dump <https://www.postgresql.org/docs/11/app-pgdump.html>`__ for instance)
+    | - upload directory: **FitTrackee/fittrackee_api/fittrackee_api/uploads/**
+
+
+Dev environment
+^^^^^^^^^^^^^^^
+
+- Stop the application and pull the repository:
+
+.. code:: bash
+
+   $ git pull
+
+- Update **Makefile.config** and **Makefile.custom.config** file if needed
+
+- Reinstall packages if needed:
+
+.. code:: bash
+
+   $ make install-dev
+
+- Restart the server and the client:
+
+.. code:: bash
+
+   $ make serve
+
+
+Prod environment
+^^^^^^^^^^^^^^^^
 
 ``TODO``
 
