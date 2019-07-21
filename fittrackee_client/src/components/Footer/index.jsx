@@ -21,7 +21,14 @@ export default function Footer() {
         >
           GPLv3
         </a>{' '}
-         license
+         license -{' '}
+        <a
+          href="https://samr1.github.io/FitTrackee/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          documentation
+        </a>
       </div>
     </footer>
   )
