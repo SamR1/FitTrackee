@@ -167,8 +167,7 @@ def get_single_user(auth_user_id, user_id):
 
 
 @users_blueprint.route('/users/<user_id>/picture', methods=['GET'])
-@authenticate
-def get_picture(auth_user_id, user_id):
+def get_picture(user_id):
     """ get user picture
 
     **Example request**:
@@ -185,14 +184,9 @@ def get_picture(auth_user_id, user_id):
       HTTP/1.1 200 OK
       Content-Type: image/jpeg
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param integer user_id: user id
 
     :statuscode 200: success
-    :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
     :statuscode 404:
         - User does not exist
         - No picture.

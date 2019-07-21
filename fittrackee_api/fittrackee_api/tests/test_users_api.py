@@ -210,22 +210,7 @@ def test_decode_auth_token(app, user_1):
 
 def test_user_no_picture(app, user_1):
     client = app.test_client()
-    resp_login = client.post(
-        '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
-    )
-    response = client.get(
-        '/api/users/1/picture',
-        headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
-    )
+    response = client.get('/api/users/1/picture')
     data = json.loads(response.data.decode())
 
     assert response.status_code == 404
@@ -235,22 +220,7 @@ def test_user_no_picture(app, user_1):
 
 def test_user_picture_no_user(app, user_1):
     client = app.test_client()
-    resp_login = client.post(
-        '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
-    )
-    response = client.get(
-        '/api/users/2/picture',
-        headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
-    )
+    response = client.get('/api/users/2/picture')
     data = json.loads(response.data.decode())
 
     assert response.status_code == 404

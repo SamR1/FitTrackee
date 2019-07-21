@@ -290,19 +290,12 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
 <li><p><strong>user_id</strong> (<em>integer</em>) – user id</p></li>
 </ul>
 </dd>
 <dt class="field-even">Status Codes</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – success</p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
-<li><p>Provide a valid auth token.</p></li>
-<li><p>Signature expired. Please log in again.</p></li>
-<li><p>Invalid token. Please log in again.</p></li>
-</ul>
-</p></li>
 <li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a> – <ul>
 <li><p>User does not exist</p></li>
 <li><p>No picture.</p></li>
