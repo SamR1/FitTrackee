@@ -1,0 +1,14 @@
+.alert-danger {
+    background-color: #d9534f;
+    border-color: transparent;
+}
+
+.alert-info {
+    background-color: #29abe0;
+    border-color: transparent;
+}
+
+.alert-warning {
+    background-color: #f47c3c;
+    border-color: transparent;
+}

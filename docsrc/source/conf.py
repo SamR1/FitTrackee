@@ -17,6 +17,11 @@ import sphinx_bootstrap_theme
 
 sys.path.insert(0, os.path.abspath('../../fittrackee_api'))
 
+
+def setup(app):
+    app.add_stylesheet("custom.css")
+
+
 # -- Project information -----------------------------------------------------
 
 project = 'FitTrackee'
