@@ -25,11 +25,11 @@ def setup(app):
 # -- Project information -----------------------------------------------------
 
 project = 'FitTrackee'
-copyright = '2019, SamR1'
+copyright = '2018 - 2019, SamR1'
 author = 'SamR1'
 
 # The full version, including alpha/beta/rc tags
-release = '0.2.1-beta'
+release = '0.2.0-beta'
 
 
 # -- General configuration ---------------------------------------------------
