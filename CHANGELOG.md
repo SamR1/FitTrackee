@@ -8,6 +8,10 @@
 
 #### Bugs Fixed
 
+* [#34](https://github.com/SamR1/Fittrackee/issues/34) - weather is not displayed anymore 
+
+In this release 2 issue were closed.
+
 
 ## Version 0.2.0 - Statistics (2019/07/07)
 
@@ -40,7 +44,6 @@ In this release 1 issue was closed.
 * [#28](https://github.com/SamR1/FitTrackee/issues/28) - Error on uploading gpx file
 * [#26](https://github.com/SamR1/FitTrackee/issues/26) - Total is incorrect in tooltip when duration is displayed
 * [#24](https://github.com/SamR1/FitTrackee/issues/24) - Some distances are not displayed correctly on current month statistics
-
 
 In this release 7 issues were closed.
 
