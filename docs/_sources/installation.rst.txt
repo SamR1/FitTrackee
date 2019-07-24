@@ -68,6 +68,9 @@ and the password ``mpwoadmin``) or register
 Prod environment
 ^^^^^^^^^^^^^^^^
 
+.. warning::
+    Note that FitTrackee is not production-ready yet
+
 -  Download the last release (for now it is the beta release v0.2.0):
 
 .. code:: bash

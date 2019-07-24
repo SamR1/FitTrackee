@@ -8,7 +8,7 @@
 
 #### Bugs Fixed
 
-* [#34](https://github.com/SamR1/Fittrackee/issues/34) - weather is not displayed anymore 
+* [#34](https://github.com/SamR1/Fittrackee/issues/34) - Weather is not displayed anymore 
 
 In this release 2 issue were closed.
 
