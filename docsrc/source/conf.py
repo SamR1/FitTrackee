@@ -12,6 +12,7 @@
 #
 import os
 import sys
+from pathlib import Path
 
 import sphinx_bootstrap_theme
 
@@ -28,10 +29,10 @@ project = 'FitTrackee'
 copyright = '2018 - 2019, SamR1'
 author = 'SamR1'
 
+# The full version, including alpha/beta/rc tags.
+release = (Path(__file__).parent.parent.parent / 'VERSION').read_text()
 # The short X.Y version.
-version = '0.2.0'
-# The full version, including alpha/beta/rc tags
-release = '0.2.0-beta'
+version = release.split('-')[0]
 
 
 # -- General configuration ---------------------------------------------------
