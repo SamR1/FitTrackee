@@ -469,6 +469,8 @@ def get_activity_chart_data(auth_user_id, activity_id):
               "distance": 0,
               "duration": 0,
               "elevation": 279.4,
+              "latitude": 51.5078118,
+              "longitude": -0.1232004,
               "speed": 8.63,
               "time": "Fri, 14 Jul 2017 13:44:03 GMT"
             },
@@ -476,6 +478,8 @@ def get_activity_chart_data(auth_user_id, activity_id):
               "distance": 7.5,
               "duration": 7380,
               "elevation": 280,
+              "latitude": 51.5079733,
+              "longitude": -0.1234538,
               "speed": 6.39,
               "time": "Fri, 14 Jul 2017 15:47:03 GMT"
             }

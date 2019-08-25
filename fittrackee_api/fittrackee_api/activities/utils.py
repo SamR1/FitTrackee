@@ -315,6 +315,8 @@ def get_chart_data(gpx_file):
                 'duration': point.time_difference(first_point),
                 'elevation': (round(point.elevation, 1)
                               if point.elevation is not None else 0),
+                'latitude': point.latitude,
+                'longitude': point.longitude,
                 'speed': speed,
                 'time': point.time,
             })
