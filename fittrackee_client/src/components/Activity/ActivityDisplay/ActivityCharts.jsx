@@ -5,7 +5,9 @@ import {
    Area, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis
 } from 'recharts'
 
-import { getActivityChartData } from '../../../actions/activities'
+import {
+  getActivityChartData, getSegmentChartData
+} from '../../../actions/activities'
 
 
 class ActivityCharts extends React.Component {
@@ -18,13 +20,23 @@ class ActivityCharts extends React.Component {
   }
 
   componentDidMount() {
-    this.props.loadActivityData(this.props.activity.id)
+    if (this.props.dataType === 'activity') {
+      this.props.loadActivityData(this.props.activity.id)
+    } else {
+      this.props.loadSegmentData(this.props.activity.id, this.props.segmentId)
+    }
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.activity.id !==
-      this.props.activity.id) {
+    if (this.props.dataType === 'activity' && (
+      prevProps.activity.id !== this.props.activity.id)
+    ) {
         this.props.loadActivityData(this.props.activity.id)
+    }
+    if (this.props.dataType === 'segment' && (
+      prevProps.segmentId !== this.props.segmentId)
+    ) {
+      this.props.loadSegmentData(this.props.activity.id, this.props.segmentId)
     }
   }
 
@@ -195,6 +207,9 @@ export default connect(
   dispatch => ({
     loadActivityData: activityId => {
       dispatch(getActivityChartData(activityId))
+    },
+    loadSegmentData: (activityId, segmentId) => {
+      dispatch(getSegmentChartData(activityId, segmentId))
     },
   })
 )(ActivityCharts)

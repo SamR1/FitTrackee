@@ -26,6 +26,10 @@ function Activity () {
             exact path="/activities/:activityId/edit"
             component={ActivityEdit}
           />
+          <Route
+            path="/activities/:activityId/segment/:segmentId"
+            component={ActivityDisplay}
+          />
           <Route component={NotFound} />
         </Switch>
       ) : (<Redirect to="/login" />)}

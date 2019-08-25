@@ -81,11 +81,43 @@ export const getActivityGpx = activityId => dispatch => {
   dispatch(setGpx(null))
 }
 
+export const getSegmentGpx = (activityId, segmentId) => dispatch => {
+  if (activityId) {
+    return FitTrackeeGenericApi
+    .getData(`activities/${activityId}/gpx/segment/${segmentId}`)
+    .then(ret => {
+      if (ret.status === 'success') {
+         dispatch(setGpx(ret.data.gpx))
+      } else {
+        dispatch(setError(`activities: ${ret.message}`))
+      }
+    })
+    .catch(error => dispatch(setError(`activities: ${error}`)))
+  }
+  dispatch(setGpx(null))
+}
+
 
 export const getActivityChartData = activityId => dispatch => {
   if (activityId) {
     return FitTrackeeGenericApi
     .getData(`activities/${activityId}/chart_data`)
+    .then(ret => {
+      if (ret.status === 'success') {
+         dispatch(setChartData(formatChartData(ret.data.chart_data)))
+      } else {
+        dispatch(setError(`activities: ${ret.message}`))
+      }
+    })
+    .catch(error => dispatch(setError(`activities: ${error}`)))
+  }
+  dispatch(setChartData(null))
+}
+
+export const getSegmentChartData = (activityId, segmentId) => dispatch => {
+  if (activityId) {
+    return FitTrackeeGenericApi
+    .getData(`activities/${activityId}/chart_data/segment/${segmentId}`)
     .then(ret => {
       if (ret.status === 'success') {
          dispatch(setChartData(formatChartData(ret.data.chart_data)))

@@ -102,7 +102,7 @@ label {
   line-height: 400px;
 }
 
-.activity-notes {
+.activity-notes, .actvitiy-segments {
   font-size: 0.9em;
   font-style: italic;
   margin-top: 10px;

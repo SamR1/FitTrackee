@@ -8,6 +8,7 @@ import ActivityDetails from './ActivityDetails'
 import ActivityMap from './ActivityMap'
 import ActivityNoMap from './ActivityNoMap'
 import ActivityNotes from './ActivityNotes'
+import ActivitySegments from './ActivitySegments'
 import CustomModal from '../../Common/CustomModal'
 import { getOrUpdateData } from '../../../actions'
 import { deleteActivity } from '../../../actions/activities'
@@ -66,7 +67,10 @@ class ActivityDisplay extends React.Component {
     const [sport] = activity
       ? sports.filter(s => s.id === activity.sport_id)
       : []
-
+    const segmentId = parseInt(this.props.match.params.segmentId)
+    const dataType = segmentId >= 0
+      ? 'segment'
+      : 'activity'
     return (
       <div className="activity-page">
         <Helmet>
@@ -94,6 +98,8 @@ class ActivityDisplay extends React.Component {
                       <div className="card-header">
                         <ActivityCardHeader
                           activity={activity}
+                          dataType={dataType}
+                          segmentId={segmentId}
                           sport={sport}
                           title={title}
                           user={user}
@@ -107,13 +113,19 @@ class ActivityDisplay extends React.Component {
                               <ActivityMap
                                 activity={activity}
                                 coordinates={coordinates}
+                                dataType={dataType}
+                                segmentId={segmentId}
                               />
                             ) : (
                               <ActivityNoMap />
                             )}
                           </div>
                           <div className="col">
-                            <ActivityDetails activity={activity} />
+                            <ActivityDetails
+                              activity={dataType === 'activity'
+                                ? activity
+                                : activity.segments[segmentId]}
+                            />
                           </div>
                         </div>
                       </div>
@@ -130,6 +142,8 @@ class ActivityDisplay extends React.Component {
                               <div className="chart-title">Chart</div>
                               <ActivityCharts
                                 activity={activity}
+                                dataType={dataType}
+                                segmentId={segmentId}
                                 updateCoordinates={
                                   e => this.updateCoordinates(e)
                                 }
@@ -141,7 +155,14 @@ class ActivityDisplay extends React.Component {
                     </div>
                   </div>
                 )}
-                <ActivityNotes notes={activity.notes} />
+                {dataType === 'activity' && (
+                  <>
+                    <ActivityNotes notes={activity.notes} />
+                    {activity.segments.length > 1 && (
+                      <ActivitySegments segments={activity.segments} />
+                    )}
+                  </>
+                )}
               </div>
             )}
           </div>

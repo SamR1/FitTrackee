@@ -5,7 +5,6 @@ import ActivityWeather from './ActivityWeather'
 export default function ActivityDetails(props) {
   const { activity } = props
   const withPauses = activity.pauses !== '0:00:00' && activity.pauses !== null
-  const recordLDexists = activity.records.find(r => r.record_type === 'LD')
   return (
     <div className="activity-details">
       <p>
@@ -14,7 +13,8 @@ export default function ActivityDetails(props) {
           aria-hidden="true"
         />
         Duration: {activity.moving}
-        {recordLDexists && (
+        {activity.records && activity.records.find(r => r.record_type === 'LD'
+        ) && (
           <sup>
             <i
               className="fa fa-trophy custom-fa"
@@ -35,7 +35,7 @@ export default function ActivityDetails(props) {
           aria-hidden="true"
         />
         Distance: {activity.distance} km
-        {activity.records.find(r => r.record_type === 'FD'
+        {activity.records && activity.records.find(r => r.record_type === 'FD'
         ) && (
           <sup>
             <i
@@ -51,7 +51,7 @@ export default function ActivityDetails(props) {
           aria-hidden="true"
         />
         Average speed: {activity.ave_speed} km/h
-        {activity.records.find(r => r.record_type === 'AS'
+        {activity.records && activity.records.find(r => r.record_type === 'AS'
         ) && (
           <sup>
             <i
@@ -62,7 +62,7 @@ export default function ActivityDetails(props) {
         )}
         <br />
         Max speed : {activity.max_speed} km/h
-        {activity.records.find(r => r.record_type === 'MS'
+        {activity.records && activity.records.find(r => r.record_type === 'MS'
         ) && (
           <sup>
             <i

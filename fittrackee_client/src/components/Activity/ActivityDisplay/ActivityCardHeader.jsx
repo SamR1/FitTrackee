@@ -6,32 +6,47 @@ import { formatActivityDate } from '../../../utils/activities'
 
 
 export default function ActivityCardHeader(props) {
-  const { activity, displayModal, sport, title, user } = props
+  const {
+    activity, dataType, displayModal, segmentId, sport, title, user
+  } = props
   const activityDate = activity
     ? formatActivityDate(
         getDateWithTZ(activity.activity_date, user.timezone)
       )
     : null
+
+  const previousUrl = dataType === 'segment' && segmentId !== 0
+    ? `/activities/${activity.id}/segment/${segmentId - 1}`
+    : dataType === 'activity' && activity.previous_activity
+      ? `/activities/${activity.previous_activity}`
+      : null
+    const nextUrl =
+      dataType === 'segment' && segmentId < activity.segments.length - 1
+    ? `/activities/${activity.id}/segment/${segmentId + 1}`
+    : dataType === 'activity' && activity.next_activity
+      ? `/activities/${activity.next_activity}`
+      : null
+
   return (
     <div className="container">
       <div className="row">
         <div className="col-auto">
-          {activity.previous_activity ? (
+          {previousUrl ? (
             <Link
               className="unlink"
-              to={`/activities/${activity.previous_activity}`}
+              to={previousUrl}
             >
               <i
                 className="fa fa-chevron-left"
                 aria-hidden="true"
-                title="See previous activity"
+                title={`See previous ${dataType}`}
               />
             </Link>
           ) : (
             <i
               className="fa fa-chevron-left inactive-link"
               aria-hidden="true"
-              title="No previous activity"
+              title={`No previous ${dataType}`}
             />
           )}
         </div>
@@ -43,23 +58,37 @@ export default function ActivityCardHeader(props) {
           />
         </div>
         <div className="col">
-          {title}{' '}
-          <Link
-            className="unlink"
-            to={`/activities/${activity.id}/edit`}
-          >
+          {dataType === 'activity' ? (
+          <>
+            {title}{' '}
+            <Link
+              className="unlink"
+              to={`/activities/${activity.id}/edit`}
+            >
+              <i
+                className="fa fa-edit custom-fa"
+                aria-hidden="true"
+                title="Edit activity"
+              />
+            </Link>
             <i
-              className="fa fa-edit custom-fa"
+              className="fa fa-trash custom-fa"
               aria-hidden="true"
-              title="Edit activity"
+              onClick={() => displayModal(true)}
+              title="Delete activity"
             />
-          </Link>
-          <i
-            className="fa fa-trash custom-fa"
-            aria-hidden="true"
-            onClick={() => displayModal(true)}
-            title="Delete activity"
-          /><br />
+          </>
+          ) : (
+            <>
+              <Link
+                to={`/activities/${activity.id}`}
+              >
+                {title}
+              </Link>{' '}
+              - segment {segmentId + 1}
+            </>
+          )}
+          <br />
           {activityDate && (
             <span className="activity-date">
           {`${activityDate.activity_date} - ${activityDate.activity_time}`}
@@ -67,22 +96,22 @@ export default function ActivityCardHeader(props) {
           )}
         </div>
         <div className="col-auto">
-          {activity.next_activity ? (
+          {nextUrl ? (
             <Link
               className="unlink"
-              to={`/activities/${activity.next_activity}`}
+              to={nextUrl}
             >
               <i
                 className="fa fa-chevron-right"
                 aria-hidden="true"
-                title="See next activity"
+                title={`See next ${dataType}`}
               />
             </Link>
           ) : (
             <i
               className="fa fa-chevron-right inactive-link"
               aria-hidden="true"
-              title="No next activity"
+              title={`No next ${dataType}`}
             />
           )}
         </div>

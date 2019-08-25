@@ -3,7 +3,7 @@ import React from 'react'
 import { GeoJSON, Map, Marker, TileLayer } from 'react-leaflet'
 import { connect } from 'react-redux'
 
-import { getActivityGpx } from '../../../actions/activities'
+import { getActivityGpx, getSegmentGpx } from '../../../actions/activities'
 import { thunderforestApiKey } from '../../../utils'
 import { getGeoJson } from '../../../utils/activities'
 
@@ -17,13 +17,23 @@ class ActivityMap extends React.Component {
   }
 
   componentDidMount() {
-    this.props.loadActivityGpx(this.props.activity.id)
+    if (this.props.dataType === 'activity') {
+      this.props.loadActivityGpx(this.props.activity.id)
+    } else {
+      this.props.loadSegmentGpx(this.props.activity.id, this.props.segmentId)
+    }
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.activity.id !==
-      this.props.activity.id) {
+    if (this.props.dataType === 'activity' && (
+      prevProps.activity.id !== this.props.activity.id)
+    ) {
         this.props.loadActivityGpx(this.props.activity.id)
+    }
+    if (this.props.dataType === 'segment' && (
+      prevProps.segmentId !== this.props.segmentId)
+    ) {
+      this.props.loadSegmentGpx(this.props.activity.id, this.props.segmentId)
     }
   }
 
@@ -32,7 +42,9 @@ class ActivityMap extends React.Component {
   }
 
   render() {
-    const { activity, coordinates, gpxContent } = this.props
+    const {
+      activity, coordinates, gpxContent
+    } = this.props
     const { jsonData } = getGeoJson(gpxContent)
     const bounds = [
       [activity.bounds[0], activity.bounds[1]],
@@ -78,6 +90,9 @@ export default connect(
   dispatch => ({
     loadActivityGpx: activityId => {
       dispatch(getActivityGpx(activityId))
+    },
+    loadSegmentGpx: (activityId, segmentId) => {
+      dispatch(getSegmentGpx(activityId, segmentId))
     },
   })
 )(ActivityMap)
