@@ -3,7 +3,14 @@ Features
 
 List
 ~~~~
+
+Users
+^^^^^
 - Account creation (only standard user, not admin)
+- User registration can be disabled
+
+Activities/Workouts
+^^^^^^^^^^^^^^^^^^^
 - 6 sports supported:
      - Cycling (Sport)
      - Cycling (Transport)
@@ -11,10 +18,10 @@ List
      - Montain Biking
      - Running
      - Walking
-- Activity creation by uploading a gpx file. An activity can even be created without gpx (the user must enter date, time, duration and distance)
-- An activity with a gpx file can be displayed with map, weather (if the DarkSky API key is provided) and charts (speed and elevation)
-- Activity edition and deletion. User can add a note
 - Dashboard with month calendar displaying activities and record
+- Activity creation by uploading a gpx file. An activity can even be created without gpx (the user must enter date, time, duration and distance)
+- An activity with a gpx file can be displayed with map, weather (if the DarkSky API key is provided) and charts (speed and elevation). Segments can be displayed
+- Activity edition and deletion. User can add a note
 - User statistics
 - User records by sports:
     - average speed
@@ -22,7 +29,6 @@ List
     - longest duration
     - maximum speed
 - Activities list and filter
-- User registration can be disabled.
 
 **Notes:**
 

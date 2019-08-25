@@ -1,5 +1,21 @@
 # Change log
 
+## Version 0.2.1 (2019/xx/xx)
+
+#### New Features
+
+* [#4](https://github.com/SamR1/Fittrackee/issues/4) - Show points on the map when mouse over the chart
+* [#14](https://github.com/SamR1/Fittrackee/issues/14) - Display segments informations
+* [#21](https://github.com/SamR1/Fittrackee/issues/21) - Document the API
+* [#36](https://github.com/SamR1/Fittrackee/issues/36) - Disable user registration
+
+#### Bugs Fixed
+
+* [#34](https://github.com/SamR1/Fittrackee/issues/34) - Weather is not displayed anymore 
+
+In this release 5 issue were closed.
+
+
 ## Version 0.2.0 - Statistics (2019/07/07)
 
 ### Issues Closed
@@ -32,11 +48,10 @@ In this release 1 issue was closed.
 * [#26](https://github.com/SamR1/FitTrackee/issues/26) - Total is incorrect in tooltip when duration is displayed
 * [#24](https://github.com/SamR1/FitTrackee/issues/24) - Some distances are not displayed correctly on current month statistics
 
-
 In this release 7 issues were closed.
 
 
-## Version 0.1.0 - Minimal version (2018-07-04)
+## Version 0.1 - Minimal version (2018-07-04)
 
 ### Issues Closed
 
