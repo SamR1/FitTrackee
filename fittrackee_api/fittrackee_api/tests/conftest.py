@@ -13,6 +13,7 @@ os.environ["APP_SETTINGS"] = 'fittrackee_api.config.TestingConfig'
 @pytest.fixture
 def app():
     app = create_app()
+    app.config['REGISTRATION_ALLOWED'] = True
     with app.app_context():
         db.create_all()
         yield app

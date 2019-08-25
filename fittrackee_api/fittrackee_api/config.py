@@ -17,7 +17,7 @@ class BaseConfig:
     PICTURE_ALLOWED_EXTENSIONS = {'jpg', 'png', 'gif'}
     ACTIVITY_ALLOWED_EXTENSIONS = {'gpx', 'zip'}
     REGISTRATION_ALLOWED = (
-        False if os.getenv('FT_ALLOW_REGISTRATION') == "false" else True
+        False if os.getenv('REACT_APP_ALLOW_REGISTRATION') == "false" else True
     )
 
 

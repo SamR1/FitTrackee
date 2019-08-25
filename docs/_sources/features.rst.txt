@@ -1,8 +1,8 @@
 Features
 ########
 
-Features list
-~~~~~~~~~~~~~
+List
+~~~~
 - Account creation (only standard user, not admin)
 - 6 sports supported:
      - Cycling (Sport)
@@ -22,6 +22,7 @@ Features list
     - longest duration
     - maximum speed
 - Activities list and filter
+- User registration can be disabled.
 
 **Notes:**
 

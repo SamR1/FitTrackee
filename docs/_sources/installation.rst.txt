@@ -46,7 +46,8 @@ Dev environment
 
 -  Update **Makefile.config** file if needed and copy/paste the
    **ThunderForest** and **Dark Sky** API keys value in
-   **Makefile.custom.config** file (see example)
+   **Makefile.custom.config** file (see example). User registration can
+   also be disabled in **Makefile.custom.config**.
 
 -  Install Python virtualenv, React and all related packages and
    initialize the database:
@@ -82,7 +83,8 @@ Prod environment
 
 -  Update **Makefile.config** file if needed and copy/paste the
    **ThunderForest** and **Dark Sky** API keys value in
-   **Makefile.custom.config** file (see example)
+   **Makefile.custom.config** file (see example). User registration can
+   also be disabled in **Makefile.custom.config**.
 
 -  Install Python virtualenv, React and all related packages and
    initialize the database:

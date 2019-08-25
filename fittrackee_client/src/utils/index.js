@@ -7,6 +7,8 @@ export const thunderforestApiKey = `${
   process.env.REACT_APP_THUNDERFOREST_API_KEY
   }`
 export const gpxLimit = `${process.env.REACT_APP_GPX_LIMIT_IMPORT}`
+export const isRegistrationAllowed =
+  process.env.REACT_APP_ALLOW_REGISTRATION !== 'false'
 
 export const isLoggedIn = () => !!window.localStorage.authToken
 
