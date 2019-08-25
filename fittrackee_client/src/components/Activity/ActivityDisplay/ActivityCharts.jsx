@@ -58,7 +58,7 @@ class ActivityCharts extends React.Component {
   }
 
   render() {
-    const { chartData } = this.props
+    const { chartData, updateCoordinates } = this.props
     const { displayDistance } = this.state
     const xInterval = chartData ? parseInt(chartData.length / 10, 10) : 0
     let xDataKey, xScale
@@ -120,6 +120,8 @@ class ActivityCharts extends React.Component {
                 <ComposedChart
                   data={chartData}
                   margin={{ top: 15, right: 30, left: 20, bottom: 15 }}
+                  onMouseMove={e => updateCoordinates(e.activePayload)}
+                  onMouseLeave={() => updateCoordinates(null)}
                 >
                   <XAxis
                     allowDecimals={false}

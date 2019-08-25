@@ -17,6 +17,10 @@ class ActivityDisplay extends React.Component {
     super(props, context)
     this.state = {
       displayModal: false,
+      coordinates: {
+        latitude: null,
+        longitude: null,
+      },
     }
   }
 
@@ -32,12 +36,31 @@ class ActivityDisplay extends React.Component {
   }
 
   displayModal(value) {
-    this.setState({ displayModal: value })
+    this.setState(prevState => ({
+      ...prevState,
+      displayModal: value
+    }))
+  }
+
+  updateCoordinates(activePayload) {
+    const coordinates = (activePayload && activePayload.length > 0)
+      ? {
+          latitude: activePayload[0].payload.latitude,
+          longitude: activePayload[0].payload.longitude,
+        }
+      : {
+          latitude: null,
+          longitude: null,
+        }
+    this.setState(prevState => ({
+      ...prevState,
+      coordinates
+    }))
   }
 
   render() {
     const { activities, message, onDeleteActivity, sports, user } = this.props
-    const { displayModal } = this.state
+    const { coordinates, displayModal } = this.state
     const [activity] = activities
     const title = activity ? activity.title : 'Activity'
     const [sport] = activity
@@ -81,7 +104,10 @@ class ActivityDisplay extends React.Component {
                         <div className="row">
                           <div className="col-md-8">
                             {activity.with_gpx ? (
-                              <ActivityMap activity={activity} />
+                              <ActivityMap
+                                activity={activity}
+                                coordinates={coordinates}
+                              />
                             ) : (
                               <ActivityNoMap />
                             )}
@@ -102,7 +128,12 @@ class ActivityDisplay extends React.Component {
                           <div className="row">
                             <div className="col">
                               <div className="chart-title">Chart</div>
-                              <ActivityCharts activity={activity} />
+                              <ActivityCharts
+                                activity={activity}
+                                updateCoordinates={
+                                  e => this.updateCoordinates(e)
+                                }
+                              />
                             </div>
                           </div>
                         </div>
