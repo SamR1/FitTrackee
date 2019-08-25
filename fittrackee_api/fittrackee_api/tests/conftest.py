@@ -21,6 +21,18 @@ def app():
         return app
 
 
+@pytest.fixture
+def app_no_registration():
+    app = create_app()
+    app.config['REGISTRATION_ALLOWED'] = False
+    with app.app_context():
+        db.create_all()
+        yield app
+        db.session.remove()
+        db.drop_all()
+    return app
+
+
 @pytest.fixture()
 def user_1():
     user = User(username='test', email='test@test.com', password='12345678')

@@ -66,10 +66,18 @@ def register_user():
             - Valid email must be provided.
             - Password and password confirmation don't match.
             - Password: 8 characters required.
+    :statuscode 403:
+        Error. Registration is disabled.
     :statuscode 500:
         Error. Please try again or contact the administrator.
 
     """
+    if not current_app.config.get('REGISTRATION_ALLOWED'):
+        response_object = {
+            'status': 'error',
+            'message': 'Error. Registration is disabled.',
+        }
+        return jsonify(response_object), 403
     # get post data
     post_data = request.get_json()
     if not post_data or post_data.get('username') is None \
