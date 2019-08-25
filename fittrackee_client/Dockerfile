@@ -1,4 +1,4 @@
-FROM node:11.6.0
+FROM node:11.10.1
 
 MAINTAINER SamR1@users.noreply.github.com
 
@@ -12,8 +12,10 @@ ENV PATH /usr/src/app/node_modules/.bin:$PATH
 # add environment variables
 ARG REACT_APP_API_URL
 ARG NODE_ENV
+ARG REACT_APP_ALLOW_REGISTRATION
 ENV NODE_ENV $NODE_ENV
 ENV REACT_APP_API_URL $REACT_APP_API_URL
+ENV REACT_APP_ALLOW_REGISTRATION $REACT_APP_ALLOW_REGISTRATION
 
 # install and cache app dependencies
 COPY package.json /usr/src/app/package.json
