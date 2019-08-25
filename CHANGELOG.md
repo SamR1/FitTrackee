@@ -5,6 +5,7 @@
 #### New Features
 
 * [#21](https://github.com/SamR1/Fittrackee/issues/21) - Document the API
+* [#36](https://github.com/SamR1/Fittrackee/issues/36) - Disable user registration
 
 #### Bugs Fixed
 
