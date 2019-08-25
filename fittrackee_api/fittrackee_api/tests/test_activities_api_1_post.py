@@ -275,6 +275,21 @@ def activity_assertion(app, user_1, sport_1_cycling, gpx_file, with_segments):
     assert len(data['data']['gpx']) != ''
 
     response = client.get(
+        '/api/activities/1/gpx/segment/0',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert '' in data['message']
+    assert len(data['data']['gpx']) != ''
+
+    response = client.get(
         f'/api/activities/map/{map_id}',
         headers=dict(
             Authorization='Bearer ' + json.loads(
@@ -419,6 +434,36 @@ def test_get_chart_data_activty_with_gpx(
     assert data['message'] == ''
     assert data['data']['chart_data'] != ''
 
+    response = client.get(
+        '/api/activities/1/chart_data/segment/0',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert data['message'] == ''
+    assert data['data']['chart_data'] != ''
+
+    response = client.get(
+        '/api/activities/1/chart_data/segment/999999',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 404
+    assert 'not found' in data['status']
+    assert data['message'] == 'No segment with id \'999999\''
+    assert 'data' not in data
+
 
 def test_get_chart_data_activty_with_gpx_different_user(
         app, user_1, user_2, sport_1_cycling, gpx_file
@@ -455,6 +500,34 @@ def test_get_chart_data_activty_with_gpx_different_user(
     )
     response = client.get(
         '/api/activities/1/chart_data',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 403
+    assert 'error' in data['status']
+    assert 'You do not have permissions.' in data['message']
+
+    response = client.get(
+        '/api/activities/1/chart_data/segment/0',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 403
+    assert 'error' in data['status']
+    assert 'You do not have permissions.' in data['message']
+
+    response = client.get(
+        '/api/activities/1/chart_data/segment/999999',
         headers=dict(
             Authorization='Bearer ' + json.loads(
                 resp_login.data.decode()

@@ -16,7 +16,9 @@ from .utils import (
     get_datetime_with_tz, process_files
 )
 from .utils_format import convert_in_duration
-from .utils_gpx import get_chart_data
+from .utils_gpx import (
+    ActivityGPXException, extract_segment_from_gpx_file, get_chart_data
+)
 
 activities_blueprint = Blueprint('activities', __name__)
 
@@ -345,7 +347,7 @@ def get_activity(auth_user_id, activity_id):
     return jsonify(response_object), code
 
 
-def get_activity_data(auth_user_id, activity_id, data_type):
+def get_activity_data(auth_user_id, activity_id, data_type, segment_id=None):
     """Get data from an activity gpx file"""
     activity = Activity.query.filter_by(id=activity_id).first()
     content = ''
@@ -364,10 +366,21 @@ def get_activity_data(auth_user_id, activity_id, data_type):
         try:
             absolute_gpx_filepath = get_absolute_file_path(activity.gpx)
             if data_type == 'chart':
-                content = get_chart_data(absolute_gpx_filepath)
+                content = get_chart_data(absolute_gpx_filepath, segment_id)
             else:  # data_type == 'gpx'
                 with open(absolute_gpx_filepath, encoding='utf-8') as f:
                     content = f.read()
+                    if segment_id is not None:
+                        content = extract_segment_from_gpx_file(
+                            content,
+                            segment_id
+                        )
+        except ActivityGPXException as e:
+            appLog.error(e.message)
+            response_object = {'status': e.status,
+                               'message': e.message}
+            code = 404 if e.status == 'not found' else 500
+            return jsonify(response_object), code
         except Exception as e:
             appLog.error(e)
             response_object = {'status': 'error',
@@ -503,6 +516,125 @@ def get_activity_chart_data(auth_user_id, activity_id):
 
     """
     return get_activity_data(auth_user_id, activity_id, 'chart')
+
+
+@activities_blueprint.route(
+    '/activities/<int:activity_id>/gpx/segment/<int:segment_id>',
+    methods=['GET']
+)
+@authenticate
+def get_segment_gpx(auth_user_id, activity_id, segment_id):
+    """
+    Get gpx file for an activity segment displayed on map with Leaflet
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/activities/3/gpx/segment/0 HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "gpx": "gpx file content"
+        },
+        "message": "",
+        "status": "success"
+      }
+
+    :param integer auth_user_id: authenticate user id (from JSON Web Token)
+    :param integer activity_id: activity id
+    :param integer segment_id: segment id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 400: no gpx file for this activity
+    :statuscode 401:
+        - Provide a valid auth token.
+        - Signature expired. Please log in again.
+        - Invalid token. Please log in again.
+    :statuscode 404: activity not found
+    :statuscode 500:
+
+    """
+    return get_activity_data(auth_user_id, activity_id, 'gpx', segment_id)
+
+
+@activities_blueprint.route(
+    '/activities/<int:activity_id>/chart_data/segment/<int:segment_id>',
+    methods=['GET']
+)
+@authenticate
+def get_segment_chart_data(auth_user_id, activity_id, segment_id):
+    """
+    Get chart data from an activity gpx file, to display it with Recharts
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/activities/3/chart/segment/0 HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "chart_data": [
+            {
+              "distance": 0,
+              "duration": 0,
+              "elevation": 279.4,
+              "latitude": 51.5078118,
+              "longitude": -0.1232004,
+              "speed": 8.63,
+              "time": "Fri, 14 Jul 2017 13:44:03 GMT"
+            },
+            {
+              "distance": 7.5,
+              "duration": 7380,
+              "elevation": 280,
+              "latitude": 51.5079733,
+              "longitude": -0.1234538,
+              "speed": 6.39,
+              "time": "Fri, 14 Jul 2017 15:47:03 GMT"
+            }
+          ]
+        },
+        "message": "",
+        "status": "success"
+      }
+
+    :param integer auth_user_id: authenticate user id (from JSON Web Token)
+    :param integer activity_id: activity id
+    :param integer segment_id: segment id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 400: no gpx file for this activity
+    :statuscode 401:
+        - Provide a valid auth token.
+        - Signature expired. Please log in again.
+        - Invalid token. Please log in again.
+    :statuscode 404: activity not found
+    :statuscode 500:
+
+    """
+    return get_activity_data(auth_user_id, activity_id, 'chart', segment_id)
 
 
 @activities_blueprint.route('/activities/map/<map_id>', methods=['GET'])

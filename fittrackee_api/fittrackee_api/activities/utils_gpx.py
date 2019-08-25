@@ -121,7 +121,22 @@ def get_gpx_info(gpx_file, update_map_data=True, update_weather_data=True):
     return gpx_data, map_data, weather_data
 
 
-def get_chart_data(gpx_file):
+def get_gpx_segments(track_segments, segment_id=None):
+    if segment_id is not None:
+        if segment_id > (len(track_segments) - 1):
+            raise ActivityGPXException(
+                'not found',
+                f'No segment with id \'{segment_id}\'',
+                None
+            )
+        segments = [track_segments[segment_id]]
+    else:
+        segments = track_segments
+
+    return segments
+
+
+def get_chart_data(gpx_file, segment_id=None):
     gpx = open_gpx_file(gpx_file)
     if gpx is None:
         return None
@@ -131,7 +146,10 @@ def get_chart_data(gpx_file):
     previous_point = None
     previous_distance = 0
 
-    for segment_idx, segment in enumerate(gpx.tracks[0].segments):
+    track_segments = gpx.tracks[0].segments
+    segments = get_gpx_segments(track_segments, segment_id)
+
+    for segment_idx, segment in enumerate(segments):
         for point_idx, point in enumerate(segment.points):
             if segment_idx == 0 and point_idx == 0:
                 first_point = point
@@ -161,3 +179,29 @@ def get_chart_data(gpx_file):
             previous_distance = distance
 
     return chart_data
+
+
+def extract_segment_from_gpx_file(content, segment_id):
+    gpx_content = gpxpy.parse(content)
+    if len(gpx_content.tracks) == 0:
+        return None
+
+    track_segment = get_gpx_segments(
+        gpx_content.tracks[0].segments,
+        segment_id
+    )
+
+    gpx = gpxpy.gpx.GPX()
+    gpx_track = gpxpy.gpx.GPXTrack()
+    gpx.tracks.append(gpx_track)
+    gpx_segment = gpxpy.gpx.GPXTrackSegment()
+    gpx_track.segments.append(gpx_segment)
+
+    for point_idx, point in enumerate(track_segment[0].points):
+        gpx_segment.points.append(
+            gpxpy.gpx.GPXTrackPoint(
+                point.latitude,
+                point.longitude,
+                elevation=point.elevation))
+
+    return gpx.to_xml()
