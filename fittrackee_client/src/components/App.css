@@ -64,6 +64,10 @@ label {
   width: 100%;
 }
 
+.activities-result {
+  font-size: 0.85em;
+}
+
 .activity-card {
   margin-bottom: 15px;
 }
@@ -113,8 +117,8 @@ label {
   margin-top: 20px;
 }
 
-.activities-result {
-  font-size: 0.85em;
+.activity-segments-list {
+  list-style: square;
 }
 
 .activity-sport {

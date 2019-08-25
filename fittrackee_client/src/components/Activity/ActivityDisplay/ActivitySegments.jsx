@@ -12,11 +12,14 @@ export default function ActivitySegments(props) {
             <div className="activity-segments">
               <ul>
                 {segments.map((segment, index) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <li key={`segment-${index}`}>
+                  <li
+                    className="activity-segments-list"
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={`segment-${index}`}
+                  >
                     <Link
                       to={`/activities/${
-                        segment.activity_id}/segment/${index}`}
+                        segment.activity_id}/segment/${index + 1}`}
                     >
                       segment {index + 1}
                     </Link>{' '}

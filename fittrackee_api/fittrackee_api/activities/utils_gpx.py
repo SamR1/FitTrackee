@@ -123,13 +123,20 @@ def get_gpx_info(gpx_file, update_map_data=True, update_weather_data=True):
 
 def get_gpx_segments(track_segments, segment_id=None):
     if segment_id is not None:
-        if segment_id > (len(track_segments) - 1):
+        segment_index = segment_id - 1
+        if segment_index > (len(track_segments) - 1):
             raise ActivityGPXException(
                 'not found',
                 f'No segment with id \'{segment_id}\'',
                 None
             )
-        segments = [track_segments[segment_id]]
+        if segment_index < 0:
+            raise ActivityGPXException(
+                'error',
+                'Incorrect segment id',
+                None
+            )
+        segments = [track_segments[segment_index]]
     else:
         segments = track_segments
 

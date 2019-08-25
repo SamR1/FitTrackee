@@ -14,6 +14,10 @@ import { loadProfile } from './actions/user'
 
 export const history = createBrowserHistory()
 
+history.listen(() => {
+    window.scrollTo(0, 0)
+})
+
 export const rootNode = document.getElementById('root')
 
 export const store = createStore(

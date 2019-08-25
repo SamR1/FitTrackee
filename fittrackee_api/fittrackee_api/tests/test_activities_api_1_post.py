@@ -275,7 +275,7 @@ def activity_assertion(app, user_1, sport_1_cycling, gpx_file, with_segments):
     assert len(data['data']['gpx']) != ''
 
     response = client.get(
-        '/api/activities/1/gpx/segment/0',
+        '/api/activities/1/gpx/segment/1',
         headers=dict(
             Authorization='Bearer ' + json.loads(
                 resp_login.data.decode()
@@ -435,7 +435,7 @@ def test_get_chart_data_activty_with_gpx(
     assert data['data']['chart_data'] != ''
 
     response = client.get(
-        '/api/activities/1/chart_data/segment/0',
+        '/api/activities/1/chart_data/segment/1',
         headers=dict(
             Authorization='Bearer ' + json.loads(
                 resp_login.data.decode()
@@ -448,6 +448,21 @@ def test_get_chart_data_activty_with_gpx(
     assert 'success' in data['status']
     assert data['message'] == ''
     assert data['data']['chart_data'] != ''
+
+    response = client.get(
+        '/api/activities/1/chart_data/segment/0',
+        headers=dict(
+            Authorization='Bearer ' + json.loads(
+                resp_login.data.decode()
+            )['auth_token']
+        )
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 500
+    assert 'error' in data['status']
+    assert data['message'] == 'Incorrect segment id'
+    assert 'data' not in data
 
     response = client.get(
         '/api/activities/1/chart_data/segment/999999',

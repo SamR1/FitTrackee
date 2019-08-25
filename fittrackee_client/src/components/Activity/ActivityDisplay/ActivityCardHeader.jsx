@@ -15,13 +15,13 @@ export default function ActivityCardHeader(props) {
       )
     : null
 
-  const previousUrl = dataType === 'segment' && segmentId !== 0
+  const previousUrl = dataType === 'segment' && segmentId !== 1
     ? `/activities/${activity.id}/segment/${segmentId - 1}`
     : dataType === 'activity' && activity.previous_activity
       ? `/activities/${activity.previous_activity}`
       : null
     const nextUrl =
-      dataType === 'segment' && segmentId < activity.segments.length - 1
+      dataType === 'segment' && segmentId < activity.segments.length
     ? `/activities/${activity.id}/segment/${segmentId + 1}`
     : dataType === 'activity' && activity.next_activity
       ? `/activities/${activity.next_activity}`
@@ -85,7 +85,7 @@ export default function ActivityCardHeader(props) {
               >
                 {title}
               </Link>{' '}
-              - segment {segmentId + 1}
+              - segment {segmentId}
             </>
           )}
           <br />

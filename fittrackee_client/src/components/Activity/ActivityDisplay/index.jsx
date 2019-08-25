@@ -124,7 +124,7 @@ class ActivityDisplay extends React.Component {
                             <ActivityDetails
                               activity={dataType === 'activity'
                                 ? activity
-                                : activity.segments[segmentId]}
+                                : activity.segments[segmentId - 1]}
                             />
                           </div>
                         </div>
