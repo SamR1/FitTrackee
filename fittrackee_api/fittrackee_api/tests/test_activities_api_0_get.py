@@ -788,7 +788,7 @@ def test_get_an_activity_activity_invalid_gpx(
     assert response.status_code == 500
     assert 'error' in data['status']
     assert 'internal error' in data['message']
-    assert data['data']['gpx'] == ''
+    assert 'data' not in data
 
     response = client.get(
         '/api/activities/1/chart_data',
@@ -803,7 +803,7 @@ def test_get_an_activity_activity_invalid_gpx(
     assert response.status_code == 500
     assert 'error' in data['status']
     assert 'internal error' in data['message']
-    assert data['data']['chart_data'] == ''
+    assert 'data' not in data
 
 
 def test_get_map_no_activity(

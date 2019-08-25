@@ -13,9 +13,10 @@ from ..users.utils import (
 from .models import Activity
 from .utils import (
     ActivityException, create_activity, edit_activity, get_absolute_file_path,
-    get_chart_data, get_datetime_with_tz, process_files
+    get_datetime_with_tz, process_files
 )
 from .utils_format import convert_in_duration
+from .utils_gpx import get_chart_data
 
 activities_blueprint = Blueprint('activities', __name__)
 
@@ -370,10 +371,7 @@ def get_activity_data(auth_user_id, activity_id, data_type):
         except Exception as e:
             appLog.error(e)
             response_object = {'status': 'error',
-                               'message': 'internal error',
-                               'data': ({'chart_data': content}
-                                        if data_type == 'chart'
-                                        else {'gpx': content})}
+                               'message': 'internal error'}
             return jsonify(response_object), 500
 
         status = 'success'
