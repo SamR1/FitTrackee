@@ -17,10 +17,7 @@ class AdminSports extends React.Component {
 
     return (
       <div>
-        <AdminDetail
-          results={sports}
-          target="sports"
-        />
+        <AdminDetail results={sports} target="sports" />
       </div>
     )
   }

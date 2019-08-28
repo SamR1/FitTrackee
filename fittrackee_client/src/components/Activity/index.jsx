@@ -9,7 +9,7 @@ import ActivityEdit from './ActivityEdit'
 import NotFound from './../Others/NotFound'
 import { isLoggedIn } from '../../utils'
 
-function Activity () {
+function Activity() {
   return (
     <div>
       <Helmet>
@@ -19,11 +19,13 @@ function Activity () {
         <Switch>
           <Route exact path="/activities/add" component={ActivityAdd} />
           <Route
-            exact path="/activities/:activityId"
+            exact
+            path="/activities/:activityId"
             component={ActivityDisplay}
           />
           <Route
-            exact path="/activities/:activityId/edit"
+            exact
+            path="/activities/:activityId/edit"
             component={ActivityEdit}
           />
           <Route
@@ -32,13 +34,13 @@ function Activity () {
           />
           <Route component={NotFound} />
         </Switch>
-      ) : (<Redirect to="/login" />)}
+      ) : (
+        <Redirect to="/login" />
+      )}
     </div>
   )
 }
 
-export default connect(
-  state => ({
-    user: state.user,
-  })
-)(Activity)
+export default connect(state => ({
+  user: state.user,
+}))(Activity)

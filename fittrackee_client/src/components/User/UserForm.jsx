@@ -15,7 +15,7 @@ class UserForm extends React.Component {
         email: '',
         password: '',
         password_conf: '',
-      }
+      },
     }
   }
 
@@ -27,7 +27,7 @@ class UserForm extends React.Component {
 
   emptyForm() {
     const { formData } = this.state
-    Object.keys(formData).map(k => formData[k] = '')
+    Object.keys(formData).map(k => (formData[k] = ''))
     this.setState(formData)
   }
 
@@ -38,12 +38,7 @@ class UserForm extends React.Component {
   }
 
   render() {
-    const {
-      formType,
-      message,
-      messages,
-      onHandleUserFormSubmit
-    } = this.props
+    const { formType, message, messages, onHandleUserFormSubmit } = this.props
     const { formData } = this.state
     return (
       <div>
@@ -51,16 +46,12 @@ class UserForm extends React.Component {
           <Redirect to="/" />
         ) : (
           <div>
-            {message !== '' && (
-              <code>{message}</code>
-            )}
+            {message !== '' && <code>{message}</code>}
             {messages.length > 0 && (
               <code>
                 <ul>
                   {messages.map(msg => (
-                    <li key={msg.id}>
-                      {msg.value}
-                    </li>
+                    <li key={msg.id}>{msg.value}</li>
                   ))}
                 </ul>
               </code>
@@ -70,8 +61,8 @@ class UserForm extends React.Component {
               userForm={formData}
               onHandleFormChange={event => this.onHandleFormChange(event)}
               handleUserFormSubmit={event => {
-                  event.preventDefault()
-                  onHandleUserFormSubmit(formData, formType)
+                event.preventDefault()
+                onHandleUserFormSubmit(formData, formType)
               }}
             />
           </div>

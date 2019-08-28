@@ -1,7 +1,6 @@
 import React from 'react'
 
-
-export default function UserStatistics (props) {
+export default function UserStatistics(props) {
   const { user } = props
   const days = user.total_duration.match(/day/g)
     ? `${user.total_duration.split(',')[0]},`

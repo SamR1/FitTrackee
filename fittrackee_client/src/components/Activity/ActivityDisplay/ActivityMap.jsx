@@ -8,7 +8,6 @@ import { thunderforestApiKey } from '../../../utils'
 import { getGeoJson } from '../../../utils/activities'
 
 class ActivityMap extends React.Component {
-
   constructor(props, context) {
     super(props, context)
     this.state = {
@@ -25,13 +24,15 @@ class ActivityMap extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.dataType === 'activity' && (
-      prevProps.activity.id !== this.props.activity.id)
+    if (
+      this.props.dataType === 'activity' &&
+      prevProps.activity.id !== this.props.activity.id
     ) {
-        this.props.loadActivityGpx(this.props.activity.id)
+      this.props.loadActivityGpx(this.props.activity.id)
     }
-    if (this.props.dataType === 'segment' && (
-      prevProps.segmentId !== this.props.segmentId)
+    if (
+      this.props.dataType === 'segment' &&
+      prevProps.segmentId !== this.props.segmentId
     ) {
       this.props.loadSegmentGpx(this.props.activity.id, this.props.segmentId)
     }
@@ -42,13 +43,11 @@ class ActivityMap extends React.Component {
   }
 
   render() {
-    const {
-      activity, coordinates, gpxContent
-    } = this.props
+    const { activity, coordinates, gpxContent } = this.props
     const { jsonData } = getGeoJson(gpxContent)
     const bounds = [
       [activity.bounds[0], activity.bounds[1]],
-      [activity.bounds[2], activity.bounds[3]]
+      [activity.bounds[2], activity.bounds[3]],
     ]
 
     return (
@@ -78,14 +77,13 @@ class ActivityMap extends React.Component {
           </Map>
         )}
       </div>
-
     )
   }
 }
 
 export default connect(
   state => ({
-    gpxContent: state.gpx
+    gpxContent: state.gpx,
   }),
   dispatch => ({
     loadActivityGpx: activityId => {

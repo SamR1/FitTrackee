@@ -32,7 +32,7 @@ export const getGeoJson = gpxContent => {
 export const formatActivityDate = (
   dateTime,
   dateFormat = null,
-  timeFormat = null,
+  timeFormat = null
 ) => {
   if (!dateFormat) {
     dateFormat = 'yyyy/MM/dd'
@@ -70,16 +70,16 @@ export const formatRecord = (record, tz) => {
     case 'FD':
       value = `${record.value} km`
       break
-    default: // 'LD'
+    default:
+      // 'LD'
       value = record.value // eslint-disable-line prefer-destructuring
   }
   const [recordType] = recordsLabels.filter(
     r => r.record_type === record.record_type
   )
   return {
-    activity_date: formatActivityDate(
-      getDateWithTZ(record.activity_date, tz)
-    ).activity_date,
+    activity_date: formatActivityDate(getDateWithTZ(record.activity_date, tz))
+      .activity_date,
     activity_id: record.activity_id,
     id: record.id,
     record_type: recordType.label,

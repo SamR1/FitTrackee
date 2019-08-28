@@ -2,14 +2,17 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import {
-  addActivityWithoutGpx, editActivity
+  addActivityWithoutGpx,
+  editActivity,
 } from '../../../actions/activities'
 import { history } from '../../../index'
 import { formatActivityDate } from '../../../utils/activities'
 
-function FormWithoutGpx (props) {
+function FormWithoutGpx(props) {
   const { activity, onAddOrEdit, sports } = props
-  let activityDate, activityTime, sportId = ''
+  let activityDate,
+    activityTime,
+    sportId = ''
   if (activity) {
     const activityDateTime = formatActivityDate(
       activity.activity_date,
@@ -21,9 +24,7 @@ function FormWithoutGpx (props) {
   }
 
   return (
-    <form
-      onSubmit={event => event.preventDefault()}
-    >
+    <form onSubmit={event => event.preventDefault()}>
       <div className="form-group">
         <label>
           Title:
@@ -78,15 +79,15 @@ function FormWithoutGpx (props) {
       <div className="form-group">
         <label>
           Duration:
-            <input
-              name="duration"
-              defaultValue={activity ? activity.duration : ''}
-              className="form-control col-xs-4"
-              pattern="^([0-9]*[0-9]):([0-5][0-9]):([0-5][0-9])$"
-              placeholder="hh:mm:ss"
-              required
-              type="text"
-            />
+          <input
+            name="duration"
+            defaultValue={activity ? activity.duration : ''}
+            className="form-control col-xs-4"
+            pattern="^([0-9]*[0-9]):([0-5][0-9]):([0-5][0-9])$"
+            placeholder="hh:mm:ss"
+            required
+            type="text"
+          />
         </label>
       </div>
       <div className="form-group">
@@ -131,12 +132,13 @@ function FormWithoutGpx (props) {
 }
 
 export default connect(
-  () => ({ }),
+  () => ({}),
   dispatch => ({
     onAddOrEdit: (e, activity) => {
       const d = e.target.form.duration.value.split(':')
       const duration = +d[0] * 60 * 60 + +d[1] * 60 + +d[2]
 
+      /* prettier-ignore */
       const activityDate = `${e.target.form.activity_date.value
         } ${ e.target.form.activity_time.value}`
 

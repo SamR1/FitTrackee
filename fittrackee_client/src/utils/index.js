@@ -3,9 +3,10 @@ import { DateTime } from 'luxon'
 
 export const version = '0.2.1-beta' // version stored in 'utils' for now
 export const apiUrl = `${process.env.REACT_APP_API_URL}/api/`
+/* prettier-ignore */
 export const thunderforestApiKey = `${
   process.env.REACT_APP_THUNDERFOREST_API_KEY
-  }`
+}`
 export const gpxLimit = `${process.env.REACT_APP_GPX_LIMIT_IMPORT}`
 export const isRegistrationAllowed =
   process.env.REACT_APP_ALLOW_REGISTRATION !== 'false'
@@ -21,12 +22,10 @@ export const generateIds = arr => {
   })
 }
 
-
 export const createApiRequest = params => {
   const headers = {}
   if (!params.noAuthorization) {
-    headers.Authorization = `Bearer ${
-      window.localStorage.getItem('authToken')}`
+    headers.Authorization = `Bearer ${window.localStorage.getItem('authToken')}`
   }
   if (params.type) {
     headers['Content-Type'] = params.type
@@ -42,22 +41,23 @@ export const createApiRequest = params => {
   }
   const request = new Request(`${apiUrl}${params.url}`, requestParams)
   return fetch(request)
-    .then(response => params.method === 'DELETE'
-      ? response
-      : response.json())
+    .then(response => (params.method === 'DELETE' ? response : response.json()))
     .catch(error => {
       console.error(error)
       return new Error('An error occurred. Please contact the administrator.')
     })
 }
 
-
 export const getDateWithTZ = (date, tz) => {
   if (!date) {
     return ''
   }
   const dt = DateTime.fromISO(
-    format(new Date(date), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")).setZone(tz)
+    format(new Date(date), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")
+  ).setZone(tz)
   return parse(
-    dt.toFormat('yyyy-MM-dd HH:mm:ss'), 'yyyy-MM-dd HH:mm:ss', new Date())
+    dt.toFormat('yyyy-MM-dd HH:mm:ss'),
+    'yyyy-MM-dd HH:mm:ss',
+    new Date()
+  )
 }

@@ -8,7 +8,6 @@ import ActivitiesList from './ActivitiesList'
 import { getOrUpdateData } from '../../actions'
 import { getMoreActivities } from '../../actions/activities'
 
-
 class Activities extends React.Component {
   constructor(props, context) {
     super(props, context)
@@ -36,12 +35,18 @@ class Activities extends React.Component {
   }
   render() {
     const {
-      activities, loadActivities, loadMoreActivities, message, sports, user
+      activities,
+      loadActivities,
+      loadMoreActivities,
+      message,
+      sports,
+      user,
     } = this.props
     const { params } = this.state
-    const paginationEnd = activities.length > 0
-      ? activities[activities.length - 1].previous_activity === null
-      : true
+    const paginationEnd =
+      activities.length > 0
+        ? activities[activities.length - 1].previous_activity === null
+        : true
     return (
       <div>
         <Helmet>
@@ -65,7 +70,7 @@ class Activities extends React.Component {
                   sports={sports}
                   user={user}
                 />
-                {!paginationEnd &&
+                {!paginationEnd && (
                   <input
                     type="submit"
                     className="btn btn-default btn-md btn-block"
@@ -76,11 +81,11 @@ class Activities extends React.Component {
                       this.setState(params)
                     }}
                   />
-                }
+                )}
                 {activities.length === 0 && (
                   <div className="card text-center">
                     <div className="card-body">
-                      No workouts. {' '}
+                      No workouts.{' '}
                       <Link to={{ pathname: '/activities/add' }}>
                         Upload one !
                       </Link>

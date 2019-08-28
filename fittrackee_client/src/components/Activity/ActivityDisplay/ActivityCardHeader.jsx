@@ -4,26 +4,30 @@ import { Link } from 'react-router-dom'
 import { getDateWithTZ } from '../../../utils'
 import { formatActivityDate } from '../../../utils/activities'
 
-
 export default function ActivityCardHeader(props) {
   const {
-    activity, dataType, displayModal, segmentId, sport, title, user
+    activity,
+    dataType,
+    displayModal,
+    segmentId,
+    sport,
+    title,
+    user,
   } = props
   const activityDate = activity
-    ? formatActivityDate(
-        getDateWithTZ(activity.activity_date, user.timezone)
-      )
+    ? formatActivityDate(getDateWithTZ(activity.activity_date, user.timezone))
     : null
 
-  const previousUrl = dataType === 'segment' && segmentId !== 1
-    ? `/activities/${activity.id}/segment/${segmentId - 1}`
-    : dataType === 'activity' && activity.previous_activity
+  const previousUrl =
+    dataType === 'segment' && segmentId !== 1
+      ? `/activities/${activity.id}/segment/${segmentId - 1}`
+      : dataType === 'activity' && activity.previous_activity
       ? `/activities/${activity.previous_activity}`
       : null
-    const nextUrl =
-      dataType === 'segment' && segmentId < activity.segments.length
-    ? `/activities/${activity.id}/segment/${segmentId + 1}`
-    : dataType === 'activity' && activity.next_activity
+  const nextUrl =
+    dataType === 'segment' && segmentId < activity.segments.length
+      ? `/activities/${activity.id}/segment/${segmentId + 1}`
+      : dataType === 'activity' && activity.next_activity
       ? `/activities/${activity.next_activity}`
       : null
 
@@ -32,10 +36,7 @@ export default function ActivityCardHeader(props) {
       <div className="row">
         <div className="col-auto">
           {previousUrl ? (
-            <Link
-              className="unlink"
-              to={previousUrl}
-            >
+            <Link className="unlink" to={previousUrl}>
               <i
                 className="fa fa-chevron-left"
                 aria-hidden="true"
@@ -51,35 +52,29 @@ export default function ActivityCardHeader(props) {
           )}
         </div>
         <div className="col-auto col-activity-logo">
-          <img
-            className="sport-img-medium"
-            src={sport.img}
-            alt="sport logo"
-          />
+          <img className="sport-img-medium" src={sport.img} alt="sport logo" />
         </div>
         <div className="col">
           {dataType === 'activity' ? (
-          <>
-            {title}{' '}
-            <Link
-              className="unlink"
-              to={`/activities/${activity.id}/edit`}
-            >
+            <>
+              {title}{' '}
+              <Link className="unlink" to={`/activities/${activity.id}/edit`}>
+                <i
+                  className="fa fa-edit custom-fa"
+                  aria-hidden="true"
+                  title="Edit activity"
+                />
+              </Link>
               <i
-                className="fa fa-edit custom-fa"
+                className="fa fa-trash custom-fa"
                 aria-hidden="true"
-                title="Edit activity"
+                onClick={() => displayModal(true)}
+                title="Delete activity"
               />
-            </Link>
-            <i
-              className="fa fa-trash custom-fa"
-              aria-hidden="true"
-              onClick={() => displayModal(true)}
-              title="Delete activity"
-            />
-          </>
+            </>
           ) : (
             <>
+              {/* prettier-ignore */}
               <Link
                 to={`/activities/${activity.id}`}
               >
@@ -91,16 +86,13 @@ export default function ActivityCardHeader(props) {
           <br />
           {activityDate && (
             <span className="activity-date">
-          {`${activityDate.activity_date} - ${activityDate.activity_time}`}
-        </span>
+              {`${activityDate.activity_date} - ${activityDate.activity_time}`}
+            </span>
           )}
         </div>
         <div className="col-auto">
           {nextUrl ? (
-            <Link
-              className="unlink"
-              to={nextUrl}
-            >
+            <Link className="unlink" to={nextUrl}>
               <i
                 className="fa fa-chevron-right"
                 aria-hidden="true"

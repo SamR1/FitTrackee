@@ -5,9 +5,7 @@ export default function ActivityWeather(props) {
   return (
     <div className="container">
       {activity.weather_start && activity.weather_end && (
-        <table
-          className="table table-borderless weather-table text-center"
-        >
+        <table className="table table-borderless weather-table text-center">
           <thead>
             <tr>
               <th />
@@ -42,12 +40,8 @@ export default function ActivityWeather(props) {
                   alt="Temperatures"
                 />
               </td>
-              <td>
-                {Number(activity.weather_start.temperature).toFixed(1)}°C
-              </td>
-              <td>
-                {Number(activity.weather_end.temperature).toFixed(1)}°C
-              </td>
+              <td>{Number(activity.weather_start.temperature).toFixed(1)}°C</td>
+              <td>{Number(activity.weather_end.temperature).toFixed(1)}°C</td>
             </tr>
             <tr>
               <td>
@@ -60,9 +54,7 @@ export default function ActivityWeather(props) {
               <td>
                 {Number(activity.weather_start.humidity * 100).toFixed(1)}%
               </td>
-              <td>
-                {Number(activity.weather_end.humidity * 100).toFixed(1)}%
-              </td>
+              <td>{Number(activity.weather_end.humidity * 100).toFixed(1)}%</td>
             </tr>
             <tr>
               <td>
@@ -72,12 +64,8 @@ export default function ActivityWeather(props) {
                   alt="Temperatures"
                 />
               </td>
-              <td>
-                {Number(activity.weather_start.wind).toFixed(1)}m/s
-              </td>
-              <td>
-                {Number(activity.weather_end.wind).toFixed(1)}m/s
-              </td>
+              <td>{Number(activity.weather_start.wind).toFixed(1)}m/s</td>
+              <td>{Number(activity.weather_end.wind).toFixed(1)}m/s</td>
             </tr>
           </tbody>
         </table>

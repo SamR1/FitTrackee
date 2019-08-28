@@ -17,7 +17,6 @@ import UserForm from './User/UserForm'
 import { isLoggedIn } from '../utils'
 
 export default class App extends React.Component {
-
   constructor(props) {
     super(props)
     this.props = props
@@ -29,78 +28,57 @@ export default class App extends React.Component {
         <NavBar />
         <Switch>
           <Route
-            exact path="/"
-            render={() => (
-              isLoggedIn() ? (
-                <Dashboard />
-              ) : (
-                <Redirect to="/login" />
-              )
-            )}
+            exact
+            path="/"
+            render={() =>
+              isLoggedIn() ? <Dashboard /> : <Redirect to="/login" />
+            }
           />
           <Route
-            exact path="/register"
-            render={() => (
+            exact
+            path="/register"
+            render={() =>
               isLoggedIn() ? (
                 <Redirect to="/" />
               ) : (
-                <UserForm
-                  formType={'register'}
-                />
+                <UserForm formType={'register'} />
               )
-            )}
+            }
           />
           <Route
-            exact path="/login"
-            render={() => (
+            exact
+            path="/login"
+            render={() =>
               isLoggedIn() ? (
                 <Redirect to="/" />
               ) : (
-                <UserForm
-                  formType={'login'}
-                />
+                <UserForm formType={'login'} />
               )
-            )}
+            }
           />
           <Route exact path="/logout" component={Logout} />
           <Route
-            exact path="/profile/edit"
-            render={() => (
-              isLoggedIn() ? (
-                <ProfileEdit />
-              ) : (
-                <UserForm
-                  formType={'login'}
-                />
-              )
-            )}
+            exact
+            path="/profile/edit"
+            render={() =>
+              isLoggedIn() ? <ProfileEdit /> : <UserForm formType={'login'} />
+            }
           />
           <Route
-            exact path="/profile"
-            render={() => (
-              isLoggedIn() ? (
-                <Profile />
-              ) : (
-                <UserForm
-                  formType={'login'}
-                />
-              )
-            )}
+            exact
+            path="/profile"
+            render={() =>
+              isLoggedIn() ? <Profile /> : <UserForm formType={'login'} />
+            }
           />
-          <Route
-            exact path="/activities/history"
-            component={Activities}
-          />
-          <Route
-            exact path="/activities/statistics"
-            component={Statistics}
-          />
+          <Route exact path="/activities/history" component={Activities} />
+          <Route exact path="/activities/statistics" component={Statistics} />
           <Route path="/activities" component={Activity} />
           {/* <Route path="/admin" component={Admin} /> */}
           <Route component={NotFound} />
         </Switch>
         <Footer />
-     </div>
+      </div>
     )
   }
 }

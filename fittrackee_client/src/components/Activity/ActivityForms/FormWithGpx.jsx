@@ -6,11 +6,8 @@ import { addActivity, editActivity } from '../../../actions/activities'
 import { history } from '../../../index'
 import { gpxLimit } from '../../../utils'
 
-
-function FormWithGpx (props) {
-  const {
-    activity, loading, onAddActivity, onEditActivity, sports
-  } = props
+function FormWithGpx(props) {
+  const { activity, loading, onAddActivity, onEditActivity, sports } = props
   const sportId = activity ? activity.sport_id : ''
   return (
     <form
@@ -52,9 +49,10 @@ function FormWithGpx (props) {
       ) : (
         <div className="form-group">
           <label>
-            <strong>gpx</strong> file or <strong>zip</strong>{' '}
-            file containing <strong>gpx</strong> (no folder inside, {
-            gpxLimit} files max):
+            {/* prettier-ignore */}
+            <strong>gpx</strong> file or <strong>zip</strong> file containing
+            {/* prettier-ignore */}
+            <strong> gpx</strong> (no folder inside, {gpxLimit} files max):
             <input
               accept=".gpx, .zip"
               className="form-control form-control-file gpx-file"
@@ -85,10 +83,8 @@ function FormWithGpx (props) {
           <input
             type="submit"
             className="btn btn-primary btn-lg btn-block"
-            onClick={
-              event => activity
-                ? onEditActivity(event, activity)
-                : onAddActivity(event)
+            onClick={event =>
+              activity ? onEditActivity(event, activity) : onAddActivity(event)
             }
             value="Submit"
           />
@@ -106,13 +102,14 @@ function FormWithGpx (props) {
 
 export default connect(
   state => ({
-    loading: state.loading
+    loading: state.loading,
   }),
   dispatch => ({
     onAddActivity: e => {
       dispatch(setLoading(true))
       const form = new FormData()
       form.append('file', e.target.form.gpxFile.files[0])
+      /* prettier-ignore */
       form.append(
         'data',
         `{"sport_id": ${e.target.form.sport.value
@@ -121,12 +118,14 @@ export default connect(
       dispatch(addActivity(form))
     },
     onEditActivity: (e, activity) => {
-      dispatch(editActivity({
-        id: activity.id,
-        notes: e.target.form.notes.value,
-        sport_id: +e.target.form.sport.value,
-        title: e.target.form.title.value,
-      }))
+      dispatch(
+        editActivity({
+          id: activity.id,
+          notes: e.target.form.notes.value,
+          sport_id: +e.target.form.sport.value,
+          title: e.target.form.title.value,
+        })
+      )
     },
   })
 )(FormWithGpx)

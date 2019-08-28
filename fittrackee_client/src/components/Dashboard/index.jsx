@@ -25,11 +25,17 @@ class DashBoard extends React.Component {
 
   render() {
     const {
-      activities, loadMoreActivities, message, records, sports, user
+      activities,
+      loadMoreActivities,
+      message,
+      records,
+      sports,
+      user,
     } = this.props
-    const paginationEnd = activities.length > 0
-      ? activities[activities.length - 1].previous_activity === null
-      : true
+    const paginationEnd =
+      activities.length > 0
+        ? activities[activities.length - 1].previous_activity === null
+        : true
     const { page } = this.state
     return (
       <div>
@@ -39,7 +45,8 @@ class DashBoard extends React.Component {
         {message ? (
           <code>{message}</code>
         ) : (
-          (activities && sports.length > 0) && (
+          activities &&
+          sports.length > 0 && (
             <div className="container dashboard">
               <UserStatistics user={user} />
               <div className="row">
@@ -51,23 +58,24 @@ class DashBoard extends React.Component {
                   <Calendar />
                   {activities.length > 0 ? (
                     activities.map(activity => (
-                    <ActivityCard
-                      activity={activity}
-                      key={activity.id}
-                      sports={sports}
-                      user={user}
-                    />)
-                  )) : (
+                      <ActivityCard
+                        activity={activity}
+                        key={activity.id}
+                        sports={sports}
+                        user={user}
+                      />
+                    ))
+                  ) : (
                     <div className="card text-center">
                       <div className="card-body">
-                        No workouts. {' '}
+                        No workouts.{' '}
                         <Link to={{ pathname: '/activities/add' }}>
                           Upload one !
                         </Link>
                       </div>
                     </div>
                   )}
-                  {!paginationEnd &&
+                  {!paginationEnd && (
                     <input
                       type="submit"
                       className="btn btn-default btn-md btn-block"
@@ -77,7 +85,7 @@ class DashBoard extends React.Component {
                         this.setState({ page: page + 1 })
                       }}
                     />
-                  }
+                  )}
                 </div>
               </div>
             </div>

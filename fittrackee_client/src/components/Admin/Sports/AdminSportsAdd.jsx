@@ -6,7 +6,7 @@ import { addData } from '../../../actions/index'
 import { history } from '../../../index'
 
 class AdminSportsAdd extends React.Component {
-  componentDidMount() { }
+  componentDidMount() {}
 
   render() {
     const { message, onAddSport } = this.props
@@ -16,25 +16,17 @@ class AdminSportsAdd extends React.Component {
         <Helmet>
           <title>FitTrackee - Admin - Add Sport</title>
         </Helmet>
-        <h1 className="page-title">
-          Administration - Sport
-        </h1>
-        {message && (
-          <code>{message}</code>
-        )}
+        <h1 className="page-title">Administration - Sport</h1>
+        {message && <code>{message}</code>}
 
         <div className="container">
           <div className="row">
             <div className="col-md-2" />
             <div className="col-md-8">
               <div className="card">
-                <div className="card-header">
-                  Add a sport
-                </div>
+                <div className="card-header">Add a sport</div>
                 <div className="card-body">
-                  <form onSubmit={event =>
-                    event.preventDefault()}
-                  >
+                  <form onSubmit={event => event.preventDefault()}>
                     <div className="form-group">
                       <label>
                         Label:

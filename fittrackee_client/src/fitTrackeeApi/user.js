@@ -1,7 +1,6 @@
 import { createApiRequest } from '../utils'
 
 export default class FitTrackeeApi {
-
   static loginOrRegister(target, data) {
     const params = {
       url: `auth/${target}`,

@@ -13,7 +13,8 @@ export default function Footer() {
           rel="noopener noreferrer"
         >
           source code
-        </a> under{' '}
+        </a>{' '}
+        under{' '}
         <a
           href="https://choosealicense.com/licenses/gpl-3.0/"
           target="_blank"
@@ -21,7 +22,7 @@ export default function Footer() {
         >
           GPLv3
         </a>{' '}
-         license -{' '}
+        license -{' '}
         <a
           href="https://samr1.github.io/FitTrackee/"
           target="_blank"
@@ -33,4 +34,3 @@ export default function Footer() {
     </footer>
   )
 }
-

@@ -75,16 +75,16 @@ class NavBar extends React.PureComponent {
                   </li>
                 )}
                 {/* {user.admin && ( */}
-                  {/* <li className="nav-item"> */}
-                    {/* <Link */}
-                      {/* className="nav-link" */}
-                      {/* to={{ */}
-                        {/* pathname: '/admin', */}
-                      {/* }} */}
-                    {/* > */}
-                      {/* Admin */}
-                    {/* </Link> */}
-                  {/* </li> */}
+                {/* <li className="nav-item"> */}
+                {/* <Link */}
+                {/* className="nav-link" */}
+                {/* to={{ */}
+                {/* pathname: '/admin', */}
+                {/* }} */}
+                {/* > */}
+                {/* Admin */}
+                {/* </Link> */}
+                {/* </li> */}
                 {/* )} */}
               </ul>
               <ul className="navbar-nav flex-row ml-md-auto d-none d-md-flex">
@@ -115,8 +115,7 @@ class NavBar extends React.PureComponent {
                 {picture === true && (
                   <img
                     alt="Avatar"
-                    src={`${apiUrl}users/${id}/picture` +
-                    `?${Date.now()}`}
+                    src={`${apiUrl}users/${id}/picture` + `?${Date.now()}`}
                     className="img-fluid App-nav-profile-img"
                   />
                 )}
@@ -153,11 +152,9 @@ class NavBar extends React.PureComponent {
   }
 }
 
-export default connect(
-  ({ user }) => ({
-    id: user.id,
-    isAuthenticated: user.isAuthenticated,
-    picture: user.picture,
-    username: user.username,
-  })
-)(NavBar)
+export default connect(({ user }) => ({
+  id: user.id,
+  isAuthenticated: user.isAuthenticated,
+  picture: user.picture,
+  username: user.username,
+}))(NavBar)

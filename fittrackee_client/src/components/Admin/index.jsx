@@ -11,7 +11,7 @@ import AccessDenied from './../Others/AccessDenied'
 import NotFound from './../Others/NotFound'
 import { isLoggedIn } from '../../utils'
 
-function Admin (props) {
+function Admin(props) {
   const { user } = props
   return (
     <div>
@@ -23,26 +23,20 @@ function Admin (props) {
           <Switch>
             <Route exact path="/admin" component={AdminMenu} />
             <Route exact path="/admin/sports" component={AdminSports} />
-            <Route
-              exact path="/admin/sports/add"
-              component={AdminSportsAdd}
-            />
-            <Route
-              exact path="/admin/sports/:sportId"
-              component={AdminSport}
-            />
+            <Route exact path="/admin/sports/add" component={AdminSportsAdd} />
+            <Route exact path="/admin/sports/:sportId" component={AdminSport} />
             <Route component={NotFound} />
           </Switch>
         ) : (
           <AccessDenied />
         )
-      ) : (<Redirect to="/login" />)}
+      ) : (
+        <Redirect to="/login" />
+      )}
     </div>
   )
 }
 
-export default connect(
-  state => ({
-    user: state.user,
-  })
-)(Admin)
+export default connect(state => ({
+  user: state.user,
+}))(Admin)

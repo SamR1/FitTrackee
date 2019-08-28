@@ -6,17 +6,14 @@ import AdminPage from '../generic/AdminPage'
 
 class AdminSports extends React.Component {
   componentDidMount() {
-      this.props.loadSports()
+    this.props.loadSports()
   }
   render() {
     const { sports } = this.props
 
     return (
       <div>
-        <AdminPage
-          data={sports}
-          target="sports"
-        />
+        <AdminPage data={sports} target="sports" />
       </div>
     )
   }

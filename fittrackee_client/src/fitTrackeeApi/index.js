@@ -1,14 +1,13 @@
 import { createApiRequest } from '../utils'
 
 export default class FitTrackeeApi {
-
   static getData(target, data = {}) {
     let url = target
     if (data.id) {
       url = `${url}/${data.id}`
     } else if (Object.keys(data).length > 0) {
       url += '?'
-      Object.keys(data).map(key => url += `&${key}=${data[key]}`)
+      Object.keys(data).map(key => (url += `&${key}=${data[key]}`))
     }
     const params = {
       url: url,
@@ -39,7 +38,7 @@ export default class FitTrackeeApi {
 
   static postData(target, data) {
     const params = {
-      url: `${target}${data.id ? `/${data.id}` : '' }`,
+      url: `${target}${data.id ? `/${data.id}` : ''}`,
       method: 'POST',
       body: data,
       type: 'application/json',

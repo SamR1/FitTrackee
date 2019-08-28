@@ -128,17 +128,18 @@ const user = (state = initial.user, action) => {
 const statistics = (state = initial.statistics, action) =>
   handleDataAndError(state, 'statistics', action)
 
-export default history => combineReducers({
-  activities,
-  calendarActivities,
-  chartData,
-  gpx,
-  loading,
-  message,
-  messages,
-  records,
-  router: connectRouter(history),
-  sports,
-  statistics,
-  user,
-})
+export default history =>
+  combineReducers({
+    activities,
+    calendarActivities,
+    chartData,
+    gpx,
+    loading,
+    message,
+    messages,
+    records,
+    router: connectRouter(history),
+    sports,
+    statistics,
+    user,
+  })

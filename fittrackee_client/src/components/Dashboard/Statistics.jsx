@@ -3,7 +3,6 @@ import React from 'react'
 
 import Stats from '../Common/Stats'
 
-
 export default class Statistics extends React.Component {
   constructor(props, context) {
     super(props, context)
@@ -19,9 +18,7 @@ export default class Statistics extends React.Component {
   render() {
     return (
       <div className="card activity-card">
-        <div className="card-header">
-          This month
-        </div>
+        <div className="card-header">This month</div>
         <div className="card-body">
           <Stats displayEmpty={false} statsParams={this.state} />
         </div>

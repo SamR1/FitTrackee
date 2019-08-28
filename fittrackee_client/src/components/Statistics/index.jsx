@@ -10,7 +10,7 @@ import {
   addYears,
   subMonths,
   subWeeks,
-  subYears
+  subYears,
 } from 'date-fns'
 import React from 'react'
 import { Helmet } from 'react-helmet'
@@ -32,7 +32,7 @@ class Statistics extends React.Component {
         end: endOfMonth(date),
         duration: 'month',
         type: 'by_time',
-      }
+      },
     }
   }
 
@@ -51,26 +51,26 @@ class Statistics extends React.Component {
     const duration = e.target.name
 
     const date = new Date()
-    const start = duration === 'year'
-      ? startOfYear(subYears(date, 9))
-      : duration === 'week'
+    const start =
+      duration === 'year'
+        ? startOfYear(subYears(date, 9))
+        : duration === 'week'
         ? startOfMonth(subMonths(date, 2))
         : startOfMonth(subMonths(date, 11))
-    const end = duration === 'year'
-      ? endOfYear(date)
-      : duration === 'week'
+    const end =
+      duration === 'year'
+        ? endOfYear(date)
+        : duration === 'week'
         ? endOfWeek(date)
         : endOfMonth(date)
-    this.setState({ statsParams:
-      { duration, end, start, type: 'by_time' }
-    })
+    this.setState({ statsParams: { duration, end, start, type: 'by_time' } })
   }
 
   handleOnChangeSports(sportId) {
     const { displayedSports } = this.state
     if (displayedSports.includes(sportId)) {
       this.setState({
-        displayedSports: displayedSports.filter(s => s !== sportId)
+        displayedSports: displayedSports.filter(s => s !== sportId),
       })
     } else {
       this.setState({ displayedSports: displayedSports.concat([sportId]) })
@@ -81,30 +81,34 @@ class Statistics extends React.Component {
     const { start, end, duration } = this.state.statsParams
     let newStart, newEnd
     if (forward) {
-      newStart = duration === 'year'
-        ? startOfYear(subYears(start, 1))
-        : duration === 'week'
+      newStart =
+        duration === 'year'
+          ? startOfYear(subYears(start, 1))
+          : duration === 'week'
           ? startOfWeek(subWeeks(start, 1))
           : startOfMonth(subMonths(start, 1))
-      newEnd = duration === 'year'
-        ? endOfYear(subYears(end, 1))
-        : duration === 'week'
+      newEnd =
+        duration === 'year'
+          ? endOfYear(subYears(end, 1))
+          : duration === 'week'
           ? endOfWeek(subWeeks(end, 1))
           : endOfMonth(subMonths(end, 1))
     } else {
-      newStart = duration === 'year'
-        ? startOfYear(addYears(start, 1))
-        : duration === 'week'
+      newStart =
+        duration === 'year'
+          ? startOfYear(addYears(start, 1))
+          : duration === 'week'
           ? startOfWeek(addWeeks(start, 1))
           : startOfMonth(addMonths(start, 1))
-      newEnd = duration === 'year'
-        ? endOfYear(addYears(end, 1))
-        : duration === 'week'
+      newEnd =
+        duration === 'year'
+          ? endOfYear(addYears(end, 1))
+          : duration === 'week'
           ? endOfWeek(addWeeks(end, 1))
           : endOfMonth(addMonths(end, 1))
     }
-    this.setState({ statsParams:
-      { duration, end: newEnd, start: newStart, type: 'by_time' }
+    this.setState({
+      statsParams: { duration, end: newEnd, start: newStart, type: 'by_time' },
     })
   }
 
@@ -118,9 +122,7 @@ class Statistics extends React.Component {
         </Helmet>
         <div className="container dashboard">
           <div className="card activity-card">
-            <div className="card-header">
-              Statistics
-            </div>
+            <div className="card-header">Statistics</div>
             <div className="card-body">
               <div className="chart-filters row">
                 <div className="col chart-arrows">
@@ -135,7 +137,7 @@ class Statistics extends React.Component {
                 <div className="col-md-3 time-frames justify-content-around">
                   {durations.map(d => (
                     <div className="time-frame" key={d}>
-                      <label >
+                      <label>
                         <input
                           type="radio"
                           id={d}
@@ -143,7 +145,7 @@ class Statistics extends React.Component {
                           checked={d === statsParams.duration}
                           onChange={e => this.handleOnChangeDuration(e)}
                         />
-                        <span>{ d }</span>
+                        <span>{d}</span>
                       </label>
                     </div>
                   ))}
@@ -186,8 +188,6 @@ class Statistics extends React.Component {
   }
 }
 
-export default connect(
-  state => ({
-    sports: state.sports.data,
-  })
-)(Statistics)
+export default connect(state => ({
+  sports: state.sports.data,
+}))(Statistics)

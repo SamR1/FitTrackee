@@ -2,20 +2,26 @@ import { format } from 'date-fns'
 import React from 'react'
 import { connect } from 'react-redux'
 import {
-   Area, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis
+  Area,
+  ComposedChart,
+  Line,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from 'recharts'
 
 import {
-  getActivityChartData, getSegmentChartData
+  getActivityChartData,
+  getSegmentChartData,
 } from '../../../actions/activities'
-
 
 class ActivityCharts extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
       displayDistance: true,
-      dataToHide: []
+      dataToHide: [],
     }
   }
 
@@ -28,13 +34,15 @@ class ActivityCharts extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.dataType === 'activity' && (
-      prevProps.activity.id !== this.props.activity.id)
+    if (
+      this.props.dataType === 'activity' &&
+      prevProps.activity.id !== this.props.activity.id
     ) {
-        this.props.loadActivityData(this.props.activity.id)
+      this.props.loadActivityData(this.props.activity.id)
     }
-    if (this.props.dataType === 'segment' && (
-      prevProps.segmentId !== this.props.segmentId)
+    if (
+      this.props.dataType === 'segment' &&
+      prevProps.segmentId !== this.props.segmentId
     ) {
       this.props.loadSegmentData(this.props.activity.id, this.props.segmentId)
     }
@@ -44,16 +52,16 @@ class ActivityCharts extends React.Component {
     this.props.loadActivityData(null)
   }
 
-  handleRadioChange (changeEvent) {
+  handleRadioChange(changeEvent) {
     this.setState({
       displayDistance:
         changeEvent.target.name === 'distance'
           ? changeEvent.target.value
-          : !changeEvent.target.value
+          : !changeEvent.target.value,
     })
   }
 
-  handleLegendChange (e) {
+  handleLegendChange(e) {
     const { dataToHide } = this.state
     const name = e.target.name // eslint-disable-line prefer-destructuring
     if (dataToHide.find(d => d === name)) {
@@ -64,7 +72,7 @@ class ActivityCharts extends React.Component {
     this.setState({ dataToHide })
   }
 
-  displayData (name) {
+  displayData(name) {
     const { dataToHide } = this.state
     return !dataToHide.find(d => d === name)
   }
@@ -141,22 +149,27 @@ class ActivityCharts extends React.Component {
                     label={{ value: xDataKey, offset: 0, position: 'bottom' }}
                     scale={xScale}
                     interval={xInterval}
-                    tickFormatter={value => displayDistance
-                                            ? value
-                                            : format(value, 'HH:mm:ss')}
+                    tickFormatter={value =>
+                      displayDistance ? value : format(value, 'HH:mm:ss')
+                    }
                     type="number"
                   />
                   <YAxis
                     label={{
-                      value: 'speed (km/h)', angle: -90, position: 'left'
+                      value: 'speed (km/h)',
+                      angle: -90,
+                      position: 'left',
                     }}
                     yAxisId="left"
                   />
                   <YAxis
                     label={{
-                      value: 'altitude (m)', angle: -90, position: 'right'
+                      value: 'altitude (m)',
+                      angle: -90,
+                      position: 'right',
                     }}
-                    yAxisId="right" orientation="right"
+                    yAxisId="right"
+                    orientation="right"
                   />
                   {this.displayData('elevation') && (
                     <Area
@@ -181,9 +194,11 @@ class ActivityCharts extends React.Component {
                     />
                   )}
                   <Tooltip
-                    labelFormatter={value => displayDistance
-                                    ? `distance: ${value} km`
-                                    : `duration: ${format(value, 'HH:mm:ss')}`}
+                    labelFormatter={value =>
+                      displayDistance
+                        ? `distance: ${value} km`
+                        : `duration: ${format(value, 'HH:mm:ss')}`
+                    }
                   />
                 </ComposedChart>
               </ResponsiveContainer>
@@ -202,7 +217,7 @@ class ActivityCharts extends React.Component {
 
 export default connect(
   state => ({
-    chartData: state.chartData
+    chartData: state.chartData,
   }),
   dispatch => ({
     loadActivityData: activityId => {

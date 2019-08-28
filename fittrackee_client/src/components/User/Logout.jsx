@@ -16,8 +16,8 @@ class Logout extends React.Component {
           <div className="card col-8">
             <div className="card-body">
               <div className="text-center">
-                You are now logged out.
-                Click <Link to="/login">here</Link> to log back in.
+                You are now logged out. Click <Link to="/login">here</Link> to
+                log back in.
               </div>
             </div>
           </div>
@@ -35,6 +35,6 @@ export default connect(
   dispatch => ({
     UserLogout: () => {
       dispatch(logout())
-    }
+    },
   })
 )(Logout)

@@ -1,8 +1,16 @@
 // eslint-disable-next-line max-len
 // source: https://blog.flowandform.agency/create-a-custom-calendar-in-react-3df1bfd0b728
 import {
-  addDays, addMonths, endOfMonth, endOfWeek, format, isSameDay, isSameMonth,
-  startOfMonth, startOfWeek, subMonths
+  addDays,
+  addMonths,
+  endOfMonth,
+  endOfWeek,
+  format,
+  isSameDay,
+  isSameMonth,
+  startOfMonth,
+  startOfWeek,
+  subMonths,
 } from 'date-fns'
 import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
@@ -20,7 +28,6 @@ const getStartAndEndMonth = date => {
     end: endOfWeek(monthEnd),
   }
 }
-
 
 class Calendar extends React.Component {
   constructor(props, context) {
@@ -42,21 +49,13 @@ class Calendar extends React.Component {
     return (
       <div className="header row flex-middle">
         <div className="col col-start" onClick={() => this.handlePrevMonth()}>
-          <i
-            className="fa fa-chevron-left"
-            aria-hidden="true"
-          />
+          <i className="fa fa-chevron-left" aria-hidden="true" />
         </div>
         <div className="col col-center">
-          <span>
-            {format(this.state.currentMonth, dateFormat)}
-          </span>
+          <span>{format(this.state.currentMonth, dateFormat)}</span>
         </div>
         <div className="col col-end" onClick={() => this.handleNextMonth()}>
-          <i
-            className="fa fa-chevron-right"
-            aria-hidden="true"
-          />
+          <i className="fa fa-chevron-right" aria-hidden="true" />
         </div>
       </div>
     )
@@ -80,11 +79,9 @@ class Calendar extends React.Component {
   filterActivities(day) {
     const { activities, user } = this.props
     if (activities) {
-      return activities
-        .filter(act => isSameDay(
-          getDateWithTZ(act.activity_date, user.timezone),
-          day
-        ))
+      return activities.filter(act =>
+        isSameDay(getDateWithTZ(act.activity_date, user.timezone), day)
+      )
     }
     return []
   }
@@ -104,14 +101,9 @@ class Calendar extends React.Component {
       for (let i = 0; i < 7; i++) {
         formattedDate = format(day, dateFormat)
         const dayActivities = this.filterActivities(day)
-        const isDisabled = isSameMonth(day, currentMonth)
-          ? ''
-          : 'disabled'
+        const isDisabled = isSameMonth(day, currentMonth) ? '' : 'disabled'
         days.push(
-          <div
-            className={`col cell img-${isDisabled}`}
-            key={day}
-          >
+          <div className={`col cell img-${isDisabled}`} key={day}>
             <span className="number">{formattedDate}</span>
             {dayActivities.map(act => (
               <Link key={act.id} to={`/activities/${act.id}`}>
@@ -129,11 +121,14 @@ class Calendar extends React.Component {
                       <i
                         className="fa fa-trophy custom-fa-small"
                         aria-hidden="true"
-                        title={act.records.map(rec => ` ${
-                          recordsLabels.filter(
-                            r => r.record_type === rec.record_type
-                          )[0].label
-                          }`)}
+                        title={act.records.map(
+                          rec =>
+                            ` ${
+                              recordsLabels.filter(
+                                r => r.record_type === rec.record_type
+                              )[0].label
+                            }`
+                        )}
                       />
                     </sup>
                   )}
@@ -196,10 +191,9 @@ export default connect(
   dispatch => ({
     loadMonthActivities: (start, end) => {
       const dateFormat = 'yyyy-MM-dd'
-      dispatch(getMonthActivities(
-        format(start, dateFormat),
-        format(end, dateFormat),
-      ))
+      dispatch(
+        getMonthActivities(format(start, dateFormat), format(end, dateFormat))
+      )
     },
   })
 )(Calendar)

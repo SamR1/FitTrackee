@@ -1,11 +1,12 @@
 import {
   addDays,
   addMonths,
-  addYears, format, startOfMonth,
+  addYears,
+  format,
+  startOfMonth,
   startOfWeek,
-  startOfYear
+  startOfYear,
 } from 'date-fns'
-
 
 const xAxisFormats = [
   { duration: 'week', dateFormat: 'yyyy-MM-dd', xAxis: 'dd/MM' },
@@ -24,22 +25,21 @@ export const formatDuration = (totalSeconds, formatWithDay = false) => {
   const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0')
   const seconds = String(totalSeconds % 60).padStart(2, '0')
   if (formatWithDay) {
-    return `${
-      days === '0' ? '' : `${days}d:`
-    }${
+    return `${days === '0' ? '' : `${days}d:`}${
       hours === '00' ? '' : `${hours}h:`
     }${minutes}m:${seconds}s`
   }
   return `${hours === '00' ? '' : `${hours}:`}${minutes}:${seconds}`
 }
 
-export const formatValue = (displayedData, value) => value === 0
+export const formatValue = (displayedData, value) =>
+  value === 0
     ? ''
     : displayedData === 'distance'
-      ? `${value.toFixed(2)} km`
-      : displayedData === 'duration'
-        ? formatDuration(value)
-        : value
+    ? `${value.toFixed(2)} km`
+    : displayedData === 'duration'
+    ? formatDuration(value)
+    : value
 
 const dateIncrement = (duration, day) => {
   switch (duration) {
@@ -65,16 +65,15 @@ const startDate = (duration, day) => {
   }
 }
 
-export const formatStats = (
-  stats, sports, params, displayedSports
-) => {
+export const formatStats = (stats, sports, params, displayedSports) => {
   const nbActivitiesStats = []
   const distanceStats = []
   const durationStats = []
 
-  for (let day = startDate(params.duration, params.start);
-       day <= params.end;
-       day = dateIncrement(params.duration, day)
+  for (
+    let day = startDate(params.duration, params.start);
+    day <= params.end;
+    day = dateIncrement(params.duration, day)
   ) {
     const [xAxisFormat] = xAxisFormats.filter(
       x => x.duration === params.duration
@@ -86,15 +85,17 @@ export const formatStats = (
     const dataDuration = { date: xAxis }
 
     if (stats[date]) {
-      Object.keys(stats[date]).filter(
-        sportId => displayedSports ? displayedSports.includes(+sportId) : true
-      ).map(sportId => {
-        const sportLabel = sports.filter(s => s.id === +sportId)[0].label
-        dataNbActivities[sportLabel] = stats[date][sportId].nb_activities
-        dataDistance[sportLabel] = stats[date][sportId].total_distance
-        dataDuration[sportLabel] = stats[date][sportId].total_duration
-        return null
-      })
+      Object.keys(stats[date])
+        .filter(sportId =>
+          displayedSports ? displayedSports.includes(+sportId) : true
+        )
+        .map(sportId => {
+          const sportLabel = sports.filter(s => s.id === +sportId)[0].label
+          dataNbActivities[sportLabel] = stats[date][sportId].nb_activities
+          dataDistance[sportLabel] = stats[date][sportId].total_distance
+          dataDuration[sportLabel] = stats[date][sportId].total_duration
+          return null
+        })
     }
     nbActivitiesStats.push(dataNbActivities)
     distanceStats.push(dataDistance)
@@ -104,6 +105,6 @@ export const formatStats = (
   return {
     activities: nbActivitiesStats,
     distance: distanceStats,
-    duration: durationStats
+    duration: durationStats,
   }
 }

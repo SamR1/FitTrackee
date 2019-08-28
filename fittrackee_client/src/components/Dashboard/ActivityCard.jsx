@@ -4,19 +4,21 @@ import { Link } from 'react-router-dom'
 
 import { apiUrl, getDateWithTZ } from '../../utils'
 
-export default function ActivityCard (props) {
+export default function ActivityCard(props) {
   const { activity, sports, user } = props
 
   return (
     <div className="card activity-card text-center">
       <div className="card-header">
         <Link to={`/activities/${activity.id}`}>
-        {sports.filter(sport => sport.id === activity.sport_id)
-               .map(sport => sport.label)} -{' '}
-        {format(
-          getDateWithTZ(activity.activity_date, user.timezone),
-          'dd/MM/yyyy HH:mm'
-        )}
+          {sports
+            .filter(sport => sport.id === activity.sport_id)
+            .map(sport => sport.label)}{' '}
+          -{' '}
+          {format(
+            getDateWithTZ(activity.activity_date, user.timezone),
+            'dd/MM/yyyy HH:mm'
+          )}
         </Link>
       </div>
       <div className="card-body">
@@ -25,15 +27,14 @@ export default function ActivityCard (props) {
             <div className="col">
               <img
                 alt="Map"
-                src={`${apiUrl}activities/map/${activity.map}` +
-                     `?${Date.now()}`}
+                src={
+                  `${apiUrl}activities/map/${activity.map}` + `?${Date.now()}`
+                }
                 className="img-fluid"
               />
               <div className="map-attribution text-right">
                 <div>
-                  <span className="map-attribution-text">
-                    ©
-                  </span>
+                  <span className="map-attribution-text">©</span>
                   <a
                     className="map-attribution-text"
                     href="http://www.openstreetmap.org/copyright"
@@ -48,15 +49,18 @@ export default function ActivityCard (props) {
           )}
           <div className="col">
             <p>
-              <i className="fa fa-clock-o" aria-hidden="true" />{' '}
-              Duration: {activity.moving}
+              <i className="fa fa-clock-o" aria-hidden="true" /> Duration:{' '}
+              {activity.moving}
               {activity.map ? (
-                <span><br /><br /></span>
+                <span>
+                  <br />
+                  <br />
+                </span>
               ) : (
                 ' - '
               )}
-              <i className="fa fa-road" aria-hidden="true" />{' '}
-              Distance: {activity.distance} km
+              <i className="fa fa-road" aria-hidden="true" /> Distance:{' '}
+              {activity.distance} km
             </p>
           </div>
         </div>

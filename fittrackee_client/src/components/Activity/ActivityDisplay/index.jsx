@@ -30,8 +30,9 @@ class ActivityDisplay extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.match.params.activityId !==
-      this.props.match.params.activityId) {
+    if (
+      prevProps.match.params.activityId !== this.props.match.params.activityId
+    ) {
       this.props.loadActivity(this.props.match.params.activityId)
     }
   }
@@ -39,23 +40,24 @@ class ActivityDisplay extends React.Component {
   displayModal(value) {
     this.setState(prevState => ({
       ...prevState,
-      displayModal: value
+      displayModal: value,
     }))
   }
 
   updateCoordinates(activePayload) {
-    const coordinates = (activePayload && activePayload.length > 0)
-      ? {
-          latitude: activePayload[0].payload.latitude,
-          longitude: activePayload[0].payload.longitude,
-        }
-      : {
-          latitude: null,
-          longitude: null,
-        }
+    const coordinates =
+      activePayload && activePayload.length > 0
+        ? {
+            latitude: activePayload[0].payload.latitude,
+            longitude: activePayload[0].payload.longitude,
+          }
+        : {
+            latitude: null,
+            longitude: null,
+          }
     this.setState(prevState => ({
       ...prevState,
-      coordinates
+      coordinates,
     }))
   }
 
@@ -68,9 +70,7 @@ class ActivityDisplay extends React.Component {
       ? sports.filter(s => s.id === activity.sport_id)
       : []
     const segmentId = parseInt(this.props.match.params.segmentId)
-    const dataType = segmentId >= 0
-      ? 'segment'
-      : 'activity'
+    const dataType = segmentId >= 0 ? 'segment' : 'activity'
     return (
       <div className="activity-page">
         <Helmet>
@@ -80,16 +80,17 @@ class ActivityDisplay extends React.Component {
           <code>{message}</code>
         ) : (
           <div className="container">
-            {displayModal &&
-            <CustomModal
-              title="Confirmation"
-              text="Are you sure you want to delete this activity?"
-              confirm={() => {
-                onDeleteActivity(activity.id)
-                this.displayModal(false)
-              }}
-              close={() => this.displayModal(false)}
-            />}
+            {displayModal && (
+              <CustomModal
+                title="Confirmation"
+                text="Are you sure you want to delete this activity?"
+                confirm={() => {
+                  onDeleteActivity(activity.id)
+                  this.displayModal(false)
+                }}
+                close={() => this.displayModal(false)}
+              />
+            )}
             {activity && sport && activities.length === 1 && (
               <div>
                 <div className="row">
@@ -122,9 +123,11 @@ class ActivityDisplay extends React.Component {
                           </div>
                           <div className="col">
                             <ActivityDetails
-                              activity={dataType === 'activity'
-                                ? activity
-                                : activity.segments[segmentId - 1]}
+                              activity={
+                                dataType === 'activity'
+                                  ? activity
+                                  : activity.segments[segmentId - 1]
+                              }
                             />
                           </div>
                         </div>
@@ -144,8 +147,8 @@ class ActivityDisplay extends React.Component {
                                 activity={activity}
                                 dataType={dataType}
                                 segmentId={segmentId}
-                                updateCoordinates={
-                                  e => this.updateCoordinates(e)
+                                updateCoordinates={e =>
+                                  this.updateCoordinates(e)
                                 }
                               />
                             </div>

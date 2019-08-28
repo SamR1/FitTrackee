@@ -4,12 +4,9 @@ import { connect } from 'react-redux'
 import ActivityAddOrEdit from './ActivityAddOrEdit'
 import { getOrUpdateData } from '../../actions'
 
-
 class ActivityEdit extends React.Component {
   componentDidMount() {
-    this.props.loadActivity(
-      this.props.match.params.activityId
-    )
+    this.props.loadActivity(this.props.match.params.activityId)
   }
 
   render() {

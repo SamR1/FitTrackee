@@ -13,11 +13,12 @@ class ActivityAddEdit extends React.Component {
     }
   }
 
-  handleRadioChange (changeEvent) {
+  handleRadioChange(changeEvent) {
     this.setState({
       withGpx:
         changeEvent.target.name === 'withGpx'
-          ? changeEvent.target.value : !changeEvent.target.value
+          ? changeEvent.target.value
+          : !changeEvent.target.value,
     })
   }
 
@@ -27,15 +28,13 @@ class ActivityAddEdit extends React.Component {
     return (
       <div>
         <Helmet>
-          <title>FitTrackee - {activity
-            ? 'Edit a workout'
-            : 'Add a workout'}
-            </title>
+          <title>
+            FitTrackee - {activity ? 'Edit a workout' : 'Add a workout'}
+          </title>
         </Helmet>
-        <br /><br />
-        {message && (
-          <code>{message}</code>
-        )}
+        <br />
+        <br />
+        {message && <code>{message}</code>}
         <div className="container">
           <div className="row">
             <div className="col-md-2" />
@@ -57,27 +56,31 @@ class ActivityAddEdit extends React.Component {
                         <div className="form-group row">
                           <div className="col">
                             <label className="radioLabel">
-                            <input
-                              className="add-activity-radio"
-                              type="radio"
-                              name="withGpx"
-                              disabled={loading}
-                              checked={withGpx}
-                              onChange={event => this.handleRadioChange(event)}
-                            />
+                              <input
+                                className="add-activity-radio"
+                                type="radio"
+                                name="withGpx"
+                                disabled={loading}
+                                checked={withGpx}
+                                onChange={event =>
+                                  this.handleRadioChange(event)
+                                }
+                              />
                               with gpx file
                             </label>
                           </div>
                           <div className="col">
                             <label className="radioLabel">
-                            <input
-                              className="add-activity-radio"
-                              type="radio"
-                              name="withoutGpx"
-                              disabled={loading}
-                              checked={!withGpx}
-                              onChange={event => this.handleRadioChange(event)}
-                            />
+                              <input
+                                className="add-activity-radio"
+                                type="radio"
+                                name="withoutGpx"
+                                disabled={loading}
+                                checked={!withGpx}
+                                onChange={event =>
+                                  this.handleRadioChange(event)
+                                }
+                              />
                               without gpx file
                             </label>
                           </div>
@@ -101,8 +104,6 @@ class ActivityAddEdit extends React.Component {
   }
 }
 
-export default connect(
-  state => ({
-    loading: state.loading
-  }),
-)(ActivityAddEdit)
+export default connect(state => ({
+  loading: state.loading,
+}))(ActivityAddEdit)
