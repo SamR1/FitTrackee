@@ -44,11 +44,11 @@ install-client-dev:
 
 install-dev: install-client-dev install-python-dev
 
-install-python: venv
-	$(PIPENV) install --deploy
+install-python:
+	$(POETRY) install --no-dev
 
-install-python-dev: venv
-	$(PIPENV) install --dev
+install-python-dev:
+	$(POETRY) install
 
 lint-all: lint-python lint-react
 
@@ -96,6 +96,3 @@ update-cov:	test-python-xml
 
 upgrade-db:
 	$(FLASK) db upgrade --directory $(MIGRATIONS)
-
-venv:
-	test -d $(VENV) || pipenv --python $(PYTHON_VERSION)

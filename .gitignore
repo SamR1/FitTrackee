@@ -12,6 +12,7 @@ uploads
 coverage.xml
 .pytest_cache
 .venv
+/fittrackee_api.egg-info/
 
 # MPWO_CLIENT
 ###############

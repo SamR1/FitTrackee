@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "fittrackee_api"
+version = "0.2.1-beta"
+description = ""
+authors = ["Your Name <you@example.com>"]
+license = "GPL-3.0"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+flask = "^1.1"
+flask-migrate = "^2.5"
+flask-bcrypt = "^0.7.1"
+pyjwt = "^1.7"
+gpxpy = "=1.3.4"
+psycopg2-binary = "^2.8"
+staticmap = "^0.5.4"
+pytz = "^2019.2"
+python-forecastio = "^1.4"
+gunicorn = "^19.9"
+tqdm = "^4.35"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.1"
+pytest-runner = "^5.1"
+pytest-cov = "^2.7"
+pytest-flake8 = "^1.0"
+codacy-coverage = "^1.3"
+sphinx = "^2.2"
+sphinxcontrib-httpdomain = "^1.7"
+sphinx-bootstrap-theme = "^0.7.1"
+recommonmark = "^0.6.0"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
