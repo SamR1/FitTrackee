@@ -53,7 +53,10 @@ install-python-dev:
 lint-all: lint-python lint-react
 
 lint-python:
-	$(PYTEST) --flake8 --isort -m "flake8 or isort" fittrackee_api --ignore=fittrackee_api/migrations
+	$(PYTEST) --flake8 --isort --black -m "flake8 or isort or black" fittrackee_api --ignore=fittrackee_api/migrations
+
+lint-python-fix:
+	$(BLACK) fittrackee_api
 
 lint-react:
 	$(NPM) lint
