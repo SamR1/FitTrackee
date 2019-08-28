@@ -27,7 +27,8 @@
     "build": "cd fittrackee_client && react-scripts build",
     "test": "cd fittrackee_client && testcafe firefox e2e",
     "eject": "cd fittrackee_client && react-scripts eject",
-    "lint": "eslint --cache --ext .jsx --ext .js fittrackee_client/src"
+    "lint": "eslint --cache --ext .jsx --ext .js fittrackee_client/src",
+    "lint-fix": "eslint --cache --ext .jsx --ext .js fittrackee_client/src --fix"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -39,7 +40,10 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "eslint-config-prettier": "^6.1.0",
+    "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-testcafe": "^0.2.1",
+    "prettier": "^1.18.2",
     "randomstring": "^1.1.5",
     "testcafe": "^1.1.3"
   }

@@ -16,6 +16,7 @@
     "es6": true,
     "jest": true
   },
+  "extends": ["plugin:prettier/recommended"],
   "rules": {
     "no-alert": "warn",
     "no-array-constructor": "off",
@@ -411,7 +412,7 @@
     "import/no-named-default": "warn",
     "import/no-anonymous-default-export": "off"
   },
-  "plugins": ["react", "import"],
+  "plugins": ["react", "import", "prettier"],
   "settings": {
     "import/resolver": {
       "node": {
@@ -421,7 +422,7 @@
     "react": {
       "createClass": "createReactClass",
       "pragma": "React",
-      "version": "16.6"
+      "version": "16.8"
     },
     "propWrapperFunctions": [
         "forbidExtraProps",
