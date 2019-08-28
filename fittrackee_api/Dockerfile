@@ -7,15 +7,16 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 # add requirements
-COPY ./Pipfile /usr/src/app/Pipfile
-COPY ./Pipfile.lock /usr/src/app/Pipfile.lock
+COPY ./pyproject.toml /usr/src/app/pyproject.toml
+COPY ./poetry.lock /usr/src/app/poetry.lock
 
 # install requirements
 RUN pip install --upgrade pip
-RUN pip install pipenv
-RUN pipenv install --system --dev
+RUN pip install poetry
+RUN poetry config settings.virtualenvs.create false
+RUN poetry install --no-interaction
 
-# add app
+# add app --no-interaction
 COPY . /usr/src/app
 
 # run server
