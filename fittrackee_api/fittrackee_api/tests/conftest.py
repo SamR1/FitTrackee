@@ -19,6 +19,10 @@ def app():
         yield app
         db.session.remove()
         db.drop_all()
+        # close unused idle connections => avoid the following error:
+        # FATAL: remaining connection slots are reserved for non-replication
+        # superuser connections
+        db.engine.dispose()
         return app
 
 
@@ -31,6 +35,7 @@ def app_no_registration():
         yield app
         db.session.remove()
         db.drop_all()
+        db.engine.dispose()
     return app
 
 
