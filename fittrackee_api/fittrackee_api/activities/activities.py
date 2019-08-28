@@ -380,10 +380,8 @@ def get_activity_data(auth_user_id, activity_id, data_type, segment_id=None):
         if response_object:
             return jsonify(response_object), code
         if not activity.gpx or activity.gpx == '':
-            response_object = {
-                'status': 'fail',
-                'message': f'No gpx file for this activity (id: {activity_id})',
-            }
+            message = f'No gpx file for this activity (id: {activity_id})'
+            response_object = {'status': 'fail', 'message': message}
             return jsonify(response_object), 400
 
         try:

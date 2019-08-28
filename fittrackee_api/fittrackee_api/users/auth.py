@@ -432,10 +432,8 @@ def edit_user(user_id):
 
     if password is not None and password != '':
         if password_conf != password:
-            response_object = {
-                'status': 'error',
-                'message': 'Password and password confirmation don\'t match.\n',
-            }
+            message = 'Password and password confirmation don\'t match.\n'
+            response_object = {'status': 'error', 'message': message}
             return jsonify(response_object), 400
         else:
             password = bcrypt.generate_password_hash(
