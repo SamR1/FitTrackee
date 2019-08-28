@@ -80,14 +80,14 @@ def register_user():
         return jsonify(response_object), 403
     # get post data
     post_data = request.get_json()
-    if not post_data or post_data.get('username') is None \
-            or post_data.get('email') is None \
-            or post_data.get('password') is None \
-            or post_data.get('password_conf') is None:
-        response_object = {
-            'status': 'error',
-            'message': 'Invalid payload.'
-        }
+    if (
+        not post_data
+        or post_data.get('username') is None
+        or post_data.get('email') is None
+        or post_data.get('password') is None
+        or post_data.get('password_conf') is None
+    ):
+        response_object = {'status': 'error', 'message': 'Invalid payload.'}
         return jsonify(response_object), 400
     username = post_data.get('username')
     email = post_data.get('email')
@@ -102,27 +102,21 @@ def register_user():
 
         response_object = {
             'status': 'error',
-            'message': 'Error. Please try again or contact the administrator.'
+            'message': 'Error. Please try again or contact the administrator.',
         }
         return jsonify(response_object), 500
     if ret != '':
-        response_object = {
-            'status': 'error',
-            'message': 'Errors: ' + ret
-        }
+        response_object = {'status': 'error', 'message': 'Errors: ' + ret}
         return jsonify(response_object), 400
 
     try:
         # check for existing user
         user = User.query.filter(
-            or_(User.username == username, User.email == email)).first()
+            or_(User.username == username, User.email == email)
+        ).first()
         if not user:
             # add new user to db
-            new_user = User(
-                username=username,
-                email=email,
-                password=password
-            )
+            new_user = User(username=username, email=email, password=password)
             new_user.timezone = 'Europe/Paris'
             db.session.add(new_user)
             db.session.commit()
@@ -131,13 +125,13 @@ def register_user():
             response_object = {
                 'status': 'success',
                 'message': 'Successfully registered.',
-                'auth_token': auth_token.decode()
+                'auth_token': auth_token.decode(),
             }
             return jsonify(response_object), 201
         else:
             response_object = {
                 'status': 'error',
-                'message': 'Sorry. That user already exists.'
+                'message': 'Sorry. That user already exists.',
             }
             return jsonify(response_object), 400
     # handler errors
@@ -147,7 +141,7 @@ def register_user():
 
         response_object = {
             'status': 'error',
-            'message': 'Error. Please try again or contact the administrator.'
+            'message': 'Error. Please try again or contact the administrator.',
         }
         return jsonify(response_object), 500
 
@@ -202,10 +196,7 @@ def login_user():
     # get post data
     post_data = request.get_json()
     if not post_data:
-        response_object = {
-            'status': 'error',
-            'message': 'Invalid payload.'
-        }
+        response_object = {'status': 'error', 'message': 'Invalid payload.'}
         return jsonify(response_object), 400
     email = post_data.get('email')
     password = post_data.get('password')
@@ -218,13 +209,13 @@ def login_user():
             response_object = {
                 'status': 'success',
                 'message': 'Successfully logged in.',
-                'auth_token': auth_token.decode()
+                'auth_token': auth_token.decode(),
             }
             return jsonify(response_object), 200
         else:
             response_object = {
                 'status': 'error',
-                'message': 'Invalid credentials.'
+                'message': 'Invalid credentials.',
             }
             return jsonify(response_object), 404
     # handler errors
@@ -233,7 +224,7 @@ def login_user():
         appLog.error(e)
         response_object = {
             'status': 'error',
-            'message': 'Error. Please try again or contact the administrator.'
+            'message': 'Error. Please try again or contact the administrator.',
         }
         return jsonify(response_object), 500
 
@@ -291,19 +282,16 @@ def logout_user(user_id):
         if not isinstance(user_id, str):
             response_object = {
                 'status': 'success',
-                'message': 'Successfully logged out.'
+                'message': 'Successfully logged out.',
             }
             return jsonify(response_object), 200
         else:
-            response_object = {
-                'status': 'error',
-                'message': resp
-            }
+            response_object = {'status': 'error', 'message': resp}
             return jsonify(response_object), 401
     else:
         response_object = {
             'status': 'error',
-            'message': 'Provide a valid auth token.'
+            'message': 'Provide a valid auth token.',
         }
         return jsonify(response_object), 401
 
@@ -360,10 +348,7 @@ def get_user_status(user_id):
 
     """
     user = User.query.filter_by(id=user_id).first()
-    response_object = {
-        'status': 'success',
-        'data': user.serialize()
-    }
+    response_object = {'status': 'success', 'data': user.serialize()}
     return jsonify(response_object), 200
 
 
@@ -434,10 +419,7 @@ def edit_user(user_id):
     # get post data
     post_data = request.get_json()
     if not post_data:
-        response_object = {
-            'status': 'error',
-            'message': 'Invalid payload.'
-        }
+        response_object = {'status': 'error', 'message': 'Invalid payload.'}
         return jsonify(response_object), 400
     first_name = post_data.get('first_name')
     last_name = post_data.get('last_name')
@@ -452,7 +434,7 @@ def edit_user(user_id):
         if password_conf != password:
             response_object = {
                 'status': 'error',
-                'message': 'Password and password confirmation don\'t match.\n'
+                'message': 'Password and password confirmation don\'t match.\n',
             }
             return jsonify(response_object), 400
         else:
@@ -478,7 +460,7 @@ def edit_user(user_id):
 
         response_object = {
             'status': 'success',
-            'message': 'User profile updated.'
+            'message': 'User profile updated.',
         }
         return jsonify(response_object), 200
 
@@ -488,7 +470,7 @@ def edit_user(user_id):
         appLog.error(e)
         response_object = {
             'status': 'error',
-            'message': 'Error. Please try again or contact the administrator.'
+            'message': 'Error. Please try again or contact the administrator.',
         }
         return jsonify(response_object), 500
 
@@ -560,18 +542,12 @@ def edit_picture(user_id):
     file = request.files['file']
     filename = secure_filename(file.filename)
     dirpath = os.path.join(
-        current_app.config['UPLOAD_FOLDER'],
-        'pictures',
-        str(user_id)
+        current_app.config['UPLOAD_FOLDER'], 'pictures', str(user_id)
     )
     if not os.path.exists(dirpath):
         os.makedirs(dirpath)
     absolute_picture_path = os.path.join(dirpath, filename)
-    relative_picture_path = os.path.join(
-        'pictures',
-        str(user_id),
-        filename
-    )
+    relative_picture_path = os.path.join('pictures', str(user_id), filename)
 
     try:
         user = User.query.filter_by(id=user_id).first()
@@ -585,7 +561,7 @@ def edit_picture(user_id):
 
         response_object = {
             'status': 'success',
-            'message': 'User picture updated.'
+            'message': 'User picture updated.',
         }
         return jsonify(response_object), 200
 
@@ -594,7 +570,7 @@ def edit_picture(user_id):
         appLog.error(e)
         response_object = {
             'status': 'fail',
-            'message': 'Error during picture update.'
+            'message': 'Error during picture update.',
         }
         return jsonify(response_object), 500
 
@@ -637,9 +613,7 @@ def del_picture(user_id):
         user.picture = None
         db.session.commit()
 
-        response_object = {
-            'status': 'no content'
-        }
+        response_object = {'status': 'no content'}
         return jsonify(response_object), 204
 
     except (exc.IntegrityError, ValueError) as e:
@@ -647,6 +621,6 @@ def del_picture(user_id):
         appLog.error(e)
         response_object = {
             'status': 'fail',
-            'message': 'Error during picture deletion.'
+            'message': 'Error during picture deletion.',
         }
         return jsonify(response_object), 500

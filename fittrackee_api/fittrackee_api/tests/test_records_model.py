@@ -3,9 +3,7 @@ import datetime
 from fittrackee_api.activities.models import Record
 
 
-def test_record_model(
-    app,  user_1, sport_1_cycling, activity_cycling_user_1
-):
+def test_record_model(app, user_1, sport_1_cycling, activity_cycling_user_1):
     record_ld = Record.query.filter_by(
         user_id=activity_cycling_user_1.user_id,
         sport_id=activity_cycling_user_1.sport_id,
@@ -29,7 +27,7 @@ def test_record_model(
 
 
 def test_record_model_none_value(
-    app,  user_1, sport_1_cycling, activity_cycling_user_1
+    app, user_1, sport_1_cycling, activity_cycling_user_1
 ):
     record_ld = Record.query.filter_by(
         user_id=activity_cycling_user_1.user_id,
@@ -49,9 +47,7 @@ def test_record_model_none_value(
     assert record_serialize['value'] is None
 
 
-def test_add_as_records(
-    app,  user_1, sport_1_cycling, activity_cycling_user_1
-):
+def test_add_as_records(app, user_1, sport_1_cycling, activity_cycling_user_1):
     record_as = Record.query.filter_by(
         user_id=activity_cycling_user_1.user_id,
         sport_id=activity_cycling_user_1.sport_id,
@@ -67,9 +63,7 @@ def test_add_as_records(
     assert isinstance(record_serialize.get('value'), float)
 
 
-def test_add_fd_records(
-    app,  user_1, sport_1_cycling, activity_cycling_user_1
-):
+def test_add_fd_records(app, user_1, sport_1_cycling, activity_cycling_user_1):
     record_fd = Record.query.filter_by(
         user_id=activity_cycling_user_1.user_id,
         sport_id=activity_cycling_user_1.sport_id,
@@ -85,9 +79,7 @@ def test_add_fd_records(
     assert isinstance(record_serialize.get('value'), float)
 
 
-def test_add_ld_records(
-    app,  user_1, sport_1_cycling, activity_cycling_user_1
-):
+def test_add_ld_records(app, user_1, sport_1_cycling, activity_cycling_user_1):
     record_ld = Record.query.filter_by(
         user_id=activity_cycling_user_1.user_id,
         sport_id=activity_cycling_user_1.sport_id,
@@ -104,7 +96,7 @@ def test_add_ld_records(
 
 
 def test_add_ld_records_zero(
-    app,  user_1, sport_1_cycling, activity_cycling_user_1
+    app, user_1, sport_1_cycling, activity_cycling_user_1
 ):
     record_ld = Record.query.filter_by(
         user_id=activity_cycling_user_1.user_id,
@@ -123,7 +115,7 @@ def test_add_ld_records_zero(
 
 
 def test_add_ms_records_no_value(
-    app,  user_1, sport_1_cycling, activity_cycling_user_1
+    app, user_1, sport_1_cycling, activity_cycling_user_1
 ):
     record_ms = Record.query.filter_by(
         user_id=activity_cycling_user_1.user_id,

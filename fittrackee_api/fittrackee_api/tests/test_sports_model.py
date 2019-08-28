@@ -10,7 +10,7 @@ def test_sport_model(app, sport_1_cycling):
 
 
 def test_sport_model_with_activity(
-        app, sport_1_cycling, user_1, activity_cycling_user_1
+    app, sport_1_cycling, user_1, activity_cycling_user_1
 ):
     assert 1 == sport_1_cycling.id
     assert 'Cycling' == sport_1_cycling.label

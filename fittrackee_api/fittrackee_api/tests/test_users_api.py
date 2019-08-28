@@ -18,20 +18,16 @@ def test_single_user(app, user_1):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     response = client.get(
         f'/api/users/{user_1.id}',
         content_type='application/json',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -55,27 +51,27 @@ def test_single_user(app, user_1):
 
 
 def test_single_user_with_activities(
-        app, user_1, sport_1_cycling, sport_2_running,
-        activity_cycling_user_1, activity_running_user_1
+    app,
+    user_1,
+    sport_1_cycling,
+    sport_2_running,
+    activity_cycling_user_1,
+    activity_running_user_1,
 ):
     """=> Get single user details"""
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     response = client.get(
         f'/api/users/{user_1.id}',
         content_type='application/json',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -103,20 +99,16 @@ def test_single_user_no_id(app, user_1):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     response = client.get(
         '/api/users/blah',
         content_type='application/json',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -130,20 +122,16 @@ def test_single_user_wrong_id(app, user_1):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     response = client.get(
         '/api/users/99999999999',
         content_type='application/json',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -158,19 +146,15 @@ def test_users_list(app, user_1, user_2):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     response = client.get(
         '/api/users',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 

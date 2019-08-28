@@ -17,7 +17,7 @@ def get_weather(point):
             point.latitude,
             point.longitude,
             time=point_time,
-            units='si'
+            units='si',
         )
         weather = forecast.currently()
         return {

@@ -23,19 +23,19 @@ class User(db.Model):
     bio = db.Column(db.String(200), nullable=True)
     picture = db.Column(db.String(255), nullable=True)
     timezone = db.Column(db.String(50), nullable=True)
-    activities = db.relationship('Activity',
-                                 lazy=True,
-                                 backref=db.backref('users', lazy='joined'))
-    records = db.relationship('Record',
-                              lazy=True,
-                              backref=db.backref('users', lazy='joined'))
+    activities = db.relationship(
+        'Activity', lazy=True, backref=db.backref('users', lazy='joined')
+    )
+    records = db.relationship(
+        'Record', lazy=True, backref=db.backref('users', lazy='joined')
+    )
 
     def __repr__(self):
         return f'<User {self.username!r}>'
 
     def __init__(
-            self, username, email, password,
-            created_at=datetime.datetime.utcnow()):
+        self, username, email, password, created_at=datetime.datetime.utcnow()
+    ):
         self.username = username
         self.email = email
         self.password = bcrypt.generate_password_hash(
@@ -52,17 +52,18 @@ class User(db.Model):
         """
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(
+                'exp': datetime.datetime.utcnow()
+                + datetime.timedelta(
                     days=current_app.config.get('TOKEN_EXPIRATION_DAYS'),
-                    seconds=current_app.config.get('TOKEN_EXPIRATION_SECONDS')
+                    seconds=current_app.config.get('TOKEN_EXPIRATION_SECONDS'),
                 ),
                 'iat': datetime.datetime.utcnow(),
-                'sub': user_id
+                'sub': user_id,
             }
             return jwt.encode(
                 payload,
                 current_app.config.get('SECRET_KEY'),
-                algorithm='HS256'
+                algorithm='HS256',
             )
         except Exception as e:
             return e
@@ -76,8 +77,8 @@ class User(db.Model):
         """
         try:
             payload = jwt.decode(
-                auth_token,
-                current_app.config.get('SECRET_KEY'))
+                auth_token, current_app.config.get('SECRET_KEY')
+            )
             return payload['sub']
         except jwt.ExpiredSignatureError:
             return 'Signature expired. Please log in again.'
@@ -91,14 +92,13 @@ class User(db.Model):
         sports = []
         total = (None, None)
         if nb_activity > 0:
-            sports = db.session.query(
-                func.count(Activity.sport_id)
-            ).group_by(
-                Activity.sport_id
-            ).all()
+            sports = (
+                db.session.query(func.count(Activity.sport_id))
+                .group_by(Activity.sport_id)
+                .all()
+            )
             total = db.session.query(
-                func.sum(Activity.distance),
-                func.sum(Activity.duration)
+                func.sum(Activity.distance), func.sum(Activity.duration)
             ).first()
         return {
             'id': self.id,

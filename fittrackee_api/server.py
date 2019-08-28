@@ -24,9 +24,8 @@ def drop_db():
 def initdata():
     """Init the database."""
     admin = User(
-        username='admin',
-        email='admin@example.com',
-        password='mpwoadmin')
+        username='admin', email='admin@example.com', password='mpwoadmin'
+    )
     admin.admin = True
     admin.timezone = 'Europe/Paris'
     db.session.add(admin)
@@ -61,9 +60,11 @@ def initdata():
 @app.cli.command()
 def recalculate():
     print("Starting activities data refresh")
-    activities = Activity.query.filter(Activity.gpx != None).order_by(  # noqa
-        Activity.activity_date.asc()
-    ).all()
+    activities = (
+        Activity.query.filter(Activity.gpx != None)
+        .order_by(Activity.activity_date.asc())  # noqa
+        .all()
+    )
     if len(activities) == 0:
         print('➡️  no activities to upgrade.')
         return None

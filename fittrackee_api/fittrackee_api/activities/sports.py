@@ -87,9 +87,7 @@ def get_sports(auth_user_id):
     sports = Sport.query.order_by(Sport.id).all()
     response_object = {
         'status': 'success',
-        'data': {
-            'sports': [sport.serialize() for sport in sports]
-        }
+        'data': {'sports': [sport.serialize() for sport in sports]},
     }
     return jsonify(response_object), 200
 
@@ -161,23 +159,17 @@ def get_sport(auth_user_id, sport_id):
     if sport:
         response_object = {
             'status': 'success',
-            'data': {
-                'sports': [sport.serialize()]
-            }
+            'data': {'sports': [sport.serialize()]},
         }
         code = 200
     else:
-        response_object = {
-            'status': 'not found',
-            'data': {
-                'sports': []
-            }
-        }
+        response_object = {'status': 'not found', 'data': {'sports': []}}
         code = 404
     return jsonify(response_object), code
 
 
 # no administration - no documentation for now
+
 
 @sports_blueprint.route('/sports', methods=['POST'])
 @authenticate_as_admin
@@ -185,10 +177,7 @@ def post_sport(auth_user_id):
     """Post a sport"""
     sport_data = request.get_json()
     if not sport_data or sport_data.get('label') is None:
-        response_object = {
-            'status': 'error',
-            'message': 'Invalid payload.'
-        }
+        response_object = {'status': 'error', 'message': 'Invalid payload.'}
         return jsonify(response_object), 400
 
     try:
@@ -197,9 +186,7 @@ def post_sport(auth_user_id):
         db.session.commit()
         response_object = {
             'status': 'created',
-            'data': {
-                'sports': [new_sport.serialize()]
-            }
+            'data': {'sports': [new_sport.serialize()]},
         }
         code = 201
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
@@ -207,7 +194,7 @@ def post_sport(auth_user_id):
         appLog.error(e)
         response_object = {
             'status': 'error',
-            'message': 'Error. Please try again or contact the administrator.'
+            'message': 'Error. Please try again or contact the administrator.',
         }
         code = 500
     return jsonify(response_object), code
@@ -219,10 +206,7 @@ def update_sport(auth_user_id, sport_id):
     """Update a sport"""
     sport_data = request.get_json()
     if not sport_data or sport_data.get('label') is None:
-        response_object = {
-            'status': 'error',
-            'message': 'Invalid payload.'
-        }
+        response_object = {'status': 'error', 'message': 'Invalid payload.'}
         return jsonify(response_object), 400
 
     sports_list = []
@@ -231,23 +215,16 @@ def update_sport(auth_user_id, sport_id):
         if sport:
             sport.label = sport_data.get('label')
             db.session.commit()
-            sports_list.append({
-                'id': sport.id,
-                'label': sport.label
-            })
+            sports_list.append({'id': sport.id, 'label': sport.label})
             response_object = {
                 'status': 'success',
-                'data': {
-                    'sports': sports_list
-                }
+                'data': {'sports': sports_list},
             }
             code = 200
         else:
             response_object = {
                 'status': 'not found',
-                'data': {
-                    'sports': sports_list
-                }
+                'data': {'sports': sports_list},
             }
             code = 404
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
@@ -255,7 +232,7 @@ def update_sport(auth_user_id, sport_id):
         appLog.error(e)
         response_object = {
             'status': 'error',
-            'message': 'Error. Please try again or contact the administrator.'
+            'message': 'Error. Please try again or contact the administrator.',
         }
         code = 500
     return jsonify(response_object), code
@@ -270,24 +247,17 @@ def delete_sport(auth_user_id, sport_id):
         if sport:
             db.session.delete(sport)
             db.session.commit()
-            response_object = {
-                'status': 'no content'
-            }
+            response_object = {'status': 'no content'}
             code = 204
         else:
-            response_object = {
-                'status': 'not found',
-                'data': {
-                    'sports': []
-                }
-            }
+            response_object = {'status': 'not found', 'data': {'sports': []}}
             code = 404
     except exc.IntegrityError as e:
         db.session.rollback()
         appLog.error(e)
         response_object = {
             'status': 'error',
-            'message': 'Error. Associated activities exist.'
+            'message': 'Error. Associated activities exist.',
         }
         code = 500
     except (exc.OperationalError, ValueError) as e:
@@ -295,7 +265,7 @@ def delete_sport(auth_user_id, sport_id):
         appLog.error(e)
         response_object = {
             'status': 'error',
-            'message': 'Error. Please try again or contact the administrator.'
+            'message': 'Error. Please try again or contact the administrator.',
         }
         code = 500
     return jsonify(response_object), code

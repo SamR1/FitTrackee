@@ -21,42 +21,38 @@ record_types = [
 
 def update_records(user_id, sport_id, connection, session):
     record_table = Record.__table__
-    new_records = Activity.get_user_activity_records(
-        user_id,
-        sport_id)
+    new_records = Activity.get_user_activity_records(user_id, sport_id)
     for record_type, record_data in new_records.items():
         if record_data['record_value']:
             record = Record.query.filter_by(
-                        user_id=user_id,
-                        sport_id=sport_id,
-                        record_type=record_type,
+                user_id=user_id, sport_id=sport_id, record_type=record_type
             ).first()
             if record:
                 value = convert_value_to_integer(
                     record_type, record_data['record_value']
                 )
-                connection.execute(record_table.update().where(
-                    record_table.c.id == record.id,
-                ).values(
-                    value=value,
-                    activity_id=record_data['activity'].id,
-                    activity_date=record_data['activity'].activity_date,
-                ))
+                connection.execute(
+                    record_table.update()
+                    .where(record_table.c.id == record.id)
+                    .values(
+                        value=value,
+                        activity_id=record_data['activity'].id,
+                        activity_date=record_data['activity'].activity_date,
+                    )
+                )
             else:
                 new_record = Record(
-                    activity=record_data['activity'],
-                    record_type=record_type
+                    activity=record_data['activity'], record_type=record_type
                 )
                 new_record.value = record_data['record_value']
                 session.add(new_record)
         else:
-            connection.execute(record_table.delete().where(
-                record_table.c.user_id == user_id,
-            ).where(
-                record_table.c.sport_id == sport_id,
-            ).where(
-                record_table.c.record_type == record_type,
-            ))
+            connection.execute(
+                record_table.delete()
+                .where(record_table.c.user_id == user_id)
+                .where(record_table.c.sport_id == sport_id)
+                .where(record_table.c.record_type == record_type)
+            )
 
 
 class Sport(db.Model):
@@ -65,12 +61,12 @@ class Sport(db.Model):
     label = db.Column(db.String(50), unique=True, nullable=False)
     img = db.Column(db.String(255), unique=True, nullable=True)
     is_default = db.Column(db.Boolean, default=False, nullable=False)
-    activities = db.relationship('Activity',
-                                 lazy=True,
-                                 backref=db.backref('sports', lazy='joined'))
-    records = db.relationship('Record',
-                              lazy=True,
-                              backref=db.backref('sports', lazy='joined'))
+    activities = db.relationship(
+        'Activity', lazy=True, backref=db.backref('sports', lazy='joined')
+    )
+    records = db.relationship(
+        'Record', lazy=True, backref=db.backref('sports', lazy='joined')
+    )
 
     def __repr__(self):
         return f'<Sport {self.label!r}>'
@@ -83,62 +79,53 @@ class Sport(db.Model):
             'id': self.id,
             'label': self.label,
             'img': self.img,
-            '_can_be_deleted':
-                len(self.activities) == 0 and not self.is_default
+            '_can_be_deleted': len(self.activities) == 0
+            and not self.is_default,
         }
 
 
 class Activity(db.Model):
     __tablename__ = "activities"
-    id = db.Column(
-        db.Integer,
-        primary_key=True,
-        autoincrement=True)
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id'),
-        nullable=False)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     sport_id = db.Column(
-        db.Integer,
-        db.ForeignKey('sports.id'),
-        nullable=False)
+        db.Integer, db.ForeignKey('sports.id'), nullable=False
+    )
     title = db.Column(db.String(255), nullable=True)
     gpx = db.Column(db.String(255), nullable=True)
-    creation_date = db.Column(
-        db.DateTime, default=datetime.datetime.utcnow)
+    creation_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     modification_date = db.Column(
-        db.DateTime, onupdate=datetime.datetime.utcnow)
+        db.DateTime, onupdate=datetime.datetime.utcnow
+    )
     activity_date = db.Column(db.DateTime, nullable=False)
     duration = db.Column(db.Interval, nullable=False)
     pauses = db.Column(db.Interval, nullable=True)
     moving = db.Column(db.Interval, nullable=True)
-    distance = db.Column(db.Numeric(6, 3), nullable=True)    # kilometers
-    min_alt = db.Column(db.Numeric(6, 2), nullable=True)     # meters
-    max_alt = db.Column(db.Numeric(6, 2), nullable=True)     # meters
-    descent = db.Column(db.Numeric(7, 2), nullable=True)     # meters
-    ascent = db.Column(db.Numeric(7, 2), nullable=True)      # meters
-    max_speed = db.Column(db.Numeric(6, 2), nullable=True)   # km/h
-    ave_speed = db.Column(db.Numeric(6, 2), nullable=True)   # km/h
+    distance = db.Column(db.Numeric(6, 3), nullable=True)  # kilometers
+    min_alt = db.Column(db.Numeric(6, 2), nullable=True)  # meters
+    max_alt = db.Column(db.Numeric(6, 2), nullable=True)  # meters
+    descent = db.Column(db.Numeric(7, 2), nullable=True)  # meters
+    ascent = db.Column(db.Numeric(7, 2), nullable=True)  # meters
+    max_speed = db.Column(db.Numeric(6, 2), nullable=True)  # km/h
+    ave_speed = db.Column(db.Numeric(6, 2), nullable=True)  # km/h
     bounds = db.Column(postgresql.ARRAY(db.Float), nullable=True)
     map = db.Column(db.String(255), nullable=True)
     map_id = db.Column(db.String(50), nullable=True)
     weather_start = db.Column(JSON, nullable=True)
     weather_end = db.Column(JSON, nullable=True)
     notes = db.Column(db.String(500), nullable=True)
-    segments = db.relationship('ActivitySegment',
-                               lazy=True,
-                               cascade='all, delete',
-                               backref=db.backref(
-                                   'activities',
-                                   lazy='joined',
-                                   single_parent=True))
-    records = db.relationship('Record',
-                              lazy=True,
-                              cascade='all, delete',
-                              backref=db.backref(
-                                  'activities',
-                                  lazy='joined',
-                                  single_parent=True))
+    segments = db.relationship(
+        'ActivitySegment',
+        lazy=True,
+        cascade='all, delete',
+        backref=db.backref('activities', lazy='joined', single_parent=True),
+    )
+    records = db.relationship(
+        'Record',
+        lazy=True,
+        cascade='all, delete',
+        backref=db.backref('activities', lazy='joined', single_parent=True),
+    )
 
     def __str__(self):
         return f'<Activity \'{self.sports.label}\' - {self.activity_date}>'
@@ -162,58 +149,80 @@ class Activity(db.Model):
         max_speed_from = params.get('max_speed_from') if params else None
         max_speed_to = params.get('max_speed_to') if params else None
         sport_id = params.get('sport_id') if params else None
-        previous_activity = Activity.query.filter(
-            Activity.id != self.id,
-            Activity.user_id == self.user_id,
-            Activity.sport_id == sport_id if sport_id else True,
-            Activity.activity_date <= self.activity_date,
-            Activity.activity_date >= datetime.datetime.strptime(
-                date_from, '%Y-%m-%d'
-            ) if date_from else True,
-            Activity.activity_date <= datetime.datetime.strptime(
-                date_to, '%Y-%m-%d'
-            ) if date_to else True,
-            Activity.distance >= int(distance_from) if distance_from else True,
-            Activity.distance <= int(distance_to) if distance_to else True,
-            Activity.duration >= convert_in_duration(duration_from)
-            if duration_from else True,
-            Activity.duration <= convert_in_duration(duration_to)
-            if duration_to else True,
-            Activity.ave_speed >= float(ave_speed_from)
-            if ave_speed_from else True,
-            Activity.ave_speed <= float(ave_speed_to)
-            if ave_speed_to else True,
-            Activity.max_speed >= float(max_speed_from)
-            if max_speed_from else True,
-            Activity.max_speed <= float(max_speed_to)
-            if max_speed_to else True,
-        ).order_by(
-            Activity.activity_date.desc()
-        ).first()
-        next_activity = Activity.query.filter(
-            Activity.id != self.id,
-            Activity.user_id == self.user_id,
-            Activity.sport_id == sport_id if sport_id else True,
-            Activity.activity_date >= self.activity_date,
-            Activity.activity_date >= datetime.datetime.strptime(
-                date_from, '%Y-%m-%d'
-            ) if date_from else True,
-            Activity.activity_date <= datetime.datetime.strptime(
-                date_to, '%Y-%m-%d'
-            ) if date_to else True,
-            Activity.distance >= int(distance_from) if distance_from else True,
-            Activity.distance <= int(distance_to) if distance_to else True,
-            Activity.duration >= convert_in_duration(duration_from)
-            if duration_from else True,
-            Activity.duration <= convert_in_duration(duration_to)
-            if duration_to else True,
-            Activity.ave_speed >= float(ave_speed_from)
-            if ave_speed_from else True,
-            Activity.ave_speed <= float(ave_speed_to)
-            if ave_speed_to else True,
-        ).order_by(
-            Activity.activity_date.asc()
-        ).first()
+        previous_activity = (
+            Activity.query.filter(
+                Activity.id != self.id,
+                Activity.user_id == self.user_id,
+                Activity.sport_id == sport_id if sport_id else True,
+                Activity.activity_date <= self.activity_date,
+                Activity.activity_date
+                >= datetime.datetime.strptime(date_from, '%Y-%m-%d')
+                if date_from
+                else True,
+                Activity.activity_date
+                <= datetime.datetime.strptime(date_to, '%Y-%m-%d')
+                if date_to
+                else True,
+                Activity.distance >= int(distance_from)
+                if distance_from
+                else True,
+                Activity.distance <= int(distance_to) if distance_to else True,
+                Activity.duration >= convert_in_duration(duration_from)
+                if duration_from
+                else True,
+                Activity.duration <= convert_in_duration(duration_to)
+                if duration_to
+                else True,
+                Activity.ave_speed >= float(ave_speed_from)
+                if ave_speed_from
+                else True,
+                Activity.ave_speed <= float(ave_speed_to)
+                if ave_speed_to
+                else True,
+                Activity.max_speed >= float(max_speed_from)
+                if max_speed_from
+                else True,
+                Activity.max_speed <= float(max_speed_to)
+                if max_speed_to
+                else True,
+            )
+            .order_by(Activity.activity_date.desc())
+            .first()
+        )
+        next_activity = (
+            Activity.query.filter(
+                Activity.id != self.id,
+                Activity.user_id == self.user_id,
+                Activity.sport_id == sport_id if sport_id else True,
+                Activity.activity_date >= self.activity_date,
+                Activity.activity_date
+                >= datetime.datetime.strptime(date_from, '%Y-%m-%d')
+                if date_from
+                else True,
+                Activity.activity_date
+                <= datetime.datetime.strptime(date_to, '%Y-%m-%d')
+                if date_to
+                else True,
+                Activity.distance >= int(distance_from)
+                if distance_from
+                else True,
+                Activity.distance <= int(distance_to) if distance_to else True,
+                Activity.duration >= convert_in_duration(duration_from)
+                if duration_from
+                else True,
+                Activity.duration <= convert_in_duration(duration_to)
+                if duration_to
+                else True,
+                Activity.ave_speed >= float(ave_speed_from)
+                if ave_speed_from
+                else True,
+                Activity.ave_speed <= float(ave_speed_to)
+                if ave_speed_to
+                else True,
+            )
+            .order_by(Activity.activity_date.asc())
+            .first()
+        )
         return {
             "id": self.id,
             "user_id": self.user_id,
@@ -233,59 +242,67 @@ class Activity(db.Model):
             "max_speed": float(self.max_speed) if self.max_speed else None,
             "ave_speed": float(self.ave_speed) if self.ave_speed else None,
             "with_gpx": self.gpx is not None,
-            "bounds": [float(bound) for bound in self.bounds] if self.bounds else [],  # noqa
-            "previous_activity": previous_activity.id if previous_activity else None,  # noqa
+            "bounds": [float(bound) for bound in self.bounds]
+            if self.bounds
+            else [],  # noqa
+            "previous_activity": previous_activity.id
+            if previous_activity
+            else None,  # noqa
             "next_activity": next_activity.id if next_activity else None,
             "segments": [segment.serialize() for segment in self.segments],
             "records": [record.serialize() for record in self.records],
             "map": self.map_id if self.map else None,
             "weather_start": self.weather_start,
             "weather_end": self.weather_end,
-            "notes": self.notes
+            "notes": self.notes,
         }
 
     @classmethod
     def get_user_activity_records(cls, user_id, sport_id, as_integer=False):
         record_types_columns = {
             'AS': 'ave_speed',  # 'Average speed'
-            'FD': 'distance',   # 'Farthest Distance'
-            'LD': 'moving',     # 'Longest Duration'
+            'FD': 'distance',  # 'Farthest Distance'
+            'LD': 'moving',  # 'Longest Duration'
             'MS': 'max_speed',  # 'Max speed'
         }
         records = {}
         for record_type, column in record_types_columns.items():
             column_sorted = getattr(getattr(Activity, column), 'desc')()
-            record_activity = Activity.query.filter_by(
-                user_id=user_id,
-                sport_id=sport_id,
-            ).order_by(
-                column_sorted,
-                Activity.activity_date,
-            ).first()
+            record_activity = (
+                Activity.query.filter_by(user_id=user_id, sport_id=sport_id)
+                .order_by(column_sorted, Activity.activity_date)
+                .first()
+            )
             records[record_type] = dict(
-                record_value=(getattr(record_activity, column)
-                              if record_activity else None),
-                activity=record_activity)
+                record_value=(
+                    getattr(record_activity, column)
+                    if record_activity
+                    else None
+                ),
+                activity=record_activity,
+            )
         return records
 
 
 @listens_for(Activity, 'after_insert')
 def on_activity_insert(mapper, connection, activity):
-
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session, context):
-        update_records(activity.user_id, activity.sport_id, connection, session)  # noqa
+        update_records(
+            activity.user_id, activity.sport_id, connection, session
+        )  # noqa
 
 
 @listens_for(Activity, 'after_update')
 def on_activity_update(mapper, connection, activity):
-    if object_session(activity).is_modified(activity, include_collections=True):  # noqa
+    if object_session(activity).is_modified(
+        activity, include_collections=True
+    ):  # noqa
+
         @listens_for(db.Session, 'after_flush', once=True)
         def receive_after_flush(session, context):
             sports_list = [activity.sport_id]
-            records = Record.query.filter_by(
-                activity_id=activity.id,
-            ).all()
+            records = Record.query.filter_by(activity_id=activity.id).all()
             for rec in records:
                 if rec.sport_id not in sports_list:
                     sports_list.append(rec.sport_id)
@@ -295,7 +312,6 @@ def on_activity_update(mapper, connection, activity):
 
 @listens_for(Activity, 'after_delete')
 def on_activity_delete(mapper, connection, old_record):
-
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session, context):
         if old_record.map:
@@ -307,26 +323,25 @@ def on_activity_delete(mapper, connection, old_record):
 class ActivitySegment(db.Model):
     __tablename__ = "activity_segments"
     activity_id = db.Column(
-        db.Integer,
-        db.ForeignKey('activities.id'),
-        primary_key=True)
-    segment_id = db.Column(
-        db.Integer,
-        primary_key=True)
+        db.Integer, db.ForeignKey('activities.id'), primary_key=True
+    )
+    segment_id = db.Column(db.Integer, primary_key=True)
     duration = db.Column(db.Interval, nullable=False)
     pauses = db.Column(db.Interval, nullable=True)
     moving = db.Column(db.Interval, nullable=True)
-    distance = db.Column(db.Numeric(6, 3), nullable=True)    # kilometers
-    min_alt = db.Column(db.Numeric(6, 2), nullable=True)     # meters
-    max_alt = db.Column(db.Numeric(6, 2), nullable=True)     # meters
-    descent = db.Column(db.Numeric(7, 2), nullable=True)     # meters
-    ascent = db.Column(db.Numeric(7, 2), nullable=True)      # meters
-    max_speed = db.Column(db.Numeric(6, 2), nullable=True)   # km/h
-    ave_speed = db.Column(db.Numeric(6, 2), nullable=True)   # km/h
+    distance = db.Column(db.Numeric(6, 3), nullable=True)  # kilometers
+    min_alt = db.Column(db.Numeric(6, 2), nullable=True)  # meters
+    max_alt = db.Column(db.Numeric(6, 2), nullable=True)  # meters
+    descent = db.Column(db.Numeric(7, 2), nullable=True)  # meters
+    ascent = db.Column(db.Numeric(7, 2), nullable=True)  # meters
+    max_speed = db.Column(db.Numeric(6, 2), nullable=True)  # km/h
+    ave_speed = db.Column(db.Numeric(6, 2), nullable=True)  # km/h
 
     def __str__(self):
-        return (f'<Segment \'{self.segment_id}\' '
-                f'for activity \'{self.activity_id}\'>')
+        return (
+            f'<Segment \'{self.segment_id}\' '
+            f'for activity \'{self.activity_id}\'>'
+        )
 
     def __init__(self, segment_id, activity_id):
         self.segment_id = segment_id
@@ -345,38 +360,35 @@ class ActivitySegment(db.Model):
             "descent": float(self.descent) if self.descent else None,
             "ascent": float(self.ascent) if self.ascent else None,
             "max_speed": float(self.max_speed) if self.max_speed else None,
-            "ave_speed": float(self.ave_speed) if self.ave_speed else None
+            "ave_speed": float(self.ave_speed) if self.ave_speed else None,
         }
 
 
 class Record(db.Model):
     __tablename__ = "records"
-    __table_args__ = (db.UniqueConstraint(
-        'user_id', 'sport_id', 'record_type', name='user_sports_records'),)
-    id = db.Column(
-        db.Integer,
-        primary_key=True,
-        autoincrement=True)
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id'),
-        nullable=False)
+    __table_args__ = (
+        db.UniqueConstraint(
+            'user_id', 'sport_id', 'record_type', name='user_sports_records'
+        ),
+    )
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     sport_id = db.Column(
-        db.Integer,
-        db.ForeignKey('sports.id'),
-        nullable=False)
+        db.Integer, db.ForeignKey('sports.id'), nullable=False
+    )
     activity_id = db.Column(
-        db.Integer,
-        db.ForeignKey('activities.id'),
-        nullable=False)
+        db.Integer, db.ForeignKey('activities.id'), nullable=False
+    )
     record_type = db.Column(Enum(*record_types, name="record_types"))
     activity_date = db.Column(db.DateTime, nullable=False)
     _value = db.Column("value", db.Integer, nullable=True)
 
     def __str__(self):
-        return (f'<Record {self.sports.label} - '
-                f'{self.record_type} - '
-                f"{self.activity_date.strftime('%Y-%m-%d')}>")
+        return (
+            f'<Record {self.sports.label} - '
+            f'{self.record_type} - '
+            f"{self.activity_date.strftime('%Y-%m-%d')}>"
+        )
 
     def __init__(self, activity, record_type):
         self.user_id = activity.user_id
@@ -421,19 +433,19 @@ class Record(db.Model):
 
 @listens_for(Record, 'after_delete')
 def on_record_delete(mapper, connection, old_record):
-
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session, context):
         activity = old_record.activities
         new_records = Activity.get_user_activity_records(
-            activity.user_id,
-            activity.sport_id)
+            activity.user_id, activity.sport_id
+        )
         for record_type, record_data in new_records.items():
-            if record_data['record_value'] \
-                    and record_type == old_record.record_type:
+            if (
+                record_data['record_value']
+                and record_type == old_record.record_type
+            ):
                 new_record = Record(
-                    activity=record_data['activity'],
-                    record_type=record_type
+                    activity=record_data['activity'], record_type=record_type
                 )
                 new_record.value = record_data['record_value']
                 session.add(new_record)

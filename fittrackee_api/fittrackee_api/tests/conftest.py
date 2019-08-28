@@ -50,9 +50,7 @@ def user_1():
 @pytest.fixture()
 def user_1_admin():
     admin = User(
-        username='admin',
-        email='admin@example.com',
-        password='12345678'
+        username='admin', email='admin@example.com', password='12345678'
     )
     admin.admin = True
     db.session.add(admin)
@@ -114,7 +112,7 @@ def activity_cycling_user_1():
         sport_id=1,
         activity_date=datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
         distance=10,
-        duration=datetime.timedelta(seconds=1024)
+        duration=datetime.timedelta(seconds=1024),
     )
     activity.max_speed = 10
     activity.ave_speed = 10
@@ -126,10 +124,7 @@ def activity_cycling_user_1():
 
 @pytest.fixture()
 def activity_cycling_user_1_segment():
-    activity_segment = ActivitySegment(
-        activity_id=1,
-        segment_id=0
-    )
+    activity_segment = ActivitySegment(activity_id=1, segment_id=0)
     activity_segment.duration = datetime.timedelta(seconds=6000)
     activity_segment.moving = activity_segment.duration
     activity_segment.distance = 5
@@ -145,7 +140,7 @@ def activity_running_user_1():
         sport_id=2,
         activity_date=datetime.datetime.strptime('01/04/2018', '%d/%m/%Y'),
         distance=12,
-        duration=datetime.timedelta(seconds=6000)
+        duration=datetime.timedelta(seconds=6000),
     )
     activity.moving = activity.duration
     db.session.add(activity)
@@ -160,7 +155,7 @@ def seven_activities_user_1():
         sport_id=1,
         activity_date=datetime.datetime.strptime('20/03/2017', '%d/%m/%Y'),
         distance=5,
-        duration=datetime.timedelta(seconds=1024)
+        duration=datetime.timedelta(seconds=1024),
     )
     activity.ave_speed = float(activity.distance) / (1024 / 3600)
     activity.moving = activity.duration
@@ -171,7 +166,7 @@ def seven_activities_user_1():
         sport_id=1,
         activity_date=datetime.datetime.strptime('01/06/2017', '%d/%m/%Y'),
         distance=10,
-        duration=datetime.timedelta(seconds=3456)
+        duration=datetime.timedelta(seconds=3456),
     )
     activity.ave_speed = float(activity.distance) / (3456 / 3600)
     activity.moving = activity.duration
@@ -182,7 +177,7 @@ def seven_activities_user_1():
         sport_id=1,
         activity_date=datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
         distance=10,
-        duration=datetime.timedelta(seconds=1024)
+        duration=datetime.timedelta(seconds=1024),
     )
     activity.ave_speed = float(activity.distance) / (1024 / 3600)
     activity.moving = activity.duration
@@ -193,7 +188,7 @@ def seven_activities_user_1():
         sport_id=1,
         activity_date=datetime.datetime.strptime('23/02/2018', '%d/%m/%Y'),
         distance=1,
-        duration=datetime.timedelta(seconds=600)
+        duration=datetime.timedelta(seconds=600),
     )
     activity.ave_speed = float(activity.distance) / (600 / 3600)
     activity.moving = activity.duration
@@ -204,7 +199,7 @@ def seven_activities_user_1():
         sport_id=1,
         activity_date=datetime.datetime.strptime('23/02/2018', '%d/%m/%Y'),
         distance=10,
-        duration=datetime.timedelta(seconds=1000)
+        duration=datetime.timedelta(seconds=1000),
     )
     activity.ave_speed = float(activity.distance) / (1000 / 3600)
     activity.moving = activity.duration
@@ -215,7 +210,7 @@ def seven_activities_user_1():
         sport_id=1,
         activity_date=datetime.datetime.strptime('01/04/2018', '%d/%m/%Y'),
         distance=8,
-        duration=datetime.timedelta(seconds=6000)
+        duration=datetime.timedelta(seconds=6000),
     )
     activity.ave_speed = float(activity.distance) / (6000 / 3600)
     activity.moving = activity.duration
@@ -226,7 +221,7 @@ def seven_activities_user_1():
         sport_id=1,
         activity_date=datetime.datetime.strptime('09/05/2018', '%d/%m/%Y'),
         distance=10,
-        duration=datetime.timedelta(seconds=3000)
+        duration=datetime.timedelta(seconds=3000),
     )
     activity.ave_speed = float(activity.distance) / (3000 / 3600)
     activity.moving = activity.duration
@@ -242,7 +237,7 @@ def activity_cycling_user_2():
         sport_id=1,
         activity_date=datetime.datetime.strptime('23/01/2018', '%d/%m/%Y'),
         distance=15,
-        duration=datetime.timedelta(seconds=3600)
+        duration=datetime.timedelta(seconds=3600),
     )
     activity.moving = activity.duration
     db.session.add(activity)

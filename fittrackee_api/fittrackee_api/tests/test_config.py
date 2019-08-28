@@ -6,7 +6,8 @@ def test_development_config(app):
     assert app.config['DEBUG']
     assert not app.config['TESTING']
     assert app.config['SQLALCHEMY_DATABASE_URI'] == os.environ.get(
-        'DATABASE_URL')
+        'DATABASE_URL'
+    )
 
 
 def test_testing_config(app):
@@ -15,4 +16,5 @@ def test_testing_config(app):
     assert app.config['TESTING']
     assert not app.config['PRESERVE_CONTEXT_ON_EXCEPTION']
     assert app.config['SQLALCHEMY_DATABASE_URI'] == os.environ.get(
-        'DATABASE_TEST_URL')
+        'DATABASE_TEST_URL'
+    )

@@ -47,12 +47,14 @@ def verify_extension(file_type, req):
         else 'PICTURE_ALLOWED_EXTENSIONS'
     )
 
-    if not ('.' in file.filename and
-            file.filename.rsplit('.', 1)[1].lower() in
-            current_app.config.get(allowed_extensions)):
+    if not (
+        '.' in file.filename
+        and file.filename.rsplit('.', 1)[1].lower()
+        in current_app.config.get(allowed_extensions)
+    ):
         response_object = {
             'status': 'fail',
-            'message': 'File extension not allowed.'
+            'message': 'File extension not allowed.',
         }
 
     return response_object
@@ -61,7 +63,7 @@ def verify_extension(file_type, req):
 def verify_user(current_request, verify_admin):
     response_object = {
         'status': 'error',
-        'message': 'Something went wrong. Please contact us.'
+        'message': 'Something went wrong. Please contact us.',
     }
     code = 401
     auth_header = current_request.headers.get('Authorization')
@@ -110,7 +112,7 @@ def can_view_activity(auth_user_id, activity_user_id):
     if auth_user_id != activity_user_id:
         response_object = {
             'status': 'error',
-            'message': 'You do not have permissions.'
+            'message': 'You do not have permissions.',
         }
         return response_object, 403
     return None, None

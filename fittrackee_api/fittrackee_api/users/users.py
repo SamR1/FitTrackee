@@ -85,9 +85,7 @@ def get_users(auth_user_id):
     users = User.query.all()
     response_object = {
         'status': 'success',
-        'data': {
-            'users': [user.serialize() for user in users]
-        }
+        'data': {'users': [user.serialize() for user in users]},
     }
     return jsonify(response_object), 200
 
@@ -148,19 +146,13 @@ def get_single_user(auth_user_id, user_id):
         - User does not exist
     """
 
-    response_object = {
-        'status': 'fail',
-        'message': 'User does not exist.'
-    }
+    response_object = {'status': 'fail', 'message': 'User does not exist.'}
     try:
         user = User.query.filter_by(id=int(user_id)).first()
         if not user:
             return jsonify(response_object), 404
         else:
-            response_object = {
-                'status': 'success',
-                'data': user.serialize()
-            }
+            response_object = {'status': 'success', 'data': user.serialize()}
             return jsonify(response_object), 200
     except ValueError:
         return jsonify(response_object), 404
@@ -192,16 +184,13 @@ def get_picture(user_id):
         - No picture.
 
     """
-    response_object = {
-        'status': 'not found',
-        'message': 'No picture.'
-    }
+    response_object = {'status': 'not found', 'message': 'No picture.'}
     try:
         user = User.query.filter_by(id=int(user_id)).first()
         if not user:
             response_object = {
                 'status': 'fail',
-                'message': 'User does not exist.'
+                'message': 'User does not exist.',
             }
             return jsonify(response_object), 404
         if user.picture is not None:
@@ -238,7 +227,4 @@ def ping_pong():
     :statuscode 200: success
 
     """
-    return jsonify({
-        'status': 'success',
-        'message': 'pong!'
-    })
+    return jsonify({'status': 'success', 'message': 'pong!'})

@@ -18,7 +18,7 @@ def get_activities(user_id, filter_type):
         if not user:
             response_object = {
                 'status': 'not found',
-                'message': 'User does not exist.'
+                'message': 'User does not exist.',
             }
             return jsonify(response_object), 404
 
@@ -29,8 +29,9 @@ def get_activities(user_id, filter_type):
             _, date_from = get_datetime_with_tz(user.timezone, date_from)
         date_to = params.get('to')
         if date_to:
-            date_to = datetime.strptime(f'{date_to} 23:59:59',
-                                        '%Y-%m-%d %H:%M:%S')
+            date_to = datetime.strptime(
+                f'{date_to} 23:59:59', '%Y-%m-%d %H:%M:%S'
+            )
             _, date_to = get_datetime_with_tz(user.timezone, date_to)
         sport_id = params.get('sport_id')
         time = params.get('time')
@@ -42,19 +43,22 @@ def get_activities(user_id, filter_type):
                 if not sport:
                     response_object = {
                         'status': 'not found',
-                        'message': 'Sport does not exist.'
+                        'message': 'Sport does not exist.',
                     }
                     return jsonify(response_object), 404
 
-        activities = Activity.query.filter(
-            Activity.user_id == user_id,
-            Activity.activity_date >= date_from if date_from else True,
-            Activity.activity_date < date_to + timedelta(seconds=1)
-            if date_to else True,
-            Activity.sport_id == sport_id if sport_id else True,
-        ).order_by(
-            Activity.activity_date.asc()
-        ).all()
+        activities = (
+            Activity.query.filter(
+                Activity.user_id == user_id,
+                Activity.activity_date >= date_from if date_from else True,
+                Activity.activity_date < date_to + timedelta(seconds=1)
+                if date_to
+                else True,
+                Activity.sport_id == sport_id if sport_id else True,
+            )
+            .order_by(Activity.activity_date.asc())
+            .all()
+        )
 
         activities_list = {}
         for activity in activities:
@@ -63,21 +67,25 @@ def get_activities(user_id, filter_type):
                 if sport_id not in activities_list:
                     activities_list[sport_id] = {
                         'nb_activities': 0,
-                        'total_distance': 0.,
+                        'total_distance': 0.0,
                         'total_duration': 0,
                     }
                 activities_list[sport_id]['nb_activities'] += 1
-                activities_list[sport_id]['total_distance'] += \
-                    float(activity.distance)
-                activities_list[sport_id]['total_duration'] += \
-                    convert_timedelta_to_integer(activity.moving)
+                activities_list[sport_id]['total_distance'] += float(
+                    activity.distance
+                )
+                activities_list[sport_id][
+                    'total_duration'
+                ] += convert_timedelta_to_integer(activity.moving)
 
             else:
                 if time == 'week':
                     activity_date = activity.activity_date - timedelta(
-                        days=(activity.activity_date.isoweekday()
-                              if activity.activity_date.isoweekday() < 7
-                              else 0)
+                        days=(
+                            activity.activity_date.isoweekday()
+                            if activity.activity_date.isoweekday() < 7
+                            else 0
+                        )
                     )
                     time_period = datetime.strftime(activity_date, "%Y-%m-%d")
                 elif time == 'weekm':  # week start Monday
@@ -86,13 +94,17 @@ def get_activities(user_id, filter_type):
                     )
                     time_period = datetime.strftime(activity_date, "%Y-%m-%d")
                 elif time == 'month':
-                    time_period = datetime.strftime(activity.activity_date, "%Y-%m")  # noqa
+                    time_period = datetime.strftime(
+                        activity.activity_date, "%Y-%m"
+                    )  # noqa
                 elif time == 'year' or not time:
-                    time_period = datetime.strftime(activity.activity_date, "%Y")  # noqa
+                    time_period = datetime.strftime(
+                        activity.activity_date, "%Y"
+                    )  # noqa
                 else:
                     response_object = {
                         'status': 'fail',
-                        'message': 'Invalid time period.'
+                        'message': 'Invalid time period.',
                     }
                     return jsonify(response_object), 400
                 sport_id = activity.sport_id
@@ -101,27 +113,27 @@ def get_activities(user_id, filter_type):
                 if sport_id not in activities_list[time_period]:
                     activities_list[time_period][sport_id] = {
                         'nb_activities': 0,
-                        'total_distance': 0.,
+                        'total_distance': 0.0,
                         'total_duration': 0,
                     }
                 activities_list[time_period][sport_id]['nb_activities'] += 1
-                activities_list[time_period][sport_id]['total_distance'] += \
-                    float(activity.distance)
-                activities_list[time_period][sport_id]['total_duration'] += \
-                    convert_timedelta_to_integer(activity.moving)
+                activities_list[time_period][sport_id][
+                    'total_distance'
+                ] += float(activity.distance)
+                activities_list[time_period][sport_id][
+                    'total_duration'
+                ] += convert_timedelta_to_integer(activity.moving)
 
         response_object = {
             'status': 'success',
-            'data': {
-                'statistics': activities_list
-            }
+            'data': {'statistics': activities_list},
         }
         code = 200
     except Exception as e:
         appLog.error(e)
         response_object = {
             'status': 'error',
-            'message': 'Error. Please try again or contact the administrator.'
+            'message': 'Error. Please try again or contact the administrator.',
         }
         code = 500
     return jsonify(response_object), code

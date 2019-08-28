@@ -36,8 +36,9 @@ def get_gpx_data(parsed_gpx, max_speed, start, stopped_time_btwn_seg):
 
     mv = parsed_gpx.get_moving_data()
     gpx_data['moving_time'] = timedelta(seconds=mv.moving_time)
-    gpx_data['stop_time'] = (timedelta(seconds=mv.stopped_time)
-                             + stopped_time_btwn_seg)
+    gpx_data['stop_time'] = (
+        timedelta(seconds=mv.stopped_time) + stopped_time_btwn_seg
+    )
     distance = mv.moving_distance + mv.stopped_distance
     gpx_data['distance'] = distance / 1000
 
@@ -52,10 +53,7 @@ def get_gpx_info(gpx_file, update_map_data=True, update_weather_data=True):
     if gpx is None:
         return None
 
-    gpx_data = {
-        'name': gpx.tracks[0].name,
-        'segments': []
-    }
+    gpx_data = {'name': gpx.tracks[0].name, 'segments': []}
     max_speed = 0
     start = 0
     map_data = []
@@ -90,12 +88,12 @@ def get_gpx_info(gpx_file, update_map_data=True, update_weather_data=True):
                     weather_data.append(get_weather(point))
 
             if update_map_data:
-                map_data.append([
-                    point.longitude, point.latitude
-                ])
-        segment_max_speed = (segment.get_moving_data().max_speed
-                             if segment.get_moving_data().max_speed
-                             else 0)
+                map_data.append([point.longitude, point.latitude])
+        segment_max_speed = (
+            segment.get_moving_data().max_speed
+            if segment.get_moving_data().max_speed
+            else 0
+        )
 
         if segment_max_speed > max_speed:
             max_speed = segment_max_speed
@@ -115,7 +113,7 @@ def get_gpx_info(gpx_file, update_map_data=True, update_weather_data=True):
             bounds.min_latitude,
             bounds.min_longitude,
             bounds.max_latitude,
-            bounds.max_longitude
+            bounds.max_longitude,
         ]
 
     return gpx_data, map_data, weather_data
@@ -126,16 +124,10 @@ def get_gpx_segments(track_segments, segment_id=None):
         segment_index = segment_id - 1
         if segment_index > (len(track_segments) - 1):
             raise ActivityGPXException(
-                'not found',
-                f'No segment with id \'{segment_id}\'',
-                None
+                'not found', f'No segment with id \'{segment_id}\'', None
             )
         if segment_index < 0:
-            raise ActivityGPXException(
-                'error',
-                'Incorrect segment id',
-                None
-            )
+            raise ActivityGPXException('error', 'Incorrect segment id', None)
         segments = [track_segments[segment_index]]
     else:
         segments = track_segments
@@ -160,28 +152,41 @@ def get_chart_data(gpx_file, segment_id=None):
         for point_idx, point in enumerate(segment.points):
             if segment_idx == 0 and point_idx == 0:
                 first_point = point
-            distance = (point.distance_3d(previous_point)
-                        if (point.elevation
-                            and previous_point
-                            and previous_point.elevation)
-                        else point.distance_2d(previous_point)
-                        )
+            distance = (
+                point.distance_3d(previous_point)
+                if (
+                    point.elevation
+                    and previous_point
+                    and previous_point.elevation
+                )
+                else point.distance_2d(previous_point)
+            )
             distance = 0 if distance is None else distance
             distance += previous_distance
-            speed = (round((segment.get_speed(point_idx) / 1000)*3600, 2)
-                     if segment.get_speed(point_idx) is not None
-                     else 0)
-            chart_data.append({
-                'distance': (round(distance / 1000, 2)
-                             if distance is not None else 0),
-                'duration': point.time_difference(first_point),
-                'elevation': (round(point.elevation, 1)
-                              if point.elevation is not None else 0),
-                'latitude': point.latitude,
-                'longitude': point.longitude,
-                'speed': speed,
-                'time': point.time,
-            })
+            speed = (
+                round((segment.get_speed(point_idx) / 1000) * 3600, 2)
+                if segment.get_speed(point_idx) is not None
+                else 0
+            )
+            chart_data.append(
+                {
+                    'distance': (
+                        round(distance / 1000, 2)
+                        if distance is not None
+                        else 0
+                    ),
+                    'duration': point.time_difference(first_point),
+                    'elevation': (
+                        round(point.elevation, 1)
+                        if point.elevation is not None
+                        else 0
+                    ),
+                    'latitude': point.latitude,
+                    'longitude': point.longitude,
+                    'speed': speed,
+                    'time': point.time,
+                }
+            )
             previous_point = point
             previous_distance = distance
 
@@ -194,8 +199,7 @@ def extract_segment_from_gpx_file(content, segment_id):
         return None
 
     track_segment = get_gpx_segments(
-        gpx_content.tracks[0].segments,
-        segment_id
+        gpx_content.tracks[0].segments, segment_id
     )
 
     gpx = gpxpy.gpx.GPX()
@@ -207,8 +211,8 @@ def extract_segment_from_gpx_file(content, segment_id):
     for point_idx, point in enumerate(track_segment[0].points):
         gpx_segment.points.append(
             gpxpy.gpx.GPXTrackPoint(
-                point.latitude,
-                point.longitude,
-                elevation=point.elevation))
+                point.latitude, point.longitude, elevation=point.elevation
+            )
+        )
 
     return gpx.to_xml()

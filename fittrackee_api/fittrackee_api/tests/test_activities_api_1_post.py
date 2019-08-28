@@ -8,7 +8,10 @@ from fittrackee_api.activities.models import Activity
 
 def assert_activity_data_with_gpx(data):
     assert 'creation_date' in data['data']['activities'][0]
-    assert 'Tue, 13 Mar 2018 12:44:45 GMT' == data['data']['activities'][0]['activity_date']  # noqa
+    assert (
+        'Tue, 13 Mar 2018 12:44:45 GMT'
+        == data['data']['activities'][0]['activity_date']
+    )  # noqa
     assert 1 == data['data']['activities'][0]['user_id']
     assert 1 == data['data']['activities'][0]['sport_id']
     assert '0:04:10' == data['data']['activities'][0]['duration']
@@ -68,7 +71,10 @@ def assert_activity_data_with_gpx(data):
 
 def assert_activity_data_with_gpx_segments(data):
     assert 'creation_date' in data['data']['activities'][0]
-    assert 'Tue, 13 Mar 2018 12:44:45 GMT' == data['data']['activities'][0]['activity_date']  # noqa
+    assert (
+        'Tue, 13 Mar 2018 12:44:45 GMT'
+        == data['data']['activities'][0]['activity_date']
+    )  # noqa
     assert 1 == data['data']['activities'][0]['user_id']
     assert 1 == data['data']['activities'][0]['sport_id']
     assert '0:04:10' == data['data']['activities'][0]['duration']
@@ -77,7 +83,9 @@ def assert_activity_data_with_gpx_segments(data):
     assert data['data']['activities'][0]['descent'] == 23.4
     assert data['data']['activities'][0]['distance'] == 0.3
     assert data['data']['activities'][0]['max_alt'] == 998.0
-    assert data['data']['activities'][0]['max_speed'] is None  # not enough points  # noqa
+    assert (
+        data['data']['activities'][0]['max_speed'] is None
+    )  # not enough points  # noqa
     assert data['data']['activities'][0]['min_alt'] == 975.0
     assert data['data']['activities'][0]['moving'] == '0:03:55'
     assert data['data']['activities'][0]['pauses'] == '0:00:15'
@@ -137,11 +145,17 @@ def assert_activity_data_with_gpx_segments(data):
 
 def assert_activity_data_wo_gpx(data):
     assert 'creation_date' in data['data']['activities'][0]
-    assert data['data']['activities'][0]['activity_date'] == 'Tue, 15 May 2018 14:05:00 GMT'  # noqa
+    assert (
+        data['data']['activities'][0]['activity_date']
+        == 'Tue, 15 May 2018 14:05:00 GMT'
+    )  # noqa
     assert data['data']['activities'][0]['user_id'] == 1
     assert data['data']['activities'][0]['sport_id'] == 1
     assert data['data']['activities'][0]['duration'] == '1:00:00'
-    assert data['data']['activities'][0]['title'] == 'Cycling - 2018-05-15 14:05:00'  # noqa
+    assert (
+        data['data']['activities'][0]['title']
+        == 'Cycling - 2018-05-15 14:05:00'
+    )  # noqa
     assert data['data']['activities'][0]['ascent'] is None
     assert data['data']['activities'][0]['ave_speed'] == 10.0
     assert data['data']['activities'][0]['descent'] is None
@@ -187,24 +201,20 @@ def test_add_an_activity_gpx(app, user_1, sport_1_cycling, gpx_file):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     response = client.post(
         '/api/activities',
         data=dict(
             file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
-            data='{"sport_id": 1}'
+            data='{"sport_id": 1}',
         ),
         headers=dict(
             content_type='multipart/form-data',
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token'],
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -219,32 +229,27 @@ def activity_assertion(app, user_1, sport_1_cycling, gpx_file, with_segments):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     client.post(
         '/api/activities',
         data=dict(
             file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
-            data='{"sport_id": 1}'
+            data='{"sport_id": 1}',
         ),
         headers=dict(
             content_type='multipart/form-data',
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token'],
+        ),
     )
     response = client.get(
         '/api/activities/1',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -262,10 +267,9 @@ def activity_assertion(app, user_1, sport_1_cycling, gpx_file, with_segments):
     response = client.get(
         '/api/activities/1/gpx',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -277,10 +281,9 @@ def activity_assertion(app, user_1, sport_1_cycling, gpx_file, with_segments):
     response = client.get(
         '/api/activities/1/gpx/segment/1',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -292,10 +295,9 @@ def activity_assertion(app, user_1, sport_1_cycling, gpx_file, with_segments):
     response = client.get(
         f'/api/activities/map/{map_id}',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     assert response.status_code == 200
 
@@ -311,10 +313,9 @@ def activity_assertion(app, user_1, sport_1_cycling, gpx_file, with_segments):
     response = client.get(
         f'/api/activities/map/{map_id}',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -328,50 +329,45 @@ def test_get_an_activity_with_gpx(app, user_1, sport_1_cycling, gpx_file):
 
 
 def test_get_an_activity_with_gpx_segments(
-        app, user_1, sport_1_cycling, gpx_file_with_segments):
+    app, user_1, sport_1_cycling, gpx_file_with_segments
+):
     return activity_assertion(
-        app, user_1, sport_1_cycling, gpx_file_with_segments, True)
+        app, user_1, sport_1_cycling, gpx_file_with_segments, True
+    )
 
 
 def test_get_an_activity_with_gpx_different_user(
-        app, user_1, user_2, sport_1_cycling, gpx_file):
+    app, user_1, user_2, sport_1_cycling, gpx_file
+):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     client.post(
         '/api/activities',
         data=dict(
             file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
-            data='{"sport_id": 1}'
+            data='{"sport_id": 1}',
         ),
         headers=dict(
             content_type='multipart/form-data',
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token'],
+        ),
     )
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='toto@toto.com',
-            password='87654321'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='toto@toto.com', password='87654321')),
+        content_type='application/json',
     )
     response = client.get(
         '/api/activities/1',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -382,10 +378,9 @@ def test_get_an_activity_with_gpx_different_user(
     response = client.get(
         '/api/activities/1/gpx',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -395,37 +390,32 @@ def test_get_an_activity_with_gpx_different_user(
 
 
 def test_get_chart_data_activty_with_gpx(
-        app, user_1, sport_1_cycling, gpx_file
+    app, user_1, sport_1_cycling, gpx_file
 ):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     client.post(
         '/api/activities',
         data=dict(
             file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
-            data='{"sport_id": 1}'
+            data='{"sport_id": 1}',
         ),
         headers=dict(
             content_type='multipart/form-data',
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token'],
+        ),
     )
     response = client.get(
         '/api/activities/1/chart_data',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -437,10 +427,9 @@ def test_get_chart_data_activty_with_gpx(
     response = client.get(
         '/api/activities/1/chart_data/segment/1',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -452,10 +441,9 @@ def test_get_chart_data_activty_with_gpx(
     response = client.get(
         '/api/activities/1/chart_data/segment/0',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -467,10 +455,9 @@ def test_get_chart_data_activty_with_gpx(
     response = client.get(
         '/api/activities/1/chart_data/segment/999999',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -481,45 +468,37 @@ def test_get_chart_data_activty_with_gpx(
 
 
 def test_get_chart_data_activty_with_gpx_different_user(
-        app, user_1, user_2, sport_1_cycling, gpx_file
+    app, user_1, user_2, sport_1_cycling, gpx_file
 ):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     client.post(
         '/api/activities',
         data=dict(
             file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
-            data='{"sport_id": 1}'
+            data='{"sport_id": 1}',
         ),
         headers=dict(
             content_type='multipart/form-data',
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token'],
+        ),
     )
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='toto@toto.com',
-            password='87654321'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='toto@toto.com', password='87654321')),
+        content_type='application/json',
     )
     response = client.get(
         '/api/activities/1/chart_data',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -530,10 +509,9 @@ def test_get_chart_data_activty_with_gpx_different_user(
     response = client.get(
         '/api/activities/1/chart_data/segment/0',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -544,10 +522,9 @@ def test_get_chart_data_activty_with_gpx_different_user(
     response = client.get(
         '/api/activities/1/chart_data/segment/999999',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -562,31 +539,30 @@ def test_add_an_activity_with_gpx_without_name(
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     response = client.post(
         '/api/activities',
         data=dict(
             file=(BytesIO(str.encode(gpx_file_wo_name)), 'example.gpx'),
-            data='{"sport_id": 1}'
+            data='{"sport_id": 1}',
         ),
         headers=dict(
             content_type='multipart/form-data',
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token'],
+        ),
     )
     data = json.loads(response.data.decode())
 
     assert response.status_code == 201
     assert 'created' in data['status']
     assert len(data['data']['activities']) == 1
-    assert 'Cycling - 2018-03-13 12:44:45' == data['data']['activities'][0]['title']  # noqa
+    assert (
+        'Cycling - 2018-03-13 12:44:45'
+        == data['data']['activities'][0]['title']
+    )  # noqa
     assert_activity_data_with_gpx(data)
 
 
@@ -597,66 +573,60 @@ def test_add_an_activity_with_gpx_without_name_timezone(
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     response = client.post(
         '/api/activities',
         data=dict(
             file=(BytesIO(str.encode(gpx_file_wo_name)), 'example.gpx'),
-            data='{"sport_id": 1}'
+            data='{"sport_id": 1}',
         ),
         headers=dict(
             content_type='multipart/form-data',
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token'],
+        ),
     )
     data = json.loads(response.data.decode())
 
     assert response.status_code == 201
     assert 'created' in data['status']
     assert len(data['data']['activities']) == 1
-    assert 'Cycling - 2018-03-13 13:44:45' == data['data']['activities'][0]['title']  # noqa
+    assert (
+        'Cycling - 2018-03-13 13:44:45'
+        == data['data']['activities'][0]['title']
+    )  # noqa
     assert_activity_data_with_gpx(data)
 
 
 def test_get_an_activity_with_gpx_notes(
-        app, user_1, sport_1_cycling, gpx_file
+    app, user_1, sport_1_cycling, gpx_file
 ):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     client.post(
         '/api/activities',
         data=dict(
             file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
-            data='{"sport_id": 1, "notes": "test activity"}'
+            data='{"sport_id": 1, "notes": "test activity"}',
         ),
         headers=dict(
             content_type='multipart/form-data',
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token'],
+        ),
     )
     response = client.get(
         '/api/activities/1',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -673,24 +643,20 @@ def test_add_an_activity_with_gpx_invalid_file(
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     response = client.post(
         '/api/activities',
         data=dict(
             file=(BytesIO(str.encode(gpx_file_wo_track)), 'example.gpx'),
-            data='{"sport_id": 1}'
+            data='{"sport_id": 1}',
         ),
         headers=dict(
             content_type='multipart/form-data',
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token'],
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -706,24 +672,20 @@ def test_add_an_activity_with_gpx_invalid_xml(
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     response = client.post(
         '/api/activities',
         data=dict(
             file=(BytesIO(str.encode(gpx_file_invalid_xml)), 'example.gpx'),
-            data='{"sport_id": 1}'
+            data='{"sport_id": 1}',
         ),
         headers=dict(
             content_type='multipart/form-data',
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token'],
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -739,24 +701,20 @@ def test_add_an_activity_gpx_invalid_extension(
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     response = client.post(
         '/api/activities',
         data=dict(
             file=(BytesIO(str.encode(gpx_file)), 'example.png'),
-            data='{"sport_id": 1}'
+            data='{"sport_id": 1}',
         ),
         headers=dict(
             content_type='multipart/form-data',
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token'],
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -771,24 +729,19 @@ def test_add_an_activity_gpx_no_sport_id(
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     response = client.post(
         '/api/activities',
         data=dict(
-            file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
-            data='{}'
+            file=(BytesIO(str.encode(gpx_file)), 'example.gpx'), data='{}'
         ),
         headers=dict(
             content_type='multipart/form-data',
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token'],
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -803,24 +756,20 @@ def test_add_an_activity_gpx_incorrect_sport_id(
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     response = client.post(
         '/api/activities',
         data=dict(
             file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
-            data='{"sport_id": 2}'
+            data='{"sport_id": 2}',
         ),
         headers=dict(
             content_type='multipart/form-data',
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token'],
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -833,23 +782,17 @@ def test_add_an_activity_gpx_no_file(app, user_1, sport_1_cycling):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     response = client.post(
         '/api/activities',
-        data=dict(
-            data='{}'
-        ),
+        data=dict(data='{}'),
         headers=dict(
             content_type='multipart/form-data',
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token'],
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -862,26 +805,24 @@ def test_add_an_activity_no_gpx(app, user_1, sport_1_cycling):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     response = client.post(
         '/api/activities/no_gpx',
         content_type='application/json',
-        data=json.dumps(dict(
-            sport_id=1,
-            duration=3600,
-            activity_date='2018-05-15 14:05',
-            distance=10
-        )),
+        data=json.dumps(
+            dict(
+                sport_id=1,
+                duration=3600,
+                activity_date='2018-05-15 14:05',
+                distance=10,
+            )
+        ),
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -895,34 +836,31 @@ def test_get_an_activity_wo_gpx(app, user_1, sport_1_cycling):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     client.post(
         '/api/activities/no_gpx',
         content_type='application/json',
-        data=json.dumps(dict(
-            sport_id=1,
-            duration=3600,
-            activity_date='2018-05-15 14:05',
-            distance=10
-        )),
+        data=json.dumps(
+            dict(
+                sport_id=1,
+                duration=3600,
+                activity_date='2018-05-15 14:05',
+                distance=10,
+            )
+        ),
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     response = client.get(
         '/api/activities/1',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -936,35 +874,32 @@ def test_get_an_activity_wo_gpx_notes(app, user_1, sport_1_cycling):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     client.post(
         '/api/activities/no_gpx',
         content_type='application/json',
-        data=json.dumps(dict(
-            sport_id=1,
-            duration=3600,
-            activity_date='2018-05-15 14:05',
-            distance=10,
-            notes="new test with notes"
-        )),
+        data=json.dumps(
+            dict(
+                sport_id=1,
+                duration=3600,
+                activity_date='2018-05-15 14:05',
+                distance=10,
+                notes="new test with notes",
+            )
+        ),
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     response = client.get(
         '/api/activities/1',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -979,192 +914,199 @@ def test_get_an_activity_wo_gpx_with_timezone(app, user_1, sport_1_cycling):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     client.post(
         '/api/activities/no_gpx',
         content_type='application/json',
-        data=json.dumps(dict(
-            sport_id=1,
-            duration=3600,
-            activity_date='2018-05-15 14:05',
-            distance=10
-        )),
+        data=json.dumps(
+            dict(
+                sport_id=1,
+                duration=3600,
+                activity_date='2018-05-15 14:05',
+                distance=10,
+            )
+        ),
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     response = client.get(
         '/api/activities/1',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
     assert response.status_code == 200
     assert 'success' in data['status']
     assert len(data['data']['activities']) == 1
-    assert data['data']['activities'][0]['activity_date'] == 'Tue, 15 May 2018 12:05:00 GMT'  # noqa
-    assert data['data']['activities'][0]['title'] == 'Cycling - 2018-05-15 14:05:00'  # noqa
+    assert (
+        data['data']['activities'][0]['activity_date']
+        == 'Tue, 15 May 2018 12:05:00 GMT'
+    )  # noqa
+    assert (
+        data['data']['activities'][0]['title']
+        == 'Cycling - 2018-05-15 14:05:00'
+    )  # noqa
 
 
 def test_get_activities_date_filter_with_timezone_new_york(
-        app, user_1_full, sport_1_cycling
+    app, user_1_full, sport_1_cycling
 ):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     client.post(
         '/api/activities/no_gpx',
         content_type='application/json',
-        data=json.dumps(dict(
-            sport_id=1,
-            duration=3600,
-            activity_date='2018-01-01 00:00',
-            distance=10
-        )),
+        data=json.dumps(
+            dict(
+                sport_id=1,
+                duration=3600,
+                activity_date='2018-01-01 00:00',
+                distance=10,
+            )
+        ),
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     response = client.get(
         '/api/activities?from=2018-01-01&to=2018-01-31',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
     assert response.status_code == 200
     assert 'success' in data['status']
     assert len(data['data']['activities']) == 1
-    assert 'Mon, 01 Jan 2018 05:00:00 GMT' == data['data']['activities'][0]['activity_date']  # noqa
-    assert 'Cycling - 2018-01-01 00:00:00' == data['data']['activities'][0]['title']  # noqa
+    assert (
+        'Mon, 01 Jan 2018 05:00:00 GMT'
+        == data['data']['activities'][0]['activity_date']
+    )  # noqa
+    assert (
+        'Cycling - 2018-01-01 00:00:00'
+        == data['data']['activities'][0]['title']
+    )  # noqa
 
 
 def test_get_activities_date_filter_with_timezone_paris(
-        app, user_1_paris, sport_1_cycling, activity_cycling_user_1
+    app, user_1_paris, sport_1_cycling, activity_cycling_user_1
 ):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     client.post(
         '/api/activities/no_gpx',
         content_type='application/json',
-        data=json.dumps(dict(
-            sport_id=1,
-            duration=3600,
-            activity_date='2017-31-12 23:59',
-            distance=10
-        )),
+        data=json.dumps(
+            dict(
+                sport_id=1,
+                duration=3600,
+                activity_date='2017-31-12 23:59',
+                distance=10,
+            )
+        ),
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     client.post(
         '/api/activities/no_gpx',
         content_type='application/json',
-        data=json.dumps(dict(
-            sport_id=1,
-            duration=3600,
-            activity_date='2018-01-01 00:00',
-            distance=10
-        )),
+        data=json.dumps(
+            dict(
+                sport_id=1,
+                duration=3600,
+                activity_date='2018-01-01 00:00',
+                distance=10,
+            )
+        ),
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
 
     activity_cycling_user_1.activity_date = datetime.strptime(
-        '31/01/2018 21:59:59', '%d/%m/%Y %H:%M:%S')
+        '31/01/2018 21:59:59', '%d/%m/%Y %H:%M:%S'
+    )
     activity_cycling_user_1.title = 'Test'
 
     client.post(
         '/api/activities/no_gpx',
         content_type='application/json',
-        data=json.dumps(dict(
-            sport_id=1,
-            duration=3600,
-            activity_date='2018-02-01 00:00',
-            distance=10
-        )),
+        data=json.dumps(
+            dict(
+                sport_id=1,
+                duration=3600,
+                activity_date='2018-02-01 00:00',
+                distance=10,
+            )
+        ),
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     response = client.get(
         '/api/activities?from=2018-01-01&to=2018-01-31',
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
     assert response.status_code == 200
     assert 'success' in data['status']
     assert len(data['data']['activities']) == 2
-    assert 'Wed, 31 Jan 2018 21:59:59 GMT' == data['data']['activities'][0]['activity_date']  # noqa
+    assert (
+        'Wed, 31 Jan 2018 21:59:59 GMT'
+        == data['data']['activities'][0]['activity_date']
+    )  # noqa
     assert 'Test' == data['data']['activities'][0]['title']
-    assert 'Sun, 31 Dec 2017 23:00:00 GMT' == data['data']['activities'][1]['activity_date']  # noqa
-    assert 'Cycling - 2018-01-01 00:00:00' == data['data']['activities'][1]['title']  # noqa
+    assert (
+        'Sun, 31 Dec 2017 23:00:00 GMT'
+        == data['data']['activities'][1]['activity_date']
+    )  # noqa
+    assert (
+        'Cycling - 2018-01-01 00:00:00'
+        == data['data']['activities'][1]['title']
+    )  # noqa
 
 
 def test_add_an_activity_no_gpx_invalid_payload(app, user_1, sport_1_cycling):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     response = client.post(
         '/api/activities/no_gpx',
         content_type='application/json',
-        data=json.dumps(dict(
-            sport_id=1,
-            duration=3600,
-            distance=10
-        )),
+        data=json.dumps(dict(sport_id=1, duration=3600, distance=10)),
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -1177,26 +1119,21 @@ def test_add_an_activity_no_gpx_error(app, user_1, sport_1_cycling):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     response = client.post(
         '/api/activities/no_gpx',
         content_type='application/json',
-        data=json.dumps(dict(
-            sport_id=1,
-            duration=3600,
-            activity_date='15/2018',
-            distance=10
-        )),
+        data=json.dumps(
+            dict(
+                sport_id=1, duration=3600, activity_date='15/2018', distance=10
+            )
+        ),
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -1211,27 +1148,25 @@ def test_add_activity_zero_value(
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
-        data=json.dumps(dict(
-            email='test@test.com',
-            password='12345678'
-        )),
-        content_type='application/json'
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
     )
     response = client.post(
         '/api/activities/no_gpx',
         content_type='application/json',
-        data=json.dumps(dict(
-            sport_id=1,
-            duration=0,
-            activity_date='2018-05-14 14:05',
-            distance=0,
-            title='Activity test'
-        )),
+        data=json.dumps(
+            dict(
+                sport_id=1,
+                duration=0,
+                activity_date='2018-05-14 14:05',
+                distance=0,
+                title='Activity test',
+            )
+        ),
         headers=dict(
-            Authorization='Bearer ' + json.loads(
-                resp_login.data.decode()
-            )['auth_token']
-        )
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
     )
     data = json.loads(response.data.decode())
 
@@ -1239,7 +1174,10 @@ def test_add_activity_zero_value(
     assert 'created' in data['status']
     assert len(data['data']['activities']) == 1
     assert 'creation_date' in data['data']['activities'][0]
-    assert data['data']['activities'][0]['activity_date'] == 'Mon, 14 May 2018 14:05:00 GMT'  # noqa
+    assert (
+        data['data']['activities'][0]['activity_date']
+        == 'Mon, 14 May 2018 14:05:00 GMT'
+    )  # noqa
     assert data['data']['activities'][0]['user_id'] == 1
     assert data['data']['activities'][0]['sport_id'] == 1
     assert data['data']['activities'][0]['duration'] is None
@@ -1267,24 +1205,17 @@ def test_get_an_activity_with_zip(app, user_1, sport_1_cycling):
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
-            data=json.dumps(dict(
-                email='test@test.com',
-                password='12345678'
-            )),
-            content_type='application/json'
+            data=json.dumps(dict(email='test@test.com', password='12345678')),
+            content_type='application/json',
         )
         response = client.post(
             '/api/activities',
-            data=dict(
-                file=(zip_file, 'gpx_test.zip'),
-                data='{"sport_id": 1}'
-            ),
+            data=dict(file=(zip_file, 'gpx_test.zip'), data='{"sport_id": 1}'),
             headers=dict(
                 content_type='multipart/form-data',
-                Authorization='Bearer ' + json.loads(
-                    resp_login.data.decode()
-                )['auth_token']
-            )
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token'],
+            ),
         )
         data = json.loads(response.data.decode())
 
@@ -1304,24 +1235,19 @@ def test_get_an_activity_with_zip_folder(app, user_1, sport_1_cycling):
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
-            data=json.dumps(dict(
-                email='test@test.com',
-                password='12345678'
-            )),
-            content_type='application/json'
+            data=json.dumps(dict(email='test@test.com', password='12345678')),
+            content_type='application/json',
         )
         response = client.post(
             '/api/activities',
             data=dict(
-                file=(zip_file, 'gpx_test_folder.zip'),
-                data='{"sport_id": 1}'
+                file=(zip_file, 'gpx_test_folder.zip'), data='{"sport_id": 1}'
             ),
             headers=dict(
                 content_type='multipart/form-data',
-                Authorization='Bearer ' + json.loads(
-                    resp_login.data.decode()
-                )['auth_token']
-            )
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token'],
+            ),
         )
         data = json.loads(response.data.decode())
 
@@ -1331,31 +1257,29 @@ def test_get_an_activity_with_zip_folder(app, user_1, sport_1_cycling):
 
 
 def test_get_an_activity_with_zip_incorrect_file(app, user_1, sport_1_cycling):
-    file_path = os.path.join(app.root_path, 'tests/files/gpx_test_incorrect.zip')  # noqa
+    file_path = os.path.join(
+        app.root_path, 'tests/files/gpx_test_incorrect.zip'
+    )  # noqa
     # 'gpx_test_incorrect.zip' contains 2 gpx files, one is incorrect
 
     with open(file_path, 'rb') as zip_file:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
-            data=json.dumps(dict(
-                email='test@test.com',
-                password='12345678'
-            )),
-            content_type='application/json'
+            data=json.dumps(dict(email='test@test.com', password='12345678')),
+            content_type='application/json',
         )
         response = client.post(
             '/api/activities',
             data=dict(
                 file=(zip_file, 'gpx_test_incorrect.zip'),
-                data='{"sport_id": 1}'
+                data='{"sport_id": 1}',
             ),
             headers=dict(
                 content_type='multipart/form-data',
-                Authorization='Bearer ' + json.loads(
-                    resp_login.data.decode()
-                )['auth_token']
-            )
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token'],
+            ),
         )
         data = json.loads(response.data.decode())
 

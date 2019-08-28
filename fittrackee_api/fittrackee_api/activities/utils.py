@@ -35,7 +35,8 @@ def get_datetime_with_tz(timezone, activity_date, gpx_data=None):
             fmt = '%Y-%m-%d %H:%M:%S'
             activity_date_string = activity_date.strftime(fmt)
             activity_date_tmp = utc_tz.localize(
-                datetime.strptime(activity_date_string, fmt))
+                datetime.strptime(activity_date_string, fmt)
+            )
             activity_date_tz = activity_date_tmp.astimezone(user_tz)
         else:
             activity_date_tz = user_tz.localize(activity_date)
@@ -59,27 +60,34 @@ def update_activity_data(activity, gpx_data):
     return activity
 
 
-def create_activity(
-        user, activity_data, gpx_data=None
-):
-    activity_date = gpx_data['start'] if gpx_data else datetime.strptime(
-        activity_data.get('activity_date'), '%Y-%m-%d %H:%M')
+def create_activity(user, activity_data, gpx_data=None):
+    activity_date = (
+        gpx_data['start']
+        if gpx_data
+        else datetime.strptime(
+            activity_data.get('activity_date'), '%Y-%m-%d %H:%M'
+        )
+    )
     activity_date_tz, activity_date = get_datetime_with_tz(
-        user.timezone, activity_date, gpx_data)
+        user.timezone, activity_date, gpx_data
+    )
 
-    duration = gpx_data['duration'] if gpx_data \
+    duration = (
+        gpx_data['duration']
+        if gpx_data
         else timedelta(seconds=activity_data.get('duration'))
-    distance = gpx_data['distance'] if gpx_data \
-        else activity_data.get('distance')
-    title = gpx_data['name'] if gpx_data \
-        else activity_data.get('title')
+    )
+    distance = (
+        gpx_data['distance'] if gpx_data else activity_data.get('distance')
+    )
+    title = gpx_data['name'] if gpx_data else activity_data.get('title')
 
     new_activity = Activity(
         user_id=user.id,
         sport_id=activity_data.get('sport_id'),
         activity_date=activity_date,
         distance=distance,
-        duration=duration
+        duration=duration,
     )
     new_activity.notes = activity_data.get('notes')
 
@@ -91,7 +99,8 @@ def create_activity(
         activity_datetime = (
             activity_date_tz.strftime(fmt)
             if activity_date_tz
-            else new_activity.activity_date.strftime(fmt))
+            else new_activity.activity_date.strftime(fmt)
+        )
         new_activity.title = f'{sport.label} - {activity_datetime}'
 
     if gpx_data:
@@ -100,18 +109,18 @@ def create_activity(
         update_activity_data(new_activity, gpx_data)
     else:
         new_activity.moving = duration
-        new_activity.ave_speed = (None
-                                  if duration.seconds == 0
-                                  else float(new_activity.distance) /
-                                  (duration.seconds / 3600))
+        new_activity.ave_speed = (
+            None
+            if duration.seconds == 0
+            else float(new_activity.distance) / (duration.seconds / 3600)
+        )
         new_activity.max_speed = new_activity.ave_speed
     return new_activity
 
 
 def create_segment(activity_id, segment_data):
     new_segment = ActivitySegment(
-        activity_id=activity_id,
-        segment_id=segment_data['idx']
+        activity_id=activity_id, segment_id=segment_data['idx']
     )
     new_segment.duration = segment_data['duration']
     new_segment.distance = segment_data['distance']
@@ -127,7 +136,8 @@ def update_activity(activity):
     (case of a modified gpx file, see issue #7)
     """
     gpx_data, _, _ = get_gpx_info(
-        get_absolute_file_path(activity.gpx), False, False)
+        get_absolute_file_path(activity.gpx), False, False
+    )
     updated_activity = update_activity_data(activity, gpx_data)
     updated_activity.duration = gpx_data['duration']
     updated_activity.distance = gpx_data['distance']
@@ -156,21 +166,26 @@ def edit_activity(activity, activity_data, auth_user_id):
     if not activity.gpx:
         if activity_data.get('activity_date'):
             activity_date = datetime.strptime(
-                activity_data.get('activity_date'), '%Y-%m-%d %H:%M')
+                activity_data.get('activity_date'), '%Y-%m-%d %H:%M'
+            )
             _, activity.activity_date = get_datetime_with_tz(
-                user.timezone, activity_date)
+                user.timezone, activity_date
+            )
 
         if activity_data.get('duration'):
             activity.duration = timedelta(
-                seconds=activity_data.get('duration'))
+                seconds=activity_data.get('duration')
+            )
             activity.moving = activity.duration
 
         if activity_data.get('distance'):
             activity.distance = activity_data.get('distance')
 
-        activity.ave_speed = (None if activity.duration.seconds == 0
-                              else float(activity.distance) /
-                              (activity.duration.seconds / 3600))
+        activity.ave_speed = (
+            None
+            if activity.duration.seconds == 0
+            else float(activity.distance) / (activity.duration.seconds / 3600)
+        )
         activity.max_speed = activity.ave_speed
     return activity
 
@@ -183,19 +198,17 @@ def get_file_path(dir_path, filename):
 
 
 def get_new_file_path(
-        auth_user_id, activity_date, sport, old_filename=None, extension=None
+    auth_user_id, activity_date, sport, old_filename=None, extension=None
 ):
     if not extension:
         extension = f".{old_filename.rsplit('.', 1)[1].lower()}"
     _, new_filename = tempfile.mkstemp(
-        prefix=f'{activity_date}_{sport}_',
-        suffix=extension
+        prefix=f'{activity_date}_{sport}_', suffix=extension
     )
     dir_path = os.path.join('activities', str(auth_user_id))
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
-    file_path = os.path.join(dir_path,
-                             new_filename.split('/')[-1])
+    file_path = os.path.join(dir_path, new_filename.split('/')[-1])
     return file_path
 
 
@@ -228,7 +241,7 @@ def process_one_gpx_file(params, filename):
             auth_user_id=auth_user_id,
             activity_date=gpx_data['start'],
             old_filename=filename,
-            sport=params['sport_label']
+            sport=params['sport_label'],
         )
         absolute_gpx_filepath = get_absolute_file_path(new_filepath)
         os.rename(params['file_path'], absolute_gpx_filepath)
@@ -238,7 +251,7 @@ def process_one_gpx_file(params, filename):
             auth_user_id=auth_user_id,
             activity_date=gpx_data['start'],
             extension='.png',
-            sport=params['sport_label']
+            sport=params['sport_label'],
         )
         absolute_map_filepath = get_absolute_file_path(map_filepath)
         generate_map(absolute_map_filepath, map_data)
@@ -249,7 +262,8 @@ def process_one_gpx_file(params, filename):
 
     try:
         new_activity = create_activity(
-            params['user'], params['activity_data'], gpx_data)
+            params['user'], params['activity_data'], gpx_data
+        )
         new_activity.map = map_filepath
         new_activity.map_id = get_map_hash(map_filepath)
         new_activity.weather_start = weather_data[0]
@@ -280,8 +294,9 @@ def process_zip_archive(common_params, extract_dir):
     gpx_files_ok = 0
 
     for gpx_file in os.listdir(extract_dir):
-        if ('.' in gpx_file and gpx_file.rsplit('.', 1)[1].lower()
-                in current_app.config.get('ACTIVITY_ALLOWED_EXTENSIONS')):
+        if '.' in gpx_file and gpx_file.rsplit('.', 1)[
+            1
+        ].lower() in current_app.config.get('ACTIVITY_ALLOWED_EXTENSIONS'):
             gpx_files_ok += 1
             if gpx_files_ok > gpx_files_limit:
                 break
@@ -303,7 +318,7 @@ def process_files(auth_user_id, activity_data, activity_file, folders):
         raise ActivityException(
             'error',
             f"Sport id: {activity_data.get('sport_id')} does not exist",
-            None
+            None,
         )
     user = User.query.filter_by(id=auth_user_id).first()
 

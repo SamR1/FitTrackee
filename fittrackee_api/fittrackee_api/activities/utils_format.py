@@ -4,7 +4,7 @@ from datetime import timedelta
 def convert_in_duration(value):
     hours = int(value.split(':')[0])
     minutes = int(value.split(':')[1])
-    return timedelta(seconds=(hours*3600 + minutes*60))
+    return timedelta(seconds=(hours * 3600 + minutes * 60))
 
 
 def convert_timedelta_to_integer(value):

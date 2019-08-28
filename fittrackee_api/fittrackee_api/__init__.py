@@ -42,8 +42,9 @@ def create_app():
 
     if app.debug:
         logging.getLogger('sqlalchemy').setLevel(logging.WARNING)
-        logging.getLogger('sqlalchemy'
-                          ).handlers = logging.getLogger('werkzeug').handlers
+        logging.getLogger('sqlalchemy').handlers = logging.getLogger(
+            'werkzeug'
+        ).handlers
         logging.getLogger('sqlalchemy.orm').setLevel(logging.WARNING)
         logging.getLogger('flake8').propagate = False
         appLog.setLevel(logging.DEBUG)
@@ -58,7 +59,7 @@ def create_app():
             )
             response.headers.add(
                 'Access-Control-Allow-Methods',
-                'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+                'GET,PUT,POST,DELETE,PATCH,OPTIONS',
             )
             return response
 
