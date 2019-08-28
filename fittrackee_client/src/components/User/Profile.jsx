@@ -8,6 +8,12 @@ import { deletePicture, uploadPicture } from '../../actions/user'
 import { apiUrl } from '../../utils'
 
 function Profile({ message, onDeletePicture, onUploadPicture, user }) {
+  const createdAt = user.created_at
+    ? format(new Date(user.created_at), 'dd/MM/yyyy HH:mm')
+    : ''
+  const birthDate = user.birth_date
+    ? format(new Date(user.birth_date), 'dd/MM/yyyy')
+    : ''
   return (
     <div>
       <Helmet>
@@ -33,18 +39,10 @@ function Profile({ message, onDeletePicture, onUploadPicture, user }) {
                 <div className="row">
                   <div className="col-md-8">
                     <p>Email: {user.email}</p>
-                    <p>
-                      Registration Date:{' '}
-                      {format(new Date(user.created_at), 'dd/MM/yyyy HH:mm')}
-                    </p>
+                    <p>Registration Date: {createdAt}</p>
                     <p>First Name: {user.first_name}</p>
                     <p>Last Name: {user.last_name}</p>
-                    <p>
-                      Birth Date:{' '}
-                      {user.birth_date
-                        ? format(new Date(user.birth_date), 'dd/MM/yyyy')
-                        : ''}
-                    </p>
+                    <p>Birth Date: {birthDate}</p>
                     <p>Location: {user.location}</p>
                     <p>Bio: {user.bio}</p>
                     <p>Time zone: {user.timezone}</p>
