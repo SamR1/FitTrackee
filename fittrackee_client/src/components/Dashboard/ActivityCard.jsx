@@ -15,7 +15,7 @@ export default function ActivityCard (props) {
                .map(sport => sport.label)} -{' '}
         {format(
           getDateWithTZ(activity.activity_date, user.timezone),
-          'DD/MM/YYYY HH:mm'
+          'dd/MM/yyyy HH:mm'
         )}
         </Link>
       </div>

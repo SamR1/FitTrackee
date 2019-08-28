@@ -5,7 +5,7 @@
   "dependencies": {
     "@mapbox/togeojson": "^0.16.0",
     "connected-react-router": "^6.5.0",
-    "date-fns": "^1.30.1",
+    "date-fns": "^2.0.1",
     "history": "^4.9.0",
     "leaflet": "^1.5.1",
     "luxon": "^1.16.1",

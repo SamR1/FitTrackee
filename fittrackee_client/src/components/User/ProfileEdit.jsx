@@ -32,7 +32,7 @@ class ProfileEdit extends React.Component {
     Object.keys(user).map(k => user[k] === null
       ? formData[k] = ''
       : k === 'birth_date'
-        ? formData[k] = format(new Date(user[k]), 'YYYY-MM-DD')
+        ? formData[k] = format(new Date(user[k]), 'yyyy-MM-DD')
         : formData[k] = user[k])
     this.setState({ formData })
   }

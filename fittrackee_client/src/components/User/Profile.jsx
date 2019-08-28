@@ -36,13 +36,13 @@ function Profile ({ message, onDeletePicture, onUploadPicture, user }) {
                   <div className="col-md-8">
                     <p>Email: {user.email}</p>
                     <p>Registration Date: {
-                         format(new Date(user.created_at), 'DD/MM/YYYY HH:mm')
+                         format(new Date(user.created_at), 'dd/MM/yyyy HH:mm')
                        }
                     </p>
                     <p>First Name: {user.first_name}</p>
                     <p>Last Name: {user.last_name}</p>
                     <p>Birth Date: {user.birth_date
-                        ? format(new Date(user.birth_date), 'DD/MM/YYYY')
+                        ? format(new Date(user.birth_date), 'dd/MM/yyyy')
                         : ''
                       }
                     </p>

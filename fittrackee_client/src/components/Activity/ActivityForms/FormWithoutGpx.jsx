@@ -13,7 +13,7 @@ function FormWithoutGpx (props) {
   if (activity) {
     const activityDateTime = formatActivityDate(
       activity.activity_date,
-      'YYYY-MM-DD'
+      'yyyy-MM-dd'
     )
     activityDate = activityDateTime.activity_date
     activityTime = activityDateTime.activity_time

@@ -49,7 +49,7 @@ export default connect(
   }),
   dispatch => ({
     loadActivities: (userId, data) => {
-      const dateFormat = 'YYYY-MM-DD'
+      const dateFormat = 'yyyy-MM-dd'
       const params = {
         from: format(data.start, dateFormat),
         to: format(data.end, dateFormat),

@@ -1,5 +1,3 @@
-import { parse } from 'date-fns'
-
 import FitTrackeeGenericApi from '../fitTrackeeApi'
 import { history } from '../index'
 import { formatChartData } from '../utils/activities'
@@ -177,13 +175,6 @@ export const getMonthActivities = (from, to) => dispatch =>
   .getData('activities', { from, to, order: 'asc', per_page: 100 })
   .then(ret => {
     if (ret.status === 'success') {
-      if (ret.data.activities.length > 0) {
-        for (let i = 0; i < ret.data.activities.length; i++) {
-          ret.data.activities[i].activity_date = parse(
-            ret.data.activities[i].activity_date
-          )
-        }
-      }
       dispatch(updateCalendar(ret.data.activities))
     } else {
       dispatch(setError(`activities: ${ret.message}`))

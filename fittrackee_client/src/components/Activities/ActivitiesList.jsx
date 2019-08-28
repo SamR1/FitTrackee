@@ -43,7 +43,7 @@ export default class ActivitiesList extends React.PureComponent {
                 <td>
                   {format(
                     getDateWithTZ(activity.activity_date, user.timezone),
-                    'DD/MM/YYYY HH:mm'
+                    'dd/MM/yyyy HH:mm'
                   )}
                 </td>
                 <td className="text-right">

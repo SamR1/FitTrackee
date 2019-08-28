@@ -8,9 +8,9 @@ import {
 
 
 const xAxisFormats = [
-  { duration: 'week', dateFormat: 'YYYY-MM-DD', xAxis: 'DD/MM' },
-  { duration: 'month', dateFormat: 'YYYY-MM', xAxis: 'MM/YYYY' },
-  { duration: 'year', dateFormat: 'YYYY', xAxis: 'YYYY' },
+  { duration: 'week', dateFormat: 'yyyy-MM-dd', xAxis: 'dd/MM' },
+  { duration: 'month', dateFormat: 'yyyy-MM', xAxis: 'MM/yyyy' },
+  { duration: 'year', dateFormat: 'yyyy', xAxis: 'yyyy' },
 ]
 
 export const formatDuration = (totalSeconds, formatWithDay = false) => {

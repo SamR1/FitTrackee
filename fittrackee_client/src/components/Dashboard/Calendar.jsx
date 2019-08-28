@@ -1,6 +1,9 @@
 // eslint-disable-next-line max-len
 // source: https://blog.flowandform.agency/create-a-custom-calendar-in-react-3df1bfd0b728
-import dateFns from 'date-fns'
+import {
+  addDays, addMonths, endOfMonth, endOfWeek, format, isSameDay, isSameMonth,
+  startOfMonth, startOfWeek, subMonths
+} from 'date-fns'
 import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -10,11 +13,11 @@ import { getDateWithTZ } from '../../utils'
 import { recordsLabels } from '../../utils/activities'
 
 const getStartAndEndMonth = date => {
-  const monthStart = dateFns.startOfMonth(date)
-  const monthEnd = dateFns.endOfMonth(date)
+  const monthStart = startOfMonth(date)
+  const monthEnd = endOfMonth(date)
   return {
-    start: dateFns.startOfWeek(monthStart),
-    end: dateFns.endOfWeek(monthEnd),
+    start: startOfWeek(monthStart),
+    end: endOfWeek(monthEnd),
   }
 }
 
@@ -35,7 +38,7 @@ class Calendar extends React.Component {
   }
 
   renderHeader() {
-    const dateFormat = 'MMM YYYY'
+    const dateFormat = 'MMM yyyy'
     return (
       <div className="header row flex-middle">
         <div className="col col-start" onClick={() => this.handlePrevMonth()}>
@@ -46,7 +49,7 @@ class Calendar extends React.Component {
         </div>
         <div className="col col-center">
           <span>
-            {dateFns.format(this.state.currentMonth, dateFormat)}
+            {format(this.state.currentMonth, dateFormat)}
           </span>
         </div>
         <div className="col col-end" onClick={() => this.handleNextMonth()}>
@@ -67,7 +70,7 @@ class Calendar extends React.Component {
     for (let i = 0; i < 7; i++) {
       days.push(
         <div className="col col-center" key={i}>
-          {dateFns.format(dateFns.addDays(startDate, i), dateFormat)}
+          {format(addDays(startDate, i), dateFormat)}
         </div>
       )
     }
@@ -78,7 +81,7 @@ class Calendar extends React.Component {
     const { activities, user } = this.props
     if (activities) {
       return activities
-        .filter(act => dateFns.isSameDay(
+        .filter(act => isSameDay(
           getDateWithTZ(act.activity_date, user.timezone),
           day
         ))
@@ -90,7 +93,7 @@ class Calendar extends React.Component {
     const { currentMonth, startDate, endDate } = this.state
     const { sports } = this.props
 
-    const dateFormat = 'D'
+    const dateFormat = 'd'
     const rows = []
 
     let days = []
@@ -99,9 +102,9 @@ class Calendar extends React.Component {
 
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
-        formattedDate = dateFns.format(day, dateFormat)
+        formattedDate = format(day, dateFormat)
         const dayActivities = this.filterActivities(day)
-        const isDisabled = dateFns.isSameMonth(day, currentMonth)
+        const isDisabled = isSameMonth(day, currentMonth)
           ? ''
           : 'disabled'
         days.push(
@@ -139,7 +142,7 @@ class Calendar extends React.Component {
             ))}
           </div>
         )
-        day = dateFns.addDays(day, 1)
+        day = addDays(day, 1)
       }
       rows.push(
         <div className="row" key={day}>
@@ -162,12 +165,12 @@ class Calendar extends React.Component {
   }
 
   handleNextMonth() {
-    const calendarDate = dateFns.addMonths(this.state.currentMonth, 1)
+    const calendarDate = addMonths(this.state.currentMonth, 1)
     this.updateStateDate(calendarDate)
   }
 
   handlePrevMonth() {
-    const calendarDate = dateFns.subMonths(this.state.currentMonth, 1)
+    const calendarDate = subMonths(this.state.currentMonth, 1)
     this.updateStateDate(calendarDate)
   }
 
@@ -192,10 +195,10 @@ export default connect(
   }),
   dispatch => ({
     loadMonthActivities: (start, end) => {
-      const dateFormat = 'YYYY-MM-DD'
+      const dateFormat = 'yyyy-MM-dd'
       dispatch(getMonthActivities(
-        dateFns.format(start, dateFormat),
-        dateFns.format(end, dateFormat),
+        format(start, dateFormat),
+        format(end, dateFormat),
       ))
     },
   })

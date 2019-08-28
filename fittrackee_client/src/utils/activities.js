@@ -35,7 +35,7 @@ export const formatActivityDate = (
   timeFormat = null,
 ) => {
   if (!dateFormat) {
-    dateFormat = 'DD/MM/YYYY'
+    dateFormat = 'yyyy/MM/dd'
   }
   if (!timeFormat) {
     timeFormat = 'HH:mm'

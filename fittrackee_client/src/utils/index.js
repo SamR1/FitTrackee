@@ -56,6 +56,8 @@ export const getDateWithTZ = (date, tz) => {
   if (!date) {
     return ''
   }
-  const dt = DateTime.fromISO(format(date)).setZone(tz)
-  return parse(dt.toFormat('yyyy-MM-dd HH:mm:ss'))
+  const dt = DateTime.fromISO(
+    format(new Date(date), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")).setZone(tz)
+  return parse(
+    dt.toFormat('yyyy-MM-dd HH:mm:ss'), 'yyyy-MM-dd HH:mm:ss', new Date())
 }
