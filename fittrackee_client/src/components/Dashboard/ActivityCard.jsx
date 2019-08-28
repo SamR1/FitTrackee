@@ -28,7 +28,7 @@ export default function ActivityCard(props) {
               <img
                 alt="Map"
                 src={
-                  `${apiUrl}activities/map/${activity.map}` + `?${Date.now()}`
+                  `${apiUrl}activities/map/${activity.map}?${Date.now()}`
                 }
                 className="img-fluid"
               />

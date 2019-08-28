@@ -7,15 +7,13 @@ const handleDataAndError = (state, type, action) => {
   if (action.target !== type) {
     return state
   }
-  switch (action.type) {
-    case 'SET_DATA':
-      return {
-        ...state,
-        data: action.data[action.target],
-      }
-    default:
-      return state
+  if (action.type === 'SET_DATA') {
+    return {
+      ...state,
+      data: action.data[action.target],
+    }
   }
+  return state
 }
 
 const activities = (state = initial.activities, action) => {
@@ -36,42 +34,34 @@ const activities = (state = initial.activities, action) => {
 }
 
 const calendarActivities = (state = initial.calendarActivities, action) => {
-  switch (action.type) {
-    case 'UPDATE_CALENDAR':
-      return {
-        ...state,
-        data: action.activities,
-      }
-    default:
-      return handleDataAndError(state, 'calendarActivities', action)
+  if (action.type === 'UPDATE_CALENDAR') {
+    return {
+      ...state,
+      data: action.activities,
+    }
   }
+  return handleDataAndError(state, 'calendarActivities', action)
 }
 
 const chartData = (state = initial.chartData, action) => {
-  switch (action.type) {
-    case 'SET_CHART_DATA':
-      return action.chartData
-    default:
-      return state
+  if (action.type === 'SET_CHART_DATA') {
+    return action.chartData
   }
+  return state
 }
 
 const gpx = (state = initial.gpx, action) => {
-  switch (action.type) {
-    case 'SET_GPX':
-      return action.gpxContent
-    default:
-      return state
+  if (action.type === 'SET_GPX') {
+    return action.gpxContent
   }
+  return state
 }
 
 const loading = (state = initial.loading, action) => {
-  switch (action.type) {
-    case 'SET_LOADING':
-      return action.loading
-    default:
-      return state
+  if (action.type === 'SET_LOADING') {
+    return action.loading
   }
+  return state
 }
 
 const message = (state = initial.message, action) => {

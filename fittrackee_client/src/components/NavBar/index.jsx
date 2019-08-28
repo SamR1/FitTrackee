@@ -115,7 +115,7 @@ class NavBar extends React.PureComponent {
                 {picture === true && (
                   <img
                     alt="Avatar"
-                    src={`${apiUrl}users/${id}/picture` + `?${Date.now()}`}
+                    src={`${apiUrl}users/${id}/picture?${Date.now()}`}
                     className="img-fluid App-nav-profile-img"
                   />
                 )}
