@@ -14,7 +14,7 @@ COPY ./poetry.lock /usr/src/app/poetry.lock
 RUN pip install --upgrade pip
 RUN pip install poetry
 RUN poetry config settings.virtualenvs.create false
-RUN poetry install --no-interaction
+RUN poetry install --no-interaction --quiet
 
 # add app --no-interaction
 COPY . /usr/src/app
