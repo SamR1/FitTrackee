@@ -2,7 +2,8 @@ import { format } from 'date-fns'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import { apiUrl, getDateWithTZ } from '../../utils'
+import StaticMap from '../Common/StaticMap'
+import { getDateWithTZ } from '../../utils'
 
 export default function ActivityCard(props) {
   const { activity, sports, user } = props
@@ -25,24 +26,7 @@ export default function ActivityCard(props) {
         <div className="row">
           {activity.map && (
             <div className="col">
-              <img
-                alt="Map"
-                src={`${apiUrl}activities/map/${activity.map}?${Date.now()}`}
-                className="img-fluid"
-              />
-              <div className="map-attribution text-right">
-                <div>
-                  <span className="map-attribution-text">©</span>
-                  <a
-                    className="map-attribution-text"
-                    href="http://www.openstreetmap.org/copyright"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    OpenStreetMap
-                  </a>
-                </div>
-              </div>
+              <StaticMap activity={activity} />
             </div>
           )}
           <div className="col">

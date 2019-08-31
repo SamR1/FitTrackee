@@ -2,7 +2,8 @@ import { format } from 'date-fns'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import { apiUrl, getDateWithTZ } from '../../utils'
+import StaticMap from '../Common/StaticMap'
+import { getDateWithTZ } from '../../utils'
 
 export default class ActivitiesList extends React.PureComponent {
   render() {
@@ -40,30 +41,7 @@ export default class ActivitiesList extends React.PureComponent {
                       <Link to={`/activities/${activity.id}`}>
                         {activity.title}
                       </Link>
-                      {activity.map && (
-                        <span>
-                          <img
-                            className="activity-map"
-                            src={`${apiUrl}activities/map/${
-                              activity.map
-                            }?${Date.now()}`}
-                            alt="activity map"
-                          />
-                          <span className="map-attribution text-right">
-                            <div>
-                              <span className="map-attribution-text">©</span>
-                              <a
-                                className="map-attribution-text"
-                                href="http://www.openstreetmap.org/copyright"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                OpenStreetMap
-                              </a>
-                            </div>
-                          </span>
-                        </span>
-                      )}
+                      {activity.map && <StaticMap activity={activity} />}
                     </td>
                     <td>
                       {format(
