@@ -20,11 +20,12 @@ import { getMonthActivities } from '../../actions/activities'
 import { getDateWithTZ } from '../../utils'
 import { recordsLabels } from '../../utils/activities'
 
-const getStartAndEndMonth = date => {
+const getStartAndEndMonth = (date, weekStartOnMonday) => {
   const monthStart = startOfMonth(date)
   const monthEnd = endOfMonth(date)
+  const weekStartsOn = weekStartOnMonday ? 1 : 0
   return {
-    start: startOfWeek(monthStart),
+    start: startOfWeek(monthStart, { weekStartsOn }),
     end: endOfWeek(monthEnd),
   }
 }
@@ -35,8 +36,9 @@ class Calendar extends React.Component {
     const calendarDate = new Date()
     this.state = {
       currentMonth: calendarDate,
-      startDate: getStartAndEndMonth(calendarDate).start,
-      endDate: getStartAndEndMonth(calendarDate).end,
+      startDate: getStartAndEndMonth(calendarDate, props.weekm).start,
+      endDate: getStartAndEndMonth(calendarDate, props.weekm).end,
+      weekStartOnMonday: props.weekm,
     }
   }
 
@@ -62,7 +64,7 @@ class Calendar extends React.Component {
   }
 
   renderDays() {
-    const dateFormat = 'ddd'
+    const dateFormat = 'EEE'
     const days = []
     const { startDate } = this.state
 
@@ -150,7 +152,10 @@ class Calendar extends React.Component {
   }
 
   updateStateDate(calendarDate) {
-    const { start, end } = getStartAndEndMonth(calendarDate)
+    const { start, end } = getStartAndEndMonth(
+      calendarDate,
+      this.state.weekStartOnMonday
+    )
     this.setState({
       currentMonth: calendarDate,
       startDate: start,

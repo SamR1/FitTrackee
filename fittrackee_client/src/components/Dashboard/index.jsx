@@ -55,7 +55,7 @@ class DashBoard extends React.Component {
                   <Records records={records} sports={sports} user={user} />
                 </div>
                 <div className="col-md-8">
-                  <Calendar />
+                  <Calendar weekm={user.weekm} />
                   {activities.length > 0 ? (
                     activities.map(activity => (
                       <ActivityCard
