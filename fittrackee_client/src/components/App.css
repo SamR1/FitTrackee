@@ -236,6 +236,11 @@ label {
   margin-top: 30px;
 }
 
+.fa-question-circle {
+  color: #6c757d;
+  margin-left: 3px;
+}
+
 .fa-trophy {
   color: goldenrod;
 }

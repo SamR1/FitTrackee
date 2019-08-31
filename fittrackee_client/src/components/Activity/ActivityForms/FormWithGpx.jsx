@@ -58,7 +58,6 @@ function FormWithGpx(props) {
                 className="fa fa-question-circle"
                 aria-hidden="true"
                 data-toggle="tooltip"
-                data-placement="top"
                 title={`max size: ${fileSizeLimit}`}
               />
             </sup>{' '}
