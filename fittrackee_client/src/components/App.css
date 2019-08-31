@@ -127,7 +127,7 @@ label {
   max-height: 18px;
 }
 
-.activity-title img, .activity-title .map-attribution   {
+.activity-title img, .activity-title .map-attribution-list   {
   display: none;
 }
 
@@ -141,10 +141,10 @@ label {
   z-index: 1000;
 }
 
-.activity-title:hover .map-attribution {
+.activity-title:hover .map-attribution-list {
   display:block;
   font-size: 11px;
-  left: -130px;
+  margin-left: 10px;
   position:relative;
   top: 0;
   z-index: 1000;

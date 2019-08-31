@@ -41,7 +41,9 @@ export default class ActivitiesList extends React.PureComponent {
                       <Link to={`/activities/${activity.id}`}>
                         {activity.title}
                       </Link>
-                      {activity.map && <StaticMap activity={activity} />}
+                      {activity.map && (
+                        <StaticMap activity={activity} display="list" />
+                      )}
                     </td>
                     <td>
                       {format(

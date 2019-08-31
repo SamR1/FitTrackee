@@ -4,7 +4,10 @@ import { apiUrl } from '../../utils'
 
 export default class StaticMap extends React.PureComponent {
   render() {
-    const { activity } = this.props
+    const { activity, display } = this.props
+    const attributionStyle =
+      display === 'list' ? 'map-attribution-list' : 'map-attribution text-right'
+
     return (
       <>
         <img
@@ -12,7 +15,7 @@ export default class StaticMap extends React.PureComponent {
           src={`${apiUrl}activities/map/${activity.map}?${Date.now()}`}
           alt="activity map"
         />
-        <div className="map-attribution text-right">
+        <div className={attributionStyle}>
           <span className="map-attribution-text">©</span>
           <a
             className="map-attribution-text"
