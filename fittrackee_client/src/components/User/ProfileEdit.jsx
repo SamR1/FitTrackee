@@ -40,7 +40,11 @@ class ProfileEdit extends React.Component {
 
   handleFormChange(e) {
     const { formData } = this.state
-    formData[e.target.name] = e.target.value
+    if (e.target.name === 'weekm') {
+      formData.weekm = e.target.value === 'Monday'
+    } else {
+      formData[e.target.name] = e.target.value
+    }
     this.setState(formData)
   }
 
@@ -193,6 +197,20 @@ class ProfileEdit extends React.Component {
                                 }}
                                 value={formData.timezone}
                               />
+                            </label>
+                          </div>
+                          <div className="form-group">
+                            <label>
+                              First day of week:
+                              <select
+                                name="weekm"
+                                className="form-control input-lg"
+                                value={formData.weekm ? 'Monday' : 'Sunday'}
+                                onChange={e => this.handleFormChange(e)}
+                              >
+                                <option value="Sunday">Sunday</option>
+                                <option value="Monday">Monday</option>
+                              </select>
                             </label>
                           </div>
                           <input
