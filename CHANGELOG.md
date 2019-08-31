@@ -12,6 +12,7 @@
 * [#23](https://github.com/SamR1/Fittrackee/issues/23) - The user can choose the first day of the week
 * [#36](https://github.com/SamR1/Fittrackee/issues/36) - Disable user registration
 * [#33](https://github.com/SamR1/Fittrackee/issues/33) - Add file size limit on file upload
+* [#37](https://github.com/SamR1/Fittrackee/issues/37) - Display map on activities list
 
 #### Bugs Fixed
 
@@ -21,7 +22,7 @@
 
 * **[Poetry](https://poetry.eustace.io/)** replaces **[pipenv](https://docs.pipenv.org)** for Python packages management
 
-In this release 7 issue were closed.
+In this release 8 issue were closed.
 
 
 ## Version 0.2.0 - Statistics (2019/07/07)

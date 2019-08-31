@@ -127,6 +127,29 @@ label {
   max-height: 18px;
 }
 
+.activity-title img, .activity-title .map-attribution   {
+  display: none;
+}
+
+.activity-title:hover span img {
+  border: 1px solid lightgrey;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  display:block;
+  margin-left: 10px;
+  position: absolute;
+  z-index: 1000;
+}
+
+.activity-title:hover .map-attribution {
+  display:block;
+  font-size: 11px;
+  left: -130px;
+  position:relative;
+  top: 0;
+  z-index: 1000;
+}
+
 .add-activity {
   margin-top: 50px;
 }
