@@ -1,6 +1,15 @@
 import { format, parse } from 'date-fns'
 import { DateTime } from 'luxon'
 
+const suffixes = ['bytes', 'KB', 'MB', 'GB', 'TB']
+const getFileSize = fileSize => {
+  const i = Math.floor(Math.log(fileSize) / Math.log(1024))
+  return (
+    (!fileSize && '0 bytes') ||
+    `${(fileSize / Math.pow(1024, i)).toFixed(1)}${suffixes[i]}`
+  )
+}
+
 export const version = '0.2.1-beta' // version stored in 'utils' for now
 export const apiUrl = `${process.env.REACT_APP_API_URL}/api/`
 /* prettier-ignore */
@@ -8,6 +17,12 @@ export const thunderforestApiKey = `${
   process.env.REACT_APP_THUNDERFOREST_API_KEY
 }`
 export const gpxLimit = `${process.env.REACT_APP_GPX_LIMIT_IMPORT}`
+export const fileSizeLimit = getFileSize(
+  +process.env.REACT_APP_MAX_SINGLE_FILE_SIZE
+)
+export const zipSizeLimit = getFileSize(
+  +process.env.REACT_APP_MAX_ZIP_FILE_SIZE
+)
 export const isRegistrationAllowed =
   process.env.REACT_APP_ALLOW_REGISTRATION !== 'false'
 

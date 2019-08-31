@@ -11,7 +11,7 @@ from ..users.utils import (
     User,
     authenticate,
     can_view_activity,
-    verify_extension,
+    verify_extension_and_size,
 )
 from .models import Activity
 from .utils import (
@@ -818,12 +818,15 @@ def post_activity(auth_user_id):
         - Provide a valid auth token.
         - Signature expired. Please log in again.
         - Invalid token. Please log in again.
+    :statuscode 413: Error during picture update: file size exceeds 1.0MB.
     :statuscode 500:
 
     """
-    response_object = verify_extension('activity', request)
+    response_object, response_code = verify_extension_and_size(
+        'activity', request
+    )
     if response_object['status'] != 'success':
-        return jsonify(response_object), 400
+        return jsonify(response_object), response_code
 
     activity_data = json.loads(request.form["data"])
     if not activity_data or activity_data.get('sport_id') is None:

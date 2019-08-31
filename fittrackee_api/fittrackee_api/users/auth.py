@@ -4,11 +4,17 @@ import os
 from fittrackee_api import appLog, bcrypt, db
 from flask import Blueprint, current_app, jsonify, request
 from sqlalchemy import exc, or_
+from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from ..activities.utils_files import get_absolute_file_path
 from .models import User
-from .utils import authenticate, register_controls, verify_extension
+from .utils import (
+    authenticate,
+    display_readable_file_size,
+    register_controls,
+    verify_extension_and_size,
+)
 
 auth_blueprint = Blueprint('auth', __name__)
 
@@ -529,13 +535,25 @@ def edit_picture(user_id):
         - Provide a valid auth token.
         - Signature expired. Please log in again.
         - Invalid token. Please log in again.
+    :statuscode 413: Error during picture update: file size exceeds 1.0MB.
     :statuscode 500: Error during picture update.
 
     """
-    code = 400
-    response_object = verify_extension('picture', request)
+    try:
+        response_object, response_code = verify_extension_and_size(
+            'picture', request
+        )
+    except RequestEntityTooLarge as e:
+        appLog.error(e)
+        max_file_size = current_app.config['MAX_CONTENT_LENGTH']
+        response_object = {
+            'status': 'fail',
+            'message': 'Error during picture update: file size exceeds '
+            f'{display_readable_file_size(max_file_size)}.',
+        }
+        return jsonify(response_object), 413
     if response_object['status'] != 'success':
-        return jsonify(response_object), code
+        return jsonify(response_object), response_code
 
     file = request.files['file']
     filename = secure_filename(file.filename)

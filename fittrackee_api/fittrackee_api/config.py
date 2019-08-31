@@ -2,6 +2,8 @@ import os
 
 from flask import current_app
 
+MAX_FILE_SIZE = 1 * 1024 * 1024  # 1MB
+
 
 class BaseConfig:
     """Base configuration"""
@@ -13,6 +15,14 @@ class BaseConfig:
     TOKEN_EXPIRATION_DAYS = 30
     TOKEN_EXPIRATION_SECONDS = 0
     UPLOAD_FOLDER = os.path.join(current_app.root_path, 'uploads')
+    # for gpx zip
+    MAX_CONTENT_LENGTH = int(
+        os.environ.get('REACT_APP_MAX_ZIP_FILE_SIZE', MAX_FILE_SIZE * 10)
+    )
+    # for single file (gpx or picture)
+    MAX_SINGLE_FILE = int(
+        os.environ.get('REACT_APP_MAX_SINGLE_FILE_SIZE', MAX_FILE_SIZE)
+    )
     PICTURE_ALLOWED_EXTENSIONS = {'jpg', 'png', 'gif'}
     ACTIVITY_ALLOWED_EXTENSIONS = {'gpx', 'zip'}
     REGISTRATION_ALLOWED = (

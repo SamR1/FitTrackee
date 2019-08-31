@@ -4,11 +4,14 @@ import { connect } from 'react-redux'
 import { setLoading } from '../../../actions/index'
 import { addActivity, editActivity } from '../../../actions/activities'
 import { history } from '../../../index'
-import { gpxLimit } from '../../../utils'
+import { fileSizeLimit, gpxLimit, zipSizeLimit } from '../../../utils'
 
 function FormWithGpx(props) {
   const { activity, loading, onAddActivity, onEditActivity, sports } = props
   const sportId = activity ? activity.sport_id : ''
+  // prettier-ignore
+  const zipTooltip =
+    `no folder inside, ${gpxLimit} files max, max size: ${zipSizeLimit}`
   return (
     <form
       encType="multipart/form-data"
@@ -49,10 +52,28 @@ function FormWithGpx(props) {
       ) : (
         <div className="form-group">
           <label>
-            {/* prettier-ignore */}
-            <strong>gpx</strong> file or <strong>zip</strong> file containing
-            {/* prettier-ignore */}
-            <strong> gpx</strong> (no folder inside, {gpxLimit} files max):
+            <strong>gpx</strong> file
+            <sup>
+              <i
+                className="fa fa-question-circle"
+                aria-hidden="true"
+                data-toggle="tooltip"
+                data-placement="top"
+                title={`max size: ${fileSizeLimit}`}
+              />
+            </sup>{' '}
+            or <strong> zip</strong> file containing <strong>gpx </strong>
+            files
+            <sup>
+              <i
+                className="fa fa-question-circle"
+                aria-hidden="true"
+                data-toggle="tooltip"
+                data-placement="top"
+                title={zipTooltip}
+              />
+            </sup>{' '}
+            :
             <input
               accept=".gpx, .zip"
               className="form-control form-control-file gpx-file"

@@ -29,17 +29,18 @@ def register_controls(username, email, password, password_conf):
     return ret
 
 
-def verify_extension(file_type, req):
+def verify_extension_and_size(file_type, req):
     response_object = {'status': 'success'}
+    code = 400
 
     if 'file' not in req.files:
         response_object = {'status': 'fail', 'message': 'No file part.'}
-        return response_object
+        return response_object, code
 
     file = req.files['file']
     if file.filename == '':
         response_object = {'status': 'fail', 'message': 'No selected file.'}
-        return response_object
+        return response_object, code
 
     allowed_extensions = (
         'ACTIVITY_ALLOWED_EXTENSIONS'
@@ -47,17 +48,30 @@ def verify_extension(file_type, req):
         else 'PICTURE_ALLOWED_EXTENSIONS'
     )
 
+    file_extension = (
+        file.filename.rsplit('.', 1)[1].lower()
+        if '.' in file.filename
+        else None
+    )
+    max_file_size = current_app.config['MAX_SINGLE_FILE']
+
     if not (
-        '.' in file.filename
-        and file.filename.rsplit('.', 1)[1].lower()
-        in current_app.config.get(allowed_extensions)
+        file_extension
+        and file_extension in current_app.config.get(allowed_extensions)
     ):
         response_object = {
             'status': 'fail',
             'message': 'File extension not allowed.',
         }
+    elif file_extension != 'zip' and req.content_length > max_file_size:
+        response_object = {
+            'status': 'fail',
+            'message': 'Error during picture update: file size exceeds '
+            f'{display_readable_file_size(max_file_size)}.',
+        }
+        code = 413
 
-    return response_object
+    return response_object, code
 
 
 def verify_user(current_request, verify_admin):
@@ -116,3 +130,15 @@ def can_view_activity(auth_user_id, activity_user_id):
         }
         return response_object, 403
     return None, None
+
+
+def display_readable_file_size(size_in_bytes):
+    if size_in_bytes == 0:
+        return '0 bytes'
+    if size_in_bytes == 1:
+        return '1 byte'
+    for unit in [' bytes', 'KB', 'MB', 'GB', 'TB']:
+        if abs(size_in_bytes) < 1024.0:
+            return f"{size_in_bytes:3.1f}{unit}"
+        size_in_bytes /= 1024.0
+    return f"{size_in_bytes} bytes"

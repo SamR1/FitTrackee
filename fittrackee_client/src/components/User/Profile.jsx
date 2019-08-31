@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import { deletePicture, uploadPicture } from '../../actions/user'
-import { apiUrl } from '../../utils'
+import { apiUrl, fileSizeLimit } from '../../utils'
 
 function Profile({ message, onDeletePicture, onUploadPicture, user }) {
   const createdAt = user.created_at
@@ -76,7 +76,8 @@ function Profile({ message, onDeletePicture, onUploadPicture, user }) {
                         accept=".png,.jpg,.gif"
                       />
                       <br />
-                      <button type="submit">Send</button>
+                      <button type="submit">Send</button> (max. size:{' '}
+                      {fileSizeLimit})
                     </form>
                   </div>
                 </div>
