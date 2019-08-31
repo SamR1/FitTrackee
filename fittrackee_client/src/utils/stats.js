@@ -53,10 +53,10 @@ const dateIncrement = (duration, day) => {
   }
 }
 
-const startDate = (duration, day) => {
+const startDate = (duration, day, weekm) => {
   switch (duration) {
     case 'week':
-      return startOfWeek(day)
+      return startOfWeek(day, { weekStartsOn: weekm ? 1 : 0 })
     case 'year':
       return startOfYear(day)
     case 'month':
@@ -65,13 +65,13 @@ const startDate = (duration, day) => {
   }
 }
 
-export const formatStats = (stats, sports, params, displayedSports) => {
+export const formatStats = (stats, sports, params, displayedSports, weekm) => {
   const nbActivitiesStats = []
   const distanceStats = []
   const durationStats = []
 
   for (
-    let day = startDate(params.duration, params.start);
+    let day = startDate(params.duration, params.start, weekm);
     day <= params.end;
     day = dateIncrement(params.duration, day)
   ) {

@@ -7,6 +7,7 @@
 * [#4](https://github.com/SamR1/Fittrackee/issues/4) - Show points on the map when mouse over the chart
 * [#14](https://github.com/SamR1/Fittrackee/issues/14) - Display segments informations
 * [#21](https://github.com/SamR1/Fittrackee/issues/21) - Document the API
+* [#23](https://github.com/SamR1/Fittrackee/issues/23) - The user can choose the first day of the week
 * [#36](https://github.com/SamR1/Fittrackee/issues/36) - Disable user registration
 * [#33](https://github.com/SamR1/Fittrackee/issues/33) - Add file size limit on file upload
 
@@ -14,7 +15,7 @@
 
 * [#34](https://github.com/SamR1/Fittrackee/issues/34) - Weather is not displayed anymore 
 
-In this release 5 issue were closed.
+In this release 7 issue were closed.
 
 
 ## Version 0.2.0 - Statistics (2019/07/07)

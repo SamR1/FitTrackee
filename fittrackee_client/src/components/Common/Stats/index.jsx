@@ -22,7 +22,11 @@ class Statistics extends React.PureComponent {
 
   updateData() {
     if (this.props.user.id) {
-      this.props.loadActivities(this.props.user.id, this.props.statsParams)
+      this.props.loadActivities(
+        this.props.user.id,
+        this.props.user.weekm,
+        this.props.statsParams
+      )
     }
   }
 
@@ -33,11 +37,18 @@ class Statistics extends React.PureComponent {
       statistics,
       statsParams,
       displayEmpty,
+      user,
     } = this.props
     if (!displayEmpty && Object.keys(statistics).length === 0) {
       return 'No workouts'
     }
-    const stats = formatStats(statistics, sports, statsParams, displayedSports)
+    const stats = formatStats(
+      statistics,
+      sports,
+      statsParams,
+      displayedSports,
+      user.weekm
+    )
     return <StatsChart sports={sports} stats={stats} />
   }
 }
@@ -49,12 +60,17 @@ export default connect(
     user: state.user,
   }),
   dispatch => ({
-    loadActivities: (userId, data) => {
+    loadActivities: (userId, weekm, data) => {
       const dateFormat = 'yyyy-MM-dd'
+      // depends on user config (first day of week)
+      const time =
+        data.duration === 'week'
+          ? `${data.duration}${weekm ? 'm' : ''}`
+          : data.duration
       const params = {
         from: format(data.start, dateFormat),
         to: format(data.end, dateFormat),
-        time: data.duration,
+        time: time,
       }
       dispatch(getStats(userId, data.type, params))
     },
