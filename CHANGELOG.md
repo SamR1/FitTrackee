@@ -8,6 +8,7 @@
 * [#14](https://github.com/SamR1/Fittrackee/issues/14) - Display segments informations
 * [#21](https://github.com/SamR1/Fittrackee/issues/21) - Document the API
 * [#36](https://github.com/SamR1/Fittrackee/issues/36) - Disable user registration
+* [#33](https://github.com/SamR1/Fittrackee/issues/33) - Add file size limit on file upload
 
 #### Bugs Fixed
 
