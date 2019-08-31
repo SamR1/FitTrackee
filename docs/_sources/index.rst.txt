@@ -5,10 +5,6 @@
 FitTrackee
 ==========
 
-| |Python Version| |Flask Version| |React Version|
-| |Codacy Badge| |Codacy Coverage Badge| [#f1]_ |Build Status|
-
-
 | This web application allows you to track your outdoor activities from
   gpx files and keep your data on your own server.
 | No mobile app is developed yet, but several existing mobile apps can
@@ -42,20 +38,3 @@ Table of contents
    api/index
    troubleshooting/index
    changelog
-
-
-.. |Python Version| image:: https://img.shields.io/badge/python-3.7-brightgreen.svg
-   :target: https://python.org
-.. |Flask Version| image:: https://img.shields.io/badge/flask-1.1-brightgreen.svg
-   :target: http://flask.pocoo.org/
-.. |React Version| image:: https://img.shields.io/badge/react-16.8-brightgreen.svg
-   :target: https://reactjs.org/
-.. |Codacy Badge| image:: https://api.codacy.com/project/badge/Grade/290a285f22e94132904dc13b4dd19d1d
-   :target: https://www.codacy.com/app/SamR1/FitTrackee
-.. |Codacy Coverage Badge| image:: https://api.codacy.com/project/badge/Coverage/290a285f22e94132904dc13b4dd19d1d
-   :target: https://www.codacy.com/app/SamR1/FitTrackee
-.. |Build Status| image:: https://travis-ci.org/SamR1/FitTrackee.svg?branch=master
-   :target: https://travis-ci.org/SamR1/FitTrackee
-
-.. rubric:: Notes
-.. [#f1] Test coverage: only for Python API

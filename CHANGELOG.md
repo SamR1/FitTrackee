@@ -1,6 +1,8 @@
 # Change log
 
-## Version 0.2.1 (2019/xx/xx)
+## Version 0.2.1 - Fix and improvements (2019/xx/xx)
+
+### Issues Closed
 
 #### New Features
 
@@ -15,6 +17,10 @@
 
 * [#34](https://github.com/SamR1/Fittrackee/issues/34) - Weather is not displayed anymore 
 
+### Misc
+
+* **[Poetry](https://poetry.eustace.io/)** replaces **[pipenv](https://docs.pipenv.org)** for Python packages management
+
 In this release 7 issue were closed.
 
 
@@ -26,7 +32,7 @@ In this release 7 issue were closed.
 
 * [#13](https://github.com/SamR1/Fittrackee/issues/13) - Detailed statistics
 
-#### Misc
+### Misc
 
 * Update dependencies
 
@@ -53,7 +59,37 @@ In this release 1 issue was closed.
 In this release 7 issues were closed.
 
 
-## Version 0.1.0 - Minimal version (2018-07-04)
+## Version 0.1.0 - First release 🎉 (2018-07-04)
+
+**Features:**
+- Account creation (only standard user, not admin)
+- 6 sports supported:
+   - Cycling (Sport)
+   - Cycling (Transport)
+   - Hiking
+   - Montain Biking
+   - Running
+   - Walking 
+- Activity creation by uploading a gpx file. An activity can even be created without gpx (the user must enter date, time, duration and distance)
+- Activity edition and deletion
+- An activity can be displayed with map (if with gpx), weather (if the DarkSky API key is provided) and charts (speed and elevation)
+- A user can add a note
+- Month calendar with activities
+- Current month statistics
+- Records by sports:
+   - average speed
+   - farest distance
+   - longest duration
+   - maximum speed
+- Activities list and search
+
+
+**Notes:**
+- only activity owner can see his activity
+- no administration for now
+
+➡️ more informations: see [wiki](https://github.com/SamR1/mpwo/wiki)  and [current issues](https://github.com/SamR1/mpwo/issues)
+
 
 ### Issues Closed
 

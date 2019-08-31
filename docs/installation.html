@@ -167,6 +167,7 @@
 <ul class="simple">
 <li><p>PostgreSQL database (10+)</p></li>
 <li><p>Python 3.7+</p></li>
+<li><p><a class="reference external" href="https://poetry.eustace.io">Poetry</a></p></li>
 <li><p><a class="reference external" href="https://yarnpkg.com">Yarn</a> and
 <a class="reference external" href="https://github.com/zeit/serve">serve</a></p></li>
 <li><p>API key from <a class="reference external" href="http://thunderforest.com">ThunderForest</a></p></li>
@@ -180,6 +181,19 @@
 on Debian and Arch).</div>
 <div class="line">On other OS, some issues can be encountered and adaptations may be
 necessary.</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Since FitTrackee 0.2.1, Python packages installation needs Poetry. To install it on ArchLinux:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ yaourt poetry
+$ poetry --version
+Poetry <span class="m">0</span>.12.17
+
+<span class="c1"># optional</span>
+$ poetry config settings.virtualenvs.in-project <span class="nb">true</span>
+</pre></div>
+</div>
+<p>For other OS, see <a class="reference external" href="https://poetry.eustace.io/docs/#installation">Poetry Documentation</a></p>
 </div>
 <div class="section" id="dev-environment">
 <h3>Dev environment<a class="headerlink" href="#dev-environment" title="Permalink to this headline">¶</a></h3>
@@ -273,9 +287,10 @@ password</p>
 </div>
 <ul class="simple">
 <li><p>Update <strong>Makefile.config</strong> and <strong>Makefile.custom.config</strong> file if needed</p></li>
-<li><p>Reinstall packages if needed:</p></li>
+<li><p>Upgrade packages and database:</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make install-dev
+$ make upgrade-db
 </pre></div>
 </div>
 <ul class="simple">

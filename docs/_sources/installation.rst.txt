@@ -20,6 +20,7 @@ Prerequisites
 
 -  PostgreSQL database (10+)
 -  Python 3.7+
+-  `Poetry <https://poetry.eustace.io>`__
 -  `Yarn <https://yarnpkg.com>`__ and
    `serve <https://github.com/zeit/serve>`__
 -  API key from `ThunderForest <http://thunderforest.com>`__
@@ -33,6 +34,21 @@ Installation
   on Debian and Arch).
 | On other OS, some issues can be encountered and adaptations may be
   necessary.
+
+.. warning::
+    Since FitTrackee 0.2.1, Python packages installation needs Poetry. To install it on ArchLinux:
+
+    .. code-block:: bash
+
+        $ yaourt poetry
+        $ poetry --version
+        Poetry 0.12.17
+
+        # optional
+        $ poetry config settings.virtualenvs.in-project true
+
+    For other OS, see `Poetry Documentation <https://poetry.eustace.io/docs/#installation>`__
+
 
 Dev environment
 ^^^^^^^^^^^^^^^
@@ -128,11 +144,12 @@ Dev environment
 
 - Update **Makefile.config** and **Makefile.custom.config** file if needed
 
-- Reinstall packages if needed:
+- Upgrade packages and database:
 
 .. code:: bash
 
    $ make install-dev
+   $ make upgrade-db
 
 - Restart the server and the client:
 

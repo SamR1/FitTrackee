@@ -46,16 +46,16 @@ html {
 }
 
 .alert-danger {
-    background-color: #d9534f;
+    background-color: #dc6460;
     border-color: transparent;
 }
 
 .alert-info {
-    background-color: #29abe0;
+    background-color: #3eb3e3;
     border-color: transparent;
 }
 
 .alert-warning {
-    background-color: #f47c3c;
+    background-color: #f5894f;
     border-color: transparent;
 }
