@@ -87,6 +87,7 @@
 <li><a class="reference internal" href="#id3">Prod environment</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#environment-variables">Environment variables</a></li>
 </ul>
 </li>
 </ul>
@@ -192,8 +193,7 @@ $ <span class="nb">cd</span> FitTrackee
 <ul class="simple">
 <li><p>Update <strong>Makefile.config</strong> file if needed and copy/paste the
 <strong>ThunderForest</strong> and <strong>Dark Sky</strong> API keys value in
-<strong>Makefile.custom.config</strong> file (see example). User registration can
-also be disabled in <strong>Makefile.custom.config</strong>.</p></li>
+<strong>Makefile.custom.config</strong> file (see <a class="reference external" href="installation.html#environment-variables">Environment variables</a>).</p></li>
 <li><p>Install Python virtualenv, React and all related packages and
 initialize the database:</p></li>
 </ul>
@@ -228,8 +228,7 @@ $ <span class="nb">cd</span> FitTrackee
 <ul class="simple">
 <li><p>Update <strong>Makefile.config</strong> file if needed and copy/paste the
 <strong>ThunderForest</strong> and <strong>Dark Sky</strong> API keys value in
-<strong>Makefile.custom.config</strong> file (see example). User registration can
-also be disabled in <strong>Makefile.custom.config</strong>.</p></li>
+<strong>Makefile.custom.config</strong> file (see <a class="reference external" href="installation.html#environment-variables">Environment variables</a>).</p></li>
 <li><p>Install Python virtualenv, React and all related packages and
 initialize the database:</p></li>
 </ul>
@@ -290,6 +289,49 @@ password</p>
 <h3>Prod environment<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">TODO</span></code></p>
 </div>
+</div>
+<div class="section" id="environment-variables">
+<h2>Environment variables<a class="headerlink" href="#environment-variables" title="Permalink to this headline">¶</a></h2>
+<p>The following environment variables must be defined in <strong>Makefile.custom.config</strong>:</p>
+<table class="table-bordered table-striped docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 35%" />
+<col style="width: 32%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>variable</p></th>
+<th class="head"><p>description</p></th>
+<th class="head"><p>app default value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">REACT_APP_GPX_LIMIT_IMPORT</span></code></p></td>
+<td><p>max. number of gpx file in zip archive</p></td>
+<td><p>10</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">REACT_APP_MAX_SINGLE_FILE_SIZE</span></code></p></td>
+<td><p>max. size of a gpx or picture file</p></td>
+<td><p>1MB</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">REACT_APP_MAX_ZIP_FILE_SIZE</span></code></p></td>
+<td><p>max. size of a zip archive</p></td>
+<td><p>10MB</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">REACT_APP_ALLOW_REGISTRATION</span></code></p></td>
+<td><p>allows users to register</p></td>
+<td><p>true</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">REACT_APP_THUNDERFOREST_API_KEY</span></code></p></td>
+<td><p>ThunderForest API key</p></td>
+<td><p>no defaut value, must be initialized</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">WEATHER_API</span></code></p></td>
+<td><p>DarkSky API key</p></td>
+<td><p>no defaut value, not mandatory</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 

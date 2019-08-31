@@ -46,8 +46,7 @@ Dev environment
 
 -  Update **Makefile.config** file if needed and copy/paste the
    **ThunderForest** and **Dark Sky** API keys value in
-   **Makefile.custom.config** file (see example). User registration can
-   also be disabled in **Makefile.custom.config**.
+   **Makefile.custom.config** file (see `Environment variables <installation.html#environment-variables>`__).
 
 -  Install Python virtualenv, React and all related packages and
    initialize the database:
@@ -83,8 +82,7 @@ Prod environment
 
 -  Update **Makefile.config** file if needed and copy/paste the
    **ThunderForest** and **Dark Sky** API keys value in
-   **Makefile.custom.config** file (see example). User registration can
-   also be disabled in **Makefile.custom.config**.
+   **Makefile.custom.config** file (see `Environment variables <installation.html#environment-variables>`__).
 
 -  Install Python virtualenv, React and all related packages and
    initialize the database:
@@ -148,3 +146,21 @@ Prod environment
 
 ``TODO``
 
+
+Environment variables
+~~~~~~~~~~~~~~~~~~~~~
+
+The following environment variables must be defined in **Makefile.custom.config**:
+
+.. cssclass:: table-bordered table-striped
+
+===================================== ======================================= ====================================
+variable                              description                             app default value
+===================================== ======================================= ====================================
+``REACT_APP_GPX_LIMIT_IMPORT``        max. number of gpx file in zip archive  10
+``REACT_APP_MAX_SINGLE_FILE_SIZE``    max. size of a gpx or picture file      1MB
+``REACT_APP_MAX_ZIP_FILE_SIZE``       max. size of a zip archive              10MB
+``REACT_APP_ALLOW_REGISTRATION``      allows users to register                true
+``REACT_APP_THUNDERFOREST_API_KEY``   ThunderForest API key                   no defaut value, must be initialized
+``WEATHER_API``                       DarkSky API key                         no defaut value, not mandatory
+===================================== ======================================= ====================================
