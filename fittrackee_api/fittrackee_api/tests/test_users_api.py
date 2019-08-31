@@ -44,6 +44,7 @@ def test_single_user(app, user_1):
     assert data['data']['bio'] is None
     assert data['data']['location'] is None
     assert data['data']['timezone'] is None
+    assert data['data']['weekm'] is False
     assert data['data']['nb_activities'] == 0
     assert data['data']['nb_sports'] == 0
     assert data['data']['total_distance'] == 0
@@ -88,6 +89,7 @@ def test_single_user_with_activities(
     assert data['data']['bio'] is None
     assert data['data']['location'] is None
     assert data['data']['timezone'] is None
+    assert data['data']['weekm'] is False
     assert data['data']['nb_activities'] == 2
     assert data['data']['nb_sports'] == 2
     assert data['data']['total_distance'] == 22
@@ -140,7 +142,7 @@ def test_single_user_wrong_id(app, user_1):
     assert 'User does not exist.' in data['message']
 
 
-def test_users_list(app, user_1, user_2):
+def test_users_list(app, user_1, user_2, user_3):
     """=> Ensure get single user behaves correctly."""
 
     client = app.test_client()
@@ -161,23 +163,34 @@ def test_users_list(app, user_1, user_2):
     assert response.status_code == 200
     assert 'success' in data['status']
 
-    assert len(data['data']['users']) == 2
+    assert len(data['data']['users']) == 3
     assert 'created_at' in data['data']['users'][0]
     assert 'created_at' in data['data']['users'][1]
+    assert 'created_at' in data['data']['users'][2]
     assert 'test' in data['data']['users'][0]['username']
     assert 'toto' in data['data']['users'][1]['username']
+    assert 'sam' in data['data']['users'][2]['username']
     assert 'test@test.com' in data['data']['users'][0]['email']
     assert 'toto@toto.com' in data['data']['users'][1]['email']
+    assert 'sam@test.com' in data['data']['users'][2]['email']
     assert data['data']['users'][0]['timezone'] is None
+    assert data['data']['users'][0]['weekm'] is False
     assert data['data']['users'][0]['nb_activities'] == 0
     assert data['data']['users'][0]['nb_sports'] == 0
     assert data['data']['users'][0]['total_distance'] == 0
     assert data['data']['users'][0]['total_duration'] == '0:00:00'
     assert data['data']['users'][1]['timezone'] is None
+    assert data['data']['users'][1]['weekm'] is False
     assert data['data']['users'][1]['nb_activities'] == 0
     assert data['data']['users'][1]['nb_sports'] == 0
     assert data['data']['users'][1]['total_distance'] == 0
     assert data['data']['users'][1]['total_duration'] == '0:00:00'
+    assert data['data']['users'][2]['timezone'] is None
+    assert data['data']['users'][2]['weekm'] is True
+    assert data['data']['users'][2]['nb_activities'] == 0
+    assert data['data']['users'][2]['nb_sports'] == 0
+    assert data['data']['users'][2]['total_distance'] == 0
+    assert data['data']['users'][2]['total_duration'] == '0:00:00'
 
 
 def test_encode_auth_token(app, user_1):

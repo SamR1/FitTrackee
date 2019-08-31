@@ -23,6 +23,8 @@ class User(db.Model):
     bio = db.Column(db.String(200), nullable=True)
     picture = db.Column(db.String(255), nullable=True)
     timezone = db.Column(db.String(50), nullable=True)
+    # does the week start Monday?
+    weekm = db.Column(db.Boolean(50), default=False, nullable=False)
     activities = db.relationship(
         'Activity', lazy=True, backref=db.backref('users', lazy='joined')
     )
@@ -113,6 +115,7 @@ class User(db.Model):
             'birth_date': self.birth_date,
             'picture': self.picture is not None,
             'timezone': self.timezone,
+            'weekm': self.weekm,
             'nb_activities': nb_activity,
             'nb_sports': len(sports),
             'total_distance': float(total[0]) if total[0] else 0,

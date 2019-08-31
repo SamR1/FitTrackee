@@ -90,6 +90,15 @@ def user_2():
 
 
 @pytest.fixture()
+def user_3():
+    user = User(username='sam', email='sam@test.com', password='12345678')
+    user.weekm = True
+    db.session.add(user)
+    db.session.commit()
+    return user
+
+
+@pytest.fixture()
 def sport_1_cycling():
     sport = Sport(label='Cycling')
     db.session.add(sport)

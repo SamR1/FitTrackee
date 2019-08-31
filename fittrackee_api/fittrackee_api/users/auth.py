@@ -408,6 +408,7 @@ def edit_user(user_id):
     :<json string password: user password
     :<json string password_conf: user password confirmation
     :<json string timezone: user time zone
+    :<json string weekm: does week start on Monday?
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -424,7 +425,16 @@ def edit_user(user_id):
     """
     # get post data
     post_data = request.get_json()
-    if not post_data:
+    user_mandatory_data = {
+        'first_name',
+        'last_name',
+        'bio',
+        'birth_date',
+        'location',
+        'timezone',
+        'weekm',
+    }
+    if not post_data or not post_data.keys() >= user_mandatory_data:
         response_object = {'status': 'error', 'message': 'Invalid payload.'}
         return jsonify(response_object), 400
     first_name = post_data.get('first_name')
@@ -435,6 +445,7 @@ def edit_user(user_id):
     password = post_data.get('password')
     password_conf = post_data.get('password_conf')
     timezone = post_data.get('timezone')
+    weekm = post_data.get('weekm')
 
     if password is not None and password != '':
         if password_conf != password:
@@ -460,11 +471,13 @@ def edit_user(user_id):
         if password is not None and password != '':
             user.password = password
         user.timezone = timezone
+        user.weekm = weekm
         db.session.commit()
 
         response_object = {
             'status': 'success',
             'message': 'User profile updated.',
+            'data': user.serialize(),
         }
         return jsonify(response_object), 200
 
