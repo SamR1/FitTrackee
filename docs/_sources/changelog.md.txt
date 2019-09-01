@@ -1,6 +1,6 @@
 # Change log
 
-## Version 0.2.1 - Fix and improvements (2019/xx/xx)
+## Version 0.2.1 - Fix and improvements (2019/09/01)
 
 ### Issues Closed
 
