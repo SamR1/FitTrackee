@@ -25,8 +25,9 @@ class ActivityMap extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (
-      this.props.dataType === 'activity' &&
-      prevProps.activity.id !== this.props.activity.id
+      (this.props.dataType === 'activity' &&
+        prevProps.activity.id !== this.props.activity.id) ||
+      (this.props.dataType === 'activity' && prevProps.dataType === 'segment')
     ) {
       this.props.loadActivityGpx(this.props.activity.id)
     }

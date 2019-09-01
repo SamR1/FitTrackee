@@ -131,23 +131,26 @@ label {
   display: none;
 }
 
-.activity-title:hover img {
+.activity-title img {
   border: 1px solid lightgrey;
   border-radius: 4px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  display:block;
-  margin-left: 10px;
+  display: none;
+  margin-left: 20px;
   position: absolute;
   z-index: 1000;
 }
 
-.activity-title:hover .map-attribution-list {
-  display:block;
+.activity-title .map-attribution-list {
+  display: none;
   font-size: 11px;
-  margin-left: 10px;
-  position:relative;
-  top: 0;
+  margin-left: 20px;
+  position: absolute;
   z-index: 1000;
+}
+
+.activity-title:hover img, .activity-title:hover .map-attribution-list   {
+  display: block;
 }
 
 .add-activity {

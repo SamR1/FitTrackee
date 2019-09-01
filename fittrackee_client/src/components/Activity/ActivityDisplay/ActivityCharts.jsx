@@ -35,8 +35,9 @@ class ActivityCharts extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (
-      this.props.dataType === 'activity' &&
-      prevProps.activity.id !== this.props.activity.id
+      (this.props.dataType === 'activity' &&
+        prevProps.activity.id !== this.props.activity.id) ||
+      (this.props.dataType === 'activity' && prevProps.dataType === 'segment')
     ) {
       this.props.loadActivityData(this.props.activity.id)
     }
