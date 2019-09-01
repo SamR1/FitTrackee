@@ -33,7 +33,7 @@ Activities/Workouts
 **Notes:**
 
 - only activity owner can see his activity
-- no administration for now
+- **no administration for now**
 
 
 Dashboard

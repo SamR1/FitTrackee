@@ -328,7 +328,7 @@ def get_user_status(user_id):
           "bio": null,
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
-          "email": "admin@example.com",
+          "email": "sam@example.com",
           "first_name": null,
           "id": 2,
           "last_name": null,
@@ -339,7 +339,8 @@ def get_user_status(user_id):
           "timezone": "Europe/Paris",
           "total_distance": 67.895,
           "total_duration": "6:50:27",
-          "username": "sam"
+          "username": "sam",
+          "weekm": false
         },
         "status": "success"
       }
@@ -384,7 +385,7 @@ def edit_user(user_id):
           "bio": null,
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
-          "email": "admin@example.com",
+          "email": "sam@example.com",
           "first_name": null,
           "id": 2,
           "last_name": null,
@@ -396,7 +397,9 @@ def edit_user(user_id):
           "total_distance": 67.895,
           "total_duration": "6:50:27",
           "username": "sam"
+          "weekm": true,
         },
+        "message": "User profile updated.",
         "status": "success"
       }
 
@@ -513,24 +516,7 @@ def edit_picture(user_id):
       Content-Type: application/json
 
       {
-        "data": {
-          "admin": false,
-          "bio": null,
-          "birth_date": null,
-          "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
-          "email": "admin@example.com",
-          "first_name": null,
-          "id": 2,
-          "last_name": null,
-          "location": null,
-          "nb_activities": 6,
-          "nb_sports": 3,
-          "picture": false,
-          "timezone": "Europe/Paris",
-          "total_distance": 67.895,
-          "total_duration": "6:50:27",
-          "username": "sam"
-        },
+        "message": "User picture updated.",
         "status": "success"
       }
 
