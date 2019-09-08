@@ -262,6 +262,22 @@ label {
   margin-top: 30px;
 }
 
+.dropdown-wrapper {
+  width: 50px;
+}
+
+.dropdown-list {
+  background-color: #fff;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 10;
+}
+.dropdown-item {
+  cursor: default;
+  font-size: 0.9em;
+  font-weight: bold;
+}
+
 .fa-question-circle {
   color: #6c757d;
   margin-left: 3px;
@@ -292,6 +308,12 @@ label {
 
 .huge {
   font-size: 25px;
+}
+
+.i18n-flag svg {
+  height: 100%;
+  opacity: .9;
+  width: 15px;
 }
 
 .inactive-link {

@@ -3,6 +3,7 @@ import { Translation } from 'react-i18next'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
+import LanguageDropdown from './LanguageDropdown'
 import { apiUrl } from '../../utils'
 
 class NavBar extends React.PureComponent {
@@ -149,6 +150,7 @@ class NavBar extends React.PureComponent {
                         </Link>
                       </li>
                     )}
+                    <li><LanguageDropdown /></li>
                   </ul>
                 </div>
               </div>
