@@ -1,0 +1,15 @@
+{
+  "Dashboard": "Dashboard",
+  "Workouts": "Workouts",
+  "Statistics": "Statistics",
+  "Add workout": "Add workout",
+  "Register": "Register",
+  "Login": "Login",
+  "Logout": "Logout",
+  "login": "login",
+  "Enter a username": "Enter a username",
+  "Enter an email address": "Enter an email address",
+  "Enter a password": "Enter a password",
+  "Enter the password confirmation": "Enter the password confirmation",
+  "Submit": "Submit"
+}

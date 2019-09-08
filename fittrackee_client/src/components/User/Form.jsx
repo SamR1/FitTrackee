@@ -1,18 +1,21 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { Helmet } from 'react-helmet'
 
 import { history } from '../../index'
 import { isRegistrationAllowed } from '../../utils'
 
 export default function Form(props) {
+  const { t } = useTranslation()
+  const pageTitle = `${props.formType
+    .charAt(0)
+    .toUpperCase()}${props.formType.slice(1)}`
   return (
     <div>
       <Helmet>
-        <title>FitTrackee - {props.formType}</title>
+        <title>FitTrackee - {t(props.formType)}</title>
       </Helmet>
-      <h1 className="page-title">
-        {`${props.formType.charAt(0).toUpperCase()}${props.formType.slice(1)}`}
-      </h1>
+      <h1 className="page-title">{t(pageTitle)}</h1>
       <div className="container">
         <div className="row">
           <div className="col-md-3" />
@@ -43,7 +46,7 @@ export default function Form(props) {
                     <input
                       className="form-control input-lg"
                       name="username"
-                      placeholder="Enter a username"
+                      placeholder={t('Enter a username')}
                       required
                       type="text"
                       value={props.userForm.username}
@@ -55,7 +58,7 @@ export default function Form(props) {
                   <input
                     className="form-control input-lg"
                     name="email"
-                    placeholder="Enter an email address"
+                    placeholder={t('Enter an email address')}
                     required
                     type="email"
                     value={props.userForm.email}
@@ -66,7 +69,7 @@ export default function Form(props) {
                   <input
                     className="form-control input-lg"
                     name="password"
-                    placeholder="Enter a password"
+                    placeholder={t('Enter a password')}
                     required
                     type="password"
                     value={props.userForm.password}
@@ -78,7 +81,7 @@ export default function Form(props) {
                     <input
                       className="form-control input-lg"
                       name="password_conf"
-                      placeholder="Enter the password confirmation"
+                      placeholder={t('Enter the password confirmation')}
                       required
                       type="password"
                       value={props.userForm.password_conf}
@@ -89,7 +92,7 @@ export default function Form(props) {
                 <input
                   type="submit"
                   className="btn btn-primary btn-lg btn-block"
-                  value="Submit"
+                  value={t('Submit')}
                 />
               </form>
             )}

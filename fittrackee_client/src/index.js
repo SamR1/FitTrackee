@@ -1,11 +1,13 @@
 /* eslint-disable react/jsx-filename-extension */
 import { createBrowserHistory } from 'history'
 import React from 'react'
+import { I18nextProvider } from 'react-i18next'
 import ReactDOM from 'react-dom'
 import { routerMiddleware } from 'connected-react-router'
-import { applyMiddleware, createStore, compose } from 'redux'
+import { applyMiddleware, compose, createStore } from 'redux'
 import thunk from 'redux-thunk'
 
+import i18n from './i18n'
 import App from './components/App'
 import Root from './components/Root'
 import registerServiceWorker from './registerServiceWorker'
@@ -34,7 +36,9 @@ if (window.localStorage.authToken !== null) {
 
 ReactDOM.render(
   <Root store={store} history={history}>
-    <App />
+    <I18nextProvider i18n={i18n}>
+      <App />
+    </I18nextProvider>
   </Root>,
   rootNode
 )

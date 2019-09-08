@@ -1,0 +1,15 @@
+{
+  "Dashboard": "Tableau de Bord",
+  "Workouts": "Activités",
+  "Statistics": "Statistiques",
+  "Add workout": "Ajouter une activité",
+  "Register": "S'inscrire",
+  "Login": "Se connecter",
+  "Logout": "Se déconnecter",
+  "login": "se connecter",
+  "Enter a username": "Saisir un nom",
+  "Enter an email address": "Saisir une adresse e-mail",
+  "Enter a password": "Saisir un mot de passe",
+  "Enter the password confirmation": "Confirmer le mot de passe",
+  "Submit": "Valider"
+}
