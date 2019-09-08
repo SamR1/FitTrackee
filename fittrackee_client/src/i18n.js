@@ -2,8 +2,10 @@ import i18n from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import XHR from 'i18next-xhr-backend'
 
-import EnTranslations from './locales/en/translations.json'
-import FrTranslations from './locales/fr/translations.json'
+import EnCommonTranslations from './locales/en/common.json'
+import EnUserTranslations from './locales/en/user.json'
+import FrCommonTranslations from './locales/fr/common.json'
+import FrUserTranslations from './locales/fr/user.json'
 
 i18n
   .use(XHR)
@@ -18,14 +20,16 @@ i18n
     },
     resources: {
       en: {
-        translations: EnTranslations,
+        common: EnCommonTranslations,
+        user: EnUserTranslations,
       },
       fr: {
-        translations: FrTranslations,
+        common: FrCommonTranslations,
+        user: FrUserTranslations,
       },
     },
-    ns: ['translations'],
-    defaultNS: 'translations',
+    ns: ['common'],
+    defaultNS: 'common',
   })
 
 export default i18n

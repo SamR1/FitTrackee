@@ -38,7 +38,7 @@ class NavBar extends React.PureComponent {
                           pathname: '/',
                         }}
                       >
-                        {t('Dashboard')}
+                        {t('common:Dashboard')}
                       </Link>
                     </li>
                     {isAuthenticated && (
@@ -61,7 +61,7 @@ class NavBar extends React.PureComponent {
                             pathname: '/activities/statistics',
                           }}
                         >
-                          {t('Statistics')}
+                          {t('common:Statistics')}
                         </Link>
                       </li>
                     )}
@@ -73,7 +73,7 @@ class NavBar extends React.PureComponent {
                             pathname: '/activities/add',
                           }}
                         >
-                          <strong>{t('Add workout')}</strong>
+                          <strong>{t('common:Add workout')}</strong>
                         </Link>
                       </li>
                     )}
@@ -102,7 +102,7 @@ class NavBar extends React.PureComponent {
                             pathname: '/register',
                           }}
                         >
-                          {t('Register')}
+                          {t('common:Register')}
                         </Link>
                       </li>
                     )}
@@ -114,7 +114,7 @@ class NavBar extends React.PureComponent {
                             pathname: '/login',
                           }}
                         >
-                          {t('Login')}
+                          {t('common:Login')}
                         </Link>
                       </li>
                     )}
@@ -145,7 +145,7 @@ class NavBar extends React.PureComponent {
                             pathname: '/logout',
                           }}
                         >
-                          {t('Logout')}
+                          {t('common:Logout')}
                         </Link>
                       </li>
                     )}

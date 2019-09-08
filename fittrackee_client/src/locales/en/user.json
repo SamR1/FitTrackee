@@ -1,0 +1,8 @@
+{
+  "login": "login",
+  "register": "register",
+  "Enter a username": "Enter a username",
+  "Enter an email address": "Enter an email address",
+  "Enter a password": "Enter a password",
+  "Enter the password confirmation": "Enter the password confirmation"
+}

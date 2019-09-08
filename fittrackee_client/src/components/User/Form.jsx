@@ -7,13 +7,13 @@ import { isRegistrationAllowed } from '../../utils'
 
 export default function Form(props) {
   const { t } = useTranslation()
-  const pageTitle = `${props.formType
+  const pageTitle = `common:${props.formType
     .charAt(0)
     .toUpperCase()}${props.formType.slice(1)}`
   return (
     <div>
       <Helmet>
-        <title>FitTrackee - {t(props.formType)}</title>
+        <title>FitTrackee - {t(`user:${props.formType}`)}</title>
       </Helmet>
       <h1 className="page-title">{t(pageTitle)}</h1>
       <div className="container">
@@ -46,7 +46,7 @@ export default function Form(props) {
                     <input
                       className="form-control input-lg"
                       name="username"
-                      placeholder={t('Enter a username')}
+                      placeholder={t('user:Enter a username')}
                       required
                       type="text"
                       value={props.userForm.username}
@@ -58,7 +58,7 @@ export default function Form(props) {
                   <input
                     className="form-control input-lg"
                     name="email"
-                    placeholder={t('Enter an email address')}
+                    placeholder={t('user:Enter an email address')}
                     required
                     type="email"
                     value={props.userForm.email}
@@ -69,7 +69,7 @@ export default function Form(props) {
                   <input
                     className="form-control input-lg"
                     name="password"
-                    placeholder={t('Enter a password')}
+                    placeholder={t('user:Enter a password')}
                     required
                     type="password"
                     value={props.userForm.password}
@@ -81,7 +81,7 @@ export default function Form(props) {
                     <input
                       className="form-control input-lg"
                       name="password_conf"
-                      placeholder={t('Enter the password confirmation')}
+                      placeholder={t('user:Enter the password confirmation')}
                       required
                       type="password"
                       value={props.userForm.password_conf}
