@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import i18next from 'i18next'
+import { connect } from 'react-redux'
 
 import { ReactComponent as EnFlag } from '../../images/flags/en.svg'
 import { ReactComponent as FrFlag } from '../../images/flags/fr.svg'
+import { setLanguage } from '../../actions/index'
 
 const languages = [
   {
@@ -22,16 +24,6 @@ class Dropdown extends Component {
     super(props)
     this.state = {
       isOpen: false,
-      selected: 'en',
-    }
-  }
-
-  selectLanguage(name) {
-    if (name !== this.state.selected) {
-      i18next.changeLanguage(name)
-      this.setState({
-        selected: name,
-      })
     }
   }
 
@@ -42,7 +34,8 @@ class Dropdown extends Component {
   }
 
   render() {
-    const { isOpen, selected } = this.state
+    const { isOpen } = this.state
+    const { language: selected, onUpdateLanguage } = this.props
     return (
       <div className="dropdown-wrapper" onClick={() => this.toggleDropdown()}>
         <ul className="dropdown-list i18n-flag">
@@ -58,7 +51,7 @@ class Dropdown extends Component {
                     : ''
                 }`}
                 key={language.name}
-                onClick={() => this.selectLanguage(language.name)}
+                onClick={() => onUpdateLanguage(language.name, selected)}
               >
                 {language.flag} {language.name}
               </li>
@@ -69,4 +62,16 @@ class Dropdown extends Component {
   }
 }
 
-export default Dropdown
+export default connect(
+  state => ({
+    language: state.language,
+  }),
+  dispatch => ({
+    onUpdateLanguage: (lang, selected) => {
+      if (lang !== selected) {
+        i18next.changeLanguage(lang)
+        dispatch(setLanguage(lang))
+      }
+    },
+  })
+)(Dropdown)

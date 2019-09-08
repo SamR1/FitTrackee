@@ -3,6 +3,7 @@ const emptyData = {
 }
 
 export default {
+  language: 'en',
   message: '',
   messages: [],
   user: {

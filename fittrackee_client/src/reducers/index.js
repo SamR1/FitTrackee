@@ -57,6 +57,13 @@ const gpx = (state = initial.gpx, action) => {
   return state
 }
 
+const language = (state = initial.language, action) => {
+  if (action.type === 'SET_LANGUAGE') {
+    return action.language
+  }
+  return state
+}
+
 const loading = (state = initial.loading, action) => {
   if (action.type === 'SET_LOADING') {
     return action.loading
@@ -124,6 +131,7 @@ export default history =>
     calendarActivities,
     chartData,
     gpx,
+    language,
     loading,
     message,
     messages,

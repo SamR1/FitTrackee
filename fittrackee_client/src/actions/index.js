@@ -12,6 +12,11 @@ export const setError = message => ({
   message,
 })
 
+export const setLanguage = language => ({
+  type: 'SET_LANGUAGE',
+  language,
+})
+
 export const setLoading = loading => ({
   type: 'SET_LOADING',
   loading,
