@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import i18next from 'i18next'
 
 import { ReactComponent as EnFlag } from '../../images/flags/en.svg'
 import { ReactComponent as FrFlag } from '../../images/flags/fr.svg'
@@ -26,9 +27,12 @@ class Dropdown extends Component {
   }
 
   selectLanguage(name) {
-    this.setState({
-      selected: name,
-    })
+    if (name !== this.state.selected) {
+      i18next.changeLanguage(name)
+      this.setState({
+        selected: name,
+      })
+    }
   }
 
   toggleDropdown() {
