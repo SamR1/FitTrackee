@@ -52,7 +52,11 @@ class Dropdown extends Component {
             )
             .map(language => (
               <li
-                className="dropdown-item"
+                className={`dropdown-item${
+                  language.name === selected && isOpen
+                    ? ' dropdown-item-selected'
+                    : ''
+                }`}
                 key={language.name}
                 onClick={() => this.selectLanguage(language.name)}
               >
