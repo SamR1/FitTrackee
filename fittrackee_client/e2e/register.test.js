@@ -95,7 +95,7 @@ test('should throw an error if the username is too short', async t => {
   await t
     .expect(Selector('H1').withText('Register').exists).ok()
     .expect(Selector('code').withText(
-      'Username: 3 to 12 characters required.').exists).ok()
+      '3 to 12 characters required for username.').exists).ok()
 })
 
 test('should throw an error if the user is too long', async t => {
@@ -115,7 +115,7 @@ test('should throw an error if the user is too long', async t => {
   await t
     .expect(Selector('H1').withText('Register').exists).ok()
     .expect(Selector('code').withText(
-      'Username: 3 to 12 characters required.').exists).ok()
+      '3 to 12 characters required for username.').exists).ok()
 })
 
 test('should throw an error if the email is invalid', async t => {
@@ -173,5 +173,5 @@ test('should throw an error if the password is too short', async t => {
   await t
     .expect(Selector('H1').withText('Register').exists).ok()
     .expect(Selector('code').withText(
-      'Password: 8 characters required.').exists).ok()
+      '8 characters required for password.').exists).ok()
 })

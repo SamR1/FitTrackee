@@ -12,6 +12,7 @@ import {
   startOfWeek,
   subMonths,
 } from 'date-fns'
+import { enGB, fr } from 'date-fns/locale'
 import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -46,7 +47,7 @@ class Calendar extends React.Component {
     this.props.loadMonthActivities(this.state.startDate, this.state.endDate)
   }
 
-  renderHeader() {
+  renderHeader(localeOptions) {
     const dateFormat = 'MMM yyyy'
     return (
       <div className="header row flex-middle">
@@ -54,7 +55,9 @@ class Calendar extends React.Component {
           <i className="fa fa-chevron-left" aria-hidden="true" />
         </div>
         <div className="col col-center">
-          <span>{format(this.state.currentMonth, dateFormat)}</span>
+          <span>
+            {format(this.state.currentMonth, dateFormat, localeOptions)}
+          </span>
         </div>
         <div className="col col-end" onClick={() => this.handleNextMonth()}>
           <i className="fa fa-chevron-right" aria-hidden="true" />
@@ -63,7 +66,7 @@ class Calendar extends React.Component {
     )
   }
 
-  renderDays() {
+  renderDays(localeOptions) {
     const dateFormat = 'EEE'
     const days = []
     const { startDate } = this.state
@@ -71,7 +74,7 @@ class Calendar extends React.Component {
     for (let i = 0; i < 7; i++) {
       days.push(
         <div className="col col-center" key={i}>
-          {format(addDays(startDate, i), dateFormat)}
+          {format(addDays(startDate, i), dateFormat, localeOptions)}
         </div>
       )
     }
@@ -175,11 +178,14 @@ class Calendar extends React.Component {
   }
 
   render() {
+    const localeOptions = {
+      locale: this.props.language === 'fr' ? fr : enGB,
+    }
     return (
       <div className="card activity-card">
         <div className="calendar">
-          {this.renderHeader()}
-          {this.renderDays()}
+          {this.renderHeader(localeOptions)}
+          {this.renderDays(localeOptions)}
           {this.renderCells()}
         </div>
       </div>
@@ -190,6 +196,7 @@ class Calendar extends React.Component {
 export default connect(
   state => ({
     activities: state.calendarActivities.data,
+    language: state.language,
     sports: state.sports.data,
     user: state.user,
   }),
