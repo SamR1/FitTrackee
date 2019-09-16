@@ -6,9 +6,11 @@ sudo: required
 
 addons:
   apt:
+    update: true
     sources:
      - google-chrome
     packages:
+     - dpkg
      - google-chrome-stable fluxbox
 
 services:
