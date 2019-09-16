@@ -16,11 +16,12 @@ export default class Statistics extends React.Component {
   }
 
   render() {
+    const { t } = this.props
     return (
       <div className="card activity-card">
-        <div className="card-header">This month</div>
+        <div className="card-header">{t('dashboard:This month')}</div>
         <div className="card-body">
-          <Stats displayEmpty={false} statsParams={this.state} />
+          <Stats displayEmpty={false} statsParams={this.state} t={t} />
         </div>
       </div>
     )

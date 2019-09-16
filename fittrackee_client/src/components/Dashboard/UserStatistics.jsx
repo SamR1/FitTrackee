@@ -1,10 +1,12 @@
 import React from 'react'
 
 export default function UserStatistics(props) {
-  const { user } = props
+  const { t, user } = props
   const days = user.total_duration.match(/day/g)
-    ? `${user.total_duration.split(',')[0]},`
-    : '0 days,'
+    ? `${user.total_duration.split(' ')[0]} ${
+        user.total_duration.match(/days/g) ? t('common:days') : t('common:day')
+      }`
+    : `0 ${t('common:days')},`
   let duration = user.total_duration.match(/day/g)
     ? user.total_duration.split(', ')[1]
     : user.total_duration
@@ -19,7 +21,11 @@ export default function UserStatistics(props) {
             </div>
             <div className="col-9 text-right">
               <div className="huge">{user.nb_activities}</div>
-              <div>{`workout${user.nb_activities === 1 ? '' : 's'}`}</div>
+              <div>{`${
+                user.nb_activities === 1
+                  ? t('common:workout')
+                  : t('common:workouts')
+              }`}</div>
             </div>
           </div>
         </div>
@@ -60,7 +66,9 @@ export default function UserStatistics(props) {
             </div>
             <div className="col-9 text-right">
               <div className="huge">{user.nb_sports}</div>
-              <div>{`sport${user.nb_sports === 1 ? '' : 's'}`}</div>
+              <div>{`${
+                user.nb_sports === 1 ? t('common:sport') : t('common:sports')
+              }`}</div>
             </div>
           </div>
         </div>

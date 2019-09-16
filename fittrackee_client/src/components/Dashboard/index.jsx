@@ -1,10 +1,11 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
+import { withTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 
 import ActivityCard from './ActivityCard'
 import Calendar from './Calendar'
+import NoActivities from '../Common/NoActivities'
 import Records from './Records'
 import Statistics from './Statistics'
 import UserStatistics from './UserStatistics'
@@ -30,6 +31,7 @@ class DashBoard extends React.Component {
       message,
       records,
       sports,
+      t,
       user,
     } = this.props
     const paginationEnd =
@@ -40,7 +42,7 @@ class DashBoard extends React.Component {
     return (
       <div>
         <Helmet>
-          <title>FitTrackee - Dashboard</title>
+          <title>FitTrackee - {t('common:Dashboard')}</title>
         </Helmet>
         {message ? (
           <code>{message}</code>
@@ -48,11 +50,16 @@ class DashBoard extends React.Component {
           activities &&
           sports.length > 0 && (
             <div className="container dashboard">
-              <UserStatistics user={user} />
+              <UserStatistics user={user} t={t} />
               <div className="row">
                 <div className="col-md-4">
-                  <Statistics />
-                  <Records records={records} sports={sports} user={user} />
+                  <Statistics t={t} />
+                  <Records
+                    t={t}
+                    records={records}
+                    sports={sports}
+                    user={user}
+                  />
                 </div>
                 <div className="col-md-8">
                   <Calendar weekm={user.weekm} />
@@ -66,14 +73,7 @@ class DashBoard extends React.Component {
                       />
                     ))
                   ) : (
-                    <div className="card text-center">
-                      <div className="card-body">
-                        No workouts.{' '}
-                        <Link to={{ pathname: '/activities/add' }}>
-                          Upload one !
-                        </Link>
-                      </div>
-                    </div>
+                    <NoActivities t={t} />
                   )}
                   {!paginationEnd && (
                     <input
@@ -96,21 +96,23 @@ class DashBoard extends React.Component {
   }
 }
 
-export default connect(
-  state => ({
-    activities: state.activities.data,
-    message: state.message,
-    records: state.records.data,
-    sports: state.sports.data,
-    user: state.user,
-  }),
-  dispatch => ({
-    loadActivities: () => {
-      dispatch(getOrUpdateData('getData', 'activities', { page: 1 }))
-      dispatch(getOrUpdateData('getData', 'records'))
-    },
-    loadMoreActivities: page => {
-      dispatch(getMoreActivities({ page }))
-    },
-  })
-)(DashBoard)
+export default withTranslation()(
+  connect(
+    state => ({
+      activities: state.activities.data,
+      message: state.message,
+      records: state.records.data,
+      sports: state.sports.data,
+      user: state.user,
+    }),
+    dispatch => ({
+      loadActivities: () => {
+        dispatch(getOrUpdateData('getData', 'activities', { page: 1 }))
+        dispatch(getOrUpdateData('getData', 'records'))
+      },
+      loadMoreActivities: page => {
+        dispatch(getMoreActivities({ page }))
+      },
+    })
+  )(DashBoard)
+)

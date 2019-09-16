@@ -6,10 +6,11 @@ import {
   editActivity,
 } from '../../../actions/activities'
 import { history } from '../../../index'
-import { formatActivityDate } from '../../../utils/activities'
+import { formatActivityDate, translateSports } from '../../../utils/activities'
 
 function FormWithoutGpx(props) {
-  const { activity, onAddOrEdit, sports } = props
+  const { activity, onAddOrEdit, sports, t } = props
+  const translatedSports = translateSports(sports, t)
   let activityDate,
     activityTime,
     sportId = ''
@@ -27,7 +28,7 @@ function FormWithoutGpx(props) {
     <form onSubmit={event => event.preventDefault()}>
       <div className="form-group">
         <label>
-          Title:
+          {t('activities:Title')}:
           <input
             name="title"
             defaultValue={activity ? activity.title : ''}
@@ -37,7 +38,7 @@ function FormWithoutGpx(props) {
       </div>
       <div className="form-group">
         <label>
-          Sport:
+          {t('common:Sport')}:
           <select
             className="form-control input-lg"
             defaultValue={sportId}
@@ -45,7 +46,7 @@ function FormWithoutGpx(props) {
             required
           >
             <option value="" />
-            {sports.map(sport => (
+            {translatedSports.map(sport => (
               <option key={sport.id} value={sport.id}>
                 {sport.label}
               </option>
@@ -55,7 +56,7 @@ function FormWithoutGpx(props) {
       </div>
       <div className="form-group">
         <label>
-          Activity Date:
+          {t('activities:Activity Date')}:
           <div className="container">
             <div className="row">
               <input
@@ -78,7 +79,7 @@ function FormWithoutGpx(props) {
       </div>
       <div className="form-group">
         <label>
-          Duration:
+          {t('activities:Duration')}:
           <input
             name="duration"
             defaultValue={activity ? activity.duration : ''}
@@ -92,7 +93,7 @@ function FormWithoutGpx(props) {
       </div>
       <div className="form-group">
         <label>
-          Distance (km):
+          {t('activities:Distance')} (km):
           <input
             name="distance"
             defaultValue={activity ? activity.distance : ''}
@@ -106,7 +107,7 @@ function FormWithoutGpx(props) {
       </div>
       <div className="form-group">
         <label>
-          Notes:
+          {t('activities:Notes')}:
           <textarea
             name="notes"
             defaultValue={activity ? activity.notes : ''}
@@ -119,13 +120,13 @@ function FormWithoutGpx(props) {
         type="submit"
         className="btn btn-primary btn-lg btn-block"
         onClick={event => onAddOrEdit(event, activity)}
-        value="Submit"
+        value={t('common:Submit')}
       />
       <input
         type="submit"
         className="btn btn-secondary btn-lg btn-block"
         onClick={() => history.push('/')}
-        value="Cancel"
+        value={t('common:Cancel')}
       />
     </form>
   )

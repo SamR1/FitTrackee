@@ -1,17 +1,21 @@
 import React from 'react'
+import { Trans } from 'react-i18next'
 import { connect } from 'react-redux'
 
 import { setLoading } from '../../../actions/index'
 import { addActivity, editActivity } from '../../../actions/activities'
 import { history } from '../../../index'
 import { fileSizeLimit, gpxLimit, zipSizeLimit } from '../../../utils'
+import { translateSports } from '../../../utils/activities'
 
 function FormWithGpx(props) {
-  const { activity, loading, onAddActivity, onEditActivity, sports } = props
+  const { activity, loading, onAddActivity, onEditActivity, sports, t } = props
   const sportId = activity ? activity.sport_id : ''
+  const translatedSports = translateSports(sports, t)
   // prettier-ignore
   const zipTooltip =
-    `no folder inside, ${gpxLimit} files max, max size: ${zipSizeLimit}`
+    `${t('activities:no folder inside')}, ${gpxLimit} ${
+    t('activities:files max')}, ${t('activities:max size')}: ${zipSizeLimit}`
   return (
     <form
       encType="multipart/form-data"
@@ -20,7 +24,7 @@ function FormWithGpx(props) {
     >
       <div className="form-group">
         <label>
-          Sport:
+          {t('common:Sport')}:
           <select
             className="form-control input-lg"
             defaultValue={sportId}
@@ -29,7 +33,7 @@ function FormWithGpx(props) {
             required
           >
             <option value="" />
-            {sports.map(sport => (
+            {translatedSports.map(sport => (
               <option key={sport.id} value={sport.id}>
                 {sport.label}
               </option>
@@ -40,7 +44,7 @@ function FormWithGpx(props) {
       {activity ? (
         <div className="form-group">
           <label>
-            Title:
+            {t('activities:Title')}:
             <input
               name="title"
               defaultValue={activity ? activity.title : ''}
@@ -52,17 +56,21 @@ function FormWithGpx(props) {
       ) : (
         <div className="form-group">
           <label>
-            <strong>gpx</strong> file
+            <Trans i18nKey="activities:gpxFile">
+              <strong>gpx</strong> file
+            </Trans>
             <sup>
               <i
                 className="fa fa-question-circle"
                 aria-hidden="true"
                 data-toggle="tooltip"
-                title={`max size: ${fileSizeLimit}`}
+                title={`${t('activities:max size')}: ${fileSizeLimit}`}
               />
             </sup>{' '}
-            or <strong> zip</strong> file containing <strong>gpx </strong>
-            files
+            <Trans i18nKey="activities:zipFile">
+              or <strong> zip</strong> file containing <strong>gpx </strong>
+              files
+            </Trans>
             <sup>
               <i
                 className="fa fa-question-circle"
@@ -86,7 +94,7 @@ function FormWithGpx(props) {
       )}
       <div className="form-group">
         <label>
-          Notes:
+          {t('activities:Notes')}:
           <textarea
             name="notes"
             defaultValue={activity ? activity.notes : ''}
@@ -106,13 +114,13 @@ function FormWithGpx(props) {
             onClick={event =>
               activity ? onEditActivity(event, activity) : onAddActivity(event)
             }
-            value="Submit"
+            value={t('common:Submit')}
           />
           <input
             type="submit"
             className="btn btn-secondary btn-lg btn-block"
             onClick={() => history.push('/')}
-            value="Cancel"
+            value={t('common:Cancel')}
           />
         </div>
       )}

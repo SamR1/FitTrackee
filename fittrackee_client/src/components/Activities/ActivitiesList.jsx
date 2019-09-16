@@ -7,7 +7,7 @@ import { getDateWithTZ } from '../../utils'
 
 export default class ActivitiesList extends React.PureComponent {
   render() {
-    const { activities, sports, user } = this.props
+    const { activities, sports, t, user } = this.props
     return (
       <div className="card  activity-card">
         <div className="card-body">
@@ -15,12 +15,12 @@ export default class ActivitiesList extends React.PureComponent {
             <thead>
               <tr>
                 <th scope="col" />
-                <th scope="col">Workout</th>
-                <th scope="col">Date</th>
-                <th scope="col">Distance</th>
-                <th scope="col">Duration</th>
-                <th scope="col">Ave. speed</th>
-                <th scope="col">Max. speed</th>
+                <th scope="col">{t('common:Workout')}</th>
+                <th scope="col">{t('activities:Date')}</th>
+                <th scope="col">{t('activities:Distance')}</th>
+                <th scope="col">{t('activities:Duration')}</th>
+                <th scope="col">{t('activities:Ave. speed')}</th>
+                <th scope="col">{t('activities:Max. speed')}</th>
               </tr>
             </thead>
             <tbody>

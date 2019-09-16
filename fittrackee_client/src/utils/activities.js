@@ -86,3 +86,17 @@ export const formatRecord = (record, tz) => {
     value: value,
   }
 }
+
+const sortSports = (a, b) => {
+  const sportALabel = a.label.toLowerCase()
+  const sportBLabel = b.label.toLowerCase()
+  return sportALabel > sportBLabel ? 1 : sportALabel < sportBLabel ? -1 : 0
+}
+
+export const translateSports = (sports, t) =>
+  sports
+    .map(sport => ({
+      ...sport,
+      label: t(`sports:${sport.label}`),
+    }))
+    .sort(sortSports)

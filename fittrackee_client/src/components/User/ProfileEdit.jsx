@@ -1,6 +1,7 @@
 import { format } from 'date-fns'
 import React from 'react'
 import { Helmet } from 'react-helmet'
+import { withTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 import TimezonePicker from 'react-timezone'
 
@@ -49,17 +50,17 @@ class ProfileEdit extends React.Component {
   }
 
   render() {
-    const { onHandleProfileFormSubmit, message, user } = this.props
+    const { onHandleProfileFormSubmit, message, t, user } = this.props
     const { formData } = this.state
     return (
       <div>
         <Helmet>
-          <title>FitTrackee - Edit Profile</title>
+          <title>FitTrackee - {t('user:Profile Edition')}</title>
         </Helmet>
         {message !== '' && <code>{message}</code>}
         {formData.isAuthenticated && (
           <div className="container">
-            <h1 className="page-title">Profile Edition</h1>
+            <h1 className="page-title">{t('user:Profile Edition')}</h1>
             <div className="row">
               <div className="col-md-2" />
               <div className="col-md-8">
@@ -76,7 +77,7 @@ class ProfileEdit extends React.Component {
                         >
                           <div className="form-group">
                             <label>
-                              Email:
+                              {t('user:Email')}:
                               <input
                                 name="email"
                                 className="form-control input-lg"
@@ -88,7 +89,7 @@ class ProfileEdit extends React.Component {
                           </div>
                           <div className="form-group">
                             <label>
-                              Registration Date:
+                              {t('user:Registration Date')}:
                               <input
                                 name="createdAt"
                                 className="form-control input-lg"
@@ -100,7 +101,7 @@ class ProfileEdit extends React.Component {
                           </div>
                           <div className="form-group">
                             <label>
-                              Password:
+                              {t('user:Password')}:
                               <input
                                 name="password"
                                 className="form-control input-lg"
@@ -111,7 +112,7 @@ class ProfileEdit extends React.Component {
                           </div>
                           <div className="form-group">
                             <label>
-                              Password Confirmation:
+                              {t('user:Password Confirmation')}:
                               <input
                                 name="password_conf"
                                 className="form-control input-lg"
@@ -123,7 +124,7 @@ class ProfileEdit extends React.Component {
                           <hr />
                           <div className="form-group">
                             <label>
-                              First Name:
+                              {t('user:First Name')}:
                               <input
                                 name="first_name"
                                 className="form-control input-lg"
@@ -135,7 +136,7 @@ class ProfileEdit extends React.Component {
                           </div>
                           <div className="form-group">
                             <label>
-                              Last Name:
+                              {t('user:Last Name')}:
                               <input
                                 name="last_name"
                                 className="form-control input-lg"
@@ -147,7 +148,7 @@ class ProfileEdit extends React.Component {
                           </div>
                           <div className="form-group">
                             <label>
-                              Birth Date
+                              {t('user:Birth Date')}
                               <input
                                 name="birth_date"
                                 className="form-control input-lg"
@@ -159,7 +160,7 @@ class ProfileEdit extends React.Component {
                           </div>
                           <div className="form-group">
                             <label>
-                              Location:
+                              {t('user:Location')}:
                               <input
                                 name="location"
                                 className="form-control input-lg"
@@ -171,7 +172,7 @@ class ProfileEdit extends React.Component {
                           </div>
                           <div className="form-group">
                             <label>
-                              Bio:
+                              {t('user:Bio')}:
                               <textarea
                                 name="bio"
                                 className="form-control input-lg"
@@ -183,7 +184,7 @@ class ProfileEdit extends React.Component {
                           </div>
                           <div className="form-group">
                             <label>
-                              Timezone:
+                              {t('user:Timezone')}:
                               <TimezonePicker
                                 className="form-control timezone-custom-height"
                                 onChange={tz => {
@@ -201,28 +202,32 @@ class ProfileEdit extends React.Component {
                           </div>
                           <div className="form-group">
                             <label>
-                              First day of week:
+                              {t('user:First day of week')}:
                               <select
                                 name="weekm"
                                 className="form-control input-lg"
                                 value={formData.weekm ? 'Monday' : 'Sunday'}
                                 onChange={e => this.handleFormChange(e)}
                               >
-                                <option value="Sunday">Sunday</option>
-                                <option value="Monday">Monday</option>
+                                <option value="Sunday">
+                                  {t('user:Sunday')}
+                                </option>
+                                <option value="Monday">
+                                  {t('user:Monday')}
+                                </option>
                               </select>
                             </label>
                           </div>
                           <input
                             type="submit"
                             className="btn btn-primary btn-lg btn-block"
-                            value="Submit"
+                            value={t('common:Submit')}
                           />
                           <input
                             type="submit"
                             className="btn btn-secondary btn-lg btn-block"
                             onClick={() => history.push('/profile')}
-                            value="Cancel"
+                            value={t('common:Cancel')}
                           />
                         </form>
                       </div>
@@ -239,15 +244,17 @@ class ProfileEdit extends React.Component {
   }
 }
 
-export default connect(
-  state => ({
-    location: state.router.location,
-    message: state.message,
-    user: state.user,
-  }),
-  dispatch => ({
-    onHandleProfileFormSubmit: formData => {
-      dispatch(handleProfileFormSubmit(formData))
-    },
-  })
-)(ProfileEdit)
+export default withTranslation(
+  connect(
+    state => ({
+      location: state.router.location,
+      message: state.message,
+      user: state.user,
+    }),
+    dispatch => ({
+      onHandleProfileFormSubmit: formData => {
+        dispatch(handleProfileFormSubmit(formData))
+      },
+    })
+  )(ProfileEdit)
+)

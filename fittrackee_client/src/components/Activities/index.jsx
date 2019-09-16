@@ -1,10 +1,11 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
+import { withTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 
 import ActivitiesFilter from './ActivitiesFilter'
 import ActivitiesList from './ActivitiesList'
+import NoActivities from '../Common/NoActivities'
 import { getOrUpdateData } from '../../actions'
 import { getMoreActivities } from '../../actions/activities'
 
@@ -40,6 +41,7 @@ class Activities extends React.Component {
       loadMoreActivities,
       message,
       sports,
+      t,
       user,
     } = this.props
     const { params } = this.state
@@ -50,7 +52,7 @@ class Activities extends React.Component {
     return (
       <div>
         <Helmet>
-          <title>FitTrackee - Workouts</title>
+          <title>FitTrackee - {t('common:Workouts')}</title>
         </Helmet>
         {message ? (
           <code>{message}</code>
@@ -61,6 +63,7 @@ class Activities extends React.Component {
                 <ActivitiesFilter
                   sports={sports}
                   loadActivities={() => loadActivities(params)}
+                  t={t}
                   updateParams={e => this.setParams(e)}
                 />
               </div>
@@ -68,6 +71,7 @@ class Activities extends React.Component {
                 <ActivitiesList
                   activities={activities}
                   sports={sports}
+                  t={t}
                   user={user}
                 />
                 {!paginationEnd && (
@@ -82,16 +86,7 @@ class Activities extends React.Component {
                     }}
                   />
                 )}
-                {activities.length === 0 && (
-                  <div className="card text-center">
-                    <div className="card-body">
-                      No workouts.{' '}
-                      <Link to={{ pathname: '/activities/add' }}>
-                        Upload one !
-                      </Link>
-                    </div>
-                  </div>
-                )}
+                {activities.length === 0 && <NoActivities t={t} />}
               </div>
             </div>
           </div>
@@ -101,19 +96,21 @@ class Activities extends React.Component {
   }
 }
 
-export default connect(
-  state => ({
-    activities: state.activities.data,
-    message: state.message,
-    sports: state.sports.data,
-    user: state.user,
-  }),
-  dispatch => ({
-    loadActivities: params => {
-      dispatch(getOrUpdateData('getData', 'activities', params))
-    },
-    loadMoreActivities: params => {
-      dispatch(getMoreActivities(params))
-    },
-  })
-)(Activities)
+export default withTranslation()(
+  connect(
+    state => ({
+      activities: state.activities.data,
+      message: state.message,
+      sports: state.sports.data,
+      user: state.user,
+    }),
+    dispatch => ({
+      loadActivities: params => {
+        dispatch(getOrUpdateData('getData', 'activities', params))
+      },
+      loadMoreActivities: params => {
+        dispatch(getMoreActivities(params))
+      },
+    })
+  )(Activities)
+)

@@ -14,9 +14,10 @@ import {
 } from 'date-fns'
 import React from 'react'
 import { Helmet } from 'react-helmet'
+import { withTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 
-import { activityColors } from '../../utils/activities'
+import { activityColors, translateSports } from '../../utils/activities'
 import Stats from '../Common/Stats'
 
 const durations = ['week', 'month', 'year']
@@ -114,15 +115,16 @@ class Statistics extends React.Component {
 
   render() {
     const { displayedSports, statsParams } = this.state
-    const { sports } = this.props
+    const { sports, t } = this.props
+    const translatedSports = translateSports(sports, t)
     return (
       <>
         <Helmet>
-          <title>FitTrackee - Statistics</title>
+          <title>FitTrackee - {t('statistics:Statistics')}</title>
         </Helmet>
         <div className="container dashboard">
           <div className="card activity-card">
-            <div className="card-header">Statistics</div>
+            <div className="card-header">{t('statistics:Statistics')}</div>
             <div className="card-body">
               <div className="chart-filters row">
                 <div className="col chart-arrows">
@@ -145,7 +147,7 @@ class Statistics extends React.Component {
                           checked={d === statsParams.duration}
                           onChange={e => this.handleOnChangeDuration(e)}
                         />
-                        <span>{d}</span>
+                        <span>{t(`statistics:${d}`)}</span>
                       </label>
                     </div>
                   ))}
@@ -164,9 +166,10 @@ class Statistics extends React.Component {
                 displayEmpty
                 displayedSports={displayedSports}
                 statsParams={statsParams}
+                t={t}
               />
               <div className="row chart-activities">
-                {sports.map(sport => (
+                {translatedSports.map(sport => (
                   <label className="col activity-label" key={sport.id}>
                     <input
                       type="checkbox"
@@ -188,6 +191,8 @@ class Statistics extends React.Component {
   }
 }
 
-export default connect(state => ({
-  sports: state.sports.data,
-}))(Statistics)
+export default withTranslation()(
+  connect(state => ({
+    sports: state.sports.data,
+  }))(Statistics)
+)

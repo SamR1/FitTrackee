@@ -1,4 +1,5 @@
 import React from 'react'
+import { Trans } from 'react-i18next'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
@@ -16,8 +17,10 @@ class Logout extends React.Component {
           <div className="card col-8">
             <div className="card-body">
               <div className="text-center">
-                You are now logged out. Click <Link to="/login">here</Link> to
-                log back in.
+                <Trans i18nKey="user:loggedOut">
+                  You are now logged out. Click <Link to="/login">here</Link> to
+                  log back in.
+                </Trans>
               </div>
             </div>
           </div>

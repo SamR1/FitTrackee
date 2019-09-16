@@ -1,10 +1,23 @@
 {
-  "Dashboard": "Tableau de Bord",
-  "Workouts": "Activités",
-  "Statistics": "Statistiques",
   "Add workout": "Ajouter une activité",
-  "Register": "S'inscrire",
+  "Cancel": "Annuler",
+  "Dashboard": "Tableau de Bord",
+  "day": "jour",
+  "days": "jours",
   "Login": "Se connecter",
   "Logout": "Se déconnecter",
-  "Submit": "Valider"
+  "No records.": "Pas de records.",
+  "No workouts.": "Pas d'activités.",
+  "Register": "S'inscrire",
+  "Statistics": "Statistiques",
+  "Sport": "Sport",
+  "sport": "sport",
+  "Sports": "Sports",
+  "sports": "sports",
+  "Submit": "Valider",
+  "to": "à",
+  "Workout": "Activité",
+  "Workouts": "Activités",
+  "workout": "activité",
+  "workouts": "activités"
 }

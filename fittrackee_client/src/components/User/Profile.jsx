@@ -1,13 +1,14 @@
 import { format } from 'date-fns'
 import React from 'react'
 import { Helmet } from 'react-helmet'
+import { withTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import { deletePicture, uploadPicture } from '../../actions/user'
 import { apiUrl, fileSizeLimit } from '../../utils'
 
-function Profile({ message, onDeletePicture, onUploadPicture, user }) {
+function Profile({ message, onDeletePicture, onUploadPicture, t, user }) {
   const createdAt = user.created_at
     ? format(new Date(user.created_at), 'dd/MM/yyyy HH:mm')
     : ''
@@ -17,11 +18,11 @@ function Profile({ message, onDeletePicture, onUploadPicture, user }) {
   return (
     <div>
       <Helmet>
-        <title>FitTrackee - Profile</title>
+        <title>FitTrackee - {t('user:Profile')}</title>
       </Helmet>
       {message !== '' && <code>{message}</code>}
       <div className="container">
-        <h1 className="page-title">Profile</h1>
+        <h1 className="page-title">{t('user:Profile')}</h1>
         <div className="row">
           <div className="col-md-12">
             <div className="card">
@@ -38,15 +39,34 @@ function Profile({ message, onDeletePicture, onUploadPicture, user }) {
               <div className="card-body">
                 <div className="row">
                   <div className="col-md-8">
-                    <p>Email: {user.email}</p>
-                    <p>Registration Date: {createdAt}</p>
-                    <p>First Name: {user.first_name}</p>
-                    <p>Last Name: {user.last_name}</p>
-                    <p>Birth Date: {birthDate}</p>
-                    <p>Location: {user.location}</p>
-                    <p>Bio: {user.bio}</p>
-                    <p>Time zone: {user.timezone}</p>
-                    <p>First day of week: {user.weekm ? 'Monday' : 'Sunday'}</p>
+                    <p>
+                      {t('user:Email')}: {user.email}
+                    </p>
+                    <p>
+                      {t('user:Registration Date')}: {createdAt}
+                    </p>
+                    <p>
+                      {t('user:First Name')}: {user.first_name}
+                    </p>
+                    <p>
+                      {t('user:Last Name')}: {user.last_name}
+                    </p>
+                    <p>
+                      {t('user:Birth Date')}: {birthDate}
+                    </p>
+                    <p>
+                      {t('user:Location')}: {user.location}
+                    </p>
+                    <p>
+                      {t('user:Bio')}: {user.bio}
+                    </p>
+                    <p>
+                      {t('user:Timezone')}: {user.timezone}
+                    </p>
+                    <p>
+                      {t('user:First day of week')}:{' '}
+                      {user.weekm ? t('user:Monday') : t('user:Sunday')}
+                    </p>
                   </div>
                   <div className="col-md-4">
                     {user.picture === true && (
@@ -61,7 +81,7 @@ function Profile({ message, onDeletePicture, onUploadPicture, user }) {
                         />
                         <br />
                         <button type="submit" onClick={() => onDeletePicture()}>
-                          Delete picture
+                          {t('user:Delete picture')}
                         </button>
                         <br />
                         <br />
@@ -77,8 +97,8 @@ function Profile({ message, onDeletePicture, onUploadPicture, user }) {
                         accept=".png,.jpg,.gif"
                       />
                       <br />
-                      <button type="submit">Send</button> (max. size:{' '}
-                      {fileSizeLimit})
+                      <button type="submit">{t('user:Send')}</button>
+                      {` (max. size: ${fileSizeLimit})`}
                     </form>
                   </div>
                 </div>
@@ -91,17 +111,19 @@ function Profile({ message, onDeletePicture, onUploadPicture, user }) {
   )
 }
 
-export default connect(
-  state => ({
-    message: state.message,
-    user: state.user,
-  }),
-  dispatch => ({
-    onDeletePicture: () => {
-      dispatch(deletePicture())
-    },
-    onUploadPicture: event => {
-      dispatch(uploadPicture(event))
-    },
-  })
-)(Profile)
+export default withTranslation()(
+  connect(
+    state => ({
+      message: state.message,
+      user: state.user,
+    }),
+    dispatch => ({
+      onDeletePicture: () => {
+        dispatch(deletePicture())
+      },
+      onUploadPicture: event => {
+        dispatch(uploadPicture(event))
+      },
+    })
+  )(Profile)
+)

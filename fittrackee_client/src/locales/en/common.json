@@ -1,10 +1,23 @@
 {
-  "Dashboard": "Dashboard",
-  "Workouts": "Workouts",
-  "Statistics": "Statistics",
   "Add workout": "Add workout",
-  "Register": "Register",
+  "Cancel": "Cancel",
+  "Dashboard": "Dashboard",
+  "day": "day",
+  "days": "days",
   "Login": "Login",
   "Logout": "Logout",
-  "Submit": "Submit"
+  "No records.": "No records.",
+  "No workouts.": "No workouts.",
+  "Register": "Register",
+  "Statistics": "Statistics",
+  "Sport": "Sport",
+  "sport": "sport",
+  "Sports": "Sports",
+  "sports": "sports",
+  "Submit": "Submit",
+  "to": "to",
+  "Workout": "Workout",
+  "Workouts": "Workouts",
+  "workout": "workout",
+  "workouts": "workouts"
 }

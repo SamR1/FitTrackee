@@ -1,0 +1,23 @@
+{
+  "Activity Date": "Date de l'activité",
+  "Add a workout": "Ajouter une activité",
+  "Ave. speed": "Vitesse moyenne",
+  "Average speed": "Vitesse moyenne",
+  "Date": "Date",
+  "Distance": "Distance",
+  "Duration": "Durée",
+  "Edit a workout": "Editer une activité",
+  "Filter": "Filtrer",
+  "From": "A partir de",
+  "gpxFile": "fichier <strong>gpx</strong>",
+  "Max. speed": "Vitesse max",
+  "no folder inside": "pas de répertoire",
+  "files max": " fichiers max",
+  "max size": "taille max",
+  "Notes": "Notes",
+  "Title": "Titre",
+  "To": "Jusqu'au",
+  "with gpx file": "avec un fichier gpx",
+  "without gpx file": "sans fichier gpx",
+  "zipFile": "ou un fichier <strong> zip</strong> contenant des fichiers <strong>gpx</strong>"
+}

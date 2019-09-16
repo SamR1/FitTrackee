@@ -37,10 +37,11 @@ class Statistics extends React.PureComponent {
       statistics,
       statsParams,
       displayEmpty,
+      t,
       user,
     } = this.props
     if (!displayEmpty && Object.keys(statistics).length === 0) {
-      return 'No workouts'
+      return <span>{t('common:No workouts.')}</span>
     }
     const stats = formatStats(
       statistics,
@@ -49,7 +50,7 @@ class Statistics extends React.PureComponent {
       displayedSports,
       user.weekm
     )
-    return <StatsChart sports={sports} stats={stats} />
+    return <StatsChart sports={sports} stats={stats} t={t} />
   }
 }
 

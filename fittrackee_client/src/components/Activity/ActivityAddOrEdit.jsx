@@ -1,5 +1,6 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
+import { withTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 
 import FormWithGpx from './ActivityForms/FormWithGpx'
@@ -23,13 +24,16 @@ class ActivityAddEdit extends React.Component {
   }
 
   render() {
-    const { activity, loading, message, sports } = this.props
+    const { activity, loading, message, sports, t } = this.props
     const { withGpx } = this.state
     return (
       <div>
         <Helmet>
           <title>
-            FitTrackee - {activity ? 'Edit a workout' : 'Add a workout'}
+            FitTrackee -{' '}
+            {activity
+              ? t('activities:Edit a workout')
+              : t('activities:Add a workout')}
           </title>
         </Helmet>
         <br />
@@ -41,14 +45,20 @@ class ActivityAddEdit extends React.Component {
             <div className="col-md-8">
               <div className="card add-activity">
                 <h2 className="card-header text-center">
-                  {activity ? 'Edit a workout' : 'Add a workout'}
+                  {activity
+                    ? t('activities:Edit a workout')
+                    : t('activities:Add a workout')}
                 </h2>
                 <div className="card-body">
                   {activity ? (
                     activity.with_gpx ? (
-                      <FormWithGpx activity={activity} sports={sports} />
+                      <FormWithGpx activity={activity} sports={sports} t={t} />
                     ) : (
-                      <FormWithoutGpx activity={activity} sports={sports} />
+                      <FormWithoutGpx
+                        activity={activity}
+                        sports={sports}
+                        t={t}
+                      />
                     )
                   ) : (
                     <div>
@@ -66,7 +76,7 @@ class ActivityAddEdit extends React.Component {
                                   this.handleRadioChange(event)
                                 }
                               />
-                              with gpx file
+                              {t('activities:with gpx file')}
                             </label>
                           </div>
                           <div className="col">
@@ -81,15 +91,15 @@ class ActivityAddEdit extends React.Component {
                                   this.handleRadioChange(event)
                                 }
                               />
-                              without gpx file
+                              {t('activities:without gpx file')}
                             </label>
                           </div>
                         </div>
                       </form>
                       {withGpx ? (
-                        <FormWithGpx sports={sports} />
+                        <FormWithGpx sports={sports} t={t} />
                       ) : (
-                        <FormWithoutGpx sports={sports} />
+                        <FormWithoutGpx sports={sports} t={t} />
                       )}
                     </div>
                   )}
@@ -104,6 +114,8 @@ class ActivityAddEdit extends React.Component {
   }
 }
 
-export default connect(state => ({
-  loading: state.loading,
-}))(ActivityAddEdit)
+export default withTranslation()(
+  connect(state => ({
+    loading: state.loading,
+  }))(ActivityAddEdit)
+)

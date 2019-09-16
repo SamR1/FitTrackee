@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { formatRecord } from '../../utils/activities'
 
 export default function RecordsCard(props) {
-  const { records, sports, user } = props
+  const { records, sports, t, user } = props
   const recordsBySport = records.reduce((sportList, record) => {
     const sport = sports.find(s => s.id === record.sport_id)
     if (sportList[sport.label] === void 0) {
@@ -22,7 +22,7 @@ export default function RecordsCard(props) {
       <div className="card-header">Personal records</div>
       <div className="card-body">
         {Object.keys(recordsBySport).length === 0
-          ? 'No records'
+          ? t('common:No records.')
           : Object.keys(recordsBySport).map(sportLabel => (
               <table
                 className="table table-borderless table-sm record-table"

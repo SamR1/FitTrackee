@@ -1,15 +1,18 @@
 import React from 'react'
 
+import { translateSports } from '../../utils/activities'
+
 export default class ActivitiesFilter extends React.PureComponent {
   render() {
-    const { loadActivities, sports, updateParams } = this.props
+    const { loadActivities, sports, t, updateParams } = this.props
+    const translatedSports = translateSports(sports, t)
     return (
       <div className="card">
         <div className="card-body activity-filter">
           <form onSubmit={event => event.preventDefault()}>
             <div className="form-group">
               <label>
-                From:
+                {t('activities:From')}:
                 <input
                   className="form-control col-md"
                   name="from"
@@ -18,7 +21,7 @@ export default class ActivitiesFilter extends React.PureComponent {
                 />
               </label>
               <label>
-                To:
+                {t('activities:To')}:
                 <input
                   className="form-control col-md"
                   name="to"
@@ -29,14 +32,14 @@ export default class ActivitiesFilter extends React.PureComponent {
             </div>
             <div className="form-group">
               <label>
-                Sport:
+                {t('common:Sport')}:
                 <select
                   className="form-control input-lg"
                   name="sport_id"
                   onChange={e => updateParams(e)}
                 >
                   <option value="" />
-                  {sports.map(sport => (
+                  {translatedSports.map(sport => (
                     <option key={sport.id} value={sport.id}>
                       {sport.label}
                     </option>
@@ -46,7 +49,7 @@ export default class ActivitiesFilter extends React.PureComponent {
             </div>
             <div className="form-group">
               <label>
-                Distance (km):
+                {t('activities:Distance')} (km):
                 <div className="container">
                   <div className="row">
                     <div className="col-5">
@@ -59,7 +62,9 @@ export default class ActivitiesFilter extends React.PureComponent {
                         type="number"
                       />
                     </div>
-                    <div className="col-2 align-middle text-center">to</div>
+                    <div className="col-2 align-middle text-center">
+                      {t('common:to')}
+                    </div>
                     <div className="col-5">
                       <input
                         className="form-control"
@@ -76,7 +81,7 @@ export default class ActivitiesFilter extends React.PureComponent {
             </div>
             <div className="form-group">
               <label>
-                Duration:
+                {t('activities:Duration')}:
                 <div className="container">
                   <div className="row">
                     <div className="col-5">
@@ -89,7 +94,9 @@ export default class ActivitiesFilter extends React.PureComponent {
                         type="text"
                       />
                     </div>
-                    <div className="col-2 align-middle text-center">to</div>
+                    <div className="col-2 align-middle text-center">
+                      {t('common:to')}
+                    </div>
                     <div className="col-5">
                       <input
                         className="form-control"
@@ -106,7 +113,7 @@ export default class ActivitiesFilter extends React.PureComponent {
             </div>
             <div className="form-group">
               <label>
-                Average speed (km/h):
+                {t('activities:Average speed')} (km/h):
                 <div className="container">
                   <div className="row">
                     <div className="col-5">
@@ -119,7 +126,9 @@ export default class ActivitiesFilter extends React.PureComponent {
                         type="number"
                       />
                     </div>
-                    <div className="col-2 align-middle text-center">to</div>
+                    <div className="col-2 align-middle text-center">
+                      {t('common:to')}
+                    </div>
                     <div className="col-5">
                       <input
                         className="form-control"
@@ -136,7 +145,7 @@ export default class ActivitiesFilter extends React.PureComponent {
             </div>
             <div className="form-group">
               <label>
-                Max speed (km/h):
+                {t('activities:Max. speed')} (km/h):
                 <div className="container">
                   <div className="row">
                     <div className="col-5">
@@ -149,7 +158,9 @@ export default class ActivitiesFilter extends React.PureComponent {
                         type="number"
                       />
                     </div>
-                    <div className="col-2 align-middle text-center">to</div>
+                    <div className="col-2 align-middle text-center">
+                      {t('common:to')}
+                    </div>
                     <div className="col-5">
                       <input
                         className="form-control"
@@ -168,7 +179,7 @@ export default class ActivitiesFilter extends React.PureComponent {
               className="btn btn-primary btn-lg btn-block"
               onClick={() => loadActivities()}
               type="submit"
-              value="Filter"
+              value={t('activities:Filter')}
             />
           </form>
         </div>
