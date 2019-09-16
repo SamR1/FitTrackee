@@ -244,7 +244,7 @@ class ProfileEdit extends React.Component {
   }
 }
 
-export default withTranslation(
+export default withTranslation()(
   connect(
     state => ({
       location: state.router.location,

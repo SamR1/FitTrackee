@@ -1,5 +1,4 @@
 import React from 'react'
-import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import { Redirect, Route, Switch } from 'react-router-dom'
 
@@ -12,9 +11,6 @@ import { isLoggedIn } from '../../utils'
 function Activity() {
   return (
     <div>
-      <Helmet>
-        <title>FitTrackee - Admin</title>
-      </Helmet>
       {isLoggedIn() ? (
         <Switch>
           <Route exact path="/activities/add" component={ActivityAdd} />
