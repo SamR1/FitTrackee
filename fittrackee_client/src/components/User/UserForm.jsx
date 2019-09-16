@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom'
 import Form from './Form'
 import { handleUserFormSubmit } from '../../actions/user'
 import { isLoggedIn } from '../../utils'
+import { withTranslation } from 'react-i18next'
 
 class UserForm extends React.Component {
   constructor(props, context) {
@@ -38,7 +39,13 @@ class UserForm extends React.Component {
   }
 
   render() {
-    const { formType, message, messages, onHandleUserFormSubmit } = this.props
+    const {
+      formType,
+      message,
+      messages,
+      onHandleUserFormSubmit,
+      t,
+    } = this.props
     const { formData } = this.state
     return (
       <div>
@@ -46,12 +53,12 @@ class UserForm extends React.Component {
           <Redirect to="/" />
         ) : (
           <div>
-            {message !== '' && <code>{message}</code>}
+            {message !== '' && <code>{t(`messages:${message}`)}</code>}
             {messages.length > 0 && (
               <code>
                 <ul>
                   {messages.map(msg => (
-                    <li key={msg.id}>{msg.value}</li>
+                    <li key={msg.id}>{t(`messages:${msg.value}`)}</li>
                   ))}
                 </ul>
               </code>
@@ -71,15 +78,17 @@ class UserForm extends React.Component {
     )
   }
 }
-export default connect(
-  state => ({
-    location: state.router.location,
-    message: state.message,
-    messages: state.messages,
-  }),
-  dispatch => ({
-    onHandleUserFormSubmit: (formData, formType) => {
-      dispatch(handleUserFormSubmit(formData, formType))
-    },
-  })
-)(UserForm)
+export default withTranslation()(
+  connect(
+    state => ({
+      location: state.router.location,
+      message: state.message,
+      messages: state.messages,
+    }),
+    dispatch => ({
+      onHandleUserFormSubmit: (formData, formType) => {
+        dispatch(handleUserFormSubmit(formData, formType))
+      },
+    })
+  )(UserForm)
+)

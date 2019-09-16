@@ -20,7 +20,7 @@ function Profile({ message, onDeletePicture, onUploadPicture, t, user }) {
       <Helmet>
         <title>FitTrackee - {t('user:Profile')}</title>
       </Helmet>
-      {message !== '' && <code>{message}</code>}
+      {message !== '' && <code>{t(`messages:${message}`)}</code>}
       <div className="container">
         <h1 className="page-title">{t('user:Profile')}</h1>
         <div className="row">

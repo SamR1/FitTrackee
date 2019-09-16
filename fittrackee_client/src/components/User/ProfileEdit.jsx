@@ -58,7 +58,7 @@ class ProfileEdit extends React.Component {
         <Helmet>
           <title>FitTrackee - {t('user:Profile Edition')}</title>
         </Helmet>
-        {message !== '' && <code>{message}</code>}
+        {message !== '' && <code>{t(`messages:${message}`)}</code>}
         {formData.isAuthenticated && (
           <div className="container">
             <h1 className="page-title">{t('user:Profile Edition')}</h1>

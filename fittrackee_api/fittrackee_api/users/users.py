@@ -143,7 +143,7 @@ def get_single_user(auth_user_id, user_id):
         - Signature expired. Please log in again.
         - Invalid token. Please log in again.
     :statuscode 404:
-        - User does not exist
+        - User does not exist.
     """
 
     response_object = {'status': 'fail', 'message': 'User does not exist.'}
@@ -180,7 +180,7 @@ def get_picture(user_id):
 
     :statuscode 200: success
     :statuscode 404:
-        - User does not exist
+        - User does not exist.
         - No picture.
 
     """

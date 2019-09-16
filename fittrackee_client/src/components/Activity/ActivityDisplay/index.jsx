@@ -85,7 +85,7 @@ class ActivityDisplay extends React.Component {
           <title>FitTrackee - {title}</title>
         </Helmet>
         {message ? (
-          <code>{message}</code>
+          <code>{t(`messages:${message}`)}</code>
         ) : (
           <div className="container">
             {displayModal && (

@@ -63,8 +63,8 @@ def test_user_registration_invalid_short_username(app):
     data = json.loads(response.data.decode())
     assert data['status'] == 'error'
     assert (
-        data['message'] == "Errors: Username: 3 to 12 characters required.\n"
-    )  # noqa
+        data['message'] == "Username: 3 to 12 characters required.\n"
+    )
     assert response.content_type == 'application/json'
     assert response.status_code == 400
 
@@ -86,8 +86,8 @@ def test_user_registration_invalid_long_username(app):
     data = json.loads(response.data.decode())
     assert data['status'] == 'error'
     assert (
-        data['message'] == "Errors: Username: 3 to 12 characters required.\n"
-    )  # noqa
+        data['message'] == "Username: 3 to 12 characters required.\n"
+    )
     assert response.content_type == 'application/json'
     assert response.status_code == 400
 
@@ -108,7 +108,7 @@ def test_user_registration_invalid_email(app):
     )
     data = json.loads(response.data.decode())
     assert data['status'] == 'error'
-    assert data['message'] == "Errors: Valid email must be provided.\n"  # noqa
+    assert data['message'] == "Valid email must be provided.\n"
     assert response.content_type == 'application/json'
     assert response.status_code == 400
 
@@ -130,8 +130,8 @@ def test_user_registration_invalid_short_password(app):
     data = json.loads(response.data.decode())
     assert data['status'] == 'error'
     assert (
-        data['message'] == "Errors: Password: 8 characters required.\n"
-    )  # noqa
+        data['message'] == "Password: 8 characters required.\n"
+    )
     assert response.content_type == 'application/json'
     assert response.status_code == 400
 
@@ -154,8 +154,8 @@ def test_user_registration_mismatched_password(app):
     assert data['status'] == 'error'
     assert (
         data['message']
-        == "Errors: Password and password confirmation don\'t match.\n"
-    )  # noqa
+        == "Password and password confirmation don\'t match.\n"
+    )
     assert response.content_type == 'application/json'
     assert response.status_code == 400
 
@@ -262,7 +262,7 @@ def test_user_registration_invalid_data(app):
     assert (
         'Error. Please try again or contact the administrator.'
         in data['message']
-    )  # noqa
+    )
     assert 'error' in data['status']
 
 
@@ -700,7 +700,7 @@ def test_user_profile_invalid_password(app, user_1):
     assert data['status'] == 'error'
     assert (
         data['message'] == 'Password and password confirmation don\'t match.\n'
-    )  # noqa
+    )
     assert response.status_code == 400
 
 
@@ -736,7 +736,7 @@ def test_user_profile_missing_password_conf(app, user_1):
     assert data['status'] == 'error'
     assert (
         data['message'] == 'Password and password confirmation don\'t match.\n'
-    )  # noqa
+    )
     assert response.status_code == 400
 
 

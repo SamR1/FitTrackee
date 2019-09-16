@@ -55,7 +55,7 @@ class Activities extends React.Component {
           <title>FitTrackee - {t('common:Workouts')}</title>
         </Helmet>
         {message ? (
-          <code>{message}</code>
+          <code>{t(`messages:${message}`)}</code>
         ) : (
           <div className="container history">
             <div className="row">

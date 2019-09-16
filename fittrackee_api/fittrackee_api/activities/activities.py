@@ -341,7 +341,7 @@ def get_activity(auth_user_id, activity_id):
         - Provide a valid auth token.
         - Signature expired. Please log in again.
         - Invalid token. Please log in again.
-    :statuscode 403: You do not have permissions
+    :statuscode 403: You do not have permissions.
     :statuscode 404: activity not found
 
     """

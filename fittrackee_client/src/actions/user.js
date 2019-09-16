@@ -61,13 +61,13 @@ export const loginOrRegister = (target, formData) => dispatch =>
 const RegisterFormControl = formData => {
   const errMsg = []
   if (formData.username.length < 3 || formData.username.length > 12) {
-    errMsg.push('Username: 3 to 12 characters required.')
+    errMsg.push('3 to 12 characters required for username.')
   }
   if (formData.password !== formData.password_conf) {
     errMsg.push("Password and password confirmation don't match.")
   }
   if (formData.password.length < 8) {
-    errMsg.push('Password: 8 characters required.')
+    errMsg.push('8 characters required for password.')
   }
   return errMsg
 }
@@ -112,7 +112,10 @@ export const uploadPicture = event => dispatch => {
       if (ret.status === 'success') {
         return dispatch(getProfile())
       }
-      return dispatch(PictureError(ret.message))
+      const msg = ret.message.match(/file size exceeds/g)
+        ? 'Error during picture update, file size exceeds max size.'
+        : ret.message
+      return dispatch(PictureError(msg))
     })
     .catch(error => {
       throw error

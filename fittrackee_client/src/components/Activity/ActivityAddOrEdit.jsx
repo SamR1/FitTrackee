@@ -38,7 +38,7 @@ class ActivityAddEdit extends React.Component {
         </Helmet>
         <br />
         <br />
-        {message && <code>{message}</code>}
+        {message && <code>{t(`messages:${message}`)}</code>}
         <div className="container">
           <div className="row">
             <div className="col-md-2" />

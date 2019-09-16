@@ -66,7 +66,7 @@ def verify_extension_and_size(file_type, req):
     elif file_extension != 'zip' and req.content_length > max_file_size:
         response_object = {
             'status': 'fail',
-            'message': 'Error during picture update: file size exceeds '
+            'message': 'Error during picture update, file size exceeds '
             f'{display_readable_file_size(max_file_size)}.',
         }
         code = 413

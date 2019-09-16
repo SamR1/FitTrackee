@@ -45,7 +45,7 @@ class DashBoard extends React.Component {
           <title>FitTrackee - {t('common:Dashboard')}</title>
         </Helmet>
         {message ? (
-          <code>{message}</code>
+          <code>{t(`messages:${message}`)}</code>
         ) : (
           activities &&
           sports.length > 0 && (

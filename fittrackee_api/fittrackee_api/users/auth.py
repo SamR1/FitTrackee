@@ -68,10 +68,10 @@ def register_user():
         - Invalid payload.
         - Sorry. That user already exists.
         - Errors:
-            - Username: 3 to 12 characters required.
+            - 3 to 12 characters required for usernanme.
             - Valid email must be provided.
             - Password and password confirmation don't match.
-            - Password: 8 characters required.
+            - 8 characters required for password.
     :statuscode 403:
         Error. Registration is disabled.
     :statuscode 500:
@@ -112,7 +112,7 @@ def register_user():
         }
         return jsonify(response_object), 500
     if ret != '':
-        response_object = {'status': 'error', 'message': 'Errors: ' + ret}
+        response_object = {'status': 'error', 'message': ret}
         return jsonify(response_object), 400
 
     try:
@@ -553,7 +553,7 @@ def edit_picture(user_id):
         max_file_size = current_app.config['MAX_CONTENT_LENGTH']
         response_object = {
             'status': 'fail',
-            'message': 'Error during picture update: file size exceeds '
+            'message': 'Error during picture update, file size exceeds '
             f'{display_readable_file_size(max_file_size)}.',
         }
         return jsonify(response_object), 413
