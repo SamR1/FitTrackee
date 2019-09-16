@@ -45,6 +45,7 @@ def test_single_user(app, user_1):
     assert data['data']['location'] is None
     assert data['data']['timezone'] is None
     assert data['data']['weekm'] is False
+    assert data['data']['language'] is None
     assert data['data']['nb_activities'] == 0
     assert data['data']['nb_sports'] == 0
     assert data['data']['total_distance'] == 0
@@ -90,6 +91,7 @@ def test_single_user_with_activities(
     assert data['data']['location'] is None
     assert data['data']['timezone'] is None
     assert data['data']['weekm'] is False
+    assert data['data']['language'] is None
     assert data['data']['nb_activities'] == 2
     assert data['data']['nb_sports'] == 2
     assert data['data']['total_distance'] == 22
@@ -175,18 +177,21 @@ def test_users_list(app, user_1, user_2, user_3):
     assert 'sam@test.com' in data['data']['users'][2]['email']
     assert data['data']['users'][0]['timezone'] is None
     assert data['data']['users'][0]['weekm'] is False
+    assert data['data']['users'][0]['language'] is None
     assert data['data']['users'][0]['nb_activities'] == 0
     assert data['data']['users'][0]['nb_sports'] == 0
     assert data['data']['users'][0]['total_distance'] == 0
     assert data['data']['users'][0]['total_duration'] == '0:00:00'
     assert data['data']['users'][1]['timezone'] is None
     assert data['data']['users'][1]['weekm'] is False
+    assert data['data']['users'][1]['language'] is None
     assert data['data']['users'][1]['nb_activities'] == 0
     assert data['data']['users'][1]['nb_sports'] == 0
     assert data['data']['users'][1]['total_distance'] == 0
     assert data['data']['users'][1]['total_duration'] == '0:00:00'
     assert data['data']['users'][2]['timezone'] is None
     assert data['data']['users'][2]['weekm'] is True
+    assert data['data']['users'][2]['language'] is None
     assert data['data']['users'][2]['nb_activities'] == 0
     assert data['data']['users'][2]['nb_sports'] == 0
     assert data['data']['users'][2]['total_distance'] == 0

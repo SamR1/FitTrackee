@@ -61,6 +61,9 @@ function Profile({ message, onDeletePicture, onUploadPicture, t, user }) {
                       {t('user:Bio')}: {user.bio}
                     </p>
                     <p>
+                      {t('user:Language')}: {user.language}
+                    </p>
+                    <p>
                       {t('user:Timezone')}: {user.timezone}
                     </p>
                     <p>

@@ -1,4 +1,4 @@
-"""add weekm in 'User' table
+"""add 'weekm' in 'User' table
 
 Revision ID: 27425324c9e3
 Revises: 096dd0b43beb

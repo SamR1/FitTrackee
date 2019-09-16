@@ -331,6 +331,7 @@ def get_user_status(user_id):
           "email": "sam@example.com",
           "first_name": null,
           "id": 2,
+          "language": "en",
           "last_name": null,
           "location": null,
           "nb_activities": 6,
@@ -388,6 +389,7 @@ def edit_user(user_id):
           "email": "sam@example.com",
           "first_name": null,
           "id": 2,
+          "language": "en",
           "last_name": null,
           "location": null,
           "nb_activities": 6,
@@ -412,6 +414,7 @@ def edit_user(user_id):
     :<json string password_conf: user password confirmation
     :<json string timezone: user time zone
     :<json string weekm: does week start on Monday?
+    :<json string language: language preferences
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -433,6 +436,7 @@ def edit_user(user_id):
         'last_name',
         'bio',
         'birth_date',
+        'language',
         'location',
         'timezone',
         'weekm',
@@ -444,6 +448,7 @@ def edit_user(user_id):
     last_name = post_data.get('last_name')
     bio = post_data.get('bio')
     birth_date = post_data.get('birth_date')
+    language = post_data.get('language')
     location = post_data.get('location')
     password = post_data.get('password')
     password_conf = post_data.get('password_conf')
@@ -465,6 +470,7 @@ def edit_user(user_id):
         user.first_name = first_name
         user.last_name = last_name
         user.bio = bio
+        user.language = language
         user.location = location
         user.birth_date = (
             datetime.datetime.strptime(birth_date, '%Y-%m-%d')

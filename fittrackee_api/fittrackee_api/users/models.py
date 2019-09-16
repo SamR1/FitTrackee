@@ -31,6 +31,7 @@ class User(db.Model):
     records = db.relationship(
         'Record', lazy=True, backref=db.backref('users', lazy='joined')
     )
+    language = db.Column(db.String(50), nullable=True)
 
     def __repr__(self):
         return f'<User {self.username!r}>'
@@ -116,6 +117,7 @@ class User(db.Model):
             'picture': self.picture is not None,
             'timezone': self.timezone,
             'weekm': self.weekm,
+            'language': self.language,
             'nb_activities': nb_activity,
             'nb_sports': len(sports),
             'total_distance': float(total[0]) if total[0] else 0,

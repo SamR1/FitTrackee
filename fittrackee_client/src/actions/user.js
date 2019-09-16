@@ -2,7 +2,7 @@ import FitTrackeeGenericApi from '../fitTrackeeApi'
 import FitTrackeeApi from '../fitTrackeeApi/user'
 import { history } from '../index'
 import { generateIds } from '../utils'
-import { getOrUpdateData } from './index'
+import { getOrUpdateData, updateLanguage } from './index'
 
 const AuthError = message => ({ type: 'AUTH_ERROR', message })
 
@@ -34,6 +34,9 @@ export const getProfile = () => dispatch =>
       if (ret.status === 'success') {
         dispatch(getOrUpdateData('getData', 'sports'))
         ret.data.isAuthenticated = true
+        if (ret.data.language) {
+          dispatch(updateLanguage(ret.data.language))
+        }
         return dispatch(ProfileSuccess(ret.data))
       }
       return dispatch(ProfileError(ret.message))

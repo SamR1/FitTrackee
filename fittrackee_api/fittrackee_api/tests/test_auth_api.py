@@ -432,6 +432,7 @@ def test_user_profile_minimal(app, user_1):
     assert not data['data']['admin']
     assert data['data']['timezone'] is None
     assert data['data']['weekm'] is False
+    assert data['data']['language'] is None
     assert data['data']['nb_activities'] == 0
     assert data['data']['nb_sports'] == 0
     assert data['data']['total_distance'] == 0
@@ -467,6 +468,7 @@ def test_user_profile_full(app, user_1_full):
     assert data['data']['location'] == 'somewhere'
     assert data['data']['timezone'] == 'America/New_York'
     assert data['data']['weekm'] is False
+    assert data['data']['language'] == 'en'
     assert data['data']['nb_activities'] == 0
     assert data['data']['nb_sports'] == 0
     assert data['data']['total_distance'] == 0
@@ -542,6 +544,7 @@ def test_user_profile_valid_update(app, user_1):
                 password_conf='87654321',
                 timezone='America/New_York',
                 weekm=True,
+                language='fr',
             )
         ),
         headers=dict(
@@ -564,6 +567,7 @@ def test_user_profile_valid_update(app, user_1):
     assert data['data']['location'] == 'Somewhere'
     assert data['data']['timezone'] == 'America/New_York'
     assert data['data']['weekm'] is True
+    assert data['data']['language'] == 'fr'
     assert data['data']['nb_activities'] == 0
     assert data['data']['nb_sports'] == 0
     assert data['data']['total_distance'] == 0
@@ -589,6 +593,7 @@ def test_user_profile_valid_update_without_password(app, user_1):
                 birth_date='1980-01-01',
                 timezone='America/New_York',
                 weekm=True,
+                language='fr',
             )
         ),
         headers=dict(
@@ -611,6 +616,7 @@ def test_user_profile_valid_update_without_password(app, user_1):
     assert data['data']['location'] == 'Somewhere'
     assert data['data']['timezone'] == 'America/New_York'
     assert data['data']['weekm'] is True
+    assert data['data']['language'] == 'fr'
     assert data['data']['nb_activities'] == 0
     assert data['data']['nb_sports'] == 0
     assert data['data']['total_distance'] == 0
@@ -682,6 +688,7 @@ def test_user_profile_invalid_password(app, user_1):
                 password_conf='876543210',
                 timezone='America/New_York',
                 weekm=True,
+                language='en',
             )
         ),
         headers=dict(
@@ -717,6 +724,7 @@ def test_user_profile_missing_password_conf(app, user_1):
                 password='87654321',
                 timezone='America/New_York',
                 weekm=True,
+                language='en',
             )
         ),
         headers=dict(

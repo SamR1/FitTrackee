@@ -1,3 +1,5 @@
+import i18next from 'i18next'
+
 import FitTrackeeApi from '../fitTrackeeApi/index'
 import { history } from '../index'
 
@@ -61,4 +63,8 @@ export const deleteData = (target, id) => dispatch => {
       }
     })
     .catch(error => dispatch(setError(`${target}: ${error}`)))
+}
+
+export const updateLanguage = language => dispatch => {
+  i18next.changeLanguage(language).then(dispatch(setLanguage(language)))
 }

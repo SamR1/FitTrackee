@@ -7,6 +7,7 @@ import TimezonePicker from 'react-timezone'
 
 import { handleProfileFormSubmit } from '../../actions/user'
 import { history } from '../../index'
+import { languages } from '../NavBar/LanguageDropdown'
 
 class ProfileEdit extends React.Component {
   constructor(props, context) {
@@ -180,6 +181,23 @@ class ProfileEdit extends React.Component {
                                 value={formData.bio}
                                 onChange={e => this.handleFormChange(e)}
                               />
+                            </label>
+                          </div>
+                          <div className="form-group">
+                            <label>
+                              {t('user:Language')}:
+                              <select
+                                name="language"
+                                className="form-control input-lg"
+                                value={formData.language}
+                                onChange={e => this.handleFormChange(e)}
+                              >
+                                {languages.map(lang => (
+                                  <option value={lang.name} key={lang.name}>
+                                    {lang.name}
+                                  </option>
+                                ))}
+                              </select>
                             </label>
                           </div>
                           <div className="form-group">

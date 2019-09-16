@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
-import i18next from 'i18next'
 import { connect } from 'react-redux'
 
 import { ReactComponent as EnFlag } from '../../images/flags/en.svg'
 import { ReactComponent as FrFlag } from '../../images/flags/fr.svg'
-import { setLanguage } from '../../actions/index'
+import { updateLanguage } from '../../actions/index'
 
-const languages = [
+export const languages = [
   {
     name: 'en',
     selected: true,
@@ -69,8 +68,7 @@ export default connect(
   dispatch => ({
     onUpdateLanguage: (lang, selected) => {
       if (lang !== selected) {
-        i18next.changeLanguage(lang)
-        dispatch(setLanguage(lang))
+        dispatch(updateLanguage(lang))
       }
     },
   })
