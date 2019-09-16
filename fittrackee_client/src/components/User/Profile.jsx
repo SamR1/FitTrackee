@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
+import Message from '../Common/Message'
 import { deletePicture, uploadPicture } from '../../actions/user'
 import { apiUrl, fileSizeLimit } from '../../utils'
 
@@ -20,7 +21,7 @@ function Profile({ message, onDeletePicture, onUploadPicture, t, user }) {
       <Helmet>
         <title>FitTrackee - {t('user:Profile')}</title>
       </Helmet>
-      {message !== '' && <code>{t(`messages:${message}`)}</code>}
+      <Message message={message} t={t} />
       <div className="container">
         <h1 className="page-title">{t('user:Profile')}</h1>
         <div className="row">

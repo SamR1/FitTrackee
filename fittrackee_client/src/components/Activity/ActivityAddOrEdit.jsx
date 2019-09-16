@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 
 import FormWithGpx from './ActivityForms/FormWithGpx'
 import FormWithoutGpx from './ActivityForms/FormWithoutGpx'
+import Message from '../Common/Message'
 
 class ActivityAddEdit extends React.Component {
   constructor(props, context) {
@@ -38,7 +39,7 @@ class ActivityAddEdit extends React.Component {
         </Helmet>
         <br />
         <br />
-        {message && <code>{t(`messages:${message}`)}</code>}
+        <Message message={message} t={t} />
         <div className="container">
           <div className="row">
             <div className="col-md-2" />

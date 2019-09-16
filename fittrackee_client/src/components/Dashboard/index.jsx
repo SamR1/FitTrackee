@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 
 import ActivityCard from './ActivityCard'
 import Calendar from './Calendar'
+import Message from '../Common/Message'
 import NoActivities from '../Common/NoActivities'
 import Records from './Records'
 import Statistics from './Statistics'
@@ -45,7 +46,7 @@ class DashBoard extends React.Component {
           <title>FitTrackee - {t('common:Dashboard')}</title>
         </Helmet>
         {message ? (
-          <code>{t(`messages:${message}`)}</code>
+          <Message message={message} t={t} />
         ) : (
           activities &&
           sports.length > 0 && (

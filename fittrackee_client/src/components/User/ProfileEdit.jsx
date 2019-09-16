@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 import TimezonePicker from 'react-timezone'
 
+import Message from '../Common/Message'
 import { handleProfileFormSubmit } from '../../actions/user'
 import { history } from '../../index'
 import { languages } from '../NavBar/LanguageDropdown'
@@ -58,7 +59,7 @@ class ProfileEdit extends React.Component {
         <Helmet>
           <title>FitTrackee - {t('user:Profile Edition')}</title>
         </Helmet>
-        {message !== '' && <code>{t(`messages:${message}`)}</code>}
+        <Message message={message} t={t} />
         {formData.isAuthenticated && (
           <div className="container">
             <h1 className="page-title">{t('user:Profile Edition')}</h1>

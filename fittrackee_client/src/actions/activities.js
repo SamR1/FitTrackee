@@ -34,7 +34,7 @@ export const addActivity = form => dispatch =>
     .then(ret => {
       if (ret.status === 'created') {
         if (ret.data.activities.length === 0) {
-          dispatch(setError('activities: no correct file'))
+          dispatch(setError('activities|no correct file.'))
         } else if (ret.data.activities.length === 1) {
           dispatch(loadProfile())
           history.push(`/activities/${ret.data.activities[0].id}`)
@@ -44,11 +44,11 @@ export const addActivity = form => dispatch =>
           history.push('/')
         }
       } else {
-        dispatch(setError(`activities: ${ret.message}`))
+        dispatch(setError(`activities|${ret.message}`))
       }
       dispatch(setLoading(false))
     })
-    .catch(error => dispatch(setError(`activities: ${error}`)))
+    .catch(error => dispatch(setError(`activities|${error}`)))
 
 export const addActivityWithoutGpx = form => dispatch =>
   FitTrackeeGenericApi.addData('activities/no_gpx', form)
@@ -57,10 +57,10 @@ export const addActivityWithoutGpx = form => dispatch =>
         dispatch(loadProfile())
         history.push(`/activities/${ret.data.activities[0].id}`)
       } else {
-        dispatch(setError(`activities: ${ret.message}`))
+        dispatch(setError(`activities|${ret.message}`))
       }
     })
-    .catch(error => dispatch(setError(`activities: ${error}`)))
+    .catch(error => dispatch(setError(`activities|${error}`)))
 
 export const getActivityGpx = activityId => dispatch => {
   if (activityId) {
@@ -69,10 +69,10 @@ export const getActivityGpx = activityId => dispatch => {
         if (ret.status === 'success') {
           dispatch(setGpx(ret.data.gpx))
         } else {
-          dispatch(setError(`activities: ${ret.message}`))
+          dispatch(setError(`activities|${ret.message}`))
         }
       })
-      .catch(error => dispatch(setError(`activities: ${error}`)))
+      .catch(error => dispatch(setError(`activities|${error}`)))
   }
   dispatch(setGpx(null))
 }
@@ -86,10 +86,10 @@ export const getSegmentGpx = (activityId, segmentId) => dispatch => {
         if (ret.status === 'success') {
           dispatch(setGpx(ret.data.gpx))
         } else {
-          dispatch(setError(`activities: ${ret.message}`))
+          dispatch(setError(`activities|${ret.message}`))
         }
       })
-      .catch(error => dispatch(setError(`activities: ${error}`)))
+      .catch(error => dispatch(setError(`activities|${error}`)))
   }
   dispatch(setGpx(null))
 }
@@ -101,10 +101,10 @@ export const getActivityChartData = activityId => dispatch => {
         if (ret.status === 'success') {
           dispatch(setChartData(formatChartData(ret.data.chart_data)))
         } else {
-          dispatch(setError(`activities: ${ret.message}`))
+          dispatch(setError(`activities|${ret.message}`))
         }
       })
-      .catch(error => dispatch(setError(`activities: ${error}`)))
+      .catch(error => dispatch(setError(`activities|${error}`)))
   }
   dispatch(setChartData(null))
 }
@@ -118,10 +118,10 @@ export const getSegmentChartData = (activityId, segmentId) => dispatch => {
         if (ret.status === 'success') {
           dispatch(setChartData(formatChartData(ret.data.chart_data)))
         } else {
-          dispatch(setError(`activities: ${ret.message}`))
+          dispatch(setError(`activities|${ret.message}`))
         }
       })
-      .catch(error => dispatch(setError(`activities: ${error}`)))
+      .catch(error => dispatch(setError(`activities|${error}`)))
   }
   dispatch(setChartData(null))
 }
@@ -134,10 +134,10 @@ export const deleteActivity = id => dispatch =>
           .then(() => dispatch(loadProfile()))
           .then(() => history.push('/'))
       } else {
-        dispatch(setError(`activities: ${ret.status}`))
+        dispatch(setError(`activities|${ret.status}`))
       }
     })
-    .catch(error => dispatch(setError(`activities: ${error}`)))
+    .catch(error => dispatch(setError(`activities|${error}`)))
 
 export const editActivity = form => dispatch =>
   FitTrackeeGenericApi.updateData('activities', form)
@@ -146,11 +146,11 @@ export const editActivity = form => dispatch =>
         dispatch(loadProfile())
         history.push(`/activities/${ret.data.activities[0].id}`)
       } else {
-        dispatch(setError(`activities: ${ret.message}`))
+        dispatch(setError(`activities|${ret.message}`))
       }
       dispatch(setLoading(false))
     })
-    .catch(error => dispatch(setError(`activities: ${error}`)))
+    .catch(error => dispatch(setError(`activities|${error}`)))
 
 export const getMoreActivities = params => dispatch =>
   FitTrackeeGenericApi.getData('activities', params)
@@ -160,10 +160,10 @@ export const getMoreActivities = params => dispatch =>
           dispatch(pushActivities(ret.data.activities))
         }
       } else {
-        dispatch(setError(`activities: ${ret.message}`))
+        dispatch(setError(`activities|${ret.message}`))
       }
     })
-    .catch(error => dispatch(setError(`activities: ${error}`)))
+    .catch(error => dispatch(setError(`activities|${error}`)))
 
 export const getMonthActivities = (from, to) => dispatch =>
   FitTrackeeGenericApi.getData('activities', {
@@ -176,7 +176,7 @@ export const getMonthActivities = (from, to) => dispatch =>
       if (ret.status === 'success') {
         dispatch(updateCalendar(ret.data.activities))
       } else {
-        dispatch(setError(`activities: ${ret.message}`))
+        dispatch(setError(`activities|${ret.message}`))
       }
     })
-    .catch(error => dispatch(setError(`activities: ${error}`)))
+    .catch(error => dispatch(setError(`activities|${error}`)))

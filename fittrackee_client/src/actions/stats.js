@@ -7,7 +7,7 @@ export const getStats = (userId, type, data) => dispatch =>
       if (ret.status === 'success') {
         dispatch(setData('statistics', ret.data))
       } else {
-        dispatch(setError(`statistics: ${ret.message}`))
+        dispatch(setError(`statistics|${ret.message}`))
       }
     })
-    .catch(error => dispatch(setError(`statistics: ${error}`)))
+    .catch(error => dispatch(setError(`statistics|${error}`)))

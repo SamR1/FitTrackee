@@ -1,11 +1,12 @@
 import React from 'react'
+import { withTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 
 import Form from './Form'
+import Message from '../Common/Message'
 import { handleUserFormSubmit } from '../../actions/user'
 import { isLoggedIn } from '../../utils'
-import { withTranslation } from 'react-i18next'
 
 class UserForm extends React.Component {
   constructor(props, context) {
@@ -53,16 +54,7 @@ class UserForm extends React.Component {
           <Redirect to="/" />
         ) : (
           <div>
-            {message !== '' && <code>{t(`messages:${message}`)}</code>}
-            {messages.length > 0 && (
-              <code>
-                <ul>
-                  {messages.map(msg => (
-                    <li key={msg.id}>{t(`messages:${msg.value}`)}</li>
-                  ))}
-                </ul>
-              </code>
-            )}
+            <Message message={message} messages={messages} t={t} />
             <Form
               formType={formType}
               userForm={formData}

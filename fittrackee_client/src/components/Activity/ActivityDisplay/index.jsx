@@ -11,6 +11,7 @@ import ActivityNoMap from './ActivityNoMap'
 import ActivityNotes from './ActivityNotes'
 import ActivitySegments from './ActivitySegments'
 import CustomModal from '../../Common/CustomModal'
+import Message from '../../Common/Message'
 import { getOrUpdateData } from '../../../actions'
 import { deleteActivity } from '../../../actions/activities'
 
@@ -85,7 +86,7 @@ class ActivityDisplay extends React.Component {
           <title>FitTrackee - {title}</title>
         </Helmet>
         {message ? (
-          <code>{t(`messages:${message}`)}</code>
+          <Message message={message} t={t} />
         ) : (
           <div className="container">
             {displayModal && (

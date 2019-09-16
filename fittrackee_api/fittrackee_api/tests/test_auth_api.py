@@ -62,9 +62,7 @@ def test_user_registration_invalid_short_username(app):
     )
     data = json.loads(response.data.decode())
     assert data['status'] == 'error'
-    assert (
-        data['message'] == "Username: 3 to 12 characters required.\n"
-    )
+    assert data['message'] == "Username: 3 to 12 characters required.\n"
     assert response.content_type == 'application/json'
     assert response.status_code == 400
 
@@ -85,9 +83,7 @@ def test_user_registration_invalid_long_username(app):
     )
     data = json.loads(response.data.decode())
     assert data['status'] == 'error'
-    assert (
-        data['message'] == "Username: 3 to 12 characters required.\n"
-    )
+    assert data['message'] == "Username: 3 to 12 characters required.\n"
     assert response.content_type == 'application/json'
     assert response.status_code == 400
 
@@ -129,9 +125,7 @@ def test_user_registration_invalid_short_password(app):
     )
     data = json.loads(response.data.decode())
     assert data['status'] == 'error'
-    assert (
-        data['message'] == "Password: 8 characters required.\n"
-    )
+    assert data['message'] == "Password: 8 characters required.\n"
     assert response.content_type == 'application/json'
     assert response.status_code == 400
 
@@ -153,8 +147,7 @@ def test_user_registration_mismatched_password(app):
     data = json.loads(response.data.decode())
     assert data['status'] == 'error'
     assert (
-        data['message']
-        == "Password and password confirmation don\'t match.\n"
+        data['message'] == "Password and password confirmation don\'t match.\n"
     )
     assert response.content_type == 'application/json'
     assert response.status_code == 400

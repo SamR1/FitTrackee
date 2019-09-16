@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 
 import ActivitiesFilter from './ActivitiesFilter'
 import ActivitiesList from './ActivitiesList'
+import Message from '../Common/Message'
 import NoActivities from '../Common/NoActivities'
 import { getOrUpdateData } from '../../actions'
 import { getMoreActivities } from '../../actions/activities'
@@ -55,7 +56,7 @@ class Activities extends React.Component {
           <title>FitTrackee - {t('common:Workouts')}</title>
         </Helmet>
         {message ? (
-          <code>{t(`messages:${message}`)}</code>
+          <Message message={message} t={t} />
         ) : (
           <div className="container history">
             <div className="row">
