@@ -79,7 +79,7 @@ class ActivityCharts extends React.Component {
   }
 
   render() {
-    const { chartData, updateCoordinates } = this.props
+    const { chartData, t, updateCoordinates } = this.props
     const { displayDistance } = this.state
     const xInterval = chartData ? parseInt(chartData.length / 10, 10) : 0
     let xDataKey, xScale
@@ -102,7 +102,7 @@ class ActivityCharts extends React.Component {
                   checked={displayDistance}
                   onChange={e => this.handleRadioChange(e)}
                 />
-                distance
+                {t('activities:distance')}
               </label>
               <label className="radioLabel col-md-1">
                 <input
@@ -111,7 +111,7 @@ class ActivityCharts extends React.Component {
                   checked={!displayDistance}
                   onChange={e => this.handleRadioChange(e)}
                 />
-                duration
+                {t('activities:duration')}
               </label>
             </div>
             <div className="row chart-radio">
@@ -123,7 +123,7 @@ class ActivityCharts extends React.Component {
                   checked={this.displayData('speed')}
                   onChange={e => this.handleLegendChange(e)}
                 />
-                speed
+                {t('activities:speed')}
               </label>
               <label className="radioLabel col-md-1">
                 <input
@@ -132,7 +132,7 @@ class ActivityCharts extends React.Component {
                   checked={this.displayData('elevation')}
                   onChange={e => this.handleLegendChange(e)}
                 />
-                elevation
+                {t('activities:elevation')}
               </label>
               <div className="col-md-5" />
             </div>
@@ -147,7 +147,11 @@ class ActivityCharts extends React.Component {
                   <XAxis
                     allowDecimals={false}
                     dataKey={xDataKey}
-                    label={{ value: xDataKey, offset: 0, position: 'bottom' }}
+                    label={{
+                      value: t(`activities:${xDataKey}`),
+                      offset: 0,
+                      position: 'bottom',
+                    }}
                     scale={xScale}
                     interval={xInterval}
                     tickFormatter={value =>
@@ -157,7 +161,7 @@ class ActivityCharts extends React.Component {
                   />
                   <YAxis
                     label={{
-                      value: 'speed (km/h)',
+                      value: `${t('activities:speed')} (km/h)`,
                       angle: -90,
                       position: 'left',
                     }}
@@ -165,7 +169,7 @@ class ActivityCharts extends React.Component {
                   />
                   <YAxis
                     label={{
-                      value: 'altitude (m)',
+                      value: `${t('activities:elevation')} (m)`,
                       angle: -90,
                       position: 'right',
                     }}
@@ -177,6 +181,7 @@ class ActivityCharts extends React.Component {
                       yAxisId="right"
                       type="linear"
                       dataKey="elevation"
+                      name={t('activities:elevation')}
                       fill="#e5e5e5"
                       stroke="#cccccc"
                       dot={false}
@@ -188,6 +193,7 @@ class ActivityCharts extends React.Component {
                       yAxisId="left"
                       type="linear"
                       dataKey="speed"
+                      name={t('activities:speed')}
                       stroke="#8884d8"
                       strokeWidth={2}
                       dot={false}
@@ -197,19 +203,22 @@ class ActivityCharts extends React.Component {
                   <Tooltip
                     labelFormatter={value =>
                       displayDistance
-                        ? `distance: ${value} km`
-                        : `duration: ${format(value, 'HH:mm:ss')}`
+                        ? `${t('activities:distance')}: ${value} km`
+                        : `${t('activities:duration')}: ${format(
+                            value,
+                            'HH:mm:ss'
+                          )}`
                     }
                   />
                 </ComposedChart>
               </ResponsiveContainer>
             </div>
             <div className="chart-info">
-              data from gpx, without any cleaning
+              {t('activities:data from gpx, without any cleaning')}
             </div>
           </div>
         ) : (
-          'No data to display'
+          t('activities:No data to display')
         )}
       </div>
     )

@@ -6,6 +6,7 @@
   "days": "jours",
   "Login": "Se connecter",
   "Logout": "Se déconnecter",
+  "No": "Non",
   "No records.": "Pas de records.",
   "No workouts.": "Pas d'activités.",
   "Register": "S'inscrire",
@@ -19,5 +20,6 @@
   "Workout": "Activité",
   "Workouts": "Activités",
   "workout": "activité",
-  "workouts": "activités"
+  "workouts": "activités",
+  "Yes": "Oui"
 }

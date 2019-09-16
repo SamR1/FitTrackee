@@ -14,10 +14,10 @@ export const activityColors = [
 ]
 
 export const recordsLabels = [
-  { record_type: 'AS', label: 'Avg speed' },
+  { record_type: 'AS', label: 'Ave. speed' },
   { record_type: 'FD', label: 'Farest distance' },
   { record_type: 'LD', label: 'Longest duration' },
-  { record_type: 'MS', label: 'Max speed' },
+  { record_type: 'MS', label: 'Max. speed' },
 ]
 
 export const getGeoJson = gpxContent => {

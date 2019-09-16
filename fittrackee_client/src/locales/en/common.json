@@ -6,6 +6,7 @@
   "days": "days",
   "Login": "Login",
   "Logout": "Logout",
+  "No": "No",
   "No records.": "No records.",
   "No workouts.": "No workouts.",
   "Register": "Register",
@@ -19,5 +20,6 @@
   "Workout": "Workout",
   "Workouts": "Workouts",
   "workout": "workout",
-  "workouts": "workouts"
+  "workouts": "workouts",
+  "Yes": "Yes"
 }

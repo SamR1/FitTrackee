@@ -11,6 +11,7 @@ export default function ActivityCardHeader(props) {
     displayModal,
     segmentId,
     sport,
+    t,
     title,
     user,
   } = props
@@ -40,14 +41,14 @@ export default function ActivityCardHeader(props) {
               <i
                 className="fa fa-chevron-left"
                 aria-hidden="true"
-                title={`See previous ${dataType}`}
+                title={t(`activities:See previous ${dataType}`)}
               />
             </Link>
           ) : (
             <i
               className="fa fa-chevron-left inactive-link"
               aria-hidden="true"
-              title={`No previous ${dataType}`}
+              title={t(`activities:No previous ${dataType}`)}
             />
           )}
         </div>
@@ -62,14 +63,14 @@ export default function ActivityCardHeader(props) {
                 <i
                   className="fa fa-edit custom-fa"
                   aria-hidden="true"
-                  title="Edit activity"
+                  title={t('activities:Edit activity')}
                 />
               </Link>
               <i
                 className="fa fa-trash custom-fa"
                 aria-hidden="true"
                 onClick={() => displayModal(true)}
-                title="Delete activity"
+                title={t('activities:Delete activity')}
               />
             </>
           ) : (
@@ -80,7 +81,7 @@ export default function ActivityCardHeader(props) {
               >
                 {title}
               </Link>{' '}
-              - segment {segmentId}
+              - {t('activities:segment')} {segmentId}
             </>
           )}
           <br />
@@ -96,14 +97,14 @@ export default function ActivityCardHeader(props) {
               <i
                 className="fa fa-chevron-right"
                 aria-hidden="true"
-                title={`See next ${dataType}`}
+                title={t(`activities:See next ${dataType}`)}
               />
             </Link>
           ) : (
             <i
               className="fa fa-chevron-right inactive-link"
               aria-hidden="true"
-              title={`No next ${dataType}`}
+              title={t(`activities:No next ${dataType}`)}
             />
           )}
         </div>

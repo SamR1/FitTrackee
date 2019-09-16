@@ -2,13 +2,13 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 export default function ActivitySegments(props) {
-  const { segments } = props
+  const { segments, t } = props
   return (
     <div className="row">
       <div className="col">
         <div className="card activity-card">
           <div className="card-body">
-            Segments
+            {t('activities:Segments')}
             <div className="activity-segments">
               <ul>
                 {segments.map((segment, index) => (
@@ -21,9 +21,10 @@ export default function ActivitySegments(props) {
                       to={`/activities/${segment.activity_id}/segment/${index +
                         1}`}
                     >
-                      segment {index + 1}
+                      {t('activities:segment')} {index + 1}
                     </Link>{' '}
-                    ({segment.distance} km, duration: {segment.duration})
+                    ({t('activities:distance')}: {segment.distance} km,{' '}
+                    {t('activities:duration')}: {segment.duration})
                   </li>
                 ))}
               </ul>

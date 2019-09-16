@@ -6,7 +6,7 @@ import StaticMap from '../Common/StaticMap'
 import { getDateWithTZ } from '../../utils'
 
 export default function ActivityCard(props) {
-  const { activity, sports, user } = props
+  const { activity, sports, t, user } = props
 
   return (
     <div className="card activity-card text-center">
@@ -14,7 +14,7 @@ export default function ActivityCard(props) {
         <Link to={`/activities/${activity.id}`}>
           {sports
             .filter(sport => sport.id === activity.sport_id)
-            .map(sport => sport.label)}{' '}
+            .map(sport => t(`sports:${sport.label}`))}{' '}
           -{' '}
           {format(
             getDateWithTZ(activity.activity_date, user.timezone),
@@ -31,8 +31,8 @@ export default function ActivityCard(props) {
           )}
           <div className="col">
             <p>
-              <i className="fa fa-clock-o" aria-hidden="true" /> Duration:{' '}
-              {activity.moving}
+              <i className="fa fa-clock-o" aria-hidden="true" />{' '}
+              {t('activities:Duration')}: {activity.moving}
               {activity.map ? (
                 <span>
                   <br />
@@ -41,8 +41,8 @@ export default function ActivityCard(props) {
               ) : (
                 ' - '
               )}
-              <i className="fa fa-road" aria-hidden="true" /> Distance:{' '}
-              {activity.distance} km
+              <i className="fa fa-road" aria-hidden="true" />{' '}
+              {t('activities:Distance')}: {activity.distance} km
             </p>
           </div>
         </div>

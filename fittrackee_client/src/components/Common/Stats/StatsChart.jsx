@@ -89,6 +89,7 @@ export default class StatsCharts extends React.PureComponent {
                     ''
                   )
                 }
+                name={t(`sports:${s.label}`)}
               />
             ))}
           </BarChart>

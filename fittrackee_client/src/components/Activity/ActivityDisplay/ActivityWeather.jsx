@@ -1,7 +1,7 @@
 import React from 'react'
 
 export default function ActivityWeather(props) {
-  const { activity } = props
+  const { activity, t } = props
   return (
     <div className="container">
       {activity.weather_start && activity.weather_end && (
@@ -10,7 +10,7 @@ export default function ActivityWeather(props) {
             <tr>
               <th />
               <th>
-                Start
+                {t('activities:Start')}
                 <br />
                 <img
                   className="weather-img"
@@ -20,7 +20,7 @@ export default function ActivityWeather(props) {
                 />
               </th>
               <th>
-                End
+                {t('activities:End')}
                 <br />
                 <img
                   className="weather-img"

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
+import { withTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 
 import ActivityCardHeader from './ActivityCardHeader'
@@ -62,7 +63,14 @@ class ActivityDisplay extends React.Component {
   }
 
   render() {
-    const { activities, message, onDeleteActivity, sports, user } = this.props
+    const {
+      activities,
+      message,
+      onDeleteActivity,
+      sports,
+      t,
+      user,
+    } = this.props
     const { coordinates, displayModal } = this.state
     const [activity] = activities
     const title = activity ? activity.title : 'Activity'
@@ -82,8 +90,10 @@ class ActivityDisplay extends React.Component {
           <div className="container">
             {displayModal && (
               <CustomModal
-                title="Confirmation"
-                text="Are you sure you want to delete this activity?"
+                title={t('activities:Confirmation')}
+                text={t(
+                  'activities:Are you sure you want to delete this activity?'
+                )}
                 confirm={() => {
                   onDeleteActivity(activity.id)
                   this.displayModal(false)
@@ -102,6 +112,7 @@ class ActivityDisplay extends React.Component {
                           dataType={dataType}
                           segmentId={segmentId}
                           sport={sport}
+                          t={t}
                           title={title}
                           user={user}
                           displayModal={() => this.displayModal(true)}
@@ -118,7 +129,7 @@ class ActivityDisplay extends React.Component {
                                 segmentId={segmentId}
                               />
                             ) : (
-                              <ActivityNoMap />
+                              <ActivityNoMap t={t} />
                             )}
                           </div>
                           <div className="col">
@@ -128,6 +139,7 @@ class ActivityDisplay extends React.Component {
                                   ? activity
                                   : activity.segments[segmentId - 1]
                               }
+                              t={t}
                             />
                           </div>
                         </div>
@@ -147,6 +159,7 @@ class ActivityDisplay extends React.Component {
                                 activity={activity}
                                 dataType={dataType}
                                 segmentId={segmentId}
+                                t={t}
                                 updateCoordinates={e =>
                                   this.updateCoordinates(e)
                                 }
@@ -160,9 +173,9 @@ class ActivityDisplay extends React.Component {
                 )}
                 {dataType === 'activity' && (
                   <>
-                    <ActivityNotes notes={activity.notes} />
+                    <ActivityNotes notes={activity.notes} t={t} />
                     {activity.segments.length > 1 && (
-                      <ActivitySegments segments={activity.segments} />
+                      <ActivitySegments segments={activity.segments} t={t} />
                     )}
                   </>
                 )}
@@ -175,19 +188,21 @@ class ActivityDisplay extends React.Component {
   }
 }
 
-export default connect(
-  state => ({
-    activities: state.activities.data,
-    message: state.message,
-    sports: state.sports.data,
-    user: state.user,
-  }),
-  dispatch => ({
-    loadActivity: activityId => {
-      dispatch(getOrUpdateData('getData', 'activities', { id: activityId }))
-    },
-    onDeleteActivity: activityId => {
-      dispatch(deleteActivity(activityId))
-    },
-  })
-)(ActivityDisplay)
+export default withTranslation()(
+  connect(
+    state => ({
+      activities: state.activities.data,
+      message: state.message,
+      sports: state.sports.data,
+      user: state.user,
+    }),
+    dispatch => ({
+      loadActivity: activityId => {
+        dispatch(getOrUpdateData('getData', 'activities', { id: activityId }))
+      },
+      onDeleteActivity: activityId => {
+        dispatch(deleteActivity(activityId))
+      },
+    })
+  )(ActivityDisplay)
+)

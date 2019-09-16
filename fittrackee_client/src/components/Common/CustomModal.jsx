@@ -1,6 +1,8 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 export default function CustomModal(props) {
+  const { t } = useTranslation()
   return (
     <div className="custom-modal-backdrop">
       <div className="custom-modal">
@@ -11,7 +13,7 @@ export default function CustomModal(props) {
               type="button"
               className="close"
               aria-label="Close"
-              onClick={() => props.close}
+              onClick={() => props.close()}
             >
               <span aria-hidden="true">&times;</span>
             </button>
@@ -25,14 +27,14 @@ export default function CustomModal(props) {
               className="btn btn-primary"
               onClick={() => props.confirm()}
             >
-              Yes
+              {t('common:Yes')}
             </button>
             <button
               type="button"
               className="btn btn-secondary"
               onClick={() => props.close()}
             >
-              No
+              {t('common:No')}
             </button>
           </div>
         </div>

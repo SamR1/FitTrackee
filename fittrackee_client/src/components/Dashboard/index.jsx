@@ -69,6 +69,7 @@ class DashBoard extends React.Component {
                         activity={activity}
                         key={activity.id}
                         sports={sports}
+                        t={t}
                         user={user}
                       />
                     ))
