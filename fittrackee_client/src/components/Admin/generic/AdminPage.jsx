@@ -14,21 +14,17 @@ export default function AdminPage(props) {
       .filter(key => key.charAt(0) !== '_')
       .map(key => tbKeys.push(key))
   }
-  const title = target.charAt(0).toUpperCase() + target.slice(1)
-
   return (
     <div>
       <Helmet>
         <title>FitTrackee - Admin</title>
       </Helmet>
-      <h1 className="page-title">Administration - {title}</h1>
       {error ? (
         <code>{error}</code>
       ) : (
         <div className="container">
           <div className="row">
-            <div className="col-md-2" />
-            <div className="col-md-8 card">
+            <div className="col card">
               <div className="card-body">
                 <table className="table">
                   <thead>
@@ -90,7 +86,6 @@ export default function AdminPage(props) {
                 />
               </div>
             </div>
-            <div className="col-md-2" />
           </div>
         </div>
       )}

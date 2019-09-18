@@ -16,22 +16,18 @@ class AdminDetail extends React.Component {
   render() {
     const { message, onDataUpdate, onDataDelete, results, target } = this.props
     const { isInEdition } = this.state
-    const title = target.charAt(0).toUpperCase() + target.slice(1)
-
     return (
       <div>
         <Helmet>
           <title>FitTrackee - Admin</title>
         </Helmet>
-        <h1 className="page-title">Administration - {title}</h1>
         {message ? (
           <code>{message}</code>
         ) : (
           results.length === 1 && (
             <div className="container">
               <div className="row">
-                <div className="col-md-2" />
-                <div className="col-md-8 card">
+                <div className="col card">
                   <div className="card-body">
                     <form onSubmit={event => event.preventDefault()}>
                       {Object.keys(results[0])
@@ -112,7 +108,6 @@ class AdminDetail extends React.Component {
                     </form>
                   </div>
                 </div>
-                <div className="col-md-2" />
               </div>
             </div>
           )

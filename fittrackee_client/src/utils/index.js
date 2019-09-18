@@ -76,3 +76,6 @@ export const getDateWithTZ = (date, tz) => {
     new Date()
   )
 }
+
+export const capitalize = target =>
+  target.charAt(0).toUpperCase() + target.slice(1)

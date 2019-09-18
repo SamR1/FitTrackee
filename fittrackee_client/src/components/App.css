@@ -166,6 +166,10 @@ label {
   max-height: 35px;
 }
 
+.admin-items {
+ list-style-type: square;
+}
+
 .card {
   text-align: left;
 }

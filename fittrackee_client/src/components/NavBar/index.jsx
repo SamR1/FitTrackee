@@ -8,7 +8,7 @@ import { apiUrl } from '../../utils'
 
 class NavBar extends React.PureComponent {
   render() {
-    const { id, isAuthenticated, picture, t, username } = this.props
+    const { admin, id, isAuthenticated, picture, t, username } = this.props
     return (
       <header>
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -76,18 +76,18 @@ class NavBar extends React.PureComponent {
                     </Link>
                   </li>
                 )}
-                {/* {user.admin && ( */}
-                {/* <li className="nav-item"> */}
-                {/* <Link */}
-                {/* className="nav-link" */}
-                {/* to={{ */}
-                {/* pathname: '/admin', */}
-                {/* }} */}
-                {/* > */}
-                {/* Admin */}
-                {/* </Link> */}
-                {/* </li> */}
-                {/* )} */}
+                {admin && (
+                  <li className="nav-item">
+                    <Link
+                      className="nav-link"
+                      to={{
+                        pathname: '/admin',
+                      }}
+                    >
+                      Admin
+                    </Link>
+                  </li>
+                )}
               </ul>
               {/* prettier-ignore */}
               <ul
@@ -160,6 +160,7 @@ class NavBar extends React.PureComponent {
 
 export default withTranslation()(
   connect(({ user }) => ({
+    admin: user.admin,
     id: user.id,
     isAuthenticated: user.isAuthenticated,
     picture: user.picture,
