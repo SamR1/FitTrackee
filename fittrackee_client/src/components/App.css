@@ -170,6 +170,12 @@ label {
  list-style-type: square;
 }
 
+.admin-message {
+  color: #7c7c7d;
+ font-size: 0.9em;
+ font-style: italic;
+}
+
 .card {
   text-align: left;
 }

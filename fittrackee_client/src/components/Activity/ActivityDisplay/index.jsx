@@ -74,7 +74,7 @@ class ActivityDisplay extends React.Component {
     } = this.props
     const { coordinates, displayModal } = this.state
     const [activity] = activities
-    const title = activity ? activity.title : 'Activity'
+    const title = activity ? activity.title : t('activities:Activity')
     const [sport] = activity
       ? sports.filter(s => s.id === activity.sport_id)
       : []

@@ -1,21 +1,22 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
+import { withTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 import { Link, Redirect, Route, Switch } from 'react-router-dom'
 
 import AdminDashboard from './AdminDashboard'
 import AdminMenu from './AdminMenu'
-import AdminSports from './Sports/AdminSports'
+import AdminSports from './Sports'
 import AccessDenied from './../Others/AccessDenied'
 import NotFound from './../Others/NotFound'
 import { isLoggedIn } from '../../utils'
 
 function Admin(props) {
-  const { user } = props
+  const { t, user } = props
   return (
     <div>
       <Helmet>
-        <title>FitTrackee - Admin</title>
+        <title>FitTrackee - {t('administration:Administration')}</title>
       </Helmet>
       <div className="container dashboard">
         <div className="row">
@@ -27,11 +28,11 @@ function Admin(props) {
                     pathname: '/admin/',
                   }}
                 >
-                  Administration
+                  {t('administration:Administration')}
                 </Link>
               </div>
               <div className="card-body">
-                <AdminMenu />
+                <AdminMenu t={t} />
               </div>
             </div>
           </div>
@@ -39,8 +40,16 @@ function Admin(props) {
             {isLoggedIn() ? (
               user.admin ? (
                 <Switch>
-                  <Route exact path="/admin" component={AdminDashboard} />
-                  <Route path="/admin/sports" component={AdminSports} />
+                  <Route
+                    exact
+                    path="/admin"
+                    render={() => <AdminDashboard t={t} />}
+                  />
+                  <Route
+                    exact
+                    path="/admin/sports"
+                    render={() => <AdminSports t={t} />}
+                  />
                   <Route component={NotFound} />
                 </Switch>
               ) : (
@@ -56,6 +65,8 @@ function Admin(props) {
   )
 }
 
-export default connect(state => ({
-  user: state.user,
-}))(Admin)
+export default withTranslation()(
+  connect(state => ({
+    user: state.user,
+  }))(Admin)
+)

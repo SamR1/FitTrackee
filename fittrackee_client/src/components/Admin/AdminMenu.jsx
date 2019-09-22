@@ -5,7 +5,8 @@ import { capitalize } from '../../utils/index'
 
 const menuItems = ['application', 'sports', 'users']
 
-export default function AdminMenu() {
+export default function AdminMenu(props) {
+  const { t } = props
   return (
     <div>
       <ul className="admin-items">
@@ -16,7 +17,7 @@ export default function AdminMenu() {
                 pathname: `/admin/${item}`,
               }}
             >
-              {capitalize(item)}
+              {t(`administration:${capitalize(item)}`)}
             </Link>
           </li>
         ))}

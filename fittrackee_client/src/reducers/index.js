@@ -105,8 +105,20 @@ const messages = (state = initial.messages, action) => {
 const records = (state = initial.records, action) =>
   handleDataAndError(state, 'records', action)
 
-const sports = (state = initial.sports, action) =>
-  handleDataAndError(state, 'sports', action)
+const sports = (state = initial.sports, action) => {
+  if (action.type === 'UPDATE_SPORT_DATA') {
+    return {
+      ...state,
+      data: state.data.map(sport => {
+        if (sport.id === action.data.id) {
+          sport.is_active = action.data.is_active
+        }
+        return sport
+      }),
+    }
+  }
+  return handleDataAndError(state, 'sports', action)
+}
 
 const user = (state = initial.user, action) => {
   switch (action.type) {

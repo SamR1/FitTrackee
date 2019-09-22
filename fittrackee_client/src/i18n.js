@@ -3,6 +3,7 @@ import LanguageDetector from 'i18next-browser-languagedetector'
 import XHR from 'i18next-xhr-backend'
 
 import EnActivitiesTranslations from './locales/en/activities.json'
+import EnAdministrationTranslations from './locales/en/administration.json'
 import EnCommonTranslations from './locales/en/common.json'
 import EnDashboardTranslations from './locales/en/dashboard.json'
 import EnMessagesTranslations from './locales/en/messages.json'
@@ -10,6 +11,7 @@ import EnSportsTranslations from './locales/en/sports.json'
 import EnStatisticsTranslations from './locales/en/statistics.json'
 import EnUserTranslations from './locales/en/user.json'
 import FrActivitiesTranslations from './locales/fr/activities.json'
+import FrAdministrationTranslations from './locales/fr/administration.json'
 import FrCommonTranslations from './locales/fr/common.json'
 import FrDashboardTranslations from './locales/fr/dashboard.json'
 import FrMessagesTranslations from './locales/fr/messages.json'
@@ -31,6 +33,7 @@ i18n
     resources: {
       en: {
         activities: EnActivitiesTranslations,
+        administration: EnAdministrationTranslations,
         common: EnCommonTranslations,
         dashboard: EnDashboardTranslations,
         messages: EnMessagesTranslations,
@@ -40,6 +43,7 @@ i18n
       },
       fr: {
         activities: FrActivitiesTranslations,
+        administration: FrAdministrationTranslations,
         common: FrCommonTranslations,
         dashboard: FrDashboardTranslations,
         messages: FrMessagesTranslations,

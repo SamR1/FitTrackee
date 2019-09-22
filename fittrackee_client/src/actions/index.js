@@ -24,14 +24,29 @@ export const setLoading = loading => ({
   loading,
 })
 
-export const getOrUpdateData = (action, target, data) => dispatch => {
+export const updateSportsData = data => ({
+  type: 'UPDATE_SPORT_DATA',
+  data,
+})
+
+export const getOrUpdateData = (
+  action,
+  target,
+  data,
+  canDispatch = true
+) => dispatch => {
   if (data && data.id && isNaN(data.id)) {
     return dispatch(setError(`${target}|Incorrect id`))
   }
+  dispatch(setError(''))
   return FitTrackeeApi[action](target, data)
     .then(ret => {
       if (ret.status === 'success') {
-        dispatch(setData(target, ret.data))
+        if (canDispatch) {
+          dispatch(setData(target, ret.data))
+        } else if (action === 'updateData' && target === 'sports') {
+          dispatch(updateSportsData(ret.data.sports[0]))
+        }
       } else {
         dispatch(setError(`${target}|${ret.message || ret.status}`))
       }

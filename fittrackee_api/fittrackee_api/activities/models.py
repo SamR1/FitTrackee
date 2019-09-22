@@ -60,7 +60,7 @@ class Sport(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     label = db.Column(db.String(50), unique=True, nullable=False)
     img = db.Column(db.String(255), unique=True, nullable=True)
-    is_default = db.Column(db.Boolean, default=False, nullable=False)
+    is_active = db.Column(db.Boolean, default=True, nullable=False)
     activities = db.relationship(
         'Activity', lazy=True, backref=db.backref('sports', lazy='joined')
     )
@@ -79,8 +79,10 @@ class Sport(db.Model):
             'id': self.id,
             'label': self.label,
             'img': self.img,
-            '_can_be_deleted': len(self.activities) == 0
-            and not self.is_default,
+            'is_active': self.is_active,
+            '_can_be_disabled': not (
+                len(self.activities) > 0 and self.is_active
+            ),
         }
 
 

@@ -6,7 +6,8 @@ def test_sport_model(app, sport_1_cycling):
     serialized_sport = sport_1_cycling.serialize()
     assert 1 == serialized_sport['id']
     assert 'Cycling' == serialized_sport['label']
-    assert serialized_sport['_can_be_deleted'] is True
+    assert serialized_sport['is_active'] is True
+    assert serialized_sport['_can_be_disabled'] is True
 
 
 def test_sport_model_with_activity(
@@ -19,4 +20,5 @@ def test_sport_model_with_activity(
     serialized_sport = sport_1_cycling.serialize()
     assert 1 == serialized_sport['id']
     assert 'Cycling' == serialized_sport['label']
-    assert serialized_sport['_can_be_deleted'] is False
+    assert serialized_sport['is_active'] is True
+    assert serialized_sport['_can_be_disabled'] is False
