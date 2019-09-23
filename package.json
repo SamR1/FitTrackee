@@ -49,6 +49,6 @@
     "eslint-plugin-testcafe": "^0.2.1",
     "prettier": "^1.18.2",
     "randomstring": "^1.1.5",
-    "testcafe": "^1.4.3"
+    "testcafe": "^1.5.0"
   }
 }
