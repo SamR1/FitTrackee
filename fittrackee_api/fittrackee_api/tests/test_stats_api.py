@@ -947,3 +947,87 @@ def test_get_stats_by_sport_all_activities_error(
         'Error. Please try again or contact the administrator.'
         in data['message']
     )
+
+
+def test_get_app_stats_without_activities(app, user_1_admin):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='admin@example.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/stats/all',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert data['data'] == {'activities': 0, 'sports': 0, 'users': 1}
+
+
+def test_get_app_stats_with_activities(
+    app,
+    user_1_admin,
+    user_2,
+    user_3,
+    sport_1_cycling,
+    sport_2_running,
+    activity_cycling_user_1,
+    activity_cycling_user_2,
+    activity_running_user_1,
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='admin@example.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/stats/all',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert data['data'] == {'activities': 3, 'sports': 2, 'users': 3}
+
+
+def test_get_app_stats_no_admin(
+    app,
+    user_1,
+    user_2,
+    user_3,
+    sport_1_cycling,
+    sport_2_running,
+    activity_cycling_user_1,
+    activity_cycling_user_2,
+    activity_running_user_1,
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/stats/all',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 403
+    assert 'success' not in data['status']
+    assert 'error' in data['status']
+    assert 'You do not have permissions.' in data['message']

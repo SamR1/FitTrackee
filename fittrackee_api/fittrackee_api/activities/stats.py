@@ -1,10 +1,11 @@
 from datetime import datetime, timedelta
 
-from fittrackee_api import appLog
+from fittrackee_api import appLog, db
 from flask import Blueprint, jsonify, request
+from sqlalchemy import func
 
 from ..users.models import User
-from ..users.utils import authenticate
+from ..users.utils import authenticate, authenticate_as_admin
 from .models import Activity, Sport
 from .utils import get_datetime_with_tz
 from .utils_format import convert_timedelta_to_integer
@@ -319,3 +320,62 @@ def get_activities_by_sport(auth_user_id, user_id):
 
     """
     return get_activities(user_id, 'by_sport')
+
+
+@stats_blueprint.route('/stats/all', methods=['GET'])
+@authenticate_as_admin
+def get_application_stats(auth_user_id):
+    """
+    Get all application statistics
+
+    **Example requests**:
+
+    .. sourcecode:: http
+
+      GET /api/stats/all HTTP/1.1
+
+
+    **Example responses**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "activities": 3,
+          "sports": 3,
+          "users": 2
+        },
+        "status": "success"
+      }
+
+    :param integer auth_user_id: authenticate user id (from JSON Web Token)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - Provide a valid auth token.
+        - Signature expired. Please log in again.
+        - Invalid token. Please log in again.
+    :statuscode 403: You do not have permissions.
+    """
+
+    nb_activities = Activity.query.filter().count()
+    nb_users = User.query.filter().count()
+    nb_sports = (
+        db.session.query(func.count(Activity.sport_id))
+        .group_by(Activity.sport_id)
+        .count()
+    )
+    response_object = {
+        'status': 'success',
+        'data': {
+            'activities': nb_activities,
+            'sports': nb_sports,
+            'users': nb_users,
+        },
+    }
+    return jsonify(response_object), 200
