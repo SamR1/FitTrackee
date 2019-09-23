@@ -428,6 +428,7 @@ def test_user_profile_minimal(app, user_1):
     assert data['data']['language'] is None
     assert data['data']['nb_activities'] == 0
     assert data['data']['nb_sports'] == 0
+    assert data['data']['sports_list'] == []
     assert data['data']['total_distance'] == 0
     assert data['data']['total_duration'] == '0:00:00'
     assert response.status_code == 200
@@ -464,6 +465,7 @@ def test_user_profile_full(app, user_1_full):
     assert data['data']['language'] == 'en'
     assert data['data']['nb_activities'] == 0
     assert data['data']['nb_sports'] == 0
+    assert data['data']['sports_list'] == []
     assert data['data']['total_distance'] == 0
     assert data['data']['total_duration'] == '0:00:00'
     assert response.status_code == 200
@@ -500,6 +502,7 @@ def test_user_profile_with_activities(
     assert data['data']['timezone'] is None
     assert data['data']['nb_activities'] == 2
     assert data['data']['nb_sports'] == 2
+    assert data['data']['sports_list'] == [1, 2]
     assert data['data']['total_distance'] == 22
     assert data['data']['total_duration'] == '1:57:04'
     assert response.status_code == 200
@@ -563,6 +566,7 @@ def test_user_profile_valid_update(app, user_1):
     assert data['data']['language'] == 'fr'
     assert data['data']['nb_activities'] == 0
     assert data['data']['nb_sports'] == 0
+    assert data['data']['sports_list'] == []
     assert data['data']['total_distance'] == 0
     assert data['data']['total_duration'] == '0:00:00'
 
@@ -612,6 +616,7 @@ def test_user_profile_valid_update_without_password(app, user_1):
     assert data['data']['language'] == 'fr'
     assert data['data']['nb_activities'] == 0
     assert data['data']['nb_sports'] == 0
+    assert data['data']['sports_list'] == []
     assert data['data']['total_distance'] == 0
     assert data['data']['total_duration'] == '0:00:00'
 

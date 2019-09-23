@@ -43,6 +43,11 @@ def get_users(auth_user_id):
               "nb_activities": 6,
               "nb_sports": 3,
               "picture": false,
+              "sports_list": [
+                  1,
+                  4,
+                  6
+              ],
               "timezone": "Europe/Paris",
               "total_distance": 67.895,
               "total_duration": "6:50:27",
@@ -61,6 +66,7 @@ def get_users(auth_user_id):
               "nb_activities": 0,
               "nb_sports": 0,
               "picture": false,
+              "sports_list": [],
               "timezone": "Europe/Paris",
               "total_distance": 0,
               "total_duration": "0:00:00",
@@ -124,6 +130,11 @@ def get_single_user(auth_user_id, user_id):
           "nb_activities": 6,
           "nb_sports": 3,
           "picture": false,
+          "sports_list": [
+              1,
+              4,
+              6
+          ],
           "timezone": "Europe/Paris",
           "total_distance": 67.895,
           "total_duration": "6:50:27",

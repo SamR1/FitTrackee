@@ -403,6 +403,11 @@ label {
   max-height: 45px;
 }
 
+.stats-disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
 .time-frames {
   align-items: center;
   display: inline-flex;

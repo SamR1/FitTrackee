@@ -17,8 +17,9 @@ import { Helmet } from 'react-helmet'
 import { withTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 
-import { activityColors, translateSports } from '../../utils/activities'
+import NoActivities from '../Common/NoActivities'
 import Stats from '../Common/Stats'
+import { activityColors, translateSports } from '../../utils/activities'
 
 const durations = ['week', 'month', 'year']
 
@@ -115,8 +116,11 @@ class Statistics extends React.Component {
 
   render() {
     const { displayedSports, statsParams } = this.state
-    const { sports, t } = this.props
-    const translatedSports = translateSports(sports, t)
+    const { sports, t, user } = this.props
+    const translatedSports = translateSports(
+      sports.filter(sport => user.sports_list.includes(sport.id)),
+      t
+    )
     return (
       <>
         <Helmet>
@@ -125,7 +129,11 @@ class Statistics extends React.Component {
         <div className="container dashboard">
           <div className="card activity-card">
             <div className="card-header">{t('statistics:Statistics')}</div>
-            <div className="card-body">
+            <div
+              className={`card-body${
+                user.nb_activities === 0 ? ' stats-disabled' : ''
+              }`}
+            >
               <div className="chart-filters row">
                 <div className="col chart-arrows">
                   <p className="text-center">
@@ -185,6 +193,7 @@ class Statistics extends React.Component {
               </div>
             </div>
           </div>
+          {user.nb_activities === 0 && <NoActivities t={t} />}
         </div>
       </>
     )
@@ -194,5 +203,6 @@ class Statistics extends React.Component {
 export default withTranslation()(
   connect(state => ({
     sports: state.sports.data,
+    user: state.user,
   }))(Statistics)
 )

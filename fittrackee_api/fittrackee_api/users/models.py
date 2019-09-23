@@ -96,9 +96,10 @@ class User(db.Model):
         total = (None, None)
         if nb_activity > 0:
             sports = (
-                db.session.query(func.count(Activity.sport_id))
+                db.session.query(Activity.sport_id)
                 .filter(Activity.user_id == self.id)
                 .group_by(Activity.sport_id)
+                .order_by(Activity.sport_id)
                 .all()
             )
             total = (
@@ -125,6 +126,9 @@ class User(db.Model):
             'language': self.language,
             'nb_activities': nb_activity,
             'nb_sports': len(sports),
+            'sports_list': [
+                sport for sportslist in sports for sport in sportslist
+            ],
             'total_distance': float(total[0]) if total[0] else 0,
             'total_duration': str(total[1]) if total[1] else "0:00:00",
         }

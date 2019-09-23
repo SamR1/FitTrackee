@@ -337,6 +337,11 @@ def get_user_status(user_id):
           "nb_activities": 6,
           "nb_sports": 3,
           "picture": false,
+          "sports_list": [
+              1,
+              4,
+              6
+          ],
           "timezone": "Europe/Paris",
           "total_distance": 67.895,
           "total_duration": "6:50:27",
@@ -395,6 +400,11 @@ def edit_user(user_id):
           "nb_activities": 6,
           "nb_sports": 3,
           "picture": false,
+          "sports_list": [
+              1,
+              4,
+              6
+          ],
           "timezone": "Europe/Paris",
           "total_distance": 67.895,
           "total_duration": "6:50:27",
