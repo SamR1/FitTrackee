@@ -108,6 +108,15 @@ def sport_1_cycling():
 
 
 @pytest.fixture()
+def sport_1_cycling_inactive():
+    sport = Sport(label='Cycling')
+    sport.is_active = False
+    db.session.add(sport)
+    db.session.commit()
+    return sport
+
+
+@pytest.fixture()
 def sport_2_running():
     sport = Sport(label='Running')
     db.session.add(sport)

@@ -64,18 +64,6 @@ class NavBar extends React.PureComponent {
                     </Link>
                   </li>
                 )}
-                {isAuthenticated && (
-                  <li className="nav-item">
-                    <Link
-                      className="nav-link"
-                      to={{
-                        pathname: '/activities/add',
-                      }}
-                    >
-                      <strong>{t('common:Add workout')}</strong>
-                    </Link>
-                  </li>
-                )}
                 {admin && (
                   <li className="nav-item">
                     <Link
@@ -85,6 +73,18 @@ class NavBar extends React.PureComponent {
                       }}
                     >
                       Admin
+                    </Link>
+                  </li>
+                )}
+                {isAuthenticated && (
+                  <li className="nav-item">
+                    <Link
+                      className="nav-link"
+                      to={{
+                        pathname: '/activities/add',
+                      }}
+                    >
+                      <strong>{t('common:Add workout')}</strong>
                     </Link>
                   </li>
                 )}

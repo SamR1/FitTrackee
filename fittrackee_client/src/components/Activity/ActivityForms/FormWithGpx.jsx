@@ -11,7 +11,7 @@ import { translateSports } from '../../../utils/activities'
 function FormWithGpx(props) {
   const { activity, loading, onAddActivity, onEditActivity, sports, t } = props
   const sportId = activity ? activity.sport_id : ''
-  const translatedSports = translateSports(sports, t)
+  const translatedSports = translateSports(sports, t, true)
   // prettier-ignore
   const zipTooltip =
     `${t('activities:no folder inside')}, ${gpxLimit} ${

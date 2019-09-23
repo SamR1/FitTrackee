@@ -10,7 +10,7 @@ import { formatActivityDate, translateSports } from '../../../utils/activities'
 
 function FormWithoutGpx(props) {
   const { activity, onAddOrEdit, sports, t } = props
-  const translatedSports = translateSports(sports, t)
+  const translatedSports = translateSports(sports, t, true)
   let activityDate,
     activityTime,
     sportId = ''

@@ -167,13 +167,14 @@ label {
 }
 
 .admin-items {
- list-style-type: square;
+  list-style-type: square;
 }
 
 .admin-message {
   color: #7c7c7d;
- font-size: 0.9em;
- font-style: italic;
+  font-size: 0.9em;
+  font-style: italic;
+  margin-left: 10px;
 }
 
 .card {

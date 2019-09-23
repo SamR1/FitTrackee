@@ -74,16 +74,16 @@ class Sport(db.Model):
     def __init__(self, label):
         self.label = label
 
-    def serialize(self):
-        return {
+    def serialize(self, is_admin=False):
+        serialized_sport = {
             'id': self.id,
             'label': self.label,
             'img': self.img,
             'is_active': self.is_active,
-            '_can_be_disabled': not (
-                len(self.activities) > 0 and self.is_active
-            ),
         }
+        if is_admin:
+            serialized_sport['has_activities'] = len(self.activities) > 0
+        return serialized_sport
 
 
 class Activity(db.Model):

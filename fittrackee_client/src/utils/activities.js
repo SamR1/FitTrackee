@@ -93,8 +93,9 @@ const sortSports = (a, b) => {
   return sportALabel > sportBLabel ? 1 : sportALabel < sportBLabel ? -1 : 0
 }
 
-export const translateSports = (sports, t) =>
+export const translateSports = (sports, t, onlyActive = false) =>
   sports
+    .filter(sport => (onlyActive ? sport.is_active : true))
     .map(sport => ({
       ...sport,
       label: t(`sports:${sport.label}`),

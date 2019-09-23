@@ -62,23 +62,26 @@ class AdminSports extends React.Component {
                             )}
                           </td>
                           <td>
-                            {sport._can_be_disabled ? (
-                              <input
-                                type="submit"
-                                className={`btn btn-${
-                                  sport.is_active ? 'dark' : 'primary'
-                                } btn-sm`}
-                                value={
-                                  sport.is_active
-                                    ? t('administration:Disable')
-                                    : t('administration:Enable')
-                                }
-                                onClick={() =>
-                                  updateSport(sport.id, !sport.is_active)
-                                }
-                              />
-                            ) : (
+                            <input
+                              type="submit"
+                              className={`btn btn-${
+                                sport.is_active ? 'dark' : 'primary'
+                              } btn-sm`}
+                              value={
+                                sport.is_active
+                                  ? t('administration:Disable')
+                                  : t('administration:Enable')
+                              }
+                              onClick={() =>
+                                updateSport(sport.id, !sport.is_active)
+                              }
+                            />
+                            {sport.has_activities && (
                               <span className="admin-message">
+                                <i
+                                  className="fa fa-warning custom-fa"
+                                  aria-hidden="true"
+                                />
                                 {t('administration:activities exist')}
                               </span>
                             )}
