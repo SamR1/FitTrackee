@@ -96,12 +96,17 @@ class User(db.Model):
         if nb_activity > 0:
             sports = (
                 db.session.query(func.count(Activity.sport_id))
+                .filter(Activity.user_id == self.id)
                 .group_by(Activity.sport_id)
                 .all()
             )
-            total = db.session.query(
-                func.sum(Activity.distance), func.sum(Activity.duration)
-            ).first()
+            total = (
+                db.session.query(
+                    func.sum(Activity.distance), func.sum(Activity.duration)
+                )
+                .filter(Activity.user_id == self.id)
+                .first()
+            )
         return {
             'id': self.id,
             'username': self.username,

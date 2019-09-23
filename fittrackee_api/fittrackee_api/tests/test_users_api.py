@@ -193,6 +193,66 @@ def test_users_list(app, user_1, user_2, user_3):
     assert data['data']['users'][2]['total_duration'] == '0:00:00'
 
 
+def test_users_list_with_activities(
+    app,
+    user_1,
+    user_2,
+    user_3,
+    sport_1_cycling,
+    activity_cycling_user_1,
+    sport_2_running,
+    activity_running_user_1,
+    activity_cycling_user_2,
+):
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/users',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+
+    assert len(data['data']['users']) == 3
+    assert 'created_at' in data['data']['users'][0]
+    assert 'created_at' in data['data']['users'][1]
+    assert 'created_at' in data['data']['users'][2]
+    assert 'test' in data['data']['users'][0]['username']
+    assert 'toto' in data['data']['users'][1]['username']
+    assert 'sam' in data['data']['users'][2]['username']
+    assert 'test@test.com' in data['data']['users'][0]['email']
+    assert 'toto@toto.com' in data['data']['users'][1]['email']
+    assert 'sam@test.com' in data['data']['users'][2]['email']
+    assert data['data']['users'][0]['timezone'] is None
+    assert data['data']['users'][0]['weekm'] is False
+    assert data['data']['users'][0]['nb_activities'] == 2
+    assert data['data']['users'][0]['nb_sports'] == 2
+    assert data['data']['users'][0]['total_distance'] == 22.0
+    assert data['data']['users'][0]['total_duration'] == '1:57:04'
+    assert data['data']['users'][1]['timezone'] is None
+    assert data['data']['users'][1]['weekm'] is False
+    assert data['data']['users'][1]['nb_activities'] == 1
+    assert data['data']['users'][1]['nb_sports'] == 1
+    assert data['data']['users'][1]['total_distance'] == 15
+    assert data['data']['users'][1]['total_duration'] == '1:00:00'
+    assert data['data']['users'][2]['timezone'] is None
+    assert data['data']['users'][2]['weekm'] is True
+    assert data['data']['users'][2]['nb_activities'] == 0
+    assert data['data']['users'][2]['nb_sports'] == 0
+    assert data['data']['users'][2]['total_distance'] == 0
+    assert data['data']['users'][2]['total_duration'] == '0:00:00'
+
+
 def test_encode_auth_token(app, user_1):
     """=> Ensure correct auth token generation"""
     auth_token = user_1.encode_auth_token(user_1.id)
