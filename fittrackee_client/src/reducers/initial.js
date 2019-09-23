@@ -12,6 +12,9 @@ export default {
   activities: {
     ...emptyData,
   },
+  application: {
+    statistics: {},
+  },
   calendarActivities: {
     ...emptyData,
   },

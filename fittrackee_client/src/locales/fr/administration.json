@@ -11,5 +11,7 @@
   "Image": "Image",
   "Label": "Label",
   "Sports": "Sports",
-  "Users": "Utilisateurs"
+  "user": "user",
+  "Users": "Utilisateurs",
+  "users": "utilisateurs"
 }

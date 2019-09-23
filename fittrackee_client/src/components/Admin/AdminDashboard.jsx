@@ -1,6 +1,8 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 
+import AdminStats from './AdminStats'
+
 export default function AdminDashboard() {
   return (
     <div>
@@ -11,7 +13,9 @@ export default function AdminDashboard() {
         <div className="card-header">
           <strong>FitTrackee administration</strong>
         </div>
-        <div className="card-body">TODO</div>
+        <div className="card-body">
+          <AdminStats />
+        </div>
       </div>
     </div>
   )

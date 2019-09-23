@@ -33,6 +33,16 @@ const activities = (state = initial.activities, action) => {
   }
 }
 
+const application = (state = initial.application, action) => {
+  if (action.type === 'SET_APP_STATS') {
+    return {
+      ...state,
+      statistics: action.data,
+    }
+  }
+  return state
+}
+
 const calendarActivities = (state = initial.calendarActivities, action) => {
   if (action.type === 'UPDATE_CALENDAR') {
     return {
@@ -140,6 +150,7 @@ const statistics = (state = initial.statistics, action) =>
 export default history =>
   combineReducers({
     activities,
+    application,
     calendarActivities,
     chartData,
     gpx,
