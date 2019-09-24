@@ -1,6 +1,6 @@
 # Change log
 
-## Version 0.2.2 - Fix and improvements (2019/09/23)
+## Version 0.2.2 - Statistics fix (2019/09/23)
 
 ### Issues Closed
 
