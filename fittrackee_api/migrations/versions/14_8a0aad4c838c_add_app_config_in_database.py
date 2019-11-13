@@ -1,4 +1,4 @@
-"""empty message
+"""add application config in database
 
 Revision ID: 8a0aad4c838c
 Revises: 1345afe3b11d

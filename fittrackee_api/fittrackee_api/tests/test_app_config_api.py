@@ -50,9 +50,7 @@ def test_get_config_no_config(app_no_config, user_1_admin):
     assert 'Error on getting configuration.' in data['message']
 
 
-def test_get_config_several_config(
-    app, app_config, user_1_admin
-):
+def test_get_config_several_config(app, app_config, user_1_admin):
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
@@ -84,9 +82,7 @@ def test_update_config_as_admin(app, user_1_admin):
     response = client.patch(
         '/api/config',
         content_type='application/json',
-        data=json.dumps(
-            dict(registration=True, max_users=10)
-        ),
+        data=json.dumps(dict(registration=True, max_users=10)),
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
@@ -150,9 +146,7 @@ def test_update_config_not_admin(app, user_1):
     response = client.patch(
         '/api/config',
         content_type='application/json',
-        data=json.dumps(
-            dict(registration=True, max_users=10)
-        ),
+        data=json.dumps(dict(registration=True, max_users=10)),
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
@@ -199,9 +193,7 @@ def test_update_config_no_config(app_no_config, user_1_admin):
     response = client.patch(
         '/api/config',
         content_type='application/json',
-        data=json.dumps(
-            dict(registration=True, max_users=10)
-        ),
+        data=json.dumps(dict(registration=True, max_users=10)),
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']

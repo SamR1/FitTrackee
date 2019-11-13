@@ -7,6 +7,7 @@ API documentation
 
    activities
    auth
+   configuration
    records
    sports
    stats

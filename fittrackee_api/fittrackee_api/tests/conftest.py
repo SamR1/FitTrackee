@@ -36,13 +36,22 @@ def app_config_registration_disabled():
     return config
 
 
-@pytest.fixture
-def app():
+def get_app_config(app_type):
+    if app_type == 'with_registration':
+        return app_config_with_registration()
+    elif app_type == 'no_registration':
+        return app_config_registration_disabled()
+    else:
+        return None
+
+
+def get_app(app_type=None):
     app = create_app()
     with app.app_context():
         db.create_all()
-        app_db_config = app_config_with_registration()
-        update_app_config_from_database(app, app_db_config)
+        app_db_config = get_app_config(app_type)
+        if app_db_config:
+            update_app_config_from_database(app, app_db_config)
         yield app
         db.session.remove()
         db.drop_all()
@@ -51,35 +60,21 @@ def app():
         # superuser connections
         db.engine.dispose()
         return app
+
+
+@pytest.fixture
+def app():
+    yield from get_app('with_registration')
 
 
 @pytest.fixture
 def app_no_config():
-    app = create_app()
-    with app.app_context():
-        db.create_all()
-        yield app
-        db.session.remove()
-        db.drop_all()
-        # close unused idle connections => avoid the following error:
-        # FATAL: remaining connection slots are reserved for non-replication
-        # superuser connections
-        db.engine.dispose()
-        return app
+    yield from get_app()
 
 
 @pytest.fixture
 def app_no_registration():
-    app = create_app()
-    with app.app_context():
-        db.create_all()
-        app_db_config = app_config_registration_disabled()
-        update_app_config_from_database(app, app_db_config)
-        yield app
-        db.session.remove()
-        db.drop_all()
-        db.engine.dispose()
-    return app
+    yield from get_app('no_registration')
 
 
 @pytest.fixture()

@@ -45,7 +45,7 @@ def create_app():
     from .activities.records import records_blueprint  # noqa
     from .activities.sports import sports_blueprint  # noqa
     from .activities.stats import stats_blueprint  # noqa
-    from .application.config import config_blueprint  # noqa
+    from .application.app_config import config_blueprint  # noqa
 
     app.register_blueprint(users_blueprint, url_prefix='/api')
     app.register_blueprint(auth_blueprint, url_prefix='/api')
