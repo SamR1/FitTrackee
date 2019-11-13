@@ -281,6 +281,46 @@ def test_user_registration_not_allowed(app_no_registration):
     assert data['message'] == 'Error. Registration is disabled.'
 
 
+def test_user_registration_max_users_exceeded(
+    app, user_1_admin, user_2, user_3
+):
+    client = app.test_client()
+
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='admin@example.com', password='12345678')),
+        content_type='application/json',
+    )
+    client.patch(
+        '/api/config',
+        content_type='application/json',
+        data=json.dumps(dict(max_users=3, registration=True)),
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    response = client.post(
+        '/api/auth/register',
+        data=json.dumps(
+            dict(
+                username='user4',
+                email='user4@test.com',
+                password='12345678',
+                password_conf='12345678',
+            )
+        ),
+        content_type='application/json',
+    )
+
+    assert response.content_type == 'application/json'
+    assert response.status_code == 403
+    data = json.loads(response.data.decode())
+    assert data['status'] == 'error'
+    assert data['message'] == 'Error. Registration is disabled.'
+
+
 def test_login_registered_user(app, user_1):
     client = app.test_client()
     response = client.post(

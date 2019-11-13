@@ -3,6 +3,7 @@ import shutil
 from fittrackee_api import create_app, db
 from fittrackee_api.activities.models import Activity, Sport
 from fittrackee_api.activities.utils import update_activity
+from fittrackee_api.application.utils import init_config
 from fittrackee_api.users.models import User
 from tqdm import tqdm
 
@@ -73,6 +74,20 @@ def recalculate():
         update_activity(activity)
         pbar.set_postfix(activitiy_id=activity.id)
     db.session.commit()
+
+
+@app.cli.command('init-app-config')
+def init_app_config():
+    """Init application configuration."""
+    print("Init application configuration")
+    config_created, _ = init_config()
+    if config_created:
+        print("Creation done!")
+    else:
+        print(
+            "Application configuration already existing in database. "
+            "Please use web application to update it."
+        )
 
 
 if __name__ == '__main__':

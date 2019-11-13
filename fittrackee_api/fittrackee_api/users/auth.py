@@ -78,7 +78,7 @@ def register_user():
         Error. Please try again or contact the administrator.
 
     """
-    if not current_app.config.get('REGISTRATION_ALLOWED'):
+    if not current_app.config.get('is_registration_enabled'):
         response_object = {
             'status': 'error',
             'message': 'Error. Registration is disabled.',

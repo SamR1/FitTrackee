@@ -4,16 +4,58 @@ import os
 import pytest
 from fittrackee_api import create_app, db
 from fittrackee_api.activities.models import Activity, ActivitySegment, Sport
+from fittrackee_api.application.models import AppConfig
+from fittrackee_api.application.utils import update_app_config_from_database
 from fittrackee_api.users.models import User
 
 os.environ["FLASK_ENV"] = 'testing'
 os.environ["APP_SETTINGS"] = 'fittrackee_api.config.TestingConfig'
 
 
+def app_config_with_registration():
+    config = AppConfig()
+    config.gpx_limit_import = 10
+    config.max_single_file_size = 1 * 1024 * 1024
+    config.max_zip_file_size = 1 * 1024 * 1024 * 10
+    config.max_users = 10
+    config.registration = True
+    db.session.add(config)
+    db.session.commit()
+    return config
+
+
+def app_config_registration_disabled():
+    config = AppConfig()
+    config.gpx_limit_import = 20
+    config.max_single_file_size = 10485
+    config.max_zip_file_size = 104850
+    config.max_users = 0
+    config.registration = False
+    db.session.add(config)
+    db.session.commit()
+    return config
+
+
 @pytest.fixture
 def app():
     app = create_app()
-    app.config['REGISTRATION_ALLOWED'] = True
+    with app.app_context():
+        db.create_all()
+        app_db_config = app_config_with_registration()
+        update_app_config_from_database(app, app_db_config)
+        yield app
+        db.session.remove()
+        db.drop_all()
+        # close unused idle connections => avoid the following error:
+        # FATAL: remaining connection slots are reserved for non-replication
+        # superuser connections
+        db.engine.dispose()
+        return app
+
+
+@pytest.fixture
+def app_no_config():
+    app = create_app()
     with app.app_context():
         db.create_all()
         yield app
@@ -29,14 +71,28 @@ def app():
 @pytest.fixture
 def app_no_registration():
     app = create_app()
-    app.config['REGISTRATION_ALLOWED'] = False
     with app.app_context():
         db.create_all()
+        app_db_config = app_config_registration_disabled()
+        update_app_config_from_database(app, app_db_config)
         yield app
         db.session.remove()
         db.drop_all()
         db.engine.dispose()
     return app
+
+
+@pytest.fixture()
+def app_config():
+    config = AppConfig()
+    config.gpx_limit_import = 10
+    config.max_single_file_size = 1048576
+    config.max_zip_file_size = 10485760
+    config.max_users = 0
+    config.registration = False
+    db.session.add(config)
+    db.session.commit()
+    return config
 
 
 @pytest.fixture()

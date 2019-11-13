@@ -53,7 +53,7 @@ def verify_extension_and_size(file_type, req):
         if '.' in file.filename
         else None
     )
-    max_file_size = current_app.config['MAX_SINGLE_FILE']
+    max_file_size = current_app.config['max_single_file_size']
 
     if not (
         file_extension

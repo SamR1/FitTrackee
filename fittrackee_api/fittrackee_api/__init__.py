@@ -26,12 +26,26 @@ def create_app():
     bcrypt.init_app(app)
     migrate.init_app(app, db)
 
+    # get configuration from database
+    from .application.models import AppConfig
+    from .application.utils import init_config, update_app_config_from_database
+
+    with app.app_context():
+        # Note: check if "app_config" table exist to avoid errors when
+        # dropping tables on dev environments
+        if db.engine.dialect.has_table(db.engine, 'app_config'):
+            db_app_config = AppConfig.query.one_or_none()
+            if not db_app_config:
+                _, db_app_config = init_config()
+            update_app_config_from_database(app, db_app_config)
+
     from .users.auth import auth_blueprint  # noqa
     from .users.users import users_blueprint  # noqa
     from .activities.activities import activities_blueprint  # noqa
     from .activities.records import records_blueprint  # noqa
     from .activities.sports import sports_blueprint  # noqa
     from .activities.stats import stats_blueprint  # noqa
+    from .application.config import config_blueprint  # noqa
 
     app.register_blueprint(users_blueprint, url_prefix='/api')
     app.register_blueprint(auth_blueprint, url_prefix='/api')
@@ -39,6 +53,7 @@ def create_app():
     app.register_blueprint(records_blueprint, url_prefix='/api')
     app.register_blueprint(sports_blueprint, url_prefix='/api')
     app.register_blueprint(stats_blueprint, url_prefix='/api')
+    app.register_blueprint(config_blueprint, url_prefix='/api')
 
     if app.debug:
         logging.getLogger('sqlalchemy').setLevel(logging.WARNING)

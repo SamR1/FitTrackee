@@ -29,6 +29,9 @@ install-db:
 	$(FLASK) db upgrade --directory $(MIGRATIONS)
 	$(FLASK) initdata
 
+init-app-config:
+	$(FLASK) init-app-config
+
 init-db:
 	$(FLASK) drop-db
 	$(FLASK) db upgrade --directory $(MIGRATIONS)
