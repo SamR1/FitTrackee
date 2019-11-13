@@ -28,26 +28,17 @@ export default function Config({ appConfig, message, t, updateIsInEdition }) {
                       <tbody>
                         <tr>
                           <th scope="row">
-                            {t('administration:Enable registration')}:
-                          </th>
-                          <td>
-                            {appConfig.registration
-                              ? t('common:yes')
-                              : t('common:no')}
-                          </td>
-                        </tr>
-                        <tr>
-                          <th scope="row">
-                            {t('administration:Max. number of active users')}:
+                            {t(
+                              // eslint-disable-next-line max-len
+                              'administration:Max. number of active users (if 0, no limitation)'
+                            )}
+                            :
                           </th>
                           <td>{appConfig.max_users}</td>
                         </tr>
                         <tr>
                           <th scope="row">
-                            {t(
-                              'administration:Max. size of ' + 'uploaded files'
-                            )}
-                            :
+                            {t('administration:Max. size of uploaded files')}:
                           </th>
                           <td>{getFileSize(appConfig.max_single_file_size)}</td>
                         </tr>

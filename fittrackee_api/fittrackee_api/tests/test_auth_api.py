@@ -259,28 +259,6 @@ def test_user_registration_invalid_data(app):
     assert 'error' in data['status']
 
 
-def test_user_registration_not_allowed(app_no_registration):
-    client = app_no_registration.test_client()
-    response = client.post(
-        '/api/auth/register',
-        data=json.dumps(
-            dict(
-                username='test',
-                email='test@test.com',
-                password='12345678',
-                password_conf='12345678',
-            )
-        ),
-        content_type='application/json',
-    )
-
-    assert response.content_type == 'application/json'
-    assert response.status_code == 403
-    data = json.loads(response.data.decode())
-    assert data['status'] == 'error'
-    assert data['message'] == 'Error. Registration is disabled.'
-
-
 def test_user_registration_max_users_exceeded(
     app, user_1_admin, user_2, user_3
 ):

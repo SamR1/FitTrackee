@@ -76,25 +76,13 @@ class AdminApplication extends React.Component {
                       <div className="form-group row">
                         <label
                           className="col-sm-6 col-form-label"
-                          htmlFor="registration"
-                        >
-                          {t('administration:Enable registration')}:
-                        </label>
-                        <input
-                          className="col-sm-5"
-                          id="registration"
-                          name="registration"
-                          type="checkbox"
-                          checked={formData.registration}
-                          onChange={e => this.handleFormChange(e)}
-                        />
-                      </div>
-                      <div className="form-group row">
-                        <label
-                          className="col-sm-6 col-form-label"
                           htmlFor="max_users"
                         >
-                          {t('administration:Max. number of active users')}:
+                          {t(
+                            // eslint-disable-next-line max-len
+                            'administration:Max. number of active users (if 0, no limitation)'
+                          )}
+                          :
                         </label>
                         <input
                           className="col-sm-5"

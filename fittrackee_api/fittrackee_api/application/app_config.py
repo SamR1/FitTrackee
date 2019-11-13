@@ -34,8 +34,7 @@ def get_application_config():
           "is_registration_enabled": false,
           "max_single_file_size": 1048576,
           "max_zip_file_size": 10485760,
-          "max_users": 0,
-          "registration": false
+          "max_users": 0
         },
         "status": "success"
       }
@@ -85,8 +84,7 @@ def update_application_config(auth_user_id):
           "is_registration_enabled": true,
           "max_single_file_size": 1048576,
           "max_zip_file_size": 10485760,
-          "max_users": 10,
-          "registration": true
+          "max_users": 10
         },
         "status": "success"
       }
@@ -94,10 +92,10 @@ def update_application_config(auth_user_id):
     :param integer auth_user_id: authenticate user id (from JSON Web Token)
 
     :<json integrer gpx_limit_import: max number of files in zip archive
+    :<json boolean is_registration_enabled: is registration enabled ?
     :<json integrer max_single_file_size: max size of a single file
     :<json integrer max_zip_file_size: max size of a zip archive
     :<json integrer max_users: max users allowed to register on instance
-    :<json boolean registration: is registration enabled ?
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -127,8 +125,6 @@ def update_application_config(auth_user_id):
             config.max_zip_file_size = config_data.get('max_zip_file_size')
         if 'max_users' in config_data:
             config.max_users = config_data.get('max_users')
-        if 'registration' in config_data:
-            config.registration = config_data.get('registration')
 
         db.session.commit()
         update_app_config_from_database(current_app, config)

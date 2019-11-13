@@ -24,8 +24,7 @@ def test_get_config(app, user_1):
     assert data['data']['is_registration_enabled'] is True
     assert data['data']['max_single_file_size'] == 1048576
     assert data['data']['max_zip_file_size'] == 10485760
-    assert data['data']['max_users'] == 10
-    assert data['data']['registration'] is True
+    assert data['data']['max_users'] == 100
 
 
 def test_get_config_no_config(app_no_config, user_1_admin):
@@ -82,7 +81,7 @@ def test_update_config_as_admin(app, user_1_admin):
     response = client.patch(
         '/api/config',
         content_type='application/json',
-        data=json.dumps(dict(registration=True, max_users=10)),
+        data=json.dumps(dict(gpx_limit_import=100, max_users=10)),
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
@@ -92,12 +91,11 @@ def test_update_config_as_admin(app, user_1_admin):
 
     assert response.status_code == 200
     assert 'success' in data['status']
-    assert data['data']['gpx_limit_import'] == 10
+    assert data['data']['gpx_limit_import'] == 100
     assert data['data']['is_registration_enabled'] is True
     assert data['data']['max_single_file_size'] == 1048576
     assert data['data']['max_zip_file_size'] == 10485760
     assert data['data']['max_users'] == 10
-    assert data['data']['registration'] is True
 
 
 def test_update_full_config_as_admin(app, user_1_admin):
@@ -116,7 +114,6 @@ def test_update_full_config_as_admin(app, user_1_admin):
                 max_single_file_size=10000,
                 max_zip_file_size=25000,
                 max_users=50,
-                registration=True,
             )
         ),
         headers=dict(
@@ -133,7 +130,6 @@ def test_update_full_config_as_admin(app, user_1_admin):
     assert data['data']['max_single_file_size'] == 10000
     assert data['data']['max_zip_file_size'] == 25000
     assert data['data']['max_users'] == 50
-    assert data['data']['registration'] is True
 
 
 def test_update_config_not_admin(app, user_1):
@@ -146,7 +142,7 @@ def test_update_config_not_admin(app, user_1):
     response = client.patch(
         '/api/config',
         content_type='application/json',
-        data=json.dumps(dict(registration=True, max_users=10)),
+        data=json.dumps(dict(gpx_limit_import=100, max_users=10)),
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
@@ -193,7 +189,7 @@ def test_update_config_no_config(app_no_config, user_1_admin):
     response = client.patch(
         '/api/config',
         content_type='application/json',
-        data=json.dumps(dict(registration=True, max_users=10)),
+        data=json.dumps(dict(gpx_limit_import=100, max_users=10)),
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
