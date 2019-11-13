@@ -84,11 +84,17 @@ run-server:
 serve-python:
 	$(FLASK) run --with-threads -h $(HOST) -p $(API_PORT)
 
+serve-python-dev:
+	$(FLASK) run --with-threads -h $(HOST) -p $(API_PORT) --cert=adhoc
+
 serve-react:
 	$(NPM) start
 
 serve:
 	$(MAKE) P="serve-react serve-python" make-p
+
+serve-dev:
+	$(MAKE) P="serve-react serve-python-dev" make-p
 
 test-e2e: init-db
 	$(NPM) test

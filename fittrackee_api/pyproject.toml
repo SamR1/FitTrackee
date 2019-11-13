@@ -31,6 +31,7 @@ sphinx = "^2.2.1"
 sphinxcontrib-httpdomain = "^1.7"
 sphinx-bootstrap-theme = "^0.7.1"
 recommonmark = "^0.6.0"
+pyopenssl = "^19.0"
 
 [tool.pytest]
 norecursedirs = "fittrackee_api/.venv"
