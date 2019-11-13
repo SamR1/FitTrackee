@@ -9,6 +9,7 @@
   "Error. Registration is disabled.": "Erreur. L'inscription est désactivée.",
   "Error. Please try again or contact the administrator.": "Erreur. Veuillez réessayer ou contacter l'administrateur",
   "File extension not allowed.": "Extension de fichier non autorisée.",
+  "File size is greater than the allowed size": "La taille du fichier est supérieure à la limite autorisée",
   "Incorrect id": "Id incorrect",
   "Invalid credentials.": "Identifiants invalides.",
   "Invalid payload.": "Données incorrectes.",

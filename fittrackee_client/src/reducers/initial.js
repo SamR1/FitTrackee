@@ -14,6 +14,14 @@ export default {
   },
   application: {
     statistics: {},
+    config: {
+      gpx_limit_import: null,
+      is_registration_enabled: null,
+      max_single_file_size: null,
+      max_users: null,
+      max_zip_file_size: null,
+      registration: null,
+    },
   },
   calendarActivities: {
     ...emptyData,

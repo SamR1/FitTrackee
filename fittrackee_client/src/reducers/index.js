@@ -34,6 +34,12 @@ const activities = (state = initial.activities, action) => {
 }
 
 const application = (state = initial.application, action) => {
+  if (action.type === 'SET_APP_CONFIG') {
+    return {
+      ...state,
+      config: action.data,
+    }
+  }
   if (action.type === 'SET_APP_STATS') {
     return {
       ...state,

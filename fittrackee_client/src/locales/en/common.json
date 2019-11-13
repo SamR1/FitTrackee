@@ -1,14 +1,18 @@
 {
   "Add workout": "Add workout",
+  "Back": "Back",
   "Cancel": "Cancel",
   "Dashboard": "Dashboard",
+  "Edit": "Edit",
   "day": "day",
   "days": "days",
   "Login": "Login",
   "Logout": "Logout",
   "No": "No",
+  "no": "no",
   "No records.": "No records.",
   "No workouts.": "No workouts.",
+  "Page not found": "Page not found",
   "Register": "Register",
   "Statistics": "Statistics",
   "Sport": "Sport",
@@ -21,5 +25,6 @@
   "Workouts": "Workouts",
   "workout": "workout",
   "workouts": "workouts",
-  "Yes": "Yes"
+  "Yes": "Yes",
+  "yes": "yes"
 }

@@ -2,7 +2,7 @@ import React from 'react'
 import { withTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 
-import { getAppStats } from '../../actions/stats'
+import { getAppData } from '../../actions/application'
 
 class AdminStats extends React.Component {
   componentDidMount() {
@@ -80,7 +80,7 @@ export default withTranslation()(
     }),
     dispatch => ({
       loadAppStats: () => {
-        dispatch(getAppStats())
+        dispatch(getAppData('stats/all'))
       },
     })
   )(AdminStats)

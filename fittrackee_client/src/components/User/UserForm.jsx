@@ -42,6 +42,7 @@ class UserForm extends React.Component {
   render() {
     const {
       formType,
+      isRegistrationAllowed,
       message,
       messages,
       onHandleUserFormSubmit,
@@ -56,6 +57,7 @@ class UserForm extends React.Component {
           <div>
             <Message message={message} messages={messages} t={t} />
             <Form
+              isRegistrationAllowed={isRegistrationAllowed}
               formType={formType}
               userForm={formData}
               onHandleFormChange={event => this.onHandleFormChange(event)}
@@ -73,6 +75,7 @@ class UserForm extends React.Component {
 export default withTranslation()(
   connect(
     state => ({
+      isRegistrationAllowed: state.application.config.is_registration_enabled,
       location: state.router.location,
       message: state.message,
       messages: state.messages,

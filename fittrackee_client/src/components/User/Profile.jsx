@@ -7,15 +7,23 @@ import { Link } from 'react-router-dom'
 
 import Message from '../Common/Message'
 import { deletePicture, uploadPicture } from '../../actions/user'
-import { apiUrl, fileSizeLimit } from '../../utils'
+import { apiUrl, getFileSize } from '../../utils'
 
-function Profile({ message, onDeletePicture, onUploadPicture, t, user }) {
+function Profile({
+  appConfig,
+  message,
+  onDeletePicture,
+  onUploadPicture,
+  t,
+  user,
+}) {
   const createdAt = user.created_at
     ? format(new Date(user.created_at), 'dd/MM/yyyy HH:mm')
     : ''
   const birthDate = user.birth_date
     ? format(new Date(user.birth_date), 'dd/MM/yyyy')
     : ''
+  const fileSizeLimit = getFileSize(appConfig.max_single_file_size)
   return (
     <div>
       <Helmet>
@@ -118,6 +126,7 @@ function Profile({ message, onDeletePicture, onUploadPicture, t, user }) {
 export default withTranslation()(
   connect(
     state => ({
+      appConfig: state.application.config,
       message: state.message,
       user: state.user,
     }),

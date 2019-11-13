@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { Helmet } from 'react-helmet'
 
 import { history } from '../../index'
-import { isRegistrationAllowed } from '../../utils'
 
 export default function Form(props) {
   const { t } = useTranslation()
@@ -22,7 +21,7 @@ export default function Form(props) {
           <div className="col-md-6">
             <hr />
             <br />
-            {props.formType === 'register' && !isRegistrationAllowed ? (
+            {props.formType === 'register' && !props.isRegistrationAllowed ? (
               <div className="card">
                 <div className="card-body">Registration is disabled.</div>
                 <div className="card-body">

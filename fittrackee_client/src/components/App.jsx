@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Redirect, Route, Switch } from 'react-router-dom'
 
 import './App.css'
@@ -14,12 +15,16 @@ import Profile from './User/Profile'
 import ProfileEdit from './User/ProfileEdit'
 import Statistics from './Statistics'
 import UserForm from './User/UserForm'
+import { getAppData } from '../actions/application'
 import { isLoggedIn } from '../utils'
 
-export default class App extends React.Component {
+class App extends React.Component {
   constructor(props) {
     super(props)
     this.props = props
+  }
+  componentDidMount() {
+    this.props.loadAppConfig()
   }
 
   render() {
@@ -74,7 +79,12 @@ export default class App extends React.Component {
           <Route exact path="/activities/history" component={Activities} />
           <Route exact path="/activities/statistics" component={Statistics} />
           <Route path="/activities" component={Activity} />
-          <Route path="/admin" component={Admin} />
+          <Route
+            path="/admin"
+            render={() =>
+              isLoggedIn() ? <Admin /> : <UserForm formType={'login'} />
+            }
+          />
           <Route component={NotFound} />
         </Switch>
         <Footer />
@@ -82,3 +92,11 @@ export default class App extends React.Component {
     )
   }
 }
+export default connect(
+  () => ({}),
+  dispatch => ({
+    loadAppConfig: () => {
+      dispatch(getAppData('config'))
+    },
+  })
+)(App)

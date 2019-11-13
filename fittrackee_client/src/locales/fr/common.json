@@ -1,14 +1,18 @@
 {
   "Add workout": "Ajouter une activité",
+  "Back": "Revenir à la page précédente",
   "Cancel": "Annuler",
   "Dashboard": "Tableau de Bord",
+  "Edit": "Modifier",
   "day": "jour",
   "days": "jours",
   "Login": "Se connecter",
   "Logout": "Se déconnecter",
   "No": "Non",
+  "no": "non",
   "No records.": "Pas de records.",
   "No workouts.": "Pas d'activités.",
+  "Page not found": "Page introuvable",
   "Register": "S'inscrire",
   "Statistics": "Statistiques",
   "Sport": "Sport",
@@ -21,5 +25,6 @@
   "Workouts": "Activités",
   "workout": "activité",
   "workouts": "activités",
-  "Yes": "Oui"
+  "Yes": "Oui",
+  "yes": "oui"
 }

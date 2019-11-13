@@ -177,6 +177,10 @@ label {
   margin-left: 10px;
 }
 
+.app-config-form label {
+  font-weight: bold;
+}
+
 .card {
   text-align: left;
 }

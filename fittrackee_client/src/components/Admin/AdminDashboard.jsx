@@ -3,15 +3,16 @@ import { Helmet } from 'react-helmet'
 
 import AdminStats from './AdminStats'
 
-export default function AdminDashboard() {
+export default function AdminDashboard(props) {
+  const { t } = props
   return (
     <div>
       <Helmet>
-        <title>FitTrackee - Administration</title>
+        <title>{t('administration:FitTrackee administration')}</title>
       </Helmet>
       <div className="card activity-card">
         <div className="card-header">
-          <strong>FitTrackee administration</strong>
+          <strong>{t('administration:FitTrackee administration')}</strong>
         </div>
         <div className="card-body">
           <AdminStats />

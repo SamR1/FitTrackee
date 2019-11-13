@@ -9,6 +9,7 @@
   "Error. Registration is disabled.": "Error. Registration is disabled.",
   "Error. Please try again or contact the administrator.": "Error. Please try again or contact the administrator.",
   "File extension not allowed.": "File extension not allowed.",
+  "File size is greater than the allowed size": "File size is greater than the allowed size",
   "Incorrect id": "Incorrect id",
   "Invalid credentials.": "Invalid credentials.",
   "Invalid payload.": "Invalid payload.",

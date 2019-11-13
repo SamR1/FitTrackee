@@ -2,12 +2,17 @@ import { format, parse } from 'date-fns'
 import { DateTime } from 'luxon'
 
 const suffixes = ['bytes', 'KB', 'MB', 'GB', 'TB']
-const getFileSize = fileSize => {
+export const getFileSize = fileSize => {
   const i = Math.floor(Math.log(fileSize) / Math.log(1024))
   return (
     (!fileSize && '0 bytes') ||
     `${(fileSize / Math.pow(1024, i)).toFixed(1)}${suffixes[i]}`
   )
+}
+
+export const getFileSizeInMB = fileSize => {
+  const value = fileSize / 1048576
+  return (!fileSize && 0) || +value.toFixed(2)
 }
 
 export const version = '0.3.0-beta' // version stored in 'utils' for now
@@ -16,15 +21,6 @@ export const apiUrl = `${process.env.REACT_APP_API_URL}/api/`
 export const thunderforestApiKey = `${
   process.env.REACT_APP_THUNDERFOREST_API_KEY
 }`
-export const gpxLimit = `${process.env.REACT_APP_GPX_LIMIT_IMPORT}`
-export const fileSizeLimit = getFileSize(
-  +process.env.REACT_APP_MAX_SINGLE_FILE_SIZE
-)
-export const zipSizeLimit = getFileSize(
-  +process.env.REACT_APP_MAX_ZIP_FILE_SIZE
-)
-export const isRegistrationAllowed =
-  process.env.REACT_APP_ALLOW_REGISTRATION !== 'false'
 
 export const isLoggedIn = () => !!window.localStorage.authToken
 
@@ -56,7 +52,11 @@ export const createApiRequest = params => {
   }
   const request = new Request(`${apiUrl}${params.url}`, requestParams)
   return fetch(request)
-    .then(response => (params.method === 'DELETE' ? response : response.json()))
+    .then(response =>
+      params.method === 'DELETE' || response.status === 413
+        ? response
+        : response.json()
+    )
     .catch(error => {
       console.error(error)
       return new Error('An error occurred. Please contact the administrator.')

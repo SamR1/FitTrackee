@@ -11,8 +11,8 @@ def init_config():
     """
     init application configuration if not existing in database
 
-    Note: get some configuration values from env variables (for FitTrackee versions
-    prior to v0.3.0)
+    Note: get some configuration values from env variables
+    (for FitTrackee versions prior to v0.3.0)
     """
     existing_config = AppConfig.query.one_or_none()
     if not existing_config:

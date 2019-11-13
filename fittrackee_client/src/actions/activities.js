@@ -43,6 +43,10 @@ export const addActivity = form => dispatch =>
           dispatch(loadProfile())
           history.push('/')
         }
+      } else if (ret.status === 413) {
+        dispatch(
+          setError('activities|File size is greater than the allowed size')
+        )
       } else {
         dispatch(setError(`activities|${ret.message}`))
       }

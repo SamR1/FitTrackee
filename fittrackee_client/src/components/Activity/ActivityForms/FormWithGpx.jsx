@@ -5,17 +5,27 @@ import { connect } from 'react-redux'
 import { setLoading } from '../../../actions/index'
 import { addActivity, editActivity } from '../../../actions/activities'
 import { history } from '../../../index'
-import { fileSizeLimit, gpxLimit, zipSizeLimit } from '../../../utils'
+import { getFileSize } from '../../../utils'
 import { translateSports } from '../../../utils/activities'
 
 function FormWithGpx(props) {
-  const { activity, loading, onAddActivity, onEditActivity, sports, t } = props
+  const {
+    activity,
+    appConfig,
+    loading,
+    onAddActivity,
+    onEditActivity,
+    sports,
+    t,
+  } = props
   const sportId = activity ? activity.sport_id : ''
   const translatedSports = translateSports(sports, t, true)
-  // prettier-ignore
-  const zipTooltip =
-    `${t('activities:no folder inside')}, ${gpxLimit} ${
-    t('activities:files max')}, ${t('activities:max size')}: ${zipSizeLimit}`
+  const zipTooltip = `${t('activities:no folder inside')}, ${
+    appConfig.gpx_limit_import
+  } ${t('activities:files max')}, ${t('activities:max size')}: ${getFileSize(
+    appConfig.max_zip_file_size
+  )}`
+  const fileSizeLimit = getFileSize(appConfig.max_single_file_size)
   return (
     <form
       encType="multipart/form-data"
@@ -130,6 +140,7 @@ function FormWithGpx(props) {
 
 export default connect(
   state => ({
+    appConfig: state.application.config,
     loading: state.loading,
   }),
   dispatch => ({
