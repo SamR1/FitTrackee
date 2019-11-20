@@ -3,7 +3,10 @@ import shutil
 from fittrackee_api import create_app, db
 from fittrackee_api.activities.models import Activity, Sport
 from fittrackee_api.activities.utils import update_activity
-from fittrackee_api.application.utils import init_config
+from fittrackee_api.application.utils import (
+    init_config,
+    update_app_config_from_database,
+)
 from fittrackee_api.users.models import User
 from tqdm import tqdm
 
@@ -55,6 +58,10 @@ def initdata():
     sport.is_default = True
     db.session.add(sport)
     db.session.commit()
+    # update app config
+    _, db_app_config = init_config()
+    update_app_config_from_database(app, db_app_config)
+
     print('Initial data stored in database.')
 
 
