@@ -281,7 +281,11 @@ label {
 }
 
 .dropdown-item-selected {
-    font-weight: bold;
+  font-weight: bold;
+}
+
+.dropdown-item-selected::after {
+  content: " ✔";
 }
 
 .fa-question-circle {

@@ -21,7 +21,7 @@ i18n
   .use(XHR)
   .use(LanguageDetector)
   .init({
-    debug: true,
+    debug: process.env.NODE_ENV === 'development',
     lng: 'en',
     fallbackLng: 'en',
     keySeparator: false,
