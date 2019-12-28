@@ -1,5 +1,16 @@
 # Change log
 
+## Version 0.2.3 - i18n (20xx/xx/xx)
+
+### Issues Closed
+
+#### New Features
+
+* [#40](https://github.com/SamR1/Fittrackee/issues/40) - Localize FitTrackee (i18n)
+
+In this release 1 issue was closed.
+
+
 ## Version 0.2.2 - Statistics fix (2019/09/23)
 
 ### Issues Closed
