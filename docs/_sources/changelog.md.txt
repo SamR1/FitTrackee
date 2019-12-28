@@ -1,5 +1,15 @@
 # Change log
 
+## Version 0.2.2 - Statistics fix (2019/09/23)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#41](https://github.com/SamR1/Fittrackee/issues/41) - User statistics are incorrect
+
+In this release 1 issue was closed.
+
 ## Version 0.2.1 - Fix and improvements (2019/09/01)
 
 ### Issues Closed
@@ -22,7 +32,7 @@
 
 * **[Poetry](https://poetry.eustace.io/)** replaces **[pipenv](https://docs.pipenv.org)** for Python packages management
 
-In this release 8 issue were closed.
+In this release 8 issues were closed.
 
 
 ## Version 0.2.0 - Statistics (2019/07/07)

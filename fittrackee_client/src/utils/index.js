@@ -10,7 +10,7 @@ const getFileSize = fileSize => {
   )
 }
 
-export const version = '0.3.0-beta' // version stored in 'utils' for now
+export const version = '0.2.2-beta' // version stored in 'utils' for now
 export const apiUrl = `${process.env.REACT_APP_API_URL}/api/`
 /* prettier-ignore */
 export const thunderforestApiKey = `${
