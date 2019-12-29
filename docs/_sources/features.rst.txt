@@ -18,7 +18,7 @@ Activities/Workouts
      - Montain Biking
      - Running
      - Walking
-- Dashboard with month calendar displaying activities and record
+- Dashboard with month calendar displaying activities and record. The week can start on Sunday or Monday (which can be changed in the user settings)
 - Activity creation by uploading a gpx file. An activity can even be created without gpx (the user must enter date, time, duration and distance)
 - An activity with a gpx file can be displayed with map, weather (if the DarkSky API key is provided) and charts (speed and elevation). Segments can be displayed
 - Activity edition and deletion. User can add a note
@@ -34,6 +34,10 @@ Activities/Workouts
 
 - only activity owner can see his activity
 - **no administration for now**
+
+Translations
+^^^^^^^^^^^^
+FitTrackee is available in English and French (which can be saved in the user settings).
 
 
 Dashboard
