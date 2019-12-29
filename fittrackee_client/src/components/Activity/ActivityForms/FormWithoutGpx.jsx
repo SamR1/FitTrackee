@@ -6,17 +6,18 @@ import {
   editActivity,
 } from '../../../actions/activities'
 import { history } from '../../../index'
+import { getDateWithTZ } from '../../../utils'
 import { formatActivityDate, translateSports } from '../../../utils/activities'
 
 function FormWithoutGpx(props) {
-  const { activity, onAddOrEdit, sports, t } = props
+  const { activity, onAddOrEdit, sports, t, user } = props
   const translatedSports = translateSports(sports, t)
   let activityDate,
     activityTime,
     sportId = ''
   if (activity) {
     const activityDateTime = formatActivityDate(
-      activity.activity_date,
+      getDateWithTZ(activity.activity_date, user.timezone),
       'yyyy-MM-dd'
     )
     activityDate = activityDateTime.activity_date
@@ -133,7 +134,9 @@ function FormWithoutGpx(props) {
 }
 
 export default connect(
-  () => ({}),
+  state => ({
+    user: state.user,
+  }),
   dispatch => ({
     onAddOrEdit: (e, activity) => {
       const d = e.target.form.duration.value.split(':')
