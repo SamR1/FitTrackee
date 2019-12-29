@@ -4,7 +4,7 @@
 [![Python Version](https://img.shields.io/badge/python-3.7-brightgreen.svg)](https://python.org)
 [![Flask Version](https://img.shields.io/badge/flask-1.1-brightgreen.svg)](http://flask.pocoo.org/) 
 [![code style: black](https://img.shields.io/badge/code%20style-black-black)](https://github.com/psf/black) 
-[![React Version](https://img.shields.io/badge/react-16.8-brightgreen.svg)](https://reactjs.org/) 
+[![React Version](https://img.shields.io/badge/react-16.12-brightgreen.svg)](https://reactjs.org/) 
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)  
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/290a285f22e94132904dc13b4dd19d1d)](https://www.codacy.com/app/SamR1/FitTrackee)
 [![Codacy Coverage Badge](https://api.codacy.com/project/badge/Coverage/290a285f22e94132904dc13b4dd19d1d)](https://www.codacy.com/app/SamR1/FitTrackee)<sup><sup>1</sup></sup>
@@ -17,7 +17,7 @@ No mobile app is developed yet, but several existing mobile apps can store worko
 Examples (for Android):  
 * [Runner Up](https://github.com/jonasoreland/runnerup) (GPL v3)  
 * [ForRunners](https://gitlab.com/brvier/ForRunners) (GPL v3)  
-* [AlpineQuest](https://www.alpinequest.net/) (Proprietary, no trackers according to [exodus privay report](https://reports.exodus-privacy.eu.org/reports/2975/))  
+* [AlpineQuest](https://www.alpinequest.net/) (Proprietary, no trackers according to [exodus privay report](https://reports.exodus-privacy.eu.org/en/reports/search/psyberia.alpinequest.free/))  
 
 Maps are displayed using [Open Street Map](https://www.openstreetmap.org).  
 It is also possible to add a workout without a gpx file.

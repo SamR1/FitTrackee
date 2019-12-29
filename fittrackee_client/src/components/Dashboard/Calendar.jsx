@@ -92,7 +92,7 @@ class Calendar extends React.Component {
   }
 
   renderCells() {
-    const { currentMonth, startDate, endDate } = this.state
+    const { currentMonth, startDate, endDate, weekStartOnMonday } = this.state
     const { sports } = this.props
 
     const dateFormat = 'd'
@@ -106,40 +106,45 @@ class Calendar extends React.Component {
       for (let i = 0; i < 7; i++) {
         formattedDate = format(day, dateFormat)
         const dayActivities = this.filterActivities(day)
-        const isDisabled = isSameMonth(day, currentMonth) ? '' : 'disabled'
+        const isDisabled = isSameMonth(day, currentMonth) ? '' : '-disabled'
+        const isWeekEnd = weekStartOnMonday
+          ? [5, 6].includes(i)
+          : [0, 6].includes(i)
         days.push(
-          <div className={`col cell img-${isDisabled}`} key={day}>
-            <span className="number">{formattedDate}</span>
-            {dayActivities.map(act => (
-              <Link key={act.id} to={`/activities/${act.id}`}>
-                <Fragment>
-                  <img
-                    alt="activity sport logo"
-                    className={`activity-sport ${isDisabled}`}
-                    src={sports
-                      .filter(s => s.id === act.sport_id)
-                      .map(s => s.img)}
-                    title={act.title}
-                  />
-                  {act.records.length > 0 && (
-                    <sup>
-                      <i
-                        className="fa fa-trophy custom-fa-small"
-                        aria-hidden="true"
-                        title={act.records.map(
-                          rec =>
-                            ` ${
-                              recordsLabels.filter(
-                                r => r.record_type === rec.record_type
-                              )[0].label
-                            }`
-                        )}
-                      />
-                    </sup>
-                  )}
-                </Fragment>
-              </Link>
-            ))}
+          <div className={`col cell ${isWeekEnd ? ' weekend' : ''}`} key={day}>
+            <div className={`img${isDisabled}`}>
+              <span className="number">{formattedDate}</span>
+              {dayActivities.map(act => (
+                <Link key={act.id} to={`/activities/${act.id}`}>
+                  <Fragment>
+                    <img
+                      alt="activity sport logo"
+                      className={`activity-sport ${isDisabled}`}
+                      src={sports
+                        .filter(s => s.id === act.sport_id)
+                        .map(s => s.img)}
+                      title={act.title}
+                    />
+                    {act.records.length > 0 && (
+                      <sup>
+                        <i
+                          className="fa fa-trophy custom-fa-small"
+                          aria-hidden="true"
+                          title={act.records.map(
+                            rec =>
+                              ` ${
+                                recordsLabels.filter(
+                                  r => r.record_type === rec.record_type
+                                )[0].label
+                              }`
+                          )}
+                        />
+                      </sup>
+                    )}
+                  </Fragment>
+                </Link>
+              ))}
+            </div>
           </div>
         )
         day = addDays(day, 1)

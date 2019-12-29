@@ -43,6 +43,14 @@
 
 html {
   font-family: "Lato", sans-serif;
+  height: 100vh;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding-bottom: 65px;
+  position: relative;
 }
 
 .alert-danger {
@@ -58,4 +66,10 @@ html {
 .alert-warning {
     background-color: #f5894f;
     border-color: transparent;
+}
+
+.footer {
+  bottom: 0;
+  height: 65px;
+  position: absolute;
 }

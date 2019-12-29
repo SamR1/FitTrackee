@@ -296,7 +296,11 @@ label {
 }
 
 .dropdown-item-selected {
-    font-weight: bold;
+  font-weight: bold;
+}
+
+.dropdown-item-selected::after {
+  content: " ✔";
 }
 
 .fa-question-circle {
@@ -339,10 +343,6 @@ label {
 
 .inactive-link {
   color: lightgrey;
-}
-
-.img-disabled {
-  opacity: .4;
 }
 
 .leaflet-container {
@@ -593,4 +593,12 @@ label {
   flex-grow: 0;
   flex-basis: calc(100%/7);
   width: calc(100%/7);
+}
+
+.calendar .body .img-disabled {
+  opacity: .4;
+}
+
+.calendar .body .weekend {
+  background: #f5f5f5;
 }

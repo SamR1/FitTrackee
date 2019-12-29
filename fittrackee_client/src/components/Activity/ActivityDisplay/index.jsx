@@ -155,7 +155,9 @@ class ActivityDisplay extends React.Component {
                         <div className="card-body">
                           <div className="row">
                             <div className="col">
-                              <div className="chart-title">Chart</div>
+                              <div className="chart-title">
+                                {t('activities:Chart')}
+                              </div>
                               <ActivityCharts
                                 activity={activity}
                                 dataType={dataType}
