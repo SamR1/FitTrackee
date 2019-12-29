@@ -1,14 +1,19 @@
 # Change log
 
-## Version 0.2.3 - i18n (20xx/xx/xx)
+## Version 0.2.3 - FitTrackee available in French (2019/12/29)
 
 ### Issues Closed
 
 #### New Features
 
+* [#43](https://github.com/SamR1/Fittrackee/issues/43) - Display weekend days with a different background color on calendar
 * [#40](https://github.com/SamR1/Fittrackee/issues/40) - Localize FitTrackee (i18n)
 
-In this release 1 issue was closed.
+#### Bugs Fixed
+
+* [#44](https://github.com/SamR1/Fittrackee/issues/44) - Cannot edit an activity that does not have a gpx file
+
+In this release 3 issues were closed.
 
 
 ## Version 0.2.2 - Statistics fix (2019/09/23)
