@@ -330,10 +330,6 @@ label {
   color: lightgrey;
 }
 
-.img-disabled {
-  opacity: .4;
-}
-
 .leaflet-container {
   height: 400px;
 }
@@ -577,4 +573,12 @@ label {
   flex-grow: 0;
   flex-basis: calc(100%/7);
   width: calc(100%/7);
+}
+
+.calendar .body .img-disabled {
+  opacity: .4;
+}
+
+.calendar .body .weekend {
+  background: #f5f5f5;
 }
