@@ -205,7 +205,7 @@ class ProfileEdit extends React.Component {
                             <label>
                               {t('user:Timezone')}:
                               <TimezonePicker
-                                className="form-control timezone-custom-height"
+                                className="form-control timezone-custom"
                                 onChange={tz => {
                                   const e = {
                                     target: {

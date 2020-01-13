@@ -421,8 +421,18 @@ label {
   color: #ffffff;
 }
 
-.timezone-custom-height {
-  height: calc(2.25rem + 14px);
+.timezone-custom {
+  font-size: .9em !important;
+  height: inherit !important;
+}
+
+.timezone-custom input {
+  border: 0 !important;
+  padding: 5px 1px !important;
+}
+
+.timezone-custom ul {
+  background: white;
 }
 
 .timezone-picker {
