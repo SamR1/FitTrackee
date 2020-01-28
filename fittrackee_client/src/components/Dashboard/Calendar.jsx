@@ -13,13 +13,12 @@ import {
   subMonths,
 } from 'date-fns'
 import { enGB, fr } from 'date-fns/locale'
-import React, { Fragment } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 
+import CalendarActivities from './CalendarActivities'
 import { getMonthActivities } from '../../actions/activities'
 import { getDateWithTZ } from '../../utils'
-import { recordsLabels } from '../../utils/activities'
 
 const getStartAndEndMonth = (date, weekStartOnMonday) => {
   const monthStart = startOfMonth(date)
@@ -114,36 +113,11 @@ class Calendar extends React.Component {
           <div className={`col cell ${isWeekEnd ? ' weekend' : ''}`} key={day}>
             <div className={`img${isDisabled}`}>
               <span className="number">{formattedDate}</span>
-              {dayActivities.map(act => (
-                <Link key={act.id} to={`/activities/${act.id}`}>
-                  <Fragment>
-                    <img
-                      alt="activity sport logo"
-                      className={`activity-sport ${isDisabled}`}
-                      src={sports
-                        .filter(s => s.id === act.sport_id)
-                        .map(s => s.img)}
-                      title={act.title}
-                    />
-                    {act.records.length > 0 && (
-                      <sup>
-                        <i
-                          className="fa fa-trophy custom-fa-small"
-                          aria-hidden="true"
-                          title={act.records.map(
-                            rec =>
-                              ` ${
-                                recordsLabels.filter(
-                                  r => r.record_type === rec.record_type
-                                )[0].label
-                              }`
-                          )}
-                        />
-                      </sup>
-                    )}
-                  </Fragment>
-                </Link>
-              ))}
+              <CalendarActivities
+                dayActivities={dayActivities}
+                isDisabled={isDisabled}
+                sports={sports}
+              />
             </div>
           </div>
         )
