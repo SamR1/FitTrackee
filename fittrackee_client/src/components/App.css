@@ -248,6 +248,13 @@ label {
 
 .custom-fa-small {
   font-size: 0.8em;
+  margin-left: -0.8em;
+}
+
+@media only screen and (max-width: 992px) {
+  .custom-fa-small {
+    font-size: 0.6em;
+  }
 }
 
 .custom-tooltip {
@@ -597,4 +604,48 @@ label {
 
 .calendar .body .weekend {
   background: #f5f5f5;
+}
+
+.calendar-activity,
+.calendar-more {
+  display: none;
+}
+
+.calendar-more {
+  color: #405976;
+  font-size: .7em;
+  margin-left: 0.3em;
+}
+
+@media only screen and (max-width: 992px) {
+
+  .calendar-activity:nth-child(-n+2) {
+    display: inline-block;
+  }
+
+  .calendar-activity:nth-child(n+3) ~ .calendar-more {
+    display: inline-block;
+  }
+}
+
+@media only screen and (min-width: 992px) and (max-width: 1200px) {
+
+  .calendar-activity:nth-child(-n+4){
+      display: inline-block;
+  }
+
+  .calendar-activity:nth-child(n+5) ~ .calendar-more {
+      display: inline-block;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+
+  .calendar-activity:nth-child(-n+6) {
+    display: inline-block;
+  }
+
+  .calendar-activity:nth-child(n+7) ~ .calendar-more {
+    display: inline-block;
+  }
 }

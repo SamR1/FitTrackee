@@ -7,9 +7,13 @@ export default class CalendarActivities extends React.PureComponent {
   render() {
     const { dayActivities, isDisabled, sports } = this.props
     return (
-      <>
+      <div>
         {dayActivities.map(act => (
-          <Link key={act.id} to={`/activities/${act.id}`}>
+          <Link
+            className="calendar-activity"
+            key={act.id}
+            to={`/activities/${act.id}`}
+          >
             <>
               <img
                 alt="activity sport logo"
@@ -36,7 +40,10 @@ export default class CalendarActivities extends React.PureComponent {
             </>
           </Link>
         ))}
-      </>
+        {dayActivities.length > 2 && (
+          <i className="fa fa-plus-circle calendar-more" aria-hidden="true" />
+        )}
+      </div>
     )
   }
 }
