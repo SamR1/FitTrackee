@@ -552,7 +552,6 @@ label {
   position: relative;
   height: 3em;
   border-right: 1px solid var(--border-color);
-  overflow: hidden;
   background: var(--neutral-color);
 }
 
@@ -617,6 +616,21 @@ label {
   margin-left: 0.3em;
 }
 
+.calendar-display-more {
+  background: whitesmoke;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  margin-bottom: 10px;
+  padding: 10px 15px;
+  position: absolute;
+  min-width: 52px;
+  z-index: 1000;
+}
+
+.calendar-activity-more {
+  display: none;
+}
+
 @media only screen and (max-width: 992px) {
 
   .calendar-activity:nth-child(-n+2) {
@@ -626,16 +640,24 @@ label {
   .calendar-activity:nth-child(n+3) ~ .calendar-more {
     display: inline-block;
   }
+
+  .calendar-activity-more:nth-child(n+3){
+    display: inline-block;
+  }
 }
 
 @media only screen and (min-width: 992px) and (max-width: 1200px) {
 
   .calendar-activity:nth-child(-n+4){
-      display: inline-block;
+    display: inline-block;
   }
 
   .calendar-activity:nth-child(n+5) ~ .calendar-more {
-      display: inline-block;
+    display: inline-block;
+  }
+
+  .calendar-activity-more:nth-child(n+5){
+    display: inline-block;
   }
 }
 
@@ -646,6 +668,10 @@ label {
   }
 
   .calendar-activity:nth-child(n+7) ~ .calendar-more {
+    display: inline-block;
+  }
+
+  .calendar-activity-more:nth-child(n+7){
     display: inline-block;
   }
 }

@@ -1,47 +1,57 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 
-import { recordsLabels } from '../../utils/activities'
+import CalendarActivity from './CalendarActivity'
 
-export default class CalendarActivities extends React.PureComponent {
+export default class CalendarActivities extends React.Component {
+  constructor(props, context) {
+    super(props, context)
+    this.state = {
+      isHidden: true,
+    }
+  }
+
+  handleDisplayMore() {
+    this.setState({
+      isHidden: !this.state.isHidden,
+    })
+  }
+
   render() {
     const { dayActivities, isDisabled, sports } = this.props
+    const { isHidden } = this.state
     return (
       <div>
         {dayActivities.map(act => (
-          <Link
-            className="calendar-activity"
+          <CalendarActivity
             key={act.id}
-            to={`/activities/${act.id}`}
-          >
-            <>
-              <img
-                alt="activity sport logo"
-                className={`activity-sport ${isDisabled}`}
-                src={sports.filter(s => s.id === act.sport_id).map(s => s.img)}
-                title={act.title}
-              />
-              {act.records.length > 0 && (
-                <sup>
-                  <i
-                    className="fa fa-trophy custom-fa-small"
-                    aria-hidden="true"
-                    title={act.records.map(
-                      rec =>
-                        ` ${
-                          recordsLabels.filter(
-                            r => r.record_type === rec.record_type
-                          )[0].label
-                        }`
-                    )}
-                  />
-                </sup>
-              )}
-            </>
-          </Link>
+            activity={act}
+            isDisabled={isDisabled}
+            isMore=""
+            sportImg={sports.filter(s => s.id === act.sport_id).map(s => s.img)}
+          />
         ))}
         {dayActivities.length > 2 && (
-          <i className="fa fa-plus-circle calendar-more" aria-hidden="true" />
+          <i
+            className="fa fa-plus calendar-more"
+            aria-hidden="true"
+            onClick={() => this.handleDisplayMore()}
+            title="show more activities"
+          />
+        )}
+        {!isHidden && (
+          <div className="calendar-display-more">
+            {dayActivities.map(act => (
+              <CalendarActivity
+                key={act.id}
+                activity={act}
+                isDisabled={isDisabled}
+                isMore="-more"
+                sportImg={sports
+                  .filter(s => s.id === act.sport_id)
+                  .map(s => s.img)}
+              />
+            ))}
+          </div>
         )}
       </div>
     )
