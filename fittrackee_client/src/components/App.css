@@ -98,6 +98,12 @@ label {
   max-height: 20px;
 }
 
+.activity-map {
+  background-color: #eaeaea;
+  height: 225px;
+  width: 400px;
+}
+
 .activity-no-map {
   background-color: #eaeaea;
   color: #666666;
