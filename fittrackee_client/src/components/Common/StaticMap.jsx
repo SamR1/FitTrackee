@@ -5,17 +5,14 @@ import { apiUrl } from '../../utils'
 export default class StaticMap extends React.PureComponent {
   render() {
     const { activity, display } = this.props
-    const attributionStyle =
-      display === 'list' ? 'map-attribution-list' : 'map-attribution text-right'
 
     return (
-      <>
+      <div className={`activity-map${display === 'list' ? '-list' : ''}`}>
         <img
-          className="activity-map"
           src={`${apiUrl}activities/map/${activity.map}?${Date.now()}`}
           alt="activity map"
         />
-        <div className={attributionStyle}>
+        <div className={`map-attribution${display === 'list' ? '-list' : ''}`}>
           <span className="map-attribution-text">©</span>
           <a
             className="map-attribution-text"
@@ -26,7 +23,7 @@ export default class StaticMap extends React.PureComponent {
             OpenStreetMap
           </a>
         </div>
-      </>
+      </div>
     )
   }
 }
