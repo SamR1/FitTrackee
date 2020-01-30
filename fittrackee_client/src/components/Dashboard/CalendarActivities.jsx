@@ -32,7 +32,7 @@ export default class CalendarActivities extends React.Component {
         ))}
         {dayActivities.length > 2 && (
           <i
-            className="fa fa-plus calendar-more"
+            className={`fa fa-${isHidden ? 'plus' : 'times'} calendar-more`}
             aria-hidden="true"
             onClick={() => this.handleDisplayMore()}
             title="show more activities"
