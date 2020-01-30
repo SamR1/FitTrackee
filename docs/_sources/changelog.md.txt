@@ -1,5 +1,17 @@
 # Change log
 
+## Version 0.2.4 - Minor fix (2020/01/30)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#47](https://github.com/SamR1/Fittrackee/issues/47) - timezone drop-down is not displayed correctly
+* [#46](https://github.com/SamR1/Fittrackee/issues/46) - calendar cannot display more than 5 or 6 activities on the same day
+
+In this release 2 issues were closed.
+
+
 ## Version 0.2.3 - FitTrackee available in French (2019/12/29)
 
 ### Issues Closed
