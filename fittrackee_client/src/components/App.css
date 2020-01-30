@@ -363,9 +363,9 @@ label {
 }
 
 .map-attribution {
+  bottom: 0;
   font-size: 11px;
-  position:relative;
-  top: -15px;
+  position: absolute;
 }
 
 .map-attribution-text {
