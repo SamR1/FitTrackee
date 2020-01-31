@@ -18,6 +18,8 @@ const handleDataAndError = (state, type, action) => {
 
 const activities = (state = initial.activities, action) => {
   switch (action.type) {
+    case 'LOGOUT':
+      return initial.activities
     case 'PUSH_ACTIVITIES':
       return {
         ...state,
@@ -34,13 +36,17 @@ const activities = (state = initial.activities, action) => {
 }
 
 const calendarActivities = (state = initial.calendarActivities, action) => {
-  if (action.type === 'UPDATE_CALENDAR') {
-    return {
-      ...state,
-      data: action.activities,
-    }
+  switch (action.type) {
+    case 'LOGOUT':
+      return initial.calendarActivities
+    case 'UPDATE_CALENDAR':
+      return {
+        ...state,
+        data: action.activities,
+      }
+    default:
+      return handleDataAndError(state, 'calendarActivities', action)
   }
-  return handleDataAndError(state, 'calendarActivities', action)
 }
 
 const chartData = (state = initial.chartData, action) => {
@@ -102,8 +108,12 @@ const messages = (state = initial.messages, action) => {
   }
 }
 
-const records = (state = initial.records, action) =>
-  handleDataAndError(state, 'records', action)
+const records = (state = initial.records, action) => {
+  if (action.type === 'LOGOUT') {
+    return initial.records
+  }
+  return handleDataAndError(state, 'records', action)
+}
 
 const sports = (state = initial.sports, action) =>
   handleDataAndError(state, 'sports', action)
@@ -122,8 +132,12 @@ const user = (state = initial.user, action) => {
   }
 }
 
-const statistics = (state = initial.statistics, action) =>
-  handleDataAndError(state, 'statistics', action)
+const statistics = (state = initial.statistics, action) => {
+  if (action.type === 'LOGOUT') {
+    return initial.statistics
+  }
+  return handleDataAndError(state, 'statistics', action)
+}
 
 export default history =>
   combineReducers({
