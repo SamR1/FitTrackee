@@ -25,7 +25,9 @@ export const setLoading = loading => ({
 })
 
 export const getOrUpdateData = (action, target, data) => dispatch => {
+  dispatch(setLoading(true))
   if (data && data.id && isNaN(data.id)) {
+    dispatch(setLoading(false))
     return dispatch(setError(`${target}|Incorrect id`))
   }
   return FitTrackeeApi[action](target, data)
@@ -35,8 +37,12 @@ export const getOrUpdateData = (action, target, data) => dispatch => {
       } else {
         dispatch(setError(`${target}|${ret.message || ret.status}`))
       }
+      dispatch(setLoading(false))
     })
-    .catch(error => dispatch(setError(`${target}|${error}`)))
+    .catch(error => {
+      dispatch(setLoading(false))
+      dispatch(setError(`${target}|${error}`))
+    })
 }
 
 export const addData = (target, data) => dispatch =>

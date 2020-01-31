@@ -7,7 +7,7 @@ import { getDateWithTZ } from '../../utils'
 
 export default class ActivitiesList extends React.PureComponent {
   render() {
-    const { activities, sports, t, user } = this.props
+    const { activities, loading, sports, t, user } = this.props
     return (
       <div className="card  activity-card">
         <div className="card-body">
@@ -24,7 +24,8 @@ export default class ActivitiesList extends React.PureComponent {
               </tr>
             </thead>
             <tbody>
-              {sports &&
+              {!loading &&
+                sports &&
                 activities.map((activity, idx) => (
                   // eslint-disable-next-line react/no-array-index-key
                   <tr key={idx}>
@@ -61,6 +62,7 @@ export default class ActivitiesList extends React.PureComponent {
                 ))}
             </tbody>
           </table>
+          {loading && <div className="loader" />}
         </div>
       </div>
     )

@@ -38,6 +38,7 @@ class Activities extends React.Component {
   render() {
     const {
       activities,
+      loading,
       loadActivities,
       loadMoreActivities,
       message,
@@ -71,6 +72,7 @@ class Activities extends React.Component {
               <div className="col-md-9 activities-result">
                 <ActivitiesList
                   activities={activities}
+                  loading={loading}
                   sports={sports}
                   t={t}
                   user={user}
@@ -101,6 +103,7 @@ export default withTranslation()(
   connect(
     state => ({
       activities: state.activities.data,
+      loading: state.loading,
       message: state.message,
       sports: state.sports.data,
       user: state.user,

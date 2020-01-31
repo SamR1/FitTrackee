@@ -349,12 +349,12 @@ label {
 
 .loader {
   animation: spin 2s linear infinite;
-  border: 16px solid #f3f3f3;
-  border-top: 16px solid #3498db;
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3498db;
   border-radius: 50%;
-  height: 120px;
+  height: 60px;
   margin-left: 41%;
-  width: 120px;
+  width: 60px;
 }
 
 @keyframes spin {

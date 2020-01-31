@@ -48,7 +48,10 @@ export const addActivity = form => dispatch =>
       }
       dispatch(setLoading(false))
     })
-    .catch(error => dispatch(setError(`activities|${error}`)))
+    .catch(error => {
+      dispatch(setLoading(false))
+      dispatch(setError(`activities|${error}`))
+    })
 
 export const addActivityWithoutGpx = form => dispatch =>
   FitTrackeeGenericApi.addData('activities/no_gpx', form)
@@ -150,7 +153,10 @@ export const editActivity = form => dispatch =>
       }
       dispatch(setLoading(false))
     })
-    .catch(error => dispatch(setError(`activities|${error}`)))
+    .catch(error => {
+      dispatch(setLoading(false))
+      dispatch(setError(`activities|${error}`))
+    })
 
 export const getMoreActivities = params => dispatch =>
   FitTrackeeGenericApi.getData('activities', params)
