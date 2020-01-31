@@ -1,5 +1,15 @@
 # Change log
 
+## Version 0.2.5 - Fix and improvements (2020/01/31)
+
+### Misc
+
+This version contains minor fix and improvements on client side:
+* [4c3fc34](https://github.com/SamR1/FitTrackee/commit/4c3fc343d51b9c27d3ebab71df648bcf7d7bae59) - empty user data on logout
+* [34614d5](https://github.com/SamR1/FitTrackee/commit/34614d5a6c29f4911d92db33d36fe95721b39f33) - add spinner on loading activities
+* [b862a77](https://github.com/SamR1/FitTrackee/commit/b862a77344abbb07d98fe3ce8b157b5cef0e8d1c) - add URL interceptors to simplify routes definition
+
+
 ## Version 0.2.4 - Minor fix (2020/01/30)
 
 ### Issues Closed

@@ -25,7 +25,7 @@ It is also possible to add a workout without a gpx file.
 **Still under development (not ready for production).**  
 (see [issues](https://github.com/SamR1/FitTrackee/issues) and [documentation](https://samr1.github.io/FitTrackee) for more information)  
 
-![FitTrackee Dashboard](misc/images/fittrackee_screenshot-01.png)
+![FitTrackee Dashboard](docsrc/source/_images/fittrackee_screenshot-01.png)
 
 ---
 
