@@ -13,6 +13,7 @@ inspect $? api
 
 docker-compose -f docker-compose-ci.yml run fittrackee-api flask db upgrade
 docker-compose -f docker-compose-ci.yml run fittrackee-api flask initdata
+docker-compose -f docker-compose-ci.yml restart fittrackee-api
 
 testcafe chrome fittrackee_client/e2e -e
 inspect $? e2e
