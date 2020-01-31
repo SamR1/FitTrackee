@@ -1,15 +1,24 @@
+const updatePath = (toPath, newPath) => {
+  if (typeof toPath === 'string' || toPath instanceof String) {
+    toPath = newPath
+  } else {
+    toPath.pathname = newPath
+  }
+  return toPath
+}
+
 const pathInterceptor = toPath => {
   if (
     !window.localStorage.authToken &&
     !['/login', '/register'].includes(toPath.pathname)
   ) {
-    toPath.pathname = '/login'
+    toPath = updatePath(toPath, '/login')
   }
   if (
     window.localStorage.authToken &&
     ['/login', '/register'].includes(toPath.pathname)
   ) {
-    toPath.pathname = '/'
+    toPath = updatePath(toPath, '/')
   }
   return toPath
 }
