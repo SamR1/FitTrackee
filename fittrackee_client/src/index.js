@@ -13,8 +13,9 @@ import Root from './components/Root'
 import registerServiceWorker from './registerServiceWorker'
 import createRootReducer from './reducers'
 import { loadProfile } from './actions/user'
+import { historyEnhancer } from './utils/history'
 
-export const history = createBrowserHistory()
+export const history = historyEnhancer(createBrowserHistory())
 
 history.listen(() => {
   window.scrollTo(0, 0)
