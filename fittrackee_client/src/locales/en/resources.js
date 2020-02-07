@@ -1,4 +1,5 @@
 import EnActivitiesTranslations from './activities.json'
+import EnAdministrationTranslations from './administration.json'
 import EnCommonTranslations from './common.json'
 import EnDashboardTranslations from './dashboard.json'
 import EnMessagesTranslations from './messages.json'
@@ -8,6 +9,7 @@ import EnUserTranslations from './user.json'
 
 export const enResources = {
   activities: EnActivitiesTranslations,
+  administration: EnAdministrationTranslations,
   common: EnCommonTranslations,
   dashboard: EnDashboardTranslations,
   messages: EnMessagesTranslations,
