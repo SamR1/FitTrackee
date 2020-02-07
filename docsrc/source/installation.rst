@@ -87,12 +87,12 @@ Prod environment
 .. warning::
     Note that FitTrackee is not production-ready yet
 
--  Download the last release (for now, it is the beta release v0.2.3):
+-  Download the last release (for now, it is the beta release v0.2.5):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.2.3-beta.tar.gz
-   $ tar -xzf v0.2.3-beta.tar.gz
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.2.5-beta.tar.gz
+   $ tar -xzf v0.2.5-beta.tar.gz
    $ mv FitTrackee-0.2.3-beta FitTrackee
    $ cd FitTrackee
 

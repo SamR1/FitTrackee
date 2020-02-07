@@ -23,7 +23,7 @@ FitTrackee
 | **Still under development (not ready for production).**
 | (see `issues <https://github.com/SamR1/FitTrackee/issues>`__ for more information)
 
-.. figure:: ../../misc/images/fittrackee_screenshot-01.png
+.. figure:: _images/fittrackee_screenshot-01.png
    :alt: FitTrackee Dashboard
 
 

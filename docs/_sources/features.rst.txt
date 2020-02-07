@@ -43,23 +43,23 @@ FitTrackee is available in English and French (which can be saved in the user se
 Dashboard
 ~~~~~~~~~
 
-.. figure:: ../../misc/images/fittrackee_screenshot-01.png
+.. figure:: _images/fittrackee_screenshot-01.png
    :alt: FitTrackee Dashboard
 
 
 Activity/workout detail
 ~~~~~~~~~~~~~~~~~~~~~~~
-.. figure:: ../../misc/images/fittrackee_screenshot-02.png
+.. figure:: _images/fittrackee_screenshot-02.png
    :alt: FitTrackee Activity
 
 
 Activities/workouts list
 ~~~~~~~~~~~~~~~~~~~~~~~~
-.. figure:: ../../misc/images/fittrackee_screenshot-03.png
+.. figure:: _images/fittrackee_screenshot-03.png
    :alt: FitTrackee Activities
 
 
 Statistics
 ~~~~~~~~~~
-.. figure:: ../../misc/images/fittrackee_screenshot-04.png
+.. figure:: _images/fittrackee_screenshot-04.png
    :alt: FitTrackee Statistics

@@ -28,14 +28,15 @@ export const updateSportsData = data => ({
   type: 'UPDATE_SPORT_DATA',
   data,
 })
-
 export const getOrUpdateData = (
   action,
   target,
   data,
   canDispatch = true
 ) => dispatch => {
+  dispatch(setLoading(true))
   if (data && data.id && isNaN(data.id)) {
+    dispatch(setLoading(false))
     return dispatch(setError(`${target}|Incorrect id`))
   }
   dispatch(setError(''))
@@ -50,8 +51,12 @@ export const getOrUpdateData = (
       } else {
         dispatch(setError(`${target}|${ret.message || ret.status}`))
       }
+      dispatch(setLoading(false))
     })
-    .catch(error => dispatch(setError(`${target}|${error}`)))
+    .catch(error => {
+      dispatch(setLoading(false))
+      dispatch(setError(`${target}|${error}`))
+    })
 }
 
 export const addData = (target, data) => dispatch =>
