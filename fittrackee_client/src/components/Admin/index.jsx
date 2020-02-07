@@ -8,6 +8,7 @@ import AdminApplication from './Application'
 import AdminDashboard from './AdminDashboard'
 import AdminMenu from './AdminMenu'
 import AdminSports from './Sports'
+import AdminUsers from './Users'
 import NotFound from './../Others/NotFound'
 
 function Admin(props) {
@@ -52,6 +53,11 @@ function Admin(props) {
                   exact
                   path="/admin/sports"
                   render={() => <AdminSports t={t} />}
+                />
+                <Route
+                  exact
+                  path="/admin/users"
+                  render={() => <AdminUsers t={t} />}
                 />
                 <Route component={NotFound} />
               </Switch>

@@ -167,6 +167,9 @@ const statistics = (state = initial.statistics, action) => {
   return handleDataAndError(state, 'statistics', action)
 }
 
+const users = (state = initial.users, action) =>
+  handleDataAndError(state, 'users', action)
+
 export default history =>
   combineReducers({
     activities,
@@ -183,4 +186,5 @@ export default history =>
     sports,
     statistics,
     user,
+    users,
   })

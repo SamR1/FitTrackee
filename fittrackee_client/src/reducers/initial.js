@@ -39,4 +39,7 @@ export default {
   statistics: {
     data: {},
   },
+  users: {
+    ...emptyData,
+  },
 }
