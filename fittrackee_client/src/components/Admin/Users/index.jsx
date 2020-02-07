@@ -32,6 +32,7 @@ class AdminUsers extends React.Component {
                       <th>{t('user:Email')}</th>
                       <th>{t('user:Registration Date')}</th>
                       <th>{t('activities:Activities')}</th>
+                      <th>{t('user:Admin')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -41,14 +42,27 @@ class AdminUsers extends React.Component {
                         <td>{user.username}</td>
                         <td>{user.email}</td>
                         <td>
-                          {user.created_at
-                            ? format(
-                                new Date(user.created_at),
-                                'dd/MM/yyyy HH:mm'
-                              )
-                            : ''}
+                          {format(
+                            new Date(user.created_at),
+                            'dd/MM/yyyy HH:mm'
+                          )}
                         </td>
                         <td>{user.nb_activities}</td>
+                        <td>
+                          {user.admin ? (
+                            <i
+                              className="fa fa-check-square-o custom-fa"
+                              aria-hidden="true"
+                              data-toggle="tooltip"
+                            />
+                          ) : (
+                            <i
+                              className="fa fa-square-o custom-fa"
+                              aria-hidden="true"
+                              data-toggle="tooltip"
+                            />
+                          )}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
