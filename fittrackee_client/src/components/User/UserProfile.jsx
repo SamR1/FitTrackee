@@ -7,12 +7,12 @@ import { getOrUpdateData } from '../../actions'
 
 class UserProfile extends React.Component {
   componentDidMount() {
-    this.props.loadUser(this.props.match.params.userId)
+    this.props.loadUser(this.props.match.params.userName)
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.match.params.userId !== this.props.match.params.userId) {
-      this.props.loadUser(this.props.match.params.userId)
+    if (prevProps.match.params.userName !== this.props.match.params.userName) {
+      this.props.loadUser(this.props.match.params.userName)
     }
   }
 
@@ -40,8 +40,8 @@ export default withTranslation()(
       users: state.users.data,
     }),
     dispatch => ({
-      loadUser: userId => {
-        dispatch(getOrUpdateData('getData', 'users', { id: userId }))
+      loadUser: userName => {
+        dispatch(getOrUpdateData('getData', 'users', { username: userName }))
       },
     })
   )(UserProfile)

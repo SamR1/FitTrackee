@@ -3,8 +3,8 @@ import { createApiRequest } from '../utils'
 export default class FitTrackeeApi {
   static getData(target, data = {}) {
     let url = target
-    if (data.id) {
-      url = `${url}/${data.id}`
+    if (data.id || (target === 'users' && data.username)) {
+      url = `${url}/${data.username ? data.username : data.id}`
     } else if (Object.keys(data).length > 0) {
       url += '?'
       Object.keys(data).map(key => (url += `&${key}=${data[key]}`))

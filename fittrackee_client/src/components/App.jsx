@@ -48,7 +48,7 @@ class App extends React.Component {
           <Route exact path="/profile" component={CurrentUserProfile} />
           <Route exact path="/activities/history" component={Activities} />
           <Route exact path="/activities/statistics" component={Statistics} />
-          <Route exact path="/users/:userId" component={UserProfile} />
+          <Route exact path="/users/:userName" component={UserProfile} />
           <Route path="/activities" component={Activity} />
           <Route path="/admin" component={Admin} />
           <Route component={NotFound} />

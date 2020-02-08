@@ -98,9 +98,9 @@ def get_users(auth_user_id):
     return jsonify(response_object), 200
 
 
-@users_blueprint.route('/users/<user_id>', methods=['GET'])
+@users_blueprint.route('/users/<user_name>', methods=['GET'])
 @authenticate
-def get_single_user(auth_user_id, user_id):
+def get_single_user(auth_user_id, user_name):
     """
     Get single user details
 
@@ -149,7 +149,7 @@ def get_single_user(auth_user_id, user_id):
       }
 
     :param integer auth_user_id: authenticate user id (from JSON Web Token)
-    :param integer user_id: user id
+    :param integer user_name: user name
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -164,7 +164,7 @@ def get_single_user(auth_user_id, user_id):
 
     response_object = {'status': 'fail', 'message': 'User does not exist.'}
     try:
-        user = User.query.filter_by(id=int(user_id)).first()
+        user = User.query.filter_by(username=user_name).first()
         if not user:
             return jsonify(response_object), 404
         else:

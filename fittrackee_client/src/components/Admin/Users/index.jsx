@@ -41,7 +41,9 @@ class AdminUsers extends React.Component {
                       <tr key={user.id}>
                         <th scope="row">{user.id}</th>
                         <td>
-                          <Link to={`/users/${user.id}`}>{user.username}</Link>
+                          <Link to={`/users/${user.username}`}>
+                            {user.username}
+                          </Link>
                         </td>
                         <td>{user.email}</td>
                         <td>

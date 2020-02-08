@@ -13,7 +13,7 @@ def test_ping(app):
     assert 'success' in data['status']
 
 
-def test_single_user(app, user_1):
+def test_single_user(app, user_1, user_2):
     """=> Get single user details"""
     client = app.test_client()
     resp_login = client.post(
@@ -22,7 +22,7 @@ def test_single_user(app, user_1):
         content_type='application/json',
     )
     response = client.get(
-        f'/api/users/{user_1.id}',
+        f'/api/users/{user_2.username}',
         content_type='application/json',
         headers=dict(
             Authorization='Bearer '
@@ -36,8 +36,8 @@ def test_single_user(app, user_1):
     assert len(data['data']['users']) == 1
 
     user = data['data']['users'][0]
-    assert user['username'] == 'test'
-    assert user['email'] == 'test@test.com'
+    assert user['username'] == 'toto'
+    assert user['email'] == 'toto@toto.com'
     assert user['created_at']
     assert not user['admin']
     assert user['first_name'] is None
@@ -71,7 +71,7 @@ def test_single_user_with_activities(
         content_type='application/json',
     )
     response = client.get(
-        f'/api/users/{user_1.id}',
+        f'/api/users/{user_1.username}',
         content_type='application/json',
         headers=dict(
             Authorization='Bearer '
@@ -104,30 +104,7 @@ def test_single_user_with_activities(
     assert user['total_duration'] == '1:57:04'
 
 
-def test_single_user_no_id(app, user_1):
-    """=> Ensure error is thrown if an id is not provided."""
-    client = app.test_client()
-    resp_login = client.post(
-        '/api/auth/login',
-        data=json.dumps(dict(email='test@test.com', password='12345678')),
-        content_type='application/json',
-    )
-    response = client.get(
-        '/api/users/blah',
-        content_type='application/json',
-        headers=dict(
-            Authorization='Bearer '
-            + json.loads(resp_login.data.decode())['auth_token']
-        ),
-    )
-    data = json.loads(response.data.decode())
-
-    assert response.status_code == 404
-    assert 'fail' in data['status']
-    assert 'User does not exist.' in data['message']
-
-
-def test_single_user_wrong_id(app, user_1):
+def test_single_user_no_existing(app, user_1):
     """=> Ensure error is thrown if the id does not exist."""
     client = app.test_client()
     resp_login = client.post(
@@ -136,7 +113,7 @@ def test_single_user_wrong_id(app, user_1):
         content_type='application/json',
     )
     response = client.get(
-        '/api/users/99999999999',
+        '/api/users/not_existing',
         content_type='application/json',
         headers=dict(
             Authorization='Bearer '
