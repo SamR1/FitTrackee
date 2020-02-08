@@ -43,7 +43,7 @@ def get_records(auth_user_id):
               "id": 9,
               "record_type": "AS",
               "sport_id": 1,
-              "user_id": 1,
+              "user": "admin",
               "value": 18
             },
             {
@@ -52,7 +52,7 @@ def get_records(auth_user_id):
               "id": 10,
               "record_type": "FD",
               "sport_id": 1,
-              "user_id": 1,
+              "user": "admin",
               "value": 18
             },
             {
@@ -61,7 +61,7 @@ def get_records(auth_user_id):
               "id": 11,
               "record_type": "LD",
               "sport_id": 1,
-              "user_id": 1,
+              "user": "admin",
               "value": "1:01:00"
             },
             {
@@ -70,7 +70,7 @@ def get_records(auth_user_id):
               "id": 12,
               "record_type": "MS",
               "sport_id": 1,
-              "user_id": 1,
+              "user": "admin",
               "value": 18
             }
           ]

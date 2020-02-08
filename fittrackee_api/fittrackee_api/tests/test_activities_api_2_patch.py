@@ -10,7 +10,7 @@ def assert_activity_data_with_gpx(data):
         'Tue, 13 Mar 2018 12:44:45 GMT'
         == data['data']['activities'][0]['activity_date']
     )  # noqa
-    assert 1 == data['data']['activities'][0]['user_id']
+    assert 'test' == data['data']['activities'][0]['user']
     assert '0:04:10' == data['data']['activities'][0]['duration']
     assert data['data']['activities'][0]['ascent'] == 0.4
     assert data['data']['activities'][0]['ave_speed'] == 4.61
@@ -303,7 +303,7 @@ def test_edit_an_activity_wo_gpx(
         data['data']['activities'][0]['activity_date']
         == 'Mon, 14 May 2018 14:05:00 GMT'
     )  # noqa
-    assert data['data']['activities'][0]['user_id'] == 1
+    assert data['data']['activities'][0]['user'] == 'test'
     assert data['data']['activities'][0]['sport_id'] == 1
     assert data['data']['activities'][0]['duration'] == '1:00:00'
     assert data['data']['activities'][0]['title'] == 'Activity test'  # noqa
@@ -372,7 +372,7 @@ def test_edit_an_activity_wo_gpx(
         data['data']['activities'][0]['activity_date']
         == 'Tue, 15 May 2018 15:05:00 GMT'
     )  # noqa
-    assert data['data']['activities'][0]['user_id'] == 1
+    assert data['data']['activities'][0]['user'] == 'test'
     assert data['data']['activities'][0]['sport_id'] == 2
     assert data['data']['activities'][0]['duration'] == '1:00:00'
     assert data['data']['activities'][0]['title'] == 'Activity test'
@@ -433,7 +433,7 @@ def test_edit_an_activity_wo_gpx(
         data['data']['activities'][0]['activity_date']
         == 'Tue, 15 May 2018 15:05:00 GMT'
     )  # noqa
-    assert data['data']['activities'][0]['user_id'] == 1
+    assert data['data']['activities'][0]['user'] == 'test'
     assert data['data']['activities'][0]['sport_id'] == 2
     assert data['data']['activities'][0]['duration'] == '1:00:00'
     assert data['data']['activities'][0]['title'] == 'Activity test'
@@ -569,7 +569,7 @@ def test_edit_an_activity_wo_gpx_timezone(
         data['data']['activities'][0]['activity_date']
         == 'Mon, 14 May 2018 12:05:00 GMT'
     )  # noqa
-    assert data['data']['activities'][0]['user_id'] == 1
+    assert data['data']['activities'][0]['user'] == 'test'
     assert data['data']['activities'][0]['sport_id'] == 1
     assert data['data']['activities'][0]['duration'] == '1:00:00'
     assert (
@@ -637,7 +637,7 @@ def test_edit_an_activity_wo_gpx_timezone(
         data['data']['activities'][0]['activity_date']
         == 'Tue, 15 May 2018 13:05:00 GMT'
     )  # noqa
-    assert data['data']['activities'][0]['user_id'] == 1
+    assert data['data']['activities'][0]['user'] == 'test'
     assert data['data']['activities'][0]['sport_id'] == 2
     assert data['data']['activities'][0]['duration'] == '1:00:00'
     assert data['data']['activities'][0]['title'] == 'Activity test'  # noqa
@@ -710,7 +710,7 @@ def test_edit_an_activity_wo_gpx_partial(app, user_1, sport_1_cycling):
         data['data']['activities'][0]['activity_date']
         == 'Mon, 14 May 2018 14:05:00 GMT'
     )  # noqa
-    assert data['data']['activities'][0]['user_id'] == 1
+    assert data['data']['activities'][0]['user'] == 'test'
     assert data['data']['activities'][0]['sport_id'] == 1
     assert data['data']['activities'][0]['duration'] == '1:00:00'
     assert (
@@ -771,7 +771,7 @@ def test_edit_an_activity_wo_gpx_partial(app, user_1, sport_1_cycling):
         data['data']['activities'][0]['activity_date']
         == 'Mon, 14 May 2018 14:05:00 GMT'
     )  # noqa
-    assert data['data']['activities'][0]['user_id'] == 1
+    assert data['data']['activities'][0]['user'] == 'test'
     assert data['data']['activities'][0]['sport_id'] == 1
     assert data['data']['activities'][0]['duration'] == '1:00:00'
     assert (

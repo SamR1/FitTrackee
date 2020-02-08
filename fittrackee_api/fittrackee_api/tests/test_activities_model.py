@@ -14,7 +14,7 @@ def test_add_activity(app, sport_1_cycling, user_1, activity_cycling_user_1):
 
     serialized_activity = activity_cycling_user_1.serialize()
     assert 1 == serialized_activity['id']
-    assert 1 == serialized_activity['user_id']
+    assert 'test' == serialized_activity['user']
     assert 1 == serialized_activity['sport_id']
     assert serialized_activity['title'] == 'Test'
     assert 'creation_date' in serialized_activity

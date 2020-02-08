@@ -11,8 +11,8 @@ def assert_activity_data_with_gpx(data):
     assert (
         'Tue, 13 Mar 2018 12:44:45 GMT'
         == data['data']['activities'][0]['activity_date']
-    )  # noqa
-    assert 1 == data['data']['activities'][0]['user_id']
+    )
+    assert 'test' == data['data']['activities'][0]['user']
     assert 1 == data['data']['activities'][0]['sport_id']
     assert '0:04:10' == data['data']['activities'][0]['duration']
     assert data['data']['activities'][0]['ascent'] == 0.4
@@ -74,8 +74,8 @@ def assert_activity_data_with_gpx_segments(data):
     assert (
         'Tue, 13 Mar 2018 12:44:45 GMT'
         == data['data']['activities'][0]['activity_date']
-    )  # noqa
-    assert 1 == data['data']['activities'][0]['user_id']
+    )
+    assert 'test' == data['data']['activities'][0]['user']
     assert 1 == data['data']['activities'][0]['sport_id']
     assert '0:04:10' == data['data']['activities'][0]['duration']
     assert data['data']['activities'][0]['ascent'] == 0.4
@@ -148,14 +148,14 @@ def assert_activity_data_wo_gpx(data):
     assert (
         data['data']['activities'][0]['activity_date']
         == 'Tue, 15 May 2018 14:05:00 GMT'
-    )  # noqa
-    assert data['data']['activities'][0]['user_id'] == 1
+    )
+    assert data['data']['activities'][0]['user'] == 'test'
     assert data['data']['activities'][0]['sport_id'] == 1
     assert data['data']['activities'][0]['duration'] == '1:00:00'
     assert (
         data['data']['activities'][0]['title']
         == 'Cycling - 2018-05-15 14:05:00'
-    )  # noqa
+    )
     assert data['data']['activities'][0]['ascent'] is None
     assert data['data']['activities'][0]['ave_speed'] == 10.0
     assert data['data']['activities'][0]['descent'] is None
@@ -562,7 +562,7 @@ def test_add_an_activity_with_gpx_without_name(
     assert (
         'Cycling - 2018-03-13 12:44:45'
         == data['data']['activities'][0]['title']
-    )  # noqa
+    )
     assert_activity_data_with_gpx(data)
 
 
@@ -596,7 +596,7 @@ def test_add_an_activity_with_gpx_without_name_timezone(
     assert (
         'Cycling - 2018-03-13 13:44:45'
         == data['data']['activities'][0]['title']
-    )  # noqa
+    )
     assert_activity_data_with_gpx(data)
 
 
@@ -948,11 +948,11 @@ def test_get_an_activity_wo_gpx_with_timezone(app, user_1, sport_1_cycling):
     assert (
         data['data']['activities'][0]['activity_date']
         == 'Tue, 15 May 2018 12:05:00 GMT'
-    )  # noqa
+    )
     assert (
         data['data']['activities'][0]['title']
         == 'Cycling - 2018-05-15 14:05:00'
-    )  # noqa
+    )
 
 
 def test_get_activities_date_filter_with_timezone_new_york(
@@ -995,11 +995,11 @@ def test_get_activities_date_filter_with_timezone_new_york(
     assert (
         'Mon, 01 Jan 2018 05:00:00 GMT'
         == data['data']['activities'][0]['activity_date']
-    )  # noqa
+    )
     assert (
         'Cycling - 2018-01-01 00:00:00'
         == data['data']['activities'][0]['title']
-    )  # noqa
+    )
 
 
 def test_get_activities_date_filter_with_timezone_paris(
@@ -1080,16 +1080,16 @@ def test_get_activities_date_filter_with_timezone_paris(
     assert (
         'Wed, 31 Jan 2018 21:59:59 GMT'
         == data['data']['activities'][0]['activity_date']
-    )  # noqa
+    )
     assert 'Test' == data['data']['activities'][0]['title']
     assert (
         'Sun, 31 Dec 2017 23:00:00 GMT'
         == data['data']['activities'][1]['activity_date']
-    )  # noqa
+    )
     assert (
         'Cycling - 2018-01-01 00:00:00'
         == data['data']['activities'][1]['title']
-    )  # noqa
+    )
 
 
 def test_add_an_activity_no_gpx_invalid_payload(app, user_1, sport_1_cycling):
@@ -1177,8 +1177,8 @@ def test_add_activity_zero_value(
     assert (
         data['data']['activities'][0]['activity_date']
         == 'Mon, 14 May 2018 14:05:00 GMT'
-    )  # noqa
-    assert data['data']['activities'][0]['user_id'] == 1
+    )
+    assert data['data']['activities'][0]['user'] == 'test'
     assert data['data']['activities'][0]['sport_id'] == 1
     assert data['data']['activities'][0]['duration'] is None
     assert data['data']['activities'][0]['title'] == 'Activity test'  # noqa
@@ -1259,7 +1259,7 @@ def test_get_an_activity_with_zip_folder(app, user_1, sport_1_cycling):
 def test_get_an_activity_with_zip_incorrect_file(app, user_1, sport_1_cycling):
     file_path = os.path.join(
         app.root_path, 'tests/files/gpx_test_incorrect.zip'
-    )  # noqa
+    )
     # 'gpx_test_incorrect.zip' contains 2 gpx files, one is incorrect
 
     with open(file_path, 'rb') as zip_file:

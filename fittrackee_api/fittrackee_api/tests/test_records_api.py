@@ -32,8 +32,8 @@ def test_get_records_for_authenticated_user(
     assert (
         'Mon, 01 Jan 2018 00:00:00 GMT'
         == data['data']['records'][0]['activity_date']
-    )  # noqa
-    assert 1 == data['data']['records'][0]['user_id']
+    )
+    assert 'test' == data['data']['records'][0]['user']
     assert 1 == data['data']['records'][0]['sport_id']
     assert 1 == data['data']['records'][0]['activity_id']
     assert 'AS' == data['data']['records'][0]['record_type']
@@ -42,8 +42,8 @@ def test_get_records_for_authenticated_user(
     assert (
         'Mon, 01 Jan 2018 00:00:00 GMT'
         == data['data']['records'][1]['activity_date']
-    )  # noqa
-    assert 1 == data['data']['records'][1]['user_id']
+    )
+    assert 'test' == data['data']['records'][1]['user']
     assert 1 == data['data']['records'][1]['sport_id']
     assert 1 == data['data']['records'][1]['activity_id']
     assert 'FD' == data['data']['records'][1]['record_type']
@@ -52,8 +52,8 @@ def test_get_records_for_authenticated_user(
     assert (
         'Mon, 01 Jan 2018 00:00:00 GMT'
         == data['data']['records'][2]['activity_date']
-    )  # noqa
-    assert 1 == data['data']['records'][2]['user_id']
+    )
+    assert 'test' == data['data']['records'][2]['user']
     assert 1 == data['data']['records'][2]['sport_id']
     assert 1 == data['data']['records'][2]['activity_id']
     assert 'LD' == data['data']['records'][2]['record_type']
@@ -63,7 +63,7 @@ def test_get_records_for_authenticated_user(
         'Mon, 01 Jan 2018 00:00:00 GMT'
         == data['data']['records'][3]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][3]['user_id']
+    assert 'test' == data['data']['records'][3]['user']
     assert 1 == data['data']['records'][3]['sport_id']
     assert 1 == data['data']['records'][3]['activity_id']
     assert 'MS' == data['data']['records'][3]['record_type']
@@ -181,7 +181,7 @@ def test_get_records_after_activities_post_and_patch(
         'Mon, 14 May 2018 14:05:00 GMT'
         == data['data']['records'][0]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][0]['user_id']
+    assert 'test' == data['data']['records'][0]['user']
     assert 1 == data['data']['records'][0]['sport_id']
     assert 1 == data['data']['records'][0]['activity_id']
     assert 'AS' == data['data']['records'][0]['record_type']
@@ -191,7 +191,7 @@ def test_get_records_after_activities_post_and_patch(
         'Mon, 14 May 2018 14:05:00 GMT'
         == data['data']['records'][1]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][1]['user_id']
+    assert 'test' == data['data']['records'][1]['user']
     assert 1 == data['data']['records'][1]['sport_id']
     assert 1 == data['data']['records'][1]['activity_id']
     assert 'FD' == data['data']['records'][1]['record_type']
@@ -201,7 +201,7 @@ def test_get_records_after_activities_post_and_patch(
         'Mon, 14 May 2018 14:05:00 GMT'
         == data['data']['records'][2]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][2]['user_id']
+    assert 'test' == data['data']['records'][2]['user']
     assert 1 == data['data']['records'][2]['sport_id']
     assert 1 == data['data']['records'][2]['activity_id']
     assert 'LD' == data['data']['records'][2]['record_type']
@@ -211,7 +211,7 @@ def test_get_records_after_activities_post_and_patch(
         'Mon, 14 May 2018 14:05:00 GMT'
         == data['data']['records'][3]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][3]['user_id']
+    assert 'test' == data['data']['records'][3]['user']
     assert 1 == data['data']['records'][3]['sport_id']
     assert 1 == data['data']['records'][3]['activity_id']
     assert 'MS' == data['data']['records'][3]['record_type']
@@ -253,7 +253,7 @@ def test_get_records_after_activities_post_and_patch(
         'Tue, 15 May 2018 14:05:00 GMT'
         == data['data']['records'][0]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][0]['user_id']
+    assert 'test' == data['data']['records'][0]['user']
     assert 1 == data['data']['records'][0]['sport_id']
     assert 2 == data['data']['records'][0]['activity_id']
     assert 'AS' == data['data']['records'][0]['record_type']
@@ -263,7 +263,7 @@ def test_get_records_after_activities_post_and_patch(
         'Mon, 14 May 2018 14:05:00 GMT'
         == data['data']['records'][1]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][1]['user_id']
+    assert 'test' == data['data']['records'][1]['user']
     assert 1 == data['data']['records'][1]['sport_id']
     assert 1 == data['data']['records'][1]['activity_id']
     assert 'FD' == data['data']['records'][1]['record_type']
@@ -273,7 +273,7 @@ def test_get_records_after_activities_post_and_patch(
         'Mon, 14 May 2018 14:05:00 GMT'
         == data['data']['records'][2]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][2]['user_id']
+    assert 'test' == data['data']['records'][2]['user']
     assert 1 == data['data']['records'][2]['sport_id']
     assert 1 == data['data']['records'][2]['activity_id']
     assert 'LD' == data['data']['records'][2]['record_type']
@@ -283,7 +283,7 @@ def test_get_records_after_activities_post_and_patch(
         'Tue, 15 May 2018 14:05:00 GMT'
         == data['data']['records'][0]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][0]['user_id']
+    assert 'test' == data['data']['records'][0]['user']
     assert 1 == data['data']['records'][0]['sport_id']
     assert 2 == data['data']['records'][0]['activity_id']
     assert 'MS' == data['data']['records'][3]['record_type']
@@ -324,7 +324,7 @@ def test_get_records_after_activities_post_and_patch(
         'Tue, 15 May 2018 14:05:00 GMT'
         == data['data']['records'][0]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][0]['user_id']
+    assert 'test' == data['data']['records'][0]['user']
     assert 1 == data['data']['records'][0]['sport_id']
     assert 2 == data['data']['records'][0]['activity_id']
     assert 'AS' == data['data']['records'][0]['record_type']
@@ -334,7 +334,7 @@ def test_get_records_after_activities_post_and_patch(
         'Mon, 14 May 2018 14:05:00 GMT'
         == data['data']['records'][1]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][1]['user_id']
+    assert 'test' == data['data']['records'][1]['user']
     assert 1 == data['data']['records'][1]['sport_id']
     assert 1 == data['data']['records'][1]['activity_id']
     assert 'FD' == data['data']['records'][1]['record_type']
@@ -344,7 +344,7 @@ def test_get_records_after_activities_post_and_patch(
         'Mon, 14 May 2018 14:05:00 GMT'
         == data['data']['records'][2]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][2]['user_id']
+    assert 'test' == data['data']['records'][2]['user']
     assert 1 == data['data']['records'][2]['sport_id']
     assert 1 == data['data']['records'][2]['activity_id']
     assert 'LD' == data['data']['records'][2]['record_type']
@@ -354,7 +354,7 @@ def test_get_records_after_activities_post_and_patch(
         'Tue, 15 May 2018 14:05:00 GMT'
         == data['data']['records'][0]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][0]['user_id']
+    assert 'test' == data['data']['records'][0]['user']
     assert 1 == data['data']['records'][0]['sport_id']
     assert 2 == data['data']['records'][0]['activity_id']
     assert 'MS' == data['data']['records'][3]['record_type']
@@ -388,7 +388,7 @@ def test_get_records_after_activities_post_and_patch(
         'Tue, 15 May 2018 14:05:00 GMT'
         == data['data']['records'][0]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][0]['user_id']
+    assert 'test' == data['data']['records'][0]['user']
     assert 1 == data['data']['records'][0]['sport_id']
     assert 2 == data['data']['records'][0]['activity_id']
     assert 'AS' == data['data']['records'][0]['record_type']
@@ -398,7 +398,7 @@ def test_get_records_after_activities_post_and_patch(
         'Mon, 14 May 2018 14:05:00 GMT'
         == data['data']['records'][1]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][1]['user_id']
+    assert 'test' == data['data']['records'][1]['user']
     assert 1 == data['data']['records'][1]['sport_id']
     assert 1 == data['data']['records'][1]['activity_id']
     assert 'FD' == data['data']['records'][1]['record_type']
@@ -408,7 +408,7 @@ def test_get_records_after_activities_post_and_patch(
         'Wed, 16 May 2018 14:05:00 GMT'
         == data['data']['records'][2]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][2]['user_id']
+    assert 'test' == data['data']['records'][2]['user']
     assert 1 == data['data']['records'][2]['sport_id']
     assert 3 == data['data']['records'][2]['activity_id']
     assert 'LD' == data['data']['records'][2]['record_type']
@@ -418,7 +418,7 @@ def test_get_records_after_activities_post_and_patch(
         'Tue, 15 May 2018 14:05:00 GMT'
         == data['data']['records'][0]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][0]['user_id']
+    assert 'test' == data['data']['records'][0]['user']
     assert 1 == data['data']['records'][0]['sport_id']
     assert 2 == data['data']['records'][0]['activity_id']
     assert 'MS' == data['data']['records'][3]['record_type']
@@ -449,7 +449,7 @@ def test_get_records_after_activities_post_and_patch(
         'Mon, 14 May 2018 14:05:00 GMT'
         == data['data']['records'][0]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][0]['user_id']
+    assert 'test' == data['data']['records'][0]['user']
     assert 1 == data['data']['records'][0]['sport_id']
     assert 1 == data['data']['records'][0]['activity_id']
     assert 'AS' == data['data']['records'][0]['record_type']
@@ -459,7 +459,7 @@ def test_get_records_after_activities_post_and_patch(
         'Mon, 14 May 2018 14:05:00 GMT'
         == data['data']['records'][1]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][1]['user_id']
+    assert 'test' == data['data']['records'][1]['user']
     assert 1 == data['data']['records'][1]['sport_id']
     assert 1 == data['data']['records'][1]['activity_id']
     assert 'FD' == data['data']['records'][1]['record_type']
@@ -469,7 +469,7 @@ def test_get_records_after_activities_post_and_patch(
         'Wed, 16 May 2018 14:05:00 GMT'
         == data['data']['records'][2]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][2]['user_id']
+    assert 'test' == data['data']['records'][2]['user']
     assert 1 == data['data']['records'][2]['sport_id']
     assert 3 == data['data']['records'][2]['activity_id']
     assert 'LD' == data['data']['records'][2]['record_type']
@@ -479,7 +479,7 @@ def test_get_records_after_activities_post_and_patch(
         'Mon, 14 May 2018 14:05:00 GMT'
         == data['data']['records'][3]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][3]['user_id']
+    assert 'test' == data['data']['records'][3]['user']
     assert 1 == data['data']['records'][3]['sport_id']
     assert 1 == data['data']['records'][3]['activity_id']
     assert 'MS' == data['data']['records'][3]['record_type']
@@ -521,7 +521,7 @@ def test_get_records_after_activities_post_and_patch(
         'Mon, 14 May 2018 14:05:00 GMT'
         == data['data']['records'][0]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][0]['user_id']
+    assert 'test' == data['data']['records'][0]['user']
     assert 1 == data['data']['records'][0]['sport_id']
     assert 1 == data['data']['records'][0]['activity_id']
     assert 'AS' == data['data']['records'][0]['record_type']
@@ -531,7 +531,7 @@ def test_get_records_after_activities_post_and_patch(
         'Mon, 14 May 2018 14:05:00 GMT'
         == data['data']['records'][1]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][1]['user_id']
+    assert 'test' == data['data']['records'][1]['user']
     assert 1 == data['data']['records'][1]['sport_id']
     assert 1 == data['data']['records'][1]['activity_id']
     assert 'FD' == data['data']['records'][1]['record_type']
@@ -541,7 +541,7 @@ def test_get_records_after_activities_post_and_patch(
         'Wed, 16 May 2018 14:05:00 GMT'
         == data['data']['records'][2]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][2]['user_id']
+    assert 'test' == data['data']['records'][2]['user']
     assert 1 == data['data']['records'][2]['sport_id']
     assert 3 == data['data']['records'][2]['activity_id']
     assert 'LD' == data['data']['records'][2]['record_type']
@@ -551,7 +551,7 @@ def test_get_records_after_activities_post_and_patch(
         'Mon, 14 May 2018 14:05:00 GMT'
         == data['data']['records'][3]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][3]['user_id']
+    assert 'test' == data['data']['records'][3]['user']
     assert 1 == data['data']['records'][3]['sport_id']
     assert 1 == data['data']['records'][3]['activity_id']
     assert 'MS' == data['data']['records'][3]['record_type']
@@ -595,7 +595,7 @@ def test_get_records_after_activities_post_and_patch(
         'Mon, 14 May 2018 08:05:00 GMT'
         == data['data']['records'][0]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][0]['user_id']
+    assert 'test' == data['data']['records'][0]['user']
     assert 1 == data['data']['records'][0]['sport_id']
     assert 5 == data['data']['records'][0]['activity_id']
     assert 'AS' == data['data']['records'][0]['record_type']
@@ -605,7 +605,7 @@ def test_get_records_after_activities_post_and_patch(
         'Mon, 14 May 2018 08:05:00 GMT'
         == data['data']['records'][1]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][1]['user_id']
+    assert 'test' == data['data']['records'][1]['user']
     assert 1 == data['data']['records'][1]['sport_id']
     assert 5 == data['data']['records'][1]['activity_id']
     assert 'FD' == data['data']['records'][1]['record_type']
@@ -615,7 +615,7 @@ def test_get_records_after_activities_post_and_patch(
         'Wed, 16 May 2018 14:05:00 GMT'
         == data['data']['records'][2]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][2]['user_id']
+    assert 'test' == data['data']['records'][2]['user']
     assert 1 == data['data']['records'][2]['sport_id']
     assert 3 == data['data']['records'][2]['activity_id']
     assert 'LD' == data['data']['records'][2]['record_type']
@@ -625,7 +625,7 @@ def test_get_records_after_activities_post_and_patch(
         'Mon, 14 May 2018 08:05:00 GMT'
         == data['data']['records'][3]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][3]['user_id']
+    assert 'test' == data['data']['records'][3]['user']
     assert 1 == data['data']['records'][3]['sport_id']
     assert 5 == data['data']['records'][3]['activity_id']
     assert 'MS' == data['data']['records'][3]['record_type']
@@ -768,7 +768,7 @@ def test_get_records_after_sport_change(
         'Mon, 14 May 2018 14:05:00 GMT'
         == data['data']['records'][0]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][0]['user_id']
+    assert 'test' == data['data']['records'][0]['user']
     assert 1 == data['data']['records'][0]['sport_id']
     assert 1 == data['data']['records'][0]['activity_id']
     assert 'AS' == data['data']['records'][0]['record_type']
@@ -778,7 +778,7 @@ def test_get_records_after_sport_change(
         'Mon, 14 May 2018 14:05:00 GMT'
         == data['data']['records'][1]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][1]['user_id']
+    assert 'test' == data['data']['records'][1]['user']
     assert 1 == data['data']['records'][1]['sport_id']
     assert 1 == data['data']['records'][1]['activity_id']
     assert 'FD' == data['data']['records'][1]['record_type']
@@ -788,7 +788,7 @@ def test_get_records_after_sport_change(
         'Mon, 14 May 2018 14:05:00 GMT'
         == data['data']['records'][2]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][2]['user_id']
+    assert 'test' == data['data']['records'][2]['user']
     assert 1 == data['data']['records'][2]['sport_id']
     assert 1 == data['data']['records'][2]['activity_id']
     assert 'LD' == data['data']['records'][2]['record_type']
@@ -798,7 +798,7 @@ def test_get_records_after_sport_change(
         'Mon, 14 May 2018 14:05:00 GMT'
         == data['data']['records'][3]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][3]['user_id']
+    assert 'test' == data['data']['records'][3]['user']
     assert 1 == data['data']['records'][3]['sport_id']
     assert 1 == data['data']['records'][3]['activity_id']
     assert 'MS' == data['data']['records'][3]['record_type']
@@ -808,7 +808,7 @@ def test_get_records_after_sport_change(
         'Wed, 16 May 2018 16:05:00 GMT'
         == data['data']['records'][4]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][4]['user_id']
+    assert 'test' == data['data']['records'][4]['user']
     assert 2 == data['data']['records'][4]['sport_id']
     assert 2 == data['data']['records'][4]['activity_id']
     assert 'AS' == data['data']['records'][4]['record_type']
@@ -818,7 +818,7 @@ def test_get_records_after_sport_change(
         'Wed, 16 May 2018 16:05:00 GMT'
         == data['data']['records'][5]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][5]['user_id']
+    assert 'test' == data['data']['records'][5]['user']
     assert 2 == data['data']['records'][5]['sport_id']
     assert 2 == data['data']['records'][5]['activity_id']
     assert 'FD' == data['data']['records'][5]['record_type']
@@ -828,7 +828,7 @@ def test_get_records_after_sport_change(
         'Wed, 16 May 2018 16:05:00 GMT'
         == data['data']['records'][6]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][6]['user_id']
+    assert 'test' == data['data']['records'][6]['user']
     assert 2 == data['data']['records'][6]['sport_id']
     assert 2 == data['data']['records'][6]['activity_id']
     assert 'LD' == data['data']['records'][6]['record_type']
@@ -838,7 +838,7 @@ def test_get_records_after_sport_change(
         'Wed, 16 May 2018 16:05:00 GMT'
         == data['data']['records'][7]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][7]['user_id']
+    assert 'test' == data['data']['records'][7]['user']
     assert 2 == data['data']['records'][7]['sport_id']
     assert 2 == data['data']['records'][7]['activity_id']
     assert 'MS' == data['data']['records'][7]['record_type']
@@ -870,7 +870,7 @@ def test_get_records_after_sport_change(
         'Wed, 16 May 2018 16:05:00 GMT'
         == data['data']['records'][0]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][0]['user_id']
+    assert 'test' == data['data']['records'][0]['user']
     assert 1 == data['data']['records'][0]['sport_id']
     assert 2 == data['data']['records'][0]['activity_id']
     assert 'AS' == data['data']['records'][0]['record_type']
@@ -880,7 +880,7 @@ def test_get_records_after_sport_change(
         'Wed, 16 May 2018 16:05:00 GMT'
         == data['data']['records'][1]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][1]['user_id']
+    assert 'test' == data['data']['records'][1]['user']
     assert 1 == data['data']['records'][1]['sport_id']
     assert 2 == data['data']['records'][1]['activity_id']
     assert 'FD' == data['data']['records'][1]['record_type']
@@ -890,7 +890,7 @@ def test_get_records_after_sport_change(
         'Mon, 14 May 2018 14:05:00 GMT'
         == data['data']['records'][2]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][2]['user_id']
+    assert 'test' == data['data']['records'][2]['user']
     assert 1 == data['data']['records'][2]['sport_id']
     assert 1 == data['data']['records'][2]['activity_id']
     assert 'LD' == data['data']['records'][2]['record_type']
@@ -900,7 +900,7 @@ def test_get_records_after_sport_change(
         'Wed, 16 May 2018 16:05:00 GMT'
         == data['data']['records'][3]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][3]['user_id']
+    assert 'test' == data['data']['records'][3]['user']
     assert 1 == data['data']['records'][3]['sport_id']
     assert 2 == data['data']['records'][3]['activity_id']
     assert 'MS' == data['data']['records'][3]['record_type']
@@ -910,7 +910,7 @@ def test_get_records_after_sport_change(
         'Fri, 18 May 2018 18:05:00 GMT'
         == data['data']['records'][4]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][4]['user_id']
+    assert 'test' == data['data']['records'][4]['user']
     assert 2 == data['data']['records'][4]['sport_id']
     assert 4 == data['data']['records'][4]['activity_id']
     assert 'AS' == data['data']['records'][4]['record_type']
@@ -920,7 +920,7 @@ def test_get_records_after_sport_change(
         'Fri, 18 May 2018 18:05:00 GMT'
         == data['data']['records'][5]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][5]['user_id']
+    assert 'test' == data['data']['records'][5]['user']
     assert 2 == data['data']['records'][5]['sport_id']
     assert 4 == data['data']['records'][5]['activity_id']
     assert 'FD' == data['data']['records'][5]['record_type']
@@ -930,7 +930,7 @@ def test_get_records_after_sport_change(
         'Fri, 18 May 2018 18:05:00 GMT'
         == data['data']['records'][6]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][6]['user_id']
+    assert 'test' == data['data']['records'][6]['user']
     assert 2 == data['data']['records'][6]['sport_id']
     assert 4 == data['data']['records'][6]['activity_id']
     assert 'LD' == data['data']['records'][6]['record_type']
@@ -940,7 +940,7 @@ def test_get_records_after_sport_change(
         'Fri, 18 May 2018 18:05:00 GMT'
         == data['data']['records'][7]['activity_date']
     )  # noqa
-    assert 1 == data['data']['records'][7]['user_id']
+    assert 'test' == data['data']['records'][7]['user']
     assert 2 == data['data']['records'][7]['sport_id']
     assert 4 == data['data']['records'][7]['activity_id']
     assert 'MS' == data['data']['records'][7]['record_type']

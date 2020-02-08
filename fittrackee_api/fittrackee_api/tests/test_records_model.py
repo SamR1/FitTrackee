@@ -9,7 +9,7 @@ def test_record_model(app, user_1, sport_1_cycling, activity_cycling_user_1):
         sport_id=activity_cycling_user_1.sport_id,
         record_type='LD',
     ).first()
-    assert 1 == record_ld.user_id
+    assert 'test' == record_ld.user.username
     assert 1 == record_ld.sport_id
     assert 1 == record_ld.activity_id
     assert 'LD' == record_ld.record_type
@@ -18,7 +18,7 @@ def test_record_model(app, user_1, sport_1_cycling, activity_cycling_user_1):
 
     record_serialize = record_ld.serialize()
     assert 'id' in record_serialize
-    assert 'user_id' in record_serialize
+    assert 'user' in record_serialize
     assert 'sport_id' in record_serialize
     assert 'activity_id' in record_serialize
     assert 'record_type' in record_serialize
@@ -35,7 +35,7 @@ def test_record_model_none_value(
         record_type='LD',
     ).first()
     record_ld.value = None
-    assert 1 == record_ld.user_id
+    assert 'test' == record_ld.user.username
     assert 1 == record_ld.sport_id
     assert 1 == record_ld.activity_id
     assert 'LD' == record_ld.record_type

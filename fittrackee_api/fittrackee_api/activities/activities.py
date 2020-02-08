@@ -91,7 +91,7 @@ def get_activities(auth_user_id):
                     "id": 4,
                     "record_type": "MS",
                     "sport_id": 1,
-                    "user_id": 1,
+                    "user": "admin",
                     "value": 10.0
                   },
                   {
@@ -100,7 +100,7 @@ def get_activities(auth_user_id):
                     "id": 3,
                     "record_type": "LD",
                     "sport_id": 1,
-                    "user_id": 1,
+                    "user": "admin",
                     "value": "0:17:04"
                   },
                   {
@@ -109,7 +109,7 @@ def get_activities(auth_user_id):
                     "id": 2,
                     "record_type": "FD",
                     "sport_id": 1,
-                    "user_id": 1,
+                    "user": "admin",
                     "value": 10.0
                   },
                   {
@@ -118,14 +118,14 @@ def get_activities(auth_user_id):
                     "id": 1,
                     "record_type": "AS",
                     "sport_id": 1,
-                    "user_id": 1,
+                    "user": "admin",
                     "value": 10.0
                   }
                 ],
                 "segments": [],
                 "sport_id": 1,
                 "title": null,
-                "user_id": 1,
+                "user": "admin",
                 "weather_end": null,
                 "weather_start": null,
                 "with_gpx": false
@@ -307,7 +307,7 @@ def get_activity(auth_user_id, activity_id):
                 "segments": [],
                 "sport_id": 1,
                 "title": "biking on sunday morning",
-                "user_id": 1,
+                "user": "admin",
                 "weather_end": null,
                 "weather_start": null,
                 "with_gpx": false
@@ -757,7 +757,7 @@ def post_activity(auth_user_id):
                     "id": 4,
                     "record_type": "MS",
                     "sport_id": 1,
-                    "user_id": 1,
+                    "user": "admin",
                     "value": 10.0
                   },
                   {
@@ -766,7 +766,7 @@ def post_activity(auth_user_id):
                     "id": 3,
                     "record_type": "LD",
                     "sport_id": 1,
-                    "user_id": 1,
+                    "user": "admin",
                     "value": "0:17:04"
                   },
                   {
@@ -775,7 +775,7 @@ def post_activity(auth_user_id):
                     "id": 2,
                     "record_type": "FD",
                     "sport_id": 1,
-                    "user_id": 1,
+                    "user": "admin",
                     "value": 10.0
                   },
                   {
@@ -784,14 +784,14 @@ def post_activity(auth_user_id):
                     "id": 1,
                     "record_type": "AS",
                     "sport_id": 1,
-                    "user_id": 1,
+                    "user": "admin",
                     "value": 10.0
                   }
                 ],
                 "segments": [],
                 "sport_id": 1,
                 "title": null,
-                "user_id": 1,
+                "user": "admin",
                 "weather_end": null,
                 "weather_start": null,
                 "with_gpx": false
@@ -922,7 +922,7 @@ def post_activity_no_gpx(auth_user_id):
                     "id": 4,
                     "record_type": "MS",
                     "sport_id": 1,
-                    "user_id": 1,
+                    "user": "admin",
                     "value": 10.0
                   },
                   {
@@ -931,7 +931,7 @@ def post_activity_no_gpx(auth_user_id):
                     "id": 3,
                     "record_type": "LD",
                     "sport_id": 1,
-                    "user_id": 1,
+                    "user": "admin",
                     "value": "0:17:04"
                   },
                   {
@@ -940,7 +940,7 @@ def post_activity_no_gpx(auth_user_id):
                     "id": 2,
                     "record_type": "FD",
                     "sport_id": 1,
-                    "user_id": 1,
+                    "user": "admin",
                     "value": 10.0
                   },
                   {
@@ -949,14 +949,14 @@ def post_activity_no_gpx(auth_user_id):
                     "id": 1,
                     "record_type": "AS",
                     "sport_id": 1,
-                    "user_id": 1,
+                    "user": "admin",
                     "value": 10.0
                   }
                 ],
                 "segments": [],
                 "sport_id": 1,
                 "title": null,
-                "user_id": 1,
+                "user": "admin",
                 "weather_end": null,
                 "weather_start": null,
                 "with_gpx": false
@@ -1069,7 +1069,7 @@ def update_activity(auth_user_id, activity_id):
                     "id": 4,
                     "record_type": "MS",
                     "sport_id": 1,
-                    "user_id": 1,
+                    "user": "admin",
                     "value": 10.0
                   },
                   {
@@ -1078,7 +1078,7 @@ def update_activity(auth_user_id, activity_id):
                     "id": 3,
                     "record_type": "LD",
                     "sport_id": 1,
-                    "user_id": 1,
+                    "user": "admin",
                     "value": "0:17:04"
                   },
                   {
@@ -1087,7 +1087,7 @@ def update_activity(auth_user_id, activity_id):
                     "id": 2,
                     "record_type": "FD",
                     "sport_id": 1,
-                    "user_id": 1,
+                    "user": "admin",
                     "value": 10.0
                   },
                   {
@@ -1096,14 +1096,14 @@ def update_activity(auth_user_id, activity_id):
                     "id": 1,
                     "record_type": "AS",
                     "sport_id": 1,
-                    "user_id": 1,
+                    "user": "admin",
                     "value": 10.0
                   }
                 ],
                 "segments": [],
                 "sport_id": 1,
                 "title": null,
-                "user_id": 1,
+                "user": "admin",
                 "weather_end": null,
                 "weather_start": null,
                 "with_gpx": false

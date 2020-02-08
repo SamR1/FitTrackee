@@ -35,8 +35,8 @@ def test_get_all_activities_for_authenticated_user(
     assert (
         'Sun, 01 Apr 2018 00:00:00 GMT'
         == data['data']['activities'][0]['activity_date']
-    )  # noqa
-    assert 1 == data['data']['activities'][0]['user_id']
+    )
+    assert 'test' == data['data']['activities'][0]['user']
     assert 2 == data['data']['activities'][0]['sport_id']
     assert 12.0 == data['data']['activities'][0]['distance']
     assert '1:40:00' == data['data']['activities'][0]['duration']
@@ -45,8 +45,8 @@ def test_get_all_activities_for_authenticated_user(
     assert (
         'Mon, 01 Jan 2018 00:00:00 GMT'
         == data['data']['activities'][1]['activity_date']
-    )  # noqa
-    assert 1 == data['data']['activities'][1]['user_id']
+    )
+    assert 'test' == data['data']['activities'][1]['user']
     assert 1 == data['data']['activities'][1]['sport_id']
     assert 10.0 == data['data']['activities'][1]['distance']
     assert '0:17:04' == data['data']['activities'][1]['duration']
@@ -116,13 +116,13 @@ def test_get_activities_pagination(
     assert (
         'Wed, 09 May 2018 00:00:00 GMT'
         == data['data']['activities'][0]['activity_date']
-    )  # noqa
+    )
     assert '0:50:00' == data['data']['activities'][0]['duration']
     assert 'creation_date' in data['data']['activities'][4]
     assert (
         'Mon, 01 Jan 2018 00:00:00 GMT'
         == data['data']['activities'][4]['activity_date']
-    )  # noqa
+    )
     assert '0:17:04' == data['data']['activities'][4]['duration']
 
     response = client.get(
@@ -141,13 +141,13 @@ def test_get_activities_pagination(
     assert (
         'Wed, 09 May 2018 00:00:00 GMT'
         == data['data']['activities'][0]['activity_date']
-    )  # noqa
+    )
     assert '0:50:00' == data['data']['activities'][0]['duration']
     assert 'creation_date' in data['data']['activities'][4]
     assert (
         'Mon, 01 Jan 2018 00:00:00 GMT'
         == data['data']['activities'][4]['activity_date']
-    )  # noqa
+    )
     assert '0:17:04' == data['data']['activities'][4]['duration']
 
     response = client.get(
@@ -166,13 +166,13 @@ def test_get_activities_pagination(
     assert (
         'Thu, 01 Jun 2017 00:00:00 GMT'
         == data['data']['activities'][0]['activity_date']
-    )  # noqa
+    )
     assert '0:57:36' == data['data']['activities'][0]['duration']
     assert 'creation_date' in data['data']['activities'][1]
     assert (
         'Mon, 20 Mar 2017 00:00:00 GMT'
         == data['data']['activities'][1]['activity_date']
-    )  # noqa
+    )
     assert '0:17:04' == data['data']['activities'][1]['duration']
 
     response = client.get(
@@ -212,7 +212,7 @@ def test_get_activities_pagination_error(
     assert (
         'Error. Please try again or contact the administrator.'
         in data['message']
-    )  # noqa
+    )
 
 
 def test_get_activities_date_filter(
@@ -240,13 +240,13 @@ def test_get_activities_date_filter(
     assert (
         'Fri, 23 Feb 2018 00:00:00 GMT'
         == data['data']['activities'][0]['activity_date']
-    )  # noqa
+    )
     assert '0:10:00' == data['data']['activities'][0]['duration']
     assert 'creation_date' in data['data']['activities'][1]
     assert (
         'Fri, 23 Feb 2018 00:00:00 GMT'
         == data['data']['activities'][1]['activity_date']
-    )  # noqa
+    )
     assert '0:16:40' == data['data']['activities'][1]['duration']
 
 
@@ -298,11 +298,11 @@ def test_get_activities_date_filter_from(
     assert (
         'Wed, 09 May 2018 00:00:00 GMT'
         == data['data']['activities'][0]['activity_date']
-    )  # noqa
+    )
     assert (
         'Sun, 01 Apr 2018 00:00:00 GMT'
         == data['data']['activities'][1]['activity_date']
-    )  # noqa
+    )
 
 
 def test_get_activities_date_filter_to(
@@ -329,11 +329,11 @@ def test_get_activities_date_filter_to(
     assert (
         'Thu, 01 Jun 2017 00:00:00 GMT'
         == data['data']['activities'][0]['activity_date']
-    )  # noqa
+    )
     assert (
         'Mon, 20 Mar 2017 00:00:00 GMT'
         == data['data']['activities'][1]['activity_date']
-    )  # noqa
+    )
 
 
 def test_get_activities_date_filter_paginate(
@@ -360,11 +360,11 @@ def test_get_activities_date_filter_paginate(
     assert (
         'Thu, 01 Jun 2017 00:00:00 GMT'
         == data['data']['activities'][0]['activity_date']
-    )  # noqa
+    )
     assert (
         'Mon, 20 Mar 2017 00:00:00 GMT'
         == data['data']['activities'][1]['activity_date']
-    )  # noqa
+    )
 
 
 def test_get_activities_order(
@@ -391,11 +391,11 @@ def test_get_activities_order(
     assert (
         'Mon, 20 Mar 2017 00:00:00 GMT'
         == data['data']['activities'][0]['activity_date']
-    )  # noqa
+    )
     assert (
         'Fri, 23 Feb 2018 00:00:00 GMT'
         == data['data']['activities'][4]['activity_date']
-    )  # noqa
+    )
 
 
 def test_get_activities_date_filter_paginate_order(
@@ -422,11 +422,11 @@ def test_get_activities_date_filter_paginate_order(
     assert (
         'Sun, 01 Apr 2018 00:00:00 GMT'
         == data['data']['activities'][0]['activity_date']
-    )  # noqa
+    )
     assert (
         'Wed, 09 May 2018 00:00:00 GMT'
         == data['data']['activities'][1]['activity_date']
-    )  # noqa
+    )
 
 
 def test_get_activities_distance_filter(
@@ -453,11 +453,11 @@ def test_get_activities_distance_filter(
     assert (
         'Sun, 01 Apr 2018 00:00:00 GMT'
         == data['data']['activities'][0]['activity_date']
-    )  # noqa
+    )
     assert (
         'Mon, 20 Mar 2017 00:00:00 GMT'
         == data['data']['activities'][1]['activity_date']
-    )  # noqa
+    )
 
 
 def test_get_activities_duration_filter(
@@ -484,7 +484,7 @@ def test_get_activities_duration_filter(
     assert (
         'Thu, 01 Jun 2017 00:00:00 GMT'
         == data['data']['activities'][0]['activity_date']
-    )  # noqa
+    )
 
 
 def test_get_activities_ave_speed_filter(
@@ -511,7 +511,7 @@ def test_get_activities_ave_speed_filter(
     assert (
         'Fri, 23 Feb 2018 00:00:00 GMT'
         == data['data']['activities'][0]['activity_date']
-    )  # noqa
+    )
 
 
 def test_get_activities_max_speed_filter(
@@ -545,7 +545,7 @@ def test_get_activities_max_speed_filter(
     assert (
         'Sun, 01 Apr 2018 00:00:00 GMT'
         == data['data']['activities'][0]['activity_date']
-    )  # noqa
+    )
 
 
 def test_get_activities_sport_filter(
@@ -577,7 +577,7 @@ def test_get_activities_sport_filter(
     assert (
         'Sun, 01 Apr 2018 00:00:00 GMT'
         == data['data']['activities'][0]['activity_date']
-    )  # noqa
+    )
 
 
 def test_get_an_activity(
@@ -607,8 +607,8 @@ def test_get_an_activity(
     assert (
         'Mon, 01 Jan 2018 00:00:00 GMT'
         == data['data']['activities'][0]['activity_date']
-    )  # noqa
-    assert 1 == data['data']['activities'][0]['user_id']
+    )
+    assert 'test' == data['data']['activities'][0]['user']
     assert 1 == data['data']['activities'][0]['sport_id']
     assert 10.0 == data['data']['activities'][0]['distance']
     assert '0:17:04' == data['data']['activities'][0]['duration']
@@ -662,11 +662,11 @@ def test_get_activities_per_page(
     assert (
         'Wed, 09 May 2018 00:00:00 GMT'
         == data['data']['activities'][0]['activity_date']
-    )  # noqa
+    )
     assert (
         'Mon, 20 Mar 2017 00:00:00 GMT'
         == data['data']['activities'][6]['activity_date']
-    )  # noqa
+    )
 
     response = client.get(
         '/api/activities?per_page=3',
@@ -683,11 +683,11 @@ def test_get_activities_per_page(
     assert (
         'Wed, 09 May 2018 00:00:00 GMT'
         == data['data']['activities'][0]['activity_date']
-    )  # noqa
+    )
     assert (
         'Fri, 23 Feb 2018 00:00:00 GMT'
         == data['data']['activities'][2]['activity_date']
-    )  # noqa
+    )
 
 
 def test_get_an_activity_invalid_id(app, user_1):

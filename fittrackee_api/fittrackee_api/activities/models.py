@@ -227,7 +227,7 @@ class Activity(db.Model):
         )
         return {
             "id": self.id,
-            "user_id": self.user_id,
+            "user": self.user.username,
             "sport_id": self.sport_id,
             "title": self.title,
             "creation_date": self.creation_date,
@@ -424,7 +424,7 @@ class Record(db.Model):
 
         return {
             "id": self.id,
-            "user_id": self.user_id,
+            "user": self.user.username,
             "sport_id": self.sport_id,
             "activity_id": self.activity_id,
             "record_type": self.record_type,

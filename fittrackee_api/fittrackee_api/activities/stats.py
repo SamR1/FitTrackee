@@ -13,9 +13,9 @@ from .utils_format import convert_timedelta_to_integer
 stats_blueprint = Blueprint('stats', __name__)
 
 
-def get_activities(user_id, filter_type):
+def get_activities(user_name, filter_type):
     try:
-        user = User.query.filter_by(id=user_id).first()
+        user = User.query.filter_by(username=user_name).first()
         if not user:
             response_object = {
                 'status': 'not found',
@@ -50,7 +50,7 @@ def get_activities(user_id, filter_type):
 
         activities = (
             Activity.query.filter(
-                Activity.user_id == user_id,
+                Activity.user_id == user.id,
                 Activity.activity_date >= date_from if date_from else True,
                 Activity.activity_date < date_to + timedelta(seconds=1)
                 if date_to
@@ -97,11 +97,11 @@ def get_activities(user_id, filter_type):
                 elif time == 'month':
                     time_period = datetime.strftime(
                         activity.activity_date, "%Y-%m"
-                    )  # noqa
+                    )
                 elif time == 'year' or not time:
                     time_period = datetime.strftime(
                         activity.activity_date, "%Y"
-                    )  # noqa
+                    )
                 else:
                     response_object = {
                         'status': 'fail',
@@ -140,9 +140,9 @@ def get_activities(user_id, filter_type):
     return jsonify(response_object), code
 
 
-@stats_blueprint.route('/stats/<int:user_id>/by_time', methods=['GET'])
+@stats_blueprint.route('/stats/<user_name>/by_time', methods=['GET'])
 @authenticate
-def get_activities_by_time(auth_user_id, user_id):
+def get_activities_by_time(auth_user_id, user_name):
     """
     Get activities statistics for a user by time
 
@@ -152,13 +152,13 @@ def get_activities_by_time(auth_user_id, user_id):
 
     .. sourcecode:: http
 
-      GET /api/stats/1/by_time HTTP/1.1
+      GET /api/stats/admin/by_time HTTP/1.1
 
     - with parameters
 
     .. sourcecode:: http
 
-      GET /api/stats/1/by_time?from=2018-01-01&to=2018-06-30&time=week HTTP/1.1
+      GET /api/stats/admin/by_time?from=2018-01-01&to=2018-06-30&time=week HTTP/1.1  # noqa
 
     **Example responses**:
 
@@ -211,7 +211,7 @@ def get_activities_by_time(auth_user_id, user_id):
       }
 
     :param integer auth_user_id: authenticate user id (from JSON Web Token)
-    :param integer user_id: user id
+    :param integer user_name: user name
 
     :query string from: start date (format: ``%Y-%m-%d``)
     :query string to: end date (format: ``%Y-%m-%d``)
@@ -233,12 +233,12 @@ def get_activities_by_time(auth_user_id, user_id):
         - User does not exist.
 
     """
-    return get_activities(user_id, 'by_time')
+    return get_activities(user_name, 'by_time')
 
 
-@stats_blueprint.route('/stats/<int:user_id>/by_sport', methods=['GET'])
+@stats_blueprint.route('/stats/<user_name>/by_sport', methods=['GET'])
 @authenticate
-def get_activities_by_sport(auth_user_id, user_id):
+def get_activities_by_sport(auth_user_id, user_name):
     """
     Get activities statistics for a user by sport
 
@@ -248,13 +248,13 @@ def get_activities_by_sport(auth_user_id, user_id):
 
     .. sourcecode:: http
 
-      GET /api/stats/1/by_sport HTTP/1.1
+      GET /api/stats/admin/by_sport HTTP/1.1
 
     - with sport id
 
     .. sourcecode:: http
 
-      GET /api/stats/1/by_sport?sport_id=1 HTTP/1.1
+      GET /api/stats/admin/by_sport?sport_id=1 HTTP/1.1
 
     **Example responses**:
 
@@ -303,7 +303,7 @@ def get_activities_by_sport(auth_user_id, user_id):
       }
 
     :param integer auth_user_id: authenticate user id (from JSON Web Token)
-    :param integer user_id: user id
+    :param integer user_name: user name
 
     :query integer sport_id: sport id
 
@@ -319,7 +319,7 @@ def get_activities_by_sport(auth_user_id, user_id):
         - Sport does not exist.
 
     """
-    return get_activities(user_id, 'by_sport')
+    return get_activities(user_name, 'by_sport')
 
 
 @stats_blueprint.route('/stats/all', methods=['GET'])

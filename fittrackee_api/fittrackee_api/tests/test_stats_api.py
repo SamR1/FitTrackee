@@ -9,7 +9,7 @@ def test_get_stats_by_time_no_activities(app, user_1):
         content_type='application/json',
     )
     response = client.get(
-        f'/api/stats/{user_1.id}/by_time',
+        f'/api/stats/{user_1.username}/by_time',
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
@@ -58,7 +58,7 @@ def test_get_stats_by_time_all_activities_error(
         content_type='application/json',
     )
     response = client.get(
-        f'/api/stats/{user_1.id}/by_time?from="2018-04-01&to=2018-04-30',
+        f'/api/stats/{user_1.username}/by_time?from="2018-04-01&to=2018-04-30',
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
@@ -89,7 +89,7 @@ def test_get_stats_by_time_all_activities_invalid_period(
         content_type='application/json',
     )
     response = client.get(
-        f'/api/stats/{user_1.id}/by_time?from=2018-04-01&to=2018-04-30&time=day',  # noqa
+        f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30&time=day',  # noqa
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
@@ -117,7 +117,7 @@ def test_get_stats_by_time_all_activities(
         content_type='application/json',
     )
     response = client.get(
-        f'/api/stats/{user_1.id}/by_time',
+        f'/api/stats/{user_1.username}/by_time',
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
@@ -165,7 +165,7 @@ def test_get_stats_by_time_all_activities_april_2018(
         content_type='application/json',
     )
     response = client.get(
-        f'/api/stats/{user_1.id}/by_time?from=2018-04-01&to=2018-04-30',
+        f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30',
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
@@ -206,7 +206,8 @@ def test_get_stats_by_time_all_activities_april_2018_paris(
         content_type='application/json',
     )
     response = client.get(
-        f'/api/stats/{user_1_paris.id}/by_time?from=2018-04-01&to=2018-04-30',
+        f'/api/stats/{user_1_paris.username}/by_time?'
+        f'from=2018-04-01&to=2018-04-30',
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
@@ -247,7 +248,7 @@ def test_get_stats_by_year_all_activities(
         content_type='application/json',
     )
     response = client.get(
-        f'/api/stats/{user_1.id}/by_time?time=year',
+        f'/api/stats/{user_1.username}/by_time?time=year',
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
@@ -295,7 +296,7 @@ def test_get_stats_by_year_all_activities_april_2018(
         content_type='application/json',
     )
     response = client.get(
-        f'/api/stats/{user_1.id}/by_time?from=2018-04-01&to=2018-04-30&time=year',  # noqa
+        f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30&time=year',  # noqa
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
@@ -336,7 +337,7 @@ def test_get_stats_by_year_all_activities_april_2018_paris(
         content_type='application/json',
     )
     response = client.get(
-        f'/api/stats/{user_1_paris.id}/by_time?from=2018-04-01&to=2018-04-30&time=year',  # noqa
+        f'/api/stats/{user_1_paris.username}/by_time?from=2018-04-01&to=2018-04-30&time=year',  # noqa
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
@@ -377,7 +378,7 @@ def test_get_stats_by_month_all_activities(
         content_type='application/json',
     )
     response = client.get(
-        f'/api/stats/{user_1.id}/by_time?time=month',
+        f'/api/stats/{user_1.username}/by_time?time=month',
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
@@ -453,7 +454,7 @@ def test_get_stats_by_month_all_activities_new_york(
         content_type='application/json',
     )
     response = client.get(
-        f'/api/stats/{user_1_full.id}/by_time?time=month',
+        f'/api/stats/{user_1_full.username}/by_time?time=month',
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
@@ -529,7 +530,7 @@ def test_get_stats_by_month_all_activities_april_2018(
         content_type='application/json',
     )
     response = client.get(
-        f'/api/stats/{user_1.id}/by_time?from=2018-04-01&to=2018-04-30&time=month',  # noqa
+        f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30&time=month',  # noqa
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
@@ -570,7 +571,7 @@ def test_get_stats_by_week_all_activities(
         content_type='application/json',
     )
     response = client.get(
-        f'/api/stats/{user_1_full.id}/by_time?time=week',
+        f'/api/stats/{user_1_full.username}/by_time?time=week',
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
@@ -646,7 +647,7 @@ def test_get_stats_by_week_all_activities_week_13(
         content_type='application/json',
     )
     response = client.get(
-        f'/api/stats/{user_1.id}/by_time?from=2018-04-01&to=2018-04-30&time=week',  # noqa
+        f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30&time=week',  # noqa
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
@@ -687,7 +688,7 @@ def test_get_stats_by_weekm_all_activities(
         content_type='application/json',
     )
     response = client.get(
-        f'/api/stats/{user_1.id}/by_time?time=weekm',
+        f'/api/stats/{user_1.username}/by_time?time=weekm',
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
@@ -763,7 +764,7 @@ def test_get_stats_by_weekm_all_activities_week_13(
         content_type='application/json',
     )
     response = client.get(
-        f'/api/stats/{user_1.id}/by_time?from=2018-04-01&to=2018-04-30&time=weekm',  # noqa
+        f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30&time=weekm',  # noqa
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
@@ -804,7 +805,7 @@ def test_get_stats_by_sport_all_activities(
         content_type='application/json',
     )
     response = client.get(
-        f'/api/stats/{user_1.id}/by_sport',
+        f'/api/stats/{user_1.username}/by_sport',
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
@@ -843,7 +844,7 @@ def test_get_stats_by_sport_all_activities_sport_1(
         content_type='application/json',
     )
     response = client.get(
-        f'/api/stats/{user_1.id}/by_sport?sport_id=1',
+        f'/api/stats/{user_1.username}/by_sport?sport_id=1',
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
@@ -905,7 +906,7 @@ def test_get_stats_by_sport_all_activities_invalid_sport(
         content_type='application/json',
     )
     response = client.get(
-        f'/api/stats/{user_1.id}/by_sport?sport_id=999',
+        f'/api/stats/{user_1.username}/by_sport?sport_id=999',
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']
@@ -933,7 +934,7 @@ def test_get_stats_by_sport_all_activities_error(
         content_type='application/json',
     )
     response = client.get(
-        f'/api/stats/{user_1.id}/by_sport?sport_id="999',
+        f'/api/stats/{user_1.username}/by_sport?sport_id="999',
         headers=dict(
             Authorization='Bearer '
             + json.loads(resp_login.data.decode())['auth_token']

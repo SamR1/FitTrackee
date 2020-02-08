@@ -126,20 +126,20 @@
   <div class="section" id="statistics">
 <h1>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h1>
 <dl class="get">
-<dt id="get--api-stats-(int-user_id)-by_sport">
-<code class="sig-name descname">GET </code><code class="sig-name descname">/api/stats/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">user_id</em><span class="sig-paren">)</span><code class="sig-name descname">/by_sport</code><a class="headerlink" href="#get--api-stats-(int-user_id)-by_sport" title="Permalink to this definition">¶</a></dt>
+<dt id="get--api-stats-(user_name)-by_sport">
+<code class="sig-name descname">GET </code><code class="sig-name descname">/api/stats/</code><span class="sig-paren">(</span><em class="sig-param">user_name</em><span class="sig-paren">)</span><code class="sig-name descname">/by_sport</code><a class="headerlink" href="#get--api-stats-(user_name)-by_sport" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get activities statistics for a user by sport</p>
 <p><strong>Example requests</strong>:</p>
 <ul class="simple">
 <li><p>without parameters (get stats for all sports with activities)</p></li>
 </ul>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/stats/1/by_sport</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/stats/admin/by_sport</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>with sport id</p></li>
 </ul>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/stats/1/by_sport?sport_id=1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/stats/admin/by_sport?sport_id=1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
 <p><strong>Example responses</strong>:</p>
@@ -191,7 +191,7 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
-<li><p><strong>user_id</strong> (<em>integer</em>) – user id</p></li>
+<li><p><strong>user_name</strong> (<em>integer</em>) – user name</p></li>
 </ul>
 </dd>
 <dt class="field-even">Query Parameters</dt>
@@ -224,20 +224,20 @@
 </dd></dl>
 
 <dl class="get">
-<dt id="get--api-stats-(int-user_id)-by_time">
-<code class="sig-name descname">GET </code><code class="sig-name descname">/api/stats/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">user_id</em><span class="sig-paren">)</span><code class="sig-name descname">/by_time</code><a class="headerlink" href="#get--api-stats-(int-user_id)-by_time" title="Permalink to this definition">¶</a></dt>
+<dt id="get--api-stats-(user_name)-by_time">
+<code class="sig-name descname">GET </code><code class="sig-name descname">/api/stats/</code><span class="sig-paren">(</span><em class="sig-param">user_name</em><span class="sig-paren">)</span><code class="sig-name descname">/by_time</code><a class="headerlink" href="#get--api-stats-(user_name)-by_time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get activities statistics for a user by time</p>
 <p><strong>Example requests</strong>:</p>
 <ul class="simple">
 <li><p>without parameters</p></li>
 </ul>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/stats/1/by_time</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/stats/admin/by_time</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>with parameters</p></li>
 </ul>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/stats/1/by_time?from=2018-01-01&amp;to=2018-06-30&amp;time=week</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span>GET /api/stats/admin/by_time?from=2018-01-01&amp;to=2018-06-30&amp;time=week HTTP/1.1  # noqa
 </pre></div>
 </div>
 <p><strong>Example responses</strong>:</p>
@@ -293,7 +293,7 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
-<li><p><strong>user_id</strong> (<em>integer</em>) – user id</p></li>
+<li><p><strong>user_name</strong> (<em>integer</em>) – user name</p></li>
 </ul>
 </dd>
 <dt class="field-even">Query Parameters</dt>

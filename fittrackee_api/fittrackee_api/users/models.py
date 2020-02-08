@@ -26,10 +26,10 @@ class User(db.Model):
     # does the week start Monday?
     weekm = db.Column(db.Boolean(50), default=False, nullable=False)
     activities = db.relationship(
-        'Activity', lazy=True, backref=db.backref('users', lazy='joined')
+        'Activity', lazy=True, backref=db.backref('user', lazy='joined')
     )
     records = db.relationship(
-        'Record', lazy=True, backref=db.backref('users', lazy='joined')
+        'Record', lazy=True, backref=db.backref('user', lazy='joined')
     )
     language = db.Column(db.String(50), nullable=True)
 
