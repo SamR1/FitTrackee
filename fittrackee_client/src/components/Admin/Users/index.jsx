@@ -2,6 +2,7 @@ import { format } from 'date-fns'
 import React from 'react'
 import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
+import { Link } from 'react-router-dom'
 
 import Message from '../../Common/Message'
 import { history } from '../../../index'
@@ -39,7 +40,9 @@ class AdminUsers extends React.Component {
                     {users.map(user => (
                       <tr key={user.id}>
                         <th scope="row">{user.id}</th>
-                        <td>{user.username}</td>
+                        <td>
+                          <Link to={`/users/${user.id}`}>{user.username}</Link>
+                        </td>
                         <td>{user.email}</td>
                         <td>
                           {format(

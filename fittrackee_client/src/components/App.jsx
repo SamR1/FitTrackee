@@ -6,15 +6,16 @@ import './App.css'
 import Admin from './Admin'
 import Activity from './Activity'
 import Activities from './Activities'
+import CurrentUserProfile from './User/CurrentUserProfile'
 import Dashboard from './Dashboard'
 import Footer from './Footer'
 import Logout from './User/Logout'
 import NavBar from './NavBar'
 import NotFound from './Others/NotFound'
-import Profile from './User/Profile'
 import ProfileEdit from './User/ProfileEdit'
 import Statistics from './Statistics'
 import UserForm from './User/UserForm'
+import UserProfile from './User/UserProfile'
 import { getAppData } from '../actions/application'
 
 class App extends React.Component {
@@ -44,9 +45,10 @@ class App extends React.Component {
           />
           <Route exact path="/logout" component={Logout} />
           <Route exact path="/profile/edit" component={ProfileEdit} />
-          <Route exact path="/profile" component={Profile} />
+          <Route exact path="/profile" component={CurrentUserProfile} />
           <Route exact path="/activities/history" component={Activities} />
           <Route exact path="/activities/statistics" component={Statistics} />
+          <Route exact path="/users/:userId" component={UserProfile} />
           <Route path="/activities" component={Activity} />
           <Route path="/admin" component={Admin} />
           <Route component={NotFound} />

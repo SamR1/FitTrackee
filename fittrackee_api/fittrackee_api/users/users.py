@@ -119,30 +119,32 @@ def get_single_user(auth_user_id, user_id):
       Content-Type: application/json
 
       {
-        "data": {
-          "admin": true,
-          "bio": null,
-          "birth_date": null,
-          "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
-          "email": "admin@example.com",
-          "first_name": null,
-          "id": 1,
-          "language": "en",
-          "last_name": null,
-          "location": null,
-          "nb_activities": 6,
-          "nb_sports": 3,
-          "picture": false,
-          "sports_list": [
-              1,
-              4,
-              6
-          ],
-          "timezone": "Europe/Paris",
-          "total_distance": 67.895,
-          "total_duration": "6:50:27",
-          "username": "admin"
-        },
+        "data": [
+          {
+            "admin": true,
+            "bio": null,
+            "birth_date": null,
+            "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+            "email": "admin@example.com",
+            "first_name": null,
+            "id": 1,
+            "language": "en",
+            "last_name": null,
+            "location": null,
+            "nb_activities": 6,
+            "nb_sports": 3,
+            "picture": false,
+            "sports_list": [
+                1,
+                4,
+                6
+            ],
+            "timezone": "Europe/Paris",
+            "total_distance": 67.895,
+            "total_duration": "6:50:27",
+            "username": "admin"
+          }
+        ],
         "status": "success"
       }
 
@@ -166,7 +168,10 @@ def get_single_user(auth_user_id, user_id):
         if not user:
             return jsonify(response_object), 404
         else:
-            response_object = {'status': 'success', 'data': user.serialize()}
+            response_object = {
+                'status': 'success',
+                'data': {'users': [user.serialize()]},
+            }
             return jsonify(response_object), 200
     except ValueError:
         return jsonify(response_object), 404

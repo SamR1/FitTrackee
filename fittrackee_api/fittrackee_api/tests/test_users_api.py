@@ -33,24 +33,26 @@ def test_single_user(app, user_1):
 
     assert response.status_code == 200
     assert data['status'] == 'success'
-    assert data['data'] is not None
-    assert data['data']['username'] == 'test'
-    assert data['data']['email'] == 'test@test.com'
-    assert data['data']['created_at']
-    assert not data['data']['admin']
-    assert data['data']['first_name'] is None
-    assert data['data']['last_name'] is None
-    assert data['data']['birth_date'] is None
-    assert data['data']['bio'] is None
-    assert data['data']['location'] is None
-    assert data['data']['timezone'] is None
-    assert data['data']['weekm'] is False
-    assert data['data']['language'] is None
-    assert data['data']['nb_activities'] == 0
-    assert data['data']['nb_sports'] == 0
-    assert data['data']['sports_list'] == []
-    assert data['data']['total_distance'] == 0
-    assert data['data']['total_duration'] == '0:00:00'
+    assert len(data['data']['users']) == 1
+
+    user = data['data']['users'][0]
+    assert user['username'] == 'test'
+    assert user['email'] == 'test@test.com'
+    assert user['created_at']
+    assert not user['admin']
+    assert user['first_name'] is None
+    assert user['last_name'] is None
+    assert user['birth_date'] is None
+    assert user['bio'] is None
+    assert user['location'] is None
+    assert user['timezone'] is None
+    assert user['weekm'] is False
+    assert user['language'] is None
+    assert user['nb_activities'] == 0
+    assert user['nb_sports'] == 0
+    assert user['sports_list'] == []
+    assert user['total_distance'] == 0
+    assert user['total_duration'] == '0:00:00'
 
 
 def test_single_user_with_activities(
@@ -80,24 +82,26 @@ def test_single_user_with_activities(
 
     assert response.status_code == 200
     assert data['status'] == 'success'
-    assert data['data'] is not None
-    assert data['data']['username'] == 'test'
-    assert data['data']['email'] == 'test@test.com'
-    assert data['data']['created_at']
-    assert not data['data']['admin']
-    assert data['data']['first_name'] is None
-    assert data['data']['last_name'] is None
-    assert data['data']['birth_date'] is None
-    assert data['data']['bio'] is None
-    assert data['data']['location'] is None
-    assert data['data']['timezone'] is None
-    assert data['data']['weekm'] is False
-    assert data['data']['language'] is None
-    assert data['data']['nb_activities'] == 2
-    assert data['data']['nb_sports'] == 2
-    assert data['data']['sports_list'] == [1, 2]
-    assert data['data']['total_distance'] == 22
-    assert data['data']['total_duration'] == '1:57:04'
+    assert len(data['data']['users']) == 1
+
+    user = data['data']['users'][0]
+    assert user['username'] == 'test'
+    assert user['email'] == 'test@test.com'
+    assert user['created_at']
+    assert not user['admin']
+    assert user['first_name'] is None
+    assert user['last_name'] is None
+    assert user['birth_date'] is None
+    assert user['bio'] is None
+    assert user['location'] is None
+    assert user['timezone'] is None
+    assert user['weekm'] is False
+    assert user['language'] is None
+    assert user['nb_activities'] == 2
+    assert user['nb_sports'] == 2
+    assert user['sports_list'] == [1, 2]
+    assert user['total_distance'] == 22
+    assert user['total_duration'] == '1:57:04'
 
 
 def test_single_user_no_id(app, user_1):

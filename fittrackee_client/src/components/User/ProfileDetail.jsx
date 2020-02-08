@@ -11,6 +11,7 @@ import { apiUrl, getFileSize } from '../../utils'
 
 function ProfileDetail({
   appConfig,
+  editable,
   message,
   onDeletePicture,
   onUploadPicture,
@@ -37,13 +38,15 @@ function ProfileDetail({
             <div className="card">
               <div className="card-header userName">
                 {user.username}{' '}
-                <Link
-                  to={{
-                    pathname: '/profile/edit',
-                  }}
-                >
-                  <i className="fa fa-pencil-square-o" aria-hidden="true" />
-                </Link>
+                {editable && (
+                  <Link
+                    to={{
+                      pathname: '/profile/edit',
+                    }}
+                  >
+                    <i className="fa fa-pencil-square-o" aria-hidden="true" />
+                  </Link>
+                )}
               </div>
               <div className="card-body">
                 <div className="row">

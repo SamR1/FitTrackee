@@ -4,10 +4,10 @@ import { connect } from 'react-redux'
 
 import ProfileDetail from './ProfileDetail'
 
-function Profile({ t, user }) {
+function CurrentUserProfile({ t, user }) {
   return (
     <div>
-      <ProfileDetail t={t} user={user} />
+      <ProfileDetail editable t={t} user={user} />
     </div>
   )
 }
@@ -15,5 +15,5 @@ function Profile({ t, user }) {
 export default withTranslation()(
   connect(state => ({
     user: state.user,
-  }))(Profile)
+  }))(CurrentUserProfile)
 )
