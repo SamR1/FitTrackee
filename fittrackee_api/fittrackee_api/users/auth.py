@@ -237,7 +237,7 @@ def login_user():
 
 @auth_blueprint.route('/auth/logout', methods=['GET'])
 @authenticate
-def logout_user(user_id):
+def logout_user(auth_user_id):
     """
     user logout
 
@@ -285,7 +285,7 @@ def logout_user(user_id):
     if auth_header:
         auth_token = auth_header.split(" ")[1]
         resp = User.decode_auth_token(auth_token)
-        if not isinstance(user_id, str):
+        if not isinstance(auth_user_id, str):
             response_object = {
                 'status': 'success',
                 'message': 'Successfully logged out.',
@@ -304,7 +304,7 @@ def logout_user(user_id):
 
 @auth_blueprint.route('/auth/profile', methods=['GET'])
 @authenticate
-def get_user_status(user_id):
+def get_authenticated_user_profile(auth_user_id):
     """
     get authenticated user info
 
@@ -330,7 +330,6 @@ def get_user_status(user_id):
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
           "email": "sam@example.com",
           "first_name": null,
-          "id": 2,
           "language": "en",
           "last_name": null,
           "location": null,
@@ -360,14 +359,14 @@ def get_user_status(user_id):
         - Invalid token. Please log in again.
 
     """
-    user = User.query.filter_by(id=user_id).first()
+    user = User.query.filter_by(id=auth_user_id).first()
     response_object = {'status': 'success', 'data': user.serialize()}
     return jsonify(response_object), 200
 
 
 @auth_blueprint.route('/auth/profile/edit', methods=['POST'])
 @authenticate
-def edit_user(user_id):
+def edit_user(auth_user_id):
     """
     edit authenticated user
 
@@ -393,7 +392,6 @@ def edit_user(user_id):
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
           "email": "sam@example.com",
           "first_name": null,
-          "id": 2,
           "language": "en",
           "last_name": null,
           "location": null,
@@ -476,7 +474,7 @@ def edit_user(user_id):
             ).decode()
 
     try:
-        user = User.query.filter_by(id=user_id).first()
+        user = User.query.filter_by(id=auth_user_id).first()
         user.first_name = first_name
         user.last_name = last_name
         user.bio = bio
@@ -513,7 +511,7 @@ def edit_user(user_id):
 
 @auth_blueprint.route('/auth/picture', methods=['POST'])
 @authenticate
-def edit_picture(user_id):
+def edit_picture(auth_user_id):
     """
     update authenticated user picture
 
@@ -573,15 +571,17 @@ def edit_picture(user_id):
     file = request.files['file']
     filename = secure_filename(file.filename)
     dirpath = os.path.join(
-        current_app.config['UPLOAD_FOLDER'], 'pictures', str(user_id)
+        current_app.config['UPLOAD_FOLDER'], 'pictures', str(auth_user_id)
     )
     if not os.path.exists(dirpath):
         os.makedirs(dirpath)
     absolute_picture_path = os.path.join(dirpath, filename)
-    relative_picture_path = os.path.join('pictures', str(user_id), filename)
+    relative_picture_path = os.path.join(
+        'pictures', str(auth_user_id), filename
+    )
 
     try:
-        user = User.query.filter_by(id=user_id).first()
+        user = User.query.filter_by(id=auth_user_id).first()
         if user.picture is not None:
             old_picture_path = get_absolute_file_path(user.picture)
             if os.path.isfile(get_absolute_file_path(old_picture_path)):
@@ -608,7 +608,7 @@ def edit_picture(user_id):
 
 @auth_blueprint.route('/auth/picture', methods=['DELETE'])
 @authenticate
-def del_picture(user_id):
+def del_picture(auth_user_id):
     """
     delete authenticated user picture
 
@@ -637,7 +637,7 @@ def del_picture(user_id):
 
     """
     try:
-        user = User.query.filter_by(id=user_id).first()
+        user = User.query.filter_by(id=auth_user_id).first()
         picture_path = get_absolute_file_path(user.picture)
         if os.path.isfile(picture_path):
             os.remove(picture_path)

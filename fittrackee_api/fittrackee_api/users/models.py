@@ -110,7 +110,6 @@ class User(db.Model):
                 .first()
             )
         return {
-            'id': self.id,
             'username': self.username,
             'email': self.email,
             'created_at': self.created_at,

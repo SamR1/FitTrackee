@@ -37,7 +37,6 @@ def get_users(auth_user_id):
               "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
               "email": "admin@example.com",
               "first_name": null,
-              "id": 1,
               "language": "en",
               "last_name": null,
               "location": null,
@@ -61,7 +60,6 @@ def get_users(auth_user_id):
               "created_at": "Sat, 20 Jul 2019 11:27:03 GMT",
               "email": "sam@example.com",
               "first_name": null,
-              "id": 2,
               "language": "fr",
               "last_name": null,
               "location": null,
@@ -108,7 +106,7 @@ def get_single_user(auth_user_id, user_name):
 
     .. sourcecode:: http
 
-      GET /api/users/1 HTTP/1.1
+      GET /api/users/admin HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -127,7 +125,6 @@ def get_single_user(auth_user_id, user_name):
             "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
             "email": "admin@example.com",
             "first_name": null,
-            "id": 1,
             "language": "en",
             "last_name": null,
             "location": null,
@@ -177,15 +174,15 @@ def get_single_user(auth_user_id, user_name):
         return jsonify(response_object), 404
 
 
-@users_blueprint.route('/users/<user_id>/picture', methods=['GET'])
-def get_picture(user_id):
+@users_blueprint.route('/users/<user_name>/picture', methods=['GET'])
+def get_picture(user_name):
     """ get user picture
 
     **Example request**:
 
     .. sourcecode:: http
 
-      GET /api/users/1/picture HTTP/1.1
+      GET /api/users/admin/picture HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -195,7 +192,7 @@ def get_picture(user_id):
       HTTP/1.1 200 OK
       Content-Type: image/jpeg
 
-    :param integer user_id: user id
+    :param integer user_name: user name
 
     :statuscode 200: success
     :statuscode 404:
@@ -205,7 +202,7 @@ def get_picture(user_id):
     """
     response_object = {'status': 'not found', 'message': 'No picture.'}
     try:
-        user = User.query.filter_by(id=int(user_id)).first()
+        user = User.query.filter_by(username=user_name).first()
         if not user:
             response_object = {
                 'status': 'fail',

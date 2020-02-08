@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 import Message from '../../Common/Message'
 import { history } from '../../../index'
 import { getOrUpdateData } from '../../../actions'
+import { apiUrl } from '../../../utils'
 
 class AdminUsers extends React.Component {
   componentDidMount() {
@@ -28,7 +29,7 @@ class AdminUsers extends React.Component {
                 <table className="table">
                   <thead>
                     <tr>
-                      <th>{t('administration:id')}</th>
+                      <th>#</th>
                       <th>{t('user:Username')}</th>
                       <th>{t('user:Email')}</th>
                       <th>{t('user:Registration Date')}</th>
@@ -38,8 +39,18 @@ class AdminUsers extends React.Component {
                   </thead>
                   <tbody>
                     {users.map(user => (
-                      <tr key={user.id}>
-                        <th scope="row">{user.id}</th>
+                      <tr key={user.username}>
+                        <td>
+                          {user.picture === true && (
+                            <img
+                              alt="Avatar"
+                              src={`${apiUrl}users/${
+                                user.username
+                              }/picture?${Date.now()}`}
+                              className="img-fluid App-nav-profile-img"
+                            />
+                          )}
+                        </td>
                         <td>
                           <Link to={`/users/${user.username}`}>
                             {user.username}

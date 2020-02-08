@@ -2,7 +2,6 @@ def test_user_model(app, user_1):
     assert '<User \'test\'>' == str(user_1)
 
     serialized_user = user_1.serialize()
-    assert 1 == serialized_user['id']
     assert 'test' == serialized_user['username']
     assert 'created_at' in serialized_user
     assert serialized_user['admin'] is False

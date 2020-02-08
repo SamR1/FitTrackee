@@ -148,7 +148,6 @@
         <span class="nt">&quot;created_at&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 14 Jul 2019 14:09:58 GMT&quot;</span><span class="p">,</span>
         <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;admin@example.com&quot;</span><span class="p">,</span>
         <span class="nt">&quot;first_name&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
-        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
         <span class="nt">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span>
         <span class="nt">&quot;last_name&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
         <span class="nt">&quot;location&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
@@ -172,7 +171,6 @@
         <span class="nt">&quot;created_at&quot;</span><span class="p">:</span> <span class="s2">&quot;Sat, 20 Jul 2019 11:27:03 GMT&quot;</span><span class="p">,</span>
         <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;sam@example.com&quot;</span><span class="p">,</span>
         <span class="nt">&quot;first_name&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
-        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
         <span class="nt">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;fr&quot;</span><span class="p">,</span>
         <span class="nt">&quot;last_name&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
         <span class="nt">&quot;location&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
@@ -221,7 +219,7 @@
 <code class="sig-name descname">GET </code><code class="sig-name descname">/api/users/</code><span class="sig-paren">(</span><em class="sig-param">user_name</em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-users-(user_name)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get single user details</p>
 <p><strong>Example request</strong>:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/users/1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/users/admin</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
@@ -238,7 +236,6 @@
       <span class="nt">&quot;created_at&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 14 Jul 2019 14:09:58 GMT&quot;</span><span class="p">,</span>
       <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;admin@example.com&quot;</span><span class="p">,</span>
       <span class="nt">&quot;first_name&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
-      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
       <span class="nt">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span>
       <span class="nt">&quot;last_name&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
       <span class="nt">&quot;location&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
@@ -291,11 +288,11 @@
 </dd></dl>
 
 <dl class="get">
-<dt id="get--api-users-(user_id)-picture">
-<code class="sig-name descname">GET </code><code class="sig-name descname">/api/users/</code><span class="sig-paren">(</span><em class="sig-param">user_id</em><span class="sig-paren">)</span><code class="sig-name descname">/picture</code><a class="headerlink" href="#get--api-users-(user_id)-picture" title="Permalink to this definition">¶</a></dt>
+<dt id="get--api-users-(user_name)-picture">
+<code class="sig-name descname">GET </code><code class="sig-name descname">/api/users/</code><span class="sig-paren">(</span><em class="sig-param">user_name</em><span class="sig-paren">)</span><code class="sig-name descname">/picture</code><a class="headerlink" href="#get--api-users-(user_name)-picture" title="Permalink to this definition">¶</a></dt>
 <dd><p>get user picture</p>
 <p><strong>Example request</strong>:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/users/1/picture</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/users/admin/picture</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
@@ -307,7 +304,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>user_id</strong> (<em>integer</em>) – user id</p></li>
+<li><p><strong>user_name</strong> (<em>integer</em>) – user name</p></li>
 </ul>
 </dd>
 <dt class="field-even">Status Codes</dt>

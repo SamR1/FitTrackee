@@ -8,7 +8,7 @@ import { apiUrl } from '../../utils'
 
 class NavBar extends React.PureComponent {
   render() {
-    const { admin, id, isAuthenticated, picture, t, username } = this.props
+    const { admin, isAuthenticated, picture, t, username } = this.props
     return (
       <header>
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -120,7 +120,7 @@ class NavBar extends React.PureComponent {
                 {picture === true && (
                   <img
                     alt="Avatar"
-                    src={`${apiUrl}users/${id}/picture?${Date.now()}`}
+                    src={`${apiUrl}users/${username}/picture?${Date.now()}`}
                     className="img-fluid App-nav-profile-img"
                   />
                 )}
@@ -161,7 +161,6 @@ class NavBar extends React.PureComponent {
 export default withTranslation()(
   connect(({ user }) => ({
     admin: user.admin,
-    id: user.id,
     isAuthenticated: user.isAuthenticated,
     picture: user.picture,
     username: user.username,

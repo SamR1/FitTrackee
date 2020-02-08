@@ -89,7 +89,7 @@ function ProfileDetail({
                         <img
                           alt="Profile"
                           src={
-                            `${apiUrl}users/${user.id}/picture` +
+                            `${apiUrl}users/${user.username}/picture` +
                             `?${Date.now()}`
                           }
                           className="img-fluid App-profile-img-small"

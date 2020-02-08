@@ -23,7 +23,7 @@ class UserProfile extends React.Component {
       <div>
         {user && (
           <ProfileDetail
-            editable={currentUser.id === user.id}
+            editable={currentUser.username === user.username}
             t={t}
             user={user}
           />
