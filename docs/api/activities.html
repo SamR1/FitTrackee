@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
     <title>Activities &#8212; FitTrackee 0.2.5-beta
@@ -8,11 +8,11 @@
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Authentication" href="auth.html" />
@@ -125,7 +125,7 @@
       
   <div class="section" id="activities">
 <h1>Activities<a class="headerlink" href="#activities" title="Permalink to this headline">¶</a></h1>
-<dl class="get">
+<dl class="http get">
 <dt id="get--api-activities">
 <code class="sig-name descname">GET </code><code class="sig-name descname">/api/activities</code><a class="headerlink" href="#get--api-activities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get activities for the authenticated user.</p>
@@ -282,7 +282,7 @@
 </dl>
 </dd></dl>
 
-<dl class="get">
+<dl class="http get">
 <dt id="get--api-activities-(int-activity_id)">
 <code class="sig-name descname">GET </code><code class="sig-name descname">/api/activities/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">activity_id</em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-activities-(int-activity_id)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get an activity</p>
@@ -377,7 +377,7 @@
 </dl>
 </dd></dl>
 
-<dl class="post">
+<dl class="http post">
 <dt id="post--api-activities">
 <code class="sig-name descname">POST </code><code class="sig-name descname">/api/activities</code><a class="headerlink" href="#post--api-activities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Post an activity with a gpx file</p>
@@ -505,7 +505,7 @@
 </dl>
 </dd></dl>
 
-<dl class="post">
+<dl class="http post">
 <dt id="post--api-activities-no_gpx">
 <code class="sig-name descname">POST </code><code class="sig-name descname">/api/activities/no_gpx</code><a class="headerlink" href="#post--api-activities-no_gpx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Post an activity without gpx file</p>
@@ -630,7 +630,7 @@
 </dl>
 </dd></dl>
 
-<dl class="patch">
+<dl class="http patch">
 <dt id="patch--api-activities-(int-activity_id)">
 <code class="sig-name descname">PATCH </code><code class="sig-name descname">/api/activities/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">activity_id</em><span class="sig-paren">)</span><a class="headerlink" href="#patch--api-activities-(int-activity_id)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update an activity</p>
@@ -760,7 +760,7 @@
 </dl>
 </dd></dl>
 
-<dl class="delete">
+<dl class="http delete">
 <dt id="delete--api-activities-(int-activity_id)">
 <code class="sig-name descname">DELETE </code><code class="sig-name descname">/api/activities/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">activity_id</em><span class="sig-paren">)</span><a class="headerlink" href="#delete--api-activities-(int-activity_id)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete an activity</p>
@@ -802,7 +802,7 @@
 </dl>
 </dd></dl>
 
-<dl class="get">
+<dl class="http get">
 <dt id="get--api-activities-map-(map_id)">
 <code class="sig-name descname">GET </code><code class="sig-name descname">/api/activities/map/</code><span class="sig-paren">(</span><em class="sig-param">map_id</em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-activities-map-(map_id)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get map image for activities with gpx</p>
@@ -839,7 +839,7 @@
 </dl>
 </dd></dl>
 
-<dl class="get">
+<dl class="http get">
 <dt id="get--api-activities-(int-activity_id)-gpx">
 <code class="sig-name descname">GET </code><code class="sig-name descname">/api/activities/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">activity_id</em><span class="sig-paren">)</span><code class="sig-name descname">/gpx</code><a class="headerlink" href="#get--api-activities-(int-activity_id)-gpx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get gpx file for an activity displayed on map with Leaflet</p>
@@ -890,7 +890,7 @@
 </dl>
 </dd></dl>
 
-<dl class="get">
+<dl class="http get">
 <dt id="get--api-activities-(int-activity_id)-chart_data">
 <code class="sig-name descname">GET </code><code class="sig-name descname">/api/activities/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">activity_id</em><span class="sig-paren">)</span><code class="sig-name descname">/chart_data</code><a class="headerlink" href="#get--api-activities-(int-activity_id)-chart_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get chart data from an activity gpx file, to display it with Recharts</p>
@@ -960,7 +960,7 @@
 </dl>
 </dd></dl>
 
-<dl class="get">
+<dl class="http get">
 <dt id="get--api-activities-(int-activity_id)-gpx-segment-(int-segment_id)">
 <code class="sig-name descname">GET </code><code class="sig-name descname">/api/activities/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">activity_id</em><span class="sig-paren">)</span><code class="sig-name descname">/gpx/segment/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">segment_id</em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-activities-(int-activity_id)-gpx-segment-(int-segment_id)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get gpx file for an activity segment displayed on map with Leaflet</p>
@@ -1012,7 +1012,7 @@
 </dl>
 </dd></dl>
 
-<dl class="get">
+<dl class="http get">
 <dt id="get--api-activities-(int-activity_id)-chart_data-segment-(int-segment_id)">
 <code class="sig-name descname">GET </code><code class="sig-name descname">/api/activities/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">activity_id</em><span class="sig-paren">)</span><code class="sig-name descname">/chart_data/segment/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">segment_id</em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-activities-(int-activity_id)-chart_data-segment-(int-segment_id)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get chart data from an activity gpx file, to display it with Recharts</p>
@@ -1098,7 +1098,7 @@
     </p>
     <p>
         &copy; Copyright 2018 - 2019, SamR1.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.3.<br/>
     </p>
   </div>
 </footer>

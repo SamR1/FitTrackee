@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
     <title>Authentication &#8212; FitTrackee 0.2.5-beta
@@ -8,11 +8,11 @@
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Records" href="records.html" />
@@ -125,7 +125,7 @@
       
   <div class="section" id="authentication">
 <h1>Authentication<a class="headerlink" href="#authentication" title="Permalink to this headline">¶</a></h1>
-<dl class="post">
+<dl class="http post">
 <dt id="post--api-auth-register">
 <code class="sig-name descname">POST </code><code class="sig-name descname">/api/auth/register</code><a class="headerlink" href="#post--api-auth-register" title="Permalink to this definition">¶</a></dt>
 <dd><p>register a user</p>
@@ -194,7 +194,7 @@
 </dl>
 </dd></dl>
 
-<dl class="post">
+<dl class="http post">
 <dt id="post--api-auth-login">
 <code class="sig-name descname">POST </code><code class="sig-name descname">/api/auth/login</code><a class="headerlink" href="#post--api-auth-login" title="Permalink to this definition">¶</a></dt>
 <dd><p>user login</p>
@@ -246,7 +246,7 @@
 </dl>
 </dd></dl>
 
-<dl class="get">
+<dl class="http get">
 <dt id="get--api-auth-logout">
 <code class="sig-name descname">GET </code><code class="sig-name descname">/api/auth/logout</code><a class="headerlink" href="#get--api-auth-logout" title="Permalink to this definition">¶</a></dt>
 <dd><p>user logout</p>
@@ -295,7 +295,7 @@
 </dl>
 </dd></dl>
 
-<dl class="get">
+<dl class="http get">
 <dt id="get--api-auth-profile">
 <code class="sig-name descname">GET </code><code class="sig-name descname">/api/auth/profile</code><a class="headerlink" href="#get--api-auth-profile" title="Permalink to this definition">¶</a></dt>
 <dd><p>get authenticated user info</p>
@@ -353,7 +353,7 @@
 </dl>
 </dd></dl>
 
-<dl class="post">
+<dl class="http post">
 <dt id="post--api-auth-profile-edit">
 <code class="sig-name descname">POST </code><code class="sig-name descname">/api/auth/profile/edit</code><a class="headerlink" href="#post--api-auth-profile-edit" title="Permalink to this definition">¶</a></dt>
 <dd><p>edit authenticated user</p>
@@ -432,7 +432,7 @@
 </dl>
 </dd></dl>
 
-<dl class="post">
+<dl class="http post">
 <dt id="post--api-auth-picture">
 <code class="sig-name descname">POST </code><code class="sig-name descname">/api/auth/picture</code><a class="headerlink" href="#post--api-auth-picture" title="Permalink to this definition">¶</a></dt>
 <dd><p>update authenticated user picture</p>
@@ -485,7 +485,7 @@
 </dl>
 </dd></dl>
 
-<dl class="delete">
+<dl class="http delete">
 <dt id="delete--api-auth-picture">
 <code class="sig-name descname">DELETE </code><code class="sig-name descname">/api/auth/picture</code><a class="headerlink" href="#delete--api-auth-picture" title="Permalink to this definition">¶</a></dt>
 <dd><p>delete authenticated user picture</p>
@@ -535,7 +535,7 @@
     </p>
     <p>
         &copy; Copyright 2018 - 2019, SamR1.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.3.<br/>
     </p>
   </div>
 </footer>
