@@ -1,4 +1,4 @@
-FROM node:11.10.1
+FROM node:13.13.0
 
 MAINTAINER SamR1@users.noreply.github.com
 
