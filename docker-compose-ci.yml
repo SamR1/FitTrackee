@@ -4,7 +4,7 @@ services:
 
   fittrackee-db:
     container_name: fittrackee-db
-    build: https://github.com/SamR1/mpwo.git#${BRANCH}:fittrackee_api/db
+    build: https://github.com/SamR1/FitTrackee.git#${BRANCH}:fittrackee_api/db
     ports:
       - 5435:5432
     environment:
@@ -13,7 +13,7 @@ services:
 
   fittrackee-api:
     container_name: fittrackee-api
-    build: https://github.com/SamR1/mpwo.git#${BRANCH}:fittrackee_api
+    build: https://github.com/SamR1/FitTrackee.git#${BRANCH}:fittrackee_api
     ports:
       - 5001:5000
     environment:
@@ -30,11 +30,12 @@ services:
   fittrackee-client:
     container_name: fittrackee-client
     build:
-      context: https://github.com/SamR1/mpwo.git#${BRANCH}
+      context: https://github.com/SamR1/FitTrackee.git#${BRANCH}
       dockerfile: ./fittrackee_client/Dockerfile
       args:
         - NODE_ENV=development
         - REACT_APP_API_URL=${REACT_APP_API_URL}
+        - CI=true
     ports:
     - 3007:3000
     depends_on:
