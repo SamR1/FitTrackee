@@ -91,7 +91,7 @@ class ActivityDisplay extends React.Component {
           <div className="container">
             {displayModal && (
               <CustomModal
-                title={t('activities:Confirmation')}
+                title={t('common:Confirmation')}
                 text={t(
                   'activities:Are you sure you want to delete this activity?'
                 )}

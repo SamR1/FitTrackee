@@ -6,15 +6,17 @@ import { connect } from 'react-redux'
 import TimezonePicker from 'react-timezone'
 
 import Message from '../Common/Message'
-import { handleProfileFormSubmit } from '../../actions/user'
+import { deleteUser, handleProfileFormSubmit } from '../../actions/user'
 import { history } from '../../index'
 import { languages } from '../NavBar/LanguageDropdown'
+import CustomModal from '../Common/CustomModal'
 
 class ProfileEdit extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
       formData: {},
+      displayModal: false,
     }
   }
 
@@ -51,9 +53,22 @@ class ProfileEdit extends React.Component {
     this.setState(formData)
   }
 
+  displayModal(value) {
+    this.setState(prevState => ({
+      ...prevState,
+      displayModal: value,
+    }))
+  }
+
   render() {
-    const { onHandleProfileFormSubmit, message, t, user } = this.props
-    const { formData } = this.state
+    const {
+      message,
+      onDeleteUser,
+      onHandleProfileFormSubmit,
+      t,
+      user,
+    } = this.props
+    const { displayModal, formData } = this.state
     return (
       <div>
         <Helmet>
@@ -62,6 +77,20 @@ class ProfileEdit extends React.Component {
         <Message message={message} t={t} />
         {formData.isAuthenticated && (
           <div className="container">
+            {displayModal && (
+              <CustomModal
+                title={t('common:Confirmation')}
+                text={t(
+                  'user:Are you sure you want to delete your account? ' +
+                    'All data will be deleted, this cannot be undone.'
+                )}
+                confirm={() => {
+                  onDeleteUser(user.username)
+                  this.displayModal(false)
+                }}
+                close={() => this.displayModal(false)}
+              />
+            )}
             <h1 className="page-title">{t('user:Profile Edition')}</h1>
             <div className="row">
               <div className="col-md-2" />
@@ -243,6 +272,11 @@ class ProfileEdit extends React.Component {
                             value={t('common:Submit')}
                           />
                           <input
+                            className="btn btn-danger btn-lg btn-block"
+                            onClick={() => this.displayModal(true)}
+                            defaultValue={t('user:Delete my account')}
+                          />
+                          <input
                             type="submit"
                             className="btn btn-secondary btn-lg btn-block"
                             onClick={() => history.push('/profile')}
@@ -271,6 +305,9 @@ export default withTranslation()(
       user: state.user,
     }),
     dispatch => ({
+      onDeleteUser: username => {
+        dispatch(deleteUser(username))
+      },
       onHandleProfileFormSubmit: formData => {
         dispatch(handleProfileFormSubmit(formData))
       },

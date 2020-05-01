@@ -30,5 +30,6 @@
   "statistics": "statistiques",
   "User does not exist.": "User does not exist.",
   "Valid email must be provided.\n": "Valid email must be provided.",
+  "You can not delete your account, no other user has admin rights.": "You can not delete your account, no other user has admin rights.",
   "You do not have permissions.": "You do not have permissions."
 }

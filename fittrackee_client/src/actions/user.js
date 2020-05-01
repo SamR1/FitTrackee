@@ -2,7 +2,7 @@ import FitTrackeeGenericApi from '../fitTrackeeApi'
 import FitTrackeeApi from '../fitTrackeeApi/auth'
 import { history } from '../index'
 import { generateIds } from '../utils'
-import { getOrUpdateData, updateLanguage } from './index'
+import { getOrUpdateData, setError, updateLanguage } from './index'
 
 const AuthError = message => ({ type: 'AUTH_ERROR', message })
 
@@ -133,3 +133,15 @@ export const deletePicture = () => dispatch =>
     .catch(error => {
       throw error
     })
+
+export const deleteUser = username => dispatch =>
+  FitTrackeeGenericApi.deleteData('users', username)
+    .then(ret => {
+      if (ret.status === 204) {
+        dispatch(logout())
+        history.push('/')
+      } else {
+        ret.json().then(r => dispatch(setError(`${r.message}`)))
+      }
+    })
+    .catch(error => dispatch(setError(`user|${error}`)))

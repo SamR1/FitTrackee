@@ -118,6 +118,15 @@ def user_2():
 
 
 @pytest.fixture()
+def user_2_admin():
+    user = User(username='toto', email='toto@toto.com', password='87654321')
+    user.admin = True
+    db.session.add(user)
+    db.session.commit()
+    return user
+
+
+@pytest.fixture()
 def user_3():
     user = User(username='sam', email='sam@test.com', password='12345678')
     user.weekm = True

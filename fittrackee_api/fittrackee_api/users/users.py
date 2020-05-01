@@ -1,9 +1,12 @@
+import os
+import shutil
+
 from fittrackee_api import appLog, db
 from flask import Blueprint, jsonify, request, send_file
 from sqlalchemy import exc
 
 from ..activities.utils_files import get_absolute_file_path
-from .models import User
+from .models import Activity, User
 from .utils import authenticate, authenticate_as_admin
 
 users_blueprint = Blueprint('users', __name__)
@@ -270,7 +273,7 @@ def update_user(auth_user_id, user_name):
       }
 
     :param integer auth_user_id: authenticate user id (from JSON Web Token)
-    :param integer user_name: user name
+    :param string user_name: user name
 
     :<json boolean admin: does the user have administrator rights
 
@@ -306,6 +309,111 @@ def update_user(auth_user_id, user_name):
             return jsonify(response_object), 200
 
     except exc.StatementError as e:
+        db.session.rollback()
+        appLog.error(e)
+        response_object = {
+            'status': 'error',
+            'message': 'Error. Please try again or contact the administrator.',
+        }
+        code = 500
+    return jsonify(response_object), code
+
+
+@users_blueprint.route('/users/<user_name>', methods=['DELETE'])
+@authenticate
+def delete_activity(auth_user_id, user_name):
+    """
+    Delete a user account
+    - a user can only delete his own account
+    - an admin can delete all accounts except his account if he's the only
+      one admin
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      DELETE /api/users/john_doe HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 204 NO CONTENT
+      Content-Type: application/json
+
+    :param integer auth_user_id: authenticate user id (from JSON Web Token)
+    :param string user_name: user name
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 204: user account deleted
+    :statuscode 401:
+        - Provide a valid auth token.
+        - Signature expired. Please log in again.
+        - Invalid token. Please log in again.
+    :statuscode 403:
+        - You do not have permissions.
+        - You can not delete your account, no other user has admin rights.
+    :statuscode 404:
+        - User does not exist.
+    :statuscode 500: Error. Please try again or contact the administrator.
+
+    """
+    try:
+        auth_user = User.query.filter_by(id=auth_user_id).first()
+        user = User.query.filter_by(username=user_name).first()
+        if user:
+            if user.id != auth_user_id and not auth_user.admin:
+                response_object = {
+                    'status': 'error',
+                    'message': 'You do not have permissions.',
+                }
+                return response_object, 403
+            if (
+                user.admin is True
+                and User.query.filter_by(admin=True).count() == 1
+            ):
+                response_object = {
+                    'status': 'error',
+                    'message': (
+                        'You can not delete your account, '
+                        'no other user has admin rights.'
+                    ),
+                }
+                return response_object, 403
+            for activity in Activity.query.filter_by(user_id=user.id).all():
+                db.session.delete(activity)
+                db.session.flush()
+            user_picture = user.picture
+            db.session.delete(user)
+            db.session.commit()
+            if user_picture:
+                picture_path = get_absolute_file_path(user.picture)
+                if os.path.isfile(picture_path):
+                    os.remove(picture_path)
+            shutil.rmtree(
+                get_absolute_file_path(f'activities/{user.id}'),
+                ignore_errors=True,
+            )
+            shutil.rmtree(
+                get_absolute_file_path(f'pictures/{user.id}'),
+                ignore_errors=True,
+            )
+            response_object = {'status': 'no content'}
+            code = 204
+        else:
+            response_object = {
+                'status': 'not found',
+                'message': 'User does not exist.',
+            }
+            code = 404
+    except (
+        exc.IntegrityError,
+        exc.OperationalError,
+        ValueError,
+        OSError,
+    ) as e:
         db.session.rollback()
         appLog.error(e)
         response_object = {

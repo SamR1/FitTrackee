@@ -1,4 +1,5 @@
 import json
+from io import BytesIO
 
 from fittrackee_api.users.models import User
 
@@ -409,3 +410,186 @@ def test_it_returns_error_if_user_can_not_change_admin_rights(
     assert response.status_code == 403
     assert 'error' in data['status']
     assert 'You do not have permissions.' in data['message']
+
+
+def test_user_can_delete_its_own_account(app, user_1):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.delete(
+        '/api/users/test',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    assert response.status_code == 204
+
+
+def test_user_with_activity_can_delete_its_own_account(
+    app, user_1, sport_1_cycling, gpx_file
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
+    )
+    client.post(
+        '/api/activities',
+        data=dict(
+            file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+            data='{"sport_id": 1}',
+        ),
+        headers=dict(
+            content_type='multipart/form-data',
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token'],
+        ),
+    )
+    response = client.delete(
+        '/api/users/test',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    assert response.status_code == 204
+
+
+def test_user_with_picture_can_delete_its_own_account(
+    app, user_1, sport_1_cycling, gpx_file
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
+    )
+    client.post(
+        '/api/auth/picture',
+        data=dict(file=(BytesIO(b'avatar'), 'avatar.png')),
+        headers=dict(
+            content_type='multipart/form-data',
+            authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token'],
+        ),
+    )
+    response = client.delete(
+        '/api/users/test',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    assert response.status_code == 204
+
+
+def test_user_can_not_delete_another_user_account(app, user_1, user_2):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.delete(
+        '/api/users/toto',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 403
+    assert 'error' in data['status']
+    assert 'You do not have permissions.' in data['message']
+
+
+def test_it_returns_error_when_deleting_non_existing_user(app, user_1):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.delete(
+        '/api/users/not_existing',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 404
+    assert 'not found' in data['status']
+    assert 'User does not exist.' in data['message']
+
+
+def test_admin_can_delete_another_user_account(app, user_1_admin, user_2):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='admin@example.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.delete(
+        '/api/users/toto',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    assert response.status_code == 204
+
+
+def test_admin_can_delete_its_own_account(app, user_1_admin, user_2_admin):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='admin@example.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.delete(
+        '/api/users/admin',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    assert response.status_code == 204
+
+
+def test_admin_can_not_delete_its_own_account_if_no_other_admin(
+    app, user_1_admin, user_2
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='admin@example.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.delete(
+        '/api/users/admin',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 403
+    assert 'error' in data['status']
+    assert (
+        'You can not delete your account, no other user has admin rights.'
+        in data['message']
+    )

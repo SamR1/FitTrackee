@@ -1,7 +1,9 @@
 {
   "Admin": "Admin",
+  "Are you sure you want to delete your account? All data will be deleted, this cannot be undone.": "Etes-vous sûr de vouloir supprimer votre compte ? Toutes les données seront définitivement effacés.",
   "Bio": "Bio",
   "Birth Date": "Date de naissance",
+  "Delete my account": "Supprimer mon compte",
   "Delete picture": "Supprimer l'image",
   "Edit Profile": "Editer le profil",
   "Email": "Email",
