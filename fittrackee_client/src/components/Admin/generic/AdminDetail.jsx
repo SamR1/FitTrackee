@@ -134,7 +134,7 @@ export default connect(
     onDataUpdate: (e, target) => {
       const data = [].slice
         .call(e.target.form.elements)
-        .reduce(function(map, obj) {
+        .reduce(function (map, obj) {
           if (obj.name) {
             map[obj.name] = obj.value
           }
