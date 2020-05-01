@@ -1,5 +1,5 @@
 import FitTrackeeGenericApi from '../fitTrackeeApi'
-import FitTrackeeApi from '../fitTrackeeApi/user'
+import FitTrackeeApi from '../fitTrackeeApi/auth'
 import { history } from '../index'
 import { generateIds } from '../utils'
 import { getOrUpdateData, updateLanguage } from './index'
