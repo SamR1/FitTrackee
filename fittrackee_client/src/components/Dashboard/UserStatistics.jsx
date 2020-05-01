@@ -13,7 +13,7 @@ export default function UserStatistics(props) {
   duration = `${duration.split(':')[0]}h ${duration.split(':')[1]}min`
   return (
     <div className="row">
-      <div className="col-md-3">
+      <div className="col-lg-3 col-md-6 col-sm-6">
         <div className="card activity-card">
           <div className="card-body row">
             <div className="col-3">
@@ -30,7 +30,7 @@ export default function UserStatistics(props) {
           </div>
         </div>
       </div>
-      <div className="col-md-3">
+      <div className="col-lg-3 col-md-6 col-sm-6">
         <div className="card activity-card">
           <div className="card-body row">
             <div className="col-3">
@@ -45,7 +45,7 @@ export default function UserStatistics(props) {
           </div>
         </div>
       </div>
-      <div className="col-md-3">
+      <div className="col-lg-3 col-md-6 col-sm-6">
         <div className="card activity-card">
           <div className="card-body row">
             <div className="col-3">
@@ -58,7 +58,7 @@ export default function UserStatistics(props) {
           </div>
         </div>
       </div>
-      <div className="col-md-3">
+      <div className="col-lg-3 col-md-6 col-sm-6">
         <div className="card activity-card">
           <div className="card-body row">
             <div className="col-3">

@@ -89,8 +89,8 @@ class AdminUsers extends React.Component {
                             disabled={user.username === authUser.username}
                             value={
                               user.admin
-                                ? t('administration:Remove')
-                                : t('administration:Add')
+                                ? t('administration:Remove admin rights')
+                                : t('administration:Add admin rights')
                             }
                             onClick={() =>
                               updateUser(user.username, !user.admin)
@@ -105,7 +105,7 @@ class AdminUsers extends React.Component {
                   type="submit"
                   className="btn btn-secondary"
                   onClick={() => history.push('/admin/')}
-                  value={t('administration:Back')}
+                  value={t('common:Back')}
                 />
               </div>
             </div>

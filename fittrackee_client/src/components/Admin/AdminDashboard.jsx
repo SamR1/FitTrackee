@@ -3,9 +3,6 @@ import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
 import AdminStats from './AdminStats'
-import { capitalize } from '../../utils'
-
-const menuItems = ['application', 'sports', 'users']
 
 export default function AdminDashboard(props) {
   const { t } = props
@@ -18,19 +15,51 @@ export default function AdminDashboard(props) {
         <div className="card-header">{t('administration:Administration')}</div>
         <div className="card-body">
           <AdminStats />
-          <ul className="admin-items">
-            {menuItems.map(item => (
-              <li key={item}>
-                <Link
-                  to={{
-                    pathname: `/admin/${item}`,
-                  }}
-                >
-                  {t(`administration:${capitalize(item)}`)}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <br />
+          <dl className="admin-items">
+            <dt>
+              <Link
+                to={{
+                  pathname: '/admin/application',
+                }}
+              >
+                {t('administration:Application')}
+              </Link>
+            </dt>
+            <dd>
+              {t(
+                'administration:Update application configuration ' +
+                  '(maximum number of registered users, maximum files size).'
+              )}{' '}
+            </dd>
+            <br />
+            <dt>
+              <Link
+                to={{
+                  pathname: '/admin/sports',
+                }}
+              >
+                {t('administration:Sports')}
+              </Link>
+            </dt>
+            <dd>{t('administration:Enable/disable sports.')}</dd>
+            <br />
+            <dt>
+              <Link
+                to={{
+                  pathname: '/admin/users',
+                }}
+              >
+                {t('administration:Users')}
+              </Link>
+            </dt>
+            <dd>
+              {t(
+                'administration:Add/remove admin rigths, ' +
+                  'delete user account.'
+              )}
+            </dd>
+          </dl>
         </div>
       </div>
     </>

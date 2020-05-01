@@ -338,3 +338,13 @@ def process_files(auth_user_id, activity_data, activity_file, folders):
         return [process_one_gpx_file(common_params, filename)]
     else:
         return process_zip_archive(common_params, folders['extract_dir'])
+
+
+def get_upload_dir_size():
+    upload_path = get_absolute_file_path('')
+    total_size = 0
+    for dir_path, _, filenames in os.walk(upload_path):
+        for f in filenames:
+            fp = os.path.join(dir_path, f)
+            total_size += os.path.getsize(fp)
+    return total_size

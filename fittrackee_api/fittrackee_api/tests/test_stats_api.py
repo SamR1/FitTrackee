@@ -968,7 +968,10 @@ def test_get_app_stats_without_activities(app, user_1_admin):
 
     assert response.status_code == 200
     assert 'success' in data['status']
-    assert data['data'] == {'activities': 0, 'sports': 0, 'users': 1}
+    assert data['data']['activities'] == 0
+    assert data['data']['sports'] == 0
+    assert data['data']['users'] == 1
+    assert 'uploads_dir_size' in data['data']
 
 
 def test_get_app_stats_with_activities(
@@ -999,7 +1002,10 @@ def test_get_app_stats_with_activities(
 
     assert response.status_code == 200
     assert 'success' in data['status']
-    assert data['data'] == {'activities': 3, 'sports': 2, 'users': 3}
+    assert data['data']['activities'] == 3
+    assert data['data']['sports'] == 2
+    assert data['data']['users'] == 3
+    assert 'uploads_dir_size' in data['data']
 
 
 def test_get_app_stats_no_admin(

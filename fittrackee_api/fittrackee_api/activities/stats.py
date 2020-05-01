@@ -7,7 +7,7 @@ from sqlalchemy import func
 from ..users.models import User
 from ..users.utils import authenticate, authenticate_as_admin
 from .models import Activity, Sport
-from .utils import get_datetime_with_tz
+from .utils import get_datetime_with_tz, get_upload_dir_size
 from .utils_format import convert_timedelta_to_integer
 
 stats_blueprint = Blueprint('stats', __name__)
@@ -376,6 +376,7 @@ def get_application_stats(auth_user_id):
             'activities': nb_activities,
             'sports': nb_sports,
             'users': nb_users,
+            'uploads_dir_size': get_upload_dir_size(),
         },
     }
     return jsonify(response_object), 200

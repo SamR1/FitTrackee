@@ -96,7 +96,7 @@ class AdminSports extends React.Component {
                   type="submit"
                   className="btn btn-secondary"
                   onClick={() => history.push('/admin/')}
-                  value={t('administration:Back')}
+                  value={t('common:Back')}
                 />
               </div>
             </div>

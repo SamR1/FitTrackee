@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 import Message from '../Common/Message'
 import { deletePicture, uploadPicture } from '../../actions/user'
 import { apiUrl, getFileSize } from '../../utils'
+import { history } from '../../index'
 
 function ProfileDetail({
   appConfig,
@@ -135,6 +136,12 @@ function ProfileDetail({
                     )}{' '}
                   </div>
                 </div>
+                <input
+                  type="submit"
+                  className="btn btn-secondary"
+                  onClick={() => history.go(-1)}
+                  value={t('common:Back')}
+                />
               </div>
             </div>
           </div>
