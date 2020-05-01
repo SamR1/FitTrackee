@@ -18,8 +18,9 @@ export default function ActivitySegments(props) {
                     key={`segment-${index}`}
                   >
                     <Link
-                      to={`/activities/${segment.activity_id}/segment/${index +
-                        1}`}
+                      to={`/activities/${segment.activity_id}/segment/${
+                        index + 1
+                      }`}
                     >
                       {t('activities:segment')} {index + 1}
                     </Link>{' '}
