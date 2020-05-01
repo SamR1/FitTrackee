@@ -11,7 +11,9 @@ import { apiUrl, getFileSize } from '../../utils'
 
 function ProfileDetail({
   appConfig,
+  displayModal,
   editable,
+  isDeletable,
   message,
   onDeletePicture,
   onUploadPicture,
@@ -46,6 +48,13 @@ function ProfileDetail({
                   >
                     <i className="fa fa-pencil-square-o" aria-hidden="true" />
                   </Link>
+                )}{' '}
+                {isDeletable && (
+                  <i
+                    className="fa fa-user-times fa-as-link"
+                    aria-hidden="true"
+                    onClick={() => displayModal(true)}
+                  />
                 )}
               </div>
               <div className="card-body">

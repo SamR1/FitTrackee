@@ -316,6 +316,15 @@ label {
   content: " ✔";
 }
 
+.fa-as-link {
+  cursor:pointer;
+  color: #40578a;
+}
+
+.fa-as-link:hover {
+  color: #0056b3;
+}
+
 .fa-question-circle {
   color: #6c757d;
   margin-left: 3px;

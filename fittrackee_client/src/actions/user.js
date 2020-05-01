@@ -134,12 +134,16 @@ export const deletePicture = () => dispatch =>
       throw error
     })
 
-export const deleteUser = username => dispatch =>
+export const deleteUser = (username, isAdmin = false) => dispatch =>
   FitTrackeeGenericApi.deleteData('users', username)
     .then(ret => {
       if (ret.status === 204) {
-        dispatch(logout())
-        history.push('/')
+        if (isAdmin) {
+          history.push('/admin/users')
+        } else {
+          dispatch(logout())
+          history.push('/')
+        }
       } else {
         ret.json().then(r => dispatch(setError(`${r.message}`)))
       }
