@@ -140,3 +140,32 @@ def update_application_config(auth_user_id):
         }
         code = 500
     return jsonify(response_object), code
+
+
+@config_blueprint.route('/ping', methods=['GET'])
+def ping_pong():
+    """ health check endpoint
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/ping HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "message": "pong!",
+        "status": "success"
+      }
+
+    :statuscode 200: success
+
+    """
+    return jsonify({'status': 'success', 'message': 'pong!'})
