@@ -1,8 +1,10 @@
-from flask import Blueprint, jsonify, send_file
+from fittrackee_api import appLog, db
+from flask import Blueprint, jsonify, request, send_file
+from sqlalchemy import exc
 
 from ..activities.utils_files import get_absolute_file_path
 from .models import User
-from .utils import authenticate
+from .utils import authenticate, authenticate_as_admin
 
 users_blueprint = Blueprint('users', __name__)
 
@@ -215,6 +217,103 @@ def get_picture(user_name):
         return jsonify(response_object), 404
     except Exception:
         return jsonify(response_object), 404
+
+
+@users_blueprint.route('/users/<user_name>', methods=['PATCH'])
+@authenticate_as_admin
+def update_user(auth_user_id, user_name):
+    """
+    Update user to add admin rights
+    Only user with admin rights can modify another user
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      PATCH api/users/<user_name> HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": [
+          {
+            "admin": true,
+            "bio": null,
+            "birth_date": null,
+            "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+            "email": "admin@example.com",
+            "first_name": null,
+            "language": "en",
+            "last_name": null,
+            "location": null,
+            "nb_activities": 6,
+            "nb_sports": 3,
+            "picture": false,
+            "sports_list": [
+                1,
+                4,
+                6
+            ],
+            "timezone": "Europe/Paris",
+            "total_distance": 67.895,
+            "total_duration": "6:50:27",
+            "username": "admin"
+          }
+        ],
+        "status": "success"
+      }
+
+    :param integer auth_user_id: authenticate user id (from JSON Web Token)
+    :param integer user_name: user name
+
+    :<json boolean admin: does the user have administrator rights
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - Provide a valid auth token.
+        - Signature expired. Please log in again.
+        - Invalid token. Please log in again.
+    :statuscode 403: You do not have permissions.
+    :statuscode 404:
+        - User does not exist.
+    :statuscode 500:
+    """
+    response_object = {'status': 'fail', 'message': 'User does not exist.'}
+    user_data = request.get_json()
+    if 'admin' not in user_data:
+        response_object = {'status': 'error', 'message': 'Invalid payload.'}
+        return jsonify(response_object), 400
+
+    try:
+        user = User.query.filter_by(username=user_name).first()
+        if not user:
+            return jsonify(response_object), 404
+        else:
+            user.admin = user_data['admin']
+            db.session.commit()
+            response_object = {
+                'status': 'success',
+                'data': {'users': [user.serialize()]},
+            }
+            return jsonify(response_object), 200
+
+    except exc.StatementError as e:
+        db.session.rollback()
+        appLog.error(e)
+        response_object = {
+            'status': 'error',
+            'message': 'Error. Please try again or contact the administrator.',
+        }
+        code = 500
+    return jsonify(response_object), code
 
 
 @users_blueprint.route('/ping', methods=['GET'])

@@ -28,6 +28,12 @@ export const updateSportsData = data => ({
   type: 'UPDATE_SPORT_DATA',
   data,
 })
+
+export const updateUsersData = data => ({
+  type: 'UPDATE_USER_DATA',
+  data,
+})
+
 export const getOrUpdateData = (
   action,
   target,
@@ -47,6 +53,8 @@ export const getOrUpdateData = (
           dispatch(setData(target, ret.data))
         } else if (action === 'updateData' && target === 'sports') {
           dispatch(updateSportsData(ret.data.sports[0]))
+        } else if (action === 'updateData' && target === 'users') {
+          dispatch(updateUsersData(ret.data.users[0]))
         }
       } else {
         dispatch(setError(`${target}|${ret.message || ret.status}`))

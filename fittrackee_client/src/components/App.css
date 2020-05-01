@@ -499,6 +499,10 @@ label {
   padding: 0.1em;
 }
 
+.user-table {
+  font-size: 0.9em;
+}
+
 /* calendar */
 :root {
   --main-color: #1a8fff;

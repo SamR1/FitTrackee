@@ -48,7 +48,9 @@ export default class FitTrackeeApi {
 
   static updateData(target, data) {
     const params = {
-      url: `${target}${data.id ? `/${data.id}` : ''}`,
+      url: `${target}${
+        data.id ? `/${data.id}` : data.username ? `/${data.username}` : ''
+      }`,
       method: 'PATCH',
       body: data,
       type: 'application/json',

@@ -146,6 +146,21 @@ const sports = (state = initial.sports, action) => {
   return handleDataAndError(state, 'sports', action)
 }
 
+const users = (state = initial.users, action) => {
+  if (action.type === 'UPDATE_USER_DATA') {
+    return {
+      ...state,
+      data: state.data.map(user => {
+        if (user.username === action.data.username) {
+          user.admin = action.data.admin
+        }
+        return user
+      }),
+    }
+  }
+  return handleDataAndError(state, 'users', action)
+}
+
 const user = (state = initial.user, action) => {
   switch (action.type) {
     case 'AUTH_ERROR':
@@ -166,9 +181,6 @@ const statistics = (state = initial.statistics, action) => {
   }
   return handleDataAndError(state, 'statistics', action)
 }
-
-const users = (state = initial.users, action) =>
-  handleDataAndError(state, 'users', action)
 
 export default history =>
   combineReducers({

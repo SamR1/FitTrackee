@@ -94,27 +94,36 @@ function ProfileDetail({
                           }
                           className="img-fluid App-profile-img-small"
                         />
-                        <br />
-                        <button type="submit" onClick={() => onDeletePicture()}>
-                          {t('user:Delete picture')}
-                        </button>
-                        <br />
-                        <br />
+                        {editable && (
+                          <>
+                            <br />
+                            <button
+                              type="submit"
+                              onClick={() => onDeletePicture()}
+                            >
+                              {t('user:Delete picture')}
+                            </button>
+                            <br />
+                            <br />
+                          </>
+                        )}
                       </div>
                     )}
-                    <form
-                      encType="multipart/form-data"
-                      onSubmit={event => onUploadPicture(event)}
-                    >
-                      <input
-                        type="file"
-                        name="picture"
-                        accept=".png,.jpg,.gif"
-                      />
-                      <br />
-                      <button type="submit">{t('user:Send')}</button>
-                      {` (max. size: ${fileSizeLimit})`}
-                    </form>
+                    {editable && (
+                      <form
+                        encType="multipart/form-data"
+                        onSubmit={event => onUploadPicture(event)}
+                      >
+                        <input
+                          type="file"
+                          name="picture"
+                          accept=".png,.jpg,.gif"
+                        />
+                        <br />
+                        <button type="submit">{t('user:Send')}</button>
+                        {` (max. size: ${fileSizeLimit})`}
+                      </form>
+                    )}{' '}
                   </div>
                 </div>
               </div>

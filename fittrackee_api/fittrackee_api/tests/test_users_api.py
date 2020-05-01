@@ -277,3 +277,135 @@ def test_user_picture_no_user(app, user_1):
     assert response.status_code == 404
     assert 'fail' in data['status']
     assert 'User does not exist.' in data['message']
+
+
+def test_it_adds_admin_rights_to_a_user(app, user_1_admin, user_2):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='admin@example.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.patch(
+        '/api/users/toto',
+        content_type='application/json',
+        data=json.dumps(dict(admin=True)),
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['users']) == 1
+
+    user = data['data']['users'][0]
+    assert user['email'] == 'toto@toto.com'
+    assert user['admin'] is True
+
+
+def test_it_removes_admin_rights_to_a_user(app, user_1_admin, user_2):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='admin@example.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.patch(
+        '/api/users/toto',
+        content_type='application/json',
+        data=json.dumps(dict(admin=False)),
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['users']) == 1
+
+    user = data['data']['users'][0]
+    assert user['email'] == 'toto@toto.com'
+    assert user['admin'] is False
+
+
+def test_it_returns_error_if_payload_for_admin_rights_is_empty(
+    app, user_1_admin, user_2
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='admin@example.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.patch(
+        '/api/users/toto',
+        content_type='application/json',
+        data=json.dumps(dict()),
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 400
+    assert 'error' in data['status']
+    assert 'Invalid payload.' in data['message']
+
+
+def test_it_returns_error_if_payload_for_admin_rights_is_invalid(
+    app, user_1_admin, user_2
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='admin@example.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.patch(
+        '/api/users/toto',
+        content_type='application/json',
+        data=json.dumps(dict(admin="")),
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 500
+    assert 'error' in data['status']
+    assert (
+        'Error. Please try again or contact the administrator.'
+        in data['message']
+    )
+
+
+def test_it_returns_error_if_user_can_not_change_admin_rights(
+    app, user_1, user_2
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.patch(
+        '/api/users/toto',
+        content_type='application/json',
+        data=json.dumps(dict(admin=True)),
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+    data = json.loads(response.data.decode())
+
+    assert response.status_code == 403
+    assert 'error' in data['status']
+    assert 'You do not have permissions.' in data['message']

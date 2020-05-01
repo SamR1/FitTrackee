@@ -15,7 +15,7 @@ class AdminUsers extends React.Component {
   }
 
   render() {
-    const { message, t, users } = this.props
+    const { message, t, updateUser, authUser, users } = this.props
     return (
       <div>
         <Helmet>
@@ -26,7 +26,7 @@ class AdminUsers extends React.Component {
           <div className="row">
             <div className="col card">
               <div className="card-body">
-                <table className="table">
+                <table className="table user-table">
                   <thead>
                     <tr>
                       <th>#</th>
@@ -35,6 +35,7 @@ class AdminUsers extends React.Component {
                       <th>{t('user:Registration Date')}</th>
                       <th>{t('activities:Activities')}</th>
                       <th>{t('user:Admin')}</th>
+                      <th>{t('administration:Actions')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -79,6 +80,23 @@ class AdminUsers extends React.Component {
                             />
                           )}
                         </td>
+                        <td>
+                          <input
+                            type="submit"
+                            className={`btn btn-${
+                              user.admin ? 'dark' : 'primary'
+                            } btn-sm`}
+                            disabled={user.username === authUser.username}
+                            value={
+                              user.admin
+                                ? t('administration:Remove')
+                                : t('administration:Add')
+                            }
+                            onClick={() =>
+                              updateUser(user.username, !user.admin)
+                            }
+                          />
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -101,11 +119,16 @@ class AdminUsers extends React.Component {
 export default connect(
   state => ({
     message: state.message,
+    authUser: state.user,
     users: state.users.data,
   }),
   dispatch => ({
     loadUsers: () => {
       dispatch(getOrUpdateData('getData', 'users'))
+    },
+    updateUser: (userName, isAdmin) => {
+      const data = { username: userName, admin: isAdmin }
+      dispatch(getOrUpdateData('updateData', 'users', data, false))
     },
   })
 )(AdminUsers)

@@ -1,6 +1,7 @@
 {
   "Actions": "Actions",
   "Active": "Active",
+  "Add": "Ajouter",
   "Administration": "Administration",
   "activities exist": "des activités existent",
   "Application": "Application",
@@ -18,6 +19,7 @@
   "Max. size of uploaded files (in Mb)": "Taille max. des fichiers (en Mo)",
   "Max. size of zip archive": "Taille max. des archives zip",
   "Max. size of zip archive (in Mb)": "Taille max. des archives zip (en Mo)",
+  "Remove": "Retirer",
   "Sports": "Sports",
   "user": "user",
   "Users": "Utilisateurs",
