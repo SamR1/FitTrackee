@@ -26,7 +26,7 @@ class AdminUsers extends React.Component {
           <div className="row">
             <div className="col card">
               <div className="card-body">
-                <table className="table user-table">
+                <table className="table table-borderless">
                   <thead>
                     <tr>
                       <th>#</th>
@@ -103,7 +103,7 @@ class AdminUsers extends React.Component {
                 </table>
                 <input
                   type="submit"
-                  className="btn btn-secondary btn-lg btn-block"
+                  className="btn btn-secondary"
                   onClick={() => history.push('/admin/')}
                   value={t('administration:Back')}
                 />

@@ -19,7 +19,6 @@ export default function Form(props) {
         <div className="row">
           <div className="col-md-3" />
           <div className="col-md-6">
-            <hr />
             <br />
             {props.formType === 'register' && !props.isRegistrationAllowed ? (
               <div className="card">

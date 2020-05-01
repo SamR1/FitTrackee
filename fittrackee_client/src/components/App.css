@@ -187,6 +187,10 @@ label {
   font-weight: bold;
 }
 
+.btn {
+  margin-right: 10px;
+}
+
 .card {
   text-align: left;
 }
@@ -286,6 +290,9 @@ label {
   font-weight: bold;
 }
 
+.dashboard {
+  height: 100%;
+}
 .dashboard, .history {
   margin-top: 30px;
 }
@@ -314,6 +321,10 @@ label {
 
 .dropdown-item-selected::after {
   content: " ✔";
+}
+
+.error-message {
+  margin-top: 10px;
 }
 
 .fa-as-link {

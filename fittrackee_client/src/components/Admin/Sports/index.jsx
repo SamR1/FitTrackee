@@ -19,12 +19,13 @@ class AdminSports extends React.Component {
           <title>FitTrackee - {t('administration:Administration')}</title>
         </Helmet>
         {message && <Message message={message} t={t} />}
-        <div className="container">
-          <div className="row">
-            <div className="col card">
+        <div className="row">
+          <div className="col">
+            <div className="card">
+              <div className="card-header">{t('administration:Sports')}</div>
               <div className="card-body">
                 {sports.length > 0 && (
-                  <table className="table">
+                  <table className="table table-borderless">
                     <thead>
                       <tr>
                         <th>{t('administration:id')}</th>
@@ -93,7 +94,7 @@ class AdminSports extends React.Component {
                 )}
                 <input
                   type="submit"
-                  className="btn btn-secondary btn-lg btn-block"
+                  className="btn btn-secondary"
                   onClick={() => history.push('/admin/')}
                   value={t('administration:Back')}
                 />

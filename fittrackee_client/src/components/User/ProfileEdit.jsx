@@ -74,7 +74,6 @@ class ProfileEdit extends React.Component {
         <Helmet>
           <title>FitTrackee - {t('user:Profile Edition')}</title>
         </Helmet>
-        <Message message={message} t={t} />
         {formData.isAuthenticated && (
           <div className="container">
             {displayModal && (
@@ -266,23 +265,27 @@ class ProfileEdit extends React.Component {
                               </select>
                             </label>
                           </div>
-                          <input
+                          <button type="submit" className="btn btn-primary">
+                            {t('common:Submit')}
+                          </button>
+                          <button
+                            className="btn btn-danger"
+                            onClick={event => {
+                              event.preventDefault()
+                              this.displayModal(true)
+                            }}
+                          >
+                            {t('user:Delete my account')}
+                          </button>
+                          <button
                             type="submit"
-                            className="btn btn-primary btn-lg btn-block"
-                            value={t('common:Submit')}
-                          />
-                          <input
-                            className="btn btn-danger btn-lg btn-block"
-                            onClick={() => this.displayModal(true)}
-                            defaultValue={t('user:Delete my account')}
-                          />
-                          <input
-                            type="submit"
-                            className="btn btn-secondary btn-lg btn-block"
+                            className="btn btn-secondary"
                             onClick={() => history.push('/profile')}
-                            value={t('common:Cancel')}
-                          />
+                          >
+                            {t('common:Cancel')}
+                          </button>
                         </form>
+                        <Message message={message} t={t} />
                       </div>
                     </div>
                   </div>

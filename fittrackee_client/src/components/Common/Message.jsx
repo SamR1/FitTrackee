@@ -12,7 +12,7 @@ export default class Message extends React.PureComponent {
           )}`
         : t(`messages:${message}`)
     return (
-      <>
+      <div className="error-message">
         {singleMessage !== '' && <code>{singleMessage}</code>}
         {messages && messages.length > 0 && (
           <code>
@@ -23,7 +23,7 @@ export default class Message extends React.PureComponent {
             </ul>
           </code>
         )}
-      </>
+      </div>
     )
   }
 }
