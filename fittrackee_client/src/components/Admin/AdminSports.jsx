@@ -25,7 +25,7 @@ class AdminSports extends React.Component {
               <div className="card-header">{t('administration:Sports')}</div>
               <div className="card-body">
                 {sports.length > 0 && (
-                  <table className="table table-borderless">
+                  <table className="table">
                     <thead>
                       <tr>
                         <th>{t('administration:id')}</th>
@@ -38,16 +38,32 @@ class AdminSports extends React.Component {
                     <tbody>
                       {sports.map(sport => (
                         <tr key={sport.id}>
-                          <th scope="row">{sport.id}</th>
                           <td>
+                            <span className="heading-span">
+                              {t('administration:id')}
+                            </span>
+                            {sport.id}
+                          </td>
+                          <td>
+                            <span className="heading-span">
+                              {t('administration:Image')}
+                            </span>
                             <img
                               className="admin-img"
                               src={sport.img ? sport.img : '/img/photo.png'}
                               alt="sport logo"
                             />
                           </td>
-                          <td>{t(`sports:${sport.label}`)}</td>
                           <td>
+                            <span className="heading-span">
+                              {t('administration:Label')}
+                            </span>
+                            {t(`sports:${sport.label}`)}
+                          </td>
+                          <td>
+                            <span className="heading-span">
+                              {t('administration:Active')}
+                            </span>
                             {sport.is_active ? (
                               <i
                                 className="fa fa-check-square-o custom-fa"
@@ -63,6 +79,9 @@ class AdminSports extends React.Component {
                             )}
                           </td>
                           <td>
+                            <span className="heading-span">
+                              {t('administration:Actions')}
+                            </span>
                             <input
                               type="submit"
                               className={`btn btn-${

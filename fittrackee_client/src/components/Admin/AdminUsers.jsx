@@ -120,7 +120,7 @@ class AdminUsers extends React.Component {
                       </label>
                     </div>
                   </div>
-                  <table className="table table-borderless">
+                  <table className="table">
                     <thead>
                       <tr>
                         <th>#</th>
@@ -136,6 +136,7 @@ class AdminUsers extends React.Component {
                       {users.map(user => (
                         <tr key={user.username}>
                           <td>
+                            <span className="heading-span">#</span>
                             {user.picture === true ? (
                               <img
                                 alt="Avatar"
@@ -152,19 +153,38 @@ class AdminUsers extends React.Component {
                             )}
                           </td>
                           <td>
+                            <span className="heading-span">
+                              {t('user:Username')}
+                            </span>
                             <Link to={`/users/${user.username}`}>
                               {user.username}
                             </Link>
                           </td>
-                          <td>{user.email}</td>
                           <td>
+                            <span className="heading-span">
+                              {t('user:Email')}
+                            </span>
+                            {user.email}
+                          </td>
+                          <td>
+                            <span className="heading-span">
+                              {t('user:Registration Date')}
+                            </span>
                             {format(
                               new Date(user.created_at),
                               'dd/MM/yyyy HH:mm'
                             )}
                           </td>
-                          <td>{user.nb_activities}</td>
                           <td>
+                            <span className="heading-span">
+                              {t('activities:Activities')}
+                            </span>
+                            {user.nb_activities}
+                          </td>
+                          <td>
+                            <span className="heading-span">
+                              {t('user:Admin')}
+                            </span>
                             {user.admin ? (
                               <i
                                 className="fa fa-check-square-o custom-fa"
@@ -180,6 +200,9 @@ class AdminUsers extends React.Component {
                             )}
                           </td>
                           <td>
+                            <span className="heading-span">
+                              {t('administration:Actions')}
+                            </span>
                             <input
                               type="submit"
                               className={`btn btn-${
