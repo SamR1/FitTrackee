@@ -3,6 +3,7 @@ import FitTrackeeApi from '../fitTrackeeApi/auth'
 import { history } from '../index'
 import { generateIds } from '../utils'
 import { getOrUpdateData, setError, updateLanguage } from './index'
+import { getAppData } from './application'
 
 const AuthError = message => ({ type: 'AUTH_ERROR', message })
 
@@ -50,6 +51,9 @@ export const loginOrRegister = (target, formData) => dispatch =>
     .then(ret => {
       if (ret.status === 'success') {
         window.localStorage.setItem('authToken', ret.auth_token)
+        if (target === 'register') {
+          dispatch(getAppData('config'))
+        }
         return dispatch(getProfile())
       }
       return dispatch(AuthError(ret.message))
@@ -138,6 +142,7 @@ export const deleteUser = (username, isAdmin = false) => dispatch =>
   FitTrackeeGenericApi.deleteData('users', username)
     .then(ret => {
       if (ret.status === 204) {
+        dispatch(getAppData('config'))
         if (isAdmin) {
           history.push('/admin/users')
         } else {

@@ -1,4 +1,6 @@
 from fittrackee_api import db
+from flask import current_app
+from sqlalchemy.event import listens_for
 
 from ..users.models import User
 
@@ -26,3 +28,25 @@ class AppConfig(db.Model):
             "max_zip_file_size": self.max_zip_file_size,
             "max_users": self.max_users,
         }
+
+
+def update_app_config():
+    config = AppConfig.query.first()
+    if config:
+        current_app.config[
+            'is_registration_enabled'
+        ] = config.is_registration_enabled
+
+
+@listens_for(User, 'after_insert')
+def on_user_insert(mapper, connection, user):
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session, context):
+        update_app_config()
+
+
+@listens_for(User, 'after_delete')
+def on_user_delete(mapper, connection, old_user):
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session, context):
+        update_app_config()

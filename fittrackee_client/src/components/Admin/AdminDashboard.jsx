@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import AdminStats from './AdminStats'
 
 export default function AdminDashboard(props) {
-  const { t } = props
+  const { appConfig, t } = props
   return (
     <div className="card activity-card">
       <div className="card-header">
@@ -27,7 +27,15 @@ export default function AdminDashboard(props) {
             {t(
               'administration:Update application configuration ' +
                 '(maximum number of registered users, maximum files size).'
-            )}{' '}
+            )}
+            <br />
+            <strong>
+              {t(
+                `administration:Registration is currently ${
+                  appConfig.is_registration_enabled ? 'enabled' : 'disabled'
+                }.`
+              )}
+            </strong>
           </dd>
           <br />
           <dt>

@@ -62,7 +62,6 @@ def app_config():
     config.max_single_file_size = 1048576
     config.max_zip_file_size = 10485760
     config.max_users = 0
-    config.registration = False
     db.session.add(config)
     db.session.commit()
     return config

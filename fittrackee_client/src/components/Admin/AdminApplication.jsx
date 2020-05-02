@@ -82,8 +82,15 @@ class AdminApplication extends React.Component {
                       >
                         {t(
                           // eslint-disable-next-line max-len
-                          'administration:Max. number of active users (if 0, no limitation)'
+                          'administration:Max. number of active users'
                         )}
+                        <sup>
+                          <i
+                            className="fa fa-question-circle"
+                            aria-hidden="true"
+                            title={t('administration:if 0, no limitation')}
+                          />
+                        </sup>
                         :
                       </label>
                       <input
@@ -197,7 +204,6 @@ class AdminApplication extends React.Component {
 
 export default connect(
   state => ({
-    appConfig: state.application.config,
     message: state.message,
   }),
   dispatch => ({

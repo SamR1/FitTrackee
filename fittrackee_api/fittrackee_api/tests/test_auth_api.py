@@ -836,3 +836,70 @@ def test_update_user_invalid_picture(app, user_1):
     assert data['status'] == 'fail'
     assert data['message'] == 'File extension not allowed.'
     assert response.status_code == 400
+
+
+def test_it_disables_registration_on_user_registration(
+    app_no_config, app_config, user_1_admin, user_2
+):
+    app_config.max_users = 3
+    client = app_no_config.test_client()
+    client.post(
+        '/api/auth/register',
+        data=json.dumps(
+            dict(
+                username='sam',
+                email='sam@test.com',
+                password='12345678',
+                password_conf='12345678',
+            )
+        ),
+        content_type='application/json',
+    )
+    response = client.post(
+        '/api/auth/register',
+        data=json.dumps(
+            dict(
+                username='new',
+                email='new@test.com',
+                password='12345678',
+                password_conf='12345678',
+            )
+        ),
+        content_type='application/json',
+    )
+    assert response.status_code == 403
+    data = json.loads(response.data.decode())
+    assert data['status'] == 'error'
+    assert data['message'] == 'Error. Registration is disabled.'
+
+
+def test_it_does_not_disable_registration_on_user_registration(
+    app_no_config, app_config, user_1_admin, user_2,
+):
+    app_config.max_users = 4
+    client = app_no_config.test_client()
+    client.post(
+        '/api/auth/register',
+        data=json.dumps(
+            dict(
+                username='sam',
+                email='sam@test.com',
+                password='12345678',
+                password_conf='12345678',
+            )
+        ),
+        content_type='application/json',
+    )
+    response = client.post(
+        '/api/auth/register',
+        data=json.dumps(
+            dict(
+                username='new',
+                email='new@test.com',
+                password='12345678',
+                password_conf='12345678',
+            )
+        ),
+        content_type='application/json',
+    )
+    assert response.status_code == 201

@@ -1252,3 +1252,70 @@ def test_admin_can_not_delete_its_own_account_if_no_other_admin(
         'You can not delete your account, no other user has admin rights.'
         in data['message']
     )
+
+
+def test_it_enables_registration_on_user_delete(
+    app_no_config, app_config, user_1_admin, user_2, user_3
+):
+    app_config.max_users = 3
+    client = app_no_config.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='admin@example.com', password='12345678')),
+        content_type='application/json',
+    )
+    client.delete(
+        '/api/users/toto',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+    response = client.post(
+        '/api/auth/register',
+        data=json.dumps(
+            dict(
+                username='justatest',
+                email='test@test.com',
+                password='12345678',
+                password_conf='12345678',
+            )
+        ),
+        content_type='application/json',
+    )
+    assert response.status_code == 201
+
+
+def test_it_does_not_enable_registration_on_user_delete(
+    app_no_config, app_config, user_1_admin, user_2, user_3
+):
+    app_config.max_users = 2
+    client = app_no_config.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='admin@example.com', password='12345678')),
+        content_type='application/json',
+    )
+    client.delete(
+        '/api/users/toto',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+    response = client.post(
+        '/api/auth/register',
+        data=json.dumps(
+            dict(
+                username='justatest',
+                email='test@test.com',
+                password='12345678',
+                password_conf='12345678',
+            )
+        ),
+        content_type='application/json',
+    )
+    assert response.status_code == 403
+    data = json.loads(response.data.decode())
+    assert data['status'] == 'error'
+    assert data['message'] == 'Error. Registration is disabled.'

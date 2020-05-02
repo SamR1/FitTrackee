@@ -11,7 +11,7 @@ import AdminUsers from './AdminUsers'
 import NotFound from './../Others/NotFound'
 
 function Admin(props) {
-  const { t, user } = props
+  const { appConfig, t, user } = props
   return (
     <>
       <Helmet>
@@ -23,12 +23,12 @@ function Admin(props) {
             <Route
               exact
               path="/admin"
-              render={() => <AdminDashboard t={t} />}
+              render={() => <AdminDashboard appConfig={appConfig} t={t} />}
             />
             <Route
               exact
               path="/admin/application"
-              render={() => <AdminApplication t={t} />}
+              render={() => <AdminApplication appConfig={appConfig} t={t} />}
             />
             <Route
               exact
@@ -52,6 +52,7 @@ function Admin(props) {
 
 export default withTranslation()(
   connect(state => ({
+    appConfig: state.application.config,
     user: state.user,
   }))(Admin)
 )
