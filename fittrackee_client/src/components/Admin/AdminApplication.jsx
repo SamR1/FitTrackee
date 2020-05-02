@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Helmet } from 'react-helmet'
 
 import Message from '../Common/Message'
 import { updateAppConfig } from '../../actions/application'
@@ -56,16 +55,15 @@ class AdminApplication extends React.Component {
     const { formData, isInEdition } = this.state
     return (
       <div>
-        <Helmet>
-          FitTrackee - {t('administration:Application configuration')}
-        </Helmet>
         {message && <Message message={message} t={t} />}
         {Object.keys(formData).length > 0 && (
           <div className="row">
             <div className="col-md-12">
               <div className="card">
                 <div className="card-header">
-                  {t('administration:Application configuration')}
+                  <strong>
+                    {t('administration:Application configuration')}
+                  </strong>
                 </div>
                 <div className="card-body">
                   <form

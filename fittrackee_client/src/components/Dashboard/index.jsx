@@ -49,6 +49,7 @@ class DashBoard extends React.Component {
           <Message message={message} t={t} />
         ) : (
           activities &&
+          user.total_duration &&
           sports.length > 0 && (
             <div className="container dashboard">
               <UserStatistics user={user} t={t} />

@@ -428,7 +428,7 @@ label {
 }
 
 .no-picture {
-  color: #40578a;
+  color: #405976;
 }
 
 .page-title {
@@ -524,49 +524,11 @@ label {
 
 .user-filters {
   font-size: 0.9em;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
-
-
-/* adapted from https://uglyduck.ca/making-tables-responsive-with-minimal-css/ */
-.heading-span {
-    background: #eee;
-    color: dimgrey;
-    display: none;
-    font-size: 10px;
-    font-weight: bold;
-    padding: 5px;
-    position: absolute;
-    text-transform: uppercase;
-    top: 0;
-    left: 0;
-}
-
-@media(max-width: 1024px) {
-    table thead {
-        left: -9999px;
-        position: absolute;
-        visibility: hidden;
-    }
-    table tr {
-        border-bottom: 0;
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        margin-bottom: 40px;
-    }
-    table td {
-        border: 1px solid lightgrey;
-        margin: 0 -1px -1px 0;
-        padding-top: 35px !important;
-        position: relative;
-        text-align: center;
-        width: 50%;
-    }
-    .heading-span  {
-        display: block;
-    }
+.user-label {
+  font-weight: bold;
 }
 
 .weather-img {
@@ -588,8 +550,45 @@ label {
   padding: 0.1em;
 }
 
-.user-table {
-  font-size: 0.9em;
+/* responsive table */
+/* adapted from https://uglyduck.ca/making-tables-responsive-with-minimal-css/ */
+.heading-span {
+  background: #eee;
+  color: dimgrey;
+  display: none;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 5px;
+  position: absolute;
+  text-transform: uppercase;
+  top: 0;
+  left: 0;
+}
+
+@media(max-width: 1024px) {
+  table thead {
+    left: -9999px;
+    position: absolute;
+    visibility: hidden;
+  }
+  table tr {
+    border-bottom: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+  table td {
+    border: 1px solid lightgrey;
+    margin: 0 -1px -1px 0;
+    padding-top: 35px !important;
+    position: relative;
+    text-align: center;
+    width: 50%;
+  }
+  .heading-span  {
+    display: block;
+  }
 }
 
 /* calendar */

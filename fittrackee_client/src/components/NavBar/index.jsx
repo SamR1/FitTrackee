@@ -117,14 +117,20 @@ class NavBar extends React.PureComponent {
                     </Link>
                   </li>
                 )}
-                {picture === true && (
-                  <img
-                    alt="Avatar"
-                    src={`${apiUrl}users/${username}/picture?${Date.now()}`}
-                    className="img-fluid App-nav-profile-img"
-                  />
-                )}
                 {isAuthenticated && (
+                <>
+                  {picture === true ? (
+                    <img
+                      alt="Avatar"
+                      src={`${apiUrl}users/${username}/picture?${Date.now()}`}
+                      className="img-fluid App-nav-profile-img"
+                    />
+                  ) : (
+                    <i
+                      className="fa fa-user-circle-o fa-2x no-picture"
+                      aria-hidden="true"
+                    />
+                  )}
                   <li className="nav-item">
                     <Link
                       className="nav-link"
@@ -135,8 +141,6 @@ class NavBar extends React.PureComponent {
                       {username}
                     </Link>
                   </li>
-                )}
-                {isAuthenticated && (
                   <li className="nav-item">
                     <Link
                       className="nav-link"
@@ -147,6 +151,7 @@ class NavBar extends React.PureComponent {
                       {t('common:Logout')}
                     </Link>
                   </li>
+                </>
                 )}
                 <li><LanguageDropdown /></li>
               </ul>

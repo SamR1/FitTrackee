@@ -1,7 +1,6 @@
 import { format } from 'date-fns'
 import React from 'react'
 import { connect } from 'react-redux'
-import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
 import Message from '../Common/Message'
@@ -70,15 +69,14 @@ class AdminUsers extends React.Component {
     const translatedSortOrders = translateValues(t, sortOrders)
     return (
       <div>
-        <Helmet>
-          <title>FitTrackee - {t('administration:Administration')}</title>
-        </Helmet>
         {message && <Message message={message} t={t} />}
         <div className="container">
           <div className="row">
             <div className="col">
               <div className="card">
-                <div className="card-header">{t('administration:Users')}</div>
+                <div className="card-header">
+                  <strong>{t('administration:Users')}</strong>
+                </div>
                 <div className="card-body">
                   <div className="row user-filters">
                     <div className="col-lg-4 col-md-6 col-sm-12">

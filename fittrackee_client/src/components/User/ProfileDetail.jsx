@@ -3,7 +3,6 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { withTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 
 import Message from '../Common/Message'
 import { deletePicture, uploadPicture } from '../../actions/user'
@@ -40,57 +39,64 @@ function ProfileDetail({
           <div className="col-md-12">
             <div className="card">
               <div className="card-header userName">
-                {user.username}{' '}
-                {editable && (
-                  <Link
-                    to={{
-                      pathname: '/profile/edit',
-                    }}
-                  >
-                    <i className="fa fa-pencil-square-o" aria-hidden="true" />
-                  </Link>
-                )}{' '}
-                {isDeletable && (
-                  <i
-                    className="fa fa-user-times fa-as-link"
-                    aria-hidden="true"
-                    onClick={() => displayModal(true)}
-                  />
-                )}
+                <strong>{user.username}</strong>
               </div>
               <div className="card-body">
                 <div className="row">
                   <div className="col-md-8">
                     <p>
-                      {t('user:Email')}: {user.email}
+                      {/* eslint-disable-next-line max-len */}
+                      <span className="user-label">
+                        {t('user:Email')}
+                      </span>: {user.email}
                     </p>
                     <p>
-                      {t('user:Registration Date')}: {createdAt}
+                      <span className="user-label">
+                        {t('user:Registration Date')}
+                      </span>
+                      : {createdAt}
                     </p>
                     <p>
-                      {t('user:First Name')}: {user.first_name}
+                      <span className="user-label">{t('user:First Name')}</span>
+                      : {user.first_name}
                     </p>
                     <p>
-                      {t('user:Last Name')}: {user.last_name}
+                      {/* eslint-disable-next-line max-len */}
+                      <span className="user-label">
+                        {t('user:Last Name')}
+                      </span>: {user.last_name}
                     </p>
                     <p>
-                      {t('user:Birth Date')}: {birthDate}
+                      <span className="user-label">{t('user:Birth Date')}</span>
+                      : {birthDate}
                     </p>
                     <p>
-                      {t('user:Location')}: {user.location}
+                      {/* eslint-disable-next-line max-len */}
+                      <span className="user-label">
+                        {t('user:Location')}
+                      </span>: {user.location}
                     </p>
                     <p>
-                      {t('user:Bio')}: {user.bio}
+                      <span className="user-label">{t('user:Bio')}</span>:{' '}
+                      {user.bio}
                     </p>
                     <p>
-                      {t('user:Language')}: {user.language}
+                      {/* eslint-disable-next-line max-len */}
+                      <span className="user-label">
+                        {t('user:Language')}
+                      </span>: {user.language}
                     </p>
                     <p>
-                      {t('user:Timezone')}: {user.timezone}
+                      {/* eslint-disable-next-line max-len */}
+                      <span className="user-label">
+                        {t('user:Timezone')}
+                      </span>: {user.timezone}
                     </p>
                     <p>
-                      {t('user:First day of week')}:{' '}
-                      {user.weekm ? t('user:Monday') : t('user:Sunday')}
+                      <span className="user-label">
+                        {t('user:First day of week')}
+                      </span>
+                      : {user.weekm ? t('user:Monday') : t('user:Sunday')}
                     </p>
                   </div>
                   <div className="col-md-4">
@@ -136,12 +142,28 @@ function ProfileDetail({
                     )}{' '}
                   </div>
                 </div>
-                <input
-                  type="submit"
+                {editable && (
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => history.push('/profile/edit')}
+                  >
+                    {t('common:Edit')}
+                  </button>
+                )}
+                {isDeletable && (
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => displayModal(true)}
+                  >
+                    {t('user:Delete user account')}
+                  </button>
+                )}
+                <button
                   className="btn btn-secondary"
-                  onClick={() => history.go(-1)}
-                  value={t('common:Back')}
-                />
+                  onClick={() => history.push('/')}
+                >
+                  {t('common:Back to home')}
+                </button>
               </div>
             </div>
           </div>

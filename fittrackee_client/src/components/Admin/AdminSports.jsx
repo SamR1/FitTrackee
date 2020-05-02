@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Helmet } from 'react-helmet'
 
 import Message from '../Common/Message'
 import { getOrUpdateData } from '../../actions'
@@ -15,14 +14,13 @@ class AdminSports extends React.Component {
     const { message, sports, t, updateSport } = this.props
     return (
       <div>
-        <Helmet>
-          <title>FitTrackee - {t('administration:Administration')}</title>
-        </Helmet>
         {message && <Message message={message} t={t} />}
         <div className="row">
           <div className="col">
             <div className="card">
-              <div className="card-header">{t('administration:Sports')}</div>
+              <div className="card-header">
+                <strong>{t('administration:Sports')}</strong>
+              </div>
               <div className="card-body">
                 {sports.length > 0 && (
                   <table className="table">
