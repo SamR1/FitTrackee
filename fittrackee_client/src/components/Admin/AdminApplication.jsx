@@ -2,19 +2,28 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 
-import Message from '../../Common/Message'
-import { updateAppConfig } from '../../../actions/application'
-import { getFileSizeInMB } from '../../../utils'
+import Message from '../Common/Message'
+import { updateAppConfig } from '../../actions/application'
+import { history } from '../../index'
+import { getFileSizeInMB } from '../../utils'
 
 class AdminApplication extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
       formData: {},
+      isInEdition: false,
     }
   }
+
   componentDidMount() {
     this.initForm()
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.appConfig !== prevProps.appConfig) {
+      this.initForm()
+    }
   }
 
   initForm() {
@@ -32,28 +41,23 @@ class AdminApplication extends React.Component {
 
   handleFormChange(e) {
     const { formData } = this.state
-    if (e.target.name === 'registration') {
-      formData[e.target.name] = e.target.checked
-    } else {
-      formData[e.target.name] = +e.target.value
-    }
+    formData[e.target.name] = +e.target.value
     this.setState(formData)
   }
 
+  toggleInEdition(e) {
+    e.preventDefault()
+    const { isInEdition } = this.state
+    this.setState({ isInEdition: !isInEdition })
+  }
+
   render() {
-    const {
-      message,
-      onHandleConfigFormSubmit,
-      t,
-      updateIsInEdition,
-    } = this.props
-    const { formData } = this.state
+    const { message, onHandleConfigFormSubmit, t } = this.props
+    const { formData, isInEdition } = this.state
     return (
       <div>
         <Helmet>
-          <title>
-            FitTrackee - {t('administration:Application configuration')}
-          </title>
+          FitTrackee - {t('administration:Application configuration')}
         </Helmet>
         {message && <Message message={message} t={t} />}
         {Object.keys(formData).length > 0 && (
@@ -65,11 +69,12 @@ class AdminApplication extends React.Component {
                 </div>
                 <div className="card-body">
                   <form
-                    className="app-config-form"
-                    onSubmit={event => {
-                      event.preventDefault()
+                    className={`app-config-form ${
+                      isInEdition ? '' : 'form-disabled'
+                    }`}
+                    onSubmit={e => {
+                      this.toggleInEdition(e)
                       onHandleConfigFormSubmit(formData)
-                      updateIsInEdition()
                     }}
                   >
                     <div className="form-group row">
@@ -149,17 +154,38 @@ class AdminApplication extends React.Component {
                         onChange={e => this.handleFormChange(e)}
                       />
                     </div>
-                    <input
-                      type="submit"
-                      className="btn btn-primary"
-                      value={t('common:Submit')}
-                    />
-                    <input
-                      type="submit"
-                      className="btn btn-secondary"
-                      onClick={() => updateIsInEdition()}
-                      value={t('common:Cancel')}
-                    />
+                    {isInEdition ? (
+                      <>
+                        <input
+                          type="submit"
+                          className="btn btn-primary"
+                          value={t('common:Submit')}
+                        />
+                        <input
+                          type="submit"
+                          className="btn btn-secondary"
+                          onClick={e => this.toggleInEdition(e)}
+                          value={t('common:Cancel')}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <input
+                          type="submit"
+                          className="btn btn-primary"
+                          onClick={e => {
+                            this.toggleInEdition(e)
+                          }}
+                          value={t('common:Edit')}
+                        />
+                        <input
+                          type="submit"
+                          className="btn btn-secondary"
+                          onClick={() => history.push('/admin')}
+                          value={t('common:Back')}
+                        />
+                      </>
+                    )}
                   </form>
                 </div>
               </div>
@@ -172,12 +198,16 @@ class AdminApplication extends React.Component {
 }
 
 export default connect(
-  () => ({}),
+  state => ({
+    appConfig: state.application.config,
+    message: state.message,
+  }),
   dispatch => ({
     onHandleConfigFormSubmit: formData => {
-      formData.max_single_file_size *= 1048576
-      formData.max_zip_file_size *= 1048576
-      dispatch(updateAppConfig(formData))
+      const data = Object.assign({}, formData)
+      data.max_single_file_size *= 1048576
+      data.max_zip_file_size *= 1048576
+      dispatch(updateAppConfig(data))
     },
   })
 )(AdminApplication)

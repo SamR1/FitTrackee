@@ -120,7 +120,7 @@ function FormWithGpx(props) {
         <div>
           <input
             type="submit"
-            className="btn btn-primary btn-lg btn-block"
+            className="btn btn-primary"
             onClick={event =>
               activity ? onEditActivity(event, activity) : onAddActivity(event)
             }
@@ -128,7 +128,7 @@ function FormWithGpx(props) {
           />
           <input
             type="submit"
-            className="btn btn-secondary btn-lg btn-block"
+            className="btn btn-secondary"
             onClick={() => history.push('/')}
             value={t('common:Cancel')}
           />

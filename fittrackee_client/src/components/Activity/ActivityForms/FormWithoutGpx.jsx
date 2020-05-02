@@ -119,13 +119,13 @@ function FormWithoutGpx(props) {
       </div>
       <input
         type="submit"
-        className="btn btn-primary btn-lg btn-block"
+        className="btn btn-primary"
         onClick={event => onAddOrEdit(event, activity)}
         value={t('common:Submit')}
       />
       <input
         type="submit"
-        className="btn btn-secondary btn-lg btn-block"
+        className="btn btn-secondary"
         onClick={() => history.push('/')}
         value={t('common:Cancel')}
       />

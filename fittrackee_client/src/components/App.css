@@ -360,6 +360,24 @@ label {
   width: 100%;
 }
 
+/* Chrome, Safari, Edge, Opera */
+.form-disabled .form-group input::-webkit-outer-spin-button,
+.form-disabled .form-group input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.form-disabled .form-group input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.form-disabled .form-group input{
+  border: none;
+  pointer-events: none;
+}
+
+
 .gpx-file {
   height: inherit;
 }

@@ -4,10 +4,10 @@ import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
-import Message from '../../Common/Message'
-import { history } from '../../../index'
-import { getOrUpdateData } from '../../../actions'
-import { apiUrl } from '../../../utils'
+import Message from '../Common/Message'
+import { history } from '../../index'
+import { getOrUpdateData } from '../../actions'
+import { apiUrl } from '../../utils'
 
 class AdminUsers extends React.Component {
   componentDidMount() {

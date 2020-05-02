@@ -2,9 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 
-import Message from '../../Common/Message'
-import { getOrUpdateData } from '../../../actions'
-import { history } from '../../../index'
+import Message from '../Common/Message'
+import { getOrUpdateData } from '../../actions'
+import { history } from '../../index'
 
 class AdminSports extends React.Component {
   componentDidMount() {

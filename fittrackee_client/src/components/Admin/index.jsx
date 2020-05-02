@@ -4,10 +4,10 @@ import { withTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 import { Route, Switch } from 'react-router-dom'
 
-import AdminApplication from './Application'
+import AdminApplication from './AdminApplication'
 import AdminDashboard from './AdminDashboard'
-import AdminSports from './Sports'
-import AdminUsers from './Users'
+import AdminSports from './AdminSports'
+import AdminUsers from './AdminUsers'
 import NotFound from './../Others/NotFound'
 
 function Admin(props) {
