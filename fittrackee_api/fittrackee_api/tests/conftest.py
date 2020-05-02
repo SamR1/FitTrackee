@@ -11,9 +11,7 @@ from fittrackee_api.users.models import User
 os.environ["FLASK_ENV"] = 'testing'
 os.environ["APP_SETTINGS"] = 'fittrackee_api.config.TestingConfig'
 # to avoid resetting dev database during tests
-os.environ[
-    "DATABASE_URL"
-] = 'postgres://fittrackee:fittrackee@localhost:5432/fittrackee_test'
+os.environ["DATABASE_URL"] = os.getenv("DATABASE_TEST_URL")
 
 
 def get_app_config(with_config=False):
