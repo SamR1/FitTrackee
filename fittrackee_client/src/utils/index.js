@@ -24,6 +24,18 @@ export const thunderforestApiKey = `${
   process.env.REACT_APP_THUNDERFOREST_API_KEY
 }`
 
+export const userFilters = [
+  { key: 'activities_count', label: 'activities count' },
+  { key: 'admin', label: 'admin rights' },
+  { key: 'created_at', label: 'registration date' },
+  { key: 'username', label: 'user name' },
+]
+
+export const sortOrders = [
+  { key: 'asc', label: 'ascending' },
+  { key: 'desc', label: 'descending' },
+]
+
 export const isLoggedIn = () => !!window.localStorage.authToken
 
 export const generateIds = arr => {
@@ -81,3 +93,35 @@ export const getDateWithTZ = (date, tz) => {
 
 export const capitalize = target =>
   target.charAt(0).toUpperCase() + target.slice(1)
+
+export const rangePagination = pages =>
+  Array.from({ length: pages }, (_, i) => i + 1)
+
+const sortValues = (a, b) => {
+  const valueALabel = a.label.toLowerCase()
+  const valueBLabel = b.label.toLowerCase()
+  return valueALabel > valueBLabel ? 1 : valueALabel < valueBLabel ? -1 : 0
+}
+
+export const translateValues = (t, values, key = 'common') =>
+  values
+    .map(value => ({
+      ...value,
+      label: t(`${key}:${value.label}`),
+    }))
+    .sort(sortValues)
+
+export const formatUrl = (pathname, query) => {
+  let url = pathname
+  if (query.id || (pathname === 'users' && query.username)) {
+    url = `${url}/${query.username ? query.username : query.id}`
+  } else if (Object.keys(query).length > 0) {
+    url += '?'
+    Object.keys(query)
+      .filter(key => query[key])
+      .map(
+        (key, index) => (url += `${index === 0 ? '' : '&'}${key}=${query[key]}`)
+      )
+  }
+  return url
+}

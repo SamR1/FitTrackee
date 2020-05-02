@@ -11,6 +11,8 @@ from .utils import authenticate, authenticate_as_admin
 
 users_blueprint = Blueprint('users', __name__)
 
+USER_PER_PAGE = 10
+
 
 @users_blueprint.route('/users', methods=['GET'])
 @authenticate
@@ -20,9 +22,18 @@ def get_users(auth_user_id):
 
     **Example request**:
 
+    - without parameters
+
     .. sourcecode:: http
 
-      GET /api/users HTTP/1.1
+      GET /api/users/ HTTP/1.1
+      Content-Type: application/json
+
+    - with some query parameters
+
+    .. sourcecode:: http
+
+      GET /api/users?order_by=activities_count&par_page=5  HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -84,6 +95,13 @@ def get_users(auth_user_id):
 
     :param integer auth_user_id: authenticate user id (from JSON Web Token)
 
+    :query integer page: page if using pagination (default: 1)
+    :query integer per_page: number of users per page (default: 10, max: 50)
+    :query string q: query on user name
+    :query string order_by: sorting criteria (``username``, ``created_at``,
+                            ``activities_count``, ``admin``)
+    :query string order: sorting order (default: ``asc``)
+
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: success
@@ -93,10 +111,61 @@ def get_users(auth_user_id):
         - Invalid token. Please log in again.
 
     """
-    users = User.query.all()
+    params = request.args.copy()
+    page = 1 if 'page' not in params.keys() else int(params.get('page'))
+    per_page = (
+        int(params.get('per_page'))
+        if params.get('per_page')
+        else USER_PER_PAGE
+    )
+    if per_page > 50:
+        per_page = 50
+    order_by = params.get('order_by')
+    order = params.get('order', 'asc')
+    query = params.get('q')
+    users_pagination = (
+        User.query.filter(
+            User.username.like('%' + query + '%') if query else True,
+        )
+        .order_by(
+            User.activities_count.asc()
+            if order_by == 'activities_count' and order == 'asc'
+            else True,
+            User.activities_count.desc()
+            if order_by == 'activities_count' and order == 'desc'
+            else True,
+            User.username.asc()
+            if order_by == 'username' and order == 'asc'
+            else True,
+            User.username.desc()
+            if order_by == 'username' and order == 'desc'
+            else True,
+            User.created_at.asc()
+            if order_by == 'created_at' and order == 'asc'
+            else True,
+            User.created_at.desc()
+            if order_by == 'created_at' and order == 'desc'
+            else True,
+            User.admin.asc()
+            if order_by == 'admin' and order == 'asc'
+            else True,
+            User.admin.desc()
+            if order_by == 'admin' and order == 'desc'
+            else True,
+        )
+        .paginate(page, per_page, False)
+    )
+    users = users_pagination.items
     response_object = {
         'status': 'success',
         'data': {'users': [user.serialize() for user in users]},
+        'pagination': {
+            'has_next': users_pagination.has_next,
+            'has_prev': users_pagination.has_prev,
+            'page': users_pagination.page,
+            'pages': users_pagination.pages,
+            'total': users_pagination.total,
+        },
     }
     return jsonify(response_object), 200
 
@@ -227,6 +296,7 @@ def get_picture(user_name):
 def update_user(auth_user_id, user_name):
     """
     Update user to add admin rights
+
     Only user with admin rights can modify another user
 
     **Example request**:
@@ -321,12 +391,14 @@ def update_user(auth_user_id, user_name):
 
 @users_blueprint.route('/users/<user_name>', methods=['DELETE'])
 @authenticate
-def delete_activity(auth_user_id, user_name):
+def delete_user(auth_user_id, user_name):
     """
     Delete a user account
-    - a user can only delete his own account
-    - an admin can delete all accounts except his account if he's the only
-      one admin
+
+    A user can only delete his own account
+
+    An admin can delete all accounts except his account if he's the only
+    one admin
 
     **Example request**:
 

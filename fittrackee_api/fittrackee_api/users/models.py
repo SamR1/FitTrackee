@@ -4,6 +4,8 @@ import jwt
 from fittrackee_api import bcrypt, db
 from flask import current_app
 from sqlalchemy import func
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.sql.expression import select
 
 from ..activities.models import Activity
 
@@ -88,13 +90,22 @@ class User(db.Model):
         except jwt.InvalidTokenError:
             return 'Invalid token. Please log in again.'
 
+    @hybrid_property
+    def activities_count(self):
+        return Activity.query.filter(Activity.user_id == self.id).count()
+
+    @activities_count.expression
+    def activities_count(self):
+        return (
+            select([func.count(Activity.id)])
+            .where(Activity.user_id == self.id)
+            .label("activities_count")
+        )
+
     def serialize(self):
-        nb_activity = Activity.query.filter(
-            Activity.user_id == self.id
-        ).count()
         sports = []
         total = (None, None)
-        if nb_activity > 0:
+        if self.activities_count > 0:
             sports = (
                 db.session.query(Activity.sport_id)
                 .filter(Activity.user_id == self.id)
@@ -123,7 +134,7 @@ class User(db.Model):
             'timezone': self.timezone,
             'weekm': self.weekm,
             'language': self.language,
-            'nb_activities': nb_activity,
+            'nb_activities': self.activities_count,
             'nb_sports': len(sports),
             'sports_list': [
                 sport for sportslist in sports for sport in sportslist

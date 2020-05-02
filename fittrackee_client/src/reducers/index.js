@@ -13,6 +13,13 @@ const handleDataAndError = (state, type, action) => {
       data: action.data[action.target],
     }
   }
+  if (action.type === 'SET_PAGINATED_DATA') {
+    return {
+      ...state,
+      data: action.data[action.target],
+      pagination: action.pagination,
+    }
+  }
   return state
 }
 

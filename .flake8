@@ -1,0 +1,3 @@
+[flake8]
+per-file-ignores =
+    fittrackee_api/fittrackee_api/activities/stats.py:E501

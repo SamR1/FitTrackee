@@ -36,8 +36,8 @@ body {
 }
 
 .App-nav-profile-img {
-  max-width: 35px;
-  max-height: 35px;
+  max-width: 32px;
+  max-height: 32px;
   border-radius: 50%;
 }
 
@@ -427,6 +427,10 @@ label {
   padding-right: 2px;
 }
 
+.no-picture {
+  color: #40578a;
+}
+
 .page-title {
   font-size: 2em;
   margin: 1em;
@@ -516,6 +520,11 @@ label {
 
 .unlink {
   color: black;
+}
+
+.user-filters {
+  font-size: 0.9em;
+  margin-bottom: 5px;
 }
 
 .weather-img {

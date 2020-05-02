@@ -8,6 +8,12 @@ export const setData = (target, data) => ({
   data,
   target,
 })
+export const setPaginatedData = (target, data, pagination) => ({
+  type: 'SET_PAGINATED_DATA',
+  data,
+  pagination,
+  target,
+})
 
 export const setError = message => ({
   type: 'SET_ERROR',
@@ -50,6 +56,9 @@ export const getOrUpdateData = (
     .then(ret => {
       if (ret.status === 'success') {
         if (canDispatch) {
+          if (target === 'users' && action === 'getData') {
+            return dispatch(setPaginatedData(target, ret.data, ret.pagination))
+          }
           dispatch(setData(target, ret.data))
         } else if (action === 'updateData' && target === 'sports') {
           dispatch(updateSportsData(ret.data.sports[0]))

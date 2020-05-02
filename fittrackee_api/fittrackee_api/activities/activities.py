@@ -31,6 +31,8 @@ from .utils_gpx import (
 
 activities_blueprint = Blueprint('activities', __name__)
 
+ACTIVITIES_PER_PAGE = 5
+
 
 @activities_blueprint.route('/activities', methods=['GET'])
 @authenticate
@@ -152,7 +154,8 @@ def get_activities(auth_user_id):
     :param integer auth_user_id: authenticate user id (from JSON Web Token)
 
     :query integer page: page if using pagination (default: 1)
-    :query integer per_page: number of activities per page (default: 5)
+    :query integer per_page: number of activities per page
+                             (default: 5, max: 50)
     :query integer sport_id: sport id
     :query string from: start date (format: ``%Y-%m-%d``)
     :query string to: end date (format: ``%Y-%m-%d``)
@@ -200,7 +203,13 @@ def get_activities(auth_user_id):
         max_speed_to = params.get('max_speed_to')
         order = params.get('order')
         sport_id = params.get('sport_id')
-        per_page = int(params.get('per_page')) if params.get('per_page') else 5
+        per_page = (
+            int(params.get('per_page'))
+            if params.get('per_page')
+            else ACTIVITIES_PER_PAGE
+        )
+        if per_page > 50:
+            per_page = 50
         activities = (
             Activity.query.filter(
                 Activity.user_id == auth_user_id,

@@ -1,17 +1,9 @@
 import json
+from datetime import datetime, timedelta
 from io import BytesIO
+from unittest.mock import patch
 
 from fittrackee_api.users.models import User
-
-
-def test_ping(app):
-    """ => Ensure the /ping route behaves correctly."""
-    client = app.test_client()
-    response = client.get('/api/ping')
-    data = json.loads(response.data.decode())
-    assert response.status_code == 200
-    assert 'pong' in data['message']
-    assert 'success' in data['status']
 
 
 def test_single_user(app, user_1, user_2):
@@ -183,6 +175,13 @@ def test_users_list(app, user_1, user_2, user_3):
     assert data['data']['users'][2]['sports_list'] == []
     assert data['data']['users'][2]['total_distance'] == 0
     assert data['data']['users'][2]['total_duration'] == '0:00:00'
+    assert data['pagination'] == {
+        'has_next': False,
+        'has_prev': False,
+        'page': 1,
+        'pages': 1,
+        'total': 3,
+    }
 
 
 def test_users_list_with_activities(
@@ -246,6 +245,666 @@ def test_users_list_with_activities(
     assert data['data']['users'][2]['sports_list'] == []
     assert data['data']['users'][2]['total_distance'] == 0
     assert data['data']['users'][2]['total_duration'] == '0:00:00'
+    assert data['pagination'] == {
+        'has_next': False,
+        'has_prev': False,
+        'page': 1,
+        'pages': 1,
+        'total': 3,
+    }
+
+
+@patch('fittrackee_api.users.users.USER_PER_PAGE', 2)
+def test_it_gets_first_page_on_users_list(
+    app, user_1, user_2, user_3,
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/users?page=1',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['users']) == 2
+    assert data['pagination'] == {
+        'has_next': True,
+        'has_prev': False,
+        'page': 1,
+        'pages': 2,
+        'total': 3,
+    }
+
+
+@patch('fittrackee_api.users.users.USER_PER_PAGE', 2)
+def test_it_gets_next_page_on_users_list(
+    app, user_1, user_2, user_3,
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/users?page=2',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['users']) == 1
+    assert data['pagination'] == {
+        'has_next': False,
+        'has_prev': True,
+        'page': 2,
+        'pages': 2,
+        'total': 3,
+    }
+
+
+def test_it_gets_empty_next_page_on_users_list(
+    app, user_1, user_2, user_3,
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/users?page=2',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['users']) == 0
+    assert data['pagination'] == {
+        'has_next': False,
+        'has_prev': True,
+        'page': 2,
+        'pages': 1,
+        'total': 3,
+    }
+
+
+def test_it_gets_user_list_with_2_per_page(
+    app, user_1, user_2, user_3,
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/users?per_page=2',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['users']) == 2
+    assert data['pagination'] == {
+        'has_next': True,
+        'has_prev': False,
+        'page': 1,
+        'pages': 2,
+        'total': 3,
+    }
+
+
+def test_it_gets_next_page_on_user_list_with_2_per_page(
+    app, user_1, user_2, user_3,
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/users?page=2&per_page=2',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['users']) == 1
+    assert data['pagination'] == {
+        'has_next': False,
+        'has_prev': True,
+        'page': 2,
+        'pages': 2,
+        'total': 3,
+    }
+
+
+def test_it_gets_users_list_ordered_by_username(app, user_1, user_2, user_3):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/users?order_by=username',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['users']) == 3
+    assert 'sam' in data['data']['users'][0]['username']
+    assert 'test' in data['data']['users'][1]['username']
+    assert 'toto' in data['data']['users'][2]['username']
+    assert data['pagination'] == {
+        'has_next': False,
+        'has_prev': False,
+        'page': 1,
+        'pages': 1,
+        'total': 3,
+    }
+
+
+def test_it_gets_users_list_ordered_by_username_ascending(
+    app, user_1, user_2, user_3
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/users?order_by=username&order=asc',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['users']) == 3
+    assert 'sam' in data['data']['users'][0]['username']
+    assert 'test' in data['data']['users'][1]['username']
+    assert 'toto' in data['data']['users'][2]['username']
+    assert data['pagination'] == {
+        'has_next': False,
+        'has_prev': False,
+        'page': 1,
+        'pages': 1,
+        'total': 3,
+    }
+
+
+def test_it_gets_users_list_ordered_by_username_descending(
+    app, user_1, user_2, user_3
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/users?order_by=username&order=desc',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['users']) == 3
+    assert 'toto' in data['data']['users'][0]['username']
+    assert 'test' in data['data']['users'][1]['username']
+    assert 'sam' in data['data']['users'][2]['username']
+    assert data['pagination'] == {
+        'has_next': False,
+        'has_prev': False,
+        'page': 1,
+        'pages': 1,
+        'total': 3,
+    }
+
+
+def test_it_gets_users_list_ordered_by_creation_date(
+    app, user_2, user_3, user_1_admin
+):
+    user_2.created_at = datetime.utcnow() - timedelta(days=1)
+    user_3.created_at = datetime.utcnow() - timedelta(hours=1)
+    user_1_admin.created_at = datetime.utcnow()
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='admin@example.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/users?order_by=created_at',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['users']) == 3
+    assert 'toto' in data['data']['users'][0]['username']
+    assert 'sam' in data['data']['users'][1]['username']
+    assert 'admin' in data['data']['users'][2]['username']
+    assert data['pagination'] == {
+        'has_next': False,
+        'has_prev': False,
+        'page': 1,
+        'pages': 1,
+        'total': 3,
+    }
+
+
+def test_it_gets_users_list_ordered_by_creation_date_ascending(
+    app, user_2, user_3, user_1_admin
+):
+    user_2.created_at = datetime.utcnow() - timedelta(days=1)
+    user_3.created_at = datetime.utcnow() - timedelta(hours=1)
+    user_1_admin.created_at = datetime.utcnow()
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='admin@example.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/users?order_by=created_at&order=asc',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['users']) == 3
+    assert 'toto' in data['data']['users'][0]['username']
+    assert 'sam' in data['data']['users'][1]['username']
+    assert 'admin' in data['data']['users'][2]['username']
+    assert data['pagination'] == {
+        'has_next': False,
+        'has_prev': False,
+        'page': 1,
+        'pages': 1,
+        'total': 3,
+    }
+
+
+def test_it_gets_users_list_ordered_by_creation_date_descending(
+    app, user_2, user_3, user_1_admin
+):
+    user_2.created_at = datetime.utcnow() - timedelta(days=1)
+    user_3.created_at = datetime.utcnow() - timedelta(hours=1)
+    user_1_admin.created_at = datetime.utcnow()
+
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='admin@example.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/users?order_by=created_at&order=desc',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['users']) == 3
+    assert 'admin' in data['data']['users'][0]['username']
+    assert 'sam' in data['data']['users'][1]['username']
+    assert 'toto' in data['data']['users'][2]['username']
+    assert data['pagination'] == {
+        'has_next': False,
+        'has_prev': False,
+        'page': 1,
+        'pages': 1,
+        'total': 3,
+    }
+
+
+def test_it_gets_users_list_ordered_by_admin_rights(
+    app, user_2, user_1_admin, user_3
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='admin@example.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/users?order_by=admin',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['users']) == 3
+    assert 'toto' in data['data']['users'][0]['username']
+    assert 'sam' in data['data']['users'][1]['username']
+    assert 'admin' in data['data']['users'][2]['username']
+    assert data['pagination'] == {
+        'has_next': False,
+        'has_prev': False,
+        'page': 1,
+        'pages': 1,
+        'total': 3,
+    }
+
+
+def test_it_gets_users_list_ordered_by_admin_rights_ascending(
+    app, user_2, user_1_admin, user_3
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='admin@example.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/users?order_by=admin&order=asc',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['users']) == 3
+    assert 'toto' in data['data']['users'][0]['username']
+    assert 'sam' in data['data']['users'][1]['username']
+    assert 'admin' in data['data']['users'][2]['username']
+    assert data['pagination'] == {
+        'has_next': False,
+        'has_prev': False,
+        'page': 1,
+        'pages': 1,
+        'total': 3,
+    }
+
+
+def test_it_gets_users_list_ordered_by_admin_rights_descending(
+    app, user_2, user_3, user_1_admin
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='admin@example.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/users?order_by=admin&order=desc',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['users']) == 3
+    assert 'admin' in data['data']['users'][0]['username']
+    assert 'toto' in data['data']['users'][1]['username']
+    assert 'sam' in data['data']['users'][2]['username']
+    assert data['pagination'] == {
+        'has_next': False,
+        'has_prev': False,
+        'page': 1,
+        'pages': 1,
+        'total': 3,
+    }
+
+
+def test_it_gets_users_list_ordered_by_activities_count(
+    app, user_1, user_2, user_3, sport_1_cycling, activity_cycling_user_2,
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/users?order_by=activities_count',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['users']) == 3
+    assert 'test' in data['data']['users'][0]['username']
+    assert 0 == data['data']['users'][0]['nb_activities']
+    assert 'sam' in data['data']['users'][1]['username']
+    assert 0 == data['data']['users'][1]['nb_activities']
+    assert 'toto' in data['data']['users'][2]['username']
+    assert 1 == data['data']['users'][2]['nb_activities']
+    assert data['pagination'] == {
+        'has_next': False,
+        'has_prev': False,
+        'page': 1,
+        'pages': 1,
+        'total': 3,
+    }
+
+
+def test_it_gets_users_list_ordered_by_activities_count_ascending(
+    app, user_1, user_2, user_3, sport_1_cycling, activity_cycling_user_2,
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/users?order_by=activities_count&order=asc',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['users']) == 3
+    assert 'test' in data['data']['users'][0]['username']
+    assert 0 == data['data']['users'][0]['nb_activities']
+    assert 'sam' in data['data']['users'][1]['username']
+    assert 0 == data['data']['users'][1]['nb_activities']
+    assert 'toto' in data['data']['users'][2]['username']
+    assert 1 == data['data']['users'][2]['nb_activities']
+    assert data['pagination'] == {
+        'has_next': False,
+        'has_prev': False,
+        'page': 1,
+        'pages': 1,
+        'total': 3,
+    }
+
+
+def test_it_gets_users_list_ordered_by_activities_count_descending(
+    app, user_1, user_2, user_3, sport_1_cycling, activity_cycling_user_2,
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/users?order_by=activities_count&order=desc',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['users']) == 3
+    assert 'toto' in data['data']['users'][0]['username']
+    assert 1 == data['data']['users'][0]['nb_activities']
+    assert 'test' in data['data']['users'][1]['username']
+    assert 0 == data['data']['users'][1]['nb_activities']
+    assert 'sam' in data['data']['users'][2]['username']
+    assert 0 == data['data']['users'][2]['nb_activities']
+    assert data['pagination'] == {
+        'has_next': False,
+        'has_prev': False,
+        'page': 1,
+        'pages': 1,
+        'total': 3,
+    }
+
+
+def test_it_gets_users_list_filtering_on_username(app, user_1, user_2, user_3):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/users?q=toto',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['users']) == 1
+    assert 'toto' in data['data']['users'][0]['username']
+    assert data['pagination'] == {
+        'has_next': False,
+        'has_prev': False,
+        'page': 1,
+        'pages': 1,
+        'total': 1,
+    }
+
+
+def test_it_returns_empty_users_list_filtering_on_username(
+    app, user_1, user_2, user_3
+):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/users?q=not_existing',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['users']) == 0
+    assert data['pagination'] == {
+        'has_next': False,
+        'has_prev': False,
+        'page': 1,
+        'pages': 0,
+        'total': 0,
+    }
+
+
+def test_it_users_list_with_complex_query(app, user_1, user_2, user_3):
+    client = app.test_client()
+    resp_login = client.post(
+        '/api/auth/login',
+        data=json.dumps(dict(email='test@test.com', password='12345678')),
+        content_type='application/json',
+    )
+    response = client.get(
+        '/api/users?order_by=username&order=desc&page=2&per_page=2',
+        headers=dict(
+            Authorization='Bearer '
+            + json.loads(resp_login.data.decode())['auth_token']
+        ),
+    )
+
+    data = json.loads(response.data.decode())
+    assert response.status_code == 200
+    assert 'success' in data['status']
+    assert len(data['data']['users']) == 1
+    assert 'sam' in data['data']['users'][0]['username']
+    assert data['pagination'] == {
+        'has_next': False,
+        'has_prev': True,
+        'page': 2,
+        'pages': 2,
+        'total': 3,
+    }
 
 
 def test_encode_auth_token(app, user_1):

@@ -158,7 +158,7 @@ def get_activities_by_time(auth_user_id, user_name):
 
     .. sourcecode:: http
 
-      GET /api/stats/admin/by_time?from=2018-01-01&to=2018-06-30&time=week HTTP/1.1  # noqa
+      GET /api/stats/admin/by_time?from=2018-01-01&to=2018-06-30&time=week HTTP/1.1
 
     **Example responses**:
 
@@ -346,7 +346,8 @@ def get_application_stats(auth_user_id):
         "data": {
           "activities": 3,
           "sports": 3,
-          "users": 2
+          "users": 2,
+          "uploads_dir_size": 1000
         },
         "status": "success"
       }

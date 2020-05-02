@@ -200,3 +200,13 @@ def test_update_config_no_config(app_no_config, user_1_admin):
     assert response.status_code == 500
     assert 'error' in data['status']
     assert 'Error on updating configuration.' in data['message']
+
+
+def test_ping(app):
+    """ => Ensure the /ping route behaves correctly."""
+    client = app.test_client()
+    response = client.get('/api/ping')
+    data = json.loads(response.data.decode())
+    assert response.status_code == 200
+    assert 'pong' in data['message']
+    assert 'success' in data['status']
