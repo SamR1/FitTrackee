@@ -40,3 +40,4 @@ class TestingConfig(BaseConfig):
     BCRYPT_LOG_ROUNDS = 4
     TOKEN_EXPIRATION_DAYS = 0
     TOKEN_EXPIRATION_SECONDS = 3
+    UPLOAD_FOLDER = '/tmp/fitTrackee/uploads'
