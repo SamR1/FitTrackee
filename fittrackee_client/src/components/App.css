@@ -552,17 +552,22 @@ label {
 
 /* responsive table */
 /* adapted from https://uglyduck.ca/making-tables-responsive-with-minimal-css/ */
-.heading-span {
+.heading-span,
+.heading-span-absolute {
   background: #eee;
   color: dimgrey;
   display: none;
   font-size: 10px;
   font-weight: bold;
   padding: 5px;
-  position: absolute;
   text-transform: uppercase;
   top: 0;
   left: 0;
+}
+
+.heading-span-absolute {
+  position: absolute;
+  display: none;
 }
 
 @media(max-width: 1024px) {
@@ -581,12 +586,18 @@ label {
   table td {
     border: 1px solid lightgrey;
     margin: 0 -1px -1px 0;
-    padding-top: 35px !important;
+    padding-top: 30px !important;
     position: relative;
     text-align: center;
     width: 50%;
   }
-  .heading-span  {
+  .record-tr {
+    margin-bottom: 0;
+  }
+  .record-td {
+    padding-top: 0 !important;
+  }
+  .heading-span, .heading-span-absolute  {
     display: block;
   }
 }

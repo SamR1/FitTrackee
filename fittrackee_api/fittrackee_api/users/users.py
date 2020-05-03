@@ -26,7 +26,7 @@ def get_users(auth_user_id):
 
     .. sourcecode:: http
 
-      GET /api/users/ HTTP/1.1
+      GET /api/users HTTP/1.1
       Content-Type: application/json
 
     - with some query parameters

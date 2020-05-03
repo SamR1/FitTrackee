@@ -30,6 +30,9 @@ export default class ActivitiesList extends React.PureComponent {
                   // eslint-disable-next-line react/no-array-index-key
                   <tr key={idx}>
                     <td>
+                      <span className="heading-span-absolute">
+                        {t('common:Sport')}
+                      </span>
                       <img
                         className="activity-sport"
                         src={sports
@@ -39,6 +42,9 @@ export default class ActivitiesList extends React.PureComponent {
                       />
                     </td>
                     <td className="activity-title">
+                      <span className="heading-span-absolute">
+                        {t('common:Workout')}
+                      </span>
                       <Link to={`/activities/${activity.id}`}>
                         {activity.title}
                       </Link>
@@ -47,17 +53,38 @@ export default class ActivitiesList extends React.PureComponent {
                       )}
                     </td>
                     <td>
+                      <span className="heading-span-absolute">
+                        {t('activities:Date')}
+                      </span>
                       {format(
                         getDateWithTZ(activity.activity_date, user.timezone),
                         'dd/MM/yyyy HH:mm'
                       )}
                     </td>
                     <td className="text-right">
+                      <span className="heading-span-absolute">
+                        {t('activities:Distance')}
+                      </span>
                       {Number(activity.distance).toFixed(2)} km
                     </td>
-                    <td className="text-right">{activity.moving}</td>
-                    <td className="text-right">{activity.ave_speed} km/h</td>
-                    <td className="text-right">{activity.max_speed} km/h</td>
+                    <td className="text-right">
+                      <span className="heading-span-absolute">
+                        {t('activities:Duration')}
+                      </span>
+                      {activity.moving}
+                    </td>
+                    <td className="text-right">
+                      <span className="heading-span-absolute">
+                        {t('activities:Ave. speed')}
+                      </span>
+                      {activity.ave_speed} km/h
+                    </td>
+                    <td className="text-right">
+                      <span className="heading-span-absolute">
+                        {t('activities:Max. speed')}
+                      </span>
+                      {activity.max_speed} km/h
+                    </td>
                   </tr>
                 ))}
             </tbody>

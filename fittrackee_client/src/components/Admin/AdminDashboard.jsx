@@ -60,7 +60,7 @@ export default function AdminDashboard(props) {
           </dt>
           <dd>
             {t(
-              'administration:Add/remove admin rigths, ' +
+              'administration:Add/remove admin rights, ' +
                 'delete user account.'
             )}
           </dd>

@@ -37,13 +37,13 @@ class AdminSports extends React.Component {
                       {sports.map(sport => (
                         <tr key={sport.id}>
                           <td>
-                            <span className="heading-span">
+                            <span className="heading-span-absolute">
                               {t('administration:id')}
                             </span>
                             {sport.id}
                           </td>
                           <td>
-                            <span className="heading-span">
+                            <span className="heading-span-absolute">
                               {t('administration:Image')}
                             </span>
                             <img
@@ -53,13 +53,13 @@ class AdminSports extends React.Component {
                             />
                           </td>
                           <td>
-                            <span className="heading-span">
+                            <span className="heading-span-absolute">
                               {t('administration:Label')}
                             </span>
                             {t(`sports:${sport.label}`)}
                           </td>
                           <td>
-                            <span className="heading-span">
+                            <span className="heading-span-absolute">
                               {t('administration:Active')}
                             </span>
                             {sport.is_active ? (
@@ -77,7 +77,7 @@ class AdminSports extends React.Component {
                             )}
                           </td>
                           <td>
-                            <span className="heading-span">
+                            <span className="heading-span-absolute">
                               {t('administration:Actions')}
                             </span>
                             <input

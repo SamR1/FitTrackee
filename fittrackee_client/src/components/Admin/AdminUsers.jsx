@@ -27,8 +27,7 @@ class AdminUsers extends React.Component {
   }
 
   componentDidMount() {
-    this.initState()
-    this.props.loadUsers(this.props.location.query)
+    this.props.loadUsers(this.initState())
   }
 
   componentDidUpdate(prevProps) {
@@ -39,12 +38,14 @@ class AdminUsers extends React.Component {
 
   initState() {
     const { query } = this.props.location
-    this.setState({
+    const newQuery = {
       page: query.page,
       per_page: query.per_page,
       order_by: query.order_by ? query.order_by : 'created_at',
       order: query.order ? query.order : 'asc',
-    })
+    }
+    this.setState(newQuery)
+    return newQuery
   }
 
   updatePage(key, value) {
@@ -134,7 +135,7 @@ class AdminUsers extends React.Component {
                       {users.map(user => (
                         <tr key={user.username}>
                           <td>
-                            <span className="heading-span">#</span>
+                            <span className="heading-span-absolute">#</span>
                             {user.picture === true ? (
                               <img
                                 alt="Avatar"
@@ -151,7 +152,7 @@ class AdminUsers extends React.Component {
                             )}
                           </td>
                           <td>
-                            <span className="heading-span">
+                            <span className="heading-span-absolute">
                               {t('user:Username')}
                             </span>
                             <Link to={`/users/${user.username}`}>
@@ -159,13 +160,13 @@ class AdminUsers extends React.Component {
                             </Link>
                           </td>
                           <td>
-                            <span className="heading-span">
+                            <span className="heading-span-absolute">
                               {t('user:Email')}
                             </span>
                             {user.email}
                           </td>
                           <td>
-                            <span className="heading-span">
+                            <span className="heading-span-absolute">
                               {t('user:Registration Date')}
                             </span>
                             {format(
@@ -174,13 +175,13 @@ class AdminUsers extends React.Component {
                             )}
                           </td>
                           <td>
-                            <span className="heading-span">
+                            <span className="heading-span-absolute">
                               {t('activities:Activities')}
                             </span>
                             {user.nb_activities}
                           </td>
                           <td>
-                            <span className="heading-span">
+                            <span className="heading-span-absolute">
                               {t('user:Admin')}
                             </span>
                             {user.admin ? (
@@ -198,7 +199,7 @@ class AdminUsers extends React.Component {
                             )}
                           </td>
                           <td>
-                            <span className="heading-span">
+                            <span className="heading-span-absolute">
                               {t('administration:Actions')}
                             </span>
                             <input
