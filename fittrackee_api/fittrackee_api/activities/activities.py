@@ -390,8 +390,8 @@ def get_activity_data(auth_user_id, activity_id, data_type, segment_id=None):
             return jsonify(response_object), code
         if not activity.gpx or activity.gpx == '':
             message = f'No gpx file for this activity (id: {activity_id})'
-            response_object = {'status': 'fail', 'message': message}
-            return jsonify(response_object), 400
+            response_object = {'status': 'error', 'message': message}
+            return jsonify(response_object), 404
 
         try:
             absolute_gpx_filepath = get_absolute_file_path(activity.gpx)
@@ -470,12 +470,13 @@ def get_activity_gpx(auth_user_id, activity_id):
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: success
-    :statuscode 400: no gpx file for this activity
     :statuscode 401:
         - Provide a valid auth token.
         - Signature expired. Please log in again.
         - Invalid token. Please log in again.
-    :statuscode 404: activity not found
+    :statuscode 404:
+        - activity not found
+        - no gpx file for this activity
     :statuscode 500:
 
     """
@@ -537,12 +538,13 @@ def get_activity_chart_data(auth_user_id, activity_id):
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: success
-    :statuscode 400: no gpx file for this activity
     :statuscode 401:
         - Provide a valid auth token.
         - Signature expired. Please log in again.
         - Invalid token. Please log in again.
-    :statuscode 404: activity not found
+    :statuscode 404:
+        - activity not found
+        - no gpx file for this activity
     :statuscode 500:
 
     """
@@ -703,7 +705,7 @@ def get_map(map_id):
         activity = Activity.query.filter_by(map_id=map_id).first()
         if not activity:
             response_object = {
-                'status': 'fail',
+                'status': 'error',
                 'message': 'Map does not exist',
             }
             return jsonify(response_object), 404

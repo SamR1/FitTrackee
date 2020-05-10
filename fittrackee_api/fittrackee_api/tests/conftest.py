@@ -168,7 +168,7 @@ def activity_cycling_user_1():
         sport_id=1,
         activity_date=datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
         distance=10,
-        duration=datetime.timedelta(seconds=1024),
+        duration=datetime.timedelta(seconds=3600),
     )
     activity.max_speed = 10
     activity.ave_speed = 10

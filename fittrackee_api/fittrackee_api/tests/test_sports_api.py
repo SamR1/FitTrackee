@@ -30,339 +30,379 @@ expected_sport_1_cycling_inactive_admin_result = (
 expected_sport_1_cycling_inactive_admin_result['has_activities'] = False
 
 
-def test_get_all_sports(app, user_1, sport_1_cycling, sport_2_running):
-    client = app.test_client()
-    resp_login = client.post(
-        '/api/auth/login',
-        data=json.dumps(dict(email='test@test.com', password='12345678')),
-        content_type='application/json',
-    )
-    response = client.get(
-        '/api/sports',
-        headers=dict(
-            Authorization='Bearer '
-            + json.loads(resp_login.data.decode())['auth_token']
-        ),
-    )
-    data = json.loads(response.data.decode())
+class TestGetSports:
+    def test_it_gets_all_sports(
+        self, app, user_1, sport_1_cycling, sport_2_running
+    ):
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(dict(email='test@test.com', password='12345678')),
+            content_type='application/json',
+        )
 
-    assert response.status_code == 200
-    assert 'success' in data['status']
+        response = client.get(
+            '/api/sports',
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
 
-    assert len(data['data']['sports']) == 2
-    assert data['data']['sports'][0] == expected_sport_1_cycling_result
-    assert data['data']['sports'][1] == expected_sport_2_running_result
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['sports']) == 2
+        assert data['data']['sports'][0] == expected_sport_1_cycling_result
+        assert data['data']['sports'][1] == expected_sport_2_running_result
 
+    def test_it_gets_all_sports_with_inactive_one(
+        self, app, user_1, sport_1_cycling_inactive, sport_2_running
+    ):
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(dict(email='test@test.com', password='12345678')),
+            content_type='application/json',
+        )
 
-def test_get_all_sports_with_inactive_one(
-    app, user_1, sport_1_cycling_inactive, sport_2_running
-):
-    client = app.test_client()
-    resp_login = client.post(
-        '/api/auth/login',
-        data=json.dumps(dict(email='test@test.com', password='12345678')),
-        content_type='application/json',
-    )
-    response = client.get(
-        '/api/sports',
-        headers=dict(
-            Authorization='Bearer '
-            + json.loads(resp_login.data.decode())['auth_token']
-        ),
-    )
-    data = json.loads(response.data.decode())
+        response = client.get(
+            '/api/sports',
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
 
-    assert response.status_code == 200
-    assert 'success' in data['status']
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['sports']) == 2
+        assert (
+            data['data']['sports'][0]
+            == expected_sport_1_cycling_inactive_result
+        )
+        assert data['data']['sports'][1] == expected_sport_2_running_result
 
-    assert len(data['data']['sports']) == 2
-    assert (
-        data['data']['sports'][0] == expected_sport_1_cycling_inactive_result
-    )
-    assert data['data']['sports'][1] == expected_sport_2_running_result
+    def test_it_gets_all_sports_with_admin_rights(
+        self, app, user_1_admin, sport_1_cycling_inactive, sport_2_running
+    ):
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(
+                dict(email='admin@example.com', password='12345678')
+            ),
+            content_type='application/json',
+        )
 
+        response = client.get(
+            '/api/sports',
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
 
-def test_get_all_sports_admin(
-    app, user_1_admin, sport_1_cycling_inactive, sport_2_running
-):
-    client = app.test_client()
-    resp_login = client.post(
-        '/api/auth/login',
-        data=json.dumps(dict(email='admin@example.com', password='12345678')),
-        content_type='application/json',
-    )
-    response = client.get(
-        '/api/sports',
-        headers=dict(
-            Authorization='Bearer '
-            + json.loads(resp_login.data.decode())['auth_token']
-        ),
-    )
-    data = json.loads(response.data.decode())
-
-    assert response.status_code == 200
-    assert 'success' in data['status']
-
-    assert len(data['data']['sports']) == 2
-    assert (
-        data['data']['sports'][0]
-        == expected_sport_1_cycling_inactive_admin_result
-    )
-    assert data['data']['sports'][1] == expected_sport_2_running_admin_result
-
-
-def test_get_a_sport(app, user_1, sport_1_cycling):
-    client = app.test_client()
-    resp_login = client.post(
-        '/api/auth/login',
-        data=json.dumps(dict(email='test@test.com', password='12345678')),
-        content_type='application/json',
-    )
-    response = client.get(
-        '/api/sports/1',
-        headers=dict(
-            Authorization='Bearer '
-            + json.loads(resp_login.data.decode())['auth_token']
-        ),
-    )
-    data = json.loads(response.data.decode())
-
-    assert response.status_code == 200
-    assert 'success' in data['status']
-
-    assert len(data['data']['sports']) == 1
-    assert data['data']['sports'][0] == expected_sport_1_cycling_result
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['sports']) == 2
+        assert (
+            data['data']['sports'][0]
+            == expected_sport_1_cycling_inactive_admin_result
+        )
+        assert (
+            data['data']['sports'][1] == expected_sport_2_running_admin_result
+        )
 
 
-def test_get_a_sport_invalid(app, user_1):
-    client = app.test_client()
-    resp_login = client.post(
-        '/api/auth/login',
-        data=json.dumps(dict(email='test@test.com', password='12345678')),
-        content_type='application/json',
-    )
-    response = client.get(
-        '/api/sports/1',
-        headers=dict(
-            Authorization='Bearer '
-            + json.loads(resp_login.data.decode())['auth_token']
-        ),
-    )
-    data = json.loads(response.data.decode())
+class TestGetSport:
+    def test_it_gets_a_sport(self, app, user_1, sport_1_cycling):
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(dict(email='test@test.com', password='12345678')),
+            content_type='application/json',
+        )
 
-    assert response.status_code == 404
-    assert 'not found' in data['status']
-    assert len(data['data']['sports']) == 0
+        response = client.get(
+            '/api/sports/1',
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
 
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['sports']) == 1
+        assert data['data']['sports'][0] == expected_sport_1_cycling_result
 
-def test_get_a_inactive_sport(app, user_1, sport_1_cycling_inactive):
-    client = app.test_client()
-    resp_login = client.post(
-        '/api/auth/login',
-        data=json.dumps(dict(email='test@test.com', password='12345678')),
-        content_type='application/json',
-    )
-    response = client.get(
-        '/api/sports/1',
-        headers=dict(
-            Authorization='Bearer '
-            + json.loads(resp_login.data.decode())['auth_token']
-        ),
-    )
-    data = json.loads(response.data.decode())
+    def test_it_returns_404_if_sport_does_not_exist(self, app, user_1):
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(dict(email='test@test.com', password='12345678')),
+            content_type='application/json',
+        )
 
-    assert response.status_code == 200
-    assert 'success' in data['status']
+        response = client.get(
+            '/api/sports/1',
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
 
-    assert len(data['data']['sports']) == 1
-    assert (
-        data['data']['sports'][0] == expected_sport_1_cycling_inactive_result
-    )
+        data = json.loads(response.data.decode())
+        assert response.status_code == 404
+        assert 'not found' in data['status']
+        assert len(data['data']['sports']) == 0
 
+    def test_it_gets_a_inactive_sport(
+        self, app, user_1, sport_1_cycling_inactive
+    ):
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(dict(email='test@test.com', password='12345678')),
+            content_type='application/json',
+        )
+        response = client.get(
+            '/api/sports/1',
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
+        data = json.loads(response.data.decode())
 
-def test_get_a_inactive_sport_as_admin(
-    app, user_1_admin, sport_1_cycling_inactive
-):
-    client = app.test_client()
-    resp_login = client.post(
-        '/api/auth/login',
-        data=json.dumps(dict(email='admin@example.com', password='12345678')),
-        content_type='application/json',
-    )
-    response = client.get(
-        '/api/sports/1',
-        headers=dict(
-            Authorization='Bearer '
-            + json.loads(resp_login.data.decode())['auth_token']
-        ),
-    )
-    data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
 
-    assert response.status_code == 200
-    assert 'success' in data['status']
+        assert len(data['data']['sports']) == 1
+        assert (
+            data['data']['sports'][0]
+            == expected_sport_1_cycling_inactive_result
+        )
 
-    assert len(data['data']['sports']) == 1
-    assert (
-        data['data']['sports'][0]
-        == expected_sport_1_cycling_inactive_admin_result
-    )
+    def test_it_get_an_inactive_sport_with_admin_rights(
+        self, app, user_1_admin, sport_1_cycling_inactive
+    ):
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(
+                dict(email='admin@example.com', password='12345678')
+            ),
+            content_type='application/json',
+        )
+        response = client.get(
+            '/api/sports/1',
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
+        data = json.loads(response.data.decode())
 
+        assert response.status_code == 200
+        assert 'success' in data['status']
 
-def test_update_a_sport(app, user_1_admin, sport_1_cycling):
-    client = app.test_client()
-    resp_login = client.post(
-        '/api/auth/login',
-        data=json.dumps(dict(email='admin@example.com', password='12345678')),
-        content_type='application/json',
-    )
-    response = client.patch(
-        '/api/sports/1',
-        content_type='application/json',
-        data=json.dumps(dict(is_active=False)),
-        headers=dict(
-            Authorization='Bearer '
-            + json.loads(resp_login.data.decode())['auth_token']
-        ),
-    )
-    data = json.loads(response.data.decode())
-
-    assert response.status_code == 200
-    assert 'success' in data['status']
-
-    assert len(data['data']['sports']) == 1
-    assert data['data']['sports'][0]['is_active'] is False
-    assert data['data']['sports'][0]['has_activities'] is False
-
-    response = client.patch(
-        '/api/sports/1',
-        content_type='application/json',
-        data=json.dumps(dict(is_active=True)),
-        headers=dict(
-            Authorization='Bearer '
-            + json.loads(resp_login.data.decode())['auth_token']
-        ),
-    )
-    data = json.loads(response.data.decode())
-
-    assert response.status_code == 200
-    assert 'success' in data['status']
-
-    assert len(data['data']['sports']) == 1
-    assert data['data']['sports'][0]['is_active'] is True
-    assert data['data']['sports'][0]['has_activities'] is False
+        assert len(data['data']['sports']) == 1
+        assert (
+            data['data']['sports'][0]
+            == expected_sport_1_cycling_inactive_admin_result
+        )
 
 
-def test_update_a_sport_with_activities(
-    app, user_1_admin, sport_1_cycling, activity_cycling_user_1
-):
-    client = app.test_client()
-    resp_login = client.post(
-        '/api/auth/login',
-        data=json.dumps(dict(email='admin@example.com', password='12345678')),
-        content_type='application/json',
-    )
-    response = client.patch(
-        '/api/sports/1',
-        content_type='application/json',
-        data=json.dumps(dict(is_active=False)),
-        headers=dict(
-            Authorization='Bearer '
-            + json.loads(resp_login.data.decode())['auth_token']
-        ),
-    )
-    data = json.loads(response.data.decode())
+class TestUpdateSport:
+    def test_it_disables_a_sport(self, app, user_1_admin, sport_1_cycling):
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(
+                dict(email='admin@example.com', password='12345678')
+            ),
+            content_type='application/json',
+        )
 
-    assert response.status_code == 200
-    assert 'success' in data['status']
+        response = client.patch(
+            '/api/sports/1',
+            content_type='application/json',
+            data=json.dumps(dict(is_active=False)),
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
 
-    assert len(data['data']['sports']) == 1
-    assert data['data']['sports'][0]['is_active'] is False
-    assert data['data']['sports'][0]['has_activities'] is True
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['sports']) == 1
+        assert data['data']['sports'][0]['is_active'] is False
+        assert data['data']['sports'][0]['has_activities'] is False
 
-    response = client.patch(
-        '/api/sports/1',
-        content_type='application/json',
-        data=json.dumps(dict(is_active=True)),
-        headers=dict(
-            Authorization='Bearer '
-            + json.loads(resp_login.data.decode())['auth_token']
-        ),
-    )
-    data = json.loads(response.data.decode())
+    def test_it_enables_a_sport(self, app, user_1_admin, sport_1_cycling):
+        sport_1_cycling.is_active = False
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(
+                dict(email='admin@example.com', password='12345678')
+            ),
+            content_type='application/json',
+        )
 
-    assert response.status_code == 200
-    assert 'success' in data['status']
+        response = client.patch(
+            '/api/sports/1',
+            content_type='application/json',
+            data=json.dumps(dict(is_active=True)),
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
 
-    assert len(data['data']['sports']) == 1
-    assert data['data']['sports'][0]['is_active'] is True
-    assert data['data']['sports'][0]['has_activities'] is True
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['sports']) == 1
+        assert data['data']['sports'][0]['is_active'] is True
+        assert data['data']['sports'][0]['has_activities'] is False
 
+    def test_it_disables_a_sport_with_activities(
+        self, app, user_1_admin, sport_1_cycling, activity_cycling_user_1
+    ):
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(
+                dict(email='admin@example.com', password='12345678')
+            ),
+            content_type='application/json',
+        )
 
-def test_update_a_sport_not_admin(app, user_1, sport_1_cycling):
-    client = app.test_client()
-    resp_login = client.post(
-        '/api/auth/login',
-        data=json.dumps(dict(email='test@test.com', password='12345678')),
-        content_type='application/json',
-    )
-    response = client.patch(
-        '/api/sports/1',
-        content_type='application/json',
-        data=json.dumps(dict(is_active=False)),
-        headers=dict(
-            Authorization='Bearer '
-            + json.loads(resp_login.data.decode())['auth_token']
-        ),
-    )
-    data = json.loads(response.data.decode())
+        response = client.patch(
+            '/api/sports/1',
+            content_type='application/json',
+            data=json.dumps(dict(is_active=False)),
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
 
-    assert response.status_code == 403
-    assert 'success' not in data['status']
-    assert 'error' in data['status']
-    assert 'You do not have permissions.' in data['message']
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['sports']) == 1
+        assert data['data']['sports'][0]['is_active'] is False
+        assert data['data']['sports'][0]['has_activities'] is True
 
+    def test_it_enables_a_sport_with_activities(
+        self, app, user_1_admin, sport_1_cycling, activity_cycling_user_1
+    ):
+        sport_1_cycling.is_active = False
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(
+                dict(email='admin@example.com', password='12345678')
+            ),
+            content_type='application/json',
+        )
 
-def test_update_a_sport_invalid_payload(app, user_1_admin):
-    client = app.test_client()
-    resp_login = client.post(
-        '/api/auth/login',
-        data=json.dumps(dict(email='admin@example.com', password='12345678')),
-        content_type='application/json',
-    )
-    response = client.patch(
-        '/api/sports/1',
-        content_type='application/json',
-        data=json.dumps(dict()),
-        headers=dict(
-            Authorization='Bearer '
-            + json.loads(resp_login.data.decode())['auth_token']
-        ),
-    )
-    data = json.loads(response.data.decode())
+        response = client.patch(
+            '/api/sports/1',
+            content_type='application/json',
+            data=json.dumps(dict(is_active=True)),
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
 
-    assert response.status_code == 400
-    assert 'error' in data['status']
-    assert 'Invalid payload.' in data['message']
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['sports']) == 1
+        assert data['data']['sports'][0]['is_active'] is True
+        assert data['data']['sports'][0]['has_activities'] is True
 
+    def test_returns_error_if_user_has_no_admin_rights(
+        self, app, user_1, sport_1_cycling
+    ):
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(dict(email='test@test.com', password='12345678')),
+            content_type='application/json',
+        )
+        response = client.patch(
+            '/api/sports/1',
+            content_type='application/json',
+            data=json.dumps(dict(is_active=False)),
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
+        data = json.loads(response.data.decode())
 
-def test_update_a_sport_invalid_id(app, user_1_admin):
-    client = app.test_client()
-    resp_login = client.post(
-        '/api/auth/login',
-        data=json.dumps(dict(email='admin@example.com', password='12345678')),
-        content_type='application/json',
-    )
-    response = client.patch(
-        '/api/sports/1',
-        content_type='application/json',
-        data=json.dumps(dict(is_active=False)),
-        headers=dict(
-            Authorization='Bearer '
-            + json.loads(resp_login.data.decode())['auth_token']
-        ),
-    )
-    data = json.loads(response.data.decode())
+        assert response.status_code == 403
+        assert 'success' not in data['status']
+        assert 'error' in data['status']
+        assert 'You do not have permissions.' in data['message']
 
-    assert response.status_code == 404
-    assert 'not found' in data['status']
-    assert len(data['data']['sports']) == 0
+    def test_returns_error_if_payload_is_invalid(self, app, user_1_admin):
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(
+                dict(email='admin@example.com', password='12345678')
+            ),
+            content_type='application/json',
+        )
+
+        response = client.patch(
+            '/api/sports/1',
+            content_type='application/json',
+            data=json.dumps(dict()),
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 400
+        assert 'error' in data['status']
+        assert 'Invalid payload.' in data['message']
+
+    def test_it_returns_error_if_sport_does_not_exist(self, app, user_1_admin):
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(
+                dict(email='admin@example.com', password='12345678')
+            ),
+            content_type='application/json',
+        )
+        response = client.patch(
+            '/api/sports/1',
+            content_type='application/json',
+            data=json.dumps(dict(is_active=False)),
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
+        data = json.loads(response.data.decode())
+
+        assert response.status_code == 404
+        assert 'not found' in data['status']
+        assert len(data['data']['sports']) == 0
