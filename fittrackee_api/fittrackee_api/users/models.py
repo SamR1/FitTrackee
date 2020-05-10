@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 import jwt
 from fittrackee_api import bcrypt, db
@@ -8,6 +8,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.sql.expression import select
 
 from ..activities.models import Activity
+from .utils_token import decode_user_token, get_user_token
 
 
 class User(db.Model):
@@ -39,7 +40,7 @@ class User(db.Model):
         return f'<User {self.username!r}>'
 
     def __init__(
-        self, username, email, password, created_at=datetime.datetime.utcnow()
+        self, username, email, password, created_at=datetime.utcnow()
     ):
         self.username = username
         self.email = email
@@ -56,20 +57,19 @@ class User(db.Model):
         :return: JWToken
         """
         try:
-            payload = {
-                'exp': datetime.datetime.utcnow()
-                + datetime.timedelta(
-                    days=current_app.config.get('TOKEN_EXPIRATION_DAYS'),
-                    seconds=current_app.config.get('TOKEN_EXPIRATION_SECONDS'),
-                ),
-                'iat': datetime.datetime.utcnow(),
-                'sub': user_id,
-            }
-            return jwt.encode(
-                payload,
-                current_app.config.get('SECRET_KEY'),
-                algorithm='HS256',
-            )
+            return get_user_token(user_id)
+        except Exception as e:
+            return e
+
+    @staticmethod
+    def encode_password_reset_token(user_id):
+        """
+        Generates the auth token
+        :param user_id: -
+        :return: JWToken
+        """
+        try:
+            return get_user_token(user_id, password_reset=True)
         except Exception as e:
             return e
 
@@ -81,10 +81,7 @@ class User(db.Model):
         :return: integer|string
         """
         try:
-            payload = jwt.decode(
-                auth_token, current_app.config.get('SECRET_KEY')
-            )
-            return payload['sub']
+            return decode_user_token(auth_token)
         except jwt.ExpiredSignatureError:
             return 'Signature expired. Please log in again.'
         except jwt.InvalidTokenError:

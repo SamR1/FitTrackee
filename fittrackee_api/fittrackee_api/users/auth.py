@@ -655,3 +655,50 @@ def del_picture(auth_user_id):
             'message': 'Error during picture deletion.',
         }
         return jsonify(response_object), 500
+
+
+@auth_blueprint.route('/auth/password-reset/request', methods=['POST'])
+def request_password_reset():
+    """
+    handle password reset request
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/auth/password-reset/request HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "message": "Password reset request processed.",
+        "status": "success"
+      }
+
+    :<json string email: user email
+
+    :statuscode 200: Password reset request processed.
+    :statuscode 400: Invalid payload.
+    :statuscode 500: Error. Please try again or contact the administrator.
+
+    """
+    post_data = request.get_json()
+    if not post_data or post_data.get('email') is None:
+        response_object = {'status': 'error', 'message': 'Invalid payload.'}
+        return jsonify(response_object), 400
+    email = post_data.get('email')
+
+    user = User.query.filter(User.email == email).first()
+    if user:
+        password_reset_token = user.encode_auth_token(user.id)
+    response_object = {
+        'status': 'success',
+        'message': 'Password reset request processed.',
+    }
+    return jsonify(response_object), 200

@@ -912,3 +912,60 @@ class TestRegistrationConfiguration:
             content_type='application/json',
         )
         assert response.status_code == 201
+
+
+class TestPasswordResetRequest:
+    def test_it_requests_password_reset_when_user_exists(self, app, user_1):
+        client = app.test_client()
+        response = client.post(
+            '/api/auth/password-reset/request',
+            data=json.dumps(dict(email='test@test.com')),
+            content_type='application/json',
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'Password reset request processed.'
+
+    def test_it_does_not_return_error_when_user_does_not_exist(self, app):
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/password-reset/request',
+            data=json.dumps(dict(email='test@test.com')),
+            content_type='application/json',
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'Password reset request processed.'
+
+    def test_it_returns_error_on_invalid_payload(self, app):
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/password-reset/request',
+            data=json.dumps(dict(usernmae='test')),
+            content_type='application/json',
+        )
+
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data['message'] == 'Invalid payload.'
+        assert data['status'] == 'error'
+
+    def test_it_returns_error_on_empty_payload(self, app):
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/password-reset/request',
+            data=json.dumps(dict()),
+            content_type='application/json',
+        )
+
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data['message'] == 'Invalid payload.'
+        assert data['status'] == 'error'

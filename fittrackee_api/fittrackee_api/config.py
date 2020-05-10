@@ -12,6 +12,7 @@ class BaseConfig:
     BCRYPT_LOG_ROUNDS = 13
     TOKEN_EXPIRATION_DAYS = 30
     TOKEN_EXPIRATION_SECONDS = 0
+    PASSWORD_TOKEN_EXPIRATION_SECONDS = 3600
     UPLOAD_FOLDER = os.path.join(current_app.root_path, 'uploads')
     PICTURE_ALLOWED_EXTENSIONS = {'jpg', 'png', 'gif'}
     ACTIVITY_ALLOWED_EXTENSIONS = {'gpx', 'zip'}
