@@ -58,14 +58,12 @@ def app_no_config():
 
 @pytest.fixture
 def app_ssl(monkeypatch):
-    print('app')
     monkeypatch.setenv('EMAIL_URL', 'smtp://none:none@0.0.0.0:1025?ssl=True')
     yield from get_app(with_config=True)
 
 
 @pytest.fixture
 def app_tls(monkeypatch):
-    print('app')
     monkeypatch.setenv('EMAIL_URL', 'smtp://none:none@0.0.0.0:1025?tls=True')
     yield from get_app(with_config=True)
 

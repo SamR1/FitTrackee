@@ -9,4 +9,6 @@ Authentication
     auth.get_authenticated_user_profile,
     auth.edit_user,
     auth.edit_picture,
-    auth.del_picture
+    auth.del_picture,
+    auth.request_password_reset,
+    auth.update_password
