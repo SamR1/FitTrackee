@@ -1,6 +1,9 @@
-export REACT_APP_API_URL = http://$(HOST):$(API_PORT)
+export REACT_APP_API_URL=
 export REACT_APP_THUNDERFOREST_API_KEY=
 export WEATHER_API=
+export UI_URL=
+export EMAIL_URL=
+export SENDER_EMAIL=
 
 # for dev env
 export CODACY_PROJECT_TOKEN=

@@ -27,6 +27,10 @@ class TestUserModel:
         auth_token = user_1.encode_auth_token(user_1.id)
         assert isinstance(auth_token, bytes)
 
+    def test_encode_password_token(self, app, user_1):
+        password_token = user_1.encode_password_reset_token(user_1.id)
+        assert isinstance(password_token, bytes)
+
     def test_decode_auth_token(self, app, user_1):
         auth_token = user_1.encode_auth_token(user_1.id)
         assert isinstance(auth_token, bytes)

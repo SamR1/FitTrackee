@@ -1,6 +1,10 @@
 import json
-import time
+from datetime import datetime, timedelta
 from io import BytesIO
+from unittest.mock import patch
+
+from fittrackee_api.users.utils_token import get_user_token
+from freezegun import freeze_time
 
 
 class TestUserRegistration:
@@ -352,24 +356,24 @@ class TestUserLogout:
 
     def test_it_returns_error_with_expired_token(self, app, user_1):
         client = app.test_client()
+        now = datetime.utcnow()
         resp_login = client.post(
             '/api/auth/login',
             data=json.dumps(dict(email='test@test.com', password='12345678')),
             content_type='application/json',
         )
-        # invalid token logout
-        time.sleep(4)
-        response = client.get(
-            '/api/auth/logout',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
-        )
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'Signature expired. Please log in again.'
-        assert response.status_code == 401
+        with freeze_time(now + timedelta(seconds=4)):
+            response = client.get(
+                '/api/auth/logout',
+                headers=dict(
+                    Authorization='Bearer '
+                    + json.loads(resp_login.data.decode())['auth_token']
+                ),
+            )
+            data = json.loads(response.data.decode())
+            assert data['status'] == 'error'
+            assert data['message'] == 'Signature expired. Please log in again.'
+            assert response.status_code == 401
 
     def test_it_returns_error_with_invalid_token(self, app):
         client = app.test_client()
@@ -915,10 +919,14 @@ class TestRegistrationConfiguration:
 
 
 class TestPasswordResetRequest:
-    def test_it_requests_password_reset_when_user_exists(self, app, user_1):
+    @patch('smtplib.SMTP_SSL')
+    @patch('smtplib.SMTP')
+    def test_it_requests_password_reset_when_user_exists(
+        self, mock_smtp, mock_smtp_ssl, app, user_1
+    ):
         client = app.test_client()
         response = client.post(
-            '/api/auth/password-reset/request',
+            '/api/auth/password/reset-request',
             data=json.dumps(dict(email='test@test.com')),
             content_type='application/json',
         )
@@ -932,7 +940,7 @@ class TestPasswordResetRequest:
         client = app.test_client()
 
         response = client.post(
-            '/api/auth/password-reset/request',
+            '/api/auth/password/reset-request',
             data=json.dumps(dict(email='test@test.com')),
             content_type='application/json',
         )
@@ -946,7 +954,7 @@ class TestPasswordResetRequest:
         client = app.test_client()
 
         response = client.post(
-            '/api/auth/password-reset/request',
+            '/api/auth/password/reset-request',
             data=json.dumps(dict(usernmae='test')),
             content_type='application/json',
         )
@@ -960,7 +968,7 @@ class TestPasswordResetRequest:
         client = app.test_client()
 
         response = client.post(
-            '/api/auth/password-reset/request',
+            '/api/auth/password/reset-request',
             data=json.dumps(dict()),
             content_type='application/json',
         )
@@ -969,3 +977,151 @@ class TestPasswordResetRequest:
         data = json.loads(response.data.decode())
         assert data['message'] == 'Invalid payload.'
         assert data['status'] == 'error'
+
+
+class TestPasswordUpdate:
+    def test_it_returns_error_if_payload_is_empty(self, app):
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/password/update',
+            data=json.dumps(dict(token='xxx', password='1234567',)),
+            content_type='application/json',
+        )
+
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'error'
+        assert data['message'] == 'Invalid payload.'
+
+    def test_it_returns_error_if_token_is_missing(self, app):
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/password/update',
+            data=json.dumps(
+                dict(password='12345678', password_conf='12345678',)
+            ),
+            content_type='application/json',
+        )
+
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'error'
+        assert data['message'] == 'Invalid payload.'
+
+    def test_it_returns_error_if_password_is_missing(self, app):
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/password/update',
+            data=json.dumps(dict(token='xxx', password_conf='12345678',)),
+            content_type='application/json',
+        )
+
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'error'
+        assert data['message'] == 'Invalid payload.'
+
+    def test_it_returns_error_if_password_confirmation_is_missing(self, app):
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/password/update',
+            data=json.dumps(dict(token='xxx', password='12345678',)),
+            content_type='application/json',
+        )
+
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'error'
+        assert data['message'] == 'Invalid payload.'
+
+    def test_it_returns_error_if_token_is_invalid(self, app):
+        token = get_user_token(1)
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/password/update',
+            data=json.dumps(
+                dict(
+                    token=token.decode(),
+                    password='12345678',
+                    password_conf='12345678',
+                )
+            ),
+            content_type='application/json',
+        )
+
+        assert response.status_code == 401
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'error'
+        assert data['message'] == 'Invalid token. Please request a new token.'
+
+    def test_it_returns_error_if_token_is_expired(self, app, user_1):
+        now = datetime.utcnow()
+        token = get_user_token(user_1.id, password_reset=True)
+        client = app.test_client()
+
+        with freeze_time(now + timedelta(seconds=4)):
+            response = client.post(
+                '/api/auth/password/update',
+                data=json.dumps(
+                    dict(
+                        token=token.decode(),
+                        password='12345678',
+                        password_conf='12345678',
+                    )
+                ),
+                content_type='application/json',
+            )
+
+            assert response.status_code == 401
+            data = json.loads(response.data.decode())
+            assert data['status'] == 'error'
+            assert (
+                data['message'] == 'Invalid token. Please request a new token.'
+            )
+
+    def test_it_returns_error_if_password_is_invalid(self, app, user_1):
+        token = get_user_token(user_1.id, password_reset=True)
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/password/update',
+            data=json.dumps(
+                dict(
+                    token=token.decode(),
+                    password='1234567',
+                    password_conf='1234567',
+                )
+            ),
+            content_type='application/json',
+        )
+
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'error'
+        assert data['message'] == 'Password: 8 characters required.\n'
+
+    def test_it_update_password(self, app, user_1):
+        token = get_user_token(user_1.id, password_reset=True)
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/password/update',
+            data=json.dumps(
+                dict(
+                    token=token.decode(),
+                    password='12345678',
+                    password_conf='12345678',
+                )
+            ),
+            content_type='application/json',
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'Password updated.'

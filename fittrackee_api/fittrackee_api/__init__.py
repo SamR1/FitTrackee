@@ -1,14 +1,18 @@
 import logging
 import os
+from importlib import import_module, reload
 
 from flask import Flask
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
+from .email.email import Email
+
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 migrate = Migrate()
+email_service = Email()
 appLog = logging.getLogger('fittrackee_api')
 
 
@@ -19,12 +23,19 @@ def create_app():
     # set config
     with app.app_context():
         app_settings = os.getenv('APP_SETTINGS')
+        if app_settings == 'fittrackee_api.config.TestingConfig':
+            # reload config on tests
+            config = import_module('fittrackee_api.config')
+            reload(config)
         app.config.from_object(app_settings)
 
     # set up extensions
     db.init_app(app)
     bcrypt.init_app(app)
     migrate.init_app(app, db)
+
+    # set up email
+    email_service.init_email(app)
 
     # get configuration from database
     from .application.models import AppConfig
@@ -64,7 +75,6 @@ def create_app():
         logging.getLogger('flake8').propagate = False
         appLog.setLevel(logging.DEBUG)
 
-    if app.debug:
         # Enable CORS
         @app.after_request
         def after_request(response):

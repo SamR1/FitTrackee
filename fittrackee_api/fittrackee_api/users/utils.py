@@ -16,16 +16,22 @@ def is_valid_email(email):
     return re.match(mail_pattern, email) is not None
 
 
+def check_passwords(password, password_conf):
+    ret = ''
+    if password_conf != password:
+        ret = 'Password and password confirmation don\'t match.\n'
+    if len(password) < 8:
+        ret += 'Password: 8 characters required.\n'
+    return ret
+
+
 def register_controls(username, email, password, password_conf):
     ret = ''
     if not 2 < len(username) < 13:
         ret += 'Username: 3 to 12 characters required.\n'
     if not is_valid_email(email):
         ret += 'Valid email must be provided.\n'
-    if password != password_conf:
-        ret += 'Password and password confirmation don\'t match.\n'
-    if len(password) < 8:
-        ret += 'Password: 8 characters required.\n'
+    ret += check_passwords(password, password_conf)
     return ret
 
 

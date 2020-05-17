@@ -1,3 +1,5 @@
 [flake8]
 per-file-ignores =
     fittrackee_api/fittrackee_api/activities/stats.py:E501
+    fittrackee_api/fittrackee_api/tests/test_email.py:E501
+    fittrackee_api/fittrackee_api/tests/test_email_template_password_request.py:E501

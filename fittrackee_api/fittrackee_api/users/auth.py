@@ -1,7 +1,8 @@
 import datetime
 import os
 
-from fittrackee_api import appLog, bcrypt, db
+import jwt
+from fittrackee_api import appLog, bcrypt, db, email_service
 from flask import Blueprint, current_app, jsonify, request
 from sqlalchemy import exc, or_
 from werkzeug.exceptions import RequestEntityTooLarge
@@ -11,10 +12,12 @@ from ..activities.utils_files import get_absolute_file_path
 from .models import User
 from .utils import (
     authenticate,
+    check_passwords,
     display_readable_file_size,
     register_controls,
     verify_extension_and_size,
 )
+from .utils_token import decode_user_token
 
 auth_blueprint = Blueprint('auth', __name__)
 
@@ -464,14 +467,13 @@ def edit_user(auth_user_id):
     weekm = post_data.get('weekm')
 
     if password is not None and password != '':
-        if password_conf != password:
-            message = 'Password and password confirmation don\'t match.\n'
+        message = check_passwords(password, password_conf)
+        if message != '':
             response_object = {'status': 'error', 'message': message}
             return jsonify(response_object), 400
-        else:
-            password = bcrypt.generate_password_hash(
-                password, current_app.config.get('BCRYPT_LOG_ROUNDS')
-            ).decode()
+        password = bcrypt.generate_password_hash(
+            password, current_app.config.get('BCRYPT_LOG_ROUNDS')
+        ).decode()
 
     try:
         user = User.query.filter_by(id=auth_user_id).first()
@@ -657,7 +659,7 @@ def del_picture(auth_user_id):
         return jsonify(response_object), 500
 
 
-@auth_blueprint.route('/auth/password-reset/request', methods=['POST'])
+@auth_blueprint.route('/auth/password/reset-request', methods=['POST'])
 def request_password_reset():
     """
     handle password reset request
@@ -666,7 +668,7 @@ def request_password_reset():
 
     .. sourcecode:: http
 
-      POST /api/auth/password-reset/request HTTP/1.1
+      POST /api/auth/password/reset-request HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -685,7 +687,6 @@ def request_password_reset():
 
     :statuscode 200: Password reset request processed.
     :statuscode 400: Invalid payload.
-    :statuscode 500: Error. Please try again or contact the administrator.
 
     """
     post_data = request.get_json()
@@ -696,9 +697,109 @@ def request_password_reset():
 
     user = User.query.filter(User.email == email).first()
     if user:
-        password_reset_token = user.encode_auth_token(user.id)
+        password_reset_token = user.encode_password_reset_token(user.id)
+        ui_url = current_app.config['UI_URL']
+        email_data = {
+            'username': user.username,
+            'password_reset_url': (
+                f'{ui_url}/password-reset?token={password_reset_token.decode()}'  # noqa
+            ),
+            'operating_system': request.user_agent.platform,
+            'browser_name': request.user_agent.browser,
+        }
+        email_service.send(
+            template='password_reset_request',
+            lang=user.language if user.language else 'en',
+            recipient=user.email,
+            data=email_data,
+        )
     response_object = {
         'status': 'success',
         'message': 'Password reset request processed.',
     }
     return jsonify(response_object), 200
+
+
+@auth_blueprint.route('/auth/password/update', methods=['POST'])
+def update_password():
+    """
+    update user password
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/auth/password/update HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "message": "Password updated.",
+        "status": "success"
+      }
+
+    :<json string password: password (8 characters required)
+    :<json string password_conf: password confirmation
+    :<json string token: password reset token
+
+    :statuscode 200: Password updated.
+    :statuscode 400: Invalid payload.
+    :statuscode 401: Invalid token.
+    :statuscode 500: Error. Please try again or contact the administrator.
+
+    """
+    post_data = request.get_json()
+    if (
+        not post_data
+        or post_data.get('password') is None
+        or post_data.get('password_conf') is None
+        or post_data.get('token') is None
+    ):
+        response_object = {'status': 'error', 'message': 'Invalid payload.'}
+        return jsonify(response_object), 400
+    password = post_data.get('password')
+    password_conf = post_data.get('password_conf')
+    token = post_data.get('token')
+
+    invalid_token_response_object = {
+        'status': 'error',
+        'message': 'Invalid token. Please request a new token.',
+    }
+    try:
+        user_id = decode_user_token(token)
+    except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+        return jsonify(invalid_token_response_object), 401
+
+    message = check_passwords(password, password_conf)
+    if message != '':
+        response_object = {'status': 'error', 'message': message}
+        return jsonify(response_object), 400
+
+    user = User.query.filter(User.id == user_id).first()
+    if not user:
+        return jsonify(invalid_token_response_object), 401
+    try:
+        user.password = bcrypt.generate_password_hash(
+            password, current_app.config.get('BCRYPT_LOG_ROUNDS')
+        ).decode()
+        db.session.commit()
+        response_object = {
+            'status': 'success',
+            'message': 'Password updated.',
+        }
+        return jsonify(response_object), 200
+
+    except (exc.OperationalError, ValueError) as e:
+        db.session.rollback()
+        appLog.error(e)
+        response_object = {
+            'status': 'error',
+            'message': 'Error. Please try again or contact the administrator.',
+        }
+        return jsonify(response_object), 500

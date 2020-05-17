@@ -1,0 +1,12 @@
+Bonjour {{username}},
+
+Vous avez récemment demander la réinitilisation du mot de passe de votre compte sur FitTrackee.
+Cliquez sur le lien ci-dessous pour le réinitialiser. Ce lien n'est valide que pendant 1 heure.
+
+Réinitialiser le mot de passe: ( {{ password_reset_url }} )
+
+Pour vérification, cette demande a été reçue à partir d'un appareil sous {{operating_system}}, utilisant le navigateur {{browser_name}}.
+Si vous n'avez pas demandé de réinitalisation, vous pouvez ignorer cet e-mail.
+
+Merci,
+L'équipe FitTrackee
