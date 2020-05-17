@@ -19,6 +19,9 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:postgres@fittrackee-db:5432/fittrackee
       - DATABASE_TEST_URL=postgres://postgres:postgres@fittrackee-db:5432/fittrackee_test
+      - UI_URL=http://127.0.0.1:3000
+      - EMAIL_URL=smtp://none:none@0.0.0.0:1025
+      - SENDER_EMAIL=fittrackee@example.com
       - FLASK_APP=server.py
       - FLASK_DEBUG=1
       - APP_SETTINGS=fittrackee_api.config.TestingConfig

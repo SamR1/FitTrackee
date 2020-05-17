@@ -32,6 +32,9 @@ before_script:
   - export REACT_APP_API_URL=http://127.0.0.1
   - export NODE_ENV=development
   - export TEST_URL=http://127.0.0.1
+  - export UI_URL=http://127.0.0.1:3000
+  - export EMAIL_URL=smtp://none:none@0.0.0.0:1025
+  - export SENDER_EMAIL=fittrackee@example.com
   - export DISPLAY=:99.0
   - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
   - sh -e /etc/init.d/xvfb start

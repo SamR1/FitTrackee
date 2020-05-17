@@ -10,6 +10,14 @@ WORKDIR /usr/src/app
 COPY ./pyproject.toml /usr/src/app/pyproject.toml
 COPY ./poetry.lock /usr/src/app/poetry.lock
 
+# add environment variables
+ARG UI_URL
+ARG EMAIL_URL
+ARG SENDER_EMAIL
+ENV UI_URL $UI_URL
+ENV EMAIL_URL $EMAIL_URL
+ENV SENDER_EMAIL $SENDER_EMAIL
+
 # install requirements
 RUN pip install --upgrade pip
 RUN pip install poetry
