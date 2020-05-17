@@ -1,3 +1,12 @@
+const routesWithoutAuthentication = [
+  '/login',
+  '/register',
+  '/password-reset',
+  '/password-reset/request',
+  '/password-reset/sent',
+  '/updated-password',
+]
+
 const updatePath = (toPath, newPath) => {
   if (typeof toPath === 'string' || toPath instanceof String) {
     toPath = newPath
@@ -10,13 +19,13 @@ const updatePath = (toPath, newPath) => {
 const pathInterceptor = toPath => {
   if (
     !window.localStorage.authToken &&
-    !['/login', '/register'].includes(toPath.pathname)
+    !routesWithoutAuthentication.includes(toPath.pathname)
   ) {
     toPath = updatePath(toPath, '/login')
   }
   if (
     window.localStorage.authToken &&
-    ['/login', '/register'].includes(toPath.pathname)
+    routesWithoutAuthentication.includes(toPath.pathname)
   ) {
     toPath = updatePath(toPath, '/')
   }

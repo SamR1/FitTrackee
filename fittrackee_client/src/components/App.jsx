@@ -12,6 +12,7 @@ import Footer from './Footer'
 import Logout from './User/Logout'
 import NavBar from './NavBar'
 import NotFound from './Others/NotFound'
+import PasswordReset from './User/PasswordReset'
 import ProfileEdit from './User/ProfileEdit'
 import Statistics from './Statistics'
 import UserForm from './User/UserForm'
@@ -43,6 +44,27 @@ class App extends React.Component {
             path="/login"
             render={() => <UserForm formType={'login'} />}
           />
+          <Route
+            exact
+            path="/password-reset"
+            render={() => <UserForm formType={'password reset'} />}
+          />
+          <Route
+            exact
+            path="/password-reset/request"
+            render={() => <UserForm formType={'reset your password'} />}
+          />
+          <Route
+            exact
+            path="/password-reset/sent"
+            render={() => <PasswordReset action={'sent'} />}
+          />
+          <Route
+            exact
+            path="/updated-password"
+            render={() => <PasswordReset action={'updated'} />}
+          />
+          <Route exact path="/password-reset/sent" component={PasswordReset} />
           <Route exact path="/logout" component={Logout} />
           <Route exact path="/profile/edit" component={ProfileEdit} />
           <Route exact path="/profile" component={CurrentUserProfile} />

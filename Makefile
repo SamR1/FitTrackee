@@ -69,6 +69,9 @@ lint-react:
 lint-react-fix:
 	$(NPM) lint-fix
 
+mail:
+	docker run -d -e "MH_STORAGE=maildir" -v /tmp/maildir:/maildir -p 1025:1025 -p 8025:8025 mailhog/mailhog
+
 migrate-db:
 	$(FLASK) db migrate --directory $(MIGRATIONS)
 

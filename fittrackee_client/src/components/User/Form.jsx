@@ -1,12 +1,13 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Helmet } from 'react-helmet'
+import { Link } from 'react-router-dom'
 
 import { history } from '../../index'
 
 export default function Form(props) {
   const { t } = useTranslation()
-  const pageTitle = `common:${props.formType
+  const pageTitle = `user:${props.formType
     .charAt(0)
     .toUpperCase()}${props.formType.slice(1)}`
   return (
@@ -34,65 +35,86 @@ export default function Form(props) {
                 </div>
               </div>
             ) : (
-              <form
-                onSubmit={event =>
-                  props.handleUserFormSubmit(event, props.formType)
-                }
-              >
-                {props.formType === 'register' && (
-                  <div className="form-group">
-                    <input
-                      className="form-control input-lg"
-                      name="username"
-                      placeholder={t('user:Enter a username')}
-                      required
-                      type="text"
-                      value={props.userForm.username}
-                      onChange={props.onHandleFormChange}
-                    />
-                  </div>
-                )}
-                <div className="form-group">
+              <>
+                <form
+                  onSubmit={event =>
+                    props.handleUserFormSubmit(event, props.formType)
+                  }
+                >
+                  {props.formType === 'register' && (
+                    <div className="form-group">
+                      <input
+                        className="form-control input-lg"
+                        name="username"
+                        placeholder={t('user:Enter a username')}
+                        required
+                        type="text"
+                        value={props.userForm.username}
+                        onChange={props.onHandleFormChange}
+                      />
+                    </div>
+                  )}
+                  {props.formType !== 'password reset' && (
+                    <div className="form-group">
+                      <input
+                        className="form-control input-lg"
+                        name="email"
+                        placeholder={t('user:Enter an email address')}
+                        required
+                        type="email"
+                        value={props.userForm.email}
+                        onChange={props.onHandleFormChange}
+                      />
+                    </div>
+                  )}
+                  {props.formType !== 'reset your password' && (
+                    <>
+                      <div className="form-group">
+                        <input
+                          className="form-control input-lg"
+                          name="password"
+                          placeholder={t('user:Enter a password')}
+                          required
+                          type="password"
+                          value={props.userForm.password}
+                          onChange={props.onHandleFormChange}
+                        />
+                      </div>
+                      {props.formType !== 'login' && (
+                        <div className="form-group">
+                          <input
+                            className="form-control input-lg"
+                            name="password_conf"
+                            placeholder={t(
+                              'user:Enter the password confirmation'
+                            )}
+                            required
+                            type="password"
+                            value={props.userForm.password_conf}
+                            onChange={props.onHandleFormChange}
+                          />
+                        </div>
+                      )}
+                    </>
+                  )}
                   <input
-                    className="form-control input-lg"
-                    name="email"
-                    placeholder={t('user:Enter an email address')}
-                    required
-                    type="email"
-                    value={props.userForm.email}
-                    onChange={props.onHandleFormChange}
+                    type="submit"
+                    className="btn btn-primary btn-lg btn-block"
+                    value={t('Submit')}
                   />
-                </div>
-                <div className="form-group">
-                  <input
-                    className="form-control input-lg"
-                    name="password"
-                    placeholder={t('user:Enter a password')}
-                    required
-                    type="password"
-                    value={props.userForm.password}
-                    onChange={props.onHandleFormChange}
-                  />
-                </div>
-                {props.formType === 'register' && (
-                  <div className="form-group">
-                    <input
-                      className="form-control input-lg"
-                      name="password_conf"
-                      placeholder={t('user:Enter the password confirmation')}
-                      required
-                      type="password"
-                      value={props.userForm.password_conf}
-                      onChange={props.onHandleFormChange}
-                    />
-                  </div>
-                )}
-                <input
-                  type="submit"
-                  className="btn btn-primary btn-lg btn-block"
-                  value={t('Submit')}
-                />
-              </form>
+                </form>
+                <p className="password-forget">
+                  {props.formType === 'login' && (
+                    <Link
+                      to={{
+                        pathname: '/password-reset/request',
+                      }}
+                    >
+                      {t('user:Forgot password?')}
+                    </Link>
+                  )}
+                </p>
+              </>
             )}
           </div>
           <div className="col-md-3" />

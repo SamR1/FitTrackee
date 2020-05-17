@@ -312,7 +312,6 @@ label {
 .dropdown-item {
   cursor: default;
   font-size: 0.9em;
-
 }
 
 .dropdown-item-selected {
@@ -437,6 +436,12 @@ label {
   text-align: center;
 }
 
+.password-forget {
+  margin: 10px;
+  font-size: .9em;
+  font-style: italic;
+}
+
 .radioLabel {
   text-align: center;
 }
@@ -465,6 +470,14 @@ label {
 .stats-disabled {
   opacity: 0.3;
   pointer-events: none;
+}
+
+.svg-icon {
+  fill: #405976;
+  height: 70px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 70px;
 }
 
 .time-frames {

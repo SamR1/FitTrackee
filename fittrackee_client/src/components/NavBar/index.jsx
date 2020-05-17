@@ -101,7 +101,7 @@ class NavBar extends React.PureComponent {
                         pathname: '/register',
                       }}
                     >
-                      {t('common:Register')}
+                      {t('user:Register')}
                     </Link>
                   </li>
                 )}
@@ -113,7 +113,7 @@ class NavBar extends React.PureComponent {
                         pathname: '/login',
                       }}
                     >
-                      {t('common:Login')}
+                      {t('user:Login')}
                     </Link>
                   </li>
                 )}
@@ -148,7 +148,7 @@ class NavBar extends React.PureComponent {
                         pathname: '/logout',
                       }}
                     >
-                      {t('common:Logout')}
+                      {t('user:Logout')}
                     </Link>
                   </li>
                 </>

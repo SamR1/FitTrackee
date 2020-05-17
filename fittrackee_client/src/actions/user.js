@@ -46,15 +46,27 @@ export const getProfile = () => dispatch =>
       throw error
     })
 
-export const loginOrRegister = (target, formData) => dispatch =>
-  FitTrackeeApi.loginOrRegister(target, formData)
+export const loginOrRegisterOrPasswordReset = (target, formData) => dispatch =>
+  FitTrackeeApi.loginOrRegisterOrPasswordReset(target, formData)
     .then(ret => {
       if (ret.status === 'success') {
-        window.localStorage.setItem('authToken', ret.auth_token)
-        if (target === 'register') {
-          dispatch(getAppData('config'))
+        if (target === 'password/reset-request') {
+          return history.push({
+            pathname: '/password-reset/sent',
+          })
         }
-        return dispatch(getProfile())
+        if (target === 'password/update') {
+          return history.push({
+            pathname: '/updated-password',
+          })
+        }
+        if (target === 'login' || target === 'register') {
+          window.localStorage.setItem('authToken', ret.auth_token)
+          if (target === 'register') {
+            dispatch(getAppData('config'))
+          }
+          return dispatch(getProfile())
+        }
       }
       return dispatch(AuthError(ret.message))
     })
@@ -62,9 +74,12 @@ export const loginOrRegister = (target, formData) => dispatch =>
       throw error
     })
 
-const RegisterFormControl = formData => {
+const RegisterFormControl = (formData, onlyPasswords = false) => {
   const errMsg = []
-  if (formData.username.length < 3 || formData.username.length > 12) {
+  if (
+    !onlyPasswords &&
+    (formData.username.length < 3 || formData.username.length > 12)
+  ) {
     errMsg.push('3 to 12 characters required for username.')
   }
   if (formData.password !== formData.password_conf) {
@@ -77,13 +92,13 @@ const RegisterFormControl = formData => {
 }
 
 export const handleUserFormSubmit = (formData, formType) => dispatch => {
-  if (formType === 'register') {
-    const ret = RegisterFormControl(formData)
+  if (formType === 'register' || formType === 'password/update') {
+    const ret = RegisterFormControl(formData, formType === 'password/update')
     if (ret.length > 0) {
       return dispatch(AuthErrors(generateIds(ret)))
     }
   }
-  return dispatch(loginOrRegister(formType, formData))
+  return dispatch(loginOrRegisterOrPasswordReset(formType, formData))
 }
 
 export const handleProfileFormSubmit = formData => dispatch => {

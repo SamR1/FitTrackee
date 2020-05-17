@@ -49,9 +49,10 @@ class UserForm extends React.Component {
       t,
     } = this.props
     const { formData } = this.state
+    const { token } = this.props.location.query
     return (
       <div>
-        {isLoggedIn() ? (
+        {isLoggedIn() || (formType === 'password reset' && !token) ? (
           <Redirect to="/" />
         ) : (
           <div>
@@ -63,6 +64,9 @@ class UserForm extends React.Component {
               onHandleFormChange={event => this.onHandleFormChange(event)}
               handleUserFormSubmit={event => {
                 event.preventDefault()
+                if (formType === 'password reset') {
+                  formData.token = token
+                }
                 onHandleUserFormSubmit(formData, formType)
               }}
             />
@@ -82,6 +86,12 @@ export default withTranslation()(
     }),
     dispatch => ({
       onHandleUserFormSubmit: (formData, formType) => {
+        formType =
+          formType === 'password reset'
+            ? 'password/update'
+            : formType === 'reset your password'
+            ? 'password/reset-request'
+            : formType
         dispatch(handleUserFormSubmit(formData, formType))
       },
     })
