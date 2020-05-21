@@ -39,9 +39,16 @@ class TestEmailSending:
     }
 
     @staticmethod
-    def assert_smtp(smtp):
+    def get_args(call_args):
+        if len(call_args) == 2:
+            args, _ = call_args
+        else:
+            _, args, _ = call_args
+        return args
+
+    def assert_smtp(self, smtp):
         assert smtp.sendmail.call_count == 1
-        call_args = smtp.sendmail.call_args.args
+        call_args = self.get_args(smtp.sendmail.call_args)
         assert call_args[0] == 'fittrackee@example.com'
         assert call_args[1] == 'test@test.com'
         assert expected_en_text_body in call_args[2]
