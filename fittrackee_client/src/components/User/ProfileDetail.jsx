@@ -17,6 +17,7 @@ function ProfileDetail({
   message,
   onDeletePicture,
   onUploadPicture,
+  pathname,
   t,
   user,
 }) {
@@ -160,9 +161,15 @@ function ProfileDetail({
                 )}
                 <button
                   className="btn btn-secondary"
-                  onClick={() => history.push('/')}
+                  onClick={() =>
+                    pathname === '/profile' ? history.push('/') : history.go(-1)
+                  }
                 >
-                  {t('common:Back to home')}
+                  {t(
+                    pathname === '/profile'
+                      ? 'common:Back to home'
+                      : 'common:Back'
+                  )}
                 </button>
               </div>
             </div>
@@ -177,6 +184,7 @@ export default withTranslation()(
   connect(
     state => ({
       appConfig: state.application.config,
+      pathname: state.router.location.pathname,
       message: state.message,
     }),
     dispatch => ({
