@@ -1,7 +1,7 @@
 Bonjour {{username}},
 
 Vous avez récemment demander la réinitilisation du mot de passe de votre compte sur FitTrackee.
-Cliquez sur le lien ci-dessous pour le réinitialiser. Ce lien n'est valide que pendant 1 heure.
+Cliquez sur le lien ci-dessous pour le réinitialiser. Ce lien n'est valide que pendant {{ expiration_delay }}.
 
 Réinitialiser le mot de passe: ( {{ password_reset_url }} )
 

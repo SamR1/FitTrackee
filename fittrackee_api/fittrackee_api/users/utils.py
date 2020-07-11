@@ -1,6 +1,8 @@
 import re
+from datetime import timedelta
 from functools import wraps
 
+import humanize
 from flask import current_app, jsonify, request
 
 from .models import User
@@ -148,3 +150,12 @@ def display_readable_file_size(size_in_bytes):
             return f"{size_in_bytes:3.1f}{unit}"
         size_in_bytes /= 1024.0
     return f"{size_in_bytes} bytes"
+
+
+def get_readable_duration(duration, locale='en'):
+    if locale != 'en':
+        _t = humanize.i18n.activate(locale)  # noqa
+    readable_duration = humanize.naturaldelta(timedelta(seconds=duration))
+    if locale != 'en':
+        humanize.i18n.deactivate()
+    return readable_duration

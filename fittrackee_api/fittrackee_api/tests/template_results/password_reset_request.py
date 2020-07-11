@@ -2,7 +2,7 @@
 
 expected_en_text_body = """Hi test,
 
-You recently requested to reset your password for your FitTrackee account. Use the button below to reset it. This password reset is only valid for the next 24 hours.
+You recently requested to reset your password for your FitTrackee account. Use the button below to reset it. This password reset link is only valid for 3 seconds.
 
 Reset your password ( http://localhost/password-reset?token=xxx )
 
@@ -14,7 +14,7 @@ The FitTrackee Team"""
 expected_fr_text_body = """Bonjour test,
 
 Vous avez récemment demander la réinitilisation du mot de passe de votre compte sur FitTrackee.
-Cliquez sur le lien ci-dessous pour le réinitialiser. Ce lien n'est valide que pendant 1 heure.
+Cliquez sur le lien ci-dessous pour le réinitialiser. Ce lien n'est valide que pendant 3 secondes.
 
 Réinitialiser le mot de passe: ( http://localhost/password-reset?token=xxx )
 
@@ -25,7 +25,7 @@ Merci,
 L'équipe FitTrackee"""
 
 expected_en_html_body = """  <body>
-    <span class="preheader">Use this link to reset your password. The link is only valid for 24 hours.</span>
+    <span class="preheader">Use this link to reset your password. The link is only valid for 3 seconds.</span>
     <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
       <tr>
         <td align="center">
@@ -45,7 +45,7 @@ expected_en_html_body = """  <body>
                       <div class="f-fallback">
                         <h1>Hi test,</h1>
                         <p>You recently requested to reset your password for your account. Use the button below to reset it.
-                          <strong>This password reset is only valid for the next 24 hours.</strong>
+                          <strong>This password reset link is only valid for 3 seconds.</strong>
                         </p>
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                           <tr>
@@ -99,8 +99,7 @@ expected_en_html_body = """  <body>
 </html>"""
 
 expected_fr_html_body = """  <body>
-    <span class="preheader">Use this link to reset your password. The link is only valid for 24 hours.</span>
-    <span class="preheader">Utiliser ce lien pour réinitialiser le mot de passe. Ce lien n'est valide que pendant 1 heure.</span>
+    <span class="preheader">Utiliser ce lien pour réinitialiser le mot de passe. Ce lien n'est valide que pendant 3 secondes.</span>
     <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
       <tr>
         <td align="center">
@@ -121,7 +120,7 @@ expected_fr_html_body = """  <body>
                         <h1>Bonjour  test,</h1>
                         <p>Vous avez récemment demander la réinitilisation du mot de passe de votre compte sur FitTrackee.
                           Cliquez sur le bouton ci-dessous pour le réinitialiser.
-                          <strong>Cette réinitialisation n'est valide que pendant 1 heure.</strong>
+                          <strong>Cette réinitialisation n'est valide que pendant 3 secondes.</strong>
                         </p>
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                           <tr>

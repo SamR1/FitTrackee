@@ -14,6 +14,7 @@ from .utils import (
     authenticate,
     check_passwords,
     display_readable_file_size,
+    get_readable_duration,
     register_controls,
     verify_extension_and_size,
 )
@@ -700,6 +701,10 @@ def request_password_reset():
         password_reset_token = user.encode_password_reset_token(user.id)
         ui_url = current_app.config['UI_URL']
         email_data = {
+            'expiration_delay': get_readable_duration(
+                current_app.config.get('PASSWORD_TOKEN_EXPIRATION_SECONDS'),
+                'en' if user.language is None else user.language,
+            ),
             'username': user.username,
             'password_reset_url': (
                 f'{ui_url}/password-reset?token={password_reset_token.decode()}'  # noqa

@@ -1,6 +1,6 @@
 Hi {{username}},
 
-You recently requested to reset your password for your FitTrackee account. Use the button below to reset it. This password reset is only valid for the next 24 hours.
+You recently requested to reset your password for your FitTrackee account. Use the button below to reset it. This password reset link is only valid for {{ expiration_delay }}.
 
 Reset your password ( {{ password_reset_url }} )
 

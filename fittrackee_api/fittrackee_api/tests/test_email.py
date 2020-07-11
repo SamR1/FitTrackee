@@ -32,6 +32,7 @@ class TestEmailMessage:
 class TestEmailSending:
 
     email_data = {
+        'expiration_delay': '3 seconds',
         'username': 'test',
         'password_reset_url': f'http://localhost/password-reset?token=xxx',
         'operating_system': 'Linux',
