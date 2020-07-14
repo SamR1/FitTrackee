@@ -4,6 +4,7 @@ from importlib import import_module, reload
 
 from flask import Flask
 from flask_bcrypt import Bcrypt
+from flask_dramatiq import Dramatiq
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
@@ -13,6 +14,7 @@ db = SQLAlchemy()
 bcrypt = Bcrypt()
 migrate = Migrate()
 email_service = Email()
+dramatiq = Dramatiq()
 appLog = logging.getLogger('fittrackee_api')
 
 
@@ -33,6 +35,7 @@ def create_app():
     db.init_app(app)
     bcrypt.init_app(app)
     migrate.init_app(app, db)
+    dramatiq.init_app(app)
 
     # set up email
     email_service.init_email(app)

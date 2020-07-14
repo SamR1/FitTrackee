@@ -2,7 +2,8 @@ import datetime
 import os
 
 import jwt
-from fittrackee_api import appLog, bcrypt, db, email_service
+from fittrackee_api import appLog, bcrypt, db
+from fittrackee_api.tasks import reset_password_email
 from flask import Blueprint, current_app, jsonify, request
 from sqlalchemy import exc, or_
 from werkzeug.exceptions import RequestEntityTooLarge
@@ -712,12 +713,11 @@ def request_password_reset():
             'operating_system': request.user_agent.platform,
             'browser_name': request.user_agent.browser,
         }
-        email_service.send(
-            template='password_reset_request',
-            lang=user.language if user.language else 'en',
-            recipient=user.email,
-            data=email_data,
-        )
+        user_data = {
+            'language': user.language if user.language else 'en',
+            'email': user.email,
+        }
+        reset_password_email.send(user_data, email_data)
     response_object = {
         'status': 'success',
         'message': 'Password reset request processed.',

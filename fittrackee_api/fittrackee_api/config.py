@@ -1,6 +1,14 @@
 import os
 
+from dramatiq.brokers.redis import RedisBroker
+from dramatiq.brokers.stub import StubBroker
 from flask import current_app
+
+if os.getenv('APP_SETTINGS') == 'fittrackee_api.config.Testing':
+    broker = StubBroker
+    broker.emit_after("process_boot")
+else:
+    broker = RedisBroker
 
 
 class BaseConfig:
@@ -20,6 +28,7 @@ class BaseConfig:
     UI_URL = os.environ.get('UI_URL')
     EMAIL_URL = os.environ.get('EMAIL_URL')
     SENDER_EMAIL = os.environ.get('SENDER_EMAIL')
+    DRAMATIQ_BROKER = broker
 
 
 class DevelopmentConfig(BaseConfig):
@@ -31,6 +40,7 @@ class DevelopmentConfig(BaseConfig):
     USERNAME = 'admin'
     PASSWORD = 'default'
     BCRYPT_LOG_ROUNDS = 4
+    DRAMATIQ_BROKER_URL = os.getenv('REDIS_URL', 'redis://')
 
 
 class TestingConfig(BaseConfig):

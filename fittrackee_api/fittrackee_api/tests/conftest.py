@@ -8,10 +8,10 @@ from fittrackee_api.application.models import AppConfig
 from fittrackee_api.application.utils import update_app_config_from_database
 from fittrackee_api.users.models import User
 
-os.environ["FLASK_ENV"] = 'testing'
-os.environ["APP_SETTINGS"] = 'fittrackee_api.config.TestingConfig'
+os.environ['FLASK_ENV'] = 'testing'
+os.environ['APP_SETTINGS'] = 'fittrackee_api.config.TestingConfig'
 # to avoid resetting dev database during tests
-os.environ["DATABASE_URL"] = os.getenv("DATABASE_TEST_URL")
+os.environ['DATABASE_URL'] = os.getenv('DATABASE_TEST_URL')
 
 
 def get_app_config(with_config=False):

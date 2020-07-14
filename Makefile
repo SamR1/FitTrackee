@@ -87,6 +87,9 @@ run-client:
 run-server:
 	cd fittrackee_api && $(GUNICORN) -b 127.0.0.1:5000 "fittrackee_api:create_app()" --error-logfile ../gunicorn-error.log
 
+run-workers:
+	$(FLASK) worker --processes=1
+
 serve-python:
 	$(FLASK) run --with-threads -h $(HOST) -p $(API_PORT)
 
