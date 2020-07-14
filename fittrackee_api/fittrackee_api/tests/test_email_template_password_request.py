@@ -35,7 +35,7 @@ class TestEmailTemplateForPasswordRequest:
         email_data = {
             'expiration_delay': '3 seconds' if lang == 'en' else '3 secondes',
             'username': 'test',
-            'password_reset_url': f'http://localhost/password-reset?token=xxx',
+            'password_reset_url': 'http://localhost/password-reset?token=xxx',
             'operating_system': 'Linux',
             'browser_name': 'Firefox',
         }
@@ -51,7 +51,7 @@ class TestEmailTemplateForPasswordRequest:
         email_data = {
             'expiration_delay': '3 seconds',
             'username': 'test',
-            'password_reset_url': f'http://localhost/password-reset?token=xxx',
+            'password_reset_url': 'http://localhost/password-reset?token=xxx',
             'operating_system': 'Linux',
             'browser_name': 'Firefox',
         }
@@ -67,7 +67,7 @@ class TestEmailTemplateForPasswordRequest:
         email_data = {
             'expiration_delay': '3 secondes',
             'username': 'test',
-            'password_reset_url': f'http://localhost/password-reset?token=xxx',
+            'password_reset_url': 'http://localhost/password-reset?token=xxx',
             'operating_system': 'Linux',
             'browser_name': 'Firefox',
         }

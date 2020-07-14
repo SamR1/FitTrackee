@@ -50,13 +50,13 @@ def create_app():
                 _, db_app_config = init_config()
             update_app_config_from_database(app, db_app_config)
 
-    from .users.auth import auth_blueprint  # noqa
-    from .users.users import users_blueprint  # noqa
     from .activities.activities import activities_blueprint  # noqa
     from .activities.records import records_blueprint  # noqa
     from .activities.sports import sports_blueprint  # noqa
     from .activities.stats import stats_blueprint  # noqa
     from .application.app_config import config_blueprint  # noqa
+    from .users.auth import auth_blueprint  # noqa
+    from .users.users import users_blueprint  # noqa
 
     app.register_blueprint(users_blueprint, url_prefix='/api')
     app.register_blueprint(auth_blueprint, url_prefix='/api')

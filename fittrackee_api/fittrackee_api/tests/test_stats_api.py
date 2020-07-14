@@ -32,7 +32,7 @@ class TestGetStatsByTime:
         )
 
         response = client.get(
-            f'/api/stats/1000/by_time',
+            '/api/stats/1000/by_time',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -900,7 +900,7 @@ class TestGetStatsBySport:
         )
 
         response = client.get(
-            f'/api/stats/1000/by_sport?sport_id=1',
+            '/api/stats/1000/by_sport?sport_id=1',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']

@@ -69,7 +69,7 @@ def initdata():
 def recalculate():
     print("Starting activities data refresh")
     activities = (
-        Activity.query.filter(Activity.gpx != None)
+        Activity.query.filter(Activity.gpx != None)  # noqa
         .order_by(Activity.activity_date.asc())  # noqa
         .all()
     )
