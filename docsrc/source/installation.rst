@@ -5,9 +5,10 @@ This application is written in Python (API) and Javascript (client):
 
 - API:
     - Flask
-    - `gpxpy <https://github.com/tkrajina/gpxpy>`__ to parse gpx files
-    - `staticmap <https://github.com/komoot/staticmap>`__ to generate a static map image from gpx coordinates
-    - `python-forecast.io <https://github.com/ZeevG/python-forecast.io>`__ to fetch weather data from `Dark Sky <https://darksky.net>`__ (former forecast.io)
+    - `gpxpy <https://github.com/tkrajina/gpxpy>`_ to parse gpx files
+    - `staticmap <https://github.com/komoot/staticmap>`_ to generate a static map image from gpx coordinates
+    - `python-forecast.io <https://github.com/ZeevG/python-forecast.io>`_ to fetch weather data from `Dark Sky <https://darksky.net>`__ (former forecast.io)
+    - `dramatiq <https://flask-dramatiq.readthedocs.io/en/latest/>`_ for task queue
 - Client:
     - React/Redux
     - `Leaflet <https://leafletjs.com/>`__ to display map
@@ -19,12 +20,14 @@ Prerequisites
 ~~~~~~~~~~~~~
 
 -  PostgreSQL database (10+)
+-  Redis for task queue
 -  Python 3.7+
 -  `Poetry <https://poetry.eustace.io>`__
 -  `Yarn <https://yarnpkg.com>`__ and
    `serve <https://github.com/zeit/serve>`__
 -  API key from `ThunderForest <http://thunderforest.com>`__
 -  API key from `Dark Sky <https://darksky.net/dev>`__ [not mandatory]
+-  SMTP provider
 
 
 Installation
@@ -40,14 +43,14 @@ Installation
 
     .. code-block:: bash
 
-        $ yaourt poetry
+        $ yay poetry
         $ poetry --version
-        Poetry 0.12.17
+        Poetry 1.0.5
 
         # optional
-        $ poetry config settings.virtualenvs.in-project true
+        $ poetry config virtualenvs.in-project true
 
-    For other OS, see `Poetry Documentation <https://poetry.eustace.io/docs/#installation>`__
+    For other OS, see `Poetry Documentation <https://python-poetry.org/docs/#installation>`__
 
 
 Dev environment
@@ -78,6 +81,12 @@ Dev environment
 
    $ make serve
 
+-  Run dramatiq workers:
+
+.. code:: bash
+
+   $ make run-workers
+
 Open http://localhost:3000 and login (the email is ``admin@example.com``
 and the password ``mpwoadmin``) or register
 
@@ -87,13 +96,13 @@ Prod environment
 .. warning::
     Note that FitTrackee is not production-ready yet
 
--  Download the last release (for now, it is the beta release v0.2.5):
+-  Download the last release (for now, it is the beta release v0.3.0):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.2.5-beta.tar.gz
-   $ tar -xzf v0.2.5-beta.tar.gz
-   $ mv FitTrackee-0.2.3-beta FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.3.0-beta.tar.gz
+   $ tar -xzf v0.3.0-beta.tar.gz
+   $ mv FitTrackee-0.3.0-beta FitTrackee
    $ cd FitTrackee
 
 -  Update **Makefile.config** file if needed and copy/paste the
@@ -119,6 +128,12 @@ Prod environment
 .. code:: bash
 
    $ make run
+
+-  Run dramatiq workers:
+
+.. code:: bash
+
+   $ make run-workers
 
 Open http://localhost:3000, log in as admin (the email is
 ``admin@example.com`` and the password ``mpwoadmin``) and change the
@@ -174,10 +189,28 @@ The following environment variables must be defined in **Makefile.custom.config*
 ===================================== ======================================= ====================================
 variable                              description                             app default value
 ===================================== ======================================= ====================================
-``REACT_APP_GPX_LIMIT_IMPORT``        max. number of gpx file in zip archive  10
-``REACT_APP_MAX_SINGLE_FILE_SIZE``    max. size of a gpx or picture file      1MB
-``REACT_APP_MAX_ZIP_FILE_SIZE``       max. size of a zip archive              10MB
-``REACT_APP_ALLOW_REGISTRATION``      allows users to register                true
-``REACT_APP_THUNDERFOREST_API_KEY``   ThunderForest API key                   no defaut value, must be initialized
-``WEATHER_API``                       DarkSky API key                         no defaut value, not mandatory
+``REACT_APP_API_URL``                 Fittrackee API URL                      no default value, must be initialized
+``REACT_APP_GPX_LIMIT_IMPORT``        max. number of gpx file in zip archive  10 (*deprecated in 0.3.0*)
+``REACT_APP_MAX_SINGLE_FILE_SIZE``    max. size of a gpx or picture file      1MB (*deprecated in 0.3.0*)
+``REACT_APP_MAX_ZIP_FILE_SIZE``       max. size of a zip archive              10MB (*deprecated in 0.3.0*)
+``REACT_APP_ALLOW_REGISTRATION``      allows users to register                true (*deprecated in 0.3.0*)
+``REACT_APP_THUNDERFOREST_API_KEY``   ThunderForest API key                   no default value, must be initialized
+``UI_URL``                            application URL                         no default value, must be initialized
+``EMAIL_URL``                         email URL with credentials              no default value, must be initialized (see below)
+``SENDER_EMAIL``                      application sender email address        no default value, must be initialized
+``REDIS_URL``                         Redis instance used by Dramatiq         local Redis instance
+``WORKERS_PROCESSES``                 number of process used by Dramatiq      no default value, must be initialized
 ===================================== ======================================= ====================================
+
+.. warning::
+    Since FitTrackee 0.3.0, some applications parameters are now stored in database.
+    Related environement variables are needed to initialize database.
+
+Emails
+^^^^^^
+
+To send emails, a valid ``EMAIL_URL`` must be provided:
+
+- with an unencrypted SMTP server: ``smtp://username:password@smtp.example.com:25``
+- with SSL: ``smtp://username:password@smtp.example.com:465/?ssl=True``
+- with STARTTLS: ``smtp://username:password@smtp.example.com:587/?tls=True``

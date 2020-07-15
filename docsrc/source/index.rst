@@ -10,11 +10,11 @@ FitTrackee
 | No mobile app is developed yet, but several existing mobile apps can
   store workouts data locally and export them into a gpx file.
 | Examples (for Android):
-| \* `Runner Up <https://github.com/jonasoreland/runnerup>`__ (GPL v3)
-| \* `ForRunners <https://gitlab.com/brvier/ForRunners>`__ (GPL v3)
-| \* `AlpineQuest <https://www.alpinequest.net/>`__ (Proprietary, no
+| \* `Runner Up <https://github.com/jonasoreland/runnerup>`_ (GPL v3)
+| \* `ForRunners <https://gitlab.com/brvier/ForRunners>`_ (GPL v3)
+| \* `AlpineQuest <https://www.alpinequest.net/>`_ (Proprietary, no
   trackers according to `exodus privay
-  report <https://reports.exodus-privacy.eu.org/reports/2975/>`__)
+  report <https://reports.exodus-privacy.eu.org/en/reports/search/psyberia.alpinequest.free/>`_)
 
 | Maps are displayed using `Open Street
   Map <https://www.openstreetmap.org>`__.

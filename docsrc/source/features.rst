@@ -4,10 +4,29 @@ Features
 List
 ~~~~
 
-Users
-^^^^^
-- Account creation (only standard user, not admin)
-- User registration can be disabled
+Account
+^^^^^^^
+- A user can create, update and deleted his account
+- Password reset is now available
+
+Administration
+^^^^^^^^^^^^^^
+- Application
+
+  - active users limit (if 0, registration is enabled (no limit defined))
+  - maximum size of uploaded files
+  - maximum size of zip archive
+  - maximum number of files in the zip archive
+
+- Users
+
+  - display users list and details
+  - edit a user to add/remove administration rights
+  - delete a user
+
+- Sports
+
+  - enable or disable a sport (a sport can be disabled even if activity with this sport exists)
 
 Activities/Workouts
 ^^^^^^^^^^^^^^^^^^^
@@ -32,8 +51,7 @@ Activities/Workouts
 
 **Notes:**
 
-- only activity owner can see his activity
-- **no administration for now**
+- for now, only activity owner can see his activities
 
 Translations
 ^^^^^^^^^^^^
@@ -63,3 +81,8 @@ Statistics
 ~~~~~~~~~~
 .. figure:: _images/fittrackee_screenshot-04.png
    :alt: FitTrackee Statistics
+
+Administration
+~~~~~~~~~~~~~~
+.. figure:: _images/fittrackee_screenshot-05.png
+   :alt: FitTrackee Administration

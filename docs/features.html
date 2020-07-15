@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Features &#8212; FitTrackee 0.2.5-beta
+    <title>Features &#8212; FitTrackee 0.3.0-beta
  documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.5</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -78,7 +78,8 @@
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#">Features</a><ul>
 <li><a class="reference internal" href="#list">List</a><ul>
-<li><a class="reference internal" href="#users">Users</a></li>
+<li><a class="reference internal" href="#account">Account</a></li>
+<li><a class="reference internal" href="#administration">Administration</a></li>
 <li><a class="reference internal" href="#activities-workouts">Activities/Workouts</a></li>
 <li><a class="reference internal" href="#translations">Translations</a></li>
 </ul>
@@ -87,6 +88,7 @@
 <li><a class="reference internal" href="#activity-workout-detail">Activity/workout detail</a></li>
 <li><a class="reference internal" href="#activities-workouts-list">Activities/workouts list</a></li>
 <li><a class="reference internal" href="#statistics">Statistics</a></li>
+<li><a class="reference internal" href="#id1">Administration</a></li>
 </ul>
 </li>
 </ul>
@@ -140,11 +142,36 @@
 <h1>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="list">
 <h2>List<a class="headerlink" href="#list" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="users">
-<h3>Users<a class="headerlink" href="#users" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="account">
+<h3>Account<a class="headerlink" href="#account" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>Account creation (only standard user, not admin)</p></li>
-<li><p>User registration can be disabled</p></li>
+<li><p>A user can create, update and deleted his account</p></li>
+<li><p>Password reset is now available</p></li>
+</ul>
+</div>
+<div class="section" id="administration">
+<h3>Administration<a class="headerlink" href="#administration" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Application</p>
+<ul>
+<li><p>active users limit (if 0, registration is enabled (no limit defined))</p></li>
+<li><p>maximum size of uploaded files</p></li>
+<li><p>maximum size of zip archive</p></li>
+<li><p>maximum number of files in the zip archive</p></li>
+</ul>
+</li>
+<li><p>Users</p>
+<ul>
+<li><p>display users list and details</p></li>
+<li><p>edit a user to add/remove administration rights</p></li>
+<li><p>delete a user</p></li>
+</ul>
+</li>
+<li><p>Sports</p>
+<ul>
+<li><p>enable or disable a sport (a sport can be disabled even if activity with this sport exists)</p></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="section" id="activities-workouts">
@@ -181,8 +208,7 @@
 </ul>
 <p><strong>Notes:</strong></p>
 <ul class="simple">
-<li><p>only activity owner can see his activity</p></li>
-<li><p><strong>no administration for now</strong></p></li>
+<li><p>for now, only activity owner can see his activities</p></li>
 </ul>
 </div>
 <div class="section" id="translations">
@@ -214,6 +240,12 @@
 <img alt="FitTrackee Statistics" src="_images/fittrackee_screenshot-04.png" />
 </div>
 </div>
+<div class="section" id="id1">
+<h2>Administration<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-default">
+<img alt="FitTrackee Administration" src="_images/fittrackee_screenshot-05.png" />
+</div>
+</div>
 </div>
 
 
@@ -228,7 +260,7 @@
       
     </p>
     <p>
-        &copy; Copyright 2018 - 2019, SamR1.<br/>
+        &copy; Copyright 2018 - 2020, SamR1.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
     </p>
   </div>

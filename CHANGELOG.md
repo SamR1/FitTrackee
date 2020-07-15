@@ -1,5 +1,23 @@
 # Change log
 
+## Version 0.3.0 - Administration (2020/07/xx)
+
+This version introduces some major changes:
+- FitTrackee administration is now available (see [documentation](https://samr1.github.io/FitTrackee/features.html#administration))  
+Note: some application parameters move from environment variables to database (see [installation](https://samr1.github.io/FitTrackee/installation.html#environment-variables)).
+- in order to send emails, Redis is now a mandatory dependency
+
+### Issues Closed
+
+#### New Features
+
+* [#50](https://github.com/SamR1/Fittrackee/issues/50) - A user can reset his password
+* [#17](https://github.com/SamR1/Fittrackee/issues/17) - A user can delete his account
+* [#15](https://github.com/SamR1/Fittrackee/issues/15) - Complete the administration
+
+In this release 3 issues were closed.
+
+
 ## Version 0.2.5 - Fix and improvements (2020/01/31)
 
 ### Misc
@@ -139,7 +157,7 @@ In this release 7 issues were closed.
 - only activity owner can see his activity
 - no administration for now
 
-➡️ more informations: see [wiki](https://github.com/SamR1/mpwo/wiki)  and [current issues](https://github.com/SamR1/mpwo/issues)
+➡️ more informations: see [documentation](https://samr1.github.io/FitTrackee/)  and [current issues](https://github.com/SamR1/FitTrackee/issues)
 
 
 ### Issues Closed

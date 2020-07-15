@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Installation &#8212; FitTrackee 0.2.5-beta
+    <title>Installation &#8212; FitTrackee 0.3.0-beta
  documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.5</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -88,7 +88,10 @@
 <li><a class="reference internal" href="#id3">Prod environment</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#environment-variables">Environment variables</a></li>
+<li><a class="reference internal" href="#environment-variables">Environment variables</a><ul>
+<li><a class="reference internal" href="#emails">Emails</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -148,6 +151,7 @@
 <li><p><a class="reference external" href="https://github.com/tkrajina/gpxpy">gpxpy</a> to parse gpx files</p></li>
 <li><p><a class="reference external" href="https://github.com/komoot/staticmap">staticmap</a> to generate a static map image from gpx coordinates</p></li>
 <li><p><a class="reference external" href="https://github.com/ZeevG/python-forecast.io">python-forecast.io</a> to fetch weather data from <a class="reference external" href="https://darksky.net">Dark Sky</a> (former forecast.io)</p></li>
+<li><p><a class="reference external" href="https://flask-dramatiq.readthedocs.io/en/latest/">dramatiq</a> for task queue</p></li>
 </ul>
 </dd>
 </dl>
@@ -167,12 +171,14 @@
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>PostgreSQL database (10+)</p></li>
+<li><p>Redis for task queue</p></li>
 <li><p>Python 3.7+</p></li>
 <li><p><a class="reference external" href="https://poetry.eustace.io">Poetry</a></p></li>
 <li><p><a class="reference external" href="https://yarnpkg.com">Yarn</a> and
 <a class="reference external" href="https://github.com/zeit/serve">serve</a></p></li>
 <li><p>API key from <a class="reference external" href="http://thunderforest.com">ThunderForest</a></p></li>
 <li><p>API key from <a class="reference external" href="https://darksky.net/dev">Dark Sky</a> [not mandatory]</p></li>
+<li><p>SMTP provider</p></li>
 </ul>
 </div>
 <div class="section" id="id1">
@@ -186,15 +192,15 @@ necessary.</div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Since FitTrackee 0.2.1, Python packages installation needs Poetry. To install it on ArchLinux:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ yaourt poetry
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ yay poetry
 $ poetry --version
-Poetry <span class="m">0</span>.12.17
+Poetry <span class="m">1</span>.0.5
 
 <span class="c1"># optional</span>
-$ poetry config settings.virtualenvs.in-project <span class="nb">true</span>
+$ poetry config virtualenvs.in-project <span class="nb">true</span>
 </pre></div>
 </div>
-<p>For other OS, see <a class="reference external" href="https://poetry.eustace.io/docs/#installation">Poetry Documentation</a></p>
+<p>For other OS, see <a class="reference external" href="https://python-poetry.org/docs/#installation">Poetry Documentation</a></p>
 </div>
 <div class="section" id="dev-environment">
 <h3>Dev environment<a class="headerlink" href="#dev-environment" title="Permalink to this headline">¶</a></h3>
@@ -222,6 +228,12 @@ $ make install-db
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make serve
 </pre></div>
 </div>
+<ul class="simple">
+<li><p>Run dramatiq workers:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make run-workers
+</pre></div>
+</div>
 <p>Open <a class="reference external" href="http://localhost:3000">http://localhost:3000</a> and login (the email is <code class="docutils literal notranslate"><span class="pre">admin&#64;example.com</span></code>
 and the password <code class="docutils literal notranslate"><span class="pre">mpwoadmin</span></code>) or register</p>
 </div>
@@ -232,11 +244,11 @@ and the password <code class="docutils literal notranslate"><span class="pre">mp
 <p>Note that FitTrackee is not production-ready yet</p>
 </div>
 <ul class="simple">
-<li><p>Download the last release (for now, it is the beta release v0.2.5):</p></li>
+<li><p>Download the last release (for now, it is the beta release v0.3.0):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.2.5-beta.tar.gz
-$ tar -xzf v0.2.5-beta.tar.gz
-$ mv FitTrackee-0.2.3-beta FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.3.0-beta.tar.gz
+$ tar -xzf v0.3.0-beta.tar.gz
+$ mv FitTrackee-0.3.0-beta FitTrackee
 $ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
@@ -261,6 +273,12 @@ $ make install-db
 <li><p>Start the server and the client:</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make run
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Run dramatiq workers:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make run-workers
 </pre></div>
 </div>
 <p>Open <a class="reference external" href="http://localhost:3000">http://localhost:3000</a>, log in as admin (the email is
@@ -311,9 +329,9 @@ $ make upgrade-db
 <p>The following environment variables must be defined in <strong>Makefile.custom.config</strong>:</p>
 <table class="table-bordered table-striped docutils align-default">
 <colgroup>
-<col style="width: 33%" />
-<col style="width: 35%" />
-<col style="width: 32%" />
+<col style="width: 30%" />
+<col style="width: 31%" />
+<col style="width: 39%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>variable</p></th>
@@ -322,32 +340,66 @@ $ make upgrade-db
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">REACT_APP_GPX_LIMIT_IMPORT</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">REACT_APP_API_URL</span></code></p></td>
+<td><p>Fittrackee API URL</p></td>
+<td><p>no default value, must be initialized</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">REACT_APP_GPX_LIMIT_IMPORT</span></code></p></td>
 <td><p>max. number of gpx file in zip archive</p></td>
-<td><p>10</p></td>
+<td><p>10 (<em>deprecated in 0.3.0</em>)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">REACT_APP_MAX_SINGLE_FILE_SIZE</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">REACT_APP_MAX_SINGLE_FILE_SIZE</span></code></p></td>
 <td><p>max. size of a gpx or picture file</p></td>
-<td><p>1MB</p></td>
+<td><p>1MB (<em>deprecated in 0.3.0</em>)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">REACT_APP_MAX_ZIP_FILE_SIZE</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">REACT_APP_MAX_ZIP_FILE_SIZE</span></code></p></td>
 <td><p>max. size of a zip archive</p></td>
-<td><p>10MB</p></td>
+<td><p>10MB (<em>deprecated in 0.3.0</em>)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">REACT_APP_ALLOW_REGISTRATION</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">REACT_APP_ALLOW_REGISTRATION</span></code></p></td>
 <td><p>allows users to register</p></td>
-<td><p>true</p></td>
+<td><p>true (<em>deprecated in 0.3.0</em>)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">REACT_APP_THUNDERFOREST_API_KEY</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">REACT_APP_THUNDERFOREST_API_KEY</span></code></p></td>
 <td><p>ThunderForest API key</p></td>
-<td><p>no defaut value, must be initialized</p></td>
+<td><p>no default value, must be initialized</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">WEATHER_API</span></code></p></td>
-<td><p>DarkSky API key</p></td>
-<td><p>no defaut value, not mandatory</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UI_URL</span></code></p></td>
+<td><p>application URL</p></td>
+<td><p>no default value, must be initialized</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code></p></td>
+<td><p>email URL with credentials</p></td>
+<td><p>no default value, must be initialized (see below)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SENDER_EMAIL</span></code></p></td>
+<td><p>application sender email address</p></td>
+<td><p>no default value, must be initialized</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">REDIS_URL</span></code></p></td>
+<td><p>Redis instance used by Dramatiq</p></td>
+<td><p>local Redis instance</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">WORKERS_PROCESSES</span></code></p></td>
+<td><p>number of process used by Dramatiq</p></td>
+<td><p>no default value, must be initialized</p></td>
 </tr>
 </tbody>
 </table>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Since FitTrackee 0.3.0, some applications parameters are now stored in database.
+Related environement variables are needed to initialize database.</p>
+</div>
+<div class="section" id="emails">
+<h3>Emails<a class="headerlink" href="#emails" title="Permalink to this headline">¶</a></h3>
+<p>To send emails, a valid <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> must be provided:</p>
+<ul class="simple">
+<li><p>with an unencrypted SMTP server: <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:25</span></code></p></li>
+<li><p>with SSL: <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:465/?ssl=True</span></code></p></li>
+<li><p>with STARTTLS: <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:587/?tls=True</span></code></p></li>
+</ul>
+</div>
 </div>
 </div>
 
@@ -363,7 +415,7 @@ $ make upgrade-db
       
     </p>
     <p>
-        &copy; Copyright 2018 - 2019, SamR1.<br/>
+        &copy; Copyright 2018 - 2020, SamR1.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
     </p>
   </div>

@@ -17,7 +17,7 @@ export const getFileSizeInMB = fileSize => {
   return (!fileSize && 0) || +value.toFixed(2)
 }
 
-export const version = '0.2.5-beta' // version stored in 'utils' for now
+export const version = '0.3.0-beta' // version stored in 'utils' for now
 export const apiUrl = `${process.env.REACT_APP_API_URL}/api/`
 /* prettier-ignore */
 export const thunderforestApiKey = `${

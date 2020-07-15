@@ -85,10 +85,10 @@ run-client:
 	serve -s fittrackee_client/build -l 3000 >> serve.log  2>&1
 
 run-server:
-	cd fittrackee_api && $(GUNICORN) -b 127.0.0.1:5000 "fittrackee_api:create_app()" --error-logfile ../gunicorn-error.log
+	cd fittrackee_api && $(GUNICORN) -b 127.0.0.1:5000 "fittrackee_api:create_app()" --error-logfile ../gunicorn.log
 
 run-workers:
-	$(FLASK) worker --processes=$(WORKERS_PROCESSES) >> workers.log  2>&1
+	$(FLASK) worker --processes=$(WORKERS_PROCESSES) >> dramatiq.log  2>&1
 
 serve-python:
 	$(FLASK) run --with-threads -h $(HOST) -p $(API_PORT)
