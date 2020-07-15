@@ -204,7 +204,7 @@ variable                              description                             ap
 
 .. warning::
     Since FitTrackee 0.3.0, some applications parameters are now stored in database.
-    Related environement variables are needed to initialize database.
+    Related environment variables are needed to initialize database.
 
 Emails
 ^^^^^^

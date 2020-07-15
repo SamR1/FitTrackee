@@ -17,6 +17,8 @@ No mobile app is developed yet, but several existing mobile apps can store worko
 Examples (for Android):  
 * [Runner Up](https://github.com/jonasoreland/runnerup) (GPL v3)  
 * [ForRunners](https://gitlab.com/brvier/ForRunners) (GPL v3)  
+* [OpenTracks](https://github.com/OpenTracksApp/OpenTracks) (Apache License)  
+* [FitoTrack](https://codeberg.org/jannis/FitoTrack) (GPL v3)  
 * [AlpineQuest](https://www.alpinequest.net/) (Proprietary, no trackers according to [exodus privay report](https://reports.exodus-privacy.eu.org/en/reports/search/psyberia.alpinequest.free/))  
 
 Maps are displayed using [Open Street Map](https://www.openstreetmap.org).  

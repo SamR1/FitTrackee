@@ -1,10 +1,10 @@
 # Change log
 
-## Version 0.3.0 - Administration (2020/07/xx)
+## Version 0.3.0 - Administration (2020/07/15)
 
 This version introduces some major changes:
 - FitTrackee administration is now available (see [documentation](https://samr1.github.io/FitTrackee/features.html#administration))  
-Note: some application parameters move from environment variables to database (see [installation](https://samr1.github.io/FitTrackee/installation.html#environment-variables)).
+⚠️ Warning: some application parameters move from environment variables to database (see [installation](https://samr1.github.io/FitTrackee/installation.html#environment-variables)).
 - in order to send emails, Redis is now a mandatory dependency
 
 ### Issues Closed

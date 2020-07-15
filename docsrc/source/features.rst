@@ -11,20 +11,22 @@ Account
 
 Administration
 ^^^^^^^^^^^^^^
-- Application
+- **Application**
+
+  The following parameters can be set:
 
   - active users limit (if 0, registration is enabled (no limit defined))
   - maximum size of uploaded files
   - maximum size of zip archive
   - maximum number of files in the zip archive
 
-- Users
+- **Users**
 
   - display users list and details
   - edit a user to add/remove administration rights
   - delete a user
 
-- Sports
+- **Sports**
 
   - enable or disable a sport (a sport can be disabled even if activity with this sport exists)
 
@@ -49,9 +51,8 @@ Activities/Workouts
     - maximum speed
 - Activities list and filter
 
-**Notes:**
-
-- for now, only activity owner can see his activities
+.. note::
+    for now, only the owner of the activity can see the activity.
 
 Translations
 ^^^^^^^^^^^^

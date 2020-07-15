@@ -12,6 +12,8 @@ FitTrackee
 | Examples (for Android):
 | \* `Runner Up <https://github.com/jonasoreland/runnerup>`_ (GPL v3)
 | \* `ForRunners <https://gitlab.com/brvier/ForRunners>`_ (GPL v3)
+| \* `OpenTracks <https://github.com/OpenTracksApp/OpenTracks>`_ (Apache License)
+| \* `FitoTrack <https://codeberg.org/jannis/FitoTrack>`_ (GPL v3)
 | \* `AlpineQuest <https://www.alpinequest.net/>`_ (Proprietary, no
   trackers according to `exodus privay
   report <https://reports.exodus-privacy.eu.org/en/reports/search/psyberia.alpinequest.free/>`_)
