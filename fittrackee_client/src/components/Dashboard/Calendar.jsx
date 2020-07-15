@@ -8,6 +8,7 @@ import {
   format,
   isSameDay,
   isSameMonth,
+  isToday,
   startOfMonth,
   startOfWeek,
   subMonths,
@@ -110,7 +111,12 @@ class Calendar extends React.Component {
           ? [5, 6].includes(i)
           : [0, 6].includes(i)
         days.push(
-          <div className={`col cell ${isWeekEnd ? ' weekend' : ''}`} key={day}>
+          <div
+            className={`col cell ${isWeekEnd ? ' weekend' : ''}${
+              isToday(day) ? ' today' : ''
+            }`}
+            key={day}
+          >
             <div className={`img${isDisabled}`}>
               <span className="number">{formattedDate}</span>
               <CalendarActivities

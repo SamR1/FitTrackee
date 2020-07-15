@@ -741,6 +741,10 @@ label {
   background: #f5f5f5;
 }
 
+.calendar .body .today {
+  background: #eff1f3;
+}
+
 .calendar-activity,
 .calendar-more {
   display: none;
