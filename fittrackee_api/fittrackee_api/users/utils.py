@@ -153,9 +153,9 @@ def display_readable_file_size(size_in_bytes):
 
 
 def get_readable_duration(duration, locale='en'):
-    if locale != 'en':
+    if locale is not None and locale != 'en':
         _t = humanize.i18n.activate(locale)  # noqa
     readable_duration = humanize.naturaldelta(timedelta(seconds=duration))
-    if locale != 'en':
+    if locale is not None and locale != 'en':
         humanize.i18n.deactivate()
     return readable_duration
