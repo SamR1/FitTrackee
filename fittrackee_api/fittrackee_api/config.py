@@ -4,9 +4,8 @@ from dramatiq.brokers.redis import RedisBroker
 from dramatiq.brokers.stub import StubBroker
 from flask import current_app
 
-if os.getenv('APP_SETTINGS') == 'fittrackee_api.config.Testing':
+if os.getenv('APP_SETTINGS') == 'fittrackee_api.config.TestingConfig':
     broker = StubBroker
-    broker.emit_after("process_boot")
 else:
     broker = RedisBroker
 
