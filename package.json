@@ -5,10 +5,10 @@
   "dependencies": {
     "@mapbox/togeojson": "^0.16.0",
     "connected-react-router": "^6.8.0",
-    "date-fns": "^2.14.0",
+    "date-fns": "^2.15.0",
     "history": "^4.10.1",
-    "i18next": "^19.6.0",
-    "i18next-browser-languagedetector": "^5.0.0",
+    "i18next": "^19.6.3",
+    "i18next-browser-languagedetector": "^5.0.1",
     "i18next-xhr-backend": "^3.2.2",
     "leaflet": "^1.6.0",
     "luxon": "^1.24.1",
@@ -18,7 +18,7 @@
     "react-helmet": "^6.1.0",
     "react-i18next": "^11.7.0",
     "react-leaflet": "^2.7.0",
-    "react-redux": "^7.2.0",
+    "react-redux": "^7.2.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.1",
     "react-timezone": "^2.4.0",
@@ -49,6 +49,6 @@
     "eslint-plugin-testcafe": "^0.2.1",
     "prettier": "^2.0.5",
     "randomstring": "^1.1.5",
-    "testcafe": "^1.8.8"
+    "testcafe": "^1.9.0"
   }
 }
