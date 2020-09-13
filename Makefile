@@ -58,10 +58,10 @@ lint-all: lint-python lint-react
 lint-all-fix: lint-python-fix lint-react-fix
 
 lint-python:
-	$(PYTEST) --flake8 --isort --black -m "flake8 or isort or black" fittrackee_api --ignore=fittrackee_api/migrations
+	$(PYTEST) --flake8 --isort --black -m "flake8 or isort or black" fittrackee_api e2e --ignore=fittrackee_api/migrations
 
 lint-python-fix:
-	$(BLACK) fittrackee_api
+	$(BLACK) fittrackee_api e2e
 
 lint-react:
 	$(NPM) lint
@@ -103,7 +103,10 @@ serve-dev:
 	$(MAKE) P="serve-react serve-python-dev" make-p
 
 test-e2e: init-db
-	$(NPM) test
+	$(PYTEST) e2e --driver firefox $(PYTEST_ARGS) $(E2E_ARGS)
+
+test-e2e-client: init-db
+	E2E_ARGS=client $(PYTEST) e2e --driver firefox $(PYTEST_ARGS)
 
 test-python:
 	$(PYTEST) fittrackee_api --cov-config .coveragerc --cov=fittrackee_api --cov-report term-missing $(PYTEST_ARGS)

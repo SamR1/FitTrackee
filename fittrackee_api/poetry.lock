@@ -652,6 +652,18 @@ version = ">=0.12"
 python = "<3.8"
 
 [[package]]
+name = "pytest-base-url"
+version = "1.4.2"
+description = "pytest plugin for URL based testing"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+pytest = ">=2.7.3"
+requests = ">=2.9"
+
+[[package]]
 name = "pytest-black"
 version = "0.3.11"
 description = "A pytest plugin to enable format checking with black"
@@ -695,6 +707,18 @@ flake8 = ">=3.5"
 pytest = ">=3.5"
 
 [[package]]
+name = "pytest-html"
+version = "2.1.1"
+description = "pytest plugin for generating HTML reports"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+pytest = ">=5.0"
+pytest-metadata = "*"
+
+[[package]]
 name = "pytest-isort"
 version = "1.2.0"
 description = "py.test plugin to check import ordering using isort"
@@ -709,6 +733,17 @@ tests = ["mock"]
 isort = ">=4.0"
 
 [[package]]
+name = "pytest-metadata"
+version = "1.10.0"
+description = "pytest plugin for test session metadata"
+category = "dev"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
+
+[package.dependencies]
+pytest = ">=2.9.0"
+
+[[package]]
 name = "pytest-runner"
 version = "5.2"
 description = "Invoke py.test as distutils command with dependency resolution"
@@ -719,6 +754,42 @@ python-versions = ">=2.7"
 [package.extras]
 docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pytest (>=3.5,<3.7.3 || >3.7.3)", "pytest-checkdocs", "pytest-flake8", "pytest-black-multipy", "pytest-cov", "pytest-virtualenv"]
+
+[[package]]
+name = "pytest-selenium"
+version = "2.0.0"
+description = "pytest plugin for Selenium"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.extras]
+appium = ["appium-python-client (>=0.44)"]
+
+[package.dependencies]
+pytest = ">=5.0.0"
+pytest-base-url = "*"
+pytest-html = ">=1.14.0"
+pytest-variables = ">=1.5.0"
+requests = "*"
+selenium = ">=3.0.0"
+tenacity = ">=6,<7"
+
+[[package]]
+name = "pytest-variables"
+version = "1.9.0"
+description = "pytest plugin for providing variables to tests/fixtures"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.extras]
+hjson = ["hjson"]
+toml = ["toml"]
+yaml = ["pyyaml"]
+
+[package.dependencies]
+pytest = ">=2.4.2"
 
 [[package]]
 name = "python-dateutil"
@@ -824,6 +895,17 @@ tests = ["coverage (>=3.7.1,<6.0.0)", "pytest-cov", "pytest-localserver", "flake
 requests = ">=2.0"
 six = "*"
 urllib3 = ">=1.25.10"
+
+[[package]]
+name = "selenium"
+version = "3.141.0"
+description = "Python bindings for Selenium"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+urllib3 = "*"
 
 [[package]]
 name = "six"
@@ -1000,6 +1082,20 @@ Pillow = "*"
 requests = "*"
 
 [[package]]
+name = "tenacity"
+version = "6.2.0"
+description = "Retry code until it succeeds"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.extras]
+doc = ["reno", "sphinx", "tornado (>=4.5)"]
+
+[package.dependencies]
+six = ">=1.9.0"
+
+[[package]]
 name = "toml"
 version = "0.10.1"
 description = "Python Library for Tom's Obvious, Minimal Language"
@@ -1075,7 +1171,7 @@ testing = ["jaraco.itertools", "func-timeout"]
 [metadata]
 lock-version = "1.0"
 python-versions = "^3.7"
-content-hash = "0d1e7030730e202fc78148ad1e14d5a022d8d37e165c6ace6e2c4b4f8f62cb3c"
+content-hash = "2dd6612c53553c2dc00eb59a85b3f29d958ae8c7d45ba682392dd0baf06ff824"
 
 [metadata.files]
 alabaster = [
@@ -1476,6 +1572,10 @@ pytest = [
     {file = "pytest-6.0.2-py3-none-any.whl", hash = "sha256:0e37f61339c4578776e090c3b8f6b16ce4db333889d65d0efb305243ec544b40"},
     {file = "pytest-6.0.2.tar.gz", hash = "sha256:c8f57c2a30983f469bf03e68cdfa74dc474ce56b8f280ddcb080dfd91df01043"},
 ]
+pytest-base-url = [
+    {file = "pytest-base-url-1.4.2.tar.gz", hash = "sha256:7f1f32e08c2ee751e59e7f5880235b46e83496adc5cba5a01ca218c6fe81333d"},
+    {file = "pytest_base_url-1.4.2-py2.py3-none-any.whl", hash = "sha256:8b6523a1a3af73c317bdae97b722dfb55a7336733d1ad411eb4a4931347ba77a"},
+]
 pytest-black = [
     {file = "pytest-black-0.3.11.tar.gz", hash = "sha256:595eb0e7908b8a858a8564a5c8f0eae853c3926a4ec7b2afdfcedfa6fec65dd6"},
 ]
@@ -1487,13 +1587,29 @@ pytest-flake8 = [
     {file = "pytest-flake8-1.0.6.tar.gz", hash = "sha256:1b82bb58c88eb1db40524018d3fcfd0424575029703b4e2d8e3ee873f2b17027"},
     {file = "pytest_flake8-1.0.6-py2.py3-none-any.whl", hash = "sha256:2e91578ecd9b200066f99c1e1de0f510fbb85bcf43712d46ea29fe47607cc234"},
 ]
+pytest-html = [
+    {file = "pytest-html-2.1.1.tar.gz", hash = "sha256:6a4ac391e105e391208e3eb9bd294a60dd336447fd8e1acddff3a6de7f4e57c5"},
+    {file = "pytest_html-2.1.1-py2.py3-none-any.whl", hash = "sha256:9e4817e8be8ddde62e8653c8934d0f296b605da3d2277a052f762c56a8b32df2"},
+]
 pytest-isort = [
     {file = "pytest-isort-1.2.0.tar.gz", hash = "sha256:f0fcf9674f3a627b36e07466d335e82b0f7c4f9e0f7ec39f2a1750b0189d5371"},
     {file = "pytest_isort-1.2.0-py3-none-any.whl", hash = "sha256:2c6a1d210e8c478e418ab25df2408c235c97b1b8958fb0b139d790d0ec246f58"},
 ]
+pytest-metadata = [
+    {file = "pytest-metadata-1.10.0.tar.gz", hash = "sha256:b7e6e0a45adacb17a03a97bf7a2ef60cc1f4e172bcce9732ce5e814191932315"},
+    {file = "pytest_metadata-1.10.0-py2.py3-none-any.whl", hash = "sha256:fcbcc5781aee450107c620c79c57e50796b6777b82b3c504be9cbc3017201169"},
+]
 pytest-runner = [
     {file = "pytest-runner-5.2.tar.gz", hash = "sha256:96c7e73ead7b93e388c5d614770d2bae6526efd997757d3543fe17b557a0942b"},
     {file = "pytest_runner-5.2-py2.py3-none-any.whl", hash = "sha256:5534b08b133ef9a5e2c22c7886a8f8508c95bb0b0bdc6cc13214f269c3c70d51"},
+]
+pytest-selenium = [
+    {file = "pytest-selenium-2.0.0.tar.gz", hash = "sha256:6a7c655c9202fa5964b872859d8aad18a67ccbdfbaa078d154cab82914d70504"},
+    {file = "pytest_selenium-2.0.0-py2.py3-none-any.whl", hash = "sha256:114bc1df383b0bb841a62ad03b222aa57d0866d57f03f81b539e59fcf43231b8"},
+]
+pytest-variables = [
+    {file = "pytest-variables-1.9.0.tar.gz", hash = "sha256:f79851e4c92a94c93d3f1d02377b5ac97cc8800392e87d108d2cbfda774ecc2a"},
+    {file = "pytest_variables-1.9.0-py2.py3-none-any.whl", hash = "sha256:ccf4afcd70de1f5f18b4463758a19f24647a9def1805f675e80db851c9e00ac0"},
 ]
 python-dateutil = [
     {file = "python-dateutil-2.8.1.tar.gz", hash = "sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c"},
@@ -1551,6 +1667,10 @@ requests = [
 responses = [
     {file = "responses-0.12.0-py2.py3-none-any.whl", hash = "sha256:0de50fbf600adf5ef9f0821b85cc537acca98d66bc7776755924476775c1989c"},
     {file = "responses-0.12.0.tar.gz", hash = "sha256:e80d5276011a4b79ecb62c5f82ba07aa23fb31ecbc95ee7cad6de250a3c97444"},
+]
+selenium = [
+    {file = "selenium-3.141.0-py2.py3-none-any.whl", hash = "sha256:2d7131d7bc5a5b99a2d9b04aaf2612c411b03b8ca1b1ee8d3de5845a9be2cb3c"},
+    {file = "selenium-3.141.0.tar.gz", hash = "sha256:deaf32b60ad91a4611b98d8002757f29e6f2c2d5fcaf202e1c9ad06d6772300d"},
 ]
 six = [
     {file = "six-1.15.0-py2.py3-none-any.whl", hash = "sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced"},
@@ -1631,6 +1751,10 @@ sqlalchemy = [
 ]
 staticmap = [
     {file = "staticmap-0.5.4.tar.gz", hash = "sha256:9d05a1739cffa0cf6ab8f64873e6dacb36c593c23f2a70053115ef344954b315"},
+]
+tenacity = [
+    {file = "tenacity-6.2.0-py2.py3-none-any.whl", hash = "sha256:5a5d3dcd46381abe8b4f82b5736b8726fd3160c6c7161f53f8af7f1eb9b82173"},
+    {file = "tenacity-6.2.0.tar.gz", hash = "sha256:29ae90e7faf488a8628432154bb34ace1cca58244c6ea399fd33f066ac71339a"},
 ]
 toml = [
     {file = "toml-0.10.1-py2.py3-none-any.whl", hash = "sha256:bda89d5935c2eac546d648028b9901107a595863cb36bae0c73ac804a9b4ce88"},
