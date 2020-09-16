@@ -5,10 +5,10 @@ variables:
   POSTGRES_USER: fittrackee
   POSTGRES_PASSWORD: fittrackee
   POSTGRES_HOST: postgres
-  APP_SETTINGS: fittrackee_api.config.TestingConfig
+  APP_SETTINGS: fittrackee.config.TestingConfig
   DATABASE_TEST_URL: postgres://fittrackee:fittrackee@postgres:5432/fittrackee_test
   EMAIL_URL: smtp://none:none@0.0.0.0:1025
-  FLASK_APP: fittrackee_api/server.py
+  FLASK_APP: fittrackee/server.py
   SENDER_EMAIL: fittrackee@example.com
 
 services:
@@ -26,12 +26,12 @@ stages:
     - poetry config virtualenvs.create false
     - poetry install --no-interaction --quiet
   script:
-    - pytest fittrackee_api -p no:warnings --cov fittrackee_api --cov-report term-missing
+    - pytest fittrackee -p no:warnings --cov fittrackee --cov-report term-missing
 
 lint:
   extends: .python
   script:
-    - pytest --flake8 --isort --black -m "flake8 or isort or black" fittrackee_api e2e --ignore=fittrackee_api/migrations
+    - pytest --flake8 --isort --black -m "flake8 or isort or black" fittrackee e2e --ignore=fittrackee/migrations
 
 python-3.7:
   extends: .python
@@ -51,7 +51,7 @@ firefox:
     - pip install --quiet poetry
     - poetry config virtualenvs.create false
     - poetry install --no-interaction --quiet
-    - flask db upgrade --directory fittrackee_api/migrations
+    - flask db upgrade --directory fittrackee/migrations
     - flask initdata
     - setsid nohup flask run --with-threads -h 0.0.0.0 -p 5000 >> nohup.out 2>&1 &
     - export TEST_APP_URL=http://$(hostname --ip-address):5000

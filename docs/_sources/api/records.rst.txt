@@ -1,6 +1,6 @@
 Records
 #######
 
-.. autoflask:: fittrackee_api:create_app()
+.. autoflask:: fittrackee:create_app()
    :endpoints:
     records.get_records

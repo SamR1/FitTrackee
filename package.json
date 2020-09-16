@@ -28,7 +28,7 @@
   },
   "scripts": {
     "start": "cd fittrackee_client && react-scripts start",
-    "build": "NODE_ENV=production cd fittrackee_client && react-scripts build && rm -rf ../fittrackee_api/dist/* && cp -a build/. ../fittrackee_api/dist",
+    "build": "NODE_ENV=production cd fittrackee_client && react-scripts build && rm -rf ../fittrackee/dist/* && cp -a build/. ../fittrackee/dist",
     "eject": "cd fittrackee_client && react-scripts eject",
     "lint": "eslint --cache --ext .jsx --ext .js fittrackee_client/src",
     "lint-fix": "eslint --cache --ext .jsx --ext .js fittrackee_client/src --fix"

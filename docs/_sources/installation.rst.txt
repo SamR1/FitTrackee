@@ -144,7 +144,7 @@ Upgrade
 .. warning::
     | Before upgrading, make a backup of all data:
     | - database (with `pg_dump <https://www.postgresql.org/docs/11/app-pgdump.html>`__ for instance)
-    | - upload directory: **FitTrackee/fittrackee_api/fittrackee_api/uploads/**
+    | - upload directory: **FitTrackee/fittrackee/fittrackee_api/uploads/**
 
 
 Dev environment

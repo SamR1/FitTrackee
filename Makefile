@@ -25,7 +25,7 @@ html:
 	cp -a docsrc/build/html/. docs
 
 install-db:
-	psql -U postgres -f fittrackee_api/db/create.sql
+	psql -U postgres -f db/create.sql
 	$(FLASK) db upgrade --directory $(MIGRATIONS)
 	$(FLASK) initdata
 
@@ -58,10 +58,10 @@ lint-all: lint-python lint-react
 lint-all-fix: lint-python-fix lint-react-fix
 
 lint-python:
-	$(PYTEST) --flake8 --isort --black -m "flake8 or isort or black" fittrackee_api e2e --ignore=fittrackee_api/migrations
+	$(PYTEST) --flake8 --isort --black -m "flake8 or isort or black" fittrackee e2e --ignore=fittrackee/migrations
 
 lint-python-fix:
-	$(BLACK) fittrackee_api e2e
+	$(BLACK) fittrackee e2e
 
 lint-react:
 	$(NPM) lint
@@ -82,7 +82,7 @@ run:
 	$(MAKE) P="run-server run-workers" make-p
 
 run-server:
-	cd fittrackee_api && $(GUNICORN) -b 127.0.0.1:5000 "fittrackee_api:create_app()" --error-logfile ../gunicorn.log
+	cd fittrackee && $(GUNICORN) -b 127.0.0.1:5000 "fittrackee:create_app()" --error-logfile ../gunicorn.log
 
 run-workers:
 	$(FLASK) worker --processes=$(WORKERS_PROCESSES) >> dramatiq.log  2>&1
@@ -103,19 +103,13 @@ serve-dev:
 	$(MAKE) P="serve-react serve-python-dev" make-p
 
 test-e2e: init-db
-	$(PYTEST) e2e --driver firefox $(PYTEST_ARGS) $(E2E_ARGS)
+	$(PYTEST) e2e --driver firefox $(PYTEST_ARGS)
 
 test-e2e-client: init-db
 	E2E_ARGS=client $(PYTEST) e2e --driver firefox $(PYTEST_ARGS)
 
 test-python:
-	$(PYTEST) fittrackee_api --cov-config .coveragerc --cov=fittrackee_api --cov-report term-missing $(PYTEST_ARGS)
-
-test-python-xml:
-	$(PYTEST) fittrackee_api --cov-config .coveragerc --cov=fittrackee_api --cov-report xml
-
-update-cov:	test-python-xml
-	$(COV) -r coverage.xml
+	$(PYTEST) fittrackee --cov-config .coveragerc --cov=fittrackee --cov-report term-missing $(PYTEST_ARGS)
 
 upgrade-db:
 	$(FLASK) db upgrade --directory $(MIGRATIONS)
