@@ -636,7 +636,6 @@
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/activities/map/fa33f4d996844a5c73ecd1ae24456ab8?1563529507772</span>
   <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
-<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
 <p><strong>Example response</strong>:</p>
@@ -664,6 +663,32 @@
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="http get">
+<dt id="get--api-activities-map_tile-(s)-(z)-(x)-(y).png">
+<code class="sig-name descname">GET </code><code class="sig-name descname">/api/activities/map_tile/</code><span class="sig-paren">(</span><em class="sig-param">s</em><span class="sig-paren">)</span><code class="sig-name descname">/</code><span class="sig-paren">(</span><em class="sig-param">z</em><span class="sig-paren">)</span><code class="sig-name descname">/</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><code class="sig-name descname">/</code><span class="sig-paren">(</span><em class="sig-param">y</em><span class="sig-paren">)</span><code class="sig-name descname">.png</code><a class="headerlink" href="#get--api-activities-map_tile-(s)-(z)-(x)-(y).png" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get map tile from tile server.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/activities/map_tile/c/13/4109/2930.png</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">image/png</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s</strong> (<em>string</em>) – subdomain</p></li>
+<li><p><strong>z</strong> (<em>string</em>) – zoom</p></li>
+<li><p><strong>x</strong> (<em>string</em>) – index of the tile along the map’s x axis</p></li>
+<li><p><strong>y</strong> (<em>string</em>) – index of the tile along the map’s y axis</p></li>
+</ul>
+</dd>
+</dl>
+<p>Status codes are status codes returned by tile server</p>
 </dd></dl>
 
 <dl class="http post">

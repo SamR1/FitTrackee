@@ -4,7 +4,7 @@ import { GeoJSON, Map, Marker, TileLayer } from 'react-leaflet'
 import { connect } from 'react-redux'
 
 import { getActivityGpx, getSegmentGpx } from '../../../actions/activities'
-import { thunderforestApiKey } from '../../../utils'
+import { apiUrl } from '../../../utils'
 import { getGeoJson } from '../../../utils/activities'
 
 class ActivityMap extends React.Component {
@@ -62,8 +62,8 @@ class ActivityMap extends React.Component {
             <TileLayer
               // eslint-disable-next-line max-len
               attribution='&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              // eslint-disable-next-line max-len
-              url={`https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=${thunderforestApiKey}`}
+              url={`${apiUrl}activities/map_tile/{s}/{z}/{x}/{y}.png`}
+
             />
             <GeoJSON
               // hash as a key to force re-rendering

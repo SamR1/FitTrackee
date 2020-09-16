@@ -25,7 +25,6 @@ Prerequisites
 -  `Poetry <https://poetry.eustace.io>`__
 -  `Yarn <https://yarnpkg.com>`__ and
    `serve <https://github.com/zeit/serve>`__
--  API key from `ThunderForest <http://thunderforest.com>`__
 -  API key from `Dark Sky <https://darksky.net/dev>`__ [not mandatory]
 -  SMTP provider
 
@@ -186,21 +185,22 @@ The following environment variables must be defined in **Makefile.custom.config*
 
 .. cssclass:: table-bordered table-striped
 
-===================================== ======================================= ====================================
-variable                              description                             app default value
-===================================== ======================================= ====================================
-``REACT_APP_API_URL``                 Fittrackee API URL                      no default value, must be initialized
-``REACT_APP_GPX_LIMIT_IMPORT``        max. number of gpx file in zip archive  10 (*deprecated in 0.3.0*)
-``REACT_APP_MAX_SINGLE_FILE_SIZE``    max. size of a gpx or picture file      1MB (*deprecated in 0.3.0*)
-``REACT_APP_MAX_ZIP_FILE_SIZE``       max. size of a zip archive              10MB (*deprecated in 0.3.0*)
-``REACT_APP_ALLOW_REGISTRATION``      allows users to register                true (*deprecated in 0.3.0*)
-``REACT_APP_THUNDERFOREST_API_KEY``   ThunderForest API key                   no default value, must be initialized
-``UI_URL``                            application URL                         no default value, must be initialized
-``EMAIL_URL``                         email URL with credentials              no default value, must be initialized (see below)
-``SENDER_EMAIL``                      application sender email address        no default value, must be initialized
-``REDIS_URL``                         Redis instance used by Dramatiq         local Redis instance
-``WORKERS_PROCESSES``                 number of process used by Dramatiq      no default value, must be initialized
-===================================== ======================================= ====================================
+===================================== ======================================== ====================================
+variable                              description                              app default value
+===================================== ======================================== ====================================
+``REACT_APP_API_URL``                 Fittrackee API URL                       no default value, must be initialized
+``REACT_APP_GPX_LIMIT_IMPORT``        max. number of gpx file in zip archive   10 (*deprecated in 0.3.0*)
+``REACT_APP_MAX_SINGLE_FILE_SIZE``    max. size of a gpx or picture file       1MB (*deprecated in 0.3.0*)
+``REACT_APP_MAX_ZIP_FILE_SIZE``       max. size of a zip archive               10MB (*deprecated in 0.3.0*)
+``REACT_APP_ALLOW_REGISTRATION``      allows users to register                 true (*deprecated in 0.3.0*)
+``REACT_APP_THUNDERFOREST_API_KEY``   ThunderForest API key                    (*deprecated*, use ``TILE_SERVER_URL`` instead)
+``TILE_SERVER_URL``                   Tile server URL (with api key if needed) ``https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png``
+``UI_URL``                            application URL                          no default value, must be initialized
+``EMAIL_URL``                         email URL with credentials               no default value, must be initialized (see below)
+``SENDER_EMAIL``                      application sender email address         no default value, must be initialized
+``REDIS_URL``                         Redis instance used by Dramatiq          local Redis instance
+``WORKERS_PROCESSES``                 number of process used by Dramatiq       no default value, must be initialized
+===================================== ======================================== ====================================
 
 .. warning::
     Since FitTrackee 0.3.0, some applications parameters are now stored in database.

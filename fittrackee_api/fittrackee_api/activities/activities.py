@@ -3,8 +3,17 @@ import os
 import shutil
 from datetime import datetime, timedelta
 
+import requests
 from fittrackee_api import appLog, db
-from flask import Blueprint, current_app, jsonify, request, send_file
+from flask import (
+    Blueprint,
+    Response,
+    current_app,
+    jsonify,
+    request,
+    send_file,
+    stream_with_context,
+)
 from sqlalchemy import exc
 
 from ..users.utils import (
@@ -681,7 +690,6 @@ def get_map(map_id):
 
       GET /api/activities/map/fa33f4d996844a5c73ecd1ae24456ab8?1563529507772
         HTTP/1.1
-      Content-Type: application/json
 
     **Example response**:
 
@@ -716,6 +724,46 @@ def get_map(map_id):
         appLog.error(e)
         response_object = {'status': 'error', 'message': 'internal error.'}
         return jsonify(response_object), 500
+
+
+@activities_blueprint.route(
+    '/activities/map_tile/<s>/<z>/<x>/<y>.png', methods=['GET']
+)
+def get_map_tile(s, z, x, y):
+    """
+    Get map tile from tile server.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/activities/map_tile/c/13/4109/2930.png HTTP/1.1
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: image/png
+
+    :param string s: subdomain
+    :param string z: zoom
+    :param string x: index of the tile along the map's x axis
+    :param string y: index of the tile along the map's y axis
+
+    Status codes are status codes returned by tile server
+
+    """
+    url = current_app.config["TILE_SERVER_URL"].format(s=s, z=z, x=x, y=y)
+    headers = {'User-Agent': 'Mozilla/5.0'}
+    response = requests.get(url, headers=headers)
+    return (
+        Response(
+            response.content,
+            content_type=response.headers['content-type'],
+        ),
+        response.status_code,
+    )
 
 
 @activities_blueprint.route('/activities', methods=['POST'])

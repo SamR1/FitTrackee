@@ -28,6 +28,9 @@ class BaseConfig:
     EMAIL_URL = os.environ.get('EMAIL_URL')
     SENDER_EMAIL = os.environ.get('SENDER_EMAIL')
     DRAMATIQ_BROKER = broker
+    TILE_SERVER_URL = os.environ.get(
+        'TILE_SERVER_URL', 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+    )
 
 
 class DevelopmentConfig(BaseConfig):

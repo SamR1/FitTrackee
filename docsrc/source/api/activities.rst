@@ -10,6 +10,7 @@ Activities
     activities.get_segment_chart_data,
     activities.get_segment_gpx,
     activities.get_map,
+    activities.get_map_tile,
     activities.post_activity,
     activities.post_activity_no_gpx,
     activities.update_activity,
