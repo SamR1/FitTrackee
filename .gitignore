@@ -3,7 +3,7 @@
 
 Makefile.custom.config
 
-# MPWO_API
+# API
 ###############
 __pycache__
 uploads
@@ -13,8 +13,9 @@ coverage.xml
 .pytest_cache
 .venv
 /fittrackee.egg-info/
+/dist
 
-# MPWO_CLIENT
+# CLIENT
 ###############
 
 # dependencies

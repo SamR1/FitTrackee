@@ -24,7 +24,9 @@ def create_app():
 
     # set config
     with app.app_context():
-        app_settings = os.getenv('APP_SETTINGS')
+        app_settings = os.getenv(
+            'APP_SETTINGS', 'fittrackee.config.ProductionConfig'
+        )
         if app_settings == 'fittrackee.config.TestingConfig':
             # reload config on tests
             config = import_module('fittrackee.config')

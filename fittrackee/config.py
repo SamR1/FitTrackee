@@ -3,6 +3,7 @@ import os
 from dramatiq.brokers.redis import RedisBroker
 from dramatiq.brokers.stub import StubBroker
 from flask import current_app
+from sqlalchemy.pool import NullPool
 
 if os.getenv('APP_SETTINGS') == 'fittrackee.config.TestingConfig':
     broker = StubBroker
@@ -20,7 +21,9 @@ class BaseConfig:
     TOKEN_EXPIRATION_DAYS = 30
     TOKEN_EXPIRATION_SECONDS = 0
     PASSWORD_TOKEN_EXPIRATION_SECONDS = 3600
-    UPLOAD_FOLDER = os.path.join(current_app.root_path, 'uploads')
+    UPLOAD_FOLDER = os.path.join(
+        os.getenv('UPLOAD_FOLDER', current_app.root_path), 'uploads'
+    )
     PICTURE_ALLOWED_EXTENSIONS = {'jpg', 'png', 'gif'}
     ACTIVITY_ALLOWED_EXTENSIONS = {'gpx', 'zip'}
     TEMPLATES_FOLDER = os.path.join(current_app.root_path, 'email/templates')
@@ -68,3 +71,18 @@ class TestingConfig(BaseConfig):
     TOKEN_EXPIRATION_SECONDS = 3
     PASSWORD_TOKEN_EXPIRATION_SECONDS = 3
     UPLOAD_FOLDER = '/tmp/fitTrackee/uploads'
+
+
+class ProductionConfig(BaseConfig):
+    """Production configuration"""
+
+    DEBUG = False
+    # https://docs.sqlalchemy.org/en/13/core/pooling.html#using-connection-pools-with-multiprocessing-or-os-fork  # noqa
+    SQLALCHEMY_ENGINE_OPTIONS = (
+        {'poolclass': NullPool}
+        if os.getenv('DATABASE_DISABLE_POOLING', True)
+        else {}
+    )
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    SECRET_KEY = os.getenv('APP_SECRET_KEY')
+    DRAMATIQ_BROKER_URL = os.getenv('REDIS_URL', 'redis://')
