@@ -23,7 +23,7 @@ dramatiq = {extras = ["redis"], version = "^1.9.0"}
 flask-dramatiq = "^0.6.0"
 
 [tool.poetry.dev-dependencies]
-black = "^19.10b0"
+black = "^20.8b1"
 pytest = "^6.0"
 pytest-black = "^0.3.10"
 pytest-cov = "^2.10"
@@ -36,7 +36,7 @@ sphinxcontrib-httpdomain = "^1.7"
 sphinx-bootstrap-theme = "^0.7.1"
 recommonmark = "^0.6.0"
 pyopenssl = "^19.0"
-freezegun = "^0.3.15"
+freezegun = "^1.0.0"
 
 [tool.pytest]
 norecursedirs = "fittrackee_api/.venv"

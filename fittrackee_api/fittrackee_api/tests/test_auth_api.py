@@ -887,7 +887,11 @@ class TestRegistrationConfiguration:
         assert data['message'] == 'Error. Registration is disabled.'
 
     def test_it_does_not_disable_registration_on_user_registration(
-        self, app_no_config, app_config, user_1_admin, user_2,
+        self,
+        app_no_config,
+        app_config,
+        user_1_admin,
+        user_2,
     ):
         app_config.max_users = 4
         client = app_no_config.test_client()
@@ -985,7 +989,12 @@ class TestPasswordUpdate:
 
         response = client.post(
             '/api/auth/password/update',
-            data=json.dumps(dict(token='xxx', password='1234567',)),
+            data=json.dumps(
+                dict(
+                    token='xxx',
+                    password='1234567',
+                )
+            ),
             content_type='application/json',
         )
 
@@ -1000,7 +1009,10 @@ class TestPasswordUpdate:
         response = client.post(
             '/api/auth/password/update',
             data=json.dumps(
-                dict(password='12345678', password_conf='12345678',)
+                dict(
+                    password='12345678',
+                    password_conf='12345678',
+                )
             ),
             content_type='application/json',
         )
@@ -1015,7 +1027,12 @@ class TestPasswordUpdate:
 
         response = client.post(
             '/api/auth/password/update',
-            data=json.dumps(dict(token='xxx', password_conf='12345678',)),
+            data=json.dumps(
+                dict(
+                    token='xxx',
+                    password_conf='12345678',
+                )
+            ),
             content_type='application/json',
         )
 
@@ -1029,7 +1046,12 @@ class TestPasswordUpdate:
 
         response = client.post(
             '/api/auth/password/update',
-            data=json.dumps(dict(token='xxx', password='12345678',)),
+            data=json.dumps(
+                dict(
+                    token='xxx',
+                    password='12345678',
+                )
+            ),
             content_type='application/json',
         )
 

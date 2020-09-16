@@ -22,7 +22,9 @@ def get_user_token(user_id, password_reset=False):
         'sub': user_id,
     }
     return jwt.encode(
-        payload, current_app.config.get('SECRET_KEY'), algorithm='HS256',
+        payload,
+        current_app.config.get('SECRET_KEY'),
+        algorithm='HS256',
     )
 
 

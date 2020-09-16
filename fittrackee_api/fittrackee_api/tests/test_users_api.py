@@ -248,7 +248,11 @@ class TestGetUsers:
 
     @patch('fittrackee_api.users.users.USER_PER_PAGE', 2)
     def test_it_gets_first_page_on_users_list(
-        self, app, user_1, user_2, user_3,
+        self,
+        app,
+        user_1,
+        user_2,
+        user_3,
     ):
         client = app.test_client()
         resp_login = client.post(
@@ -279,7 +283,11 @@ class TestGetUsers:
 
     @patch('fittrackee_api.users.users.USER_PER_PAGE', 2)
     def test_it_gets_next_page_on_users_list(
-        self, app, user_1, user_2, user_3,
+        self,
+        app,
+        user_1,
+        user_2,
+        user_3,
     ):
         client = app.test_client()
         resp_login = client.post(
@@ -309,7 +317,11 @@ class TestGetUsers:
         }
 
     def test_it_gets_empty_next_page_on_users_list(
-        self, app, user_1, user_2, user_3,
+        self,
+        app,
+        user_1,
+        user_2,
+        user_3,
     ):
         client = app.test_client()
         resp_login = client.post(
@@ -339,7 +351,11 @@ class TestGetUsers:
         }
 
     def test_it_gets_user_list_with_2_per_page(
-        self, app, user_1, user_2, user_3,
+        self,
+        app,
+        user_1,
+        user_2,
+        user_3,
     ):
         client = app.test_client()
         resp_login = client.post(
@@ -369,7 +385,11 @@ class TestGetUsers:
         }
 
     def test_it_gets_next_page_on_user_list_with_2_per_page(
-        self, app, user_1, user_2, user_3,
+        self,
+        app,
+        user_1,
+        user_2,
+        user_3,
     ):
         client = app.test_client()
         resp_login = client.post(

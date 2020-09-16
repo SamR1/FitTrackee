@@ -250,7 +250,7 @@ def get_single_user(auth_user_id, user_name):
 
 @users_blueprint.route('/users/<user_name>/picture', methods=['GET'])
 def get_picture(user_name):
-    """ get user picture
+    """get user picture
 
     **Example request**:
 

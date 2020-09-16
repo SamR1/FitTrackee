@@ -144,7 +144,7 @@ def update_application_config(auth_user_id):
 
 @config_blueprint.route('/ping', methods=['GET'])
 def health_check():
-    """ health check endpoint
+    """health check endpoint
 
     **Example request**:
 
