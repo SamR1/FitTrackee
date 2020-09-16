@@ -48,8 +48,10 @@ def get_app(with_config=False):
 @pytest.fixture
 def app(monkeypatch):
     monkeypatch.setenv('EMAIL_URL', 'smtp://none:none@0.0.0.0:1025')
-    monkeypatch.delenv('TILE_SERVER_URL')
-    monkeypatch.delenv('MAP_ATTRIBUTION')
+    if os.getenv('TILE_SERVER_URL'):
+        monkeypatch.delenv('TILE_SERVER_URL')
+    if os.getenv('MAP_ATTRIBUTION'):
+        monkeypatch.delenv('MAP_ATTRIBUTION')
     yield from get_app(with_config=True)
 
 
