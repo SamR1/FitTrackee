@@ -2,7 +2,7 @@ import logging
 import os
 from importlib import import_module, reload
 
-from flask import Flask, render_template
+from flask import Flask, render_template, send_file
 from flask_bcrypt import Bcrypt
 from flask_dramatiq import Dramatiq
 from flask_migrate import Migrate
@@ -91,9 +91,17 @@ def create_app():
             )
             return response
 
+    @app.route('/favicon.ico')
+    def favicon():
+        return send_file(os.path.join(app.root_path, 'dist/favicon.ico'))
+
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
     def catch_all(path):
-        return render_template('index.html')
+        # workaround to serve images (not in static directory)
+        if path.startswith('img/'):
+            return send_file(os.path.join(app.root_path, 'dist', path))
+        else:
+            return render_template('index.html')
 
     return app
