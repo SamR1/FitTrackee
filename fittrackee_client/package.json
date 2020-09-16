@@ -1,4 +1,51 @@
 {
   "name": "fittrackee_client",
-  "version": "0.1.0"
+  "version": "0.3.0-beta",
+  "private": true,
+  "dependencies": {
+    "@mapbox/togeojson": "^0.16.0",
+    "connected-react-router": "^6.8.0",
+    "date-fns": "^2.16.1",
+    "history": "^4.10.1",
+    "i18next": "^19.7.0",
+    "i18next-browser-languagedetector": "^6.0.1",
+    "i18next-xhr-backend": "^3.2.2",
+    "leaflet": "^1.7.1",
+    "luxon": "^1.25.0",
+    "object-hash": "^2.0.3",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-helmet": "^6.1.0",
+    "react-i18next": "^11.7.2",
+    "react-leaflet": "^2.7.0",
+    "react-redux": "^7.2.1",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^3.4.3",
+    "react-timezone": "^2.4.0",
+    "recharts": "^1.8.5",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "NODE_ENV=production react-scripts build && rm -rf ../fittrackee/dist/* && cp -a build/. ../fittrackee/dist",
+    "eject": "react-scripts eject",
+    "lint": "node_modules/.bin/eslint --cache --ext .jsx --ext .js src",
+    "lint-fix": "node_modules/.bin/eslint --cache --ext .jsx --ext .js --fix"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-testcafe": "^0.2.1",
+    "prettier": "^2.1.2"
+  }
 }

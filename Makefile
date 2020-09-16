@@ -6,8 +6,8 @@ make-p:
 	# Launch all P targets in parallel and exit as soon as one exits.
 	set -m; (for p in $(P); do ($(MAKE) $$p || kill 0)& done; wait)
 
-build-client: lint-react
-	$(NPM) build
+build-client: lint-client
+	cd fittrackee_client && $(NPM) build
 
 clean-install:
 	rm -fr $(NODE_MODULES)
@@ -40,10 +40,10 @@ init-db:
 install: install-client install-python
 
 install-client:
-	$(NPM) install --prod
+	cd fittrackee_client && $(NPM) install --prod
 
 install-client-dev:
-	$(NPM) install
+	cd fittrackee_client && $(NPM) install
 
 install-dev: install-client-dev install-python-dev
 
@@ -53,9 +53,9 @@ install-python:
 install-python-dev:
 	$(POETRY) install
 
-lint-all: lint-python lint-react
+lint-all: lint-python lint-client
 
-lint-all-fix: lint-python-fix lint-react-fix
+lint-all-fix: lint-python-fix lint-client-fix
 
 lint-python:
 	$(PYTEST) --flake8 --isort --black -m "flake8 or isort or black" fittrackee e2e --ignore=fittrackee/migrations
@@ -63,11 +63,11 @@ lint-python:
 lint-python-fix:
 	$(BLACK) fittrackee e2e
 
-lint-react:
-	$(NPM) lint
+lint-client:
+	cd fittrackee_client && $(NPM) lint
 
-lint-react-fix:
-	$(NPM) lint-fix
+lint-client-fix:
+	cd fittrackee_client && $(NPM) lint-fix
 
 mail:
 	docker run -d -e "MH_STORAGE=maildir" -v /tmp/maildir:/maildir -p 1025:1025 -p 8025:8025 mailhog/mailhog
@@ -93,14 +93,14 @@ serve-python:
 serve-python-dev:
 	$(FLASK) run --with-threads -h $(HOST) -p $(API_PORT) --cert=adhoc
 
-serve-react:
-	$(NPM) start
+serve-client:
+	cd fittrackee_client && $(NPM) start
 
 serve:
-	$(MAKE) P="serve-react serve-python" make-p
+	$(MAKE) P="serve-client serve-python" make-p
 
 serve-dev:
-	$(MAKE) P="serve-react serve-python-dev" make-p
+	$(MAKE) P="serve-client serve-python-dev" make-p
 
 test-e2e: init-db
 	$(PYTEST) e2e --driver firefox $(PYTEST_ARGS)
