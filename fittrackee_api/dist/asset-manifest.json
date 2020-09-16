@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/static/css/main.9eb63bc2.chunk.css",
+    "main.js": "/static/js/main.e589eaf8.chunk.js",
+    "main.js.map": "/static/js/main.e589eaf8.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.2d7c76f9.js",
+    "runtime-main.js.map": "/static/js/runtime-main.2d7c76f9.js.map",
+    "static/js/2.8ad7236a.chunk.js": "/static/js/2.8ad7236a.chunk.js",
+    "static/js/2.8ad7236a.chunk.js.map": "/static/js/2.8ad7236a.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.5c6aeed76c2cb8cfc6f5407698470a91.js": "/precache-manifest.5c6aeed76c2cb8cfc6f5407698470a91.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/main.9eb63bc2.chunk.css.map": "/static/css/main.9eb63bc2.chunk.css.map",
+    "static/js/2.8ad7236a.chunk.js.LICENSE.txt": "/static/js/2.8ad7236a.chunk.js.LICENSE.txt",
+    "static/media/en.501888db.svg": "/static/media/en.501888db.svg",
+    "static/media/fr.b75cd962.svg": "/static/media/fr.b75cd962.svg",
+    "static/media/mail-send.66b8d739.svg": "/static/media/mail-send.66b8d739.svg",
+    "static/media/password.488f5f4c.svg": "/static/media/password.488f5f4c.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.2d7c76f9.js",
+    "static/js/2.8ad7236a.chunk.js",
+    "static/css/main.9eb63bc2.chunk.css",
+    "static/js/main.e589eaf8.chunk.js"
+  ]
+}

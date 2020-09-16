@@ -2,7 +2,7 @@ import logging
 import os
 from importlib import import_module, reload
 
-from flask import Flask
+from flask import Flask, render_template
 from flask_bcrypt import Bcrypt
 from flask_dramatiq import Dramatiq
 from flask_migrate import Migrate
@@ -20,7 +20,9 @@ appLog = logging.getLogger('fittrackee_api')
 
 def create_app():
     # instantiate the app
-    app = Flask(__name__)
+    app = Flask(
+        __name__, static_folder='../dist/static', template_folder='../dist'
+    )
 
     # set config
     with app.app_context():
@@ -90,5 +92,10 @@ def create_app():
                 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
             )
             return response
+
+    @app.route('/', defaults={'path': ''})
+    @app.route('/<path:path>')
+    def catch_all(path):
+        return render_template('index.html')
 
     return app

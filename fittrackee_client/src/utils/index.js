@@ -18,7 +18,10 @@ export const getFileSizeInMB = fileSize => {
 }
 
 export const version = '0.3.0-beta' // version stored in 'utils' for now
-export const apiUrl = `${process.env.REACT_APP_API_URL}/api/`
+export const apiUrl =
+  process.env.NODE_ENV === 'production'
+    ? '/api/'
+    : `${process.env.REACT_APP_API_URL}/api/`
 
 export const userFilters = [
   { key: 'activities_count', label: 'activities count' },
