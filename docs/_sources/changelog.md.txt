@@ -1,5 +1,16 @@
 # Change log
 
+## Version 0.x.x (unreleased)
+
+### Issues Closed
+
+#### New Features
+
+* [#54](https://github.com/SamR1/Fittrackee/issues/54) - Tile server can be changed
+
+In this release 1 issue weas closed.
+
+
 ## Version 0.3.0 - Administration (2020/07/15)
 
 This version introduces some major changes:

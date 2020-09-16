@@ -12,3 +12,8 @@ class TestConfigModel:
         assert serialized_app_config['max_single_file_size'] == 1048576
         assert serialized_app_config['max_zip_file_size'] == 10485760
         assert serialized_app_config['max_users'] == 100
+        assert serialized_app_config['map_attribution'] == (
+            '&copy; <a href="http://www.openstreetmap.org/copyright" '
+            'target="_blank" rel="noopener noreferrer">OpenStreetMap</a> '
+            'contributors'
+        )

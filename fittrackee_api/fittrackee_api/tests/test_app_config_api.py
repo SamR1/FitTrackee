@@ -26,6 +26,11 @@ class TestGetConfig:
         assert data['data']['max_single_file_size'] == 1048576
         assert data['data']['max_zip_file_size'] == 10485760
         assert data['data']['max_users'] == 100
+        assert data['data']['map_attribution'] == (
+            '&copy; <a href="http://www.openstreetmap.org/copyright" '
+            'target="_blank" rel="noopener noreferrer">OpenStreetMap</a> '
+            'contributors'
+        )
 
     def test_it_returns_error_if_application_has_no_config(
         self, app_no_config, user_1_admin

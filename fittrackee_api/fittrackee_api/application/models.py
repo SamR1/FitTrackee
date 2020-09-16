@@ -20,6 +20,10 @@ class AppConfig(db.Model):
         nb_users = User.query.count()
         return self.max_users == 0 or nb_users < self.max_users
 
+    @property
+    def map_attribution(self):
+        return current_app.config['TILE_SERVER']['ATTRIBUTION']
+
     def serialize(self):
         return {
             "gpx_limit_import": self.gpx_limit_import,
@@ -27,6 +31,7 @@ class AppConfig(db.Model):
             "max_single_file_size": self.max_single_file_size,
             "max_zip_file_size": self.max_zip_file_size,
             "max_users": self.max_users,
+            "map_attribution": self.map_attribution,
         }
 
 

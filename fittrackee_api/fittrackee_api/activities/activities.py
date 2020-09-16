@@ -5,15 +5,7 @@ from datetime import datetime, timedelta
 
 import requests
 from fittrackee_api import appLog, db
-from flask import (
-    Blueprint,
-    Response,
-    current_app,
-    jsonify,
-    request,
-    send_file,
-    stream_with_context,
-)
+from flask import Blueprint, Response, current_app, jsonify, request, send_file
 from sqlalchemy import exc
 
 from ..users.utils import (
@@ -754,7 +746,7 @@ def get_map_tile(s, z, x, y):
     Status codes are status codes returned by tile server
 
     """
-    url = current_app.config["TILE_SERVER_URL"].format(s=s, z=z, x=x, y=y)
+    url = current_app.config['TILE_SERVER']['URL'].format(s=s, z=z, x=x, y=y)
     headers = {'User-Agent': 'Mozilla/5.0'}
     response = requests.get(url, headers=headers)
     return (

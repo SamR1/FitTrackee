@@ -28,9 +28,18 @@ class BaseConfig:
     EMAIL_URL = os.environ.get('EMAIL_URL')
     SENDER_EMAIL = os.environ.get('SENDER_EMAIL')
     DRAMATIQ_BROKER = broker
-    TILE_SERVER_URL = os.environ.get(
-        'TILE_SERVER_URL', 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-    )
+    TILE_SERVER = {
+        'URL': os.environ.get(
+            'TILE_SERVER_URL',
+            'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        ),
+        'ATTRIBUTION': os.environ.get(
+            'MAP_ATTRIBUTION',
+            '&copy; <a href="http://www.openstreetmap.org/copyright" '
+            'target="_blank" rel="noopener noreferrer">OpenStreetMap</a>'
+            ' contributors',
+        ),
+    }
 
 
 class DevelopmentConfig(BaseConfig):

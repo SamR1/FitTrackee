@@ -2,6 +2,7 @@ WORKERS_PROCESSES = 1
 
 export REACT_APP_API_URL=
 export TILE_SERVER_URL=
+export MAP_ATTRIBUTION=
 export WEATHER_API=
 export UI_URL=
 export EMAIL_URL=

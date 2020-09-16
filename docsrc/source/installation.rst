@@ -185,22 +185,23 @@ The following environment variables must be defined in **Makefile.custom.config*
 
 .. cssclass:: table-bordered table-striped
 
-===================================== ======================================== ====================================
-variable                              description                              app default value
-===================================== ======================================== ====================================
-``REACT_APP_API_URL``                 Fittrackee API URL                       no default value, must be initialized
-``REACT_APP_GPX_LIMIT_IMPORT``        max. number of gpx file in zip archive   10 (*deprecated in 0.3.0*)
-``REACT_APP_MAX_SINGLE_FILE_SIZE``    max. size of a gpx or picture file       1MB (*deprecated in 0.3.0*)
-``REACT_APP_MAX_ZIP_FILE_SIZE``       max. size of a zip archive               10MB (*deprecated in 0.3.0*)
-``REACT_APP_ALLOW_REGISTRATION``      allows users to register                 true (*deprecated in 0.3.0*)
-``REACT_APP_THUNDERFOREST_API_KEY``   ThunderForest API key                    (*deprecated*, use ``TILE_SERVER_URL`` instead)
-``TILE_SERVER_URL``                   Tile server URL (with api key if needed) ``https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png``
-``UI_URL``                            application URL                          no default value, must be initialized
-``EMAIL_URL``                         email URL with credentials               no default value, must be initialized (see below)
-``SENDER_EMAIL``                      application sender email address         no default value, must be initialized
-``REDIS_URL``                         Redis instance used by Dramatiq          local Redis instance
-``WORKERS_PROCESSES``                 number of process used by Dramatiq       no default value, must be initialized
-===================================== ======================================== ====================================
+===================================== ============================================== ====================================
+variable                              description                                    app default value
+===================================== ============================================== ====================================
+``REACT_APP_API_URL``                 Fittrackee API URL                             no default value, must be initialized
+``REACT_APP_GPX_LIMIT_IMPORT``        max. number of gpx file in zip archive         10 (*deprecated in 0.3.0*)
+``REACT_APP_MAX_SINGLE_FILE_SIZE``    max. size of a gpx or picture file             1MB (*deprecated in 0.3.0*)
+``REACT_APP_MAX_ZIP_FILE_SIZE``       max. size of a zip archive                     10MB (*deprecated in 0.3.0*)
+``REACT_APP_ALLOW_REGISTRATION``      allows users to register                       true (*deprecated in 0.3.0*)
+``REACT_APP_THUNDERFOREST_API_KEY``   ThunderForest API key                          (*deprecated in 0.x.x*, use ``TILE_SERVER_URL`` **and** ``MAP_ATTRIBUTION`` instead)
+``TILE_SERVER_URL``                   Tile server URL (with api key if needed)       ``https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png``
+``MAP_ATTRIBUTION``                   Map attribution (if using another tile server) ``&copy; <a href="http://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors``
+``UI_URL``                            application URL                                no default value, must be initialized
+``EMAIL_URL``                         email URL with credentials                     no default value, must be initialized (see below)
+``SENDER_EMAIL``                      application sender email address               no default value, must be initialized
+``REDIS_URL``                         Redis instance used by Dramatiq                local Redis instance
+``WORKERS_PROCESSES``                 number of process used by Dramatiq             no default value, must be initialized
+===================================== ============================================== ====================================
 
 .. warning::
     Since FitTrackee 0.3.0, some applications parameters are now stored in database.
@@ -208,9 +209,26 @@ variable                              description                              a
 
 Emails
 ^^^^^^
+*new in 0.3.0*
 
 To send emails, a valid ``EMAIL_URL`` must be provided:
 
 - with an unencrypted SMTP server: ``smtp://username:password@smtp.example.com:25``
 - with SSL: ``smtp://username:password@smtp.example.com:465/?ssl=True``
 - with STARTTLS: ``smtp://username:password@smtp.example.com:587/?tls=True``
+
+
+Map tile server
+^^^^^^^^^^^^^^^
+*new in 0.x.x*
+
+Default tile server is now **OpenStreetMap**'s standard tile layer (if environment variables are not initialized).
+The tile server can be changed by updating ``TILE_SERVER_URL`` and ``MAP_ATTRIBUTION`` variables (`list of tile servers <https://wiki.openstreetmap.org/wiki/Tile_servers>`__).
+
+To keep using ThunderForest Outdoors, the configuration is:
+
+- ``TILE_SERVER_URL=https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=XXXX`` where **XXXX** is ThunderForest API key
+- ``MAP_ATTRIBUTION=&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors``
+
+.. note::
+    Check the terms of service of tile provider for map attribution

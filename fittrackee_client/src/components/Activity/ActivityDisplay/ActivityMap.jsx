@@ -44,7 +44,7 @@ class ActivityMap extends React.Component {
   }
 
   render() {
-    const { activity, coordinates, gpxContent } = this.props
+    const { activity, coordinates, gpxContent, mapAttribution } = this.props
     const { jsonData } = getGeoJson(gpxContent)
     const bounds = [
       [activity.bounds[0], activity.bounds[1]],
@@ -61,9 +61,8 @@ class ActivityMap extends React.Component {
           >
             <TileLayer
               // eslint-disable-next-line max-len
-              attribution='&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+              attribution={mapAttribution}
               url={`${apiUrl}activities/map_tile/{s}/{z}/{x}/{y}.png`}
-
             />
             <GeoJSON
               // hash as a key to force re-rendering
@@ -85,6 +84,7 @@ class ActivityMap extends React.Component {
 export default connect(
   state => ({
     gpxContent: state.gpx,
+    mapAttribution: state.application.config.map_attribution,
   }),
   dispatch => ({
     loadActivityGpx: activityId => {

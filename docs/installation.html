@@ -90,6 +90,7 @@
 </li>
 <li><a class="reference internal" href="#environment-variables">Environment variables</a><ul>
 <li><a class="reference internal" href="#emails">Emails</a></li>
+<li><a class="reference internal" href="#map-tile-server">Map tile server</a></li>
 </ul>
 </li>
 </ul>
@@ -328,9 +329,9 @@ $ make upgrade-db
 <p>The following environment variables must be defined in <strong>Makefile.custom.config</strong>:</p>
 <table class="table-bordered table-striped docutils align-default">
 <colgroup>
-<col style="width: 28%" />
-<col style="width: 31%" />
-<col style="width: 41%" />
+<col style="width: 17%" />
+<col style="width: 21%" />
+<col style="width: 61%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>variable</p></th>
@@ -361,29 +362,33 @@ $ make upgrade-db
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">REACT_APP_THUNDERFOREST_API_KEY</span></code></p></td>
 <td><p>ThunderForest API key</p></td>
-<td><p>(<em>deprecated</em>, use <code class="docutils literal notranslate"><span class="pre">TILE_SERVER_URL</span></code> instead)</p></td>
+<td><p>(<em>deprecated in 0.x.x</em>, use <code class="docutils literal notranslate"><span class="pre">TILE_SERVER_URL</span></code> <strong>and</strong> <code class="docutils literal notranslate"><span class="pre">MAP_ATTRIBUTION</span></code> instead)</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">TILE_SERVER_URL</span></code></p></td>
 <td><p>Tile server URL (with api key if needed)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UI_URL</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">MAP_ATTRIBUTION</span></code></p></td>
+<td><p>Map attribution (if using another tile server)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&amp;copy;</span> <span class="pre">&lt;a</span> <span class="pre">href=&quot;http://www.openstreetmap.org/copyright&quot;</span> <span class="pre">target=&quot;_blank&quot;</span> <span class="pre">rel=&quot;noopener</span> <span class="pre">noreferrer&quot;&gt;OpenStreetMap&lt;/a&gt;</span> <span class="pre">contributors</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UI_URL</span></code></p></td>
 <td><p>application URL</p></td>
 <td><p>no default value, must be initialized</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code></p></td>
 <td><p>email URL with credentials</p></td>
 <td><p>no default value, must be initialized (see below)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SENDER_EMAIL</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SENDER_EMAIL</span></code></p></td>
 <td><p>application sender email address</p></td>
 <td><p>no default value, must be initialized</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">REDIS_URL</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">REDIS_URL</span></code></p></td>
 <td><p>Redis instance used by Dramatiq</p></td>
 <td><p>local Redis instance</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">WORKERS_PROCESSES</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">WORKERS_PROCESSES</span></code></p></td>
 <td><p>number of process used by Dramatiq</p></td>
 <td><p>no default value, must be initialized</p></td>
 </tr>
@@ -396,12 +401,28 @@ Related environment variables are needed to initialize database.</p>
 </div>
 <div class="section" id="emails">
 <h3>Emails<a class="headerlink" href="#emails" title="Permalink to this headline">¶</a></h3>
+<p><em>new in 0.3.0</em></p>
 <p>To send emails, a valid <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> must be provided:</p>
 <ul class="simple">
 <li><p>with an unencrypted SMTP server: <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:25</span></code></p></li>
 <li><p>with SSL: <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:465/?ssl=True</span></code></p></li>
 <li><p>with STARTTLS: <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:587/?tls=True</span></code></p></li>
 </ul>
+</div>
+<div class="section" id="map-tile-server">
+<h3>Map tile server<a class="headerlink" href="#map-tile-server" title="Permalink to this headline">¶</a></h3>
+<p><em>new in 0.x.x</em></p>
+<p>Default tile server is now <strong>OpenStreetMap</strong>’s standard tile layer (if environment variables are not initialized).
+The tile server can be changed by updating <code class="docutils literal notranslate"><span class="pre">TILE_SERVER_URL</span></code> and <code class="docutils literal notranslate"><span class="pre">MAP_ATTRIBUTION</span></code> variables (<a class="reference external" href="https://wiki.openstreetmap.org/wiki/Tile_servers">list of tile servers</a>).</p>
+<p>To keep using ThunderForest Outdoors, the configuration is:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">TILE_SERVER_URL=https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=XXXX</span></code> where <strong>XXXX</strong> is ThunderForest API key</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MAP_ATTRIBUTION=&amp;copy;</span> <span class="pre">&lt;a</span> <span class="pre">href=&quot;http://www.thunderforest.com/&quot;&gt;Thunderforest&lt;/a&gt;,</span> <span class="pre">&amp;copy;</span> <span class="pre">&lt;a</span> <span class="pre">href=&quot;http://www.openstreetmap.org/copyright&quot;&gt;OpenStreetMap&lt;/a&gt;</span> <span class="pre">contributors</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Check the terms of service of tile provider for map attribution</p>
+</div>
 </div>
 </div>
 </div>
