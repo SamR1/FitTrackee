@@ -8,7 +8,7 @@ variables:
   APP_SETTINGS: fittrackee.config.TestingConfig
   DATABASE_TEST_URL: postgres://fittrackee:fittrackee@postgres:5432/fittrackee_test
   EMAIL_URL: smtp://none:none@0.0.0.0:1025
-  FLASK_APP: fittrackee/server.py
+  FLASK_APP: fittrackee/__main__.py
   SENDER_EMAIL: fittrackee@example.com
 
 services:
@@ -57,7 +57,7 @@ firefox:
     - poetry config virtualenvs.create false
     - poetry install --no-interaction --quiet
     - flask db upgrade --directory fittrackee/migrations
-    - flask initdata
+    - flask init-data
     - setsid nohup flask run --with-threads -h 0.0.0.0 -p 5000 >> nohup.out 2>&1 &
     - export TEST_APP_URL=http://$(hostname --ip-address):5000
     - sleep 5
