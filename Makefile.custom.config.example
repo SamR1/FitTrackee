@@ -4,6 +4,7 @@ WORKERS_PROCESSES = 1
 export DATABASE_URL = postgres://fittrackee:fittrackee@$(HOST):5432/fittrackee
 export DATABASE_TEST_URL = postgres://fittrackee:fittrackee@$(HOST):5432/fittrackee_test
 export APP_SETTINGS=fittrackee.config.DevelopmentConfig
+export APP_LOG=fittrackee.log
 export DATABASE_DISABLE_POOLING=True
 export TILE_SERVER_URL=
 export MAP_ATTRIBUTION=
