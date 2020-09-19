@@ -14,7 +14,7 @@ from flask_migrate import upgrade
 from tqdm import tqdm
 
 HOST = os.getenv('HOST', '0.0.0.0')
-PORT = os.getenv('API_PORT', '5000')
+PORT = os.getenv('PORT', '5000')
 WORKERS = os.getenv('APP_WORKERS', 1)
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 app = create_app()

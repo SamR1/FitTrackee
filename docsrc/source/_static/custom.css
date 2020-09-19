@@ -54,18 +54,37 @@ body {
 }
 
 .alert-danger {
-    background-color: #dc6460;
-    border-color: transparent;
+    background-color: #f2dede;
+    border-color: #dca7a7;
+    color: #a94442;
 }
 
 .alert-info {
-    background-color: #3eb3e3;
-    border-color: transparent;
+    background-color: #d9edf7;
+    border-color: #9acfea;
+    color: #31708f;
 }
 
 .alert-warning {
-    background-color: #f5894f;
-    border-color: transparent;
+    background-color: #fcf8e3;
+    border-color: #f5e79e;
+    color: #8a6d3b;
+}
+
+.descname {
+    border-top: solid 3px #a18bac;
+    border-radius: unset;
+    padding: 6px;
+}
+
+dl.field-list > dt {
+    background: #f0f0f0;
+    border-left: solid 3px #ccc;
+    color: #555;
+}
+
+.envvar {
+    margin-top: 30px;
 }
 
 .footer {

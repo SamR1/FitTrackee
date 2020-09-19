@@ -4,13 +4,10 @@ Features
 List
 ~~~~
 
-Account
-^^^^^^^
-- A user can create, update and deleted his account
-- Password reset is now available
-
 Administration
 ^^^^^^^^^^^^^^
+(*new in 0.3.0*)
+
 - **Application**
 
   The following parameters can be set:
@@ -29,6 +26,12 @@ Administration
 - **Sports**
 
   - enable or disable a sport (a sport can be disabled even if activity with this sport exists)
+
+Account
+^^^^^^^
+- A user can create, update and deleted his account
+- A user can reset his password (*new in 0.3.0*)
+
 
 Activities/Workouts
 ^^^^^^^^^^^^^^^^^^^

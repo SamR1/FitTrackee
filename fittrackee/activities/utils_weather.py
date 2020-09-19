@@ -4,7 +4,7 @@ import forecastio
 import pytz
 from fittrackee import appLog
 
-API_KEY = os.getenv('WEATHER_API')
+API_KEY = os.getenv('WEATHER_API_KEY')
 
 
 def get_weather(point):

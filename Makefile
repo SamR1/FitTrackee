@@ -1,5 +1,5 @@
 include Makefile.config
--include Makefile.custom.config
+-include .env
 .SILENT:
 
 make-p:
@@ -12,6 +12,9 @@ build-client: lint-client
 clean-install:
 	rm -fr $(NODE_MODULES)
 	rm -fr $(VENV)
+	rm -rf *.egg-info
+	rm -rf .pytest_cache
+	rm -rf dist/
 
 html:
 	rm -rf docsrc/build
@@ -43,7 +46,8 @@ install-client:
 	cd fittrackee_client && $(NPM) install --prod
 
 install-client-dev:
-	cd fittrackee_client && $(NPM) install
+	#                                         https://github.com/facebook/create-react-app/issues/8688
+	cd fittrackee_client && $(NPM) install && sed -i '/process.env.CI/ s/isInteractive [|]*//' node_modules/react-scripts/scripts/start.js
 
 install-dev: install-client-dev install-python-dev
 
@@ -88,10 +92,10 @@ run-workers:
 	$(FLASK) worker --processes=$(WORKERS_PROCESSES) >> dramatiq.log  2>&1
 
 serve-python:
-	$(FLASK) run --with-threads -h $(HOST) -p $(API_PORT)
+	$(FLASK) run --with-threads -h $(HOST) -p $(PORT)
 
 serve-python-dev:
-	$(FLASK) run --with-threads -h $(HOST) -p $(API_PORT) --cert=adhoc
+	$(FLASK) run --with-threads -h $(HOST) -p $(PORT) --cert=adhoc
 
 serve-client:
 	cd fittrackee_client && $(NPM) start

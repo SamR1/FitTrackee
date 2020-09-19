@@ -34,7 +34,8 @@ def get_application_config():
           "is_registration_enabled": false,
           "max_single_file_size": 1048576,
           "max_zip_file_size": 10485760,
-          "max_users": 0
+          "max_users": 0,
+          "map_attribution": "&copy; <a href=http://www.openstreetmap.org/copyright>OpenStreetMap</a> contributors"
         },
         "status": "success"
       }

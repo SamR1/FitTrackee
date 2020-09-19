@@ -7,8 +7,8 @@
 [![React Version](https://img.shields.io/badge/react-16.13-brightgreen.svg)](https://reactjs.org/) 
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)  
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/290a285f22e94132904dc13b4dd19d1d)](https://www.codacy.com/app/SamR1/FitTrackee)
-[![Codacy Coverage Badge](https://api.codacy.com/project/badge/Coverage/290a285f22e94132904dc13b4dd19d1d)](https://www.codacy.com/app/SamR1/FitTrackee)<sup><sup>1</sup></sup>
-[![Build Status](https://travis-ci.org/SamR1/FitTrackee.svg?branch=master)](https://travis-ci.org/SamR1/FitTrackee)
+[![pipeline status](https://gitlab.com/SamR1/FitTrackee/badges/master/pipeline.svg)](https://gitlab.com/SamR1/FitTrackee/-/commits/master) <sup><sup>1</sup></sup>
+[![coverage report](https://gitlab.com/SamR1/FitTrackee/badges/master/coverage.svg)](https://gitlab.com/SamR1/FitTrackee/-/commits/master)
 
 ---
 
@@ -24,10 +24,10 @@ Examples (for Android):
 Maps are displayed using [Open Street Map](https://www.openstreetmap.org).  
 It is also possible to add a workout without a gpx file.
 
-**Still under development (not ready for production).**  
+**Still under heavy development (some features may be unstable).**  
 (see [issues](https://github.com/SamR1/FitTrackee/issues) and [documentation](https://samr1.github.io/FitTrackee) for more information)  
 
-![FitTrackee Dashboard](docsrc/source/_images/fittrackee_screenshot-01.png)
+![FitTrackee Dashboard Screenshot](https://samr1.github.io/FitTrackee/_images/fittrackee_screenshot-01.png)
 
 ---
 
