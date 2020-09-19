@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Installation &#8212; FitTrackee 0.3.0-beta
+    <title>Installation &#8212; FitTrackee 0.4.0
  documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -40,7 +40,8 @@
         </button>
         <a class="navbar-brand" href="index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.4.0
+</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -78,21 +79,31 @@
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
 <li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
-<li><a class="reference internal" href="#id1">Installation</a><ul>
-<li><a class="reference internal" href="#dev-environment">Dev environment</a></li>
-<li><a class="reference internal" href="#prod-environment">Prod environment</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#upgrade">Upgrade</a><ul>
-<li><a class="reference internal" href="#id2">Dev environment</a></li>
-<li><a class="reference internal" href="#id3">Prod environment</a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#environment-variables">Environment variables</a><ul>
+<li><a class="reference internal" href="#deprecated-variables">Deprecated variables</a></li>
 <li><a class="reference internal" href="#emails">Emails</a></li>
 <li><a class="reference internal" href="#map-tile-server">Map tile server</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#from-pypi">From PyPI</a><ul>
+<li><a class="reference internal" href="#id1">Installation</a></li>
+<li><a class="reference internal" href="#upgrade">Upgrade</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#from-sources">From sources</a><ul>
+<li><a class="reference internal" href="#id2">Installation</a><ul>
+<li><a class="reference internal" href="#dev-environment">Dev environment</a></li>
+<li><a class="reference internal" href="#production-environment">Production environment</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id3">Upgrade</a><ul>
+<li><a class="reference internal" href="#id4">Dev environment</a></li>
+<li><a class="reference internal" href="#prod-environment">Prod environment</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#deployment">Deployment</a></li>
 </ul>
 </li>
 </ul>
@@ -174,234 +185,316 @@
 <li><p>PostgreSQL database (10+)</p></li>
 <li><p>Redis for task queue</p></li>
 <li><p>Python 3.7+</p></li>
-<li><p><a class="reference external" href="https://poetry.eustace.io">Poetry</a></p></li>
-<li><p><a class="reference external" href="https://yarnpkg.com">Yarn</a> and
-<a class="reference external" href="https://github.com/zeit/serve">serve</a></p></li>
+<li><p><a class="reference external" href="https://poetry.eustace.io">Poetry</a> (for installation from sources only)</p></li>
 <li><p>API key from <a class="reference external" href="https://darksky.net/dev">Dark Sky</a> [not mandatory]</p></li>
 <li><p>SMTP provider</p></li>
+<li><p><a class="reference external" href="https://yarnpkg.com">Yarn</a> (for development only)</p></li>
+<li><p>Docker (for development only, to start <a class="reference external" href="https://github.com/mailhog/MailHog">MailHog</a>)</p></li>
 </ul>
-</div>
-<div class="section" id="id1">
-<h2>Installation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <div class="line-block">
 <div class="line">The following steps describe an installation on Linux systems (tested
 on Debian and Arch).</div>
 <div class="line">On other OS, some issues can be encountered and adaptations may be
 necessary.</div>
 </div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Since FitTrackee 0.2.1, Python packages installation needs Poetry. To install it on ArchLinux:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ yay poetry
-$ poetry --version
-Poetry <span class="m">1</span>.0.5
-
-<span class="c1"># optional</span>
-$ poetry config virtualenvs.in-project <span class="nb">true</span>
-</pre></div>
-</div>
-<p>For other OS, see <a class="reference external" href="https://python-poetry.org/docs/#installation">Poetry Documentation</a></p>
-</div>
-<div class="section" id="dev-environment">
-<h3>Dev environment<a class="headerlink" href="#dev-environment" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p>Clone this repo:</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/SamR1/FitTrackee.git
-$ <span class="nb">cd</span> FitTrackee
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Update <strong>Makefile.config</strong> file if needed and copy/paste the
-<strong>ThunderForest</strong> and <strong>Dark Sky</strong> API keys value in
-<strong>Makefile.custom.config</strong> file (see <a class="reference external" href="installation.html#environment-variables">Environment variables</a>).</p></li>
-<li><p>Install Python virtualenv, React and all related packages and
-initialize the database:</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make install-dev
-$ make install-db
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Start the server and the client:</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make serve
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Run dramatiq workers:</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make run-workers
-</pre></div>
-</div>
-<p>Open <a class="reference external" href="http://localhost:3000">http://localhost:3000</a> and login (the email is <code class="docutils literal notranslate"><span class="pre">admin&#64;example.com</span></code>
-and the password <code class="docutils literal notranslate"><span class="pre">mpwoadmin</span></code>) or register</p>
-</div>
-<div class="section" id="prod-environment">
-<h3>Prod environment<a class="headerlink" href="#prod-environment" title="Permalink to this headline">¶</a></h3>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Note that FitTrackee is not production-ready yet</p>
-</div>
-<ul class="simple">
-<li><p>Download the last release (for now, it is the beta release v0.3.0):</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.3.0-beta.tar.gz
-$ tar -xzf v0.3.0-beta.tar.gz
-$ mv FitTrackee-0.3.0-beta FitTrackee
-$ <span class="nb">cd</span> FitTrackee
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Update <strong>Makefile.config</strong> file if needed and copy/paste the
-<strong>ThunderForest</strong> and <strong>Dark Sky</strong> API keys value in
-<strong>Makefile.custom.config</strong> file (see <a class="reference external" href="installation.html#environment-variables">Environment variables</a>).</p></li>
-<li><p>Install Python virtualenv, React and all related packages and
-initialize the database:</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make install
-$ make install-db
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Build the client:</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make build-client
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Start the server and the client:</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make run
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Run dramatiq workers:</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make run-workers
-</pre></div>
-</div>
-<p>Open <a class="reference external" href="http://localhost:3000">http://localhost:3000</a>, log in as admin (the email is
-<code class="docutils literal notranslate"><span class="pre">admin&#64;example.com</span></code> and the password <code class="docutils literal notranslate"><span class="pre">mpwoadmin</span></code>) and change the
-password</p>
-</div>
-</div>
-<div class="section" id="upgrade">
-<h2>Upgrade<a class="headerlink" href="#upgrade" title="Permalink to this headline">¶</a></h2>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<div class="line-block">
-<div class="line">Before upgrading, make a backup of all data:</div>
-<div class="line">- database (with <a class="reference external" href="https://www.postgresql.org/docs/11/app-pgdump.html">pg_dump</a> for instance)</div>
-<div class="line">- upload directory: <strong>FitTrackee/fittrackee_api/fittrackee_api/uploads/</strong></div>
-</div>
-</div>
-<div class="section" id="id2">
-<h3>Dev environment<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p>Stop the application and pull the repository:</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git pull
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Update <strong>Makefile.config</strong> and <strong>Makefile.custom.config</strong> file if needed</p></li>
-<li><p>Upgrade packages and database:</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make install-dev
-$ make upgrade-db
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Restart the server and the client:</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make serve
-</pre></div>
-</div>
-</div>
-<div class="section" id="id3">
-<h3>Prod environment<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">TODO</span></code></p>
 </div>
 </div>
 <div class="section" id="environment-variables">
 <h2>Environment variables<a class="headerlink" href="#environment-variables" title="Permalink to this headline">¶</a></h2>
-<p>The following environment variables must be defined in <strong>Makefile.custom.config</strong>:</p>
-<table class="table-bordered table-striped docutils align-default">
-<colgroup>
-<col style="width: 17%" />
-<col style="width: 21%" />
-<col style="width: 61%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>variable</p></th>
-<th class="head"><p>description</p></th>
-<th class="head"><p>app default value</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">REACT_APP_API_URL</span></code></p></td>
-<td><p>Fittrackee API URL</p></td>
-<td><p>no default value, must be initialized</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">REACT_APP_GPX_LIMIT_IMPORT</span></code></p></td>
-<td><p>max. number of gpx file in zip archive</p></td>
-<td><p>10 (<em>deprecated in 0.3.0</em>)</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">REACT_APP_MAX_SINGLE_FILE_SIZE</span></code></p></td>
-<td><p>max. size of a gpx or picture file</p></td>
-<td><p>1MB (<em>deprecated in 0.3.0</em>)</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">REACT_APP_MAX_ZIP_FILE_SIZE</span></code></p></td>
-<td><p>max. size of a zip archive</p></td>
-<td><p>10MB (<em>deprecated in 0.3.0</em>)</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">REACT_APP_ALLOW_REGISTRATION</span></code></p></td>
-<td><p>allows users to register</p></td>
-<td><p>true (<em>deprecated in 0.3.0</em>)</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">REACT_APP_THUNDERFOREST_API_KEY</span></code></p></td>
-<td><p>ThunderForest API key</p></td>
-<td><p>(<em>deprecated in 0.x.x</em>, use <code class="docutils literal notranslate"><span class="pre">TILE_SERVER_URL</span></code> <strong>and</strong> <code class="docutils literal notranslate"><span class="pre">MAP_ATTRIBUTION</span></code> instead)</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">TILE_SERVER_URL</span></code></p></td>
-<td><p>Tile server URL (with api key if needed)</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">MAP_ATTRIBUTION</span></code></p></td>
-<td><p>Map attribution (if using another tile server)</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&amp;copy;</span> <span class="pre">&lt;a</span> <span class="pre">href=&quot;http://www.openstreetmap.org/copyright&quot;</span> <span class="pre">target=&quot;_blank&quot;</span> <span class="pre">rel=&quot;noopener</span> <span class="pre">noreferrer&quot;&gt;OpenStreetMap&lt;/a&gt;</span> <span class="pre">contributors</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UI_URL</span></code></p></td>
-<td><p>application URL</p></td>
-<td><p>no default value, must be initialized</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code></p></td>
-<td><p>email URL with credentials</p></td>
-<td><p>no default value, must be initialized (see below)</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SENDER_EMAIL</span></code></p></td>
-<td><p>application sender email address</p></td>
-<td><p>no default value, must be initialized</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">REDIS_URL</span></code></p></td>
-<td><p>Redis instance used by Dramatiq</p></td>
-<td><p>local Redis instance</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">WORKERS_PROCESSES</span></code></p></td>
-<td><p>number of process used by Dramatiq</p></td>
-<td><p>no default value, must be initialized</p></td>
-</tr>
-</tbody>
-</table>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Since FitTrackee 0.3.0, some applications parameters are now stored in database.
-Related environment variables are needed to initialize database.</p>
+<div class="line-block">
+<div class="line">Since FitTrackee 0.4.0, <code class="docutils literal notranslate"><span class="pre">Makefile.custom.config</span></code> is replaced by <code class="docutils literal notranslate"><span class="pre">.env</span></code></div>
+</div>
+</div>
+<p>The following environment variables are used by <strong>FitTrackee</strong> web application
+or the task processing library. They are not all mandatory depending on
+deployment method.</p>
+<dl class="std envvar">
+<dt id="envvar-FLASK_APP">
+<code class="sig-name descname">FLASK_APP</code><a class="headerlink" href="#envvar-FLASK_APP" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Name of the module to import at flask run.</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">FLASK_APP</span></code> should contain <code class="docutils literal notranslate"><span class="pre">$(PWD)/fittrackee/__main__.py</span></code> with installation from sources, else <code class="docutils literal notranslate"><span class="pre">fittrackee</span></code>.</div>
+</div>
+</dd></dl>
+
+<dl class="std envvar">
+<dt id="envvar-HOST">
+<code class="sig-name descname">HOST</code><a class="headerlink" href="#envvar-HOST" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>FitTrackee</strong> host.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>0.0.0.0</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt id="envvar-PORT">
+<code class="sig-name descname">PORT</code><a class="headerlink" href="#envvar-PORT" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>FitTrackee</strong> port.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>5000</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt id="envvar-APP_SETTINGS">
+<code class="sig-name descname">APP_SETTINGS</code><a class="headerlink" href="#envvar-APP_SETTINGS" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>FitTrackee</strong> configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>fittrackee.config.ProductionConfig</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt id="envvar-APP_SECRET_KEY">
+<code class="sig-name descname">APP_SECRET_KEY</code><a class="headerlink" href="#envvar-APP_SECRET_KEY" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>FitTrackee</strong> secret key, must be initialized in production environment.</p>
+</dd></dl>
+
+<dl class="std envvar">
+<dt id="envvar-APP_WORKERS">
+<code class="sig-name descname">APP_WORKERS</code><a class="headerlink" href="#envvar-APP_WORKERS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of workers spawned by <strong>Gunicorn</strong>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>1</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt id="envvar-APP_LOG">
+<span id="envvar-APP_LOG 🆕"></span><code class="sig-name descname">APP_LOG 🆕</code><a class="headerlink" href="#envvar-APP_LOG" title="Permalink to this definition">¶</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.4.0.</span></p>
+</div>
+<p>Path to log file</p>
+</dd></dl>
+
+<dl class="std envvar">
+<dt id="envvar-UPLOAD_FOLDER">
+<span id="envvar-UPLOAD_FOLDER 🆕"></span><code class="sig-name descname">UPLOAD_FOLDER 🆕</code><a class="headerlink" href="#envvar-UPLOAD_FOLDER" title="Permalink to this definition">¶</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.4.0.</span></p>
+</div>
+<p>Directory containing uploaded files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><cite>fittrackee/uploads/</cite></p>
+</dd>
+</dl>
+<div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<div class="line-block">
+<div class="line">With installation from PyPI, the directory will be located in
+<strong>virtualenv</strong> directory if the variable is not initialized.</div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="std envvar">
+<dt id="envvar-DATABASE_URL">
+<code class="sig-name descname">DATABASE_URL</code><a class="headerlink" href="#envvar-DATABASE_URL" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Database URL with username and password, must be initialized in production environment.</div>
+<div class="line">For example in dev environment : <code class="docutils literal notranslate"><span class="pre">postgres://fittrackee:fittrackee&#64;localhost:5432/fittrackee</span></code></div>
+</div>
+</dd></dl>
+
+<dl class="std envvar">
+<dt id="envvar-DATABASE_DISABLE_POOLING">
+<span id="envvar-DATABASE_DISABLE_POOLING 🆕"></span><code class="sig-name descname">DATABASE_DISABLE_POOLING 🆕</code><a class="headerlink" href="#envvar-DATABASE_DISABLE_POOLING" title="Permalink to this definition">¶</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.4.0.</span></p>
+</div>
+<p>Disable pooling if needed (when starting application with <strong>FitTrackee</strong> entry point and not directly with <strong>Gunicorn</strong>),
+see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/pooling.html#using-connection-pools-with-multiprocessing-or-os-fork">SqlAlchemy documentation</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>false</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt id="envvar-UI_URL">
+<code class="sig-name descname">UI_URL</code><a class="headerlink" href="#envvar-UI_URL" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>FitTrackee</strong> URL, needed for links in emails.</p>
+</dd></dl>
+
+<dl class="std envvar">
+<dt id="envvar-EMAIL_URL">
+<code class="sig-name descname">EMAIL_URL</code><a class="headerlink" href="#envvar-EMAIL_URL" title="Permalink to this definition">¶</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.3.0.</span></p>
+</div>
+<p>Email URL with credentials, see <a class="reference external" href="installation.html#emails">Emails</a>.</p>
+</dd></dl>
+
+<dl class="std envvar">
+<dt id="envvar-SENDER_EMAIL">
+<code class="sig-name descname">SENDER_EMAIL</code><a class="headerlink" href="#envvar-SENDER_EMAIL" title="Permalink to this definition">¶</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.3.0.</span></p>
+</div>
+<p><strong>FitTrackee</strong> sender email address.</p>
+</dd></dl>
+
+<dl class="std envvar">
+<dt id="envvar-REDIS_URL">
+<code class="sig-name descname">REDIS_URL</code><a class="headerlink" href="#envvar-REDIS_URL" title="Permalink to this definition">¶</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.3.0.</span></p>
+</div>
+<p>Redis instance used by <strong>Dramatiq</strong>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>local Redis instance (<code class="docutils literal notranslate"><span class="pre">redis://</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt id="envvar-WORKERS_PROCESSES">
+<code class="sig-name descname">WORKERS_PROCESSES</code><a class="headerlink" href="#envvar-WORKERS_PROCESSES" title="Permalink to this definition">¶</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.3.0.</span></p>
+</div>
+<p>Number of processes used by <strong>Dramatiq</strong>.</p>
+</dd></dl>
+
+<dl class="std envvar">
+<dt id="envvar-TILE_SERVER_URL">
+<span id="envvar-TILE_SERVER_URL 🆕"></span><code class="sig-name descname">TILE_SERVER_URL 🆕</code><a class="headerlink" href="#envvar-TILE_SERVER_URL" title="Permalink to this definition">¶</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.4.0.</span></p>
+</div>
+<p>Tile server URL (with api key if needed), see <a class="reference external" href="installation.html#map-tile-server">Map tile server</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><cite>https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt id="envvar-MAP_ATTRIBUTION">
+<span id="envvar-MAP_ATTRIBUTION 🆕"></span><code class="sig-name descname">MAP_ATTRIBUTION 🆕</code><a class="headerlink" href="#envvar-MAP_ATTRIBUTION" title="Permalink to this definition">¶</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.4.0.</span></p>
+</div>
+<p>Map attribution (if using another tile server), see <a class="reference external" href="installation.html#map-tile-server">Map tile server</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><cite>&amp;copy; &lt;a href=”http://www.openstreetmap.org/copyright” target=”_blank” rel=”noopener noreferrer”&gt;OpenStreetMap&lt;/a&gt; contributors</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt id="envvar-WEATHER_API_KEY">
+<code class="sig-name descname">WEATHER_API_KEY</code><a class="headerlink" href="#envvar-WEATHER_API_KEY" title="Permalink to this definition">¶</a></dt>
+<dd><div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.4.0: </span>⚠️ replaces <code class="docutils literal notranslate"><span class="pre">WEATHER_API</span></code></p>
+</div>
+<p><strong>Dark Sky</strong> API key for weather data (not mandatory).</p>
+</dd></dl>
+
+<dl class="std envvar">
+<dt id="envvar-REACT_APP_API_URL">
+<code class="sig-name descname">REACT_APP_API_URL</code><a class="headerlink" href="#envvar-REACT_APP_API_URL" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>FitTrackee</strong> API URL, only needed in dev environment.</p>
+</dd></dl>
+
+<div class="section" id="deprecated-variables">
+<h3>Deprecated variables<a class="headerlink" href="#deprecated-variables" title="Permalink to this headline">¶</a></h3>
+<dl class="std envvar">
+<dt id="envvar-REACT_APP_GPX_LIMIT_IMPORT">
+<code class="sig-name descname">REACT_APP_GPX_LIMIT_IMPORT</code><a class="headerlink" href="#envvar-REACT_APP_GPX_LIMIT_IMPORT" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.3.0: </span>now stored in database</p>
+</div>
+<p>Maximum number of gpx file in zip archive.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>10</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt id="envvar-REACT_APP_MAX_SINGLE_FILE_SIZE">
+<code class="sig-name descname">REACT_APP_MAX_SINGLE_FILE_SIZE</code><a class="headerlink" href="#envvar-REACT_APP_MAX_SINGLE_FILE_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.3.0: </span>now stored in database</p>
+</div>
+<p>Maximum size of a gpx or picture file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>1MB</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt id="envvar-REACT_APP_MAX_ZIP_FILE_SIZE">
+<code class="sig-name descname">REACT_APP_MAX_ZIP_FILE_SIZE</code><a class="headerlink" href="#envvar-REACT_APP_MAX_ZIP_FILE_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.3.0: </span>now stored in database</p>
+</div>
+<p>Maximum size of a zip archive.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>10MB</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt id="envvar-REACT_APP_ALLOW_REGISTRATION">
+<code class="sig-name descname">REACT_APP_ALLOW_REGISTRATION</code><a class="headerlink" href="#envvar-REACT_APP_ALLOW_REGISTRATION" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.3.0: </span>now stored in database</p>
+</div>
+<p>Allows users to register.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>true</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt id="envvar-REACT_APP_THUNDERFOREST_API_KEY">
+<code class="sig-name descname">REACT_APP_THUNDERFOREST_API_KEY</code><a class="headerlink" href="#envvar-REACT_APP_THUNDERFOREST_API_KEY" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.4.0: </span>see <a class="reference external" href="installation.html#envvar-TILE_SERVER_URL">TILE_SERVER_URL</a></p>
+</div>
+<p>ThunderForest API key.</p>
+</dd></dl>
+
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<div class="line-block">
+<div class="line">Since FitTrackee 0.3.0, some applications parameters are now stored in database.</div>
+<div class="line">Related environment variables are needed to initialize database when upgrading from version prior 0.3.0.</div>
+</div>
+</div>
 </div>
 <div class="section" id="emails">
 <h3>Emails<a class="headerlink" href="#emails" title="Permalink to this headline">¶</a></h3>
-<p><em>new in 0.3.0</em></p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.3.0.</span></p>
+</div>
 <p>To send emails, a valid <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> must be provided:</p>
 <ul class="simple">
 <li><p>with an unencrypted SMTP server: <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:25</span></code></p></li>
@@ -411,18 +504,400 @@ Related environment variables are needed to initialize database.</p>
 </div>
 <div class="section" id="map-tile-server">
 <h3>Map tile server<a class="headerlink" href="#map-tile-server" title="Permalink to this headline">¶</a></h3>
-<p><em>new in 0.x.x</em></p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.4.0.</span></p>
+</div>
 <p>Default tile server is now <strong>OpenStreetMap</strong>’s standard tile layer (if environment variables are not initialized).
 The tile server can be changed by updating <code class="docutils literal notranslate"><span class="pre">TILE_SERVER_URL</span></code> and <code class="docutils literal notranslate"><span class="pre">MAP_ATTRIBUTION</span></code> variables (<a class="reference external" href="https://wiki.openstreetmap.org/wiki/Tile_servers">list of tile servers</a>).</p>
-<p>To keep using ThunderForest Outdoors, the configuration is:</p>
+<p>To keep using <strong>ThunderForest Outdoors</strong>, the configuration is:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">TILE_SERVER_URL=https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=XXXX</span></code> where <strong>XXXX</strong> is ThunderForest API key</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TILE_SERVER_URL=https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=XXXX</span></code> where <strong>XXXX</strong> is <strong>ThunderForest</strong> API key</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">MAP_ATTRIBUTION=&amp;copy;</span> <span class="pre">&lt;a</span> <span class="pre">href=&quot;http://www.thunderforest.com/&quot;&gt;Thunderforest&lt;/a&gt;,</span> <span class="pre">&amp;copy;</span> <span class="pre">&lt;a</span> <span class="pre">href=&quot;http://www.openstreetmap.org/copyright&quot;&gt;OpenStreetMap&lt;/a&gt;</span> <span class="pre">contributors</span></code></p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Check the terms of service of tile provider for map attribution</p>
+<div class="line-block">
+<div class="line">Check the terms of service of tile provider for map attribution</div>
 </div>
+</div>
+</div>
+</div>
+<div class="section" id="from-pypi">
+<h2>From PyPI<a class="headerlink" href="#from-pypi" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Recommended way on production.</div>
+</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<div class="line-block">
+<div class="line">Note that FitTrackee is under heavy development, some features may be unstable.</div>
+</div>
+</div>
+<div class="section" id="id1">
+<h3>Installation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Create and activate a virtualenv</p></li>
+<li><p>Install <strong>FitTrackee</strong> with pip</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pip install fittrackee
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Create <code class="docutils literal notranslate"><span class="pre">fittrackee</span></code> database</p></li>
+</ul>
+<p>Example :</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">DATABASE</span> <span class="n">fittrackee</span><span class="p">;</span>
+<span class="k">CREATE</span> <span class="k">USER</span> <span class="n">fittrackee</span> <span class="k">WITH</span> <span class="n">PASSWORD</span> <span class="s1">&#39;&lt;PASSWORD&gt;&#39;</span><span class="p">;</span>
+<span class="k">GRANT</span> <span class="k">ALL</span> <span class="k">PRIVILEGES</span> <span class="k">ON</span> <span class="k">DATABASE</span> <span class="n">fittrackee</span> <span class="k">TO</span> <span class="n">fittrackee</span><span class="p">;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Initialize environment variables, see <a class="reference external" href="installation.html#environment-variables">Environment variables</a></p></li>
+</ul>
+<p>For instance, copy and update <code class="docutils literal notranslate"><span class="pre">.env</span></code> file from <code class="docutils literal notranslate"><span class="pre">.env.example</span></code> and source the file.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ nano .env
+$ <span class="nb">source</span> .env
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Upgrade database schema</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ fittrackee_upgrade_db
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Initialize database</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ fittrackee_init_data
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Start the application</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ fittrackee
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Start task queue workers</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ fittrackee_worker --processes <span class="m">2</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">To start application and workers with <strong>systemd</strong> service, see <a class="reference external" href="installation.html#deployment">Deployment</a></div>
+</div>
+</div>
+</div>
+<div class="section" id="upgrade">
+<h3>Upgrade<a class="headerlink" href="#upgrade" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<div class="line-block">
+<div class="line">Before upgrading, make a backup of all data:</div>
+<div class="line">- database (with <a class="reference external" href="https://www.postgresql.org/docs/11/app-pgdump.html">pg_dump</a> for instance)</div>
+<div class="line">- upload directory (see <a class="reference external" href="installation.html#environment-variables">Environment variables</a>)</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>Activate the virtualenv</p></li>
+<li><p>Upgrade with pip</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pip install -U fittrackee
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Update environment variables if needed and source environment variables file</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ nano .env
+$ <span class="nb">source</span> .env
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Upgrade database if needed</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ fittrackee_upgrade_db
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Restart the application and task queue workers.</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="from-sources">
+<h2>From sources<a class="headerlink" href="#from-sources" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<div class="line-block">
+<div class="line">Since FitTrackee 0.2.1, Python packages installation needs Poetry.</div>
+<div class="line">To install it on ArchLinux:</div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ yay poetry
+$ poetry --version
+Poetry <span class="m">1</span>.0.10
+
+<span class="c1"># optional</span>
+$ poetry config virtualenvs.in-project <span class="nb">true</span>
+</pre></div>
+</div>
+<p>For other OS, see <a class="reference external" href="https://python-poetry.org/docs/#installation">Poetry Documentation</a></p>
+</div>
+<div class="section" id="id2">
+<h3>Installation<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="dev-environment">
+<h4>Dev environment<a class="headerlink" href="#dev-environment" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Clone this repo:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/SamR1/FitTrackee.git
+$ <span class="nb">cd</span> FitTrackee
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Create <strong>Makefile.custom.config</strong> from example and update it
+(see <a class="reference external" href="installation.html#environment-variables">Environment variables</a>).</p></li>
+<li><p>Install Python virtualenv, React and all related packages and
+initialize the database:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make install-dev
+$ make install-db
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Start the server and the client:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make serve
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Run dramatiq workers:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make run-workers
+</pre></div>
+</div>
+<p>Open <a class="reference external" href="http://localhost:3000">http://localhost:3000</a> and log in (the email is <code class="docutils literal notranslate"><span class="pre">admin&#64;example.com</span></code>
+and the password <code class="docutils literal notranslate"><span class="pre">mpwoadmin</span></code>) or register</p>
+</div>
+<div class="section" id="production-environment">
+<h4>Production environment<a class="headerlink" href="#production-environment" title="Permalink to this headline">¶</a></h4>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<div class="line-block">
+<div class="line">Note that FitTrackee is under heavy development, some features may be unstable.</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>Download the last release (for now, it is the release v0.4.0):</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.4.0.tar.gz
+$ tar -xzf v0.4.0.tar.gz
+$ mv FitTrackee-0.4.0 FitTrackee
+$ <span class="nb">cd</span> FitTrackee
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Create <strong>Makefile.custom.config</strong> from example and update it
+(see <a class="reference external" href="installation.html#environment-variables">Environment variables</a>).</p></li>
+<li><p>Install Python virtualenv and all related packages:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make install-python
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Initialize the database (<strong>after updating</strong> <code class="docutils literal notranslate"><span class="pre">db/create.sql</span></code> <strong>to change
+database credentials</strong>):</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make install-db
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Start the server and dramatiq workers:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make run
+</pre></div>
+</div>
+<p>Open <a class="reference external" href="http://localhost:5000">http://localhost:5000</a>, log in as admin (the email is
+<code class="docutils literal notranslate"><span class="pre">admin&#64;example.com</span></code> and the password <code class="docutils literal notranslate"><span class="pre">mpwoadmin</span></code>) and change the
+password</p>
+</div>
+</div>
+<div class="section" id="id3">
+<h3>Upgrade<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<div class="line-block">
+<div class="line">Before upgrading, make a backup of all data:</div>
+<div class="line">- database (with <a class="reference external" href="https://www.postgresql.org/docs/11/app-pgdump.html">pg_dump</a> for instance)</div>
+<div class="line">- upload directory (see <a class="reference external" href="installation.html#environment-variables">Environment variables</a>)</div>
+</div>
+</div>
+<div class="section" id="id4">
+<h4>Dev environment<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Stop the application and pull the repository:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git pull
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Update <strong>.env</strong> if needed</p></li>
+<li><p>Upgrade packages and database:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make install-dev
+$ make upgrade-db
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Restart the server:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make serve
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Run dramatiq workers:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make run-workers
+</pre></div>
+</div>
+</div>
+<div class="section" id="prod-environment">
+<h4>Prod environment<a class="headerlink" href="#prod-environment" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Stop the application and pull the repository:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git pull
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Update <strong>Makefile.custom.config</strong> if needed</p></li>
+<li><p>Upgrade packages and database:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make install
+$ make upgrade-db
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Restart the server and dramatiq workers:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make run
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="deployment">
+<h2>Deployment<a class="headerlink" href="#deployment" title="Permalink to this headline">¶</a></h2>
+<p>There are several ways to start <strong>FitTrackee</strong> web application and task queue
+library.
+One way is to use a <strong>systemd</strong> services and <strong>Nginx</strong> to proxy pass to <strong>Gunicorn</strong>.</p>
+<p>Examples (to update depending on your application configuration and given distribution):</p>
+<ul class="simple">
+<li><p>for application: <code class="docutils literal notranslate"><span class="pre">fittrackee.service</span></code></p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Unit</span><span class="p">]</span>
+<span class="n">Description</span><span class="o">=</span><span class="n">FitTrackee</span> <span class="n">service</span>
+<span class="n">After</span><span class="o">=</span><span class="n">network</span><span class="o">.</span><span class="n">target</span>
+<span class="n">After</span><span class="o">=</span><span class="n">postgresql</span><span class="o">.</span><span class="n">service</span>
+<span class="n">After</span><span class="o">=</span><span class="n">redis</span><span class="o">.</span><span class="n">service</span>
+<span class="n">StartLimitIntervalSec</span><span class="o">=</span><span class="mi">0</span>
+
+<span class="p">[</span><span class="n">Service</span><span class="p">]</span>
+<span class="n">Type</span><span class="o">=</span><span class="n">simple</span>
+<span class="n">Restart</span><span class="o">=</span><span class="n">always</span>
+<span class="n">RestartSec</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">User</span><span class="o">=&lt;</span><span class="n">USER</span><span class="o">&gt;</span>
+<span class="n">StandardOutput</span><span class="o">=</span><span class="n">syslog</span>
+<span class="n">StandardError</span><span class="o">=</span><span class="n">syslog</span>
+<span class="n">SyslogIdentifier</span><span class="o">=</span><span class="n">fittrackee</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;APP_SECRET_KEY=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;APP_LOG=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;UPLOAD_FOLDER=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;DATABASE_URL=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;UI_URL=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;EMAIL_URL=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;SENDER_EMAIL=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;REDIS_URL=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;TILE_SERVER_URL=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;MAP_ATTRIBUTION=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;WEATHER_API_KEY=&quot;</span>
+<span class="n">WorkingDirectory</span><span class="o">=/</span><span class="n">home</span><span class="o">/&lt;</span><span class="n">USER</span><span class="o">&gt;/&lt;</span><span class="n">FITTRACKEE</span> <span class="n">DIRECTORY</span><span class="o">&gt;</span>
+<span class="n">ExecStart</span><span class="o">=/</span><span class="n">home</span><span class="o">/&lt;</span><span class="n">USER</span><span class="o">&gt;/&lt;</span><span class="n">FITTRACKEE</span> <span class="n">DIRECTORY</span><span class="o">&gt;/.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">gunicorn</span> <span class="o">-</span><span class="n">b</span> <span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="p">:</span><span class="mi">5000</span> <span class="s2">&quot;fittrackee:create_app()&quot;</span> <span class="o">--</span><span class="n">error</span><span class="o">-</span><span class="n">logfile</span> <span class="o">/</span><span class="n">home</span><span class="o">/&lt;</span><span class="n">USER</span><span class="o">&gt;/&lt;</span><span class="n">FITTRACKEE</span> <span class="n">DIRECTORY</span><span class="o">&gt;/</span><span class="n">gunicorn</span><span class="o">.</span><span class="n">log</span>
+<span class="n">Restart</span><span class="o">=</span><span class="n">always</span>
+
+<span class="p">[</span><span class="n">Install</span><span class="p">]</span>
+<span class="n">WantedBy</span><span class="o">=</span><span class="n">multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>for task queue workers: <code class="docutils literal notranslate"><span class="pre">fittrackee_workers.service</span></code></p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Unit</span><span class="p">]</span>
+<span class="n">Description</span><span class="o">=</span><span class="n">FitTrackee</span> <span class="n">task</span> <span class="n">queue</span> <span class="n">service</span>
+<span class="n">After</span><span class="o">=</span><span class="n">network</span><span class="o">.</span><span class="n">target</span>
+<span class="n">After</span><span class="o">=</span><span class="n">postgresql</span><span class="o">.</span><span class="n">service</span>
+<span class="n">After</span><span class="o">=</span><span class="n">redis</span><span class="o">.</span><span class="n">service</span>
+<span class="n">StartLimitIntervalSec</span><span class="o">=</span><span class="mi">0</span>
+
+<span class="p">[</span><span class="n">Service</span><span class="p">]</span>
+<span class="n">Type</span><span class="o">=</span><span class="n">simple</span>
+<span class="n">Restart</span><span class="o">=</span><span class="n">always</span>
+<span class="n">RestartSec</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">User</span><span class="o">=&lt;</span><span class="n">USER</span><span class="o">&gt;</span>
+<span class="n">StandardOutput</span><span class="o">=</span><span class="n">syslog</span>
+<span class="n">StandardError</span><span class="o">=</span><span class="n">syslog</span>
+<span class="n">SyslogIdentifier</span><span class="o">=</span><span class="n">fittrackee_workers</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;FLASK_APP=fittrackee&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;APP_SECRET_KEY=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;APP_LOG=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;UPLOAD_FOLDER=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;DATABASE_URL=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;UI_URL=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;EMAIL_URL=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;SENDER_EMAIL=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;REDIS_URL=&quot;</span>
+<span class="n">WorkingDirectory</span><span class="o">=/</span><span class="n">home</span><span class="o">/&lt;</span><span class="n">USER</span><span class="o">&gt;/&lt;</span><span class="n">FITTRACKEE</span> <span class="n">DIRECTORY</span><span class="o">&gt;</span>
+<span class="n">ExecStart</span><span class="o">=/</span><span class="n">home</span><span class="o">/&lt;</span><span class="n">USER</span><span class="o">&gt;/&lt;</span><span class="n">FITTRACKEE</span> <span class="n">DIRECTORY</span><span class="o">&gt;/.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">flask</span> <span class="n">worker</span> <span class="o">--</span><span class="n">processes</span> <span class="o">&lt;</span><span class="n">NUMBER</span> <span class="n">OF</span> <span class="n">PROCESSES</span><span class="o">&gt;</span>
+<span class="n">Restart</span><span class="o">=</span><span class="n">always</span>
+
+<span class="p">[</span><span class="n">Install</span><span class="p">]</span>
+<span class="n">WantedBy</span><span class="o">=</span><span class="n">multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>Nginx</strong> configuration:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>server {
+    listen 443 ssl;
+    server_name example.com;
+    ssl_certificate fullchain.pem;
+    ssl_certificate_key privkey.pem;
+
+    location / {
+        proxy_pass http://127.0.0.1:5000;
+        proxy_redirect    default;
+        proxy_set_header  Host $host;
+        proxy_set_header  X-Real-IP $remote_addr;
+        proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header  X-Forwarded-Host $server_name;
+    }
+}
+
+server {
+    listen 80;
+    server_name example.com;
+    location / {
+        return 301 https://example.com$request_uri;
+    }
+}
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>More information on <a class="reference external" href="https://docs.gunicorn.org/en/stable/deploy.html">Gunicorn documentation</a></p>
 </div>
 </div>
 </div>

@@ -1,7 +1,7 @@
 Activities
 ##########
 
-.. autoflask:: fittrackee_api:create_app()
+.. autoflask:: fittrackee:create_app()
    :endpoints:
     activities.get_activities,
     activities.get_activity,

@@ -1,14 +1,21 @@
 # Change log
 
-## Version 0.x.x (unreleased)
+## Version 0.4.0 (unreleased)
+
+This version introduces some major changes:
+- Installation becomes more easy.  
+⚠️ Warning: please read [installation documentation](https://samr1.github.io/FitTrackee/installation.html), some environment variables and files have been renamed.
+- It's now possible to change the tile provider for maps. The default tile server is now **OpenStreetMap**'s standard tile layer (replacing **ThunderForest Outdoors**), 
+see [Map tile server in documentation](https://samr1.github.io/FitTrackee/installation.html#map-tile-server).
 
 ### Issues Closed
 
 #### New Features
 
 * [#54](https://github.com/SamR1/Fittrackee/issues/54) - Tile server can be changed
+* [#53](https://github.com/SamR1/Fittrackee/issues/53) - Simplify FitTrackee installation
 
-In this release 1 issue weas closed.
+In this release 2 issue were closed.
 
 
 ## Version 0.3.0 - Administration (2020/07/15)

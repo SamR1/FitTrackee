@@ -1,17 +1,20 @@
 include Makefile.config
--include Makefile.custom.config
+-include .env
 .SILENT:
 
 make-p:
 	# Launch all P targets in parallel and exit as soon as one exits.
 	set -m; (for p in $(P); do ($(MAKE) $$p || kill 0)& done; wait)
 
-build-client:
-	$(NPM) build
+build-client: lint-client
+	cd fittrackee_client && $(NPM) build
 
 clean-install:
 	rm -fr $(NODE_MODULES)
 	rm -fr $(VENV)
+	rm -rf *.egg-info
+	rm -rf .pytest_cache
+	rm -rf dist/
 
 html:
 	rm -rf docsrc/build
@@ -25,9 +28,9 @@ html:
 	cp -a docsrc/build/html/. docs
 
 install-db:
-	psql -U postgres -f fittrackee_api/db/create.sql
+	psql -U postgres -f db/create.sql
 	$(FLASK) db upgrade --directory $(MIGRATIONS)
-	$(FLASK) initdata
+	$(FLASK) init-data
 
 init-app-config:
 	$(FLASK) init-app-config
@@ -35,15 +38,16 @@ init-app-config:
 init-db:
 	$(FLASK) drop-db
 	$(FLASK) db upgrade --directory $(MIGRATIONS)
-	$(FLASK) initdata
+	$(FLASK) init-data
 
 install: install-client install-python
 
 install-client:
-	$(NPM) install --prod
+	cd fittrackee_client && $(NPM) install --prod
 
 install-client-dev:
-	$(NPM) install
+	#                                         https://github.com/facebook/create-react-app/issues/8688
+	cd fittrackee_client && $(NPM) install && sed -i '/process.env.CI/ s/isInteractive [|]*//' node_modules/react-scripts/scripts/start.js
 
 install-dev: install-client-dev install-python-dev
 
@@ -53,21 +57,21 @@ install-python:
 install-python-dev:
 	$(POETRY) install
 
-lint-all: lint-python lint-react
+lint-all: lint-python lint-client
 
-lint-all-fix: lint-python-fix lint-react-fix
+lint-all-fix: lint-python-fix lint-client-fix
 
 lint-python:
-	$(PYTEST) --flake8 --isort --black -m "flake8 or isort or black" fittrackee_api --ignore=fittrackee_api/migrations
+	$(PYTEST) --flake8 --isort --black -m "flake8 or isort or black" fittrackee e2e --ignore=fittrackee/migrations
 
 lint-python-fix:
-	$(BLACK) fittrackee_api
+	$(BLACK) fittrackee e2e
 
-lint-react:
-	$(NPM) lint
+lint-client:
+	cd fittrackee_client && $(NPM) lint
 
-lint-react-fix:
-	$(NPM) lint-fix
+lint-client-fix:
+	cd fittrackee_client && $(NPM) lint-fix
 
 mail:
 	docker run -d -e "MH_STORAGE=maildir" -v /tmp/maildir:/maildir -p 1025:1025 -p 8025:8025 mailhog/mailhog
@@ -79,43 +83,37 @@ recalculate:
 	$(FLASK) recalculate
 
 run:
-	$(MAKE) P="run-server run-workers run-client" make-p
-
-run-client:
-	serve -s fittrackee_client/build -l 3000 >> serve.log  2>&1
+	$(MAKE) P="run-server run-workers" make-p
 
 run-server:
-	cd fittrackee_api && $(GUNICORN) -b 127.0.0.1:5000 "fittrackee_api:create_app()" --error-logfile ../gunicorn.log
+	cd fittrackee && $(GUNICORN) -b 127.0.0.1:5000 "fittrackee:create_app()" --error-logfile ../gunicorn.log
 
 run-workers:
 	$(FLASK) worker --processes=$(WORKERS_PROCESSES) >> dramatiq.log  2>&1
 
 serve-python:
-	$(FLASK) run --with-threads -h $(HOST) -p $(API_PORT)
+	$(FLASK) run --with-threads -h $(HOST) -p $(PORT)
 
 serve-python-dev:
-	$(FLASK) run --with-threads -h $(HOST) -p $(API_PORT) --cert=adhoc
+	$(FLASK) run --with-threads -h $(HOST) -p $(PORT) --cert=adhoc
 
-serve-react:
-	$(NPM) start
+serve-client:
+	cd fittrackee_client && $(NPM) start
 
 serve:
-	$(MAKE) P="serve-react serve-python" make-p
+	$(MAKE) P="serve-client serve-python" make-p
 
 serve-dev:
-	$(MAKE) P="serve-react serve-python-dev" make-p
+	$(MAKE) P="serve-client serve-python-dev" make-p
 
 test-e2e: init-db
-	$(NPM) test
+	$(PYTEST) e2e --driver firefox $(PYTEST_ARGS)
+
+test-e2e-client: init-db
+	E2E_ARGS=client $(PYTEST) e2e --driver firefox $(PYTEST_ARGS)
 
 test-python:
-	$(PYTEST) fittrackee_api --cov-config .coveragerc --cov=fittrackee_api --cov-report term-missing $(PYTEST_ARGS)
-
-test-python-xml:
-	$(PYTEST) fittrackee_api --cov-config .coveragerc --cov=fittrackee_api --cov-report xml
-
-update-cov:	test-python-xml
-	$(COV) -r coverage.xml
+	$(PYTEST) fittrackee --cov-config .coveragerc --cov=fittrackee --cov-report term-missing $(PYTEST_ARGS)
 
 upgrade-db:
 	$(FLASK) db upgrade --directory $(MIGRATIONS)

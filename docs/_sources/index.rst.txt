@@ -22,7 +22,7 @@ FitTrackee
   Map <https://www.openstreetmap.org>`__.
 | It is also possible to add a workout without a gpx file.
 
-| **Still under development (not ready for production).**
+| **Still under heavy development (some features may be unstable).**
 | (see `issues <https://github.com/SamR1/FitTrackee/issues>`__ for more information)
 
 .. figure:: _images/fittrackee_screenshot-01.png

@@ -1,0 +1,65 @@
+image: python:3.8
+
+variables:
+  POSTGRES_DB: fittrackee_test
+  POSTGRES_USER: fittrackee
+  POSTGRES_PASSWORD: fittrackee
+  POSTGRES_HOST: postgres
+  APP_SETTINGS: fittrackee.config.TestingConfig
+  DATABASE_TEST_URL: postgres://fittrackee:fittrackee@postgres:5432/fittrackee_test
+  EMAIL_URL: smtp://none:none@0.0.0.0:1025
+  FLASK_APP: fittrackee/__main__.py
+  SENDER_EMAIL: fittrackee@example.com
+
+services:
+  - name: postgres:latest
+    alias: postgres
+
+stages:
+  - tests
+  - selenium
+
+.python:
+  stage: tests
+  before_script:
+    - pip install --quiet poetry
+    - poetry config virtualenvs.create false
+    - poetry install --no-interaction --quiet
+  script:
+    - pytest fittrackee -p no:warnings --cov fittrackee --cov-report term-missing
+
+lint:
+  extends: .python
+  script:
+    - pytest --flake8 --isort --black -m "flake8 or isort or black" fittrackee e2e --ignore=fittrackee/migrations
+
+python-3.7:
+  extends: .python
+  image: python:3.7
+
+python-3.8:
+  extends: .python
+
+python-3.9-rc:
+  extends: .python
+  image: python:3.9-rc
+  allow_failure: true
+
+firefox:
+  stage: selenium
+  services:
+    - name: postgres:latest
+      alias: postgres
+    - name: selenium/standalone-firefox
+      alias: selenium
+  before_script:
+    - pip install --quiet poetry
+    - poetry config virtualenvs.create false
+    - poetry install --no-interaction --quiet
+    - flask db upgrade --directory fittrackee/migrations
+    - flask init-data
+    - setsid nohup flask run --with-threads -h 0.0.0.0 -p 5000 >> nohup.out 2>&1 &
+    - export TEST_APP_URL=http://$(hostname --ip-address):5000
+    - sleep 5
+  script:
+    - pytest e2e --driver Remote --capability browserName firefox --host selenium --port 4444
