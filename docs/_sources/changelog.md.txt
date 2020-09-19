@@ -1,9 +1,9 @@
 # Change log
 
-## Version 0.4.0 (unreleased)
+## Version 0.4.0 - FitFtrackee on PyPI (2020/09/19)
 
 This version introduces some major changes:
-- Installation becomes more easy.  
+- Installation becomes more easy. **FitFtrackee** can be now be installed from PyPi.  
 ⚠️ Warning: please read [installation documentation](https://samr1.github.io/FitTrackee/installation.html), some environment variables and files have been renamed.
 - It's now possible to change the tile provider for maps. The default tile server is now **OpenStreetMap**'s standard tile layer (replacing **ThunderForest Outdoors**), 
 see [Map tile server in documentation](https://samr1.github.io/FitTrackee/installation.html#map-tile-server).
