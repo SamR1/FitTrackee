@@ -40,10 +40,9 @@ python-3.7:
 python-3.8:
   extends: .python
 
-python-3.9-rc:
+python-3.9:
   extends: .python
-  image: python:3.9-rc
-  allow_failure: true
+  image: python:3.9
 
 firefox:
   stage: selenium
