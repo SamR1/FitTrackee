@@ -1,6 +1,6 @@
 import hash from 'object-hash'
 import React from 'react'
-import { GeoJSON, Map, Marker, TileLayer } from 'react-leaflet'
+import { GeoJSON, MapContainer, Marker, TileLayer } from 'react-leaflet'
 import { connect } from 'react-redux'
 
 import { getActivityGpx, getSegmentGpx } from '../../../actions/activities'
@@ -54,7 +54,7 @@ class ActivityMap extends React.Component {
     return (
       <div>
         {jsonData && (
-          <Map
+          <MapContainer
             zoom={this.state.zoom}
             bounds={bounds}
             boundsOptions={{ padding: [10, 10] }}
@@ -74,7 +74,7 @@ class ActivityMap extends React.Component {
                 position={[coordinates.latitude, coordinates.longitude]}
               />
             )}
-          </Map>
+          </MapContainer>
         )}
       </div>
     )
