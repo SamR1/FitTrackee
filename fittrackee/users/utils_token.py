@@ -29,5 +29,9 @@ def get_user_token(user_id, password_reset=False):
 
 
 def decode_user_token(auth_token):
-    payload = jwt.decode(auth_token, current_app.config.get('SECRET_KEY'))
+    payload = jwt.decode(
+        auth_token,
+        current_app.config.get('SECRET_KEY'),
+        algorithms=['HS256'],
+    )
     return payload['sub']

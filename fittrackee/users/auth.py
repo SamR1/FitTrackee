@@ -136,7 +136,7 @@ def register_user():
             response_object = {
                 'status': 'success',
                 'message': 'Successfully registered.',
-                'auth_token': auth_token.decode(),
+                'auth_token': auth_token,
             }
             return jsonify(response_object), 201
         else:
@@ -220,7 +220,7 @@ def login_user():
             response_object = {
                 'status': 'success',
                 'message': 'Successfully logged in.',
-                'auth_token': auth_token.decode(),
+                'auth_token': auth_token,
             }
             return jsonify(response_object), 200
         else:
@@ -708,7 +708,7 @@ def request_password_reset():
             ),
             'username': user.username,
             'password_reset_url': (
-                f'{ui_url}/password-reset?token={password_reset_token.decode()}'  # noqa
+                f'{ui_url}/password-reset?token={password_reset_token}'  # noqa
             ),
             'operating_system': request.user_agent.platform,
             'browser_name': request.user_agent.browser,

@@ -1068,7 +1068,7 @@ class TestPasswordUpdate:
             '/api/auth/password/update',
             data=json.dumps(
                 dict(
-                    token=token.decode(),
+                    token=token,
                     password='12345678',
                     password_conf='12345678',
                 )
@@ -1091,7 +1091,7 @@ class TestPasswordUpdate:
                 '/api/auth/password/update',
                 data=json.dumps(
                     dict(
-                        token=token.decode(),
+                        token=token,
                         password='12345678',
                         password_conf='12345678',
                     )
@@ -1114,7 +1114,7 @@ class TestPasswordUpdate:
             '/api/auth/password/update',
             data=json.dumps(
                 dict(
-                    token=token.decode(),
+                    token=token,
                     password='1234567',
                     password_conf='1234567',
                 )
@@ -1135,7 +1135,7 @@ class TestPasswordUpdate:
             '/api/auth/password/update',
             data=json.dumps(
                 dict(
-                    token=token.decode(),
+                    token=token,
                     password='12345678',
                     password_conf='12345678',
                 )
