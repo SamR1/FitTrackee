@@ -27,7 +27,7 @@
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=$CLIENT_PORT react-scripts start",
     "build": "NODE_ENV=production react-scripts build && rm -rf ../fittrackee/dist/* && cp -a build/. ../fittrackee/dist",
     "eject": "react-scripts eject",
     "lint": "node_modules/.bin/eslint --cache --ext .jsx --ext .js src",
