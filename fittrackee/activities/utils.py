@@ -118,9 +118,11 @@ def create_activity(user, activity_data, gpx_data=None):
     return new_activity
 
 
-def create_segment(activity_id, segment_data):
+def create_segment(activity_id, activity_uuid, segment_data):
     new_segment = ActivitySegment(
-        activity_id=activity_id, segment_id=segment_data['idx']
+        activity_id=activity_id,
+        activity_uuid=activity_uuid,
+        segment_id=segment_data['idx'],
     )
     new_segment.duration = segment_data['duration']
     new_segment.distance = segment_data['distance']
@@ -272,7 +274,9 @@ def process_one_gpx_file(params, filename):
         db.session.flush()
 
         for segment_data in gpx_data['segments']:
-            new_segment = create_segment(new_activity.id, segment_data)
+            new_segment = create_segment(
+                new_activity.id, new_activity.uuid, segment_data
+            )
             db.session.add(new_segment)
         db.session.commit()
         return new_activity

@@ -1,3 +1,6 @@
+from .utils import is_valid_uuid
+
+
 class TestActivityModel:
     def test_activity_model(
         self, app, sport_1_cycling, user_1, activity_cycling_user_1
@@ -5,6 +8,7 @@ class TestActivityModel:
         activity_cycling_user_1.title = 'Test'
 
         assert 1 == activity_cycling_user_1.id
+        assert activity_cycling_user_1.uuid is not None
         assert 1 == activity_cycling_user_1.user_id
         assert 1 == activity_cycling_user_1.sport_id
         assert '2018-01-01 00:00:00' == str(
@@ -18,7 +22,7 @@ class TestActivityModel:
         )
 
         serialized_activity = activity_cycling_user_1.serialize()
-        assert 1 == serialized_activity['id']
+        assert is_valid_uuid(serialized_activity['id'])
         assert 'test' == serialized_activity['user']
         assert 1 == serialized_activity['sport_id']
         assert serialized_activity['title'] == 'Test'
@@ -55,6 +59,8 @@ class TestActivityModel:
         activity_cycling_user_1,
         activity_cycling_user_1_segment,
     ):
-        assert '<Segment \'0\' for activity \'1\'>' == str(
-            activity_cycling_user_1_segment
+        assert (
+            f'<Segment \'{activity_cycling_user_1_segment.segment_id}\' '
+            f'for activity \'{activity_cycling_user_1.uuid.hex}\'>'
+            == str(activity_cycling_user_1_segment)
         )

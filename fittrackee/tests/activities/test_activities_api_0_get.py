@@ -1,4 +1,5 @@
 import json
+from uuid import uuid4
 
 
 class TestGetActivities:
@@ -694,7 +695,7 @@ class TestGetActivity:
         )
 
         response = client.get(
-            '/api/activities/1',
+            f'/api/activities/{activity_cycling_user_1.uuid.hex}',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -726,7 +727,7 @@ class TestGetActivity:
         )
 
         response = client.get(
-            '/api/activities/1',
+            f'/api/activities/{activity_cycling_user_2.uuid.hex}',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -747,7 +748,7 @@ class TestGetActivity:
         )
 
         response = client.get(
-            '/api/activities/11',
+            f'/api/activities/{uuid4().hex}',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -762,6 +763,7 @@ class TestGetActivity:
     def test_it_returns_404_on_getting_gpx_if_activity_does_not_exist(
         self, app, user_1
     ):
+        random_uuid = uuid4().hex
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -770,7 +772,7 @@ class TestGetActivity:
         )
 
         response = client.get(
-            '/api/activities/11/gpx',
+            f'/api/activities/{random_uuid}/gpx',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -780,12 +782,13 @@ class TestGetActivity:
         data = json.loads(response.data.decode())
         assert response.status_code == 404
         assert 'not found' in data['status']
-        assert 'Activity not found (id: 11)' in data['message']
+        assert f'Activity not found (id: {random_uuid})' in data['message']
         assert data['data']['gpx'] == ''
 
     def test_it_returns_404_on_getting_chart_data_if_activity_does_not_exist(
         self, app, user_1
     ):
+        random_uuid = uuid4().hex
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -794,7 +797,7 @@ class TestGetActivity:
         )
 
         response = client.get(
-            '/api/activities/11/chart_data',
+            f'/api/activities/{random_uuid}/chart_data',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -804,12 +807,13 @@ class TestGetActivity:
         data = json.loads(response.data.decode())
         assert response.status_code == 404
         assert 'not found' in data['status']
-        assert 'Activity not found (id: 11)' in data['message']
+        assert f'Activity not found (id: {random_uuid})' in data['message']
         assert data['data']['chart_data'] == ''
 
     def test_it_returns_404_on_getting_gpx_if_activity_have_no_gpx(
         self, app, user_1, sport_1_cycling, activity_cycling_user_1
     ):
+        activity_uuid = activity_cycling_user_1.uuid.hex
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -818,7 +822,7 @@ class TestGetActivity:
         )
 
         response = client.get(
-            '/api/activities/1/gpx',
+            f'/api/activities/{activity_uuid}/gpx',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -828,11 +832,15 @@ class TestGetActivity:
         data = json.loads(response.data.decode())
         assert response.status_code == 404
         assert 'error' in data['status']
-        assert 'No gpx file for this activity (id: 1)' in data['message']
+        assert (
+            f'No gpx file for this activity (id: {activity_uuid})'
+            in data['message']
+        )
 
     def test_it_returns_404_if_activity_have_no_chart_data(
         self, app, user_1, sport_1_cycling, activity_cycling_user_1
     ):
+        activity_uuid = activity_cycling_user_1.uuid.hex
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -841,7 +849,7 @@ class TestGetActivity:
         )
 
         response = client.get(
-            '/api/activities/1/chart_data',
+            f'/api/activities/{activity_uuid}/chart_data',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -851,7 +859,10 @@ class TestGetActivity:
         data = json.loads(response.data.decode())
         assert response.status_code == 404
         assert 'error' in data['status']
-        assert 'No gpx file for this activity (id: 1)' in data['message']
+        assert (
+            f'No gpx file for this activity (id: {activity_uuid})'
+            in data['message']
+        )
 
     def test_it_returns_500_on_getting_gpx_if_an_activity_has_invalid_gpx_pathname(  # noqa
         self, app, user_1, sport_1_cycling, activity_cycling_user_1
@@ -865,7 +876,7 @@ class TestGetActivity:
         )
 
         response = client.get(
-            '/api/activities/1/gpx',
+            f'/api/activities/{activity_cycling_user_1.uuid.hex}/gpx',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -881,7 +892,7 @@ class TestGetActivity:
     def test_it_returns_500_on_getting_chart_data_if_an_activity_has_invalid_gpx_pathname(  # noqa
         self, app, user_1, sport_1_cycling, activity_cycling_user_1
     ):
-        activity_cycling_user_1.gpx = "some path"
+        activity_cycling_user_1.gpx = 'some path'
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -890,7 +901,7 @@ class TestGetActivity:
         )
 
         response = client.get(
-            '/api/activities/1/chart_data',
+            f'/api/activities/{activity_cycling_user_1.uuid.hex}/chart_data',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -911,7 +922,7 @@ class TestGetActivity:
             content_type='application/json',
         )
         response = client.get(
-            '/api/activities/map/123',
+            f'/api/activities/map/{uuid4().hex}',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']

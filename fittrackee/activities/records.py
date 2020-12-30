@@ -39,7 +39,7 @@ def get_records(auth_user_id):
           "records": [
             {
               "activity_date": "Sun, 07 Jul 2019 08:00:00 GMT",
-              "activity_id": 4,
+              "activity_id": "e060bde05e3f4906a32913b102c814cb",
               "id": 9,
               "record_type": "AS",
               "sport_id": 1,
@@ -48,7 +48,7 @@ def get_records(auth_user_id):
             },
             {
               "activity_date": "Sun, 07 Jul 2019 08:00:00 GMT",
-              "activity_id": 4,
+              "activity_id": "e060bde05e3f4906a32913b102c814cb",
               "id": 10,
               "record_type": "FD",
               "sport_id": 1,
@@ -57,7 +57,7 @@ def get_records(auth_user_id):
             },
             {
               "activity_date": "Sun, 07 Jul 2019 08:00:00 GMT",
-              "activity_id": 7,
+              "activity_id": "e060bde05e3f4906a32913b102c814cb",
               "id": 11,
               "record_type": "LD",
               "sport_id": 1,
@@ -66,7 +66,7 @@ def get_records(auth_user_id):
             },
             {
               "activity_date": "Sun, 07 Jul 2019 08:00:00 GMT",
-              "activity_id": 4,
+              "activity_id": "e060bde05e3f4906a32913b102c814cb",
               "id": 12,
               "record_type": "MS",
               "sport_id": 1,

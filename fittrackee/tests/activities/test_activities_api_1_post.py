@@ -32,7 +32,7 @@ def assert_activity_data_with_gpx(data):
     assert len(data['data']['activities'][0]['segments']) == 1
 
     segment = data['data']['activities'][0]['segments'][0]
-    assert segment['activity_id'] == 1
+    assert segment['activity_id'] == data['data']['activities'][0]['id']
     assert segment['segment_id'] == 0
     assert segment['duration'] == '0:04:10'
     assert segment['ascent'] == 0.4
@@ -48,22 +48,22 @@ def assert_activity_data_with_gpx(data):
     records = data['data']['activities'][0]['records']
     assert len(records) == 4
     assert records[0]['sport_id'] == 1
-    assert records[0]['activity_id'] == 1
+    assert records[0]['activity_id'] == data['data']['activities'][0]['id']
     assert records[0]['record_type'] == 'MS'
     assert records[0]['activity_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
     assert records[0]['value'] == 5.12
     assert records[1]['sport_id'] == 1
-    assert records[1]['activity_id'] == 1
+    assert records[1]['activity_id'] == data['data']['activities'][0]['id']
     assert records[1]['record_type'] == 'LD'
     assert records[1]['activity_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
     assert records[1]['value'] == '0:04:10'
     assert records[2]['sport_id'] == 1
-    assert records[2]['activity_id'] == 1
+    assert records[2]['activity_id'] == data['data']['activities'][0]['id']
     assert records[2]['record_type'] == 'FD'
     assert records[2]['activity_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
     assert records[2]['value'] == 0.32
     assert records[3]['sport_id'] == 1
-    assert records[3]['activity_id'] == 1
+    assert records[3]['activity_id'] == data['data']['activities'][0]['id']
     assert records[3]['record_type'] == 'AS'
     assert records[3]['activity_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
     assert records[3]['value'] == 4.61
@@ -97,7 +97,7 @@ def assert_activity_data_with_gpx_segments(data):
     assert len(data['data']['activities'][0]['segments']) == 2
 
     segment = data['data']['activities'][0]['segments'][0]
-    assert segment['activity_id'] == 1
+    assert segment['activity_id'] == data['data']['activities'][0]['id']
     assert segment['segment_id'] == 0
     assert segment['duration'] == '0:01:30'
     assert segment['ascent'] is None
@@ -111,7 +111,7 @@ def assert_activity_data_with_gpx_segments(data):
     assert segment['pauses'] is None
 
     segment = data['data']['activities'][0]['segments'][1]
-    assert segment['activity_id'] == 1
+    assert segment['activity_id'] == data['data']['activities'][0]['id']
     assert segment['segment_id'] == 1
     assert segment['duration'] == '0:02:25'
     assert segment['ascent'] == 0.4
@@ -127,17 +127,17 @@ def assert_activity_data_with_gpx_segments(data):
     records = data['data']['activities'][0]['records']
     assert len(records) == 3
     assert records[0]['sport_id'] == 1
-    assert records[0]['activity_id'] == 1
+    assert records[0]['activity_id'] == data['data']['activities'][0]['id']
     assert records[0]['record_type'] == 'LD'
     assert records[0]['activity_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
     assert records[0]['value'] == '0:03:55'
     assert records[1]['sport_id'] == 1
-    assert records[1]['activity_id'] == 1
+    assert records[1]['activity_id'] == data['data']['activities'][0]['id']
     assert records[1]['record_type'] == 'FD'
     assert records[1]['activity_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
     assert records[1]['value'] == 0.3
     assert records[2]['sport_id'] == 1
-    assert records[2]['activity_id'] == 1
+    assert records[2]['activity_id'] == data['data']['activities'][0]['id']
     assert records[2]['record_type'] == 'AS'
     assert records[2]['activity_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
     assert records[2]['value'] == 4.59
@@ -176,22 +176,22 @@ def assert_activity_data_wo_gpx(data):
     records = data['data']['activities'][0]['records']
     assert len(records) == 4
     assert records[0]['sport_id'] == 1
-    assert records[0]['activity_id'] == 1
+    assert records[0]['activity_id'] == data['data']['activities'][0]['id']
     assert records[0]['record_type'] == 'MS'
     assert records[0]['activity_date'] == 'Tue, 15 May 2018 14:05:00 GMT'
     assert records[0]['value'] == 10.0
     assert records[1]['sport_id'] == 1
-    assert records[1]['activity_id'] == 1
+    assert records[1]['activity_id'] == data['data']['activities'][0]['id']
     assert records[1]['record_type'] == 'LD'
     assert records[1]['activity_date'] == 'Tue, 15 May 2018 14:05:00 GMT'
     assert records[1]['value'] == '1:00:00'
     assert records[2]['sport_id'] == 1
-    assert records[2]['activity_id'] == 1
+    assert records[2]['activity_id'] == data['data']['activities'][0]['id']
     assert records[2]['record_type'] == 'FD'
     assert records[2]['activity_date'] == 'Tue, 15 May 2018 14:05:00 GMT'
     assert records[2]['value'] == 10.0
     assert records[3]['sport_id'] == 1
-    assert records[3]['activity_id'] == 1
+    assert records[3]['activity_id'] == data['data']['activities'][0]['id']
     assert records[3]['record_type'] == 'AS'
     assert records[3]['activity_date'] == 'Tue, 15 May 2018 14:05:00 GMT'
     assert records[3]['value'] == 10.0
@@ -305,7 +305,7 @@ class TestPostActivityWithGpx:
             content_type='application/json',
         )
 
-        client.post(
+        response = client.post(
             '/api/activities',
             data=dict(
                 file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
@@ -317,17 +317,10 @@ class TestPostActivityWithGpx:
                 + json.loads(resp_login.data.decode())['auth_token'],
             ),
         )
-        response = client.get(
-            '/api/activities/1',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
-        )
         data = json.loads(response.data.decode())
 
-        assert response.status_code == 200
-        assert 'success' in data['status']
+        assert response.status_code == 201
+        assert 'created' in data['status']
         assert len(data['data']['activities']) == 1
         assert 'just an activity' == data['data']['activities'][0]['title']
         assert 'test activity' == data['data']['activities'][0]['notes']
@@ -766,7 +759,7 @@ class TestPostAndGetActivityWithGpx:
             data=json.dumps(dict(email='test@test.com', password='12345678')),
             content_type='application/json',
         )
-        client.post(
+        response = client.post(
             '/api/activities',
             data=dict(
                 file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
@@ -779,17 +772,9 @@ class TestPostAndGetActivityWithGpx:
             ),
         )
 
-        response = client.get(
-            '/api/activities/1',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
-        )
-
         data = json.loads(response.data.decode())
-        assert response.status_code == 200
-        assert 'success' in data['status']
+        assert response.status_code == 201
+        assert 'created' in data['status']
         assert len(data['data']['activities']) == 1
         assert 'just an activity' == data['data']['activities'][0]['title']
         if with_segments:
@@ -797,9 +782,10 @@ class TestPostAndGetActivityWithGpx:
         else:
             assert_activity_data_with_gpx(data)
         map_id = data['data']['activities'][0]['map']
+        activity_uuid = data['data']['activities'][0]['id']
 
         response = client.get(
-            '/api/activities/1/gpx',
+            f'/api/activities/{activity_uuid}/gpx',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -813,7 +799,7 @@ class TestPostAndGetActivityWithGpx:
         assert len(data['data']['gpx']) != ''
 
         response = client.get(
-            '/api/activities/1/gpx/segment/1',
+            f'/api/activities/{activity_uuid}/gpx/segment/1',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -836,7 +822,7 @@ class TestPostAndGetActivityWithGpx:
         assert response.status_code == 200
 
         # error case in the same test to avoid generate a new map file
-        activity = Activity.query.filter_by(id=1).first()
+        activity = Activity.query.filter_by(uuid=activity_uuid).first()
         activity.map = 'incorrect path'
 
         assert response.status_code == 200
@@ -877,7 +863,7 @@ class TestPostAndGetActivityWithGpx:
             content_type='application/json',
         )
 
-        client.post(
+        response = client.post(
             '/api/activities',
             data=dict(
                 file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
@@ -889,8 +875,10 @@ class TestPostAndGetActivityWithGpx:
                 + json.loads(resp_login.data.decode())['auth_token'],
             ),
         )
+        data = json.loads(response.data.decode())
+        activity_uuid = data['data']['activities'][0]['id']
         response = client.get(
-            '/api/activities/1/chart_data',
+            f'/api/activities/{activity_uuid}/chart_data',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -913,7 +901,7 @@ class TestPostAndGetActivityWithGpx:
             content_type='application/json',
         )
 
-        client.post(
+        response = client.post(
             '/api/activities',
             data=dict(
                 file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
@@ -925,8 +913,10 @@ class TestPostAndGetActivityWithGpx:
                 + json.loads(resp_login.data.decode())['auth_token'],
             ),
         )
+        data = json.loads(response.data.decode())
+        activity_uuid = data['data']['activities'][0]['id']
         response = client.get(
-            '/api/activities/1/chart_data/segment/1',
+            f'/api/activities/{activity_uuid}/chart_data/segment/1',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -948,7 +938,7 @@ class TestPostAndGetActivityWithGpx:
             data=json.dumps(dict(email='test@test.com', password='12345678')),
             content_type='application/json',
         )
-        client.post(
+        response = client.post(
             '/api/activities',
             data=dict(
                 file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
@@ -960,6 +950,8 @@ class TestPostAndGetActivityWithGpx:
                 + json.loads(resp_login.data.decode())['auth_token'],
             ),
         )
+        data = json.loads(response.data.decode())
+        activity_uuid = data['data']['activities'][0]['id']
 
         resp_login = client.post(
             '/api/auth/login',
@@ -967,7 +959,7 @@ class TestPostAndGetActivityWithGpx:
             content_type='application/json',
         )
         response = client.get(
-            '/api/activities/1/chart_data',
+            f'/api/activities/{activity_uuid}/chart_data',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -989,7 +981,7 @@ class TestPostAndGetActivityWithGpx:
             content_type='application/json',
         )
 
-        client.post(
+        response = client.post(
             '/api/activities',
             data=dict(
                 file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
@@ -1001,8 +993,10 @@ class TestPostAndGetActivityWithGpx:
                 + json.loads(resp_login.data.decode())['auth_token'],
             ),
         )
+        data = json.loads(response.data.decode())
+        activity_uuid = data['data']['activities'][0]['id']
         response = client.get(
-            '/api/activities/1/chart_data/segment/0',
+            f'/api/activities/{activity_uuid}/chart_data/segment/0',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -1025,7 +1019,7 @@ class TestPostAndGetActivityWithGpx:
             content_type='application/json',
         )
 
-        client.post(
+        response = client.post(
             '/api/activities',
             data=dict(
                 file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
@@ -1037,8 +1031,10 @@ class TestPostAndGetActivityWithGpx:
                 + json.loads(resp_login.data.decode())['auth_token'],
             ),
         )
+        data = json.loads(response.data.decode())
+        activity_uuid = data['data']['activities'][0]['id']
         response = client.get(
-            '/api/activities/1/chart_data/segment/999999',
+            f'/api/activities/{activity_uuid}/chart_data/segment/999999',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -1063,7 +1059,7 @@ class TestPostAndGetActivityWithoutGpx:
             content_type='application/json',
         )
 
-        client.post(
+        response = client.post(
             '/api/activities/no_gpx',
             content_type='application/json',
             data=json.dumps(
@@ -1079,8 +1075,10 @@ class TestPostAndGetActivityWithoutGpx:
                 + json.loads(resp_login.data.decode())['auth_token']
             ),
         )
+        data = json.loads(response.data.decode())
+        activity_uuid = data['data']['activities'][0]['id']
         response = client.get(
-            '/api/activities/1',
+            f'/api/activities/{activity_uuid}',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -1103,7 +1101,7 @@ class TestPostAndGetActivityWithoutGpx:
             content_type='application/json',
         )
 
-        client.post(
+        response = client.post(
             '/api/activities/no_gpx',
             content_type='application/json',
             data=json.dumps(
@@ -1120,8 +1118,10 @@ class TestPostAndGetActivityWithoutGpx:
                 + json.loads(resp_login.data.decode())['auth_token']
             ),
         )
+        data = json.loads(response.data.decode())
+        activity_uuid = data['data']['activities'][0]['id']
         response = client.get(
-            '/api/activities/1',
+            f'/api/activities/{activity_uuid}',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -1147,7 +1147,7 @@ class TestPostAndGetActivityUsingTimezones:
             content_type='application/json',
         )
 
-        client.post(
+        response = client.post(
             '/api/activities/no_gpx',
             content_type='application/json',
             data=json.dumps(
@@ -1163,8 +1163,10 @@ class TestPostAndGetActivityUsingTimezones:
                 + json.loads(resp_login.data.decode())['auth_token']
             ),
         )
+        data = json.loads(response.data.decode())
+        activity_uuid = data['data']['activities'][0]['id']
         response = client.get(
-            '/api/activities/1',
+            f'/api/activities/{activity_uuid}',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']

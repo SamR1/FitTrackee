@@ -1,5 +1,6 @@
 import datetime
 import os
+from uuid import uuid4
 
 from fittrackee import db
 from sqlalchemy.dialects import postgresql
@@ -37,6 +38,7 @@ def update_records(user_id, sport_id, connection, session):
                     .values(
                         value=value,
                         activity_id=record_data['activity'].id,
+                        activity_uuid=record_data['activity'].uuid,
                         activity_date=record_data['activity'].activity_date,
                     )
                 )
@@ -89,6 +91,12 @@ class Sport(db.Model):
 class Activity(db.Model):
     __tablename__ = "activities"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    uuid = db.Column(
+        postgresql.UUID(as_uuid=True),
+        default=uuid4,
+        unique=True,
+        nullable=False,
+    )
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     sport_id = db.Column(
         db.Integer, db.ForeignKey('sports.id'), nullable=False
@@ -226,7 +234,7 @@ class Activity(db.Model):
             .first()
         )
         return {
-            "id": self.id,
+            "id": self.uuid.hex,  # WARNING: client use uuid as id
             "user": self.user.username,
             "sport_id": self.sport_id,
             "title": self.title,
@@ -247,10 +255,10 @@ class Activity(db.Model):
             "bounds": [float(bound) for bound in self.bounds]
             if self.bounds
             else [],  # noqa
-            "previous_activity": previous_activity.id
+            "previous_activity": previous_activity.uuid.hex
             if previous_activity
             else None,  # noqa
-            "next_activity": next_activity.id if next_activity else None,
+            "next_activity": next_activity.uuid.hex if next_activity else None,
             "segments": [segment.serialize() for segment in self.segments],
             "records": [record.serialize() for record in self.records],
             "map": self.map_id if self.map else None,
@@ -327,6 +335,7 @@ class ActivitySegment(db.Model):
     activity_id = db.Column(
         db.Integer, db.ForeignKey('activities.id'), primary_key=True
     )
+    activity_uuid = db.Column(postgresql.UUID(as_uuid=True), nullable=False)
     segment_id = db.Column(db.Integer, primary_key=True)
     duration = db.Column(db.Interval, nullable=False)
     pauses = db.Column(db.Interval, nullable=True)
@@ -342,16 +351,17 @@ class ActivitySegment(db.Model):
     def __str__(self):
         return (
             f'<Segment \'{self.segment_id}\' '
-            f'for activity \'{self.activity_id}\'>'
+            f'for activity \'{self.activity_uuid.hex}\'>'
         )
 
-    def __init__(self, segment_id, activity_id):
+    def __init__(self, segment_id, activity_id, activity_uuid):
         self.segment_id = segment_id
         self.activity_id = activity_id
+        self.activity_uuid = activity_uuid
 
     def serialize(self):
         return {
-            "activity_id": self.activity_id,
+            "activity_id": self.activity_uuid.hex,
             "segment_id": self.segment_id,
             "duration": str(self.duration) if self.duration else None,
             "pauses": str(self.pauses) if self.pauses else None,
@@ -381,6 +391,7 @@ class Record(db.Model):
     activity_id = db.Column(
         db.Integer, db.ForeignKey('activities.id'), nullable=False
     )
+    activity_uuid = db.Column(postgresql.UUID(as_uuid=True), nullable=False)
     record_type = db.Column(Enum(*record_types, name="record_types"))
     activity_date = db.Column(db.DateTime, nullable=False)
     _value = db.Column("value", db.Integer, nullable=True)
@@ -396,6 +407,7 @@ class Record(db.Model):
         self.user_id = activity.user_id
         self.sport_id = activity.sport_id
         self.activity_id = activity.id
+        self.activity_uuid = activity.uuid
         self.record_type = record_type
         self.activity_date = activity.activity_date
 
@@ -426,7 +438,7 @@ class Record(db.Model):
             "id": self.id,
             "user": self.user.username,
             "sport_id": self.sport_id,
-            "activity_id": self.activity_id,
+            "activity_id": self.activity_uuid.hex,
             "record_type": self.record_type,
             "activity_date": self.activity_date,
             "value": value,

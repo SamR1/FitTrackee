@@ -196,8 +196,12 @@ def activity_cycling_user_1():
 
 
 @pytest.fixture()
-def activity_cycling_user_1_segment():
-    activity_segment = ActivitySegment(activity_id=1, segment_id=0)
+def activity_cycling_user_1_segment(activity_cycling_user_1):
+    activity_segment = ActivitySegment(
+        activity_id=activity_cycling_user_1.id,
+        activity_uuid=activity_cycling_user_1.uuid,
+        segment_id=0,
+    )
     activity_segment.duration = datetime.timedelta(seconds=6000)
     activity_segment.moving = activity_segment.duration
     activity_segment.distance = 5
