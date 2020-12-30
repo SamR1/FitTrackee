@@ -11,6 +11,7 @@ from sqlalchemy.types import JSON, Enum
 
 from .utils_files import get_absolute_file_path
 from .utils_format import convert_in_duration, convert_value_to_integer
+from .utils_id import encode_uuid
 
 record_types = [
     'AS',  # 'Best Average Speed'
@@ -147,6 +148,10 @@ class Activity(db.Model):
         self.distance = distance
         self.duration = duration
 
+    @property
+    def short_id(self):
+        return encode_uuid(self.uuid)
+
     def serialize(self, params=None):
         date_from = params.get('from') if params else None
         date_to = params.get('to') if params else None
@@ -234,7 +239,7 @@ class Activity(db.Model):
             .first()
         )
         return {
-            "id": self.uuid.hex,  # WARNING: client use uuid as id
+            "id": self.short_id,  # WARNING: client use uuid as id
             "user": self.user.username,
             "sport_id": self.sport_id,
             "title": self.title,
@@ -255,10 +260,10 @@ class Activity(db.Model):
             "bounds": [float(bound) for bound in self.bounds]
             if self.bounds
             else [],  # noqa
-            "previous_activity": previous_activity.uuid.hex
+            "previous_activity": previous_activity.short_id
             if previous_activity
             else None,  # noqa
-            "next_activity": next_activity.uuid.hex if next_activity else None,
+            "next_activity": next_activity.short_id if next_activity else None,
             "segments": [segment.serialize() for segment in self.segments],
             "records": [record.serialize() for record in self.records],
             "map": self.map_id if self.map else None,
@@ -351,7 +356,7 @@ class ActivitySegment(db.Model):
     def __str__(self):
         return (
             f'<Segment \'{self.segment_id}\' '
-            f'for activity \'{self.activity_uuid.hex}\'>'
+            f'for activity \'{encode_uuid(self.activity_uuid)}\'>'
         )
 
     def __init__(self, segment_id, activity_id, activity_uuid):
@@ -361,7 +366,7 @@ class ActivitySegment(db.Model):
 
     def serialize(self):
         return {
-            "activity_id": self.activity_uuid.hex,
+            "activity_id": encode_uuid(self.activity_uuid),
             "segment_id": self.segment_id,
             "duration": str(self.duration) if self.duration else None,
             "pauses": str(self.pauses) if self.pauses else None,
@@ -438,7 +443,7 @@ class Record(db.Model):
             "id": self.id,
             "user": self.user.username,
             "sport_id": self.sport_id,
-            "activity_id": self.activity_uuid.hex,
+            "activity_id": encode_uuid(self.activity_uuid),
             "record_type": self.record_type,
             "activity_date": self.activity_date,
             "value": value,

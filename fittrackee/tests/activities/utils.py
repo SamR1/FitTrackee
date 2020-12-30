@@ -1,14 +1,12 @@
 import json
 from io import BytesIO
-from uuid import UUID
+from uuid import uuid4
+
+from fittrackee.activities.utils_id import encode_uuid
 
 
-def is_valid_uuid(string):
-    try:
-        UUID(string, version=4)
-    except ValueError:
-        return False
-    return True
+def get_random_short_id():
+    return encode_uuid(uuid4())
 
 
 def post_an_activity(app, gpx_file):

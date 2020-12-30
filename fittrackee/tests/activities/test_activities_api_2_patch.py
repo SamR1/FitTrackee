@@ -1,9 +1,9 @@
 import json
-from uuid import uuid4
 
 from fittrackee.activities.models import Activity
+from fittrackee.activities.utils_id import decode_short_id
 
-from .utils import post_an_activity
+from .utils import get_random_short_id, post_an_activity
 
 
 def assert_activity_data_with_gpx(data, sport_id):
@@ -53,11 +53,11 @@ class TestEditActivityWithGpx:
     def test_it_updates_title_for_an_activity_with_gpx(
         self, app, user_1, sport_1_cycling, sport_2_running, gpx_file
     ):
-        token, activity_uuid = post_an_activity(app, gpx_file)
+        token, activity_short_id = post_an_activity(app, gpx_file)
         client = app.test_client()
 
         response = client.patch(
-            f'/api/activities/{activity_uuid}',
+            f'/api/activities/{activity_short_id}',
             content_type='application/json',
             data=json.dumps(dict(sport_id=2, title="Activity test")),
             headers=dict(Authorization=f'Bearer {token}'),
@@ -74,11 +74,11 @@ class TestEditActivityWithGpx:
     def test_it_adds_notes_for_an_activity_with_gpx(
         self, app, user_1, sport_1_cycling, sport_2_running, gpx_file
     ):
-        token, activity_uuid = post_an_activity(app, gpx_file)
+        token, activity_short_id = post_an_activity(app, gpx_file)
         client = app.test_client()
 
         response = client.patch(
-            f'/api/activities/{activity_uuid}',
+            f'/api/activities/{activity_short_id}',
             content_type='application/json',
             data=json.dumps(dict(notes="test notes")),
             headers=dict(Authorization=f'Bearer {token}'),
@@ -94,7 +94,7 @@ class TestEditActivityWithGpx:
     def test_it_raises_403_when_editing_an_activity_from_different_user(
         self, app, user_1, user_2, sport_1_cycling, sport_2_running, gpx_file
     ):
-        _, activity_uuid = post_an_activity(app, gpx_file)
+        _, activity_short_id = post_an_activity(app, gpx_file)
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -103,7 +103,7 @@ class TestEditActivityWithGpx:
         )
 
         response = client.patch(
-            f'/api/activities/{activity_uuid}',
+            f'/api/activities/{activity_short_id}',
             content_type='application/json',
             data=json.dumps(dict(sport_id=2, title="Activity test")),
             headers=dict(
@@ -120,11 +120,11 @@ class TestEditActivityWithGpx:
     def test_it_updates_sport(
         self, app, user_1, sport_1_cycling, sport_2_running, gpx_file
     ):
-        token, activity_uuid = post_an_activity(app, gpx_file)
+        token, activity_short_id = post_an_activity(app, gpx_file)
         client = app.test_client()
 
         response = client.patch(
-            f'/api/activities/{activity_uuid}',
+            f'/api/activities/{activity_short_id}',
             content_type='application/json',
             data=json.dumps(dict(sport_id=2)),
             headers=dict(Authorization=f'Bearer {token}'),
@@ -141,11 +141,11 @@ class TestEditActivityWithGpx:
     def test_it_returns_400_if_payload_is_empty(
         self, app, user_1, sport_1_cycling, gpx_file
     ):
-        token, activity_uuid = post_an_activity(app, gpx_file)
+        token, activity_short_id = post_an_activity(app, gpx_file)
         client = app.test_client()
 
         response = client.patch(
-            f'/api/activities/{activity_uuid}',
+            f'/api/activities/{activity_short_id}',
             content_type='application/json',
             data=json.dumps(dict()),
             headers=dict(Authorization=f'Bearer {token}'),
@@ -159,11 +159,11 @@ class TestEditActivityWithGpx:
     def test_it_raises_500_if_sport_does_not_exists(
         self, app, user_1, sport_1_cycling, gpx_file
     ):
-        token, activity_uuid = post_an_activity(app, gpx_file)
+        token, activity_short_id = post_an_activity(app, gpx_file)
         client = app.test_client()
 
         response = client.patch(
-            f'/api/activities/{activity_uuid}',
+            f'/api/activities/{activity_short_id}',
             content_type='application/json',
             data=json.dumps(dict(sport_id=2)),
             headers=dict(Authorization=f'Bearer {token}'),
@@ -187,7 +187,7 @@ class TestEditActivityWithoutGpx:
         sport_2_running,
         activity_cycling_user_1,
     ):
-        activity_uuid = activity_cycling_user_1.uuid.hex
+        activity_short_id = activity_cycling_user_1.short_id
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -196,7 +196,7 @@ class TestEditActivityWithoutGpx:
         )
 
         response = client.patch(
-            f'/api/activities/{activity_uuid}',
+            f'/api/activities/{activity_short_id}',
             content_type='application/json',
             data=json.dumps(
                 dict(
@@ -245,22 +245,22 @@ class TestEditActivityWithoutGpx:
         records = data['data']['activities'][0]['records']
         assert len(records) == 4
         assert records[0]['sport_id'] == sport_2_running.id
-        assert records[0]['activity_id'] == activity_uuid
+        assert records[0]['activity_id'] == activity_short_id
         assert records[0]['record_type'] == 'MS'
         assert records[0]['activity_date'] == 'Tue, 15 May 2018 15:05:00 GMT'
         assert records[0]['value'] == 8.0
         assert records[1]['sport_id'] == sport_2_running.id
-        assert records[1]['activity_id'] == activity_uuid
+        assert records[1]['activity_id'] == activity_short_id
         assert records[1]['record_type'] == 'LD'
         assert records[1]['activity_date'] == 'Tue, 15 May 2018 15:05:00 GMT'
         assert records[1]['value'] == '1:00:00'
         assert records[2]['sport_id'] == sport_2_running.id
-        assert records[2]['activity_id'] == activity_uuid
+        assert records[2]['activity_id'] == activity_short_id
         assert records[2]['record_type'] == 'FD'
         assert records[2]['activity_date'] == 'Tue, 15 May 2018 15:05:00 GMT'
         assert records[2]['value'] == 8.0
         assert records[3]['sport_id'] == sport_2_running.id
-        assert records[3]['activity_id'] == activity_uuid
+        assert records[3]['activity_id'] == activity_short_id
         assert records[3]['record_type'] == 'AS'
         assert records[3]['activity_date'] == 'Tue, 15 May 2018 15:05:00 GMT'
         assert records[3]['value'] == 8.0
@@ -268,7 +268,7 @@ class TestEditActivityWithoutGpx:
     def test_it_adds_notes_to_an_activity_wo_gpx(
         self, app, user_1, sport_1_cycling, activity_cycling_user_1
     ):
-        activity_uuid = activity_cycling_user_1.uuid.hex
+        activity_short_id = activity_cycling_user_1.short_id
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -277,7 +277,7 @@ class TestEditActivityWithoutGpx:
         )
 
         response = client.patch(
-            f'/api/activities/{activity_uuid}',
+            f'/api/activities/{activity_short_id}',
             content_type='application/json',
             data=json.dumps(dict(notes='test notes')),
             headers=dict(
@@ -317,22 +317,22 @@ class TestEditActivityWithoutGpx:
         records = data['data']['activities'][0]['records']
         assert len(records) == 4
         assert records[0]['sport_id'] == sport_1_cycling.id
-        assert records[0]['activity_id'] == activity_uuid
+        assert records[0]['activity_id'] == activity_short_id
         assert records[0]['record_type'] == 'MS'
         assert records[0]['activity_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
         assert records[0]['value'] == 10.0
         assert records[1]['sport_id'] == sport_1_cycling.id
-        assert records[1]['activity_id'] == activity_uuid
+        assert records[1]['activity_id'] == activity_short_id
         assert records[1]['record_type'] == 'LD'
         assert records[1]['activity_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
         assert records[1]['value'] == '1:00:00'
         assert records[2]['sport_id'] == sport_1_cycling.id
-        assert records[2]['activity_id'] == activity_uuid
+        assert records[2]['activity_id'] == activity_short_id
         assert records[2]['record_type'] == 'FD'
         assert records[2]['activity_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
         assert records[2]['value'] == 10.0
         assert records[3]['sport_id'] == sport_1_cycling.id
-        assert records[3]['activity_id'] == activity_uuid
+        assert records[3]['activity_id'] == activity_short_id
         assert records[3]['record_type'] == 'AS'
         assert records[3]['activity_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
         assert records[3]['value'] == 10.0
@@ -348,7 +348,7 @@ class TestEditActivityWithoutGpx:
         )
 
         response = client.patch(
-            f'/api/activities/{activity_cycling_user_2.uuid}',
+            f'/api/activities/{activity_cycling_user_2.short_id}',
             content_type='application/json',
             data=json.dumps(
                 dict(
@@ -378,7 +378,7 @@ class TestEditActivityWithoutGpx:
         sport_2_running,
         activity_cycling_user_1,
     ):
-        activity_uuid = activity_cycling_user_1.uuid.hex
+        activity_short_id = activity_cycling_user_1.short_id
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -387,7 +387,7 @@ class TestEditActivityWithoutGpx:
         )
 
         response = client.patch(
-            f'/api/activities/{activity_uuid}',
+            f'/api/activities/{activity_short_id}',
             content_type='application/json',
             data=json.dumps(
                 dict(
@@ -431,22 +431,22 @@ class TestEditActivityWithoutGpx:
         records = data['data']['activities'][0]['records']
         assert len(records) == 4
         assert records[0]['sport_id'] == sport_2_running.id
-        assert records[0]['activity_id'] == activity_uuid
+        assert records[0]['activity_id'] == activity_short_id
         assert records[0]['record_type'] == 'MS'
         assert records[0]['activity_date'] == 'Tue, 15 May 2018 13:05:00 GMT'
         assert records[0]['value'] == 8.0
         assert records[1]['sport_id'] == sport_2_running.id
-        assert records[1]['activity_id'] == activity_uuid
+        assert records[1]['activity_id'] == activity_short_id
         assert records[1]['record_type'] == 'LD'
         assert records[1]['activity_date'] == 'Tue, 15 May 2018 13:05:00 GMT'
         assert records[1]['value'] == '1:00:00'
         assert records[2]['sport_id'] == sport_2_running.id
-        assert records[2]['activity_id'] == activity_uuid
+        assert records[2]['activity_id'] == activity_short_id
         assert records[2]['record_type'] == 'FD'
         assert records[2]['activity_date'] == 'Tue, 15 May 2018 13:05:00 GMT'
         assert records[2]['value'] == 8.0
         assert records[3]['sport_id'] == sport_2_running.id
-        assert records[3]['activity_id'] == activity_uuid
+        assert records[3]['activity_id'] == activity_short_id
         assert records[3]['record_type'] == 'AS'
         assert records[3]['activity_date'] == 'Tue, 15 May 2018 13:05:00 GMT'
         assert records[3]['value'] == 8.0
@@ -459,7 +459,7 @@ class TestEditActivityWithoutGpx:
         sport_2_running,
         activity_cycling_user_1,
     ):
-        activity_uuid = activity_cycling_user_1.uuid.hex
+        activity_short_id = activity_cycling_user_1.short_id
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -468,7 +468,7 @@ class TestEditActivityWithoutGpx:
         )
 
         response = client.patch(
-            f'/api/activities/{activity_uuid}',
+            f'/api/activities/{activity_short_id}',
             content_type='application/json',
             data=json.dumps(dict(sport_id=2, distance=20)),
             headers=dict(
@@ -504,22 +504,22 @@ class TestEditActivityWithoutGpx:
         records = data['data']['activities'][0]['records']
         assert len(records) == 4
         assert records[0]['sport_id'] == sport_2_running.id
-        assert records[0]['activity_id'] == activity_uuid
+        assert records[0]['activity_id'] == activity_short_id
         assert records[0]['record_type'] == 'MS'
         assert records[0]['activity_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
         assert records[0]['value'] == 20.0
         assert records[1]['sport_id'] == sport_2_running.id
-        assert records[1]['activity_id'] == activity_uuid
+        assert records[1]['activity_id'] == activity_short_id
         assert records[1]['record_type'] == 'LD'
         assert records[1]['activity_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
         assert records[1]['value'] == '1:00:00'
         assert records[2]['sport_id'] == sport_2_running.id
-        assert records[2]['activity_id'] == activity_uuid
+        assert records[2]['activity_id'] == activity_short_id
         assert records[2]['record_type'] == 'FD'
         assert records[2]['activity_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
         assert records[2]['value'] == 20.0
         assert records[3]['sport_id'] == sport_2_running.id
-        assert records[3]['activity_id'] == activity_uuid
+        assert records[3]['activity_id'] == activity_short_id
         assert records[3]['record_type'] == 'AS'
         assert records[3]['activity_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
         assert records[3]['value'] == 20.0
@@ -535,7 +535,7 @@ class TestEditActivityWithoutGpx:
         )
 
         response = client.patch(
-            f'/api/activities/{activity_cycling_user_1.uuid}',
+            f'/api/activities/{activity_cycling_user_1.short_id}',
             content_type='application/json',
             data=json.dumps(dict()),
             headers=dict(
@@ -559,7 +559,7 @@ class TestEditActivityWithoutGpx:
             content_type='application/json',
         )
         response = client.patch(
-            f'/api/activities/{activity_cycling_user_1.uuid}',
+            f'/api/activities/{activity_cycling_user_1.short_id}',
             content_type='application/json',
             data=json.dumps(
                 dict(
@@ -594,7 +594,7 @@ class TestEditActivityWithoutGpx:
             content_type='application/json',
         )
         response = client.patch(
-            f'/api/activities/{uuid4().hex}',
+            f'/api/activities/{get_random_short_id()}',
             content_type='application/json',
             data=json.dumps(
                 dict(
@@ -620,7 +620,8 @@ class TestRefreshActivityWithGpx:
     def test_refresh_an_activity_with_gpx(
         self, app, user_1, sport_1_cycling, sport_2_running, gpx_file
     ):
-        token, activity_uuid = post_an_activity(app, gpx_file)
+        token, activity_short_id = post_an_activity(app, gpx_file)
+        activity_uuid = decode_short_id(activity_short_id)
         client = app.test_client()
 
         # Edit some activity data
@@ -629,7 +630,7 @@ class TestRefreshActivityWithGpx:
         activity.min_alt = -100
 
         response = client.patch(
-            f'/api/activities/{activity_uuid}',
+            f'/api/activities/{activity_short_id}',
             content_type='application/json',
             data=json.dumps(dict(refresh=True)),
             headers=dict(Authorization=f'Bearer {token}'),

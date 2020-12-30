@@ -35,6 +35,7 @@ psycopg2-binary = "^2.8"
 pyjwt = "^2.0"
 python-forecastio = "^1.4"
 pytz = "^2020.5"
+shortuuid = "^1.0.1"
 staticmap = "^0.5.4"
 tqdm = "^4.55"
 

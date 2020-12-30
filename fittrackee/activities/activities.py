@@ -29,6 +29,7 @@ from .utils_gpx import (
     extract_segment_from_gpx_file,
     get_chart_data,
 )
+from .utils_id import decode_short_id
 
 activities_blueprint = Blueprint('activities', __name__)
 
@@ -76,7 +77,7 @@ def get_activities(auth_user_id):
                 "descent": null,
                 "distance": 10.0,
                 "duration": "0:17:04",
-                "id": "f03265f69fe0489b812fc7dc4deff55e",
+                "id": "kjxavSTUrJvoAh2wvCeGEF",
                 "map": null,
                 "max_alt": null,
                 "max_speed": 10.0,
@@ -90,7 +91,7 @@ def get_activities(auth_user_id):
                 "records": [
                   {
                     "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "activity_id": "f03265f69fe0489b812fc7dc4deff55e",
+                    "activity_id": "kjxavSTUrJvoAh2wvCeGEF",
                     "id": 4,
                     "record_type": "MS",
                     "sport_id": 1,
@@ -99,7 +100,7 @@ def get_activities(auth_user_id):
                   },
                   {
                     "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "activity_id": "f03265f69fe0489b812fc7dc4deff55e",
+                    "activity_id": "kjxavSTUrJvoAh2wvCeGEF",
                     "id": 3,
                     "record_type": "LD",
                     "sport_id": 1,
@@ -108,7 +109,7 @@ def get_activities(auth_user_id):
                   },
                   {
                     "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "activity_id": "f03265f69fe0489b812fc7dc4deff55e",
+                    "activity_id": "kjxavSTUrJvoAh2wvCeGEF",
                     "id": 2,
                     "record_type": "FD",
                     "sport_id": 1,
@@ -117,7 +118,7 @@ def get_activities(auth_user_id):
                   },
                   {
                     "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "activity_id": "f03265f69fe0489b812fc7dc4deff55e",
+                    "activity_id": "kjxavSTUrJvoAh2wvCeGEF",
                     "id": 1,
                     "record_type": "AS",
                     "sport_id": 1,
@@ -270,10 +271,10 @@ def get_activities(auth_user_id):
 
 
 @activities_blueprint.route(
-    '/activities/<string:activity_uuid>', methods=['GET']
+    '/activities/<string:activity_short_id>', methods=['GET']
 )
 @authenticate
-def get_activity(auth_user_id, activity_uuid):
+def get_activity(auth_user_id, activity_short_id):
     """
     Get an activity
 
@@ -281,7 +282,7 @@ def get_activity(auth_user_id, activity_uuid):
 
     .. sourcecode:: http
 
-      GET /api/activities/f03265f69fe0489b812fc7dc4deff55e HTTP/1.1
+      GET /api/activities/kjxavSTUrJvoAh2wvCeGEF HTTP/1.1
 
     **Example responses**:
 
@@ -304,7 +305,7 @@ def get_activity(auth_user_id, activity_uuid):
                 "descent": null,
                 "distance": 12,
                 "duration": "0:45:00",
-                "id": "f03265f69fe0489b812fc7dc4deff55e",
+                "id": "kjxavSTUrJvoAh2wvCeGEF",
                 "map": null,
                 "max_alt": null,
                 "max_speed": 16,
@@ -344,7 +345,7 @@ def get_activity(auth_user_id, activity_uuid):
         }
 
     :param integer auth_user_id: authenticate user id (from JSON Web Token)
-    :param integer activity_uuid: activity uuid
+    :param string activity_short_id: activity short id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -357,6 +358,7 @@ def get_activity(auth_user_id, activity_uuid):
     :statuscode 404: activity not found
 
     """
+    activity_uuid = decode_short_id(activity_short_id)
     activity = Activity.query.filter_by(uuid=activity_uuid).first()
     activities_list = []
 
@@ -381,8 +383,11 @@ def get_activity(auth_user_id, activity_uuid):
     return jsonify(response_object), code
 
 
-def get_activity_data(auth_user_id, activity_uuid, data_type, segment_id=None):
+def get_activity_data(
+    auth_user_id, activity_short_id, data_type, segment_id=None
+):
     """Get data from an activity gpx file"""
+    activity_uuid = decode_short_id(activity_short_id)
     activity = Activity.query.filter_by(uuid=activity_uuid).first()
     content = ''
     if activity:
@@ -392,7 +397,9 @@ def get_activity_data(auth_user_id, activity_uuid, data_type, segment_id=None):
         if response_object:
             return jsonify(response_object), code
         if not activity.gpx or activity.gpx == '':
-            message = f'No gpx file for this activity (id: {activity_uuid})'
+            message = (
+                f'No gpx file for this activity (id: {activity_short_id})'
+            )
             response_object = {'status': 'error', 'message': message}
             return jsonify(response_object), 404
 
@@ -422,7 +429,7 @@ def get_activity_data(auth_user_id, activity_uuid, data_type, segment_id=None):
         code = 200
     else:
         status = 'not found'
-        message = f'Activity not found (id: {activity_uuid})'
+        message = f'Activity not found (id: {activity_short_id})'
         code = 404
 
     response_object = {
@@ -438,10 +445,10 @@ def get_activity_data(auth_user_id, activity_uuid, data_type, segment_id=None):
 
 
 @activities_blueprint.route(
-    '/activities/<string:activity_uuid>/gpx', methods=['GET']
+    '/activities/<string:activity_short_id>/gpx', methods=['GET']
 )
 @authenticate
-def get_activity_gpx(auth_user_id, activity_uuid):
+def get_activity_gpx(auth_user_id, activity_short_id):
     """
     Get gpx file for an activity displayed on map with Leaflet
 
@@ -449,7 +456,7 @@ def get_activity_gpx(auth_user_id, activity_uuid):
 
     .. sourcecode:: http
 
-      GET /api/activities/f03265f69fe0489b812fc7dc4deff55e/gpx HTTP/1.1
+      GET /api/activities/kjxavSTUrJvoAh2wvCeGEF/gpx HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -468,7 +475,7 @@ def get_activity_gpx(auth_user_id, activity_uuid):
       }
 
     :param integer auth_user_id: authenticate user id (from JSON Web Token)
-    :param integer activity_uuid: activity uuid
+    :param string activity_short_id: activity short id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -483,14 +490,14 @@ def get_activity_gpx(auth_user_id, activity_uuid):
     :statuscode 500:
 
     """
-    return get_activity_data(auth_user_id, activity_uuid, 'gpx')
+    return get_activity_data(auth_user_id, activity_short_id, 'gpx')
 
 
 @activities_blueprint.route(
-    '/activities/<string:activity_uuid>/chart_data', methods=['GET']
+    '/activities/<string:activity_short_id>/chart_data', methods=['GET']
 )
 @authenticate
-def get_activity_chart_data(auth_user_id, activity_uuid):
+def get_activity_chart_data(auth_user_id, activity_short_id):
     """
     Get chart data from an activity gpx file, to display it with Recharts
 
@@ -498,7 +505,7 @@ def get_activity_chart_data(auth_user_id, activity_uuid):
 
     .. sourcecode:: http
 
-      GET /api/activities/f03265f69fe0489b812fc7dc4deff55e/chart HTTP/1.1
+      GET /api/activities/kjxavSTUrJvoAh2wvCeGEF/chart HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -536,7 +543,7 @@ def get_activity_chart_data(auth_user_id, activity_uuid):
       }
 
     :param integer auth_user_id: authenticate user id (from JSON Web Token)
-    :param integer activity_uuid: activity uuid
+    :param string activity_short_id: activity short id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -551,15 +558,15 @@ def get_activity_chart_data(auth_user_id, activity_uuid):
     :statuscode 500:
 
     """
-    return get_activity_data(auth_user_id, activity_uuid, 'chart')
+    return get_activity_data(auth_user_id, activity_short_id, 'chart')
 
 
 @activities_blueprint.route(
-    '/activities/<string:activity_uuid>/gpx/segment/<int:segment_id>',
+    '/activities/<string:activity_short_id>/gpx/segment/<int:segment_id>',
     methods=['GET'],
 )
 @authenticate
-def get_segment_gpx(auth_user_id, activity_uuid, segment_id):
+def get_segment_gpx(auth_user_id, activity_short_id, segment_id):
     """
     Get gpx file for an activity segment displayed on map with Leaflet
 
@@ -567,8 +574,7 @@ def get_segment_gpx(auth_user_id, activity_uuid, segment_id):
 
     .. sourcecode:: http
 
-      GET /api/activities/f03265f69fe0489b812fc7dc4deff55e/gpx/segment/0
-        HTTP/1.1
+      GET /api/activities/kjxavSTUrJvoAh2wvCeGEF/gpx/segment/0 HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -587,7 +593,7 @@ def get_segment_gpx(auth_user_id, activity_uuid, segment_id):
       }
 
     :param integer auth_user_id: authenticate user id (from JSON Web Token)
-    :param integer activity_uuid: activity uuid
+    :param string activity_short_id: activity short id
     :param integer segment_id: segment id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
@@ -602,15 +608,18 @@ def get_segment_gpx(auth_user_id, activity_uuid, segment_id):
     :statuscode 500:
 
     """
-    return get_activity_data(auth_user_id, activity_uuid, 'gpx', segment_id)
+    return get_activity_data(
+        auth_user_id, activity_short_id, 'gpx', segment_id
+    )
 
 
 @activities_blueprint.route(
-    '/activities/<string:activity_uuid>/chart_data/segment/<int:segment_id>',
+    '/activities/<string:activity_short_id>/chart_data/segment/'
+    '<int:segment_id>',
     methods=['GET'],
 )
 @authenticate
-def get_segment_chart_data(auth_user_id, activity_uuid, segment_id):
+def get_segment_chart_data(auth_user_id, activity_short_id, segment_id):
     """
     Get chart data from an activity gpx file, to display it with Recharts
 
@@ -618,8 +627,7 @@ def get_segment_chart_data(auth_user_id, activity_uuid, segment_id):
 
     .. sourcecode:: http
 
-      GET /api/activities/f03265f69fe0489b812fc7dc4deff55e/chart/segment/0
-        HTTP/1.1
+      GET /api/activities/kjxavSTUrJvoAh2wvCeGEF/chart/segment/0 HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -657,7 +665,7 @@ def get_segment_chart_data(auth_user_id, activity_uuid, segment_id):
       }
 
     :param integer auth_user_id: authenticate user id (from JSON Web Token)
-    :param integer activity_uuid: activity uuid
+    :param string activity_short_id: activity short id
     :param integer segment_id: segment id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
@@ -672,7 +680,9 @@ def get_segment_chart_data(auth_user_id, activity_uuid, segment_id):
     :statuscode 500:
 
     """
-    return get_activity_data(auth_user_id, activity_uuid, 'chart', segment_id)
+    return get_activity_data(
+        auth_user_id, activity_short_id, 'chart', segment_id
+    )
 
 
 @activities_blueprint.route('/activities/map/<map_id>', methods=['GET'])
@@ -794,7 +804,7 @@ def post_activity(auth_user_id):
                 "descent": null,
                 "distance": 10.0,
                 "duration": "0:17:04",
-                "id": "f03265f69fe0489b812fc7dc4deff55e",
+                "id": "kjxavSTUrJvoAh2wvCeGEF",
                 "map": null,
                 "max_alt": null,
                 "max_speed": 10.0,
@@ -808,7 +818,7 @@ def post_activity(auth_user_id):
                 "records": [
                   {
                     "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "activity_id": "f03265f69fe0489b812fc7dc4deff55e",
+                    "activity_id": "kjxavSTUrJvoAh2wvCeGEF",
                     "id": 4,
                     "record_type": "MS",
                     "sport_id": 1,
@@ -817,7 +827,7 @@ def post_activity(auth_user_id):
                   },
                   {
                     "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "activity_id": "f03265f69fe0489b812fc7dc4deff55e",
+                    "activity_id": "kjxavSTUrJvoAh2wvCeGEF",
                     "id": 3,
                     "record_type": "LD",
                     "sport_id": 1,
@@ -826,7 +836,7 @@ def post_activity(auth_user_id):
                   },
                   {
                     "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "activity_id": "f03265f69fe0489b812fc7dc4deff55e",
+                    "activity_id": "kjxavSTUrJvoAh2wvCeGEF",
                     "id": 2,
                     "record_type": "FD",
                     "sport_id": 1,
@@ -835,7 +845,7 @@ def post_activity(auth_user_id):
                   },
                   {
                     "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "activity_id": "f03265f69fe0489b812fc7dc4deff55e",
+                    "activity_id": "kjxavSTUrJvoAh2wvCeGEF",
                     "id": 1,
                     "record_type": "AS",
                     "sport_id": 1,
@@ -883,7 +893,7 @@ def post_activity(auth_user_id):
     if response_object['status'] != 'success':
         return jsonify(response_object), response_code
 
-    activity_data = json.loads(request.form["data"])
+    activity_data = json.loads(request.form['data'])
     if not activity_data or activity_data.get('sport_id') is None:
         response_object = {'status': 'error', 'message': 'Invalid payload.'}
         return jsonify(response_object), 400
@@ -972,7 +982,7 @@ def post_activity_no_gpx(auth_user_id):
                 "records": [
                   {
                     "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "activity_id": "f03265f69fe0489b812fc7dc4deff55e",
+                    "activity_id": "kjxavSTUrJvoAh2wvCeGEF",
                     "id": 4,
                     "record_type": "MS",
                     "sport_id": 1,
@@ -981,7 +991,7 @@ def post_activity_no_gpx(auth_user_id):
                   },
                   {
                     "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "activity_id": "f03265f69fe0489b812fc7dc4deff55e",
+                    "activity_id": "kjxavSTUrJvoAh2wvCeGEF",
                     "id": 3,
                     "record_type": "LD",
                     "sport_id": 1,
@@ -990,7 +1000,7 @@ def post_activity_no_gpx(auth_user_id):
                   },
                   {
                     "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "activity_id": "f03265f69fe0489b812fc7dc4deff55e",
+                    "activity_id": "kjxavSTUrJvoAh2wvCeGEF",
                     "id": 2,
                     "record_type": "FD",
                     "sport_id": 1,
@@ -999,7 +1009,7 @@ def post_activity_no_gpx(auth_user_id):
                   },
                   {
                     "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "activity_id": "f03265f69fe0489b812fc7dc4deff55e",
+                    "activity_id": "kjxavSTUrJvoAh2wvCeGEF",
                     "id": 1,
                     "record_type": "AS",
                     "sport_id": 1,
@@ -1011,7 +1021,7 @@ def post_activity_no_gpx(auth_user_id):
                 "sport_id": 1,
                 "title": null,
                 "user": "admin",
-                "uuid": "f03265f69fe0489b812fc7dc4deff55e"
+                "uuid": "kjxavSTUrJvoAh2wvCeGEF"
                 "weather_end": null,
                 "weather_start": null,
                 "with_gpx": false
@@ -1075,10 +1085,10 @@ def post_activity_no_gpx(auth_user_id):
 
 
 @activities_blueprint.route(
-    '/activities/<string:activity_uuid>', methods=['PATCH']
+    '/activities/<string:activity_short_id>', methods=['PATCH']
 )
 @authenticate
-def update_activity(auth_user_id, activity_uuid):
+def update_activity(auth_user_id, activity_short_id):
     """
     Update an activity
 
@@ -1121,7 +1131,7 @@ def update_activity(auth_user_id, activity_uuid):
                 "records": [
                   {
                     "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "activity_id": "f03265f69fe0489b812fc7dc4deff55e",
+                    "activity_id": "kjxavSTUrJvoAh2wvCeGEF",
                     "id": 4,
                     "record_type": "MS",
                     "sport_id": 1,
@@ -1130,7 +1140,7 @@ def update_activity(auth_user_id, activity_uuid):
                   },
                   {
                     "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "activity_id": "f03265f69fe0489b812fc7dc4deff55e",
+                    "activity_id": "kjxavSTUrJvoAh2wvCeGEF",
                     "id": 3,
                     "record_type": "LD",
                     "sport_id": 1,
@@ -1139,7 +1149,7 @@ def update_activity(auth_user_id, activity_uuid):
                   },
                   {
                     "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "activity_id": "f03265f69fe0489b812fc7dc4deff55e",
+                    "activity_id": "kjxavSTUrJvoAh2wvCeGEF",
                     "id": 2,
                     "record_type": "FD",
                     "sport_id": 1,
@@ -1148,7 +1158,7 @@ def update_activity(auth_user_id, activity_uuid):
                   },
                   {
                     "activity_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "activity_id": "f03265f69fe0489b812fc7dc4deff55e",
+                    "activity_id": "kjxavSTUrJvoAh2wvCeGEF",
                     "id": 1,
                     "record_type": "AS",
                     "sport_id": 1,
@@ -1160,7 +1170,7 @@ def update_activity(auth_user_id, activity_uuid):
                 "sport_id": 1,
                 "title": null,
                 "user": "admin",
-                "uuid": "f03265f69fe0489b812fc7dc4deff55e"
+                "uuid": "kjxavSTUrJvoAh2wvCeGEF"
                 "weather_end": null,
                 "weather_start": null,
                 "with_gpx": false
@@ -1171,7 +1181,7 @@ def update_activity(auth_user_id, activity_uuid):
         }
 
     :param integer auth_user_id: authenticate user id (from JSON Web Token)
-    :param integer activity_uuid: activity uuid
+    :param string activity_short_id: activity short id
 
     :<json string activity_date: activity date  (format: ``%Y-%m-%d %H:%M``)
         (only for activity without gpx)
@@ -1201,6 +1211,7 @@ def update_activity(auth_user_id, activity_uuid):
         return jsonify(response_object), 400
 
     try:
+        activity_uuid = decode_short_id(activity_short_id)
         activity = Activity.query.filter_by(uuid=activity_uuid).first()
         if activity:
             response_object, code = can_view_activity(
@@ -1234,10 +1245,10 @@ def update_activity(auth_user_id, activity_uuid):
 
 
 @activities_blueprint.route(
-    '/activities/<string:activity_uuid>', methods=['DELETE']
+    '/activities/<string:activity_short_id>', methods=['DELETE']
 )
 @authenticate
-def delete_activity(auth_user_id, activity_uuid):
+def delete_activity(auth_user_id, activity_short_id):
     """
     Delete an activity
 
@@ -1245,7 +1256,7 @@ def delete_activity(auth_user_id, activity_uuid):
 
     .. sourcecode:: http
 
-      DELETE /api/activities/f03265f69fe0489b812fc7dc4deff55e HTTP/1.1
+      DELETE /api/activities/kjxavSTUrJvoAh2wvCeGEF HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -1256,7 +1267,7 @@ def delete_activity(auth_user_id, activity_uuid):
       Content-Type: application/json
 
     :param integer auth_user_id: authenticate user id (from JSON Web Token)
-    :param integer activity_uuid: activity uuid
+    :param string activity_short_id: activity short id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1271,6 +1282,7 @@ def delete_activity(auth_user_id, activity_uuid):
     """
 
     try:
+        activity_uuid = decode_short_id(activity_short_id)
         activity = Activity.query.filter_by(uuid=activity_uuid).first()
         if activity:
             response_object, code = can_view_activity(

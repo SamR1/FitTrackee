@@ -1,4 +1,6 @@
-from .utils import is_valid_uuid
+from uuid import UUID
+
+from fittrackee.activities.utils_id import decode_short_id
 
 
 class TestActivityModel:
@@ -22,7 +24,7 @@ class TestActivityModel:
         )
 
         serialized_activity = activity_cycling_user_1.serialize()
-        assert is_valid_uuid(serialized_activity['id'])
+        assert isinstance(decode_short_id(serialized_activity['id']), UUID)
         assert 'test' == serialized_activity['user']
         assert 1 == serialized_activity['sport_id']
         assert serialized_activity['title'] == 'Test'
@@ -61,6 +63,6 @@ class TestActivityModel:
     ):
         assert (
             f'<Segment \'{activity_cycling_user_1_segment.segment_id}\' '
-            f'for activity \'{activity_cycling_user_1.uuid.hex}\'>'
+            f'for activity \'{activity_cycling_user_1.short_id}\'>'
             == str(activity_cycling_user_1_segment)
         )

@@ -38,7 +38,7 @@ class TestGetRecords:
         assert 'test' == data['data']['records'][0]['user']
         assert sport_1_cycling.id == data['data']['records'][0]['sport_id']
         assert (
-            activity_cycling_user_1.uuid.hex
+            activity_cycling_user_1.short_id
             == data['data']['records'][0]['activity_id']
         )
         assert 'AS' == data['data']['records'][0]['record_type']
@@ -51,7 +51,7 @@ class TestGetRecords:
         assert 'test' == data['data']['records'][1]['user']
         assert sport_1_cycling.id == data['data']['records'][1]['sport_id']
         assert (
-            activity_cycling_user_1.uuid.hex
+            activity_cycling_user_1.short_id
             == data['data']['records'][1]['activity_id']
         )
         assert 'FD' == data['data']['records'][1]['record_type']
@@ -64,7 +64,7 @@ class TestGetRecords:
         assert 'test' == data['data']['records'][2]['user']
         assert sport_1_cycling.id == data['data']['records'][2]['sport_id']
         assert (
-            activity_cycling_user_1.uuid.hex
+            activity_cycling_user_1.short_id
             == data['data']['records'][2]['activity_id']
         )
         assert 'LD' == data['data']['records'][2]['record_type']
@@ -77,7 +77,7 @@ class TestGetRecords:
         assert 'test' == data['data']['records'][3]['user']
         assert sport_1_cycling.id == data['data']['records'][3]['sport_id']
         assert (
-            activity_cycling_user_1.uuid.hex
+            activity_cycling_user_1.short_id
             == data['data']['records'][3]['activity_id']
         )
         assert 'MS' == data['data']['records'][3]['record_type']
@@ -177,7 +177,7 @@ class TestGetRecords:
             ),
         )
         data = json.loads(response.data.decode())
-        activity_1_uuid = data['data']['activities'][0]['id']
+        activity_1_short_id = data['data']['activities'][0]['id']
         response = client.get(
             '/api/records',
             headers=dict(
@@ -197,7 +197,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][0]['user']
         assert sport_1_cycling.id == data['data']['records'][0]['sport_id']
-        assert activity_1_uuid == data['data']['records'][0]['activity_id']
+        assert activity_1_short_id == data['data']['records'][0]['activity_id']
         assert 'AS' == data['data']['records'][0]['record_type']
         assert 7.0 == data['data']['records'][0]['value']
 
@@ -207,7 +207,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][1]['user']
         assert sport_1_cycling.id == data['data']['records'][1]['sport_id']
-        assert activity_1_uuid == data['data']['records'][1]['activity_id']
+        assert activity_1_short_id == data['data']['records'][1]['activity_id']
         assert 'FD' == data['data']['records'][1]['record_type']
         assert 7.0 == data['data']['records'][1]['value']
 
@@ -217,7 +217,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][2]['user']
         assert sport_1_cycling.id == data['data']['records'][2]['sport_id']
-        assert activity_1_uuid == data['data']['records'][2]['activity_id']
+        assert activity_1_short_id == data['data']['records'][2]['activity_id']
         assert 'LD' == data['data']['records'][2]['record_type']
         assert '1:00:00' == data['data']['records'][2]['value']
 
@@ -227,7 +227,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][3]['user']
         assert sport_1_cycling.id == data['data']['records'][3]['sport_id']
-        assert activity_1_uuid == data['data']['records'][3]['activity_id']
+        assert activity_1_short_id == data['data']['records'][3]['activity_id']
         assert 'MS' == data['data']['records'][3]['record_type']
         assert 7.0 == data['data']['records'][3]['value']
 
@@ -251,7 +251,7 @@ class TestGetRecords:
             ),
         )
         data = json.loads(response.data.decode())
-        activity_2_uuid = data['data']['activities'][0]['id']
+        activity_2_short_id = data['data']['activities'][0]['id']
         response = client.get(
             '/api/records',
             headers=dict(
@@ -271,7 +271,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][0]['user']
         assert sport_1_cycling.id == data['data']['records'][0]['sport_id']
-        assert activity_2_uuid == data['data']['records'][0]['activity_id']
+        assert activity_2_short_id == data['data']['records'][0]['activity_id']
         assert 'AS' == data['data']['records'][0]['record_type']
         assert 8.4 == data['data']['records'][0]['value']
 
@@ -281,7 +281,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][1]['user']
         assert sport_1_cycling.id == data['data']['records'][1]['sport_id']
-        assert activity_1_uuid == data['data']['records'][1]['activity_id']
+        assert activity_1_short_id == data['data']['records'][1]['activity_id']
         assert 'FD' == data['data']['records'][1]['record_type']
         assert 7.0 == data['data']['records'][1]['value']
 
@@ -291,7 +291,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][2]['user']
         assert sport_1_cycling.id == data['data']['records'][2]['sport_id']
-        assert activity_1_uuid == data['data']['records'][2]['activity_id']
+        assert activity_1_short_id == data['data']['records'][2]['activity_id']
         assert 'LD' == data['data']['records'][2]['record_type']
         assert '1:00:00' == data['data']['records'][2]['value']
 
@@ -301,7 +301,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][0]['user']
         assert sport_1_cycling.id == data['data']['records'][0]['sport_id']
-        assert activity_2_uuid == data['data']['records'][0]['activity_id']
+        assert activity_2_short_id == data['data']['records'][0]['activity_id']
         assert 'MS' == data['data']['records'][3]['record_type']
         assert 8.4 == data['data']['records'][3]['value']
 
@@ -324,7 +324,7 @@ class TestGetRecords:
             ),
         )
         data = json.loads(response.data.decode())
-        activity_3_uuid = data['data']['activities'][0]['id']
+        activity_3_short_id = data['data']['activities'][0]['id']
         response = client.get(
             '/api/records',
             headers=dict(
@@ -344,7 +344,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][0]['user']
         assert sport_1_cycling.id == data['data']['records'][0]['sport_id']
-        assert activity_2_uuid == data['data']['records'][0]['activity_id']
+        assert activity_2_short_id == data['data']['records'][0]['activity_id']
         assert 'AS' == data['data']['records'][0]['record_type']
         assert 8.4 == data['data']['records'][0]['value']
 
@@ -354,7 +354,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][1]['user']
         assert sport_1_cycling.id == data['data']['records'][1]['sport_id']
-        assert activity_1_uuid == data['data']['records'][1]['activity_id']
+        assert activity_1_short_id == data['data']['records'][1]['activity_id']
         assert 'FD' == data['data']['records'][1]['record_type']
         assert 7.0 == data['data']['records'][1]['value']
 
@@ -364,7 +364,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][2]['user']
         assert sport_1_cycling.id == data['data']['records'][2]['sport_id']
-        assert activity_1_uuid == data['data']['records'][2]['activity_id']
+        assert activity_1_short_id == data['data']['records'][2]['activity_id']
         assert 'LD' == data['data']['records'][2]['record_type']
         assert '1:00:00' == data['data']['records'][2]['value']
 
@@ -374,14 +374,14 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][0]['user']
         assert sport_1_cycling.id == data['data']['records'][0]['sport_id']
-        assert activity_2_uuid == data['data']['records'][0]['activity_id']
+        assert activity_2_short_id == data['data']['records'][0]['activity_id']
         assert 'MS' == data['data']['records'][3]['record_type']
         assert 8.4 == data['data']['records'][3]['value']
 
         # Edit last activity
         # 1 new record: Longest duration
         client.patch(
-            f'/api/activities/{activity_3_uuid}',
+            f'/api/activities/{activity_3_short_id}',
             content_type='application/json',
             data=json.dumps(dict(duration=4000)),
             headers=dict(
@@ -408,7 +408,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][0]['user']
         assert sport_1_cycling.id == data['data']['records'][0]['sport_id']
-        assert activity_2_uuid == data['data']['records'][0]['activity_id']
+        assert activity_2_short_id == data['data']['records'][0]['activity_id']
         assert 'AS' == data['data']['records'][0]['record_type']
         assert 8.4 == data['data']['records'][0]['value']
 
@@ -418,7 +418,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][1]['user']
         assert sport_1_cycling.id == data['data']['records'][1]['sport_id']
-        assert activity_1_uuid == data['data']['records'][1]['activity_id']
+        assert activity_1_short_id == data['data']['records'][1]['activity_id']
         assert 'FD' == data['data']['records'][1]['record_type']
         assert 7.0 == data['data']['records'][1]['value']
 
@@ -428,7 +428,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][2]['user']
         assert sport_1_cycling.id == data['data']['records'][2]['sport_id']
-        assert activity_3_uuid == data['data']['records'][2]['activity_id']
+        assert activity_3_short_id == data['data']['records'][2]['activity_id']
         assert 'LD' == data['data']['records'][2]['record_type']
         assert '1:06:40' == data['data']['records'][2]['value']
 
@@ -438,13 +438,13 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][0]['user']
         assert sport_1_cycling.id == data['data']['records'][0]['sport_id']
-        assert activity_2_uuid == data['data']['records'][0]['activity_id']
+        assert activity_2_short_id == data['data']['records'][0]['activity_id']
         assert 'MS' == data['data']['records'][3]['record_type']
         assert 8.4 == data['data']['records'][3]['value']
 
         # delete activity 2 => AS and MS record update
         client.delete(
-            f'/api/activities/{activity_2_uuid}',
+            f'/api/activities/{activity_2_short_id}',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -469,7 +469,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][0]['user']
         assert sport_1_cycling.id == data['data']['records'][0]['sport_id']
-        assert activity_1_uuid == data['data']['records'][0]['activity_id']
+        assert activity_1_short_id == data['data']['records'][0]['activity_id']
         assert 'AS' == data['data']['records'][0]['record_type']
         assert 7.0 == data['data']['records'][0]['value']
 
@@ -479,7 +479,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][1]['user']
         assert sport_1_cycling.id == data['data']['records'][1]['sport_id']
-        assert activity_1_uuid == data['data']['records'][1]['activity_id']
+        assert activity_1_short_id == data['data']['records'][1]['activity_id']
         assert 'FD' == data['data']['records'][1]['record_type']
         assert 7.0 == data['data']['records'][1]['value']
 
@@ -489,7 +489,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][2]['user']
         assert sport_1_cycling.id == data['data']['records'][2]['sport_id']
-        assert activity_3_uuid == data['data']['records'][2]['activity_id']
+        assert activity_3_short_id == data['data']['records'][2]['activity_id']
         assert 'LD' == data['data']['records'][2]['record_type']
         assert '1:06:40' == data['data']['records'][2]['value']
 
@@ -499,7 +499,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][3]['user']
         assert sport_1_cycling.id == data['data']['records'][3]['sport_id']
-        assert activity_1_uuid == data['data']['records'][3]['activity_id']
+        assert activity_1_short_id == data['data']['records'][3]['activity_id']
         assert 'MS' == data['data']['records'][3]['record_type']
         assert 7.0 == data['data']['records'][3]['value']
 
@@ -523,7 +523,7 @@ class TestGetRecords:
             ),
         )
         data = json.loads(response.data.decode())
-        activity_4_uuid = data['data']['activities'][0]['id']
+        activity_4_short_id = data['data']['activities'][0]['id']
         response = client.get(
             '/api/records',
             headers=dict(
@@ -543,7 +543,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][0]['user']
         assert sport_1_cycling.id == data['data']['records'][0]['sport_id']
-        assert activity_1_uuid == data['data']['records'][0]['activity_id']
+        assert activity_1_short_id == data['data']['records'][0]['activity_id']
         assert 'AS' == data['data']['records'][0]['record_type']
         assert 7.0 == data['data']['records'][0]['value']
 
@@ -553,7 +553,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][1]['user']
         assert sport_1_cycling.id == data['data']['records'][1]['sport_id']
-        assert activity_1_uuid == data['data']['records'][1]['activity_id']
+        assert activity_1_short_id == data['data']['records'][1]['activity_id']
         assert 'FD' == data['data']['records'][1]['record_type']
         assert 7.0 == data['data']['records'][1]['value']
 
@@ -563,7 +563,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][2]['user']
         assert sport_1_cycling.id == data['data']['records'][2]['sport_id']
-        assert activity_3_uuid == data['data']['records'][2]['activity_id']
+        assert activity_3_short_id == data['data']['records'][2]['activity_id']
         assert 'LD' == data['data']['records'][2]['record_type']
         assert '1:06:40' == data['data']['records'][2]['value']
 
@@ -573,7 +573,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][3]['user']
         assert sport_1_cycling.id == data['data']['records'][3]['sport_id']
-        assert activity_1_uuid == data['data']['records'][3]['activity_id']
+        assert activity_1_short_id == data['data']['records'][3]['activity_id']
         assert 'MS' == data['data']['records'][3]['record_type']
         assert 7.0 == data['data']['records'][3]['value']
 
@@ -599,7 +599,7 @@ class TestGetRecords:
             ),
         )
         data = json.loads(response.data.decode())
-        activity_5_uuid = data['data']['activities'][0]['id']
+        activity_5_short_id = data['data']['activities'][0]['id']
         response = client.get(
             '/api/records',
             headers=dict(
@@ -619,7 +619,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][0]['user']
         assert sport_1_cycling.id == data['data']['records'][0]['sport_id']
-        assert activity_5_uuid == data['data']['records'][0]['activity_id']
+        assert activity_5_short_id == data['data']['records'][0]['activity_id']
         assert 'AS' == data['data']['records'][0]['record_type']
         assert 7.0 == data['data']['records'][0]['value']
 
@@ -629,7 +629,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][1]['user']
         assert sport_1_cycling.id == data['data']['records'][1]['sport_id']
-        assert activity_5_uuid == data['data']['records'][1]['activity_id']
+        assert activity_5_short_id == data['data']['records'][1]['activity_id']
         assert 'FD' == data['data']['records'][1]['record_type']
         assert 7.0 == data['data']['records'][1]['value']
 
@@ -639,7 +639,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][2]['user']
         assert sport_1_cycling.id == data['data']['records'][2]['sport_id']
-        assert activity_3_uuid == data['data']['records'][2]['activity_id']
+        assert activity_3_short_id == data['data']['records'][2]['activity_id']
         assert 'LD' == data['data']['records'][2]['record_type']
         assert '1:06:40' == data['data']['records'][2]['value']
 
@@ -649,34 +649,34 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][3]['user']
         assert sport_1_cycling.id == data['data']['records'][3]['sport_id']
-        assert activity_5_uuid == data['data']['records'][3]['activity_id']
+        assert activity_5_short_id == data['data']['records'][3]['activity_id']
         assert 'MS' == data['data']['records'][3]['record_type']
         assert 7.0 == data['data']['records'][3]['value']
 
         # delete all activities - no more records
         client.delete(
-            f'/api/activities/{activity_1_uuid}',
+            f'/api/activities/{activity_1_short_id}',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
             ),
         )
         client.delete(
-            f'/api/activities/{activity_3_uuid}',
+            f'/api/activities/{activity_3_short_id}',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
             ),
         )
         client.delete(
-            f'/api/activities/{activity_4_uuid}',
+            f'/api/activities/{activity_4_short_id}',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
             ),
         )
         client.delete(
-            f'/api/activities/{activity_5_uuid}',
+            f'/api/activities/{activity_5_short_id}',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -722,7 +722,7 @@ class TestGetRecords:
             ),
         )
         data = json.loads(response.data.decode())
-        activity_1_uuid = data['data']['activities'][0]['id']
+        activity_1_short_id = data['data']['activities'][0]['id']
         response = client.post(
             '/api/activities/no_gpx',
             content_type='application/json',
@@ -741,7 +741,7 @@ class TestGetRecords:
             ),
         )
         data = json.loads(response.data.decode())
-        activity_2_uuid = data['data']['activities'][0]['id']
+        activity_2_short_id = data['data']['activities'][0]['id']
         client.post(
             '/api/activities/no_gpx',
             content_type='application/json',
@@ -777,7 +777,7 @@ class TestGetRecords:
             ),
         )
         data = json.loads(response.data.decode())
-        activity_4_uuid = data['data']['activities'][0]['id']
+        activity_4_short_id = data['data']['activities'][0]['id']
         response = client.get(
             '/api/records',
             headers=dict(
@@ -797,7 +797,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][0]['user']
         assert sport_1_cycling.id == data['data']['records'][0]['sport_id']
-        assert activity_1_uuid == data['data']['records'][0]['activity_id']
+        assert activity_1_short_id == data['data']['records'][0]['activity_id']
         assert 'AS' == data['data']['records'][0]['record_type']
         assert 7.0 == data['data']['records'][0]['value']
 
@@ -807,7 +807,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][1]['user']
         assert sport_1_cycling.id == data['data']['records'][1]['sport_id']
-        assert activity_1_uuid == data['data']['records'][1]['activity_id']
+        assert activity_1_short_id == data['data']['records'][1]['activity_id']
         assert 'FD' == data['data']['records'][1]['record_type']
         assert 7.0 == data['data']['records'][1]['value']
 
@@ -817,7 +817,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][2]['user']
         assert sport_1_cycling.id == data['data']['records'][2]['sport_id']
-        assert activity_1_uuid == data['data']['records'][2]['activity_id']
+        assert activity_1_short_id == data['data']['records'][2]['activity_id']
         assert 'LD' == data['data']['records'][2]['record_type']
         assert '1:00:00' == data['data']['records'][2]['value']
 
@@ -827,7 +827,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][3]['user']
         assert sport_1_cycling.id == data['data']['records'][3]['sport_id']
-        assert activity_1_uuid == data['data']['records'][3]['activity_id']
+        assert activity_1_short_id == data['data']['records'][3]['activity_id']
         assert 'MS' == data['data']['records'][3]['record_type']
         assert 7.0 == data['data']['records'][3]['value']
 
@@ -837,7 +837,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][4]['user']
         assert sport_2_running.id == data['data']['records'][4]['sport_id']
-        assert activity_2_uuid == data['data']['records'][4]['activity_id']
+        assert activity_2_short_id == data['data']['records'][4]['activity_id']
         assert 'AS' == data['data']['records'][4]['record_type']
         assert 20.0 == data['data']['records'][4]['value']
 
@@ -847,7 +847,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][5]['user']
         assert sport_2_running.id == data['data']['records'][5]['sport_id']
-        assert activity_2_uuid == data['data']['records'][5]['activity_id']
+        assert activity_2_short_id == data['data']['records'][5]['activity_id']
         assert 'FD' == data['data']['records'][5]['record_type']
         assert 20.0 == data['data']['records'][5]['value']
 
@@ -857,7 +857,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][6]['user']
         assert sport_2_running.id == data['data']['records'][6]['sport_id']
-        assert activity_2_uuid == data['data']['records'][6]['activity_id']
+        assert activity_2_short_id == data['data']['records'][6]['activity_id']
         assert 'LD' == data['data']['records'][6]['record_type']
         assert '1:00:00' == data['data']['records'][6]['value']
 
@@ -867,12 +867,12 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][7]['user']
         assert sport_2_running.id == data['data']['records'][7]['sport_id']
-        assert activity_2_uuid == data['data']['records'][7]['activity_id']
+        assert activity_2_short_id == data['data']['records'][7]['activity_id']
         assert 'MS' == data['data']['records'][7]['record_type']
         assert 20.0 == data['data']['records'][7]['value']
 
         client.patch(
-            f'/api/activities/{activity_2_uuid}',
+            f'/api/activities/{activity_2_short_id}',
             content_type='application/json',
             data=json.dumps(dict(sport_id=1)),
             headers=dict(
@@ -899,7 +899,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][0]['user']
         assert sport_1_cycling.id == data['data']['records'][0]['sport_id']
-        assert activity_2_uuid == data['data']['records'][0]['activity_id']
+        assert activity_2_short_id == data['data']['records'][0]['activity_id']
         assert 'AS' == data['data']['records'][0]['record_type']
         assert 20.0 == data['data']['records'][0]['value']
 
@@ -909,7 +909,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][1]['user']
         assert sport_1_cycling.id == data['data']['records'][1]['sport_id']
-        assert activity_2_uuid == data['data']['records'][1]['activity_id']
+        assert activity_2_short_id == data['data']['records'][1]['activity_id']
         assert 'FD' == data['data']['records'][1]['record_type']
         assert 20.0 == data['data']['records'][1]['value']
 
@@ -919,7 +919,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][2]['user']
         assert sport_1_cycling.id == data['data']['records'][2]['sport_id']
-        assert activity_1_uuid == data['data']['records'][2]['activity_id']
+        assert activity_1_short_id == data['data']['records'][2]['activity_id']
         assert 'LD' == data['data']['records'][2]['record_type']
         assert '1:00:00' == data['data']['records'][2]['value']
 
@@ -929,7 +929,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][3]['user']
         assert sport_1_cycling.id == data['data']['records'][3]['sport_id']
-        assert activity_2_uuid == data['data']['records'][3]['activity_id']
+        assert activity_2_short_id == data['data']['records'][3]['activity_id']
         assert 'MS' == data['data']['records'][3]['record_type']
         assert 20.0 == data['data']['records'][3]['value']
 
@@ -939,7 +939,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][4]['user']
         assert sport_2_running.id == data['data']['records'][4]['sport_id']
-        assert activity_4_uuid == data['data']['records'][4]['activity_id']
+        assert activity_4_short_id == data['data']['records'][4]['activity_id']
         assert 'AS' == data['data']['records'][4]['record_type']
         assert 12.0 == data['data']['records'][4]['value']
 
@@ -949,7 +949,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][5]['user']
         assert sport_2_running.id == data['data']['records'][5]['sport_id']
-        assert activity_4_uuid == data['data']['records'][5]['activity_id']
+        assert activity_4_short_id == data['data']['records'][5]['activity_id']
         assert 'FD' == data['data']['records'][5]['record_type']
         assert 10.0 == data['data']['records'][5]['value']
 
@@ -959,7 +959,7 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][6]['user']
         assert sport_2_running.id == data['data']['records'][6]['sport_id']
-        assert activity_4_uuid == data['data']['records'][6]['activity_id']
+        assert activity_4_short_id == data['data']['records'][6]['activity_id']
         assert 'LD' == data['data']['records'][6]['record_type']
         assert '0:50:00' == data['data']['records'][6]['value']
 
@@ -969,6 +969,6 @@ class TestGetRecords:
         )  # noqa
         assert 'test' == data['data']['records'][7]['user']
         assert sport_2_running.id == data['data']['records'][7]['sport_id']
-        assert activity_4_uuid == data['data']['records'][7]['activity_id']
+        assert activity_4_short_id == data['data']['records'][7]['activity_id']
         assert 'MS' == data['data']['records'][7]['record_type']
         assert 12.0 == data['data']['records'][7]['value']

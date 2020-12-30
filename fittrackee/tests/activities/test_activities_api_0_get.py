@@ -1,6 +1,8 @@
 import json
 from uuid import uuid4
 
+from .utils import get_random_short_id
+
 
 class TestGetActivities:
     def test_it_gets_all_activities_for_authenticated_user(
@@ -695,7 +697,7 @@ class TestGetActivity:
         )
 
         response = client.get(
-            f'/api/activities/{activity_cycling_user_1.uuid.hex}',
+            f'/api/activities/{activity_cycling_user_1.short_id}',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -727,7 +729,7 @@ class TestGetActivity:
         )
 
         response = client.get(
-            f'/api/activities/{activity_cycling_user_2.uuid.hex}',
+            f'/api/activities/{activity_cycling_user_2.short_id}',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -748,7 +750,7 @@ class TestGetActivity:
         )
 
         response = client.get(
-            f'/api/activities/{uuid4().hex}',
+            f'/api/activities/{get_random_short_id()}',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -763,7 +765,7 @@ class TestGetActivity:
     def test_it_returns_404_on_getting_gpx_if_activity_does_not_exist(
         self, app, user_1
     ):
-        random_uuid = uuid4().hex
+        random_short_id = get_random_short_id()
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -772,7 +774,7 @@ class TestGetActivity:
         )
 
         response = client.get(
-            f'/api/activities/{random_uuid}/gpx',
+            f'/api/activities/{random_short_id}/gpx',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -782,13 +784,13 @@ class TestGetActivity:
         data = json.loads(response.data.decode())
         assert response.status_code == 404
         assert 'not found' in data['status']
-        assert f'Activity not found (id: {random_uuid})' in data['message']
+        assert f'Activity not found (id: {random_short_id})' in data['message']
         assert data['data']['gpx'] == ''
 
     def test_it_returns_404_on_getting_chart_data_if_activity_does_not_exist(
         self, app, user_1
     ):
-        random_uuid = uuid4().hex
+        random_short_id = get_random_short_id()
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -797,7 +799,7 @@ class TestGetActivity:
         )
 
         response = client.get(
-            f'/api/activities/{random_uuid}/chart_data',
+            f'/api/activities/{random_short_id}/chart_data',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -807,13 +809,13 @@ class TestGetActivity:
         data = json.loads(response.data.decode())
         assert response.status_code == 404
         assert 'not found' in data['status']
-        assert f'Activity not found (id: {random_uuid})' in data['message']
+        assert f'Activity not found (id: {random_short_id})' in data['message']
         assert data['data']['chart_data'] == ''
 
     def test_it_returns_404_on_getting_gpx_if_activity_have_no_gpx(
         self, app, user_1, sport_1_cycling, activity_cycling_user_1
     ):
-        activity_uuid = activity_cycling_user_1.uuid.hex
+        activity_short_id = activity_cycling_user_1.short_id
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -822,7 +824,7 @@ class TestGetActivity:
         )
 
         response = client.get(
-            f'/api/activities/{activity_uuid}/gpx',
+            f'/api/activities/{activity_short_id}/gpx',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -833,14 +835,14 @@ class TestGetActivity:
         assert response.status_code == 404
         assert 'error' in data['status']
         assert (
-            f'No gpx file for this activity (id: {activity_uuid})'
+            f'No gpx file for this activity (id: {activity_short_id})'
             in data['message']
         )
 
     def test_it_returns_404_if_activity_have_no_chart_data(
         self, app, user_1, sport_1_cycling, activity_cycling_user_1
     ):
-        activity_uuid = activity_cycling_user_1.uuid.hex
+        activity_short_id = activity_cycling_user_1.short_id
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -849,7 +851,7 @@ class TestGetActivity:
         )
 
         response = client.get(
-            f'/api/activities/{activity_uuid}/chart_data',
+            f'/api/activities/{activity_short_id}/chart_data',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -860,7 +862,7 @@ class TestGetActivity:
         assert response.status_code == 404
         assert 'error' in data['status']
         assert (
-            f'No gpx file for this activity (id: {activity_uuid})'
+            f'No gpx file for this activity (id: {activity_short_id})'
             in data['message']
         )
 
@@ -876,7 +878,7 @@ class TestGetActivity:
         )
 
         response = client.get(
-            f'/api/activities/{activity_cycling_user_1.uuid.hex}/gpx',
+            f'/api/activities/{activity_cycling_user_1.short_id}/gpx',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -901,7 +903,7 @@ class TestGetActivity:
         )
 
         response = client.get(
-            f'/api/activities/{activity_cycling_user_1.uuid.hex}/chart_data',
+            f'/api/activities/{activity_cycling_user_1.short_id}/chart_data',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']

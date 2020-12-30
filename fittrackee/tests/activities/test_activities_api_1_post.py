@@ -4,6 +4,7 @@ from datetime import datetime
 from io import BytesIO
 
 from fittrackee.activities.models import Activity
+from fittrackee.activities.utils_id import decode_short_id
 
 
 def assert_activity_data_with_gpx(data):
@@ -782,10 +783,10 @@ class TestPostAndGetActivityWithGpx:
         else:
             assert_activity_data_with_gpx(data)
         map_id = data['data']['activities'][0]['map']
-        activity_uuid = data['data']['activities'][0]['id']
+        activity_short_id = data['data']['activities'][0]['id']
 
         response = client.get(
-            f'/api/activities/{activity_uuid}/gpx',
+            f'/api/activities/{activity_short_id}/gpx',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -799,7 +800,7 @@ class TestPostAndGetActivityWithGpx:
         assert len(data['data']['gpx']) != ''
 
         response = client.get(
-            f'/api/activities/{activity_uuid}/gpx/segment/1',
+            f'/api/activities/{activity_short_id}/gpx/segment/1',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -822,6 +823,7 @@ class TestPostAndGetActivityWithGpx:
         assert response.status_code == 200
 
         # error case in the same test to avoid generate a new map file
+        activity_uuid = decode_short_id(activity_short_id)
         activity = Activity.query.filter_by(uuid=activity_uuid).first()
         activity.map = 'incorrect path'
 
@@ -876,9 +878,9 @@ class TestPostAndGetActivityWithGpx:
             ),
         )
         data = json.loads(response.data.decode())
-        activity_uuid = data['data']['activities'][0]['id']
+        activity_short_id = data['data']['activities'][0]['id']
         response = client.get(
-            f'/api/activities/{activity_uuid}/chart_data',
+            f'/api/activities/{activity_short_id}/chart_data',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -914,9 +916,9 @@ class TestPostAndGetActivityWithGpx:
             ),
         )
         data = json.loads(response.data.decode())
-        activity_uuid = data['data']['activities'][0]['id']
+        activity_short_id = data['data']['activities'][0]['id']
         response = client.get(
-            f'/api/activities/{activity_uuid}/chart_data/segment/1',
+            f'/api/activities/{activity_short_id}/chart_data/segment/1',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -951,7 +953,7 @@ class TestPostAndGetActivityWithGpx:
             ),
         )
         data = json.loads(response.data.decode())
-        activity_uuid = data['data']['activities'][0]['id']
+        activity_short_id = data['data']['activities'][0]['id']
 
         resp_login = client.post(
             '/api/auth/login',
@@ -959,7 +961,7 @@ class TestPostAndGetActivityWithGpx:
             content_type='application/json',
         )
         response = client.get(
-            f'/api/activities/{activity_uuid}/chart_data',
+            f'/api/activities/{activity_short_id}/chart_data',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -994,9 +996,9 @@ class TestPostAndGetActivityWithGpx:
             ),
         )
         data = json.loads(response.data.decode())
-        activity_uuid = data['data']['activities'][0]['id']
+        activity_short_id = data['data']['activities'][0]['id']
         response = client.get(
-            f'/api/activities/{activity_uuid}/chart_data/segment/0',
+            f'/api/activities/{activity_short_id}/chart_data/segment/0',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -1032,9 +1034,9 @@ class TestPostAndGetActivityWithGpx:
             ),
         )
         data = json.loads(response.data.decode())
-        activity_uuid = data['data']['activities'][0]['id']
+        activity_short_id = data['data']['activities'][0]['id']
         response = client.get(
-            f'/api/activities/{activity_uuid}/chart_data/segment/999999',
+            f'/api/activities/{activity_short_id}/chart_data/segment/999999',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -1076,9 +1078,9 @@ class TestPostAndGetActivityWithoutGpx:
             ),
         )
         data = json.loads(response.data.decode())
-        activity_uuid = data['data']['activities'][0]['id']
+        activity_short_id = data['data']['activities'][0]['id']
         response = client.get(
-            f'/api/activities/{activity_uuid}',
+            f'/api/activities/{activity_short_id}',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -1119,9 +1121,9 @@ class TestPostAndGetActivityWithoutGpx:
             ),
         )
         data = json.loads(response.data.decode())
-        activity_uuid = data['data']['activities'][0]['id']
+        activity_short_id = data['data']['activities'][0]['id']
         response = client.get(
-            f'/api/activities/{activity_uuid}',
+            f'/api/activities/{activity_short_id}',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -1164,9 +1166,9 @@ class TestPostAndGetActivityUsingTimezones:
             ),
         )
         data = json.loads(response.data.decode())
-        activity_uuid = data['data']['activities'][0]['id']
+        activity_short_id = data['data']['activities'][0]['id']
         response = client.get(
-            f'/api/activities/{activity_uuid}',
+            f'/api/activities/{activity_short_id}',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
