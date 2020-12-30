@@ -4,7 +4,7 @@
 [![Python Version](https://img.shields.io/badge/python-3.7+-brightgreen.svg)](https://python.org)
 [![Flask Version](https://img.shields.io/badge/flask-1.1-brightgreen.svg)](http://flask.pocoo.org/) 
 [![code style: black](https://img.shields.io/badge/code%20style-black-black)](https://github.com/psf/black) 
-[![React Version](https://img.shields.io/badge/react-16.13-brightgreen.svg)](https://reactjs.org/) 
+[![React Version](https://img.shields.io/badge/react-17.0-brightgreen.svg)](https://reactjs.org/) 
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)  
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/290a285f22e94132904dc13b4dd19d1d)](https://www.codacy.com/app/SamR1/FitTrackee)
 [![pipeline status](https://gitlab.com/SamR1/FitTrackee/badges/master/pipeline.svg)](https://gitlab.com/SamR1/FitTrackee/-/commits/master) <sup><sup>1</sup></sup>
