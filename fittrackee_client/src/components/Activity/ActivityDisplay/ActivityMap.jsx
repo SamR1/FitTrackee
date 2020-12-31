@@ -1,10 +1,9 @@
-import hash from 'object-hash'
 import React from 'react'
-import { GeoJSON, MapContainer, Marker, TileLayer } from 'react-leaflet'
+import { MapContainer } from 'react-leaflet'
 import { connect } from 'react-redux'
 
+import Map from './Map'
 import { getActivityGpx, getSegmentGpx } from '../../../actions/activities'
-import { apiUrl } from '../../../utils'
 import { getGeoJson } from '../../../utils/activities'
 
 class ActivityMap extends React.Component {
@@ -59,21 +58,12 @@ class ActivityMap extends React.Component {
             bounds={bounds}
             boundsOptions={{ padding: [10, 10] }}
           >
-            <TileLayer
-              // eslint-disable-next-line max-len
-              attribution={mapAttribution}
-              url={`${apiUrl}activities/map_tile/{s}/{z}/{x}/{y}.png`}
+            <Map
+              bounds={bounds}
+              coordinates={coordinates}
+              jsonData={jsonData}
+              mapAttribution={mapAttribution}
             />
-            <GeoJSON
-              // hash as a key to force re-rendering
-              key={hash(jsonData)}
-              data={jsonData}
-            />
-            {coordinates.latitude && (
-              <Marker
-                position={[coordinates.latitude, coordinates.longitude]}
-              />
-            )}
           </MapContainer>
         )}
       </div>
