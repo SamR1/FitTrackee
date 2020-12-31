@@ -1,5 +1,16 @@
 # Change log
 
+## Version 0.4.1 (2020/12/31)
+
+### Issues Closed
+
+#### New Features
+
+* [#57](https://github.com/SamR1/Fittrackee/issues/57) - Use uuid for activities
+
+In this release 1 issue was closed.
+
+
 ## Version 0.4.0 - FitTrackee on PyPI (2020/09/19)
 
 This version introduces some major changes:
