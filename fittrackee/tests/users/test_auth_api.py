@@ -162,7 +162,7 @@ class TestUserRegistration:
         assert response.content_type == 'application/json'
         assert response.status_code == 400
 
-    def test_it_returns_error_if_paylaod_is_invalid(self, app):
+    def test_it_returns_error_if_payload_is_invalid(self, app):
         client = app.test_client()
         response = client.post(
             '/api/auth/register',
@@ -278,43 +278,49 @@ class TestUserRegistration:
 class TestUserLogin:
     def test_user_can_register(self, app, user_1):
         client = app.test_client()
+
         response = client.post(
             '/api/auth/login',
             data=json.dumps(dict(email='test@test.com', password='12345678')),
             content_type='application/json',
         )
+
+        assert response.content_type == 'application/json'
+        assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['message'] == 'Successfully logged in.'
         assert data['auth_token']
-        assert response.content_type == 'application/json'
-        assert response.status_code == 200
 
     def test_it_returns_error_if_user_does_not_exists(self, app):
         client = app.test_client()
+
         response = client.post(
             '/api/auth/login',
             data=json.dumps(dict(email='test@test.com', password='12345678')),
             content_type='application/json',
         )
+
+        assert response.content_type == 'application/json'
+        assert response.status_code == 401
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
         assert data['message'] == 'Invalid credentials.'
-        assert response.content_type == 'application/json'
-        assert response.status_code == 404
 
     def test_it_returns_error_on_invalid_payload(self, app):
         client = app.test_client()
+
         response = client.post(
             '/api/auth/login',
             data=json.dumps(dict()),
             content_type='application/json',
         )
+
+        assert response.content_type == 'application/json'
+        assert response.status_code == 400
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
         assert data['message'] == 'Invalid payload.'
-        assert response.content_type == 'application/json'
-        assert response.status_code == 400
 
     def test_it_returns_error_if_password_is_invalid(self, app, user_1):
         client = app.test_client()
@@ -325,11 +331,11 @@ class TestUserLogin:
             content_type='application/json',
         )
 
+        assert response.content_type == 'application/json'
+        assert response.status_code == 401
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
         assert data['message'] == 'Invalid credentials.'
-        assert response.content_type == 'application/json'
-        assert response.status_code == 404
 
 
 class TestUserLogout:

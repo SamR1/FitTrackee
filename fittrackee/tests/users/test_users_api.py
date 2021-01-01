@@ -111,7 +111,7 @@ class TestGetUser:
         data = json.loads(response.data.decode())
 
         assert response.status_code == 404
-        assert 'fail' in data['status']
+        assert 'not found' in data['status']
         assert 'User does not exist.' in data['message']
 
 
@@ -972,7 +972,7 @@ class TestGetUserPicture:
 
         data = json.loads(response.data.decode())
         assert response.status_code == 404
-        assert 'fail' in data['status']
+        assert 'not found' in data['status']
         assert 'User does not exist.' in data['message']
 
 

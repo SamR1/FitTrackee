@@ -1,5 +1,9 @@
-from fittrackee import appLog, db
-from flask import Blueprint, current_app, jsonify, request
+from fittrackee import db
+from fittrackee.responses import (
+    InvalidPayloadErrorResponse,
+    handle_error_and_return_response,
+)
+from flask import Blueprint, current_app, request
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 
 from ..users.utils import authenticate_as_admin
@@ -46,15 +50,11 @@ def get_application_config():
 
     try:
         config = AppConfig.query.one()
-        response_object = {'status': 'success', 'data': config.serialize()}
-        return jsonify(response_object), 200
+        return {'status': 'success', 'data': config.serialize()}
     except (MultipleResultsFound, NoResultFound) as e:
-        appLog.error(e)
-        response_object = {
-            'status': 'error',
-            'message': 'Error on getting configuration.',
-        }
-        return jsonify(response_object), 500
+        return handle_error_and_return_response(
+            e, message='Error on getting configuration.'
+        )
 
 
 @config_blueprint.route('/config', methods=['PATCH'])
@@ -111,8 +111,7 @@ def update_application_config(auth_user_id):
     """
     config_data = request.get_json()
     if not config_data:
-        response_object = {'status': 'error', 'message': 'Invalid payload.'}
-        return jsonify(response_object), 400
+        return InvalidPayloadErrorResponse()
 
     try:
         config = AppConfig.query.one()
@@ -129,18 +128,12 @@ def update_application_config(auth_user_id):
 
         db.session.commit()
         update_app_config_from_database(current_app, config)
-
-        response_object = {'status': 'success', 'data': config.serialize()}
-        code = 200
+        return {'status': 'success', 'data': config.serialize()}
 
     except Exception as e:
-        appLog.error(e)
-        response_object = {
-            'status': 'error',
-            'message': 'Error on updating configuration.',
-        }
-        code = 500
-    return jsonify(response_object), code
+        return handle_error_and_return_response(
+            e, message='Error on updating configuration.'
+        )
 
 
 @config_blueprint.route('/ping', methods=['GET'])
@@ -169,4 +162,4 @@ def health_check():
     :statuscode 200: success
 
     """
-    return jsonify({'status': 'success', 'message': 'pong!'})
+    return {'status': 'success', 'message': 'pong!'}

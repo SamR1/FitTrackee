@@ -843,7 +843,10 @@ class TestPostAndGetActivityWithGpx:
 
         assert response.status_code == 500
         assert data['status'] == 'error'
-        assert data['message'] == 'internal error.'
+        assert (
+            data['message']
+            == 'Error. Please try again or contact the administrator.'
+        )
 
     def test_it_gets_an_activity_created_with_gpx(
         self, app, user_1, sport_1_cycling, gpx_file

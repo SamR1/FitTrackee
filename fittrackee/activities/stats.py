@@ -1,7 +1,13 @@
 from datetime import datetime, timedelta
 
-from fittrackee import appLog, db
-from flask import Blueprint, jsonify, request
+from fittrackee import db
+from fittrackee.responses import (
+    InvalidPayloadErrorResponse,
+    NotFoundErrorResponse,
+    UserNotFoundErrorResponse,
+    handle_error_and_return_response,
+)
+from flask import Blueprint, request
 from sqlalchemy import func
 
 from ..users.models import User
@@ -17,11 +23,7 @@ def get_activities(user_name, filter_type):
     try:
         user = User.query.filter_by(username=user_name).first()
         if not user:
-            response_object = {
-                'status': 'not found',
-                'message': 'User does not exist.',
-            }
-            return jsonify(response_object), 404
+            return UserNotFoundErrorResponse()
 
         params = request.args.copy()
         date_from = params.get('from')
@@ -42,11 +44,7 @@ def get_activities(user_name, filter_type):
             if sport_id:
                 sport = Sport.query.filter_by(id=sport_id).first()
                 if not sport:
-                    response_object = {
-                        'status': 'not found',
-                        'message': 'Sport does not exist.',
-                    }
-                    return jsonify(response_object), 404
+                    return NotFoundErrorResponse('Sport does not exist.')
 
         activities = (
             Activity.query.filter(
@@ -103,11 +101,9 @@ def get_activities(user_name, filter_type):
                         activity.activity_date, "%Y"
                     )
                 else:
-                    response_object = {
-                        'status': 'fail',
-                        'message': 'Invalid time period.',
-                    }
-                    return jsonify(response_object), 400
+                    return InvalidPayloadErrorResponse(
+                        'Invalid time period.', 'fail'
+                    )
                 sport_id = activity.sport_id
                 if time_period not in activities_list:
                     activities_list[time_period] = {}
@@ -125,19 +121,12 @@ def get_activities(user_name, filter_type):
                     'total_duration'
                 ] += convert_timedelta_to_integer(activity.moving)
 
-        response_object = {
+        return {
             'status': 'success',
             'data': {'statistics': activities_list},
         }
-        code = 200
     except Exception as e:
-        appLog.error(e)
-        response_object = {
-            'status': 'error',
-            'message': 'Error. Please try again or contact the administrator.',
-        }
-        code = 500
-    return jsonify(response_object), code
+        return handle_error_and_return_response(e)
 
 
 @stats_blueprint.route('/stats/<user_name>/by_time', methods=['GET'])
@@ -371,7 +360,7 @@ def get_application_stats(auth_user_id):
         .group_by(Activity.sport_id)
         .count()
     )
-    response_object = {
+    return {
         'status': 'success',
         'data': {
             'activities': nb_activities,
@@ -380,4 +369,3 @@ def get_application_stats(auth_user_id):
             'uploads_dir_size': get_upload_dir_size(),
         },
     }
-    return jsonify(response_object), 200

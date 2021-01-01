@@ -5,7 +5,15 @@ from datetime import datetime, timedelta
 
 import requests
 from fittrackee import appLog, db
-from flask import Blueprint, Response, current_app, jsonify, request, send_file
+from fittrackee.responses import (
+    DataInvalidPayloadErrorResponse,
+    DataNotFoundErrorResponse,
+    InternalServerErrorResponse,
+    InvalidPayloadErrorResponse,
+    NotFoundErrorResponse,
+    handle_error_and_return_response,
+)
+from flask import Blueprint, Response, current_app, request, send_file
 from sqlalchemy import exc
 
 from ..users.utils import (
@@ -251,7 +259,7 @@ def get_activities(auth_user_id):
             .paginate(page, per_page, False)
             .items
         )
-        response_object = {
+        return {
             'status': 'success',
             'data': {
                 'activities': [
@@ -259,15 +267,8 @@ def get_activities(auth_user_id):
                 ]
             },
         }
-        code = 200
     except Exception as e:
-        appLog.error(e)
-        response_object = {
-            'status': 'error',
-            'message': 'Error. Please try again or contact the administrator.',
-        }
-        code = 500
-    return jsonify(response_object), code
+        return handle_error_and_return_response(e)
 
 
 @activities_blueprint.route(
@@ -360,27 +361,17 @@ def get_activity(auth_user_id, activity_short_id):
     """
     activity_uuid = decode_short_id(activity_short_id)
     activity = Activity.query.filter_by(uuid=activity_uuid).first()
-    activities_list = []
+    if not activity:
+        return DataNotFoundErrorResponse('activities')
 
-    if activity:
-        response_object, code = can_view_activity(
-            auth_user_id, activity.user_id
-        )
-        if response_object:
-            return jsonify(response_object), code
+    error_response = can_view_activity(auth_user_id, activity.user_id)
+    if error_response:
+        return error_response
 
-        activities_list.append(activity.serialize())
-        status = 'success'
-        code = 200
-    else:
-        status = 'not found'
-        code = 404
-
-    response_object = {
-        'status': status,
-        'data': {'activities': activities_list},
+    return {
+        'status': 'success',
+        'data': {'activities': [activity.serialize()]},
     }
-    return jsonify(response_object), code
 
 
 def get_activity_data(
@@ -389,59 +380,44 @@ def get_activity_data(
     """Get data from an activity gpx file"""
     activity_uuid = decode_short_id(activity_short_id)
     activity = Activity.query.filter_by(uuid=activity_uuid).first()
-    content = ''
-    if activity:
-        response_object, code = can_view_activity(
-            auth_user_id, activity.user_id
+    if not activity:
+        return DataNotFoundErrorResponse(
+            data_type=data_type,
+            message=f'Activity not found (id: {activity_short_id})',
         )
-        if response_object:
-            return jsonify(response_object), code
-        if not activity.gpx or activity.gpx == '':
-            message = (
-                f'No gpx file for this activity (id: {activity_short_id})'
-            )
-            response_object = {'status': 'error', 'message': message}
-            return jsonify(response_object), 404
 
-        try:
-            absolute_gpx_filepath = get_absolute_file_path(activity.gpx)
-            if data_type == 'chart':
-                content = get_chart_data(absolute_gpx_filepath, segment_id)
-            else:  # data_type == 'gpx'
-                with open(absolute_gpx_filepath, encoding='utf-8') as f:
-                    content = f.read()
-                    if segment_id is not None:
-                        content = extract_segment_from_gpx_file(
-                            content, segment_id
-                        )
-        except ActivityGPXException as e:
-            appLog.error(e.message)
-            response_object = {'status': e.status, 'message': e.message}
-            code = 404 if e.status == 'not found' else 500
-            return jsonify(response_object), code
-        except Exception as e:
-            appLog.error(e)
-            response_object = {'status': 'error', 'message': 'internal error'}
-            return jsonify(response_object), 500
+    error_response = can_view_activity(auth_user_id, activity.user_id)
+    if error_response:
+        return error_response
+    if not activity.gpx or activity.gpx == '':
+        return NotFoundErrorResponse(
+            f'No gpx file for this activity (id: {activity_short_id})'
+        )
 
-        status = 'success'
-        message = ''
-        code = 200
-    else:
-        status = 'not found'
-        message = f'Activity not found (id: {activity_short_id})'
-        code = 404
+    try:
+        absolute_gpx_filepath = get_absolute_file_path(activity.gpx)
+        if data_type == 'chart_data':
+            content = get_chart_data(absolute_gpx_filepath, segment_id)
+        else:  # data_type == 'gpx'
+            with open(absolute_gpx_filepath, encoding='utf-8') as f:
+                content = f.read()
+                if segment_id is not None:
+                    content = extract_segment_from_gpx_file(
+                        content, segment_id
+                    )
+    except ActivityGPXException as e:
+        appLog.error(e.message)
+        if e.status == 'not found':
+            return NotFoundErrorResponse(e.message)
+        return InternalServerErrorResponse(e.message)
+    except Exception as e:
+        return handle_error_and_return_response(e)
 
-    response_object = {
-        'status': status,
-        'message': message,
-        'data': (
-            {'chart_data': content}
-            if data_type == 'chart'
-            else {'gpx': content}
-        ),
+    return {
+        'status': 'success',
+        'message': '',
+        'data': ({data_type: content}),
     }
-    return jsonify(response_object), code
 
 
 @activities_blueprint.route(
@@ -558,7 +534,7 @@ def get_activity_chart_data(auth_user_id, activity_short_id):
     :statuscode 500:
 
     """
-    return get_activity_data(auth_user_id, activity_short_id, 'chart')
+    return get_activity_data(auth_user_id, activity_short_id, 'chart_data')
 
 
 @activities_blueprint.route(
@@ -681,7 +657,7 @@ def get_segment_chart_data(auth_user_id, activity_short_id, segment_id):
 
     """
     return get_activity_data(
-        auth_user_id, activity_short_id, 'chart', segment_id
+        auth_user_id, activity_short_id, 'chart_data', segment_id
     )
 
 
@@ -718,18 +694,11 @@ def get_map(map_id):
     try:
         activity = Activity.query.filter_by(map_id=map_id).first()
         if not activity:
-            response_object = {
-                'status': 'error',
-                'message': 'Map does not exist',
-            }
-            return jsonify(response_object), 404
-        else:
-            absolute_map_filepath = get_absolute_file_path(activity.map)
-            return send_file(absolute_map_filepath)
+            return NotFoundErrorResponse('Map does not exist.')
+        absolute_map_filepath = get_absolute_file_path(activity.map)
+        return send_file(absolute_map_filepath)
     except Exception as e:
-        appLog.error(e)
-        response_object = {'status': 'error', 'message': 'internal error.'}
-        return jsonify(response_object), 500
+        return handle_error_and_return_response(e)
 
 
 @activities_blueprint.route(
@@ -887,16 +856,13 @@ def post_activity(auth_user_id):
     :statuscode 500:
 
     """
-    response_object, response_code = verify_extension_and_size(
-        'activity', request
-    )
-    if response_object['status'] != 'success':
-        return jsonify(response_object), response_code
+    error_response = verify_extension_and_size('activity', request)
+    if error_response:
+        return error_response
 
     activity_data = json.loads(request.form['data'])
     if not activity_data or activity_data.get('sport_id') is None:
-        response_object = {'status': 'error', 'message': 'Invalid payload.'}
-        return jsonify(response_object), 400
+        return InvalidPayloadErrorResponse()
 
     activity_file = request.files['file']
     upload_dir = os.path.join(
@@ -921,20 +887,19 @@ def post_activity(auth_user_id):
                     ]
                 },
             }
-            code = 201
         else:
-            response_object = {'status': 'fail', 'data': {'activities': []}}
-            code = 400
+            return DataInvalidPayloadErrorResponse('activities', 'fail')
     except ActivityException as e:
         db.session.rollback()
         if e.e:
             appLog.error(e.e)
-        response_object = {'status': e.status, 'message': e.message}
-        code = 500 if e.status == 'error' else 400
+        if e.status == 'error':
+            return InternalServerErrorResponse(e.message)
+        return InvalidPayloadErrorResponse(e.message)
 
     shutil.rmtree(folders['extract_dir'], ignore_errors=True)
     shutil.rmtree(folders['tmp_dir'], ignore_errors=True)
-    return jsonify(response_object), code
+    return response_object, 201
 
 
 @activities_blueprint.route('/activities/no_gpx', methods=['POST'])
@@ -1059,8 +1024,7 @@ def post_activity_no_gpx(auth_user_id):
         or activity_data.get('distance') is None
         or activity_data.get('activity_date') is None
     ):
-        response_object = {'status': 'error', 'message': 'Invalid payload.'}
-        return jsonify(response_object), 400
+        return InvalidPayloadErrorResponse()
 
     try:
         user = User.query.filter_by(id=auth_user_id).first()
@@ -1068,20 +1032,21 @@ def post_activity_no_gpx(auth_user_id):
         db.session.add(new_activity)
         db.session.commit()
 
-        response_object = {
-            'status': 'created',
-            'data': {'activities': [new_activity.serialize()]},
-        }
-        return jsonify(response_object), 201
+        return (
+            {
+                'status': 'created',
+                'data': {'activities': [new_activity.serialize()]},
+            },
+            201,
+        )
 
     except (exc.IntegrityError, ValueError) as e:
-        db.session.rollback()
-        appLog.error(e)
-        response_object = {
-            'status': 'fail',
-            'message': 'Error during activity save.',
-        }
-        return jsonify(response_object), 500
+        return handle_error_and_return_response(
+            error=e,
+            message='Error during activity save.',
+            status='fail',
+            db=db,
+        )
 
 
 @activities_blueprint.route(
@@ -1207,41 +1172,27 @@ def update_activity(auth_user_id, activity_short_id):
     """
     activity_data = request.get_json()
     if not activity_data:
-        response_object = {'status': 'error', 'message': 'Invalid payload.'}
-        return jsonify(response_object), 400
+        return InvalidPayloadErrorResponse()
 
     try:
         activity_uuid = decode_short_id(activity_short_id)
         activity = Activity.query.filter_by(uuid=activity_uuid).first()
-        if activity:
-            response_object, code = can_view_activity(
-                auth_user_id, activity.user_id
-            )
-            if response_object:
-                return jsonify(response_object), code
+        if not activity:
+            return DataNotFoundErrorResponse('activities')
 
-            activity = edit_activity(activity, activity_data, auth_user_id)
-            db.session.commit()
-            response_object = {
-                'status': 'success',
-                'data': {'activities': [activity.serialize()]},
-            }
-            code = 200
-        else:
-            response_object = {
-                'status': 'not found',
-                'data': {'activities': []},
-            }
-            code = 404
-    except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
-        db.session.rollback()
-        appLog.error(e)
-        response_object = {
-            'status': 'error',
-            'message': 'Error. Please try again or contact the administrator.',
+        response_object = can_view_activity(auth_user_id, activity.user_id)
+        if response_object:
+            return response_object
+
+        activity = edit_activity(activity, activity_data, auth_user_id)
+        db.session.commit()
+        return {
+            'status': 'success',
+            'data': {'activities': [activity.serialize()]},
         }
-        code = 500
-    return jsonify(response_object), code
+
+    except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(e)
 
 
 @activities_blueprint.route(
@@ -1284,34 +1235,19 @@ def delete_activity(auth_user_id, activity_short_id):
     try:
         activity_uuid = decode_short_id(activity_short_id)
         activity = Activity.query.filter_by(uuid=activity_uuid).first()
-        if activity:
-            response_object, code = can_view_activity(
-                auth_user_id, activity.user_id
-            )
-            if response_object:
-                return jsonify(response_object), code
+        if not activity:
+            return DataNotFoundErrorResponse('activities')
+        error_response = can_view_activity(auth_user_id, activity.user_id)
+        if error_response:
+            return error_response
 
-            db.session.delete(activity)
-            db.session.commit()
-            response_object = {'status': 'no content'}
-            code = 204
-        else:
-            response_object = {
-                'status': 'not found',
-                'data': {'activities': []},
-            }
-            code = 404
+        db.session.delete(activity)
+        db.session.commit()
+        return {'status': 'no content'}, 204
     except (
         exc.IntegrityError,
         exc.OperationalError,
         ValueError,
         OSError,
     ) as e:
-        db.session.rollback()
-        appLog.error(e)
-        response_object = {
-            'status': 'error',
-            'message': 'Error. Please try again or contact the administrator.',
-        }
-        code = 500
-    return jsonify(response_object), code
+        return handle_error_and_return_response(e, db=db)

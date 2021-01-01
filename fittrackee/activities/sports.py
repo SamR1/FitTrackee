@@ -1,5 +1,10 @@
-from fittrackee import appLog, db
-from flask import Blueprint, jsonify, request
+from fittrackee import db
+from fittrackee.responses import (
+    DataNotFoundErrorResponse,
+    InvalidPayloadErrorResponse,
+    handle_error_and_return_response,
+)
+from flask import Blueprint, request
 from sqlalchemy import exc
 
 from ..users.models import User
@@ -143,14 +148,12 @@ def get_sports(auth_user_id):
         - Invalid token. Please log in again.
 
     """
-
     user = User.query.filter_by(id=int(auth_user_id)).first()
     sports = Sport.query.order_by(Sport.id).all()
-    response_object = {
+    return {
         'status': 'success',
         'data': {'sports': [sport.serialize(user.admin) for sport in sports]},
     }
-    return jsonify(response_object), 200
 
 
 @sports_blueprint.route('/sports/<int:sport_id>', methods=['GET'])
@@ -238,19 +241,14 @@ def get_sport(auth_user_id, sport_id):
     :statuscode 404: sport not found
 
     """
-
     user = User.query.filter_by(id=int(auth_user_id)).first()
     sport = Sport.query.filter_by(id=sport_id).first()
     if sport:
-        response_object = {
+        return {
             'status': 'success',
             'data': {'sports': [sport.serialize(user.admin)]},
         }
-        code = 200
-    else:
-        response_object = {'status': 'not found', 'data': {'sports': []}}
-        code = 404
-    return jsonify(response_object), code
+    return DataNotFoundErrorResponse('sports')
 
 
 @sports_blueprint.route('/sports/<int:sport_id>', methods=['PATCH'])
@@ -325,28 +323,19 @@ def update_sport(auth_user_id, sport_id):
     """
     sport_data = request.get_json()
     if not sport_data or sport_data.get('is_active') is None:
-        response_object = {'status': 'error', 'message': 'Invalid payload.'}
-        return jsonify(response_object), 400
+        return InvalidPayloadErrorResponse()
 
     try:
         sport = Sport.query.filter_by(id=sport_id).first()
-        if sport:
-            sport.is_active = sport_data.get('is_active')
-            db.session.commit()
-            response_object = {
-                'status': 'success',
-                'data': {'sports': [sport.serialize(True)]},
-            }
-            code = 200
-        else:
-            response_object = {'status': 'not found', 'data': {'sports': []}}
-            code = 404
-    except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
-        db.session.rollback()
-        appLog.error(e)
-        response_object = {
-            'status': 'error',
-            'message': 'Error. Please try again or contact the administrator.',
+        if not sport:
+            return DataNotFoundErrorResponse('sports')
+
+        sport.is_active = sport_data.get('is_active')
+        db.session.commit()
+        return {
+            'status': 'success',
+            'data': {'sports': [sport.serialize(True)]},
         }
-        code = 500
-    return jsonify(response_object), code
+
+    except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(e, db=db)

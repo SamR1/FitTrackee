@@ -3,8 +3,15 @@ import os
 
 import jwt
 from fittrackee import appLog, bcrypt, db
+from fittrackee.responses import (
+    ForbiddenErrorResponse,
+    InvalidPayloadErrorResponse,
+    PayloadTooLargeErrorResponse,
+    UnauthorizedErrorResponse,
+    handle_error_and_return_response,
+)
 from fittrackee.tasks import reset_password_email
-from flask import Blueprint, current_app, jsonify, request
+from flask import Blueprint, current_app, request
 from sqlalchemy import exc, or_
 from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
@@ -84,11 +91,8 @@ def register_user():
 
     """
     if not current_app.config.get('is_registration_enabled'):
-        response_object = {
-            'status': 'error',
-            'message': 'Error. Registration is disabled.',
-        }
-        return jsonify(response_object), 403
+        return ForbiddenErrorResponse('Error. Registration is disabled.')
+
     # get post data
     post_data = request.get_json()
     if (
@@ -98,8 +102,7 @@ def register_user():
         or post_data.get('password') is None
         or post_data.get('password_conf') is None
     ):
-        response_object = {'status': 'error', 'message': 'Invalid payload.'}
-        return jsonify(response_object), 400
+        return InvalidPayloadErrorResponse()
     username = post_data.get('username')
     email = post_data.get('email')
     password = post_data.get('password')
@@ -108,53 +111,36 @@ def register_user():
     try:
         ret = register_controls(username, email, password, password_conf)
     except TypeError as e:
-        db.session.rollback()
-        appLog.error(e)
+        return handle_error_and_return_response(e, db=db)
 
-        response_object = {
-            'status': 'error',
-            'message': 'Error. Please try again or contact the administrator.',
-        }
-        return jsonify(response_object), 500
     if ret != '':
-        response_object = {'status': 'error', 'message': ret}
-        return jsonify(response_object), 400
+        return InvalidPayloadErrorResponse(ret)
 
     try:
         # check for existing user
         user = User.query.filter(
             or_(User.username == username, User.email == email)
         ).first()
-        if not user:
-            # add new user to db
-            new_user = User(username=username, email=email, password=password)
-            new_user.timezone = 'Europe/Paris'
-            db.session.add(new_user)
-            db.session.commit()
-            # generate auth token
-            auth_token = new_user.encode_auth_token(new_user.id)
-            response_object = {
-                'status': 'success',
-                'message': 'Successfully registered.',
-                'auth_token': auth_token,
-            }
-            return jsonify(response_object), 201
-        else:
-            response_object = {
-                'status': 'error',
-                'message': 'Sorry. That user already exists.',
-            }
-            return jsonify(response_object), 400
+        if user:
+            return InvalidPayloadErrorResponse(
+                'Sorry. That user already exists.'
+            )
+
+        # add new user to db
+        new_user = User(username=username, email=email, password=password)
+        new_user.timezone = 'Europe/Paris'
+        db.session.add(new_user)
+        db.session.commit()
+        # generate auth token
+        auth_token = new_user.encode_auth_token(new_user.id)
+        return {
+            'status': 'success',
+            'message': 'Successfully registered.',
+            'auth_token': auth_token,
+        }, 201
     # handler errors
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
-        db.session.rollback()
-        appLog.error(e)
-
-        response_object = {
-            'status': 'error',
-            'message': 'Error. Please try again or contact the administrator.',
-        }
-        return jsonify(response_object), 500
+        return handle_error_and_return_response(e, db=db)
 
 
 @auth_blueprint.route('/auth/login', methods=['POST'])
@@ -200,15 +186,15 @@ def login_user():
     :<json string password_conf: password confirmation
 
     :statuscode 200: Successfully logged in.
-    :statuscode 404: Invalid credentials.
+    :statuscode 400: Invalid payload.
+    :statuscode 401: Invalid credentials.
     :statuscode 500: Error. Please try again or contact the administrator.
 
     """
     # get post data
     post_data = request.get_json()
     if not post_data:
-        response_object = {'status': 'error', 'message': 'Invalid payload.'}
-        return jsonify(response_object), 400
+        return InvalidPayloadErrorResponse()
     email = post_data.get('email')
     password = post_data.get('password')
     try:
@@ -217,27 +203,15 @@ def login_user():
         if user and bcrypt.check_password_hash(user.password, password):
             # generate auth token
             auth_token = user.encode_auth_token(user.id)
-            response_object = {
+            return {
                 'status': 'success',
                 'message': 'Successfully logged in.',
                 'auth_token': auth_token,
             }
-            return jsonify(response_object), 200
-        else:
-            response_object = {
-                'status': 'error',
-                'message': 'Invalid credentials.',
-            }
-            return jsonify(response_object), 404
+        return UnauthorizedErrorResponse('Invalid credentials.')
     # handler errors
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
-        db.session.rollback()
-        appLog.error(e)
-        response_object = {
-            'status': 'error',
-            'message': 'Error. Please try again or contact the administrator.',
-        }
-        return jsonify(response_object), 500
+        return handle_error_and_return_response(e, db=db)
 
 
 @auth_blueprint.route('/auth/logout', methods=['GET'])
@@ -287,24 +261,18 @@ def logout_user(auth_user_id):
     """
     # get auth token
     auth_header = request.headers.get('Authorization')
-    if auth_header:
-        auth_token = auth_header.split(" ")[1]
-        resp = User.decode_auth_token(auth_token)
-        if not isinstance(auth_user_id, str):
-            response_object = {
-                'status': 'success',
-                'message': 'Successfully logged out.',
-            }
-            return jsonify(response_object), 200
-        else:
-            response_object = {'status': 'error', 'message': resp}
-            return jsonify(response_object), 401
-    else:
-        response_object = {
-            'status': 'error',
-            'message': 'Provide a valid auth token.',
-        }
-        return jsonify(response_object), 401
+    if not auth_header:
+        return UnauthorizedErrorResponse('Provide a valid auth token.')
+
+    auth_token = auth_header.split(' ')[1]
+    resp = User.decode_auth_token(auth_token)
+    if isinstance(auth_user_id, str):
+        return UnauthorizedErrorResponse(resp)
+
+    return {
+        'status': 'success',
+        'message': 'Successfully logged out.',
+    }
 
 
 @auth_blueprint.route('/auth/profile', methods=['GET'])
@@ -365,8 +333,7 @@ def get_authenticated_user_profile(auth_user_id):
 
     """
     user = User.query.filter_by(id=auth_user_id).first()
-    response_object = {'status': 'success', 'data': user.serialize()}
-    return jsonify(response_object), 200
+    return {'status': 'success', 'data': user.serialize()}
 
 
 @auth_blueprint.route('/auth/profile/edit', methods=['POST'])
@@ -455,8 +422,8 @@ def edit_user(auth_user_id):
         'weekm',
     }
     if not post_data or not post_data.keys() >= user_mandatory_data:
-        response_object = {'status': 'error', 'message': 'Invalid payload.'}
-        return jsonify(response_object), 400
+        return InvalidPayloadErrorResponse()
+
     first_name = post_data.get('first_name')
     last_name = post_data.get('last_name')
     bio = post_data.get('bio')
@@ -471,8 +438,7 @@ def edit_user(auth_user_id):
     if password is not None and password != '':
         message = check_passwords(password, password_conf)
         if message != '':
-            response_object = {'status': 'error', 'message': message}
-            return jsonify(response_object), 400
+            return InvalidPayloadErrorResponse(message)
         password = bcrypt.generate_password_hash(
             password, current_app.config.get('BCRYPT_LOG_ROUNDS')
         ).decode()
@@ -495,22 +461,15 @@ def edit_user(auth_user_id):
         user.weekm = weekm
         db.session.commit()
 
-        response_object = {
+        return {
             'status': 'success',
             'message': 'User profile updated.',
             'data': user.serialize(),
         }
-        return jsonify(response_object), 200
 
     # handler errors
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
-        db.session.rollback()
-        appLog.error(e)
-        response_object = {
-            'status': 'error',
-            'message': 'Error. Please try again or contact the administrator.',
-        }
-        return jsonify(response_object), 500
+        return handle_error_and_return_response(e, db=db)
 
 
 @auth_blueprint.route('/auth/picture', methods=['POST'])
@@ -557,20 +516,16 @@ def edit_picture(auth_user_id):
 
     """
     try:
-        response_object, response_code = verify_extension_and_size(
-            'picture', request
-        )
+        response_object = verify_extension_and_size('picture', request)
     except RequestEntityTooLarge as e:
         appLog.error(e)
         max_file_size = current_app.config['MAX_CONTENT_LENGTH']
-        response_object = {
-            'status': 'fail',
-            'message': 'Error during picture update, file size exceeds '
-            f'{display_readable_file_size(max_file_size)}.',
-        }
-        return jsonify(response_object), 413
-    if response_object['status'] != 'success':
-        return jsonify(response_object), response_code
+        return PayloadTooLargeErrorResponse(
+            'Error during picture update, file size exceeds '
+            f'{display_readable_file_size(max_file_size)}.'
+        )
+    if response_object:
+        return response_object
 
     file = request.files['file']
     filename = secure_filename(file.filename)
@@ -593,21 +548,15 @@ def edit_picture(auth_user_id):
         file.save(absolute_picture_path)
         user.picture = relative_picture_path
         db.session.commit()
-
-        response_object = {
+        return {
             'status': 'success',
             'message': 'User picture updated.',
         }
-        return jsonify(response_object), 200
 
     except (exc.IntegrityError, ValueError) as e:
-        db.session.rollback()
-        appLog.error(e)
-        response_object = {
-            'status': 'fail',
-            'message': 'Error during picture update.',
-        }
-        return jsonify(response_object), 500
+        return handle_error_and_return_response(
+            e, message='Error during picture update.', status='fail', db=db
+        )
 
 
 @auth_blueprint.route('/auth/picture', methods=['DELETE'])
@@ -647,18 +596,11 @@ def del_picture(auth_user_id):
             os.remove(picture_path)
         user.picture = None
         db.session.commit()
-
-        response_object = {'status': 'no content'}
-        return jsonify(response_object), 204
-
+        return {'status': 'no content'}, 204
     except (exc.IntegrityError, ValueError) as e:
-        db.session.rollback()
-        appLog.error(e)
-        response_object = {
-            'status': 'fail',
-            'message': 'Error during picture deletion.',
-        }
-        return jsonify(response_object), 500
+        return handle_error_and_return_response(
+            e, message='Error during picture deletion.', status='fail', db=db
+        )
 
 
 @auth_blueprint.route('/auth/password/reset-request', methods=['POST'])
@@ -693,8 +635,7 @@ def request_password_reset():
     """
     post_data = request.get_json()
     if not post_data or post_data.get('email') is None:
-        response_object = {'status': 'error', 'message': 'Invalid payload.'}
-        return jsonify(response_object), 400
+        return InvalidPayloadErrorResponse()
     email = post_data.get('email')
 
     user = User.query.filter(User.email == email).first()
@@ -718,11 +659,10 @@ def request_password_reset():
             'email': user.email,
         }
         reset_password_email.send(user_data, email_data)
-    response_object = {
+    return {
         'status': 'success',
         'message': 'Password reset request processed.',
     }
-    return jsonify(response_object), 200
 
 
 @auth_blueprint.route('/auth/password/update', methods=['POST'])
@@ -766,45 +706,31 @@ def update_password():
         or post_data.get('password_conf') is None
         or post_data.get('token') is None
     ):
-        response_object = {'status': 'error', 'message': 'Invalid payload.'}
-        return jsonify(response_object), 400
+        return InvalidPayloadErrorResponse()
     password = post_data.get('password')
     password_conf = post_data.get('password_conf')
     token = post_data.get('token')
 
-    invalid_token_response_object = {
-        'status': 'error',
-        'message': 'Invalid token. Please request a new token.',
-    }
     try:
         user_id = decode_user_token(token)
     except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
-        return jsonify(invalid_token_response_object), 401
+        return UnauthorizedErrorResponse()
 
     message = check_passwords(password, password_conf)
     if message != '':
-        response_object = {'status': 'error', 'message': message}
-        return jsonify(response_object), 400
+        return InvalidPayloadErrorResponse(message)
 
     user = User.query.filter(User.id == user_id).first()
     if not user:
-        return jsonify(invalid_token_response_object), 401
+        return UnauthorizedErrorResponse()
     try:
         user.password = bcrypt.generate_password_hash(
             password, current_app.config.get('BCRYPT_LOG_ROUNDS')
         ).decode()
         db.session.commit()
-        response_object = {
+        return {
             'status': 'success',
             'message': 'Password updated.',
         }
-        return jsonify(response_object), 200
-
     except (exc.OperationalError, ValueError) as e:
-        db.session.rollback()
-        appLog.error(e)
-        response_object = {
-            'status': 'error',
-            'message': 'Error. Please try again or contact the administrator.',
-        }
-        return jsonify(response_object), 500
+        return handle_error_and_return_response(e, db=db)

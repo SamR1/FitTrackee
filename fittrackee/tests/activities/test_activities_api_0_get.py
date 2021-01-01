@@ -833,7 +833,7 @@ class TestGetActivity:
 
         data = json.loads(response.data.decode())
         assert response.status_code == 404
-        assert 'error' in data['status']
+        assert 'not found' in data['status']
         assert (
             f'No gpx file for this activity (id: {activity_short_id})'
             in data['message']
@@ -860,7 +860,7 @@ class TestGetActivity:
 
         data = json.loads(response.data.decode())
         assert response.status_code == 404
-        assert 'error' in data['status']
+        assert 'not found' in data['status']
         assert (
             f'No gpx file for this activity (id: {activity_short_id})'
             in data['message']
@@ -888,7 +888,10 @@ class TestGetActivity:
         data = json.loads(response.data.decode())
         assert response.status_code == 500
         assert 'error' in data['status']
-        assert 'internal error' in data['message']
+        assert (
+            'Error. Please try again or contact the administrator.'
+            in data['message']
+        )
         assert 'data' not in data
 
     def test_it_returns_500_on_getting_chart_data_if_an_activity_has_invalid_gpx_pathname(  # noqa
@@ -913,7 +916,10 @@ class TestGetActivity:
         data = json.loads(response.data.decode())
         assert response.status_code == 500
         assert 'error' in data['status']
-        assert 'internal error' in data['message']
+        assert (
+            'Error. Please try again or contact the administrator.'
+            in data['message']
+        )
         assert 'data' not in data
 
     def test_it_returns_404_if_activity_has_no_map(self, app, user_1):
@@ -933,5 +939,5 @@ class TestGetActivity:
         data = json.loads(response.data.decode())
 
         assert response.status_code == 404
-        assert 'error' in data['status']
+        assert 'not found' in data['status']
         assert 'Map does not exist' in data['message']

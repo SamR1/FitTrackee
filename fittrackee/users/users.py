@@ -1,8 +1,15 @@
 import os
 import shutil
 
-from fittrackee import appLog, db
-from flask import Blueprint, jsonify, request, send_file
+from fittrackee import db
+from fittrackee.responses import (
+    ForbiddenErrorResponse,
+    InvalidPayloadErrorResponse,
+    NotFoundErrorResponse,
+    UserNotFoundErrorResponse,
+    handle_error_and_return_response,
+)
+from flask import Blueprint, request, send_file
 from sqlalchemy import exc
 
 from ..activities.utils_files import get_absolute_file_path
@@ -156,7 +163,7 @@ def get_users(auth_user_id):
         .paginate(page, per_page, False)
     )
     users = users_pagination.items
-    response_object = {
+    return {
         'status': 'success',
         'data': {'users': [user.serialize() for user in users]},
         'pagination': {
@@ -167,7 +174,6 @@ def get_users(auth_user_id):
             'total': users_pagination.total,
         },
     }
-    return jsonify(response_object), 200
 
 
 @users_blueprint.route('/users/<user_name>', methods=['GET'])
@@ -232,20 +238,16 @@ def get_single_user(auth_user_id, user_name):
     :statuscode 404:
         - User does not exist.
     """
-
-    response_object = {'status': 'fail', 'message': 'User does not exist.'}
     try:
         user = User.query.filter_by(username=user_name).first()
-        if not user:
-            return jsonify(response_object), 404
-        else:
-            response_object = {
+        if user:
+            return {
                 'status': 'success',
                 'data': {'users': [user.serialize()]},
             }
-            return jsonify(response_object), 200
     except ValueError:
-        return jsonify(response_object), 404
+        pass
+    return UserNotFoundErrorResponse()
 
 
 @users_blueprint.route('/users/<user_name>/picture', methods=['GET'])
@@ -274,21 +276,16 @@ def get_picture(user_name):
         - No picture.
 
     """
-    response_object = {'status': 'not found', 'message': 'No picture.'}
     try:
         user = User.query.filter_by(username=user_name).first()
         if not user:
-            response_object = {
-                'status': 'fail',
-                'message': 'User does not exist.',
-            }
-            return jsonify(response_object), 404
+            return UserNotFoundErrorResponse()
         if user.picture is not None:
             picture_path = get_absolute_file_path(user.picture)
             return send_file(picture_path)
-        return jsonify(response_object), 404
     except Exception:
-        return jsonify(response_object), 404
+        pass
+    return NotFoundErrorResponse('No picture.')
 
 
 @users_blueprint.route('/users/<user_name>', methods=['PATCH'])
@@ -359,34 +356,23 @@ def update_user(auth_user_id, user_name):
         - User does not exist.
     :statuscode 500:
     """
-    response_object = {'status': 'fail', 'message': 'User does not exist.'}
     user_data = request.get_json()
     if 'admin' not in user_data:
-        response_object = {'status': 'error', 'message': 'Invalid payload.'}
-        return jsonify(response_object), 400
+        return InvalidPayloadErrorResponse()
 
     try:
         user = User.query.filter_by(username=user_name).first()
         if not user:
-            return jsonify(response_object), 404
-        else:
-            user.admin = user_data['admin']
-            db.session.commit()
-            response_object = {
-                'status': 'success',
-                'data': {'users': [user.serialize()]},
-            }
-            return jsonify(response_object), 200
+            return UserNotFoundErrorResponse()
 
-    except exc.StatementError as e:
-        db.session.rollback()
-        appLog.error(e)
-        response_object = {
-            'status': 'error',
-            'message': 'Error. Please try again or contact the administrator.',
+        user.admin = user_data['admin']
+        db.session.commit()
+        return {
+            'status': 'success',
+            'data': {'users': [user.serialize()]},
         }
-        code = 500
-    return jsonify(response_object), code
+    except exc.StatementError as e:
+        return handle_error_and_return_response(e, db=db)
 
 
 @users_blueprint.route('/users/<user_name>', methods=['DELETE'])
@@ -435,62 +421,43 @@ def delete_user(auth_user_id, user_name):
     try:
         auth_user = User.query.filter_by(id=auth_user_id).first()
         user = User.query.filter_by(username=user_name).first()
-        if user:
-            if user.id != auth_user_id and not auth_user.admin:
-                response_object = {
-                    'status': 'error',
-                    'message': 'You do not have permissions.',
-                }
-                return response_object, 403
-            if (
-                user.admin is True
-                and User.query.filter_by(admin=True).count() == 1
-            ):
-                response_object = {
-                    'status': 'error',
-                    'message': (
-                        'You can not delete your account, '
-                        'no other user has admin rights.'
-                    ),
-                }
-                return response_object, 403
-            for activity in Activity.query.filter_by(user_id=user.id).all():
-                db.session.delete(activity)
-                db.session.flush()
-            user_picture = user.picture
-            db.session.delete(user)
-            db.session.commit()
-            if user_picture:
-                picture_path = get_absolute_file_path(user.picture)
-                if os.path.isfile(picture_path):
-                    os.remove(picture_path)
-            shutil.rmtree(
-                get_absolute_file_path(f'activities/{user.id}'),
-                ignore_errors=True,
+        if not user:
+            return UserNotFoundErrorResponse()
+
+        if user.id != auth_user_id and not auth_user.admin:
+            return ForbiddenErrorResponse()
+        if (
+            user.admin is True
+            and User.query.filter_by(admin=True).count() == 1
+        ):
+            return ForbiddenErrorResponse(
+                'You can not delete your account, '
+                'no other user has admin rights.'
             )
-            shutil.rmtree(
-                get_absolute_file_path(f'pictures/{user.id}'),
-                ignore_errors=True,
-            )
-            response_object = {'status': 'no content'}
-            code = 204
-        else:
-            response_object = {
-                'status': 'not found',
-                'message': 'User does not exist.',
-            }
-            code = 404
+
+        for activity in Activity.query.filter_by(user_id=user.id).all():
+            db.session.delete(activity)
+            db.session.flush()
+        user_picture = user.picture
+        db.session.delete(user)
+        db.session.commit()
+        if user_picture:
+            picture_path = get_absolute_file_path(user.picture)
+            if os.path.isfile(picture_path):
+                os.remove(picture_path)
+        shutil.rmtree(
+            get_absolute_file_path(f'activities/{user.id}'),
+            ignore_errors=True,
+        )
+        shutil.rmtree(
+            get_absolute_file_path(f'pictures/{user.id}'),
+            ignore_errors=True,
+        )
+        return {'status': 'no content'}, 204
     except (
         exc.IntegrityError,
         exc.OperationalError,
         ValueError,
         OSError,
     ) as e:
-        db.session.rollback()
-        appLog.error(e)
-        response_object = {
-            'status': 'error',
-            'message': 'Error. Please try again or contact the administrator.',
-        }
-        code = 500
-    return jsonify(response_object), code
+        return handle_error_and_return_response(e, db=db)

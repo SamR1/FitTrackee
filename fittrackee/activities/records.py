@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint
 
 from ..users.utils import authenticate
 from .models import Record
@@ -103,14 +103,12 @@ def get_records(auth_user_id):
         - Invalid token. Please log in again.
 
     """
-
     records = (
         Record.query.filter_by(user_id=auth_user_id)
         .order_by(Record.sport_id.asc(), Record.record_type.asc())
         .all()
     )
-    response_object = {
+    return {
         'status': 'success',
         'data': {'records': [record.serialize() for record in records]},
     }
-    return jsonify(response_object), 200

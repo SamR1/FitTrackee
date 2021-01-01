@@ -3,7 +3,13 @@ from datetime import timedelta
 from functools import wraps
 
 import humanize
-from flask import current_app, jsonify, request
+from fittrackee.responses import (
+    ForbiddenErrorResponse,
+    InvalidPayloadErrorResponse,
+    PayloadTooLargeErrorResponse,
+    UnauthorizedErrorResponse,
+)
+from flask import current_app, request
 
 from .models import User
 
@@ -38,17 +44,12 @@ def register_controls(username, email, password, password_conf):
 
 
 def verify_extension_and_size(file_type, req):
-    response_object = {'status': 'success'}
-    code = 400
-
     if 'file' not in req.files:
-        response_object = {'status': 'fail', 'message': 'No file part.'}
-        return response_object, code
+        return InvalidPayloadErrorResponse('No file part.', 'fail')
 
     file = req.files['file']
     if file.filename == '':
-        response_object = {'status': 'fail', 'message': 'No selected file.'}
-        return response_object, code
+        return InvalidPayloadErrorResponse('No selected file.', 'fail')
 
     allowed_extensions = (
         'ACTIVITY_ALLOWED_EXTENSIONS'
@@ -67,52 +68,43 @@ def verify_extension_and_size(file_type, req):
         file_extension
         and file_extension in current_app.config.get(allowed_extensions)
     ):
-        response_object = {
-            'status': 'fail',
-            'message': 'File extension not allowed.',
-        }
-    elif file_extension != 'zip' and req.content_length > max_file_size:
-        response_object = {
-            'status': 'fail',
-            'message': 'Error during picture update, file size exceeds '
-            f'{display_readable_file_size(max_file_size)}.',
-        }
-        code = 413
+        return InvalidPayloadErrorResponse(
+            'File extension not allowed.', 'fail'
+        )
 
-    return response_object, code
+    if file_extension != 'zip' and req.content_length > max_file_size:
+        return PayloadTooLargeErrorResponse(
+            'Error during picture update, file size exceeds '
+            f'{display_readable_file_size(max_file_size)}.'
+        )
+
+    return None
 
 
 def verify_user(current_request, verify_admin):
-    response_object = {
-        'status': 'error',
-        'message': 'Something went wrong. Please contact us.',
-    }
-    code = 401
+    default_message = 'Provide a valid auth token.'
     auth_header = current_request.headers.get('Authorization')
     if not auth_header:
-        response_object['message'] = 'Provide a valid auth token.'
-        return response_object, code, None
-    auth_token = auth_header.split(" ")[1]
+        return UnauthorizedErrorResponse(default_message), None
+    auth_token = auth_header.split(' ')[1]
     resp = User.decode_auth_token(auth_token)
     if isinstance(resp, str):
-        response_object['message'] = resp
-        return response_object, code, None
+        return UnauthorizedErrorResponse(resp), None
     user = User.query.filter_by(id=resp).first()
     if not user:
-        return response_object, code, None
+        return UnauthorizedErrorResponse(default_message), None
     if verify_admin and not is_admin(resp):
-        response_object['message'] = 'You do not have permissions.'
-        return response_object, 403, None
-    return None, None, resp
+        return ForbiddenErrorResponse(), None
+    return None, resp
 
 
 def authenticate(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         verify_admin = False
-        response_object, code, resp = verify_user(request, verify_admin)
+        response_object, resp = verify_user(request, verify_admin)
         if response_object:
-            return jsonify(response_object), code
+            return response_object
         return f(resp, *args, **kwargs)
 
     return decorated_function
@@ -122,9 +114,9 @@ def authenticate_as_admin(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         verify_admin = True
-        response_object, code, resp = verify_user(request, verify_admin)
+        response_object, resp = verify_user(request, verify_admin)
         if response_object:
-            return jsonify(response_object), code
+            return response_object
         return f(resp, *args, **kwargs)
 
     return decorated_function
@@ -132,12 +124,8 @@ def authenticate_as_admin(f):
 
 def can_view_activity(auth_user_id, activity_user_id):
     if auth_user_id != activity_user_id:
-        response_object = {
-            'status': 'error',
-            'message': 'You do not have permissions.',
-        }
-        return response_object, 403
-    return None, None
+        return ForbiddenErrorResponse()
+    return None
 
 
 def display_readable_file_size(size_in_bytes):
