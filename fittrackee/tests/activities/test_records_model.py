@@ -1,12 +1,18 @@
 import datetime
 
-from fittrackee.activities.models import Record
+from fittrackee.activities.models import Activity, Record, Sport
+from fittrackee.users.models import User
+from flask import Flask
 
 
 class TestRecordModel:
     def test_record_model(
-        self, app, user_1, sport_1_cycling, activity_cycling_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_1: Activity,
+    ) -> None:
         record_ld = Record.query.filter_by(
             user_id=activity_cycling_user_1.user_id,
             sport_id=activity_cycling_user_1.sport_id,
@@ -29,8 +35,12 @@ class TestRecordModel:
         assert 'value' in record_serialize
 
     def test_record_model_with_none_value(
-        self, app, user_1, sport_1_cycling, activity_cycling_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_1: Activity,
+    ) -> None:
         record_ld = Record.query.filter_by(
             user_id=activity_cycling_user_1.user_id,
             sport_id=activity_cycling_user_1.sport_id,
@@ -49,8 +59,12 @@ class TestRecordModel:
         assert record_serialize['value'] is None
 
     def test_average_speed_records(
-        self, app, user_1, sport_1_cycling, activity_cycling_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_1: Activity,
+    ) -> None:
         record_as = Record.query.filter_by(
             user_id=activity_cycling_user_1.user_id,
             sport_id=activity_cycling_user_1.sport_id,
@@ -66,8 +80,12 @@ class TestRecordModel:
         assert isinstance(record_serialize.get('value'), float)
 
     def test_add_farest_distance_records(
-        self, app, user_1, sport_1_cycling, activity_cycling_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_1: Activity,
+    ) -> None:
         record_fd = Record.query.filter_by(
             user_id=activity_cycling_user_1.user_id,
             sport_id=activity_cycling_user_1.sport_id,
@@ -83,8 +101,12 @@ class TestRecordModel:
         assert isinstance(record_serialize.get('value'), float)
 
     def test_add_longest_duration_records(
-        self, app, user_1, sport_1_cycling, activity_cycling_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_1: Activity,
+    ) -> None:
         record_ld = Record.query.filter_by(
             user_id=activity_cycling_user_1.user_id,
             sport_id=activity_cycling_user_1.sport_id,
@@ -100,8 +122,12 @@ class TestRecordModel:
         assert isinstance(record_serialize.get('value'), str)
 
     def test_add_longest_duration_records_with_zero(
-        self, app, user_1, sport_1_cycling, activity_cycling_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_1: Activity,
+    ) -> None:
         record_ld = Record.query.filter_by(
             user_id=activity_cycling_user_1.user_id,
             sport_id=activity_cycling_user_1.sport_id,
@@ -118,8 +144,12 @@ class TestRecordModel:
         assert isinstance(record_serialize.get('value'), str)
 
     def test_max_speed_records_no_value(
-        self, app, user_1, sport_1_cycling, activity_cycling_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_1: Activity,
+    ) -> None:
         record_ms = Record.query.filter_by(
             user_id=activity_cycling_user_1.user_id,
             sport_id=activity_cycling_user_1.sport_id,

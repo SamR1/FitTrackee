@@ -1,3 +1,5 @@
+from typing import Dict
+
 from flask import Blueprint
 
 from ..users.utils import authenticate
@@ -8,7 +10,7 @@ records_blueprint = Blueprint('records', __name__)
 
 @records_blueprint.route('/records', methods=['GET'])
 @authenticate
-def get_records(auth_user_id):
+def get_records(auth_user_id: int) -> Dict:
     """
     Get all records for authenticated user.
 

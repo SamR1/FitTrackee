@@ -1,8 +1,9 @@
 from fittrackee.users.models import User
+from flask import Flask
 
 
 class TestUserModel:
-    def test_user_model(self, app, user_1):
+    def test_user_model(self, app: Flask, user_1: User) -> None:
         assert '<User \'test\'>' == str(user_1)
 
         serialized_user = user_1.serialize()
@@ -23,15 +24,15 @@ class TestUserModel:
         assert serialized_user['total_distance'] == 0
         assert serialized_user['total_duration'] == '0:00:00'
 
-    def test_encode_auth_token(self, app, user_1):
+    def test_encode_auth_token(self, app: Flask, user_1: User) -> None:
         auth_token = user_1.encode_auth_token(user_1.id)
         assert isinstance(auth_token, str)
 
-    def test_encode_password_token(self, app, user_1):
+    def test_encode_password_token(self, app: Flask, user_1: User) -> None:
         password_token = user_1.encode_password_reset_token(user_1.id)
         assert isinstance(password_token, str)
 
-    def test_decode_auth_token(self, app, user_1):
+    def test_decode_auth_token(self, app: Flask, user_1: User) -> None:
         auth_token = user_1.encode_auth_token(user_1.id)
         assert isinstance(auth_token, str)
         assert User.decode_auth_token(auth_token) == user_1.id

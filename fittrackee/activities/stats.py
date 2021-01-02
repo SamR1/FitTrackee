@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta
+from typing import Dict, Union
 
 from fittrackee import db
 from fittrackee.responses import (
+    HttpResponse,
     InvalidPayloadErrorResponse,
     NotFoundErrorResponse,
     UserNotFoundErrorResponse,
@@ -19,7 +21,12 @@ from .utils_format import convert_timedelta_to_integer
 stats_blueprint = Blueprint('stats', __name__)
 
 
-def get_activities(user_name, filter_type):
+def get_activities(
+    user_name: str, filter_type: str
+) -> Union[Dict, HttpResponse]:
+    """
+    Return user activities by sport or by time
+    """
     try:
         user = User.query.filter_by(username=user_name).first()
         if not user:
@@ -40,7 +47,6 @@ def get_activities(user_name, filter_type):
         time = params.get('time')
 
         if filter_type == 'by_sport':
-            sport_id = params.get('sport_id')
             if sport_id:
                 sport = Sport.query.filter_by(id=sport_id).first()
                 if not sport:
@@ -59,24 +65,26 @@ def get_activities(user_name, filter_type):
             .all()
         )
 
-        activities_list = {}
+        activities_list_by_sport = {}
+        activities_list_by_time = {}  # type: ignore
         for activity in activities:
             if filter_type == 'by_sport':
                 sport_id = activity.sport_id
-                if sport_id not in activities_list:
-                    activities_list[sport_id] = {
+                if sport_id not in activities_list_by_sport:
+                    activities_list_by_sport[sport_id] = {
                         'nb_activities': 0,
                         'total_distance': 0.0,
                         'total_duration': 0,
                     }
-                activities_list[sport_id]['nb_activities'] += 1
-                activities_list[sport_id]['total_distance'] += float(
+                activities_list_by_sport[sport_id]['nb_activities'] += 1
+                activities_list_by_sport[sport_id]['total_distance'] += float(
                     activity.distance
                 )
-                activities_list[sport_id][
+                activities_list_by_sport[sport_id][
                     'total_duration'
                 ] += convert_timedelta_to_integer(activity.moving)
 
+            # filter_type == 'by_time'
             else:
                 if time == 'week':
                     activity_date = activity.activity_date - timedelta(
@@ -105,25 +113,31 @@ def get_activities(user_name, filter_type):
                         'Invalid time period.', 'fail'
                     )
                 sport_id = activity.sport_id
-                if time_period not in activities_list:
-                    activities_list[time_period] = {}
-                if sport_id not in activities_list[time_period]:
-                    activities_list[time_period][sport_id] = {
+                if time_period not in activities_list_by_time:
+                    activities_list_by_time[time_period] = {}
+                if sport_id not in activities_list_by_time[time_period]:
+                    activities_list_by_time[time_period][sport_id] = {
                         'nb_activities': 0,
                         'total_distance': 0.0,
                         'total_duration': 0,
                     }
-                activities_list[time_period][sport_id]['nb_activities'] += 1
-                activities_list[time_period][sport_id][
+                activities_list_by_time[time_period][sport_id][
+                    'nb_activities'
+                ] += 1
+                activities_list_by_time[time_period][sport_id][
                     'total_distance'
                 ] += float(activity.distance)
-                activities_list[time_period][sport_id][
+                activities_list_by_time[time_period][sport_id][
                     'total_duration'
                 ] += convert_timedelta_to_integer(activity.moving)
 
         return {
             'status': 'success',
-            'data': {'statistics': activities_list},
+            'data': {
+                'statistics': activities_list_by_sport
+                if filter_type == 'by_sport'
+                else activities_list_by_time
+            },
         }
     except Exception as e:
         return handle_error_and_return_response(e)
@@ -131,7 +145,9 @@ def get_activities(user_name, filter_type):
 
 @stats_blueprint.route('/stats/<user_name>/by_time', methods=['GET'])
 @authenticate
-def get_activities_by_time(auth_user_id, user_name):
+def get_activities_by_time(
+    auth_user_id: int, user_name: str
+) -> Union[Dict, HttpResponse]:
     """
     Get activities statistics for a user by time
 
@@ -227,7 +243,9 @@ def get_activities_by_time(auth_user_id, user_name):
 
 @stats_blueprint.route('/stats/<user_name>/by_sport', methods=['GET'])
 @authenticate
-def get_activities_by_sport(auth_user_id, user_name):
+def get_activities_by_sport(
+    auth_user_id: int, user_name: str
+) -> Union[Dict, HttpResponse]:
     """
     Get activities statistics for a user by sport
 
@@ -313,7 +331,7 @@ def get_activities_by_sport(auth_user_id, user_name):
 
 @stats_blueprint.route('/stats/all', methods=['GET'])
 @authenticate_as_admin
-def get_application_stats(auth_user_id):
+def get_application_stats(auth_user_id: int) -> Dict:
     """
     Get all application statistics
 

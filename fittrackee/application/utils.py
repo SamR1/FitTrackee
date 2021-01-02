@@ -1,14 +1,16 @@
 import os
+from typing import Tuple
 
 from fittrackee import db
 from fittrackee.users.models import User
+from flask import Flask
 
 from .models import AppConfig
 
 MAX_FILE_SIZE = 1 * 1024 * 1024  # 1MB
 
 
-def init_config():
+def init_config() -> Tuple[bool, AppConfig]:
     """
     init application configuration if not existing in database
 
@@ -36,7 +38,9 @@ def init_config():
     return False, existing_config
 
 
-def update_app_config_from_database(current_app, db_config):
+def update_app_config_from_database(
+    current_app: Flask, db_config: AppConfig
+) -> None:
     current_app.config['gpx_limit_import'] = db_config.gpx_limit_import
     current_app.config['max_single_file_size'] = db_config.max_single_file_size
     current_app.config['MAX_CONTENT_LENGTH'] = db_config.max_zip_file_size

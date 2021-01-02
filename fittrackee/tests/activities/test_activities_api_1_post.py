@@ -2,12 +2,15 @@ import json
 import os
 from datetime import datetime
 from io import BytesIO
+from typing import Dict
 
-from fittrackee.activities.models import Activity
+from fittrackee.activities.models import Activity, Sport
 from fittrackee.activities.utils_id import decode_short_id
+from fittrackee.users.models import User
+from flask import Flask
 
 
-def assert_activity_data_with_gpx(data):
+def assert_activity_data_with_gpx(data: Dict) -> None:
     assert 'creation_date' in data['data']['activities'][0]
     assert (
         'Tue, 13 Mar 2018 12:44:45 GMT'
@@ -70,7 +73,7 @@ def assert_activity_data_with_gpx(data):
     assert records[3]['value'] == 4.61
 
 
-def assert_activity_data_with_gpx_segments(data):
+def assert_activity_data_with_gpx_segments(data: Dict) -> None:
     assert 'creation_date' in data['data']['activities'][0]
     assert (
         'Tue, 13 Mar 2018 12:44:45 GMT'
@@ -144,7 +147,7 @@ def assert_activity_data_with_gpx_segments(data):
     assert records[2]['value'] == 4.59
 
 
-def assert_activity_data_wo_gpx(data):
+def assert_activity_data_wo_gpx(data: Dict) -> None:
     assert 'creation_date' in data['data']['activities'][0]
     assert (
         data['data']['activities'][0]['activity_date']
@@ -200,8 +203,8 @@ def assert_activity_data_wo_gpx(data):
 
 class TestPostActivityWithGpx:
     def test_it_adds_an_activity_with_gpx_file(
-        self, app, user_1, sport_1_cycling, gpx_file
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -230,8 +233,12 @@ class TestPostActivityWithGpx:
         assert_activity_data_with_gpx(data)
 
     def test_it_adds_an_activity_with_gpx_without_name(
-        self, app, user_1, sport_1_cycling, gpx_file_wo_name
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file_wo_name: str,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -263,8 +270,12 @@ class TestPostActivityWithGpx:
         assert_activity_data_with_gpx(data)
 
     def test_it_adds_an_activity_with_gpx_without_name_timezone(
-        self, app, user_1, sport_1_cycling, gpx_file_wo_name
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file_wo_name: str,
+    ) -> None:
         user_1.timezone = 'Europe/Paris'
         client = app.test_client()
         resp_login = client.post(
@@ -297,8 +308,8 @@ class TestPostActivityWithGpx:
         assert_activity_data_with_gpx(data)
 
     def test_it_adds_get_an_activity_with_gpx_notes(
-        self, app, user_1, sport_1_cycling, gpx_file
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -327,8 +338,12 @@ class TestPostActivityWithGpx:
         assert 'test activity' == data['data']['activities'][0]['notes']
 
     def test_it_returns_500_if_gpx_file_has_not_tracks(
-        self, app, user_1, sport_1_cycling, gpx_file_wo_track
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file_wo_track: str,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -352,12 +367,16 @@ class TestPostActivityWithGpx:
         data = json.loads(response.data.decode())
         assert response.status_code == 500
         assert 'error' in data['status']
-        assert 'Error during gpx file parsing.' in data['message']
+        assert 'Error during gpx processing.' in data['message']
         assert 'data' not in data
 
     def test_it_returns_500_if_gpx_has_invalid_xml(
-        self, app, user_1, sport_1_cycling, gpx_file_invalid_xml
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file_invalid_xml: str,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -388,8 +407,8 @@ class TestPostActivityWithGpx:
         assert 'data' not in data
 
     def test_it_returns_400_if_activity_gpx_has_invalid_extension(
-        self, app, user_1, sport_1_cycling, gpx_file
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -416,8 +435,8 @@ class TestPostActivityWithGpx:
         assert data['message'] == 'File extension not allowed.'
 
     def test_it_returns_400_if_sport_id_is_not_provided(
-        self, app, user_1, sport_1_cycling, gpx_file
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -443,8 +462,8 @@ class TestPostActivityWithGpx:
         assert data['message'] == 'Invalid payload.'
 
     def test_it_returns_500_if_sport_id_does_not_exists(
-        self, app, user_1, sport_1_cycling, gpx_file
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -471,8 +490,8 @@ class TestPostActivityWithGpx:
         assert data['message'] == 'Sport id: 2 does not exist'
 
     def test_returns_400_if_no_gpx_file_is_provided(
-        self, app, user_1, sport_1_cycling
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -498,8 +517,8 @@ class TestPostActivityWithGpx:
 
 class TestPostActivityWithoutGpx:
     def test_it_adds_an_activity_without_gpx(
-        self, app, user_1, sport_1_cycling
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -531,8 +550,8 @@ class TestPostActivityWithoutGpx:
         assert_activity_data_wo_gpx(data)
 
     def test_it_returns_400_if_activity_date_is_missing(
-        self, app, user_1, sport_1_cycling
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -556,8 +575,8 @@ class TestPostActivityWithoutGpx:
         assert 'Invalid payload.' in data['message']
 
     def test_it_returns_500_if_activity_format_is_invalid(
-        self, app, user_1, sport_1_cycling
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -588,8 +607,12 @@ class TestPostActivityWithoutGpx:
         assert 'Error during activity save.' in data['message']
 
     def test_it_adds_activity_with_zero_value(
-        self, app, user_1, sport_1_cycling, sport_2_running
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -645,8 +668,8 @@ class TestPostActivityWithoutGpx:
 
 class TestPostActivityWithZipArchive:
     def test_it_adds_activities_with_zip_archive(
-        self, app, user_1, sport_1_cycling
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
         file_path = os.path.join(app.root_path, 'tests/files/gpx_test.zip')
         # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
         with open(file_path, 'rb') as zip_file:
@@ -679,8 +702,8 @@ class TestPostActivityWithZipArchive:
             assert_activity_data_with_gpx(data)
 
     def test_it_returns_400_if_folder_is_present_in_zpi_archive(
-        self, app, user_1, sport_1_cycling
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
         file_path = os.path.join(
             app.root_path, 'tests/files/gpx_test_folder.zip'
         )
@@ -715,8 +738,8 @@ class TestPostActivityWithZipArchive:
             assert len(data['data']['activities']) == 0
 
     def test_it_returns_500_if_one_fle_in_zip_archive_is_invalid(
-        self, app, user_1, sport_1_cycling
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
         file_path = os.path.join(
             app.root_path, 'tests/files/gpx_test_incorrect.zip'
         )
@@ -747,13 +770,15 @@ class TestPostActivityWithZipArchive:
             data = json.loads(response.data.decode())
             assert response.status_code == 500
             assert 'error' in data['status']
-            assert 'Error during gpx file parsing.' in data['message']
+            assert 'Error during gpx processing.' in data['message']
             assert 'data' not in data
 
 
 class TestPostAndGetActivityWithGpx:
     @staticmethod
-    def activity_assertion(app, gpx_file, with_segments):
+    def activity_assertion(
+        app: Flask, gpx_file: str, with_segments: bool
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -849,18 +874,22 @@ class TestPostAndGetActivityWithGpx:
         )
 
     def test_it_gets_an_activity_created_with_gpx(
-        self, app, user_1, sport_1_cycling, gpx_file
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
         return self.activity_assertion(app, gpx_file, False)
 
     def test_it_gets_an_activity_created_with_gpx_with_segments(
-        self, app, user_1, sport_1_cycling, gpx_file_with_segments
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file_with_segments: str,
+    ) -> None:
         return self.activity_assertion(app, gpx_file_with_segments, True)
 
     def test_it_gets_chart_data_for_an_activity_created_with_gpx(
-        self, app, user_1, sport_1_cycling, gpx_file
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -897,8 +926,8 @@ class TestPostAndGetActivityWithGpx:
         assert data['data']['chart_data'] != ''
 
     def test_it_gets_segment_chart_data_for_an_activity_created_with_gpx(
-        self, app, user_1, sport_1_cycling, gpx_file
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -935,8 +964,13 @@ class TestPostAndGetActivityWithGpx:
         assert data['data']['chart_data'] != ''
 
     def test_it_returns_403_on_getting_chart_data_if_activity_belongs_to_another_user(  # noqa
-        self, app, user_1, user_2, sport_1_cycling, gpx_file
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -977,8 +1011,8 @@ class TestPostAndGetActivityWithGpx:
         assert data['message'] == 'You do not have permissions.'
 
     def test_it_returns_500_on_invalid_segment_id(
-        self, app, user_1, sport_1_cycling, gpx_file
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -1015,8 +1049,8 @@ class TestPostAndGetActivityWithGpx:
         assert 'data' not in data
 
     def test_it_returns_404_if_segment_id_does_not_exist(
-        self, app, user_1, sport_1_cycling, gpx_file
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -1055,8 +1089,8 @@ class TestPostAndGetActivityWithGpx:
 
 class TestPostAndGetActivityWithoutGpx:
     def test_it_add_and_gets_an_activity_wo_gpx(
-        self, app, user_1, sport_1_cycling
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -1097,8 +1131,8 @@ class TestPostAndGetActivityWithoutGpx:
         assert_activity_data_wo_gpx(data)
 
     def test_it_adds_and_gets_an_activity_wo_gpx_notes(
-        self, app, user_1, sport_1_cycling
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -1142,8 +1176,8 @@ class TestPostAndGetActivityWithoutGpx:
 
 class TestPostAndGetActivityUsingTimezones:
     def test_it_add_and_gets_an_activity_wo_gpx_with_timezone(
-        self, app, user_1, sport_1_cycling
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
         user_1.timezone = 'Europe/Paris'
         client = app.test_client()
         resp_login = client.post(
@@ -1192,8 +1226,8 @@ class TestPostAndGetActivityUsingTimezones:
         )
 
     def test_it_adds_and_gets_activities_date_filter_with_timezone_new_york(
-        self, app, user_1_full, sport_1_cycling
-    ):
+        self, app: Flask, user_1_full: User, sport_1_cycling: Sport
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -1239,8 +1273,12 @@ class TestPostAndGetActivityUsingTimezones:
         )
 
     def test_it_adds_and_gets_activities_date_filter_with_timezone_paris(
-        self, app, user_1_paris, sport_1_cycling, activity_cycling_user_1
-    ):
+        self,
+        app: Flask,
+        user_1_paris: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',

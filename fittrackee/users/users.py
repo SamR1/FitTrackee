@@ -1,9 +1,11 @@
 import os
 import shutil
+from typing import Any, Dict, Tuple, Union
 
 from fittrackee import db
 from fittrackee.responses import (
     ForbiddenErrorResponse,
+    HttpResponse,
     InvalidPayloadErrorResponse,
     NotFoundErrorResponse,
     UserNotFoundErrorResponse,
@@ -23,7 +25,7 @@ USER_PER_PAGE = 10
 
 @users_blueprint.route('/users', methods=['GET'])
 @authenticate
-def get_users(auth_user_id):
+def get_users(auth_user_id: int) -> Dict:
     """
     Get all users
 
@@ -135,10 +137,10 @@ def get_users(auth_user_id):
             User.username.like('%' + query + '%') if query else True,
         )
         .order_by(
-            User.activities_count.asc()
+            User.activities_count.asc()  # type: ignore
             if order_by == 'activities_count' and order == 'asc'
             else True,
-            User.activities_count.desc()
+            User.activities_count.desc()  # type: ignore
             if order_by == 'activities_count' and order == 'desc'
             else True,
             User.username.asc()
@@ -178,7 +180,9 @@ def get_users(auth_user_id):
 
 @users_blueprint.route('/users/<user_name>', methods=['GET'])
 @authenticate
-def get_single_user(auth_user_id, user_name):
+def get_single_user(
+    auth_user_id: int, user_name: str
+) -> Union[Dict, HttpResponse]:
     """
     Get single user details
 
@@ -251,7 +255,7 @@ def get_single_user(auth_user_id, user_name):
 
 
 @users_blueprint.route('/users/<user_name>/picture', methods=['GET'])
-def get_picture(user_name):
+def get_picture(user_name: str) -> Any:
     """get user picture
 
     **Example request**:
@@ -290,7 +294,9 @@ def get_picture(user_name):
 
 @users_blueprint.route('/users/<user_name>', methods=['PATCH'])
 @authenticate_as_admin
-def update_user(auth_user_id, user_name):
+def update_user(
+    auth_user_id: int, user_name: str
+) -> Union[Dict, HttpResponse]:
     """
     Update user to add admin rights
 
@@ -377,7 +383,9 @@ def update_user(auth_user_id, user_name):
 
 @users_blueprint.route('/users/<user_name>', methods=['DELETE'])
 @authenticate
-def delete_user(auth_user_id, user_name):
+def delete_user(
+    auth_user_id: int, user_name: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Delete a user account
 

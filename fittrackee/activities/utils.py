@@ -3,6 +3,8 @@ import os
 import tempfile
 import zipfile
 from datetime import datetime, timedelta
+from typing import Dict, List, Optional, Tuple, Union
+from uuid import UUID
 
 import gpxpy.gpx
 import pytz
@@ -10,6 +12,7 @@ from fittrackee import appLog, db
 from flask import current_app
 from sqlalchemy import exc
 from staticmap import Line, StaticMap
+from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
 from ..users.models import User
@@ -19,13 +22,20 @@ from .utils_gpx import get_gpx_info
 
 
 class ActivityException(Exception):
-    def __init__(self, status, message, e):
+    def __init__(
+        self, status: str, message: str, e: Optional[Exception] = None
+    ) -> None:
         self.status = status
         self.message = message
         self.e = e
 
 
-def get_datetime_with_tz(timezone, activity_date, gpx_data=None):
+def get_datetime_with_tz(
+    timezone: str, activity_date: datetime, gpx_data: Optional[Dict] = None
+) -> Tuple[Optional[datetime], datetime]:
+    """
+    Return naive datetime and datetime with user timezone
+    """
     activity_date_tz = None
     if timezone:
         user_tz = pytz.timezone(timezone)
@@ -47,8 +57,12 @@ def get_datetime_with_tz(timezone, activity_date, gpx_data=None):
     return activity_date_tz, activity_date
 
 
-def update_activity_data(activity, gpx_data):
-    """activity could be a complete activity or an activity segment"""
+def update_activity_data(
+    activity: Union[Activity, ActivitySegment], gpx_data: Dict
+) -> Union[Activity, ActivitySegment]:
+    """
+    Update activity or activity segment with data from gpx file
+    """
     activity.pauses = gpx_data['stop_time']
     activity.moving = gpx_data['moving_time']
     activity.min_alt = gpx_data['elevation_min']
@@ -60,12 +74,18 @@ def update_activity_data(activity, gpx_data):
     return activity
 
 
-def create_activity(user, activity_data, gpx_data=None):
+def create_activity(
+    user: User, activity_data: Dict, gpx_data: Optional[Dict] = None
+) -> Activity:
+    """
+    Create Activity from data entered by user and from gpx if a gpx file is
+    provided
+    """
     activity_date = (
         gpx_data['start']
         if gpx_data
         else datetime.strptime(
-            activity_data.get('activity_date'), '%Y-%m-%d %H:%M'
+            activity_data['activity_date'], '%Y-%m-%d %H:%M'
         )
     )
     activity_date_tz, activity_date = get_datetime_with_tz(
@@ -75,16 +95,14 @@ def create_activity(user, activity_data, gpx_data=None):
     duration = (
         gpx_data['duration']
         if gpx_data
-        else timedelta(seconds=activity_data.get('duration'))
+        else timedelta(seconds=activity_data['duration'])
     )
-    distance = (
-        gpx_data['distance'] if gpx_data else activity_data.get('distance')
-    )
-    title = gpx_data['name'] if gpx_data else activity_data.get('title')
+    distance = gpx_data['distance'] if gpx_data else activity_data['distance']
+    title = gpx_data['name'] if gpx_data else activity_data.get('title', '')
 
     new_activity = Activity(
         user_id=user.id,
-        sport_id=activity_data.get('sport_id'),
+        sport_id=activity_data['sport_id'],
         activity_date=activity_date,
         distance=distance,
         duration=duration,
@@ -118,7 +136,12 @@ def create_activity(user, activity_data, gpx_data=None):
     return new_activity
 
 
-def create_segment(activity_id, activity_uuid, segment_data):
+def create_segment(
+    activity_id: int, activity_uuid: UUID, segment_data: Dict
+) -> ActivitySegment:
+    """
+    Create Activity Segment from gpx data
+    """
     new_segment = ActivitySegment(
         activity_id=activity_id,
         activity_uuid=activity_uuid,
@@ -130,12 +153,9 @@ def create_segment(activity_id, activity_uuid, segment_data):
     return new_segment
 
 
-def update_activity(activity):
+def update_activity(activity: Activity) -> Activity:
     """
-    Note: only gpx_data is be updated for now (the gpx file is NOT modified)
-
-    In a next version, map_data and weather_data will be updated
-    (case of a modified gpx file, see issue #7)
+    Update activity data from gpx file
     """
     gpx_data, _, _ = get_gpx_info(
         get_absolute_file_path(activity.gpx), False, False
@@ -155,7 +175,16 @@ def update_activity(activity):
     return updated_activity
 
 
-def edit_activity(activity, activity_data, auth_user_id):
+def edit_activity(
+    activity: Activity, activity_data: Dict, auth_user_id: int
+) -> Activity:
+    """
+    Edit an activity
+    Note: the gpx file is NOT modified
+
+    In a next version, map_data and weather_data will be updated
+    (case of a modified gpx file, see issue #7)
+    """
     user = User.query.filter_by(id=auth_user_id).first()
     if activity_data.get('refresh'):
         activity = update_activity(activity)
@@ -168,20 +197,18 @@ def edit_activity(activity, activity_data, auth_user_id):
     if not activity.gpx:
         if activity_data.get('activity_date'):
             activity_date = datetime.strptime(
-                activity_data.get('activity_date'), '%Y-%m-%d %H:%M'
+                activity_data['activity_date'], '%Y-%m-%d %H:%M'
             )
             _, activity.activity_date = get_datetime_with_tz(
                 user.timezone, activity_date
             )
 
         if activity_data.get('duration'):
-            activity.duration = timedelta(
-                seconds=activity_data.get('duration')
-            )
+            activity.duration = timedelta(seconds=activity_data['duration'])
             activity.moving = activity.duration
 
         if activity_data.get('distance'):
-            activity.distance = activity_data.get('distance')
+            activity.distance = activity_data['distance']
 
         activity.ave_speed = (
             None
@@ -192,7 +219,10 @@ def edit_activity(activity, activity_data, auth_user_id):
     return activity
 
 
-def get_file_path(dir_path, filename):
+def get_file_path(dir_path: str, filename: str) -> str:
+    """
+    Get full path for a file
+    """
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
     file_path = os.path.join(dir_path, filename)
@@ -200,9 +230,16 @@ def get_file_path(dir_path, filename):
 
 
 def get_new_file_path(
-    auth_user_id, activity_date, sport, old_filename=None, extension=None
-):
-    if not extension:
+    auth_user_id: int,
+    activity_date: str,
+    sport: str,
+    old_filename: Optional[str] = None,
+    extension: Optional[str] = None,
+) -> str:
+    """
+    Generate a file path from user and activity data
+    """
+    if not extension and old_filename:
         extension = f".{old_filename.rsplit('.', 1)[1].lower()}"
     _, new_filename = tempfile.mkstemp(
         prefix=f'{activity_date}_{sport}_', suffix=extension
@@ -214,7 +251,10 @@ def get_new_file_path(
     return file_path
 
 
-def generate_map(map_filepath, map_data):
+def generate_map(map_filepath: str, map_data: List) -> None:
+    """
+    Generate and save map image from map data
+    """
     m = StaticMap(400, 225, 10)
     line = Line(map_data, '#3388FF', 4)
     m.add_line(line)
@@ -222,10 +262,10 @@ def generate_map(map_filepath, map_data):
     image.save(map_filepath)
 
 
-def get_map_hash(map_filepath):
+def get_map_hash(map_filepath: str) -> str:
     """
-    md5 hash is used as id instead of activity id, to retrieve map image
-    (maps are sensitive data)
+    Generate a md5 hash used as id instead of activity id, to retrieve map
+    image (maps are sensitive data)
     """
     md5 = hashlib.md5()
     absolute_map_filepath = get_absolute_file_path(map_filepath)
@@ -235,7 +275,10 @@ def get_map_hash(map_filepath):
     return md5.hexdigest()
 
 
-def process_one_gpx_file(params, filename):
+def process_one_gpx_file(params: Dict, filename: str) -> Activity:
+    """
+    Get all data from a gpx file to create an activity with map image
+    """
     try:
         gpx_data, map_data, weather_data = get_gpx_info(params['file_path'])
         auth_user_id = params['user'].id
@@ -284,23 +327,33 @@ def process_one_gpx_file(params, filename):
         raise ActivityException('fail', 'Error during activity save.', e)
 
 
-def process_zip_archive(common_params, extract_dir):
+def process_zip_archive(common_params: Dict, extract_dir: str) -> List:
+    """
+    Get files from a zip archive and create activities, if number of files
+    does not exceed defined limit.
+    """
     with zipfile.ZipFile(common_params['file_path'], "r") as zip_ref:
         zip_ref.extractall(extract_dir)
 
     new_activities = []
-    gpx_files_limit = os.getenv('REACT_APP_GPX_LIMIT_IMPORT', '10')
-    if gpx_files_limit and gpx_files_limit.isdigit():
+    gpx_files_limit = os.getenv('REACT_APP_GPX_LIMIT_IMPORT', 10)
+    if (
+        gpx_files_limit
+        and isinstance(gpx_files_limit, str)
+        and gpx_files_limit.isdigit()
+    ):
         gpx_files_limit = int(gpx_files_limit)
     else:
         gpx_files_limit = 10
-        appLog.error('GPX limit not configured, set to 10.')
+        appLog.warning('GPX limit not configured, set to 10.')
     gpx_files_ok = 0
 
     for gpx_file in os.listdir(extract_dir):
-        if '.' in gpx_file and gpx_file.rsplit('.', 1)[
-            1
-        ].lower() in current_app.config.get('ACTIVITY_ALLOWED_EXTENSIONS'):
+        if (
+            '.' in gpx_file
+            and gpx_file.rsplit('.', 1)[1].lower()
+            in current_app.config['ACTIVITY_ALLOWED_EXTENSIONS']
+        ):
             gpx_files_ok += 1
             if gpx_files_ok > gpx_files_limit:
                 break
@@ -313,7 +366,17 @@ def process_zip_archive(common_params, extract_dir):
     return new_activities
 
 
-def process_files(auth_user_id, activity_data, activity_file, folders):
+def process_files(
+    auth_user_id: int,
+    activity_data: Dict,
+    activity_file: FileStorage,
+    folders: Dict,
+) -> List:
+    """
+    Store gpx file or zip archive and create activities
+    """
+    if activity_file.filename is None:
+        raise ActivityException('error', 'File has no filename.')
     filename = secure_filename(activity_file.filename)
     extension = f".{filename.rsplit('.', 1)[1].lower()}"
     file_path = get_file_path(folders['tmp_dir'], filename)
@@ -322,7 +385,6 @@ def process_files(auth_user_id, activity_data, activity_file, folders):
         raise ActivityException(
             'error',
             f"Sport id: {activity_data.get('sport_id')} does not exist",
-            None,
         )
     user = User.query.filter_by(id=auth_user_id).first()
 
@@ -344,7 +406,10 @@ def process_files(auth_user_id, activity_data, activity_file, folders):
         return process_zip_archive(common_params, folders['extract_dir'])
 
 
-def get_upload_dir_size():
+def get_upload_dir_size() -> int:
+    """
+    Return upload directory size
+    """
     upload_path = get_absolute_file_path('')
     total_size = 0
     for dir_path, _, filenames in os.walk(upload_path):

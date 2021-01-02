@@ -1,5 +1,6 @@
 import datetime
 import os
+from typing import Generator, Optional
 
 import pytest
 from fittrackee import create_app, db
@@ -11,10 +12,10 @@ from fittrackee.users.models import User
 os.environ['FLASK_ENV'] = 'testing'
 os.environ['APP_SETTINGS'] = 'fittrackee.config.TestingConfig'
 # to avoid resetting dev database during tests
-os.environ['DATABASE_URL'] = os.getenv('DATABASE_TEST_URL')
+os.environ['DATABASE_URL'] = os.environ['DATABASE_TEST_URL']
 
 
-def get_app_config(with_config=False):
+def get_app_config(with_config: Optional[bool] = False) -> Optional[AppConfig]:
     if with_config:
         config = AppConfig()
         config.gpx_limit_import = 10
@@ -28,7 +29,7 @@ def get_app_config(with_config=False):
         return None
 
 
-def get_app(with_config=False):
+def get_app(with_config: Optional[bool] = False) -> Generator:
     app = create_app()
     with app.app_context():
         db.create_all()
@@ -46,7 +47,7 @@ def get_app(with_config=False):
 
 
 @pytest.fixture
-def app(monkeypatch):
+def app(monkeypatch: pytest.MonkeyPatch) -> Generator:
     monkeypatch.setenv('EMAIL_URL', 'smtp://none:none@0.0.0.0:1025')
     if os.getenv('TILE_SERVER_URL'):
         monkeypatch.delenv('TILE_SERVER_URL')
@@ -56,24 +57,24 @@ def app(monkeypatch):
 
 
 @pytest.fixture
-def app_no_config():
+def app_no_config() -> Generator:
     yield from get_app(with_config=False)
 
 
 @pytest.fixture
-def app_ssl(monkeypatch):
+def app_ssl(monkeypatch: pytest.MonkeyPatch) -> Generator:
     monkeypatch.setenv('EMAIL_URL', 'smtp://none:none@0.0.0.0:1025?ssl=True')
     yield from get_app(with_config=True)
 
 
 @pytest.fixture
-def app_tls(monkeypatch):
+def app_tls(monkeypatch: pytest.MonkeyPatch) -> Generator:
     monkeypatch.setenv('EMAIL_URL', 'smtp://none:none@0.0.0.0:1025?tls=True')
     yield from get_app(with_config=True)
 
 
 @pytest.fixture()
-def app_config():
+def app_config() -> AppConfig:
     config = AppConfig()
     config.gpx_limit_import = 10
     config.max_single_file_size = 1048576
@@ -85,7 +86,7 @@ def app_config():
 
 
 @pytest.fixture()
-def user_1():
+def user_1() -> User:
     user = User(username='test', email='test@test.com', password='12345678')
     db.session.add(user)
     db.session.commit()
@@ -93,7 +94,7 @@ def user_1():
 
 
 @pytest.fixture()
-def user_1_admin():
+def user_1_admin() -> User:
     admin = User(
         username='admin', email='admin@example.com', password='12345678'
     )
@@ -104,7 +105,7 @@ def user_1_admin():
 
 
 @pytest.fixture()
-def user_1_full():
+def user_1_full() -> User:
     user = User(username='test', email='test@test.com', password='12345678')
     user.first_name = 'John'
     user.last_name = 'Doe'
@@ -119,7 +120,7 @@ def user_1_full():
 
 
 @pytest.fixture()
-def user_1_paris():
+def user_1_paris() -> User:
     user = User(username='test', email='test@test.com', password='12345678')
     user.timezone = 'Europe/Paris'
     db.session.add(user)
@@ -128,7 +129,7 @@ def user_1_paris():
 
 
 @pytest.fixture()
-def user_2():
+def user_2() -> User:
     user = User(username='toto', email='toto@toto.com', password='87654321')
     db.session.add(user)
     db.session.commit()
@@ -136,7 +137,7 @@ def user_2():
 
 
 @pytest.fixture()
-def user_2_admin():
+def user_2_admin() -> User:
     user = User(username='toto', email='toto@toto.com', password='87654321')
     user.admin = True
     db.session.add(user)
@@ -145,7 +146,7 @@ def user_2_admin():
 
 
 @pytest.fixture()
-def user_3():
+def user_3() -> User:
     user = User(username='sam', email='sam@test.com', password='12345678')
     user.weekm = True
     db.session.add(user)
@@ -154,7 +155,7 @@ def user_3():
 
 
 @pytest.fixture()
-def sport_1_cycling():
+def sport_1_cycling() -> Sport:
     sport = Sport(label='Cycling')
     db.session.add(sport)
     db.session.commit()
@@ -162,7 +163,7 @@ def sport_1_cycling():
 
 
 @pytest.fixture()
-def sport_1_cycling_inactive():
+def sport_1_cycling_inactive() -> Sport:
     sport = Sport(label='Cycling')
     sport.is_active = False
     db.session.add(sport)
@@ -171,7 +172,7 @@ def sport_1_cycling_inactive():
 
 
 @pytest.fixture()
-def sport_2_running():
+def sport_2_running() -> Sport:
     sport = Sport(label='Running')
     db.session.add(sport)
     db.session.commit()
@@ -179,7 +180,7 @@ def sport_2_running():
 
 
 @pytest.fixture()
-def activity_cycling_user_1():
+def activity_cycling_user_1() -> Activity:
     activity = Activity(
         user_id=1,
         sport_id=1,
@@ -196,7 +197,9 @@ def activity_cycling_user_1():
 
 
 @pytest.fixture()
-def activity_cycling_user_1_segment(activity_cycling_user_1):
+def activity_cycling_user_1_segment(
+    activity_cycling_user_1: Activity,
+) -> ActivitySegment:
     activity_segment = ActivitySegment(
         activity_id=activity_cycling_user_1.id,
         activity_uuid=activity_cycling_user_1.uuid,
@@ -211,7 +214,7 @@ def activity_cycling_user_1_segment(activity_cycling_user_1):
 
 
 @pytest.fixture()
-def activity_running_user_1():
+def activity_running_user_1() -> Activity:
     activity = Activity(
         user_id=1,
         sport_id=2,
@@ -226,7 +229,7 @@ def activity_running_user_1():
 
 
 @pytest.fixture()
-def seven_activities_user_1():
+def seven_activities_user_1() -> Activity:
     activity = Activity(
         user_id=1,
         sport_id=1,
@@ -308,7 +311,7 @@ def seven_activities_user_1():
 
 
 @pytest.fixture()
-def activity_cycling_user_2():
+def activity_cycling_user_2() -> Activity:
     activity = Activity(
         user_id=2,
         sport_id=1,
@@ -323,7 +326,7 @@ def activity_cycling_user_2():
 
 
 @pytest.fixture()
-def gpx_file():
+def gpx_file() -> str:
     return (
         '<?xml version=\'1.0\' encoding=\'UTF-8\'?>'
         '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
@@ -438,7 +441,7 @@ def gpx_file():
 
 
 @pytest.fixture()
-def gpx_file_wo_name():
+def gpx_file_wo_name() -> str:
     return (
         '<?xml version=\'1.0\' encoding=\'UTF-8\'?>'
         '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
@@ -552,7 +555,7 @@ def gpx_file_wo_name():
 
 
 @pytest.fixture()
-def gpx_file_wo_track():
+def gpx_file_wo_track() -> str:
     return (
         '<?xml version=\'1.0\' encoding=\'UTF-8\'?>'
         '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
@@ -562,7 +565,7 @@ def gpx_file_wo_track():
 
 
 @pytest.fixture()
-def gpx_file_invalid_xml():
+def gpx_file_invalid_xml() -> str:
     return (
         '<?xml version=\'1.0\' encoding=\'UTF-8\'?>'
         '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
@@ -571,7 +574,7 @@ def gpx_file_invalid_xml():
 
 
 @pytest.fixture()
-def gpx_file_with_segments():
+def gpx_file_with_segments() -> str:
     return (
         '<?xml version=\'1.0\' encoding=\'UTF-8\'?>'
         '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa

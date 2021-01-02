@@ -1,10 +1,12 @@
 import datetime
 import os
+from typing import Dict, Tuple, Union
 
 import jwt
 from fittrackee import appLog, bcrypt, db
 from fittrackee.responses import (
     ForbiddenErrorResponse,
+    HttpResponse,
     InvalidPayloadErrorResponse,
     PayloadTooLargeErrorResponse,
     UnauthorizedErrorResponse,
@@ -32,7 +34,7 @@ auth_blueprint = Blueprint('auth', __name__)
 
 
 @auth_blueprint.route('/auth/register', methods=['POST'])
-def register_user():
+def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     """
     register a user
 
@@ -144,7 +146,7 @@ def register_user():
 
 
 @auth_blueprint.route('/auth/login', methods=['POST'])
-def login_user():
+def login_user() -> Union[Dict, HttpResponse]:
     """
     user login
 
@@ -216,7 +218,7 @@ def login_user():
 
 @auth_blueprint.route('/auth/logout', methods=['GET'])
 @authenticate
-def logout_user(auth_user_id):
+def logout_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
     """
     user logout
 
@@ -277,7 +279,9 @@ def logout_user(auth_user_id):
 
 @auth_blueprint.route('/auth/profile', methods=['GET'])
 @authenticate
-def get_authenticated_user_profile(auth_user_id):
+def get_authenticated_user_profile(
+    auth_user_id: int,
+) -> Union[Dict, HttpResponse]:
     """
     get authenticated user info
 
@@ -338,7 +342,7 @@ def get_authenticated_user_profile(auth_user_id):
 
 @auth_blueprint.route('/auth/profile/edit', methods=['POST'])
 @authenticate
-def edit_user(auth_user_id):
+def edit_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
     """
     edit authenticated user
 
@@ -474,7 +478,7 @@ def edit_user(auth_user_id):
 
 @auth_blueprint.route('/auth/picture', methods=['POST'])
 @authenticate
-def edit_picture(auth_user_id):
+def edit_picture(auth_user_id: int) -> Union[Dict, HttpResponse]:
     """
     update authenticated user picture
 
@@ -561,7 +565,7 @@ def edit_picture(auth_user_id):
 
 @auth_blueprint.route('/auth/picture', methods=['DELETE'])
 @authenticate
-def del_picture(auth_user_id):
+def del_picture(auth_user_id: int) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     delete authenticated user picture
 
@@ -604,7 +608,7 @@ def del_picture(auth_user_id):
 
 
 @auth_blueprint.route('/auth/password/reset-request', methods=['POST'])
-def request_password_reset():
+def request_password_reset() -> Union[Dict, HttpResponse]:
     """
     handle password reset request
 
@@ -644,15 +648,15 @@ def request_password_reset():
         ui_url = current_app.config['UI_URL']
         email_data = {
             'expiration_delay': get_readable_duration(
-                current_app.config.get('PASSWORD_TOKEN_EXPIRATION_SECONDS'),
+                current_app.config['PASSWORD_TOKEN_EXPIRATION_SECONDS'],
                 'en' if user.language is None else user.language,
             ),
             'username': user.username,
             'password_reset_url': (
                 f'{ui_url}/password-reset?token={password_reset_token}'  # noqa
             ),
-            'operating_system': request.user_agent.platform,
-            'browser_name': request.user_agent.browser,
+            'operating_system': request.user_agent.platform,  # type: ignore
+            'browser_name': request.user_agent.browser,  # type: ignore
         }
         user_data = {
             'language': user.language if user.language else 'en',
@@ -666,7 +670,7 @@ def request_password_reset():
 
 
 @auth_blueprint.route('/auth/password/update', methods=['POST'])
-def update_password():
+def update_password() -> Union[Dict, HttpResponse]:
     """
     update user password
 

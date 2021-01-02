@@ -1,5 +1,9 @@
 import json
 
+from fittrackee.activities.models import Activity, Sport
+from fittrackee.users.models import User
+from flask import Flask
+
 expected_sport_1_cycling_result = {
     'id': 1,
     'label': 'Cycling',
@@ -32,8 +36,12 @@ expected_sport_1_cycling_inactive_admin_result['has_activities'] = False
 
 class TestGetSports:
     def test_it_gets_all_sports(
-        self, app, user_1, sport_1_cycling, sport_2_running
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -57,8 +65,12 @@ class TestGetSports:
         assert data['data']['sports'][1] == expected_sport_2_running_result
 
     def test_it_gets_all_sports_with_inactive_one(
-        self, app, user_1, sport_1_cycling_inactive, sport_2_running
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling_inactive: Sport,
+        sport_2_running: Sport,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -85,8 +97,12 @@ class TestGetSports:
         assert data['data']['sports'][1] == expected_sport_2_running_result
 
     def test_it_gets_all_sports_with_admin_rights(
-        self, app, user_1_admin, sport_1_cycling_inactive, sport_2_running
-    ):
+        self,
+        app: Flask,
+        user_1_admin: User,
+        sport_1_cycling_inactive: Sport,
+        sport_2_running: Sport,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -118,7 +134,9 @@ class TestGetSports:
 
 
 class TestGetSport:
-    def test_it_gets_a_sport(self, app, user_1, sport_1_cycling):
+    def test_it_gets_a_sport(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -140,7 +158,9 @@ class TestGetSport:
         assert len(data['data']['sports']) == 1
         assert data['data']['sports'][0] == expected_sport_1_cycling_result
 
-    def test_it_returns_404_if_sport_does_not_exist(self, app, user_1):
+    def test_it_returns_404_if_sport_does_not_exist(
+        self, app: Flask, user_1: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -162,8 +182,8 @@ class TestGetSport:
         assert len(data['data']['sports']) == 0
 
     def test_it_gets_a_inactive_sport(
-        self, app, user_1, sport_1_cycling_inactive
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling_inactive: Sport
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -189,8 +209,8 @@ class TestGetSport:
         )
 
     def test_it_get_an_inactive_sport_with_admin_rights(
-        self, app, user_1_admin, sport_1_cycling_inactive
-    ):
+        self, app: Flask, user_1_admin: User, sport_1_cycling_inactive: Sport
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -219,7 +239,9 @@ class TestGetSport:
 
 
 class TestUpdateSport:
-    def test_it_disables_a_sport(self, app, user_1_admin, sport_1_cycling):
+    def test_it_disables_a_sport(
+        self, app: Flask, user_1_admin: User, sport_1_cycling: Sport
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -246,7 +268,9 @@ class TestUpdateSport:
         assert data['data']['sports'][0]['is_active'] is False
         assert data['data']['sports'][0]['has_activities'] is False
 
-    def test_it_enables_a_sport(self, app, user_1_admin, sport_1_cycling):
+    def test_it_enables_a_sport(
+        self, app: Flask, user_1_admin: User, sport_1_cycling: Sport
+    ) -> None:
         sport_1_cycling.is_active = False
         client = app.test_client()
         resp_login = client.post(
@@ -275,8 +299,12 @@ class TestUpdateSport:
         assert data['data']['sports'][0]['has_activities'] is False
 
     def test_it_disables_a_sport_with_activities(
-        self, app, user_1_admin, sport_1_cycling, activity_cycling_user_1
-    ):
+        self,
+        app: Flask,
+        user_1_admin: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -304,8 +332,12 @@ class TestUpdateSport:
         assert data['data']['sports'][0]['has_activities'] is True
 
     def test_it_enables_a_sport_with_activities(
-        self, app, user_1_admin, sport_1_cycling, activity_cycling_user_1
-    ):
+        self,
+        app: Flask,
+        user_1_admin: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_1: Activity,
+    ) -> None:
         sport_1_cycling.is_active = False
         client = app.test_client()
         resp_login = client.post(
@@ -334,8 +366,8 @@ class TestUpdateSport:
         assert data['data']['sports'][0]['has_activities'] is True
 
     def test_returns_error_if_user_has_no_admin_rights(
-        self, app, user_1, sport_1_cycling
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -358,7 +390,9 @@ class TestUpdateSport:
         assert 'error' in data['status']
         assert 'You do not have permissions.' in data['message']
 
-    def test_returns_error_if_payload_is_invalid(self, app, user_1_admin):
+    def test_returns_error_if_payload_is_invalid(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -383,7 +417,9 @@ class TestUpdateSport:
         assert 'error' in data['status']
         assert 'Invalid payload.' in data['message']
 
-    def test_it_returns_error_if_sport_does_not_exist(self, app, user_1_admin):
+    def test_it_returns_error_if_sport_does_not_exist(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',

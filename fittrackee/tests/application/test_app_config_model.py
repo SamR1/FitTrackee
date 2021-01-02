@@ -1,8 +1,9 @@
 from fittrackee.application.models import AppConfig
+from flask import Flask
 
 
 class TestConfigModel:
-    def test_application_config(self, app):
+    def test_application_config(self, app: Flask) -> None:
         app_config = AppConfig.query.first()
         assert 1 == app_config.id
 

@@ -1,6 +1,9 @@
+from typing import Dict, Union
+
 from fittrackee import db
 from fittrackee.responses import (
     DataNotFoundErrorResponse,
+    HttpResponse,
     InvalidPayloadErrorResponse,
     handle_error_and_return_response,
 )
@@ -16,7 +19,7 @@ sports_blueprint = Blueprint('sports', __name__)
 
 @sports_blueprint.route('/sports', methods=['GET'])
 @authenticate
-def get_sports(auth_user_id):
+def get_sports(auth_user_id: int) -> Dict:
     """
     Get all sports
 
@@ -158,7 +161,7 @@ def get_sports(auth_user_id):
 
 @sports_blueprint.route('/sports/<int:sport_id>', methods=['GET'])
 @authenticate
-def get_sport(auth_user_id, sport_id):
+def get_sport(auth_user_id: int, sport_id: int) -> Union[Dict, HttpResponse]:
     """
     Get a sport
 
@@ -253,7 +256,9 @@ def get_sport(auth_user_id, sport_id):
 
 @sports_blueprint.route('/sports/<int:sport_id>', methods=['PATCH'])
 @authenticate_as_admin
-def update_sport(auth_user_id, sport_id):
+def update_sport(
+    auth_user_id: int, sport_id: int
+) -> Union[Dict, HttpResponse]:
     """
     Update a sport
     Authenticated user must be an admin

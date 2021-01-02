@@ -2,12 +2,14 @@ import json
 import os
 import shutil
 from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import requests
 from fittrackee import appLog, db
 from fittrackee.responses import (
     DataInvalidPayloadErrorResponse,
     DataNotFoundErrorResponse,
+    HttpResponse,
     InternalServerErrorResponse,
     InvalidPayloadErrorResponse,
     NotFoundErrorResponse,
@@ -46,7 +48,7 @@ ACTIVITIES_PER_PAGE = 5
 
 @activities_blueprint.route('/activities', methods=['GET'])
 @authenticate
-def get_activities(auth_user_id):
+def get_activities(auth_user_id: int) -> Union[Dict, HttpResponse]:
     """
     Get activities for the authenticated user.
 
@@ -275,7 +277,9 @@ def get_activities(auth_user_id):
     '/activities/<string:activity_short_id>', methods=['GET']
 )
 @authenticate
-def get_activity(auth_user_id, activity_short_id):
+def get_activity(
+    auth_user_id: int, activity_short_id: str
+) -> Union[Dict, HttpResponse]:
     """
     Get an activity
 
@@ -375,8 +379,11 @@ def get_activity(auth_user_id, activity_short_id):
 
 
 def get_activity_data(
-    auth_user_id, activity_short_id, data_type, segment_id=None
-):
+    auth_user_id: int,
+    activity_short_id: str,
+    data_type: str,
+    segment_id: Optional[int] = None,
+) -> Union[Dict, HttpResponse]:
     """Get data from an activity gpx file"""
     activity_uuid = decode_short_id(activity_short_id)
     activity = Activity.query.filter_by(uuid=activity_uuid).first()
@@ -396,14 +403,17 @@ def get_activity_data(
 
     try:
         absolute_gpx_filepath = get_absolute_file_path(activity.gpx)
+        chart_data_content: Optional[List] = []
         if data_type == 'chart_data':
-            content = get_chart_data(absolute_gpx_filepath, segment_id)
+            chart_data_content = get_chart_data(
+                absolute_gpx_filepath, segment_id
+            )
         else:  # data_type == 'gpx'
             with open(absolute_gpx_filepath, encoding='utf-8') as f:
-                content = f.read()
+                gpx_content = f.read()
                 if segment_id is not None:
-                    content = extract_segment_from_gpx_file(
-                        content, segment_id
+                    gpx_segment_content = extract_segment_from_gpx_file(
+                        gpx_content, segment_id
                     )
     except ActivityGPXException as e:
         appLog.error(e.message)
@@ -416,7 +426,15 @@ def get_activity_data(
     return {
         'status': 'success',
         'message': '',
-        'data': ({data_type: content}),
+        'data': (
+            {
+                data_type: chart_data_content
+                if data_type == 'chart_data'
+                else gpx_content
+                if segment_id is None
+                else gpx_segment_content
+            }
+        ),
     }
 
 
@@ -424,7 +442,9 @@ def get_activity_data(
     '/activities/<string:activity_short_id>/gpx', methods=['GET']
 )
 @authenticate
-def get_activity_gpx(auth_user_id, activity_short_id):
+def get_activity_gpx(
+    auth_user_id: int, activity_short_id: str
+) -> Union[Dict, HttpResponse]:
     """
     Get gpx file for an activity displayed on map with Leaflet
 
@@ -473,7 +493,9 @@ def get_activity_gpx(auth_user_id, activity_short_id):
     '/activities/<string:activity_short_id>/chart_data', methods=['GET']
 )
 @authenticate
-def get_activity_chart_data(auth_user_id, activity_short_id):
+def get_activity_chart_data(
+    auth_user_id: int, activity_short_id: str
+) -> Union[Dict, HttpResponse]:
     """
     Get chart data from an activity gpx file, to display it with Recharts
 
@@ -542,7 +564,9 @@ def get_activity_chart_data(auth_user_id, activity_short_id):
     methods=['GET'],
 )
 @authenticate
-def get_segment_gpx(auth_user_id, activity_short_id, segment_id):
+def get_segment_gpx(
+    auth_user_id: int, activity_short_id: str, segment_id: int
+) -> Union[Dict, HttpResponse]:
     """
     Get gpx file for an activity segment displayed on map with Leaflet
 
@@ -595,7 +619,9 @@ def get_segment_gpx(auth_user_id, activity_short_id, segment_id):
     methods=['GET'],
 )
 @authenticate
-def get_segment_chart_data(auth_user_id, activity_short_id, segment_id):
+def get_segment_chart_data(
+    auth_user_id: int, activity_short_id: str, segment_id: int
+) -> Union[Dict, HttpResponse]:
     """
     Get chart data from an activity gpx file, to display it with Recharts
 
@@ -662,7 +688,7 @@ def get_segment_chart_data(auth_user_id, activity_short_id, segment_id):
 
 
 @activities_blueprint.route('/activities/map/<map_id>', methods=['GET'])
-def get_map(map_id):
+def get_map(map_id: int) -> Any:
     """
     Get map image for activities with gpx
 
@@ -704,7 +730,7 @@ def get_map(map_id):
 @activities_blueprint.route(
     '/activities/map_tile/<s>/<z>/<x>/<y>.png', methods=['GET']
 )
-def get_map_tile(s, z, x, y):
+def get_map_tile(s: str, z: str, x: str, y: str) -> Tuple[Response, int]:
     """
     Get map tile from tile server.
 
@@ -743,7 +769,7 @@ def get_map_tile(s, z, x, y):
 
 @activities_blueprint.route('/activities', methods=['POST'])
 @authenticate
-def post_activity(auth_user_id):
+def post_activity(auth_user_id: int) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Post an activity with a gpx file
 
@@ -904,7 +930,9 @@ def post_activity(auth_user_id):
 
 @activities_blueprint.route('/activities/no_gpx', methods=['POST'])
 @authenticate
-def post_activity_no_gpx(auth_user_id):
+def post_activity_no_gpx(
+    auth_user_id: int,
+) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Post an activity without gpx file
 
@@ -1053,7 +1081,9 @@ def post_activity_no_gpx(auth_user_id):
     '/activities/<string:activity_short_id>', methods=['PATCH']
 )
 @authenticate
-def update_activity(auth_user_id, activity_short_id):
+def update_activity(
+    auth_user_id: int, activity_short_id: str
+) -> Union[Dict, HttpResponse]:
     """
     Update an activity
 
@@ -1199,7 +1229,9 @@ def update_activity(auth_user_id, activity_short_id):
     '/activities/<string:activity_short_id>', methods=['DELETE']
 )
 @authenticate
-def delete_activity(auth_user_id, activity_short_id):
+def delete_activity(
+    auth_user_id: int, activity_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Delete an activity
 

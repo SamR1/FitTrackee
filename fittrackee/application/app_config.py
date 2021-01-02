@@ -1,5 +1,8 @@
+from typing import Dict, Union
+
 from fittrackee import db
 from fittrackee.responses import (
+    HttpResponse,
     InvalidPayloadErrorResponse,
     handle_error_and_return_response,
 )
@@ -14,7 +17,7 @@ config_blueprint = Blueprint('config', __name__)
 
 
 @config_blueprint.route('/config', methods=['GET'])
-def get_application_config():
+def get_application_config() -> Union[Dict, HttpResponse]:
     """
     Get Application config
 
@@ -59,7 +62,7 @@ def get_application_config():
 
 @config_blueprint.route('/config', methods=['PATCH'])
 @authenticate_as_admin
-def update_application_config(auth_user_id):
+def update_application_config(auth_user_id: int) -> Union[Dict, HttpResponse]:
     """
     Update Application config
 
@@ -137,7 +140,7 @@ def update_application_config(auth_user_id):
 
 
 @config_blueprint.route('/ping', methods=['GET'])
-def health_check():
+def health_check() -> Union[Dict, HttpResponse]:
     """health check endpoint
 
     **Example request**:

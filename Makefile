@@ -9,10 +9,13 @@ make-p:
 build-client: lint-client
 	cd fittrackee_client && $(NPM) build
 
+check-all: lint-all type-check test-python
+
 clean-install:
 	rm -fr $(NODE_MODULES)
 	rm -fr $(VENV)
 	rm -rf *.egg-info
+	rm -rf .mypy_cache
 	rm -rf .pytest_cache
 	rm -rf dist/
 
@@ -61,17 +64,17 @@ lint-all: lint-python lint-client
 
 lint-all-fix: lint-python-fix lint-client-fix
 
-lint-python:
-	$(PYTEST) --flake8 --isort --black -m "flake8 or isort or black" fittrackee e2e --ignore=fittrackee/migrations
-
-lint-python-fix:
-	$(BLACK) fittrackee e2e
-
 lint-client:
 	cd fittrackee_client && $(NPM) lint
 
 lint-client-fix:
 	cd fittrackee_client && $(NPM) lint-fix
+
+lint-python:
+	$(PYTEST) --flake8 --isort --black -m "flake8 or isort or black" fittrackee e2e --ignore=fittrackee/migrations
+
+lint-python-fix:
+	$(BLACK) fittrackee e2e
 
 mail:
 	docker run -d -e "MH_STORAGE=maildir" -v /tmp/maildir:/maildir -p 1025:1025 -p 8025:8025 mailhog/mailhog
@@ -91,20 +94,20 @@ run-server:
 run-workers:
 	$(FLASK) worker --processes=$(WORKERS_PROCESSES) >> dramatiq.log  2>&1
 
-serve-python:
-	$(FLASK) run --with-threads -h $(HOST) -p $(PORT)
-
-serve-python-dev:
-	$(FLASK) run --with-threads -h $(HOST) -p $(PORT) --cert=adhoc
-
-serve-client:
-	cd fittrackee_client && $(NPM) start
-
 serve:
 	$(MAKE) P="serve-client serve-python" make-p
 
 serve-dev:
 	$(MAKE) P="serve-client serve-python-dev" make-p
+
+serve-client:
+	cd fittrackee_client && $(NPM) start
+
+serve-python:
+	$(FLASK) run --with-threads -h $(HOST) -p $(PORT)
+
+serve-python-dev:
+	$(FLASK) run --with-threads -h $(HOST) -p $(PORT) --cert=adhoc
 
 test-e2e: init-db
 	$(PYTEST) e2e --driver firefox $(PYTEST_ARGS)
@@ -114,6 +117,10 @@ test-e2e-client: init-db
 
 test-python:
 	$(PYTEST) fittrackee --cov-config .coveragerc --cov=fittrackee --cov-report term-missing $(PYTEST_ARGS)
+
+type-check:
+	echo 'Running mypy...'
+	$(MYPY) fittrackee --disallow-untyped-defs --ignore-missing-imports
 
 upgrade-db:
 	$(FLASK) db upgrade --directory $(MIGRATIONS)

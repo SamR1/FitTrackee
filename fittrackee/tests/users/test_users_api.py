@@ -3,9 +3,15 @@ from datetime import datetime, timedelta
 from io import BytesIO
 from unittest.mock import patch
 
+from fittrackee.activities.models import Activity, Sport
+from fittrackee.users.models import User
+from flask import Flask
+
 
 class TestGetUser:
-    def test_it_gets_single_user_without_activities(self, app, user_1, user_2):
+    def test_it_gets_single_user_without_activities(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -47,13 +53,13 @@ class TestGetUser:
 
     def test_it_gets_single_user_with_activities(
         self,
-        app,
-        user_1,
-        sport_1_cycling,
-        sport_2_running,
-        activity_cycling_user_1,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        activity_cycling_user_1: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -93,7 +99,9 @@ class TestGetUser:
         assert user['total_distance'] == 22
         assert user['total_duration'] == '2:40:00'
 
-    def test_it_returns_error_if_user_does_not_exist(self, app, user_1):
+    def test_it_returns_error_if_user_does_not_exist(
+        self, app: Flask, user_1: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -116,7 +124,9 @@ class TestGetUser:
 
 
 class TestGetUsers:
-    def test_it_get_users_list(self, app, user_1, user_2, user_3):
+    def test_it_get_users_list(
+        self, app: Flask, user_1: User, user_2: User, user_3: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -179,16 +189,16 @@ class TestGetUsers:
 
     def test_it_gets_users_list_with_activities(
         self,
-        app,
-        user_1,
-        user_2,
-        user_3,
-        sport_1_cycling,
-        activity_cycling_user_1,
-        sport_2_running,
-        activity_running_user_1,
-        activity_cycling_user_2,
-    ):
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_1: Activity,
+        sport_2_running: Sport,
+        activity_running_user_1: Activity,
+        activity_cycling_user_2: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -249,11 +259,11 @@ class TestGetUsers:
     @patch('fittrackee.users.users.USER_PER_PAGE', 2)
     def test_it_gets_first_page_on_users_list(
         self,
-        app,
-        user_1,
-        user_2,
-        user_3,
-    ):
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -284,11 +294,11 @@ class TestGetUsers:
     @patch('fittrackee.users.users.USER_PER_PAGE', 2)
     def test_it_gets_next_page_on_users_list(
         self,
-        app,
-        user_1,
-        user_2,
-        user_3,
-    ):
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -318,11 +328,11 @@ class TestGetUsers:
 
     def test_it_gets_empty_next_page_on_users_list(
         self,
-        app,
-        user_1,
-        user_2,
-        user_3,
-    ):
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -352,11 +362,11 @@ class TestGetUsers:
 
     def test_it_gets_user_list_with_2_per_page(
         self,
-        app,
-        user_1,
-        user_2,
-        user_3,
-    ):
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -386,11 +396,11 @@ class TestGetUsers:
 
     def test_it_gets_next_page_on_user_list_with_2_per_page(
         self,
-        app,
-        user_1,
-        user_2,
-        user_3,
-    ):
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -419,8 +429,8 @@ class TestGetUsers:
         }
 
     def test_it_gets_users_list_ordered_by_username(
-        self, app, user_1, user_2, user_3
-    ):
+        self, app: Flask, user_1: User, user_2: User, user_3: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -451,8 +461,8 @@ class TestGetUsers:
         }
 
     def test_it_gets_users_list_ordered_by_username_ascending(
-        self, app, user_1, user_2, user_3
-    ):
+        self, app: Flask, user_1: User, user_2: User, user_3: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -484,8 +494,8 @@ class TestGetUsers:
         }
 
     def test_it_gets_users_list_ordered_by_username_descending(
-        self, app, user_1, user_2, user_3
-    ):
+        self, app: Flask, user_1: User, user_2: User, user_3: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -517,8 +527,8 @@ class TestGetUsers:
         }
 
     def test_it_gets_users_list_ordered_by_creation_date(
-        self, app, user_2, user_3, user_1_admin
-    ):
+        self, app: Flask, user_2: User, user_3: User, user_1_admin: User
+    ) -> None:
         user_2.created_at = datetime.utcnow() - timedelta(days=1)
         user_3.created_at = datetime.utcnow() - timedelta(hours=1)
         user_1_admin.created_at = datetime.utcnow()
@@ -555,8 +565,8 @@ class TestGetUsers:
         }
 
     def test_it_gets_users_list_ordered_by_creation_date_ascending(
-        self, app, user_2, user_3, user_1_admin
-    ):
+        self, app: Flask, user_2: User, user_3: User, user_1_admin: User
+    ) -> None:
         user_2.created_at = datetime.utcnow() - timedelta(days=1)
         user_3.created_at = datetime.utcnow() - timedelta(hours=1)
         user_1_admin.created_at = datetime.utcnow()
@@ -593,8 +603,8 @@ class TestGetUsers:
         }
 
     def test_it_gets_users_list_ordered_by_creation_date_descending(
-        self, app, user_2, user_3, user_1_admin
-    ):
+        self, app: Flask, user_2: User, user_3: User, user_1_admin: User
+    ) -> None:
         user_2.created_at = datetime.utcnow() - timedelta(days=1)
         user_3.created_at = datetime.utcnow() - timedelta(hours=1)
         user_1_admin.created_at = datetime.utcnow()
@@ -631,8 +641,8 @@ class TestGetUsers:
         }
 
     def test_it_gets_users_list_ordered_by_admin_rights(
-        self, app, user_2, user_1_admin, user_3
-    ):
+        self, app: Flask, user_2: User, user_1_admin: User, user_3: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -666,8 +676,8 @@ class TestGetUsers:
         }
 
     def test_it_gets_users_list_ordered_by_admin_rights_ascending(
-        self, app, user_2, user_1_admin, user_3
-    ):
+        self, app: Flask, user_2: User, user_1_admin: User, user_3: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -701,8 +711,8 @@ class TestGetUsers:
         }
 
     def test_it_gets_users_list_ordered_by_admin_rights_descending(
-        self, app, user_2, user_3, user_1_admin
-    ):
+        self, app: Flask, user_2: User, user_3: User, user_1_admin: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -737,13 +747,13 @@ class TestGetUsers:
 
     def test_it_gets_users_list_ordered_by_activities_count(
         self,
-        app,
-        user_1,
-        user_2,
-        user_3,
-        sport_1_cycling,
-        activity_cycling_user_2,
-    ):
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_2: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -779,13 +789,13 @@ class TestGetUsers:
 
     def test_it_gets_users_list_ordered_by_activities_count_ascending(
         self,
-        app,
-        user_1,
-        user_2,
-        user_3,
-        sport_1_cycling,
-        activity_cycling_user_2,
-    ):
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_2: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -821,13 +831,13 @@ class TestGetUsers:
 
     def test_it_gets_users_list_ordered_by_activities_count_descending(
         self,
-        app,
-        user_1,
-        user_2,
-        user_3,
-        sport_1_cycling,
-        activity_cycling_user_2,
-    ):
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_2: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -862,8 +872,8 @@ class TestGetUsers:
         }
 
     def test_it_gets_users_list_filtering_on_username(
-        self, app, user_1, user_2, user_3
-    ):
+        self, app: Flask, user_1: User, user_2: User, user_3: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -893,8 +903,8 @@ class TestGetUsers:
         }
 
     def test_it_returns_empty_users_list_filtering_on_username(
-        self, app, user_1, user_2, user_3
-    ):
+        self, app: Flask, user_1: User, user_2: User, user_3: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -923,8 +933,8 @@ class TestGetUsers:
         }
 
     def test_it_users_list_with_complex_query(
-        self, app, user_1, user_2, user_3
-    ):
+        self, app: Flask, user_1: User, user_2: User, user_3: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -955,7 +965,9 @@ class TestGetUsers:
 
 
 class TestGetUserPicture:
-    def test_it_return_error_if_user_has_no_picture(self, app, user_1):
+    def test_it_return_error_if_user_has_no_picture(
+        self, app: Flask, user_1: User
+    ) -> None:
         client = app.test_client()
 
         response = client.get(f'/api/users/{user_1.username}/picture')
@@ -965,7 +977,9 @@ class TestGetUserPicture:
         assert 'not found' in data['status']
         assert 'No picture.' in data['message']
 
-    def test_it_returns_error_if_user_does_not_exist(self, app, user_1):
+    def test_it_returns_error_if_user_does_not_exist(
+        self, app: Flask, user_1: User
+    ) -> None:
         client = app.test_client()
 
         response = client.get('/api/users/not_existing/picture')
@@ -977,7 +991,9 @@ class TestGetUserPicture:
 
 
 class TestUpdateUser:
-    def test_it_adds_admin_rights_to_a_user(self, app, user_1_admin, user_2):
+    def test_it_adds_admin_rights_to_a_user(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -1006,8 +1022,8 @@ class TestUpdateUser:
         assert user['admin'] is True
 
     def test_it_removes_admin_rights_to_a_user(
-        self, app, user_1_admin, user_2
-    ):
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -1037,8 +1053,8 @@ class TestUpdateUser:
         assert user['admin'] is False
 
     def test_it_returns_error_if_payload_for_admin_rights_is_empty(
-        self, app, user_1_admin, user_2
-    ):
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -1064,8 +1080,8 @@ class TestUpdateUser:
         assert 'Invalid payload.' in data['message']
 
     def test_it_returns_error_if_payload_for_admin_rights_is_invalid(
-        self, app, user_1_admin, user_2
-    ):
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -1094,8 +1110,8 @@ class TestUpdateUser:
         )
 
     def test_it_returns_error_if_user_can_not_change_admin_rights(
-        self, app, user_1, user_2
-    ):
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -1120,7 +1136,9 @@ class TestUpdateUser:
 
 
 class TestDeleteUser:
-    def test_user_can_delete_its_own_account(self, app, user_1):
+    def test_user_can_delete_its_own_account(
+        self, app: Flask, user_1: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -1139,8 +1157,8 @@ class TestDeleteUser:
         assert response.status_code == 204
 
     def test_user_with_activity_can_delete_its_own_account(
-        self, app, user_1, sport_1_cycling, gpx_file
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -1171,8 +1189,8 @@ class TestDeleteUser:
         assert response.status_code == 204
 
     def test_user_with_picture_can_delete_its_own_account(
-        self, app, user_1, sport_1_cycling, gpx_file
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -1200,8 +1218,8 @@ class TestDeleteUser:
         assert response.status_code == 204
 
     def test_user_can_not_delete_another_user_account(
-        self, app, user_1, user_2
-    ):
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -1223,8 +1241,8 @@ class TestDeleteUser:
         assert 'You do not have permissions.' in data['message']
 
     def test_it_returns_error_when_deleting_non_existing_user(
-        self, app, user_1
-    ):
+        self, app: Flask, user_1: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -1246,8 +1264,8 @@ class TestDeleteUser:
         assert 'User does not exist.' in data['message']
 
     def test_admin_can_delete_another_user_account(
-        self, app, user_1_admin, user_2
-    ):
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -1268,8 +1286,8 @@ class TestDeleteUser:
         assert response.status_code == 204
 
     def test_admin_can_delete_its_own_account(
-        self, app, user_1_admin, user_2_admin
-    ):
+        self, app: Flask, user_1_admin: User, user_2_admin: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -1290,8 +1308,8 @@ class TestDeleteUser:
         assert response.status_code == 204
 
     def test_admin_can_not_delete_its_own_account_if_no_other_admin(
-        self, app, user_1_admin, user_2
-    ):
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -1317,8 +1335,13 @@ class TestDeleteUser:
         )
 
     def test_it_enables_registration_on_user_delete(
-        self, app_no_config, app_config, user_1_admin, user_2, user_3
-    ):
+        self,
+        app_no_config: Flask,
+        app_config: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
         app_config.max_users = 3
         client = app_no_config.test_client()
         resp_login = client.post(
@@ -1351,8 +1374,13 @@ class TestDeleteUser:
         assert response.status_code == 201
 
     def test_it_does_not_enable_registration_on_user_delete(
-        self, app_no_config, app_config, user_1_admin, user_2, user_3
-    ):
+        self,
+        app_no_config: Flask,
+        app_config: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
         app_config.max_users = 2
         client = app_no_config.test_client()
         resp_login = client.post(

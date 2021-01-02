@@ -1,13 +1,15 @@
 import os
+from typing import Dict, Optional
 
 import forecastio
 import pytz
 from fittrackee import appLog
+from gpxpy.gpx import GPXRoutePoint
 
 API_KEY = os.getenv('WEATHER_API_KEY')
 
 
-def get_weather(point):
+def get_weather(point: GPXRoutePoint) -> Optional[Dict]:
     if not API_KEY or API_KEY == '':
         return None
     try:

@@ -1,4 +1,5 @@
 from datetime import timedelta
+from typing import Any, Dict, List, Optional, Tuple
 
 import gpxpy.gpx
 
@@ -6,25 +7,40 @@ from .utils_weather import get_weather
 
 
 class ActivityGPXException(Exception):
-    def __init__(self, status, message, e):
+    def __init__(
+        self, status: str, message: str, e: Optional[Exception] = None
+    ) -> None:
         self.status = status
         self.message = message
         self.e = e
 
 
-def open_gpx_file(gpx_file):
-    gpx_file = open(gpx_file, 'r')
+def open_gpx_file(gpx_file: str) -> Optional[gpxpy.gpx.GPX]:
+    gpx_file = open(gpx_file, 'r')  # type: ignore
     gpx = gpxpy.parse(gpx_file)
     if len(gpx.tracks) == 0:
         return None
     return gpx
 
 
-def get_gpx_data(parsed_gpx, max_speed, start, stopped_time_btwn_seg):
-    gpx_data = {'max_speed': (max_speed / 1000) * 3600, 'start': start}
+def get_gpx_data(
+    parsed_gpx: gpxpy.gpx,
+    max_speed: float,
+    start: int,
+    stopped_time_between_seg: timedelta,
+) -> Dict:
+    """
+    Returns data from parsed gpx file
+    """
+    gpx_data: Dict[str, Any] = {
+        'max_speed': (max_speed / 1000) * 3600,
+        'start': start,
+    }
 
     duration = parsed_gpx.get_duration()
-    gpx_data['duration'] = timedelta(seconds=duration) + stopped_time_btwn_seg
+    gpx_data['duration'] = (
+        timedelta(seconds=duration) + stopped_time_between_seg
+    )
 
     ele = parsed_gpx.get_elevation_extremes()
     gpx_data['elevation_max'] = ele.maximum
@@ -37,7 +53,7 @@ def get_gpx_data(parsed_gpx, max_speed, start, stopped_time_btwn_seg):
     mv = parsed_gpx.get_moving_data()
     gpx_data['moving_time'] = timedelta(seconds=mv.moving_time)
     gpx_data['stop_time'] = (
-        timedelta(seconds=mv.stopped_time) + stopped_time_btwn_seg
+        timedelta(seconds=mv.stopped_time) + stopped_time_between_seg
     )
     distance = mv.moving_distance + mv.stopped_distance
     gpx_data['distance'] = distance / 1000
@@ -48,10 +64,17 @@ def get_gpx_data(parsed_gpx, max_speed, start, stopped_time_btwn_seg):
     return gpx_data
 
 
-def get_gpx_info(gpx_file, update_map_data=True, update_weather_data=True):
+def get_gpx_info(
+    gpx_file: str,
+    update_map_data: Optional[bool] = True,
+    update_weather_data: Optional[bool] = True,
+) -> Tuple:
+    """
+    Parse and return gpx, map and weather data from gpx file
+    """
     gpx = open_gpx_file(gpx_file)
     if gpx is None:
-        return None
+        raise ActivityGPXException('not found', 'No gpx file')
 
     gpx_data = {'name': gpx.tracks[0].name, 'segments': []}
     max_speed = 0
@@ -61,7 +84,7 @@ def get_gpx_info(gpx_file, update_map_data=True, update_weather_data=True):
     segments_nb = len(gpx.tracks[0].segments)
     prev_seg_last_point = None
     no_stopped_time = timedelta(seconds=0)
-    stopped_time_btwn_seg = no_stopped_time
+    stopped_time_between_seg = no_stopped_time
 
     for segment_idx, segment in enumerate(gpx.tracks[0].segments):
         segment_start = 0
@@ -77,7 +100,7 @@ def get_gpx_info(gpx_file, update_map_data=True, update_weather_data=True):
                 # if a previous segment exists, calculate stopped time between
                 # the two segments
                 if prev_seg_last_point:
-                    stopped_time_btwn_seg = point.time - prev_seg_last_point
+                    stopped_time_between_seg = point.time - prev_seg_last_point
 
             # last segment point
             if point_idx == (segment_points_nb - 1):
@@ -104,7 +127,9 @@ def get_gpx_info(gpx_file, update_map_data=True, update_weather_data=True):
         segment_data['idx'] = segment_idx
         gpx_data['segments'].append(segment_data)
 
-    full_gpx_data = get_gpx_data(gpx, max_speed, start, stopped_time_btwn_seg)
+    full_gpx_data = get_gpx_data(
+        gpx, max_speed, start, stopped_time_between_seg
+    )
     gpx_data = {**gpx_data, **full_gpx_data}
 
     if update_map_data:
@@ -119,7 +144,12 @@ def get_gpx_info(gpx_file, update_map_data=True, update_weather_data=True):
     return gpx_data, map_data, weather_data
 
 
-def get_gpx_segments(track_segments, segment_id=None):
+def get_gpx_segments(
+    track_segments: List, segment_id: Optional[int] = None
+) -> List:
+    """
+    Return list of segments, filtered on segment id if provided
+    """
     if segment_id is not None:
         segment_index = segment_id - 1
         if segment_index > (len(track_segments) - 1):
@@ -135,7 +165,12 @@ def get_gpx_segments(track_segments, segment_id=None):
     return segments
 
 
-def get_chart_data(gpx_file, segment_id=None):
+def get_chart_data(
+    gpx_file: str, segment_id: Optional[int] = None
+) -> Optional[List]:
+    """
+    Return data needed to generate chart with speed and elevation
+    """
     gpx = open_gpx_file(gpx_file)
     if gpx is None:
         return None
@@ -193,7 +228,12 @@ def get_chart_data(gpx_file, segment_id=None):
     return chart_data
 
 
-def extract_segment_from_gpx_file(content, segment_id):
+def extract_segment_from_gpx_file(
+    content: str, segment_id: int
+) -> Optional[str]:
+    """
+    Returns segments in xml format from a gpx file content
+    """
     gpx_content = gpxpy.parse(content)
     if len(gpx_content.tracks) == 0:
         return None

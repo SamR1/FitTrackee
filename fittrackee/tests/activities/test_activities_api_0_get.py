@@ -1,21 +1,25 @@
 import json
 from uuid import uuid4
 
+from fittrackee.activities.models import Activity, Sport
+from fittrackee.users.models import User
+from flask import Flask
+
 from .utils import get_random_short_id
 
 
 class TestGetActivities:
     def test_it_gets_all_activities_for_authenticated_user(
         self,
-        app,
-        user_1,
-        user_2,
-        sport_1_cycling,
-        sport_2_running,
-        activity_cycling_user_1,
-        activity_cycling_user_2,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        activity_cycling_user_1: Activity,
+        activity_cycling_user_2: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -57,14 +61,14 @@ class TestGetActivities:
 
     def test_it_gets_no_activities_for_authenticated_user_with_no_activities(
         self,
-        app,
-        user_1,
-        user_2,
-        sport_1_cycling,
-        sport_2_running,
-        activity_cycling_user_1,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        activity_cycling_user_1: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -85,7 +89,9 @@ class TestGetActivities:
         assert 'success' in data['status']
         assert len(data['data']['activities']) == 0
 
-    def test_it_returns_401_if_user_is_not_authenticated(self, app):
+    def test_it_returns_401_if_user_is_not_authenticated(
+        self, app: Flask
+    ) -> None:
         client = app.test_client()
 
         response = client.get('/api/activities')
@@ -98,8 +104,12 @@ class TestGetActivities:
 
 class TestGetActivitiesWithPagination:
     def test_it_gets_activities_with_default_pagination(
-        self, app, user_1, sport_1_cycling, seven_activities_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_activities_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -133,8 +143,12 @@ class TestGetActivitiesWithPagination:
         assert '0:17:04' == data['data']['activities'][4]['duration']
 
     def test_it_gets_first_page(
-        self, app, user_1, sport_1_cycling, seven_activities_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_activities_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -168,8 +182,12 @@ class TestGetActivitiesWithPagination:
         assert '0:17:04' == data['data']['activities'][4]['duration']
 
     def test_it_gets_second_page(
-        self, app, user_1, sport_1_cycling, seven_activities_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_activities_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -203,8 +221,12 @@ class TestGetActivitiesWithPagination:
         assert '0:17:04' == data['data']['activities'][1]['duration']
 
     def test_it_gets_empty_third_page(
-        self, app, user_1, sport_1_cycling, seven_activities_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_activities_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -226,8 +248,12 @@ class TestGetActivitiesWithPagination:
         assert len(data['data']['activities']) == 0
 
     def test_it_returns_error_on_invalid_page_value(
-        self, app, user_1, sport_1_cycling, seven_activities_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_activities_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -252,8 +278,12 @@ class TestGetActivitiesWithPagination:
         )
 
     def test_it_gets_5_activities_per_page(
-        self, app, user_1, sport_1_cycling, seven_activities_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_activities_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -283,8 +313,12 @@ class TestGetActivitiesWithPagination:
         )
 
     def test_it_gets_3_activities_per_page(
-        self, app, user_1, sport_1_cycling, seven_activities_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_activities_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -316,8 +350,12 @@ class TestGetActivitiesWithPagination:
 
 class TestGetActivitiesWithFilters:
     def test_it_gets_activities_with_date_filter(
-        self, app, user_1, sport_1_cycling, seven_activities_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_activities_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -351,8 +389,12 @@ class TestGetActivitiesWithFilters:
         assert '0:16:40' == data['data']['activities'][1]['duration']
 
     def test_it_gets_no_activities_with_date_filter(
-        self, app, user_1, sport_1_cycling, seven_activities_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_activities_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -374,8 +416,12 @@ class TestGetActivitiesWithFilters:
         assert len(data['data']['activities']) == 0
 
     def test_if_gets_activities_with_date_filter_from(
-        self, app, user_1, sport_1_cycling, seven_activities_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_activities_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -406,8 +452,12 @@ class TestGetActivitiesWithFilters:
         )
 
     def test_it_gets_activities_with_date_filter_to(
-        self, app, user_1, sport_1_cycling, seven_activities_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_activities_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -437,8 +487,12 @@ class TestGetActivitiesWithFilters:
         )
 
     def test_it_gets_activities_with_ascending_order(
-        self, app, user_1, sport_1_cycling, seven_activities_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_activities_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -468,8 +522,12 @@ class TestGetActivitiesWithFilters:
         )
 
     def test_it_gets_activities_with_distance_filter(
-        self, app, user_1, sport_1_cycling, seven_activities_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_activities_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -499,8 +557,12 @@ class TestGetActivitiesWithFilters:
         )
 
     def test_it_gets_activities_with_duration_filter(
-        self, app, user_1, sport_1_cycling, seven_activities_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_activities_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -526,8 +588,12 @@ class TestGetActivitiesWithFilters:
         )
 
     def test_it_gets_activities_with_average_speed_filter(
-        self, app, user_1, sport_1_cycling, seven_activities_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_activities_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -554,13 +620,13 @@ class TestGetActivitiesWithFilters:
 
     def test_it_gets_activities_with_max_speed_filter(
         self,
-        app,
-        user_1,
-        sport_1_cycling,
-        sport_2_running,
-        activity_cycling_user_1,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        activity_cycling_user_1: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         activity_cycling_user_1.max_speed = 25
         activity_running_user_1.max_speed = 11
         client = app.test_client()
@@ -589,13 +655,13 @@ class TestGetActivitiesWithFilters:
 
     def test_it_gets_activities_with_sport_filter(
         self,
-        app,
-        user_1,
-        sport_1_cycling,
-        seven_activities_user_1,
-        sport_2_running,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_activities_user_1: Activity,
+        sport_2_running: Sport,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -623,8 +689,12 @@ class TestGetActivitiesWithFilters:
 
 class TestGetActivitiesWithFiltersAndPagination:
     def test_it_gets_page_2_with_date_filter(
-        self, app, user_1, sport_1_cycling, seven_activities_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_activities_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -654,8 +724,12 @@ class TestGetActivitiesWithFiltersAndPagination:
         )
 
     def test_it_get_page_2_with_date_filter_and_ascending_order(
-        self, app, user_1, sport_1_cycling, seven_activities_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_activities_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -687,8 +761,12 @@ class TestGetActivitiesWithFiltersAndPagination:
 
 class TestGetActivity:
     def test_it_gets_an_activity(
-        self, app, user_1, sport_1_cycling, activity_cycling_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -719,8 +797,13 @@ class TestGetActivity:
         assert '1:00:00' == data['data']['activities'][0]['duration']
 
     def test_it_returns_403_if_activity_belongs_to_a_different_user(
-        self, app, user_1, user_2, sport_1_cycling, activity_cycling_user_2
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_2: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -741,7 +824,9 @@ class TestGetActivity:
         assert 'error' in data['status']
         assert 'You do not have permissions.' in data['message']
 
-    def test_it_returns_404_if_activity_does_not_exist(self, app, user_1):
+    def test_it_returns_404_if_activity_does_not_exist(
+        self, app: Flask, user_1: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -763,8 +848,8 @@ class TestGetActivity:
         assert len(data['data']['activities']) == 0
 
     def test_it_returns_404_on_getting_gpx_if_activity_does_not_exist(
-        self, app, user_1
-    ):
+        self, app: Flask, user_1: User
+    ) -> None:
         random_short_id = get_random_short_id()
         client = app.test_client()
         resp_login = client.post(
@@ -788,8 +873,8 @@ class TestGetActivity:
         assert data['data']['gpx'] == ''
 
     def test_it_returns_404_on_getting_chart_data_if_activity_does_not_exist(
-        self, app, user_1
-    ):
+        self, app: Flask, user_1: User
+    ) -> None:
         random_short_id = get_random_short_id()
         client = app.test_client()
         resp_login = client.post(
@@ -813,8 +898,12 @@ class TestGetActivity:
         assert data['data']['chart_data'] == ''
 
     def test_it_returns_404_on_getting_gpx_if_activity_have_no_gpx(
-        self, app, user_1, sport_1_cycling, activity_cycling_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_1: Activity,
+    ) -> None:
         activity_short_id = activity_cycling_user_1.short_id
         client = app.test_client()
         resp_login = client.post(
@@ -840,8 +929,12 @@ class TestGetActivity:
         )
 
     def test_it_returns_404_if_activity_have_no_chart_data(
-        self, app, user_1, sport_1_cycling, activity_cycling_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_1: Activity,
+    ) -> None:
         activity_short_id = activity_cycling_user_1.short_id
         client = app.test_client()
         resp_login = client.post(
@@ -867,8 +960,12 @@ class TestGetActivity:
         )
 
     def test_it_returns_500_on_getting_gpx_if_an_activity_has_invalid_gpx_pathname(  # noqa
-        self, app, user_1, sport_1_cycling, activity_cycling_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_1: Activity,
+    ) -> None:
         activity_cycling_user_1.gpx = "some path"
         client = app.test_client()
         resp_login = client.post(
@@ -895,8 +992,12 @@ class TestGetActivity:
         assert 'data' not in data
 
     def test_it_returns_500_on_getting_chart_data_if_an_activity_has_invalid_gpx_pathname(  # noqa
-        self, app, user_1, sport_1_cycling, activity_cycling_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_1: Activity,
+    ) -> None:
         activity_cycling_user_1.gpx = 'some path'
         client = app.test_client()
         resp_login = client.post(
@@ -922,7 +1023,9 @@ class TestGetActivity:
         )
         assert 'data' not in data
 
-    def test_it_returns_404_if_activity_has_no_map(self, app, user_1):
+    def test_it_returns_404_if_activity_has_no_map(
+        self, app: Flask, user_1: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',

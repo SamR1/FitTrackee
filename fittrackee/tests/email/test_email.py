@@ -1,13 +1,15 @@
-from unittest.mock import patch
+from typing import Any
+from unittest.mock import Mock, patch
 
 from fittrackee import email_service
 from fittrackee.email.email import EmailMessage
+from flask import Flask
 
 from ..template_results.password_reset_request import expected_en_text_body
 
 
 class TestEmailMessage:
-    def test_it_generate_email_data(self):
+    def test_it_generate_email_data(self) -> None:
         message = EmailMessage(
             sender='fittrackee@example.com',
             recipient='test@test.com',
@@ -40,14 +42,14 @@ class TestEmailSending:
     }
 
     @staticmethod
-    def get_args(call_args):
+    def get_args(call_args: Any) -> Any:
         if len(call_args) == 2:
             args, _ = call_args
         else:
             _, args, _ = call_args
         return args
 
-    def assert_smtp(self, smtp):
+    def assert_smtp(self, smtp: Mock) -> None:
         assert smtp.sendmail.call_count == 1
         call_args = self.get_args(smtp.sendmail.call_args)
         assert call_args[0] == 'fittrackee@example.com'
@@ -56,7 +58,9 @@ class TestEmailSending:
 
     @patch('smtplib.SMTP_SSL')
     @patch('smtplib.SMTP')
-    def test_it_sends_message(self, mock_smtp, mock_smtp_ssl, app):
+    def test_it_sends_message(
+        self, mock_smtp: Mock, mock_smtp_ssl: Mock, app: Flask
+    ) -> None:
 
         email_service.send(
             template='password_reset_request',
@@ -72,8 +76,8 @@ class TestEmailSending:
     @patch('smtplib.SMTP_SSL')
     @patch('smtplib.SMTP')
     def test_it_sends_message_with_ssl(
-        self, mock_smtp, mock_smtp_ssl, app_ssl
-    ):
+        self, mock_smtp: Mock, mock_smtp_ssl: Mock, app_ssl: Flask
+    ) -> None:
         email_service.send(
             template='password_reset_request',
             lang='en',
@@ -88,8 +92,8 @@ class TestEmailSending:
     @patch('smtplib.SMTP_SSL')
     @patch('smtplib.SMTP')
     def test_it_sends_message_with_tls(
-        self, mock_smtp, mock_smtp_ssl, app_tls
-    ):
+        self, mock_smtp: Mock, mock_smtp_ssl: Mock, app_tls: Flask
+    ) -> None:
         email_service.send(
             template='password_reset_request',
             lang='en',

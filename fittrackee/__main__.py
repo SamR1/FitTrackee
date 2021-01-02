@@ -2,6 +2,7 @@
 # http://docs.gunicorn.org/en/stable/custom.html
 import os
 import shutil
+from typing import Dict, Optional
 
 import gunicorn.app.base
 from fittrackee import create_app, db
@@ -9,6 +10,7 @@ from fittrackee.activities.models import Activity
 from fittrackee.activities.utils import update_activity
 from fittrackee.application.utils import init_config
 from fittrackee.database_utils import init_database
+from flask import Flask
 from flask_dramatiq import worker
 from flask_migrate import upgrade
 from tqdm import tqdm
@@ -22,12 +24,14 @@ dramatiq_worker = worker
 
 
 class StandaloneApplication(gunicorn.app.base.BaseApplication):
-    def __init__(self, current_app, options=None):
+    def __init__(
+        self, current_app: Flask, options: Optional[Dict] = None
+    ) -> None:
         self.options = options or {}
         self.application = current_app
         super().__init__()
 
-    def load_config(self):
+    def load_config(self) -> None:
         config = {
             key: value
             for key, value in self.options.items()
@@ -36,17 +40,17 @@ class StandaloneApplication(gunicorn.app.base.BaseApplication):
         for key, value in config.items():
             self.cfg.set(key.lower(), value)
 
-    def load(self):
+    def load(self) -> Flask:
         return self.application
 
 
-def upgrade_db():
+def upgrade_db() -> None:
     with app.app_context():
         upgrade(directory=BASEDIR + '/migrations')
 
 
 @app.cli.command('drop-db')
-def drop_db():
+def drop_db() -> None:
     """Empty database for dev environments."""
     db.engine.execute("DROP TABLE IF EXISTS alembic_version;")
     db.drop_all()
@@ -57,13 +61,13 @@ def drop_db():
 
 
 @app.cli.command('init-data')
-def init_data():
+def init_data() -> None:
     """Init the database and application config."""
     init_database(app)
 
 
 @app.cli.command()
-def recalculate():
+def recalculate() -> None:
     print("Starting activities data refresh")
     activities = (
         Activity.query.filter(Activity.gpx != None)  # noqa
@@ -81,7 +85,7 @@ def recalculate():
 
 
 @app.cli.command('init-app-config')
-def init_app_config():
+def init_app_config() -> None:
     """Init application configuration."""
     print("Init application configuration")
     config_created, _ = init_config()
@@ -94,7 +98,7 @@ def init_app_config():
         )
 
 
-def main():
+def main() -> None:
     options = {'bind': f'{HOST}:{PORT}', 'workers': WORKERS}
     StandaloneApplication(app, options).run()
 

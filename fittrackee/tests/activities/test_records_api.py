@@ -1,17 +1,21 @@
 import json
 
+from fittrackee.activities.models import Activity, Sport
+from fittrackee.users.models import User
+from flask import Flask
+
 
 class TestGetRecords:
     def test_it_gets_records_for_authenticated_user(
         self,
-        app,
-        user_1,
-        user_2,
-        sport_1_cycling,
-        sport_2_running,
-        activity_cycling_user_1,
-        activity_cycling_user_2,
-    ):
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        activity_cycling_user_1: Activity,
+        activity_cycling_user_2: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -85,13 +89,13 @@ class TestGetRecords:
 
     def test_it_gets_no_records_if_user_has_no_activity(
         self,
-        app,
-        user_1,
-        user_2,
-        sport_1_cycling,
-        sport_2_running,
-        activity_cycling_user_2,
-    ):
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        activity_cycling_user_2: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -112,8 +116,12 @@ class TestGetRecords:
         assert len(data['data']['records']) == 0
 
     def test_it_gets_no_records_if_activity_has_zero_value(
-        self, app, user_1, sport_1_cycling, sport_2_running
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -151,8 +159,8 @@ class TestGetRecords:
         assert len(data['data']['records']) == 0
 
     def test_it_gets_updated_records_after_activities_post_and_patch(
-        self, app, user_1, sport_1_cycling
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -696,8 +704,12 @@ class TestGetRecords:
         assert len(data['data']['records']) == 0
 
     def test_it_gets_updated_records_after_sport_change(
-        self, app, user_1, sport_1_cycling, sport_2_running
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',

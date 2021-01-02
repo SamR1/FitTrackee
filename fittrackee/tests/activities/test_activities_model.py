@@ -1,12 +1,19 @@
 from uuid import UUID
 
+from fittrackee.activities.models import Activity, Sport
 from fittrackee.activities.utils_id import decode_short_id
+from fittrackee.users.models import User
+from flask import Flask
 
 
 class TestActivityModel:
     def test_activity_model(
-        self, app, sport_1_cycling, user_1, activity_cycling_user_1
-    ):
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        activity_cycling_user_1: Activity,
+    ) -> None:
         activity_cycling_user_1.title = 'Test'
 
         assert 1 == activity_cycling_user_1.id
@@ -55,12 +62,12 @@ class TestActivityModel:
 
     def test_activity_segment_model(
         self,
-        app,
-        sport_1_cycling,
-        user_1,
-        activity_cycling_user_1,
-        activity_cycling_user_1_segment,
-    ):
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        activity_cycling_user_1: Activity,
+        activity_cycling_user_1_segment: Activity,
+    ) -> None:
         assert (
             f'<Segment \'{activity_cycling_user_1_segment.segment_id}\' '
             f'for activity \'{activity_cycling_user_1.short_id}\'>'

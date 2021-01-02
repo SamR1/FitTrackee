@@ -1,19 +1,25 @@
 from datetime import datetime, timedelta
+from typing import Optional
 
 import jwt
 from flask import current_app
 
 
-def get_user_token(user_id, password_reset=False):
-    expiration_days = (
-        0
-        if password_reset
-        else current_app.config.get('TOKEN_EXPIRATION_DAYS')
+def get_user_token(
+    user_id: int, password_reset: Optional[bool] = False
+) -> str:
+    """
+    Return authentication token for a given user.
+    Token expiration time depends on token type (authentication or password
+    reset)
+    """
+    expiration_days: float = (
+        0.0 if password_reset else current_app.config['TOKEN_EXPIRATION_DAYS']
     )
-    expiration_seconds = (
-        current_app.config.get('PASSWORD_TOKEN_EXPIRATION_SECONDS')
+    expiration_seconds: float = (
+        current_app.config['PASSWORD_TOKEN_EXPIRATION_SECONDS']
         if password_reset
-        else current_app.config.get('TOKEN_EXPIRATION_SECONDS')
+        else current_app.config['TOKEN_EXPIRATION_SECONDS']
     )
     payload = {
         'exp': datetime.utcnow()
@@ -23,15 +29,18 @@ def get_user_token(user_id, password_reset=False):
     }
     return jwt.encode(
         payload,
-        current_app.config.get('SECRET_KEY'),
+        current_app.config['SECRET_KEY'],
         algorithm='HS256',
     )
 
 
-def decode_user_token(auth_token):
+def decode_user_token(auth_token: str) -> int:
+    """
+    Return user id from token
+    """
     payload = jwt.decode(
         auth_token,
-        current_app.config.get('SECRET_KEY'),
+        current_app.config['SECRET_KEY'],
         algorithms=['HS256'],
     )
     return payload['sub']

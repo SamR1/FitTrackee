@@ -1,18 +1,22 @@
 from datetime import datetime
+from typing import Dict, Optional, Union
 
 import jwt
 from fittrackee import bcrypt, db
 from flask import current_app
 from sqlalchemy import func
+from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.sql.expression import select
 
 from ..activities.models import Activity
 from .utils_token import decode_user_token, get_user_token
 
+BaseModel: DeclarativeMeta = db.Model
 
-class User(db.Model):
-    __tablename__ = "users"
+
+class User(BaseModel):
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -36,12 +40,16 @@ class User(db.Model):
     )
     language = db.Column(db.String(50), nullable=True)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'<User {self.username!r}>'
 
     def __init__(
-        self, username, email, password, created_at=datetime.utcnow()
-    ):
+        self,
+        username: str,
+        email: str,
+        password: str,
+        created_at: Optional[datetime] = datetime.utcnow(),
+    ) -> None:
         self.username = username
         self.email = email
         self.password = bcrypt.generate_password_hash(
@@ -50,31 +58,25 @@ class User(db.Model):
         self.created_at = created_at
 
     @staticmethod
-    def encode_auth_token(user_id):
+    def encode_auth_token(user_id: int) -> str:
         """
         Generates the auth token
         :param user_id: -
         :return: JWToken
         """
-        try:
-            return get_user_token(user_id)
-        except Exception as e:
-            return e
+        return get_user_token(user_id)
 
     @staticmethod
-    def encode_password_reset_token(user_id):
+    def encode_password_reset_token(user_id: int) -> str:
         """
         Generates the auth token
         :param user_id: -
         :return: JWToken
         """
-        try:
-            return get_user_token(user_id, password_reset=True)
-        except Exception as e:
-            return e
+        return get_user_token(user_id, password_reset=True)
 
     @staticmethod
-    def decode_auth_token(auth_token):
+    def decode_auth_token(auth_token: str) -> Union[int, str]:
         """
         Decodes the auth token
         :param auth_token: -
@@ -88,21 +90,21 @@ class User(db.Model):
             return 'Invalid token. Please log in again.'
 
     @hybrid_property
-    def activities_count(self):
+    def activities_count(self) -> int:
         return Activity.query.filter(Activity.user_id == self.id).count()
 
-    @activities_count.expression
-    def activities_count(self):
+    @activities_count.expression  # type: ignore
+    def activities_count(self) -> int:
         return (
             select([func.count(Activity.id)])
             .where(Activity.user_id == self.id)
-            .label("activities_count")
+            .label('activities_count')
         )
 
-    def serialize(self):
+    def serialize(self) -> Dict:
         sports = []
-        total = (None, None)
-        if self.activities_count > 0:
+        total = (0, '0:00:00')
+        if self.activities_count > 0:  # type: ignore
             sports = (
                 db.session.query(Activity.sport_id)
                 .filter(Activity.user_id == self.id)
@@ -136,6 +138,6 @@ class User(db.Model):
             'sports_list': [
                 sport for sportslist in sports for sport in sportslist
             ],
-            'total_distance': float(total[0]) if total[0] else 0,
-            'total_duration': str(total[1]) if total[1] else "0:00:00",
+            'total_distance': float(total[0]),
+            'total_duration': str(total[1]),
         }

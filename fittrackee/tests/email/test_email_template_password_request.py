@@ -1,5 +1,6 @@
 import pytest
 from fittrackee.email.email import EmailTemplate
+from flask import Flask
 
 from ..template_results.password_reset_request import (
     expected_en_html_body,
@@ -17,8 +18,10 @@ class TestEmailTemplateForPasswordRequest:
             ('fr', 'FitTrackee - Réinitialiser votre mot de passe'),
         ],
     )
-    def test_it_gets_subject(self, app, lang, expected_subject):
-        email_template = EmailTemplate(app.config.get('TEMPLATES_FOLDER'))
+    def test_it_gets_subject(
+        self, app: Flask, lang: str, expected_subject: str
+    ) -> None:
+        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
 
         subject = email_template.get_content(
             'password_reset_request', lang, 'subject.txt', {}
@@ -30,8 +33,10 @@ class TestEmailTemplateForPasswordRequest:
         'lang, expected_text_body',
         [('en', expected_en_text_body), ('fr', expected_fr_text_body)],
     )
-    def test_it_gets_text_body(self, app, lang, expected_text_body):
-        email_template = EmailTemplate(app.config.get('TEMPLATES_FOLDER'))
+    def test_it_gets_text_body(
+        self, app: Flask, lang: str, expected_text_body: str
+    ) -> None:
+        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
         email_data = {
             'expiration_delay': '3 seconds' if lang == 'en' else '3 secondes',
             'username': 'test',
@@ -46,8 +51,8 @@ class TestEmailTemplateForPasswordRequest:
 
         assert text_body == expected_text_body
 
-    def test_it_gets_en_html_body(self, app):
-        email_template = EmailTemplate(app.config.get('TEMPLATES_FOLDER'))
+    def test_it_gets_en_html_body(self, app: Flask) -> None:
+        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
         email_data = {
             'expiration_delay': '3 seconds',
             'username': 'test',
@@ -62,8 +67,8 @@ class TestEmailTemplateForPasswordRequest:
 
         assert expected_en_html_body in text_body
 
-    def test_it_gets_fr_html_body(self, app):
-        email_template = EmailTemplate(app.config.get('TEMPLATES_FOLDER'))
+    def test_it_gets_fr_html_body(self, app: Flask) -> None:
+        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
         email_data = {
             'expiration_delay': '3 secondes',
             'username': 'test',

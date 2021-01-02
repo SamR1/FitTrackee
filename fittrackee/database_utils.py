@@ -5,9 +5,10 @@ from fittrackee.application.utils import (
     update_app_config_from_database,
 )
 from fittrackee.users.models import User
+from flask import Flask
 
 
-def init_database(app):
+def init_database(app: Flask) -> None:
     """Init the database."""
     admin = User(
         username='admin', email='admin@example.com', password='mpwoadmin'

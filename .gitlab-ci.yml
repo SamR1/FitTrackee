@@ -33,6 +33,11 @@ lint:
   script:
     - pytest --flake8 --isort --black -m "flake8 or isort or black" fittrackee e2e --ignore=fittrackee/migrations
 
+type-check:
+  extends: .python
+  script:
+    - mypy fittrackee --disallow-untyped-defs --ignore-missing-imports
+
 python-3.7:
   extends: .python
   image: python:3.7

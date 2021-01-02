@@ -1,18 +1,23 @@
 import datetime
 import os
-from uuid import uuid4
+from typing import Any, Dict, Optional, Union
+from uuid import UUID, uuid4
 
 from fittrackee import db
 from sqlalchemy.dialects import postgresql
+from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
+from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm.session import object_session
+from sqlalchemy.orm.mapper import Mapper
+from sqlalchemy.orm.session import Session, object_session
 from sqlalchemy.types import JSON, Enum
 
 from .utils_files import get_absolute_file_path
 from .utils_format import convert_in_duration, convert_value_to_integer
 from .utils_id import encode_uuid
 
+BaseModel: DeclarativeMeta = db.Model
 record_types = [
     'AS',  # 'Best Average Speed'
     'FD',  # 'Farthest Distance'
@@ -21,7 +26,9 @@ record_types = [
 ]
 
 
-def update_records(user_id, sport_id, connection, session):
+def update_records(
+    user_id: int, sport_id: int, connection: Connection, session: Session
+) -> None:
     record_table = Record.__table__
     new_records = Activity.get_user_activity_records(user_id, sport_id)
     for record_type, record_data in new_records.items():
@@ -47,7 +54,7 @@ def update_records(user_id, sport_id, connection, session):
                 new_record = Record(
                     activity=record_data['activity'], record_type=record_type
                 )
-                new_record.value = record_data['record_value']
+                new_record.value = record_data['record_value']  # type: ignore
                 session.add(new_record)
         else:
             connection.execute(
@@ -58,7 +65,7 @@ def update_records(user_id, sport_id, connection, session):
             )
 
 
-class Sport(db.Model):
+class Sport(BaseModel):
     __tablename__ = "sports"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     label = db.Column(db.String(50), unique=True, nullable=False)
@@ -71,13 +78,13 @@ class Sport(db.Model):
         'Record', lazy=True, backref=db.backref('sports', lazy='joined')
     )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'<Sport {self.label!r}>'
 
-    def __init__(self, label):
+    def __init__(self, label: str) -> None:
         self.label = label
 
-    def serialize(self, is_admin=False):
+    def serialize(self, is_admin: Optional[bool] = False) -> Dict:
         serialized_sport = {
             'id': self.id,
             'label': self.label,
@@ -89,7 +96,7 @@ class Sport(db.Model):
         return serialized_sport
 
 
-class Activity(db.Model):
+class Activity(BaseModel):
     __tablename__ = "activities"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     uuid = db.Column(
@@ -138,10 +145,17 @@ class Activity(db.Model):
         backref=db.backref('activities', lazy='joined', single_parent=True),
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'<Activity \'{self.sports.label}\' - {self.activity_date}>'
 
-    def __init__(self, user_id, sport_id, activity_date, distance, duration):
+    def __init__(
+        self,
+        user_id: int,
+        sport_id: int,
+        activity_date: datetime.datetime,
+        distance: float,
+        duration: datetime.timedelta,
+    ) -> None:
         self.user_id = user_id
         self.sport_id = sport_id
         self.activity_date = activity_date
@@ -149,10 +163,10 @@ class Activity(db.Model):
         self.duration = duration
 
     @property
-    def short_id(self):
+    def short_id(self) -> str:
         return encode_uuid(self.uuid)
 
-    def serialize(self, params=None):
+    def serialize(self, params: Optional[Dict] = None) -> Dict:
         date_from = params.get('from') if params else None
         date_to = params.get('to') if params else None
         distance_from = params.get('distance_from') if params else None
@@ -239,41 +253,43 @@ class Activity(db.Model):
             .first()
         )
         return {
-            "id": self.short_id,  # WARNING: client use uuid as id
-            "user": self.user.username,
-            "sport_id": self.sport_id,
-            "title": self.title,
-            "creation_date": self.creation_date,
-            "modification_date": self.modification_date,
-            "activity_date": self.activity_date,
-            "duration": str(self.duration) if self.duration else None,
-            "pauses": str(self.pauses) if self.pauses else None,
-            "moving": str(self.moving) if self.moving else None,
-            "distance": float(self.distance) if self.distance else None,
-            "min_alt": float(self.min_alt) if self.min_alt else None,
-            "max_alt": float(self.max_alt) if self.max_alt else None,
-            "descent": float(self.descent) if self.descent else None,
-            "ascent": float(self.ascent) if self.ascent else None,
-            "max_speed": float(self.max_speed) if self.max_speed else None,
-            "ave_speed": float(self.ave_speed) if self.ave_speed else None,
-            "with_gpx": self.gpx is not None,
-            "bounds": [float(bound) for bound in self.bounds]
+            'id': self.short_id,  # WARNING: client use uuid as id
+            'user': self.user.username,
+            'sport_id': self.sport_id,
+            'title': self.title,
+            'creation_date': self.creation_date,
+            'modification_date': self.modification_date,
+            'activity_date': self.activity_date,
+            'duration': str(self.duration) if self.duration else None,
+            'pauses': str(self.pauses) if self.pauses else None,
+            'moving': str(self.moving) if self.moving else None,
+            'distance': float(self.distance) if self.distance else None,
+            'min_alt': float(self.min_alt) if self.min_alt else None,
+            'max_alt': float(self.max_alt) if self.max_alt else None,
+            'descent': float(self.descent) if self.descent else None,
+            'ascent': float(self.ascent) if self.ascent else None,
+            'max_speed': float(self.max_speed) if self.max_speed else None,
+            'ave_speed': float(self.ave_speed) if self.ave_speed else None,
+            'with_gpx': self.gpx is not None,
+            'bounds': [float(bound) for bound in self.bounds]
             if self.bounds
             else [],  # noqa
-            "previous_activity": previous_activity.short_id
+            'previous_activity': previous_activity.short_id
             if previous_activity
             else None,  # noqa
-            "next_activity": next_activity.short_id if next_activity else None,
-            "segments": [segment.serialize() for segment in self.segments],
-            "records": [record.serialize() for record in self.records],
-            "map": self.map_id if self.map else None,
-            "weather_start": self.weather_start,
-            "weather_end": self.weather_end,
-            "notes": self.notes,
+            'next_activity': next_activity.short_id if next_activity else None,
+            'segments': [segment.serialize() for segment in self.segments],
+            'records': [record.serialize() for record in self.records],
+            'map': self.map_id if self.map else None,
+            'weather_start': self.weather_start,
+            'weather_end': self.weather_end,
+            'notes': self.notes,
         }
 
     @classmethod
-    def get_user_activity_records(cls, user_id, sport_id, as_integer=False):
+    def get_user_activity_records(
+        cls, user_id: int, sport_id: int, as_integer: Optional[bool] = False
+    ) -> Dict:
         record_types_columns = {
             'AS': 'ave_speed',  # 'Average speed'
             'FD': 'distance',  # 'Farthest Distance'
@@ -300,22 +316,26 @@ class Activity(db.Model):
 
 
 @listens_for(Activity, 'after_insert')
-def on_activity_insert(mapper, connection, activity):
+def on_activity_insert(
+    mapper: Mapper, connection: Connection, activity: Activity
+) -> None:
     @listens_for(db.Session, 'after_flush', once=True)
-    def receive_after_flush(session, context):
+    def receive_after_flush(session: Session, context: Any) -> None:
         update_records(
             activity.user_id, activity.sport_id, connection, session
         )  # noqa
 
 
 @listens_for(Activity, 'after_update')
-def on_activity_update(mapper, connection, activity):
+def on_activity_update(
+    mapper: Mapper, connection: Connection, activity: Activity
+) -> None:
     if object_session(activity).is_modified(
         activity, include_collections=True
     ):  # noqa
 
         @listens_for(db.Session, 'after_flush', once=True)
-        def receive_after_flush(session, context):
+        def receive_after_flush(session: Session, context: Any) -> None:
             sports_list = [activity.sport_id]
             records = Record.query.filter_by(activity_id=activity.id).all()
             for rec in records:
@@ -326,16 +346,18 @@ def on_activity_update(mapper, connection, activity):
 
 
 @listens_for(Activity, 'after_delete')
-def on_activity_delete(mapper, connection, old_record):
+def on_activity_delete(
+    mapper: Mapper, connection: Connection, old_record: 'Record'
+) -> None:
     @listens_for(db.Session, 'after_flush', once=True)
-    def receive_after_flush(session, context):
+    def receive_after_flush(session: Session, context: Any) -> None:
         if old_record.map:
             os.remove(get_absolute_file_path(old_record.map))
         if old_record.gpx:
             os.remove(get_absolute_file_path(old_record.gpx))
 
 
-class ActivitySegment(db.Model):
+class ActivitySegment(BaseModel):
     __tablename__ = "activity_segments"
     activity_id = db.Column(
         db.Integer, db.ForeignKey('activities.id'), primary_key=True
@@ -353,35 +375,37 @@ class ActivitySegment(db.Model):
     max_speed = db.Column(db.Numeric(6, 2), nullable=True)  # km/h
     ave_speed = db.Column(db.Numeric(6, 2), nullable=True)  # km/h
 
-    def __str__(self):
+    def __str__(self) -> str:
         return (
             f'<Segment \'{self.segment_id}\' '
             f'for activity \'{encode_uuid(self.activity_uuid)}\'>'
         )
 
-    def __init__(self, segment_id, activity_id, activity_uuid):
+    def __init__(
+        self, segment_id: int, activity_id: int, activity_uuid: UUID
+    ) -> None:
         self.segment_id = segment_id
         self.activity_id = activity_id
         self.activity_uuid = activity_uuid
 
-    def serialize(self):
+    def serialize(self) -> Dict:
         return {
-            "activity_id": encode_uuid(self.activity_uuid),
-            "segment_id": self.segment_id,
-            "duration": str(self.duration) if self.duration else None,
-            "pauses": str(self.pauses) if self.pauses else None,
-            "moving": str(self.moving) if self.moving else None,
-            "distance": float(self.distance) if self.distance else None,
-            "min_alt": float(self.min_alt) if self.min_alt else None,
-            "max_alt": float(self.max_alt) if self.max_alt else None,
-            "descent": float(self.descent) if self.descent else None,
-            "ascent": float(self.ascent) if self.ascent else None,
-            "max_speed": float(self.max_speed) if self.max_speed else None,
-            "ave_speed": float(self.ave_speed) if self.ave_speed else None,
+            'activity_id': encode_uuid(self.activity_uuid),
+            'segment_id': self.segment_id,
+            'duration': str(self.duration) if self.duration else None,
+            'pauses': str(self.pauses) if self.pauses else None,
+            'moving': str(self.moving) if self.moving else None,
+            'distance': float(self.distance) if self.distance else None,
+            'min_alt': float(self.min_alt) if self.min_alt else None,
+            'max_alt': float(self.max_alt) if self.max_alt else None,
+            'descent': float(self.descent) if self.descent else None,
+            'ascent': float(self.ascent) if self.ascent else None,
+            'max_speed': float(self.max_speed) if self.max_speed else None,
+            'ave_speed': float(self.ave_speed) if self.ave_speed else None,
         }
 
 
-class Record(db.Model):
+class Record(BaseModel):
     __tablename__ = "records"
     __table_args__ = (
         db.UniqueConstraint(
@@ -401,14 +425,14 @@ class Record(db.Model):
     activity_date = db.Column(db.DateTime, nullable=False)
     _value = db.Column("value", db.Integer, nullable=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return (
             f'<Record {self.sports.label} - '
             f'{self.record_type} - '
             f"{self.activity_date.strftime('%Y-%m-%d')}>"
         )
 
-    def __init__(self, activity, record_type):
+    def __init__(self, activity: Activity, record_type: str) -> None:
         self.user_id = activity.user_id
         self.sport_id = activity.sport_id
         self.activity_id = activity.id
@@ -417,7 +441,7 @@ class Record(db.Model):
         self.activity_date = activity.activity_date
 
     @hybrid_property
-    def value(self):
+    def value(self) -> Optional[Union[datetime.timedelta, float]]:
         if self._value is None:
             return None
         if self.record_type == 'LD':
@@ -427,33 +451,35 @@ class Record(db.Model):
         else:  # 'FD'
             return float(self._value / 1000)
 
-    @value.setter
-    def value(self, val):
+    @value.setter  # type: ignore
+    def value(self, val: Union[str, float]) -> None:
         self._value = convert_value_to_integer(self.record_type, val)
 
-    def serialize(self):
+    def serialize(self) -> Dict:
         if self.value is None:
             value = None
         elif self.record_type in ['AS', 'FD', 'MS']:
-            value = float(self.value)
+            value = float(self.value)  # type: ignore
         else:  # 'LD'
-            value = str(self.value)
+            value = str(self.value)  # type: ignore
 
         return {
-            "id": self.id,
-            "user": self.user.username,
-            "sport_id": self.sport_id,
-            "activity_id": encode_uuid(self.activity_uuid),
-            "record_type": self.record_type,
-            "activity_date": self.activity_date,
-            "value": value,
+            'id': self.id,
+            'user': self.user.username,
+            'sport_id': self.sport_id,
+            'activity_id': encode_uuid(self.activity_uuid),
+            'record_type': self.record_type,
+            'activity_date': self.activity_date,
+            'value': value,
         }
 
 
 @listens_for(Record, 'after_delete')
-def on_record_delete(mapper, connection, old_record):
+def on_record_delete(
+    mapper: Mapper, connection: Connection, old_record: Record
+) -> None:
     @listens_for(db.Session, 'after_flush', once=True)
-    def receive_after_flush(session, context):
+    def receive_after_flush(session: Session, context: Any) -> None:
         activity = old_record.activities
         new_records = Activity.get_user_activity_records(
             activity.user_id, activity.sport_id
@@ -466,5 +492,5 @@ def on_record_delete(mapper, connection, old_record):
                 new_record = Record(
                     activity=record_data['activity'], record_type=record_type
                 )
-                new_record.value = record_data['record_value']
+                new_record.value = record_data['record_value']  # type: ignore
                 session.add(new_record)

@@ -1,8 +1,14 @@
 import json
 
+from fittrackee.activities.models import Activity, Sport
+from fittrackee.users.models import User
+from flask import Flask
+
 
 class TestGetStatsByTime:
-    def test_it_gets_no_stats_when_user_has_no_activities(self, app, user_1):
+    def test_it_gets_no_stats_when_user_has_no_activities(
+        self, app: Flask, user_1: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -23,7 +29,9 @@ class TestGetStatsByTime:
         assert 'success' in data['status']
         assert data['data']['statistics'] == {}
 
-    def test_it_returns_error_when_user_does_not_exists(self, app, user_1):
+    def test_it_returns_error_when_user_does_not_exists(
+        self, app: Flask, user_1: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -46,13 +54,13 @@ class TestGetStatsByTime:
 
     def test_it_returns_error_if_date_format_is_invalid(
         self,
-        app,
-        user_1,
-        sport_1_cycling,
-        sport_2_running,
-        seven_activities_user_1,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_activities_user_1: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -78,13 +86,13 @@ class TestGetStatsByTime:
 
     def test_it_returns_error_if_period_is_invalid(
         self,
-        app,
-        user_1,
-        sport_1_cycling,
-        sport_2_running,
-        seven_activities_user_1,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_activities_user_1: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -107,13 +115,13 @@ class TestGetStatsByTime:
 
     def test_it_gets_stats_by_time_all_activities(
         self,
-        app,
-        user_1,
-        sport_1_cycling,
-        sport_2_running,
-        seven_activities_user_1,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_activities_user_1: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -156,13 +164,13 @@ class TestGetStatsByTime:
 
     def test_it_gets_stats_for_april_2018(
         self,
-        app,
-        user_1,
-        sport_1_cycling,
-        sport_2_running,
-        seven_activities_user_1,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_activities_user_1: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -198,13 +206,13 @@ class TestGetStatsByTime:
 
     def test_it_gets_stats_for_april_2018_with_paris_timezone(
         self,
-        app,
-        user_1_paris,
-        sport_1_cycling,
-        sport_2_running,
-        seven_activities_user_1,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1_paris: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_activities_user_1: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -241,13 +249,13 @@ class TestGetStatsByTime:
 
     def test_it_gets_stats_by_year(
         self,
-        app,
-        user_1,
-        sport_1_cycling,
-        sport_2_running,
-        seven_activities_user_1,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_activities_user_1: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -290,13 +298,13 @@ class TestGetStatsByTime:
 
     def test_it_gets_stats_by_year_for_april_2018(
         self,
-        app,
-        user_1,
-        sport_1_cycling,
-        sport_2_running,
-        seven_activities_user_1,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_activities_user_1: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -332,13 +340,13 @@ class TestGetStatsByTime:
 
     def test_it_gets_stats_by_year_for_april_2018_with_paris_timezone(
         self,
-        app,
-        user_1_paris,
-        sport_1_cycling,
-        sport_2_running,
-        seven_activities_user_1,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1_paris: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_activities_user_1: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -374,13 +382,13 @@ class TestGetStatsByTime:
 
     def test_it_gets_stats_by_month(
         self,
-        app,
-        user_1,
-        sport_1_cycling,
-        sport_2_running,
-        seven_activities_user_1,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_activities_user_1: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -451,13 +459,13 @@ class TestGetStatsByTime:
 
     def test_it_gets_stats_by_month_with_new_york_timezone(
         self,
-        app,
-        user_1_full,
-        sport_1_cycling,
-        sport_2_running,
-        seven_activities_user_1,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1_full: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_activities_user_1: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -528,13 +536,13 @@ class TestGetStatsByTime:
 
     def test_it_gets_stats_by_month_for_april_2018(
         self,
-        app,
-        user_1,
-        sport_1_cycling,
-        sport_2_running,
-        seven_activities_user_1,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_activities_user_1: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -570,13 +578,13 @@ class TestGetStatsByTime:
 
     def test_it_gets_stats_by_week(
         self,
-        app,
-        user_1_full,
-        sport_1_cycling,
-        sport_2_running,
-        seven_activities_user_1,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1_full: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_activities_user_1: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -647,13 +655,13 @@ class TestGetStatsByTime:
 
     def test_it_gets_stats_by_week_for_week_13(
         self,
-        app,
-        user_1,
-        sport_1_cycling,
-        sport_2_running,
-        seven_activities_user_1,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_activities_user_1: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -689,13 +697,13 @@ class TestGetStatsByTime:
 
     def test_if_get_stats_by_week_starting_with_monday(
         self,
-        app,
-        user_1,
-        sport_1_cycling,
-        sport_2_running,
-        seven_activities_user_1,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_activities_user_1: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -766,13 +774,13 @@ class TestGetStatsByTime:
 
     def test_it_gets_stats_by_week_starting_with_monday_for_week_13(
         self,
-        app,
-        user_1,
-        sport_1_cycling,
-        sport_2_running,
-        seven_activities_user_1,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_activities_user_1: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -810,13 +818,13 @@ class TestGetStatsByTime:
 class TestGetStatsBySport:
     def test_it_gets_stats_by_sport(
         self,
-        app,
-        user_1,
-        sport_1_cycling,
-        sport_2_running,
-        seven_activities_user_1,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_activities_user_1: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -850,13 +858,13 @@ class TestGetStatsBySport:
 
     def test_it_get_stats_for_sport_1(
         self,
-        app,
-        user_1,
-        sport_1_cycling,
-        sport_2_running,
-        seven_activities_user_1,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_activities_user_1: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -885,13 +893,13 @@ class TestGetStatsBySport:
 
     def test_it_returns_errors_if_user_does_not_exist(
         self,
-        app,
-        user_1,
-        sport_1_cycling,
-        sport_2_running,
-        seven_activities_user_1,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_activities_user_1: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -914,13 +922,13 @@ class TestGetStatsBySport:
 
     def test_it_returns_error_if_sport_does_not_exist(
         self,
-        app,
-        user_1,
-        sport_1_cycling,
-        sport_2_running,
-        seven_activities_user_1,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_activities_user_1: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -943,13 +951,13 @@ class TestGetStatsBySport:
 
     def test_it_returns_error_if_sport_id_is_invalid(
         self,
-        app,
-        user_1,
-        sport_1_cycling,
-        sport_2_running,
-        seven_activities_user_1,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_activities_user_1: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -976,8 +984,8 @@ class TestGetStatsBySport:
 
 class TestGetAllStats:
     def test_it_returns_all_stats_when_users_have_no_activities(
-        self, app, user_1_admin, user_2
-    ):
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -1005,16 +1013,16 @@ class TestGetAllStats:
 
     def test_it_gets_app_all_stats_with_activities(
         self,
-        app,
-        user_1_admin,
-        user_2,
-        user_3,
-        sport_1_cycling,
-        sport_2_running,
-        activity_cycling_user_1,
-        activity_cycling_user_2,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        activity_cycling_user_1: Activity,
+        activity_cycling_user_2: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -1042,16 +1050,16 @@ class TestGetAllStats:
 
     def test_it_returns_error_if_user_has_no_admin_rights(
         self,
-        app,
-        user_1,
-        user_2,
-        user_3,
-        sport_1_cycling,
-        sport_2_running,
-        activity_cycling_user_1,
-        activity_cycling_user_2,
-        activity_running_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        activity_cycling_user_1: Activity,
+        activity_cycling_user_2: Activity,
+        activity_running_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',

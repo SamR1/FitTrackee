@@ -1,8 +1,13 @@
 import json
 
+from fittrackee.users.models import User
+from flask import Flask
+
 
 class TestGetConfig:
-    def test_it_gets_application_config(self, app, user_1):
+    def test_it_gets_application_config(
+        self, app: Flask, user_1: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -33,8 +38,8 @@ class TestGetConfig:
         )
 
     def test_it_returns_error_if_application_has_no_config(
-        self, app_no_config, user_1_admin
-    ):
+        self, app_no_config: Flask, user_1_admin: User
+    ) -> None:
         client = app_no_config.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -59,8 +64,8 @@ class TestGetConfig:
         assert 'Error on getting configuration.' in data['message']
 
     def test_it_returns_error_if_application_has_several_config(
-        self, app, app_config, user_1_admin
-    ):
+        self, app: Flask, app_config: Flask, user_1_admin: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -86,7 +91,9 @@ class TestGetConfig:
 
 
 class TestUpdateConfig:
-    def test_it_updates_config_when_user_is_admin(self, app, user_1_admin):
+    def test_it_updates_config_when_user_is_admin(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -114,7 +121,9 @@ class TestUpdateConfig:
         assert data['data']['max_zip_file_size'] == 10485760
         assert data['data']['max_users'] == 10
 
-    def test_it_updates_all_config(self, app, user_1_admin):
+    def test_it_updates_all_config(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -150,7 +159,9 @@ class TestUpdateConfig:
         assert data['data']['max_zip_file_size'] == 25000
         assert data['data']['max_users'] == 50
 
-    def test_it_returns_403_when_user_is_not_an_admin(self, app, user_1):
+    def test_it_returns_403_when_user_is_not_an_admin(
+        self, app: Flask, user_1: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -174,7 +185,9 @@ class TestUpdateConfig:
         assert 'error' in data['status']
         assert 'You do not have permissions.' in data['message']
 
-    def test_it_returns_400_if_invalid_is_payload(self, app, user_1_admin):
+    def test_it_returns_400_if_invalid_is_payload(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -200,8 +213,8 @@ class TestUpdateConfig:
         assert 'Invalid payload.' in data['message']
 
     def test_it_returns_error_on_update_if_application_has_no_config(
-        self, app_no_config, user_1_admin
-    ):
+        self, app_no_config: Flask, user_1_admin: User
+    ) -> None:
         client = app_no_config.test_client()
         resp_login = client.post(
             '/api/auth/login',

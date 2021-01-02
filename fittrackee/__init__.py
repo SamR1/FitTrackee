@@ -1,8 +1,9 @@
 import logging
 import os
 from importlib import import_module, reload
+from typing import Any
 
-from flask import Flask, render_template, send_file
+from flask import Flask, Response, render_template, send_file
 from flask_bcrypt import Bcrypt
 from flask_dramatiq import Dramatiq
 from flask_migrate import Migrate
@@ -24,7 +25,7 @@ logging.basicConfig(
 appLog = logging.getLogger('fittrackee')
 
 
-def create_app():
+def create_app() -> Flask:
     # instantiate the app
     app = Flask(__name__, static_folder='dist/static', template_folder='dist')
 
@@ -88,7 +89,7 @@ def create_app():
 
         # Enable CORS
         @app.after_request
-        def after_request(response):
+        def after_request(response: Response) -> Response:
             response.headers.add('Access-Control-Allow-Origin', '*')
             response.headers.add(
                 'Access-Control-Allow-Headers', 'Content-Type,Authorization'
@@ -100,15 +101,23 @@ def create_app():
             return response
 
     @app.route('/favicon.ico')
-    def favicon():
-        return send_file(os.path.join(app.root_path, 'dist/favicon.ico'))
+    def favicon() -> Any:
+        return send_file(
+            os.path.join(app.root_path, 'dist/favicon.ico')  # type: ignore
+        )
 
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
-    def catch_all(path):
+    def catch_all(path: str) -> Any:
         # workaround to serve images (not in static directory)
         if path.startswith('img/'):
-            return send_file(os.path.join(app.root_path, 'dist', path))
+            return send_file(
+                os.path.join(
+                    app.root_path,  # type: ignore
+                    'dist',
+                    path,
+                )
+            )
         else:
             return render_template('index.html')
 

@@ -1,12 +1,15 @@
 import json
+from typing import Dict
 
-from fittrackee.activities.models import Activity
+from fittrackee.activities.models import Activity, Sport
 from fittrackee.activities.utils_id import decode_short_id
+from fittrackee.users.models import User
+from flask import Flask
 
 from .utils import get_random_short_id, post_an_activity
 
 
-def assert_activity_data_with_gpx(data, sport_id):
+def assert_activity_data_with_gpx(data: Dict, sport_id: int) -> None:
     assert 'creation_date' in data['data']['activities'][0]
     assert (
         'Tue, 13 Mar 2018 12:44:45 GMT'
@@ -51,8 +54,13 @@ def assert_activity_data_with_gpx(data, sport_id):
 
 class TestEditActivityWithGpx:
     def test_it_updates_title_for_an_activity_with_gpx(
-        self, app, user_1, sport_1_cycling, sport_2_running, gpx_file
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        gpx_file: str,
+    ) -> None:
         token, activity_short_id = post_an_activity(app, gpx_file)
         client = app.test_client()
 
@@ -72,8 +80,13 @@ class TestEditActivityWithGpx:
         assert_activity_data_with_gpx(data, sport_2_running.id)
 
     def test_it_adds_notes_for_an_activity_with_gpx(
-        self, app, user_1, sport_1_cycling, sport_2_running, gpx_file
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        gpx_file: str,
+    ) -> None:
         token, activity_short_id = post_an_activity(app, gpx_file)
         client = app.test_client()
 
@@ -92,8 +105,14 @@ class TestEditActivityWithGpx:
         assert data['data']['activities'][0]['notes'] == 'test notes'
 
     def test_it_raises_403_when_editing_an_activity_from_different_user(
-        self, app, user_1, user_2, sport_1_cycling, sport_2_running, gpx_file
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        gpx_file: str,
+    ) -> None:
         _, activity_short_id = post_an_activity(app, gpx_file)
         client = app.test_client()
         resp_login = client.post(
@@ -118,8 +137,13 @@ class TestEditActivityWithGpx:
         assert 'You do not have permissions.' in data['message']
 
     def test_it_updates_sport(
-        self, app, user_1, sport_1_cycling, sport_2_running, gpx_file
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        gpx_file: str,
+    ) -> None:
         token, activity_short_id = post_an_activity(app, gpx_file)
         client = app.test_client()
 
@@ -139,8 +163,8 @@ class TestEditActivityWithGpx:
         assert_activity_data_with_gpx(data, sport_2_running.id)
 
     def test_it_returns_400_if_payload_is_empty(
-        self, app, user_1, sport_1_cycling, gpx_file
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
         token, activity_short_id = post_an_activity(app, gpx_file)
         client = app.test_client()
 
@@ -157,8 +181,8 @@ class TestEditActivityWithGpx:
         assert 'Invalid payload.' in data['message']
 
     def test_it_raises_500_if_sport_does_not_exists(
-        self, app, user_1, sport_1_cycling, gpx_file
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
         token, activity_short_id = post_an_activity(app, gpx_file)
         client = app.test_client()
 
@@ -181,12 +205,12 @@ class TestEditActivityWithGpx:
 class TestEditActivityWithoutGpx:
     def test_it_updates_an_activity_wo_gpx(
         self,
-        app,
-        user_1,
-        sport_1_cycling,
-        sport_2_running,
-        activity_cycling_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        activity_cycling_user_1: Activity,
+    ) -> None:
         activity_short_id = activity_cycling_user_1.short_id
         client = app.test_client()
         resp_login = client.post(
@@ -266,8 +290,12 @@ class TestEditActivityWithoutGpx:
         assert records[3]['value'] == 8.0
 
     def test_it_adds_notes_to_an_activity_wo_gpx(
-        self, app, user_1, sport_1_cycling, activity_cycling_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_1: Activity,
+    ) -> None:
         activity_short_id = activity_cycling_user_1.short_id
         client = app.test_client()
         resp_login = client.post(
@@ -338,8 +366,13 @@ class TestEditActivityWithoutGpx:
         assert records[3]['value'] == 10.0
 
     def test_returns_403_when_editing_an_activity_wo_gpx_from_different_user(
-        self, app, user_1, user_2, sport_1_cycling, activity_cycling_user_2
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_2: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -372,12 +405,12 @@ class TestEditActivityWithoutGpx:
 
     def test_it_updates_an_activity_wo_gpx_with_timezone(
         self,
-        app,
-        user_1_paris,
-        sport_1_cycling,
-        sport_2_running,
-        activity_cycling_user_1,
-    ):
+        app: Flask,
+        user_1_paris: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        activity_cycling_user_1: Activity,
+    ) -> None:
         activity_short_id = activity_cycling_user_1.short_id
         client = app.test_client()
         resp_login = client.post(
@@ -453,12 +486,12 @@ class TestEditActivityWithoutGpx:
 
     def test_it_updates_only_sport_and_distance_an_activity_wo_gpx(
         self,
-        app,
-        user_1,
-        sport_1_cycling,
-        sport_2_running,
-        activity_cycling_user_1,
-    ):
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        activity_cycling_user_1: Activity,
+    ) -> None:
         activity_short_id = activity_cycling_user_1.short_id
         client = app.test_client()
         resp_login = client.post(
@@ -525,8 +558,12 @@ class TestEditActivityWithoutGpx:
         assert records[3]['value'] == 20.0
 
     def test_it_returns_400_if_payload_is_empty(
-        self, app, user_1, sport_1_cycling, activity_cycling_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -550,8 +587,12 @@ class TestEditActivityWithoutGpx:
         assert 'Invalid payload.' in data['message']
 
     def test_it_returns_500_if_date_format_is_invalid(
-        self, app, user_1, sport_1_cycling, activity_cycling_user_1
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        activity_cycling_user_1: Activity,
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -585,8 +626,8 @@ class TestEditActivityWithoutGpx:
         )
 
     def test_it_returns_404_if_edited_activity_does_not_exists(
-        self, app, user_1, sport_1_cycling
-    ):
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -618,8 +659,13 @@ class TestEditActivityWithoutGpx:
 
 class TestRefreshActivityWithGpx:
     def test_refresh_an_activity_with_gpx(
-        self, app, user_1, sport_1_cycling, sport_2_running, gpx_file
-    ):
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        gpx_file: str,
+    ) -> None:
         token, activity_short_id = post_an_activity(app, gpx_file)
         activity_uuid = decode_short_id(activity_short_id)
         client = app.test_client()

@@ -1,20 +1,22 @@
 from json import dumps
+from typing import Dict, List, Optional, Union
 
 from fittrackee import appLog
 from flask import Response
+from flask_sqlalchemy import SQLAlchemy
 
 
-def get_empty_data_for_datatype(data_type):
+def get_empty_data_for_datatype(data_type: str) -> Union[str, List]:
     return '' if data_type in ['gpx', 'chart_data'] else []
 
 
 class HttpResponse(Response):
     def __init__(
         self,
-        response=None,
-        status_code=None,
-        content_type=None,
-    ):
+        response: Optional[Union[str, Dict]] = None,
+        status_code: Optional[int] = None,
+        content_type: Optional[str] = None,
+    ) -> None:
         if isinstance(response, dict):
             response = dumps(response)
             content_type = (
@@ -28,7 +30,9 @@ class HttpResponse(Response):
 
 
 class GenericErrorResponse(HttpResponse):
-    def __init__(self, status_code, message, status=None):
+    def __init__(
+        self, status_code: int, message: str, status: Optional[str] = None
+    ) -> None:
         response = {
             'status': 'error' if status is None else status,
             'message': message,
@@ -40,13 +44,15 @@ class GenericErrorResponse(HttpResponse):
 
 
 class InvalidPayloadErrorResponse(GenericErrorResponse):
-    def __init__(self, message=None, status=None):
+    def __init__(
+        self, message: Optional[str] = None, status: Optional[str] = None
+    ) -> None:
         message = 'Invalid payload.' if message is None else message
         super().__init__(status_code=400, message=message, status=status)
 
 
 class DataInvalidPayloadErrorResponse(HttpResponse):
-    def __init__(self, data_type, status=None):
+    def __init__(self, data_type: str, status: Optional[str] = None) -> None:
         response = {
             'status': 'error' if status is None else status,
             'data': {data_type: get_empty_data_for_datatype(data_type)},
@@ -55,7 +61,7 @@ class DataInvalidPayloadErrorResponse(HttpResponse):
 
 
 class UnauthorizedErrorResponse(GenericErrorResponse):
-    def __init__(self, message=None):
+    def __init__(self, message: Optional[str] = None) -> None:
         message = (
             'Invalid token. Please request a new token.'
             if message is None
@@ -65,7 +71,7 @@ class UnauthorizedErrorResponse(GenericErrorResponse):
 
 
 class ForbiddenErrorResponse(GenericErrorResponse):
-    def __init__(self, message=None):
+    def __init__(self, message: Optional[str] = None) -> None:
         message = (
             'You do not have permissions.' if message is None else message
         )
@@ -73,17 +79,17 @@ class ForbiddenErrorResponse(GenericErrorResponse):
 
 
 class NotFoundErrorResponse(GenericErrorResponse):
-    def __init__(self, message):
+    def __init__(self, message: str) -> None:
         super().__init__(status_code=404, message=message, status='not found')
 
 
 class UserNotFoundErrorResponse(NotFoundErrorResponse):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(message='User does not exist.')
 
 
 class DataNotFoundErrorResponse(HttpResponse):
-    def __init__(self, data_type, message=None):
+    def __init__(self, data_type: str, message: Optional[str] = None) -> None:
         response = {
             'status': 'not found',
             'data': {data_type: get_empty_data_for_datatype(data_type)},
@@ -94,12 +100,14 @@ class DataNotFoundErrorResponse(HttpResponse):
 
 
 class PayloadTooLargeErrorResponse(GenericErrorResponse):
-    def __init__(self, message):
+    def __init__(self, message: str) -> None:
         super().__init__(status_code=413, message=message, status='fail')
 
 
 class InternalServerErrorResponse(GenericErrorResponse):
-    def __init__(self, message=None, status=None):
+    def __init__(
+        self, message: Optional[str] = None, status: Optional[str] = None
+    ):
         message = (
             'Error. Please try again or contact the administrator.'
             if message is None
@@ -109,8 +117,11 @@ class InternalServerErrorResponse(GenericErrorResponse):
 
 
 def handle_error_and_return_response(
-    error, message=None, status=None, db=None
-):
+    error: Exception,
+    message: Optional[str] = None,
+    status: Optional[str] = None,
+    db: Optional[SQLAlchemy] = None,
+) -> HttpResponse:
     if db is not None:
         db.session.rollback()
     appLog.error(error)

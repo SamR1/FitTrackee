@@ -1,15 +1,17 @@
 import json
 from io import BytesIO
+from typing import Tuple
 from uuid import uuid4
 
 from fittrackee.activities.utils_id import encode_uuid
+from flask import Flask
 
 
-def get_random_short_id():
+def get_random_short_id() -> str:
     return encode_uuid(uuid4())
 
 
-def post_an_activity(app, gpx_file):
+def post_an_activity(app: Flask, gpx_file: str) -> Tuple[str, str]:
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
