@@ -11,6 +11,7 @@ uploads
 .coverage
 coverage.xml
 .env
+.mypy_cache
 .pytest_cache
 .venv
 /fittrackee.egg-info/
