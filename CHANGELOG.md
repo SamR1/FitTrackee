@@ -1,5 +1,13 @@
 # Change log
 
+## Version 0.4.2 (2021/01/03)
+
+### Misc
+
+No new features in this release, only some refactorings before introducing 
+new features.
+
+
 ## Version 0.4.1 (2020/12/31)
 
 ### Issues Closed
