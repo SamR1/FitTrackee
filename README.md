@@ -1,6 +1,7 @@
 # FitTrackee
 **A simple self-hosted workout/activity tracker.**  
 
+[![PyPI version](https://img.shields.io/pypi/v/fittrackee.svg)](https://pypi.org/project/fittrackee/) 
 [![Python Version](https://img.shields.io/badge/python-3.7+-brightgreen.svg)](https://python.org)
 [![Flask Version](https://img.shields.io/badge/flask-1.1-brightgreen.svg)](http://flask.pocoo.org/) 
 [![code style: black](https://img.shields.io/badge/code%20style-black-black)](https://github.com/psf/black) 
