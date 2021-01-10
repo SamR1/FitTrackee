@@ -20,9 +20,13 @@ pytest_plugins = [
     'fittrackee.tests.fixtures.fixtures_users',
 ]
 
-def get_app_config(with_config: Optional[bool] = False) -> Optional[AppConfig]:
+def get_app_config(
+    with_config: Optional[bool] = False,
+    with_federation: Optional[bool] = False,
+) -> Optional[AppConfig]:
     if with_config:
         config = AppConfig()
+        config.federation_enabled = with_federation
         config.gpx_limit_import = 10
         config.max_single_file_size = 1 * 1024 * 1024
         config.max_zip_file_size = 1 * 1024 * 1024 * 10
@@ -30,15 +34,17 @@ def get_app_config(with_config: Optional[bool] = False) -> Optional[AppConfig]:
         db.session.add(config)
         db.session.commit()
         return config
-    else:
-        return None
+    return None
 
 
-def get_app(with_config: Optional[bool] = False) -> Generator:
+def get_app(
+    with_config: Optional[bool] = False,
+    with_federation: Optional[bool] = False,
+) -> Generator:
     app = create_app()
     with app.app_context():
         db.create_all()
-        app_db_config = get_app_config(with_config)
+        app_db_config = get_app_config(with_config, with_federation)
         if app_db_config:
             update_app_config_from_database(app, app_db_config)
         yield app
@@ -78,9 +84,15 @@ def app_tls(monkeypatch: pytest.MonkeyPatch) -> Generator:
     yield from get_app(with_config=True)
 
 
+@pytest.fixture
+def app_with_federation() -> Generator:
+    yield from get_app(with_config=True, with_federation=True)
+
+
 @pytest.fixture()
 def app_config() -> AppConfig:
     config = AppConfig()
+    config.federation_enabled = False
     config.gpx_limit_import = 10
     config.max_single_file_size = 1048576
     config.max_zip_file_size = 10485760

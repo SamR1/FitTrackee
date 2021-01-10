@@ -119,6 +119,8 @@ def update_application_config(auth_user_id: int) -> Union[Dict, HttpResponse]:
 
     try:
         config = AppConfig.query.one()
+        if 'federation_enabled' in config_data:
+            config.federation_enabled = config_data.get('federation_enabled')
         if 'gpx_limit_import' in config_data:
             config.gpx_limit_import = config_data.get('gpx_limit_import')
         if 'max_single_file_size' in config_data:

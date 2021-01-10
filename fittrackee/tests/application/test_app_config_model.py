@@ -9,6 +9,7 @@ class TestConfigModel:
         assert 1 == app_config.id
 
         serialized_app_config = app_config.serialize()
+        assert serialized_app_config['federation_enabled'] is False
         assert serialized_app_config['gpx_limit_import'] == 10
         assert serialized_app_config['is_registration_enabled'] is True
         assert serialized_app_config['max_single_file_size'] == 1048576

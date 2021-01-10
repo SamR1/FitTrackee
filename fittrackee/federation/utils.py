@@ -1,6 +1,8 @@
-from typing import Tuple
+from functools import wraps
+from typing import Any, Callable, Tuple
 
 from Crypto.PublicKey import RSA
+from fittrackee.responses import InternalServerErrorResponse
 from flask import current_app
 
 ACTOR_TYPES = ['Application', 'Group', 'Person']
@@ -42,3 +44,13 @@ def get_ap_url(username: str, url_type: str) -> str:
     if url_type == 'shared_inbox':
         return f'{ap_url}inbox'
     raise Exception('Invalid \'url_type\'.')
+
+
+def federation_required(f: Callable) -> Callable:
+    @wraps(f)
+    def decorated_function(*args: Any, **kwargs: Any) -> Callable:
+        if not current_app.config['federation_enabled']:
+            return InternalServerErrorResponse()
+        return f(*args, **kwargs)
+
+    return decorated_function

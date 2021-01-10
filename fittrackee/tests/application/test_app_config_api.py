@@ -139,6 +139,7 @@ class TestUpdateConfig:
             content_type='application/json',
             data=json.dumps(
                 dict(
+                    federation_enabled=True,
                     gpx_limit_import=20,
                     max_single_file_size=10000,
                     max_zip_file_size=25000,
@@ -154,6 +155,7 @@ class TestUpdateConfig:
         data = json.loads(response.data.decode())
         assert response.status_code == 200
         assert 'success' in data['status']
+        assert data['data']['federation_enabled'] is True
         assert data['data']['gpx_limit_import'] == 20
         assert data['data']['is_registration_enabled'] is True
         assert data['data']['max_single_file_size'] == 10000
