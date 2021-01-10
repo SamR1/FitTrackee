@@ -16,7 +16,7 @@ class AdminStats extends React.Component {
     return (
       <div className="row">
         <div className="col-lg-3 col-md-6 col-sm-6">
-          <div className="card activity-card">
+          <div className="card workout-card">
             <div className="card-body row">
               <div className="col-3">
                 <i className="fa fa-users fa-3x fa-color" />
@@ -35,7 +35,7 @@ class AdminStats extends React.Component {
           </div>
         </div>
         <div className="col-lg-3 col-md-6 col-sm-6">
-          <div className="card activity-card">
+          <div className="card workout-card">
             <div className="card-body row">
               <div className="col-3">
                 <i className="fa fa-tags fa-3x fa-color" />
@@ -52,17 +52,17 @@ class AdminStats extends React.Component {
           </div>
         </div>
         <div className="col-lg-3 col-md-6 col-sm-6">
-          <div className="card activity-card">
+          <div className="card workout-card">
             <div className="card-body row">
               <div className="col-3">
                 <i className="fa fa-calendar fa-3x fa-color" />
               </div>
               <div className="col-9 text-right">
                 <div className="huge">
-                  {appStats.activities ? appStats.activities : 0}
+                  {appStats.workouts ? appStats.workouts : 0}
                 </div>
                 <div>{`${
-                  appStats.activities === 1
+                  appStats.workouts === 1
                     ? t('common:workout')
                     : t('common:workouts')
                 }`}</div>
@@ -71,7 +71,7 @@ class AdminStats extends React.Component {
           </div>
         </div>
         <div className="col-lg-3 col-md-6 col-sm-6">
-          <div className="card activity-card">
+          <div className="card workout-card">
             <div className="card-body row">
               <div className="col-3">
                 <i className="fa fa-folder-open fa-3x fa-color" />

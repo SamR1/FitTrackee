@@ -1,4 +1,4 @@
-import FrActivitiesTranslations from './activities.json'
+import FrWorkoutsTranslations from './workouts.json'
 import FrAdministrationTranslations from './administration.json'
 import FrCommonTranslations from './common.json'
 import FrDashboardTranslations from './dashboard.json'
@@ -8,7 +8,7 @@ import FrStatisticsTranslations from './statistics.json'
 import FrUserTranslations from './user.json'
 
 export const frResources = {
-  activities: FrActivitiesTranslations,
+  workouts: FrWorkoutsTranslations,
   administration: FrAdministrationTranslations,
   common: FrCommonTranslations,
   dashboard: FrDashboardTranslations,

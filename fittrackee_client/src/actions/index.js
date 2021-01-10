@@ -47,7 +47,7 @@ export const getOrUpdateData = (
   canDispatch = true
 ) => dispatch => {
   dispatch(setLoading(true))
-  if (data && data.id && target !== 'activities' && isNaN(data.id)) {
+  if (data && data.id && target !== 'workouts' && isNaN(data.id)) {
     dispatch(setLoading(false))
     return dispatch(setError(`${target}|Incorrect id`))
   }

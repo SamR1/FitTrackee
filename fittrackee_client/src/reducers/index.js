@@ -23,22 +23,22 @@ const handleDataAndError = (state, type, action) => {
   return state
 }
 
-const activities = (state = initial.activities, action) => {
+const workouts = (state = initial.workouts, action) => {
   switch (action.type) {
     case 'LOGOUT':
-      return initial.activities
-    case 'PUSH_ACTIVITIES':
+      return initial.workouts
+    case 'PUSH_WORKOUTS':
       return {
         ...state,
-        data: state.data.concat(action.activities),
+        data: state.data.concat(action.workouts),
       }
-    case 'REMOVE_ACTIVITY':
+    case 'REMOVE_WORKOUT':
       return {
         ...state,
-        data: state.data.filter(activity => activity.id !== action.activityId),
+        data: state.data.filter(workout => workout.id !== action.workoutId),
       }
     default:
-      return handleDataAndError(state, 'activities', action)
+      return handleDataAndError(state, 'workouts', action)
   }
 }
 
@@ -58,17 +58,17 @@ const application = (state = initial.application, action) => {
   return state
 }
 
-const calendarActivities = (state = initial.calendarActivities, action) => {
+const calendarWorkouts = (state = initial.calendarWorkouts, action) => {
   switch (action.type) {
     case 'LOGOUT':
-      return initial.calendarActivities
+      return initial.calendarWorkouts
     case 'UPDATE_CALENDAR':
       return {
         ...state,
-        data: action.activities,
+        data: action.workouts,
       }
     default:
-      return handleDataAndError(state, 'calendarActivities', action)
+      return handleDataAndError(state, 'calendarWorkouts', action)
   }
 }
 
@@ -191,9 +191,9 @@ const statistics = (state = initial.statistics, action) => {
 
 export default history =>
   combineReducers({
-    activities,
+    workouts,
     application,
-    calendarActivities,
+    calendarWorkouts,
     chartData,
     gpx,
     language,

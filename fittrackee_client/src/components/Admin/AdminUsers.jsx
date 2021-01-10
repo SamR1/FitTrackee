@@ -126,7 +126,7 @@ class AdminUsers extends React.Component {
                         <th>{t('user:Username')}</th>
                         <th>{t('user:Email')}</th>
                         <th>{t('user:Registration Date')}</th>
-                        <th>{t('activities:Activities')}</th>
+                        <th>{t('workouts:Workouts')}</th>
                         <th>{t('user:Admin')}</th>
                         <th>{t('administration:Actions')}</th>
                       </tr>
@@ -176,9 +176,9 @@ class AdminUsers extends React.Component {
                           </td>
                           <td>
                             <span className="heading-span-absolute">
-                              {t('activities:Activities')}
+                              {t('workouts:Workouts')}
                             </span>
-                            {user.nb_activities}
+                            {user.nb_workouts}
                           </td>
                           <td>
                             <span className="heading-span-absolute">

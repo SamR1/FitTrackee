@@ -66,7 +66,7 @@ const startDate = (duration, day, weekm) => {
 }
 
 export const formatStats = (stats, sports, params, displayedSports, weekm) => {
-  const nbActivitiesStats = []
+  const nbWorkoutsStats = []
   const distanceStats = []
   const durationStats = []
 
@@ -80,7 +80,7 @@ export const formatStats = (stats, sports, params, displayedSports, weekm) => {
     )
     const date = format(day, xAxisFormat.dateFormat)
     const xAxis = format(day, xAxisFormat.xAxis)
-    const dataNbActivities = { date: xAxis }
+    const dataNbWorkouts = { date: xAxis }
     const dataDistance = { date: xAxis }
     const dataDuration = { date: xAxis }
 
@@ -91,19 +91,19 @@ export const formatStats = (stats, sports, params, displayedSports, weekm) => {
         )
         .map(sportId => {
           const sportLabel = sports.filter(s => s.id === +sportId)[0].label
-          dataNbActivities[sportLabel] = stats[date][sportId].nb_activities
+          dataNbWorkouts[sportLabel] = stats[date][sportId].nb_workouts
           dataDistance[sportLabel] = stats[date][sportId].total_distance
           dataDuration[sportLabel] = stats[date][sportId].total_duration
           return null
         })
     }
-    nbActivitiesStats.push(dataNbActivities)
+    nbWorkoutsStats.push(dataNbWorkouts)
     distanceStats.push(dataDistance)
     durationStats.push(dataDuration)
   }
 
   return {
-    activities: nbActivitiesStats,
+    workouts: nbWorkoutsStats,
     distance: distanceStats,
     duration: durationStats,
   }

@@ -17,9 +17,9 @@ import { Helmet } from 'react-helmet'
 import { withTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 
-import NoActivities from '../Common/NoActivities'
+import NoWorkouts from '../Common/NoWorkouts'
 import Stats from '../Common/Stats'
-import { activityColors, translateSports } from '../../utils/activities'
+import { workoutColors, translateSports } from '../../utils/workouts'
 
 const durations = ['week', 'month', 'year']
 
@@ -127,11 +127,11 @@ class Statistics extends React.Component {
           <title>FitTrackee - {t('statistics:Statistics')}</title>
         </Helmet>
         <div className="container dashboard">
-          <div className="card activity-card">
+          <div className="card workout-card">
             <div className="card-header">{t('statistics:Statistics')}</div>
             <div
               className={`card-body${
-                user.nb_activities === 0 ? ' stats-disabled' : ''
+                user.nb_workouts === 0 ? ' stats-disabled' : ''
               }`}
             >
               <div className="chart-filters row">
@@ -176,16 +176,16 @@ class Statistics extends React.Component {
                 statsParams={statsParams}
                 t={t}
               />
-              <div className="row chart-activities">
+              <div className="row chart-workouts">
                 {translatedSports.map(sport => (
-                  <label className="col activity-label" key={sport.id}>
+                  <label className="col workout-label" key={sport.id}>
                     <input
                       type="checkbox"
                       checked={displayedSports.includes(sport.id)}
                       name={sport.label}
                       onChange={() => this.handleOnChangeSports(sport.id)}
                     />
-                    <span style={{ color: activityColors[sport.id - 1] }}>
+                    <span style={{ color: workoutColors[sport.id - 1] }}>
                       {` ${sport.label}`}
                     </span>
                   </label>
@@ -193,7 +193,7 @@ class Statistics extends React.Component {
               </div>
             </div>
           </div>
-          {user.nb_activities === 0 && <NoActivities t={t} />}
+          {user.nb_workouts === 0 && <NoWorkouts t={t} />}
         </div>
       </>
     )

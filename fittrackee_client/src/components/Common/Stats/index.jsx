@@ -23,7 +23,7 @@ class Statistics extends React.PureComponent {
 
   updateData() {
     if (this.props.user.username) {
-      this.props.loadActivities(
+      this.props.loadWorkouts(
         this.props.user.username,
         this.props.user.weekm,
         this.props.statsParams
@@ -62,7 +62,7 @@ export default connect(
     user: state.user,
   }),
   dispatch => ({
-    loadActivities: (userName, weekm, data) => {
+    loadWorkouts: (userName, weekm, data) => {
       const dateFormat = 'yyyy-MM-dd'
       // depends on user config (first day of week)
       const time =

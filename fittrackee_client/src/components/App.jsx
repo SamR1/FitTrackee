@@ -4,8 +4,8 @@ import { Route, Switch } from 'react-router-dom'
 
 import './App.css'
 import Admin from './Admin'
-import Activity from './Activity'
-import Activities from './Activities'
+import Workout from './Workout'
+import Workouts from './Workouts'
 import CurrentUserProfile from './User/CurrentUserProfile'
 import Dashboard from './Dashboard'
 import Footer from './Footer'
@@ -68,10 +68,10 @@ class App extends React.Component {
           <Route exact path="/logout" component={Logout} />
           <Route exact path="/profile/edit" component={ProfileEdit} />
           <Route exact path="/profile" component={CurrentUserProfile} />
-          <Route exact path="/activities/history" component={Activities} />
-          <Route exact path="/activities/statistics" component={Statistics} />
+          <Route exact path="/workouts/history" component={Workouts} />
+          <Route exact path="/workouts/statistics" component={Statistics} />
           <Route exact path="/users/:userName" component={UserProfile} />
-          <Route path="/activities" component={Activity} />
+          <Route path="/workouts" component={Workout} />
           <Route path="/admin" component={Admin} />
           <Route component={NotFound} />
         </Switch>

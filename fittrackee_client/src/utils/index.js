@@ -24,7 +24,7 @@ export const apiUrl =
     : `${process.env.REACT_APP_API_URL}/api/`
 
 export const userFilters = [
-  { key: 'activities_count', label: 'activities count' },
+  { key: 'workouts_count', label: 'workouts count' },
   { key: 'admin', label: 'admin rights' },
   { key: 'created_at', label: 'registration date' },
   { key: 'username', label: 'user name' },

@@ -8,8 +8,8 @@ import {
   YAxis,
 } from 'recharts'
 
-import { activityColors } from '../../../utils/activities'
 import { formatValue } from '../../../utils/stats'
+import { workoutColors } from '../../../utils/workouts'
 import CustomTooltip from './CustomTooltip'
 import CustomLabel from './CustomLabel'
 
@@ -56,11 +56,11 @@ export default class StatsCharts extends React.PureComponent {
           <label className="radioLabel col">
             <input
               type="radio"
-              name="activities"
-              checked={displayedData === 'activities'}
+              name="workouts"
+              checked={displayedData === 'workouts'}
               onChange={e => this.handleRadioChange(e)}
             />
-            {t('statistics:activities')}
+            {t('statistics:workouts')}
           </label>
         </div>
         <ResponsiveContainer height={300}>
@@ -81,7 +81,7 @@ export default class StatsCharts extends React.PureComponent {
                 key={s.id}
                 dataKey={s.label}
                 stackId="a"
-                fill={activityColors[i]}
+                fill={workoutColors[i]}
                 label={
                   i === sports.length - 1 ? (
                     <CustomLabel displayedData={displayedData} />

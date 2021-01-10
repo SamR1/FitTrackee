@@ -1,4 +1,4 @@
-import EnActivitiesTranslations from './activities.json'
+import EnWorkoutsTranslations from './workouts.json'
 import EnAdministrationTranslations from './administration.json'
 import EnCommonTranslations from './common.json'
 import EnDashboardTranslations from './dashboard.json'
@@ -8,7 +8,7 @@ import EnStatisticsTranslations from './statistics.json'
 import EnUserTranslations from './user.json'
 
 export const enResources = {
-  activities: EnActivitiesTranslations,
+  workouts: EnWorkoutsTranslations,
   administration: EnAdministrationTranslations,
   common: EnCommonTranslations,
   dashboard: EnDashboardTranslations,

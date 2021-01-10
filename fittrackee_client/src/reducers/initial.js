@@ -9,7 +9,7 @@ export default {
   user: {
     isAuthenticated: false,
   },
-  activities: {
+  workouts: {
     ...emptyData,
   },
   application: {
@@ -23,7 +23,7 @@ export default {
       registration: null,
     },
   },
-  calendarActivities: {
+  calendarWorkouts: {
     ...emptyData,
   },
   chartData: [],

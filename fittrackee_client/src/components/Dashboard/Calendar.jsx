@@ -17,8 +17,8 @@ import { enGB, fr } from 'date-fns/locale'
 import React from 'react'
 import { connect } from 'react-redux'
 
-import CalendarActivities from './CalendarActivities'
-import { getMonthActivities } from '../../actions/activities'
+import CalendarWorkouts from './CalendarWorkouts'
+import { getMonthWorkouts } from '../../actions/workouts'
 import { getDateWithTZ } from '../../utils'
 
 const getStartAndEndMonth = (date, weekStartOnMonday) => {
@@ -44,7 +44,7 @@ class Calendar extends React.Component {
   }
 
   componentDidMount() {
-    this.props.loadMonthActivities(this.state.startDate, this.state.endDate)
+    this.props.loadMonthWorkouts(this.state.startDate, this.state.endDate)
   }
 
   renderHeader(localeOptions) {
@@ -81,11 +81,11 @@ class Calendar extends React.Component {
     return <div className="days row">{days}</div>
   }
 
-  filterActivities(day) {
-    const { activities, user } = this.props
-    if (activities) {
-      return activities.filter(act =>
-        isSameDay(getDateWithTZ(act.activity_date, user.timezone), day)
+  filterWorkouts(day) {
+    const { workouts, user } = this.props
+    if (workouts) {
+      return workouts.filter(act =>
+        isSameDay(getDateWithTZ(act.workout_date, user.timezone), day)
       )
     }
     return []
@@ -105,7 +105,7 @@ class Calendar extends React.Component {
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
         formattedDate = format(day, dateFormat)
-        const dayActivities = this.filterActivities(day)
+        const dayWorkouts = this.filterWorkouts(day)
         const isDisabled = isSameMonth(day, currentMonth) ? '' : '-disabled'
         const isWeekEnd = weekStartOnMonday
           ? [5, 6].includes(i)
@@ -119,8 +119,8 @@ class Calendar extends React.Component {
           >
             <div className={`img${isDisabled}`}>
               <span className="number">{formattedDate}</span>
-              <CalendarActivities
-                dayActivities={dayActivities}
+              <CalendarWorkouts
+                dayWorkouts={dayWorkouts}
                 isDisabled={isDisabled}
                 sports={sports}
               />
@@ -149,7 +149,7 @@ class Calendar extends React.Component {
       startDate: start,
       endDate: end,
     })
-    this.props.loadMonthActivities(start, end)
+    this.props.loadMonthWorkouts(start, end)
   }
 
   handleNextMonth() {
@@ -167,7 +167,7 @@ class Calendar extends React.Component {
       locale: this.props.language === 'fr' ? fr : enGB,
     }
     return (
-      <div className="card activity-card">
+      <div className="card workout-card">
         <div className="calendar">
           {this.renderHeader(localeOptions)}
           {this.renderDays(localeOptions)}
@@ -180,16 +180,16 @@ class Calendar extends React.Component {
 
 export default connect(
   state => ({
-    activities: state.calendarActivities.data,
+    workouts: state.calendarWorkouts.data,
     language: state.language,
     sports: state.sports.data,
     user: state.user,
   }),
   dispatch => ({
-    loadMonthActivities: (start, end) => {
+    loadMonthWorkouts: (start, end) => {
       const dateFormat = 'yyyy-MM-dd'
       dispatch(
-        getMonthActivities(format(start, dateFormat), format(end, dateFormat))
+        getMonthWorkouts(format(start, dateFormat), format(end, dateFormat))
       )
     },
   })

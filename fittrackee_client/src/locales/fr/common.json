@@ -1,6 +1,6 @@
 {
-  "activities count": "nombre d'activités",
-  "Add workout": "Ajouter une activité",
+  "workouts count": "nombre d'séances",
+  "Add workout": "Ajouter une séance",
   "admin rights": "droits d'admin",
   "ascending": "ascendant",
   "Back": "Revenir à la page précédente",
@@ -16,7 +16,7 @@
   "No": "Non",
   "no": "non",
   "No records.": "Pas de records.",
-  "No workouts.": "Pas d'activités.",
+  "No workouts.": "Pas d'séances.",
   "Page not found": "Page introuvable",
   "Previous": "Page précédente",
   "registration date": "date d'inscription",
@@ -30,10 +30,10 @@
   "Submit": "Valider",
   "to": "à",
   "user name": "utilisateur",
-  "Workout": "Activité",
-  "Workouts": "Activités",
-  "workout": "activité",
-  "workouts": "activités",
+  "Workout": "Séance",
+  "Workouts": "Séances",
+  "workout": "séance",
+  "workouts": "séances",
   "Yes": "Oui",
   "yes": "oui"
 }

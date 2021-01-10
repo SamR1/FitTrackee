@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import { formatRecord, translateSports } from '../../utils/activities'
+import { formatRecord, translateSports } from '../../utils/workouts'
 
 export default function RecordsCard(props) {
   const { records, sports, t, user } = props
@@ -19,8 +19,8 @@ export default function RecordsCard(props) {
   }, {})
 
   return (
-    <div className="card activity-card">
-      <div className="card-header">{t('activities:Personal records')}</div>
+    <div className="card workout-card">
+      <div className="card-header">{t('workouts:Personal records')}</div>
       <div className="card-body">
         {Object.keys(recordsBySport).length === 0
           ? t('common:No records.')
@@ -54,12 +54,12 @@ export default function RecordsCard(props) {
                       {recordsBySport[sportLabel].records.map(rec => (
                         <tr className="record-tr" key={rec.id}>
                           <td className="record-td">
-                            {t(`activities:${rec.record_type}`)}
+                            {t(`workouts:${rec.record_type}`)}
                           </td>
                           <td className="record-td text-right">{rec.value}</td>
                           <td className="record-td text-right">
-                            <Link to={`/activities/${rec.activity_id}`}>
-                              {rec.activity_date}
+                            <Link to={`/workouts/${rec.workout_id}`}>
+                              {rec.workout_date}
                             </Link>
                           </td>
                         </tr>

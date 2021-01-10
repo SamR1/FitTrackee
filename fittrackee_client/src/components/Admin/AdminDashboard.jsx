@@ -6,7 +6,7 @@ import AdminStats from './AdminStats'
 export default function AdminDashboard(props) {
   const { appConfig, t } = props
   return (
-    <div className="card activity-card">
+    <div className="card workout-card">
       <div className="card-header">
         <strong>{t('administration:Administration')}</strong>
       </div>

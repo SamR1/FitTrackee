@@ -14,15 +14,15 @@ export default function UserStatistics(props) {
   return (
     <div className="row">
       <div className="col-lg-3 col-md-6 col-sm-6">
-        <div className="card activity-card">
+        <div className="card workout-card">
           <div className="card-body row">
             <div className="col-3">
               <i className="fa fa-calendar fa-3x fa-color" />
             </div>
             <div className="col-9 text-right">
-              <div className="huge">{user.nb_activities}</div>
+              <div className="huge">{user.nb_workouts}</div>
               <div>{`${
-                user.nb_activities === 1
+                user.nb_workouts === 1
                   ? t('common:workout')
                   : t('common:workouts')
               }`}</div>
@@ -31,7 +31,7 @@ export default function UserStatistics(props) {
         </div>
       </div>
       <div className="col-lg-3 col-md-6 col-sm-6">
-        <div className="card activity-card">
+        <div className="card workout-card">
           <div className="card-body row">
             <div className="col-3">
               <i className="fa fa-road fa-3x fa-color" />
@@ -46,7 +46,7 @@ export default function UserStatistics(props) {
         </div>
       </div>
       <div className="col-lg-3 col-md-6 col-sm-6">
-        <div className="card activity-card">
+        <div className="card workout-card">
           <div className="card-body row">
             <div className="col-3">
               <i className="fa fa-clock-o fa-3x fa-color" />
@@ -59,7 +59,7 @@ export default function UserStatistics(props) {
         </div>
       </div>
       <div className="col-lg-3 col-md-6 col-sm-6">
-        <div className="card activity-card">
+        <div className="card workout-card">
           <div className="card-body row">
             <div className="col-3">
               <i className="fa fa-tags fa-3x fa-color" />

@@ -64,106 +64,11 @@ label {
   width: 100%;
 }
 
-.activities-result {
-  font-size: 0.85em;
-}
-
-.activity-card {
-  margin-bottom: 15px;
-}
-
-.activity-details {
-  font-size: 0.95em;
-}
-.activity-date {
-  font-size: 0.75em;
-}
-
-.activity-filter {
-  font-size: 0.9em;
-}
-
-.activity-filter .col-2, .col-5{
-  padding: 0;
-}
-
-.activity-label {
-  font-size: 0.8em;
-  color: #666
-}
-
-.activity-logo {
-  margin: 0 5px;
-  max-width: 20px;
-  max-height: 20px;
-}
-
-.activity-map {
-  background-color: #eaeaea;
-  height: 225px;
-  width: 400px;
-}
-
-.activity-no-map {
-  background-color: #eaeaea;
-  color: #666666;
-  font-style: italic;
-  height: 400px;
-  line-height: 400px;
-}
-
-.activity-notes, .actvitiy-segments {
-  font-size: 0.9em;
-  font-style: italic;
-  margin-top: 10px;
-  padding: 5px;
-}
-
-.activity-page {
-  margin-top: 20px;
-}
-
-.activity-segments-list {
-  list-style: square;
-}
-
-.activity-sport {
-  margin-right: 1px;
-  max-width: 18px;
-  max-height: 18px;
-}
-
-.activity-title img, .activity-title .map-attribution-list   {
-  display: none;
-}
-
-.activity-title img {
-  border: 1px solid lightgrey;
-  border-radius: 4px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  display: none;
-  margin-left: 20px;
-  position: absolute;
-  z-index: 1000;
-}
-
-.activity-title .map-attribution-list {
-  display: none;
-  font-size: 11px;
-  margin-left: 20px;
-  position: absolute;
-  z-index: 1000;
-}
-
-.activity-title:hover img, .activity-title:hover .map-attribution-list   {
-  display: block;
-}
-
-.add-activity {
+.add-workout {
   margin-top: 50px;
 }
 
-.add-activity-radio {
+.add-workout-radio {
   margin-right: 10px;
 }
 
@@ -199,7 +104,7 @@ label {
   font-size: 0.9em;
 }
 
-.chart-activities {
+.chart-workouts {
   margin-left: 60px;
 }
 
@@ -238,7 +143,7 @@ label {
   margin-bottom: 10px;
 }
 
-.col-activity-logo{
+.col-workout-logo{
   padding-right: 0;
 }
 
@@ -563,6 +468,101 @@ label {
   padding: 0.1em;
 }
 
+.workouts-result {
+  font-size: 0.85em;
+}
+
+.workout-card {
+  margin-bottom: 15px;
+}
+
+.workout-details {
+  font-size: 0.95em;
+}
+.workout-date {
+  font-size: 0.75em;
+}
+
+.workout-filter {
+  font-size: 0.9em;
+}
+
+.workout-filter .col-2, .col-5{
+  padding: 0;
+}
+
+.workout-label {
+  font-size: 0.8em;
+  color: #666
+}
+
+.workout-logo {
+  margin: 0 5px;
+  max-width: 20px;
+  max-height: 20px;
+}
+
+.workout-map {
+  background-color: #eaeaea;
+  height: 225px;
+  width: 400px;
+}
+
+.workout-no-map {
+  background-color: #eaeaea;
+  color: #666666;
+  font-style: italic;
+  height: 400px;
+  line-height: 400px;
+}
+
+.workout-notes, .actvitiy-segments {
+  font-size: 0.9em;
+  font-style: italic;
+  margin-top: 10px;
+  padding: 5px;
+}
+
+.workout-page {
+  margin-top: 20px;
+}
+
+.workout-segments-list {
+  list-style: square;
+}
+
+.workout-sport {
+  margin-right: 1px;
+  max-width: 18px;
+  max-height: 18px;
+}
+
+.workout-title img, .workout-title .map-attribution-list   {
+  display: none;
+}
+
+.workout-title img {
+  border: 1px solid lightgrey;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  display: none;
+  margin-left: 20px;
+  position: absolute;
+  z-index: 1000;
+}
+
+.workout-title .map-attribution-list {
+  display: none;
+  font-size: 11px;
+  margin-left: 20px;
+  position: absolute;
+  z-index: 1000;
+}
+
+.workout-title:hover img, .workout-title:hover .map-attribution-list   {
+  display: block;
+}
+
 /* responsive table */
 /* adapted from https://uglyduck.ca/making-tables-responsive-with-minimal-css/ */
 .heading-span,
@@ -745,7 +745,7 @@ label {
   background: #eff1f3;
 }
 
-.calendar-activity,
+.calendar-workout,
 .calendar-more {
   display: none;
 }
@@ -767,15 +767,15 @@ label {
   z-index: 1000;
 }
 
-.calendar-activity-more {
+.calendar-workout-more {
   display: none;
 }
 
 @media only screen and (max-width: 992px) {
 
-  .calendar-activity:nth-child(-n+2),
-  .calendar-activity:nth-child(n+3) ~ .calendar-more,
-  .calendar-activity-more:nth-child(n+3) {
+  .calendar-workout:nth-child(-n+2),
+  .calendar-workout:nth-child(n+3) ~ .calendar-more,
+  .calendar-workout-more:nth-child(n+3) {
     display: inline-block;
   }
 
@@ -783,9 +783,9 @@ label {
 
 @media only screen and (min-width: 992px) and (max-width: 1200px) {
 
-  .calendar-activity:nth-child(-n+4),
-  .calendar-activity:nth-child(n+5) ~ .calendar-more,
-  .calendar-activity-more:nth-child(n+5) {
+  .calendar-workout:nth-child(-n+4),
+  .calendar-workout:nth-child(n+5) ~ .calendar-more,
+  .calendar-workout-more:nth-child(n+5) {
     display: inline-block;
   }
 
@@ -793,9 +793,9 @@ label {
 
 @media only screen and (min-width: 1200px) {
 
-  .calendar-activity:nth-child(-n+6),
-  .calendar-activity:nth-child(n+7) ~ .calendar-more,
-  .calendar-activity-more:nth-child(n+7) {
+  .calendar-workout:nth-child(-n+6),
+  .calendar-workout:nth-child(n+7) ~ .calendar-more,
+  .calendar-workout-more:nth-child(n+7) {
     display: inline-block;
   }
 

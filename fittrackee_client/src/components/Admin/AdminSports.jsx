@@ -94,13 +94,13 @@ class AdminSports extends React.Component {
                                 updateSport(sport.id, !sport.is_active)
                               }
                             />
-                            {sport.has_activities && (
+                            {sport.has_workouts && (
                               <span className="admin-message">
                                 <i
                                   className="fa fa-warning custom-fa"
                                   aria-hidden="true"
                                 />
-                                {t('administration:activities exist')}
+                                {t('administration:workouts exist')}
                               </span>
                             )}
                           </td>

@@ -4,13 +4,13 @@ import { apiUrl } from '../../utils'
 
 export default class StaticMap extends React.PureComponent {
   render() {
-    const { activity, display } = this.props
+    const { display, workout } = this.props
 
     return (
-      <div className={`activity-map${display === 'list' ? '-list' : ''}`}>
+      <div className={`workout-map${display === 'list' ? '-list' : ''}`}>
         <img
-          src={`${apiUrl}activities/map/${activity.map}?${Date.now()}`}
-          alt="activity map"
+          src={`${apiUrl}workouts/map/${workout.map}?${Date.now()}`}
+          alt="workout map"
         />
         <div className={`map-attribution${display === 'list' ? '-list' : ''}`}>
           <span className="map-attribution-text">©</span>

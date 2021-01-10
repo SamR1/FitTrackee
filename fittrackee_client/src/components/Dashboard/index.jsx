@@ -3,15 +3,15 @@ import { Helmet } from 'react-helmet'
 import { withTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 
-import ActivityCard from './ActivityCard'
 import Calendar from './Calendar'
 import Message from '../Common/Message'
-import NoActivities from '../Common/NoActivities'
+import NoWorkouts from '../Common/NoWorkouts'
 import Records from './Records'
 import Statistics from './Statistics'
 import UserStatistics from './UserStatistics'
+import WorkoutCard from './WorkoutCard'
 import { getOrUpdateData } from '../../actions'
-import { getMoreActivities } from '../../actions/activities'
+import { getMoreWorkouts } from '../../actions/workouts'
 
 class DashBoard extends React.Component {
   constructor(props, context) {
@@ -22,22 +22,22 @@ class DashBoard extends React.Component {
   }
 
   componentDidMount() {
-    this.props.loadActivities()
+    this.props.loadWorkouts()
   }
 
   render() {
     const {
-      activities,
-      loadMoreActivities,
+      loadMoreWorkouts,
       message,
       records,
       sports,
       t,
       user,
+      workouts,
     } = this.props
     const paginationEnd =
-      activities.length > 0
-        ? activities[activities.length - 1].previous_activity === null
+      workouts.length > 0
+        ? workouts[workouts.length - 1].previous_workout === null
         : true
     const { page } = this.state
     return (
@@ -48,7 +48,7 @@ class DashBoard extends React.Component {
         {message ? (
           <Message message={message} t={t} />
         ) : (
-          activities &&
+          workouts &&
           user.total_duration &&
           sports.length > 0 && (
             <div className="container dashboard">
@@ -65,26 +65,26 @@ class DashBoard extends React.Component {
                 </div>
                 <div className="col-md-8">
                   <Calendar weekm={user.weekm} />
-                  {activities.length > 0 ? (
-                    activities.map(activity => (
-                      <ActivityCard
-                        activity={activity}
-                        key={activity.id}
+                  {workouts.length > 0 ? (
+                    workouts.map(workout => (
+                      <WorkoutCard
+                        workout={workout}
+                        key={workout.id}
                         sports={sports}
                         t={t}
                         user={user}
                       />
                     ))
                   ) : (
-                    <NoActivities t={t} />
+                    <NoWorkouts t={t} />
                   )}
                   {!paginationEnd && (
                     <input
                       type="submit"
                       className="btn btn-default btn-md btn-block"
-                      value="Load more activities"
+                      value="Load more workouts"
                       onClick={() => {
-                        loadMoreActivities(page + 1)
+                        loadMoreWorkouts(page + 1)
                         this.setState({ page: page + 1 })
                       }}
                     />
@@ -102,19 +102,19 @@ class DashBoard extends React.Component {
 export default withTranslation()(
   connect(
     state => ({
-      activities: state.activities.data,
+      workouts: state.workouts.data,
       message: state.message,
       records: state.records.data,
       sports: state.sports.data,
       user: state.user,
     }),
     dispatch => ({
-      loadActivities: () => {
-        dispatch(getOrUpdateData('getData', 'activities', { page: 1 }))
+      loadWorkouts: () => {
+        dispatch(getOrUpdateData('getData', 'workouts', { page: 1 }))
         dispatch(getOrUpdateData('getData', 'records'))
       },
-      loadMoreActivities: page => {
-        dispatch(getMoreActivities({ page }))
+      loadMoreWorkouts: page => {
+        dispatch(getMoreWorkouts({ page }))
       },
     })
   )(DashBoard)

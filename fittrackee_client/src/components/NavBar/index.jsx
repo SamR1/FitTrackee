@@ -45,7 +45,7 @@ class NavBar extends React.PureComponent {
                     <Link
                       className="nav-link"
                       to={{
-                        pathname: '/activities/history',
+                        pathname: '/workouts/history',
                       }}
                     >
                       {t('Workouts')}
@@ -57,7 +57,7 @@ class NavBar extends React.PureComponent {
                     <Link
                       className="nav-link"
                       to={{
-                        pathname: '/activities/statistics',
+                        pathname: '/workouts/statistics',
                       }}
                     >
                       {t('common:Statistics')}
@@ -81,7 +81,7 @@ class NavBar extends React.PureComponent {
                     <Link
                       className="nav-link"
                       to={{
-                        pathname: '/activities/add',
+                        pathname: '/workouts/add',
                       }}
                     >
                       <strong>{t('common:Add workout')}</strong>
