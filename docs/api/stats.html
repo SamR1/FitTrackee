@@ -129,7 +129,7 @@
 <dl class="http get">
 <dt id="get--api-stats-(user_name)-by_time">
 <code class="sig-name descname">GET </code><code class="sig-name descname">/api/stats/</code><span class="sig-paren">(</span><em class="sig-param">user_name</em><span class="sig-paren">)</span><code class="sig-name descname">/by_time</code><a class="headerlink" href="#get--api-stats-(user_name)-by_time" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get activities statistics for a user by time</p>
+<dd><p>Get workouts statistics for a user by time</p>
 <p><strong>Example requests</strong>:</p>
 <ul class="simple">
 <li><p>without parameters</p></li>
@@ -140,7 +140,8 @@
 <ul class="simple">
 <li><p>with parameters</p></li>
 </ul>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/stats/admin/by_time?from=2018-01-01&amp;to=2018-06-30&amp;time=week</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/stats/admin/by_time?from=2018-01-01&amp;to=2018-06-30&amp;time=week</span>
+  <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
 <p><strong>Example responses</strong>:</p>
@@ -155,19 +156,19 @@
     <span class="nt">&quot;statistics&quot;</span><span class="p">:</span> <span class="p">{</span>
       <span class="nt">&quot;2017&quot;</span><span class="p">:</span> <span class="p">{</span>
         <span class="nt">&quot;3&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;nb_activities&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+          <span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
           <span class="nt">&quot;total_distance&quot;</span><span class="p">:</span> <span class="mf">15.282</span><span class="p">,</span>
           <span class="nt">&quot;total_duration&quot;</span><span class="p">:</span> <span class="mi">12341</span>
         <span class="p">}</span>
       <span class="p">},</span>
       <span class="nt">&quot;2019&quot;</span><span class="p">:</span> <span class="p">{</span>
         <span class="nt">&quot;1&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;nb_activities&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+          <span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
           <span class="nt">&quot;total_distance&quot;</span><span class="p">:</span> <span class="mi">47</span><span class="p">,</span>
           <span class="nt">&quot;total_duration&quot;</span><span class="p">:</span> <span class="mi">9960</span>
         <span class="p">},</span>
         <span class="nt">&quot;2&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="nt">&quot;nb_activities&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+          <span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
           <span class="nt">&quot;total_distance&quot;</span><span class="p">:</span> <span class="mf">5.613</span><span class="p">,</span>
           <span class="nt">&quot;total_duration&quot;</span><span class="p">:</span> <span class="mi">1267</span>
         <span class="p">}</span>
@@ -179,7 +180,7 @@
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>no activities</p></li>
+<li><p>no workouts</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -239,10 +240,10 @@
 <dl class="http get">
 <dt id="get--api-stats-(user_name)-by_sport">
 <code class="sig-name descname">GET </code><code class="sig-name descname">/api/stats/</code><span class="sig-paren">(</span><em class="sig-param">user_name</em><span class="sig-paren">)</span><code class="sig-name descname">/by_sport</code><a class="headerlink" href="#get--api-stats-(user_name)-by_sport" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get activities statistics for a user by sport</p>
+<dd><p>Get workouts statistics for a user by sport</p>
 <p><strong>Example requests</strong>:</p>
 <ul class="simple">
-<li><p>without parameters (get stats for all sports with activities)</p></li>
+<li><p>without parameters (get stats for all sports with workouts)</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/stats/admin/by_sport</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
@@ -264,17 +265,17 @@
   <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
     <span class="nt">&quot;statistics&quot;</span><span class="p">:</span> <span class="p">{</span>
       <span class="nt">&quot;1&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;nb_activities&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
         <span class="nt">&quot;total_distance&quot;</span><span class="p">:</span> <span class="mi">47</span><span class="p">,</span>
         <span class="nt">&quot;total_duration&quot;</span><span class="p">:</span> <span class="mi">9960</span>
       <span class="p">},</span>
       <span class="nt">&quot;2&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;nb_activities&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
         <span class="nt">&quot;total_distance&quot;</span><span class="p">:</span> <span class="mf">5.613</span><span class="p">,</span>
         <span class="nt">&quot;total_duration&quot;</span><span class="p">:</span> <span class="mi">1267</span>
       <span class="p">},</span>
       <span class="nt">&quot;3&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;nb_activities&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
         <span class="nt">&quot;total_distance&quot;</span><span class="p">:</span> <span class="mf">15.282</span><span class="p">,</span>
         <span class="nt">&quot;total_duration&quot;</span><span class="p">:</span> <span class="mi">12341</span>
       <span class="p">}</span>
@@ -285,7 +286,7 @@
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>no activities</p></li>
+<li><p>no workouts</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -348,10 +349,10 @@
 
 <span class="p">{</span>
   <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;activities&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
     <span class="nt">&quot;sports&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="nt">&quot;uploads_dir_size&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
     <span class="nt">&quot;users&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-    <span class="nt">&quot;uploads_dir_size&quot;</span><span class="p">:</span> <span class="mi">1000</span>
+    <span class="nt">&quot;workouts&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
   <span class="p">},</span>
   <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span>
 <span class="p">}</span>

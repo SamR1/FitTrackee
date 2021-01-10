@@ -3,13 +3,13 @@ from datetime import datetime, timedelta
 from io import BytesIO
 from unittest.mock import patch
 
-from fittrackee.activities.models import Activity, Sport
 from fittrackee.users.models import User
+from fittrackee.workouts.models import Sport, Workout
 from flask import Flask
 
 
 class TestGetUser:
-    def test_it_gets_single_user_without_activities(
+    def test_it_gets_single_user_without_workouts(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
         client = app.test_client()
@@ -45,20 +45,20 @@ class TestGetUser:
         assert user['timezone'] is None
         assert user['weekm'] is False
         assert user['language'] is None
-        assert user['nb_activities'] == 0
         assert user['nb_sports'] == 0
+        assert user['nb_workouts'] == 0
         assert user['sports_list'] == []
         assert user['total_distance'] == 0
         assert user['total_duration'] == '0:00:00'
 
-    def test_it_gets_single_user_with_activities(
+    def test_it_gets_single_user_with_workouts(
         self,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        activity_cycling_user_1: Activity,
-        activity_running_user_1: Activity,
+        workout_cycling_user_1: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -93,8 +93,8 @@ class TestGetUser:
         assert user['timezone'] is None
         assert user['weekm'] is False
         assert user['language'] is None
-        assert user['nb_activities'] == 2
         assert user['nb_sports'] == 2
+        assert user['nb_workouts'] == 2
         assert user['sports_list'] == [1, 2]
         assert user['total_distance'] == 22
         assert user['total_duration'] == '2:40:00'
@@ -158,24 +158,24 @@ class TestGetUsers:
         assert data['data']['users'][0]['timezone'] is None
         assert data['data']['users'][0]['weekm'] is False
         assert data['data']['users'][0]['language'] is None
-        assert data['data']['users'][0]['nb_activities'] == 0
         assert data['data']['users'][0]['nb_sports'] == 0
+        assert data['data']['users'][0]['nb_workouts'] == 0
         assert data['data']['users'][0]['sports_list'] == []
         assert data['data']['users'][0]['total_distance'] == 0
         assert data['data']['users'][0]['total_duration'] == '0:00:00'
         assert data['data']['users'][1]['timezone'] is None
         assert data['data']['users'][1]['weekm'] is False
         assert data['data']['users'][1]['language'] is None
-        assert data['data']['users'][1]['nb_activities'] == 0
         assert data['data']['users'][1]['nb_sports'] == 0
+        assert data['data']['users'][1]['nb_workouts'] == 0
         assert data['data']['users'][1]['sports_list'] == []
         assert data['data']['users'][1]['total_distance'] == 0
         assert data['data']['users'][1]['total_duration'] == '0:00:00'
         assert data['data']['users'][2]['timezone'] is None
         assert data['data']['users'][2]['weekm'] is True
         assert data['data']['users'][2]['language'] is None
-        assert data['data']['users'][2]['nb_activities'] == 0
         assert data['data']['users'][2]['nb_sports'] == 0
+        assert data['data']['users'][2]['nb_workouts'] == 0
         assert data['data']['users'][2]['sports_list'] == []
         assert data['data']['users'][2]['total_distance'] == 0
         assert data['data']['users'][2]['total_duration'] == '0:00:00'
@@ -187,17 +187,17 @@ class TestGetUsers:
             'total': 3,
         }
 
-    def test_it_gets_users_list_with_activities(
+    def test_it_gets_users_list_with_workouts(
         self,
         app: Flask,
         user_1: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
-        activity_cycling_user_1: Activity,
+        workout_cycling_user_1: Workout,
         sport_2_running: Sport,
-        activity_running_user_1: Activity,
-        activity_cycling_user_2: Activity,
+        workout_running_user_1: Workout,
+        workout_cycling_user_2: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -229,22 +229,22 @@ class TestGetUsers:
         assert 'sam@test.com' in data['data']['users'][2]['email']
         assert data['data']['users'][0]['timezone'] is None
         assert data['data']['users'][0]['weekm'] is False
-        assert data['data']['users'][0]['nb_activities'] == 2
         assert data['data']['users'][0]['nb_sports'] == 2
+        assert data['data']['users'][0]['nb_workouts'] == 2
         assert data['data']['users'][0]['sports_list'] == [1, 2]
         assert data['data']['users'][0]['total_distance'] == 22.0
         assert data['data']['users'][0]['total_duration'] == '2:40:00'
         assert data['data']['users'][1]['timezone'] is None
         assert data['data']['users'][1]['weekm'] is False
-        assert data['data']['users'][1]['nb_activities'] == 1
         assert data['data']['users'][1]['nb_sports'] == 1
+        assert data['data']['users'][1]['nb_workouts'] == 1
         assert data['data']['users'][1]['sports_list'] == [1]
         assert data['data']['users'][1]['total_distance'] == 15
         assert data['data']['users'][1]['total_duration'] == '1:00:00'
         assert data['data']['users'][2]['timezone'] is None
         assert data['data']['users'][2]['weekm'] is True
-        assert data['data']['users'][2]['nb_activities'] == 0
         assert data['data']['users'][2]['nb_sports'] == 0
+        assert data['data']['users'][2]['nb_workouts'] == 0
         assert data['data']['users'][2]['sports_list'] == []
         assert data['data']['users'][2]['total_distance'] == 0
         assert data['data']['users'][2]['total_duration'] == '0:00:00'
@@ -745,14 +745,14 @@ class TestGetUsers:
             'total': 3,
         }
 
-    def test_it_gets_users_list_ordered_by_activities_count(
+    def test_it_gets_users_list_ordered_by_workouts_count(
         self,
         app: Flask,
         user_1: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
-        activity_cycling_user_2: Activity,
+        workout_cycling_user_2: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -762,7 +762,7 @@ class TestGetUsers:
         )
 
         response = client.get(
-            '/api/users?order_by=activities_count',
+            '/api/users?order_by=workouts_count',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -774,11 +774,11 @@ class TestGetUsers:
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'test' in data['data']['users'][0]['username']
-        assert 0 == data['data']['users'][0]['nb_activities']
+        assert 0 == data['data']['users'][0]['nb_workouts']
         assert 'sam' in data['data']['users'][1]['username']
-        assert 0 == data['data']['users'][1]['nb_activities']
+        assert 0 == data['data']['users'][1]['nb_workouts']
         assert 'toto' in data['data']['users'][2]['username']
-        assert 1 == data['data']['users'][2]['nb_activities']
+        assert 1 == data['data']['users'][2]['nb_workouts']
         assert data['pagination'] == {
             'has_next': False,
             'has_prev': False,
@@ -787,14 +787,14 @@ class TestGetUsers:
             'total': 3,
         }
 
-    def test_it_gets_users_list_ordered_by_activities_count_ascending(
+    def test_it_gets_users_list_ordered_by_workouts_count_ascending(
         self,
         app: Flask,
         user_1: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
-        activity_cycling_user_2: Activity,
+        workout_cycling_user_2: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -804,7 +804,7 @@ class TestGetUsers:
         )
 
         response = client.get(
-            '/api/users?order_by=activities_count&order=asc',
+            '/api/users?order_by=workouts_count&order=asc',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -816,11 +816,11 @@ class TestGetUsers:
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'test' in data['data']['users'][0]['username']
-        assert 0 == data['data']['users'][0]['nb_activities']
+        assert 0 == data['data']['users'][0]['nb_workouts']
         assert 'sam' in data['data']['users'][1]['username']
-        assert 0 == data['data']['users'][1]['nb_activities']
+        assert 0 == data['data']['users'][1]['nb_workouts']
         assert 'toto' in data['data']['users'][2]['username']
-        assert 1 == data['data']['users'][2]['nb_activities']
+        assert 1 == data['data']['users'][2]['nb_workouts']
         assert data['pagination'] == {
             'has_next': False,
             'has_prev': False,
@@ -829,14 +829,14 @@ class TestGetUsers:
             'total': 3,
         }
 
-    def test_it_gets_users_list_ordered_by_activities_count_descending(
+    def test_it_gets_users_list_ordered_by_workouts_count_descending(
         self,
         app: Flask,
         user_1: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
-        activity_cycling_user_2: Activity,
+        workout_cycling_user_2: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -846,7 +846,7 @@ class TestGetUsers:
         )
 
         response = client.get(
-            '/api/users?order_by=activities_count&order=desc',
+            '/api/users?order_by=workouts_count&order=desc',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -858,11 +858,11 @@ class TestGetUsers:
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'toto' in data['data']['users'][0]['username']
-        assert 1 == data['data']['users'][0]['nb_activities']
+        assert 1 == data['data']['users'][0]['nb_workouts']
         assert 'test' in data['data']['users'][1]['username']
-        assert 0 == data['data']['users'][1]['nb_activities']
+        assert 0 == data['data']['users'][1]['nb_workouts']
         assert 'sam' in data['data']['users'][2]['username']
-        assert 0 == data['data']['users'][2]['nb_activities']
+        assert 0 == data['data']['users'][2]['nb_workouts']
         assert data['pagination'] == {
             'has_next': False,
             'has_prev': False,
@@ -1156,7 +1156,7 @@ class TestDeleteUser:
 
         assert response.status_code == 204
 
-    def test_user_with_activity_can_delete_its_own_account(
+    def test_user_with_workout_can_delete_its_own_account(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
         client = app.test_client()
@@ -1166,7 +1166,7 @@ class TestDeleteUser:
             content_type='application/json',
         )
         client.post(
-            '/api/activities',
+            '/api/workouts',
             data=dict(
                 file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
                 data='{"sport_id": 1}',

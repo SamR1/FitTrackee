@@ -1,34 +1,34 @@
 import json
 import os
 
-from fittrackee.activities.models import Activity, Sport
-from fittrackee.activities.utils import get_absolute_file_path
 from fittrackee.users.models import User
+from fittrackee.workouts.models import Sport, Workout
+from fittrackee.workouts.utils import get_absolute_file_path
 from flask import Flask
 
-from .utils import get_random_short_id, post_an_activity
+from .utils import get_random_short_id, post_an_workout
 
 
-def get_gpx_filepath(activity_id: int) -> str:
-    activity = Activity.query.filter_by(id=activity_id).first()
-    return activity.gpx
+def get_gpx_filepath(workout_id: int) -> str:
+    workout = Workout.query.filter_by(id=workout_id).first()
+    return workout.gpx
 
 
-class TestDeleteActivityWithGpx:
-    def test_it_deletes_an_activity_with_gpx(
+class TestDeleteWorkoutWithGpx:
+    def test_it_deletes_an_workout_with_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
-        token, activity_short_id = post_an_activity(app, gpx_file)
+        token, workout_short_id = post_an_workout(app, gpx_file)
         client = app.test_client()
 
         response = client.delete(
-            f'/api/activities/{activity_short_id}',
+            f'/api/workouts/{workout_short_id}',
             headers=dict(Authorization=f'Bearer {token}'),
         )
 
         assert response.status_code == 204
 
-    def test_it_returns_403_when_deleting_an_activity_from_different_user(
+    def test_it_returns_403_when_deleting_an_workout_from_different_user(
         self,
         app: Flask,
         user_1: User,
@@ -36,7 +36,7 @@ class TestDeleteActivityWithGpx:
         sport_1_cycling: Sport,
         gpx_file: str,
     ) -> None:
-        _, activity_short_id = post_an_activity(app, gpx_file)
+        _, workout_short_id = post_an_workout(app, gpx_file)
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -45,7 +45,7 @@ class TestDeleteActivityWithGpx:
         )
 
         response = client.delete(
-            f'/api/activities/{activity_short_id}',
+            f'/api/workouts/{workout_short_id}',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -58,7 +58,7 @@ class TestDeleteActivityWithGpx:
         assert 'error' in data['status']
         assert 'You do not have permissions.' in data['message']
 
-    def test_it_returns_404_if_activity_does_not_exist(
+    def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
         client = app.test_client()
@@ -68,7 +68,7 @@ class TestDeleteActivityWithGpx:
             content_type='application/json',
         )
         response = client.delete(
-            f'/api/activities/{get_random_short_id()}',
+            f'/api/workouts/{get_random_short_id()}',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -78,17 +78,17 @@ class TestDeleteActivityWithGpx:
         assert response.status_code == 404
         assert 'not found' in data['status']
 
-    def test_it_returns_500_when_deleting_an_activity_with_gpx_invalid_file(
+    def test_it_returns_500_when_deleting_an_workout_with_gpx_invalid_file(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
-        token, activity_short_id = post_an_activity(app, gpx_file)
+        token, workout_short_id = post_an_workout(app, gpx_file)
         client = app.test_client()
         gpx_filepath = get_gpx_filepath(1)
         gpx_filepath = get_absolute_file_path(gpx_filepath)
         os.remove(gpx_filepath)
 
         response = client.delete(
-            f'/api/activities/{activity_short_id}',
+            f'/api/workouts/{workout_short_id}',
             headers=dict(Authorization=f'Bearer {token}'),
         )
 
@@ -102,13 +102,13 @@ class TestDeleteActivityWithGpx:
         )
 
 
-class TestDeleteActivityWithoutGpx:
-    def test_it_deletes_an_activity_wo_gpx(
+class TestDeleteWorkoutWithoutGpx:
+    def test_it_deletes_an_workout_wo_gpx(
         self,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        activity_cycling_user_1: Activity,
+        workout_cycling_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -117,7 +117,7 @@ class TestDeleteActivityWithoutGpx:
             content_type='application/json',
         )
         response = client.delete(
-            f'/api/activities/{activity_cycling_user_1.short_id}',
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']
@@ -125,13 +125,13 @@ class TestDeleteActivityWithoutGpx:
         )
         assert response.status_code == 204
 
-    def test_it_returns_403_when_deleting_an_activity_from_different_user(
+    def test_it_returns_403_when_deleting_an_workout_from_different_user(
         self,
         app: Flask,
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
-        activity_cycling_user_1: Activity,
+        workout_cycling_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -140,7 +140,7 @@ class TestDeleteActivityWithoutGpx:
             content_type='application/json',
         )
         response = client.delete(
-            f'/api/activities/{activity_cycling_user_1.short_id}',
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
             headers=dict(
                 Authorization='Bearer '
                 + json.loads(resp_login.data.decode())['auth_token']

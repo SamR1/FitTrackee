@@ -19,6 +19,9 @@ clean-install:
 	rm -rf .pytest_cache
 	rm -rf dist/
 
+downgrade-db:
+	$(FLASK) db downgrade --directory $(MIGRATIONS)
+
 html:
 	rm -rf docsrc/build
 	rm -rf docs/*

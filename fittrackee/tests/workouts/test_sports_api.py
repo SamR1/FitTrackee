@@ -1,7 +1,7 @@
 import json
 
-from fittrackee.activities.models import Activity, Sport
 from fittrackee.users.models import User
+from fittrackee.workouts.models import Sport, Workout
 from flask import Flask
 
 expected_sport_1_cycling_result = {
@@ -11,7 +11,7 @@ expected_sport_1_cycling_result = {
     'is_active': True,
 }
 expected_sport_1_cycling_admin_result = expected_sport_1_cycling_result.copy()
-expected_sport_1_cycling_admin_result['has_activities'] = False
+expected_sport_1_cycling_admin_result['has_workouts'] = False
 
 expected_sport_2_running_result = {
     'id': 2,
@@ -20,7 +20,7 @@ expected_sport_2_running_result = {
     'is_active': True,
 }
 expected_sport_2_running_admin_result = expected_sport_2_running_result.copy()
-expected_sport_2_running_admin_result['has_activities'] = False
+expected_sport_2_running_admin_result['has_workouts'] = False
 
 expected_sport_1_cycling_inactive_result = {
     'id': 1,
@@ -31,7 +31,7 @@ expected_sport_1_cycling_inactive_result = {
 expected_sport_1_cycling_inactive_admin_result = (
     expected_sport_1_cycling_inactive_result.copy()
 )
-expected_sport_1_cycling_inactive_admin_result['has_activities'] = False
+expected_sport_1_cycling_inactive_admin_result['has_workouts'] = False
 
 
 class TestGetSports:
@@ -266,7 +266,7 @@ class TestUpdateSport:
         assert 'success' in data['status']
         assert len(data['data']['sports']) == 1
         assert data['data']['sports'][0]['is_active'] is False
-        assert data['data']['sports'][0]['has_activities'] is False
+        assert data['data']['sports'][0]['has_workouts'] is False
 
     def test_it_enables_a_sport(
         self, app: Flask, user_1_admin: User, sport_1_cycling: Sport
@@ -296,14 +296,14 @@ class TestUpdateSport:
         assert 'success' in data['status']
         assert len(data['data']['sports']) == 1
         assert data['data']['sports'][0]['is_active'] is True
-        assert data['data']['sports'][0]['has_activities'] is False
+        assert data['data']['sports'][0]['has_workouts'] is False
 
-    def test_it_disables_a_sport_with_activities(
+    def test_it_disables_a_sport_with_workouts(
         self,
         app: Flask,
         user_1_admin: User,
         sport_1_cycling: Sport,
-        activity_cycling_user_1: Activity,
+        workout_cycling_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -329,14 +329,14 @@ class TestUpdateSport:
         assert 'success' in data['status']
         assert len(data['data']['sports']) == 1
         assert data['data']['sports'][0]['is_active'] is False
-        assert data['data']['sports'][0]['has_activities'] is True
+        assert data['data']['sports'][0]['has_workouts'] is True
 
-    def test_it_enables_a_sport_with_activities(
+    def test_it_enables_a_sport_with_workouts(
         self,
         app: Flask,
         user_1_admin: User,
         sport_1_cycling: Sport,
-        activity_cycling_user_1: Activity,
+        workout_cycling_user_1: Workout,
     ) -> None:
         sport_1_cycling.is_active = False
         client = app.test_client()
@@ -363,7 +363,7 @@ class TestUpdateSport:
         assert 'success' in data['status']
         assert len(data['data']['sports']) == 1
         assert data['data']['sports'][0]['is_active'] is True
-        assert data['data']['sports'][0]['has_activities'] is True
+        assert data['data']['sports'][0]['has_workouts'] is True
 
     def test_returns_error_if_user_has_no_admin_rights(
         self, app: Flask, user_1: User, sport_1_cycling: Sport

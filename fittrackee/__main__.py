@@ -6,10 +6,10 @@ from typing import Dict, Optional
 
 import gunicorn.app.base
 from fittrackee import create_app, db
-from fittrackee.activities.models import Activity
-from fittrackee.activities.utils import update_activity
 from fittrackee.application.utils import init_config
 from fittrackee.database_utils import init_database
+from fittrackee.workouts.models import Workout
+from fittrackee.workouts.utils import update_workout
 from flask import Flask
 from flask_dramatiq import worker
 from flask_migrate import upgrade
@@ -68,19 +68,19 @@ def init_data() -> None:
 
 @app.cli.command()
 def recalculate() -> None:
-    print("Starting activities data refresh")
-    activities = (
-        Activity.query.filter(Activity.gpx != None)  # noqa
-        .order_by(Activity.activity_date.asc())  # noqa
+    print("Starting workouts data refresh")
+    workouts = (
+        Workout.query.filter(Workout.gpx != None)  # noqa
+        .order_by(Workout.workout_date.asc())  # noqa
         .all()
     )
-    if len(activities) == 0:
-        print('➡️  no activities to upgrade.')
+    if len(workouts) == 0:
+        print('➡️  no workouts to upgrade.')
         return None
-    pbar = tqdm(activities)
-    for activity in pbar:
-        update_activity(activity)
-        pbar.set_postfix(activitiy_id=activity.id)
+    pbar = tqdm(workouts)
+    for workout in pbar:
+        update_workout(workout)
+        pbar.set_postfix(activitiy_id=workout.id)
     db.session.commit()
 
 

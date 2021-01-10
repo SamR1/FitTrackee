@@ -25,7 +25,7 @@ Administration
 
 - **Sports**
 
-  - enable or disable a sport (a sport can be disabled even if activity with this sport exists)
+  - enable or disable a sport (a sport can be disabled even if workout with this sport exists)
 
 Account
 ^^^^^^^
@@ -33,29 +33,29 @@ Account
 - A user can reset his password (*new in 0.3.0*)
 
 
-Activities/Workouts
-^^^^^^^^^^^^^^^^^^^
-- 6 sports supported:
+Workouts
+^^^^^^^^
+- 6 sports are supported:
      - Cycling (Sport)
      - Cycling (Transport)
      - Hiking
      - Montain Biking
      - Running
      - Walking
-- Dashboard with month calendar displaying activities and record. The week can start on Sunday or Monday (which can be changed in the user settings)
-- Activity creation by uploading a gpx file. An activity can even be created without gpx (the user must enter date, time, duration and distance)
-- An activity with a gpx file can be displayed with map, weather (if the DarkSky API key is provided) and charts (speed and elevation). Segments can be displayed
-- Activity edition and deletion. User can add a note
+- Dashboard with month calendar displaying workouts and record. The week can start on Sunday or Monday (which can be changed in the user settings)
+- Workout creation by uploading a gpx file. A workout can even be created without gpx (the user must enter date, time, duration and distance)
+- A workout with a gpx file can be displayed with map, weather (if the DarkSky API key is provided) and charts (speed and elevation). Segments can be displayed
+- Workout edition and deletion. User can add a note
 - User statistics
 - User records by sports:
     - average speed
     - farest distance
     - longest duration
     - maximum speed
-- Activities list and filter
+- Workours list and filter
 
 .. note::
-    for now, only the owner of the activity can see the activity.
+    for now, only the owner of the workout can see it.
 
 Translations
 ^^^^^^^^^^^^
@@ -69,16 +69,16 @@ Dashboard
    :alt: FitTrackee Dashboard
 
 
-Activity/workout detail
+Workout detail
 ~~~~~~~~~~~~~~~~~~~~~~~
 .. figure:: _images/fittrackee_screenshot-02.png
-   :alt: FitTrackee Activity
+   :alt: FitTrackee Workout
 
 
-Activities/workouts list
-~~~~~~~~~~~~~~~~~~~~~~~~
+Workouts list
+~~~~~~~~~~~~~
 .. figure:: _images/fittrackee_screenshot-03.png
-   :alt: FitTrackee Activities
+   :alt: FitTrackee Workouts
 
 
 Statistics

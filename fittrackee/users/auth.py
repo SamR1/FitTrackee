@@ -18,7 +18,7 @@ from sqlalchemy import exc, or_
 from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
-from ..activities.utils_files import get_absolute_file_path
+from ..workouts.utils_files import get_absolute_file_path
 from .models import User
 from .utils import (
     authenticate,
@@ -310,8 +310,8 @@ def get_authenticated_user_profile(
           "language": "en",
           "last_name": null,
           "location": null,
-          "nb_activities": 6,
           "nb_sports": 3,
+          "nb_workouts": 6,
           "picture": false,
           "sports_list": [
               1,
@@ -371,8 +371,8 @@ def edit_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
           "language": "en",
           "last_name": null,
           "location": null,
-          "nb_activities": 6,
           "nb_sports": 3,
+          "nb_workouts": 6,
           "picture": false,
           "sports_list": [
               1,

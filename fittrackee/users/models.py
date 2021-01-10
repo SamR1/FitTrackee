@@ -9,7 +9,7 @@ from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.sql.expression import select
 
-from ..activities.models import Activity
+from ..workouts.models import Workout
 from .utils_token import decode_user_token, get_user_token
 
 BaseModel: DeclarativeMeta = db.Model
@@ -32,8 +32,8 @@ class User(BaseModel):
     timezone = db.Column(db.String(50), nullable=True)
     # does the week start Monday?
     weekm = db.Column(db.Boolean(50), default=False, nullable=False)
-    activities = db.relationship(
-        'Activity', lazy=True, backref=db.backref('user', lazy='joined')
+    workouts = db.relationship(
+        'Workout', lazy=True, backref=db.backref('user', lazy='joined')
     )
     records = db.relationship(
         'Record', lazy=True, backref=db.backref('user', lazy='joined')
@@ -90,33 +90,33 @@ class User(BaseModel):
             return 'Invalid token. Please log in again.'
 
     @hybrid_property
-    def activities_count(self) -> int:
-        return Activity.query.filter(Activity.user_id == self.id).count()
+    def workouts_count(self) -> int:
+        return Workout.query.filter(Workout.user_id == self.id).count()
 
-    @activities_count.expression  # type: ignore
-    def activities_count(self) -> int:
+    @workouts_count.expression  # type: ignore
+    def workouts_count(self) -> int:
         return (
-            select([func.count(Activity.id)])
-            .where(Activity.user_id == self.id)
-            .label('activities_count')
+            select([func.count(Workout.id)])
+            .where(Workout.user_id == self.id)
+            .label('workouts_count')
         )
 
     def serialize(self) -> Dict:
         sports = []
         total = (0, '0:00:00')
-        if self.activities_count > 0:  # type: ignore
+        if self.workouts_count > 0:  # type: ignore
             sports = (
-                db.session.query(Activity.sport_id)
-                .filter(Activity.user_id == self.id)
-                .group_by(Activity.sport_id)
-                .order_by(Activity.sport_id)
+                db.session.query(Workout.sport_id)
+                .filter(Workout.user_id == self.id)
+                .group_by(Workout.sport_id)
+                .order_by(Workout.sport_id)
                 .all()
             )
             total = (
                 db.session.query(
-                    func.sum(Activity.distance), func.sum(Activity.duration)
+                    func.sum(Workout.distance), func.sum(Workout.duration)
                 )
-                .filter(Activity.user_id == self.id)
+                .filter(Workout.user_id == self.id)
                 .first()
             )
         return {
@@ -133,8 +133,8 @@ class User(BaseModel):
             'timezone': self.timezone,
             'weekm': self.weekm,
             'language': self.language,
-            'nb_activities': self.activities_count,
             'nb_sports': len(sports),
+            'nb_workouts': self.workouts_count,
             'sports_list': [
                 sport for sportslist in sports for sport in sportslist
             ],

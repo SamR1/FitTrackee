@@ -14,8 +14,8 @@ from fittrackee.responses import (
 from flask import Blueprint, request, send_file
 from sqlalchemy import exc
 
-from ..activities.utils_files import get_absolute_file_path
-from .models import Activity, User
+from ..workouts.utils_files import get_absolute_file_path
+from .models import User, Workout
 from .utils import authenticate, authenticate_as_admin
 
 users_blueprint = Blueprint('users', __name__)
@@ -42,7 +42,7 @@ def get_users(auth_user_id: int) -> Dict:
 
     .. sourcecode:: http
 
-      GET /api/users?order_by=activities_count&par_page=5  HTTP/1.1
+      GET /api/users?order_by=workouts_count&par_page=5  HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -65,8 +65,8 @@ def get_users(auth_user_id: int) -> Dict:
               "language": "en",
               "last_name": null,
               "location": null,
-              "nb_activities": 6,
               "nb_sports": 3,
+              "nb_workouts": 6,
               "picture": false,
               "sports_list": [
                   1,
@@ -88,8 +88,8 @@ def get_users(auth_user_id: int) -> Dict:
               "language": "fr",
               "last_name": null,
               "location": null,
-              "nb_activities": 0,
               "nb_sports": 0,
+              "nb_workouts": 0,
               "picture": false,
               "sports_list": [],
               "timezone": "Europe/Paris",
@@ -108,7 +108,7 @@ def get_users(auth_user_id: int) -> Dict:
     :query integer per_page: number of users per page (default: 10, max: 50)
     :query string q: query on user name
     :query string order_by: sorting criteria (``username``, ``created_at``,
-                            ``activities_count``, ``admin``)
+                            ``workouts_count``, ``admin``)
     :query string order: sorting order (default: ``asc``)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
@@ -137,11 +137,11 @@ def get_users(auth_user_id: int) -> Dict:
             User.username.like('%' + query + '%') if query else True,
         )
         .order_by(
-            User.activities_count.asc()  # type: ignore
-            if order_by == 'activities_count' and order == 'asc'
+            User.workouts_count.asc()  # type: ignore
+            if order_by == 'workouts_count' and order == 'asc'
             else True,
-            User.activities_count.desc()  # type: ignore
-            if order_by == 'activities_count' and order == 'desc'
+            User.workouts_count.desc()  # type: ignore
+            if order_by == 'workouts_count' and order == 'desc'
             else True,
             User.username.asc()
             if order_by == 'username' and order == 'asc'
@@ -212,8 +212,8 @@ def get_single_user(
             "language": "en",
             "last_name": null,
             "location": null,
-            "nb_activities": 6,
             "nb_sports": 3,
+            "nb_workouts": 6,
             "picture": false,
             "sports_list": [
                 1,
@@ -328,7 +328,7 @@ def update_user(
             "language": "en",
             "last_name": null,
             "location": null,
-            "nb_activities": 6,
+            "nb_workouts": 6,
             "nb_sports": 3,
             "picture": false,
             "sports_list": [
@@ -443,8 +443,8 @@ def delete_user(
                 'no other user has admin rights.'
             )
 
-        for activity in Activity.query.filter_by(user_id=user.id).all():
-            db.session.delete(activity)
+        for workout in Workout.query.filter_by(user_id=user.id).all():
+            db.session.delete(workout)
             db.session.flush()
         user_picture = user.picture
         db.session.delete(user)
@@ -454,7 +454,7 @@ def delete_user(
             if os.path.isfile(picture_path):
                 os.remove(picture_path)
         shutil.rmtree(
-            get_absolute_file_path(f'activities/{user.id}'),
+            get_absolute_file_path(f'workouts/{user.id}'),
             ignore_errors=True,
         )
         shutil.rmtree(

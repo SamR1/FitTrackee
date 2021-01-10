@@ -3,7 +3,7 @@ from io import BytesIO
 from typing import Tuple
 from uuid import uuid4
 
-from fittrackee.activities.utils_id import encode_uuid
+from fittrackee.workouts.utils_id import encode_uuid
 from flask import Flask
 
 
@@ -11,7 +11,7 @@ def get_random_short_id() -> str:
     return encode_uuid(uuid4())
 
 
-def post_an_activity(app: Flask, gpx_file: str) -> Tuple[str, str]:
+def post_an_workout(app: Flask, gpx_file: str) -> Tuple[str, str]:
     client = app.test_client()
     resp_login = client.post(
         '/api/auth/login',
@@ -20,7 +20,7 @@ def post_an_activity(app: Flask, gpx_file: str) -> Tuple[str, str]:
     )
     token = json.loads(resp_login.data.decode())['auth_token']
     response = client.post(
-        '/api/activities',
+        '/api/workouts',
         data=dict(
             file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
             data='{"sport_id": 1}',
@@ -30,4 +30,4 @@ def post_an_activity(app: Flask, gpx_file: str) -> Tuple[str, str]:
         ),
     )
     data = json.loads(response.data.decode())
-    return token, data['data']['activities'][0]['id']
+    return token, data['data']['workouts'][0]['id']

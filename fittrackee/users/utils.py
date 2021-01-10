@@ -78,8 +78,8 @@ def verify_extension_and_size(
         return InvalidPayloadErrorResponse('No selected file.', 'fail')
 
     allowed_extensions = (
-        'ACTIVITY_ALLOWED_EXTENSIONS'
-        if file_type == 'activity'
+        'WORKOUT_ALLOWED_EXTENSIONS'
+        if file_type == 'workout'
         else 'PICTURE_ALLOWED_EXTENSIONS'
     )
 
@@ -158,13 +158,13 @@ def authenticate_as_admin(f: Callable) -> Callable:
     return decorated_function
 
 
-def can_view_activity(
-    auth_user_id: int, activity_user_id: int
+def can_view_workout(
+    auth_user_id: int, workout_user_id: int
 ) -> Optional[HttpResponse]:
     """
-    Return error response if user has no right to view activity
+    Return error response if user has no right to view workout
     """
-    if auth_user_id != activity_user_id:
+    if auth_user_id != workout_user_id:
         return ForbiddenErrorResponse()
     return None
 

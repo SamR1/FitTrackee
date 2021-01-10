@@ -1,12 +1,12 @@
 import json
 
-from fittrackee.activities.models import Activity, Sport
 from fittrackee.users.models import User
+from fittrackee.workouts.models import Sport, Workout
 from flask import Flask
 
 
 class TestGetStatsByTime:
-    def test_it_gets_no_stats_when_user_has_no_activities(
+    def test_it_gets_no_stats_when_user_has_no_workouts(
         self, app: Flask, user_1: User
     ) -> None:
         client = app.test_client()
@@ -58,8 +58,8 @@ class TestGetStatsByTime:
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_activities_user_1: Activity,
-        activity_running_user_1: Activity,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -90,8 +90,8 @@ class TestGetStatsByTime:
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_activities_user_1: Activity,
-        activity_running_user_1: Activity,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -113,14 +113,14 @@ class TestGetStatsByTime:
         assert 'fail' in data['status']
         assert 'Invalid time period.' in data['message']
 
-    def test_it_gets_stats_by_time_all_activities(
+    def test_it_gets_stats_by_time_all_workouts(
         self,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_activities_user_1: Activity,
-        activity_running_user_1: Activity,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -143,19 +143,19 @@ class TestGetStatsByTime:
         assert data['data']['statistics'] == {
             '2017': {
                 '1': {
-                    'nb_activities': 2,
+                    'nb_workouts': 2,
                     'total_distance': 15.0,
                     'total_duration': 4480,
                 }
             },
             '2018': {
                 '1': {
-                    'nb_activities': 5,
+                    'nb_workouts': 5,
                     'total_distance': 39.0,
                     'total_duration': 11624,
                 },
                 '2': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 12.0,
                     'total_duration': 6000,
                 },
@@ -168,8 +168,8 @@ class TestGetStatsByTime:
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_activities_user_1: Activity,
-        activity_running_user_1: Activity,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -192,12 +192,12 @@ class TestGetStatsByTime:
         assert data['data']['statistics'] == {
             '2018': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 8.0,
                     'total_duration': 6000,
                 },
                 '2': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 12.0,
                     'total_duration': 6000,
                 },
@@ -210,8 +210,8 @@ class TestGetStatsByTime:
         user_1_paris: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_activities_user_1: Activity,
-        activity_running_user_1: Activity,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -235,12 +235,12 @@ class TestGetStatsByTime:
         assert data['data']['statistics'] == {
             '2018': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 8.0,
                     'total_duration': 6000,
                 },
                 '2': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 12.0,
                     'total_duration': 6000,
                 },
@@ -253,8 +253,8 @@ class TestGetStatsByTime:
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_activities_user_1: Activity,
-        activity_running_user_1: Activity,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -277,19 +277,19 @@ class TestGetStatsByTime:
         assert data['data']['statistics'] == {
             '2017': {
                 '1': {
-                    'nb_activities': 2,
+                    'nb_workouts': 2,
                     'total_distance': 15.0,
                     'total_duration': 4480,
                 }
             },
             '2018': {
                 '1': {
-                    'nb_activities': 5,
+                    'nb_workouts': 5,
                     'total_distance': 39.0,
                     'total_duration': 11624,
                 },
                 '2': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 12.0,
                     'total_duration': 6000,
                 },
@@ -302,8 +302,8 @@ class TestGetStatsByTime:
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_activities_user_1: Activity,
-        activity_running_user_1: Activity,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -326,12 +326,12 @@ class TestGetStatsByTime:
         assert data['data']['statistics'] == {
             '2018': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 8.0,
                     'total_duration': 6000,
                 },
                 '2': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 12.0,
                     'total_duration': 6000,
                 },
@@ -344,8 +344,8 @@ class TestGetStatsByTime:
         user_1_paris: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_activities_user_1: Activity,
-        activity_running_user_1: Activity,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -368,12 +368,12 @@ class TestGetStatsByTime:
         assert data['data']['statistics'] == {
             '2018': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 8.0,
                     'total_duration': 6000,
                 },
                 '2': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 12.0,
                     'total_duration': 6000,
                 },
@@ -386,8 +386,8 @@ class TestGetStatsByTime:
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_activities_user_1: Activity,
-        activity_running_user_1: Activity,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -410,47 +410,47 @@ class TestGetStatsByTime:
         assert data['data']['statistics'] == {
             '2017-03': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 5.0,
                     'total_duration': 1024,
                 }
             },
             '2017-06': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 10.0,
                     'total_duration': 3456,
                 }
             },
             '2018-01': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 10.0,
                     'total_duration': 1024,
                 }
             },
             '2018-02': {
                 '1': {
-                    'nb_activities': 2,
+                    'nb_workouts': 2,
                     'total_distance': 11.0,
                     'total_duration': 1600,
                 }
             },
             '2018-04': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 8.0,
                     'total_duration': 6000,
                 },
                 '2': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 12.0,
                     'total_duration': 6000,
                 },
             },
             '2018-05': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 10.0,
                     'total_duration': 3000,
                 }
@@ -463,8 +463,8 @@ class TestGetStatsByTime:
         user_1_full: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_activities_user_1: Activity,
-        activity_running_user_1: Activity,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -487,47 +487,47 @@ class TestGetStatsByTime:
         assert data['data']['statistics'] == {
             '2017-03': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 5.0,
                     'total_duration': 1024,
                 }
             },
             '2017-06': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 10.0,
                     'total_duration': 3456,
                 }
             },
             '2018-01': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 10.0,
                     'total_duration': 1024,
                 }
             },
             '2018-02': {
                 '1': {
-                    'nb_activities': 2,
+                    'nb_workouts': 2,
                     'total_distance': 11.0,
                     'total_duration': 1600,
                 }
             },
             '2018-04': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 8.0,
                     'total_duration': 6000,
                 },
                 '2': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 12.0,
                     'total_duration': 6000,
                 },
             },
             '2018-05': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 10.0,
                     'total_duration': 3000,
                 }
@@ -540,8 +540,8 @@ class TestGetStatsByTime:
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_activities_user_1: Activity,
-        activity_running_user_1: Activity,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -564,12 +564,12 @@ class TestGetStatsByTime:
         assert data['data']['statistics'] == {
             '2018-04': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 8.0,
                     'total_duration': 6000,
                 },
                 '2': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 12.0,
                     'total_duration': 6000,
                 },
@@ -582,8 +582,8 @@ class TestGetStatsByTime:
         user_1_full: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_activities_user_1: Activity,
-        activity_running_user_1: Activity,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -606,47 +606,47 @@ class TestGetStatsByTime:
         assert data['data']['statistics'] == {
             '2017-03-19': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 5.0,
                     'total_duration': 1024,
                 }
             },
             '2017-05-28': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 10.0,
                     'total_duration': 3456,
                 }
             },
             '2017-12-31': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 10.0,
                     'total_duration': 1024,
                 }
             },
             '2018-02-18': {
                 '1': {
-                    'nb_activities': 2,
+                    'nb_workouts': 2,
                     'total_distance': 11.0,
                     'total_duration': 1600,
                 }
             },
             '2018-04-01': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 8.0,
                     'total_duration': 6000,
                 },
                 '2': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 12.0,
                     'total_duration': 6000,
                 },
             },
             '2018-05-06': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 10.0,
                     'total_duration': 3000,
                 }
@@ -659,8 +659,8 @@ class TestGetStatsByTime:
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_activities_user_1: Activity,
-        activity_running_user_1: Activity,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -683,12 +683,12 @@ class TestGetStatsByTime:
         assert data['data']['statistics'] == {
             '2018-04-01': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 8.0,
                     'total_duration': 6000,
                 },
                 '2': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 12.0,
                     'total_duration': 6000,
                 },
@@ -701,8 +701,8 @@ class TestGetStatsByTime:
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_activities_user_1: Activity,
-        activity_running_user_1: Activity,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -725,47 +725,47 @@ class TestGetStatsByTime:
         assert data['data']['statistics'] == {
             '2017-03-20': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 5.0,
                     'total_duration': 1024,
                 }
             },
             '2017-05-29': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 10.0,
                     'total_duration': 3456,
                 }
             },
             '2018-01-01': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 10.0,
                     'total_duration': 1024,
                 }
             },
             '2018-02-19': {
                 '1': {
-                    'nb_activities': 2,
+                    'nb_workouts': 2,
                     'total_distance': 11.0,
                     'total_duration': 1600,
                 }
             },
             '2018-03-26': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 8.0,
                     'total_duration': 6000,
                 },
                 '2': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 12.0,
                     'total_duration': 6000,
                 },
             },
             '2018-05-07': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 10.0,
                     'total_duration': 3000,
                 }
@@ -778,8 +778,8 @@ class TestGetStatsByTime:
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_activities_user_1: Activity,
-        activity_running_user_1: Activity,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -802,12 +802,12 @@ class TestGetStatsByTime:
         assert data['data']['statistics'] == {
             '2018-03-26': {
                 '1': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 8.0,
                     'total_duration': 6000,
                 },
                 '2': {
-                    'nb_activities': 1,
+                    'nb_workouts': 1,
                     'total_distance': 12.0,
                     'total_duration': 6000,
                 },
@@ -822,8 +822,8 @@ class TestGetStatsBySport:
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_activities_user_1: Activity,
-        activity_running_user_1: Activity,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -845,12 +845,12 @@ class TestGetStatsBySport:
         assert 'success' in data['status']
         assert data['data']['statistics'] == {
             '1': {
-                'nb_activities': 7,
+                'nb_workouts': 7,
                 'total_distance': 54.0,
                 'total_duration': 16104,
             },
             '2': {
-                'nb_activities': 1,
+                'nb_workouts': 1,
                 'total_distance': 12.0,
                 'total_duration': 6000,
             },
@@ -862,8 +862,8 @@ class TestGetStatsBySport:
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_activities_user_1: Activity,
-        activity_running_user_1: Activity,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -885,7 +885,7 @@ class TestGetStatsBySport:
         assert 'success' in data['status']
         assert data['data']['statistics'] == {
             '1': {
-                'nb_activities': 7,
+                'nb_workouts': 7,
                 'total_distance': 54.0,
                 'total_duration': 16104,
             }
@@ -897,8 +897,8 @@ class TestGetStatsBySport:
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_activities_user_1: Activity,
-        activity_running_user_1: Activity,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -926,8 +926,8 @@ class TestGetStatsBySport:
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_activities_user_1: Activity,
-        activity_running_user_1: Activity,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -955,8 +955,8 @@ class TestGetStatsBySport:
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_activities_user_1: Activity,
-        activity_running_user_1: Activity,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -983,7 +983,7 @@ class TestGetStatsBySport:
 
 
 class TestGetAllStats:
-    def test_it_returns_all_stats_when_users_have_no_activities(
+    def test_it_returns_all_stats_when_users_have_no_workouts(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         client = app.test_client()
@@ -1006,12 +1006,12 @@ class TestGetAllStats:
         data = json.loads(response.data.decode())
         assert response.status_code == 200
         assert 'success' in data['status']
-        assert data['data']['activities'] == 0
+        assert data['data']['workouts'] == 0
         assert data['data']['sports'] == 0
         assert data['data']['users'] == 2
         assert 'uploads_dir_size' in data['data']
 
-    def test_it_gets_app_all_stats_with_activities(
+    def test_it_gets_app_all_stats_with_workouts(
         self,
         app: Flask,
         user_1_admin: User,
@@ -1019,9 +1019,9 @@ class TestGetAllStats:
         user_3: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        activity_cycling_user_1: Activity,
-        activity_cycling_user_2: Activity,
-        activity_running_user_1: Activity,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_2: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -1043,7 +1043,7 @@ class TestGetAllStats:
         data = json.loads(response.data.decode())
         assert response.status_code == 200
         assert 'success' in data['status']
-        assert data['data']['activities'] == 3
+        assert data['data']['workouts'] == 3
         assert data['data']['sports'] == 2
         assert data['data']['users'] == 3
         assert 'uploads_dir_size' in data['data']
@@ -1056,9 +1056,9 @@ class TestGetAllStats:
         user_3: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        activity_cycling_user_1: Activity,
-        activity_cycling_user_2: Activity,
-        activity_running_user_1: Activity,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_2: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(

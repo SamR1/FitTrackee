@@ -1,10 +1,10 @@
 from fittrackee import db
-from fittrackee.activities.models import Sport
 from fittrackee.application.utils import (
     init_config,
     update_app_config_from_database,
 )
 from fittrackee.users.models import User
+from fittrackee.workouts.models import Sport
 from flask import Flask
 
 

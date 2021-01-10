@@ -94,42 +94,42 @@ def get_sports(auth_user_id: int) -> Dict:
         "data": {
           "sports": [
             {
-              "has_activities": true,
+              "has_workouts": true,
               "id": 1,
               "img": "/img/sports/cycling-sport.png",
               "is_active": true,
               "label": "Cycling (Sport)"
             },
             {
-              "has_activities": false,
+              "has_workouts": false,
               "id": 2,
               "img": "/img/sports/cycling-transport.png",
               "is_active": true,
               "label": "Cycling (Transport)"
             },
             {
-              "has_activities": false,
+              "has_workouts": false,
               "id": 3,
               "img": "/img/sports/hiking.png",
               "is_active": true,
               "label": "Hiking"
             },
             {
-              "has_activities": false,
+              "has_workouts": false,
               "id": 4,
               "img": "/img/sports/mountain-biking.png",
               "is_active": true,
               "label": "Mountain Biking"
             },
             {
-              "has_activities": false,
+              "has_workouts": false,
               "id": 5,
               "img": "/img/sports/running.png",
               "is_active": true,
               "label": "Running"
             },
             {
-              "has_activities": false,
+              "has_workouts": false,
               "id": 6,
               "img": "/img/sports/walking.png",
               "is_active": true,
@@ -206,7 +206,7 @@ def get_sport(auth_user_id: int, sport_id: int) -> Union[Dict, HttpResponse]:
         "data": {
           "sports": [
             {
-              "has_activities": false,
+              "has_workouts": false,
               "id": 1,
               "img": "/img/sports/cycling-sport.png",
               "is_active": true,
@@ -283,7 +283,7 @@ def update_sport(
         "data": {
           "sports": [
             {
-              "has_activities": false,
+              "has_workouts": false,
               "id": 1,
               "img": "/img/sports/cycling-sport.png",
               "is_active": false,

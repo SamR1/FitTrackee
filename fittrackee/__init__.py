@@ -62,21 +62,21 @@ def create_app() -> Flask:
                 _, db_app_config = init_config()
             update_app_config_from_database(app, db_app_config)
 
-    from .activities.activities import activities_blueprint  # noqa
-    from .activities.records import records_blueprint  # noqa
-    from .activities.sports import sports_blueprint  # noqa
-    from .activities.stats import stats_blueprint  # noqa
     from .application.app_config import config_blueprint  # noqa
     from .users.auth import auth_blueprint  # noqa
     from .users.users import users_blueprint  # noqa
+    from .workouts.records import records_blueprint  # noqa
+    from .workouts.sports import sports_blueprint  # noqa
+    from .workouts.stats import stats_blueprint  # noqa
+    from .workouts.workouts import workouts_blueprint  # noqa
 
-    app.register_blueprint(users_blueprint, url_prefix='/api')
     app.register_blueprint(auth_blueprint, url_prefix='/api')
-    app.register_blueprint(activities_blueprint, url_prefix='/api')
+    app.register_blueprint(config_blueprint, url_prefix='/api')
     app.register_blueprint(records_blueprint, url_prefix='/api')
     app.register_blueprint(sports_blueprint, url_prefix='/api')
     app.register_blueprint(stats_blueprint, url_prefix='/api')
-    app.register_blueprint(config_blueprint, url_prefix='/api')
+    app.register_blueprint(users_blueprint, url_prefix='/api')
+    app.register_blueprint(workouts_blueprint, url_prefix='/api')
 
     if app.debug:
         logging.getLogger('sqlalchemy').setLevel(logging.WARNING)

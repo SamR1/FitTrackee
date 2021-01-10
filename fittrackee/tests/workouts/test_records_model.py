@@ -1,7 +1,7 @@
 import datetime
 
-from fittrackee.activities.models import Activity, Record, Sport
 from fittrackee.users.models import User
+from fittrackee.workouts.models import Record, Sport, Workout
 from flask import Flask
 
 
@@ -11,27 +11,27 @@ class TestRecordModel:
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        activity_cycling_user_1: Activity,
+        workout_cycling_user_1: Workout,
     ) -> None:
         record_ld = Record.query.filter_by(
-            user_id=activity_cycling_user_1.user_id,
-            sport_id=activity_cycling_user_1.sport_id,
+            user_id=workout_cycling_user_1.user_id,
+            sport_id=workout_cycling_user_1.sport_id,
             record_type='LD',
         ).first()
         assert 'test' == record_ld.user.username
         assert 1 == record_ld.sport_id
-        assert 1 == record_ld.activity_id
+        assert 1 == record_ld.workout_id
         assert 'LD' == record_ld.record_type
-        assert '2018-01-01 00:00:00' == str(record_ld.activity_date)
+        assert '2018-01-01 00:00:00' == str(record_ld.workout_date)
         assert '<Record Cycling - LD - 2018-01-01>' == str(record_ld)
 
         record_serialize = record_ld.serialize()
         assert 'id' in record_serialize
         assert 'user' in record_serialize
         assert 'sport_id' in record_serialize
-        assert 'activity_id' in record_serialize
+        assert 'workout_id' in record_serialize
         assert 'record_type' in record_serialize
-        assert 'activity_date' in record_serialize
+        assert 'workout_date' in record_serialize
         assert 'value' in record_serialize
 
     def test_record_model_with_none_value(
@@ -39,19 +39,19 @@ class TestRecordModel:
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        activity_cycling_user_1: Activity,
+        workout_cycling_user_1: Workout,
     ) -> None:
         record_ld = Record.query.filter_by(
-            user_id=activity_cycling_user_1.user_id,
-            sport_id=activity_cycling_user_1.sport_id,
+            user_id=workout_cycling_user_1.user_id,
+            sport_id=workout_cycling_user_1.sport_id,
             record_type='LD',
         ).first()
         record_ld.value = None
         assert 'test' == record_ld.user.username
         assert 1 == record_ld.sport_id
-        assert 1 == record_ld.activity_id
+        assert 1 == record_ld.workout_id
         assert 'LD' == record_ld.record_type
-        assert '2018-01-01 00:00:00' == str(record_ld.activity_date)
+        assert '2018-01-01 00:00:00' == str(record_ld.workout_date)
         assert '<Record Cycling - LD - 2018-01-01>' == str(record_ld)
         assert record_ld.value is None
 
@@ -63,11 +63,11 @@ class TestRecordModel:
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        activity_cycling_user_1: Activity,
+        workout_cycling_user_1: Workout,
     ) -> None:
         record_as = Record.query.filter_by(
-            user_id=activity_cycling_user_1.user_id,
-            sport_id=activity_cycling_user_1.sport_id,
+            user_id=workout_cycling_user_1.user_id,
+            sport_id=workout_cycling_user_1.sport_id,
             record_type='AS',
         ).first()
 
@@ -84,11 +84,11 @@ class TestRecordModel:
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        activity_cycling_user_1: Activity,
+        workout_cycling_user_1: Workout,
     ) -> None:
         record_fd = Record.query.filter_by(
-            user_id=activity_cycling_user_1.user_id,
-            sport_id=activity_cycling_user_1.sport_id,
+            user_id=workout_cycling_user_1.user_id,
+            sport_id=workout_cycling_user_1.sport_id,
             record_type='FD',
         ).first()
 
@@ -105,11 +105,11 @@ class TestRecordModel:
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        activity_cycling_user_1: Activity,
+        workout_cycling_user_1: Workout,
     ) -> None:
         record_ld = Record.query.filter_by(
-            user_id=activity_cycling_user_1.user_id,
-            sport_id=activity_cycling_user_1.sport_id,
+            user_id=workout_cycling_user_1.user_id,
+            sport_id=workout_cycling_user_1.sport_id,
             record_type='LD',
         ).first()
 
@@ -126,11 +126,11 @@ class TestRecordModel:
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        activity_cycling_user_1: Activity,
+        workout_cycling_user_1: Workout,
     ) -> None:
         record_ld = Record.query.filter_by(
-            user_id=activity_cycling_user_1.user_id,
-            sport_id=activity_cycling_user_1.sport_id,
+            user_id=workout_cycling_user_1.user_id,
+            sport_id=workout_cycling_user_1.sport_id,
             record_type='LD',
         ).first()
         record_ld.value = datetime.timedelta(seconds=0)
@@ -148,11 +148,11 @@ class TestRecordModel:
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        activity_cycling_user_1: Activity,
+        workout_cycling_user_1: Workout,
     ) -> None:
         record_ms = Record.query.filter_by(
-            user_id=activity_cycling_user_1.user_id,
-            sport_id=activity_cycling_user_1.sport_id,
+            user_id=workout_cycling_user_1.user_id,
+            sport_id=workout_cycling_user_1.sport_id,
             record_type='MS',
         ).first()
 

@@ -19,8 +19,8 @@ class TestUserModel:
         assert serialized_user['timezone'] is None
         assert serialized_user['weekm'] is False
         assert serialized_user['language'] is None
-        assert serialized_user['nb_activities'] == 0
         assert serialized_user['nb_sports'] == 0
+        assert serialized_user['nb_workouts'] == 0
         assert serialized_user['total_distance'] == 0
         assert serialized_user['total_duration'] == '0:00:00'
 

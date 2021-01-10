@@ -3,9 +3,9 @@ from datetime import datetime, timedelta
 from io import BytesIO
 from unittest.mock import Mock, patch
 
-from fittrackee.activities.models import Activity, Sport
 from fittrackee.users.models import User
 from fittrackee.users.utils_token import get_user_token
+from fittrackee.workouts.models import Sport, Workout
 from flask import Flask
 from freezegun import freeze_time
 
@@ -446,8 +446,8 @@ class TestUserProfile:
         assert data['data']['timezone'] is None
         assert data['data']['weekm'] is False
         assert data['data']['language'] is None
-        assert data['data']['nb_activities'] == 0
         assert data['data']['nb_sports'] == 0
+        assert data['data']['nb_workouts'] == 0
         assert data['data']['sports_list'] == []
         assert data['data']['total_distance'] == 0
         assert data['data']['total_duration'] == '0:00:00'
@@ -484,21 +484,21 @@ class TestUserProfile:
         assert data['data']['timezone'] == 'America/New_York'
         assert data['data']['weekm'] is False
         assert data['data']['language'] == 'en'
-        assert data['data']['nb_activities'] == 0
         assert data['data']['nb_sports'] == 0
+        assert data['data']['nb_workouts'] == 0
         assert data['data']['sports_list'] == []
         assert data['data']['total_distance'] == 0
         assert data['data']['total_duration'] == '0:00:00'
         assert response.status_code == 200
 
-    def test_it_returns_user_profile_with_activities(
+    def test_it_returns_user_profile_with_workouts(
         self,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        activity_cycling_user_1: Activity,
-        activity_running_user_1: Activity,
+        workout_cycling_user_1: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
         client = app.test_client()
         resp_login = client.post(
@@ -521,8 +521,8 @@ class TestUserProfile:
         assert data['data']['created_at']
         assert not data['data']['admin']
         assert data['data']['timezone'] is None
-        assert data['data']['nb_activities'] == 2
         assert data['data']['nb_sports'] == 2
+        assert data['data']['nb_workouts'] == 2
         assert data['data']['sports_list'] == [1, 2]
         assert data['data']['total_distance'] == 22
         assert data['data']['total_duration'] == '2:40:00'
@@ -585,8 +585,8 @@ class TestUserProfileUpdate:
         assert data['data']['timezone'] == 'America/New_York'
         assert data['data']['weekm'] is True
         assert data['data']['language'] == 'fr'
-        assert data['data']['nb_activities'] == 0
         assert data['data']['nb_sports'] == 0
+        assert data['data']['nb_workouts'] == 0
         assert data['data']['sports_list'] == []
         assert data['data']['total_distance'] == 0
         assert data['data']['total_duration'] == '0:00:00'
@@ -636,8 +636,8 @@ class TestUserProfileUpdate:
         assert data['data']['timezone'] == 'America/New_York'
         assert data['data']['weekm'] is True
         assert data['data']['language'] == 'fr'
-        assert data['data']['nb_activities'] == 0
         assert data['data']['nb_sports'] == 0
+        assert data['data']['nb_workouts'] == 0
         assert data['data']['sports_list'] == []
         assert data['data']['total_distance'] == 0
         assert data['data']['total_duration'] == '0:00:00'

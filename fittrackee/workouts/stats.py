@@ -14,18 +14,18 @@ from sqlalchemy import func
 
 from ..users.models import User
 from ..users.utils import authenticate, authenticate_as_admin
-from .models import Activity, Sport
+from .models import Sport, Workout
 from .utils import get_datetime_with_tz, get_upload_dir_size
 from .utils_format import convert_timedelta_to_integer
 
 stats_blueprint = Blueprint('stats', __name__)
 
 
-def get_activities(
+def get_workouts(
     user_name: str, filter_type: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Return user activities by sport or by time
+    Return user workouts by sport or by time
     """
     try:
         user = User.query.filter_by(username=user_name).first()
@@ -52,91 +52,89 @@ def get_activities(
                 if not sport:
                     return NotFoundErrorResponse('Sport does not exist.')
 
-        activities = (
-            Activity.query.filter(
-                Activity.user_id == user.id,
-                Activity.activity_date >= date_from if date_from else True,
-                Activity.activity_date < date_to + timedelta(seconds=1)
+        workouts = (
+            Workout.query.filter(
+                Workout.user_id == user.id,
+                Workout.workout_date >= date_from if date_from else True,
+                Workout.workout_date < date_to + timedelta(seconds=1)
                 if date_to
                 else True,
-                Activity.sport_id == sport_id if sport_id else True,
+                Workout.sport_id == sport_id if sport_id else True,
             )
-            .order_by(Activity.activity_date.asc())
+            .order_by(Workout.workout_date.asc())
             .all()
         )
 
-        activities_list_by_sport = {}
-        activities_list_by_time = {}  # type: ignore
-        for activity in activities:
+        workouts_list_by_sport = {}
+        workouts_list_by_time = {}  # type: ignore
+        for workout in workouts:
             if filter_type == 'by_sport':
-                sport_id = activity.sport_id
-                if sport_id not in activities_list_by_sport:
-                    activities_list_by_sport[sport_id] = {
-                        'nb_activities': 0,
+                sport_id = workout.sport_id
+                if sport_id not in workouts_list_by_sport:
+                    workouts_list_by_sport[sport_id] = {
+                        'nb_workouts': 0,
                         'total_distance': 0.0,
                         'total_duration': 0,
                     }
-                activities_list_by_sport[sport_id]['nb_activities'] += 1
-                activities_list_by_sport[sport_id]['total_distance'] += float(
-                    activity.distance
+                workouts_list_by_sport[sport_id]['nb_workouts'] += 1
+                workouts_list_by_sport[sport_id]['total_distance'] += float(
+                    workout.distance
                 )
-                activities_list_by_sport[sport_id][
+                workouts_list_by_sport[sport_id][
                     'total_duration'
-                ] += convert_timedelta_to_integer(activity.moving)
+                ] += convert_timedelta_to_integer(workout.moving)
 
             # filter_type == 'by_time'
             else:
                 if time == 'week':
-                    activity_date = activity.activity_date - timedelta(
+                    workout_date = workout.workout_date - timedelta(
                         days=(
-                            activity.activity_date.isoweekday()
-                            if activity.activity_date.isoweekday() < 7
+                            workout.workout_date.isoweekday()
+                            if workout.workout_date.isoweekday() < 7
                             else 0
                         )
                     )
-                    time_period = datetime.strftime(activity_date, "%Y-%m-%d")
+                    time_period = datetime.strftime(workout_date, "%Y-%m-%d")
                 elif time == 'weekm':  # week start Monday
-                    activity_date = activity.activity_date - timedelta(
-                        days=activity.activity_date.weekday()
+                    workout_date = workout.workout_date - timedelta(
+                        days=workout.workout_date.weekday()
                     )
-                    time_period = datetime.strftime(activity_date, "%Y-%m-%d")
+                    time_period = datetime.strftime(workout_date, "%Y-%m-%d")
                 elif time == 'month':
                     time_period = datetime.strftime(
-                        activity.activity_date, "%Y-%m"
+                        workout.workout_date, "%Y-%m"
                     )
                 elif time == 'year' or not time:
-                    time_period = datetime.strftime(
-                        activity.activity_date, "%Y"
-                    )
+                    time_period = datetime.strftime(workout.workout_date, "%Y")
                 else:
                     return InvalidPayloadErrorResponse(
                         'Invalid time period.', 'fail'
                     )
-                sport_id = activity.sport_id
-                if time_period not in activities_list_by_time:
-                    activities_list_by_time[time_period] = {}
-                if sport_id not in activities_list_by_time[time_period]:
-                    activities_list_by_time[time_period][sport_id] = {
-                        'nb_activities': 0,
+                sport_id = workout.sport_id
+                if time_period not in workouts_list_by_time:
+                    workouts_list_by_time[time_period] = {}
+                if sport_id not in workouts_list_by_time[time_period]:
+                    workouts_list_by_time[time_period][sport_id] = {
+                        'nb_workouts': 0,
                         'total_distance': 0.0,
                         'total_duration': 0,
                     }
-                activities_list_by_time[time_period][sport_id][
-                    'nb_activities'
+                workouts_list_by_time[time_period][sport_id][
+                    'nb_workouts'
                 ] += 1
-                activities_list_by_time[time_period][sport_id][
+                workouts_list_by_time[time_period][sport_id][
                     'total_distance'
-                ] += float(activity.distance)
-                activities_list_by_time[time_period][sport_id][
+                ] += float(workout.distance)
+                workouts_list_by_time[time_period][sport_id][
                     'total_duration'
-                ] += convert_timedelta_to_integer(activity.moving)
+                ] += convert_timedelta_to_integer(workout.moving)
 
         return {
             'status': 'success',
             'data': {
-                'statistics': activities_list_by_sport
+                'statistics': workouts_list_by_sport
                 if filter_type == 'by_sport'
-                else activities_list_by_time
+                else workouts_list_by_time
             },
         }
     except Exception as e:
@@ -145,11 +143,11 @@ def get_activities(
 
 @stats_blueprint.route('/stats/<user_name>/by_time', methods=['GET'])
 @authenticate
-def get_activities_by_time(
+def get_workouts_by_time(
     auth_user_id: int, user_name: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get activities statistics for a user by time
+    Get workouts statistics for a user by time
 
     **Example requests**:
 
@@ -163,7 +161,8 @@ def get_activities_by_time(
 
     .. sourcecode:: http
 
-      GET /api/stats/admin/by_time?from=2018-01-01&to=2018-06-30&time=week HTTP/1.1
+      GET /api/stats/admin/by_time?from=2018-01-01&to=2018-06-30&time=week
+        HTTP/1.1
 
     **Example responses**:
 
@@ -179,19 +178,19 @@ def get_activities_by_time(
           "statistics": {
             "2017": {
               "3": {
-                "nb_activities": 2,
+                "nb_workouts": 2,
                 "total_distance": 15.282,
                 "total_duration": 12341
               }
             },
             "2019": {
               "1": {
-                "nb_activities": 3,
+                "nb_workouts": 3,
                 "total_distance": 47,
                 "total_duration": 9960
               },
               "2": {
-                "nb_activities": 1,
+                "nb_workouts": 1,
                 "total_distance": 5.613,
                 "total_duration": 1267
               }
@@ -201,7 +200,7 @@ def get_activities_by_time(
         "status": "success"
       }
 
-    - no activities
+    - no workouts
 
     .. sourcecode:: http
 
@@ -238,20 +237,20 @@ def get_activities_by_time(
         - User does not exist.
 
     """
-    return get_activities(user_name, 'by_time')
+    return get_workouts(user_name, 'by_time')
 
 
 @stats_blueprint.route('/stats/<user_name>/by_sport', methods=['GET'])
 @authenticate
-def get_activities_by_sport(
+def get_workouts_by_sport(
     auth_user_id: int, user_name: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get activities statistics for a user by sport
+    Get workouts statistics for a user by sport
 
     **Example requests**:
 
-    - without parameters (get stats for all sports with activities)
+    - without parameters (get stats for all sports with workouts)
 
     .. sourcecode:: http
 
@@ -276,17 +275,17 @@ def get_activities_by_sport(
         "data": {
           "statistics": {
             "1": {
-              "nb_activities": 3,
+              "nb_workouts": 3,
               "total_distance": 47,
               "total_duration": 9960
             },
             "2": {
-              "nb_activities": 1,
+              "nb_workouts": 1,
               "total_distance": 5.613,
               "total_duration": 1267
             },
             "3": {
-              "nb_activities": 2,
+              "nb_workouts": 2,
               "total_distance": 15.282,
               "total_duration": 12341
             }
@@ -295,7 +294,7 @@ def get_activities_by_sport(
         "status": "success"
       }
 
-    - no activities
+    - no workouts
 
     .. sourcecode:: http
 
@@ -326,7 +325,7 @@ def get_activities_by_sport(
         - Sport does not exist.
 
     """
-    return get_activities(user_name, 'by_sport')
+    return get_workouts(user_name, 'by_sport')
 
 
 @stats_blueprint.route('/stats/all', methods=['GET'])
@@ -351,10 +350,10 @@ def get_application_stats(auth_user_id: int) -> Dict:
 
       {
         "data": {
-          "activities": 3,
           "sports": 3,
+          "uploads_dir_size": 1000,
           "users": 2,
-          "uploads_dir_size": 1000
+          "workouts": 3,
         },
         "status": "success"
       }
@@ -371,17 +370,17 @@ def get_application_stats(auth_user_id: int) -> Dict:
     :statuscode 403: You do not have permissions.
     """
 
-    nb_activities = Activity.query.filter().count()
+    nb_workouts = Workout.query.filter().count()
     nb_users = User.query.filter().count()
     nb_sports = (
-        db.session.query(func.count(Activity.sport_id))
-        .group_by(Activity.sport_id)
+        db.session.query(func.count(Workout.sport_id))
+        .group_by(Workout.sport_id)
         .count()
     )
     return {
         'status': 'success',
         'data': {
-            'activities': nb_activities,
+            'workouts': nb_workouts,
             'sports': nb_sports,
             'users': nb_users,
             'uploads_dir_size': get_upload_dir_size(),

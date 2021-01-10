@@ -40,40 +40,40 @@ def get_records(auth_user_id: int) -> Dict:
         "data": {
           "records": [
             {
-              "activity_date": "Sun, 07 Jul 2019 08:00:00 GMT",
-              "activity_id": "hvYBqYBRa7wwXpaStWR4V2",
               "id": 9,
               "record_type": "AS",
               "sport_id": 1,
               "user": "admin",
-              "value": 18
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             },
             {
-              "activity_date": "Sun, 07 Jul 2019 08:00:00 GMT",
-              "activity_id": "hvYBqYBRa7wwXpaStWR4V2",
               "id": 10,
               "record_type": "FD",
               "sport_id": 1,
               "user": "admin",
-              "value": 18
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             },
             {
-              "activity_date": "Sun, 07 Jul 2019 08:00:00 GMT",
-              "activity_id": "hvYBqYBRa7wwXpaStWR4V2",
               "id": 11,
               "record_type": "LD",
               "sport_id": 1,
               "user": "admin",
-              "value": "1:01:00"
+              "value": "1:01:00",
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             },
             {
-              "activity_date": "Sun, 07 Jul 2019 08:00:00 GMT",
-              "activity_id": "hvYBqYBRa7wwXpaStWR4V2",
               "id": 12,
               "record_type": "MS",
               "sport_id": 1,
               "user": "admin",
-              "value": 18
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             }
           ]
         },

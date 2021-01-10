@@ -6,7 +6,7 @@ import gpxpy.gpx
 from .utils_weather import get_weather
 
 
-class ActivityGPXException(Exception):
+class WorkoutGPXException(Exception):
     def __init__(
         self, status: str, message: str, e: Optional[Exception] = None
     ) -> None:
@@ -74,7 +74,7 @@ def get_gpx_info(
     """
     gpx = open_gpx_file(gpx_file)
     if gpx is None:
-        raise ActivityGPXException('not found', 'No gpx file')
+        raise WorkoutGPXException('not found', 'No gpx file')
 
     gpx_data = {'name': gpx.tracks[0].name, 'segments': []}
     max_speed = 0
@@ -153,11 +153,11 @@ def get_gpx_segments(
     if segment_id is not None:
         segment_index = segment_id - 1
         if segment_index > (len(track_segments) - 1):
-            raise ActivityGPXException(
+            raise WorkoutGPXException(
                 'not found', f'No segment with id \'{segment_id}\'', None
             )
         if segment_index < 0:
-            raise ActivityGPXException('error', 'Incorrect segment id', None)
+            raise WorkoutGPXException('error', 'Incorrect segment id', None)
         segments = [track_segments[segment_index]]
     else:
         segments = track_segments

@@ -1,7 +1,7 @@
 from typing import Dict, Optional
 
-from fittrackee.activities.models import Activity, Sport
 from fittrackee.users.models import User
+from fittrackee.workouts.models import Sport, Workout
 from flask import Flask
 
 
@@ -22,24 +22,24 @@ class TestSportModel:
 
     def test_sport_model(self, app: Flask, sport_1_cycling: Sport) -> None:
         serialized_sport = self.assert_sport_model(sport_1_cycling)
-        assert 'has_activities' not in serialized_sport
+        assert 'has_workouts' not in serialized_sport
 
-    def test_sport_model_with_activity(
+    def test_sport_model_with_workout(
         self,
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
-        activity_cycling_user_1: Activity,
+        workout_cycling_user_1: Workout,
     ) -> None:
         serialized_sport = self.assert_sport_model(sport_1_cycling)
-        assert 'has_activities' not in serialized_sport
+        assert 'has_workouts' not in serialized_sport
 
-    def test_sport_model_with_activity_as_admin(
+    def test_sport_model_with_workout_as_admin(
         self,
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
-        activity_cycling_user_1: Activity,
+        workout_cycling_user_1: Workout,
     ) -> None:
         serialized_sport = self.assert_sport_model(sport_1_cycling, True)
-        assert serialized_sport['has_activities'] is True
+        assert serialized_sport['has_workouts'] is True

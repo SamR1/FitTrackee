@@ -4,10 +4,10 @@ from typing import Generator, Optional
 
 import pytest
 from fittrackee import create_app, db
-from fittrackee.activities.models import Activity, ActivitySegment, Sport
 from fittrackee.application.models import AppConfig
 from fittrackee.application.utils import update_app_config_from_database
 from fittrackee.users.models import User
+from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
 
 os.environ['FLASK_ENV'] = 'testing'
 os.environ['APP_SETTINGS'] = 'fittrackee.config.TestingConfig'
@@ -180,149 +180,149 @@ def sport_2_running() -> Sport:
 
 
 @pytest.fixture()
-def activity_cycling_user_1() -> Activity:
-    activity = Activity(
+def workout_cycling_user_1() -> Workout:
+    workout = Workout(
         user_id=1,
         sport_id=1,
-        activity_date=datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
+        workout_date=datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
         distance=10,
         duration=datetime.timedelta(seconds=3600),
     )
-    activity.max_speed = 10
-    activity.ave_speed = 10
-    activity.moving = activity.duration
-    db.session.add(activity)
+    workout.max_speed = 10
+    workout.ave_speed = 10
+    workout.moving = workout.duration
+    db.session.add(workout)
     db.session.commit()
-    return activity
+    return workout
 
 
 @pytest.fixture()
-def activity_cycling_user_1_segment(
-    activity_cycling_user_1: Activity,
-) -> ActivitySegment:
-    activity_segment = ActivitySegment(
-        activity_id=activity_cycling_user_1.id,
-        activity_uuid=activity_cycling_user_1.uuid,
+def workout_cycling_user_1_segment(
+    workout_cycling_user_1: Workout,
+) -> WorkoutSegment:
+    workout_segment = WorkoutSegment(
+        workout_id=workout_cycling_user_1.id,
+        workout_uuid=workout_cycling_user_1.uuid,
         segment_id=0,
     )
-    activity_segment.duration = datetime.timedelta(seconds=6000)
-    activity_segment.moving = activity_segment.duration
-    activity_segment.distance = 5
-    db.session.add(activity_segment)
+    workout_segment.duration = datetime.timedelta(seconds=6000)
+    workout_segment.moving = workout_segment.duration
+    workout_segment.distance = 5
+    db.session.add(workout_segment)
     db.session.commit()
-    return activity_segment
+    return workout_segment
 
 
 @pytest.fixture()
-def activity_running_user_1() -> Activity:
-    activity = Activity(
+def workout_running_user_1() -> Workout:
+    workout = Workout(
         user_id=1,
         sport_id=2,
-        activity_date=datetime.datetime.strptime('01/04/2018', '%d/%m/%Y'),
+        workout_date=datetime.datetime.strptime('01/04/2018', '%d/%m/%Y'),
         distance=12,
         duration=datetime.timedelta(seconds=6000),
     )
-    activity.moving = activity.duration
-    db.session.add(activity)
+    workout.moving = workout.duration
+    db.session.add(workout)
     db.session.commit()
-    return activity
+    return workout
 
 
 @pytest.fixture()
-def seven_activities_user_1() -> Activity:
-    activity = Activity(
+def seven_workouts_user_1() -> Workout:
+    workout = Workout(
         user_id=1,
         sport_id=1,
-        activity_date=datetime.datetime.strptime('20/03/2017', '%d/%m/%Y'),
+        workout_date=datetime.datetime.strptime('20/03/2017', '%d/%m/%Y'),
         distance=5,
         duration=datetime.timedelta(seconds=1024),
     )
-    activity.ave_speed = float(activity.distance) / (1024 / 3600)
-    activity.moving = activity.duration
-    db.session.add(activity)
+    workout.ave_speed = float(workout.distance) / (1024 / 3600)
+    workout.moving = workout.duration
+    db.session.add(workout)
     db.session.flush()
-    activity = Activity(
+    workout = Workout(
         user_id=1,
         sport_id=1,
-        activity_date=datetime.datetime.strptime('01/06/2017', '%d/%m/%Y'),
+        workout_date=datetime.datetime.strptime('01/06/2017', '%d/%m/%Y'),
         distance=10,
         duration=datetime.timedelta(seconds=3456),
     )
-    activity.ave_speed = float(activity.distance) / (3456 / 3600)
-    activity.moving = activity.duration
-    db.session.add(activity)
+    workout.ave_speed = float(workout.distance) / (3456 / 3600)
+    workout.moving = workout.duration
+    db.session.add(workout)
     db.session.flush()
-    activity = Activity(
+    workout = Workout(
         user_id=1,
         sport_id=1,
-        activity_date=datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
+        workout_date=datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
         distance=10,
         duration=datetime.timedelta(seconds=1024),
     )
-    activity.ave_speed = float(activity.distance) / (1024 / 3600)
-    activity.moving = activity.duration
-    db.session.add(activity)
+    workout.ave_speed = float(workout.distance) / (1024 / 3600)
+    workout.moving = workout.duration
+    db.session.add(workout)
     db.session.flush()
-    activity = Activity(
+    workout = Workout(
         user_id=1,
         sport_id=1,
-        activity_date=datetime.datetime.strptime('23/02/2018', '%d/%m/%Y'),
+        workout_date=datetime.datetime.strptime('23/02/2018', '%d/%m/%Y'),
         distance=1,
         duration=datetime.timedelta(seconds=600),
     )
-    activity.ave_speed = float(activity.distance) / (600 / 3600)
-    activity.moving = activity.duration
-    db.session.add(activity)
+    workout.ave_speed = float(workout.distance) / (600 / 3600)
+    workout.moving = workout.duration
+    db.session.add(workout)
     db.session.flush()
-    activity = Activity(
+    workout = Workout(
         user_id=1,
         sport_id=1,
-        activity_date=datetime.datetime.strptime('23/02/2018', '%d/%m/%Y'),
+        workout_date=datetime.datetime.strptime('23/02/2018', '%d/%m/%Y'),
         distance=10,
         duration=datetime.timedelta(seconds=1000),
     )
-    activity.ave_speed = float(activity.distance) / (1000 / 3600)
-    activity.moving = activity.duration
-    db.session.add(activity)
+    workout.ave_speed = float(workout.distance) / (1000 / 3600)
+    workout.moving = workout.duration
+    db.session.add(workout)
     db.session.flush()
-    activity = Activity(
+    workout = Workout(
         user_id=1,
         sport_id=1,
-        activity_date=datetime.datetime.strptime('01/04/2018', '%d/%m/%Y'),
+        workout_date=datetime.datetime.strptime('01/04/2018', '%d/%m/%Y'),
         distance=8,
         duration=datetime.timedelta(seconds=6000),
     )
-    activity.ave_speed = float(activity.distance) / (6000 / 3600)
-    activity.moving = activity.duration
-    db.session.add(activity)
+    workout.ave_speed = float(workout.distance) / (6000 / 3600)
+    workout.moving = workout.duration
+    db.session.add(workout)
     db.session.flush()
-    activity = Activity(
+    workout = Workout(
         user_id=1,
         sport_id=1,
-        activity_date=datetime.datetime.strptime('09/05/2018', '%d/%m/%Y'),
+        workout_date=datetime.datetime.strptime('09/05/2018', '%d/%m/%Y'),
         distance=10,
         duration=datetime.timedelta(seconds=3000),
     )
-    activity.ave_speed = float(activity.distance) / (3000 / 3600)
-    activity.moving = activity.duration
-    db.session.add(activity)
+    workout.ave_speed = float(workout.distance) / (3000 / 3600)
+    workout.moving = workout.duration
+    db.session.add(workout)
     db.session.commit()
-    return activity
+    return workout
 
 
 @pytest.fixture()
-def activity_cycling_user_2() -> Activity:
-    activity = Activity(
+def workout_cycling_user_2() -> Workout:
+    workout = Workout(
         user_id=2,
         sport_id=1,
-        activity_date=datetime.datetime.strptime('23/01/2018', '%d/%m/%Y'),
+        workout_date=datetime.datetime.strptime('23/01/2018', '%d/%m/%Y'),
         distance=15,
         duration=datetime.timedelta(seconds=3600),
     )
-    activity.moving = activity.duration
-    db.session.add(activity)
+    workout.moving = workout.duration
+    db.session.add(workout)
     db.session.commit()
-    return activity
+    return workout
 
 
 @pytest.fixture()
@@ -332,7 +332,7 @@ def gpx_file() -> str:
         '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
         '  <metadata/>'
         '  <trk>'
-        '    <name>just an activity</name>'
+        '    <name>just a workout</name>'
         '    <trkseg>'
         '      <trkpt lat="44.68095" lon="6.07367">'
         '        <ele>998</ele>'
@@ -580,7 +580,7 @@ def gpx_file_with_segments() -> str:
         '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
         '  <metadata/>'
         '  <trk>'
-        '    <name>just an activity</name>'
+        '    <name>just a workout</name>'
         '    <trkseg>'
         '      <trkpt lat="44.68095" lon="6.07367">'
         '        <ele>998</ele>'
