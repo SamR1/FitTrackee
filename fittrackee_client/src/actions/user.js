@@ -131,9 +131,10 @@ export const uploadPicture = event => dispatch => {
       if (ret.status === 'success') {
         return dispatch(getProfile())
       }
-      const msg = ret.message.match(/file size exceeds/g)
-        ? 'Error during picture update, file size exceeds max size.'
-        : ret.message
+      const msg =
+        ret.status === 413
+          ? 'Error during picture update, file size exceeds max size.'
+          : ret.message
       return dispatch(PictureError(msg))
     })
     .catch(error => {
