@@ -17,7 +17,7 @@ export const getFileSizeInMB = fileSize => {
   return (!fileSize && 0) || +value.toFixed(2)
 }
 
-export const version = '0.4.2' // version stored in 'utils' for now
+export const version = '0.4.3' // version stored in 'utils' for now
 export const apiUrl =
   process.env.NODE_ENV === 'production'
     ? '/api/'
