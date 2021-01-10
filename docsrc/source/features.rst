@@ -52,7 +52,7 @@ Workouts
     - farest distance
     - longest duration
     - maximum speed
-- Workours list and filter
+- Workouts list and filter
 
 .. note::
     for now, only the owner of the workout can see it.

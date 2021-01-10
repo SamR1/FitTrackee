@@ -1,5 +1,22 @@
 # Change log
 
+## Version 0.4.3 (2021/01/10)
+
+
+### Issues Closed
+
+#### New Features
+
+* [#58](https://github.com/SamR1/Fittrackee/issues/58) - Standardize terms used for workouts  
+**Note:** Database model, upload directory for workouts and API endpoints are also updated.
+
+#### Bugs Fixed
+
+* [#59](https://github.com/SamR1/Fittrackee/issues/59) - No message displayed on uploading image error
+
+In this release 2 issues were closed.
+
+
 ## Version 0.4.2 (2021/01/03)
 
 ### Misc
