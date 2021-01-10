@@ -1,4 +1,6 @@
 import os
+from pathlib import Path
+from typing import Generator, Optional
 
 import pytest
 
@@ -8,6 +10,7 @@ from fittrackee.application.utils import update_app_config_from_database
 from fittrackee.federation.models import Actor
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
+from flask import Flask
 
 os.environ['FLASK_ENV'] = 'testing'
 os.environ['APP_SETTINGS'] = 'fittrackee.config.TestingConfig'
@@ -705,6 +708,11 @@ def gpx_file_with_segments() -> str:
         '  </trk>'
         '</gpx>'
     )
+
+
+@pytest.fixture()
+def app_version(app: Flask) -> str:
+    return (Path(f'{app.root_path}/VERSION')).read_text().strip()
 
 
 @pytest.fixture()

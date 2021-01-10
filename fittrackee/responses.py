@@ -118,7 +118,7 @@ class InternalServerErrorResponse(GenericErrorResponse):
 
 
 class DisabledFederationErrorResponse(ForbiddenErrorResponse):
-    def __init__(self):
+    def __init__(self) -> None:
         message = 'Error. Federation is disabled for this instance.'
         super().__init__(message=message)
 
