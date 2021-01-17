@@ -3,14 +3,14 @@ from pathlib import Path
 from typing import Generator, Optional
 
 import pytest
+from flask import Flask
 
 from fittrackee import create_app, db
 from fittrackee.application.models import AppConfig
 from fittrackee.application.utils import update_app_config_from_database
-from fittrackee.federation.models import Actor
+from fittrackee.federation.models import Actor, Domain
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
-from flask import Flask
 
 os.environ['FLASK_ENV'] = 'testing'
 os.environ['APP_SETTINGS'] = 'fittrackee.config.TestingConfig'
@@ -43,6 +43,7 @@ def get_app_config(
 def get_app(
     with_config: Optional[bool] = False,
     with_federation: Optional[bool] = False,
+    with_domain: Optional[bool] = True,
 ) -> Generator:
     app = create_app()
     with app.app_context():
@@ -50,6 +51,10 @@ def get_app(
         app_db_config = get_app_config(with_config, with_federation)
         if app_db_config:
             update_app_config_from_database(app, app_db_config)
+            if with_domain:
+                domain = Domain(name=app.config['AP_DOMAIN'])
+                db.session.add(domain)
+                db.session.commit()
         yield app
         db.session.remove()
         db.drop_all()
@@ -90,6 +95,13 @@ def app_tls(monkeypatch: pytest.MonkeyPatch) -> Generator:
 @pytest.fixture
 def app_with_federation() -> Generator:
     yield from get_app(with_config=True, with_federation=True)
+
+
+@pytest.fixture
+def app_wo_domain() -> Generator:
+    yield from get_app(
+        with_config=True, with_federation=True, with_domain=False
+    )
 
 
 @pytest.fixture()
@@ -711,13 +723,25 @@ def gpx_file_with_segments() -> str:
 
 
 @pytest.fixture()
-def app_version(app: Flask) -> str:
-    return (Path(f'{app.root_path}/VERSION')).read_text().strip()
+def app_version() -> str:
+    return (Path(__file__).parent.parent / 'VERSION').read_text().strip()
 
 
 @pytest.fixture()
-def actor_1(user_1: User) -> Actor:
-    actor = Actor(user=user_1)
+def app_actor(user_1: User, app: Flask) -> Actor:
+    domain = Domain.query.filter_by(name=app.config['AP_DOMAIN']).first()
+    actor = Actor(user=user_1, domain_id=domain.id)
+    db.session.add(actor)
+    db.session.commit()
+    return actor
+
+
+@pytest.fixture()
+def actor_1(user_1: User, app_with_federation: Flask) -> Actor:
+    domain = Domain.query.filter_by(
+        name=app_with_federation.config['AP_DOMAIN']
+    ).first()
+    actor = Actor(user=user_1, domain_id=domain.id)
     db.session.add(actor)
     db.session.commit()
     return actor

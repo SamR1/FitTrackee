@@ -6,15 +6,15 @@ from fittrackee.responses import (
     UserNotFoundErrorResponse,
 )
 
-from .models import Actor
-from .utils import federation_required
+from .decorators import federation_required
+from .models import Actor, Domain
 
 ap_webfinger_blueprint = Blueprint('ap_webfinger', __name__)
 
 
 @ap_webfinger_blueprint.route('/webfinger', methods=['GET'])
 @federation_required
-def webfinger() -> HttpResponse:
+def webfinger(app_domain: Domain) -> HttpResponse:
     resource = request.args.get('resource')
     if not resource or not resource.startswith('acct:'):
         return InvalidPayloadErrorResponse('Missing resource in request args.')
@@ -28,13 +28,13 @@ def webfinger() -> HttpResponse:
         return UserNotFoundErrorResponse()
 
     actor = Actor.query.filter_by(
-        preferred_username=preferred_username, domain=domain
+        preferred_username=preferred_username, domain_id=app_domain.id
     ).first()
     if not actor:
         return UserNotFoundErrorResponse()
 
     response = {
-        'subject': f'acct:{actor.preferred_username}@{actor.domain}',
+        'subject': f'acct:{actor.preferred_username}@{actor.domain.name}',
         'links': [
             {
                 'href': actor.ap_id,

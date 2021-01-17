@@ -23,15 +23,24 @@ def upgrade():
             'federation_enabled', sa.Boolean(), nullable=True, default=False
         ),
     )
-    op.execute('UPDATE app_config SET federation_enabled = true')
+    op.execute('UPDATE app_config SET federation_enabled = false')
     op.alter_column('app_config', 'federation_enabled', nullable=False)
+
+    op.create_table('domains',
+        sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column('name', sa.String(length=1000), nullable=False),
+        sa.Column('created_at', sa.DateTime(), nullable=False),
+        sa.Column('is_allowed', sa.Boolean(), nullable=False),
+        sa.PrimaryKeyConstraint('id'),
+        sa.UniqueConstraint('name'),
+    )
 
     op.create_table('actors',
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
         sa.Column('ap_id', sa.String(length=255), nullable=False),
         sa.Column('user_id', sa.Integer(), nullable=False),
+        sa.Column('domain_id', sa.Integer(), nullable=False),
         sa.Column('type', sa.Enum('Application', 'Group', 'Person', name='actor_types'), server_default='Person', nullable=True),
-        sa.Column('domain', sa.String(length=1000), nullable=False),
         sa.Column('name', sa.String(length=255), nullable=False),
         sa.Column('preferred_username', sa.String(length=255), nullable=False),
         sa.Column('public_key', sa.String(length=5000), nullable=True),
@@ -41,11 +50,11 @@ def upgrade():
         sa.Column('followers_url', sa.String(length=255), nullable=False),
         sa.Column('following_url', sa.String(length=255), nullable=False),
         sa.Column('shared_inbox_url', sa.String(length=255), nullable=False),
-        sa.Column('is_remote', sa.Boolean(), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=False),
         sa.Column('manually_approves_followers', sa.Boolean(), nullable=False),
         sa.Column('last_fetch_date', sa.DateTime(), nullable=True),
         sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+        sa.ForeignKeyConstraint(['domain_id'], ['domains.id'], ),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('ap_id'),
         sa.UniqueConstraint('user_id')
@@ -55,5 +64,7 @@ def upgrade():
 def downgrade():
     op.drop_table('actors')
     op.execute('DROP TYPE actor_types')
+
+    op.drop_table('domains')
 
     op.drop_column('app_config', 'federation_enabled')

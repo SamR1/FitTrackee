@@ -1,9 +1,9 @@
-from flask import Blueprint, current_app
+from flask import Blueprint
 
 from fittrackee.responses import HttpResponse, UserNotFoundErrorResponse
 
-from .models import Actor
-from .utils import federation_required
+from .decorators import federation_required
+from .models import Actor, Domain
 
 ap_federation_blueprint = Blueprint('ap_federation', __name__)
 
@@ -12,10 +12,10 @@ ap_federation_blueprint = Blueprint('ap_federation', __name__)
     '/user/<string:preferred_username>', methods=['GET']
 )
 @federation_required
-def get_actor(preferred_username: str) -> HttpResponse:
+def get_actor(app_domain: Domain, preferred_username: str) -> HttpResponse:
     actor = Actor.query.filter_by(
         preferred_username=preferred_username,
-        domain=current_app.config['AP_DOMAIN'],
+        domain_id=app_domain.id,
     ).first()
     if not actor:
         return UserNotFoundErrorResponse()
