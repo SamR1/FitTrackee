@@ -30,7 +30,9 @@ copyright = '2018 - 2020, SamR1'
 author = 'SamR1'
 
 # The full version, including alpha/beta/rc tags.
-release = (Path(__file__).parent.parent.parent / 'VERSION').read_text()
+release = (
+    Path(__file__).parent.parent.parent / 'fittrackee/VERSION'
+).read_text()
 # The short X.Y version.
 version = release.split('-')[0]
 
