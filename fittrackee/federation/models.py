@@ -2,15 +2,12 @@ from datetime import datetime
 from typing import Dict, Optional
 
 from flask import current_app
-from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.types import Enum
 
-from fittrackee import db
+from fittrackee import BaseModel, db
 from fittrackee.users.models import User
 
 from .utils import ACTOR_TYPES, AP_CTX, generate_keys, get_ap_url
-
-BaseModel: DeclarativeMeta = db.Model
 
 
 class Domain(BaseModel):

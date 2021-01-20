@@ -3,14 +3,11 @@ from typing import Dict
 from flask import current_app
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
-from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session
 
-from fittrackee import db
+from fittrackee import BaseModel, db
 from fittrackee.users.models import User
-
-BaseModel: DeclarativeMeta = db.Model
 
 
 class AppConfig(BaseModel):

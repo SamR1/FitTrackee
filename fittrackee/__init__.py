@@ -10,10 +10,12 @@ from flask_dramatiq import Dramatiq
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import ProgrammingError
+from sqlalchemy.ext.declarative import DeclarativeMeta
 
 from fittrackee.emails.email import Email
 
 db = SQLAlchemy()
+BaseModel: DeclarativeMeta = db.Model
 bcrypt = Bcrypt()
 migrate = Migrate()
 email_service = Email()
