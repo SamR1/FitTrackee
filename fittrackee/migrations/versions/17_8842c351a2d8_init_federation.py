@@ -38,7 +38,6 @@ def upgrade():
     op.create_table('actors',
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
         sa.Column('ap_id', sa.String(length=255), nullable=False),
-        sa.Column('user_id', sa.Integer(), nullable=False),
         sa.Column('domain_id', sa.Integer(), nullable=False),
         sa.Column('type', sa.Enum('Application', 'Group', 'Person', name='actor_types'), server_default='Person', nullable=True),
         sa.Column('name', sa.String(length=255), nullable=False),
@@ -53,15 +52,21 @@ def upgrade():
         sa.Column('created_at', sa.DateTime(), nullable=False),
         sa.Column('manually_approves_followers', sa.Boolean(), nullable=False),
         sa.Column('last_fetch_date', sa.DateTime(), nullable=True),
-        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
         sa.ForeignKeyConstraint(['domain_id'], ['domains.id'], ),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('ap_id'),
-        sa.UniqueConstraint('user_id')
     )
+
+    op.add_column('users', sa.Column('actor_id', sa.Integer(), nullable=True))
+    op.create_unique_constraint('users_actor_id_key', 'users', ['actor_id'])
+    op.create_foreign_key('users_actor_id_fkey', 'users', 'actors', ['actor_id'], ['id'])
 
 
 def downgrade():
+    op.drop_constraint('users_actor_id_fkey', 'users', type_='foreignkey')
+    op.drop_constraint('users_actor_id_key', 'users', type_='unique')
+    op.drop_column('users', 'actor_id')
+
     op.drop_table('actors')
     op.execute('DROP TYPE actor_types')
 
