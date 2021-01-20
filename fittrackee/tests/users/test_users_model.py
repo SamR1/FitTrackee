@@ -1,5 +1,6 @@
-from fittrackee.users.models import User
 from flask import Flask
+
+from fittrackee.users.models import User
 
 
 class TestUserModel:

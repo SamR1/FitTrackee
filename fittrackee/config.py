@@ -26,7 +26,7 @@ class BaseConfig:
     )
     PICTURE_ALLOWED_EXTENSIONS = {'jpg', 'png', 'gif'}
     WORKOUT_ALLOWED_EXTENSIONS = {'gpx', 'zip'}
-    TEMPLATES_FOLDER = os.path.join(current_app.root_path, 'email/templates')
+    TEMPLATES_FOLDER = os.path.join(current_app.root_path, 'emails/templates')
     UI_URL = os.environ.get('UI_URL')
     EMAIL_URL = os.environ.get('EMAIL_URL')
     SENDER_EMAIL = os.environ.get('SENDER_EMAIL')

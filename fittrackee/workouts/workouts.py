@@ -5,6 +5,9 @@ from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import requests
+from flask import Blueprint, Response, current_app, request, send_file
+from sqlalchemy import exc
+
 from fittrackee import appLog, db
 from fittrackee.responses import (
     DataInvalidPayloadErrorResponse,
@@ -15,15 +18,13 @@ from fittrackee.responses import (
     NotFoundErrorResponse,
     handle_error_and_return_response,
 )
-from flask import Blueprint, Response, current_app, request, send_file
-from sqlalchemy import exc
-
-from ..users.utils import (
+from fittrackee.users.decorators import authenticate
+from fittrackee.users.utils import (
     User,
-    authenticate,
     can_view_workout,
     verify_extension_and_size,
 )
+
 from .models import Workout
 from .utils import (
     WorkoutException,

@@ -1,15 +1,16 @@
 from typing import Dict, Union
 
+from flask import Blueprint, current_app, request
+from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
+
 from fittrackee import db
 from fittrackee.responses import (
     HttpResponse,
     InvalidPayloadErrorResponse,
     handle_error_and_return_response,
 )
-from flask import Blueprint, current_app, request
-from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
+from fittrackee.users.decorators import authenticate_as_admin
 
-from ..users.utils import authenticate_as_admin
 from .models import AppConfig
 from .utils import update_app_config_from_database
 

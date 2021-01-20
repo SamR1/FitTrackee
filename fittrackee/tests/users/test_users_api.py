@@ -3,9 +3,10 @@ from datetime import datetime, timedelta
 from io import BytesIO
 from unittest.mock import patch
 
+from flask import Flask
+
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
-from flask import Flask
 
 
 class TestGetUser:

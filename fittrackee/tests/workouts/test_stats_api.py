@@ -1,8 +1,9 @@
 import json
 
+from flask import Flask
+
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
-from flask import Flask
 
 
 class TestGetStatsByTime:

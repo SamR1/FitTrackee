@@ -3,16 +3,8 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import gpxpy.gpx
 
+from .exceptions import WorkoutGPXException
 from .utils_weather import get_weather
-
-
-class WorkoutGPXException(Exception):
-    def __init__(
-        self, status: str, message: str, e: Optional[Exception] = None
-    ) -> None:
-        self.status = status
-        self.message = message
-        self.e = e
 
 
 def open_gpx_file(gpx_file: str) -> Optional[gpxpy.gpx.GPX]:

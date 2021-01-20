@@ -9,7 +9,7 @@ from flask_dramatiq import Dramatiq
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
-from .email.email import Email
+from fittrackee.emails.email import Email
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()

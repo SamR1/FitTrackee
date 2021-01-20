@@ -1,9 +1,10 @@
 import json
 from uuid import uuid4
 
+from flask import Flask
+
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
-from flask import Flask
 
 from .utils import get_random_short_id
 

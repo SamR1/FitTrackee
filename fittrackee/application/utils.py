@@ -1,9 +1,10 @@
 import os
 from typing import Tuple
 
+from flask import Flask
+
 from fittrackee import db
 from fittrackee.users.models import User
-from flask import Flask
 
 from .models import AppConfig
 

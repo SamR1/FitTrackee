@@ -2,9 +2,7 @@ from typing import Dict
 
 from urllib3.util import parse_url
 
-
-class InvalidEmailUrlScheme(Exception):
-    ...
+from .exceptions import InvalidEmailUrlScheme
 
 
 def parse_email_url(email_url: str) -> Dict:

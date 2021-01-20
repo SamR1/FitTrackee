@@ -8,26 +8,19 @@ from uuid import UUID
 
 import gpxpy.gpx
 import pytz
-from fittrackee import appLog, db
 from flask import current_app
 from sqlalchemy import exc
 from staticmap import Line, StaticMap
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
-from ..users.models import User
+from fittrackee import appLog, db
+from fittrackee.users.models import User
+
+from .exceptions import WorkoutException
 from .models import Sport, Workout, WorkoutSegment
 from .utils_files import get_absolute_file_path
 from .utils_gpx import get_gpx_info
-
-
-class WorkoutException(Exception):
-    def __init__(
-        self, status: str, message: str, e: Optional[Exception] = None
-    ) -> None:
-        self.status = status
-        self.message = message
-        self.e = e
 
 
 def get_datetime_with_tz(

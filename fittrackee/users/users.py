@@ -2,6 +2,9 @@ import os
 import shutil
 from typing import Any, Dict, Tuple, Union
 
+from flask import Blueprint, request, send_file
+from sqlalchemy import exc
+
 from fittrackee import db
 from fittrackee.responses import (
     ForbiddenErrorResponse,
@@ -11,12 +14,10 @@ from fittrackee.responses import (
     UserNotFoundErrorResponse,
     handle_error_and_return_response,
 )
-from flask import Blueprint, request, send_file
-from sqlalchemy import exc
+from fittrackee.workouts.utils_files import get_absolute_file_path
 
-from ..workouts.utils_files import get_absolute_file_path
+from .decorators import authenticate, authenticate_as_admin
 from .models import User, Workout
-from .utils import authenticate, authenticate_as_admin
 
 users_blueprint = Blueprint('users', __name__)
 

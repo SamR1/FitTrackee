@@ -1,5 +1,6 @@
-from fittrackee.application.models import AppConfig
 from flask import Flask
+
+from fittrackee.application.models import AppConfig
 
 
 class TestConfigModel:

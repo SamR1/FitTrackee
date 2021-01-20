@@ -2,14 +2,15 @@ from datetime import datetime
 from typing import Dict, Optional, Union
 
 import jwt
-from fittrackee import bcrypt, db
 from flask import current_app
 from sqlalchemy import func
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.sql.expression import select
 
-from ..workouts.models import Workout
+from fittrackee import bcrypt, db
+from fittrackee.workouts.models import Workout
+
 from .utils_token import decode_user_token, get_user_token
 
 BaseModel: DeclarativeMeta = db.Model

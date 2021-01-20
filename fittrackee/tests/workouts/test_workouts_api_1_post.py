@@ -4,10 +4,11 @@ from datetime import datetime
 from io import BytesIO
 from typing import Dict
 
+from flask import Flask
+
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 from fittrackee.workouts.utils_id import decode_short_id
-from flask import Flask
 
 
 def assert_workout_data_with_gpx(data: Dict) -> None:
