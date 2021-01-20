@@ -16,18 +16,10 @@ from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
 from ..users.models import User
+from .exceptions import WorkoutException
 from .models import Sport, Workout, WorkoutSegment
 from .utils_files import get_absolute_file_path
 from .utils_gpx import get_gpx_info
-
-
-class WorkoutException(Exception):
-    def __init__(
-        self, status: str, message: str, e: Optional[Exception] = None
-    ) -> None:
-        self.status = status
-        self.message = message
-        self.e = e
 
 
 def get_datetime_with_tz(
