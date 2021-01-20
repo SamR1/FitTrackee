@@ -11,12 +11,14 @@ build-client: lint-client
 
 check-all: lint-all type-check test-python
 
-clean-install:
+clean:
+	rm -rf .mypy_cache
+	rm -rf .pytest_cache
+
+clean-install: clean
 	rm -fr $(NODE_MODULES)
 	rm -fr $(VENV)
 	rm -rf *.egg-info
-	rm -rf .mypy_cache
-	rm -rf .pytest_cache
 	rm -rf dist/
 
 downgrade-db:
@@ -92,7 +94,8 @@ run:
 	$(MAKE) P="run-server run-workers" make-p
 
 run-server:
-	cd fittrackee && $(GUNICORN) -b 127.0.0.1:5000 "fittrackee:create_app()" --error-logfile ../gunicorn.log
+	echo 'Running on http://$(HOST):$(PORT)'
+	cd fittrackee && $(GUNICORN) -b $(HOST):$(PORT) "fittrackee:create_app()" --error-logfile ../gunicorn.log
 
 run-workers:
 	$(FLASK) worker --processes=$(WORKERS_PROCESSES) >> dramatiq.log  2>&1
