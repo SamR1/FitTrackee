@@ -1,8 +1,9 @@
 from functools import wraps
 from typing import Any, Callable, Union
 
-from fittrackee.responses import HttpResponse
 from flask import request
+
+from fittrackee.responses import HttpResponse
 
 from .utils import verify_user
 

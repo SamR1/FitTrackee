@@ -3,6 +3,7 @@ import os
 from typing import Generator, Optional
 
 import pytest
+
 from fittrackee import create_app, db
 from fittrackee.application.models import AppConfig
 from fittrackee.application.utils import update_app_config_from_database

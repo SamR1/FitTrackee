@@ -5,15 +5,16 @@ import shutil
 from typing import Dict, Optional
 
 import gunicorn.app.base
+from flask import Flask
+from flask_dramatiq import worker
+from flask_migrate import upgrade
+from tqdm import tqdm
+
 from fittrackee import create_app, db
 from fittrackee.application.utils import init_config
 from fittrackee.database_utils import init_database
 from fittrackee.workouts.models import Workout
 from fittrackee.workouts.utils import update_workout
-from flask import Flask
-from flask_dramatiq import worker
-from flask_migrate import upgrade
-from tqdm import tqdm
 
 HOST = os.getenv('HOST', '0.0.0.0')
 PORT = os.getenv('PORT', '5000')

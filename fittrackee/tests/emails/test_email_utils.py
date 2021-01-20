@@ -1,5 +1,9 @@
 import pytest
-from fittrackee.email.utils_email import InvalidEmailUrlScheme, parse_email_url
+
+from fittrackee.emails.utils_email import (
+    InvalidEmailUrlScheme,
+    parse_email_url,
+)
 
 
 class TestEmailUrlParser:

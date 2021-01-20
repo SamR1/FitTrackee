@@ -3,8 +3,9 @@ from typing import Dict, Optional
 
 import forecastio
 import pytz
-from fittrackee import appLog
 from gpxpy.gpx import GPXRoutePoint
+
+from fittrackee import appLog
 
 API_KEY = os.getenv('WEATHER_API_KEY')
 

@@ -1,3 +1,5 @@
+from flask import Flask
+
 from fittrackee import db
 from fittrackee.application.utils import (
     init_config,
@@ -5,7 +7,6 @@ from fittrackee.application.utils import (
 )
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport
-from flask import Flask
 
 
 def init_database(app: Flask) -> None:

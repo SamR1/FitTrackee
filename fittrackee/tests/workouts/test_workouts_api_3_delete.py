@@ -1,10 +1,11 @@
 import json
 import os
 
+from flask import Flask
+
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 from fittrackee.workouts.utils import get_absolute_file_path
-from flask import Flask
 
 from .utils import get_random_short_id, post_an_workout
 

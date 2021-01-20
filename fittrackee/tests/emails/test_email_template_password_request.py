@@ -1,8 +1,9 @@
 import pytest
-from fittrackee.email.email import EmailTemplate
 from flask import Flask
 
-from ..template_results.password_reset_request import (
+from fittrackee.emails.email import EmailTemplate
+
+from .template_results.password_reset_request import (
     expected_en_html_body,
     expected_en_text_body,
     expected_fr_html_body,

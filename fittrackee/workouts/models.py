@@ -3,7 +3,6 @@ import os
 from typing import Any, Dict, Optional, Union
 from uuid import UUID, uuid4
 
-from fittrackee import db
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
@@ -12,6 +11,8 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session, object_session
 from sqlalchemy.types import JSON, Enum
+
+from fittrackee import db
 
 from .utils_files import get_absolute_file_path
 from .utils_format import convert_in_duration, convert_value_to_integer

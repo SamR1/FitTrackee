@@ -3,6 +3,8 @@ from datetime import timedelta
 from typing import Optional, Tuple, Union
 
 import humanize
+from flask import Request, current_app
+
 from fittrackee.responses import (
     ForbiddenErrorResponse,
     HttpResponse,
@@ -10,7 +12,6 @@ from fittrackee.responses import (
     PayloadTooLargeErrorResponse,
     UnauthorizedErrorResponse,
 )
-from flask import Request, current_app
 
 from .models import User
 

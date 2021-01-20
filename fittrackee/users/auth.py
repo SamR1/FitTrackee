@@ -3,6 +3,11 @@ import os
 from typing import Dict, Tuple, Union
 
 import jwt
+from flask import Blueprint, current_app, request
+from sqlalchemy import exc, or_
+from werkzeug.exceptions import RequestEntityTooLarge
+from werkzeug.utils import secure_filename
+
 from fittrackee import appLog, bcrypt, db
 from fittrackee.responses import (
     ForbiddenErrorResponse,
@@ -13,12 +18,8 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.tasks import reset_password_email
-from flask import Blueprint, current_app, request
-from sqlalchemy import exc, or_
-from werkzeug.exceptions import RequestEntityTooLarge
-from werkzeug.utils import secure_filename
+from fittrackee.workouts.utils_files import get_absolute_file_path
 
-from ..workouts.utils_files import get_absolute_file_path
 from .decorators import authenticate
 from .models import User
 from .utils import (

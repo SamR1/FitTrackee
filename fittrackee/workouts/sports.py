@@ -1,5 +1,8 @@
 from typing import Dict, Union
 
+from flask import Blueprint, request
+from sqlalchemy import exc
+
 from fittrackee import db
 from fittrackee.responses import (
     DataNotFoundErrorResponse,
@@ -7,11 +10,9 @@ from fittrackee.responses import (
     InvalidPayloadErrorResponse,
     handle_error_and_return_response,
 )
-from flask import Blueprint, request
-from sqlalchemy import exc
+from fittrackee.users.decorators import authenticate, authenticate_as_admin
+from fittrackee.users.models import User
 
-from ..users.decorators import authenticate, authenticate_as_admin
-from ..users.models import User
 from .models import Sport
 
 sports_blueprint = Blueprint('sports', __name__)

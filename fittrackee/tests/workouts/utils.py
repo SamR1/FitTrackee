@@ -3,8 +3,9 @@ from io import BytesIO
 from typing import Tuple
 from uuid import uuid4
 
-from fittrackee.workouts.utils_id import encode_uuid
 from flask import Flask
+
+from fittrackee.workouts.utils_id import encode_uuid
 
 
 def get_random_short_id() -> str:

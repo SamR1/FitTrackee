@@ -1,11 +1,12 @@
 from typing import Any
 from unittest.mock import Mock, patch
 
-from fittrackee import email_service
-from fittrackee.email.email import EmailMessage
 from flask import Flask
 
-from ..template_results.password_reset_request import expected_en_text_body
+from fittrackee import email_service
+from fittrackee.emails.email import EmailMessage
+
+from .template_results.password_reset_request import expected_en_text_body
 
 
 class TestEmailMessage:

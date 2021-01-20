@@ -1,6 +1,9 @@
 from datetime import datetime, timedelta
 from typing import Dict, Union
 
+from flask import Blueprint, request
+from sqlalchemy import func
+
 from fittrackee import db
 from fittrackee.responses import (
     HttpResponse,
@@ -9,11 +12,9 @@ from fittrackee.responses import (
     UserNotFoundErrorResponse,
     handle_error_and_return_response,
 )
-from flask import Blueprint, request
-from sqlalchemy import func
+from fittrackee.users.decorators import authenticate, authenticate_as_admin
+from fittrackee.users.models import User
 
-from ..users.decorators import authenticate, authenticate_as_admin
-from ..users.models import User
 from .models import Sport, Workout
 from .utils import get_datetime_with_tz, get_upload_dir_size
 from .utils_format import convert_timedelta_to_integer

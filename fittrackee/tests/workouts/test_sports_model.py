@@ -1,8 +1,9 @@
 from typing import Dict, Optional
 
+from flask import Flask
+
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
-from flask import Flask
 
 
 class TestSportModel:

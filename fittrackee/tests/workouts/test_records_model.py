@@ -1,8 +1,9 @@
 import datetime
 
+from flask import Flask
+
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Record, Sport, Workout
-from flask import Flask
 
 
 class TestRecordModel:

@@ -3,11 +3,12 @@ from datetime import datetime, timedelta
 from io import BytesIO
 from unittest.mock import Mock, patch
 
+from flask import Flask
+from freezegun import freeze_time
+
 from fittrackee.users.models import User
 from fittrackee.users.utils_token import get_user_token
 from fittrackee.workouts.models import Sport, Workout
-from flask import Flask
-from freezegun import freeze_time
 
 
 class TestUserRegistration:

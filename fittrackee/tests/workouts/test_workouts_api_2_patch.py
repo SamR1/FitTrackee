@@ -1,10 +1,11 @@
 import json
 from typing import Dict
 
+from flask import Flask
+
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 from fittrackee.workouts.utils_id import decode_short_id
-from flask import Flask
 
 from .utils import get_random_short_id, post_an_workout
 

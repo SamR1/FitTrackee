@@ -1,9 +1,10 @@
 from json import dumps
 from typing import Dict, List, Optional, Union
 
-from fittrackee import appLog
 from flask import Response
 from flask_sqlalchemy import SQLAlchemy
+
+from fittrackee import appLog
 
 
 def get_empty_data_for_datatype(data_type: str) -> Union[str, List]:

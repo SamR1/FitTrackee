@@ -8,14 +8,15 @@ from uuid import UUID
 
 import gpxpy.gpx
 import pytz
-from fittrackee import appLog, db
 from flask import current_app
 from sqlalchemy import exc
 from staticmap import Line, StaticMap
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
-from ..users.models import User
+from fittrackee import appLog, db
+from fittrackee.users.models import User
+
 from .exceptions import WorkoutException
 from .models import Sport, Workout, WorkoutSegment
 from .utils_files import get_absolute_file_path

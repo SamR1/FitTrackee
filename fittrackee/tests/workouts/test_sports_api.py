@@ -1,8 +1,9 @@
 import json
 
+from flask import Flask
+
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
-from flask import Flask
 
 expected_sport_1_cycling_result = {
     'id': 1,

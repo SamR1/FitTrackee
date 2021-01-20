@@ -1,9 +1,10 @@
 from uuid import UUID
 
+from flask import Flask
+
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 from fittrackee.workouts.utils_id import decode_short_id
-from flask import Flask
 
 
 class TestWorkoutModel:
