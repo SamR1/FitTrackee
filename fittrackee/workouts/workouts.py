@@ -18,12 +18,8 @@ from fittrackee.responses import (
 from flask import Blueprint, Response, current_app, request, send_file
 from sqlalchemy import exc
 
-from ..users.utils import (
-    User,
-    authenticate,
-    can_view_workout,
-    verify_extension_and_size,
-)
+from ..users.decorators import authenticate
+from ..users.utils import User, can_view_workout, verify_extension_and_size
 from .models import Workout
 from .utils import (
     WorkoutException,

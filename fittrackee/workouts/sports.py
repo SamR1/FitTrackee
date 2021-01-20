@@ -10,8 +10,8 @@ from fittrackee.responses import (
 from flask import Blueprint, request
 from sqlalchemy import exc
 
+from ..users.decorators import authenticate, authenticate_as_admin
 from ..users.models import User
-from ..users.utils import authenticate, authenticate_as_admin
 from .models import Sport
 
 sports_blueprint = Blueprint('sports', __name__)

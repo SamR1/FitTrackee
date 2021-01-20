@@ -19,9 +19,9 @@ from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from ..workouts.utils_files import get_absolute_file_path
+from .decorators import authenticate
 from .models import User
 from .utils import (
-    authenticate,
     check_passwords,
     display_readable_file_size,
     get_readable_duration,

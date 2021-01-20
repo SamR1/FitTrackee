@@ -1,7 +1,6 @@
 import re
 from datetime import timedelta
-from functools import wraps
-from typing import Any, Callable, Optional, Tuple, Union
+from typing import Optional, Tuple, Union
 
 import humanize
 from fittrackee.responses import (
@@ -11,7 +10,7 @@ from fittrackee.responses import (
     PayloadTooLargeErrorResponse,
     UnauthorizedErrorResponse,
 )
-from flask import Request, current_app, request
+from flask import Request, current_app
 
 from .models import User
 
@@ -128,34 +127,6 @@ def verify_user(
     if verify_admin and not is_admin(resp):
         return ForbiddenErrorResponse(), None
     return None, resp
-
-
-def authenticate(f: Callable) -> Callable:
-    @wraps(f)
-    def decorated_function(
-        *args: Any, **kwargs: Any
-    ) -> Union[Callable, HttpResponse]:
-        verify_admin = False
-        response_object, resp = verify_user(request, verify_admin)
-        if response_object:
-            return response_object
-        return f(resp, *args, **kwargs)
-
-    return decorated_function
-
-
-def authenticate_as_admin(f: Callable) -> Callable:
-    @wraps(f)
-    def decorated_function(
-        *args: Any, **kwargs: Any
-    ) -> Union[Callable, HttpResponse]:
-        verify_admin = True
-        response_object, resp = verify_user(request, verify_admin)
-        if response_object:
-            return response_object
-        return f(resp, *args, **kwargs)
-
-    return decorated_function
 
 
 def can_view_workout(

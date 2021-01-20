@@ -15,8 +15,8 @@ from flask import Blueprint, request, send_file
 from sqlalchemy import exc
 
 from ..workouts.utils_files import get_absolute_file_path
+from .decorators import authenticate, authenticate_as_admin
 from .models import User, Workout
-from .utils import authenticate, authenticate_as_admin
 
 users_blueprint = Blueprint('users', __name__)
 

@@ -9,7 +9,7 @@ from fittrackee.responses import (
 from flask import Blueprint, current_app, request
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 
-from ..users.utils import authenticate_as_admin
+from ..users.decorators import authenticate_as_admin
 from .models import AppConfig
 from .utils import update_app_config_from_database
 

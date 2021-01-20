@@ -2,7 +2,7 @@ from typing import Dict
 
 from flask import Blueprint
 
-from ..users.utils import authenticate
+from ..users.decorators import authenticate
 from .models import Record
 
 records_blueprint = Blueprint('records', __name__)

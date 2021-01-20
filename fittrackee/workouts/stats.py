@@ -12,8 +12,8 @@ from fittrackee.responses import (
 from flask import Blueprint, request
 from sqlalchemy import func
 
+from ..users.decorators import authenticate, authenticate_as_admin
 from ..users.models import User
-from ..users.utils import authenticate, authenticate_as_admin
 from .models import Sport, Workout
 from .utils import get_datetime_with_tz, get_upload_dir_size
 from .utils_format import convert_timedelta_to_integer
