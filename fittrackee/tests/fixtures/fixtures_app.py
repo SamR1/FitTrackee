@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from typing import Generator, Optional
 
 import pytest
@@ -6,6 +7,7 @@ import pytest
 from fittrackee import create_app, db
 from fittrackee.application.models import AppConfig
 from fittrackee.application.utils import update_app_config_from_database
+from fittrackee.federation.models import Domain
 
 
 def get_app_config(
@@ -28,6 +30,7 @@ def get_app_config(
 def get_app(
     with_config: Optional[bool] = False,
     with_federation: Optional[bool] = False,
+    with_domain: Optional[bool] = True,
 ) -> Generator:
     app = create_app()
     with app.app_context():
@@ -36,6 +39,10 @@ def get_app(
             app_db_config = get_app_config(with_config, with_federation)
             if app_db_config:
                 update_app_config_from_database(app, app_db_config)
+                if with_domain:
+                    domain = Domain(name=app.config['AP_DOMAIN'])
+                    db.session.add(domain)
+                    db.session.commit()
             yield app
         except Exception as e:
             print(f'Error with app configuration: {e}')
@@ -83,7 +90,9 @@ def app_with_federation() -> Generator:
 
 @pytest.fixture
 def app_wo_domain() -> Generator:
-    yield from get_app(with_config=True, with_federation=True)
+    yield from get_app(
+        with_config=True, with_federation=True, with_domain=False
+    )
 
 
 @pytest.fixture()
@@ -97,3 +106,10 @@ def app_config() -> AppConfig:
     db.session.add(config)
     db.session.commit()
     return config
+
+
+@pytest.fixture()
+def app_version() -> str:
+    return (
+        (Path(__file__).parent.parent.parent / 'VERSION').read_text().strip()
+    )

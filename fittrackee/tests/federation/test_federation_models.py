@@ -7,12 +7,13 @@ from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
 from flask import Flask
 
+from fittrackee.federation.constants import AP_CTX
 from fittrackee.federation.exceptions import (
     FollowRequestAlreadyProcessedError,
     NotExistingFollowRequestError,
 )
 from fittrackee.federation.models import Actor, Domain, FollowRequest
-from fittrackee.federation.utils import AP_CTX, get_ap_url
+from fittrackee.federation.utils import get_ap_url
 
 
 class TestGetApUrl:
@@ -56,7 +57,7 @@ class TestActivityPubDomainModel:
         assert not serialized_domain['is_remote']
 
 
-class TestActivityPubActorModel:
+class TestActivityPubPersonActorModel:
     def test_it_returns_string_representation(
         self, app_with_federation: Flask, actor_1: Actor
     ) -> None:
@@ -78,26 +79,26 @@ class TestActivityPubActorModel:
         assert (
             serialized_actor['preferredUsername'] == actor_1.preferred_username
         )
-        assert serialized_actor['name'] == actor_1.name
+        assert serialized_actor['name'] == actor_1.user.username
         assert (
             serialized_actor['inbox']
-            == f'{ap_url}/federation/user/{actor_1.name}/inbox'
+            == f'{ap_url}/federation/user/{actor_1.preferred_username}/inbox'
         )
         assert (
             serialized_actor['inbox']
-            == f'{ap_url}/federation/user/{actor_1.name}/inbox'
+            == f'{ap_url}/federation/user/{actor_1.preferred_username}/inbox'
         )
         assert (
             serialized_actor['outbox']
-            == f'{ap_url}/federation/user/{actor_1.name}/outbox'
+            == f'{ap_url}/federation/user/{actor_1.preferred_username}/outbox'
         )
-        assert (
-            serialized_actor['followers']
-            == f'{ap_url}/federation/user/{actor_1.name}/followers'
+        assert serialized_actor['followers'] == (
+            f'{ap_url}/federation/user/'
+            f'{actor_1.preferred_username}/followers'
         )
-        assert (
-            serialized_actor['following']
-            == f'{ap_url}/federation/user/{actor_1.name}/following'
+        assert serialized_actor['following'] == (
+            f'{ap_url}/federation/user/'
+            f'{actor_1.preferred_username}/following'
         )
         assert serialized_actor['manuallyApprovesFollowers'] is True
         assert (
@@ -209,3 +210,14 @@ class TestActivityPubActorFollowingModel:
 
         with pytest.raises(FollowRequestAlreadyProcessedError):
             actor_1.approves_follow_request_from(actor_2)
+
+
+class TestActivityPubActorModel:
+    def test_it_returns_actor_empty_name(
+        self, app_with_federation: Flask
+    ) -> None:
+        domain = Domain.query.filter_by(
+            name=app_with_federation.config['AP_DOMAIN']
+        ).first()
+        actor = Actor(username=uuid4().hex, domain_id=domain.id)
+        assert actor.name is None

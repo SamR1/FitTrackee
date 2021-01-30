@@ -3,13 +3,6 @@ from typing import Tuple
 from Crypto.PublicKey import RSA
 from flask import current_app
 
-ACTOR_TYPES = ['Application', 'Group', 'Person']
-
-AP_CTX = [
-    'https://www.w3.org/ns/activitystreams',
-    'https://w3id.org/security/v1',
-]
-
 
 def generate_keys() -> Tuple[str, str]:
     """
