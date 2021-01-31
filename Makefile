@@ -21,6 +21,41 @@ clean-install: clean
 	rm -rf *.egg-info
 	rm -rf dist/
 
+## Docker commands for evaluation purposes
+docker-build:
+	docker-compose -f docker-compose-dev.yml build
+
+docker-init: docker-init-db docker-restart docker-run-workers
+
+docker-init-db:
+	docker-compose -f docker-compose-dev.yml exec fittrackee docker/init-database.sh
+
+docker-logs:
+	docker-compose -f docker-compose-dev.yml logs --follow
+
+docker-rebuild:
+	docker-compose -f docker-compose-dev.yml build --no-cache
+
+docker-restart:
+	docker-compose -f docker-compose-dev.yml restart fittrackee
+
+docker-run-all: docker-run docker-run-workers
+
+docker-run:
+	docker-compose -f docker-compose-dev.yml up -d
+
+docker-run-workers:
+	docker-compose -f docker-compose-dev.yml exec -d fittrackee docker/run-workers.sh
+
+docker-shell:
+	docker-compose -f docker-compose-dev.yml exec fittrackee docker/shell.sh
+
+docker-stop:
+	docker-compose -f docker-compose-dev.yml stop
+
+docker-up:
+	docker-compose -f docker-compose-dev.yml up
+
 downgrade-db:
 	$(FLASK) db downgrade --directory $(MIGRATIONS)
 
