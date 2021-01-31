@@ -26,7 +26,7 @@ Prerequisites
 -  API key from `Dark Sky <https://darksky.net/dev>`__ [not mandatory]
 -  SMTP provider
 -  `Yarn <https://yarnpkg.com>`__ (for development only)
--  Docker (for development only, to start `MailHog <https://github.com/mailhog/MailHog>`__)
+-  Docker (for development only, to start `MailHog <https://github.com/mailhog/MailHog>`__ or evaluation purposes)
 
 .. note::
     | The following steps describe an installation on Linux systems (tested
@@ -636,3 +636,43 @@ Examples (to update depending on your application configuration and given distri
 
 .. note::
     More information on `Gunicorn documentation <https://docs.gunicorn.org/en/stable/deploy.html>`__
+
+
+Docker
+~~~~~~
+
+.. versionadded:: 0.x.x
+
+For evaluation purposes (at least for now), docker files are available,
+installing **FitTrackee** from **sources**.
+
+- To install **FitTrackee** with database initialisation and run the application and dramatiq workers:
+
+.. code-block:: bash
+
+    $ git clone https://github.com/SamR1/FitTrackee.git
+    $ cd FitTrackee
+    $ make docker-build docker-run docker-init
+
+Open http://localhost:5000, log in as admin (the email is `admin@example.com` and the password `mpwoadmin`) or register.
+
+Open http://localhost:8025 to access `MailHog interface <https://github.com/mailhog/MailHog>`_ (email testing tool)
+
+- To stop **Fittrackee**:
+
+.. code-block:: bash
+
+    $ make docker-stop
+
+- To start **Fittrackee** (application and dramatiq workers):
+
+.. code-block:: bash
+
+    $ make docker-run-all
+
+
+- To run shell inside **Fittrackee** container:
+
+.. code-block:: bash
+
+    $ make docker-shell

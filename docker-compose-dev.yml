@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+
+  fittrackee-db:
+    container_name: fittrackee-db
+    build: ./db
+    ports:
+      - 5435:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  fittrackee:
+    container_name: fittrackee
+    build: .
+    ports:
+      - 5000:5000
+    env_file:
+      - .env.docker
+    depends_on:
+      - fittrackee-db
+      - redis
+      - mail
+    links:
+      - fittrackee-db
+      - redis
+      - mail
+
+  redis:
+    container_name: fittrackee-redis
+    image: "redis:latest"
+    hostname: redis
+    ports:
+      - 6379:6379
+
+  mail:
+    container_name: fittrackee-mailhog
+    image: "mailhog/mailhog"
+    ports:
+      - 1025:1025
+      - 8025:8025
+
