@@ -103,6 +103,7 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#deployment">Deployment</a></li>
+<li><a class="reference internal" href="#docker">Docker</a></li>
 </ul>
 </li>
 </ul>
@@ -188,7 +189,7 @@
 <li><p>API key from <a class="reference external" href="https://darksky.net/dev">Dark Sky</a> [not mandatory]</p></li>
 <li><p>SMTP provider</p></li>
 <li><p><a class="reference external" href="https://yarnpkg.com">Yarn</a> (for development only)</p></li>
-<li><p>Docker (for development only, to start <a class="reference external" href="https://github.com/mailhog/MailHog">MailHog</a>)</p></li>
+<li><p>Docker (for development only, to start <a class="reference external" href="https://github.com/mailhog/MailHog">MailHog</a> or evaluation purposes)</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -897,6 +898,42 @@ server {
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>More information on <a class="reference external" href="https://docs.gunicorn.org/en/stable/deploy.html">Gunicorn documentation</a></p>
+</div>
+</div>
+<div class="section" id="docker">
+<h2>Docker<a class="headerlink" href="#docker" title="Permalink to this headline">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.x.x.</span></p>
+</div>
+<p>For evaluation purposes (at least for now), docker files are available,
+installing <strong>FitTrackee</strong> from <strong>sources</strong>.</p>
+<ul class="simple">
+<li><p>To install <strong>FitTrackee</strong> with database initialisation and run the application and dramatiq workers:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/SamR1/FitTrackee.git
+$ <span class="nb">cd</span> FitTrackee
+$ make docker-build docker-run docker-init
+</pre></div>
+</div>
+<p>Open <a class="reference external" href="http://localhost:5000">http://localhost:5000</a>, log in as admin (the email is <cite>admin&#64;example.com</cite> and the password <cite>mpwoadmin</cite>) or register.</p>
+<p>Open <a class="reference external" href="http://localhost:8025">http://localhost:8025</a> to access <a class="reference external" href="https://github.com/mailhog/MailHog">MailHog interface</a> (email testing tool)</p>
+<ul class="simple">
+<li><p>To stop <strong>Fittrackee</strong>:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make docker-stop
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>To start <strong>Fittrackee</strong> (application and dramatiq workers):</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make docker-run-all
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>To run shell inside <strong>Fittrackee</strong> container:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make docker-shell
+</pre></div>
 </div>
 </div>
 </div>
