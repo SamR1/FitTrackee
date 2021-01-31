@@ -161,7 +161,7 @@ test-python:
 
 type-check:
 	echo 'Running mypy...'
-	$(MYPY) fittrackee --disallow-untyped-defs --ignore-missing-imports
+	$(MYPY) fittrackee
 
 upgrade-db:
 	$(FLASK) db upgrade --directory $(MIGRATIONS)
