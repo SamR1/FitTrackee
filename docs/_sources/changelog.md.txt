@@ -1,7 +1,21 @@
 # Change log
 
-## Version 0.4.3 (2021/01/10)
+## Unreleased version
 
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#62](https://github.com/SamR1/Fittrackee/issues/62) - Error when sending reset password email
+
+### Misc
+
+* Refactoring before introducing new features.
+
+In this release 1 issue was closed.
+
+
+## Version 0.4.3 (2021/01/10)
 
 ### Issues Closed
 
