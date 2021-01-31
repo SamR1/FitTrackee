@@ -11,6 +11,7 @@
 ### Misc
 
 * Refactoring before introducing new features.
+* Add docker files for evaluation purposes.
 
 In this release 1 issue was closed.
 
