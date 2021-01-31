@@ -647,10 +647,11 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
     if user:
         password_reset_token = user.encode_password_reset_token(user.id)
         ui_url = current_app.config['UI_URL']
+        user_language = 'en' if user.language is None else user.language
         email_data = {
             'expiration_delay': get_readable_duration(
                 current_app.config['PASSWORD_TOKEN_EXPIRATION_SECONDS'],
-                'en' if user.language is None else user.language,
+                user_language,
             ),
             'username': user.username,
             'password_reset_url': (
@@ -660,7 +661,7 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
             'browser_name': request.user_agent.browser,  # type: ignore
         }
         user_data = {
-            'language': user.language if user.language else 'en',
+            'language': user_language,
             'email': user.email,
         }
         reset_password_email.send(user_data, email_data)

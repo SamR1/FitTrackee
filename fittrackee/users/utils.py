@@ -156,13 +156,18 @@ def display_readable_file_size(size_in_bytes: Union[float, int]) -> str:
     return f'{size_in_bytes} bytes'
 
 
-def get_readable_duration(duration: int, locale: Optional[str] = 'en') -> str:
+def get_readable_duration(duration: int, locale: Optional[str] = None) -> str:
     """
     Return readable and localized duration from duration in seconds
     """
-    if locale is not None and locale != 'en':
-        _t = humanize.i18n.activate(locale)  # noqa
+    if locale is None:
+        locale = 'en'
+    if locale != 'en':
+        try:
+            _t = humanize.i18n.activate(locale)  # noqa
+        except FileNotFoundError:
+            locale = 'en'
     readable_duration = humanize.naturaldelta(timedelta(seconds=duration))
-    if locale is not None and locale != 'en':
+    if locale != 'en':
         humanize.i18n.deactivate()
     return readable_duration
