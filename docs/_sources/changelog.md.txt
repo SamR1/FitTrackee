@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased version
+## Version 0.4.4 (2021/01/31)
 
 ### Issues Closed
 
