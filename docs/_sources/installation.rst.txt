@@ -641,7 +641,7 @@ Examples (to update depending on your application configuration and given distri
 Docker
 ~~~~~~
 
-.. versionadded:: 0.x.x
+.. versionadded:: 0.4.4
 
 For evaluation purposes (at least for now), docker files are available,
 installing **FitTrackee** from **sources**.
