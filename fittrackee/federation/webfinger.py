@@ -37,7 +37,7 @@ def webfinger(app_domain: Domain) -> HttpResponse:
         'subject': f'acct:{actor.preferred_username}@{actor.domain.name}',
         'links': [
             {
-                'href': actor.ap_id,
+                'href': actor.activitypub_id,
                 'rel': 'self',
                 'type': 'application/activity+json',
             }

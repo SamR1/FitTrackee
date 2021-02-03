@@ -80,7 +80,7 @@ class Actor(BaseModel):
         ),
     )
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    ap_id = db.Column(db.String(255), unique=True, nullable=False)
+    activitypub_id = db.Column(db.String(255), unique=True, nullable=False)
     domain_id = db.Column(
         db.Integer, db.ForeignKey('domains.id'), nullable=False
     )
@@ -126,7 +126,7 @@ class Actor(BaseModel):
         domain_id: int,
         created_at: Optional[datetime] = datetime.utcnow(),
     ) -> None:
-        self.ap_id = get_ap_url(username, 'user_url')
+        self.activitypub_id = get_ap_url(username, 'user_url')
         self.created_at = created_at
         self.domain_id = domain_id
         self.followers_url = get_ap_url(username, 'followers')
@@ -191,7 +191,7 @@ class Actor(BaseModel):
     def serialize(self) -> Dict:
         return {
             '@context': AP_CTX,
-            'id': self.ap_id,
+            'id': self.activitypub_id,
             'type': self.type.value,
             'preferredUsername': self.preferred_username,
             'name': self.name,
@@ -201,8 +201,8 @@ class Actor(BaseModel):
             'following': self.following_url,
             'manuallyApprovesFollowers': self.manually_approves_followers,
             'publicKey': {
-                'id': f'{self.ap_id}#main-key',
-                'owner': self.ap_id,
+                'id': f'{self.activitypub_id}#main-key',
+                'owner': self.activitypub_id,
                 'publicKeyPem': self.public_key,
             },
             'endpoints': {'sharedInbox': self.shared_inbox_url},

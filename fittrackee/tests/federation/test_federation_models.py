@@ -74,7 +74,7 @@ class TestActivityPubPersonActorModel:
         serialized_actor = actor_1.serialize()
         ap_url = app_with_federation.config['AP_DOMAIN']
         assert serialized_actor['@context'] == AP_CTX
-        assert serialized_actor['id'] == actor_1.ap_id
+        assert serialized_actor['id'] == actor_1.activitypub_id
         assert serialized_actor['type'] == 'Person'
         assert (
             serialized_actor['preferredUsername'] == actor_1.preferred_username
@@ -102,9 +102,10 @@ class TestActivityPubPersonActorModel:
         )
         assert serialized_actor['manuallyApprovesFollowers'] is True
         assert (
-            serialized_actor['publicKey']['id'] == f'{actor_1.ap_id}#main-key'
+            serialized_actor['publicKey']['id']
+            == f'{actor_1.activitypub_id}#main-key'
         )
-        assert serialized_actor['publicKey']['owner'] == actor_1.ap_id
+        assert serialized_actor['publicKey']['owner'] == actor_1.activitypub_id
         assert 'publicKeyPem' in serialized_actor['publicKey']
         assert (
             serialized_actor['endpoints']['sharedInbox']

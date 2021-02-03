@@ -122,7 +122,7 @@ class TestWebfinger:
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['links'][0] == {
-            'href': actor_1.ap_id,
+            'href': actor_1.activitypub_id,
             'rel': 'self',
             'type': 'application/activity+json',
         }

@@ -37,7 +37,7 @@ def upgrade():
 
     op.create_table('actors',
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-        sa.Column('ap_id', sa.String(length=255), nullable=False),
+        sa.Column('activitypub_id', sa.String(length=255), nullable=False),
         sa.Column('domain_id', sa.Integer(), nullable=False),
         sa.Column('type', sa.Enum('APPLICATION', 'GROUP', 'PERSON', name='actor_types'), server_default='PERSON', nullable=True),
         sa.Column('preferred_username', sa.String(length=255), nullable=False),
@@ -53,7 +53,7 @@ def upgrade():
         sa.Column('last_fetch_date', sa.DateTime(), nullable=True),
         sa.ForeignKeyConstraint(['domain_id'], ['domains.id'], ),
         sa.PrimaryKeyConstraint('id'),
-        sa.UniqueConstraint('ap_id'),
+        sa.UniqueConstraint('activitypub_id'),
         sa.UniqueConstraint('domain_id', 'preferred_username', name='domain_username_unique'),
     )
 
