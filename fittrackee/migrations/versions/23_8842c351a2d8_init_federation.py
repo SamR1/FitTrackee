@@ -31,7 +31,8 @@ def upgrade():
     op.execute('UPDATE app_config SET federation_enabled = false')
     op.alter_column('app_config', 'federation_enabled', nullable=False)
 
-    domain_table = op.create_table('domains',
+    domain_table = op.create_table(
+        'domains',
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
         sa.Column('name', sa.String(length=1000), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=False),
@@ -47,11 +48,17 @@ def upgrade():
         f"VALUES ('{domain}', '{created_at}'::timestamp, True)"
     )
 
-    actors_table = op.create_table('actors',
+    actors_table = op.create_table(
+        'actors',
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
         sa.Column('activitypub_id', sa.String(length=255), nullable=False),
         sa.Column('domain_id', sa.Integer(), nullable=False),
-        sa.Column('type', sa.Enum('APPLICATION', 'GROUP', 'PERSON', name='actor_types'), server_default='PERSON', nullable=True),
+        sa.Column(
+            'type',
+            sa.Enum('APPLICATION', 'GROUP', 'PERSON', name='actor_types'),
+            server_default='PERSON',
+            nullable=True,
+        ),
         sa.Column('preferred_username', sa.String(length=255), nullable=False),
         sa.Column('public_key', sa.String(length=5000), nullable=True),
         sa.Column('private_key', sa.String(length=5000), nullable=True),
@@ -63,15 +70,22 @@ def upgrade():
         sa.Column('created_at', sa.DateTime(), nullable=False),
         sa.Column('manually_approves_followers', sa.Boolean(), nullable=False),
         sa.Column('last_fetch_date', sa.DateTime(), nullable=True),
-        sa.ForeignKeyConstraint(['domain_id'], ['domains.id'], ),
+        sa.ForeignKeyConstraint(
+            ['domain_id'],
+            ['domains.id'],
+        ),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('activitypub_id'),
-        sa.UniqueConstraint('domain_id', 'preferred_username', name='domain_username_unique'),
+        sa.UniqueConstraint(
+            'domain_id', 'preferred_username', name='domain_username_unique'
+        ),
     )
 
     op.add_column('users', sa.Column('actor_id', sa.Integer(), nullable=True))
     op.create_unique_constraint('users_actor_id_key', 'users', ['actor_id'])
-    op.create_foreign_key('users_actor_id_fkey', 'users', 'actors', ['actor_id'], ['id'])
+    op.create_foreign_key(
+        'users_actor_id_fkey', 'users', 'actors', ['actor_id'], ['id']
+    )
 
     # create local actors
     user_helper = sa.Table(
@@ -99,22 +113,31 @@ def upgrade():
             f"'{get_ap_url(user.username, 'shared_inbox')}', "
             f"'{created_at}'::timestamp, {True}) RETURNING id"
         )
-        actor = connection.execute(actors_table.select().where(
-            actors_table.c.preferred_username == user.username)).fetchone()
+        actor = connection.execute(
+            actors_table.select().where(
+                actors_table.c.preferred_username == user.username
+            )
+        ).fetchone()
         op.execute(
             f'UPDATE users SET actor_id = {actor.id} WHERE users.id = {user.id}'
         )
 
-
-    op.create_table('follow_requests',
+    op.create_table(
+        'follow_requests',
         sa.Column('follower_actor_id', sa.Integer(), nullable=False),
         sa.Column('followed_actor_id', sa.Integer(), nullable=False),
         sa.Column('is_approved', sa.Boolean(), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=False),
         sa.Column('updated_at', sa.DateTime(), nullable=True),
-        sa.ForeignKeyConstraint(['followed_actor_id'], ['actors.id'], ),
-        sa.ForeignKeyConstraint(['follower_actor_id'], ['actors.id'], ),
-        sa.PrimaryKeyConstraint('follower_actor_id', 'followed_actor_id')
+        sa.ForeignKeyConstraint(
+            ['followed_actor_id'],
+            ['actors.id'],
+        ),
+        sa.ForeignKeyConstraint(
+            ['follower_actor_id'],
+            ['actors.id'],
+        ),
+        sa.PrimaryKeyConstraint('follower_actor_id', 'followed_actor_id'),
     )
 
 
