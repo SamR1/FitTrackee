@@ -1,5 +1,18 @@
 # Change log
 
+## Version 0.4.5 (2021/02/17)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#66](https://github.com/SamR1/Fittrackee/issues/66) - invalid gpx limit used when importing zip archive
+* [#64](https://github.com/SamR1/Fittrackee/issues/64) - Only 50 workouts per month shown in calendar
+
+
+In this release 2 issueS were closed.
+
+
 ## Version 0.4.4 (2021/01/31)
 
 ### Issues Closed
