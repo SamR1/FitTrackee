@@ -44,7 +44,8 @@ from .utils_id import decode_short_id
 
 workouts_blueprint = Blueprint('workouts', __name__)
 
-WORKOUTS_PER_PAGE = 5
+DEFAULT_WORKOUTS_PER_PAGE = 5
+MAX_WORKOUTS_PER_PAGE = 100
 
 
 @workouts_blueprint.route('/workouts', methods=['GET'])
@@ -168,7 +169,7 @@ def get_workouts(auth_user_id: int) -> Union[Dict, HttpResponse]:
 
     :query integer page: page if using pagination (default: 1)
     :query integer per_page: number of workouts per page
-                             (default: 5, max: 50)
+                             (default: 5, max: 100)
     :query integer sport_id: sport id
     :query string from: start date (format: ``%Y-%m-%d``)
     :query string to: end date (format: ``%Y-%m-%d``)
@@ -219,10 +220,10 @@ def get_workouts(auth_user_id: int) -> Union[Dict, HttpResponse]:
         per_page = (
             int(params.get('per_page'))
             if params.get('per_page')
-            else WORKOUTS_PER_PAGE
+            else DEFAULT_WORKOUTS_PER_PAGE
         )
-        if per_page > 50:
-            per_page = 50
+        if per_page > MAX_WORKOUTS_PER_PAGE:
+            per_page = MAX_WORKOUTS_PER_PAGE
         workouts = (
             Workout.query.filter(
                 Workout.user_id == auth_user_id,

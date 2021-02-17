@@ -1,4 +1,5 @@
 import json
+from unittest.mock import patch
 from uuid import uuid4
 
 from flask import Flask
@@ -278,7 +279,8 @@ class TestGetWorkoutsWithPagination:
             in data['message']
         )
 
-    def test_it_gets_5_workouts_per_page(
+    @patch('fittrackee.workouts.workouts.MAX_WORKOUTS_PER_PAGE', 6)
+    def test_it_gets_max_workouts_per_page_if_per_page_exceeds_max(
         self,
         app: Flask,
         user_1: User,
@@ -303,17 +305,18 @@ class TestGetWorkoutsWithPagination:
         data = json.loads(response.data.decode())
         assert response.status_code == 200
         assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 7
+        assert len(data['data']['workouts']) == 6
         assert (
             'Wed, 09 May 2018 00:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
         assert (
-            'Mon, 20 Mar 2017 00:00:00 GMT'
-            == data['data']['workouts'][6]['workout_date']
+            'Thu, 01 Jun 2017 00:00:00 GMT'
+            == data['data']['workouts'][5]['workout_date']
         )
 
-    def test_it_gets_3_workouts_per_page(
+    @patch('fittrackee.workouts.workouts.MAX_WORKOUTS_PER_PAGE', 6)
+    def test_it_gets_given_number_of_workouts_per_page(
         self,
         app: Flask,
         user_1: User,
