@@ -179,7 +179,7 @@ export const getMonthWorkouts = (from, to) => dispatch =>
   FitTrackeeGenericApi.getData('workouts', {
     from,
     to,
-    order: 'asc',
+    order: 'desc',
     per_page: 100,
   })
     .then(ret => {
