@@ -1,4 +1,5 @@
 import json
+from unittest.mock import patch
 from uuid import uuid4
 
 from flask import Flask
@@ -278,7 +279,8 @@ class TestGetWorkoutsWithPagination:
             in data['message']
         )
 
-    def test_it_gets_5_workouts_per_page(
+    @patch('fittrackee.workouts.workouts.MAX_WORKOUTS_PER_PAGE', 6)
+    def test_it_gets_max_workouts_per_page_if_per_page_exceeds_max(
         self,
         app: Flask,
         user_1: User,
@@ -303,17 +305,18 @@ class TestGetWorkoutsWithPagination:
         data = json.loads(response.data.decode())
         assert response.status_code == 200
         assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 7
+        assert len(data['data']['workouts']) == 6
         assert (
             'Wed, 09 May 2018 00:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
         assert (
-            'Mon, 20 Mar 2017 00:00:00 GMT'
-            == data['data']['workouts'][6]['workout_date']
+            'Thu, 01 Jun 2017 00:00:00 GMT'
+            == data['data']['workouts'][5]['workout_date']
         )
 
-    def test_it_gets_3_workouts_per_page(
+    @patch('fittrackee.workouts.workouts.MAX_WORKOUTS_PER_PAGE', 6)
+    def test_it_gets_given_number_of_workouts_per_page(
         self,
         app: Flask,
         user_1: User,
@@ -346,6 +349,113 @@ class TestGetWorkoutsWithPagination:
         assert (
             'Fri, 23 Feb 2018 00:00:00 GMT'
             == data['data']['workouts'][2]['workout_date']
+        )
+
+
+class TestGetWorkoutsWithOrder:
+    def test_it_gets_workouts_with_default_order(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_workouts_user_1: Workout,
+    ) -> None:
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(dict(email='test@test.com', password='12345678')),
+            content_type='application/json',
+        )
+
+        response = client.get(
+            '/api/workouts',
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 5
+        assert (
+            'Wed, 09 May 2018 00:00:00 GMT'
+            == data['data']['workouts'][0]['workout_date']
+        )
+        assert (
+            'Mon, 01 Jan 2018 00:00:00 GMT'
+            == data['data']['workouts'][4]['workout_date']
+        )
+
+    def test_it_gets_workouts_with_ascending_order(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_workouts_user_1: Workout,
+    ) -> None:
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(dict(email='test@test.com', password='12345678')),
+            content_type='application/json',
+        )
+
+        response = client.get(
+            '/api/workouts?order=asc',
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 5
+        assert (
+            'Mon, 20 Mar 2017 00:00:00 GMT'
+            == data['data']['workouts'][0]['workout_date']
+        )
+        assert (
+            'Fri, 23 Feb 2018 00:00:00 GMT'
+            == data['data']['workouts'][4]['workout_date']
+        )
+
+    def test_it_gets_workouts_with_descending_order(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_workouts_user_1: Workout,
+    ) -> None:
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(dict(email='test@test.com', password='12345678')),
+            content_type='application/json',
+        )
+
+        response = client.get(
+            '/api/workouts?order=desc',
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 5
+        assert (
+            'Wed, 09 May 2018 00:00:00 GMT'
+            == data['data']['workouts'][0]['workout_date']
+        )
+        assert (
+            'Mon, 01 Jan 2018 00:00:00 GMT'
+            == data['data']['workouts'][4]['workout_date']
         )
 
 
@@ -485,41 +595,6 @@ class TestGetWorkoutsWithFilters:
         assert (
             'Mon, 20 Mar 2017 00:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
-        )
-
-    def test_it_gets_workouts_with_ascending_order(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
-    ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
-
-        response = client.get(
-            '/api/workouts?order=asc',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
-        )
-
-        data = json.loads(response.data.decode())
-        assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 5
-        assert (
-            'Mon, 20 Mar 2017 00:00:00 GMT'
-            == data['data']['workouts'][0]['workout_date']
-        )
-        assert (
-            'Fri, 23 Feb 2018 00:00:00 GMT'
-            == data['data']['workouts'][4]['workout_date']
         )
 
     def test_it_gets_workouts_with_distance_filter(

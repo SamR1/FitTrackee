@@ -42,7 +42,7 @@ Workouts
      - Montain Biking
      - Running
      - Walking
-- Dashboard with month calendar displaying workouts and record. The week can start on Sunday or Monday (which can be changed in the user settings)
+- Dashboard with month calendar displaying workouts and record. The week can start on Sunday or Monday (which can be changed in the user settings). The calendar displays up to 100 workouts.
 - Workout creation by uploading a gpx file. A workout can even be created without gpx (the user must enter date, time, duration and distance)
 - A workout with a gpx file can be displayed with map, weather (if the DarkSky API key is provided) and charts (speed and elevation). Segments can be displayed
 - Workout edition and deletion. User can add a note
