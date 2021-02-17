@@ -1,6 +1,6 @@
 {
   "name": "fittrackee_client",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "private": true,
   "dependencies": {
     "@mapbox/togeojson": "^0.16.0",
