@@ -10,12 +10,11 @@ from fittrackee.application.utils import update_app_config_from_database
 
 def get_app_config(
     with_config: Optional[bool] = False,
-    with_federation: Optional[bool] = False,
+    max_workouts: Optional[int] = None,
 ) -> Optional[AppConfig]:
     if with_config:
         config = AppConfig()
-        config.federation_enabled = with_federation
-        config.gpx_limit_import = 10
+        config.gpx_limit_import = 10 if max_workouts is None else max_workouts
         config.max_single_file_size = 1 * 1024 * 1024
         config.max_zip_file_size = 1 * 1024 * 1024 * 10
         config.max_users = 100
@@ -27,13 +26,13 @@ def get_app_config(
 
 def get_app(
     with_config: Optional[bool] = False,
-    with_federation: Optional[bool] = False,
+    max_workouts: Optional[int] = None,
 ) -> Generator:
     app = create_app()
     with app.app_context():
         try:
             db.create_all()
-            app_db_config = get_app_config(with_config, with_federation)
+            app_db_config = get_app_config(with_config, max_workouts)
             if app_db_config:
                 update_app_config_from_database(app, app_db_config)
             yield app
@@ -60,6 +59,12 @@ def app(monkeypatch: pytest.MonkeyPatch) -> Generator:
 
 
 @pytest.fixture
+def app_with_max_workouts(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv('EMAIL_URL', 'smtp://none:none@0.0.0.0:1025')
+    yield from get_app(with_config=True, max_workouts=2)
+
+
+@pytest.fixture
 def app_no_config() -> Generator:
     yield from get_app(with_config=False)
 
@@ -77,19 +82,13 @@ def app_tls(monkeypatch: pytest.MonkeyPatch) -> Generator:
 
 
 @pytest.fixture
-def app_with_federation() -> Generator:
-    yield from get_app(with_config=True, with_federation=True)
-
-
-@pytest.fixture
 def app_wo_domain() -> Generator:
-    yield from get_app(with_config=True, with_federation=True)
+    yield from get_app(with_config=True)
 
 
 @pytest.fixture()
 def app_config() -> AppConfig:
     config = AppConfig()
-    config.federation_enabled = False
     config.gpx_limit_import = 10
     config.max_single_file_size = 1048576
     config.max_zip_file_size = 10485760

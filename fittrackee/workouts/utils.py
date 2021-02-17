@@ -14,7 +14,7 @@ from staticmap import Line, StaticMap
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
-from fittrackee import appLog, db
+from fittrackee import db
 from fittrackee.users.models import User
 
 from .exceptions import WorkoutException
@@ -327,16 +327,7 @@ def process_zip_archive(common_params: Dict, extract_dir: str) -> List:
         zip_ref.extractall(extract_dir)
 
     new_workouts = []
-    gpx_files_limit = os.getenv('REACT_APP_GPX_LIMIT_IMPORT', 10)
-    if (
-        gpx_files_limit
-        and isinstance(gpx_files_limit, str)
-        and gpx_files_limit.isdigit()
-    ):
-        gpx_files_limit = int(gpx_files_limit)
-    else:
-        gpx_files_limit = 10
-        appLog.warning('GPX limit not configured, set to 10.')
+    gpx_files_limit = current_app.config['gpx_limit_import']
     gpx_files_ok = 0
 
     for gpx_file in os.listdir(extract_dir):

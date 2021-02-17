@@ -701,7 +701,7 @@ class TestPostWorkoutWithZipArchive:
             assert 'just a workout' == data['data']['workouts'][0]['title']
             assert_workout_data_with_gpx(data)
 
-    def test_it_returns_400_if_folder_is_present_in_zpi_archive(
+    def test_it_returns_400_if_folder_is_present_in_zip_archive(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
         file_path = os.path.join(
@@ -737,7 +737,7 @@ class TestPostWorkoutWithZipArchive:
             assert 'fail' in data['status']
             assert len(data['data']['workouts']) == 0
 
-    def test_it_returns_500_if_one_fle_in_zip_archive_is_invalid(
+    def test_it_returns_500_if_one_file_in_zip_archive_is_invalid(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
         file_path = os.path.join(
@@ -772,6 +772,48 @@ class TestPostWorkoutWithZipArchive:
             assert 'error' in data['status']
             assert 'Error during gpx processing.' in data['message']
             assert 'data' not in data
+
+    def test_it_imports_only_max_number_of_files(
+        self,
+        app_with_max_workouts: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+    ) -> None:
+        file_path = os.path.join(
+            app_with_max_workouts.root_path, 'tests/files/gpx_test.zip'
+        )
+        # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
+        with open(file_path, 'rb') as zip_file:
+            client = app_with_max_workouts.test_client()
+            resp_login = client.post(
+                '/api/auth/login',
+                data=json.dumps(
+                    dict(email='test@test.com', password='12345678')
+                ),
+                content_type='application/json',
+            )
+
+            client.post(
+                '/api/workouts',
+                data=dict(
+                    file=(zip_file, 'gpx_test.zip'), data='{"sport_id": 1}'
+                ),
+                headers=dict(
+                    content_type='multipart/form-data',
+                    Authorization='Bearer '
+                    + json.loads(resp_login.data.decode())['auth_token'],
+                ),
+            )
+
+            response = client.get(
+                '/api/workouts',
+                headers=dict(
+                    Authorization='Bearer '
+                    + json.loads(resp_login.data.decode())['auth_token']
+                ),
+            )
+            data = json.loads(response.data.decode())
+            assert len(data['data']['workouts']) == 2
 
 
 class TestPostAndGetWorkoutWithGpx:
