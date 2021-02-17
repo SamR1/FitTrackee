@@ -352,6 +352,113 @@ class TestGetWorkoutsWithPagination:
         )
 
 
+class TestGetWorkoutsWithOrder:
+    def test_it_gets_workouts_with_default_order(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_workouts_user_1: Workout,
+    ) -> None:
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(dict(email='test@test.com', password='12345678')),
+            content_type='application/json',
+        )
+
+        response = client.get(
+            '/api/workouts',
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 5
+        assert (
+            'Wed, 09 May 2018 00:00:00 GMT'
+            == data['data']['workouts'][0]['workout_date']
+        )
+        assert (
+            'Mon, 01 Jan 2018 00:00:00 GMT'
+            == data['data']['workouts'][4]['workout_date']
+        )
+
+    def test_it_gets_workouts_with_ascending_order(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_workouts_user_1: Workout,
+    ) -> None:
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(dict(email='test@test.com', password='12345678')),
+            content_type='application/json',
+        )
+
+        response = client.get(
+            '/api/workouts?order=asc',
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 5
+        assert (
+            'Mon, 20 Mar 2017 00:00:00 GMT'
+            == data['data']['workouts'][0]['workout_date']
+        )
+        assert (
+            'Fri, 23 Feb 2018 00:00:00 GMT'
+            == data['data']['workouts'][4]['workout_date']
+        )
+
+    def test_it_gets_workouts_with_descending_order(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_workouts_user_1: Workout,
+    ) -> None:
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(dict(email='test@test.com', password='12345678')),
+            content_type='application/json',
+        )
+
+        response = client.get(
+            '/api/workouts?order=desc',
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 5
+        assert (
+            'Wed, 09 May 2018 00:00:00 GMT'
+            == data['data']['workouts'][0]['workout_date']
+        )
+        assert (
+            'Mon, 01 Jan 2018 00:00:00 GMT'
+            == data['data']['workouts'][4]['workout_date']
+        )
+
+
 class TestGetWorkoutsWithFilters:
     def test_it_gets_workouts_with_date_filter(
         self,
@@ -488,41 +595,6 @@ class TestGetWorkoutsWithFilters:
         assert (
             'Mon, 20 Mar 2017 00:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
-        )
-
-    def test_it_gets_workouts_with_ascending_order(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
-    ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
-
-        response = client.get(
-            '/api/workouts?order=asc',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
-        )
-
-        data = json.loads(response.data.decode())
-        assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 5
-        assert (
-            'Mon, 20 Mar 2017 00:00:00 GMT'
-            == data['data']['workouts'][0]['workout_date']
-        )
-        assert (
-            'Fri, 23 Feb 2018 00:00:00 GMT'
-            == data['data']['workouts'][4]['workout_date']
         )
 
     def test_it_gets_workouts_with_distance_filter(
