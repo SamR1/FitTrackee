@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import Message from '../Common/Message'
-import { updateAppConfig } from '../../actions/application'
+import { getAppData, updateAppConfig } from '../../actions/application'
 import { history } from '../../index'
 import { getFileSizeInMB } from '../../utils'
 
@@ -11,7 +11,6 @@ class AdminApplication extends React.Component {
     super(props, context)
     this.state = {
       formData: {},
-      isInEdition: false,
     }
   }
 
@@ -44,15 +43,15 @@ class AdminApplication extends React.Component {
     this.setState(formData)
   }
 
-  toggleInEdition(e) {
-    e.preventDefault()
-    const { isInEdition } = this.state
-    this.setState({ isInEdition: !isInEdition })
-  }
-
   render() {
-    const { message, onHandleConfigFormSubmit, t } = this.props
-    const { formData, isInEdition } = this.state
+    const {
+      isInEdition,
+      loadAppConfig,
+      message,
+      onHandleConfigFormSubmit,
+      t,
+    } = this.props
+    const { formData } = this.state
     return (
       <div>
         {message && <Message message={message} t={t} />}
@@ -71,7 +70,7 @@ class AdminApplication extends React.Component {
                       isInEdition ? '' : 'form-disabled'
                     }`}
                     onSubmit={e => {
-                      this.toggleInEdition(e)
+                      e.preventDefault()
                       onHandleConfigFormSubmit(formData)
                     }}
                   >
@@ -169,7 +168,11 @@ class AdminApplication extends React.Component {
                         <input
                           type="submit"
                           className="btn btn-secondary"
-                          onClick={e => this.toggleInEdition(e)}
+                          onClick={e => {
+                            e.preventDefault()
+                            loadAppConfig()
+                            history.push('/admin/application')
+                          }}
                           value={t('common:Cancel')}
                         />
                       </>
@@ -179,7 +182,8 @@ class AdminApplication extends React.Component {
                           type="submit"
                           className="btn btn-primary"
                           onClick={e => {
-                            this.toggleInEdition(e)
+                            e.preventDefault()
+                            history.push('/admin/application/edit')
                           }}
                           value={t('common:Edit')}
                         />
@@ -207,6 +211,9 @@ export default connect(
     message: state.message,
   }),
   dispatch => ({
+    loadAppConfig: () => {
+      dispatch(getAppData('config'))
+    },
     onHandleConfigFormSubmit: formData => {
       const data = Object.assign({}, formData)
       data.max_single_file_size *= 1048576

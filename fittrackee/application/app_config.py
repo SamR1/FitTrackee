@@ -130,6 +130,11 @@ def update_application_config(auth_user_id: int) -> Union[Dict, HttpResponse]:
         if 'max_users' in config_data:
             config.max_users = config_data.get('max_users')
 
+        if config.max_zip_file_size < config.max_single_file_size:
+            return InvalidPayloadErrorResponse(
+                'Max. size of zip archive must be equal or greater than '
+                'max. size of uploaded files'
+            )
         db.session.commit()
         update_app_config_from_database(current_app, config)
         return {'status': 'success', 'data': config.serialize()}

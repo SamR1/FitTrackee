@@ -239,3 +239,40 @@ class TestUpdateConfig:
         assert response.status_code == 500
         assert 'error' in data['status']
         assert 'Error on updating configuration.' in data['message']
+
+    def test_it_raises_error_if_archive_max_size_is_below_files_max_size(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(
+                dict(email='admin@example.com', password='12345678')
+            ),
+            content_type='application/json',
+        )
+
+        response = client.patch(
+            '/api/config',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    gpx_limit_import=20,
+                    max_single_file_size=10000,
+                    max_zip_file_size=1000,
+                    max_users=50,
+                )
+            ),
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 400
+        assert 'error' in data['status']
+        assert (
+            'Max. size of zip archive must be equal or greater than max. size '
+            'of uploaded files'
+        ) in data['message']

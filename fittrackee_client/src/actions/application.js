@@ -1,4 +1,5 @@
 import FitTrackeeGenericApi from '../fitTrackeeApi'
+import { history } from '../index'
 import { setError } from './index'
 
 export const setAppConfig = data => ({
@@ -31,6 +32,7 @@ export const updateAppConfig = formData => dispatch =>
     .then(ret => {
       if (ret.status === 'success') {
         dispatch(setAppConfig(ret.data))
+        history.push('/admin/application')
       } else {
         dispatch(setError(`application|${ret.message}`))
       }

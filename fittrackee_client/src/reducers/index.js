@@ -110,6 +110,7 @@ const message = (state = initial.message, action) => {
       return action.message
     case 'LOGOUT':
     case 'PROFILE_SUCCESS':
+    case 'SET_APP_CONFIG':
     case 'SET_RESULTS':
     case '@@router/LOCATION_CHANGE':
       return ''

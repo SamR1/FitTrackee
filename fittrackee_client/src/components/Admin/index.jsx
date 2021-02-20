@@ -28,7 +28,20 @@ function Admin(props) {
             <Route
               exact
               path="/admin/application"
-              render={() => <AdminApplication appConfig={appConfig} t={t} />}
+              render={() => (
+                <AdminApplication
+                  appConfig={appConfig}
+                  t={t}
+                  isInEdition={false}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/admin/application/edit"
+              render={() => (
+                <AdminApplication appConfig={appConfig} t={t} isInEdition />
+              )}
             />
             <Route
               exact
