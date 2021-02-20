@@ -149,11 +149,15 @@
 <li><p><strong>Application</strong></p>
 <p>The following parameters can be set:</p>
 <ul class="simple">
-<li><p>active users limit (if 0, registration is enabled (no limit defined))</p></li>
+<li><p>active users limit. If 0, registration is enabled (no limit defined)</p></li>
 <li><p>maximum size of uploaded files</p></li>
 <li><p>maximum size of zip archive</p></li>
-<li><p>maximum number of files in the zip archive</p></li>
+<li><p>maximum number of files in the zip archive. If an archive contains more files, only the configured number of files is processed, without raising errors.</p></li>
 </ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Updating server configuration may be necessary to handle large files (like <a class="reference external" href="https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size">nginx</a> for instance).</p>
+</div>
 </li>
 <li><p><strong>Users</strong></p>
 <ul class="simple">

@@ -12,10 +12,14 @@ Administration
 
   The following parameters can be set:
 
-  - active users limit (if 0, registration is enabled (no limit defined))
+  - active users limit. If 0, registration is enabled (no limit defined)
   - maximum size of uploaded files
   - maximum size of zip archive
-  - maximum number of files in the zip archive
+  - maximum number of files in the zip archive. If an archive contains more files, only the configured number of files is processed, without raising errors.
+
+  .. warning::
+      Updating server configuration may be necessary to handle large files (like `nginx <https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size>`_ for instance).
+
 
 - **Users**
 
