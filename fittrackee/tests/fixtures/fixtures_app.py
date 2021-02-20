@@ -1,5 +1,5 @@
 import os
-from typing import Generator, Optional
+from typing import Generator, Optional, Union
 
 import pytest
 
@@ -11,17 +11,22 @@ from fittrackee.application.utils import update_app_config_from_database
 def get_app_config(
     with_config: Optional[bool] = False,
     max_workouts: Optional[int] = None,
-    max_single_file_size: Optional[int] = None,
+    max_single_file_size: Optional[Union[int, float]] = None,
+    max_zip_file_size: Optional[Union[int, float]] = None,
 ) -> Optional[AppConfig]:
     if with_config:
         config = AppConfig()
         config.gpx_limit_import = 10 if max_workouts is None else max_workouts
         config.max_single_file_size = (
-            1 * 1024 * 1024
-            if max_single_file_size is None
-            else max_single_file_size
+            (1 if max_single_file_size is None else max_single_file_size)
+            * 1024
+            * 1024
         )
-        config.max_zip_file_size = 1 * 1024 * 1024 * 10
+        config.max_zip_file_size = (
+            (10 if max_zip_file_size is None else max_zip_file_size)
+            * 1024
+            * 1024
+        )
         config.max_users = 100
         db.session.add(config)
         db.session.commit()
@@ -32,13 +37,19 @@ def get_app_config(
 def get_app(
     with_config: Optional[bool] = False,
     max_workouts: Optional[int] = None,
-    max_single_file_size: Optional[int] = None,
+    max_single_file_size: Optional[Union[int, float]] = None,
+    max_zip_file_size: Optional[Union[int, float]] = None,
 ) -> Generator:
     app = create_app()
     with app.app_context():
         try:
             db.create_all()
-            app_db_config = get_app_config(with_config, max_workouts)
+            app_db_config = get_app_config(
+                with_config,
+                max_workouts,
+                max_single_file_size,
+                max_zip_file_size,
+            )
             if app_db_config:
                 update_app_config_from_database(app, app_db_config)
             yield app
@@ -71,11 +82,23 @@ def app_with_max_workouts(monkeypatch: pytest.MonkeyPatch) -> Generator:
 
 
 @pytest.fixture
-def app_with_max_single_file_size(
+def app_with_max_file_size_equals_0(
     monkeypatch: pytest.MonkeyPatch,
 ) -> Generator:
     monkeypatch.setenv('EMAIL_URL', 'smtp://none:none@0.0.0.0:1025')
     yield from get_app(with_config=True, max_single_file_size=0)
+
+
+@pytest.fixture
+def app_with_max_file_size(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv('EMAIL_URL', 'smtp://none:none@0.0.0.0:1025')
+    yield from get_app(with_config=True, max_single_file_size=0.001)
+
+
+@pytest.fixture
+def app_with_max_zip_file_size(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv('EMAIL_URL', 'smtp://none:none@0.0.0.0:1025')
+    yield from get_app(with_config=True, max_zip_file_size=0.001)
 
 
 @pytest.fixture

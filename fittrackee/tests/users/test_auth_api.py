@@ -851,6 +851,76 @@ class TestUserPicture:
         assert data['message'] == 'File extension not allowed.'
         assert response.status_code == 400
 
+    def test_it_returns_error_if_image_size_exceeds_file_limit(
+        self,
+        app_with_max_file_size: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        client = app_with_max_file_size.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(dict(email='test@test.com', password='12345678')),
+            content_type='application/json',
+        )
+
+        response = client.post(
+            '/api/auth/picture',
+            data=dict(
+                file=(BytesIO(b'test_file_for_avatar' * 50), 'avatar.jpg')
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token'],
+            ),
+        )
+        data = json.loads(response.data.decode())
+        print('data', data)
+        assert response.status_code == 413
+        assert 'fail' in data['status']
+        assert (
+            'Error during picture upload, file size (1.2KB) exceeds 1.0KB.'
+            in data['message']
+        )
+        assert 'data' not in data
+
+    def test_it_returns_error_if_image_size_exceeds_archive_limit(
+        self,
+        app_with_max_zip_file_size: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        client = app_with_max_zip_file_size.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(dict(email='test@test.com', password='12345678')),
+            content_type='application/json',
+        )
+
+        response = client.post(
+            '/api/auth/picture',
+            data=dict(
+                file=(BytesIO(b'test_file_for_avatar' * 50), 'avatar.jpg')
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token'],
+            ),
+        )
+        data = json.loads(response.data.decode())
+        print('data', data)
+        assert response.status_code == 413
+        assert 'fail' in data['status']
+        assert (
+            'Error during picture upload, file size (1.2KB) exceeds 1.0KB.'
+            in data['message']
+        )
+        assert 'data' not in data
+
 
 class TestRegistrationConfiguration:
     def test_it_returns_error_if_it_exceeds_max_users(

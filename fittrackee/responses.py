@@ -11,6 +11,21 @@ def get_empty_data_for_datatype(data_type: str) -> Union[str, List]:
     return '' if data_type in ['gpx', 'chart_data'] else []
 
 
+def display_readable_file_size(size_in_bytes: Union[float, int]) -> str:
+    """
+    Return readable file size from size in bytes
+    """
+    if size_in_bytes == 0:
+        return '0 bytes'
+    if size_in_bytes == 1:
+        return '1 byte'
+    for unit in [' bytes', 'KB', 'MB', 'GB', 'TB']:
+        if abs(size_in_bytes) < 1024.0:
+            return f'{size_in_bytes:3.1f}{unit}'
+        size_in_bytes /= 1024.0
+    return f'{size_in_bytes} bytes'
+
+
 class HttpResponse(Response):
     def __init__(
         self,
@@ -106,7 +121,19 @@ class DataNotFoundErrorResponse(HttpResponse):
 
 
 class PayloadTooLargeErrorResponse(GenericErrorResponse):
-    def __init__(self, message: str) -> None:
+    def __init__(
+        self, file_type: str, file_size: Optional[int], max_size: Optional[int]
+    ) -> None:
+        readable_file_size = (
+            f'({display_readable_file_size(file_size)}) ' if file_size else ''
+        )
+        readable_max_size = (
+            display_readable_file_size(max_size) if max_size else 'limit'
+        )
+        message = (
+            f'Error during {file_type} upload, file size {readable_file_size}'
+            f'exceeds {readable_max_size}.'
+        )
         super().__init__(status_code=413, message=message, status='fail')
 
 

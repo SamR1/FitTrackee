@@ -278,9 +278,9 @@ class TestUpdateConfig:
         ) in data['message']
 
     def test_it_raises_error_if_archive_max_size_equals_0(
-        self, app_with_max_single_file_size: Flask, user_1_admin: User
+        self, app_with_max_file_size_equals_0: Flask, user_1_admin: User
     ) -> None:
-        client = app_with_max_single_file_size.test_client()
+        client = app_with_max_file_size_equals_0.test_client()
         resp_login = client.post(
             '/api/auth/login',
             data=json.dumps(

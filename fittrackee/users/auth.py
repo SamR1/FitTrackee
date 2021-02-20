@@ -18,17 +18,12 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.tasks import reset_password_email
+from fittrackee.utils import get_readable_duration, verify_extension_and_size
 from fittrackee.workouts.utils_files import get_absolute_file_path
 
 from .decorators import authenticate
 from .models import User
-from .utils import (
-    check_passwords,
-    display_readable_file_size,
-    get_readable_duration,
-    register_controls,
-    verify_extension_and_size,
-)
+from .utils import check_passwords, register_controls
 from .utils_token import decode_user_token
 
 auth_blueprint = Blueprint('auth', __name__)
@@ -524,10 +519,10 @@ def edit_picture(auth_user_id: int) -> Union[Dict, HttpResponse]:
         response_object = verify_extension_and_size('picture', request)
     except RequestEntityTooLarge as e:
         appLog.error(e)
-        max_file_size = current_app.config['MAX_CONTENT_LENGTH']
         return PayloadTooLargeErrorResponse(
-            'Error during picture update, file size exceeds '
-            f'{display_readable_file_size(max_file_size)}.'
+            file_type='picture',
+            file_size=request.content_length,
+            max_size=current_app.config['MAX_CONTENT_LENGTH'],
         )
     if response_object:
         return response_object

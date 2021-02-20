@@ -7,6 +7,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 import requests
 from flask import Blueprint, Response, current_app, request, send_file
 from sqlalchemy import exc
+from werkzeug.exceptions import RequestEntityTooLarge
 
 from fittrackee import appLog, db
 from fittrackee.responses import (
@@ -16,14 +17,13 @@ from fittrackee.responses import (
     InternalServerErrorResponse,
     InvalidPayloadErrorResponse,
     NotFoundErrorResponse,
+    PayloadTooLargeErrorResponse,
     handle_error_and_return_response,
 )
 from fittrackee.users.decorators import authenticate
-from fittrackee.users.utils import (
-    User,
-    can_view_workout,
-    verify_extension_and_size,
-)
+from fittrackee.users.models import User
+from fittrackee.users.utils import can_view_workout
+from fittrackee.utils import verify_extension_and_size
 
 from .models import Workout
 from .utils import (
@@ -880,7 +880,15 @@ def post_workout(auth_user_id: int) -> Union[Tuple[Dict, int], HttpResponse]:
     :statuscode 500:
 
     """
-    error_response = verify_extension_and_size('workout', request)
+    try:
+        error_response = verify_extension_and_size('workout', request)
+    except RequestEntityTooLarge as e:
+        appLog.error(e)
+        return PayloadTooLargeErrorResponse(
+            file_type='workout',
+            file_size=request.content_length,
+            max_size=current_app.config['MAX_CONTENT_LENGTH'],
+        )
     if error_response:
         return error_response
 

@@ -514,6 +514,41 @@ class TestPostWorkoutWithGpx:
         assert data['status'] == 'fail'
         assert data['message'] == 'No file part.'
 
+    def test_it_returns_error_if_file_size_exceeds_limit(
+        self,
+        app_with_max_file_size: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        client = app_with_max_file_size.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(dict(email='test@test.com', password='12345678')),
+            content_type='application/json',
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token'],
+            ),
+        )
+        data = json.loads(response.data.decode())
+        assert response.status_code == 413
+        assert 'fail' in data['status']
+        assert (
+            'Error during workout upload, file size (3.6KB) exceeds 1.0KB.'
+            in data['message']
+        )
+        assert 'data' not in data
+
 
 class TestPostWorkoutWithoutGpx:
     def test_it_adds_an_workout_without_gpx(
@@ -814,6 +849,46 @@ class TestPostWorkoutWithZipArchive:
             )
             data = json.loads(response.data.decode())
             assert len(data['data']['workouts']) == 2
+
+    def test_it_returns_error_if_archive_size_exceeds_limit(
+        self,
+        app_with_max_zip_file_size: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+    ) -> None:
+        file_path = os.path.join(
+            app_with_max_zip_file_size.root_path, 'tests/files/gpx_test.zip'
+        )
+        # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
+        with open(file_path, 'rb') as zip_file:
+            client = app_with_max_zip_file_size.test_client()
+            resp_login = client.post(
+                '/api/auth/login',
+                data=json.dumps(
+                    dict(email='test@test.com', password='12345678')
+                ),
+                content_type='application/json',
+            )
+
+            response = client.post(
+                '/api/workouts',
+                data=dict(
+                    file=(zip_file, 'gpx_test.zip'), data='{"sport_id": 1}'
+                ),
+                headers=dict(
+                    content_type='multipart/form-data',
+                    Authorization='Bearer '
+                    + json.loads(resp_login.data.decode())['auth_token'],
+                ),
+            )
+            data = json.loads(response.data.decode())
+            assert response.status_code == 413
+            assert 'fail' in data['status']
+            assert (
+                'Error during workout upload, file size (2.5KB) exceeds 1.0KB.'
+                in data['message']
+            )
+            assert 'data' not in data
 
 
 class TestPostAndGetWorkoutWithGpx:
