@@ -1,5 +1,5 @@
 import os
-from typing import Tuple
+from typing import Dict, List, Tuple
 
 from flask import Flask
 
@@ -49,3 +49,30 @@ def update_app_config_from_database(
     current_app.config[
         'is_registration_enabled'
     ] = db_config.is_registration_enabled
+
+
+def verify_app_config(config_data: Dict) -> List:
+    """
+    Verify if application config is valid.
+
+    If not, it returns not empty string
+    """
+    ret = []
+    if (
+        'gpx_limit_import' in config_data
+        and config_data['gpx_limit_import'] <= 0
+    ):
+        ret.append('Max. files in a zip archive must be greater than 0')
+
+    if (
+        'max_single_file_size' in config_data
+        and config_data['max_single_file_size'] <= 0
+    ):
+        ret.append('Max. size of uploaded files must be greater than 0')
+
+    if (
+        'max_zip_file_size' in config_data
+        and config_data['max_zip_file_size'] <= 0
+    ):
+        ret.append('Max. size of zip archive must be greater than 0')
+    return ret

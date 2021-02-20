@@ -11,11 +11,16 @@ from fittrackee.application.utils import update_app_config_from_database
 def get_app_config(
     with_config: Optional[bool] = False,
     max_workouts: Optional[int] = None,
+    max_single_file_size: Optional[int] = None,
 ) -> Optional[AppConfig]:
     if with_config:
         config = AppConfig()
         config.gpx_limit_import = 10 if max_workouts is None else max_workouts
-        config.max_single_file_size = 1 * 1024 * 1024
+        config.max_single_file_size = (
+            1 * 1024 * 1024
+            if max_single_file_size is None
+            else max_single_file_size
+        )
         config.max_zip_file_size = 1 * 1024 * 1024 * 10
         config.max_users = 100
         db.session.add(config)
@@ -27,6 +32,7 @@ def get_app_config(
 def get_app(
     with_config: Optional[bool] = False,
     max_workouts: Optional[int] = None,
+    max_single_file_size: Optional[int] = None,
 ) -> Generator:
     app = create_app()
     with app.app_context():
@@ -62,6 +68,14 @@ def app(monkeypatch: pytest.MonkeyPatch) -> Generator:
 def app_with_max_workouts(monkeypatch: pytest.MonkeyPatch) -> Generator:
     monkeypatch.setenv('EMAIL_URL', 'smtp://none:none@0.0.0.0:1025')
     yield from get_app(with_config=True, max_workouts=2)
+
+
+@pytest.fixture
+def app_with_max_single_file_size(
+    monkeypatch: pytest.MonkeyPatch,
+) -> Generator:
+    monkeypatch.setenv('EMAIL_URL', 'smtp://none:none@0.0.0.0:1025')
+    yield from get_app(with_config=True, max_single_file_size=0)
 
 
 @pytest.fixture

@@ -12,7 +12,7 @@ from fittrackee.responses import (
 from fittrackee.users.decorators import authenticate_as_admin
 
 from .models import AppConfig
-from .utils import update_app_config_from_database
+from .utils import update_app_config_from_database, verify_app_config
 
 config_blueprint = Blueprint('config', __name__)
 
@@ -96,11 +96,11 @@ def update_application_config(auth_user_id: int) -> Union[Dict, HttpResponse]:
 
     :param integer auth_user_id: authenticate user id (from JSON Web Token)
 
-    :<json integrer gpx_limit_import: max number of files in zip archive
+    :<json integer gpx_limit_import: max number of files in zip archive
     :<json boolean is_registration_enabled: is registration enabled ?
-    :<json integrer max_single_file_size: max size of a single file
-    :<json integrer max_zip_file_size: max size of a zip archive
-    :<json integrer max_users: max users allowed to register on instance
+    :<json integer max_single_file_size: max size of a single file
+    :<json integer max_zip_file_size: max size of a zip archive
+    :<json integer max_users: max users allowed to register on instance
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -116,6 +116,10 @@ def update_application_config(auth_user_id: int) -> Union[Dict, HttpResponse]:
     config_data = request.get_json()
     if not config_data:
         return InvalidPayloadErrorResponse()
+
+    ret = verify_app_config(config_data)
+    if ret:
+        return InvalidPayloadErrorResponse(message=ret)
 
     try:
         config = AppConfig.query.one()

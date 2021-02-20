@@ -32,7 +32,10 @@ class HttpResponse(Response):
 
 class GenericErrorResponse(HttpResponse):
     def __init__(
-        self, status_code: int, message: str, status: Optional[str] = None
+        self,
+        status_code: int,
+        message: Union[str, List],
+        status: Optional[str] = None,
     ) -> None:
         response = {
             'status': 'error' if status is None else status,
@@ -46,7 +49,9 @@ class GenericErrorResponse(HttpResponse):
 
 class InvalidPayloadErrorResponse(GenericErrorResponse):
     def __init__(
-        self, message: Optional[str] = None, status: Optional[str] = None
+        self,
+        message: Optional[Union[str, List]] = None,
+        status: Optional[str] = None,
     ) -> None:
         message = 'Invalid payload.' if message is None else message
         super().__init__(status_code=400, message=message, status=status)

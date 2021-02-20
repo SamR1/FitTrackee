@@ -276,3 +276,105 @@ class TestUpdateConfig:
             'Max. size of zip archive must be equal or greater than max. size '
             'of uploaded files'
         ) in data['message']
+
+    def test_it_raises_error_if_archive_max_size_equals_0(
+        self, app_with_max_single_file_size: Flask, user_1_admin: User
+    ) -> None:
+        client = app_with_max_single_file_size.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(
+                dict(email='admin@example.com', password='12345678')
+            ),
+            content_type='application/json',
+        )
+
+        response = client.patch(
+            '/api/config',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    max_zip_file_size=0,
+                )
+            ),
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 400
+        assert 'error' in data['status']
+        assert (
+            'Max. size of zip archive must be greater than 0'
+            in data['message']
+        )
+
+    def test_it_raises_error_if_files_max_size_equals_0(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(
+                dict(email='admin@example.com', password='12345678')
+            ),
+            content_type='application/json',
+        )
+
+        response = client.patch(
+            '/api/config',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    max_single_file_size=0,
+                )
+            ),
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 400
+        assert 'error' in data['status']
+        assert (
+            'Max. size of uploaded files must be greater than 0'
+            in data['message']
+        )
+
+    def test_it_raises_error_if_gpx_limit_import_equals_0(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(
+                dict(email='admin@example.com', password='12345678')
+            ),
+            content_type='application/json',
+        )
+
+        response = client.patch(
+            '/api/config',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    gpx_limit_import=0,
+                )
+            ),
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 400
+        assert 'error' in data['status']
+        assert (
+            'Max. files in a zip archive must be greater than 0'
+            in data['message']
+        )

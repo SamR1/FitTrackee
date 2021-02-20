@@ -48,13 +48,16 @@ class AdminApplication extends React.Component {
       isInEdition,
       loadAppConfig,
       message,
+      messages,
       onHandleConfigFormSubmit,
       t,
     } = this.props
     const { formData } = this.state
     return (
       <div>
-        {message && <Message message={message} t={t} />}
+        {(message || messages) && (
+          <Message message={message} messages={messages} t={t} />
+        )}
         {Object.keys(formData).length > 0 && (
           <div className="row">
             <div className="col-md-12">
@@ -209,6 +212,7 @@ class AdminApplication extends React.Component {
 export default connect(
   state => ({
     message: state.message,
+    messages: state.messages,
   }),
   dispatch => ({
     loadAppConfig: () => {
