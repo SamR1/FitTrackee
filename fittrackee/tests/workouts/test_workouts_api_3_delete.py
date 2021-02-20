@@ -7,6 +7,7 @@ from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 from fittrackee.workouts.utils import get_absolute_file_path
 
+from ..api_test_case import ApiTestCaseMixin
 from .utils import get_random_short_id, post_an_workout
 
 
@@ -15,7 +16,7 @@ def get_gpx_filepath(workout_id: int) -> str:
     return workout.gpx
 
 
-class TestDeleteWorkoutWithGpx:
+class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
     def test_it_deletes_an_workout_with_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
@@ -62,18 +63,10 @@ class TestDeleteWorkoutWithGpx:
     def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
         response = client.delete(
             f'/api/workouts/{get_random_short_id()}',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         data = json.loads(response.data.decode())
         assert response.status_code == 404
@@ -103,7 +96,7 @@ class TestDeleteWorkoutWithGpx:
         )
 
 
-class TestDeleteWorkoutWithoutGpx:
+class TestDeleteWorkoutWithoutGpx(ApiTestCaseMixin):
     def test_it_deletes_an_workout_wo_gpx(
         self,
         app: Flask,
@@ -111,18 +104,10 @@ class TestDeleteWorkoutWithoutGpx:
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
         response = client.delete(
             f'/api/workouts/{workout_cycling_user_1.short_id}',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         assert response.status_code == 204
 

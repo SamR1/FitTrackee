@@ -10,6 +10,8 @@ from fittrackee.users.models import User
 from fittrackee.users.utils_token import get_user_token
 from fittrackee.workouts.models import Sport, Workout
 
+from ..api_test_case import ApiTestCaseMixin
+
 
 class TestUserRegistration:
     def test_user_can_register(self, app: Flask) -> None:
@@ -356,21 +358,14 @@ class TestUserLogin:
         assert data['message'] == 'Invalid credentials.'
 
 
-class TestUserLogout:
+class TestUserLogout(ApiTestCaseMixin):
     def test_user_can_logout(self, app: Flask, user_1: User) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/auth/logout',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -381,20 +376,13 @@ class TestUserLogout:
     def test_it_returns_error_with_expired_token(
         self, app: Flask, user_1: User
     ) -> None:
-        client = app.test_client()
         now = datetime.utcnow()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
         with freeze_time(now + timedelta(seconds=4)):
             response = client.get(
                 '/api/auth/logout',
-                headers=dict(
-                    Authorization='Bearer '
-                    + json.loads(resp_login.data.decode())['auth_token']
-                ),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
             )
             data = json.loads(response.data.decode())
             assert data['status'] == 'error'
@@ -420,23 +408,17 @@ class TestUserLogout:
         assert response.status_code == 401
 
 
-class TestUserProfile:
+class TestUserProfile(ApiTestCaseMixin):
     def test_it_returns_user_minimal_profile(
         self, app: Flask, user_1: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
         response = client.get(
             '/api/auth/profile',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
+
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['data'] is not None
@@ -457,19 +439,13 @@ class TestUserProfile:
     def test_it_returns_user_full_profile(
         self, app: Flask, user_1_full: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
         response = client.get(
             '/api/auth/profile',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
+
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['data'] is not None
@@ -501,19 +477,13 @@ class TestUserProfile:
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
         response = client.get(
             '/api/auth/profile',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
+
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['data'] is not None
@@ -540,14 +510,10 @@ class TestUserProfile:
         assert response.status_code == 401
 
 
-class TestUserProfileUpdate:
+class TestUserProfileUpdate(ApiTestCaseMixin):
     def test_it_updates_user_profile(self, app: Flask, user_1: User) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
         response = client.post(
             '/api/auth/profile/edit',
             content_type='application/json',
@@ -565,11 +531,9 @@ class TestUserProfileUpdate:
                     language='fr',
                 )
             ),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
+
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['message'] == 'User profile updated.'
@@ -595,12 +559,8 @@ class TestUserProfileUpdate:
     def test_it_updates_user_profile_without_password(
         self, app: Flask, user_1: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
         response = client.post(
             '/api/auth/profile/edit',
             content_type='application/json',
@@ -616,11 +576,9 @@ class TestUserProfileUpdate:
                     language='fr',
                 )
             ),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
+
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['message'] == 'User profile updated.'
@@ -646,21 +604,15 @@ class TestUserProfileUpdate:
     def test_it_returns_error_if_fields_are_missing(
         self, app: Flask, user_1: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
         response = client.post(
             '/api/auth/profile/edit',
             content_type='application/json',
             data=json.dumps(dict(first_name='John')),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
+
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
         assert data['message'] == 'Invalid payload.'
@@ -669,21 +621,15 @@ class TestUserProfileUpdate:
     def test_it_returns_error_if_payload_is_empty(
         self, app: Flask, user_1: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
         response = client.post(
             '/api/auth/profile/edit',
             content_type='application/json',
             data=json.dumps(dict()),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
+
         data = json.loads(response.data.decode())
         assert response.status_code == 400
         assert 'Invalid payload.' in data['message']
@@ -692,12 +638,8 @@ class TestUserProfileUpdate:
     def test_it_returns_error_if_passwords_mismatch(
         self, app: Flask, user_1: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
         response = client.post(
             '/api/auth/profile/edit',
             content_type='application/json',
@@ -715,11 +657,9 @@ class TestUserProfileUpdate:
                     language='en',
                 )
             ),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
+
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
         assert (
@@ -731,12 +671,8 @@ class TestUserProfileUpdate:
     def test_it_returns_error_if_password_confirmation_is_missing(
         self, app: Flask, user_1: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
         response = client.post(
             '/api/auth/profile/edit',
             content_type='application/json',
@@ -753,11 +689,9 @@ class TestUserProfileUpdate:
                     language='en',
                 )
             ),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
+
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
         assert (
@@ -767,23 +701,19 @@ class TestUserProfileUpdate:
         assert response.status_code == 400
 
 
-class TestUserPicture:
+class TestUserPicture(ApiTestCaseMixin):
     def test_it_updates_user_picture(self, app: Flask, user_1: User) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
         response = client.post(
             '/api/auth/picture',
             data=dict(file=(BytesIO(b'avatar'), 'avatar.png')),
             headers=dict(
                 content_type='multipart/form-data',
-                authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token'],
+                Authorization=f'Bearer {auth_token}',
             ),
         )
+
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['message'] == 'User picture updated.'
@@ -795,10 +725,10 @@ class TestUserPicture:
             data=dict(file=(BytesIO(b'avatar2'), 'avatar2.png')),
             headers=dict(
                 content_type='multipart/form-data',
-                authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token'],
+                Authorization=f'Bearer {auth_token}',
             ),
         )
+
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['message'] == 'User picture updated.'
@@ -809,20 +739,16 @@ class TestUserPicture:
     def test_it_returns_error_if_file_is_missing(
         self, app: Flask, user_1: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
         response = client.post(
             '/api/auth/picture',
             headers=dict(
                 content_type='multipart/form-data',
-                authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token'],
+                Authorization=f'Bearer {auth_token}',
             ),
         )
+
         data = json.loads(response.data.decode())
         assert data['status'] == 'fail'
         assert data['message'] == 'No file part.'
@@ -831,21 +757,17 @@ class TestUserPicture:
     def test_it_returns_error_if_file_is_invalid(
         self, app: Flask, user_1: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
         response = client.post(
             '/api/auth/picture',
             data=dict(file=(BytesIO(b'avatar'), 'avatar.bmp')),
             headers=dict(
                 content_type='multipart/form-data',
-                authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token'],
+                Authorization=f'Bearer {auth_token}',
             ),
         )
+
         data = json.loads(response.data.decode())
         assert data['status'] == 'fail'
         assert data['message'] == 'File extension not allowed.'
@@ -858,11 +780,8 @@ class TestUserPicture:
         sport_1_cycling: Sport,
         gpx_file: str,
     ) -> None:
-        client = app_with_max_file_size.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_max_file_size
         )
 
         response = client.post(
@@ -872,10 +791,10 @@ class TestUserPicture:
             ),
             headers=dict(
                 content_type='multipart/form-data',
-                authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token'],
+                Authorization=f'Bearer {auth_token}',
             ),
         )
+
         data = json.loads(response.data.decode())
         print('data', data)
         assert response.status_code == 413
@@ -893,11 +812,8 @@ class TestUserPicture:
         sport_1_cycling: Sport,
         gpx_file: str,
     ) -> None:
-        client = app_with_max_zip_file_size.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_max_zip_file_size
         )
 
         response = client.post(
@@ -907,10 +823,10 @@ class TestUserPicture:
             ),
             headers=dict(
                 content_type='multipart/form-data',
-                authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token'],
+                Authorization=f'Bearer {auth_token}',
             ),
         )
+
         data = json.loads(response.data.decode())
         print('data', data)
         assert response.status_code == 413
@@ -924,26 +840,13 @@ class TestUserPicture:
 
 class TestRegistrationConfiguration:
     def test_it_returns_error_if_it_exceeds_max_users(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self,
+        app_with_3_users_max: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
     ) -> None:
-        client = app.test_client()
-
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(
-                dict(email='admin@example.com', password='12345678')
-            ),
-            content_type='application/json',
-        )
-        client.patch(
-            '/api/config',
-            content_type='application/json',
-            data=json.dumps(dict(max_users=3, registration=True)),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
-        )
+        client = app_with_3_users_max.test_client()
 
         response = client.post(
             '/api/auth/register',
@@ -966,13 +869,11 @@ class TestRegistrationConfiguration:
 
     def test_it_disables_registration_on_user_registration(
         self,
-        app_no_config: Flask,
-        app_config: Flask,
+        app_with_3_users_max: Flask,
         user_1_admin: User,
         user_2: User,
     ) -> None:
-        app_config.max_users = 3
-        client = app_no_config.test_client()
+        client = app_with_3_users_max.test_client()
         client.post(
             '/api/auth/register',
             data=json.dumps(
@@ -985,6 +886,7 @@ class TestRegistrationConfiguration:
             ),
             content_type='application/json',
         )
+
         response = client.post(
             '/api/auth/register',
             data=json.dumps(
@@ -997,6 +899,7 @@ class TestRegistrationConfiguration:
             ),
             content_type='application/json',
         )
+
         assert response.status_code == 403
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
@@ -1004,13 +907,10 @@ class TestRegistrationConfiguration:
 
     def test_it_does_not_disable_registration_on_user_registration(
         self,
-        app_no_config: Flask,
-        app_config: Flask,
-        user_1_admin: User,
-        user_2: User,
+        app_with_3_users_max: Flask,
+        user_1: User,
     ) -> None:
-        app_config.max_users = 4
-        client = app_no_config.test_client()
+        client = app_with_3_users_max.test_client()
         client.post(
             '/api/auth/register',
             data=json.dumps(

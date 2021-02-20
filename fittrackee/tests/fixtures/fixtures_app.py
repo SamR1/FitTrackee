@@ -13,6 +13,7 @@ def get_app_config(
     max_workouts: Optional[int] = None,
     max_single_file_size: Optional[Union[int, float]] = None,
     max_zip_file_size: Optional[Union[int, float]] = None,
+    max_users: Optional[int] = None,
 ) -> Optional[AppConfig]:
     if with_config:
         config = AppConfig()
@@ -27,7 +28,7 @@ def get_app_config(
             * 1024
             * 1024
         )
-        config.max_users = 100
+        config.max_users = 100 if max_users is None else max_users
         db.session.add(config)
         db.session.commit()
         return config
@@ -39,6 +40,7 @@ def get_app(
     max_workouts: Optional[int] = None,
     max_single_file_size: Optional[Union[int, float]] = None,
     max_zip_file_size: Optional[Union[int, float]] = None,
+    max_users: Optional[int] = None,
 ) -> Generator:
     app = create_app()
     with app.app_context():
@@ -49,6 +51,7 @@ def get_app(
                 max_workouts,
                 max_single_file_size,
                 max_zip_file_size,
+                max_users,
             )
             if app_db_config:
                 update_app_config_from_database(app, app_db_config)
@@ -99,6 +102,12 @@ def app_with_max_file_size(monkeypatch: pytest.MonkeyPatch) -> Generator:
 def app_with_max_zip_file_size(monkeypatch: pytest.MonkeyPatch) -> Generator:
     monkeypatch.setenv('EMAIL_URL', 'smtp://none:none@0.0.0.0:1025')
     yield from get_app(with_config=True, max_zip_file_size=0.001)
+
+
+@pytest.fixture
+def app_with_3_users_max(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv('EMAIL_URL', 'smtp://none:none@0.0.0.0:1025')
+    yield from get_app(with_config=True, max_users=3)
 
 
 @pytest.fixture

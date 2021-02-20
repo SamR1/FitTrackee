@@ -5,8 +5,10 @@ from flask import Flask
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
+from ..api_test_case import ApiTestCaseMixin
 
-class TestGetRecords:
+
+class TestGetRecords(ApiTestCaseMixin):
     def test_it_gets_records_for_authenticated_user(
         self,
         app: Flask,
@@ -17,21 +19,14 @@ class TestGetRecords:
         workout_cycling_user_1: Workout,
         workout_cycling_user_2: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
         response = client.get(
             '/api/records',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
-        data = json.loads(response.data.decode())
 
+        data = json.loads(response.data.decode())
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['records']) == 4
@@ -97,21 +92,14 @@ class TestGetRecords:
         sport_2_running: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
         response = client.get(
             '/api/records',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
-        data = json.loads(response.data.decode())
 
+        data = json.loads(response.data.decode())
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['records']) == 0
@@ -123,12 +111,8 @@ class TestGetRecords:
         sport_1_cycling: Sport,
         sport_2_running: Sport,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
         client.post(
             '/api/workouts/no_gpx',
             content_type='application/json',
@@ -141,20 +125,15 @@ class TestGetRecords:
                     title='Workout test',
                 )
             ),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
+
         response = client.get(
             '/api/records',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
-        data = json.loads(response.data.decode())
 
+        data = json.loads(response.data.decode())
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['records']) == 0
@@ -162,12 +141,7 @@ class TestGetRecords:
     def test_it_gets_updated_records_after_workouts_post_and_patch(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
         response = client.post(
             '/api/workouts/no_gpx',
             content_type='application/json',
@@ -180,26 +154,20 @@ class TestGetRecords:
                     title='Workout test 1',
                 )
             ),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         data = json.loads(response.data.decode())
         workout_1_short_id = data['data']['workouts'][0]['id']
+
         response = client.get(
             '/api/records',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
-        data = json.loads(response.data.decode())
 
+        data = json.loads(response.data.decode())
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['records']) == 4
-
         assert (
             'Mon, 14 May 2018 14:05:00 GMT'
             == data['data']['records'][0]['workout_date']
@@ -254,19 +222,13 @@ class TestGetRecords:
                     title='Workout test 2',
                 )
             ),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         data = json.loads(response.data.decode())
         workout_2_short_id = data['data']['workouts'][0]['id']
         response = client.get(
             '/api/records',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         data = json.loads(response.data.decode())
 
@@ -327,19 +289,13 @@ class TestGetRecords:
                     title='Workout test 3',
                 )
             ),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         data = json.loads(response.data.decode())
         workout_3_short_id = data['data']['workouts'][0]['id']
         response = client.get(
             '/api/records',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         data = json.loads(response.data.decode())
 
@@ -393,17 +349,11 @@ class TestGetRecords:
             f'/api/workouts/{workout_3_short_id}',
             content_type='application/json',
             data=json.dumps(dict(duration=4000)),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         response = client.get(
             '/api/records',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         data = json.loads(response.data.decode())
 
@@ -454,17 +404,11 @@ class TestGetRecords:
         # delete workout 2 => AS and MS record update
         client.delete(
             f'/api/workouts/{workout_2_short_id}',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         response = client.get(
             '/api/records',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         data = json.loads(response.data.decode())
 
@@ -526,19 +470,13 @@ class TestGetRecords:
                     title='Workout test 4',
                 )
             ),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         data = json.loads(response.data.decode())
         workout_4_short_id = data['data']['workouts'][0]['id']
         response = client.get(
             '/api/records',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         data = json.loads(response.data.decode())
 
@@ -602,19 +540,13 @@ class TestGetRecords:
                     title='Workout test 5',
                 )
             ),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         data = json.loads(response.data.decode())
         workout_5_short_id = data['data']['workouts'][0]['id']
         response = client.get(
             '/api/records',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         data = json.loads(response.data.decode())
 
@@ -665,38 +597,23 @@ class TestGetRecords:
         # delete all workouts - no more records
         client.delete(
             f'/api/workouts/{workout_1_short_id}',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         client.delete(
             f'/api/workouts/{workout_3_short_id}',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         client.delete(
             f'/api/workouts/{workout_4_short_id}',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         client.delete(
             f'/api/workouts/{workout_5_short_id}',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         response = client.get(
             '/api/records',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         data = json.loads(response.data.decode())
 
@@ -711,12 +628,8 @@ class TestGetRecords:
         sport_1_cycling: Sport,
         sport_2_running: Sport,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
         response = client.post(
             '/api/workouts/no_gpx',
             content_type='application/json',
@@ -729,10 +642,7 @@ class TestGetRecords:
                     title='Workout test 1',
                 )
             ),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         data = json.loads(response.data.decode())
         workout_1_short_id = data['data']['workouts'][0]['id']
@@ -748,10 +658,7 @@ class TestGetRecords:
                     title='Workout test 2',
                 )
             ),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         data = json.loads(response.data.decode())
         workout_2_short_id = data['data']['workouts'][0]['id']
@@ -767,10 +674,7 @@ class TestGetRecords:
                     title='Workout test 3',
                 )
             ),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         response = client.post(
             '/api/workouts/no_gpx',
@@ -784,19 +688,13 @@ class TestGetRecords:
                     title='Workout test 4',
                 )
             ),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         data = json.loads(response.data.decode())
         workout_4_short_id = data['data']['workouts'][0]['id']
         response = client.get(
             '/api/records',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         data = json.loads(response.data.decode())
 
@@ -888,17 +786,11 @@ class TestGetRecords:
             f'/api/workouts/{workout_2_short_id}',
             content_type='application/json',
             data=json.dumps(dict(sport_id=1)),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         response = client.get(
             '/api/records',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         data = json.loads(response.data.decode())
 
