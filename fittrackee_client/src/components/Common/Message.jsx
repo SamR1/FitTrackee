@@ -14,15 +14,19 @@ export default class Message extends React.PureComponent {
     return (
       <div className="error-message">
         {singleMessage !== '' && <code>{singleMessage}</code>}
-        {messages && messages.length > 0 && (
-          <code>
-            <ul>
-              {messages.map(msg => (
-                <li key={msg.id}>{t(`messages:${msg.value}`)}</li>
-              ))}
-            </ul>
-          </code>
-        )}
+        {messages &&
+          messages.length > 0 &&
+          (messages.length === 1 ? (
+            <code>{messages[0].value}</code>
+          ) : (
+            <code>
+              <ul>
+                {messages.map(msg => (
+                  <li key={msg.id}>{t(`messages:${msg.value}`)}</li>
+                ))}
+              </ul>
+            </code>
+          ))}
       </div>
     )
   }
