@@ -1,5 +1,17 @@
 # Change log
 
+## Version 0.4.6 (2021/02/21)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#72](https://github.com/SamR1/Fittrackee/issues/72) - Error message when file exceeding size is incorrect
+* [#71](https://github.com/SamR1/Fittrackee/issues/71) - max size or max number of files must be greater than 0
+* [#70](https://github.com/SamR1/Fittrackee/issues/70) - max size for an archive must not be less than uploaded files max size
+
+In this release 3 issues were closed.
+
 ## Version 0.4.5 (2021/02/17)
 
 ### Issues Closed
@@ -9,8 +21,7 @@
 * [#66](https://github.com/SamR1/Fittrackee/issues/66) - invalid gpx limit used when importing zip archive
 * [#64](https://github.com/SamR1/Fittrackee/issues/64) - Only 50 workouts per month shown in calendar
 
-
-In this release 2 issueS were closed.
+In this release 2 issues were closed.
 
 
 ## Version 0.4.4 (2021/01/31)
