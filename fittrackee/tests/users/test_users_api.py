@@ -8,25 +8,19 @@ from flask import Flask
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
+from ..api_test_case import ApiTestCaseMixin
 
-class TestGetUser:
+
+class TestGetUser(ApiTestCaseMixin):
     def test_it_gets_single_user_without_workouts(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/users/{user_2.username}',
             content_type='application/json',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -61,20 +55,12 @@ class TestGetUser:
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/users/{user_1.username}',
             content_type='application/json',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -103,19 +89,12 @@ class TestGetUser:
     def test_it_returns_error_if_user_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
         response = client.get(
             '/api/users/not_existing',
             content_type='application/json',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         data = json.loads(response.data.decode())
 
@@ -124,23 +103,15 @@ class TestGetUser:
         assert 'User does not exist.' in data['message']
 
 
-class TestGetUsers:
+class TestGetUsers(ApiTestCaseMixin):
     def test_it_get_users_list(
         self, app: Flask, user_1: User, user_2: User, user_3: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/users',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -200,19 +171,11 @@ class TestGetUsers:
         workout_running_user_1: Workout,
         workout_cycling_user_2: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/users',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -265,19 +228,11 @@ class TestGetUsers:
         user_2: User,
         user_3: User,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/users?page=1',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -300,19 +255,11 @@ class TestGetUsers:
         user_2: User,
         user_3: User,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/users?page=2',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -334,19 +281,11 @@ class TestGetUsers:
         user_2: User,
         user_3: User,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/users?page=2',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -368,19 +307,11 @@ class TestGetUsers:
         user_2: User,
         user_3: User,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/users?per_page=2',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -402,19 +333,11 @@ class TestGetUsers:
         user_2: User,
         user_3: User,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/users?page=2&per_page=2',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -432,18 +355,11 @@ class TestGetUsers:
     def test_it_gets_users_list_ordered_by_username(
         self, app: Flask, user_1: User, user_2: User, user_3: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
         response = client.get(
             '/api/users?order_by=username',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -464,19 +380,11 @@ class TestGetUsers:
     def test_it_gets_users_list_ordered_by_username_ascending(
         self, app: Flask, user_1: User, user_2: User, user_3: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/users?order_by=username&order=asc',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -497,19 +405,11 @@ class TestGetUsers:
     def test_it_gets_users_list_ordered_by_username_descending(
         self, app: Flask, user_1: User, user_2: User, user_3: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/users?order_by=username&order=desc',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -533,21 +433,13 @@ class TestGetUsers:
         user_2.created_at = datetime.utcnow() - timedelta(days=1)
         user_3.created_at = datetime.utcnow() - timedelta(hours=1)
         user_1_admin.created_at = datetime.utcnow()
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(
-                dict(email='admin@example.com', password='12345678')
-            ),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, as_admin=True
         )
 
         response = client.get(
             '/api/users?order_by=created_at',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -571,21 +463,13 @@ class TestGetUsers:
         user_2.created_at = datetime.utcnow() - timedelta(days=1)
         user_3.created_at = datetime.utcnow() - timedelta(hours=1)
         user_1_admin.created_at = datetime.utcnow()
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(
-                dict(email='admin@example.com', password='12345678')
-            ),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, as_admin=True
         )
 
         response = client.get(
             '/api/users?order_by=created_at&order=asc',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -609,21 +493,13 @@ class TestGetUsers:
         user_2.created_at = datetime.utcnow() - timedelta(days=1)
         user_3.created_at = datetime.utcnow() - timedelta(hours=1)
         user_1_admin.created_at = datetime.utcnow()
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(
-                dict(email='admin@example.com', password='12345678')
-            ),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, as_admin=True
         )
 
         response = client.get(
             '/api/users?order_by=created_at&order=desc',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -644,21 +520,13 @@ class TestGetUsers:
     def test_it_gets_users_list_ordered_by_admin_rights(
         self, app: Flask, user_2: User, user_1_admin: User, user_3: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(
-                dict(email='admin@example.com', password='12345678')
-            ),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, as_admin=True
         )
 
         response = client.get(
             '/api/users?order_by=admin',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -679,21 +547,13 @@ class TestGetUsers:
     def test_it_gets_users_list_ordered_by_admin_rights_ascending(
         self, app: Flask, user_2: User, user_1_admin: User, user_3: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(
-                dict(email='admin@example.com', password='12345678')
-            ),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, as_admin=True
         )
 
         response = client.get(
             '/api/users?order_by=admin&order=asc',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -714,21 +574,13 @@ class TestGetUsers:
     def test_it_gets_users_list_ordered_by_admin_rights_descending(
         self, app: Flask, user_2: User, user_3: User, user_1_admin: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(
-                dict(email='admin@example.com', password='12345678')
-            ),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, as_admin=True
         )
 
         response = client.get(
             '/api/users?order_by=admin&order=desc',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -755,19 +607,11 @@ class TestGetUsers:
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/users?order_by=workouts_count',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -797,19 +641,11 @@ class TestGetUsers:
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/users?order_by=workouts_count&order=asc',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -839,19 +675,11 @@ class TestGetUsers:
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/users?order_by=workouts_count&order=desc',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -875,19 +703,11 @@ class TestGetUsers:
     def test_it_gets_users_list_filtering_on_username(
         self, app: Flask, user_1: User, user_2: User, user_3: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/users?q=toto',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -906,19 +726,11 @@ class TestGetUsers:
     def test_it_returns_empty_users_list_filtering_on_username(
         self, app: Flask, user_1: User, user_2: User, user_3: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/users?q=not_existing',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -936,19 +748,11 @@ class TestGetUsers:
     def test_it_users_list_with_complex_query(
         self, app: Flask, user_1: User, user_2: User, user_3: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/users?order_by=username&order=desc&page=2&per_page=2',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -991,27 +795,19 @@ class TestGetUserPicture:
         assert 'User does not exist.' in data['message']
 
 
-class TestUpdateUser:
+class TestUpdateUser(ApiTestCaseMixin):
     def test_it_adds_admin_rights_to_a_user(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(
-                dict(email='admin@example.com', password='12345678')
-            ),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, as_admin=True
         )
 
         response = client.patch(
             '/api/users/toto',
             content_type='application/json',
             data=json.dumps(dict(admin=True)),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -1025,23 +821,15 @@ class TestUpdateUser:
     def test_it_removes_admin_rights_to_a_user(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(
-                dict(email='admin@example.com', password='12345678')
-            ),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, as_admin=True
         )
 
         response = client.patch(
             '/api/users/toto',
             content_type='application/json',
             data=json.dumps(dict(admin=False)),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -1056,23 +844,15 @@ class TestUpdateUser:
     def test_it_returns_error_if_payload_for_admin_rights_is_empty(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(
-                dict(email='admin@example.com', password='12345678')
-            ),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, as_admin=True
         )
 
         response = client.patch(
             '/api/users/toto',
             content_type='application/json',
             data=json.dumps(dict()),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -1083,23 +863,15 @@ class TestUpdateUser:
     def test_it_returns_error_if_payload_for_admin_rights_is_invalid(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(
-                dict(email='admin@example.com', password='12345678')
-            ),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, as_admin=True
         )
 
         response = client.patch(
             '/api/users/toto',
             content_type='application/json',
             data=json.dumps(dict(admin="")),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -1113,21 +885,13 @@ class TestUpdateUser:
     def test_it_returns_error_if_user_can_not_change_admin_rights(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.patch(
             '/api/users/toto',
             content_type='application/json',
             data=json.dumps(dict(admin=True)),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -1136,23 +900,15 @@ class TestUpdateUser:
         assert 'You do not have permissions.' in data['message']
 
 
-class TestDeleteUser:
+class TestDeleteUser(ApiTestCaseMixin):
     def test_user_can_delete_its_own_account(
         self, app: Flask, user_1: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.delete(
             '/api/users/test',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         assert response.status_code == 204
@@ -1160,12 +916,7 @@ class TestDeleteUser:
     def test_user_with_workout_can_delete_its_own_account(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
         client.post(
             '/api/workouts',
             data=dict(
@@ -1174,17 +925,13 @@ class TestDeleteUser:
             ),
             headers=dict(
                 content_type='multipart/form-data',
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token'],
+                Authorization=f'Bearer {auth_token}',
             ),
         )
 
         response = client.delete(
             '/api/users/test',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         assert response.status_code == 204
@@ -1192,28 +939,19 @@ class TestDeleteUser:
     def test_user_with_picture_can_delete_its_own_account(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
         client.post(
             '/api/auth/picture',
             data=dict(file=(BytesIO(b'avatar'), 'avatar.png')),
             headers=dict(
                 content_type='multipart/form-data',
-                authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token'],
+                Authorization=f'Bearer {auth_token}',
             ),
         )
 
         response = client.delete(
             '/api/users/test',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         assert response.status_code == 204
@@ -1221,19 +959,11 @@ class TestDeleteUser:
     def test_user_can_not_delete_another_user_account(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.delete(
             '/api/users/toto',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -1244,19 +974,11 @@ class TestDeleteUser:
     def test_it_returns_error_when_deleting_non_existing_user(
         self, app: Flask, user_1: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.delete(
             '/api/users/not_existing',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -1267,21 +989,13 @@ class TestDeleteUser:
     def test_admin_can_delete_another_user_account(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(
-                dict(email='admin@example.com', password='12345678')
-            ),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, as_admin=True
         )
 
         response = client.delete(
             '/api/users/toto',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         assert response.status_code == 204
@@ -1289,21 +1003,13 @@ class TestDeleteUser:
     def test_admin_can_delete_its_own_account(
         self, app: Flask, user_1_admin: User, user_2_admin: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(
-                dict(email='admin@example.com', password='12345678')
-            ),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, as_admin=True
         )
 
         response = client.delete(
             '/api/users/admin',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         assert response.status_code == 204
@@ -1311,20 +1017,13 @@ class TestDeleteUser:
     def test_admin_can_not_delete_its_own_account_if_no_other_admin(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(
-                dict(email='admin@example.com', password='12345678')
-            ),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, as_admin=True
         )
+
         response = client.delete(
             '/api/users/admin',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -1337,29 +1036,19 @@ class TestDeleteUser:
 
     def test_it_enables_registration_on_user_delete(
         self,
-        app_no_config: Flask,
-        app_config: Flask,
+        app_with_3_users_max: Flask,
         user_1_admin: User,
         user_2: User,
         user_3: User,
     ) -> None:
-        app_config.max_users = 3
-        client = app_no_config.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(
-                dict(email='admin@example.com', password='12345678')
-            ),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_3_users_max, as_admin=True
         )
-
         client.delete(
             '/api/users/toto',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
+
         response = client.post(
             '/api/auth/register',
             data=json.dumps(
@@ -1376,28 +1065,19 @@ class TestDeleteUser:
 
     def test_it_does_not_enable_registration_on_user_delete(
         self,
-        app_no_config: Flask,
-        app_config: Flask,
+        app_with_3_users_max: Flask,
         user_1_admin: User,
         user_2: User,
         user_3: User,
+        user_1_paris: User,
     ) -> None:
-        app_config.max_users = 2
-        client = app_no_config.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(
-                dict(email='admin@example.com', password='12345678')
-            ),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_3_users_max, as_admin=True
         )
 
         client.delete(
             '/api/users/toto',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         response = client.post(
             '/api/auth/register',

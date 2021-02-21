@@ -2,7 +2,7 @@
   "3 to 12 characters required for username.": "3 à 12 caractères requis pour le nom.",
   "8 characters required for password.": "8 caractères minimum pour le mot de passe.",
   "An error occurred. Please contact the administrator.": "Une erreur s'est produite. Merci de contacter l'administrateur.",
-  "workouts": "séances",
+  "application": "application",
   "Error during picture deletion.": "Erreur lors de la suppression de l'image.",
   "Error during picture update.":  "Erreur lors de la mise à jour de l'image.",
   "Error during picture update, file size exceeds max size.": "Erreur lors de la mise à jour de l'image, la taille du ficher dépasse la taille maximum autorisée",
@@ -14,6 +14,10 @@
   "Invalid credentials.": "Identifiants invalides.",
   "Invalid payload.": "Données incorrectes.",
   "Invalid token. Please log in again.": "Jeton invalide. Merci de vous reconnecter.",
+  "Max. files in a zip archive must be greater than 0": "Le nombre max. de fichiers dans une archive doit être supérieur à 0",
+  "Max. size of uploaded files must be greater than 0": "La taille max. des fichiers doit être supérieure à 0",
+  "Max. size of zip archive must be equal or greater than max. size of uploaded files": "La taille max. d'une archive doit être supérieure ou égale à la taille max. d'un fichier",
+  "Max. size of zip archive must be greater than 0": "La taille max. d'une archive doit être supérieure à 0",
   "No file part.": "Pas de fichier fourni.",
   "No picture.": "Pas d'image.",
   "No selected file.": "Pas de fichier sélectionné.",
@@ -30,6 +34,7 @@
   "statistics": "statistics",
   "User does not exist.": "L'utilisateur n'existe pas.",
   "Valid email must be provided.\n": "L'email fourni n'est pas valide.",
+  "workouts": "séances",
   "You can not delete your account, no other user has admin rights.": "Vous ne pouvez pas supprimer votre compte, aucun autre utilisateur n'a des droits d'administration.",
   "You do not have permissions.": "Vous n'avez pas les permissions nécessaires."
 }

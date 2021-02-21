@@ -3,11 +3,16 @@ import i18next from 'i18next'
 import FitTrackeeApi from '../fitTrackeeApi/index'
 import { history } from '../index'
 
+export const emptyMessages = () => ({
+  type: 'CLEAN_ALL_MESSAGES',
+})
+
 export const setData = (target, data) => ({
   type: 'SET_DATA',
   data,
   target,
 })
+
 export const setPaginatedData = (target, data, pagination) => ({
   type: 'SET_PAGINATED_DATA',
   data,
@@ -51,7 +56,7 @@ export const getOrUpdateData = (
     dispatch(setLoading(false))
     return dispatch(setError(`${target}|Incorrect id`))
   }
-  dispatch(setError(''))
+  dispatch(emptyMessages())
   return FitTrackeeApi[action](target, data)
     .then(ret => {
       if (ret.status === 'success') {

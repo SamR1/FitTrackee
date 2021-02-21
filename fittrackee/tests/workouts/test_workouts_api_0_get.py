@@ -7,10 +7,11 @@ from flask import Flask
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
+from ..api_test_case import ApiTestCaseMixin
 from .utils import get_random_short_id
 
 
-class TestGetWorkouts:
+class TestGetWorkouts(ApiTestCaseMixin):
     def test_it_gets_all_workouts_for_authenticated_user(
         self,
         app: Flask,
@@ -22,19 +23,11 @@ class TestGetWorkouts:
         workout_cycling_user_2: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/workouts',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -104,7 +97,7 @@ class TestGetWorkouts:
         assert 'Provide a valid auth token.' in data['message']
 
 
-class TestGetWorkoutsWithPagination:
+class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
     def test_it_gets_workouts_with_default_pagination(
         self,
         app: Flask,
@@ -112,19 +105,11 @@ class TestGetWorkoutsWithPagination:
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/workouts',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -151,19 +136,11 @@ class TestGetWorkoutsWithPagination:
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/workouts?page=1',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -190,19 +167,11 @@ class TestGetWorkoutsWithPagination:
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/workouts?page=2',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -229,19 +198,11 @@ class TestGetWorkoutsWithPagination:
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/workouts?page=3',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -256,19 +217,11 @@ class TestGetWorkoutsWithPagination:
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/workouts?page=A',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -287,19 +240,11 @@ class TestGetWorkoutsWithPagination:
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/workouts?per_page=10',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -323,19 +268,11 @@ class TestGetWorkoutsWithPagination:
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/workouts?per_page=3',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -352,7 +289,7 @@ class TestGetWorkoutsWithPagination:
         )
 
 
-class TestGetWorkoutsWithOrder:
+class TestGetWorkoutsWithOrder(ApiTestCaseMixin):
     def test_it_gets_workouts_with_default_order(
         self,
         app: Flask,
@@ -360,19 +297,11 @@ class TestGetWorkoutsWithOrder:
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/workouts',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -395,19 +324,11 @@ class TestGetWorkoutsWithOrder:
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/workouts?order=asc',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -430,19 +351,11 @@ class TestGetWorkoutsWithOrder:
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/workouts?order=desc',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -459,7 +372,7 @@ class TestGetWorkoutsWithOrder:
         )
 
 
-class TestGetWorkoutsWithFilters:
+class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
     def test_it_gets_workouts_with_date_filter(
         self,
         app: Flask,
@@ -467,19 +380,11 @@ class TestGetWorkoutsWithFilters:
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/workouts?from=2018-02-01&to=2018-02-28',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -506,19 +411,11 @@ class TestGetWorkoutsWithFilters:
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/workouts?from=2018-03-01&to=2018-03-30',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -533,19 +430,11 @@ class TestGetWorkoutsWithFilters:
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/workouts?from=2018-04-01',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -569,19 +458,11 @@ class TestGetWorkoutsWithFilters:
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/workouts?to=2017-12-31',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -604,19 +485,11 @@ class TestGetWorkoutsWithFilters:
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/workouts?distance_from=5&distance_to=8',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -639,19 +512,11 @@ class TestGetWorkoutsWithFilters:
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/workouts?duration_from=00:52&duration_to=01:20',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -670,19 +535,11 @@ class TestGetWorkoutsWithFilters:
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/workouts?ave_speed_from=5&ave_speed_to=10',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -705,19 +562,11 @@ class TestGetWorkoutsWithFilters:
     ) -> None:
         workout_cycling_user_1.max_speed = 25
         workout_running_user_1.max_speed = 11
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/workouts?max_speed_from=10&max_speed_to=20',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -738,19 +587,11 @@ class TestGetWorkoutsWithFilters:
         sport_2_running: Sport,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/workouts?sport_id=2',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -763,7 +604,7 @@ class TestGetWorkoutsWithFilters:
         )
 
 
-class TestGetWorkoutsWithFiltersAndPagination:
+class TestGetWorkoutsWithFiltersAndPagination(ApiTestCaseMixin):
     def test_it_gets_page_2_with_date_filter(
         self,
         app: Flask,
@@ -771,19 +612,11 @@ class TestGetWorkoutsWithFiltersAndPagination:
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/workouts?from=2017-01-01&page=2',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -806,19 +639,11 @@ class TestGetWorkoutsWithFiltersAndPagination:
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/workouts?from=2017-01-01&page=2&order=asc',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -835,7 +660,7 @@ class TestGetWorkoutsWithFiltersAndPagination:
         )
 
 
-class TestGetWorkout:
+class TestGetWorkout(ApiTestCaseMixin):
     def test_it_gets_an_workout(
         self,
         app: Flask,
@@ -843,19 +668,11 @@ class TestGetWorkout:
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/workouts/{workout_cycling_user_1.short_id}',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -880,19 +697,11 @@ class TestGetWorkout:
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/workouts/{workout_cycling_user_2.short_id}',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -903,19 +712,11 @@ class TestGetWorkout:
     def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/workouts/{get_random_short_id()}',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -927,19 +728,11 @@ class TestGetWorkout:
         self, app: Flask, user_1: User
     ) -> None:
         random_short_id = get_random_short_id()
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/workouts/{random_short_id}/gpx',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -952,19 +745,11 @@ class TestGetWorkout:
         self, app: Flask, user_1: User
     ) -> None:
         random_short_id = get_random_short_id()
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/workouts/{random_short_id}/chart_data',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -981,19 +766,11 @@ class TestGetWorkout:
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_short_id = workout_cycling_user_1.short_id
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/workouts/{workout_short_id}/gpx',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -1012,19 +789,11 @@ class TestGetWorkout:
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_short_id = workout_cycling_user_1.short_id
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/workouts/{workout_short_id}/chart_data',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -1043,19 +812,11 @@ class TestGetWorkout:
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.gpx = "some path"
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/workouts/{workout_cycling_user_1.short_id}/gpx',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -1075,19 +836,11 @@ class TestGetWorkout:
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.gpx = 'some path'
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/workouts/{workout_cycling_user_1.short_id}/chart_data',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -1102,18 +855,10 @@ class TestGetWorkout:
     def test_it_returns_404_if_workout_has_no_map(
         self, app: Flask, user_1: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
         response = client.get(
             f'/api/workouts/map/{uuid4().hex}',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         data = json.loads(response.data.decode())
 

@@ -7,6 +7,7 @@ from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 from fittrackee.workouts.utils_id import decode_short_id
 
+from ..api_test_case import ApiTestCaseMixin
 from .utils import get_random_short_id, post_an_workout
 
 
@@ -53,7 +54,7 @@ def assert_workout_data_with_gpx(data: Dict, sport_id: int) -> None:
     assert records[3]['value'] == 4.61
 
 
-class TestEditWorkoutWithGpx:
+class TestEditWorkoutWithGpx(ApiTestCaseMixin):
     def test_it_updates_title_for_an_workout_with_gpx(
         self,
         app: Flask,
@@ -203,7 +204,7 @@ class TestEditWorkoutWithGpx:
         )
 
 
-class TestEditWorkoutWithoutGpx:
+class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
     def test_it_updates_an_workout_wo_gpx(
         self,
         app: Flask,
@@ -213,12 +214,7 @@ class TestEditWorkoutWithoutGpx:
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_short_id = workout_cycling_user_1.short_id
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.patch(
             f'/api/workouts/{workout_short_id}',
@@ -232,10 +228,7 @@ class TestEditWorkoutWithoutGpx:
                     title='Workout test',
                 )
             ),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -298,21 +291,13 @@ class TestEditWorkoutWithoutGpx:
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_short_id = workout_cycling_user_1.short_id
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.patch(
             f'/api/workouts/{workout_short_id}',
             content_type='application/json',
             data=json.dumps(dict(notes='test notes')),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -374,12 +359,7 @@ class TestEditWorkoutWithoutGpx:
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.patch(
             f'/api/workouts/{workout_cycling_user_2.short_id}',
@@ -393,10 +373,7 @@ class TestEditWorkoutWithoutGpx:
                     title='Workout test',
                 )
             ),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -413,12 +390,7 @@ class TestEditWorkoutWithoutGpx:
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_short_id = workout_cycling_user_1.short_id
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.patch(
             f'/api/workouts/{workout_short_id}',
@@ -432,10 +404,7 @@ class TestEditWorkoutWithoutGpx:
                     title='Workout test',
                 )
             ),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         data = json.loads(response.data.decode())
 
@@ -494,21 +463,13 @@ class TestEditWorkoutWithoutGpx:
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_short_id = workout_cycling_user_1.short_id
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.patch(
             f'/api/workouts/{workout_short_id}',
             content_type='application/json',
             data=json.dumps(dict(sport_id=2, distance=20)),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -565,21 +526,13 @@ class TestEditWorkoutWithoutGpx:
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.patch(
             f'/api/workouts/{workout_cycling_user_1.short_id}',
             content_type='application/json',
             data=json.dumps(dict()),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -594,12 +547,7 @@ class TestEditWorkoutWithoutGpx:
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
         response = client.patch(
             f'/api/workouts/{workout_cycling_user_1.short_id}',
             content_type='application/json',
@@ -611,10 +559,7 @@ class TestEditWorkoutWithoutGpx:
                     distance=10,
                 )
             ),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -629,12 +574,7 @@ class TestEditWorkoutWithoutGpx:
     def test_it_returns_404_if_edited_workout_does_not_exists(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
         response = client.patch(
             f'/api/workouts/{get_random_short_id()}',
             content_type='application/json',
@@ -646,10 +586,7 @@ class TestEditWorkoutWithoutGpx:
                     distance=10,
                 )
             ),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())

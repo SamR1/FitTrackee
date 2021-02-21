@@ -2,7 +2,7 @@
   "3 to 12 characters required for username.": "3 to 12 characters required for username.",
   "8 characters required for password.": "8 characters required for password.",
   "An error occurred. Please contact the administrator.": "An error occurred. Please contact the administrator.",
-  "workouts": "workouts",
+  "application": "application",
   "Error during picture deletion.": "Error during picture deletion.",
   "Error during picture update.":  "Error during picture update.",
   "Error during picture update, file size exceeds max size.": "Error during picture update, file size exceeds max size.",
@@ -14,6 +14,10 @@
   "Invalid credentials.": "Invalid credentials.",
   "Invalid payload.": "Invalid payload.",
   "Invalid token. Please log in again.": "Invalid token. Please log in again.",
+  "Max. files in a zip archive must be greater than 0": "Max. files in a zip archive must be greater than 0",
+  "Max. size of uploaded files must be greater than 0": "Max. size of uploaded files must be greater than 0",
+  "Max. size of zip archive must be equal or greater than max. size of uploaded files": "Max. size of zip archive must be equal or greater than max. size of uploaded files",
+  "Max. size of zip archive must be greater than 0": "Max. size of zip archive must be greater than 0",
   "No file part.": "No file part.",
   "No picture.": "No picture.",
   "No selected file.": "No selected file.",
@@ -30,6 +34,7 @@
   "statistics": "statistiques",
   "User does not exist.": "User does not exist.",
   "Valid email must be provided.\n": "Valid email must be provided.",
+  "workouts": "workouts",
   "You can not delete your account, no other user has admin rights.": "You can not delete your account, no other user has admin rights.",
   "You do not have permissions.": "You do not have permissions."
 }

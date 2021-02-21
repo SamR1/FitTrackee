@@ -5,24 +5,18 @@ from flask import Flask
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
+from ..api_test_case import ApiTestCaseMixin
 
-class TestGetStatsByTime:
+
+class TestGetStatsByTime(ApiTestCaseMixin):
     def test_it_gets_no_stats_when_user_has_no_workouts(
         self, app: Flask, user_1: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_time',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -33,19 +27,11 @@ class TestGetStatsByTime:
     def test_it_returns_error_when_user_does_not_exists(
         self, app: Flask, user_1: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/stats/1000/by_time',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -62,19 +48,14 @@ class TestGetStatsByTime:
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_time?from="2018-04-01&to=2018-04-30',  # noqa
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
+            (
+                f'/api/stats/{user_1.username}/by_time'
+                f'?from="2018-04-01&to=2018-04-30'
             ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -94,19 +75,11 @@ class TestGetStatsByTime:
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30&time=day',  # noqa
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -123,19 +96,11 @@ class TestGetStatsByTime:
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_time',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -172,19 +137,11 @@ class TestGetStatsByTime:
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30',  # noqa
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -214,20 +171,12 @@ class TestGetStatsByTime:
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/stats/{user_1_paris.username}/by_time?'
             f'from=2018-04-01&to=2018-04-30',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -257,19 +206,11 @@ class TestGetStatsByTime:
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_time?time=year',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -306,19 +247,11 @@ class TestGetStatsByTime:
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30&time=year',  # noqa
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -348,19 +281,12 @@ class TestGetStatsByTime:
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/stats/{user_1_paris.username}/by_time?from=2018-04-01&to=2018-04-30&time=year',  # noqa
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -390,19 +316,11 @@ class TestGetStatsByTime:
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_time?time=month',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -467,19 +385,11 @@ class TestGetStatsByTime:
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/stats/{user_1_full.username}/by_time?time=month',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -544,19 +454,11 @@ class TestGetStatsByTime:
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30&time=month',  # noqa
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -586,19 +488,11 @@ class TestGetStatsByTime:
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/stats/{user_1_full.username}/by_time?time=week',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -663,19 +557,11 @@ class TestGetStatsByTime:
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30&time=week',  # noqa
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -705,19 +591,11 @@ class TestGetStatsByTime:
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_time?time=weekm',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -782,19 +660,11 @@ class TestGetStatsByTime:
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30&time=weekm',  # noqa
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -816,7 +686,7 @@ class TestGetStatsByTime:
         }
 
 
-class TestGetStatsBySport:
+class TestGetStatsBySport(ApiTestCaseMixin):
     def test_it_gets_stats_by_sport(
         self,
         app: Flask,
@@ -826,19 +696,11 @@ class TestGetStatsBySport:
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_sport',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -866,19 +728,11 @@ class TestGetStatsBySport:
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_sport?sport_id=1',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -901,19 +755,11 @@ class TestGetStatsBySport:
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/stats/1000/by_sport?sport_id=1',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -930,19 +776,11 @@ class TestGetStatsBySport:
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_sport?sport_id=999',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -959,19 +797,11 @@ class TestGetStatsBySport:
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_sport?sport_id="999',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -983,25 +813,17 @@ class TestGetStatsBySport:
         )
 
 
-class TestGetAllStats:
+class TestGetAllStats(ApiTestCaseMixin):
     def test_it_returns_all_stats_when_users_have_no_workouts(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(
-                dict(email='admin@example.com', password='12345678')
-            ),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, as_admin=True
         )
 
         response = client.get(
             '/api/stats/all',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -1024,21 +846,13 @@ class TestGetAllStats:
         workout_cycling_user_2: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(
-                dict(email='admin@example.com', password='12345678')
-            ),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, as_admin=True
         )
 
         response = client.get(
             '/api/stats/all',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -1061,19 +875,11 @@ class TestGetAllStats:
         workout_cycling_user_2: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
-            content_type='application/json',
-        )
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
             '/api/stats/all',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())

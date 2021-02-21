@@ -1,5 +1,7 @@
 import FitTrackeeGenericApi from '../fitTrackeeApi'
-import { setError } from './index'
+import { history } from '../index'
+import { generateIds } from '../utils'
+import { emptyMessages, setError } from './index'
 
 export const setAppConfig = data => ({
   type: 'SET_APP_CONFIG',
@@ -10,6 +12,8 @@ export const setAppStats = data => ({
   type: 'SET_APP_STATS',
   data,
 })
+
+const SetAppErrors = messages => ({ type: 'APP_ERRORS', messages })
 
 export const getAppData = target => dispatch =>
   FitTrackeeGenericApi.getData(target)
@@ -26,13 +30,18 @@ export const getAppData = target => dispatch =>
     })
     .catch(error => dispatch(setError(`application|${error}`)))
 
-export const updateAppConfig = formData => dispatch =>
+export const updateAppConfig = formData => dispatch => {
+  dispatch(emptyMessages())
   FitTrackeeGenericApi.updateData('config', formData)
     .then(ret => {
       if (ret.status === 'success') {
         dispatch(setAppConfig(ret.data))
+        history.push('/admin/application')
+      } else if (Array.isArray(ret.message)) {
+        dispatch(SetAppErrors(generateIds(ret.message)))
       } else {
-        dispatch(setError(`application|${ret.message}`))
+        dispatch(setError(ret.message))
       }
     })
     .catch(error => dispatch(setError(`application|${error}`)))
+}

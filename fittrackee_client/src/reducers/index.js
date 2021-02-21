@@ -108,8 +108,10 @@ const message = (state = initial.message, action) => {
     case 'PICTURE_ERROR':
     case 'SET_ERROR':
       return action.message
+    case 'CLEAN_ALL_MESSAGES':
     case 'LOGOUT':
     case 'PROFILE_SUCCESS':
+    case 'SET_APP_CONFIG':
     case 'SET_RESULTS':
     case '@@router/LOCATION_CHANGE':
       return ''
@@ -121,7 +123,9 @@ const message = (state = initial.message, action) => {
 const messages = (state = initial.messages, action) => {
   switch (action.type) {
     case 'AUTH_ERRORS':
+    case 'APP_ERRORS':
       return action.messages
+    case 'CLEAN_ALL_MESSAGES':
     case 'LOGOUT':
     case 'PROFILE_SUCCESS':
     case '@@router/LOCATION_CHANGE':

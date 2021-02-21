@@ -571,6 +571,9 @@ Examples (to update depending on your application configuration and given distri
     [Install]
     WantedBy=multi-user.target
 
+.. note::
+    More information on `Gunicorn documentation <https://docs.gunicorn.org/en/stable/deploy.html>`__
+
 - for task queue workers: ``fittrackee_workers.service``
 
 .. code-block::
@@ -635,7 +638,7 @@ Examples (to update depending on your application configuration and given distri
     }
 
 .. note::
-    More information on `Gunicorn documentation <https://docs.gunicorn.org/en/stable/deploy.html>`__
+    If needed, update configuration to handle larger files (see `client_max_body_size <https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size>`_).
 
 
 Docker
