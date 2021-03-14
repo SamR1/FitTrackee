@@ -4,10 +4,10 @@
   "private": true,
   "dependencies": {
     "@mapbox/togeojson": "^0.16.0",
-    "connected-react-router": "^6.8.0",
-    "date-fns": "^2.17.0",
+    "connected-react-router": "^6.9.1",
+    "date-fns": "^2.19.0",
     "history": "^4.10.1",
-    "i18next": "^19.8.8",
+    "i18next": "^19.9.2",
     "i18next-browser-languagedetector": "^6.0.1",
     "i18next-xhr-backend": "^3.2.2",
     "leaflet": "^1.7.1",
@@ -16,11 +16,11 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-helmet": "^6.1.0",
-    "react-i18next": "^11.8.7",
+    "react-i18next": "^11.8.10",
     "react-leaflet": "^3.1.0",
     "react-redux": "^7.2.2",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^4.0.2",
+    "react-scripts": "^4.0.3",
     "react-timezone": "^2.4.0",
     "recharts": "^1.8.5",
     "redux": "^4.0.5",
@@ -43,7 +43,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "eslint-config-prettier": "^7.2.0",
+    "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-testcafe": "^0.2.1",
     "prettier": "^2.2.1"
