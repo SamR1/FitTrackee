@@ -2,10 +2,17 @@
 
 ## Version 0.4.7 (unreleased)
 
+#### Bugs Fixed
+
+* [#75](https://github.com/SamR1/Fittrackee/issues/75) - Workouts on the same day are not displayed in right order
+
 #### Misc
 
 * Update Python and Javascript dependencies  
-**IMPORTANT**: Due to SQLAlchemy update (1.4+), engine URLs starting with `postgres://` are no longer supported. Please update `DATABASE_URL` with `postgresql://`.
+**IMPORTANT**: Due to [SQLAlchemy update (1.4+)](https://docs.sqlalchemy.org/en/14/changelog/changelog_14.html#change-3687655465c25a39b968b4f5f6e9170b), engine URLs starting with `postgres://` are no longer supported. Please update `DATABASE_URL` with `postgresql://`.
+
+In this release 1 issue was closed.
+
 
 ## Version 0.4.6 (2021/02/21)
 
