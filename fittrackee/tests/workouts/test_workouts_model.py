@@ -2,6 +2,7 @@ from uuid import UUID
 
 from flask import Flask
 
+from fittrackee import db
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 from fittrackee.workouts.utils_id import decode_short_id
@@ -16,6 +17,7 @@ class TestWorkoutModel:
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.title = 'Test'
+        db.session.commit()
 
         assert 1 == workout_cycling_user_1.id
         assert workout_cycling_user_1.uuid is not None

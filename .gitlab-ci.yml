@@ -6,7 +6,7 @@ variables:
   POSTGRES_PASSWORD: fittrackee
   POSTGRES_HOST: postgres
   APP_SETTINGS: fittrackee.config.TestingConfig
-  DATABASE_TEST_URL: postgres://fittrackee:fittrackee@postgres:5432/fittrackee_test
+  DATABASE_TEST_URL: postgresql://fittrackee:fittrackee@postgres:5432/fittrackee_test
   EMAIL_URL: smtp://none:none@0.0.0.0:1025
   FLASK_APP: fittrackee/__main__.py
   SENDER_EMAIL: fittrackee@example.com

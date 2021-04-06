@@ -106,7 +106,7 @@ deployment method.
 .. envvar:: DATABASE_URL
 
     | Database URL with username and password, must be initialized in production environment.
-    | For example in dev environment : ``postgres://fittrackee:fittrackee@localhost:5432/fittrackee``
+    | For example in dev environment : ``postgresql://fittrackee:fittrackee@localhost:5432/fittrackee``
 
 
 .. envvar:: DATABASE_DISABLE_POOLING 🆕
