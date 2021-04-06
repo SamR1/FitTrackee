@@ -1,5 +1,12 @@
 # Change log
 
+## Version 0.4.7 (unreleased)
+
+#### Misc
+
+* Update Python and Javascript dependencies  
+**IMPORTANT**: Due to SQLAlchemy update (1.4+), engine URLs starting with `postgres://` are no longer supported. Please update `DATABASE_URL` with `postgresql://`.
+
 ## Version 0.4.6 (2021/02/21)
 
 ### Issues Closed
