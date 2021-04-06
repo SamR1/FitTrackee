@@ -108,6 +108,8 @@ deployment method.
     | Database URL with username and password, must be initialized in production environment.
     | For example in dev environment : ``postgresql://fittrackee:fittrackee@localhost:5432/fittrackee``
 
+    .. danger::
+        | Since SQLAlchemy update (1.4+), engine URL should begin with `postgresql://`.
 
 .. envvar:: DATABASE_DISABLE_POOLING 🆕
 
