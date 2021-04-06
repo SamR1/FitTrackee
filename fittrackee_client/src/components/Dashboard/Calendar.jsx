@@ -84,9 +84,11 @@ class Calendar extends React.Component {
   filterWorkouts(day) {
     const { workouts, user } = this.props
     if (workouts) {
-      return workouts.filter(act =>
-        isSameDay(getDateWithTZ(act.workout_date, user.timezone), day)
-      )
+      return workouts
+        .filter(act =>
+          isSameDay(getDateWithTZ(act.workout_date, user.timezone), day)
+        )
+        .reverse()
     }
     return []
   }
