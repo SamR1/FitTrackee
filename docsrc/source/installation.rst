@@ -109,7 +109,8 @@ deployment method.
     | For example in dev environment : ``postgresql://fittrackee:fittrackee@localhost:5432/fittrackee``
 
     .. danger::
-        | Since SQLAlchemy update (1.4+), engine URL should begin with `postgresql://`.
+        | Since `SQLAlchemy update (1.4+) <https://docs.sqlalchemy.org/en/14/changelog/changelog_14.html#change-3687655465c25a39b968b4f5f6e9170b>`__,
+          engine URL should begin with `postgresql://`.
 
 .. envvar:: DATABASE_DISABLE_POOLING 🆕
 
