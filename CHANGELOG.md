@@ -1,6 +1,6 @@
 # Change log
 
-## Version 0.4.7 (unreleased)
+## Version 0.4.7 (2021/04/07)
 
 #### Bugs Fixed
 
