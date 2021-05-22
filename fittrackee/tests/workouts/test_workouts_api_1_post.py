@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from datetime import datetime
 from io import BytesIO
 from typing import Dict
@@ -481,9 +482,9 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 413
         assert 'fail' in data['status']
-        assert (
-            'Error during workout upload, file size (3.6KB) exceeds 1.0KB.'
-            in data['message']
+        assert re.match(
+            r'Error during workout upload, file size \((.*)\) exceeds 1.0KB.',
+            data['message'],
         )
         assert 'data' not in data
 
