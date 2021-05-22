@@ -741,7 +741,7 @@ def get_map_tile(s: str, z: str, x: str, y: str) -> Tuple[Response, int]:
 
     """
     url = current_app.config['TILE_SERVER']['URL'].format(s=s, z=z, x=x, y=y)
-    headers = {'User-Agent': 'Mozilla/5.0'}
+    headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:88.0)'}
     response = requests.get(url, headers=headers)
     return (
         Response(
