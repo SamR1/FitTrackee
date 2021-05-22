@@ -528,7 +528,7 @@ def edit_picture(auth_user_id: int) -> Union[Dict, HttpResponse]:
         return response_object
 
     file = request.files['file']
-    filename = secure_filename(file.filename)
+    filename = secure_filename(file.filename)  # type: ignore
     dirpath = os.path.join(
         current_app.config['UPLOAD_FOLDER'], 'pictures', str(auth_user_id)
     )

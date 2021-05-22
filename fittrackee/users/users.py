@@ -122,12 +122,8 @@ def get_users(auth_user_id: int) -> Dict:
 
     """
     params = request.args.copy()
-    page = 1 if 'page' not in params.keys() else int(params.get('page'))
-    per_page = (
-        int(params.get('per_page'))
-        if params.get('per_page')
-        else USER_PER_PAGE
-    )
+    page = int(params.get('page', 1))
+    per_page = int(params.get('per_page', USER_PER_PAGE))
     if per_page > 50:
         per_page = 50
     order_by = params.get('order_by')
@@ -364,7 +360,7 @@ def update_user(
     :statuscode 500:
     """
     user_data = request.get_json()
-    if 'admin' not in user_data:
+    if not user_data or user_data.get('admin') is None:
         return InvalidPayloadErrorResponse()
 
     try:

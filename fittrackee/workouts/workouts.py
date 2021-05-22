@@ -1,7 +1,7 @@
 import json
 import os
 import shutil
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import requests
@@ -31,7 +31,7 @@ from .utils import (
     create_workout,
     edit_workout,
     get_absolute_file_path,
-    get_datetime_with_tz,
+    get_datetime_from_request_args,
     process_files,
 )
 from .utils_format import convert_in_duration
@@ -196,17 +196,8 @@ def get_workouts(auth_user_id: int) -> Union[Dict, HttpResponse]:
     try:
         user = User.query.filter_by(id=auth_user_id).first()
         params = request.args.copy()
-        page = 1 if 'page' not in params.keys() else int(params.get('page'))
-        date_from = params.get('from')
-        if date_from:
-            date_from = datetime.strptime(date_from, '%Y-%m-%d')
-            _, date_from = get_datetime_with_tz(user.timezone, date_from)
-        date_to = params.get('to')
-        if date_to:
-            date_to = datetime.strptime(
-                f'{date_to} 23:59:59', '%Y-%m-%d %H:%M:%S'
-            )
-            _, date_to = get_datetime_with_tz(user.timezone, date_to)
+        page = int(params.get('page', 1))
+        date_from, date_to = get_datetime_from_request_args(params, user)
         distance_from = params.get('distance_from')
         distance_to = params.get('distance_to')
         duration_from = params.get('duration_from')
@@ -217,11 +208,7 @@ def get_workouts(auth_user_id: int) -> Union[Dict, HttpResponse]:
         max_speed_to = params.get('max_speed_to')
         order = params.get('order')
         sport_id = params.get('sport_id')
-        per_page = (
-            int(params.get('per_page'))
-            if params.get('per_page')
-            else DEFAULT_WORKOUTS_PER_PAGE
-        )
+        per_page = int(params.get('per_page', DEFAULT_WORKOUTS_PER_PAGE))
         if per_page > MAX_WORKOUTS_PER_PAGE:
             per_page = MAX_WORKOUTS_PER_PAGE
         workouts = (

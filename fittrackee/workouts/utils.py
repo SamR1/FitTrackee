@@ -50,6 +50,25 @@ def get_datetime_with_tz(
     return workout_date_tz, workout_date
 
 
+def get_datetime_from_request_args(
+    params: Dict, user: User
+) -> Tuple[Optional[datetime], Optional[datetime]]:
+    date_from = None
+    date_to = None
+
+    date_from_str = params.get('from')
+    if date_from_str:
+        date_from = datetime.strptime(date_from_str, '%Y-%m-%d')
+        _, date_from = get_datetime_with_tz(user.timezone, date_from)
+    date_to_str = params.get('to')
+    if date_to_str:
+        date_to = datetime.strptime(
+            f'{date_to_str} 23:59:59', '%Y-%m-%d %H:%M:%S'
+        )
+        _, date_to = get_datetime_with_tz(user.timezone, date_to)
+    return date_from, date_to
+
+
 def update_workout_data(
     workout: Union[Workout, WorkoutSegment], gpx_data: Dict
 ) -> Union[Workout, WorkoutSegment]:

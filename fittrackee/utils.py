@@ -21,7 +21,7 @@ def verify_extension_and_size(
         return InvalidPayloadErrorResponse('No file part.', 'fail')
 
     file = req.files['file']
-    if file.filename == '':
+    if not file.filename or file.filename == '':
         return InvalidPayloadErrorResponse('No selected file.', 'fail')
 
     allowed_extensions = (

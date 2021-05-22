@@ -16,7 +16,7 @@ from fittrackee.users.decorators import authenticate, authenticate_as_admin
 from fittrackee.users.models import User
 
 from .models import Sport, Workout
-from .utils import get_datetime_with_tz, get_upload_dir_size
+from .utils import get_datetime_from_request_args, get_upload_dir_size
 from .utils_format import convert_timedelta_to_integer
 
 stats_blueprint = Blueprint('stats', __name__)
@@ -34,16 +34,7 @@ def get_workouts(
             return UserNotFoundErrorResponse()
 
         params = request.args.copy()
-        date_from = params.get('from')
-        if date_from:
-            date_from = datetime.strptime(date_from, '%Y-%m-%d')
-            _, date_from = get_datetime_with_tz(user.timezone, date_from)
-        date_to = params.get('to')
-        if date_to:
-            date_to = datetime.strptime(
-                f'{date_to} 23:59:59', '%Y-%m-%d %H:%M:%S'
-            )
-            _, date_to = get_datetime_with_tz(user.timezone, date_to)
+        date_from, date_to = get_datetime_from_request_args(params, user)
         sport_id = params.get('sport_id')
         time = params.get('time')
 
