@@ -56,7 +56,7 @@ def create_app() -> Flask:
     with app.app_context():
         # Note: check if "app_config" table exist to avoid errors when
         # dropping tables on dev environments
-        if db.engine.dialect.has_table(db.engine, 'app_config'):
+        if db.engine.dialect.has_table(db.engine.connect(), 'app_config'):
             db_app_config = AppConfig.query.one_or_none()
             if not db_app_config:
                 _, db_app_config = init_config()
