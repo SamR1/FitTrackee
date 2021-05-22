@@ -57,15 +57,8 @@ class AdminUsers extends React.Component {
   }
 
   render() {
-    const {
-      authUser,
-      location,
-      message,
-      t,
-      pagination,
-      updateUser,
-      users,
-    } = this.props
+    const { authUser, location, message, t, pagination, updateUser, users } =
+      this.props
     const translatedFilters = translateValues(t, userFilters)
     const translatedSortOrders = translateValues(t, sortOrders)
     return (

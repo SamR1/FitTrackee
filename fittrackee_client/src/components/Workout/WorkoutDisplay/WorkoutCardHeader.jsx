@@ -5,16 +5,8 @@ import { getDateWithTZ } from '../../../utils'
 import { formatWorkoutDate } from '../../../utils/workouts'
 
 export default function WorkoutCardHeader(props) {
-  const {
-    dataType,
-    displayModal,
-    segmentId,
-    sport,
-    t,
-    title,
-    user,
-    workout,
-  } = props
+  const { dataType, displayModal, segmentId, sport, t, title, user, workout } =
+    props
   const workoutDate = workout
     ? formatWorkoutDate(getDateWithTZ(workout.workout_date, user.timezone))
     : null

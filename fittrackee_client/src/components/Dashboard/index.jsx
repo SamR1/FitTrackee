@@ -26,15 +26,8 @@ class DashBoard extends React.Component {
   }
 
   render() {
-    const {
-      loadMoreWorkouts,
-      message,
-      records,
-      sports,
-      t,
-      user,
-      workouts,
-    } = this.props
+    const { loadMoreWorkouts, message, records, sports, t, user, workouts } =
+      this.props
     const paginationEnd =
       workouts.length > 0
         ? workouts[workouts.length - 1].previous_workout === null

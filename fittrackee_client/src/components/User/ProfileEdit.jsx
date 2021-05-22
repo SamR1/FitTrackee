@@ -61,13 +61,8 @@ class ProfileEdit extends React.Component {
   }
 
   render() {
-    const {
-      message,
-      onDeleteUser,
-      onHandleProfileFormSubmit,
-      t,
-      user,
-    } = this.props
+    const { message, onDeleteUser, onHandleProfileFormSubmit, t, user } =
+      this.props
     const { displayModal, formData } = this.state
     return (
       <div>

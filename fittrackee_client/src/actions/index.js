@@ -45,41 +45,40 @@ export const updateUsersData = data => ({
   data,
 })
 
-export const getOrUpdateData = (
-  action,
-  target,
-  data,
-  canDispatch = true
-) => dispatch => {
-  dispatch(setLoading(true))
-  if (data && data.id && target !== 'workouts' && isNaN(data.id)) {
-    dispatch(setLoading(false))
-    return dispatch(setError(`${target}|Incorrect id`))
-  }
-  dispatch(emptyMessages())
-  return FitTrackeeApi[action](target, data)
-    .then(ret => {
-      if (ret.status === 'success') {
-        if (canDispatch) {
-          if (target === 'users' && action === 'getData') {
-            return dispatch(setPaginatedData(target, ret.data, ret.pagination))
+export const getOrUpdateData =
+  (action, target, data, canDispatch = true) =>
+  dispatch => {
+    dispatch(setLoading(true))
+    if (data && data.id && target !== 'workouts' && isNaN(data.id)) {
+      dispatch(setLoading(false))
+      return dispatch(setError(`${target}|Incorrect id`))
+    }
+    dispatch(emptyMessages())
+    return FitTrackeeApi[action](target, data)
+      .then(ret => {
+        if (ret.status === 'success') {
+          if (canDispatch) {
+            if (target === 'users' && action === 'getData') {
+              return dispatch(
+                setPaginatedData(target, ret.data, ret.pagination)
+              )
+            }
+            dispatch(setData(target, ret.data))
+          } else if (action === 'updateData' && target === 'sports') {
+            dispatch(updateSportsData(ret.data.sports[0]))
+          } else if (action === 'updateData' && target === 'users') {
+            dispatch(updateUsersData(ret.data.users[0]))
           }
-          dispatch(setData(target, ret.data))
-        } else if (action === 'updateData' && target === 'sports') {
-          dispatch(updateSportsData(ret.data.sports[0]))
-        } else if (action === 'updateData' && target === 'users') {
-          dispatch(updateUsersData(ret.data.users[0]))
+        } else {
+          dispatch(setError(`${target}|${ret.message || ret.status}`))
         }
-      } else {
-        dispatch(setError(`${target}|${ret.message || ret.status}`))
-      }
-      dispatch(setLoading(false))
-    })
-    .catch(error => {
-      dispatch(setLoading(false))
-      dispatch(setError(`${target}|${error}`))
-    })
-}
+        dispatch(setLoading(false))
+      })
+      .catch(error => {
+        dispatch(setLoading(false))
+        dispatch(setError(`${target}|${error}`))
+      })
+  }
 
 export const addData = (target, data) => dispatch =>
   FitTrackeeApi.addData(target, data)
