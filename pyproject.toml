@@ -52,7 +52,7 @@ pytest-isort = "^2.0"
 pytest-runner = "^5.3"
 pytest-selenium = "^2.0.1"
 recommonmark = "^0.7"
-sphinx = "^4.0"
+sphinx = "<4.0"
 sphinx-bootstrap-theme = "^0.7.1"
 sphinxcontrib-httpdomain = "^1.7"
 
