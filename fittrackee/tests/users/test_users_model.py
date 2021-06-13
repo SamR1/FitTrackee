@@ -119,7 +119,7 @@ class TestUserFollowingModel:
 
     def test_user_has_no_pending_follow_request(
         self,
-        app_with_federation: Flask,
+        app: Flask,
         user_1: User,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
@@ -128,7 +128,7 @@ class TestUserFollowingModel:
 
     def test_user_approves_follow_request(
         self,
-        app_with_federation: Flask,
+        app: Flask,
         user_1: User,
         user_2: User,
         follow_request_from_user_2_to_user_1: FollowRequest,
@@ -143,7 +143,7 @@ class TestUserFollowingModel:
 
     def test_user_refuses_follow_request(
         self,
-        app_with_federation: Flask,
+        app: Flask,
         user_1: User,
         user_2: User,
         follow_request_from_user_2_to_user_1: FollowRequest,
@@ -155,7 +155,7 @@ class TestUserFollowingModel:
 
     def test_it_raises_error_if_follow_request_does_not_exists(
         self,
-        app_with_federation: Flask,
+        app: Flask,
         user_1: User,
         user_2: User,
     ) -> None:
@@ -164,7 +164,7 @@ class TestUserFollowingModel:
 
     def test_it_raises_error_if_user_approves_follow_request_already_processed(  # noqa
         self,
-        app_with_federation: Flask,
+        app: Flask,
         user_1: User,
         user_2: User,
         follow_request_from_user_2_to_user_1: FollowRequest,
