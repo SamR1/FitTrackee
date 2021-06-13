@@ -1,6 +1,6 @@
 from typing import Dict
 
-from flask import Blueprint, current_app, request
+from flask import Blueprint, request
 
 from .decorators import authenticate
 from .models import FollowRequest, User
@@ -32,12 +32,11 @@ def get_follow_requests(auth_user: User) -> Dict:
         .paginate(page, per_page, False)
     )
     follow_requests = follow_requests_pagination.items
-    federation_enabled = current_app.config['federation_enabled']
     return {
         'status': 'success',
         'data': {
             'follow_requests': [
-                follow_request.serialize(federation_enabled)['from_user']
+                follow_request.serialize()['from_user']
                 for follow_request in follow_requests
             ]
         },
