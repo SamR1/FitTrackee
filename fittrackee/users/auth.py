@@ -138,6 +138,8 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
         new_user.timezone = 'Europe/Paris'
         db.session.add(new_user)
         db.session.commit()
+        # create actor even if federation is disabled
+        new_user.create_actor()
         # generate auth token
         auth_token = new_user.encode_auth_token(new_user.id)
         return {

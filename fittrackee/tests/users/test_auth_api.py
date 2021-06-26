@@ -11,6 +11,7 @@ from fittrackee.users.models import User, UserSportPreference
 from fittrackee.users.utils.token import get_user_token
 from fittrackee.workouts.models import Sport, Workout
 
+from ..federation.users.test_auth_api import assert_actor_is_created
 from ..test_case_mixins import ApiTestCaseMixin
 
 
@@ -37,6 +38,10 @@ class TestUserRegistration:
         assert data['auth_token']
         assert response.content_type == 'application/json'
         assert response.status_code == 201
+
+    def test_it_creates_actor_on_user_registration(self, app: Flask) -> None:
+        """it must create actor even if federation is disabled"""
+        assert_actor_is_created(app=app)
 
     @pytest.mark.parametrize(
         'input_username',

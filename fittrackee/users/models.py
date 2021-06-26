@@ -11,7 +11,7 @@ from fittrackee import BaseModel, bcrypt, db
 from fittrackee.federation.constants import AP_CTX
 from fittrackee.federation.enums import ActivityType
 from fittrackee.federation.exceptions import FederationDisabledException
-from fittrackee.federation.models import Actor
+from fittrackee.federation.models import Actor, Domain
 from fittrackee.federation.tasks.user_inbox import send_to_users_inbox
 from fittrackee.federation.utils import generate_activity_id
 from fittrackee.workouts.models import Workout
@@ -236,6 +236,17 @@ class User(BaseModel):
     def get_user_url(self) -> str:
         """Return user url on user interface"""
         return f"{current_app.config['UI_URL']}/users/{self.username}"
+
+    def create_actor(self) -> None:
+        app_domain = Domain.query.filter_by(
+            name=current_app.config['AP_DOMAIN']
+        ).first()
+        actor = Actor(username=self.username, domain_id=app_domain.id)
+        db.session.add(actor)
+        db.session.flush()
+        self.actor_id = actor.id
+        actor.generate_keys()
+        db.session.commit()
 
     def serialize(self) -> Dict:
         sports = []
