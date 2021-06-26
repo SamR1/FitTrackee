@@ -80,20 +80,20 @@ class TestActivityPubLocalPersonActorModel:
             serialized_actor['preferredUsername'] == actor_1.preferred_username
         )
         assert serialized_actor['name'] == actor_1.user.username
-        assert (
-            serialized_actor['inbox']
-            == f'{ap_url}/federation/user/{actor_1.preferred_username}/inbox'
+        assert serialized_actor['inbox'] == (
+            f'https://{ap_url}/federation/user/'
+            f'{actor_1.preferred_username}/inbox'
         )
-        assert (
-            serialized_actor['outbox']
-            == f'{ap_url}/federation/user/{actor_1.preferred_username}/outbox'
+        assert serialized_actor['outbox'] == (
+            f'https://{ap_url}/federation/user/'
+            f'{actor_1.preferred_username}/outbox'
         )
         assert serialized_actor['followers'] == (
-            f'{ap_url}/federation/user/'
+            f'https://{ap_url}/federation/user/'
             f'{actor_1.preferred_username}/followers'
         )
         assert serialized_actor['following'] == (
-            f'{ap_url}/federation/user/'
+            f'https://{ap_url}/federation/user/'
             f'{actor_1.preferred_username}/following'
         )
         assert serialized_actor['manuallyApprovesFollowers'] is True
@@ -105,7 +105,7 @@ class TestActivityPubLocalPersonActorModel:
         assert 'publicKeyPem' in serialized_actor['publicKey']
         assert (
             serialized_actor['endpoints']['sharedInbox']
-            == f'{ap_url}/federation/inbox'
+            == f'https://{ap_url}/federation/inbox'
         )
 
     def test_generated_key_is_valid(

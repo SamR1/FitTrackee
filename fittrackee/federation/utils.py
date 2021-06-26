@@ -32,7 +32,7 @@ def get_ap_url(username: str, url_type: str) -> str:
     - 'followers'
     - 'shared_inbox'
     """
-    ap_url = f"{current_app.config['AP_DOMAIN']}/federation/"
+    ap_url = f"https://{current_app.config['AP_DOMAIN']}/federation/"
     ap_url_user = f'{ap_url}user/{username}'
     if url_type == 'user_url':
         return ap_url_user

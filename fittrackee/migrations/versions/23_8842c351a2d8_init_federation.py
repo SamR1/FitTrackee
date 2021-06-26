@@ -11,7 +11,7 @@ from datetime import datetime
 import sqlalchemy as sa
 from alembic import op
 
-from fittrackee.federation.utils import get_ap_url
+from fittrackee.federation.utils import generate_keys, get_ap_url, remove_url_scheme
 
 
 # revision identifiers, used by Alembic.
@@ -41,7 +41,8 @@ def upgrade():
         sa.UniqueConstraint('name'),
     )
 
-    domain = os.environ['UI_URL']
+    # create local domain (even if federation is not enabled)
+    domain = remove_url_scheme(os.environ['UI_URL'])
     created_at = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
     op.execute(
         "INSERT INTO domains (name, created_at, is_allowed)"
@@ -87,7 +88,7 @@ def upgrade():
         'users_actor_id_fkey', 'users', 'actors', ['actor_id'], ['id']
     )
 
-    # create local actors
+    # create local actors with keys (even if federation is not enabled)
     user_helper = sa.Table(
         'users',
         sa.MetaData(),
@@ -98,14 +99,17 @@ def upgrade():
     domain = connection.execute(domain_table.select()).fetchone()
     for user in connection.execute(user_helper.select()):
         created_at = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+        public_key, private_key = generate_keys()
         op.execute(
             "INSERT INTO actors ("
-            "activitypub_id, domain_id, preferred_username, followers_url, "
-            "following_url, inbox_url, outbox_url, shared_inbox_url, "
-            "created_at, manually_approves_followers) "
+            "activitypub_id, domain_id, preferred_username, public_key, "
+            "private_key, followers_url, following_url, inbox_url, "
+            "outbox_url, shared_inbox_url, created_at, "
+            "manually_approves_followers) "
             "VALUES ("
             f"'{get_ap_url(user.username, 'user_url')}', "
             f"{domain.id}, '{user.username}', "
+            f"'{public_key}', '{private_key}', "
             f"'{get_ap_url(user.username, 'followers')}', "
             f"'{get_ap_url(user.username, 'following')}', "
             f"'{get_ap_url(user.username, 'inbox')}', "
