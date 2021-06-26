@@ -6,7 +6,7 @@ from flask import Flask
 
 from fittrackee.users.models import FollowRequest, User
 
-from ..api_test_case import ApiTestCaseMixin
+from ..test_case_mixins import ApiTestCaseMixin
 
 
 class TestGetFollowRequestWithoutFederation(ApiTestCaseMixin):

@@ -6,7 +6,7 @@ from fittrackee import db
 from fittrackee.users.models import User, UserSportPreference
 from fittrackee.workouts.models import Sport, Workout
 
-from ..api_test_case import ApiTestCaseMixin
+from ..test_case_mixins import ApiTestCaseMixin
 
 expected_sport_1_cycling_result = {
     'id': 1,

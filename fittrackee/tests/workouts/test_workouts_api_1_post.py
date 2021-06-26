@@ -13,7 +13,7 @@ from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 from fittrackee.workouts.utils.short_id import decode_short_id
 
-from ..api_test_case import ApiTestCaseMixin, CallArgsMixin
+from ..test_case_mixins import ApiTestCaseMixin, CallArgsMixin
 
 
 def assert_workout_data_with_gpx(data: Dict) -> None:

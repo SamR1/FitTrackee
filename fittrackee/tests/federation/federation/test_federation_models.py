@@ -85,10 +85,6 @@ class TestActivityPubLocalPersonActorModel:
             == f'{ap_url}/federation/user/{actor_1.preferred_username}/inbox'
         )
         assert (
-            serialized_actor['inbox']
-            == f'{ap_url}/federation/user/{actor_1.preferred_username}/inbox'
-        )
-        assert (
             serialized_actor['outbox']
             == f'{ap_url}/federation/user/{actor_1.preferred_username}/outbox'
         )
@@ -148,7 +144,6 @@ class TestActivityPubRemotePersonActorModel:
             == remote_actor.preferred_username
         )
         assert serialized_actor['name'] == remote_actor.user.username
-        assert serialized_actor['inbox'] == f'{user_url}/inbox'
         assert serialized_actor['inbox'] == f'{user_url}/inbox'
         assert serialized_actor['outbox'] == f'{user_url}/outbox'
         assert serialized_actor['followers'] == f'{user_url}/followers'
