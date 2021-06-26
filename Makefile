@@ -145,9 +145,11 @@ serve-client:
 	cd fittrackee_client && $(NPM) start
 
 serve-python:
+	echo 'Running on http://$(HOST):$(PORT)'
 	$(FLASK) run --with-threads -h $(HOST) -p $(PORT)
 
 serve-python-dev:
+	echo 'Running on https://$(HOST):$(PORT)'
 	$(FLASK) run --with-threads -h $(HOST) -p $(PORT) --cert=adhoc
 
 test-e2e: init-db
