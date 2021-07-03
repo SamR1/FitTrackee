@@ -1,5 +1,17 @@
 # Change log
 
+## Version 0.4.8 (2021/07/03)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#79](https://github.com/SamR1/Fittrackee/issues/79) - Fails to start after make rebuild
+* [8fcbbf0](https://github.com/SamR1/FitTrackee/commit/8fcbbf010c186b6cb8c192748bd6ecb97700f980) - fix user agent used to get map tiles 
+
+In this release 1 issue was closed.
+
+
 ## Version 0.4.7 (2021/04/07)
 
 ### Issues Closed
