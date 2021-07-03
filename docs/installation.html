@@ -3,7 +3,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Installation &#8212; FitTrackee 0.4.7
  documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -153,7 +154,7 @@
   <div class="row">
     <div class="body col-md-12 content" role="main">
       
-  <div class="section" id="installation">
+  <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <p>This application is written in Python (API) and Javascript (client):</p>
 <ul class="simple">
@@ -179,7 +180,7 @@
 </li>
 </ul>
 <p>Sports and weather icons are made by <a class="reference external" href="https://www.freepik.com/">Freepik</a> from <a class="reference external" href="https://www.flaticon.com/">www.flaticon.com</a>.</p>
-<div class="section" id="prerequisites">
+<section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>PostgreSQL database (10+)</p></li>
@@ -200,8 +201,8 @@ on Debian and Arch).</div>
 necessary.</div>
 </div>
 </div>
-</div>
-<div class="section" id="environment-variables">
+</section>
+<section id="environment-variables">
 <h2>Environment variables<a class="headerlink" href="#environment-variables" title="Permalink to this headline">¶</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -422,7 +423,7 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 <dd><p><strong>FitTrackee</strong> API URL, only needed in dev environment.</p>
 </dd></dl>
 
-<div class="section" id="deprecated-variables">
+<section id="deprecated-variables">
 <h3>Deprecated variables<a class="headerlink" href="#deprecated-variables" title="Permalink to this headline">¶</a></h3>
 <dl class="std envvar">
 <dt id="envvar-REACT_APP_GPX_LIMIT_IMPORT">
@@ -496,8 +497,8 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 <div class="line">Related environment variables are needed to initialize database when upgrading from version prior 0.3.0.</div>
 </div>
 </div>
-</div>
-<div class="section" id="emails">
+</section>
+<section id="emails">
 <h3>Emails<a class="headerlink" href="#emails" title="Permalink to this headline">¶</a></h3>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.3.0.</span></p>
@@ -508,8 +509,8 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 <li><p>with SSL: <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:465/?ssl=True</span></code></p></li>
 <li><p>with STARTTLS: <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:587/?tls=True</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="map-tile-server">
+</section>
+<section id="map-tile-server">
 <h3>Map tile server<a class="headerlink" href="#map-tile-server" title="Permalink to this headline">¶</a></h3>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.4.0.</span></p>
@@ -527,9 +528,9 @@ The tile server can be changed by updating <code class="docutils literal notrans
 <div class="line">Check the terms of service of tile provider for map attribution</div>
 </div>
 </div>
-</div>
-</div>
-<div class="section" id="from-pypi">
+</section>
+</section>
+<section id="from-pypi">
 <h2>From PyPI<a class="headerlink" href="#from-pypi" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -543,7 +544,7 @@ The tile server can be changed by updating <code class="docutils literal notrans
 <div class="line">Note that FitTrackee is under heavy development, some features may be unstable.</div>
 </div>
 </div>
-<div class="section" id="id1">
+<section id="id1">
 <h3>Installation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Create and activate a virtualenv</p></li>
@@ -599,8 +600,8 @@ $ <span class="nb">source</span> .env
 <div class="line">To start application and workers with <strong>systemd</strong> service, see <a class="reference external" href="installation.html#deployment">Deployment</a></div>
 </div>
 </div>
-</div>
-<div class="section" id="upgrade">
+</section>
+<section id="upgrade">
 <h3>Upgrade<a class="headerlink" href="#upgrade" title="Permalink to this headline">¶</a></h3>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -633,9 +634,9 @@ $ <span class="nb">source</span> .env
 <ul class="simple">
 <li><p>Restart the application and task queue workers.</p></li>
 </ul>
-</div>
-</div>
-<div class="section" id="from-sources">
+</section>
+</section>
+<section id="from-sources">
 <h2>From sources<a class="headerlink" href="#from-sources" title="Permalink to this headline">¶</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -653,9 +654,9 @@ $ poetry config virtualenvs.in-project <span class="nb">true</span>
 </div>
 <p>For other OS, see <a class="reference external" href="https://python-poetry.org/docs/#installation">Poetry Documentation</a></p>
 </div>
-<div class="section" id="id2">
+<section id="id2">
 <h3>Installation<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="dev-environment">
+<section id="dev-environment">
 <h4>Dev environment<a class="headerlink" href="#dev-environment" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><p>Clone this repo:</p></li>
@@ -688,8 +689,8 @@ $ make install-db
 </div>
 <p>Open <a class="reference external" href="http://localhost:3000">http://localhost:3000</a> and log in (the email is <code class="docutils literal notranslate"><span class="pre">admin&#64;example.com</span></code>
 and the password <code class="docutils literal notranslate"><span class="pre">mpwoadmin</span></code>) or register</p>
-</div>
-<div class="section" id="production-environment">
+</section>
+<section id="production-environment">
 <h4>Production environment<a class="headerlink" href="#production-environment" title="Permalink to this headline">¶</a></h4>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -730,9 +731,9 @@ database credentials</strong>):</p></li>
 <p>Open <a class="reference external" href="http://localhost:5000">http://localhost:5000</a>, log in as admin (the email is
 <code class="docutils literal notranslate"><span class="pre">admin&#64;example.com</span></code> and the password <code class="docutils literal notranslate"><span class="pre">mpwoadmin</span></code>) and change the
 password</p>
-</div>
-</div>
-<div class="section" id="id3">
+</section>
+</section>
+<section id="id3">
 <h3>Upgrade<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -742,7 +743,7 @@ password</p>
 <div class="line">- upload directory (see <a class="reference external" href="installation.html#environment-variables">Environment variables</a>)</div>
 </div>
 </div>
-<div class="section" id="id4">
+<section id="id4">
 <h4>Dev environment<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><p>Stop the application and pull the repository:</p></li>
@@ -770,8 +771,8 @@ $ make upgrade-db
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make run-workers
 </pre></div>
 </div>
-</div>
-<div class="section" id="prod-environment">
+</section>
+<section id="prod-environment">
 <h4>Prod environment<a class="headerlink" href="#prod-environment" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><p>Stop the application and pull the repository:</p></li>
@@ -793,10 +794,10 @@ $ make upgrade-db
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make run
 </pre></div>
 </div>
-</div>
-</div>
-</div>
-<div class="section" id="deployment">
+</section>
+</section>
+</section>
+<section id="deployment">
 <h2>Deployment<a class="headerlink" href="#deployment" title="Permalink to this headline">¶</a></h2>
 <p>There are several ways to start <strong>FitTrackee</strong> web application and task queue
 library.
@@ -910,8 +911,8 @@ server {
 <p class="admonition-title">Note</p>
 <p>If needed, update configuration to handle larger files (see <a class="reference external" href="https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size">client_max_body_size</a>).</p>
 </div>
-</div>
-<div class="section" id="docker">
+</section>
+<section id="docker">
 <h2>Docker<a class="headerlink" href="#docker" title="Permalink to this headline">¶</a></h2>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.4.4.</span></p>
@@ -946,8 +947,8 @@ $ make docker-build docker-run docker-init
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make docker-shell
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
     </div>
@@ -962,7 +963,7 @@ $ make docker-build docker-run docker-init
     </p>
     <p>
         &copy; Copyright 2018 - 2021, SamR1.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3.<br/>
     </p>
   </div>
 </footer>
