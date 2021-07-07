@@ -15,6 +15,7 @@ from fittrackee.users.decorators import authenticate
 from fittrackee.users.models import User
 
 from .decorators import federation_required
+from .inbox import inbox
 from .models import Actor, Domain
 
 ap_federation_blueprint = Blueprint('ap_federation', __name__)
@@ -111,3 +112,13 @@ def remote_actor(
         response=actor.serialize(),
         content_type='application/jrd+json; charset=utf-8',
     )
+
+
+@ap_federation_blueprint.route(
+    '/user/<string:preferred_username>/inbox', methods=['POST']
+)
+@federation_required
+def user_inbox(
+    app_domain: Domain, preferred_username: str
+) -> Union[Dict, HttpResponse]:
+    return inbox(request, app_domain, preferred_username)

@@ -33,7 +33,7 @@ class TestUserInbox(ApiTestCaseMixin):
         host = random_domain()
         date_str = get_date_string()
         client = app_with_federation.test_client()
-        inbox_path = f'/api/users/{actor_1.preferred_username}/inbox'
+        inbox_path = f'/federation/user/{actor_1.preferred_username}/inbox'
         follow_activity: Dict = {
             '@context': AP_CTX,
             'id': random_string(),
@@ -76,7 +76,7 @@ class TestUserInbox(ApiTestCaseMixin):
         client = app_with_federation.test_client()
 
         response = client.post(
-            f'/api/users/{random_string()}/inbox',
+            f'/federation/user/{random_string()}/inbox',
             content_type='application/json',
             data=json.dumps({}),
         )
@@ -111,7 +111,7 @@ class TestUserInbox(ApiTestCaseMixin):
         client = app_with_federation.test_client()
 
         response = client.post(
-            f'/api/users/{actor_1.preferred_username}/inbox',
+            f'/federation/user/{actor_1.preferred_username}/inbox',
             content_type='application/json',
             data=json.dumps(input_activity),
         )
@@ -134,7 +134,7 @@ class TestUserInbox(ApiTestCaseMixin):
         }
 
         response = client.post(
-            f'/api/users/{actor_1.preferred_username}/inbox',
+            f'/federation/user/{actor_1.preferred_username}/inbox',
             content_type='application/json',
             data=json.dumps(follow_activity),
         )
@@ -157,7 +157,7 @@ class TestUserInbox(ApiTestCaseMixin):
         }
 
         response = client.post(
-            f'/api/users/{actor_1.preferred_username}/inbox',
+            f'/federation/user/{actor_1.preferred_username}/inbox',
             content_type='application/json',
             headers={
                 'Host': random_string(),

@@ -74,8 +74,8 @@ class FollowRequest(BaseModel):
             '@context': AP_CTX,
             'id': generate_activity_id(),
             'type': ActivityType.FOLLOW.value,
-            'actor': self.from_user.get_user_url(),
-            'object': f'https://{self.to_user.actor.activitypub_id}',
+            'actor': self.from_user.actor.activitypub_id,
+            'object': self.to_user.actor.activitypub_id,
         }
 
 

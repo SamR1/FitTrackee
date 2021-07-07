@@ -15,13 +15,18 @@ class TestSendToUsersInbox:
     def test_it_raises_error_if_sender_does_not_exist(
         self,
         app_with_federation: Flask,
-        follow_request_from_user_1_to_user_2: FollowRequest,
+        follow_request_from_user_1_to_user_2_with_federation: FollowRequest,
         remote_actor: Actor,
     ) -> None:
         with pytest.raises(SenderNotFoundException):
             send_to_users_inbox(
                 sender_id=0,
-                activity=follow_request_from_user_1_to_user_2.get_activity(),
+                activity=(
+                    # fmt: off
+                    follow_request_from_user_1_to_user_2_with_federation.
+                    get_activity()
+                    # fmt: on
+                ),
                 recipients=[remote_actor.inbox_url],
             )
 

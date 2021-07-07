@@ -36,7 +36,7 @@ class TestFollowRequestModelWithFederation:
         expected_object_subset = {
             '@context': AP_CTX,
             'type': 'Follow',
-            'actor': actor_1.user.get_user_url(),
-            'object': f'https://{actor_2.activitypub_id}',
+            'actor': actor_1.activitypub_id,
+            'object': actor_2.activitypub_id,
         }
         assert {**activity_object, **expected_object_subset} == activity_object
