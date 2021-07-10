@@ -78,7 +78,7 @@
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#">Administrator</a><ul>
-<li><a class="reference internal" href="#json-parse-unexpected-character-at-line-1-column-1-of-the-json-data"><cite>JSON.parse: unexpected character at line 1 column 1 of the JSON data</cite></a></li>
+<li><a class="reference internal" href="#fittrackee-fails-to-start"><cite>FitTrackee fails to start</cite></a></li>
 </ul>
 </li>
 </ul>
@@ -130,10 +130,15 @@
       
   <section id="administrator">
 <h1>Administrator<a class="headerlink" href="#administrator" title="Permalink to this headline">¶</a></h1>
-<section id="json-parse-unexpected-character-at-line-1-column-1-of-the-json-data">
-<h2><cite>JSON.parse: unexpected character at line 1 column 1 of the JSON data</cite><a class="headerlink" href="#json-parse-unexpected-character-at-line-1-column-1-of-the-json-data" title="Permalink to this headline">¶</a></h2>
-<p>On the <strong>Network Tab</strong>, if the requests are made to <cite>http://localhost:3000/undefined/api</cite>, that means the environnement variable <strong>REACT_APP_API_URL</strong> is not initialized.</p>
-<p>Check if <strong>Makefile.custom.config</strong> file exists and <strong>REACT_APP_API_URL</strong> is correctly initialized (see <a class="reference external" href="https://github.com/SamR1/FitTrackee/blob/master/Makefile.custom.config.example">example</a>), and rebuild the client.</p>
+<section id="fittrackee-fails-to-start">
+<h2><cite>FitTrackee fails to start</cite><a class="headerlink" href="#fittrackee-fails-to-start" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Check the database URL in <a class="reference external" href="../installation.html#envvar-DATABASE_URL">Environment variables</a> if the following error is displayed in <strong>gunicorn</strong> logs:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sqlalchemy</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">NoSuchModuleError</span><span class="p">:</span> <span class="n">Can</span><span class="s1">&#39;t load plugin: sqlalchemy.dialects:postgres</span>
+</pre></div>
+</div>
+<p>It must start with <cite>postgresql://</cite> (engine URLs starting with <cite>postgres://</cite> are no longer supported).</p>
 </section>
 </section>
 

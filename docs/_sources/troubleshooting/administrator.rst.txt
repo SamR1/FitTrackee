@@ -2,9 +2,13 @@ Administrator
 #############
 
 
-`JSON.parse: unexpected character at line 1 column 1 of the JSON data`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+`FitTrackee fails to start`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-On the **Network Tab**, if the requests are made to `http://localhost:3000/undefined/api`, that means the environnement variable **REACT_APP_API_URL** is not initialized.
+- Check the database URL in `Environment variables <../installation.html#envvar-DATABASE_URL>`__ if the following error is displayed in **gunicorn** logs:
 
-Check if **Makefile.custom.config** file exists and **REACT_APP_API_URL** is correctly initialized (see `example <https://github.com/SamR1/FitTrackee/blob/master/Makefile.custom.config.example>`__), and rebuild the client.
+.. code::
+
+   sqlalchemy.exc.NoSuchModuleError: Can't load plugin: sqlalchemy.dialects:postgres
+
+It must start with `postgresql://` (engine URLs starting with `postgres://` are no longer supported).

@@ -190,7 +190,7 @@
 <li><p>API key from <a class="reference external" href="https://darksky.net/dev">Dark Sky</a> [not mandatory]</p></li>
 <li><p>SMTP provider</p></li>
 <li><p><a class="reference external" href="https://yarnpkg.com">Yarn</a> (for development only)</p></li>
-<li><p>Docker (for development only, to start <a class="reference external" href="https://github.com/mailhog/MailHog">MailHog</a> or evaluation purposes)</p></li>
+<li><p>Docker (for development only, to start <a class="reference external" href="https://github.com/mailhog/MailHog">MailHog</a> or for evaluation purposes)</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -666,7 +666,7 @@ $ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Create <strong>Makefile.custom.config</strong> from example and update it
+<li><p>Create <strong>.env</strong> from example and update it
 (see <a class="reference external" href="installation.html#environment-variables">Environment variables</a>).</p></li>
 <li><p>Install Python virtualenv, React and all related packages and
 initialize the database:</p></li>
@@ -699,16 +699,16 @@ and the password <code class="docutils literal notranslate"><span class="pre">mp
 </div>
 </div>
 <ul class="simple">
-<li><p>Download the last release (for now, it is the release v0.4.0):</p></li>
+<li><p>Download the last release (for now, it is the release v0.4.8):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.4.0.tar.gz
-$ tar -xzf v0.4.0.tar.gz
-$ mv FitTrackee-0.4.0 FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.4.8.tar.gz
+$ tar -xzf v0.4.8.tar.gz
+$ mv FitTrackee-0.4.8 FitTrackee
 $ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Create <strong>Makefile.custom.config</strong> from example and update it
+<li><p>Create <strong>.env</strong> from example and update it
 (see <a class="reference external" href="installation.html#environment-variables">Environment variables</a>).</p></li>
 <li><p>Install Python virtualenv and all related packages:</p></li>
 </ul>
@@ -781,7 +781,7 @@ $ make upgrade-db
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Update <strong>Makefile.custom.config</strong> if needed</p></li>
+<li><p>Update <strong>.env</strong> if needed</p></li>
 <li><p>Upgrade packages and database:</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make install

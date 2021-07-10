@@ -26,7 +26,7 @@ Prerequisites
 -  API key from `Dark Sky <https://darksky.net/dev>`__ [not mandatory]
 -  SMTP provider
 -  `Yarn <https://yarnpkg.com>`__ (for development only)
--  Docker (for development only, to start `MailHog <https://github.com/mailhog/MailHog>`__ or evaluation purposes)
+-  Docker (for development only, to start `MailHog <https://github.com/mailhog/MailHog>`__ or for evaluation purposes)
 
 .. note::
     | The following steps describe an installation on Linux systems (tested
@@ -396,7 +396,7 @@ Dev environment
    $ git clone https://github.com/SamR1/FitTrackee.git
    $ cd FitTrackee
 
--  Create **Makefile.custom.config** from example and update it
+-  Create **.env** from example and update it
    (see `Environment variables <installation.html#environment-variables>`__).
 
 -  Install Python virtualenv, React and all related packages and
@@ -429,16 +429,16 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.4.0):
+-  Download the last release (for now, it is the release v0.4.8):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.4.0.tar.gz
-   $ tar -xzf v0.4.0.tar.gz
-   $ mv FitTrackee-0.4.0 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.4.8.tar.gz
+   $ tar -xzf v0.4.8.tar.gz
+   $ mv FitTrackee-0.4.8 FitTrackee
    $ cd FitTrackee
 
--  Create **Makefile.custom.config** from example and update it
+-  Create **.env** from example and update it
    (see `Environment variables <installation.html#environment-variables>`__).
 
 -  Install Python virtualenv and all related packages:
@@ -512,7 +512,7 @@ Prod environment
 
    $ git pull
 
-- Update **Makefile.custom.config** if needed
+- Update **.env** if needed
 
 - Upgrade packages and database:
 
