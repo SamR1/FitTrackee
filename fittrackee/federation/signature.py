@@ -139,7 +139,14 @@ class SignatureVerification:
         except Exception:
             self.raise_error('invalid HTTP digest')
 
+    def header_actor_is_payload_actor(self) -> bool:
+        activity = json.loads(self.request.data.decode())
+        return self.key_id == activity.get('actor')
+
     def verify(self) -> None:
+        if not self.header_actor_is_payload_actor():
+            self.raise_error('invalid actor')
+
         public_key = self.get_actor_public_key()
         if not public_key:
             self.raise_error('invalid public key')

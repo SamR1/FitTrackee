@@ -104,6 +104,18 @@ class SignatureVerificationTestCase:
         request_mock.data = json.dumps(data if data else {}).encode()
         return request_mock
 
+    @staticmethod
+    def get_activity(actor: Optional[Actor] = None) -> Dict:
+        return {
+            '@context': AP_CTX,
+            'id': random_string(),
+            'type': random_string(),
+            'actor': (
+                random_string() if actor is None else actor.activitypub_id
+            ),
+            'object': random_string(),
+        }
+
 
 class TestSignatureVerificationInstantiation(SignatureVerificationTestCase):
     def test_it_raises_error_if_headers_are_empty(self) -> None:
@@ -332,15 +344,16 @@ class TestSignatureDigestVerification(SignatureVerificationTestCase):
         app_with_federation: Flask,
         actor_1: Actor,
     ) -> None:
+        activity = self.get_activity(actor=actor_1)
         sig_verification = SignatureVerification.get_signature(
             self.get_request_mock(
                 self.generate_headers(
                     host=app_with_federation.config['AP_DOMAIN'],
                     date_str=datetime.utcnow().strftime(VALID_DATE_FORMAT),
                     algorithm=input_algorithm,
-                    digest=get_digest(TEST_ACTIVITY, input_algorithm),
+                    digest=get_digest(activity, input_algorithm),
                 ),
-                data=TEST_ACTIVITY,
+                data=activity,
             )
         )
 
@@ -348,8 +361,8 @@ class TestSignatureDigestVerification(SignatureVerificationTestCase):
 
 
 class TestSignatureVerify(SignatureVerificationTestCase):
-    def test_verify_raises_error_if_header_date_is_invalid(
-        self, app_with_federation: Flask, actor_1: Actor
+    def test_it_raises_error_if_header_actor_is_different_from_activity_actor(
+        self, app_with_federation: Flask, actor_1: Actor, actor_2: Actor
     ) -> None:
         actor_1.generate_keys()
         sig_verification = SignatureVerification.get_signature(
@@ -357,9 +370,36 @@ class TestSignatureVerify(SignatureVerificationTestCase):
                 self.generate_valid_headers(
                     host=app_with_federation.config['AP_DOMAIN'],
                     actor=actor_1,
-                    date_str='',
-                    activity=TEST_ACTIVITY,
+                    date_str=datetime.utcnow().strftime(VALID_DATE_FORMAT),
+                    activity=self.get_activity(actor=actor_2),
                 )
+            )
+        )
+        with patch.object(requests, 'get') as requests_mock:
+            requests_mock.return_value = generate_response(
+                status_code=200,
+                content=actor_1.serialize(),
+            )
+
+            with pytest.raises(
+                InvalidSignatureException, match='invalid actor'
+            ):
+                sig_verification.verify()
+
+    def test_verify_raises_error_if_header_date_is_invalid(
+        self, app_with_federation: Flask, actor_1: Actor
+    ) -> None:
+        actor_1.generate_keys()
+        activity = self.get_activity(actor=actor_1)
+        sig_verification = SignatureVerification.get_signature(
+            self.get_request_mock(
+                self.generate_valid_headers(
+                    host=app_with_federation.config['AP_DOMAIN'],
+                    actor=actor_1,
+                    date_str='',
+                    activity=self.get_activity(actor=actor_1),
+                ),
+                data=activity,
             )
         )
         with patch.object(requests, 'get') as requests_mock:
@@ -377,13 +417,15 @@ class TestSignatureVerify(SignatureVerificationTestCase):
         self, app_with_federation: Flask, actor_1: Actor
     ) -> None:
         actor_1.generate_keys()
+        activity = self.get_activity(actor=actor_1)
         sig_verification = SignatureVerification.get_signature(
             self.get_request_mock(
                 self.generate_valid_headers(
                     host=app_with_federation.config['AP_DOMAIN'],
                     actor=actor_1,
-                    activity=TEST_ACTIVITY,
-                )
+                    activity=activity,
+                ),
+                data=activity,
             )
         )
         with patch.object(requests, 'get') as requests_mock:
@@ -399,15 +441,17 @@ class TestSignatureVerify(SignatureVerificationTestCase):
     ) -> None:
         actor_1.generate_keys()
         algorithm = random_string()
+        activity = self.get_activity(actor=actor_1)
         sig_verification = SignatureVerification.get_signature(
             self.get_request_mock(
                 self.generate_headers(
                     host=app_with_federation.config['AP_DOMAIN'],
+                    key_id=actor_1.activitypub_id,
                     date_str=datetime.utcnow().strftime(VALID_DATE_FORMAT),
                     algorithm=algorithm,
-                    digest=get_digest(TEST_ACTIVITY),
+                    digest=get_digest(activity),
                 ),
-                data=TEST_ACTIVITY,
+                data=activity,
             )
         )
         with patch.object(requests, 'get') as requests_mock:
@@ -429,11 +473,12 @@ class TestSignatureVerify(SignatureVerificationTestCase):
             self.get_request_mock(
                 self.generate_headers(
                     host=app_with_federation.config['AP_DOMAIN'],
+                    key_id=actor_1.activitypub_id,
                     date_str=datetime.utcnow().strftime(VALID_DATE_FORMAT),
                     algorithm='rsa-sha256',
                     digest=random_string(),
                 ),
-                data=TEST_ACTIVITY,
+                data=self.get_activity(actor=actor_1),
             )
         )
         with patch.object(requests, 'get') as requests_mock:
@@ -451,14 +496,15 @@ class TestSignatureVerify(SignatureVerificationTestCase):
         self, app_with_federation: Flask, actor_1: Actor
     ) -> None:
         actor_1.generate_keys()
+        activity = self.get_activity(actor=actor_1)
         sig_verification = SignatureVerification.get_signature(
             self.get_request_mock(
                 self.generate_valid_headers(
                     host=app_with_federation.config['AP_DOMAIN'],
                     actor=actor_1,
-                    activity=TEST_ACTIVITY,
+                    activity=activity,
                 ),
-                data=TEST_ACTIVITY,
+                data=activity,
             )
         )
         # update actor keys
@@ -478,14 +524,15 @@ class TestSignatureVerify(SignatureVerificationTestCase):
         self, app_with_federation: Flask, actor_1: Actor
     ) -> None:
         actor_1.generate_keys()
+        activity = self.get_activity(actor=actor_1)
         sig_verification = SignatureVerification.get_signature(
             self.get_request_mock(
                 self.generate_valid_headers(
                     host=app_with_federation.config['AP_DOMAIN'],
                     actor=actor_1,
-                    activity=TEST_ACTIVITY,
+                    activity=activity,
                 ),
-                data=TEST_ACTIVITY,
+                data=activity,
             )
         )
         with patch.object(requests, 'get') as requests_mock:
