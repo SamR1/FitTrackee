@@ -103,6 +103,7 @@ class Actor(BaseModel):
             self.shared_inbox_url = get_ap_url(
                 preferred_username, 'shared_inbox'
             )
+            self.generate_keys()
 
     def generate_keys(self) -> None:
         self.public_key, self.private_key = generate_keys()

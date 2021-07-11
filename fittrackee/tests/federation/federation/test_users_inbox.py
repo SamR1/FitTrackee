@@ -29,7 +29,6 @@ class TestUserInbox(ApiTestCaseMixin):
     def post_to_user_inbox(
         app_with_federation: Flask, actor_1: Actor, actor_2: Actor
     ) -> Tuple[Dict, TestResponse]:
-        actor_2.generate_keys()
         host = random_domain()
         date_str = get_date_string()
         client = app_with_federation.test_client()

@@ -364,7 +364,6 @@ class TestSignatureVerify(SignatureVerificationTestCase):
     def test_it_raises_error_if_header_actor_is_different_from_activity_actor(
         self, app_with_federation: Flask, actor_1: Actor, actor_2: Actor
     ) -> None:
-        actor_1.generate_keys()
         sig_verification = SignatureVerification.get_signature(
             self.get_request_mock(
                 self.generate_valid_headers(
@@ -389,7 +388,6 @@ class TestSignatureVerify(SignatureVerificationTestCase):
     def test_verify_raises_error_if_header_date_is_invalid(
         self, app_with_federation: Flask, actor_1: Actor
     ) -> None:
-        actor_1.generate_keys()
         activity = self.get_activity(actor=actor_1)
         sig_verification = SignatureVerification.get_signature(
             self.get_request_mock(
@@ -416,7 +414,6 @@ class TestSignatureVerify(SignatureVerificationTestCase):
     def test_verify_raises_error_if_public_key_is_invalid(
         self, app_with_federation: Flask, actor_1: Actor
     ) -> None:
-        actor_1.generate_keys()
         activity = self.get_activity(actor=actor_1)
         sig_verification = SignatureVerification.get_signature(
             self.get_request_mock(
@@ -439,7 +436,6 @@ class TestSignatureVerify(SignatureVerificationTestCase):
     def test_verify_raises_error_if_algorithm_is_not_supported(
         self, app_with_federation: Flask, actor_1: Actor
     ) -> None:
-        actor_1.generate_keys()
         algorithm = random_string()
         activity = self.get_activity(actor=actor_1)
         sig_verification = SignatureVerification.get_signature(
@@ -468,7 +464,6 @@ class TestSignatureVerify(SignatureVerificationTestCase):
     def test_verify_raises_error_if_http_digest_is_invalid(
         self, app_with_federation: Flask, actor_1: Actor
     ) -> None:
-        actor_1.generate_keys()
         sig_verification = SignatureVerification.get_signature(
             self.get_request_mock(
                 self.generate_headers(
@@ -495,7 +490,6 @@ class TestSignatureVerify(SignatureVerificationTestCase):
     def test_verify_raises_error_if_signature_is_invalid_due_to_keys_update(
         self, app_with_federation: Flask, actor_1: Actor
     ) -> None:
-        actor_1.generate_keys()
         activity = self.get_activity(actor=actor_1)
         sig_verification = SignatureVerification.get_signature(
             self.get_request_mock(
@@ -523,7 +517,6 @@ class TestSignatureVerify(SignatureVerificationTestCase):
     def test_verify_does_not_raise_error_if_signature_is_valid(
         self, app_with_federation: Flask, actor_1: Actor
     ) -> None:
-        actor_1.generate_keys()
         activity = self.get_activity(actor=actor_1)
         sig_verification = SignatureVerification.get_signature(
             self.get_request_mock(

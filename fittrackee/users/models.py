@@ -258,7 +258,6 @@ class User(BaseModel):
         db.session.add(actor)
         db.session.flush()
         self.actor_id = actor.id
-        actor.generate_keys()
         db.session.commit()
 
     def serialize(self) -> Dict:
