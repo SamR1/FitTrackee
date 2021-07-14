@@ -265,7 +265,14 @@ def generate_map(map_filepath: str, map_data: List) -> None:
     """
     Generate and save map image from map data
     """
-    m = StaticMap(400, 225, 10)
+    m = StaticMap(
+        400,
+        225,
+        10,
+        url_template=current_app.config['TILE_SERVER']['URL'].replace(
+            '{s}.', ''
+        ),
+    )
     line = Line(map_data, '#3388FF', 4)
     m.add_line(line)
     image = m.render()

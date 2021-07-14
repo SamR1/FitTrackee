@@ -1,4 +1,3 @@
-from typing import Any
 from unittest.mock import Mock, patch
 
 from flask import Flask
@@ -6,6 +5,7 @@ from flask import Flask
 from fittrackee import email_service
 from fittrackee.emails.email import EmailMessage
 
+from ..api_test_case import CallArgsMixin
 from .template_results.password_reset_request import expected_en_text_body
 
 
@@ -32,7 +32,7 @@ class TestEmailMessage:
         assert 'Hello !' in message_string
 
 
-class TestEmailSending:
+class TestEmailSending(CallArgsMixin):
 
     email_data = {
         'expiration_delay': '3 seconds',
@@ -41,14 +41,6 @@ class TestEmailSending:
         'operating_system': 'Linux',
         'browser_name': 'Firefox',
     }
-
-    @staticmethod
-    def get_args(call_args: Any) -> Any:
-        if len(call_args) == 2:
-            args, _ = call_args
-        else:
-            _, args, _ = call_args
-        return args
 
     def assert_smtp(self, smtp: Mock) -> None:
         assert smtp.sendmail.call_count == 1

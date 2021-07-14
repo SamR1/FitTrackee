@@ -4,6 +4,7 @@ import re
 from datetime import datetime
 from io import BytesIO
 from typing import Dict
+from unittest.mock import Mock
 
 import pytest
 from flask import Flask
@@ -12,7 +13,7 @@ from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 from fittrackee.workouts.utils_id import decode_short_id
 
-from ..api_test_case import ApiTestCaseMixin
+from ..api_test_case import ApiTestCaseMixin, CallArgsMixin
 
 
 def assert_workout_data_with_gpx(data: Dict) -> None:
@@ -205,7 +206,7 @@ def assert_workout_data_wo_gpx(data: Dict) -> None:
     assert records[3]['value'] == 10.0
 
 
-class TestPostWorkoutWithGpx(ApiTestCaseMixin):
+class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
     def test_it_adds_an_workout_with_gpx_file(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
@@ -329,6 +330,35 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin):
         assert 'created' in data['status']
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0]['notes'] == input_notes
+
+    def test_it_calls_configured_tile_server_for_static_map(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        static_map_get_mock: Mock,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+        client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        call_args = self.get_args(static_map_get_mock.call_args)
+        assert (
+            app.config['TILE_SERVER']['URL']
+            .replace('{s}.', '')
+            .replace('/{z}/{x}/{y}.png', '')
+            in call_args[0]
+        )
 
     def test_it_returns_500_if_gpx_file_has_not_tracks(
         self,
