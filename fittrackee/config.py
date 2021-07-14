@@ -71,6 +71,8 @@ class TestingConfig(BaseConfig):
     TOKEN_EXPIRATION_SECONDS = 3
     PASSWORD_TOKEN_EXPIRATION_SECONDS = 3
     UPLOAD_FOLDER = '/tmp/fitTrackee/uploads'
+    UI_URL = 'http://0.0.0.0:5000'
+    SENDER_EMAIL = 'fittrackee@example.com'
 
 
 class ProductionConfig(BaseConfig):
