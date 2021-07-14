@@ -1,9 +1,26 @@
 import datetime
+from io import BytesIO
+from typing import Generator
+from unittest.mock import Mock, patch
 
 import pytest
+from PIL import Image
 
 from fittrackee import db
 from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
+from fittrackee.workouts.utils import StaticMap
+
+byte_io = BytesIO()
+Image.new('RGB', (256, 256)).save(byte_io, 'PNG')
+byte_image = byte_io.getvalue()
+
+
+@pytest.fixture(scope='session', autouse=True)
+def static_map_get_mock() -> Generator:
+    # to avoid unnecessary requests calls through staticmap
+    m = Mock(return_value=(200, byte_image))
+    with patch.object(StaticMap, 'get', m) as _fixture:
+        yield _fixture
 
 
 @pytest.fixture()
