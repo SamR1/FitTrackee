@@ -1,6 +1,8 @@
 import json
 from typing import Dict
+from uuid import uuid4
 
+import pytest
 from flask import Flask
 
 from fittrackee.users.models import User
@@ -81,9 +83,19 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         assert data['data']['workouts'][0]['title'] == 'Workout test'
         assert_workout_data_with_gpx(data, sport_2_running.id)
 
-    def test_it_adds_notes_for_an_workout_with_gpx(
+    @pytest.mark.parametrize(
+        'input_description,input_notes',
+        [
+            ('empty notes', ''),
+            ('short notes', 'test workout'),
+            ('notes with special characters', 'test \nworkout'),
+        ],
+    )
+    def test_it_adds_notes_to_a_workout_with_gpx(
         self,
         app: Flask,
+        input_description: str,
+        input_notes: str,
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
@@ -95,7 +107,7 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         response = client.patch(
             f'/api/workouts/{workout_short_id}',
             content_type='application/json',
-            data=json.dumps(dict(notes="test notes")),
+            data=json.dumps(dict(notes=input_notes)),
             headers=dict(Authorization=f'Bearer {token}'),
         )
 
@@ -103,8 +115,33 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
-        assert data['data']['workouts'][0]['title'] == 'just a workout'
-        assert data['data']['workouts'][0]['notes'] == 'test notes'
+        assert data['data']['workouts'][0]['notes'] == input_notes
+
+    def test_it_empties_workout_notes(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        gpx_file: str,
+    ) -> None:
+        token, workout_short_id = post_an_workout(
+            app, gpx_file, notes=uuid4().hex
+        )
+        client = app.test_client()
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            data=json.dumps(dict(notes='')),
+            headers=dict(Authorization=f'Bearer {token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['notes'] == ''
 
     def test_it_raises_403_when_editing_an_workout_from_different_user(
         self,
@@ -283,9 +320,19 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         assert records[3]['workout_date'] == 'Tue, 15 May 2018 15:05:00 GMT'
         assert records[3]['value'] == 8.0
 
-    def test_it_adds_notes_to_an_workout_wo_gpx(
+    @pytest.mark.parametrize(
+        'input_description,input_notes',
+        [
+            ('empty notes', ''),
+            ('short notes', 'test workout'),
+            ('notes with special characters', 'test \nworkout'),
+        ],
+    )
+    def test_it_adds_notes_to_a_workout_wo_gpx(
         self,
         app: Flask,
+        input_description: str,
+        input_notes: str,
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
@@ -296,7 +343,7 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         response = client.patch(
             f'/api/workouts/{workout_short_id}',
             content_type='application/json',
-            data=json.dumps(dict(notes='test notes')),
+            data=json.dumps(dict(notes=input_notes)),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -304,52 +351,31 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
-        assert 'creation_date' in data['data']['workouts'][0]
-        assert (
-            data['data']['workouts'][0]['workout_date']
-            == 'Mon, 01 Jan 2018 00:00:00 GMT'
-        )
-        assert data['data']['workouts'][0]['user'] == 'test'
-        assert data['data']['workouts'][0]['sport_id'] == sport_1_cycling.id
-        assert data['data']['workouts'][0]['duration'] == '1:00:00'
-        assert data['data']['workouts'][0]['title'] is None
-        assert data['data']['workouts'][0]['ascent'] is None
-        assert data['data']['workouts'][0]['ave_speed'] == 10.0
-        assert data['data']['workouts'][0]['descent'] is None
-        assert data['data']['workouts'][0]['distance'] == 10.0
-        assert data['data']['workouts'][0]['max_alt'] is None
-        assert data['data']['workouts'][0]['max_speed'] == 10.0
-        assert data['data']['workouts'][0]['min_alt'] is None
-        assert data['data']['workouts'][0]['moving'] == '1:00:00'
-        assert data['data']['workouts'][0]['pauses'] is None
-        assert data['data']['workouts'][0]['with_gpx'] is False
-        assert data['data']['workouts'][0]['map'] is None
-        assert data['data']['workouts'][0]['weather_start'] is None
-        assert data['data']['workouts'][0]['weather_end'] is None
-        assert data['data']['workouts'][0]['notes'] == 'test notes'
+        assert data['data']['workouts'][0]['notes'] == input_notes
 
-        records = data['data']['workouts'][0]['records']
-        assert len(records) == 4
-        assert records[0]['sport_id'] == sport_1_cycling.id
-        assert records[0]['workout_id'] == workout_short_id
-        assert records[0]['record_type'] == 'MS'
-        assert records[0]['workout_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
-        assert records[0]['value'] == 10.0
-        assert records[1]['sport_id'] == sport_1_cycling.id
-        assert records[1]['workout_id'] == workout_short_id
-        assert records[1]['record_type'] == 'LD'
-        assert records[1]['workout_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
-        assert records[1]['value'] == '1:00:00'
-        assert records[2]['sport_id'] == sport_1_cycling.id
-        assert records[2]['workout_id'] == workout_short_id
-        assert records[2]['record_type'] == 'FD'
-        assert records[2]['workout_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
-        assert records[2]['value'] == 10.0
-        assert records[3]['sport_id'] == sport_1_cycling.id
-        assert records[3]['workout_id'] == workout_short_id
-        assert records[3]['record_type'] == 'AS'
-        assert records[3]['workout_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
-        assert records[3]['value'] == 10.0
+    def test_it_empties_workout_notes(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_short_id = workout_cycling_user_1.short_id
+        workout_cycling_user_1.notes = uuid4().hex
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            data=json.dumps(dict(notes='')),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['notes'] == ''
 
     def test_returns_403_when_editing_an_workout_wo_gpx_from_different_user(
         self,

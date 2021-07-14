@@ -202,7 +202,7 @@ def edit_workout(
         workout.sport_id = workout_data.get('sport_id')
     if workout_data.get('title'):
         workout.title = workout_data.get('title')
-    if workout_data.get('notes'):
+    if workout_data.get('notes') is not None:
         workout.notes = workout_data.get('notes')
     if not workout.gpx:
         if workout_data.get('workout_date'):
