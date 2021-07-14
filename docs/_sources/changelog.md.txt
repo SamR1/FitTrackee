@@ -1,5 +1,20 @@
 # Change log
 
+## Version 0.4.9 (unreleased)
+
+#### New Features
+
+* [#81](https://github.com/SamR1/Fittrackee/issues/81) - display remaining characters in textarea
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#82](https://github.com/SamR1/Fittrackee/issues/82) - a user can not modify his birth day
+* [#80](https://github.com/SamR1/Fittrackee/issues/80) - can not save notes with control characters
+
+In this release 3 issue were closed.
+
 ## Version 0.4.8 (2021/07/03)
 
 ### Issues Closed
