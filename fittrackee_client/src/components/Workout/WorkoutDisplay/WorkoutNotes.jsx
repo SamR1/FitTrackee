@@ -9,7 +9,7 @@ export default function WorkoutNotes(props) {
           <div className="card-body">
             Notes
             <div className="workout-notes">
-              {notes ? notes : t('workouts:No notes')}
+              {notes && notes !== '' ? notes : t('workouts:No notes')}
             </div>
           </div>
         </div>
