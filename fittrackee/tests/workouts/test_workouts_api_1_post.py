@@ -5,6 +5,7 @@ from datetime import datetime
 from io import BytesIO
 from typing import Dict
 
+import pytest
 from flask import Flask
 
 from fittrackee.users.models import User
@@ -292,8 +293,22 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin):
         )
         assert_workout_data_with_gpx(data)
 
-    def test_it_adds_get_an_workout_with_gpx_notes(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    @pytest.mark.parametrize(
+        'input_description,input_notes',
+        [
+            ('empty notes', ''),
+            ('short notes', 'test workout'),
+            ('notes with special characters', 'test \nworkout'),
+        ],
+    )
+    def test_it_adds_a_workout_with_gpx_notes(
+        self,
+        input_description: str,
+        input_notes: str,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(app)
 
@@ -301,7 +316,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin):
             '/api/workouts',
             data=dict(
                 file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
-                data='{"sport_id": 1, "notes": "test workout"}',
+                data=f'{{"sport_id": 1, "notes": "{input_notes}"}}',
             ),
             headers=dict(
                 content_type='multipart/form-data',
@@ -313,8 +328,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin):
         assert response.status_code == 201
         assert 'created' in data['status']
         assert len(data['data']['workouts']) == 1
-        assert 'just a workout' == data['data']['workouts'][0]['title']
-        assert 'test workout' == data['data']['workouts'][0]['notes']
+        assert data['data']['workouts'][0]['notes'] == input_notes
 
     def test_it_returns_500_if_gpx_file_has_not_tracks(
         self,
