@@ -160,7 +160,8 @@ deployment method.
 
     .. versionadded:: 0.4.0
 
-    Tile server URL (with api key if needed), see `Map tile server <installation.html#map-tile-server>`__.
+    | Tile server URL (with api key if needed), see `Map tile server <installation.html#map-tile-server>`__.
+    | Since **0.4.9**, it's also used to generate static maps.
 
     :default: `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`
 

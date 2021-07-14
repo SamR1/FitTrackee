@@ -4,6 +4,7 @@
 
 #### New Features
 
+* [#83](https://github.com/SamR1/Fittrackee/issues/83) - use configured tile server to generate static maps
 * [#81](https://github.com/SamR1/Fittrackee/issues/81) - display remaining characters in textarea
 
 ### Issues Closed
@@ -13,7 +14,7 @@
 * [#82](https://github.com/SamR1/Fittrackee/issues/82) - a user can not modify his birth day
 * [#80](https://github.com/SamR1/Fittrackee/issues/80) - can not save notes with control characters
 
-In this release 3 issue were closed.
+In this release 4 issue were closed.
 
 ## Version 0.4.8 (2021/07/03)
 
