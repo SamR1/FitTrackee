@@ -362,6 +362,11 @@ label {
   padding: 0.1em;
 }
 
+.remaining-chars {
+  font-size: 0.8em;
+  font-style: italic;
+}
+
 .sport-img {
   max-width: 35px;
   max-height: 35px;
@@ -440,6 +445,10 @@ label {
   color: black;
 }
 
+.user-bio, .workout-notes {
+  white-space: pre-wrap;
+}
+
 .user-filters {
   font-size: 0.9em;
   margin-bottom: 10px;
@@ -516,7 +525,7 @@ label {
   line-height: 400px;
 }
 
-.workout-notes, .actvitiy-segments {
+.workout-notes, .actvity-segments {
   font-size: 0.9em;
   font-style: italic;
   margin-top: 10px;

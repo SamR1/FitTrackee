@@ -10,6 +10,7 @@ import { deleteUser, handleProfileFormSubmit } from '../../actions/user'
 import { history } from '../../index'
 import { languages } from '../NavBar/LanguageDropdown'
 import CustomModal from '../Common/CustomModal'
+import CustomTextArea from '../Common/CustomTextArea'
 
 class ProfileEdit extends React.Component {
   constructor(props, context) {
@@ -198,12 +199,11 @@ class ProfileEdit extends React.Component {
                           <div className="form-group">
                             <label>
                               {t('user:Bio')}:
-                              <textarea
+                              <CustomTextArea
+                                charLimit={200}
                                 name="bio"
-                                className="form-control input-lg"
-                                maxLength="200"
-                                value={formData.bio}
-                                onChange={e => this.handleFormChange(e)}
+                                defaultValue={formData.bio}
+                                onTextChange={e => this.handleFormChange(e)}
                               />
                             </label>
                           </div>

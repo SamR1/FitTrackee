@@ -79,7 +79,7 @@ function ProfileDetail({
                     </p>
                     <p>
                       <span className="user-label">{t('user:Bio')}</span>:{' '}
-                      {user.bio}
+                      <span className="user-bio">{user.bio}</span>
                     </p>
                     <p>
                       {/* eslint-disable-next-line max-len */}

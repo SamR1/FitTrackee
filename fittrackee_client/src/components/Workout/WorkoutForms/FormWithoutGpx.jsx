@@ -5,6 +5,7 @@ import { addWorkoutWithoutGpx, editWorkout } from '../../../actions/workouts'
 import { history } from '../../../index'
 import { getDateWithTZ } from '../../../utils'
 import { formatWorkoutDate, translateSports } from '../../../utils/workouts'
+import CustomTextArea from '../../Common/CustomTextArea'
 
 function FormWithoutGpx(props) {
   const { onAddOrEdit, sports, t, user, workout } = props
@@ -106,11 +107,10 @@ function FormWithoutGpx(props) {
       <div className="form-group">
         <label>
           {t('workouts:Notes')}:
-          <textarea
-            name="notes"
+          <CustomTextArea
+            charLimit={500}
             defaultValue={workout ? workout.notes : ''}
-            className="form-control input-lg"
-            maxLength="500"
+            name="notes"
           />
         </label>
       </div>

@@ -7,6 +7,7 @@ import { addWorkout, editWorkout } from '../../../actions/workouts'
 import { history } from '../../../index'
 import { getFileSize } from '../../../utils'
 import { translateSports } from '../../../utils/workouts'
+import CustomTextArea from '../../Common/CustomTextArea'
 
 function FormWithGpx(props) {
   const {
@@ -105,12 +106,11 @@ function FormWithGpx(props) {
       <div className="form-group">
         <label>
           {t('workouts:Notes')}:
-          <textarea
-            name="notes"
+          <CustomTextArea
+            charLimit={500}
             defaultValue={workout ? workout.notes : ''}
-            disabled={loading}
-            className="form-control input-lg"
-            maxLength="500"
+            loading={loading}
+            name="notes"
           />
         </label>
       </div>
