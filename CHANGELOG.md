@@ -1,10 +1,11 @@
 # Change log
 
-## Version 0.4.9 (unreleased)
+## Version 0.4.9 (2021/07/16)
 
 #### New Features
 
-* [#83](https://github.com/SamR1/Fittrackee/issues/83) - use configured tile server to generate static maps
+* [#83](https://github.com/SamR1/Fittrackee/issues/83) - allow using configured tile server to generate static maps  
+  **Note**: to keep using the default tile server, set environment variable `DEFAULT_STATICMAP` to `True`
 * [#81](https://github.com/SamR1/Fittrackee/issues/81) - display remaining characters in textarea
 
 ### Issues Closed
