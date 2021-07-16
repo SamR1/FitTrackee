@@ -84,14 +84,14 @@ deployment method.
     :default: 1
 
 
-.. envvar:: APP_LOG 🆕
+.. envvar:: APP_LOG
 
     .. versionadded:: 0.4.0
 
     Path to log file
 
 
-.. envvar:: UPLOAD_FOLDER 🆕
+.. envvar:: UPLOAD_FOLDER
 
     .. versionadded:: 0.4.0
 
@@ -112,7 +112,7 @@ deployment method.
         | Since `SQLAlchemy update (1.4+) <https://docs.sqlalchemy.org/en/14/changelog/changelog_14.html#change-3687655465c25a39b968b4f5f6e9170b>`__,
           engine URL should begin with `postgresql://`.
 
-.. envvar:: DATABASE_DISABLE_POOLING 🆕
+.. envvar:: DATABASE_DISABLE_POOLING
 
     .. versionadded:: 0.4.0
 
@@ -156,23 +156,32 @@ deployment method.
     Number of processes used by **Dramatiq**.
 
 
-.. envvar:: TILE_SERVER_URL 🆕
+.. envvar:: TILE_SERVER_URL
 
     .. versionadded:: 0.4.0
 
     | Tile server URL (with api key if needed), see `Map tile server <installation.html#map-tile-server>`__.
-    | Since **0.4.9**, it's also used to generate static maps.
+    | Since **0.4.9**, it's also used to generate static maps (to keep default server, see `DEFAULT_STATICMAP <installation.html#envvar-DEFAULT_STATICMAP>`__)
 
     :default: `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`
 
 
-.. envvar:: MAP_ATTRIBUTION 🆕
+.. envvar:: MAP_ATTRIBUTION
 
     .. versionadded:: 0.4.0
 
     Map attribution (if using another tile server), see `Map tile server <installation.html#map-tile-server>`__.
 
     :default: `&copy; <a href="http://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors`
+
+
+.. envvar:: DEFAULT_STATICMAP 🆕
+
+    .. versionadded:: 0.4.9
+
+    If `True`, it keeps using default tile server to generate static maps.
+
+    :default: False
 
 
 .. envvar:: WEATHER_API_KEY

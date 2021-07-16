@@ -274,7 +274,7 @@ deployment method.</p>
 
 <dl class="std envvar">
 <dt id="envvar-APP_LOG">
-<span id="envvar-APP_LOG 🆕"></span><code class="sig-name descname"><span class="pre">APP_LOG</span> <span class="pre">🆕</span></code><a class="headerlink" href="#envvar-APP_LOG" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">APP_LOG</span></code><a class="headerlink" href="#envvar-APP_LOG" title="Permalink to this definition">¶</a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.4.0.</span></p>
 </div>
@@ -283,7 +283,7 @@ deployment method.</p>
 
 <dl class="std envvar">
 <dt id="envvar-UPLOAD_FOLDER">
-<span id="envvar-UPLOAD_FOLDER 🆕"></span><code class="sig-name descname"><span class="pre">UPLOAD_FOLDER</span> <span class="pre">🆕</span></code><a class="headerlink" href="#envvar-UPLOAD_FOLDER" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">UPLOAD_FOLDER</span></code><a class="headerlink" href="#envvar-UPLOAD_FOLDER" title="Permalink to this definition">¶</a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.4.0.</span></p>
 </div>
@@ -320,7 +320,7 @@ engine URL should begin with <cite>postgresql://</cite>.</div>
 
 <dl class="std envvar">
 <dt id="envvar-DATABASE_DISABLE_POOLING">
-<span id="envvar-DATABASE_DISABLE_POOLING 🆕"></span><code class="sig-name descname"><span class="pre">DATABASE_DISABLE_POOLING</span> <span class="pre">🆕</span></code><a class="headerlink" href="#envvar-DATABASE_DISABLE_POOLING" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">DATABASE_DISABLE_POOLING</span></code><a class="headerlink" href="#envvar-DATABASE_DISABLE_POOLING" title="Permalink to this definition">¶</a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.4.0.</span></p>
 </div>
@@ -382,13 +382,13 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 
 <dl class="std envvar">
 <dt id="envvar-TILE_SERVER_URL">
-<span id="envvar-TILE_SERVER_URL 🆕"></span><code class="sig-name descname"><span class="pre">TILE_SERVER_URL</span> <span class="pre">🆕</span></code><a class="headerlink" href="#envvar-TILE_SERVER_URL" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">TILE_SERVER_URL</span></code><a class="headerlink" href="#envvar-TILE_SERVER_URL" title="Permalink to this definition">¶</a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.4.0.</span></p>
 </div>
 <div class="line-block">
 <div class="line">Tile server URL (with api key if needed), see <a class="reference external" href="installation.html#map-tile-server">Map tile server</a>.</div>
-<div class="line">Since <strong>0.4.9</strong>, it’s also used to generate static maps.</div>
+<div class="line">Since <strong>0.4.9</strong>, it’s also used to generate static maps (to keep default server, see <a class="reference external" href="installation.html#envvar-DEFAULT_STATICMAP">DEFAULT_STATICMAP</a>)</div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
@@ -399,7 +399,7 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 
 <dl class="std envvar">
 <dt id="envvar-MAP_ATTRIBUTION">
-<span id="envvar-MAP_ATTRIBUTION 🆕"></span><code class="sig-name descname"><span class="pre">MAP_ATTRIBUTION</span> <span class="pre">🆕</span></code><a class="headerlink" href="#envvar-MAP_ATTRIBUTION" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">MAP_ATTRIBUTION</span></code><a class="headerlink" href="#envvar-MAP_ATTRIBUTION" title="Permalink to this definition">¶</a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.4.0.</span></p>
 </div>
@@ -407,6 +407,20 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
 <dd class="field-odd"><p><cite>&amp;copy; &lt;a href=”http://www.openstreetmap.org/copyright” target=”_blank” rel=”noopener noreferrer”&gt;OpenStreetMap&lt;/a&gt; contributors</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt id="envvar-DEFAULT_STATICMAP">
+<span id="envvar-DEFAULT_STATICMAP 🆕"></span><code class="sig-name descname"><span class="pre">DEFAULT_STATICMAP</span> <span class="pre">🆕</span></code><a class="headerlink" href="#envvar-DEFAULT_STATICMAP" title="Permalink to this definition">¶</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.4.9.</span></p>
+</div>
+<p>If <cite>True</cite>, it keeps using default tile server to generate static maps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>False</p>
 </dd>
 </dl>
 </dd></dl>
