@@ -439,13 +439,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.4.8):
+-  Download the last release (for now, it is the release v0.4.9):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.4.8.tar.gz
-   $ tar -xzf v0.4.8.tar.gz
-   $ mv FitTrackee-0.4.8 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.4.9.tar.gz
+   $ tar -xzf v0.4.9.tar.gz
+   $ mv FitTrackee-0.4.9 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
