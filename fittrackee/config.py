@@ -42,6 +42,9 @@ class BaseConfig:
             'target="_blank" rel="noopener noreferrer">OpenStreetMap</a>'
             ' contributors',
         ),
+        'DEFAULT_STATICMAP': (
+            os.environ.get('DEFAULT_STATICMAP', 'False') == 'True'
+        ),
     }
 
 

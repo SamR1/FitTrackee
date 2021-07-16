@@ -360,6 +360,37 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             in call_args[0]
         )
 
+    def test_it_calls_default_tile_server_for_static_map(
+        self,
+        app_default_static_map: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        static_map_get_mock: Mock,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_default_static_map
+        )
+        client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        call_args = self.get_args(static_map_get_mock.call_args)
+        assert (
+            app_default_static_map.config['TILE_SERVER']['URL']
+            .replace('{s}.', '')
+            .replace('/{z}/{x}/{y}.png', '')
+            not in call_args[0]
+        )
+
     def test_it_returns_500_if_gpx_file_has_not_tracks(
         self,
         app: Flask,

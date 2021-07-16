@@ -75,6 +75,14 @@ def app(monkeypatch: pytest.MonkeyPatch) -> Generator:
         monkeypatch.delenv('TILE_SERVER_URL')
     if os.getenv('MAP_ATTRIBUTION'):
         monkeypatch.delenv('MAP_ATTRIBUTION')
+    if os.getenv('DEFAULT_STATICMAP'):
+        monkeypatch.delenv('DEFAULT_STATICMAP')
+    yield from get_app(with_config=True)
+
+
+@pytest.fixture
+def app_default_static_map(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv('DEFAULT_STATICMAP', 'True')
     yield from get_app(with_config=True)
 
 
