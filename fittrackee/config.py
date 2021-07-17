@@ -85,7 +85,7 @@ class ProductionConfig(BaseConfig):
     # https://docs.sqlalchemy.org/en/13/core/pooling.html#using-connection-pools-with-multiprocessing-or-os-fork  # noqa
     SQLALCHEMY_ENGINE_OPTIONS = (
         {'poolclass': NullPool}
-        if os.getenv('DATABASE_DISABLE_POOLING', False)
+        if os.getenv('DATABASE_DISABLE_POOLING', 'False') == 'True'
         else {}
     )
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
