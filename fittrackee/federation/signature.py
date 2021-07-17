@@ -1,3 +1,7 @@
+"""
+inspired by bookwyrm signatures.py
+https://github.com/bookwyrm-social/bookwyrm
+"""
 import base64
 import hashlib
 import json
@@ -25,7 +29,7 @@ SUPPORTED_ALGORITHMS = {
 DEFAULT_ALGORITHM = 'rsa-sha256'
 
 
-def get_digest(activity: Dict, algorithm: Optional[str] = None) -> str:
+def generate_digest(activity: Dict, algorithm: Optional[str] = None) -> str:
     algorithm_dict = SUPPORTED_ALGORITHMS[
         DEFAULT_ALGORITHM if algorithm is None else algorithm
     ]
@@ -37,7 +41,7 @@ def get_digest(activity: Dict, algorithm: Optional[str] = None) -> str:
     return f"{algorithm_dict['algorithm']}={digest}"
 
 
-def get_signature_header(
+def generate_signature_header(
     host: str, path: str, date_str: str, actor: Actor, digest: str
 ) -> str:
     signed_string = (
@@ -51,7 +55,7 @@ def get_signature_header(
     signature = base64.b64encode(key_signer.sign(h))
     return (
         f'keyId="{actor.activitypub_id}",'
-        'algorithm=rsa-sha256,'
+        f'algorithm={DEFAULT_ALGORITHM},'
         'headers="(request-target) host date digest",'
         f'signature="' + signature.decode() + '"'
     )
@@ -115,13 +119,13 @@ class SignatureVerification:
         delta = datetime.utcnow() - date
         return delta.total_seconds() > VALID_DATE_DELTA
 
-    def raise_error(self, error: str) -> None:
+    def log_and_raise_error(self, error: str) -> None:
         appLog.error(f'Invalid signature: {error} (host: {self.host}).')
         raise InvalidSignatureException(error)
 
     def verify_digest(self) -> None:
         if self.algorithm not in SUPPORTED_ALGORITHMS.keys():
-            self.raise_error('unsupported algorithm')
+            self.log_and_raise_error('unsupported algorithm')
         expected_algorithm = SUPPORTED_ALGORITHMS[self.algorithm]['algorithm']
         hash_function = SUPPORTED_ALGORITHMS[self.algorithm]['hash_function']
 
@@ -137,7 +141,7 @@ class SignatureVerification:
             if base64.b64decode(digest) != expected:
                 raise Exception()
         except Exception:
-            self.raise_error('invalid HTTP digest')
+            self.log_and_raise_error('invalid HTTP digest')
 
     def header_actor_is_payload_actor(self) -> bool:
         activity = json.loads(self.request.data.decode())
@@ -145,14 +149,14 @@ class SignatureVerification:
 
     def verify(self) -> None:
         if not self.header_actor_is_payload_actor():
-            self.raise_error('invalid actor')
+            self.log_and_raise_error('invalid actor')
 
         public_key = self.get_actor_public_key()
         if not public_key:
-            self.raise_error('invalid public key')
+            self.log_and_raise_error('invalid public key')
 
         if self.is_date_invalid():
-            self.raise_error('invalid date header')
+            self.log_and_raise_error('invalid date header')
 
         comparison = []
         for headers_part in self.headers.split(' '):
@@ -178,4 +182,4 @@ class SignatureVerification:
         try:
             signer.verify(digest, self.signature)
         except ValueError:
-            self.raise_error('verification failed')
+            self.log_and_raise_error('verification failed')

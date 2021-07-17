@@ -19,8 +19,8 @@ from .models import Actor, Domain
 from .signature import (
     VALID_DATE_FORMAT,
     SignatureVerification,
-    get_digest,
-    get_signature_header,
+    generate_digest,
+    generate_signature_header,
 )
 from .tasks.activity import handle_activity
 from .utils import is_invalid_activity_data
@@ -58,8 +58,8 @@ def send_to_remote_user_inbox(
 ) -> None:
     now_str = datetime.utcnow().strftime(VALID_DATE_FORMAT)
     parsed_inbox_url = urlparse(recipient_inbox_url)
-    digest = get_digest(activity)
-    signed_header = get_signature_header(
+    digest = generate_digest(activity)
+    signed_header = generate_signature_header(
         host=parsed_inbox_url.netloc,
         path=parsed_inbox_url.path,
         date_str=now_str,

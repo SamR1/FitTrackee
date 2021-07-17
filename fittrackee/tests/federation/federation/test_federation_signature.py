@@ -15,8 +15,8 @@ from fittrackee.federation.signature import (
     VALID_DATE_DELTA,
     VALID_DATE_FORMAT,
     SignatureVerification,
-    get_digest,
-    get_signature_header,
+    generate_digest,
+    generate_signature_header,
 )
 
 from ...utils import generate_response, get_date_string, random_string
@@ -30,12 +30,14 @@ TEST_ACTIVITY = {
 }
 
 
-class TestGetDigest:
+class TestGenerateDigest:
     def test_it_returns_digest_with_default_algorithm(self) -> None:
-        assert get_digest(TEST_ACTIVITY).startswith('SHA-256=')
+        assert generate_digest(TEST_ACTIVITY).startswith('SHA-256=')
 
     def test_it_returns_digest_with_given_algorithm(self) -> None:
-        assert get_digest(TEST_ACTIVITY, 'rsa-sha512').startswith('SHA-512=')
+        assert generate_digest(TEST_ACTIVITY, 'rsa-sha512').startswith(
+            'SHA-512='
+        )
 
 
 class SignatureVerificationTestCase:
@@ -81,8 +83,8 @@ class SignatureVerificationTestCase:
         if date_str is None:
             now = datetime.utcnow()
             date_str = now.strftime(VALID_DATE_FORMAT)
-        digest = get_digest(activity)
-        signed_header = get_signature_header(
+        digest = generate_digest(activity)
+        signed_header = generate_signature_header(
             host, '/inbox', date_str, actor, digest
         )
         return self.generate_headers(
@@ -168,7 +170,7 @@ class TestSignatureVerificationInstantiation(SignatureVerificationTestCase):
         )
         date_str = get_date_string()
         activity = {'foo': 'bar'}
-        digest = get_digest(activity)
+        digest = generate_digest(activity)
         valid_request_mock = self.get_request_mock(
             headers={
                 'Host': random_string(),
@@ -301,11 +303,11 @@ class TestSignatureDigestVerification(SignatureVerificationTestCase):
             ),
             (
                 'mismatched digest (different data)',
-                get_digest({"foo": "bar"}),
+                generate_digest({"foo": "bar"}),
             ),
             (
                 'mismatched digest (different algo)',
-                get_digest(TEST_ACTIVITY, algorithm='rsa-sha512'),
+                generate_digest(TEST_ACTIVITY, algorithm='rsa-sha512'),
             ),
         ],
     )
@@ -351,7 +353,7 @@ class TestSignatureDigestVerification(SignatureVerificationTestCase):
                     host=app_with_federation.config['AP_DOMAIN'],
                     date_str=datetime.utcnow().strftime(VALID_DATE_FORMAT),
                     algorithm=input_algorithm,
-                    digest=get_digest(activity, input_algorithm),
+                    digest=generate_digest(activity, input_algorithm),
                 ),
                 data=activity,
             )
@@ -445,7 +447,7 @@ class TestSignatureVerify(SignatureVerificationTestCase):
                     key_id=actor_1.activitypub_id,
                     date_str=datetime.utcnow().strftime(VALID_DATE_FORMAT),
                     algorithm=algorithm,
-                    digest=get_digest(activity),
+                    digest=generate_digest(activity),
                 ),
                 data=activity,
             )

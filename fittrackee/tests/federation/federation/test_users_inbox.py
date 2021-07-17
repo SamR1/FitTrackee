@@ -10,7 +10,10 @@ from werkzeug.test import TestResponse
 from fittrackee.federation.constants import AP_CTX
 from fittrackee.federation.enums import ActivityType
 from fittrackee.federation.models import Actor
-from fittrackee.federation.signature import get_digest, get_signature_header
+from fittrackee.federation.signature import (
+    generate_digest,
+    generate_signature_header,
+)
 
 from ...test_case_mixins import ApiTestCaseMixin
 from ...utils import (
@@ -40,7 +43,7 @@ class TestUserInbox(ApiTestCaseMixin):
             'actor': actor_2.activitypub_id,
             'object': actor_1.activitypub_id,
         }
-        digest = get_digest(follow_activity)
+        digest = generate_digest(follow_activity)
 
         with patch.object(requests, 'get') as requests_mock:
             requests_mock.return_value = generate_response(
@@ -55,7 +58,7 @@ class TestUserInbox(ApiTestCaseMixin):
                     'Host': host,
                     'Date': date_str,
                     'Digest': digest,
-                    'Signature': get_signature_header(
+                    'Signature': generate_signature_header(
                         host=host,
                         path=inbox_path,
                         date_str=date_str,
