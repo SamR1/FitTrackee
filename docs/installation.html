@@ -663,7 +663,7 @@ $ <span class="nb">source</span> .env
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ yay poetry
 $ poetry --version
-Poetry <span class="m">1</span>.0.10
+Poetry <span class="m">1</span>.0.17
 
 <span class="c1"># optional</span>
 $ poetry config virtualenvs.in-project <span class="nb">true</span>
@@ -769,7 +769,7 @@ password</p>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Update <strong>.env</strong> if needed</p></li>
+<li><p>Update <strong>.env</strong> if needed (see <a class="reference external" href="installation.html#environment-variables">Environment variables</a>).</p></li>
 <li><p>Upgrade packages and database:</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make install-dev
@@ -792,16 +792,21 @@ $ make upgrade-db
 <section id="prod-environment">
 <h4>Prod environment<a class="headerlink" href="#prod-environment" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
-<li><p>Stop the application and pull the repository:</p></li>
+<li><p>Stop the application</p></li>
+<li><p>Change to the directory where FitTrackee directory is located</p></li>
+<li><p>Download the last release (for now, it is the release v0.4.9) and overwrite existing files:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git pull
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.4.9.tar.gz
+$ tar -xzf v0.4.9.tar.gz
+$ cp -R FitTrackee-0.4.9/* FitTrackee/
+$ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Update <strong>.env</strong> if needed</p></li>
+<li><p>Update <strong>.env</strong> if needed (see <a class="reference external" href="installation.html#environment-variables">Environment variables</a>).</p></li>
 <li><p>Upgrade packages and database:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make install
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make install-python
 $ make upgrade-db
 </pre></div>
 </div>

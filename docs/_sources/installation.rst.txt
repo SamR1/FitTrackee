@@ -385,7 +385,7 @@ From sources
 
         $ yay poetry
         $ poetry --version
-        Poetry 1.0.10
+        Poetry 1.0.17
 
         # optional
         $ poetry config virtualenvs.in-project true
@@ -492,7 +492,7 @@ Dev environment
 
    $ git pull
 
-- Update **.env** if needed
+- Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
 
 - Upgrade packages and database:
 
@@ -516,19 +516,26 @@ Dev environment
 Prod environment
 """"""""""""""""
 
-- Stop the application and pull the repository:
+- Stop the application
+
+- Change to the directory where FitTrackee directory is located
+
+- Download the last release (for now, it is the release v0.4.9) and overwrite existing files:
 
 .. code:: bash
 
-   $ git pull
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.4.9.tar.gz
+   $ tar -xzf v0.4.9.tar.gz
+   $ cp -R FitTrackee-0.4.9/* FitTrackee/
+   $ cd FitTrackee
 
-- Update **.env** if needed
+- Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
 
 - Upgrade packages and database:
 
 .. code:: bash
 
-   $ make install
+   $ make install-python
    $ make upgrade-db
 
 - Restart the server and dramatiq workers:
