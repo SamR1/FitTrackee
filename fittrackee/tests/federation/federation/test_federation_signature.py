@@ -115,7 +115,7 @@ class SignatureVerificationTestCase:
         )
         signature = generate_signature(actor.private_key, signed_string)
         return (
-            f'keyId="{actor.activitypub_id}",'
+            f'keyId="{actor.activitypub_id}#main-key",'
             'headers="(request-target) host date",'
             f'signature="' + signature.decode() + '"'
         )

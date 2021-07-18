@@ -58,7 +58,7 @@ def generate_signature_header(
     )
     signature = generate_signature(actor.private_key, signed_string)
     return (
-        f'keyId="{actor.activitypub_id}",'
+        f'keyId="{actor.activitypub_id}#main-key",'
         f'algorithm={DEFAULT_ALGORITHM},'
         'headers="(request-target) host date digest",'
         f'signature="' + signature.decode() + '"'
@@ -149,7 +149,7 @@ class SignatureVerification:
 
     def header_actor_is_payload_actor(self) -> bool:
         activity = json.loads(self.request.data.decode())
-        return self.key_id == activity.get('actor')
+        return self.key_id.replace('#main-key', '') == activity.get('actor')
 
     def verify(self) -> None:
         if not self.header_actor_is_payload_actor():
