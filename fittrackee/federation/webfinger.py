@@ -73,7 +73,7 @@ def webfinger(app_domain: Domain) -> HttpResponse:
         return UserNotFoundErrorResponse()
 
     response = {
-        'subject': f'acct:{actor.preferred_username}@{actor.domain.name}',
+        'subject': f'acct:{actor.fullname}',
         'links': [
             {
                 'href': actor.activitypub_id,

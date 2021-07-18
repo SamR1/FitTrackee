@@ -84,8 +84,7 @@ class TestWebfinger:
     ) -> None:
         client = app_with_federation.test_client()
         response = client.get(
-            '/.well-known/webfinger?resource=acct:'
-            f'{actor_1.preferred_username}@{actor_1.domain.name}',
+            '/.well-known/webfinger?resource=acct:' f'{actor_1.fullname}',
             content_type='application/json',
         )
 
@@ -97,25 +96,20 @@ class TestWebfinger:
     ) -> None:
         client = app_with_federation.test_client()
         response = client.get(
-            '/.well-known/webfinger?resource=acct:'
-            f'{actor_1.preferred_username}@{actor_1.domain.name}',
+            '/.well-known/webfinger?resource=acct:' f'{actor_1.fullname}',
             content_type='application/json',
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert (
-            f'acct:{actor_1.preferred_username}@{actor_1.domain.name}'
-            in data['subject']
-        )
+        assert f'acct:{actor_1.fullname}' in data['subject']
 
     def test_it_returns_user_links(
         self, app_with_federation: Flask, actor_1: Actor
     ) -> None:
         client = app_with_federation.test_client()
         response = client.get(
-            '/.well-known/webfinger?resource=acct:'
-            f'{actor_1.preferred_username}@{actor_1.domain.name}',
+            '/.well-known/webfinger?resource=acct:' f'{actor_1.fullname}',
             content_type='application/json',
         )
 
@@ -132,8 +126,7 @@ class TestWebfinger:
     ) -> None:
         client = app.test_client()
         response = client.get(
-            '/.well-known/webfinger?resource=acct:'
-            f'{app_actor.preferred_username}@{app_actor.domain.name}',
+            '/.well-known/webfinger?resource=acct:' f'{app_actor.fullname}',
             content_type='application/json',
         )
 

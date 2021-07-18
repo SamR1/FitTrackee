@@ -118,6 +118,12 @@ class Actor(BaseModel):
             return self.user.username
         return None
 
+    @property
+    def fullname(self) -> Optional[str]:
+        if self.type == ActorType.PERSON:
+            return f'{self.preferred_username}@{self.domain.name}'
+        return None
+
     def update_remote_data(self, remote_user_data: Dict) -> None:
         self.activitypub_id = remote_user_data['id']
         self.type = ActorType(remote_user_data['type'])

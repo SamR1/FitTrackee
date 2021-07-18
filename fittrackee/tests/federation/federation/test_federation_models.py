@@ -70,6 +70,14 @@ class TestActivityPubLocalPersonActorModel:
     ) -> None:
         assert not actor_1.is_remote
 
+    def test_it_returns_fullname(
+        self, app_with_federation: Flask, actor_1: Actor
+    ) -> None:
+        assert (
+            actor_1.fullname
+            == f'{actor_1.preferred_username}@{actor_1.domain.name}'
+        )
+
     def test_it_returns_serialized_object(
         self, app_with_federation: Flask, actor_1: Actor
     ) -> None:
@@ -126,6 +134,14 @@ class TestActivityPubRemotePersonActorModel:
         self, app_with_federation: Flask, remote_actor: Actor
     ) -> None:
         assert remote_actor.is_remote
+
+    def test_it_returns_fullname(
+        self, app_with_federation: Flask, actor_1: Actor
+    ) -> None:
+        assert (
+            actor_1.fullname
+            == f'{actor_1.preferred_username}@{actor_1.domain.name}'
+        )
 
     def test_it_returns_serialized_object(
         self,
