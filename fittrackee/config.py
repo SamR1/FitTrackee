@@ -77,6 +77,7 @@ class TestingConfig(BaseConfig):
     UPLOAD_FOLDER = '/tmp/fitTrackee/uploads'
     UI_URL = 'http://0.0.0.0:5000'
     SENDER_EMAIL = 'fittrackee@example.com'
+    AP_DOMAIN = '0.0.0.0:5000'
 
 
 class ProductionConfig(BaseConfig):
