@@ -70,7 +70,6 @@ def upgrade():
         sa.Column('following_url', sa.String(length=255), nullable=False),
         sa.Column('shared_inbox_url', sa.String(length=255), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=False),
-        sa.Column('manually_approves_followers', sa.Boolean(), nullable=False),
         sa.Column('last_fetch_date', sa.DateTime(), nullable=True),
         sa.ForeignKeyConstraint(
             ['domain_id'],
@@ -83,6 +82,11 @@ def upgrade():
         ),
     )
 
+    op.add_column(
+        'users',
+        sa.Column('manually_approves_followers', sa.Boolean(),
+        nullable=True)
+    )
     op.add_column('users', sa.Column('actor_id', sa.Integer(), nullable=True))
     op.create_unique_constraint('users_actor_id_key', 'users', ['actor_id'])
     op.create_foreign_key(
@@ -111,14 +115,17 @@ def upgrade():
     connection = op.get_bind()
     domain = connection.execute(domain_table.select()).fetchone()
     for user in connection.execute(user_helper.select()):
+        op.execute(
+            "UPDATE users SET manually_approves_followers = True "
+            f"WHERE users.id = {user.id}"
+        )
         created_at = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
         public_key, private_key = generate_keys()
         op.execute(
             "INSERT INTO actors ("
             "activitypub_id, domain_id, preferred_username, public_key, "
             "private_key, followers_url, following_url, profile_url, "
-            "inbox_url, outbox_url, shared_inbox_url, created_at, "
-            "manually_approves_followers) "
+            "inbox_url, outbox_url, shared_inbox_url, created_at) "
             "VALUES ("
             f"'{get_ap_url(user.username, 'user_url')}', "
             f"{domain.id}, '{user.username}', "
@@ -129,7 +136,7 @@ def upgrade():
             f"'{get_ap_url(user.username, 'inbox')}', "
             f"'{get_ap_url(user.username, 'outbox')}', "
             f"'{get_ap_url(user.username, 'shared_inbox')}', "
-            f"'{created_at}'::timestamp, {True}) RETURNING id"
+            f"'{created_at}'::timestamp) RETURNING id"
         )
         actor = connection.execute(
             actors_table.select().where(
@@ -139,6 +146,7 @@ def upgrade():
         op.execute(
             f'UPDATE users SET actor_id = {actor.id} WHERE users.id = {user.id}'
         )
+    op.alter_column('users', 'manually_approves_followers', nullable=False)
     op.create_unique_constraint(
         'username_actor_id_unique', 'users', ['username', 'actor_id']
     )
@@ -183,6 +191,7 @@ def downgrade():
     )
     op.drop_constraint('users_actor_id_fkey', 'users', type_='foreignkey')
     op.drop_constraint('users_actor_id_key', 'users', type_='unique')
+    op.drop_column('users', 'manually_approves_followers')
     op.drop_column('users', 'actor_id')
 
     op.drop_table('actors')

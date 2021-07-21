@@ -1,4 +1,5 @@
 from datetime import datetime
+from unittest.mock import Mock, patch
 
 from flask import Flask
 
@@ -93,3 +94,44 @@ class TestFollowRequestModelWithFederation:
                 'object': actor_2.activitypub_id,
             },
         }
+
+
+class TestUserFollowingModelWithFederation:
+    @patch('fittrackee.users.models.send_to_users_inbox')
+    def test_local_actor_sends_follow_requests_to_remote_actor(
+        self,
+        send_to_users_inbox_mock: Mock,
+        app_with_federation: Flask,
+        actor_1: Actor,
+        remote_actor: Actor,
+    ) -> None:
+        follow_request = actor_1.user.send_follow_request_to(remote_actor.user)
+
+        assert follow_request in actor_1.user.sent_follow_requests.all()
+        assert follow_request.is_approved is False
+        assert follow_request.updated_at is None
+        send_to_users_inbox_mock.send.assert_called_with(
+            sender_id=actor_1.id,
+            activity=follow_request.get_activity(),
+            recipients=[remote_actor.inbox_url],
+        )
+
+    @patch('fittrackee.users.models.send_to_users_inbox')
+    def test_follow_request_is_automatically_accepted_if_manually_approved_if_false(  # noqa
+        self,
+        send_to_users_inbox_mock: Mock,
+        app_with_federation: Flask,
+        actor_1: Actor,
+        remote_actor: Actor,
+    ) -> None:
+        actor_1.user.manually_approves_followers = False
+        follow_request = remote_actor.user.send_follow_request_to(actor_1.user)
+
+        assert follow_request in remote_actor.user.sent_follow_requests.all()
+        assert follow_request.is_approved is True
+        assert follow_request.updated_at is not None
+        send_to_users_inbox_mock.send.assert_called_with(
+            sender_id=actor_1.id,
+            activity=follow_request.get_activity(),
+            recipients=[remote_actor.inbox_url],
+        )

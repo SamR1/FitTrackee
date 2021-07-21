@@ -46,6 +46,7 @@ def get_remote_user_object(
     preferred_username: str,
     domain: str,
     profile_url: Optional[str] = None,
+    manually_approves_followers: bool = True,
 ) -> Dict:
     user_url = f'{domain}/users/{preferred_username}'
     user_object = {
@@ -61,7 +62,7 @@ def get_remote_user_object(
         'outbox': f'{user_url}/outbox',
         'name': username,
         'preferredUsername': preferred_username,
-        'manuallyApprovesFollowers': True,
+        'manuallyApprovesFollowers': manually_approves_followers,
         'publicKey': {
             'id': f'{user_url}#main-key',
             'owner': user_url,
@@ -79,6 +80,7 @@ class RandomActor:
     name: str = random_string()
     preferred_username: str = random_string()
     domain: str = random_domain_with_scheme()
+    manually_approves_followers: bool = True
 
     @property
     def fullname(self) -> str:
@@ -96,7 +98,11 @@ class RandomActor:
 
     def get_remote_user_object(self) -> Dict:
         return get_remote_user_object(
-            self.name, self.preferred_username, self.domain, self.profile_url
+            self.name,
+            self.preferred_username,
+            self.domain,
+            self.profile_url,
+            self.manually_approves_followers,
         )
 
 

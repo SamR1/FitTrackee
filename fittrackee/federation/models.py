@@ -72,9 +72,6 @@ class Actor(BaseModel):
     following_url = db.Column(db.String(255), nullable=False)
     shared_inbox_url = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
-    manually_approves_followers = db.Column(
-        db.Boolean, default=True, nullable=False
-    )
     last_fetch_date = db.Column(db.DateTime, nullable=True)
 
     domain = db.relationship('Domain', back_populates='actors')
@@ -126,12 +123,15 @@ class Actor(BaseModel):
             return f'{self.preferred_username}@{self.domain.name}'
         return None
 
+    @property
+    def manually_approves_followers(self) -> Optional[bool]:
+        if self.type == ActorType.PERSON and self.user:
+            return self.user.manually_approves_followers
+        return None
+
     def update_remote_data(self, remote_user_data: Dict) -> None:
         self.activitypub_id = remote_user_data['id']
         self.type = ActorType(remote_user_data['type'])
-        self.manually_approves_followers = remote_user_data[
-            'manuallyApprovesFollowers'
-        ]
         self.followers_url = remote_user_data['followers']
         self.following_url = remote_user_data['following']
         self.profile_url = remote_user_data.get('url', remote_user_data['id'])

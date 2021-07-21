@@ -89,5 +89,8 @@ def create_remote_user(remote_actor_url: Optional[str]) -> Actor:
     else:
         actor.update_remote_data(remote_actor_object)
         actor.user.username = remote_actor_object['name']
+    actor.user.manually_approves_followers = remote_actor_object[
+        'manuallyApprovesFollowers'
+    ]
     db.session.commit()
     return actor

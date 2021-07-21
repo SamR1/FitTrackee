@@ -100,6 +100,7 @@ class TestCreateRemoteUser:
         random_actor: RandomActor,
     ) -> None:
         random_actor.domain = f'https://{remote_domain.name}'
+        random_actor.manually_approves_followers = False
         remote_user_object = random_actor.get_remote_user_object()
         with patch(
             'fittrackee.federation.utils_user.get_remote_actor'
@@ -112,6 +113,11 @@ class TestCreateRemoteUser:
                 activitypub_id=random_actor.activitypub_id
             ).first()
             assert actor == expected_actor
+            assert actor.user.username == random_actor.name
+            assert (
+                actor.user.manually_approves_followers
+                == random_actor.manually_approves_followers
+            )
 
     def test_it_creates_remote_actor_if_actor_and_domain_dont_exist(
         self,
@@ -138,6 +144,7 @@ class TestCreateRemoteUser:
         remote_user_object = remote_actor.serialize()
         updated_name = random_string()
         remote_user_object['name'] = updated_name
+        remote_user_object['manuallyApprovesFollowers'] = False
         last_fetched = remote_actor.last_fetch_date
         with patch(
             'fittrackee.federation.utils_user.get_remote_actor'
@@ -149,6 +156,7 @@ class TestCreateRemoteUser:
             updated_actor = Actor.query.filter_by(id=remote_actor.id).first()
             assert updated_actor.name == updated_name
             assert updated_actor.last_fetch_date != last_fetched
+            assert updated_actor.user.manually_approves_followers is False
 
     def test_it_creates_several_remote_actors(
         self,

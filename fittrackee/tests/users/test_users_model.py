@@ -1,4 +1,5 @@
 from datetime import datetime
+from unittest.mock import Mock, patch
 
 import pytest
 from flask import Flask
@@ -127,6 +128,18 @@ class TestUserFollowingModel:
 
         assert follow_request in user_2.sent_follow_requests.all()
 
+    @patch('fittrackee.users.models.send_to_users_inbox')
+    def test_it_does_not_call_send_to_user_inbox_when_federation_is_disabled(
+        self,
+        send_to_users_inbox_mock: Mock,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        user_2.send_follow_request_to(user_1)
+
+        send_to_users_inbox_mock.send.assert_not_called()
+
     def test_user_1_receives_follow_requests_from_user_2(
         self,
         app: Flask,
@@ -204,3 +217,16 @@ class TestUserFollowingModel:
 
         with pytest.raises(FollowRequestAlreadyProcessedError):
             user_1.approves_follow_request_from(user_2)
+
+    def test_follow_request_is_automatically_accepted_if_manually_approved_if_false(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        user_1.manually_approves_followers = False
+        follow_request = user_2.send_follow_request_to(user_1)
+
+        assert follow_request in user_2.sent_follow_requests.all()
+        assert follow_request.is_approved is True
+        assert follow_request.updated_at is not None
