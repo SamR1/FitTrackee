@@ -165,6 +165,10 @@ def upgrade():
 def downgrade():
     op.drop_table('follow_requests')
 
+    # remove remote users (for which password is NULL)
+    op.execute(
+        "DELETE FROM users WHERE password IS NULL;"
+    )
     op.drop_constraint('username_actor_id_unique', 'users', type_='unique')
     op.alter_column(
         'users', 'username', existing_type=sa.String(length=50),
