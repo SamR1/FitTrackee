@@ -2,14 +2,14 @@
   <div id="nav">
     <div class="container">
       <div class="nav-app-name">
-        <span class="nav-item app-name">FitTrackee</span>
+        <div class="nav-item app-name">FitTrackee</div>
       </div>
       <div class="nav-icon-open" :class="{ 'menu-open': isMenuOpen }">
         <i class="fa fa-bars hamburger-icon" @click="openMenu()"></i>
       </div>
       <div class="nav-items" :class="{ 'menu-open': isMenuOpen }">
         <div class="nav-items-close">
-          <span class="app-name">FitTrackee</span>
+          <div class="app-name">FitTrackee</div>
           <i
             class="fa fa-close close-icon nav-item"
             :class="{ 'menu-closed': !isMenuOpen }"
@@ -20,16 +20,25 @@
           <router-link class="nav-item" to="/">{{
             t('dashboard.DASHBOARD')
           }}</router-link>
-          <span class="nav-item">{{ t('workouts.WORKOUTS') }}</span>
-          <span class="nav-item">{{ t('statistics.STATISTICS') }}</span>
-          <span class="nav-item">{{ t('administration.ADMIN') }}</span>
-          <span class="nav-item">{{ t('workouts.ADD_WORKOUT') }}</span>
+          <div class="nav-item">{{ t('workouts.WORKOUTS') }}</div>
+          <div class="nav-item">{{ t('statistics.STATISTICS') }}</div>
+          <div class="nav-item">{{ t('administration.ADMIN') }}</div>
+          <div class="nav-item">{{ t('workouts.ADD_WORKOUT') }}</div>
         </div>
         <div class="nav-items-user-menu">
-          <span class="nav-item">User</span>
-          <span class="nav-item">{{ t('user.LOGOUT') }}</span>
-          <span class="nav-item">{{ t('user.REGISTER') }}</span>
-          <span class="nav-item">{{ t('user.LOGIN') }}</span>
+          <div class="nav-item">User</div>
+          <div class="nav-item">{{ t('user.LOGOUT') }}</div>
+          <!--          <span class="nav-item">{{ t('user.REGISTER') }}</span>-->
+          <!--          <span class="nav-item">{{ t('user.LOGIN') }}</span>-->
+          <Dropdown
+            v-if="availableLanguages && language"
+            class="nav-item"
+            :options="availableLanguages"
+            :selected="language"
+            @selected="updateLanguage"
+          >
+            <i class="fa fa-language"></i>
+          </Dropdown>
         </div>
       </div>
     </div>
@@ -37,21 +46,45 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, ref } from 'vue'
+  import { computed, defineComponent, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
+  import { useStore } from 'vuex'
+
+  import { IDropdownOption } from '@/types'
+  import Dropdown from '@/components/Common/Dropdown.vue'
 
   export default defineComponent({
     name: 'NavBar',
+    components: {
+      Dropdown,
+    },
     setup() {
+      const { t, locale, availableLocales } = useI18n()
+      const store = useStore()
+      const availableLanguages = availableLocales.map((l) => {
+        return { label: l.toUpperCase(), value: l }
+      })
       let isMenuOpen = ref(false)
-      const { t } = useI18n()
       function openMenu() {
         isMenuOpen.value = true
       }
       function closeMenu() {
         isMenuOpen.value = false
       }
-      return { isMenuOpen, openMenu, closeMenu, t }
+      function updateLanguage(option: IDropdownOption) {
+        locale.value = option.value.toString()
+        store.commit('setLanguage', option.value)
+      }
+
+      return {
+        availableLanguages,
+        isMenuOpen,
+        language: computed(() => store.state.language),
+        t,
+        openMenu,
+        closeMenu,
+        updateLanguage,
+      }
     },
   })
 </script>
@@ -74,7 +107,6 @@
       font-size: 1.2em;
       font-weight: bold;
       margin-right: 10px;
-      line-height: 12px;
     }
 
     .fa {
@@ -84,6 +116,7 @@
     .nav-icon-open {
       display: none;
     }
+
     .hamburger-icon,
     .close-icon {
       display: none;
@@ -99,8 +132,25 @@
         display: none;
       }
 
+      .nav-items-app-menu,
+      .nav-items-user-menu {
+        display: flex;
+        margin: 0;
+        padding: 0;
+      }
+
       .nav-item {
-        padding: 10px 10px;
+        padding: 0 10px;
+
+        &.dropdown-wrapper {
+          width: 60px;
+        }
+
+        ::v-deep(.dropdown-list) {
+          margin-left: -10px;
+          padding-left: 10px;
+          width: 75px;
+        }
       }
     }
 
@@ -155,8 +205,12 @@
           justify-content: space-between;
 
           .app-name {
-            padding: 19px 25px;
+            padding: 15px 25px;
           }
+        }
+
+        .nav-item {
+          padding: 7px 25px;
         }
       }
     }
