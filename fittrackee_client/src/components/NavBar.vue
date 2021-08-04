@@ -17,19 +17,25 @@
           ></i>
         </div>
         <div class="nav-items-app-menu" @click="closeMenu()">
-          <router-link class="nav-item" to="/">{{
-            t('dashboard.DASHBOARD')
-          }}</router-link>
-          <div class="nav-item">{{ t('workouts.WORKOUTS') }}</div>
-          <div class="nav-item">{{ t('statistics.STATISTICS') }}</div>
-          <div class="nav-item">{{ t('administration.ADMIN') }}</div>
-          <div class="nav-item">{{ t('workouts.ADD_WORKOUT') }}</div>
+          <div class="nav-items-group" v-if="isAuthenticated">
+            <router-link class="nav-item" to="/">{{
+              t('dashboard.DASHBOARD')
+            }}</router-link>
+            <div class="nav-item">{{ t('workouts.WORKOUTS') }}</div>
+            <div class="nav-item">{{ t('statistics.STATISTICS') }}</div>
+            <div class="nav-item">{{ t('administration.ADMIN') }}</div>
+            <div class="nav-item">{{ t('workouts.ADD_WORKOUT') }}</div>
+          </div>
         </div>
         <div class="nav-items-user-menu">
-          <div class="nav-item">User</div>
-          <div class="nav-item">{{ t('user.LOGOUT') }}</div>
-          <!--          <span class="nav-item">{{ t('user.REGISTER') }}</span>-->
-          <!--          <span class="nav-item">{{ t('user.LOGIN') }}</span>-->
+          <div class="nav-items-group" v-if="isAuthenticated">
+            <div class="nav-item">User</div>
+            <div class="nav-item">{{ t('user.LOGOUT') }}</div>
+          </div>
+          <div class="nav-items-group" v-else>
+            <span class="nav-item">{{ t('user.REGISTER') }}</span>
+            <span class="nav-item">{{ t('user.LOGIN') }}</span>
+          </div>
           <Dropdown
             v-if="availableLanguages && language"
             class="nav-item"
@@ -78,6 +84,7 @@
 
       return {
         availableLanguages,
+        isAuthenticated: computed(() => store.getters.isAuthenticated),
         isMenuOpen,
         language: computed(() => store.state.language),
         t,
@@ -139,6 +146,9 @@
         padding: 0;
       }
 
+      .nav-items-group {
+        display: flex;
+      }
       .nav-item {
         padding: 0 10px;
 
@@ -206,6 +216,11 @@
           .app-name {
             padding: 15px 25px;
           }
+        }
+
+        .nav-items-group {
+          display: flex;
+          flex-direction: column;
         }
 
         .nav-item {
