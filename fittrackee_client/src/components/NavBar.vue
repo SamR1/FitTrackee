@@ -17,17 +17,19 @@
           ></i>
         </div>
         <div class="nav-items-app-menu" @click="closeMenu()">
-          <router-link class="nav-item" to="/">Dashboard</router-link>
-          <span class="nav-item">Workout</span>
-          <span class="nav-item">Statistics</span>
-          <span class="nav-item">Admin</span>
-          <span class="nav-item">Add Workout</span>
+          <router-link class="nav-item" to="/">{{
+            t('dashboard.DASHBOARD')
+          }}</router-link>
+          <span class="nav-item">{{ t('workouts.WORKOUTS') }}</span>
+          <span class="nav-item">{{ t('statistics.STATISTICS') }}</span>
+          <span class="nav-item">{{ t('administration.ADMIN') }}</span>
+          <span class="nav-item">{{ t('workouts.ADD_WORKOUT') }}</span>
         </div>
         <div class="nav-items-user-menu">
           <span class="nav-item">User</span>
-          <span class="nav-item">Logout</span>
-          <span class="nav-item">Register</span>
-          <span class="nav-item">Login</span>
+          <span class="nav-item">{{ t('user.LOGOUT') }}</span>
+          <span class="nav-item">{{ t('user.REGISTER') }}</span>
+          <span class="nav-item">{{ t('user.LOGIN') }}</span>
         </div>
       </div>
     </div>
@@ -36,18 +38,20 @@
 
 <script lang="ts">
   import { defineComponent, ref } from 'vue'
+  import { useI18n } from 'vue-i18n'
 
   export default defineComponent({
     name: 'NavBar',
     setup() {
       let isMenuOpen = ref(false)
+      const { t } = useI18n()
       function openMenu() {
         isMenuOpen.value = true
       }
       function closeMenu() {
         isMenuOpen.value = false
       }
-      return { isMenuOpen, openMenu, closeMenu }
+      return { isMenuOpen, openMenu, closeMenu, t }
     },
   })
 </script>
