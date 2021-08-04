@@ -169,7 +169,6 @@
 
       .close-icon {
         display: block;
-        margin-right: 18px;
       }
       .close-icon.menu-closed {
         display: none;
