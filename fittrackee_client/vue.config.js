@@ -14,9 +14,9 @@ module.exports = {
       return args
     })
   },
-  publicPath: '/static/',
-  outputDir: path.resolve(__dirname, '../fittrackee/dist/static'),
-  indexPath: '../index.html',
+  publicPath: '/',
+  outputDir: path.resolve(__dirname, '../fittrackee/dist/'),
+  assetsDir: 'static',
   pluginOptions: {
     i18n: {
       locale: 'en',
