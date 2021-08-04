@@ -1,32 +1,34 @@
 <template>
   <div id="nav">
-    <div class="nav-app-name">
-      <span class="nav-item app-name">FitTrackee</span>
-    </div>
-    <div class="nav-icon-open" :class="{ 'menu-open': isMenuOpen }">
-      <i class="fa fa-bars hamburger-icon" @click="openMenu()"></i>
-    </div>
-    <div class="nav-items" :class="{ 'menu-open': isMenuOpen }">
-      <div class="nav-items-close">
-        <span class="app-name">FitTrackee</span>
-        <i
-          class="fa fa-close close-icon nav-item"
-          :class="{ 'menu-closed': !isMenuOpen }"
-          @click="closeMenu()"
-        ></i>
+    <div class="container">
+      <div class="nav-app-name">
+        <span class="nav-item app-name">FitTrackee</span>
       </div>
-      <div class="nav-items-app-menu" @click="closeMenu()">
-        <router-link class="nav-item" to="/">Dashboard</router-link>
-        <span class="nav-item">Workout</span>
-        <span class="nav-item">Statistics</span>
-        <span class="nav-item">Admin</span>
-        <span class="nav-item">Add Workout</span>
+      <div class="nav-icon-open" :class="{ 'menu-open': isMenuOpen }">
+        <i class="fa fa-bars hamburger-icon" @click="openMenu()"></i>
       </div>
-      <div class="nav-items-user-menu">
-        <span class="nav-item">User</span>
-        <span class="nav-item">Logout</span>
-        <span class="nav-item">Register</span>
-        <span class="nav-item">Login</span>
+      <div class="nav-items" :class="{ 'menu-open': isMenuOpen }">
+        <div class="nav-items-close">
+          <span class="app-name">FitTrackee</span>
+          <i
+            class="fa fa-close close-icon nav-item"
+            :class="{ 'menu-closed': !isMenuOpen }"
+            @click="closeMenu()"
+          ></i>
+        </div>
+        <div class="nav-items-app-menu" @click="closeMenu()">
+          <router-link class="nav-item" to="/">Dashboard</router-link>
+          <span class="nav-item">Workout</span>
+          <span class="nav-item">Statistics</span>
+          <span class="nav-item">Admin</span>
+          <span class="nav-item">Add Workout</span>
+        </div>
+        <div class="nav-items-user-menu">
+          <span class="nav-item">User</span>
+          <span class="nav-item">Logout</span>
+          <span class="nav-item">Register</span>
+          <span class="nav-item">Login</span>
+        </div>
       </div>
     </div>
   </div>
@@ -51,21 +53,24 @@
 </script>
 
 <style scoped lang="scss">
+  @import '~@/scss/base';
+
   #nav {
-    align-items: center;
-    background: white;
+    background: var(--nav-bar-background-color);
     display: flex;
-    padding: 15px 70px;
+    padding: 15px 10px;
 
     a {
       &.router-link-exact-active {
-        color: rgba(0, 0, 0, 0.7);
+        color: var(--nav-bar-link-active);
       }
     }
 
     .app-name {
       font-size: 1.2em;
       font-weight: bold;
+      margin-right: 10px;
+      line-height: 12px;
     }
 
     .fa {
@@ -95,7 +100,7 @@
       }
     }
 
-    @media screen and (max-width: 1000px) {
+    @media screen and (max-width: $medium-limit) {
       .hamburger-icon {
         display: block;
       }
@@ -110,6 +115,7 @@
 
       .close-icon {
         display: block;
+        margin-right: 18px;
       }
       .close-icon.menu-closed {
         display: none;
@@ -129,7 +135,7 @@
         bottom: 0;
         left: 0;
 
-        background: white;
+        background: var(--nav-bar-background-color);
 
         .nav-items-close,
         .nav-items-app-menu,
@@ -145,16 +151,10 @@
           justify-content: space-between;
 
           .app-name {
-            padding: 10px;
+            padding: 19px 25px;
           }
         }
       }
-    }
-  }
-
-  @media screen and (max-width: 1000px) {
-    #nav {
-      padding: 10px;
     }
   }
 </style>

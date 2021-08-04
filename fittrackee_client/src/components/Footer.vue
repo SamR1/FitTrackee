@@ -35,6 +35,8 @@
 </template>
 
 <style scoped lang="scss">
+  @import '~@/scss/base';
+
   #footer {
     display: flex;
 
@@ -42,8 +44,8 @@
     position: absolute;
     width: 100%;
 
-    background: white;
-    color: #8b8c8c;
+    background: var(--footer-background-color);
+    color: var(--footer-color);
     font-size: 0.9em;
 
     a {
@@ -64,7 +66,7 @@
       }
     }
 
-    @media screen and (max-width: 550px) {
+    @media screen and (max-width: $small-limit) {
       .footer-items {
         font-size: 0.85em;
 
