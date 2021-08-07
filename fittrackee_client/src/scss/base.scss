@@ -32,3 +32,25 @@ a {
   max-width: $container-width;
   width: 100%;
 }
+
+button {
+  border: solid 1px var(--app-color);
+  border-radius: 0;
+  box-shadow: 2px 2px 2px var(--app-shadow-color);
+  color: var(--app-color);
+  padding: 6px 14px;
+
+  &:hover {
+    background: var(--app-color);
+    color: #FFFFFF;
+  }
+
+  &:active {
+    box-shadow: 2px 0 2px var(--app-shadow-color);
+    transform: translateY(2px);
+  }
+}
+
+.upper {
+  text-transform: uppercase;
+}
