@@ -1,8 +1,10 @@
 <template>
   <div id="nav">
-    <div class="container">
+    <div class="nav-container">
       <div class="nav-app-name">
-        <div class="nav-item app-name">FitTrackee</div>
+        <div class="nav-item app-name" @click="$router.push('/')">
+          FitTrackee
+        </div>
       </div>
       <div class="nav-icon-open" :class="{ 'menu-open': isMenuOpen }">
         <i class="fa fa-bars hamburger-icon" @click="openMenu()"></i>
@@ -104,6 +106,18 @@
     display: flex;
     padding: 15px 10px;
 
+    .nav-container {
+      display: flex;
+
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0 15px 15px 15px;
+      max-width: $container-width;
+      width: 100%;
+
+      border-bottom: solid 1px var(--nav-border-color);
+    }
+
     a {
       &.router-link-exact-active {
         color: var(--nav-bar-link-active);
@@ -114,6 +128,10 @@
       font-size: 1.2em;
       font-weight: bold;
       margin-right: 10px;
+
+      &:hover {
+        cursor: pointer;
+      }
     }
 
     .fa {

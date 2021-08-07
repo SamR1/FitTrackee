@@ -23,17 +23,8 @@ a {
   text-decoration: none;
 }
 
-.container {
-  display: flex;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 15px;
-  padding-right: 15px;
-  max-width: $container-width;
-  width: 100%;
-}
-
 button {
+  background: var(--app-background-color);
   border: solid 1px var(--app-color);
   border-radius: 0;
   box-shadow: 2px 2px 2px var(--app-shadow-color);

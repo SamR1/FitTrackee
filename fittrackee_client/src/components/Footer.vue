@@ -62,6 +62,7 @@
       .footer-item {
         padding: 10px 10px;
 
+        border-top: solid 1px var(--footer-border-color);
         text-align: center;
       }
     }
