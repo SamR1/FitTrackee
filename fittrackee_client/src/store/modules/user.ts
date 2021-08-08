@@ -13,6 +13,7 @@ const getters: Getters = {
     return state.authToken !== null
   },
 }
+
 export default {
   state: userState,
   getters,

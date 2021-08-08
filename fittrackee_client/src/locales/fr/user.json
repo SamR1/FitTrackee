@@ -1,6 +1,11 @@
 {
+  "CONFIRM-PASSWORD": "Confirmation du mot de passe",
+  "EMAIL": "Email",
   "LANGUAGE": "Langue",
   "LOGIN": "Se connecter",
   "LOGOUT": "Se déconnecter",
-  "REGISTER": "S'inscrire"
+  "PASSWORD": "Mot de passe",
+  "PASSWORD-CONFIRM": "Confirmation du mot de passe",
+  "REGISTER": "S'inscrire",
+  "USERNAME": "Nom d'utilisateur"
 }

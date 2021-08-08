@@ -36,7 +36,9 @@
           </div>
           <div class="nav-items-group" v-else>
             <span class="nav-item">{{ t('user.REGISTER') }}</span>
-            <span class="nav-item">{{ t('user.LOGIN') }}</span>
+            <router-link class="nav-item" to="/login" @click="closeMenu">{{
+              t('user.LOGIN')
+            }}</router-link>
           </div>
           <Dropdown
             v-if="availableLanguages && language"

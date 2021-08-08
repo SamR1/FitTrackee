@@ -1,4 +1,5 @@
 import AdministrationTranslations from './administration.json'
+import ButtonsTranslations from './buttons.json'
 import CommonTranslations from './common.json'
 import DashboardTranslations from './dashboard.json'
 import ErrorTranslations from './error.json'
@@ -8,6 +9,7 @@ import WorkoutsTranslations from './workouts.json'
 
 export default {
   administration: AdministrationTranslations,
+  buttons: ButtonsTranslations,
   common: CommonTranslations,
   dashboard: DashboardTranslations,
   error: ErrorTranslations,

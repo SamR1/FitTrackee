@@ -1,6 +1,10 @@
 {
+  "EMAIL": "Email",
   "LANGUAGE": "Language",
   "LOGIN": "Login",
   "LOGOUT": "Logout",
-  "REGISTER": "Register"
+  "PASSWORD": "Password",
+  "PASSWORD-CONFIRM": "Confirm Password",
+  "REGISTER": "Register",
+  "USERNAME": "Username"
 }
