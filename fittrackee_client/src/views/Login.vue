@@ -36,6 +36,8 @@
       flex-wrap: wrap;
       justify-content: space-evenly;
 
+      margin-bottom: $default-margin * 2;
+
       .container-sub {
         min-width: 50%;
       }
