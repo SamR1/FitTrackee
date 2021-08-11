@@ -19,7 +19,8 @@
 
 <script lang="ts">
   import { PropType, defineComponent, ref } from 'vue'
-  import { IDropdownOption, TDropdownOptions } from '@/types'
+  import { IDropdownOption } from '@/interfaces'
+  import { TDropdownOptions } from '@/types'
 
   export default defineComponent({
     name: 'Dropdown',

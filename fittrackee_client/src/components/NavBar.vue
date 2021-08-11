@@ -60,7 +60,7 @@
   import { useI18n } from 'vue-i18n'
   import { useStore } from 'vuex'
 
-  import { IDropdownOption } from '@/types'
+  import { IDropdownOption } from '@/interfaces'
   import Dropdown from '@/components/Common/Dropdown.vue'
 
   export default defineComponent({
