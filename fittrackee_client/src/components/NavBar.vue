@@ -31,7 +31,7 @@
         </div>
         <div class="nav-items-user-menu">
           <div class="nav-items-group" v-if="isAuthenticated">
-            <div class="nav-item">User</div>
+            <div class="nav-item">{{ authUser.username }}</div>
             <div class="nav-item">{{ t('user.LOGOUT') }}</div>
           </div>
           <div class="nav-items-group" v-else>
@@ -61,6 +61,7 @@
   import { useStore } from 'vuex'
 
   import { IDropdownOption } from '@/interfaces'
+  import { USER_STORE } from '@/store/constants'
   import Dropdown from '@/components/Common/Dropdown.vue'
 
   export default defineComponent({
@@ -88,7 +89,12 @@
 
       return {
         availableLanguages,
-        isAuthenticated: computed(() => store.getters.isAuthenticated),
+        authUser: computed(
+          () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
+        ),
+        isAuthenticated: computed(
+          () => store.getters[USER_STORE.GETTERS.IS_AUTHENTICATED]
+        ),
         isMenuOpen,
         language: computed(() => store.state.language),
         t,
