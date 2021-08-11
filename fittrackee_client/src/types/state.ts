@@ -1,7 +1,3 @@
-export interface DefaultStateTypes {
+export interface IDefaultState {
   language: string
-}
-
-export interface UserStateTypes {
-  authToken: string
 }

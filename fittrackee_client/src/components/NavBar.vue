@@ -83,7 +83,7 @@
       }
       function updateLanguage(option: IDropdownOption) {
         locale.value = option.value.toString()
-        store.commit('setLanguage', option.value)
+        store.commit('UPDATE_LANG', option.value)
       }
 
       return {

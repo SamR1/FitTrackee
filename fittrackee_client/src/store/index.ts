@@ -1,18 +1,7 @@
 import { createStore } from 'vuex'
-import { DefaultStateTypes } from '@/types/state'
-import user from './modules/user'
+import { IRootState } from '@/store/modules/root/interfaces'
+import root from '@/store/modules/root'
 
-export default createStore({
-  state: {
-    language: 'en',
-  },
-  mutations: {
-    setLanguage(state: DefaultStateTypes, language: string) {
-      state.language = language
-    },
-  },
-  actions: {},
-  modules: {
-    user,
-  },
-})
+const store = createStore<IRootState>(root)
+
+export default store
