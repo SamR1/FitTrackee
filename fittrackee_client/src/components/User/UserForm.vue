@@ -7,21 +7,21 @@
             v-if="action === 'register'"
             id="username"
             required
-            v-model="user.username"
+            v-model="formData.username"
             :placeholder="t('user.REGISTER')"
           />
           <input
             id="email"
             required
             type="email"
-            v-model="user.email"
+            v-model="formData.email"
             :placeholder="t('user.EMAIL')"
           />
           <input
             id="password"
             required
             type="password"
-            v-model="user.password"
+            v-model="formData.password"
             :placeholder="t('user.PASSWORD')"
           />
           <input
@@ -29,7 +29,7 @@
             id="confirm-password"
             type="password"
             required
-            v-model="user.confirmPassword"
+            v-model="formData.confirmPassword"
             :placeholder="t('user.PASSWORD-CONFIRM')"
           />
         </div>
@@ -45,6 +45,9 @@
 <script lang="ts">
   import { defineComponent, reactive, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
+  import { useStore } from 'vuex'
+  import { IFormData } from '@/interfaces.ts'
+  import { USER_STORE } from '@/store/constants'
 
   export default defineComponent({
     name: 'UserForm',
@@ -56,21 +59,25 @@
       },
     },
     setup() {
-      const user = reactive({
+      const formData: IFormData = reactive({
         username: '',
         email: '',
         password: '',
         confirmPassword: '',
       })
       const { t } = useI18n()
-      function onSubmit(action: string) {
-        console.log(action, user)
+      const store = useStore()
+      function onSubmit(actionType: string) {
+        return store.dispatch(USER_STORE.ACTIONS.LOGIN_OR_REGISTER, {
+          actionType,
+          formData,
+        })
       }
 
       return {
         errorMessage: ref(null),
         t,
-        user,
+        formData,
         onSubmit,
       }
     },
