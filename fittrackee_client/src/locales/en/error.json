@@ -1,5 +1,6 @@
 {
-  "not-found": {
+  "UNKNOWN": "Error. Please try again or contact the administrator.",
+  "NOT_FOUND": {
     "PAGE": "Page not found"
   }
 }

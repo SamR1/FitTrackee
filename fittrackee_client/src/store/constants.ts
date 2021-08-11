@@ -1,4 +1,4 @@
-import { RootMutations } from '@/store/modules/root/enums'
+import { RootGetters, RootMutations } from '@/store/modules/root/enums'
 import {
   UserActions,
   UserGetters,
@@ -6,6 +6,7 @@ import {
 } from '@/store/modules/user/enums'
 
 export const ROOT_STORE = {
+  GETTERS: RootGetters,
   MUTATIONS: RootMutations,
 }
 

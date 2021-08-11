@@ -2,7 +2,7 @@
   <div class="not-found">
     <Error
       title="404"
-      :message="t('error.not-found.PAGE')"
+      :message="t('error.NOT_FOUND.PAGE')"
       :button-text="t('common.HOME')"
     />
   </div>

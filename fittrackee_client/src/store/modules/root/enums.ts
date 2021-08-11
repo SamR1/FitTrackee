@@ -1,3 +1,9 @@
+export enum RootGetters {
+  ERROR_MESSAGE = 'ERROR_MESSAGE',
+}
+
 export enum RootMutations {
+  EMPTY_ERROR_MESSAGE = 'EMPTY_ERROR_MESSAGE',
+  SET_ERROR_MESSAGE = 'SET_ERROR_MESSAGE',
   UPDATE_LANG = 'UPDATE_LANG',
 }

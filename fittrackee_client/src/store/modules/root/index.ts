@@ -1,4 +1,5 @@
 import { Module, ModuleTree } from 'vuex'
+import { getters } from '@/store/modules/root/getters'
 import { IRootState } from '@/store/modules/root/interfaces'
 import { mutations } from '@/store/modules/root/mutations'
 import { state } from '@/store/modules/root/state.ts'
@@ -10,6 +11,7 @@ const modules: ModuleTree<IRootState> = {
 
 const root: Module<IRootState, IRootState> = {
   state,
+  getters,
   mutations,
   modules,
 }

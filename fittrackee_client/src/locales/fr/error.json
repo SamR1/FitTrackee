@@ -1,5 +1,6 @@
 {
-  "not-found": {
+  "UNKNOWN": "Erreur. Veuillez réessayer ou contacter l'administrateur.",
+  "NOT_FOUND": {
     "PAGE": "Page introuvable"
   }
 }

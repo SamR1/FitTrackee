@@ -37,7 +37,7 @@ export interface IUserState {
 }
 
 export interface IUserGetters {
-  [USER_STORE.GETTERS.AUTH_TOKEN](state: IUserState): string
+  [USER_STORE.GETTERS.AUTH_TOKEN](state: IUserState): string | null
   [USER_STORE.GETTERS.IS_AUTHENTICATED](state: IUserState): boolean
 }
 

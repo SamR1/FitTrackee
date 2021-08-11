@@ -43,11 +43,12 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive, ref } from 'vue'
+  import { computed, defineComponent, reactive } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useStore } from 'vuex'
+
   import { IFormData } from '@/interfaces.ts'
-  import { USER_STORE } from '@/store/constants'
+  import { ROOT_STORE, USER_STORE } from '@/store/constants'
 
   export default defineComponent({
     name: 'UserForm',
@@ -75,7 +76,9 @@
       }
 
       return {
-        errorMessage: ref(null),
+        errorMessage: computed(
+          () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGE]
+        ),
         t,
         formData,
         onSubmit,
