@@ -45,10 +45,10 @@
 <script lang="ts">
   import { computed, defineComponent, reactive } from 'vue'
   import { useI18n } from 'vue-i18n'
-  import { useStore } from 'vuex'
 
   import { IFormData } from '@/interfaces.ts'
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
+  import { useStore } from '@/use/useStore'
 
   export default defineComponent({
     name: 'UserForm',

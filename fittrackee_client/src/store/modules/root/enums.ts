@@ -1,5 +1,6 @@
 export enum RootGetters {
   ERROR_MESSAGE = 'ERROR_MESSAGE',
+  LANGUAGE = 'LANGUAGE',
 }
 
 export enum RootMutations {

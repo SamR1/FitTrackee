@@ -8,4 +8,5 @@ export interface IRootState {
 
 export interface IRootGetters {
   [ROOT_STORE.GETTERS.ERROR_MESSAGE](state: IRootState): string | null
+  [ROOT_STORE.GETTERS.LANGUAGE](state: IRootState): string
 }

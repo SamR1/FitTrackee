@@ -56,12 +56,13 @@
 </template>
 
 <script lang="ts">
-  import { computed, defineComponent, ref } from 'vue'
+  import { ComputedRef, computed, defineComponent, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
-  import { useStore } from 'vuex'
 
   import { IDropdownOption } from '@/interfaces'
-  import { USER_STORE } from '@/store/constants'
+  import { ROOT_STORE, USER_STORE } from '@/store/constants'
+  import { useStore } from '@/use/useStore'
+  import { IAuthUserProfile } from '@/store/modules/user/interfaces'
   import Dropdown from '@/components/Common/Dropdown.vue'
 
   export default defineComponent({
@@ -75,6 +76,15 @@
       const availableLanguages = availableLocales.map((l) => {
         return { label: l.toUpperCase(), value: l }
       })
+      const authUser: ComputedRef<IAuthUserProfile> = computed(
+        () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
+      )
+      const isAuthenticated: ComputedRef<boolean> = computed(
+        () => store.getters[USER_STORE.GETTERS.IS_AUTHENTICATED]
+      )
+      const language: ComputedRef<string> = computed(
+        () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
+      )
       let isMenuOpen = ref(false)
       function openMenu() {
         isMenuOpen.value = true
@@ -84,19 +94,15 @@
       }
       function updateLanguage(option: IDropdownOption) {
         locale.value = option.value.toString()
-        store.commit('UPDATE_LANG', option.value)
+        store.commit(ROOT_STORE.MUTATIONS.UPDATE_LANG, option.value)
       }
 
       return {
         availableLanguages,
-        authUser: computed(
-          () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
-        ),
-        isAuthenticated: computed(
-          () => store.getters[USER_STORE.GETTERS.IS_AUTHENTICATED]
-        ),
+        authUser,
+        isAuthenticated,
         isMenuOpen,
-        language: computed(() => store.state.language),
+        language,
         t,
         openMenu,
         closeMenu,

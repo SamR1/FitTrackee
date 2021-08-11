@@ -1,5 +1,5 @@
 export interface IDropdownOption {
-  value: string | number
+  value: string
   label: string
 }
 

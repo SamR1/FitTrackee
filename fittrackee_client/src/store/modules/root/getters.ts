@@ -6,4 +6,7 @@ export const getters: GetterTree<IRootState, IRootState> & IRootGetters = {
   [ROOT_STORE.GETTERS.ERROR_MESSAGE]: (state: IRootState) => {
     return state.errorMessage
   },
+  [ROOT_STORE.GETTERS.LANGUAGE]: (state: IRootState) => {
+    return state.language
+  },
 }
