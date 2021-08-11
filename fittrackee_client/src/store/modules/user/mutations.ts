@@ -1,7 +1,8 @@
 import { MutationTree } from 'vuex'
-import { TUserMutations } from '@/store/modules/user/types'
+
 import { USER_STORE } from '@/store/constants'
 import { IAuthUserProfile, IUserState } from '@/store/modules/user/interfaces'
+import { TUserMutations } from '@/store/modules/user/types'
 
 export const mutations: MutationTree<IUserState> & TUserMutations = {
   [USER_STORE.MUTATIONS.UPDATE_AUTH_TOKEN](

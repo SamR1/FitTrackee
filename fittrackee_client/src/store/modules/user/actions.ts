@@ -1,14 +1,15 @@
 import { ActionContext, ActionTree } from 'vuex'
+
 import { ROOT_STORE, USER_STORE } from '@/store/constants'
+import { IRootState } from '@/store/modules/root/interfaces'
 import {
   ILoginOrRegisterData,
   IUserActions,
   IUserState,
 } from '@/store/modules/user/interfaces'
-import { IRootState } from '@/store/modules/root/interfaces'
 import { handleError } from '@/utils'
-import api from '@/api/defaultApi'
 import authApi from '@/api/authApi'
+import api from '@/api/defaultApi'
 import router from '@/router'
 
 export const actions: ActionTree<IUserState, IRootState> & IUserActions = {

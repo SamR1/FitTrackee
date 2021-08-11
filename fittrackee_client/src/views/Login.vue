@@ -13,6 +13,7 @@
 
 <script lang="ts">
   import { defineComponent } from 'vue'
+
   import BikePic from '@/components/BikePic.vue'
   import LoginForm from '@/components/User/LoginForm.vue'
 

@@ -1,4 +1,5 @@
 import { ActionContext } from 'vuex'
+
 import { IFormData } from '@/interfaces'
 import { USER_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/interfaces'
@@ -36,15 +37,15 @@ export interface IUserState {
   authUserProfile: IAuthUserProfile
 }
 
-export interface IUserGetters {
-  [USER_STORE.GETTERS.AUTH_TOKEN](state: IUserState): string | null
-  [USER_STORE.GETTERS.AUTH_USER_PROFILE](state: IUserState): IAuthUserProfile
-  [USER_STORE.GETTERS.IS_AUTHENTICATED](state: IUserState): boolean
-}
-
 export interface IUserActions {
   [USER_STORE.ACTIONS.LOGIN_OR_REGISTER](
     context: ActionContext<IUserState, IRootState>,
     data: ILoginOrRegisterData
   ): void
+}
+
+export interface IUserGetters {
+  [USER_STORE.GETTERS.AUTH_TOKEN](state: IUserState): string | null
+  [USER_STORE.GETTERS.AUTH_USER_PROFILE](state: IUserState): IAuthUserProfile
+  [USER_STORE.GETTERS.IS_AUTHENTICATED](state: IUserState): boolean
 }

@@ -1,4 +1,5 @@
 import { MutationTree } from 'vuex'
+
 import { ROOT_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/interfaces'
 import { TRootMutations } from '@/store/modules/root/types'

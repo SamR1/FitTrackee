@@ -1,4 +1,5 @@
 import { Module, ModuleTree } from 'vuex'
+
 import { getters } from '@/store/modules/root/getters'
 import { IRootState } from '@/store/modules/root/interfaces'
 import { mutations } from '@/store/modules/root/mutations'

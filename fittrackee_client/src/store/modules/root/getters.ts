@@ -1,4 +1,5 @@
 import { GetterTree } from 'vuex'
+
 import { ROOT_STORE } from '@/store/constants'
 import { IRootState, IRootGetters } from '@/store/modules/root/interfaces'
 

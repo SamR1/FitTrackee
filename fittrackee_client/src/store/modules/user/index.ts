@@ -1,4 +1,5 @@
 import { Module } from 'vuex'
+
 import { IRootState } from '@/store/modules/root/interfaces'
 import { actions } from '@/store/modules/user/actions'
 import { getters } from '@/store/modules/user/getters'

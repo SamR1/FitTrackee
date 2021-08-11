@@ -61,8 +61,8 @@
 
   import { IDropdownOption } from '@/interfaces'
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
-  import { useStore } from '@/use/useStore'
   import { IAuthUserProfile } from '@/store/modules/user/interfaces'
+  import { useStore } from '@/use/useStore'
   import Dropdown from '@/components/Common/Dropdown.vue'
 
   export default defineComponent({
