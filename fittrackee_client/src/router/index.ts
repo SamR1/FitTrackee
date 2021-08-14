@@ -3,7 +3,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import { USER_STORE } from '@/store/constants'
 import store from '@/store'
 import Dashboard from '@/views/DashBoard.vue'
-import Login from '@/views/Login.vue'
+import LoginOrRegister from '@/views/LoginOrRegister.vue'
 import NotFound from '@/views/NotFound.vue'
 
 const routes: Array<RouteRecordRaw> = [
@@ -15,7 +15,14 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/login',
     name: 'Login',
-    component: Login,
+    component: LoginOrRegister,
+    props: { action: 'login' },
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: LoginOrRegister,
+    props: { action: 'register' },
   },
   { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound },
 ]
@@ -31,12 +38,12 @@ router.beforeEach((to, from, next) => {
     .then(() => {
       if (
         store.getters[USER_STORE.GETTERS.IS_AUTHENTICATED] &&
-        ['/login'].includes(to.path)
+        ['/login', '/register'].includes(to.path)
       ) {
         return next('/')
       } else if (
         !store.getters[USER_STORE.GETTERS.IS_AUTHENTICATED] &&
-        !['/login'].includes(to.path)
+        !['/login', '/register'].includes(to.path)
       ) {
         const path =
           to.path === '/'

@@ -48,7 +48,9 @@
             </div>
           </div>
           <div class="nav-items-group" v-else>
-            <span class="nav-item">{{ t('user.REGISTER') }}</span>
+            <router-link class="nav-item" to="/register" @click="closeMenu">{{
+              t('user.REGISTER')
+            }}</router-link>
             <router-link class="nav-item" to="/login" @click="closeMenu">{{
               t('user.LOGIN')
             }}</router-link>

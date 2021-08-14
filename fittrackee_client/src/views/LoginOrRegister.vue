@@ -5,7 +5,7 @@
         <BikePic />
       </div>
       <div class="container-sub">
-        <LoginForm />
+        <LoginOrRegisterForm :action="action" />
       </div>
     </div>
   </div>
@@ -15,13 +15,19 @@
   import { defineComponent } from 'vue'
 
   import BikePic from '@/components/BikePic.vue'
-  import LoginForm from '@/components/User/LoginForm.vue'
+  import LoginOrRegisterForm from '@/components/User/LoginOrRegisterForm.vue'
 
   export default defineComponent({
     name: 'NavBar',
     components: {
       BikePic,
-      LoginForm,
+      LoginOrRegisterForm,
+    },
+    props: {
+      action: {
+        type: String,
+        required: true,
+      },
     },
   })
 </script>
