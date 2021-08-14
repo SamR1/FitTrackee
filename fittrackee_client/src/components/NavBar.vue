@@ -27,14 +27,15 @@
             <div class="nav-item">{{ t('statistics.STATISTICS') }}</div>
             <div class="nav-item">{{ t('administration.ADMIN') }}</div>
             <div class="nav-item">{{ t('workouts.ADD_WORKOUT') }}</div>
+            <div class="nav-item nav-separator" />
           </div>
         </div>
         <div class="nav-items-user-menu">
           <div class="nav-items-group" v-if="isAuthenticated">
-            <div class="nav-item">
+            <div class="nav-item nav-profile-img">
               <img
                 v-if="authUserPictureUrl !== ''"
-                class="nav-profile-img"
+                class="nav-profile-user-img"
                 alt="User picture"
                 :src="authUserPictureUrl"
               />
@@ -48,11 +49,11 @@
             </div>
           </div>
           <div class="nav-items-group" v-else>
-            <router-link class="nav-item" to="/register" @click="closeMenu">{{
-              t('user.REGISTER')
-            }}</router-link>
             <router-link class="nav-item" to="/login" @click="closeMenu">{{
               t('user.LOGIN')
+            }}</router-link>
+            <router-link class="nav-item" to="/register" @click="closeMenu">{{
+              t('user.REGISTER')
             }}</router-link>
           </div>
           <Dropdown
@@ -165,6 +166,7 @@
     a {
       &.router-link-exact-active {
         color: var(--nav-bar-link-active);
+        font-weight: bold;
       }
     }
 
@@ -232,16 +234,21 @@
       }
 
       .nav-profile-img {
-        border-radius: 50%;
-        height: 32px;
-        width: 32px;
-        object-fit: cover;
         margin-bottom: -$default-padding;
+        .nav-profile-user-img {
+          border-radius: 50%;
+          height: 32px;
+          width: 32px;
+          object-fit: cover;
+        }
+        .no-picture {
+          color: var(--app-a-color);
+          font-size: 1.7em;
+        }
       }
-      .no-picture {
-        color: var(--app-a-color);
-        font-size: 1.7em;
-        margin-bottom: -$default-padding;
+
+      .nav-separator {
+        display: none;
       }
     }
 
@@ -306,6 +313,17 @@
 
         .nav-item {
           padding: 7px 25px;
+        }
+
+        .nav-profile-img {
+          display: none;
+        }
+
+        .nav-separator {
+          display: flex;
+          border-top: solid 1px var(--nav-border-color);
+          margin: 0 $default-margin * 2;
+          padding: 0;
         }
       }
     }
