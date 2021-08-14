@@ -31,6 +31,17 @@
         </div>
         <div class="nav-items-user-menu">
           <div class="nav-items-group" v-if="isAuthenticated">
+            <div class="nav-item">
+              <img
+                v-if="authUserPictureUrl !== ''"
+                class="nav-profile-img"
+                alt="User picture"
+                :src="authUserPictureUrl"
+              />
+              <div v-else class="no-picture">
+                <i class="fa fa-user-circle-o" aria-hidden="true" />
+              </div>
+            </div>
             <div class="nav-item">{{ authUser.username }}</div>
             <div class="nav-item">{{ t('user.LOGOUT') }}</div>
           </div>
@@ -63,6 +74,7 @@
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
   import { IAuthUserProfile } from '@/store/modules/user/interfaces'
   import { useStore } from '@/use/useStore'
+  import { getApiUrl } from '@/utils'
   import Dropdown from '@/components/Common/Dropdown.vue'
 
   export default defineComponent({
@@ -73,6 +85,7 @@
     setup() {
       const { t, locale, availableLocales } = useI18n()
       const store = useStore()
+
       const availableLanguages = availableLocales.map((l) => {
         return { label: l.toUpperCase(), value: l }
       })
@@ -82,10 +95,18 @@
       const isAuthenticated: ComputedRef<boolean> = computed(
         () => store.getters[USER_STORE.GETTERS.IS_AUTHENTICATED]
       )
+      const authUserPictureUrl: ComputedRef<string> = computed(() =>
+        isAuthenticated.value && authUser.value.picture
+          ? `${getApiUrl()}/users/${
+              authUser.value.username
+            }/picture?${Date.now()}`
+          : ''
+      )
       const language: ComputedRef<string> = computed(
         () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
       )
       let isMenuOpen = ref(false)
+
       function openMenu() {
         isMenuOpen.value = true
       }
@@ -100,6 +121,7 @@
       return {
         availableLanguages,
         authUser,
+        authUserPictureUrl,
         isAuthenticated,
         isMenuOpen,
         language,
@@ -165,6 +187,7 @@
       display: flex;
       flex: 1;
       justify-content: space-between;
+      line-height: 1.8em;
       width: 100%;
 
       .nav-items-close {
@@ -193,6 +216,19 @@
           padding-left: 10px;
           width: 75px;
         }
+      }
+
+      .nav-profile-img {
+        border-radius: 50%;
+        height: 32px;
+        width: 32px;
+        object-fit: cover;
+        margin-bottom: -$default-padding;
+      }
+      .no-picture {
+        color: var(--app-a-color);
+        font-size: 1.7em;
+        margin-bottom: -$default-padding;
       }
     }
 
