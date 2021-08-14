@@ -13,6 +13,20 @@ import api from '@/api/defaultApi'
 import router from '@/router'
 
 export const actions: ActionTree<IUserState, IRootState> & IUserActions = {
+  [USER_STORE.ACTIONS.CHECK_AUTH_USER](
+    context: ActionContext<IUserState, IRootState>
+  ): void {
+    if (
+      window.localStorage.authToken &&
+      !context.getters[USER_STORE.GETTERS.IS_AUTHENTICATED]
+    ) {
+      context.commit(
+        USER_STORE.MUTATIONS.UPDATE_AUTH_TOKEN,
+        window.localStorage.authToken
+      )
+      context.dispatch(USER_STORE.ACTIONS.GET_USER_PROFILE)
+    }
+  },
   [USER_STORE.ACTIONS.GET_USER_PROFILE](
     context: ActionContext<IUserState, IRootState>
   ): void {

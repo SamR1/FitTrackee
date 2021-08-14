@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
+import { USER_STORE } from '@/store/constants'
+import store from '@/store'
 import Dashboard from '@/views/DashBoard.vue'
 import Login from '@/views/Login.vue'
 import NotFound from '@/views/NotFound.vue'
@@ -21,6 +23,34 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+})
+
+router.beforeEach((to, from, next) => {
+  store
+    .dispatch(USER_STORE.ACTIONS.CHECK_AUTH_USER)
+    .then(() => {
+      if (
+        store.getters[USER_STORE.GETTERS.IS_AUTHENTICATED] &&
+        ['/login'].includes(to.path)
+      ) {
+        return next('/')
+      } else if (
+        !store.getters[USER_STORE.GETTERS.IS_AUTHENTICATED] &&
+        !['/login'].includes(to.path)
+      ) {
+        const path =
+          to.path === '/'
+            ? { path: '/login' }
+            : { path: '/login', query: { from: to.fullPath } }
+        next(path)
+      } else {
+        next()
+      }
+    })
+    .catch((error) => {
+      console.error(error)
+      next()
+    })
 })
 
 export default router

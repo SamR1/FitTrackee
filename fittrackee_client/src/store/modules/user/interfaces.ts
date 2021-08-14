@@ -38,6 +38,9 @@ export interface IUserState {
 }
 
 export interface IUserActions {
+  [USER_STORE.ACTIONS.CHECK_AUTH_USER](
+    context: ActionContext<IUserState, IRootState>
+  ): void
   [USER_STORE.ACTIONS.GET_USER_PROFILE](
     context: ActionContext<IUserState, IRootState>
   ): void
