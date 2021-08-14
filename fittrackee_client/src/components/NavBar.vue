@@ -43,7 +43,9 @@
               </div>
             </div>
             <div class="nav-item">{{ authUser.username }}</div>
-            <div class="nav-item">{{ t('user.LOGOUT') }}</div>
+            <div class="nav-item nav-link" @click="logout">
+              {{ t('user.LOGOUT') }}
+            </div>
           </div>
           <div class="nav-items-group" v-else>
             <span class="nav-item">{{ t('user.REGISTER') }}</span>
@@ -117,6 +119,9 @@
         locale.value = option.value.toString()
         store.commit(ROOT_STORE.MUTATIONS.UPDATE_LANG, option.value)
       }
+      function logout() {
+        store.dispatch(USER_STORE.ACTIONS.LOGOUT)
+      }
 
       return {
         availableLanguages,
@@ -129,6 +134,7 @@
         openMenu,
         closeMenu,
         updateLanguage,
+        logout,
       }
     },
   })
@@ -216,6 +222,11 @@
           padding-left: 10px;
           width: 75px;
         }
+      }
+
+      .nav-link {
+        color: var(--app-a-color);
+        cursor: pointer;
       }
 
       .nav-profile-img {

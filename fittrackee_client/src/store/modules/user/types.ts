@@ -2,13 +2,19 @@ import { Store as VuexStore, CommitOptions, DispatchOptions } from 'vuex'
 
 import { USER_STORE } from '@/store/constants'
 import {
+  IAuthUserProfile,
   IUserActions,
   IUserGetters,
   IUserState,
 } from '@/store/modules/user/interfaces'
 
 export type TUserMutations<S = IUserState> = {
+  [USER_STORE.MUTATIONS.CLEAR_AUTH_USER_TOKEN](state: S): void
   [USER_STORE.MUTATIONS.UPDATE_AUTH_TOKEN](state: S, authToken: string): void
+  [USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE](
+    state: S,
+    authUserProfile: IAuthUserProfile
+  ): void
 }
 
 export type TUserStoreModule<S = IUserState> = Omit<

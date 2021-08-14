@@ -1,6 +1,7 @@
 export enum UserActions {
   GET_USER_PROFILE = 'GET_USER_PROFILE',
   LOGIN_OR_REGISTER = 'LOGIN_OR_REGISTER',
+  LOGOUT = 'LOGOUT',
 }
 
 export enum UserGetters {
@@ -10,6 +11,7 @@ export enum UserGetters {
 }
 
 export enum UserMutations {
+  CLEAR_AUTH_USER_TOKEN = 'CLEAR_AUTH_USER_TOKEN',
   UPDATE_AUTH_TOKEN = 'UPDATE_AUTH_TOKEN',
   UPDATE_AUTH_USER_PROFILE = 'UPDATE_AUTH_USER_PROFILE',
 }

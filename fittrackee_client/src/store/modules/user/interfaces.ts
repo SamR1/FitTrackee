@@ -38,9 +38,15 @@ export interface IUserState {
 }
 
 export interface IUserActions {
+  [USER_STORE.ACTIONS.GET_USER_PROFILE](
+    context: ActionContext<IUserState, IRootState>
+  ): void
   [USER_STORE.ACTIONS.LOGIN_OR_REGISTER](
     context: ActionContext<IUserState, IRootState>,
     data: ILoginOrRegisterData
+  ): void
+  [USER_STORE.ACTIONS.LOGOUT](
+    context: ActionContext<IUserState, IRootState>
   ): void
 }
 

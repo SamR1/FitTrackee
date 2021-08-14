@@ -5,6 +5,10 @@ import { IAuthUserProfile, IUserState } from '@/store/modules/user/interfaces'
 import { TUserMutations } from '@/store/modules/user/types'
 
 export const mutations: MutationTree<IUserState> & TUserMutations = {
+  [USER_STORE.MUTATIONS.CLEAR_AUTH_USER_TOKEN](state: IUserState) {
+    state.authToken = null
+    state.authUserProfile = <IAuthUserProfile>{}
+  },
   [USER_STORE.MUTATIONS.UPDATE_AUTH_TOKEN](
     state: IUserState,
     authToken: string

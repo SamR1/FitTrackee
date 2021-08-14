@@ -52,4 +52,12 @@ export const actions: ActionTree<IUserState, IRootState> & IUserActions = {
       })
       .catch((error) => handleError(context, error))
   },
+  [USER_STORE.ACTIONS.LOGOUT](
+    context: ActionContext<IUserState, IRootState>
+  ): void {
+    localStorage.removeItem('authToken')
+    context.commit(USER_STORE.MUTATIONS.CLEAR_AUTH_USER_TOKEN)
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGE)
+    router.push('/login')
+  },
 }
