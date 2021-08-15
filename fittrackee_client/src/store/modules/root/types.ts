@@ -1,7 +1,11 @@
-import { Store as VuexStore, CommitOptions } from 'vuex'
+import { Store as VuexStore, CommitOptions, DispatchOptions } from 'vuex'
 
 import { ROOT_STORE } from '@/store/constants'
-import { IRootGetters, IRootState } from '@/store/modules/root/interfaces'
+import {
+  IRootActions,
+  IRootGetters,
+  IRootState,
+} from '@/store/modules/root/interfaces'
 
 export type TRootMutations<S = IRootState> = {
   [ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES](state: S): void
@@ -16,6 +20,12 @@ export type TRootStoreModule<S = IRootState> = Omit<
   VuexStore<S>,
   'commit' | 'getters' | 'dispatch'
 > & {
+  dispatch<K extends keyof IRootActions>(
+    key: K,
+    payload?: Parameters<IRootActions[K]>[1],
+    options?: DispatchOptions
+  ): ReturnType<IRootActions[K]>
+} & {
   getters: {
     [K in keyof IRootGetters]: ReturnType<IRootGetters[K]>
   }

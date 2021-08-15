@@ -7,8 +7,10 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent } from 'vue'
+  import { defineComponent, onBeforeMount } from 'vue'
 
+  import { ROOT_STORE } from '@/store/constants'
+  import { useStore } from '@/use/useStore'
   import Footer from '@/components/Footer.vue'
   import NavBar from '@/components/NavBar.vue'
 
@@ -17,6 +19,12 @@
     components: {
       Footer,
       NavBar,
+    },
+    setup() {
+      const store = useStore()
+      onBeforeMount(() =>
+        store.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_CONFIG)
+      )
     },
   })
 </script>

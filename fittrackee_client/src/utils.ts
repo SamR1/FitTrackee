@@ -14,7 +14,9 @@ export const getApiUrl = (): string => {
 const removeLastEndOfLine = (text: string): string => text.replace(/\n$/gm, '')
 const removeLastDot = (text: string): string => text.replace(/\.$/gm, '')
 export const handleError = (
-  context: ActionContext<IUserState, IRootState>,
+  context:
+    | ActionContext<IRootState, IRootState>
+    | ActionContext<IUserState, IRootState>,
   error: AxiosError | null,
   msg = 'UNKNOWN'
 ): void => {
