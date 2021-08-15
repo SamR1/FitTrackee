@@ -6,5 +6,6 @@
   "PASSWORD": "Password",
   "PASSWORD-CONFIRM": "Confirm Password",
   "REGISTER": "Register",
+  "REGISTER_DISABLED": "Sorry, registration is disabled.",
   "USERNAME": "Username"
 }

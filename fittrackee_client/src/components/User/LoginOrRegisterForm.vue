@@ -1,18 +1,25 @@
 <template>
   <div id="login-or-register-form">
     <div id="user-form">
-      <div class="form-box">
+      <div
+        class="form-box"
+        :class="{
+          disabled: registration_disabled,
+        }"
+      >
         <form @submit.prevent="onSubmit(action)">
           <div class="form-items">
             <input
               v-if="action === 'register'"
               id="username"
+              :disabled="registration_disabled"
               required
               v-model="formData.username"
               :placeholder="t('user.USERNAME')"
             />
             <input
               id="email"
+              :disabled="registration_disabled"
               required
               type="email"
               v-model="formData.email"
@@ -20,6 +27,7 @@
             />
             <input
               id="password"
+              :disabled="registration_disabled"
               required
               type="password"
               v-model="formData.password"
@@ -28,15 +36,22 @@
             <input
               v-if="action === 'register'"
               id="confirm-password"
+              :disabled="registration_disabled"
               type="password"
               required
               v-model="formData.password_conf"
               :placeholder="t('user.PASSWORD-CONFIRM')"
             />
           </div>
-          <button type="submit">{{ t(buttonText) }}</button>
+          <button type="submit" :disabled="registration_disabled">
+            {{ t(buttonText) }}
+          </button>
         </form>
         <ErrorMessage :message="errorMessages" v-if="errorMessages" />
+        <AlertMessage
+          message="user.REGISTER_DISABLED"
+          v-if="registration_disabled"
+        />
       </div>
     </div>
   </div>
@@ -49,12 +64,16 @@
 
   import { IFormData } from '@/interfaces'
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
+  import { IAppConfig } from '@/store/modules/root/interfaces'
   import { useStore } from '@/use/useStore'
+  import AlertMessage from '@/components/Common/AlertMessage.vue'
   import ErrorMessage from '@/components/Common/ErrorMessage.vue'
+  import router from '@/router'
 
   export default defineComponent({
     name: 'LoginOrRegisterForm',
     components: {
+      AlertMessage,
       ErrorMessage,
     },
     props: {
@@ -80,6 +99,14 @@
       const errorMessages: ComputedRef<string | string[] | null> = computed(
         () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
       )
+      const appConfig: ComputedRef<IAppConfig> = computed(
+        () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
+      )
+      const registration_disabled: ComputedRef<boolean> = computed(
+        () =>
+          props.action === 'register' &&
+          !appConfig.value.is_registration_enabled
+      )
 
       function onSubmit(actionType: string) {
         return store.dispatch(USER_STORE.ACTIONS.LOGIN_OR_REGISTER, {
@@ -102,10 +129,13 @@
       )
       return {
         t,
+        appConfig,
         buttonText,
         errorMessages,
         formData,
         onSubmit,
+        registration_disabled,
+        router,
       }
     },
   })

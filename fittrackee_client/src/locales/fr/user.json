@@ -7,5 +7,6 @@
   "PASSWORD": "Mot de passe",
   "PASSWORD-CONFIRM": "Confirmation du mot de passe",
   "REGISTER": "S'inscrire",
+  "REGISTER_DISABLED": "Désolé, les inscriptions sont désactivées.",
   "USERNAME": "Nom d'utilisateur"
 }
