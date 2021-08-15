@@ -34,7 +34,7 @@
               :placeholder="t('user.PASSWORD-CONFIRM')"
             />
           </div>
-          <button type="submit">{{ t('buttons.LOGIN') }}</button>
+          <button type="submit">{{ t(buttonText) }}</button>
         </form>
         <p v-if="errorMessage">
           {{ errorMessage }}
@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-  import { computed, defineComponent, reactive } from 'vue'
+  import { ComputedRef, computed, defineComponent, reactive } from 'vue'
   import { useI18n } from 'vue-i18n'
 
   import { IFormData } from '@/interfaces'
@@ -60,7 +60,7 @@
         required: true,
       },
     },
-    setup() {
+    setup(props) {
       const formData: IFormData = reactive({
         username: '',
         email: '',
@@ -69,6 +69,14 @@
       })
       const { t } = useI18n()
       const store = useStore()
+
+      const buttonText: ComputedRef<string> = computed(() =>
+        props.action === 'register' ? 'buttons.REGISTER' : 'buttons.LOGIN'
+      )
+      const errorMessage: ComputedRef<string | null> = computed(
+        () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGE]
+      )
+
       function onSubmit(actionType: string) {
         return store.dispatch(USER_STORE.ACTIONS.LOGIN_OR_REGISTER, {
           actionType,
@@ -77,10 +85,9 @@
       }
 
       return {
-        errorMessage: computed(
-          () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGE]
-        ),
         t,
+        buttonText,
+        errorMessage,
         formData,
         onSubmit,
       }
