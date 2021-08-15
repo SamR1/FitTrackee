@@ -10,12 +10,15 @@ export const getApiUrl = (): string => {
     : 'http://localhost:5000/api'
 }
 
+// TODO: update api error messages to remove these workarounds
+const removeLastEndOfLine = (text: string): string => text.replace(/\n$/gm, '')
+const removeLastDot = (text: string): string => text.replace(/\.$/gm, '')
 export const handleError = (
   context: ActionContext<IUserState, IRootState>,
   error: AxiosError | null,
-  msg = 'error.UNKNOWN'
+  msg = 'UNKNOWN'
 ): void => {
-  const errorMessage = !error
+  let errorMessages = !error
     ? msg
     : error.response
     ? error.response.data.message
@@ -24,5 +27,13 @@ export const handleError = (
     : error.message
     ? error.message
     : msg
-  context.commit(ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGE, errorMessage)
+  errorMessages = removeLastEndOfLine(errorMessages)
+  context.commit(
+    ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES,
+    errorMessages.includes('\n')
+      ? errorMessages
+          .split('\n')
+          .map((m: string) => `api.ERROR.${removeLastDot(m)}`)
+      : `api.ERROR.${removeLastDot(errorMessages)}`
+  )
 }

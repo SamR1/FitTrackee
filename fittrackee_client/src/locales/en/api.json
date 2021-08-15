@@ -1,0 +1,10 @@
+{
+  "ERROR": {
+    "UNKNOWN": "Error. Please try again or contact the administrator.",
+    "Invalid credentials": "Invalid credentials.",
+    "Password and password confirmation don't match": "Password and password confirmation don't match.",
+    "Password: 8 characters required": "Password: 8 characters required.",
+    "Username: 3 to 12 characters required": "Username: 3 to 12 characters required.",
+    "Valid email must be provided": "Valid email must be provided."
+  }
+}

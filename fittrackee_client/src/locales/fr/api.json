@@ -1,0 +1,10 @@
+{
+  "ERROR": {
+    "UNKNOWN": "Erreur. Veuillez réessayer ou contacter l'administrateur.",
+    "Invalid credentials": "Identifiants invalides.",
+    "Password and password confirmation don't match": "Les mots de passe saisis sont différents.",
+    "Password: 8 characters required": "8 caractères minimum pour le mot de passe.",
+    "Username: 3 to 12 characters required": "3 à 12 caractères requis pour le nom.",
+    "Valid email must be provided": "L'email fourni n'est pas valide."
+  }
+}

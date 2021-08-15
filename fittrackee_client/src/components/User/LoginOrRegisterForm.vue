@@ -36,9 +36,7 @@
           </div>
           <button type="submit">{{ t(buttonText) }}</button>
         </form>
-        <p v-if="errorMessage">
-          {{ errorMessage }}
-        </p>
+        <ErrorMessage :message="errorMessages" v-if="errorMessages" />
       </div>
     </div>
   </div>
@@ -51,9 +49,13 @@
   import { IFormData } from '@/interfaces'
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
   import { useStore } from '@/use/useStore'
+  import ErrorMessage from '@/components/Common/ErrorMessage.vue'
 
   export default defineComponent({
     name: 'LoginForm',
+    components: {
+      ErrorMessage,
+    },
     props: {
       action: {
         type: String,
@@ -73,8 +75,8 @@
       const buttonText: ComputedRef<string> = computed(() =>
         props.action === 'register' ? 'buttons.REGISTER' : 'buttons.LOGIN'
       )
-      const errorMessage: ComputedRef<string | null> = computed(
-        () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGE]
+      const errorMessages: ComputedRef<string | string[] | null> = computed(
+        () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
       )
 
       function onSubmit(actionType: string) {
@@ -87,7 +89,7 @@
       return {
         t,
         buttonText,
-        errorMessage,
+        errorMessages,
         formData,
         onSubmit,
       }
@@ -119,6 +121,7 @@
 
     @media screen and (max-width: $medium-limit) {
       height: auto;
+      margin-bottom: 50px;
     }
   }
 </style>
