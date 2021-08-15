@@ -20,6 +20,12 @@ export const mutations: MutationTree<IRootState> & TRootMutations = {
   ) {
     state.application.config = config
   },
+  [ROOT_STORE.MUTATIONS.UPDATE_APPLICATION_LOADING](
+    state: IRootState,
+    loading: boolean
+  ) {
+    state.appLoading = loading
+  },
   [ROOT_STORE.MUTATIONS.UPDATE_LANG](state: IRootState, language: string) {
     state.language = language
   },

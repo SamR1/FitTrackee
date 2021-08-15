@@ -6,4 +6,5 @@ export const state: IRootState = {
   language: 'en',
   errorMessages: null,
   application: <IApplication>{},
+  appLoading: false,
 }

@@ -10,6 +10,7 @@ export const actions: ActionTree<IRootState, IRootState> & IRootActions = {
     context: ActionContext<IRootState, IRootState>
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(ROOT_STORE.MUTATIONS.UPDATE_APPLICATION_LOADING, true)
     authApi
       .get('config')
       .then((res) => {
@@ -23,5 +24,8 @@ export const actions: ActionTree<IRootState, IRootState> & IRootActions = {
         }
       })
       .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(ROOT_STORE.MUTATIONS.UPDATE_APPLICATION_LOADING, false)
+      )
   },
 }

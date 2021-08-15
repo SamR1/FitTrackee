@@ -28,6 +28,7 @@ export interface IRootState {
   language: string
   errorMessages: string | string[] | null
   application: IApplication
+  appLoading: boolean
 }
 
 export interface IRootActions {
@@ -37,6 +38,8 @@ export interface IRootActions {
 }
 
 export interface IRootGetters {
+  [ROOT_STORE.GETTERS.APP_CONFIG](state: IRootState): IAppConfig
+  [ROOT_STORE.GETTERS.APP_LOADING](state: IRootState): boolean
   [ROOT_STORE.GETTERS.ERROR_MESSAGES](
     state: IRootState
   ): string | string[] | null

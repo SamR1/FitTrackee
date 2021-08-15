@@ -1,5 +1,6 @@
 {
   "UNKNOWN": "Erreur. Veuillez réessayer ou contacter l'administrateur.",
+  "APP_ERROR": "L'application semble rencontrer quelques problèmes.<br />Veuillez réessayer plus tard ou contacter l'administrateur.",
   "NOT_FOUND": {
     "PAGE": "Page introuvable"
   }
