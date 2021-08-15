@@ -1,5 +1,5 @@
 <template>
-  <div id="login-form">
+  <div id="login-or-register-form">
     <div id="user-form">
       <div class="form-box">
         <form @submit.prevent="onSubmit(action)">
@@ -43,8 +43,9 @@
 </template>
 
 <script lang="ts">
-  import { ComputedRef, computed, defineComponent, reactive } from 'vue'
+  import { ComputedRef, computed, defineComponent, reactive, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
+  import { useRoute } from 'vue-router'
 
   import { IFormData } from '@/interfaces'
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
@@ -52,7 +53,7 @@
   import ErrorMessage from '@/components/Common/ErrorMessage.vue'
 
   export default defineComponent({
-    name: 'LoginForm',
+    name: 'LoginOrRegisterForm',
     components: {
       ErrorMessage,
     },
@@ -70,6 +71,7 @@
         password_conf: '',
       })
       const { t } = useI18n()
+      const route = useRoute()
       const store = useStore()
 
       const buttonText: ComputedRef<string> = computed(() =>
@@ -85,7 +87,19 @@
           formData,
         })
       }
-
+      function resetFormData() {
+        formData.username = ''
+        formData.email = ''
+        formData.password = ''
+        formData.password_conf = ''
+      }
+      watch(
+        () => route.path,
+        async () => {
+          store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+          resetFormData()
+        }
+      )
       return {
         t,
         buttonText,
@@ -100,7 +114,7 @@
 <style scoped lang="scss">
   @import '~@/scss/base';
 
-  #login-form {
+  #login-or-register-form {
     display: flex;
     align-items: center;
 
