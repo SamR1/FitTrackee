@@ -1,6 +1,8 @@
 <template>
   <NavBar />
-  <router-view />
+  <div class="app-container">
+    <router-view />
+  </div>
   <Footer />
 </template>
 
@@ -21,4 +23,7 @@
 
 <style lang="scss">
   @import '~@/scss/base';
+  .app-container {
+    height: $app-height;
+  }
 </style>

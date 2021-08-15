@@ -1,5 +1,5 @@
 <template>
-  <div id="login">
+  <div id="loginOrRegister">
     <div class="container">
       <div class="container-sub">
         <BikePic />
@@ -35,14 +35,15 @@
 <style lang="scss">
   @import '~@/scss/base';
 
-  #login {
-    height: 84vh;
+  #loginOrRegister {
+    height: 100%;
+
     .container {
       display: flex;
       flex-direction: row;
-      flex-wrap: wrap;
       justify-content: space-evenly;
 
+      height: 100%;
       margin-bottom: $default-margin * 2;
 
       .container-sub {
@@ -50,9 +51,7 @@
       }
 
       @media screen and (max-width: $medium-limit) {
-        flex-direction: column;
-        flex-wrap: nowrap;
-
+        display: block;
         .container-sub {
           .bike-img {
             margin-top: $default-margin * 1.5;

@@ -25,11 +25,7 @@
     justify-content: center;
 
     padding: $default-padding;
-    height: calc(100vh - 100px);
-
-    @media screen and (max-width: $medium-limit) {
-      height: auto;
-    }
+    height: 100%;
 
     .bike-img {
       max-width: 40%;

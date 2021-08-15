@@ -6,6 +6,11 @@ $medium-limit: 1000px;
 $small-limit: 500px;
 
 /*
+* === HEIGHT ===
+*/
+$app-height: calc(100vh - 130px);
+
+/*
 * === PADDING / MARGIN ===
 */
 $default-padding: 10px;

@@ -101,10 +101,9 @@
   #login-form {
     display: flex;
     align-items: center;
-    height: calc(100vh - 100px);
 
-    border-radius: 4px;
     margin: $default-margin 0;
+    height: 100%;
 
     #user-form {
       width: 60%;
