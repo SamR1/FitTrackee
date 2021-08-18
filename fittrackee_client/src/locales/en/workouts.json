@@ -1,4 +1,6 @@
 {
   "ADD_WORKOUT": "Add workout",
-  "WORKOUTS": "Workouts"
+  "KM": "km",
+  "SPORT": "sport | sports",
+  "WORKOUT": "workout | workouts"
 }

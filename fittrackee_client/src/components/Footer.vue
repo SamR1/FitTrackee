@@ -67,7 +67,7 @@
       }
     }
 
-    @media screen and (max-width: $small-limit) {
+    @media screen and (max-width: $x-small-limit) {
       .footer-items {
         font-size: 0.85em;
 

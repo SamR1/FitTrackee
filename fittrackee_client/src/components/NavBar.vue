@@ -23,7 +23,9 @@
             <router-link class="nav-item" to="/">{{
               t('dashboard.DASHBOARD')
             }}</router-link>
-            <div class="nav-item">{{ t('workouts.WORKOUTS') }}</div>
+            <div class="nav-item">
+              {{ capitalize(t('workouts.WORKOUT', 1)) }}
+            </div>
             <div class="nav-item">{{ t('statistics.STATISTICS') }}</div>
             <div class="nav-item">{{ t('administration.ADMIN') }}</div>
             <div class="nav-item">{{ t('workouts.ADD_WORKOUT') }}</div>
@@ -79,7 +81,7 @@
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
   import { IAuthUserProfile } from '@/store/modules/user/interfaces'
   import { useStore } from '@/use/useStore'
-  import { getApiUrl } from '@/utils'
+  import { capitalize, getApiUrl } from '@/utils'
   import Dropdown from '@/components/Common/Dropdown.vue'
 
   export default defineComponent({
@@ -134,6 +136,7 @@
         isMenuOpen,
         language,
         t,
+        capitalize,
         openMenu,
         closeMenu,
         updateLanguage,

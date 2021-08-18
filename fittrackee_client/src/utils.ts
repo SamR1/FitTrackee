@@ -7,7 +7,7 @@ import { IRootState } from '@/store/modules/root/interfaces'
 export const getApiUrl = (): string => {
   return process.env.NODE_ENV === 'production'
     ? '/api'
-    : 'http://localhost:5000/api'
+    : `${process.env.VUE_APP_API_URL}/api/`
 }
 
 // TODO: update api error messages to remove these workarounds
@@ -39,3 +39,6 @@ export const handleError = (
       : `api.ERROR.${removeLastDot(errorMessages)}`
   )
 }
+
+export const capitalize = (text: string): string =>
+  text.charAt(0).toUpperCase() + text.slice(1)

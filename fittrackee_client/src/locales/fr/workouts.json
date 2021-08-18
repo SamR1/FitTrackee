@@ -1,4 +1,6 @@
 {
   "ADD_WORKOUT": "Ajouter une séance",
-  "WORKOUTS": "Séances"
+  "KM": "km",
+  "SPORT": "sport | sports",
+  "WORKOUT": "séance | séances"
 }
