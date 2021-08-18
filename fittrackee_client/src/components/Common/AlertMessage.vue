@@ -28,7 +28,7 @@
     background: var(--alert-background-color);
     color: var(--alert-color);
 
-    border-radius: 4px;
+    border-radius: $border-radius;
 
     margin: $default-margin;
     padding: $default-padding;

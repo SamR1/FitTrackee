@@ -21,7 +21,7 @@
 
   .card {
     border: solid 1px var(--card-border-color);
-    border-radius: 4px;
+    border-radius: $border-radius;
     margin: $default-margin;
     padding: $default-padding $default-padding * 2;
   }

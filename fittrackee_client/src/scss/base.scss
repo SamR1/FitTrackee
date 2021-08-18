@@ -24,7 +24,7 @@ a {
 }
 
 input {
-  border-radius: 0;
+  border-radius: $border-radius;
   border: solid 1px var(--input-border-color);
 
   &:disabled {
@@ -40,7 +40,7 @@ label {
 button {
   background: var(--app-background-color);
   border: solid 1px var(--app-color);
-  border-radius: 0;
+  border-radius: $border-radius;
   box-shadow: 2px 2px 2px var(--app-shadow-color);
   color: var(--app-color);
   padding: 6px 14px;
