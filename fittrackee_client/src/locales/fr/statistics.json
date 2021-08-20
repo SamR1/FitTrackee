@@ -2,6 +2,8 @@
   "workouts": "séances",
   "distance": "distance",
   "duration": "durée",
+  "ascent": "dénivelé+",
+  "descent": "dénivelé-",
   "month": "mois",
   "Statistics": "Statistiques",
   "year": "année",
