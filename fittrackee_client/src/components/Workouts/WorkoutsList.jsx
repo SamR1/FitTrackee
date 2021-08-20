@@ -21,6 +21,8 @@ export default class WorkoutsList extends React.PureComponent {
                 <th scope="col">{t('workouts:Duration')}</th>
                 <th scope="col">{t('workouts:Ave. speed')}</th>
                 <th scope="col">{t('workouts:Max. speed')}</th>
+                <th scope="col">{t('workouts:Ascent')}</th>
+                <th scope="col">{t('workouts:Descent')}</th>
               </tr>
             </thead>
             <tbody>
@@ -84,6 +86,18 @@ export default class WorkoutsList extends React.PureComponent {
                         {t('workouts:Max. speed')}
                       </span>
                       {workout.max_speed} km/h
+                    </td>
+                    <td className="text-right">
+                      <span className="heading-span-absolute">
+                        {t('workouts:Ascent')}
+                      </span>
+                      {workout.ascent} m
+                    </td>
+                    <td className="text-right">
+                      <span className="heading-span-absolute">
+                        {t('workouts:Descent')}
+                      </span>
+                      {workout.descent} m
                     </td>
                   </tr>
                 ))}

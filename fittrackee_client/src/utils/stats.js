@@ -39,6 +39,10 @@ export const formatValue = (displayedData, value) =>
     ? `${value.toFixed(2)} km`
     : displayedData === 'duration'
     ? formatDuration(value)
+    : displayedData === 'ascent'
+    ? `${value.toFixed(2)} km`
+    : displayedData === 'descent'
+    ? `${value.toFixed(2)} km`
     : value
 
 const dateIncrement = (duration, day) => {
@@ -69,6 +73,8 @@ export const formatStats = (stats, sports, params, displayedSports, weekm) => {
   const nbWorkoutsStats = []
   const distanceStats = []
   const durationStats = []
+  const ascentStats = []
+  const descentStats = []
 
   for (
     let day = startDate(params.duration, params.start, weekm);
@@ -83,6 +89,8 @@ export const formatStats = (stats, sports, params, displayedSports, weekm) => {
     const dataNbWorkouts = { date: xAxis }
     const dataDistance = { date: xAxis }
     const dataDuration = { date: xAxis }
+    const dataAscent = { date: xAxis }
+    const dataDescent = { date: xAxis }
 
     if (stats[date]) {
       Object.keys(stats[date])
@@ -94,17 +102,23 @@ export const formatStats = (stats, sports, params, displayedSports, weekm) => {
           dataNbWorkouts[sportLabel] = stats[date][sportId].nb_workouts
           dataDistance[sportLabel] = stats[date][sportId].total_distance
           dataDuration[sportLabel] = stats[date][sportId].total_duration
+          dataAscent[sportLabel] = stats[date][sportId].total_ascent
+          dataDescent[sportLabel] = stats[date][sportId].total_descent
           return null
         })
     }
     nbWorkoutsStats.push(dataNbWorkouts)
     distanceStats.push(dataDistance)
     durationStats.push(dataDuration)
+    ascentStats.push(dataAscent)
+    descentStats.push(dataDescent)
   }
 
   return {
     workouts: nbWorkoutsStats,
     distance: distanceStats,
     duration: durationStats,
+    ascent: ascentStats,
+    descent: descentStats,
   }
 }

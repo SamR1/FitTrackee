@@ -67,6 +67,8 @@ def get_workouts(
                         'nb_workouts': 0,
                         'total_distance': 0.0,
                         'total_duration': 0,
+                        'total_ascent': 0.0,
+                        'total_descent': 0.0,
                     }
                 workouts_list_by_sport[sport_id]['nb_workouts'] += 1
                 workouts_list_by_sport[sport_id]['total_distance'] += float(
@@ -75,6 +77,12 @@ def get_workouts(
                 workouts_list_by_sport[sport_id][
                     'total_duration'
                 ] += convert_timedelta_to_integer(workout.moving)
+                workouts_list_by_sport[sport_id]['total_ascent'] += float(
+                    workout.ascent
+                )
+                workouts_list_by_sport[sport_id]['total_descent'] += float(
+                    workout.descent
+                )
 
             # filter_type == 'by_time'
             else:
@@ -110,6 +118,8 @@ def get_workouts(
                         'nb_workouts': 0,
                         'total_distance': 0.0,
                         'total_duration': 0,
+                        'total_ascent': 0.0,
+                        'total_descent': 0.0,
                     }
                 workouts_list_by_time[time_period][sport_id][
                     'nb_workouts'
@@ -119,8 +129,15 @@ def get_workouts(
                 ] += float(workout.distance)
                 workouts_list_by_time[time_period][sport_id][
                     'total_duration'
-                ] += convert_timedelta_to_integer(workout.moving)
-
+                ] += convert_timedelta_to_integer(workout.moving)            
+                if workout.ascent:
+                    workouts_list_by_time[time_period][sport_id][
+                        'total_ascent'
+                    ] += float(workout.ascent / 1000)
+                if workout.descent:
+                    workouts_list_by_time[time_period][sport_id][
+                        'total_descent'
+                    ] += float(workout.descent / 1000)
         return {
             'status': 'success',
             'data': {

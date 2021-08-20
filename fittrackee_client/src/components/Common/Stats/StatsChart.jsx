@@ -56,6 +56,24 @@ export default class StatsCharts extends React.PureComponent {
           <label className="radioLabel col">
             <input
               type="radio"
+              name="ascent"
+              checked={displayedData === 'ascent'}
+              onChange={e => this.handleRadioChange(e)}
+            />
+            {t('statistics:ascent')}
+          </label>
+          <label className="radioLabel col">
+            <input
+              type="radio"
+              name="descent"
+              checked={displayedData === 'descent'}
+              onChange={e => this.handleRadioChange(e)}
+            />
+            {t('statistics:descent')}
+          </label>
+          <label className="radioLabel col">
+            <input
+              type="radio"
               name="workouts"
               checked={displayedData === 'workouts'}
               onChange={e => this.handleRadioChange(e)}
