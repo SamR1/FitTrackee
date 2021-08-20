@@ -33,12 +33,32 @@ def init_database(app: Flask) -> None:
     sport.img = '/img/sports/mountain-biking.png'
     sport.is_default = True
     db.session.add(sport)
+    sport = Sport(label='Mountain Biking (Electric)')
+    sport.img = '/img/sports/electric-mountain-biking.png'
+    sport.is_default = True
+    db.session.add(sport)
     sport = Sport(label='Running')
     sport.img = '/img/sports/running.png'
     sport.is_default = True
     db.session.add(sport)
+    sport = Sport(label='Trail')
+    sport.img = '/img/sports/trail.png'
+    sport.is_default = True
+    db.session.add(sport)    
     sport = Sport(label='Walking')
     sport.img = '/img/sports/walking.png'
+    sport.is_default = True
+    db.session.add(sport)
+    sport = Sport(label='Skiing (Alpine)')
+    sport.img = '/img/sports/alpine-skiing.png'
+    sport.is_default = True
+    db.session.add(sport)
+    sport = Sport(label='Skiing (Cross Country)')
+    sport.img = '/img/sports/cross-country-skiing.png'
+    sport.is_default = True
+    db.session.add(sport)    
+    sport = Sport(label='Rowing')
+    sport.img = '/img/sports/rowing.png'
     sport.is_default = True
     db.session.add(sport)
     db.session.commit()
