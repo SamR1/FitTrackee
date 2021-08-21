@@ -28,7 +28,7 @@
   import { useI18n } from 'vue-i18n'
 
   import UserStatCard from '@/components/Dashboard/UserStatCard.vue'
-  import { IAuthUserProfile } from '@/store/modules/user/interfaces'
+  import { IAuthUserProfile } from '@/types/user'
 
   export default defineComponent({
     name: 'UserStats',

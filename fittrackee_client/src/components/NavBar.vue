@@ -78,9 +78,9 @@
   import { useI18n } from 'vue-i18n'
 
   import Dropdown from '@/components/Common/Dropdown.vue'
-  import { IDropdownOption } from '@/interfaces'
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
-  import { IAuthUserProfile } from '@/store/modules/user/interfaces'
+  import { IDropdownOption } from '@/types/forms'
+  import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { capitalize, getApiUrl } from '@/utils'
 

@@ -1,8 +1,9 @@
 import { MutationTree } from 'vuex'
 
 import { ROOT_STORE } from '@/store/constants'
-import { IAppConfig, IRootState } from '@/store/modules/root/interfaces'
+import { IRootState } from '@/store/modules/root/interfaces'
 import { TRootMutations } from '@/store/modules/root/types'
+import { IAppConfig } from '@/types/application'
 
 export const mutations: MutationTree<IRootState> & TRootMutations = {
   [ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES](state: IRootState) {

@@ -1,8 +1,9 @@
 import { MutationTree } from 'vuex'
 
 import { USER_STORE } from '@/store/constants'
-import { IAuthUserProfile, IUserState } from '@/store/modules/user/interfaces'
+import { IUserState } from '@/store/modules/user/interfaces'
 import { TUserMutations } from '@/store/modules/user/types'
+import { IAuthUserProfile } from '@/types/user'
 
 export const mutations: MutationTree<IUserState> & TUserMutations = {
   [USER_STORE.MUTATIONS.CLEAR_AUTH_USER_TOKEN](state: IUserState) {

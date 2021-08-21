@@ -11,7 +11,7 @@
 
   import UserStats from '@/components/Dashboard/UserStats.vue'
   import { USER_STORE } from '@/store/constants'
-  import { IAuthUserProfile } from '@/store/modules/user/interfaces'
+  import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   export default defineComponent({

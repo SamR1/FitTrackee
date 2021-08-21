@@ -5,11 +5,8 @@ import api from '@/api/defaultApi'
 import router from '@/router'
 import { ROOT_STORE, USER_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/interfaces'
-import {
-  ILoginOrRegisterData,
-  IUserActions,
-  IUserState,
-} from '@/store/modules/user/interfaces'
+import { IUserActions, IUserState } from '@/store/modules/user/interfaces'
+import { ILoginOrRegisterData } from '@/types/user'
 import { handleError } from '@/utils'
 
 export const actions: ActionTree<IUserState, IRootState> & IUserActions = {

@@ -64,10 +64,10 @@
 
   import AlertMessage from '@/components/Common/AlertMessage.vue'
   import ErrorMessage from '@/components/Common/ErrorMessage.vue'
-  import { IFormData } from '@/interfaces'
   import router from '@/router'
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
-  import { IAppConfig } from '@/store/modules/root/interfaces'
+  import { IAppConfig } from '@/types/application'
+  import { ILoginRegisterFormData } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   export default defineComponent({
@@ -83,7 +83,7 @@
       },
     },
     setup(props) {
-      const formData: IFormData = reactive({
+      const formData: ILoginRegisterFormData = reactive({
         username: '',
         email: '',
         password: '',

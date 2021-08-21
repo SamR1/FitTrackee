@@ -20,7 +20,7 @@
   import NavBar from '@/components/NavBar.vue'
   import NoConfig from '@/components/NoConfig.vue'
   import { ROOT_STORE } from '@/store/constants'
-  import { IAppConfig } from '@/store/modules/root/interfaces'
+  import { IAppConfig } from '@/types/application'
   import { useStore } from '@/use/useStore'
 
   export default defineComponent({
