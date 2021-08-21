@@ -3,6 +3,7 @@ import { ActionContext } from 'vuex'
 
 import { ROOT_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/interfaces'
+import { IStatisticsState } from '@/store/modules/statistics/interfaces'
 import { IUserState } from '@/store/modules/user/interfaces'
 
 export const getApiUrl = (): string => {
@@ -17,7 +18,8 @@ const removeLastDot = (text: string): string => text.replace(/\.$/gm, '')
 export const handleError = (
   context:
     | ActionContext<IRootState, IRootState>
-    | ActionContext<IUserState, IRootState>,
+    | ActionContext<IUserState, IRootState>
+    | ActionContext<IStatisticsState, IRootState>,
   error: AxiosError | null,
   msg = 'UNKNOWN'
 ): void => {

@@ -4,7 +4,6 @@ import { USER_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/interfaces'
 import { IAuthUserProfile, ILoginOrRegisterData } from '@/types/user'
 
-// STORE
 export interface IUserState {
   authToken: string | null
   authUserProfile: IAuthUserProfile

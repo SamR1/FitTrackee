@@ -5,9 +5,11 @@ import { getters } from '@/store/modules/root/getters'
 import { IRootState } from '@/store/modules/root/interfaces'
 import { mutations } from '@/store/modules/root/mutations'
 import { state } from '@/store/modules/root/state.ts'
+import statsModule from '@/store/modules/statistics'
 import userModule from '@/store/modules/user'
 
 const modules: ModuleTree<IRootState> = {
+  statsModule,
   userModule,
 }
 

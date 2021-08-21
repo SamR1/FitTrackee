@@ -4,6 +4,11 @@ import {
   RootMutations,
 } from '@/store/modules/root/enums'
 import {
+  StatisticsActions,
+  StatisticsGetters,
+  StatisticsMutations,
+} from '@/store/modules/statistics/enums'
+import {
   UserActions,
   UserGetters,
   UserMutations,
@@ -13,6 +18,12 @@ export const ROOT_STORE = {
   ACTIONS: RootActions,
   GETTERS: RootGetters,
   MUTATIONS: RootMutations,
+}
+
+export const STATS_STORE = {
+  ACTIONS: StatisticsActions,
+  GETTERS: StatisticsGetters,
+  MUTATIONS: StatisticsMutations,
 }
 
 export const USER_STORE = {
