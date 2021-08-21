@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <div class="card-title">
+    <div class="card-title" :class="{ 'without-title': withoutTitle }">
       <slot name="title"></slot>
     </div>
     <div class="card-content">
@@ -13,6 +13,12 @@
   import { defineComponent } from 'vue'
   export default defineComponent({
     name: 'Card',
+    props: {
+      withoutTitle: {
+        type: Boolean,
+        default: true,
+      },
+    },
   })
 </script>
 
@@ -24,5 +30,15 @@
     border-radius: $border-radius;
     margin: $default-margin;
     padding: $default-padding $default-padding * 2;
+
+    .without-title {
+      display: none;
+    }
+
+    .card-title {
+      font-weight: bold;
+      border-bottom: solid 1px var(--card-border-color);
+      padding-bottom: $default-padding;
+    }
   }
 </style>
