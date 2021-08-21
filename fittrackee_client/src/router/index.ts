@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
-import { USER_STORE } from '@/store/constants'
 import store from '@/store'
+import { USER_STORE } from '@/store/constants'
 import Dashboard from '@/views/DashBoard.vue'
 import LoginOrRegister from '@/views/LoginOrRegister.vue'
 import NotFound from '@/views/NotFound.vue'

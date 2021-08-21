@@ -62,13 +62,13 @@
   import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
 
+  import AlertMessage from '@/components/Common/AlertMessage.vue'
+  import ErrorMessage from '@/components/Common/ErrorMessage.vue'
   import { IFormData } from '@/interfaces'
+  import router from '@/router'
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
   import { IAppConfig } from '@/store/modules/root/interfaces'
   import { useStore } from '@/use/useStore'
-  import AlertMessage from '@/components/Common/AlertMessage.vue'
-  import ErrorMessage from '@/components/Common/ErrorMessage.vue'
-  import router from '@/router'
 
   export default defineComponent({
     name: 'LoginOrRegisterForm',

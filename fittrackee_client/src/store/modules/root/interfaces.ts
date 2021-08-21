@@ -1,5 +1,6 @@
-import { ROOT_STORE } from '@/store/constants'
 import { ActionContext } from 'vuex'
+
+import { ROOT_STORE } from '@/store/constants'
 
 export interface IAppStatistics {
   sports: number

@@ -1,8 +1,9 @@
 import { AxiosError } from 'axios'
 import { ActionContext } from 'vuex'
+
 import { ROOT_STORE } from '@/store/constants'
-import { IUserState } from '@/store/modules/user/interfaces'
 import { IRootState } from '@/store/modules/root/interfaces'
+import { IUserState } from '@/store/modules/user/interfaces'
 
 export const getApiUrl = (): string => {
   return process.env.NODE_ENV === 'production'

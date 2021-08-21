@@ -38,6 +38,8 @@
     "@vue/test-utils": "^2.0.0-0",
     "chai": "^4.1.2",
     "eslint": "^6.7.2",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-import": "^2.24.1",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-vue": "^7.0.0",
     "prettier": "^2.2.1",
@@ -56,12 +58,24 @@
       "eslint:recommended",
       "@vue/typescript/recommended",
       "@vue/prettier",
-      "@vue/prettier/@typescript-eslint"
+      "@vue/prettier/@typescript-eslint",
+      "plugin:import/recommended",
+      "plugin:import/typescript"
     ],
+    "settings": {
+      "import/resolver": "typescript"
+    },
     "parserOptions": {
       "ecmaVersion": 2020
     },
-    "rules": {},
+    "rules": {
+      "import/order": [
+        "error", {
+          "newlines-between": "always",
+          "alphabetize": { "order": "asc", "caseInsensitive": true}
+        }
+      ]
+    },
     "overrides": [
       {
         "files": [

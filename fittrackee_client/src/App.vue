@@ -15,13 +15,13 @@
 <script lang="ts">
   import { computed, ComputedRef, defineComponent, onBeforeMount } from 'vue'
 
-  import { ROOT_STORE } from '@/store/constants'
-  import { useStore } from '@/use/useStore'
-  import { IAppConfig } from '@/store/modules/root/interfaces'
-  import Footer from '@/components/Footer.vue'
   import Loader from '@/components/Common/Loader.vue'
+  import Footer from '@/components/Footer.vue'
   import NavBar from '@/components/NavBar.vue'
   import NoConfig from '@/components/NoConfig.vue'
+  import { ROOT_STORE } from '@/store/constants'
+  import { IAppConfig } from '@/store/modules/root/interfaces'
+  import { useStore } from '@/use/useStore'
 
   export default defineComponent({
     name: 'App',

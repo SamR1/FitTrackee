@@ -1,7 +1,7 @@
 import { createStore } from 'vuex'
 
-import { IRootState } from '@/store/modules/root/interfaces'
 import root from '@/store/modules/root'
+import { IRootState } from '@/store/modules/root/interfaces'
 
 const store = createStore<IRootState>(root)
 

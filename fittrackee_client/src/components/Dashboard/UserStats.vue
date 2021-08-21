@@ -27,8 +27,8 @@
   import { ComputedRef, PropType, defineComponent, computed } from 'vue'
   import { useI18n } from 'vue-i18n'
 
-  import { IAuthUserProfile } from '@/store/modules/user/interfaces'
   import UserStatCard from '@/components/Dashboard/UserStatCard.vue'
+  import { IAuthUserProfile } from '@/store/modules/user/interfaces'
 
   export default defineComponent({
     name: 'UserStats',

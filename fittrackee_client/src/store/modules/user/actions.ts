@@ -1,5 +1,8 @@
 import { ActionContext, ActionTree } from 'vuex'
 
+import authApi from '@/api/authApi'
+import api from '@/api/defaultApi'
+import router from '@/router'
 import { ROOT_STORE, USER_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/interfaces'
 import {
@@ -8,9 +11,6 @@ import {
   IUserState,
 } from '@/store/modules/user/interfaces'
 import { handleError } from '@/utils'
-import authApi from '@/api/authApi'
-import api from '@/api/defaultApi'
-import router from '@/router'
 
 export const actions: ActionTree<IUserState, IRootState> & IUserActions = {
   [USER_STORE.ACTIONS.CHECK_AUTH_USER](

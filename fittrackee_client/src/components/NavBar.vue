@@ -77,12 +77,12 @@
   import { ComputedRef, computed, defineComponent, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
 
+  import Dropdown from '@/components/Common/Dropdown.vue'
   import { IDropdownOption } from '@/interfaces'
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
   import { IAuthUserProfile } from '@/store/modules/user/interfaces'
   import { useStore } from '@/use/useStore'
   import { capitalize, getApiUrl } from '@/utils'
-  import Dropdown from '@/components/Common/Dropdown.vue'
 
   export default defineComponent({
     name: 'NavBar',
