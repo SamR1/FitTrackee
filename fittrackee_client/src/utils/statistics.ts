@@ -1,6 +1,7 @@
 import { format } from 'date-fns'
 
 import { genericObject } from '@/types/generic'
+import { ISport } from '@/types/sports'
 import {
   IStatisticsChartData,
   IStatisticsChartDataset,
@@ -9,7 +10,6 @@ import {
   TStatisticsDatasets,
   TStatisticsFromApi,
 } from '@/types/statistics'
-import { ISport } from '@/types/workouts'
 import { incrementDate, startDate } from '@/utils/dates'
 
 // date format from api

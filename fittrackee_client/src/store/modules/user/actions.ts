@@ -3,7 +3,7 @@ import { ActionContext, ActionTree } from 'vuex'
 import authApi from '@/api/authApi'
 import api from '@/api/defaultApi'
 import router from '@/router'
-import { ROOT_STORE, USER_STORE } from '@/store/constants'
+import { ROOT_STORE, SPORTS_STORE, USER_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
 import { IUserActions, IUserState } from '@/store/modules/user/types'
 import { ILoginOrRegisterData } from '@/types/user'
@@ -36,6 +36,7 @@ export const actions: ActionTree<IUserState, IRootState> & IUserActions = {
             USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE,
             res.data.data
           )
+          context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
         } else {
           handleError(context, null)
         }

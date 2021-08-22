@@ -3,6 +3,7 @@ import { ActionContext } from 'vuex'
 
 import { ROOT_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
+import { ISportsState } from '@/store/modules/sports/types'
 import { IStatisticsState } from '@/store/modules/statistics/types'
 import { IUserState } from '@/store/modules/user/types'
 
@@ -19,7 +20,8 @@ export const handleError = (
   context:
     | ActionContext<IRootState, IRootState>
     | ActionContext<IUserState, IRootState>
-    | ActionContext<IStatisticsState, IRootState>,
+    | ActionContext<IStatisticsState, IRootState>
+    | ActionContext<ISportsState, IRootState>,
   error: AxiosError | null,
   msg = 'UNKNOWN'
 ): void => {
