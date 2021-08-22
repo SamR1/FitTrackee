@@ -1,7 +1,7 @@
 import { GetterTree } from 'vuex'
 
 import { ROOT_STORE } from '@/store/constants'
-import { IRootState, IRootGetters } from '@/store/modules/root/interfaces'
+import { IRootGetters, IRootState } from '@/store/modules/root/types'
 
 export const getters: GetterTree<IRootState, IRootState> & IRootGetters = {
   [ROOT_STORE.GETTERS.APP_CONFIG]: (state: IRootState) => {

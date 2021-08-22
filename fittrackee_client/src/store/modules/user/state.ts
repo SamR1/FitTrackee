@@ -1,4 +1,4 @@
-import { IUserState } from '@/store/modules/user/interfaces'
+import { IUserState } from '@/store/modules/user/types'
 import { IAuthUserProfile } from '@/types/user'
 
 export const userState: IUserState = {

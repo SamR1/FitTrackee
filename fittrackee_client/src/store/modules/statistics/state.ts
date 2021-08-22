@@ -1,4 +1,4 @@
-import { IStatisticsState } from '@/store/modules/statistics/interfaces'
+import { IStatisticsState } from '@/store/modules/statistics/types'
 import { TStatisticsFromApi } from '@/types/statistics'
 
 export const statisticsState: IStatisticsState = {

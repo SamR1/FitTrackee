@@ -2,9 +2,9 @@ import { AxiosError } from 'axios'
 import { ActionContext } from 'vuex'
 
 import { ROOT_STORE } from '@/store/constants'
-import { IRootState } from '@/store/modules/root/interfaces'
-import { IStatisticsState } from '@/store/modules/statistics/interfaces'
-import { IUserState } from '@/store/modules/user/interfaces'
+import { IRootState } from '@/store/modules/root/types'
+import { IStatisticsState } from '@/store/modules/statistics/types'
+import { IUserState } from '@/store/modules/user/types'
 
 export const getApiUrl = (): string => {
   return process.env.NODE_ENV === 'production'

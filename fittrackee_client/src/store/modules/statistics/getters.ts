@@ -1,11 +1,11 @@
 import { GetterTree } from 'vuex'
 
 import { STATS_STORE } from '@/store/constants'
-import { IRootState } from '@/store/modules/root/interfaces'
+import { IRootState } from '@/store/modules/root/types'
 import {
   IStatisticsGetters,
   IStatisticsState,
-} from '@/store/modules/statistics/interfaces'
+} from '@/store/modules/statistics/types'
 
 export const getters: GetterTree<IStatisticsState, IRootState> &
   IStatisticsGetters = {

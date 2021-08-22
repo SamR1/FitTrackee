@@ -2,7 +2,7 @@ import { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
 import { ROOT_STORE } from '@/store/constants'
-import { IRootActions, IRootState } from '@/store/modules/root/interfaces'
+import { IRootActions, IRootState } from '@/store/modules/root/types'
 import { handleError } from '@/utils'
 
 export const actions: ActionTree<IRootState, IRootState> & IRootActions = {

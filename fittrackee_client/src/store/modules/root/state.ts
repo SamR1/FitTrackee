@@ -1,4 +1,4 @@
-import { IRootState } from '@/store/modules/root/interfaces'
+import { IRootState } from '@/store/modules/root/types'
 import { IApplication } from '@/types/application'
 
 export const state: IRootState = {

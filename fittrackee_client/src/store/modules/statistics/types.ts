@@ -1,12 +1,28 @@
-import { Store as VuexStore, CommitOptions, DispatchOptions } from 'vuex'
+import {
+  ActionContext,
+  CommitOptions,
+  DispatchOptions,
+  Store as VuexStore,
+} from 'vuex'
 
 import { STATS_STORE } from '@/store/constants'
-import {
-  IStatisticsState,
-  IStatisticsActions,
-  IStatisticsGetters,
-} from '@/store/modules/statistics/interfaces'
-import { TStatisticsFromApi } from '@/types/statistics'
+import { IRootState } from '@/store/modules/root/types'
+import { IUserStatisticsPayload, TStatisticsFromApi } from '@/types/statistics'
+
+export interface IStatisticsState {
+  statistics: TStatisticsFromApi
+}
+
+export interface IStatisticsActions {
+  [STATS_STORE.ACTIONS.GET_USER_STATS](
+    context: ActionContext<IStatisticsState, IRootState>,
+    payload: IUserStatisticsPayload
+  ): void
+}
+
+export interface IStatisticsGetters {
+  [STATS_STORE.GETTERS.USER_STATS](state: IStatisticsState): TStatisticsFromApi
+}
 
 export type TStatisticsMutations<S = IStatisticsState> = {
   [STATS_STORE.MUTATIONS.UPDATE_USER_STATS](

@@ -2,11 +2,11 @@ import { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
 import { STATS_STORE, ROOT_STORE } from '@/store/constants'
-import { IRootState } from '@/store/modules/root/interfaces'
+import { IRootState } from '@/store/modules/root/types'
 import {
   IStatisticsActions,
   IStatisticsState,
-} from '@/store/modules/statistics/interfaces'
+} from '@/store/modules/statistics/types'
 import { IUserStatisticsPayload } from '@/types/statistics'
 import { handleError } from '@/utils'
 

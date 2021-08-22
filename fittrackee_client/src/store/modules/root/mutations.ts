@@ -1,8 +1,7 @@
 import { MutationTree } from 'vuex'
 
 import { ROOT_STORE } from '@/store/constants'
-import { IRootState } from '@/store/modules/root/interfaces'
-import { TRootMutations } from '@/store/modules/root/types'
+import { IRootState, TRootMutations } from '@/store/modules/root/types'
 import { IAppConfig } from '@/types/application'
 
 export const mutations: MutationTree<IRootState> & TRootMutations = {

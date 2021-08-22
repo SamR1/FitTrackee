@@ -1,8 +1,7 @@
 import { MutationTree } from 'vuex'
 
 import { USER_STORE } from '@/store/constants'
-import { IUserState } from '@/store/modules/user/interfaces'
-import { TUserMutations } from '@/store/modules/user/types'
+import { IUserState, TUserMutations } from '@/store/modules/user/types'
 import { IAuthUserProfile } from '@/types/user'
 
 export const mutations: MutationTree<IUserState> & TUserMutations = {
