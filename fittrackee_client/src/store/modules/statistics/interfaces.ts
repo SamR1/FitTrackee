@@ -2,10 +2,10 @@ import { ActionContext } from 'vuex'
 
 import { STATS_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/interfaces'
-import { IUserStatisticsPayload, TStatistics } from '@/types/statistics'
+import { IUserStatisticsPayload, TStatisticsFromApi } from '@/types/statistics'
 
 export interface IStatisticsState {
-  statistics: TStatistics
+  statistics: TStatisticsFromApi
 }
 
 export interface IStatisticsActions {
@@ -16,5 +16,5 @@ export interface IStatisticsActions {
 }
 
 export interface IStatisticsGetters {
-  [STATS_STORE.GETTERS.USER_STATS](state: IStatisticsState): TStatistics
+  [STATS_STORE.GETTERS.USER_STATS](state: IStatisticsState): TStatisticsFromApi
 }

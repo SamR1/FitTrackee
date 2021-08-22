@@ -6,12 +6,12 @@ import {
   IStatisticsActions,
   IStatisticsGetters,
 } from '@/store/modules/statistics/interfaces'
-import { TStatistics } from '@/types/statistics'
+import { TStatisticsFromApi } from '@/types/statistics'
 
 export type TStatisticsMutations<S = IStatisticsState> = {
   [STATS_STORE.MUTATIONS.UPDATE_USER_STATS](
     state: S,
-    statistics: TStatistics
+    statistics: TStatisticsFromApi
   ): void
 }
 
