@@ -34,6 +34,10 @@ def downgrade():
     op.execute(
         """
         DELETE FROM sports
-        WHERE label = 'Mountain Biking (Electric)';
+        WHERE label = 'Mountain Biking (Electric)'
+           OR label = 'Trail'
+           OR label = 'Skiing (Alpine)'
+           OR label = 'Skiing (Cross Country)'
+           OR label = 'Rowing';
         """
     )
