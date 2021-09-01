@@ -44,7 +44,7 @@ def init_database(app: Flask) -> None:
     sport = Sport(label='Trail')
     sport.img = '/img/sports/trail.png'
     sport.is_default = True
-    db.session.add(sport)    
+    db.session.add(sport)
     sport = Sport(label='Walking')
     sport.img = '/img/sports/walking.png'
     sport.is_default = True
@@ -56,7 +56,7 @@ def init_database(app: Flask) -> None:
     sport = Sport(label='Skiing (Cross Country)')
     sport.img = '/img/sports/cross-country-skiing.png'
     sport.is_default = True
-    db.session.add(sport)    
+    db.session.add(sport)
     sport = Sport(label='Rowing')
     sport.img = '/img/sports/rowing.png'
     sport.is_default = True

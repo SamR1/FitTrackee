@@ -129,7 +129,7 @@ def get_workouts(
                 ] += float(workout.distance)
                 workouts_list_by_time[time_period][sport_id][
                     'total_duration'
-                ] += convert_timedelta_to_integer(workout.moving)            
+                ] += convert_timedelta_to_integer(workout.moving)
                 if workout.ascent:
                     workouts_list_by_time[time_period][sport_id][
                         'total_ascent'
