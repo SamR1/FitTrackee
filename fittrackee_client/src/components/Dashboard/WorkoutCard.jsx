@@ -29,7 +29,7 @@ export default function WorkoutCard(props) {
               <StaticMap workout={workout} />
             </div>
           )}
-          <div className="col">
+          <div className={`col${workout.map ? ' col-with-map' : ''}`}>
             <p>
               <i className="fa fa-clock-o" aria-hidden="true" />{' '}
               {t('workouts:Duration')}: {workout.moving}

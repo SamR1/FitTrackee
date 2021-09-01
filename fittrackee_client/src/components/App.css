@@ -485,6 +485,15 @@ label {
   margin-bottom: 15px;
 }
 
+.col-with-map {
+  font-size: .87em;
+}
+@media only screen and (min-width: 1200px) {
+  .col-with-map {
+    font-size: 1em;
+  }
+}
+
 .workout-details {
   font-size: 0.95em;
 }
