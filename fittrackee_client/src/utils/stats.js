@@ -102,8 +102,8 @@ export const formatStats = (stats, sports, params, displayedSports, weekm) => {
           dataNbWorkouts[sportLabel] = stats[date][sportId].nb_workouts
           dataDistance[sportLabel] = stats[date][sportId].total_distance
           dataDuration[sportLabel] = stats[date][sportId].total_duration
-          dataAscent[sportLabel] = stats[date][sportId].total_ascent
-          dataDescent[sportLabel] = stats[date][sportId].total_descent
+          dataAscent[sportLabel] = stats[date][sportId].total_ascent / 1000
+          dataDescent[sportLabel] = stats[date][sportId].total_descent / 1000
           return null
         })
     }
