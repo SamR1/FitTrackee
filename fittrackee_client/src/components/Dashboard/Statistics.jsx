@@ -21,7 +21,12 @@ export default class Statistics extends React.Component {
       <div className="card workout-card">
         <div className="card-header">{t('dashboard:This month')}</div>
         <div className="card-body">
-          <Stats displayEmpty={false} statsParams={this.state} t={t} />
+          <Stats
+            displayEmpty={false}
+            statsParams={this.state}
+            t={t}
+            withElevation={false}
+          />
         </div>
       </div>
     )
