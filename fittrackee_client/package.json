@@ -5,9 +5,9 @@
   "dependencies": {
     "@mapbox/togeojson": "^0.16.0",
     "connected-react-router": "^6.9.1",
-    "date-fns": "^2.22.1",
+    "date-fns": "^2.23.0",
     "history": "^4.10.1",
-    "i18next": "^20.3.2",
+    "i18next": "^20.6.0",
     "i18next-browser-languagedetector": "^6.1.2",
     "i18next-xhr-backend": "^3.2.2",
     "leaflet": "^1.7.1",
