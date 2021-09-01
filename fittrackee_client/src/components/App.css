@@ -358,8 +358,14 @@ label {
 }
 
 .record-table table, .record-table th, .record-table td{
-  font-size: 0.9em;
+  font-size: 0.85em;
   padding: 0.1em;
+}
+@media only screen and (min-width: 1200px) {
+  .record-table table, .record-table th, .record-table td{
+    font-size: 0.9em;
+    padding: 0.1em;
+  }
 }
 
 .remaining-chars {
