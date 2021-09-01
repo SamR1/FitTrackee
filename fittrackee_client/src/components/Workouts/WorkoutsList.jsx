@@ -91,13 +91,13 @@ export default class WorkoutsList extends React.PureComponent {
                       <span className="heading-span-absolute">
                         {t('workouts:Ascent')}
                       </span>
-                      {workout.ascent} m
+                      {workout.ascent === null ? '' : `${workout.ascent} m`}
                     </td>
                     <td className="text-right">
                       <span className="heading-span-absolute">
                         {t('workouts:Descent')}
                       </span>
-                      {workout.descent} m
+                      {workout.descent === null ? '' : `${workout.descent} m`}
                     </td>
                   </tr>
                 ))}
