@@ -9,7 +9,7 @@ make-p:
 build-client: lint-client
 	cd fittrackee_client && $(NPM) build
 
-check-all: lint-all type-check test-python
+check-all: lint-all type-check test-python test-client
 
 clean:
 	rm -rf .mypy_cache
@@ -98,8 +98,7 @@ install-client:
 	cd fittrackee_client && $(NPM) install --prod
 
 install-client-dev:
-	#                                         https://github.com/facebook/create-react-app/issues/8688
-	cd fittrackee_client && $(NPM) install && sed -i '/process.env.CI/ s/isInteractive [|]*//' node_modules/react-scripts/scripts/start.js
+	cd fittrackee_client && $(NPM) install
 
 install-dev: install-client-dev install-python-dev
 
@@ -154,7 +153,7 @@ serve-dev:
 	$(MAKE) P="serve-client serve-python-dev" make-p
 
 serve-client:
-	cd fittrackee_client && $(NPM) start
+	cd fittrackee_client && $(NPM) serve
 
 serve-python:
 	echo 'Running on http://$(HOST):$(PORT)'
@@ -172,6 +171,9 @@ test-e2e-client: init-db
 
 test-python:
 	$(PYTEST) fittrackee --cov-config .coveragerc --cov=fittrackee --cov-report term-missing $(PYTEST_ARGS)
+
+test-client:
+	cd fittrackee_client && $(NPM) test:unit
 
 type-check:
 	echo 'Running mypy...'
