@@ -9,7 +9,8 @@
   import { ComputedRef, PropType, computed, defineComponent } from 'vue'
   import { BarChart, useBarChart } from 'vue-chart-3'
 
-  import { IStatisticsChartDataset } from '@/types/statistics'
+  import { IStatisticsChartDataset, TDatasetKeys } from '@/types/statistics'
+  import { formatTooltipValue } from '@/utils/tooltip'
 
   Chart.register(...registerables)
 
@@ -25,6 +26,10 @@
       },
       labels: {
         type: Object as PropType<unknown[]>,
+        required: true,
+      },
+      displayedData: {
+        type: String as PropType<TDatasetKeys>,
         required: true,
       },
     },
@@ -56,6 +61,37 @@
         plugins: {
           legend: {
             display: false,
+          },
+          tooltip: {
+            interaction: {
+              intersect: true,
+              mode: 'index',
+            },
+            filter: function (tooltipItem) {
+              return tooltipItem.formattedValue !== '0'
+            },
+            callbacks: {
+              label: function (context) {
+                let label = context.dataset.label || ''
+                if (label) {
+                  label += ': '
+                }
+                if (context.parsed.y !== null) {
+                  label += formatTooltipValue(
+                    props.displayedData,
+                    context.parsed.y
+                  )
+                }
+                return label
+              },
+              footer: function (tooltipItems) {
+                let sum = 0
+                tooltipItems.map((tooltipItem) => {
+                  sum += tooltipItem.parsed.y
+                })
+                return 'Total: ' + formatTooltipValue(props.displayedData, sum)
+              },
+            },
           },
         },
       }))

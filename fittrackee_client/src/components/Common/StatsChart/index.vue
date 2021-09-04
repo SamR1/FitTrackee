@@ -1,6 +1,10 @@
 <template>
   <div class="stat-chart">
-    <Chart :datasets="datasets" :labels="labels" />
+    <Chart
+      :datasets="datasets"
+      :labels="labels"
+      :displayedData="displayedData"
+    />
   </div>
 </template>
 

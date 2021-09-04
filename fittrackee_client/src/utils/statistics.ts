@@ -19,7 +19,11 @@ const dateFormats: genericObject = {
   year: 'yyyy',
 }
 
-const data: TDatasetKeys[] = ['nb_workouts', 'total_duration', 'total_distance']
+export const datasetKeys: TDatasetKeys[] = [
+  'nb_workouts',
+  'total_duration',
+  'total_distance',
+]
 
 export const getDateKeys = (
   params: IStatisticsDateParams,
@@ -95,7 +99,7 @@ export const formatStats = (
   dayKeys.map((key) => {
     const date: string = format(key, dateFormat)
     labels.push(date)
-    data.map((datasetKey) => {
+    datasetKeys.map((datasetKey) => {
       datasets[datasetKey].map((dataset) => {
         dataset.data.push(
           apiStats !== {} &&
