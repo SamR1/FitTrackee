@@ -36,14 +36,24 @@ export const getDateKeys = (
   return days
 }
 
+export const sportColors: Record<string, string> = {
+  'Cycling (Sport)': '#55A8A3',
+  'Cycling (Transport)': '#98C3A9',
+  Hiking: '#D0838A',
+  'Mountain Biking': '#ECC77E',
+  Running: '#926692',
+  Walking: '#929292',
+}
+
 const getStatisticsChartDataset = (
-  sportLabel: string
+  sportLabel: string,
+  color: string
 ): IStatisticsChartDataset =>
   Object.assign(
     {},
     {
       label: sportLabel,
-      backgroundColor: [],
+      backgroundColor: [color],
       data: [],
     }
   )
@@ -55,9 +65,10 @@ export const getDatasets = (displayedSports: ISport[]): TStatisticsDatasets => {
     total_duration: [],
   }
   displayedSports.map((sport) => {
-    datasets.nb_workouts.push(getStatisticsChartDataset(sport.label))
-    datasets.total_distance.push(getStatisticsChartDataset(sport.label))
-    datasets.total_duration.push(getStatisticsChartDataset(sport.label))
+    const color = sportColors[sport.label]
+    datasets.nb_workouts.push(getStatisticsChartDataset(sport.label, color))
+    datasets.total_distance.push(getStatisticsChartDataset(sport.label, color))
+    datasets.total_duration.push(getStatisticsChartDataset(sport.label, color))
   })
   return datasets
 }
@@ -85,15 +96,15 @@ export const formatStats = (
     const date: string = format(key, dateFormat)
     labels.push(date)
     data.map((datasetKey) => {
-      datasets[datasetKey].map((dataset) =>
+      datasets[datasetKey].map((dataset) => {
         dataset.data.push(
           apiStats !== {} &&
             date in apiStats &&
             sportsId[dataset.label] in apiStats[date]
             ? apiStats[date][sportsId[dataset.label]][datasetKey]
-            : null
+            : 0
         )
-      )
+      })
     })
   })
   return {

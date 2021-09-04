@@ -31,7 +31,7 @@ export type TStatisticsFromApi = {
 export interface IStatisticsChartDataset {
   label: string
   backgroundColor: string[]
-  data: (number | null)[]
+  data: number[]
 }
 
 export type TStatisticsDatasets = Record<
@@ -40,6 +40,6 @@ export type TStatisticsDatasets = Record<
 >
 
 export interface IStatisticsChartData {
-  labels: string[]
+  labels: unknown[]
   datasets: TStatisticsDatasets
 }

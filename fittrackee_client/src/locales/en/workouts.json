@@ -1,5 +1,7 @@
 {
   "ADD_WORKOUT": "Add workout",
+  "DISTANCE": "distance",
+  "DURATION": "duration",
   "KM": "km",
   "SPORT": "sport | sports",
   "WORKOUT": "workout | workouts"

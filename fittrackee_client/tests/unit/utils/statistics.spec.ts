@@ -164,51 +164,51 @@ describe('getDatasets', () => {
       nb_workouts: [
         {
           label: 'Cycling (Sport)',
-          backgroundColor: [],
+          backgroundColor: ['#55A8A3'],
           data: [],
         },
         {
           label: 'Cycling (Transport)',
-          backgroundColor: [],
+          backgroundColor: ['#98C3A9'],
           data: [],
         },
         {
           label: 'Hiking',
-          backgroundColor: [],
+          backgroundColor: ['#D0838A'],
           data: [],
         },
       ],
       total_distance: [
         {
           label: 'Cycling (Sport)',
-          backgroundColor: [],
+          backgroundColor: ['#55A8A3'],
           data: [],
         },
         {
           label: 'Cycling (Transport)',
-          backgroundColor: [],
+          backgroundColor: ['#98C3A9'],
           data: [],
         },
         {
           label: 'Hiking',
-          backgroundColor: [],
+          backgroundColor: ['#D0838A'],
           data: [],
         },
       ],
       total_duration: [
         {
           label: 'Cycling (Sport)',
-          backgroundColor: [],
+          backgroundColor: ['#55A8A3'],
           data: [],
         },
         {
           label: 'Cycling (Transport)',
-          backgroundColor: [],
+          backgroundColor: ['#98C3A9'],
           data: [],
         },
         {
           label: 'Hiking',
-          backgroundColor: [],
+          backgroundColor: ['#D0838A'],
           data: [],
         },
       ],
@@ -220,21 +220,21 @@ describe('getDatasets', () => {
       nb_workouts: [
         {
           label: 'Cycling (Transport)',
-          backgroundColor: [],
+          backgroundColor: ['#98C3A9'],
           data: [],
         },
       ],
       total_distance: [
         {
           label: 'Cycling (Transport)',
-          backgroundColor: [],
+          backgroundColor: ['#98C3A9'],
           data: [],
         },
       ],
       total_duration: [
         {
           label: 'Cycling (Transport)',
-          backgroundColor: [],
+          backgroundColor: ['#98C3A9'],
           data: [],
         },
       ],
@@ -257,52 +257,52 @@ describe('formatStats', () => {
         nb_workouts: [
           {
             label: 'Cycling (Sport)',
-            backgroundColor: [],
-            data: [null, null, null],
+            backgroundColor: ['#55A8A3'],
+            data: [0, 0, 0],
           },
           {
             label: 'Cycling (Transport)',
-            backgroundColor: [],
-            data: [null, null, null],
+            backgroundColor: ['#98C3A9'],
+            data: [0, 0, 0],
           },
           {
             label: 'Hiking',
-            backgroundColor: [],
-            data: [null, null, null],
+            backgroundColor: ['#D0838A'],
+            data: [0, 0, 0],
           },
         ],
         total_distance: [
           {
             label: 'Cycling (Sport)',
-            backgroundColor: [],
-            data: [null, null, null],
+            backgroundColor: ['#55A8A3'],
+            data: [0, 0, 0],
           },
           {
             label: 'Cycling (Transport)',
-            backgroundColor: [],
-            data: [null, null, null],
+            backgroundColor: ['#98C3A9'],
+            data: [0, 0, 0],
           },
           {
             label: 'Hiking',
-            backgroundColor: [],
-            data: [null, null, null],
+            backgroundColor: ['#D0838A'],
+            data: [0, 0, 0],
           },
         ],
         total_duration: [
           {
             label: 'Cycling (Sport)',
-            backgroundColor: [],
-            data: [null, null, null],
+            backgroundColor: ['#55A8A3'],
+            data: [0, 0, 0],
           },
           {
             label: 'Cycling (Transport)',
-            backgroundColor: [],
-            data: [null, null, null],
+            backgroundColor: ['#98C3A9'],
+            data: [0, 0, 0],
           },
           {
             label: 'Hiking',
-            backgroundColor: [],
-            data: [null, null, null],
+            backgroundColor: ['#D0838A'],
+            data: [0, 0, 0],
           },
         ],
       },
@@ -326,22 +326,22 @@ describe('formatStats', () => {
         nb_workouts: [
           {
             label: 'Cycling (Transport)',
-            backgroundColor: [],
-            data: [null, null, null],
+            backgroundColor: ['#98C3A9'],
+            data: [0, 0, 0],
           },
         ],
         total_distance: [
           {
             label: 'Cycling (Transport)',
-            backgroundColor: [],
-            data: [null, null, null],
+            backgroundColor: ['#98C3A9'],
+            data: [0, 0, 0],
           },
         ],
         total_duration: [
           {
             label: 'Cycling (Transport)',
-            backgroundColor: [],
-            data: [null, null, null],
+            backgroundColor: ['#98C3A9'],
+            data: [0, 0, 0],
           },
         ],
       },
@@ -392,52 +392,52 @@ describe('formatStats', () => {
         nb_workouts: [
           {
             label: 'Cycling (Sport)',
-            backgroundColor: [],
-            data: [1, 1, null],
+            backgroundColor: ['#55A8A3'],
+            data: [1, 1, 0],
           },
           {
             label: 'Cycling (Transport)',
-            backgroundColor: [],
-            data: [null, 2, null],
+            backgroundColor: ['#98C3A9'],
+            data: [0, 2, 0],
           },
           {
             label: 'Hiking',
-            backgroundColor: [],
-            data: [null, null, 2],
+            backgroundColor: ['#D0838A'],
+            data: [0, 0, 2],
           },
         ],
         total_distance: [
           {
             label: 'Cycling (Sport)',
-            backgroundColor: [],
-            data: [10, 15, null],
+            backgroundColor: ['#55A8A3'],
+            data: [10, 15, 0],
           },
           {
             label: 'Cycling (Transport)',
-            backgroundColor: [],
-            data: [null, 20, null],
+            backgroundColor: ['#98C3A9'],
+            data: [0, 20, 0],
           },
           {
             label: 'Hiking',
-            backgroundColor: [],
-            data: [null, null, 12],
+            backgroundColor: ['#D0838A'],
+            data: [0, 0, 12],
           },
         ],
         total_duration: [
           {
             label: 'Cycling (Sport)',
-            backgroundColor: [],
-            data: [3000, 3500, null],
+            backgroundColor: ['#55A8A3'],
+            data: [3000, 3500, 0],
           },
           {
             label: 'Cycling (Transport)',
-            backgroundColor: [],
-            data: [null, 3000, null],
+            backgroundColor: ['#98C3A9'],
+            data: [0, 3000, 0],
           },
           {
             label: 'Hiking',
-            backgroundColor: [],
-            data: [null, null, 5000],
+            backgroundColor: ['#D0838A'],
+            data: [0, 0, 5000],
           },
         ],
       },
@@ -488,22 +488,22 @@ describe('formatStats', () => {
         nb_workouts: [
           {
             label: 'Cycling (Sport)',
-            backgroundColor: [],
-            data: [1, 1, null],
+            backgroundColor: ['#55A8A3'],
+            data: [1, 1, 0],
           },
         ],
         total_distance: [
           {
             label: 'Cycling (Sport)',
-            backgroundColor: [],
-            data: [10, 15, null],
+            backgroundColor: ['#55A8A3'],
+            data: [10, 15, 0],
           },
         ],
         total_duration: [
           {
             label: 'Cycling (Sport)',
-            backgroundColor: [],
-            data: [3000, 3500, null],
+            backgroundColor: ['#55A8A3'],
+            data: [3000, 3500, 0],
           },
         ],
       },
