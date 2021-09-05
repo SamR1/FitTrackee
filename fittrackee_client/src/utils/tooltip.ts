@@ -3,10 +3,11 @@ import { formatDuration } from '@/utils/duration'
 
 export const formatTooltipValue = (
   displayedData: TDatasetKeys,
-  value: number
+  value: number,
+  formatWithUnits = true
 ): string => {
   return displayedData === 'total_duration'
-    ? formatDuration(value, true)
+    ? formatDuration(value, formatWithUnits)
     : displayedData === 'total_distance'
     ? value.toFixed(2) + ' km'
     : value.toString()

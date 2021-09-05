@@ -48,13 +48,18 @@
           x: {
             stacked: true,
             grid: {
-              display: false,
+              drawOnChartArea: false,
             },
           },
           y: {
             stacked: true,
             grid: {
-              display: false,
+              drawOnChartArea: false,
+            },
+            ticks: {
+              callback: function (value) {
+                return formatTooltipValue(props.displayedData, +value, false)
+              },
             },
           },
         },

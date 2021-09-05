@@ -67,3 +67,19 @@
     },
   })
 </script>
+
+<style lang="scss">
+  @import '~@/scss/base';
+  .stat-chart {
+    .chart {
+      height: 335px;
+    }
+  }
+  @media screen and (max-width: $small-limit) {
+    .stat-chart {
+      .chart {
+        height: 280px;
+      }
+    }
+  }
+</style>

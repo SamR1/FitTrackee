@@ -3,12 +3,12 @@
     <div class="container">
       <UserStats :user="authUser" v-if="authUser.username" />
     </div>
-    <div class="container">
-      <div class="left-container dashboard-container">
+    <div class="container dashboard-container">
+      <div class="left-container dashboard-sub-container">
         <UserMonthStats :user="authUser" />
         <UserRecords />
       </div>
-      <div class="right-container dashboard-container">
+      <div class="right-container dashboard-sub-container">
         <UserCalendar />
         <Timeline />
       </div>
@@ -51,12 +51,28 @@
   @import '~@/scss/base';
   .dashboard-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    .dashboard-sub-container {
+      display: flex;
+      flex-direction: column;
+    }
+    .left-container {
+      width: 35%;
+    }
+    .right-container {
+      width: 65%;
+    }
   }
-  .left-container {
-    width: 35%;
-  }
-  .right-container {
-    width: 65%;
+  @media screen and (max-width: $small-limit) {
+    .dashboard-container {
+      display: flex;
+      flex-direction: column;
+      .left-container {
+        width: 100%;
+      }
+      .right-container {
+        width: 100%;
+      }
+    }
   }
 </style>

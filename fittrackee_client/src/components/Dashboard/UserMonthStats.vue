@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="user-month-stats">
     <Card :without-title="false">
       <template #title>{{ $t('dashboard.THIS_MONTH') }}</template>
       <template #content>

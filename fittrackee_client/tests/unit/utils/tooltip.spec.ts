@@ -37,3 +37,39 @@ describe('formatTooltipValue', () => {
     })
   })
 })
+
+describe('formatTooltipValue (formatWithUnits = false)', () => {
+  const testsParams = [
+    {
+      description: 'returns 3 if input is workouts count',
+      inputDisplayedData: datasetKeys[0], // 'nb_workouts'
+      inputValue: 3,
+      expectedResult: '3',
+    },
+    {
+      description: 'returns 00:03 if input is total duration',
+      inputDisplayedData: datasetKeys[1], // 'total_duration'
+      inputValue: 3,
+      expectedResult: '00:03',
+    },
+    {
+      description: 'returns 3.00 if input is total distance',
+      inputDisplayedData: datasetKeys[2], // 'total_distance'
+      inputValue: 3,
+      expectedResult: '3.00 km',
+    },
+  ]
+
+  testsParams.map((testParams) => {
+    it(testParams.description, () => {
+      assert.equal(
+        formatTooltipValue(
+          testParams.inputDisplayedData,
+          testParams.inputValue,
+          false
+        ),
+        testParams.expectedResult
+      )
+    })
+  })
+})
