@@ -120,9 +120,10 @@
         border-right: solid 1px var(--calendar-border-color);
         height: 3em;
         flex-grow: 1;
-        flex-basis: 10%;
-        padding: $default-padding * 0.5;
-        width: 10%;
+        flex-basis: 8%;
+        padding: $default-padding * 0.5 $default-padding $default-padding * 0.5
+          $default-padding * 0.5;
+        width: 8%;
         position: relative;
 
         .calendar-cell-day {
