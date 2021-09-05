@@ -108,12 +108,14 @@
 
       watch(
         () => props.user.username,
-        async () => {
-          store.dispatch(STATS_STORE.ACTIONS.GET_USER_STATS, {
-            username: props.user.username,
-            filterType: 'by_time',
-            params: apiParams,
-          })
+        async (newUsername) => {
+          if (newUsername) {
+            store.dispatch(STATS_STORE.ACTIONS.GET_USER_STATS, {
+              username: newUsername,
+              filterType: 'by_time',
+              params: apiParams,
+            })
+          }
         }
       )
       return {
