@@ -25,7 +25,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
         if (res.data.status === 'success') {
           context.commit(
             WORKOUTS_STORE.MUTATIONS.SET_CALENDAR_WORKOUTS,
-            res.data.data.statistics
+            res.data.data.workouts
           )
         } else {
           handleError(context, null)

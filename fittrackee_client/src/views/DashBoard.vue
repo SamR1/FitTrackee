@@ -1,7 +1,7 @@
 <template>
-  <div id="dashboard">
+  <div id="dashboard" v-if="authUser.username">
     <div class="container">
-      <UserStats :user="authUser" v-if="authUser.username" />
+      <UserStats :user="authUser" />
     </div>
     <div class="container dashboard-container">
       <div class="left-container dashboard-sub-container">
@@ -9,7 +9,7 @@
         <UserRecords />
       </div>
       <div class="right-container dashboard-sub-container">
-        <UserCalendar />
+        <UserCalendar :user="authUser" />
         <Timeline />
       </div>
     </div>
@@ -20,7 +20,7 @@
   import { computed, ComputedRef, defineComponent } from 'vue'
 
   import Timeline from '@/components/Dashboard/Timeline.vue'
-  import UserCalendar from '@/components/Dashboard/UserCalendar.vue'
+  import UserCalendar from '@/components/Dashboard/UserCalendar/index.vue'
   import UserMonthStats from '@/components/Dashboard/UserMonthStats.vue'
   import UserRecords from '@/components/Dashboard/UserRecords.vue'
   import UserStats from '@/components/Dashboard/UserStats.vue'

@@ -8,11 +8,13 @@ import { IRootState } from '@/store/modules/root/types'
 import sportsModule from '@/store/modules/sports'
 import statsModule from '@/store/modules/statistics'
 import userModule from '@/store/modules/user'
+import workoutsModule from '@/store/modules/workouts'
 
 const modules: ModuleTree<IRootState> = {
   sportsModule,
   statsModule,
   userModule,
+  workoutsModule,
 }
 
 const root: Module<IRootState, IRootState> = {

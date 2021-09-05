@@ -52,7 +52,7 @@
     computed,
     defineComponent,
     ref,
-    watch,
+    onBeforeMount,
   } from 'vue'
   import { useI18n } from 'vue-i18n'
 
@@ -106,18 +106,16 @@
         displayedData.value = event.target.name
       }
 
-      watch(
-        () => props.user.username,
-        async (newUsername) => {
-          if (newUsername) {
-            store.dispatch(STATS_STORE.ACTIONS.GET_USER_STATS, {
-              username: newUsername,
-              filterType: 'by_time',
-              params: apiParams,
-            })
-          }
-        }
-      )
+      function getStatistics() {
+        store.dispatch(STATS_STORE.ACTIONS.GET_USER_STATS, {
+          username: props.user.username,
+          filterType: 'by_time',
+          params: apiParams,
+        })
+      }
+
+      onBeforeMount(() => getStatistics())
+
       return {
         chartParams,
         displayedData,

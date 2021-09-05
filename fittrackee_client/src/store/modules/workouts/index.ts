@@ -13,3 +13,5 @@ const workouts: Module<IWorkoutsState, IRootState> = {
   getters,
   mutations,
 }
+
+export default workouts

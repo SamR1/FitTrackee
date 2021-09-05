@@ -1,6 +1,6 @@
 import { assert, expect } from 'chai'
 
-import { incrementDate, startDate } from '@/utils/dates'
+import { getCalendarStartAndEnd, incrementDate, startDate } from '@/utils/dates'
 
 describe('startDate (week starting Sunday)', () => {
   const testsParams = [
@@ -134,4 +134,24 @@ describe('dateIncrement', () => {
       'Invalid duration, expected: "week", "month", "year", got: "invalid duration"'
     )
   })
+})
+
+describe('getCalendarStartAndEnd', () => {
+  const testsParams = [
+    {
+      description: 'returns empty string if no date provided',
+      inputDate: 'September 5, 2021 20:00:00',
+      expectedStartDate: 'August 29, 2021 00:00:00',
+      expectedEndDate: 'October 2, 2021 23:59:59.999',
+    },
+  ]
+
+  testsParams.map((testParams) =>
+    it(testParams.description, () => {
+      const date: Date = new Date(testParams.inputDate)
+      const results = getCalendarStartAndEnd(date, false)
+      assert.deepEqual(results.start, new Date(testParams.expectedStartDate))
+      assert.deepEqual(results.end, new Date(testParams.expectedEndDate))
+    })
+  )
 })
