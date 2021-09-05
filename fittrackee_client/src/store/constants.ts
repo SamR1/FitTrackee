@@ -18,6 +18,11 @@ import {
   UserGetters,
   UserMutations,
 } from '@/store/modules/user/enums'
+import {
+  WorkoutsActions,
+  WorkoutsGetters,
+  WorkoutsMutations,
+} from '@/store/modules/workouts/enums'
 
 export const ROOT_STORE = {
   ACTIONS: RootActions,
@@ -41,4 +46,10 @@ export const USER_STORE = {
   ACTIONS: UserActions,
   GETTERS: UserGetters,
   MUTATIONS: UserMutations,
+}
+
+export const WORKOUTS_STORE = {
+  ACTIONS: WorkoutsActions,
+  GETTERS: WorkoutsGetters,
+  MUTATIONS: WorkoutsMutations,
 }
