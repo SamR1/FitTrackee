@@ -81,7 +81,9 @@
       }
 
       function isWeekEnd(day: number): boolean {
-        return weekStartingMonday ? [0, 6].includes(day) : [5, 6].includes(day)
+        return weekStartingMonday.value
+          ? [5, 6].includes(day)
+          : [0, 6].includes(day)
       }
 
       function filterWorkouts(day: Date, workouts: IWorkout[]) {
