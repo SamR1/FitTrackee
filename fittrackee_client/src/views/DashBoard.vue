@@ -1,7 +1,7 @@
 <template>
   <div id="dashboard" v-if="authUser.username">
     <div class="container">
-      <UserStats :user="authUser" />
+      <UserStatsCards :user="authUser" />
     </div>
     <div class="container dashboard-container">
       <div class="left-container dashboard-sub-container">
@@ -23,7 +23,7 @@
   import UserCalendar from '@/components/Dashboard/UserCalendar/index.vue'
   import UserMonthStats from '@/components/Dashboard/UserMonthStats.vue'
   import UserRecords from '@/components/Dashboard/UserRecords.vue'
-  import UserStats from '@/components/Dashboard/UserStats.vue'
+  import UserStatsCards from '@/components/Dashboard/UserStartsCards/index.vue'
   import { USER_STORE } from '@/store/constants'
   import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -35,7 +35,7 @@
       UserCalendar,
       UserMonthStats,
       UserRecords,
-      UserStats,
+      UserStatsCards,
     },
     setup() {
       const store = useStore()

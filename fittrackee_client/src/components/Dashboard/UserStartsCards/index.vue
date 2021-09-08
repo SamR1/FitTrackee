@@ -27,11 +27,11 @@
   import { ComputedRef, PropType, defineComponent, computed } from 'vue'
   import { useI18n } from 'vue-i18n'
 
-  import UserStatCard from '@/components/Dashboard/UserStatCard.vue'
+  import UserStatCard from '@/components/Dashboard/UserStartsCards/UserStatCard.vue'
   import { IAuthUserProfile } from '@/types/user'
 
   export default defineComponent({
-    name: 'UserStats',
+    name: 'UserStatsCards',
     components: {
       UserStatCard,
     },
