@@ -3,6 +3,10 @@
   "DISTANCE": "distance",
   "DURATION": "duration",
   "KM": "km",
+  "RECORD_AS": "Ave. speed",
+  "RECORD_FD": "Farest distance",
+  "RECORD_LD": "Longest duration",
+  "RECORD_MS": "Max. speed",
   "SPORT": "sport | sports",
   "WORKOUT": "workout | workouts"
 }

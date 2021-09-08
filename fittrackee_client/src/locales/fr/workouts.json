@@ -3,6 +3,10 @@
   "DISTANCE": "distance",
   "DURATION": "durée",
   "KM": "km",
+  "RECORD_AS": "Vitesse moy.",
+  "RECORD_FD": "Distance la + longue",
+  "RECORD_LD": "Durée la + longue",
+  "RECORD_MS": "Vitesse max.",
   "SPORT": "sport | sports",
   "WORKOUT": "séance | séances"
 }
