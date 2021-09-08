@@ -14,4 +14,10 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
   ) {
     state.calendar_workouts = workouts
   },
+  [WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS](
+    state: IWorkoutsState,
+    workouts: IWorkout[]
+  ) {
+    state.user_workouts = workouts
+  },
 }

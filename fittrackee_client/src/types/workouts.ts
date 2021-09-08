@@ -1,5 +1,3 @@
-import { IStatisticsParams } from '@/types/statistics'
-
 export interface IWorkoutSegment {
   ascent: number
   ave_speed: number
