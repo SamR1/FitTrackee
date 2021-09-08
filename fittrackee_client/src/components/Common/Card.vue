@@ -29,7 +29,6 @@
     border: solid 1px var(--card-border-color);
     border-radius: $border-radius;
     margin: $default-margin;
-    padding: $default-padding $default-padding * 2;
 
     .without-title {
       display: none;
@@ -38,7 +37,11 @@
     .card-title {
       font-weight: bold;
       border-bottom: solid 1px var(--card-border-color);
-      padding-bottom: $default-padding;
+      padding: $default-padding $default-padding * 2;
+    }
+
+    .card-content {
+      padding: $default-padding $default-padding * 2;
     }
   }
 </style>

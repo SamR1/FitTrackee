@@ -82,6 +82,10 @@
   #user-calendar {
     .calendar-card {
       padding: 0;
+
+      .card-content {
+        padding: 0;
+      }
     }
   }
 </style>
