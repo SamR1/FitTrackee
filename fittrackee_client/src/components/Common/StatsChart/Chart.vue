@@ -1,11 +1,12 @@
 <template>
   <div class="chart">
-    <BarChart v-bind="barChartProps" />
+    <BarChart v-bind="barChartProps" class="bar-chart" />
   </div>
 </template>
 
 <script lang="ts">
   import { Chart, ChartData, ChartOptions, registerables } from 'chart.js'
+  import ChartDataLabels from 'chartjs-plugin-datalabels'
   import { ComputedRef, PropType, computed, defineComponent } from 'vue'
   import { BarChart, useBarChart } from 'vue-chart-3'
 
@@ -13,6 +14,7 @@
   import { formatTooltipValue } from '@/utils/tooltip'
 
   Chart.register(...registerables)
+  Chart.register(ChartDataLabels)
 
   export default defineComponent({
     name: 'Chart',
@@ -34,6 +36,14 @@
       },
     },
     setup(props) {
+      // eslint-disable-next-line
+      function getNumber(value: any): number {
+        return isNaN(value) ? 0 : +value
+      }
+      // eslint-disable-next-line
+      function getSum(total: any, value: any): number {
+        return getNumber(total) + getNumber(value)
+      }
       let chartData: ComputedRef<ChartData<'bar'>> = computed(() => ({
         labels: props.labels,
         datasets: props.datasets,
@@ -42,7 +52,9 @@
         responsive: true,
         maintainAspectRatio: true,
         layout: {
-          padding: 5,
+          padding: {
+            top: 22,
+          },
         },
         scales: {
           x: {
@@ -64,6 +76,20 @@
           },
         },
         plugins: {
+          datalabels: {
+            anchor: 'end',
+            align: 'end',
+            formatter: function (value, context) {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              const total: number = context.chart.data.datasets
+                .map((d) => d.data[context.dataIndex])
+                .reduce((total, value) => getSum(total, value), 0)
+              return context.datasetIndex === 5 && total > 0
+                ? formatTooltipValue(props.displayedData, total, false)
+                : null
+            },
+          },
           legend: {
             display: false,
           },

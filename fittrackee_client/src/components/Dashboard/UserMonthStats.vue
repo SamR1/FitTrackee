@@ -129,17 +129,31 @@
   })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   @import '~@/scss/base';
 
-  .chart-radio {
-    display: flex;
-    justify-content: space-between;
-    padding: $default-padding;
+  .user-month-stats {
+    ::v-deep(.stat-chart) {
+      .chart {
+        .bar-chart {
+          height: 280px;
+        }
+        @media screen and (max-width: $small-limit) {
+          .bar-chart {
+            height: 100%;
+          }
+        }
+      }
+    }
+    .chart-radio {
+      display: flex;
+      justify-content: space-between;
+      padding: $default-padding;
 
-    label {
-      font-size: 0.9em;
-      font-weight: normal;
+      label {
+        font-size: 0.9em;
+        font-weight: normal;
+      }
     }
   }
 </style>

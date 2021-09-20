@@ -6,7 +6,7 @@
     <div class="container dashboard-container">
       <div class="left-container dashboard-sub-container">
         <UserCalendar :user="authUser" />
-        <!--        <UserMonthStats :user="authUser" />-->
+        <UserMonthStats :user="authUser" />
         <!--        <UserRecords />-->
       </div>
       <div class="right-container dashboard-sub-container">
@@ -21,7 +21,7 @@
 
   import Timeline from '@/components/Dashboard/Timeline/index.vue'
   import UserCalendar from '@/components/Dashboard/UserCalendar/index.vue'
-  // import UserMonthStats from '@/components/Dashboard/UserMonthStats.vue'
+  import UserMonthStats from '@/components/Dashboard/UserMonthStats.vue'
   // import UserRecords from '@/components/Dashboard/UserRecords.vue'
   import UserStatsCards from '@/components/Dashboard/UserStartsCards/index.vue'
   import { USER_STORE } from '@/store/constants'
@@ -33,7 +33,7 @@
     components: {
       Timeline,
       UserCalendar,
-      // UserMonthStats,
+      UserMonthStats,
       // UserRecords,
       UserStatsCards,
     },

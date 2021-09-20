@@ -8,7 +8,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" scoped>
   import { ComputedRef, PropType, computed, defineComponent } from 'vue'
 
   import Chart from '@/components/Common/StatsChart/Chart.vue'
@@ -72,14 +72,8 @@
   @import '~@/scss/base';
   .stat-chart {
     .chart {
-      height: 335px;
-    }
-  }
-  @media screen and (max-width: $small-limit) {
-    .stat-chart {
-      .chart {
-        height: 280px;
-      }
+      padding: $default-padding;
+      max-height: 100%;
     }
   }
 </style>
