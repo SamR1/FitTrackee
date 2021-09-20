@@ -7,6 +7,7 @@ export enum RootGetters {
   APP_LOADING = 'APP_LOADING',
   ERROR_MESSAGES = 'ERROR_MESSAGES',
   LANGUAGE = 'LANGUAGE',
+  LOCALE = 'LOCALE', // date-fns
 }
 
 export enum RootMutations {

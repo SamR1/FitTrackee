@@ -62,8 +62,9 @@ export interface IWorkout {
 }
 
 export interface IWorkoutsPayload {
-  from: string
-  to: string
-  order: string
-  per_page: number
+  from?: string
+  to?: string
+  order?: string
+  per_page?: number
+  page?: number
 }

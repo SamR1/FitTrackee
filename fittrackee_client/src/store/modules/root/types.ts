@@ -1,3 +1,4 @@
+import { Locale } from 'date-fns'
 import {
   ActionContext,
   CommitOptions,
@@ -11,6 +12,7 @@ import { IAppConfig, IApplication } from '@/types/application'
 export interface IRootState {
   root: boolean
   language: string
+  locale: Locale
   errorMessages: string | string[] | null
   application: IApplication
   appLoading: boolean
@@ -32,6 +34,8 @@ export interface IRootGetters {
   ): string | string[] | null
 
   [ROOT_STORE.GETTERS.LANGUAGE](state: IRootState): string
+
+  [ROOT_STORE.GETTERS.LOCALE](state: IRootState): Locale
 }
 
 export type TRootMutations<S = IRootState> = {

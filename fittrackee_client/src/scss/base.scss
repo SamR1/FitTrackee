@@ -23,6 +23,10 @@ a {
   text-decoration: none;
 }
 
+img {
+  max-width: 100%;
+}
+
 input {
   border-radius: $border-radius;
   border: solid 1px var(--input-border-color);

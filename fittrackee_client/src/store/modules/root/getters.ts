@@ -16,4 +16,7 @@ export const getters: GetterTree<IRootState, IRootState> & IRootGetters = {
   [ROOT_STORE.GETTERS.LANGUAGE]: (state: IRootState) => {
     return state.language
   },
+  [ROOT_STORE.GETTERS.LOCALE]: (state: IRootState) => {
+    return state.locale
+  },
 }
