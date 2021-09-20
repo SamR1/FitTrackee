@@ -282,6 +282,7 @@
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
+        z-index: 1;
 
         position: absolute;
         top: 0;
