@@ -5,7 +5,13 @@
 </template>
 
 <script lang="ts">
-  import { Chart, ChartData, ChartOptions, registerables } from 'chart.js'
+  import {
+    Chart,
+    ChartData,
+    ChartOptions,
+    LayoutItem,
+    registerables,
+  } from 'chart.js'
   import ChartDataLabels from 'chartjs-plugin-datalabels'
   import { ComputedRef, PropType, computed, defineComponent } from 'vue'
   import { BarChart, useBarChart } from 'vue-chart-3'
@@ -54,6 +60,7 @@
       const options = computed<ChartOptions<'bar'>>(() => ({
         responsive: true,
         maintainAspectRatio: true,
+        animation: false,
         layout: {
           padding: {
             top: 22,
@@ -72,9 +79,13 @@
               drawOnChartArea: false,
             },
             ticks: {
+              maxTicksLimit: 6,
               callback: function (value) {
                 return formatTooltipValue(props.displayedData, +value, false)
               },
+            },
+            afterFit: function (scale: LayoutItem) {
+              scale.width = 60
             },
           },
         },
