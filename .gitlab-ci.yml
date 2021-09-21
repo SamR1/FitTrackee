@@ -53,6 +53,16 @@ python-3.10:
   extends: .python
   image: python:3.10
 
+typescript:
+  stage: tests
+  before_script:
+    - apt-get update && apt-get install -y nodejs npm
+    - npm install --global yarn
+    - cd fittrackee_client
+    - yarn install
+  script:
+    - yarn test:unit
+
 firefox:
   stage: selenium
   services:
