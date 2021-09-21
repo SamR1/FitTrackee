@@ -18,7 +18,9 @@ export interface IStatisticsDateParams {
 
 export type TDatasetKeys = 'nb_workouts' | 'total_duration' | 'total_distance'
 
-export type TStatistics = Record<TDatasetKeys, number>
+export type TStatistics = {
+  [key in TDatasetKeys]: number
+}
 
 export type TSportStatistics = {
   [key in number]: TStatistics
@@ -34,10 +36,9 @@ export interface IStatisticsChartDataset {
   data: number[]
 }
 
-export type TStatisticsDatasets = Record<
-  TDatasetKeys,
-  IStatisticsChartDataset[]
->
+export type TStatisticsDatasets = {
+  [key in TDatasetKeys]: IStatisticsChartDataset[]
+}
 
 export interface IStatisticsChartData {
   labels: unknown[]

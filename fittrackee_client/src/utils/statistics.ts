@@ -44,15 +44,13 @@ export const getDateKeys = (
 const getStatisticsChartDataset = (
   sportLabel: string,
   color: string
-): IStatisticsChartDataset =>
-  Object.assign(
-    {},
-    {
-      label: sportLabel,
-      backgroundColor: [color],
-      data: [],
-    }
-  )
+): IStatisticsChartDataset => {
+  return {
+    label: sportLabel,
+    backgroundColor: [color],
+    data: [],
+  }
+}
 
 export const getDatasets = (displayedSports: ISport[]): TStatisticsDatasets => {
   const datasets: TStatisticsDatasets = {

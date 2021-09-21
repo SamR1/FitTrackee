@@ -48,7 +48,8 @@
       }
       let chartData: ComputedRef<ChartData<'bar'>> = computed(() => ({
         labels: props.labels,
-        datasets: props.datasets,
+        // workaround to avoid dataset modification
+        datasets: JSON.parse(JSON.stringify(props.datasets)),
       }))
       const options = computed<ChartOptions<'bar'>>(() => ({
         responsive: true,
