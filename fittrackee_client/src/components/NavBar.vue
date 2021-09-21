@@ -24,7 +24,7 @@
               t('dashboard.DASHBOARD')
             }}</router-link>
             <div class="nav-item">
-              {{ capitalize(t('workouts.WORKOUT', 1)) }}
+              {{ capitalize(t('workouts.WORKOUT', 2)) }}
             </div>
             <div class="nav-item">{{ t('statistics.STATISTICS') }}</div>
             <div class="nav-item">{{ t('administration.ADMIN') }}</div>
