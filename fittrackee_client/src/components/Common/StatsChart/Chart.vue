@@ -9,6 +9,7 @@
   import ChartDataLabels from 'chartjs-plugin-datalabels'
   import { ComputedRef, PropType, computed, defineComponent } from 'vue'
   import { BarChart, useBarChart } from 'vue-chart-3'
+  import { useI18n } from 'vue-i18n'
 
   import { IStatisticsChartDataset, TDatasetKeys } from '@/types/statistics'
   import { formatTooltipValue } from '@/utils/tooltip'
@@ -36,6 +37,7 @@
       },
     },
     setup(props) {
+      const { t } = useI18n()
       // eslint-disable-next-line
       function getNumber(value: any): number {
         return isNaN(value) ? 0 : +value
@@ -103,7 +105,7 @@
             },
             callbacks: {
               label: function (context) {
-                let label = context.dataset.label || ''
+                let label = t(`sports.${context.dataset.label}.LABEL`) || ''
                 if (label) {
                   label += ': '
                 }
@@ -120,7 +122,10 @@
                 tooltipItems.map((tooltipItem) => {
                   sum += tooltipItem.parsed.y
                 })
-                return 'Total: ' + formatTooltipValue(props.displayedData, sum)
+                return (
+                  `${t('statistics.TOTAL')}: ` +
+                  formatTooltipValue(props.displayedData, sum)
+                )
               },
             },
           },

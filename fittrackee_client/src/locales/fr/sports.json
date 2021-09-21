@@ -1,0 +1,20 @@
+{
+  "Cycling (Sport)": {
+    "LABEL": "Vélo (Sport)"
+  },
+  "Cycling (Transport)": {
+    "LABEL": "Vélo (Transport)"
+  },
+  "Hiking": {
+    "LABEL": "Randonnée"
+  },
+  "Mountain Biking": {
+    "LABEL": "VTT"
+  },
+  "Running": {
+    "LABEL": "Course"
+  },
+  "Walking": {
+    "LABEL": "Marche"
+  }
+}

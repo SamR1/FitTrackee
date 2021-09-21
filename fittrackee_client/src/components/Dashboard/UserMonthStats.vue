@@ -3,43 +3,49 @@
     <Card :without-title="false">
       <template #title>{{ $t('dashboard.THIS_MONTH') }}</template>
       <template #content>
-        <div class="chart-radio">
-          <label class="">
-            <input
-              type="radio"
-              name="total_distance"
-              :checked="displayedData === 'total_distance'"
-              @click="updateDisplayData"
-            />
-            {{ t('workouts.DISTANCE') }}
-          </label>
-          <label class="">
-            <input
-              type="radio"
-              name="total_duration"
-              :checked="displayedData === 'total_duration'"
-              @click="updateDisplayData"
-            />
-            {{ t('workouts.DURATION') }}
-          </label>
-          <label class="">
-            <input
-              type="radio"
-              name="nb_workouts"
-              :checked="displayedData === 'nb_workouts'"
-              @click="updateDisplayData"
-            />
-            {{ t('workouts.WORKOUT', 2) }}
-          </label>
+        <div v-if="Object.keys(statistics).length === 0">
+          {{ t('workouts.NO_WORKOUTS') }}
         </div>
-        <Chart
-          :displayedData="displayedData"
-          :params="chartParams"
-          :statistics="statistics"
-          :sports="sports"
-          :week-starting-monday="weekStartingMonday"
-          v-if="statistics && weekStartingMonday !== undefined"
-      /></template>
+        <div v-else>
+          <div class="chart-radio">
+            <label class="">
+              <input
+                type="radio"
+                name="total_distance"
+                :checked="displayedData === 'total_distance'"
+                @click="updateDisplayData"
+              />
+              {{ t('workouts.DISTANCE') }}
+            </label>
+            <label class="">
+              <input
+                type="radio"
+                name="total_duration"
+                :checked="displayedData === 'total_duration'"
+                @click="updateDisplayData"
+              />
+              {{ t('workouts.DURATION') }}
+            </label>
+            <label class="">
+              <input
+                type="radio"
+                name="nb_workouts"
+                :checked="displayedData === 'nb_workouts'"
+                @click="updateDisplayData"
+              />
+              {{ t('workouts.WORKOUT', 2) }}
+            </label>
+          </div>
+          <Chart
+            :displayedData="displayedData"
+            :params="chartParams"
+            :statistics="statistics"
+            :sports="sports"
+            :week-starting-monday="weekStartingMonday"
+            v-if="statistics && weekStartingMonday !== undefined"
+          />
+        </div>
+      </template>
     </Card>
   </div>
 </template>

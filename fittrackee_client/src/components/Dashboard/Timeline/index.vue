@@ -7,6 +7,9 @@
       :user="user"
       :key="workout.id"
     ></WorkoutCard>
+    <Card v-if="workouts.length === 0" class="no-workouts">
+      <template #content>{{ t('workouts.NO_WORKOUTS') }}</template>
+    </Card>
   </div>
 </template>
 
@@ -18,7 +21,9 @@
     onBeforeMount,
     PropType,
   } from 'vue'
+  import { useI18n } from 'vue-i18n'
 
+  import Card from '@/components/Common/Card.vue'
   import WorkoutCard from '@/components/Dashboard/Timeline/WorkoutCard.vue'
   import { SPORTS_STORE, WORKOUTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
@@ -29,6 +34,7 @@
   export default defineComponent({
     name: 'Timeline',
     components: {
+      Card,
       WorkoutCard,
     },
     props: {
@@ -39,6 +45,7 @@
     },
     setup() {
       const store = useStore()
+      const { t } = useI18n()
       onBeforeMount(() =>
         store.dispatch(WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS, { page: 1 })
       )
@@ -51,7 +58,15 @@
         () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
       )
 
-      return { workouts, sports }
+      return { workouts, sports, t }
     },
   })
 </script>
+
+<style lang="scss" scoped>
+  @import '~@/scss/base';
+
+  .no-workouts {
+    margin-bottom: $default-margin * 2;
+  }
+</style>

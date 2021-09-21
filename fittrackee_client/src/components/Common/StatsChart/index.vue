@@ -8,7 +8,7 @@
   </div>
 </template>
 
-<script lang="ts" scoped>
+<script lang="ts">
   import { ComputedRef, PropType, computed, defineComponent } from 'vue'
 
   import Chart from '@/components/Common/StatsChart/Chart.vue'
@@ -68,7 +68,7 @@
   })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   @import '~@/scss/base';
   .stat-chart {
     .chart {
