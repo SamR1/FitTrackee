@@ -69,6 +69,44 @@ def get_users(auth_user_id: int) -> Dict:
               "nb_sports": 3,
               "nb_workouts": 6,
               "picture": false,
+              "records": [
+                {
+                  "id": 9,
+                  "record_type": "AS",
+                  "sport_id": 1,
+                  "user": "admin",
+                  "value": 18,
+                  "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                  "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+                },
+                {
+                  "id": 10,
+                  "record_type": "FD",
+                  "sport_id": 1,
+                  "user": "admin",
+                  "value": 18,
+                  "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                  "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+                },
+                {
+                  "id": 11,
+                  "record_type": "LD",
+                  "sport_id": 1,
+                  "user": "admin",
+                  "value": "1:01:00",
+                  "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                  "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+                },
+                {
+                  "id": 12,
+                  "record_type": "MS",
+                  "sport_id": 1,
+                  "user": "admin",
+                  "value": 18,
+                  "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                  "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+                }
+              ],
               "sports_list": [
                   1,
                   4,
@@ -92,6 +130,7 @@ def get_users(auth_user_id: int) -> Dict:
               "nb_sports": 0,
               "nb_workouts": 0,
               "picture": false,
+              "records": [],
               "sports_list": [],
               "timezone": "Europe/Paris",
               "total_distance": 0,
@@ -212,6 +251,44 @@ def get_single_user(
             "nb_sports": 3,
             "nb_workouts": 6,
             "picture": false,
+            "records": [
+              {
+                "id": 9,
+                "record_type": "AS",
+                "sport_id": 1,
+                "user": "admin",
+                "value": 18,
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              },
+              {
+                "id": 10,
+                "record_type": "FD",
+                "sport_id": 1,
+                "user": "admin",
+                "value": 18,
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              },
+              {
+                "id": 11,
+                "record_type": "LD",
+                "sport_id": 1,
+                "user": "admin",
+                "value": "1:01:00",
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              },
+              {
+                "id": 12,
+                "record_type": "MS",
+                "sport_id": 1,
+                "user": "admin",
+                "value": 18,
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              }
+            ],
             "sports_list": [
                 1,
                 4,
@@ -328,6 +405,44 @@ def update_user(
             "nb_workouts": 6,
             "nb_sports": 3,
             "picture": false,
+            "records": [
+              {
+                "id": 9,
+                "record_type": "AS",
+                "sport_id": 1,
+                "user": "admin",
+                "value": 18,
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              },
+              {
+                "id": 10,
+                "record_type": "FD",
+                "sport_id": 1,
+                "user": "admin",
+                "value": 18,
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              },
+              {
+                "id": 11,
+                "record_type": "LD",
+                "sport_id": 1,
+                "user": "admin",
+                "value": "1:01:00",
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              },
+              {
+                "id": 12,
+                "record_type": "MS",
+                "sport_id": 1,
+                "user": "admin",
+                "value": 18,
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              }
+            ],
             "sports_list": [
                 1,
                 4,

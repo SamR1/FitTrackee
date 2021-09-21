@@ -136,6 +136,7 @@ class User(BaseModel):
             'language': self.language,
             'nb_sports': len(sports),
             'nb_workouts': self.workouts_count,
+            'records': [record.serialize() for record in self.records],
             'sports_list': [
                 sport for sportslist in sports for sport in sportslist
             ],

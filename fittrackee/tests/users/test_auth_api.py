@@ -431,6 +431,7 @@ class TestUserProfile(ApiTestCaseMixin):
         assert data['data']['language'] is None
         assert data['data']['nb_sports'] == 0
         assert data['data']['nb_workouts'] == 0
+        assert data['data']['records'] == []
         assert data['data']['sports_list'] == []
         assert data['data']['total_distance'] == 0
         assert data['data']['total_duration'] == '0:00:00'
@@ -463,6 +464,7 @@ class TestUserProfile(ApiTestCaseMixin):
         assert data['data']['language'] == 'en'
         assert data['data']['nb_sports'] == 0
         assert data['data']['nb_workouts'] == 0
+        assert data['data']['records'] == []
         assert data['data']['sports_list'] == []
         assert data['data']['total_distance'] == 0
         assert data['data']['total_duration'] == '0:00:00'
@@ -494,6 +496,7 @@ class TestUserProfile(ApiTestCaseMixin):
         assert data['data']['timezone'] is None
         assert data['data']['nb_sports'] == 2
         assert data['data']['nb_workouts'] == 2
+        assert len(data['data']['records']) == 6
         assert data['data']['sports_list'] == [1, 2]
         assert data['data']['total_distance'] == 22
         assert data['data']['total_duration'] == '2:40:00'
@@ -552,6 +555,7 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
         assert data['data']['language'] == 'fr'
         assert data['data']['nb_sports'] == 0
         assert data['data']['nb_workouts'] == 0
+        assert data['data']['records'] == []
         assert data['data']['sports_list'] == []
         assert data['data']['total_distance'] == 0
         assert data['data']['total_duration'] == '0:00:00'
@@ -597,6 +601,7 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
         assert data['data']['language'] == 'fr'
         assert data['data']['nb_sports'] == 0
         assert data['data']['nb_workouts'] == 0
+        assert data['data']['records'] == []
         assert data['data']['sports_list'] == []
         assert data['data']['total_distance'] == 0
         assert data['data']['total_duration'] == '0:00:00'
