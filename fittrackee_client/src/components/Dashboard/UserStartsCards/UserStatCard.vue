@@ -8,7 +8,7 @@
           </div>
           <div class="stat-details">
             <div class="stat-huge">{{ value }}</div>
-            <div>{{ text }}</div>
+            <div class="stat">{{ text }}</div>
           </div>
         </div>
       </template>
@@ -91,6 +91,15 @@
           }
           @media screen and (max-width: $x-small-limit) {
             font-size: 1em;
+          }
+        }
+        .stat {
+          font-size: 1em;
+          @media screen and (max-width: $medium-limit) {
+            font-size: 0.9em;
+          }
+          @media screen and (max-width: $x-small-limit) {
+            font-size: 0.8em;
           }
         }
       }
