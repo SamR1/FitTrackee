@@ -1,9 +1,12 @@
 <template>
   <div class="static-map">
-    <img
-      class="map-image"
-      :src="`${getApiUrl()}workouts/map/${workout.map}?${Date.now()}`"
-      alt="workout map"
+    <div
+      class="bg-map-image"
+      :style="{
+        backgroundImage: `url(${getApiUrl()}workouts/map/${
+          workout.map
+        }?${Date.now()})`,
+      }"
     />
     <div class="map-attribution">
       <span class="map-attribution-text">©</span>
@@ -46,9 +49,12 @@
     display: flex;
     position: relative;
 
-    .map-image {
-      height: 225px;
-      width: 400px;
+    .bg-map-image {
+      background-size: cover;
+      background-position: center;
+      opacity: 0.6;
+      height: 200px;
+      width: 100%;
     }
 
     .map-attribution {

@@ -5,11 +5,11 @@
     </div>
     <div class="container dashboard-container">
       <div class="left-container dashboard-sub-container">
-        <UserCalendar :user="authUser" />
         <UserMonthStats :user="authUser" />
         <UserRecords :user="authUser" />
       </div>
       <div class="right-container dashboard-sub-container">
+        <UserCalendar :user="authUser" />
         <Timeline :user="authUser" />
       </div>
     </div>
@@ -58,10 +58,10 @@
       flex-direction: column;
     }
     .left-container {
-      width: 65%;
+      width: 32%;
     }
     .right-container {
-      width: 35%;
+      width: 68%;
     }
   }
   @media screen and (max-width: $small-limit) {

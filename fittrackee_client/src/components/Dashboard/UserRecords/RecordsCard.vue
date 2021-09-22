@@ -57,11 +57,8 @@
   @import '~@/scss/base';
 
   .records-card {
-    padding: 0;
-    width: 50%;
-    @media screen and (max-width: $small-limit) {
-      width: 100%;
-    }
+    width: 100%;
+    padding-bottom: $default-padding * 0.3;
 
     ::v-deep(.card) {
       font-size: 0.9em;

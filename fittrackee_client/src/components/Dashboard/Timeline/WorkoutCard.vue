@@ -13,7 +13,7 @@
             <div v-else class="no-picture">
               <i class="fa fa-user-circle-o" aria-hidden="true" />
             </div>
-            {{ user.username }}
+            <span class="workout-user-name">{{ user.username }}</span>
           </div>
           <div
             class="workout-date"
@@ -119,7 +119,6 @@
     margin-bottom: $default-margin * 2;
 
     ::v-deep(.card) {
-      max-width: 400px;
       .card-content {
         display: flex;
         flex-direction: column;
@@ -128,13 +127,22 @@
           display: flex;
           justify-content: space-between;
           padding: $default-padding * 0.5 $default-padding;
-          .profile-img {
-            border-radius: 50%;
-            height: 25px;
-            width: 25px;
+          .workout-user {
+            display: flex;
+            .profile-img {
+              border-radius: 50%;
+              height: 25px;
+              width: 25px;
+            }
+            .fa-user-circle-o {
+              font-size: 1.5em;
+            }
+            .workout-user-name {
+              padding-left: 5px;
+            }
           }
           .workout-date {
-            font-size: 0.75em;
+            font-size: 0.85em;
             font-style: italic;
           }
         }

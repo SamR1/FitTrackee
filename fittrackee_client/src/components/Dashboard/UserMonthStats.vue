@@ -139,26 +139,24 @@
   @import '~@/scss/base';
 
   .user-month-stats {
-    ::v-deep(.stat-chart) {
-      .chart {
-        .bar-chart {
-          height: 280px;
-        }
-        @media screen and (max-width: $small-limit) {
+    ::v-deep(.card-content) {
+      padding: $default-padding;
+      .stat-chart {
+        .chart {
           .bar-chart {
             height: 100%;
           }
         }
       }
-    }
-    .chart-radio {
-      display: flex;
-      justify-content: space-between;
-      padding: $default-padding;
+      .chart-radio {
+        display: flex;
+        justify-content: space-between;
+        padding: $default-padding;
 
-      label {
-        font-size: 0.9em;
-        font-weight: normal;
+        label {
+          font-size: 0.85em;
+          font-weight: normal;
+        }
       }
     }
   }

@@ -59,10 +59,6 @@
   @import '~@/scss/base';
 
   .user-records {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-
     .no-records {
       padding: $default-padding;
     }
