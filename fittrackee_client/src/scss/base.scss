@@ -94,3 +94,10 @@ button {
 .fa-trophy {
   color: var(--workout-trophy-color)
 }
+
+.section-title {
+  font-weight: bold;
+  padding-top: $default-padding * 1.5;
+  padding-left: $default-padding;
+  text-transform: capitalize;
+}

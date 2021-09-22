@@ -1,14 +1,20 @@
 <template>
-  <div class="user-records">
-    <Card v-if="Object.keys(recordsBySport).length === 0" class="no-records">
-      <template #content>{{ t('workouts.NO_RECORDS') }}</template>
-    </Card>
-    <RecordsCard
-      v-for="sportLabel in Object.keys(recordsBySport).sort()"
-      :sportLabel="sportLabel"
-      :records="recordsBySport[sportLabel]"
-      :key="sportLabel"
-    />
+  <div class="user-records-section">
+    <div class="section-title">
+      <i class="fa fa-trophy custom-fa-small" aria-hidden="true" />
+      {{ t('workouts.RECORD', 2) }}
+    </div>
+    <div class="user-records">
+      <div v-if="Object.keys(recordsBySport).length === 0" class="no-records">
+        {{ t('workouts.NO_RECORDS') }}
+      </div>
+      <RecordsCard
+        v-for="sportLabel in Object.keys(recordsBySport).sort()"
+        :sportLabel="sportLabel"
+        :records="recordsBySport[sportLabel]"
+        :key="sportLabel"
+      />
+    </div>
   </div>
 </template>
 
@@ -16,7 +22,6 @@
   import { computed, defineComponent, PropType } from 'vue'
   import { useI18n } from 'vue-i18n'
 
-  import Card from '@/components/Common/Card.vue'
   import RecordsCard from '@/components/Dashboard/UserRecords/RecordsCard.vue'
   import { SPORTS_STORE } from '@/store/constants'
   import { IAuthUserProfile } from '@/types/user'
@@ -27,7 +32,6 @@
   export default defineComponent({
     name: 'UserRecords',
     components: {
-      Card,
       RecordsCard,
     },
     props: {
@@ -60,7 +64,7 @@
     justify-content: space-between;
 
     .no-records {
-      width: 100%;
+      padding: $default-padding;
     }
   }
 </style>

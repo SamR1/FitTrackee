@@ -1,5 +1,6 @@
 <template>
   <div class="timeline">
+    <div class="section-title">{{ t('workouts.LATEST_WORKOUTS') }}</div>
     <WorkoutCard
       v-for="workout in workouts"
       :workout="workout"
@@ -7,9 +8,9 @@
       :user="user"
       :key="workout.id"
     ></WorkoutCard>
-    <Card v-if="workouts.length === 0" class="no-workouts">
-      <template #content>{{ t('workouts.NO_WORKOUTS') }}</template>
-    </Card>
+    <div v-if="workouts.length === 0" class="no-workouts">
+      {{ t('workouts.NO_WORKOUTS') }}
+    </div>
   </div>
 </template>
 
@@ -23,7 +24,6 @@
   } from 'vue'
   import { useI18n } from 'vue-i18n'
 
-  import Card from '@/components/Common/Card.vue'
   import WorkoutCard from '@/components/Dashboard/Timeline/WorkoutCard.vue'
   import { SPORTS_STORE, WORKOUTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
@@ -34,7 +34,6 @@
   export default defineComponent({
     name: 'Timeline',
     components: {
-      Card,
       WorkoutCard,
     },
     props: {
@@ -68,5 +67,6 @@
 
   .no-workouts {
     margin-bottom: $default-margin * 2;
+    padding: $default-padding;
   }
 </style>
