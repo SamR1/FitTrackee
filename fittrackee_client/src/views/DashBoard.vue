@@ -7,7 +7,7 @@
       <div class="left-container dashboard-sub-container">
         <UserCalendar :user="authUser" />
         <UserMonthStats :user="authUser" />
-        <!--        <UserRecords />-->
+        <UserRecords :user="authUser" />
       </div>
       <div class="right-container dashboard-sub-container">
         <Timeline :user="authUser" />
@@ -22,7 +22,7 @@
   import Timeline from '@/components/Dashboard/Timeline/index.vue'
   import UserCalendar from '@/components/Dashboard/UserCalendar/index.vue'
   import UserMonthStats from '@/components/Dashboard/UserMonthStats.vue'
-  // import UserRecords from '@/components/Dashboard/UserRecords.vue'
+  import UserRecords from '@/components/Dashboard/UserRecords/index.vue'
   import UserStatsCards from '@/components/Dashboard/UserStartsCards/index.vue'
   import { USER_STORE } from '@/store/constants'
   import { IAuthUserProfile } from '@/types/user'
@@ -34,7 +34,7 @@
       Timeline,
       UserCalendar,
       UserMonthStats,
-      // UserRecords,
+      UserRecords,
       UserStatsCards,
     },
     setup() {

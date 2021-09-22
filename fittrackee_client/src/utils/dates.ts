@@ -4,6 +4,7 @@ import {
   addYears,
   endOfMonth,
   endOfWeek,
+  format,
   startOfMonth,
   startOfWeek,
   startOfYear,
@@ -58,5 +59,22 @@ export const getCalendarStartAndEnd = (
   return {
     start: startOfWeek(monthStart, { weekStartsOn }),
     end: endOfWeek(monthEnd),
+  }
+}
+
+export const formatWorkoutDate = (
+  dateTime: Date,
+  dateFormat: string | null = null,
+  timeFormat: string | null = null
+): Record<string, string> => {
+  if (!dateFormat) {
+    dateFormat = 'yyyy/MM/dd'
+  }
+  if (!timeFormat) {
+    timeFormat = 'HH:mm'
+  }
+  return {
+    workout_date: format(dateTime, dateFormat),
+    workout_time: format(dateTime, timeFormat),
   }
 }

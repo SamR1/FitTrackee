@@ -18,9 +18,19 @@ export interface IRecord {
   record_type: string
   sport_id: number
   user: string
-  value: number
+  value: number | string
   workout_date: string
   workout_id: string
+}
+
+export interface IRecordsBySport {
+  [key: string]: string | Record<string, string | number>[]
+  img: string
+  records: Record<string, string | number>[]
+}
+
+export interface IRecordsBySports {
+  [key: string]: IRecordsBySport
 }
 
 export interface IWeather {

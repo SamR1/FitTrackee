@@ -3,6 +3,7 @@
   "DISTANCE": "distance",
   "DURATION": "duration",
   "KM": "km",
+  "NO_RECORDS": "No records.",
   "NO_WORKOUTS": "No workouts.",
   "RECORD_AS": "Ave. speed",
   "RECORD_FD": "Farest distance",

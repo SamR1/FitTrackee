@@ -1,6 +1,11 @@
 import { assert, expect } from 'chai'
 
-import { getCalendarStartAndEnd, incrementDate, startDate } from '@/utils/dates'
+import {
+  getCalendarStartAndEnd,
+  incrementDate,
+  startDate,
+  formatWorkoutDate,
+} from '@/utils/dates'
 
 describe('startDate (week starting Sunday)', () => {
   const testsParams = [
@@ -154,4 +159,69 @@ describe('getCalendarStartAndEnd', () => {
       assert.deepEqual(results.end, new Date(testParams.expectedEndDate))
     })
   )
+})
+
+describe('formatWorkoutDate', () => {
+  const testsParams = [
+    {
+      description: 'returns date and time with default format',
+      inputParams: {
+        date: new Date('August 21, 2021 20:00:00'),
+        dateFormat: null,
+        timeFormat: null,
+      },
+      expected: {
+        workout_date: '2021/08/21',
+        workout_time: '20:00',
+      },
+    },
+    {
+      description: 'returns date and time with provided date format',
+      inputParams: {
+        date: new Date('August 21, 2021 20:00:00'),
+        dateFormat: 'dd MM yyyy',
+        timeFormat: null,
+      },
+      expected: {
+        workout_date: '21 08 2021',
+        workout_time: '20:00',
+      },
+    },
+    {
+      description: 'returns date and time with provided time format',
+      inputParams: {
+        date: new Date('August 21, 2021 20:00:00'),
+        dateFormat: null,
+        timeFormat: 'HH:mm:ss',
+      },
+      expected: {
+        workout_date: '2021/08/21',
+        workout_time: '20:00:00',
+      },
+    },
+    {
+      description: 'returns date and time with provided date and time formats',
+      inputParams: {
+        date: new Date('August 21, 2021 20:00:00'),
+        dateFormat: 'dd-MM-yyyy',
+        timeFormat: 'HH:mm:ss',
+      },
+      expected: {
+        workout_date: '21-08-2021',
+        workout_time: '20:00:00',
+      },
+    },
+  ]
+  testsParams.map((testParams) => {
+    it(testParams.description, () => {
+      assert.deepEqual(
+        formatWorkoutDate(
+          testParams.inputParams.date,
+          testParams.inputParams.dateFormat,
+          testParams.inputParams.timeFormat
+        ),
+        testParams.expected
+      )
+    })
+  })
 })

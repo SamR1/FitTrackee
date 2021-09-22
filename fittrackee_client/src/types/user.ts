@@ -1,3 +1,5 @@
+import { IRecord } from '@/types/workouts'
+
 export interface IAuthUserProfile {
   admin: boolean
   bio: string | null
@@ -11,6 +13,7 @@ export interface IAuthUserProfile {
   nb_sports: number
   nb_workouts: number
   picture: string | boolean
+  records: IRecord[]
   sports_list: number[]
   timezone: string
   total_distance: number
