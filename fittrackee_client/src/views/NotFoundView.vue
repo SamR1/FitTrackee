@@ -1,10 +1,6 @@
 <template>
   <div class="not-found">
-    <Error
-      title="404"
-      :message="t('error.NOT_FOUND.PAGE')"
-      :button-text="t('common.HOME')"
-    />
+    <NotFound />
   </div>
 </template>
 
@@ -12,12 +8,12 @@
   import { defineComponent } from 'vue'
   import { useI18n } from 'vue-i18n'
 
-  import Error from '@/components/Error.vue'
+  import NotFound from '@/components/Common/NotFound.vue'
 
   export default defineComponent({
-    name: 'NotFound',
+    name: 'NotFoundView',
     components: {
-      Error,
+      NotFound,
     },
     setup() {
       const { t } = useI18n()
