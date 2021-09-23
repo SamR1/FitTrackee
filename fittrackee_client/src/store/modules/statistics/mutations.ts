@@ -15,4 +15,7 @@ export const mutations: MutationTree<IStatisticsState> & TStatisticsMutations =
     ) {
       state.statistics = statistics
     },
+    [STATS_STORE.MUTATIONS.EMPTY_USER_STATS](state: IStatisticsState) {
+      state.statistics = {}
+    },
   }

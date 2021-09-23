@@ -3,7 +3,13 @@ import { ActionContext, ActionTree } from 'vuex'
 import authApi from '@/api/authApi'
 import api from '@/api/defaultApi'
 import router from '@/router'
-import { ROOT_STORE, SPORTS_STORE, USER_STORE } from '@/store/constants'
+import {
+  ROOT_STORE,
+  SPORTS_STORE,
+  STATS_STORE,
+  USER_STORE,
+  WORKOUTS_STORE,
+} from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
 import { IUserActions, IUserState } from '@/store/modules/user/types'
 import { ILoginOrRegisterData } from '@/types/user'
@@ -68,8 +74,10 @@ export const actions: ActionTree<IUserState, IRootState> & IUserActions = {
     context: ActionContext<IUserState, IRootState>
   ): void {
     localStorage.removeItem('authToken')
-    context.commit(USER_STORE.MUTATIONS.CLEAR_AUTH_USER_TOKEN)
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(STATS_STORE.MUTATIONS.EMPTY_USER_STATS)
+    context.commit(USER_STORE.MUTATIONS.CLEAR_AUTH_USER_TOKEN)
+    context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUTS)
     router.push('/login')
   },
 }

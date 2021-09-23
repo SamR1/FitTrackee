@@ -7,5 +7,6 @@ export enum StatisticsGetters {
 }
 
 export enum StatisticsMutations {
+  EMPTY_USER_STATS = 'EMPTY_USER_STATS',
   UPDATE_USER_STATS = 'UPDATE_USER_STATS',
 }

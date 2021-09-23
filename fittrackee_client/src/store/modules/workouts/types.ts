@@ -39,6 +39,7 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
     state: S,
     workouts: IWorkout[]
   ): void
+  [WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUTS](state: S): void
 }
 
 export type TWorkoutsStoreModule<S = IWorkoutsState> = Omit<

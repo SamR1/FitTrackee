@@ -20,4 +20,8 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
   ) {
     state.user_workouts = workouts
   },
+  [WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUTS](state: IWorkoutsState) {
+    state.calendar_workouts = []
+    state.user_workouts = []
+  },
 }

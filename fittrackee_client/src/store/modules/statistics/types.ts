@@ -29,6 +29,7 @@ export type TStatisticsMutations<S = IStatisticsState> = {
     state: S,
     statistics: TStatisticsFromApi
   ): void
+  [STATS_STORE.MUTATIONS.EMPTY_USER_STATS](state: S): void
 }
 
 export type TStatisticsStoreModule<S = IStatisticsState> = Omit<

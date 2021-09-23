@@ -9,6 +9,7 @@ export enum WorkoutsGetters {
 }
 
 export enum WorkoutsMutations {
+  EMPTY_WORKOUTS = 'EMPTY_WORKOUTS',
   SET_CALENDAR_WORKOUTS = 'SET_CALENDAR_WORKOUTS',
   SET_USER_WORKOUTS = 'SET_USER_WORKOUTS',
 }
