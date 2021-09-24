@@ -32,10 +32,21 @@
             }}
           </div>
         </div>
-        <div class="workout-map" v-if="workout.with_gpx">
+        <div
+          class="workout-map"
+          v-if="workout.with_gpx"
+          @click="
+            $router.push({ name: 'Workout', params: { workoutId: workout.id } })
+          "
+        >
           <StaticMap :workout="workout"></StaticMap>
         </div>
-        <div class="workout-data">
+        <div
+          class="workout-data"
+          @click="
+            $router.push({ name: 'Workout', params: { workoutId: workout.id } })
+          "
+        >
           <div>
             <img class="sport-img" alt="workout sport logo" :src="sport.img" />
           </div>
@@ -157,6 +168,10 @@
             width: 33%;
             text-align: center;
           }
+        }
+        .workout-map,
+        .workout-data {
+          cursor: pointer;
         }
       }
     }

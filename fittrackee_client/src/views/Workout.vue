@@ -24,7 +24,13 @@
 </template>
 
 <script lang="ts">
-  import { computed, ComputedRef, defineComponent, onBeforeMount } from 'vue'
+  import {
+    computed,
+    ComputedRef,
+    defineComponent,
+    onBeforeMount,
+    onUnmounted,
+  } from 'vue'
   import { useRoute } from 'vue-router'
 
   import Loader from '@/components/Common/Loader.vue'
@@ -60,6 +66,9 @@
       )
       const sports = computed(() => store.getters[SPORTS_STORE.GETTERS.SPORTS])
 
+      onUnmounted(() => {
+        store.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
+      })
       return { authUser, sports, workout }
     },
   })

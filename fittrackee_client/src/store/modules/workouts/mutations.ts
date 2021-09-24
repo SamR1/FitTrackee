@@ -42,4 +42,11 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
     state.calendar_workouts = []
     state.user_workouts = []
   },
+  [WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT](state: IWorkoutsState) {
+    state.workout = {
+      gpx: '',
+      loading: false,
+      workout: <IWorkout>{},
+    }
+  },
 }
