@@ -12,7 +12,8 @@
         @ready="fitBounds(bounds)"
       >
         <LTileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          :url="`${getApiUrl()}workouts/map_tile/{s}/{z}/{x}/{y}.png`"
+          :attribution="appConfig.map_attribution"
           :bounds="bounds"
         />
         <LGeoJson :geojson="geoJson.jsonData" />
@@ -26,8 +27,11 @@
   import { LGeoJson, LMap, LTileLayer } from '@vue-leaflet/vue-leaflet'
   import { ComputedRef, PropType, computed, defineComponent, ref } from 'vue'
 
+  import { ROOT_STORE } from '@/store/constants'
   import { GeoJSONData } from '@/types/geojson'
   import { IWorkoutState } from '@/types/workouts'
+  import { useStore } from '@/use/useStore'
+  import { getApiUrl } from '@/utils'
 
   export default defineComponent({
     name: 'WorkoutMap',
@@ -42,6 +46,7 @@
       },
     },
     setup(props) {
+      const store = useStore()
       const workoutMap = ref<null | {
         leafletObject: { fitBounds: (bounds: number[][]) => null }
       }>(null)
@@ -85,8 +90,12 @@
             ]
           : []
       )
+      const appConfig = computed(
+        () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
+      )
 
       return {
+        appConfig,
         bounds: bounds,
         center: computed(() => getCenter(bounds)),
         geoJson: computed(() =>
@@ -97,6 +106,7 @@
         options: { zoom: 13 },
         workoutMap,
         fitBounds,
+        getApiUrl,
       }
     },
   })
