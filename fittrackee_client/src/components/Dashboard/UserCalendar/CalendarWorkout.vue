@@ -1,5 +1,10 @@
 <template>
-  <div class="calendar-workout">
+  <div
+    class="calendar-workout"
+    @click="
+      $router.push({ name: 'Workout', params: { workoutId: workout.id } })
+    "
+  >
     <img alt="workout sport logo" :src="sportImg" :title="workout.title" />
     <sup>
       <i
@@ -46,6 +51,7 @@
 
   .calendar-workout {
     padding: 2px 0;
+    cursor: pointer;
     img {
       max-width: 18px;
       max-height: 18px;

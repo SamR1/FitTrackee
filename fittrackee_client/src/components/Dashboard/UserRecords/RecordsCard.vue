@@ -17,7 +17,15 @@
             t(`workouts.RECORD_${record.record_type}`)
           }}</span>
           <span class="record-value">{{ record.value }}</span>
-          <span class="record-date">{{ record.workout_date }}</span>
+          <span class="record-date">
+            <router-link
+              :to="{
+                name: 'Workout',
+                params: { workoutId: record.workout_id },
+              }"
+              >{{ record.workout_date }}</router-link
+            >
+          </span>
         </div>
       </template>
     </Card>
