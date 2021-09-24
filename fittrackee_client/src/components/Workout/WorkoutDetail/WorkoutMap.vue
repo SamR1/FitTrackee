@@ -4,7 +4,13 @@
       class="leaflet-container"
       v-if="geoJson.jsonData && center && bounds.length === 2"
     >
-      <LMap :zoom="options.zoom" :center="center" :bounds="bounds">
+      <LMap
+        :zoom="options.zoom"
+        :center="center"
+        :bounds="bounds"
+        ref="workoutMap"
+        @ready="fitBounds(bounds)"
+      >
         <LTileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           :bounds="bounds"
@@ -18,7 +24,7 @@
 <script lang="ts">
   import { gpx } from '@tmcw/togeojson'
   import { LGeoJson, LMap, LTileLayer } from '@vue-leaflet/vue-leaflet'
-  import { ComputedRef, PropType, computed, defineComponent } from 'vue'
+  import { ComputedRef, PropType, computed, defineComponent, ref } from 'vue'
 
   import { GeoJSONData } from '@/types/geojson'
   import { IWorkoutState } from '@/types/workouts'
@@ -36,6 +42,9 @@
       },
     },
     setup(props) {
+      const workoutMap = ref<null | {
+        leafletObject: { fitBounds: (bounds: number[][]) => null }
+      }>(null)
       function getGeoJson(gpxContent: string): GeoJSONData {
         if (!gpxContent || gpxContent !== '') {
           try {
@@ -56,6 +65,12 @@
           (bounds.value[0][1] + bounds.value[1][1]) / 2,
         ]
       }
+      function fitBounds(bounds: number[][]) {
+        if (workoutMap.value?.leafletObject) {
+          workoutMap.value?.leafletObject.fitBounds(bounds)
+        }
+      }
+
       const bounds = computed(() =>
         props.workout
           ? [
@@ -80,6 +95,8 @@
             : {}
         ),
         options: { zoom: 13 },
+        workoutMap,
+        fitBounds,
       }
     },
   })
