@@ -2,7 +2,23 @@
   <div class="workout-detail">
     <Card :without-title="false">
       <template #title>
-        <div class="workout-previous">
+        <div
+          class="workout-previous workout-arrow"
+          :class="{ inactive: !workout.workout.previous_workout }"
+          :title="
+            workout.workout.previous_workout
+              ? t('workouts.PREVIOUS_WORKOUT')
+              : t('workouts.NO_PREVIOUS_WORKOUT')
+          "
+          @click="
+            workout.workout.previous_workout
+              ? $router.push({
+                  name: 'Workout',
+                  params: { workoutId: workout.workout.previous_workout },
+                })
+              : null
+          "
+        >
           <i class="fa fa-chevron-left" aria-hidden="true" />
         </div>
         <div class="workout-card-title">
@@ -16,7 +32,23 @@
             </div>
           </div>
         </div>
-        <div class="workout-next">
+        <div
+          class="workout-next workout-arrow"
+          :class="{ inactive: !workout.workout.next_workout }"
+          :title="
+            workout.workout.next_workout
+              ? t('workouts.NEXT_WORKOUT')
+              : t('workouts.NO_NEXT_WORKOUT')
+          "
+          @click="
+            workout.workout.next_workout
+              ? $router.push({
+                  name: 'Workout',
+                  params: { workoutId: workout.workout.next_workout },
+                })
+              : null
+          "
+        >
           <i class="fa fa-chevron-right" aria-hidden="true" />
         </div>
       </template>
@@ -28,13 +60,17 @@
 </template>
 
 <script lang="ts">
-  import { PropType, defineComponent, computed } from 'vue'
+  import { PropType, defineComponent, computed, watch } from 'vue'
+  import { useI18n } from 'vue-i18n'
+  import { useRoute } from 'vue-router'
 
   import Card from '@/components/Common/Card.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap.vue'
+  import { WORKOUTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'
   import { IWorkoutState } from '@/types/workouts'
+  import { useStore } from '@/use/useStore'
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
 
   export default defineComponent({
@@ -57,6 +93,15 @@
       },
     },
     setup(props) {
+      const route = useRoute()
+      const store = useStore()
+      const { t } = useI18n()
+      watch(
+        () => route.params.workoutId,
+        async (newWorkoutId) => {
+          store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT, newWorkoutId)
+        }
+      )
       return {
         sport: computed(() =>
           props.sports
@@ -73,6 +118,7 @@
             )
           )
         ),
+        t,
       }
     },
   })
@@ -88,6 +134,14 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        .workout-arrow {
+          cursor: pointer;
+          &.inactive {
+            color: var(--disabled-color);
+            cursor: default;
+          }
+        }
+
         .workout-card-title {
           display: flex;
           flex-grow: 1;
