@@ -1,14 +1,22 @@
 {
   "ADD_WORKOUT": "Ajouter une séance",
+  "ASCENT": "dénivelé positif",
+  "AVERAGE_SPEED": "vitesse moyenne",
+  "DESCENT": "dénivelé négatif",
   "DISTANCE": "distance",
   "DURATION": "durée",
+  "END": "fin",
   "KM": "km",
   "LATEST_WORKOUTS": "Séances récentes",
+  "MAX_ALTITUDE": "altitude max",
+  "MAX_SPEED": "vitesse max",
+  "MIN_ALTITUDE": "altitude min",
   "NEXT_WORKOUT": "Séance suivante",
   "NO_NEXT_WORKOUT": "Pas de séance suivante",
   "NO_PREVIOUS_WORKOUT": "Pas de séances précédente",
   "NO_RECORDS": "Pas de records.",
   "NO_WORKOUTS": "Pas de séances.",
+  "PAUSES": "pauses",
   "PREVIOUS_WORKOUT": "Séance précédente",
   "RECORD": "record | records",
   "RECORD_AS": "Vitesse moy.",
@@ -16,5 +24,24 @@
   "RECORD_LD": "Durée la + longue",
   "RECORD_MS": "Vitesse max.",
   "SPORT": "sport | sports",
+  "START": "début",
+  "TOTAL_DURATION": "durée totale",
+  "WEATHER": {
+    "HUMIDITY": "humidité",
+    "TEMPERATURE": "température",
+    "WIND": "vent",
+    "DARK_SKY": {
+      "clear-day": "ensoleillé",
+      "clear-night": "nuit claire",
+      "cloudy": "nuageux",
+      "fog": "brouillard",
+      "partly-cloudy-day": "partiellement nuageux",
+      "partly-cloudy-night": "nuit partiellement nuageuse",
+      "rain": "pluie",
+      "sleet": "neige fondue",
+      "snow": "neige",
+      "wind":  "venteux"
+    }
+  },
   "WORKOUT": "séance | séances"
 }

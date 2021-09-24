@@ -1,14 +1,22 @@
 {
   "ADD_WORKOUT": "Add workout",
+  "ASCENT": "ascent",
+  "AVERAGE_SPEED": "average speed",
+  "DESCENT": "descent",
   "DISTANCE": "distance",
   "DURATION": "duration",
+  "END": "end",
   "KM": "km",
   "LATEST_WORKOUTS": "Latest workouts",
+  "MAX_ALTITUDE": "max. altitude",
+  "MAX_SPEED": "max. speed",
+  "MIN_ALTITUDE": "min. altitude",
   "NEXT_WORKOUT": "Next workout",
   "NO_NEXT_WORKOUT": "No next workout",
   "NO_PREVIOUS_WORKOUT": "No previous workout",
   "NO_RECORDS": "No records.",
   "NO_WORKOUTS": "No workouts.",
+  "PAUSES": "pauses",
   "PREVIOUS_WORKOUT": "Previous workout",
   "RECORD": "record | records",
   "RECORD_AS": "Ave. speed",
@@ -16,5 +24,24 @@
   "RECORD_LD": "Longest duration",
   "RECORD_MS": "Max. speed",
   "SPORT": "sport | sports",
+  "START": "start",
+  "TOTAL_DURATION": "total duration",
+  "WEATHER": {
+    "HUMIDITY": "humidity",
+    "TEMPERATURE": "temperature",
+    "WIND": "wind",
+    "DARK_SKY": {
+      "clear-day": "clear day",
+      "clear-night": "clear night",
+      "cloudy": "cloudy",
+      "fog": "fog",
+      "partly-cloudy-day": "partly cloudy day",
+      "partly-cloudy-night": "partly cloudy night",
+      "rain": "rain",
+      "sleet": "sleet",
+      "snow": "snow",
+      "wind":  "wind"
+    }
+  },
   "WORKOUT": "workout | workouts"
 }

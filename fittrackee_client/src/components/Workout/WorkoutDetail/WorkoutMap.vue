@@ -105,6 +105,7 @@
 <style lang="scss" scoped>
   @import '~@/scss/base';
   #workout-map {
+    padding: $default-padding 0;
     .leaflet-container {
       height: 400px;
       width: 600px;

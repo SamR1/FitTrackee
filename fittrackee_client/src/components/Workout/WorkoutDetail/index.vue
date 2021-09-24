@@ -54,6 +54,7 @@
       </template>
       <template #content>
         <WorkoutMap :workout="workout" />
+        <WorkoutData :workout="workout.workout" />
       </template>
     </Card>
   </div>
@@ -65,6 +66,7 @@
   import { useRoute } from 'vue-router'
 
   import Card from '@/components/Common/Card.vue'
+  import WorkoutData from '@/components/Workout/WorkoutDetail/WorkoutData.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap.vue'
   import { WORKOUTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
@@ -77,6 +79,7 @@
     name: 'WorkoutDetail',
     components: {
       Card,
+      WorkoutData,
       WorkoutMap,
     },
     props: {
@@ -156,6 +159,13 @@
             font-size: 0.8em;
             font-weight: normal;
           }
+        }
+      }
+      .card-content {
+        display: flex;
+        flex-direction: row;
+        @media screen and (max-width: $small-limit) {
+          flex-direction: column;
         }
       }
     }
