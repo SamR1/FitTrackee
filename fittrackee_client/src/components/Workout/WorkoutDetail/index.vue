@@ -81,7 +81,9 @@
 <style lang="scss" scoped>
   @import '~@/scss/base';
   .workout-detail {
+    display: flex;
     ::v-deep(.card) {
+      width: 100%;
       .card-title {
         display: flex;
         justify-content: space-between;

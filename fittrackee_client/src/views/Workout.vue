@@ -1,21 +1,23 @@
 <template>
   <div id="workout">
-    <div class="workout-loading" v-if="workout.loading">
-      <div class="loading">
-        <Loader />
+    <div class="container">
+      <div class="workout-loading" v-if="workout.loading">
+        <div class="loading">
+          <Loader />
+        </div>
       </div>
-    </div>
-    <div v-else class="container">
-      <div v-if="workout.workout.id">
-        <WorkoutDetail
-          v-if="sports.length > 0"
-          :workout="workout"
-          :sports="sports"
-          :authUser="authUser"
-        />
-      </div>
-      <div class="container" v-else>
-        <NotFound target="WORKOUT" />
+      <div v-else class="workout-container">
+        <div v-if="workout.workout.id">
+          <WorkoutDetail
+            v-if="sports.length > 0"
+            :workout="workout"
+            :sports="sports"
+            :authUser="authUser"
+          />
+        </div>
+        <div v-else>
+          <NotFound target="WORKOUT" />
+        </div>
       </div>
     </div>
   </div>
@@ -66,13 +68,21 @@
 <style lang="scss" scoped>
   @import '~@/scss/base';
   #workout {
-    .workout-loading {
-      height: $app-height;
-
-      .loading {
-        display: flex;
-        align-items: center;
-        height: 100%;
+    display: flex;
+    .container {
+      width: 100%;
+      padding: 0;
+      .workout-container {
+        width: 100%;
+      }
+      .workout-loading {
+        height: $app-height;
+        width: 100%;
+        .loading {
+          display: flex;
+          align-items: center;
+          height: 100%;
+        }
       }
     }
   }

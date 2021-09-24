@@ -104,8 +104,17 @@
 
 <style lang="scss" scoped>
   @import '~@/scss/base';
-  .leaflet-container {
-    height: 400px;
-    width: 600px;
+  #workout-map {
+    .leaflet-container {
+      height: 400px;
+      width: 600px;
+    }
+
+    @media screen and (max-width: $small-limit) {
+      .leaflet-container {
+        width: 100%;
+        height: 300px;
+      }
+    }
   }
 </style>
