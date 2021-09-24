@@ -10,12 +10,15 @@
     "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\""
   },
   "dependencies": {
+    "@tmcw/togeojson": "^4.5.0",
+    "@vue-leaflet/vue-leaflet": "^0.6.1",
     "axios": "^0.21.1",
     "chart.js": "^3.5.1",
     "chartjs-plugin-datalabels": "^2.0.0",
     "core-js": "^3.6.5",
     "date-fns": "^2.23.0",
     "date-fns-tz": "^1.1.6",
+    "leaflet": "^1.7.1",
     "register-service-worker": "^1.7.1",
     "vue": "^3.0.0",
     "vue-chart-3": "^0.5.8",

@@ -5,6 +5,7 @@ import { USER_STORE } from '@/store/constants'
 import Dashboard from '@/views/DashBoard.vue'
 import LoginOrRegister from '@/views/LoginOrRegister.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
+import Workout from '@/views/Workout.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -23,6 +24,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Register',
     component: LoginOrRegister,
     props: { action: 'register' },
+  },
+  {
+    path: '/workouts/:workoutId',
+    name: 'Workout',
+    component: Workout,
   },
   { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundView },
 ]

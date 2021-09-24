@@ -49,4 +49,37 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
   ): void {
     getWorkouts(context, payload, 'USER_WORKOUTS')
   },
+  [WORKOUTS_STORE.ACTIONS.GET_WORKOUT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    workoutId: string
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING, true)
+    authApi
+      .get(`workouts/${workoutId}`)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.SET_WORKOUT,
+            res.data.data.workouts[0]
+          )
+          if (res.data.data.workouts[0].with_gpx) {
+            authApi.get(`workouts/${workoutId}/gpx`).then((res) => {
+              if (res.data.status === 'success') {
+                context.commit(
+                  WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GPX,
+                  res.data.data.gpx
+                )
+              }
+            })
+          }
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING, false)
+      )
+  },
 }

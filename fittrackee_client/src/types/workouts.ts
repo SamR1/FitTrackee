@@ -78,3 +78,9 @@ export interface IWorkoutsPayload {
   per_page?: number
   page?: number
 }
+
+export interface IWorkoutState {
+  gpx: string
+  loading: boolean
+  workout: IWorkout
+}
