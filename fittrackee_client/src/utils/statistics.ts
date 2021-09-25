@@ -1,10 +1,9 @@
 import { format } from 'date-fns'
 
-import { genericObject } from '@/types/generic'
+import { IChartDataset } from '@/types/chart'
 import { ISport } from '@/types/sports'
 import {
   IStatisticsChartData,
-  IStatisticsChartDataset,
   IStatisticsDateParams,
   TDatasetKeys,
   TStatisticsDatasets,
@@ -14,7 +13,7 @@ import { incrementDate, startDate } from '@/utils/dates'
 import { sportColors } from '@/utils/sports'
 
 // date format from api
-const dateFormats: genericObject = {
+const dateFormats: Record<string, string> = {
   week: 'yyyy-MM-dd',
   month: 'yyyy-MM',
   year: 'yyyy',
@@ -44,7 +43,7 @@ export const getDateKeys = (
 const getStatisticsChartDataset = (
   sportLabel: string,
   color: string
-): IStatisticsChartDataset => {
+): IChartDataset => {
   return {
     label: sportLabel,
     backgroundColor: [color],

@@ -1,3 +1,5 @@
+import { IChartDataset } from '@/types/chart'
+
 export interface IStatisticsParams {
   from: string
   to: string
@@ -30,14 +32,8 @@ export type TStatisticsFromApi = {
   [key in string]: TSportStatistics
 }
 
-export interface IStatisticsChartDataset {
-  label: string
-  backgroundColor: string[]
-  data: number[]
-}
-
 export type TStatisticsDatasets = {
-  [key in TDatasetKeys]: IStatisticsChartDataset[]
+  [key in TDatasetKeys]: IChartDataset[]
 }
 
 export interface IStatisticsChartData {

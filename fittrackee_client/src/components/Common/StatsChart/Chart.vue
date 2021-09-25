@@ -17,7 +17,8 @@
   import { BarChart, useBarChart } from 'vue-chart-3'
   import { useI18n } from 'vue-i18n'
 
-  import { IStatisticsChartDataset, TDatasetKeys } from '@/types/statistics'
+  import { IChartDataset } from '@/types/chart'
+  import { TDatasetKeys } from '@/types/statistics'
   import { formatTooltipValue } from '@/utils/tooltip'
 
   Chart.register(...registerables)
@@ -30,7 +31,7 @@
     },
     props: {
       datasets: {
-        type: Object as PropType<IStatisticsChartDataset[]>,
+        type: Object as PropType<IChartDataset[]>,
         required: true,
       },
       labels: {

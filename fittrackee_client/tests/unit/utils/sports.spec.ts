@@ -1,6 +1,6 @@
 import { assert } from 'chai'
 
-import { sports } from './constants'
+import { sports } from './fixtures'
 
 import createI18n from '@/i18n'
 import { translateSports } from '@/utils/sports'

@@ -1,6 +1,6 @@
 import { assert, expect } from 'chai'
 
-import { sports } from './constants'
+import { sports } from './fixtures'
 
 import { formatRecord, getRecordsBySports } from '@/utils/records'
 

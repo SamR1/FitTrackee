@@ -23,7 +23,7 @@
   import UserCalendar from '@/components/Dashboard/UserCalendar/index.vue'
   import UserMonthStats from '@/components/Dashboard/UserMonthStats.vue'
   import UserRecords from '@/components/Dashboard/UserRecords/index.vue'
-  import UserStatsCards from '@/components/Dashboard/UserStartsCards/index.vue'
+  import UserStatsCards from '@/components/Dashboard/UserStatsCards/index.vue'
   import { USER_STORE } from '@/store/constants'
   import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
