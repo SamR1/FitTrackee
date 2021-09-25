@@ -22,13 +22,19 @@
       {{ t('workouts.MAX_SPEED') }}: <span>{{ workout.max_speed }} km/h</span>
       <WorkoutRecord :workout="workout" record_type="MS" />
     </div>
-    <div class="workout-data">
+    <div
+      class="workout-data"
+      v-if="workout.max_alt !== null && workout.min_alt !== null"
+    >
       <img class="mountains" src="/img/misc/mountains.svg" />
       {{ t('workouts.MIN_ALTITUDE') }}: <span>{{ workout.min_alt }} m</span
       ><br />
       {{ t('workouts.MAX_ALTITUDE') }}: <span>{{ workout.max_alt }} m</span>
     </div>
-    <div class="workout-data">
+    <div
+      class="workout-data"
+      v-if="workout.ascent !== null && workout.descent !== null"
+    >
       <i class="fa fa-location-arrow" aria-hidden="true" />
       {{ t('workouts.ASCENT') }}: <span>{{ workout.ascent }} m</span><br />
       {{ t('workouts.DESCENT') }}: <span>{{ workout.descent }} m</span>

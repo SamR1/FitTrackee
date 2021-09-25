@@ -19,6 +19,7 @@
         <LGeoJson :geojson="geoJson.jsonData" />
       </LMap>
     </div>
+    <div v-else class="no-map">{{ t('workouts.NO_MAP') }}</div>
   </div>
 </template>
 
@@ -26,6 +27,7 @@
   import { gpx } from '@tmcw/togeojson'
   import { LGeoJson, LMap, LTileLayer } from '@vue-leaflet/vue-leaflet'
   import { ComputedRef, PropType, computed, defineComponent, ref } from 'vue'
+  import { useI18n } from 'vue-i18n'
 
   import { ROOT_STORE } from '@/store/constants'
   import { GeoJSONData } from '@/types/geojson'
@@ -46,6 +48,7 @@
       },
     },
     setup(props) {
+      const { t } = useI18n()
       const store = useStore()
       const workoutMap = ref<null | {
         leafletObject: { fitBounds: (bounds: number[][]) => null }
@@ -104,6 +107,7 @@
             : {}
         ),
         options: { zoom: 13 },
+        t,
         workoutMap,
         fitBounds,
         getApiUrl,
@@ -116,15 +120,28 @@
   @import '~@/scss/base';
   #workout-map {
     padding: $default-padding 0;
-    .leaflet-container {
+    .leaflet-container,
+    .no-map {
       height: 400px;
       width: 600px;
     }
+    .no-map {
+      text-align: center;
+      vertical-align: center;
+      font-style: italic;
+      line-height: 400px;
+      color: var(--workout-no-map-color);
+      background-color: var(--workout-no-map-bg-color);
+    }
 
     @media screen and (max-width: $small-limit) {
+      padding: 0;
       .leaflet-container {
         width: 100%;
         height: 300px;
+      }
+      .no-map {
+        display: none;
       }
     }
   }
