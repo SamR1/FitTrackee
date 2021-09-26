@@ -85,7 +85,7 @@
           },
         },
         scales: {
-          x: {
+          [displayDistance.value ? 'xDistance' : 'xDuration']: {
             grid: {
               drawOnChartArea: false,
             },
@@ -94,7 +94,7 @@
               callback: function (value) {
                 return displayDistance.value
                   ? Number(value).toFixed(2)
-                  : new Date(+value * 1000).toISOString().substr(11, 8)
+                  : formatDuration(value)
               },
             },
             type: 'linear',
@@ -138,11 +138,35 @@
           datalabels: {
             display: false,
           },
+          tooltip: {
+            interaction: {
+              intersect: false,
+              mode: 'index',
+            },
+            callbacks: {
+              label: function (context) {
+                const label = ` ${context.dataset.label}: ${context.formattedValue}`
+                return context.dataset.yAxisID === 'yElevation'
+                  ? label + ' m'
+                  : label + ' km/h'
+              },
+              title: function (tooltipItems) {
+                return tooltipItems.length === 0
+                  ? ''
+                  : displayDistance.value
+                  ? tooltipItems[0].label + ' km'
+                  : formatDuration(tooltipItems[0].label.replace(',', ''))
+              },
+            },
+          },
         },
       }))
 
       function updateDisplayDistance() {
         displayDistance.value = !displayDistance.value
+      }
+      function formatDuration(duration: string | number): string {
+        return new Date(+duration * 1000).toISOString().substr(11, 8)
       }
 
       const { lineChartProps } = useLineChart({
