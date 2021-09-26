@@ -16,7 +16,9 @@
             :markerCoordinates="markerCoordinates"
           />
           <WorkoutChart
-            v-if="workoutData.chartData.length > 0"
+            v-if="
+              workoutData.workout.with_gpx && workoutData.chartData.length > 0
+            "
             :workoutData="workoutData"
             :authUser="authUser"
             @getCoordinates="updateCoordinates"

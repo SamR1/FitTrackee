@@ -2,7 +2,12 @@
   <div id="workout-map">
     <div
       class="leaflet-container"
-      v-if="geoJson.jsonData && center && bounds.length === 2"
+      v-if="
+        workoutData.workout.with_gpx &&
+        geoJson.jsonData &&
+        center &&
+        bounds.length === 2
+      "
     >
       <LMap
         :zoom="options.zoom"
