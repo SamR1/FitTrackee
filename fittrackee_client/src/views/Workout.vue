@@ -21,6 +21,7 @@
             :authUser="authUser"
             @getCoordinates="updateCoordinates"
           />
+          <WorkoutNotes :notes="workout.workout.notes" />
         </div>
         <div v-else>
           <NotFound target="WORKOUT" />
@@ -46,6 +47,7 @@
   import NotFound from '@/components/Common/NotFound.vue'
   import WorkoutChart from '@/components/Workout/WorkoutChart/index.vue'
   import WorkoutDetail from '@/components/Workout/WorkoutDetail/index.vue'
+  import WorkoutNotes from '@/components/Workout/WorkoutNotes.vue'
   import { SPORTS_STORE, USER_STORE, WORKOUTS_STORE } from '@/store/constants'
   import { IAuthUserProfile } from '@/types/user'
   import { IWorkoutState, TCoordinates } from '@/types/workouts'
@@ -58,6 +60,7 @@
       NotFound,
       WorkoutChart,
       WorkoutDetail,
+      WorkoutNotes,
     },
     setup() {
       const route = useRoute()
