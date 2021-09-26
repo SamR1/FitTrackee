@@ -1,6 +1,7 @@
 import {
   IWorkoutApiChartData,
   IWorkoutChartData,
+  TCoordinates,
   TWorkoutDatasets,
 } from '@/types/workouts'
 
@@ -29,13 +30,15 @@ export const getDatasets = (
   }
   const distance_labels: unknown[] = []
   const duration_labels: unknown[] = []
+  const coordinates: TCoordinates[] = []
 
   chartData.map((data) => {
     distance_labels.push(data.distance)
     duration_labels.push(data.duration)
     datasets.speed.data.push(data.speed)
     datasets.elevation.data.push(data.elevation)
+    coordinates.push({ latitude: data.latitude, longitude: data.longitude })
   })
 
-  return { distance_labels, duration_labels, datasets }
+  return { distance_labels, duration_labels, datasets, coordinates }
 }

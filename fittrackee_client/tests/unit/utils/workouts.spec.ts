@@ -36,6 +36,7 @@ describe('getDatasets', () => {
             yAxisID: 'yElevation',
           },
         },
+        coordinates: [],
       },
     },
     {
@@ -94,6 +95,11 @@ describe('getDatasets', () => {
             yAxisID: 'yElevation',
           },
         },
+        coordinates: [
+          { latitude: 48.845574, longitude: 2.373723 },
+          { latitude: 48.845578, longitude: 2.373732 },
+          { latitude: 48.845591, longitude: 2.373811 },
+        ],
       },
     },
   ]

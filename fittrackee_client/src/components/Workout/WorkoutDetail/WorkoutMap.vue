@@ -17,6 +17,10 @@
           :bounds="bounds"
         />
         <LGeoJson :geojson="geoJson.jsonData" />
+        <LMarker
+          v-if="markerCoordinates.latitude"
+          :lat-lng="[markerCoordinates.latitude, markerCoordinates.longitude]"
+        />
       </LMap>
     </div>
     <div v-else class="no-map">{{ t('workouts.NO_MAP') }}</div>
@@ -25,13 +29,13 @@
 
 <script lang="ts">
   import { gpx } from '@tmcw/togeojson'
-  import { LGeoJson, LMap, LTileLayer } from '@vue-leaflet/vue-leaflet'
+  import { LGeoJson, LMap, LMarker, LTileLayer } from '@vue-leaflet/vue-leaflet'
   import { ComputedRef, PropType, computed, defineComponent, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
 
   import { ROOT_STORE } from '@/store/constants'
   import { GeoJSONData } from '@/types/geojson'
-  import { IWorkoutState } from '@/types/workouts'
+  import { IWorkoutState, TCoordinates } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getApiUrl } from '@/utils'
 
@@ -40,11 +44,16 @@
     components: {
       LGeoJson,
       LMap,
+      LMarker,
       LTileLayer,
     },
     props: {
       workout: {
         type: Object as PropType<IWorkoutState>,
+      },
+      markerCoordinates: {
+        type: Object as PropType<TCoordinates>,
+        required: false,
       },
     },
     setup(props) {

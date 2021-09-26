@@ -23,7 +23,11 @@
             {{ t('workouts.DURATION') }}
           </label>
         </div>
-        <LineChart v-bind="lineChartProps" class="line-chart" />
+        <LineChart
+          v-bind="lineChartProps"
+          class="line-chart"
+          @mouseleave="emitEmptyCoordinates"
+        />
         <div class="no-data-cleaning">
           {{ t('workouts.NO_DATA_CLEANING') }}
         </div>
@@ -40,7 +44,11 @@
 
   import Card from '@/components/Common/Card.vue'
   import { IAuthUserProfile } from '@/types/user'
-  import { IWorkoutChartData, IWorkoutState } from '@/types/workouts'
+  import {
+    IWorkoutChartData,
+    IWorkoutState,
+    TCoordinates,
+  } from '@/types/workouts'
   import { getDatasets } from '@/utils/workouts'
 
   export default defineComponent({
@@ -59,7 +67,8 @@
         required: true,
       },
     },
-    setup(props) {
+    emits: ['getCoordinates'],
+    setup(props, { emit }) {
       const { t } = useI18n()
       let displayDistance = ref(true)
       const datasets: ComputedRef<IWorkoutChartData> = computed(() =>
@@ -76,6 +85,9 @@
           ])
         ),
       }))
+      const coordinates: ComputedRef<TCoordinates[]> = computed(
+        () => datasets.value.coordinates
+      )
       const options = computed<ChartOptions<'line'>>(() => ({
         responsive: true,
         animation: false,
@@ -151,6 +163,9 @@
                   : label + ' km/h'
               },
               title: function (tooltipItems) {
+                if (tooltipItems.length > 0) {
+                  emitCoordinates(coordinates.value[tooltipItems[0].dataIndex])
+                }
                 return tooltipItems.length === 0
                   ? ''
                   : displayDistance.value
@@ -168,6 +183,12 @@
       function formatDuration(duration: string | number): string {
         return new Date(+duration * 1000).toISOString().substr(11, 8)
       }
+      function emitCoordinates(coordinates: TCoordinates) {
+        emit('getCoordinates', coordinates)
+      }
+      function emitEmptyCoordinates() {
+        emitCoordinates({ latitude: null, longitude: null })
+      }
 
       const { lineChartProps } = useLineChart({
         chartData,
@@ -177,6 +198,7 @@
         displayDistance,
         lineChartProps,
         t,
+        emitEmptyCoordinates,
         updateDisplayDistance,
       }
     },

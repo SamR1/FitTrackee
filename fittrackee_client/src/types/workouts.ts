@@ -104,8 +104,15 @@ export type TWorkoutDatasets = {
   [key in TWorkoutDatasetKeys]: IChartDataset
 }
 
+export type TCoordinatesKeys = 'latitude' | 'longitude'
+
+export type TCoordinates = {
+  [key in TCoordinatesKeys]: number | null
+}
+
 export interface IWorkoutChartData {
   distance_labels: unknown[]
   duration_labels: unknown[]
   datasets: TWorkoutDatasets
+  coordinates: TCoordinates[]
 }

@@ -13,11 +13,13 @@
             :workout="workout"
             :sports="sports"
             :authUser="authUser"
+            :markerCoordinates="markerCoordinates"
           />
           <WorkoutChart
             v-if="workout.chartData.length > 0"
             :workout="workout"
             :authUser="authUser"
+            @getCoordinates="updateCoordinates"
           />
         </div>
         <div v-else>
@@ -30,9 +32,11 @@
 
 <script lang="ts">
   import {
-    computed,
     ComputedRef,
+    Ref,
+    computed,
     defineComponent,
+    ref,
     onBeforeMount,
     onUnmounted,
   } from 'vue'
@@ -44,7 +48,7 @@
   import WorkoutDetail from '@/components/Workout/WorkoutDetail/index.vue'
   import { SPORTS_STORE, USER_STORE, WORKOUTS_STORE } from '@/store/constants'
   import { IAuthUserProfile } from '@/types/user'
-  import { IWorkoutState } from '@/types/workouts'
+  import { IWorkoutState, TCoordinates } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
 
   export default defineComponent({
@@ -72,11 +76,22 @@
         () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
       )
       const sports = computed(() => store.getters[SPORTS_STORE.GETTERS.SPORTS])
+      let markerCoordinates: Ref<TCoordinates> = ref({
+        latitude: null,
+        longitude: null,
+      })
+
+      function updateCoordinates(coordinates: TCoordinates) {
+        markerCoordinates.value = {
+          latitude: coordinates.latitude,
+          longitude: coordinates.longitude,
+        }
+      }
 
       onUnmounted(() => {
         store.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
       })
-      return { authUser, sports, workout }
+      return { authUser, markerCoordinates, sports, workout, updateCoordinates }
     },
   })
 </script>

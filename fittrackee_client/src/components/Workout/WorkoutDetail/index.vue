@@ -53,7 +53,7 @@
         </div>
       </template>
       <template #content>
-        <WorkoutMap :workout="workout" />
+        <WorkoutMap :workout="workout" :markerCoordinates="markerCoordinates" />
         <WorkoutData :workout="workout.workout" />
       </template>
     </Card>
@@ -71,7 +71,7 @@
   import { WORKOUTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'
-  import { IWorkoutState } from '@/types/workouts'
+  import { IWorkoutState, TCoordinates } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
 
@@ -86,6 +86,10 @@
       authUser: {
         type: Object as PropType<IAuthUserProfile>,
         required: true,
+      },
+      markerCoordinates: {
+        type: Object as PropType<TCoordinates>,
+        required: false,
       },
       sports: {
         type: Object as PropType<ISport[]>,
