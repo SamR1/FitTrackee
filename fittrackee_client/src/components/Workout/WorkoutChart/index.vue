@@ -169,8 +169,10 @@
                 return tooltipItems.length === 0
                   ? ''
                   : displayDistance.value
-                  ? tooltipItems[0].label + ' km'
-                  : formatDuration(tooltipItems[0].label.replace(',', ''))
+                  ? `${t('workouts.DISTANCE')}: ${tooltipItems[0].label} km`
+                  : `${t('workouts.DURATION')}: ${formatDuration(
+                      tooltipItems[0].label.replace(',', '')
+                    )}`
               },
             },
           },
