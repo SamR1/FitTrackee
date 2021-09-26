@@ -35,7 +35,7 @@
 
   import { ROOT_STORE } from '@/store/constants'
   import { GeoJSONData } from '@/types/geojson'
-  import { IWorkoutState, TCoordinates } from '@/types/workouts'
+  import { IWorkoutData, TCoordinates } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getApiUrl } from '@/utils'
 
@@ -48,8 +48,8 @@
       LTileLayer,
     },
     props: {
-      workout: {
-        type: Object as PropType<IWorkoutState>,
+      workoutData: {
+        type: Object as PropType<IWorkoutData>,
       },
       markerCoordinates: {
         type: Object as PropType<TCoordinates>,
@@ -89,15 +89,15 @@
       }
 
       const bounds = computed(() =>
-        props.workout
+        props.workoutData
           ? [
               [
-                props.workout.workout.bounds[0],
-                props.workout.workout.bounds[1],
+                props.workoutData.workout.bounds[0],
+                props.workoutData.workout.bounds[1],
               ],
               [
-                props.workout.workout.bounds[2],
-                props.workout.workout.bounds[3],
+                props.workoutData.workout.bounds[2],
+                props.workoutData.workout.bounds[3],
               ],
             ]
           : []
@@ -111,8 +111,8 @@
         bounds: bounds,
         center: computed(() => getCenter(bounds)),
         geoJson: computed(() =>
-          props.workout && props.workout.gpx
-            ? getGeoJson(props.workout.gpx)
+          props.workoutData && props.workoutData.gpx
+            ? getGeoJson(props.workoutData.gpx)
             : {}
         ),
         options: { zoom: 13 },

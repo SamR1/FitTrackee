@@ -4,17 +4,17 @@
       <template #title>
         <div
           class="workout-previous workout-arrow"
-          :class="{ inactive: !workout.workout.previous_workout }"
+          :class="{ inactive: !workoutData.workout.previous_workout }"
           :title="
-            workout.workout.previous_workout
+            workoutData.workout.previous_workout
               ? t('workouts.PREVIOUS_WORKOUT')
               : t('workouts.NO_PREVIOUS_WORKOUT')
           "
           @click="
-            workout.workout.previous_workout
+            workoutData.workout.previous_workout
               ? $router.push({
                   name: 'Workout',
-                  params: { workoutId: workout.workout.previous_workout },
+                  params: { workoutId: workoutData.workout.previous_workout },
                 })
               : null
           "
@@ -26,7 +26,7 @@
             <img alt="workout sport logo" :src="sport.img" />
           </div>
           <div class="workout-title-date">
-            <div class="workout-title">{{ workout.workout.title }}</div>
+            <div class="workout-title">{{ workoutData.workout.title }}</div>
             <div class="workout-date">
               {{ workoutDate.workout_date }} - {{ workoutDate.workout_time }}
             </div>
@@ -34,17 +34,17 @@
         </div>
         <div
           class="workout-next workout-arrow"
-          :class="{ inactive: !workout.workout.next_workout }"
+          :class="{ inactive: !workoutData.workout.next_workout }"
           :title="
-            workout.workout.next_workout
+            workoutData.workout.next_workout
               ? t('workouts.NEXT_WORKOUT')
               : t('workouts.NO_NEXT_WORKOUT')
           "
           @click="
-            workout.workout.next_workout
+            workoutData.workout.next_workout
               ? $router.push({
                   name: 'Workout',
-                  params: { workoutId: workout.workout.next_workout },
+                  params: { workoutId: workoutData.workout.next_workout },
                 })
               : null
           "
@@ -53,8 +53,11 @@
         </div>
       </template>
       <template #content>
-        <WorkoutMap :workout="workout" :markerCoordinates="markerCoordinates" />
-        <WorkoutData :workout="workout.workout" />
+        <WorkoutMap
+          :workoutData="workoutData"
+          :markerCoordinates="markerCoordinates"
+        />
+        <WorkoutData :workout="workoutData.workout" />
       </template>
     </Card>
   </div>
@@ -71,7 +74,7 @@
   import { WORKOUTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'
-  import { IWorkoutState, TCoordinates } from '@/types/workouts'
+  import { IWorkoutData, TCoordinates } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
 
@@ -94,8 +97,8 @@
       sports: {
         type: Object as PropType<ISport[]>,
       },
-      workout: {
-        type: Object as PropType<IWorkoutState>,
+      workoutData: {
+        type: Object as PropType<IWorkoutData>,
         required: true,
       },
     },
@@ -106,21 +109,21 @@
       watch(
         () => route.params.workoutId,
         async (newWorkoutId) => {
-          store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT, newWorkoutId)
+          store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, newWorkoutId)
         }
       )
       return {
         sport: computed(() =>
           props.sports
             ? props.sports.find(
-                (sport) => sport.id === props.workout.workout.sport_id
+                (sport) => sport.id === props.workoutData.workout.sport_id
               )
             : {}
         ),
         workoutDate: computed(() =>
           formatWorkoutDate(
             getDateWithTZ(
-              props.workout.workout.workout_date,
+              props.workoutData.workout.workout_date,
               props.authUser.timezone
             )
           )

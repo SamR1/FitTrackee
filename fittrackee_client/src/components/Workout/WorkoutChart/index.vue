@@ -46,7 +46,7 @@
   import { IAuthUserProfile } from '@/types/user'
   import {
     IWorkoutChartData,
-    IWorkoutState,
+    IWorkoutData,
     TCoordinates,
   } from '@/types/workouts'
   import { getDatasets } from '@/utils/workouts'
@@ -62,8 +62,8 @@
         type: Object as PropType<IAuthUserProfile>,
         required: true,
       },
-      workout: {
-        type: Object as PropType<IWorkoutState>,
+      workoutData: {
+        type: Object as PropType<IWorkoutData>,
         required: true,
       },
     },
@@ -72,7 +72,7 @@
       const { t } = useI18n()
       let displayDistance = ref(true)
       const datasets: ComputedRef<IWorkoutChartData> = computed(() =>
-        getDatasets(props.workout.chartData, t)
+        getDatasets(props.workoutData.chartData, t)
       )
       let chartData: ComputedRef<ChartData<'line'>> = computed(() => ({
         labels: displayDistance.value

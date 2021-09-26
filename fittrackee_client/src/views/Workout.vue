@@ -1,27 +1,27 @@
 <template>
   <div id="workout">
     <div class="container">
-      <div class="workout-loading" v-if="workout.loading">
+      <div class="workout-loading" v-if="workoutData.loading">
         <div class="loading">
           <Loader />
         </div>
       </div>
       <div v-else class="workout-container">
-        <div v-if="workout.workout.id">
+        <div v-if="workoutData.workout.id">
           <WorkoutDetail
             v-if="sports.length > 0"
-            :workout="workout"
+            :workoutData="workoutData"
             :sports="sports"
             :authUser="authUser"
             :markerCoordinates="markerCoordinates"
           />
           <WorkoutChart
-            v-if="workout.chartData.length > 0"
-            :workout="workout"
+            v-if="workoutData.chartData.length > 0"
+            :workoutData="workoutData"
             :authUser="authUser"
             @getCoordinates="updateCoordinates"
           />
-          <WorkoutNotes :notes="workout.workout.notes" />
+          <WorkoutNotes :notes="workoutData.workout.notes" />
         </div>
         <div v-else>
           <NotFound target="WORKOUT" />
@@ -50,7 +50,7 @@
   import WorkoutNotes from '@/components/Workout/WorkoutNotes.vue'
   import { SPORTS_STORE, USER_STORE, WORKOUTS_STORE } from '@/store/constants'
   import { IAuthUserProfile } from '@/types/user'
-  import { IWorkoutState, TCoordinates } from '@/types/workouts'
+  import { IWorkoutData, TCoordinates } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
 
   export default defineComponent({
@@ -67,13 +67,13 @@
       const store = useStore()
       onBeforeMount(() =>
         store.dispatch(
-          WORKOUTS_STORE.ACTIONS.GET_WORKOUT,
+          WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA,
           route.params.workoutId
         )
       )
 
-      const workout: ComputedRef<IWorkoutState> = computed(
-        () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUT]
+      const workoutData: ComputedRef<IWorkoutData> = computed(
+        () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUT_DATA]
       )
       const authUser: ComputedRef<IAuthUserProfile> = computed(
         () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
@@ -94,7 +94,13 @@
       onUnmounted(() => {
         store.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
       })
-      return { authUser, markerCoordinates, sports, workout, updateCoordinates }
+      return {
+        authUser,
+        markerCoordinates,
+        sports,
+        workoutData,
+        updateCoordinates,
+      }
     },
   })
 </script>

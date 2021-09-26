@@ -49,7 +49,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
   ): void {
     getWorkouts(context, payload, 'USER_WORKOUTS')
   },
-  [WORKOUTS_STORE.ACTIONS.GET_WORKOUT](
+  [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA](
     context: ActionContext<IWorkoutsState, IRootState>,
     workoutId: string
   ): void {

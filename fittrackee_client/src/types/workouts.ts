@@ -91,7 +91,7 @@ export interface IWorkoutApiChartData {
   time: string
 }
 
-export interface IWorkoutState {
+export interface IWorkoutData {
   gpx: string
   loading: boolean
   workout: IWorkout

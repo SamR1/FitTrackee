@@ -11,5 +11,5 @@ export const initialWorkoutValue = {
 export const workoutsState: IWorkoutsState = {
   calendar_workouts: [],
   user_workouts: [],
-  workout: initialWorkoutValue,
+  workoutData: initialWorkoutValue,
 }

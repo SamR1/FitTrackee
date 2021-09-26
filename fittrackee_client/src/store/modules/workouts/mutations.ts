@@ -25,31 +25,31 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
     state: IWorkoutsState,
     workout: IWorkout
   ) {
-    state.workout.workout = workout
+    state.workoutData.workout = workout
   },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CHART_DATA](
     state: IWorkoutsState,
     chartData: IWorkoutApiChartData[]
   ) {
-    state.workout.chartData = chartData
+    state.workoutData.chartData = chartData
   },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GPX](
     state: IWorkoutsState,
     gpx: string
   ) {
-    state.workout.gpx = gpx
+    state.workoutData.gpx = gpx
   },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING](
     state: IWorkoutsState,
     loading: boolean
   ) {
-    state.workout.loading = loading
+    state.workoutData.loading = loading
   },
   [WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUTS](state: IWorkoutsState) {
     state.calendar_workouts = []
     state.user_workouts = []
   },
   [WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT](state: IWorkoutsState) {
-    state.workout = initialWorkoutValue
+    state.workoutData = initialWorkoutValue
   },
 }

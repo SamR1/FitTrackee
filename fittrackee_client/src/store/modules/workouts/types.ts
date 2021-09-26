@@ -11,13 +11,13 @@ import {
   IWorkout,
   IWorkoutApiChartData,
   IWorkoutsPayload,
-  IWorkoutState,
+  IWorkoutData,
 } from '@/types/workouts'
 
 export interface IWorkoutsState {
   user_workouts: IWorkout[]
   calendar_workouts: IWorkout[]
-  workout: IWorkoutState
+  workoutData: IWorkoutData
 }
 
 export interface IWorkoutsActions {
@@ -29,7 +29,7 @@ export interface IWorkoutsActions {
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: IWorkoutsPayload
   ): void
-  [WORKOUTS_STORE.ACTIONS.GET_WORKOUT](
+  [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA](
     context: ActionContext<IWorkoutsState, IRootState>,
     workoutId: string | string[]
   ): void
@@ -38,7 +38,7 @@ export interface IWorkoutsActions {
 export interface IWorkoutsGetters {
   [WORKOUTS_STORE.GETTERS.CALENDAR_WORKOUTS](state: IWorkoutsState): IWorkout[]
   [WORKOUTS_STORE.GETTERS.USER_WORKOUTS](state: IWorkoutsState): IWorkout[]
-  [WORKOUTS_STORE.GETTERS.WORKOUT](state: IWorkoutsState): IWorkoutState
+  [WORKOUTS_STORE.GETTERS.WORKOUT_DATA](state: IWorkoutsState): IWorkoutData
 }
 
 export type TWorkoutsMutations<S = IWorkoutsState> = {
