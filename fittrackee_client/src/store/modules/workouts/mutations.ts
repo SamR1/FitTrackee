@@ -1,11 +1,12 @@
 import { MutationTree } from 'vuex'
 
 import { WORKOUTS_STORE } from '@/store/constants'
+import { initialWorkoutValue } from '@/store/modules/workouts/state'
 import {
   IWorkoutsState,
   TWorkoutsMutations,
 } from '@/store/modules/workouts/types'
-import { IWorkout } from '@/types/workouts'
+import { IWorkout, IWorkoutApiChartData } from '@/types/workouts'
 
 export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
   [WORKOUTS_STORE.MUTATIONS.SET_CALENDAR_WORKOUTS](
@@ -26,11 +27,11 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
   ) {
     state.workout.workout = workout
   },
-  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING](
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CHART_DATA](
     state: IWorkoutsState,
-    loading: boolean
+    chartData: IWorkoutApiChartData[]
   ) {
-    state.workout.loading = loading
+    state.workout.chartData = chartData
   },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GPX](
     state: IWorkoutsState,
@@ -38,15 +39,17 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
   ) {
     state.workout.gpx = gpx
   },
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING](
+    state: IWorkoutsState,
+    loading: boolean
+  ) {
+    state.workout.loading = loading
+  },
   [WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUTS](state: IWorkoutsState) {
     state.calendar_workouts = []
     state.user_workouts = []
   },
   [WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT](state: IWorkoutsState) {
-    state.workout = {
-      gpx: '',
-      loading: false,
-      workout: <IWorkout>{},
-    }
+    state.workout = initialWorkoutValue
   },
 }

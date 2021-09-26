@@ -1,3 +1,5 @@
+import { IChartDataset } from '@/types/chart'
+
 export interface IWorkoutSegment {
   ascent: number
   ave_speed: number
@@ -79,8 +81,31 @@ export interface IWorkoutsPayload {
   page?: number
 }
 
+export interface IWorkoutApiChartData {
+  distance: number
+  duration: number
+  elevation: number
+  latitude: number
+  longitude: number
+  speed: number
+  time: string
+}
+
 export interface IWorkoutState {
   gpx: string
   loading: boolean
   workout: IWorkout
+  chartData: IWorkoutApiChartData[]
+}
+
+export type TWorkoutDatasetKeys = 'speed' | 'elevation'
+
+export type TWorkoutDatasets = {
+  [key in TWorkoutDatasetKeys]: IChartDataset
+}
+
+export interface IWorkoutChartData {
+  distance_labels: unknown[]
+  duration_labels: unknown[]
+  datasets: TWorkoutDatasets
 }

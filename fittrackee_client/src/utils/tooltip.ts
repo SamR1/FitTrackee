@@ -1,8 +1,8 @@
-import { TDatasetKeys } from '@/types/statistics'
+import { TStatisticsDatasetKeys } from '@/types/statistics'
 import { formatDuration } from '@/utils/duration'
 
 export const formatTooltipValue = (
-  displayedData: TDatasetKeys,
+  displayedData: TStatisticsDatasetKeys,
   value: number,
   formatWithUnits = true
 ): string => {

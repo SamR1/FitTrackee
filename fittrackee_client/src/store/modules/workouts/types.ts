@@ -7,7 +7,12 @@ import {
 
 import { WORKOUTS_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
-import { IWorkout, IWorkoutsPayload, IWorkoutState } from '@/types/workouts'
+import {
+  IWorkout,
+  IWorkoutApiChartData,
+  IWorkoutsPayload,
+  IWorkoutState,
+} from '@/types/workouts'
 
 export interface IWorkoutsState {
   user_workouts: IWorkout[]
@@ -46,6 +51,10 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
     workouts: IWorkout[]
   ): void
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT](state: S, workout: IWorkout): void
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CHART_DATA](
+    state: S,
+    chartDate: IWorkoutApiChartData[]
+  ): void
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GPX](state: S, gpx: string): void
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING](
     state: S,

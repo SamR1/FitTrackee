@@ -5,24 +5,14 @@
 </template>
 
 <script lang="ts">
-  import {
-    Chart,
-    ChartData,
-    ChartOptions,
-    LayoutItem,
-    registerables,
-  } from 'chart.js'
-  import ChartDataLabels from 'chartjs-plugin-datalabels'
+  import { ChartData, ChartOptions, LayoutItem } from 'chart.js'
   import { ComputedRef, PropType, computed, defineComponent } from 'vue'
   import { BarChart, useBarChart } from 'vue-chart-3'
   import { useI18n } from 'vue-i18n'
 
   import { IChartDataset } from '@/types/chart'
-  import { TDatasetKeys } from '@/types/statistics'
+  import { TStatisticsDatasetKeys } from '@/types/statistics'
   import { formatTooltipValue } from '@/utils/tooltip'
-
-  Chart.register(...registerables)
-  Chart.register(ChartDataLabels)
 
   export default defineComponent({
     name: 'Chart',
@@ -39,7 +29,7 @@
         required: true,
       },
       displayedData: {
-        type: String as PropType<TDatasetKeys>,
+        type: String as PropType<TStatisticsDatasetKeys>,
         required: true,
       },
     },

@@ -16,7 +16,7 @@
   import {
     IStatisticsChartData,
     IStatisticsDateParams,
-    TDatasetKeys,
+    TStatisticsDatasetKeys,
     TStatisticsFromApi,
   } from '@/types/statistics'
   import { formatStats } from '@/utils/statistics'
@@ -32,7 +32,7 @@
         required: true,
       },
       displayedData: {
-        type: String as PropType<TDatasetKeys>,
+        type: String as PropType<TStatisticsDatasetKeys>,
         required: true,
       },
       params: {

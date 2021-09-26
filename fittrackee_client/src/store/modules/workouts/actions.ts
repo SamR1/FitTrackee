@@ -64,6 +64,14 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
             res.data.data.workouts[0]
           )
           if (res.data.data.workouts[0].with_gpx) {
+            authApi.get(`workouts/${workoutId}/chart_data`).then((res) => {
+              if (res.data.status === 'success') {
+                context.commit(
+                  WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CHART_DATA,
+                  res.data.data.chart_data
+                )
+              }
+            })
             authApi.get(`workouts/${workoutId}/gpx`).then((res) => {
               if (res.data.status === 'success') {
                 context.commit(

@@ -5,7 +5,7 @@ import { ISport } from '@/types/sports'
 import {
   IStatisticsChartData,
   IStatisticsDateParams,
-  TDatasetKeys,
+  TStatisticsDatasetKeys,
   TStatisticsDatasets,
   TStatisticsFromApi,
 } from '@/types/statistics'
@@ -19,7 +19,7 @@ const dateFormats: Record<string, string> = {
   year: 'yyyy',
 }
 
-export const datasetKeys: TDatasetKeys[] = [
+export const datasetKeys: TStatisticsDatasetKeys[] = [
   'nb_workouts',
   'total_duration',
   'total_distance',

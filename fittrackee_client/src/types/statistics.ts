@@ -18,10 +18,13 @@ export interface IStatisticsDateParams {
   end: Date
 }
 
-export type TDatasetKeys = 'nb_workouts' | 'total_duration' | 'total_distance'
+export type TStatisticsDatasetKeys =
+  | 'nb_workouts'
+  | 'total_duration'
+  | 'total_distance'
 
 export type TStatistics = {
-  [key in TDatasetKeys]: number
+  [key in TStatisticsDatasetKeys]: number
 }
 
 export type TSportStatistics = {
@@ -33,7 +36,7 @@ export type TStatisticsFromApi = {
 }
 
 export type TStatisticsDatasets = {
-  [key in TDatasetKeys]: IChartDataset[]
+  [key in TStatisticsDatasetKeys]: IChartDataset[]
 }
 
 export interface IStatisticsChartData {
