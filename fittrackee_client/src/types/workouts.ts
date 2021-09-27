@@ -73,6 +73,35 @@ export interface IWorkout {
   workout_date: string
 }
 
+export interface IWorkoutObject {
+  ascent: number | null
+  aveSpeed: number
+  descent: number | null
+  distance: number
+  duration: string
+  maxAlt: number | null
+  maxSpeed: number
+  minAlt: number | null
+  moving: string
+  nextUrl: string | null
+  pauses: string | null
+  previousUrl: string | null
+  records: IRecord[]
+  segmentId: number | null
+  title: string
+  type: string
+  workoutDate: string
+  weatherEnd: IWeather | null
+  workoutId: string
+  weatherStart: IWeather | null
+  workoutTime: string
+}
+
+export interface IWorkoutPayload {
+  workoutId: string | string[]
+  segmentId?: string | string[]
+}
+
 export interface IWorkoutsPayload {
   from?: string
   to?: string

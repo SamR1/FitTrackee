@@ -29,6 +29,13 @@ const routes: Array<RouteRecordRaw> = [
     path: '/workouts/:workoutId',
     name: 'Workout',
     component: Workout,
+    props: { displaySegment: false },
+  },
+  {
+    path: '/workouts/:workoutId/segment/:segmentId',
+    name: 'WorkoutSegment',
+    component: Workout,
+    props: { displaySegment: true },
   },
   { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundView },
 ]

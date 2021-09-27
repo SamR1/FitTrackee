@@ -4,18 +4,15 @@
       <template #title>
         <div
           class="workout-previous workout-arrow"
-          :class="{ inactive: !workoutData.workout.previous_workout }"
+          :class="{ inactive: !workoutObject.previousUrl }"
           :title="
-            workoutData.workout.previous_workout
-              ? t('workouts.PREVIOUS_WORKOUT')
-              : t('workouts.NO_PREVIOUS_WORKOUT')
+            workoutObject.previousUrl
+              ? t(`workouts.PREVIOUS_${workoutObject.type}`)
+              : t(`workouts.NO_PREVIOUS_${workoutObject.type}`)
           "
           @click="
-            workoutData.workout.previous_workout
-              ? $router.push({
-                  name: 'Workout',
-                  params: { workoutId: workoutData.workout.previous_workout },
-                })
+            workoutObject.previousUrl
+              ? $router.push(workoutObject.previousUrl)
               : null
           "
         >
@@ -26,27 +23,41 @@
             <img alt="workout sport logo" :src="sport.img" />
           </div>
           <div class="workout-title-date">
-            <div class="workout-title">{{ workoutData.workout.title }}</div>
+            <div class="workout-title" v-if="workoutObject.type === 'WORKOUT'">
+              {{ workoutObject.title }}
+            </div>
+            <div class="workout-title" v-else>
+              <router-link
+                :to="{
+                  name: 'Workout',
+                  params: { workoutId: workoutObject.workoutId },
+                }"
+              >
+                {{ workoutObject.title }}
+              </router-link>
+              —
+              <span class="workout-segment">
+                <i class="fa fa-map-marker" aria-hidden="true" />
+                {{ t('workouts.SEGMENT') }}
+                {{ workoutObject.segmentId + 1 }}
+              </span>
+            </div>
             <div class="workout-date">
-              {{ workoutDate.workout_date }} - {{ workoutDate.workout_time }}
+              {{ workoutObject.workoutDate }} -
+              {{ workoutObject.workoutTime }}
             </div>
           </div>
         </div>
         <div
           class="workout-next workout-arrow"
-          :class="{ inactive: !workoutData.workout.next_workout }"
+          :class="{ inactive: !workoutObject.nextUrl }"
           :title="
-            workoutData.workout.next_workout
-              ? t('workouts.NEXT_WORKOUT')
-              : t('workouts.NO_NEXT_WORKOUT')
+            workoutObject.nextUrl
+              ? t(`workouts.NEXT_${workoutObject.type}`)
+              : t(`workouts.NO_NEXT_${workoutObject.type}`)
           "
           @click="
-            workoutData.workout.next_workout
-              ? $router.push({
-                  name: 'Workout',
-                  params: { workoutId: workoutData.workout.next_workout },
-                })
-              : null
+            workoutObject.nextUrl ? $router.push(workoutObject.nextUrl) : null
           "
         >
           <i class="fa fa-chevron-right" aria-hidden="true" />
@@ -57,25 +68,37 @@
           :workoutData="workoutData"
           :markerCoordinates="markerCoordinates"
         />
-        <WorkoutData :workout="workoutData.workout" />
+        <WorkoutData :workoutObject="workoutObject" />
       </template>
     </Card>
   </div>
 </template>
 
 <script lang="ts">
-  import { PropType, defineComponent, computed, watch } from 'vue'
+  import {
+    ComputedRef,
+    PropType,
+    Ref,
+    defineComponent,
+    computed,
+    ref,
+    watch,
+  } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
 
   import Card from '@/components/Common/Card.vue'
   import WorkoutData from '@/components/Workout/WorkoutDetail/WorkoutData.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap.vue'
-  import { WORKOUTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'
-  import { IWorkoutData, TCoordinates } from '@/types/workouts'
-  import { useStore } from '@/use/useStore'
+  import {
+    IWorkout,
+    IWorkoutData,
+    IWorkoutObject,
+    IWorkoutSegment,
+    TCoordinates,
+  } from '@/types/workouts'
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
 
   export default defineComponent({
@@ -101,17 +124,98 @@
         type: Object as PropType<IWorkoutData>,
         required: true,
       },
+      displaySegment: {
+        type: Boolean,
+        required: true,
+      },
     },
     setup(props) {
       const route = useRoute()
-      const store = useStore()
       const { t } = useI18n()
+
+      function getWorkoutObjectUrl(
+        workout: IWorkout,
+        displaySegment: boolean,
+        segmentId: number | null
+      ): Record<string, string | null> {
+        const previousUrl =
+          displaySegment && segmentId && segmentId !== 1
+            ? `/workouts/${workout.id}/segment/${segmentId - 1}`
+            : !displaySegment && workout.previous_workout
+            ? `/workouts/${workout.previous_workout}`
+            : null
+        const nextUrl =
+          displaySegment && segmentId && segmentId < workout.segments.length
+            ? `/workouts/${workout.id}/segment/${segmentId + 1}`
+            : !displaySegment && workout.next_workout
+            ? `/workouts/${workout.next_workout}`
+            : null
+        return {
+          previousUrl,
+          nextUrl,
+        }
+      }
+      function getWorkoutObject(
+        workout: IWorkout,
+        segment: IWorkoutSegment | null
+      ): IWorkoutObject {
+        const urls = getWorkoutObjectUrl(
+          workout,
+          props.displaySegment,
+          segmentId.value ? +segmentId.value : null
+        )
+        const workoutDate = formatWorkoutDate(
+          getDateWithTZ(
+            props.workoutData.workout.workout_date,
+            props.authUser.timezone
+          )
+        )
+        return {
+          ascent: segment ? segment.ascent : workout.ascent,
+          aveSpeed: segment ? segment.ave_speed : workout.ave_speed,
+          distance: segment ? segment.distance : workout.distance,
+          descent: segment ? segment.descent : workout.descent,
+          duration: segment ? segment.duration : workout.duration,
+          maxAlt: segment ? segment.max_alt : workout.max_alt,
+          maxSpeed: segment ? segment.max_speed : workout.max_speed,
+          minAlt: segment ? segment.min_alt : workout.min_alt,
+          moving: segment ? segment.moving : workout.moving,
+          nextUrl: urls.nextUrl,
+          pauses: segment ? segment.pauses : workout.pauses,
+          previousUrl: urls.previousUrl,
+          records: segment ? [] : workout.records,
+          segmentId: segment ? segment.segment_id : null,
+          title: workout.title,
+          type: props.displaySegment ? 'SEGMENT' : 'WORKOUT',
+          workoutDate: workoutDate.workout_date,
+          weatherEnd: segment ? null : workout.weather_end,
+          workoutId: workout.id,
+          weatherStart: segment ? null : workout.weather_start,
+          workoutTime: workoutDate.workout_time,
+        }
+      }
+
+      const workout: ComputedRef<IWorkout> = computed(
+        () => props.workoutData.workout
+      )
+      let segmentId: Ref<number | null> = ref(
+        route.params.workoutId ? +route.params.segmentId : null
+      )
+      const segment: ComputedRef<IWorkoutSegment | null> = computed(() =>
+        workout.value.segments.length > 0 && segmentId.value
+          ? workout.value.segments[+segmentId.value - 1]
+          : null
+      )
+
       watch(
-        () => route.params.workoutId,
-        async (newWorkoutId) => {
-          store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, newWorkoutId)
+        () => route.params.segmentId,
+        async (newSegmentId) => {
+          if (newSegmentId) {
+            segmentId.value = +newSegmentId
+          }
         }
       )
+
       return {
         sport: computed(() =>
           props.sports
@@ -120,13 +224,8 @@
               )
             : {}
         ),
-        workoutDate: computed(() =>
-          formatWorkoutDate(
-            getDateWithTZ(
-              props.workoutData.workout.workout_date,
-              props.authUser.timezone
-            )
-          )
+        workoutObject: computed(() =>
+          getWorkoutObject(workout.value, segment.value)
         ),
         t,
       }
@@ -164,6 +263,10 @@
           }
           .workout-date {
             font-size: 0.8em;
+            font-weight: normal;
+          }
+          .workout-segment {
+            font-style: italic;
             font-weight: normal;
           }
         }

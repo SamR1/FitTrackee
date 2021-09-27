@@ -2,44 +2,48 @@
   <div id="workout-info">
     <div class="workout-data">
       <i class="fa fa-clock-o" aria-hidden="true" />
-      {{ t('workouts.DURATION') }}: <span>{{ workout.moving }}</span>
-      <WorkoutRecord :workout="workout" record_type="LD" />
+      {{ t('workouts.DURATION') }}: <span>{{ workoutObject.moving }}</span>
+      <WorkoutRecord :workoutObject="workoutObject" record_type="LD" />
       <div v-if="withPause">
-        ({{ t('workouts.PAUSES') }}: <span>{{ workout.pauses }}</span> -
-        {{ t('workouts.TOTAL_DURATION') }}: <span>{{ workout.duration }})</span>
+        ({{ t('workouts.PAUSES') }}: <span>{{ workoutObject.pauses }}</span> -
+        {{ t('workouts.TOTAL_DURATION') }}:
+        <span>{{ workoutObject.duration }})</span>
       </div>
     </div>
     <div class="workout-data">
       <i class="fa fa-road" aria-hidden="true" />
-      {{ t('workouts.DISTANCE') }}: <span>{{ workout.distance }} km</span>
-      <WorkoutRecord :workout="workout" record_type="FD" />
+      {{ t('workouts.DISTANCE') }}: <span>{{ workoutObject.distance }} km</span>
+      <WorkoutRecord :workoutObject="workoutObject" record_type="FD" />
     </div>
     <div class="workout-data">
       <i class="fa fa-tachometer" aria-hidden="true" />
       {{ t('workouts.AVERAGE_SPEED') }}:
-      <span>{{ workout.ave_speed }} km/h</span
-      ><WorkoutRecord :workout="workout" record_type="AS" /><br />
-      {{ t('workouts.MAX_SPEED') }}: <span>{{ workout.max_speed }} km/h</span>
-      <WorkoutRecord :workout="workout" record_type="MS" />
+      <span>{{ workoutObject.aveSpeed }} km/h</span
+      ><WorkoutRecord :workoutObject="workoutObject" record_type="AS" /><br />
+      {{ t('workouts.MAX_SPEED') }}:
+      <span>{{ workoutObject.maxSpeed }} km/h</span>
+      <WorkoutRecord :workoutObject="workoutObject" record_type="MS" />
     </div>
     <div
       class="workout-data"
-      v-if="workout.max_alt !== null && workout.min_alt !== null"
+      v-if="workoutObject.maxAlt !== null && workoutObject.minAlt !== null"
     >
       <img class="mountains" src="/img/misc/mountains.svg" />
-      {{ t('workouts.MIN_ALTITUDE') }}: <span>{{ workout.min_alt }} m</span
+      {{ t('workouts.MIN_ALTITUDE') }}: <span>{{ workoutObject.minAlt }} m</span
       ><br />
-      {{ t('workouts.MAX_ALTITUDE') }}: <span>{{ workout.max_alt }} m</span>
+      {{ t('workouts.MAX_ALTITUDE') }}:
+      <span>{{ workoutObject.maxAlt }} m</span>
     </div>
     <div
       class="workout-data"
-      v-if="workout.ascent !== null && workout.descent !== null"
+      v-if="workoutObject.ascent !== null && workoutObject.descent !== null"
     >
       <i class="fa fa-location-arrow" aria-hidden="true" />
-      {{ t('workouts.ASCENT') }}: <span>{{ workout.ascent }} m</span><br />
-      {{ t('workouts.DESCENT') }}: <span>{{ workout.descent }} m</span>
+      {{ t('workouts.ASCENT') }}: <span>{{ workoutObject.ascent }} m</span
+      ><br />
+      {{ t('workouts.DESCENT') }}: <span>{{ workoutObject.descent }} m</span>
     </div>
-    <WorkoutWeather :workout="workout" />
+    <WorkoutWeather :workoutObject="workoutObject" />
   </div>
 </template>
 
@@ -49,7 +53,7 @@
 
   import WorkoutRecord from '@/components/Workout/WorkoutDetail/WorkoutRecord.vue'
   import WorkoutWeather from '@/components/Workout/WorkoutDetail/WorkoutWeather.vue'
-  import { IWorkout } from '@/types/workouts'
+  import { IWorkoutObject } from '@/types/workouts'
   export default defineComponent({
     name: 'WorkoutData',
     components: {
@@ -57,8 +61,8 @@
       WorkoutWeather,
     },
     props: {
-      workout: {
-        type: Object as PropType<IWorkout>,
+      workoutObject: {
+        type: Object as PropType<IWorkoutObject>,
         required: true,
       },
     },
@@ -67,7 +71,8 @@
       return {
         withPause: computed(
           () =>
-            props.workout.pauses !== '0:00:00' && props.workout.pauses !== null
+            props.workoutObject.pauses !== '0:00:00' &&
+            props.workoutObject.pauses !== null
         ),
         t,
       }

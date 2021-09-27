@@ -12,6 +12,7 @@ import {
   IWorkoutApiChartData,
   IWorkoutsPayload,
   IWorkoutData,
+  IWorkoutPayload,
 } from '@/types/workouts'
 
 export interface IWorkoutsState {
@@ -31,7 +32,7 @@ export interface IWorkoutsActions {
   ): void
   [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA](
     context: ActionContext<IWorkoutsState, IRootState>,
-    workoutId: string | string[]
+    payload: IWorkoutPayload
   ): void
 }
 

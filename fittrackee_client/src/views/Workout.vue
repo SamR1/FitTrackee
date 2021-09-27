@@ -14,6 +14,7 @@
             :sports="sports"
             :authUser="authUser"
             :markerCoordinates="markerCoordinates"
+            :displaySegment="displaySegment"
           />
           <WorkoutChart
             v-if="
@@ -21,9 +22,17 @@
             "
             :workoutData="workoutData"
             :authUser="authUser"
+            :displaySegment="displaySegment"
             @getCoordinates="updateCoordinates"
           />
-          <WorkoutNotes :notes="workoutData.workout.notes" />
+          <WorkoutSegments
+            v-if="!displaySegment && workoutData.workout.segments.length > 1"
+            :segments="workoutData.workout.segments"
+          ></WorkoutSegments>
+          <WorkoutNotes
+            v-if="!displaySegment"
+            :notes="workoutData.workout.notes"
+          />
         </div>
         <div v-else>
           <NotFound target="WORKOUT" />
@@ -40,6 +49,7 @@
     computed,
     defineComponent,
     ref,
+    watch,
     onBeforeMount,
     onUnmounted,
   } from 'vue'
@@ -50,9 +60,10 @@
   import WorkoutChart from '@/components/Workout/WorkoutChart/index.vue'
   import WorkoutDetail from '@/components/Workout/WorkoutDetail/index.vue'
   import WorkoutNotes from '@/components/Workout/WorkoutNotes.vue'
+  import WorkoutSegments from '@/components/Workout/WorkoutSegments.vue'
   import { SPORTS_STORE, USER_STORE, WORKOUTS_STORE } from '@/store/constants'
   import { IAuthUserProfile } from '@/types/user'
-  import { IWorkoutData, TCoordinates } from '@/types/workouts'
+  import { IWorkoutData, IWorkoutPayload, TCoordinates } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
 
   export default defineComponent({
@@ -63,16 +74,25 @@
       WorkoutChart,
       WorkoutDetail,
       WorkoutNotes,
+      WorkoutSegments,
     },
-    setup() {
+    props: {
+      displaySegment: {
+        type: Boolean,
+        required: true,
+      },
+    },
+    setup(props) {
       const route = useRoute()
       const store = useStore()
-      onBeforeMount(() =>
-        store.dispatch(
-          WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA,
-          route.params.workoutId
-        )
-      )
+
+      onBeforeMount(() => {
+        const payload: IWorkoutPayload = { workoutId: route.params.workoutId }
+        if (props.displaySegment) {
+          payload.segmentId = route.params.segmentId
+        }
+        store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, payload)
+      })
 
       const workoutData: ComputedRef<IWorkoutData> = computed(
         () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUT_DATA]
@@ -93,9 +113,31 @@
         }
       }
 
+      watch(
+        () => route.params.workoutId,
+        async (newWorkoutId) => {
+          store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, {
+            workoutId: newWorkoutId,
+          })
+        }
+      )
+      watch(
+        () => route.params.segmentId,
+        async (newSegmentId) => {
+          const payload: IWorkoutPayload = {
+            workoutId: route.params.workoutId,
+          }
+          if (newSegmentId) {
+            payload.segmentId = newSegmentId
+          }
+          store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, payload)
+        }
+      )
+
       onUnmounted(() => {
         store.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
       })
+
       return {
         authUser,
         markerCoordinates,

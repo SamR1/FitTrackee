@@ -1,5 +1,8 @@
 <template>
-  <div id="workout-weather" v-if="workout.weather_start && workout.weather_end">
+  <div
+    id="workout-weather"
+    v-if="workoutObject.weatherStart && workoutObject.weatherEnd"
+  >
     <table class="weather-table">
       <thead>
         <tr>
@@ -9,12 +12,16 @@
               {{ t('workouts.START') }}
               <img
                 class="weather-img"
-                :src="`/img/weather/${workout.weather_start.icon}.svg`"
+                :src="`/img/weather/${workoutObject.weatherStart.icon}.svg`"
                 :alt="
-                  t(`workouts.WEATHER.DARK_SKY.${workout.weather_start.icon}`)
+                  t(
+                    `workouts.WEATHER.DARK_SKY.${workoutObject.weatherStart.icon}`
+                  )
                 "
                 :title="
-                  t(`workouts.WEATHER.DARK_SKY.${workout.weather_start.icon}`)
+                  t(
+                    `workouts.WEATHER.DARK_SKY.${workoutObject.weatherStart.icon}`
+                  )
                 "
               />
             </div>
@@ -24,12 +31,16 @@
               {{ t('workouts.END') }}
               <img
                 class="weather-img"
-                :src="`/img/weather/${workout.weather_end.icon}.svg`"
+                :src="`/img/weather/${workoutObject.weatherEnd.icon}.svg`"
                 :alt="
-                  t(`workouts.WEATHER.DARK_SKY.${workout.weather_end.icon}`)
+                  t(
+                    `workouts.WEATHER.DARK_SKY.${workoutObject.weatherEnd.icon}`
+                  )
                 "
                 :title="
-                  t(`workouts.WEATHER.DARK_SKY.${workout.weather_end.icon}`)
+                  t(
+                    `workouts.WEATHER.DARK_SKY.${workoutObject.weatherEnd.icon}`
+                  )
                 "
               />
             </div>
@@ -46,8 +57,12 @@
               :title="t(`workouts.WEATHER.TEMPERATURE`)"
             />
           </td>
-          <td>{{ Number(workout.weather_start.temperature).toFixed(1) }}°C</td>
-          <td>{{ Number(workout.weather_end.temperature).toFixed(1) }}°C</td>
+          <td>
+            {{ Number(workoutObject.weatherStart.temperature).toFixed(1) }}°C
+          </td>
+          <td>
+            {{ Number(workoutObject.weatherEnd.temperature).toFixed(1) }}°C
+          </td>
         </tr>
         <tr>
           <td>
@@ -59,9 +74,11 @@
             />
           </td>
           <td>
-            {{ Number(workout.weather_start.humidity * 100).toFixed(1) }}%
+            {{ Number(workoutObject.weatherStart.humidity * 100).toFixed(1) }}%
           </td>
-          <td>{{ Number(workout.weather_end.humidity * 100).toFixed(1) }}%</td>
+          <td>
+            {{ Number(workoutObject.weatherEnd.humidity * 100).toFixed(1) }}%
+          </td>
         </tr>
         <tr>
           <td>
@@ -72,8 +89,8 @@
               :title="t(`workouts.WEATHER.WIND`)"
             />
           </td>
-          <td>{{ Number(workout.weather_start.wind).toFixed(1) }}m/s</td>
-          <td>{{ Number(workout.weather_end.wind).toFixed(1) }}m/s</td>
+          <td>{{ Number(workoutObject.weatherStart.wind).toFixed(1) }}m/s</td>
+          <td>{{ Number(workoutObject.weatherEnd.wind).toFixed(1) }}m/s</td>
         </tr>
       </tbody>
     </table>
@@ -84,12 +101,12 @@
   import { defineComponent, PropType } from 'vue'
   import { useI18n } from 'vue-i18n'
 
-  import { IWorkout } from '@/types/workouts'
+  import { IWorkoutObject } from '@/types/workouts'
   export default defineComponent({
     name: 'WorkoutWeather',
     props: {
-      workout: {
-        type: Object as PropType<IWorkout>,
+      workoutObject: {
+        type: Object as PropType<IWorkoutObject>,
         required: true,
       },
     },
