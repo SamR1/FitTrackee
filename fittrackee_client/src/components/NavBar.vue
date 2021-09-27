@@ -89,7 +89,8 @@
     components: {
       Dropdown,
     },
-    setup() {
+    emits: ['menuInteraction'],
+    setup(props, { emit }) {
       const { t, locale, availableLocales } = useI18n()
       const store = useStore()
 
@@ -116,9 +117,11 @@
 
       function openMenu() {
         isMenuOpen.value = true
+        emit('menuInteraction', true)
       }
       function closeMenu() {
         isMenuOpen.value = false
+        emit('menuInteraction', false)
       }
       function updateLanguage(option: IDropdownOption) {
         locale.value = option.value.toString()
@@ -282,7 +285,7 @@
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
-        z-index: 1;
+        z-index: 1001;
 
         position: absolute;
         top: 0;
