@@ -101,3 +101,16 @@ button {
   padding-left: $default-padding;
   text-transform: capitalize;
 }
+
+.no-map {
+  background-color: var(--workout-no-map-bg-color);
+  background-image: url('/img/workouts/map.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  color: var(--workout-no-map-color);
+  font-style: italic;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: center;
+}

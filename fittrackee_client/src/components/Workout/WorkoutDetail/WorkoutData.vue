@@ -28,7 +28,7 @@
       class="workout-data"
       v-if="workoutObject.maxAlt !== null && workoutObject.minAlt !== null"
     >
-      <img class="mountains" src="/img/misc/mountains.svg" />
+      <img class="mountains" src="/img/workouts/mountains.svg" />
       {{ t('workouts.MIN_ALTITUDE') }}: <span>{{ workoutObject.minAlt }} m</span
       ><br />
       {{ t('workouts.MAX_ALTITUDE') }}:

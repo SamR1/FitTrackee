@@ -13,10 +13,13 @@
             <div v-else class="no-picture">
               <i class="fa fa-user-circle-o" aria-hidden="true" />
             </div>
-            <span class="workout-user-name">{{ user.username }}</span>
+            <span v-if="user.username" class="workout-user-name">
+              {{ user.username }}
+            </span>
           </div>
           <div
             class="workout-date"
+            v-if="workout && user"
             :title="
               format(
                 getDateWithTZ(workout.workout_date, user.timezone),
@@ -34,12 +37,22 @@
         </div>
         <div
           class="workout-map"
-          v-if="workout.with_gpx"
+          :class="{ 'no-cursor': !workout }"
           @click="
-            $router.push({ name: 'Workout', params: { workoutId: workout.id } })
+            workout
+              ? $router.push({
+                  name: 'Workout',
+                  params: { workoutId: workout.id },
+                })
+              : null
           "
         >
-          <StaticMap :workout="workout"></StaticMap>
+          <div v-if="workout">
+            <StaticMap v-if="workout.with_gpx" :workout="workout" />
+            <div v-else class="no-map">
+              {{ t('workouts.NO_MAP') }}
+            </div>
+          </div>
         </div>
         <div
           class="workout-data"
@@ -48,15 +61,20 @@
           "
         >
           <div>
-            <img class="sport-img" alt="workout sport logo" :src="sport.img" />
+            <img
+              v-if="sport"
+              class="sport-img"
+              alt="workout sport logo"
+              :src="sport.img"
+            />
           </div>
           <div>
             <i class="fa fa-clock-o" aria-hidden="true" />
-            {{ workout.moving }}
+            <span v-if="workout">{{ workout.moving }}</span>
           </div>
           <div>
             <i class="fa fa-road" aria-hidden="true" />
-            {{ workout.distance }} km
+            <span v-if="workout">{{ workout.distance }} km</span>
           </div>
         </div>
       </template>
@@ -88,7 +106,7 @@
     props: {
       workout: {
         type: Object as PropType<IWorkout>,
-        required: true,
+        required: false,
       },
       user: {
         type: Object as PropType<IAuthUserProfile>,
@@ -96,12 +114,13 @@
       },
       sport: {
         type: Object as PropType<ISport>,
-        required: true,
+        required: false,
       },
     },
     setup(props) {
       const { t } = useI18n()
       const store = useStore()
+
       const userPictureUrl: ComputedRef<string> = computed(() =>
         props.user.picture
           ? `${getApiUrl()}/users/${props.user.username}/picture?${Date.now()}`
@@ -157,6 +176,18 @@
             font-style: italic;
           }
         }
+
+        .workout-map {
+          background-color: var(--workout-no-map-bg-color);
+          height: 150px;
+          .no-map {
+            line-height: 150px;
+          }
+          .bg-map-image {
+            height: 150px;
+          }
+        }
+
         .workout-data {
           display: flex;
           padding-top: $default-padding * 0.5;
@@ -172,6 +203,12 @@
         .workout-map,
         .workout-data {
           cursor: pointer;
+        }
+        .no-cursor {
+          cursor: default;
+        }
+        .fa {
+          padding-right: $default-padding;
         }
       }
     }

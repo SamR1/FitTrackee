@@ -138,12 +138,7 @@
       width: 600px;
     }
     .no-map {
-      text-align: center;
-      vertical-align: center;
-      font-style: italic;
       line-height: 400px;
-      color: var(--workout-no-map-color);
-      background-color: var(--workout-no-map-bg-color);
     }
 
     @media screen and (max-width: $small-limit) {

@@ -3,9 +3,7 @@
     <div
       class="bg-map-image"
       :style="{
-        backgroundImage: `url(${getApiUrl()}workouts/map/${
-          workout.map
-        }?${Date.now()})`,
+        backgroundImage: `url(${getApiUrl()}workouts/map/${workout.map})`,
       }"
     />
     <div class="map-attribution">
