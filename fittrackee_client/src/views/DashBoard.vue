@@ -1,16 +1,16 @@
 <template>
-  <div id="dashboard" v-if="authUser.username">
+  <div id="dashboard" v-if="authUser.username && sports.length > 0">
     <div class="container">
       <UserStatsCards :user="authUser" />
     </div>
     <div class="container dashboard-container">
       <div class="left-container dashboard-sub-container">
-        <UserMonthStats :user="authUser" />
-        <UserRecords :user="authUser" />
+        <UserMonthStats :sports="sports" :user="authUser" />
+        <UserRecords :sports="sports" :user="authUser" />
       </div>
       <div class="right-container dashboard-sub-container">
-        <UserCalendar :user="authUser" />
-        <Timeline :user="authUser" />
+        <UserCalendar :sports="sports" :user="authUser" />
+        <Timeline :sports="sports" :user="authUser" />
       </div>
     </div>
   </div>
@@ -24,7 +24,8 @@
   import UserMonthStats from '@/components/Dashboard/UserMonthStats.vue'
   import UserRecords from '@/components/Dashboard/UserRecords/index.vue'
   import UserStatsCards from '@/components/Dashboard/UserStatsCards/index.vue'
-  import { USER_STORE } from '@/store/constants'
+  import { SPORTS_STORE, USER_STORE } from '@/store/constants'
+  import { ISport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
@@ -42,7 +43,10 @@
       const authUser: ComputedRef<IAuthUserProfile> = computed(
         () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
       )
-      return { authUser }
+      const sports: ComputedRef<ISport[]> = computed(
+        () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
+      )
+      return { authUser, sports }
     },
   })
 </script>

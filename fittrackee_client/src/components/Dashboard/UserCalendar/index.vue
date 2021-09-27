@@ -4,7 +4,7 @@
       <template #content>
         <CalendarHeader :day="day" locale-options="enGB" />
         <CalendarDays :start-date="calendarDates.start" locale-options="enGB" />
-        <CalendaCells
+        <CalendarCells
           :currentDay="day"
           :end-date="calendarDates.end"
           :sports="sports"
@@ -21,18 +21,19 @@
 <script lang="ts">
   import { format } from 'date-fns'
   import {
+    ComputedRef,
     PropType,
+    computed,
     defineComponent,
     onBeforeMount,
-    ComputedRef,
-    computed,
   } from 'vue'
 
   import Card from '@/components/Common/Card.vue'
-  import CalendaCells from '@/components/Dashboard/UserCalendar/CalendarCells.vue'
+  import CalendarCells from '@/components/Dashboard/UserCalendar/CalendarCells.vue'
   import CalendarDays from '@/components/Dashboard/UserCalendar/CalendarDays.vue'
   import CalendarHeader from '@/components/Dashboard/UserCalendar/CalendarHeader.vue'
-  import { SPORTS_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import { WORKOUTS_STORE } from '@/store/constants'
+  import { ISport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'
   import { IWorkout, IWorkoutsPayload } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
@@ -41,12 +42,16 @@
   export default defineComponent({
     name: 'UserCalendar',
     components: {
-      CalendaCells,
+      CalendarCells,
       CalendarDays,
       CalendarHeader,
       Card,
     },
     props: {
+      sports: {
+        type: Object as PropType<ISport[]>,
+        required: true,
+      },
       user: {
         type: Object as PropType<IAuthUserProfile>,
         required: true,
@@ -54,6 +59,11 @@
     },
     setup(props) {
       const store = useStore()
+
+      onBeforeMount(() =>
+        store.dispatch(WORKOUTS_STORE.ACTIONS.GET_CALENDAR_WORKOUTS, apiParams)
+      )
+
       const dateFormat = 'yyyy-MM-dd'
       const day = new Date()
       const calendarDates = getCalendarStartAndEnd(day, props.user.weekm)
@@ -66,13 +76,8 @@
       const calendarWorkouts: ComputedRef<IWorkout[]> = computed(
         () => store.getters[WORKOUTS_STORE.GETTERS.CALENDAR_WORKOUTS]
       )
-      const sports = computed(() => store.getters[SPORTS_STORE.GETTERS.SPORTS])
 
-      onBeforeMount(() =>
-        store.dispatch(WORKOUTS_STORE.ACTIONS.GET_CALENDAR_WORKOUTS, apiParams)
-      )
-
-      return { day, calendarDates, calendarWorkouts, sports }
+      return { day, calendarDates, calendarWorkouts }
     },
   })
 </script>

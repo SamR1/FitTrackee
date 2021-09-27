@@ -51,7 +51,7 @@
 </template>
 
 <script lang="ts">
-  import { startOfMonth, endOfMonth, format } from 'date-fns'
+  import { endOfMonth, format, startOfMonth } from 'date-fns'
   import {
     ComputedRef,
     PropType,
@@ -64,7 +64,7 @@
 
   import Card from '@/components/Common/Card.vue'
   import Chart from '@/components/Common/StatsChart/index.vue'
-  import { STATS_STORE, SPORTS_STORE, USER_STORE } from '@/store/constants'
+  import { STATS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
   import { IStatisticsDateParams, TStatisticsFromApi } from '@/types/statistics'
   import { IAuthUserProfile } from '@/types/user'
@@ -77,6 +77,10 @@
       Chart,
     },
     props: {
+      sports: {
+        type: Object as PropType<ISport[]>,
+        required: true,
+      },
       user: {
         type: Object as PropType<IAuthUserProfile>,
         required: true,
@@ -84,9 +88,13 @@
     },
     setup(props) {
       const store = useStore()
-      const date = new Date()
       const { t } = useI18n()
+
+      onBeforeMount(() => getStatistics())
+
+      const date = new Date()
       const dateFormat = 'yyyy-MM-dd'
+      let displayedData = ref('total_distance')
       const chartParams: IStatisticsDateParams = {
         duration: 'week',
         start: startOfMonth(date),
@@ -100,18 +108,10 @@
       const statistics: ComputedRef<TStatisticsFromApi> = computed(
         () => store.getters[STATS_STORE.GETTERS.USER_STATS]
       )
-      const sports: ComputedRef<ISport[]> = computed(
-        () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
-      )
-      const authUser: ComputedRef<IAuthUserProfile> = computed(
-        () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
-      )
-      let displayedData = ref('total_distance')
 
       function updateDisplayData(event: Event & { target: HTMLInputElement }) {
         displayedData.value = event.target.name
       }
-
       function getStatistics() {
         store.dispatch(STATS_STORE.ACTIONS.GET_USER_STATS, {
           username: props.user.username,
@@ -120,16 +120,13 @@
         })
       }
 
-      onBeforeMount(() => getStatistics())
-
       return {
+        weekStartingMonday: computed<boolean>(() => props.user.weekm),
         chartParams,
         displayedData,
-        sports,
         statistics,
         t,
         updateDisplayData,
-        weekStartingMonday: computed<boolean>(() => authUser.value.weekm),
       }
     },
   })

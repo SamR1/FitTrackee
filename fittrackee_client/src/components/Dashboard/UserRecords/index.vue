@@ -23,9 +23,8 @@
   import { useI18n } from 'vue-i18n'
 
   import RecordsCard from '@/components/Dashboard/UserRecords/RecordsCard.vue'
-  import { SPORTS_STORE } from '@/store/constants'
+  import { ISport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'
-  import { useStore } from '@/use/useStore'
   import { getRecordsBySports } from '@/utils/records'
   import { translateSports } from '@/utils/sports'
 
@@ -35,18 +34,21 @@
       RecordsCard,
     },
     props: {
+      sports: {
+        type: Object as PropType<ISport[]>,
+        required: true,
+      },
       user: {
         type: Object as PropType<IAuthUserProfile>,
         required: true,
       },
     },
     setup(props) {
-      const store = useStore()
       const { t } = useI18n()
       const recordsBySport = computed(() =>
         getRecordsBySports(
           props.user.records,
-          translateSports(store.getters[SPORTS_STORE.GETTERS.SPORTS], t),
+          translateSports(props.sports, t),
           props.user.timezone
         )
       )
