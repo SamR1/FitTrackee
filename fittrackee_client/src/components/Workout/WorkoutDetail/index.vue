@@ -2,66 +2,7 @@
   <div class="workout-detail">
     <Card :without-title="false">
       <template #title>
-        <div
-          class="workout-previous workout-arrow"
-          :class="{ inactive: !workoutObject.previousUrl }"
-          :title="
-            workoutObject.previousUrl
-              ? t(`workouts.PREVIOUS_${workoutObject.type}`)
-              : t(`workouts.NO_PREVIOUS_${workoutObject.type}`)
-          "
-          @click="
-            workoutObject.previousUrl
-              ? $router.push(workoutObject.previousUrl)
-              : null
-          "
-        >
-          <i class="fa fa-chevron-left" aria-hidden="true" />
-        </div>
-        <div class="workout-card-title">
-          <div class="sport-img">
-            <img alt="workout sport logo" :src="sport.img" />
-          </div>
-          <div class="workout-title-date">
-            <div class="workout-title" v-if="workoutObject.type === 'WORKOUT'">
-              {{ workoutObject.title }}
-            </div>
-            <div class="workout-title" v-else>
-              <router-link
-                :to="{
-                  name: 'Workout',
-                  params: { workoutId: workoutObject.workoutId },
-                }"
-              >
-                {{ workoutObject.title }}
-              </router-link>
-              —
-              <span class="workout-segment">
-                <i class="fa fa-map-marker" aria-hidden="true" />
-                {{ t('workouts.SEGMENT') }}
-                {{ workoutObject.segmentId + 1 }}
-              </span>
-            </div>
-            <div class="workout-date">
-              {{ workoutObject.workoutDate }} -
-              {{ workoutObject.workoutTime }}
-            </div>
-          </div>
-        </div>
-        <div
-          class="workout-next workout-arrow"
-          :class="{ inactive: !workoutObject.nextUrl }"
-          :title="
-            workoutObject.nextUrl
-              ? t(`workouts.NEXT_${workoutObject.type}`)
-              : t(`workouts.NO_NEXT_${workoutObject.type}`)
-          "
-          @click="
-            workoutObject.nextUrl ? $router.push(workoutObject.nextUrl) : null
-          "
-        >
-          <i class="fa fa-chevron-right" aria-hidden="true" />
-        </div>
+        <WorkoutCardTitle :sport="sport" :workoutObject="workoutObject" />
       </template>
       <template #content>
         <WorkoutMap
@@ -79,8 +20,8 @@
     ComputedRef,
     PropType,
     Ref,
-    defineComponent,
     computed,
+    defineComponent,
     ref,
     watch,
   } from 'vue'
@@ -88,6 +29,7 @@
   import { useRoute } from 'vue-router'
 
   import Card from '@/components/Common/Card.vue'
+  import WorkoutCardTitle from '@/components/Workout/WorkoutDetail/WorkoutCardTitle.vue'
   import WorkoutData from '@/components/Workout/WorkoutDetail/WorkoutData.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap.vue'
   import { ISport } from '@/types/sports'
@@ -105,12 +47,17 @@
     name: 'WorkoutDetail',
     components: {
       Card,
+      WorkoutCardTitle,
       WorkoutData,
       WorkoutMap,
     },
     props: {
       authUser: {
         type: Object as PropType<IAuthUserProfile>,
+        required: true,
+      },
+      displaySegment: {
+        type: Boolean,
         required: true,
       },
       markerCoordinates: {
@@ -122,10 +69,6 @@
       },
       workoutData: {
         type: Object as PropType<IWorkoutData>,
-        required: true,
-      },
-      displaySegment: {
-        type: Boolean,
         required: true,
       },
     },
@@ -239,38 +182,6 @@
     display: flex;
     ::v-deep(.card) {
       width: 100%;
-      .card-title {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        .workout-arrow {
-          cursor: pointer;
-          &.inactive {
-            color: var(--disabled-color);
-            cursor: default;
-          }
-        }
-
-        .workout-card-title {
-          display: flex;
-          flex-grow: 1;
-          .sport-img {
-            img {
-              height: 35px;
-              width: 35px;
-              padding: 0 $default-padding;
-            }
-          }
-          .workout-date {
-            font-size: 0.8em;
-            font-weight: normal;
-          }
-          .workout-segment {
-            font-style: italic;
-            font-weight: normal;
-          }
-        }
-      }
       .card-content {
         display: flex;
         flex-direction: row;

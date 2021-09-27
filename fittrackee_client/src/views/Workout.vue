@@ -1,15 +1,9 @@
 <template>
   <div id="workout">
     <div class="container">
-      <div class="workout-loading" v-if="workoutData.loading">
-        <div class="loading">
-          <Loader />
-        </div>
-      </div>
-      <div v-else class="workout-container">
+      <div class="workout-container" v-if="sports.length > 0">
         <div v-if="workoutData.workout.id">
           <WorkoutDetail
-            v-if="sports.length > 0"
             :workoutData="workoutData"
             :sports="sports"
             :authUser="authUser"
@@ -28,14 +22,14 @@
           <WorkoutSegments
             v-if="!displaySegment && workoutData.workout.segments.length > 1"
             :segments="workoutData.workout.segments"
-          ></WorkoutSegments>
+          />
           <WorkoutNotes
             v-if="!displaySegment"
             :notes="workoutData.workout.notes"
           />
         </div>
         <div v-else>
-          <NotFound target="WORKOUT" />
+          <NotFound v-if="!workoutData.loading" target="WORKOUT" />
         </div>
       </div>
     </div>
@@ -55,9 +49,8 @@
   } from 'vue'
   import { useRoute } from 'vue-router'
 
-  import Loader from '@/components/Common/Loader.vue'
   import NotFound from '@/components/Common/NotFound.vue'
-  import WorkoutChart from '@/components/Workout/WorkoutChart/index.vue'
+  import WorkoutChart from '@/components/Workout/WorkoutChart.vue'
   import WorkoutDetail from '@/components/Workout/WorkoutDetail/index.vue'
   import WorkoutNotes from '@/components/Workout/WorkoutNotes.vue'
   import WorkoutSegments from '@/components/Workout/WorkoutSegments.vue'
@@ -69,7 +62,6 @@
   export default defineComponent({
     name: 'Workout',
     components: {
-      Loader,
       NotFound,
       WorkoutChart,
       WorkoutDetail,
@@ -116,21 +108,25 @@
       watch(
         () => route.params.workoutId,
         async (newWorkoutId) => {
-          store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, {
-            workoutId: newWorkoutId,
-          })
+          if (newWorkoutId) {
+            store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, {
+              workoutId: newWorkoutId,
+            })
+          }
         }
       )
       watch(
         () => route.params.segmentId,
         async (newSegmentId) => {
-          const payload: IWorkoutPayload = {
-            workoutId: route.params.workoutId,
+          if (route.params.workoutId) {
+            const payload: IWorkoutPayload = {
+              workoutId: route.params.workoutId,
+            }
+            if (newSegmentId) {
+              payload.segmentId = newSegmentId
+            }
+            store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, payload)
           }
-          if (newSegmentId) {
-            payload.segmentId = newSegmentId
-          }
-          store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, payload)
         }
       )
 

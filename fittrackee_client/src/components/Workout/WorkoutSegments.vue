@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, PropType } from 'vue'
+  import { PropType, defineComponent } from 'vue'
   import { useI18n } from 'vue-i18n'
 
   import Card from '@/components/Common/Card.vue'

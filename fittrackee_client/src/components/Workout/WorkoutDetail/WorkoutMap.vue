@@ -1,34 +1,30 @@
 <template>
   <div id="workout-map">
-    <div
-      class="leaflet-container"
-      v-if="
-        workoutData.workout.with_gpx &&
-        geoJson.jsonData &&
-        center &&
-        bounds.length === 2
-      "
-    >
-      <LMap
-        :zoom="options.zoom"
-        :center="center"
-        :bounds="bounds"
-        ref="workoutMap"
-        @ready="fitBounds(bounds)"
-      >
-        <LTileLayer
-          :url="`${getApiUrl()}workouts/map_tile/{s}/{z}/{x}/{y}.png`"
-          :attribution="appConfig.map_attribution"
+    <div v-if="workoutData.loading" class="leaflet-container" />
+    <div v-else>
+      <div class="leaflet-container" v-if="workoutData.workout.with_gpx">
+        <LMap
+          v-if="geoJson.jsonData && center && bounds.length === 2"
+          :zoom="options.zoom"
+          :center="center"
           :bounds="bounds"
-        />
-        <LGeoJson :geojson="geoJson.jsonData" />
-        <LMarker
-          v-if="markerCoordinates.latitude"
-          :lat-lng="[markerCoordinates.latitude, markerCoordinates.longitude]"
-        />
-      </LMap>
+          ref="workoutMap"
+          @ready="fitBounds(bounds)"
+        >
+          <LTileLayer
+            :url="`${getApiUrl()}workouts/map_tile/{s}/{z}/{x}/{y}.png`"
+            :attribution="appConfig.map_attribution"
+            :bounds="bounds"
+          />
+          <LGeoJson :geojson="geoJson.jsonData" />
+          <LMarker
+            v-if="markerCoordinates.latitude"
+            :lat-lng="[markerCoordinates.latitude, markerCoordinates.longitude]"
+          />
+        </LMap>
+      </div>
+      <div v-else class="no-map">{{ t('workouts.NO_MAP') }}</div>
     </div>
-    <div v-else class="no-map">{{ t('workouts.NO_MAP') }}</div>
   </div>
 </template>
 
@@ -39,6 +35,7 @@
   import { useI18n } from 'vue-i18n'
 
   import { ROOT_STORE } from '@/store/constants'
+  import { IAppConfig } from '@/types/application'
   import { GeoJSONData } from '@/types/geojson'
   import { IWorkoutData, TCoordinates } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
@@ -64,9 +61,7 @@
     setup(props) {
       const { t } = useI18n()
       const store = useStore()
-      const workoutMap = ref<null | {
-        leafletObject: { fitBounds: (bounds: number[][]) => null }
-      }>(null)
+
       function getGeoJson(gpxContent: string): GeoJSONData {
         if (!gpxContent || gpxContent !== '') {
           try {
@@ -93,6 +88,9 @@
         }
       }
 
+      const workoutMap = ref<null | {
+        leafletObject: { fitBounds: (bounds: number[][]) => null }
+      }>(null)
       const bounds = computed(() =>
         props.workoutData
           ? [
@@ -107,7 +105,7 @@
             ]
           : []
       )
-      const appConfig = computed(
+      const appConfig: ComputedRef<IAppConfig> = computed(
         () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
       )
 

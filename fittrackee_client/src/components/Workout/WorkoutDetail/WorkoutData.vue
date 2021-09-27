@@ -48,12 +48,13 @@
 </template>
 
 <script lang="ts">
-  import { PropType, defineComponent, computed } from 'vue'
+  import { PropType, computed, defineComponent } from 'vue'
   import { useI18n } from 'vue-i18n'
 
   import WorkoutRecord from '@/components/Workout/WorkoutDetail/WorkoutRecord.vue'
   import WorkoutWeather from '@/components/Workout/WorkoutDetail/WorkoutWeather.vue'
   import { IWorkoutObject } from '@/types/workouts'
+
   export default defineComponent({
     name: 'WorkoutData',
     components: {

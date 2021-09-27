@@ -38,7 +38,7 @@
 
 <script lang="ts">
   import { ChartData, ChartOptions } from 'chart.js'
-  import { PropType, defineComponent, ref, ComputedRef, computed } from 'vue'
+  import { ComputedRef, PropType, computed, defineComponent, ref } from 'vue'
   import { LineChart, useLineChart } from 'vue-chart-3'
   import { useI18n } from 'vue-i18n'
 
@@ -70,6 +70,7 @@
     emits: ['getCoordinates'],
     setup(props, { emit }) {
       const { t } = useI18n()
+
       let displayDistance = ref(true)
       const datasets: ComputedRef<IWorkoutChartData> = computed(() =>
         getDatasets(props.workoutData.chartData, t)
@@ -90,6 +91,7 @@
       )
       const options = computed<ChartOptions<'line'>>(() => ({
         responsive: true,
+        maintainAspectRatio: true,
         animation: false,
         layout: {
           padding: {
@@ -221,7 +223,6 @@
           width: 100%;
           display: flex;
           justify-content: center;
-
           label {
             padding: 0 $default-padding;
           }
@@ -229,6 +230,15 @@
         .no-data-cleaning {
           font-size: 0.85em;
           font-style: italic;
+        }
+      }
+
+      @media screen and (max-width: $small-limit) {
+        .card-content {
+          padding: $default-padding 0;
+          .no-data-cleaning {
+            padding: 0 $default-padding * 2;
+          }
         }
       }
     }
