@@ -43,7 +43,7 @@ label {
 
 button {
   background: var(--app-background-color);
-  border: solid 1px var(--app-color);
+  border: solid 1px var(--input-border-color);
   border-radius: $border-radius;
   box-shadow: 2px 2px 2px var(--app-shadow-color);
   color: var(--app-color);

@@ -19,7 +19,7 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
     state: IWorkoutsState,
     workouts: IWorkout[]
   ) {
-    state.user_workouts = workouts
+    state.user_workouts = state.user_workouts.concat(workouts)
   },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT](
     state: IWorkoutsState,

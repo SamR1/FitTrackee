@@ -156,6 +156,11 @@
 
       button {
         margin: $default-margin;
+        border: solid 1px var(--app-color);
+
+        &:disabled {
+          border-color: var(--disabled-color);
+        }
       }
       @media screen and (max-width: $medium-limit) {
         margin-top: $default-margin;
