@@ -105,7 +105,7 @@
 
     @media screen and (max-width: $small-limit) {
       .custom-modal {
-        margin: 20% 0;
+        margin: 50% 0;
         width: 100%;
       }
     }

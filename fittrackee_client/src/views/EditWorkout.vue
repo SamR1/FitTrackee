@@ -1,7 +1,7 @@
 <template>
   <div id="edit-workout">
     <div class="container">
-      <AddOrEditWorkout :sports="sports" :workout="workoutData.workout" />
+      <WorkoutEdition :sports="sports" :workout="workoutData.workout" />
     </div>
   </div>
 </template>
@@ -16,7 +16,7 @@
   } from 'vue'
   import { useRoute } from 'vue-router'
 
-  import AddOrEditWorkout from '@/components/Workout/WorkoutEdition.vue'
+  import WorkoutEdition from '@/components/Workout/WorkoutEdition.vue'
   import { SPORTS_STORE, WORKOUTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
   import { IWorkoutData } from '@/types/workouts'
@@ -25,7 +25,7 @@
   export default defineComponent({
     name: 'EditWorkout',
     components: {
-      AddOrEditWorkout,
+      WorkoutEdition,
     },
     setup() {
       const route = useRoute()

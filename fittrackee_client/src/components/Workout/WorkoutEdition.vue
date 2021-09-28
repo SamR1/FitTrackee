@@ -82,7 +82,7 @@
   import { translateSports } from '@/utils/sports'
 
   export default defineComponent({
-    name: 'AddOrEditWorkout',
+    name: 'WorkoutEdition',
     components: {
       Card,
       CustomTextArea,
@@ -190,6 +190,7 @@
 
     @media screen and (max-width: $small-limit) {
       width: 100%;
+      margin: 15% auto;
     }
   }
 </style>
