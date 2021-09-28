@@ -27,14 +27,14 @@ img {
   max-width: 100%;
 }
 
-input {
+input, textarea, select {
   border-radius: $border-radius;
   border: solid 1px var(--input-border-color);
+  padding: $default-padding;
 
   &:disabled {
     border-color: var(--disabled-color);
   }
-
 }
 
 label {

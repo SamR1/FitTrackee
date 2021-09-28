@@ -3,6 +3,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import store from '@/store'
 import { USER_STORE } from '@/store/constants'
 import Dashboard from '@/views/DashBoard.vue'
+import EditWorkout from '@/views/EditWorkout.vue'
 import LoginOrRegister from '@/views/LoginOrRegister.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import Workout from '@/views/Workout.vue'
@@ -30,6 +31,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Workout',
     component: Workout,
     props: { displaySegment: false },
+  },
+  {
+    path: '/workouts/:workoutId/edit',
+    name: 'EditWorkout',
+    component: EditWorkout,
   },
   {
     path: '/workouts/:workoutId/segment/:segmentId',

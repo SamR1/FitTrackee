@@ -1,6 +1,8 @@
 {
+  "CANCEL": "Cancel",
   "LOGIN": "Log in",
   "NO": "No",
   "REGISTER": "Register",
+  "SUBMIT": "Submit",
   "YES": "Yes"
 }

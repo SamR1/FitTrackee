@@ -24,6 +24,16 @@
         <div class="workout-title" v-if="workoutObject.type === 'WORKOUT'">
           {{ workoutObject.title }}
           <i
+            class="fa fa-edit"
+            aria-hidden="true"
+            @click="
+              $router.push({
+                name: 'EditWorkout',
+                params: { workoutId: workoutObject.workoutId },
+              })
+            "
+          />
+          <i
             class="fa fa-trash"
             aria-hidden="true"
             @click="emit('displayModal', true)"
@@ -134,6 +144,10 @@
       }
       .workout-link {
         padding-left: $default-padding;
+      }
+
+      .fa {
+        padding: 0 $default-padding * 0.3;
       }
     }
   }

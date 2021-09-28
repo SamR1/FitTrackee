@@ -38,6 +38,10 @@ export interface IWorkoutsActions {
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: IWorkoutPayload
   ): void
+  [WORKOUTS_STORE.ACTIONS.EDIT_WORKOUT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IWorkoutPayload
+  ): void
 }
 
 export interface IWorkoutsGetters {

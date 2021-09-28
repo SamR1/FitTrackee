@@ -1,0 +1,63 @@
+<template>
+  <div id="edit-workout">
+    <div class="container">
+      <AddOrEditWorkout :sports="sports" :workout="workoutData.workout" />
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+  import {
+    computed,
+    defineComponent,
+    watch,
+    onBeforeMount,
+    ComputedRef,
+  } from 'vue'
+  import { useRoute } from 'vue-router'
+
+  import AddOrEditWorkout from '@/components/Workout/WorkoutEdition.vue'
+  import { SPORTS_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import { ISport } from '@/types/sports'
+  import { IWorkoutData } from '@/types/workouts'
+  import { useStore } from '@/use/useStore'
+
+  export default defineComponent({
+    name: 'EditWorkout',
+    components: {
+      AddOrEditWorkout,
+    },
+    setup() {
+      const route = useRoute()
+      const store = useStore()
+
+      onBeforeMount(() => {
+        store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, {
+          workoutId: route.params.workoutId,
+        })
+      })
+
+      const sports: ComputedRef<ISport[]> = computed(
+        () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
+      )
+      const workoutData: ComputedRef<IWorkoutData> = computed(
+        () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUT_DATA]
+      )
+
+      watch(
+        () => route.params.workoutId,
+        async (newWorkoutId) => {
+          if (!newWorkoutId) {
+            store.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
+          }
+        }
+      )
+
+      return { sports, workoutData }
+    },
+  })
+</script>
+
+<style lang="scss" scoped>
+  @import '~@/scss/base';
+</style>

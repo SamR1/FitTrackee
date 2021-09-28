@@ -1,6 +1,8 @@
 {
+  "CANCEL": "Annuler",
   "LOGIN": "Se connecter",
   "NO": "Non",
   "REGISTER": "S'inscrire",
+  "SUBMIT": "Valider",
   "YES": "Oui"
 }

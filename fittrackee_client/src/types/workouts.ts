@@ -97,9 +97,16 @@ export interface IWorkoutObject {
   workoutTime: string
 }
 
+export interface IWorkoutForm {
+  sport_id: number | null
+  title: string
+  notes: string
+}
+
 export interface IWorkoutPayload {
   workoutId: string | string[]
   segmentId?: string | string[]
+  data?: IWorkoutForm
 }
 
 export interface IWorkoutsPayload {

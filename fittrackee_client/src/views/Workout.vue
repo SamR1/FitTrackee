@@ -55,6 +55,7 @@
   import WorkoutNotes from '@/components/Workout/WorkoutNotes.vue'
   import WorkoutSegments from '@/components/Workout/WorkoutSegments.vue'
   import { SPORTS_STORE, USER_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import { ISport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'
   import { IWorkoutData, IWorkoutPayload, TCoordinates } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
@@ -92,7 +93,9 @@
       const authUser: ComputedRef<IAuthUserProfile> = computed(
         () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
       )
-      const sports = computed(() => store.getters[SPORTS_STORE.GETTERS.SPORTS])
+      const sports: ComputedRef<ISport[]> = computed(
+        () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
+      )
       let markerCoordinates: Ref<TCoordinates> = ref({
         latitude: null,
         longitude: null,

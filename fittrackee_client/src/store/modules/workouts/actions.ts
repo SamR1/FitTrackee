@@ -123,4 +123,27 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
         handleError(context, error)
       })
   },
+  [WORKOUTS_STORE.ACTIONS.EDIT_WORKOUT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IWorkoutPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .patch(`workouts/${payload.workoutId}`, payload.data)
+      .then(() => {
+        context
+          .dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, {
+            workoutId: payload.workoutId,
+          })
+          .then(() =>
+            router.push({
+              name: 'Workout',
+              params: { workoutId: payload.workoutId },
+            })
+          )
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+  },
 }
