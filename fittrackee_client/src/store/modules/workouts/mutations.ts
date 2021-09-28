@@ -1,7 +1,6 @@
 import { MutationTree } from 'vuex'
 
 import { WORKOUTS_STORE } from '@/store/constants'
-import { initialWorkoutValue } from '@/store/modules/workouts/state'
 import {
   IWorkoutsState,
   TWorkoutsMutations,
@@ -50,6 +49,11 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
     state.user_workouts = []
   },
   [WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT](state: IWorkoutsState) {
-    state.workoutData = initialWorkoutValue
+    state.workoutData = {
+      gpx: '',
+      loading: false,
+      workout: <IWorkout>{},
+      chartData: [],
+    }
   },
 }

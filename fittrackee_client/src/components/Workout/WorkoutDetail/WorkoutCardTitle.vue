@@ -23,6 +23,11 @@
       <div class="workout-title-date">
         <div class="workout-title" v-if="workoutObject.type === 'WORKOUT'">
           {{ workoutObject.title }}
+          <i
+            class="fa fa-trash"
+            aria-hidden="true"
+            @click="emit('displayModal', true)"
+          />
         </div>
         <div class="workout-title" v-else>
           {{ workoutObject.title }}
@@ -86,9 +91,10 @@
         required: true,
       },
     },
-    setup() {
+    emits: ['displayModal'],
+    setup(props, { emit }) {
       const { t } = useI18n()
-      return { t }
+      return { t, emit }
     },
   })
 </script>

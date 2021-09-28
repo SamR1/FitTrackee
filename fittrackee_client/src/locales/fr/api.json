@@ -1,6 +1,7 @@
 {
   "ERROR": {
     "UNKNOWN": "Erreur. Veuillez réessayer ou contacter l'administrateur.",
+    "Error, Please try again or contact the administrator": "Erreur. Veuillez réessayer ou contacter l'administrateur.",
     "Invalid credentials": "Identifiants invalides.",
     "Network Error": "Erreur Réseau",
     "Password and password confirmation don't match": "Les mots de passe saisis sont différents.",

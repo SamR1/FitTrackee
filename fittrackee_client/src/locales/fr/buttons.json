@@ -1,4 +1,6 @@
 {
   "LOGIN": "Se connecter",
-  "REGISTER": "S'inscrire"
+  "NO": "Non",
+  "REGISTER": "S'inscrire",
+  "YES": "Oui"
 }

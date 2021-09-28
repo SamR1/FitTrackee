@@ -51,7 +51,7 @@ button {
 
   &:hover {
     background: var(--app-color);
-    color: #FFFFFF;
+    color: var(--button-hover-color);
   }
 
   &:enabled:active {
@@ -64,6 +64,25 @@ button {
     border-color: var(--disabled-color);
     color: var(--disabled-color);
   }
+
+  &.cancel {
+    background: var(--button-cancel-bg-color);
+    color: var(--button-cancel-color);
+    &:hover {
+    background: var(--app-color);
+    color: var(--button-hover-color);
+    }
+  }
+
+  &.confirm {
+    background: var(--button-confirm-bg-color);
+    color: var(--button-confirm-color);
+    &:hover {
+    background: var(--app-color);
+    color: var(--button-hover-color);
+    }
+  }
+
 }
 
 .container {

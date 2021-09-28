@@ -1,8 +1,19 @@
 <template>
   <div class="workout-detail">
+    <Modal
+      v-if="displayModal"
+      :title="t('common.CONFIRMATION')"
+      :message="t('workouts.WORKOUT_DELETION_CONFIRMATION')"
+      @confirmAction="deleteWorkout(workoutObject.workoutId)"
+      @cancelAction="updateDisplayModal(false)"
+    />
     <Card :without-title="false">
       <template #title>
-        <WorkoutCardTitle :sport="sport" :workoutObject="workoutObject" />
+        <WorkoutCardTitle
+          :sport="sport"
+          :workoutObject="workoutObject"
+          @displayModal="updateDisplayModal(true)"
+        />
       </template>
       <template #content>
         <WorkoutMap
@@ -29,9 +40,11 @@
   import { useRoute } from 'vue-router'
 
   import Card from '@/components/Common/Card.vue'
+  import Modal from '@/components/Common/Modal.vue'
   import WorkoutCardTitle from '@/components/Workout/WorkoutDetail/WorkoutCardTitle.vue'
   import WorkoutData from '@/components/Workout/WorkoutDetail/WorkoutData.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap.vue'
+  import { WORKOUTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'
   import {
@@ -41,12 +54,14 @@
     IWorkoutSegment,
     TCoordinates,
   } from '@/types/workouts'
+  import { useStore } from '@/use/useStore'
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
 
   export default defineComponent({
     name: 'WorkoutDetail',
     components: {
       Card,
+      Modal,
       WorkoutCardTitle,
       WorkoutData,
       WorkoutMap,
@@ -74,6 +89,7 @@
     },
     setup(props) {
       const route = useRoute()
+      const store = useStore()
       const { t } = useI18n()
 
       function getWorkoutObjectUrl(
@@ -137,6 +153,14 @@
           workoutTime: workoutDate.workout_time,
         }
       }
+      function updateDisplayModal(value: boolean) {
+        displayModal.value = value
+      }
+      function deleteWorkout(workoutId: string) {
+        store.dispatch(WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT, {
+          workoutId: workoutId,
+        })
+      }
 
       const workout: ComputedRef<IWorkout> = computed(
         () => props.workoutData.workout
@@ -149,6 +173,7 @@
           ? workout.value.segments[+segmentId.value - 1]
           : null
       )
+      let displayModal: Ref<boolean> = ref(false)
 
       watch(
         () => route.params.segmentId,
@@ -170,7 +195,10 @@
         workoutObject: computed(() =>
           getWorkoutObject(workout.value, segment.value)
         ),
+        displayModal,
         t,
+        deleteWorkout,
+        updateDisplayModal,
       }
     },
   })

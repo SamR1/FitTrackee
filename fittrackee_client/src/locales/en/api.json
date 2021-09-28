@@ -1,6 +1,7 @@
 {
   "ERROR": {
     "UNKNOWN": "Error. Please try again or contact the administrator.",
+    "Error, Please try again or contact the administrator": "Error. Please try again or contact the administrator.",
     "Invalid credentials": "Invalid credentials.",
     "Network Error": "Network Error",
     "Password and password confirmation don't match": "Password and password confirmation don't match.",

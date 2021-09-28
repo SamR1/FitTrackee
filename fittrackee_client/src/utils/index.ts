@@ -17,6 +17,9 @@ export const getApiUrl = (): string => {
 // TODO: update api error messages to remove these workarounds
 const removeLastEndOfLine = (text: string): string => text.replace(/\n$/gm, '')
 const removeLastDot = (text: string): string => text.replace(/\.$/gm, '')
+const removeErrorDot = (text: string): string =>
+  text.replace(/^Error\./gm, 'Error,')
+
 export const handleError = (
   context:
     | ActionContext<IRootState, IRootState>
@@ -37,6 +40,7 @@ export const handleError = (
     ? error.message
     : msg
   errorMessages = removeLastEndOfLine(errorMessages)
+  errorMessages = removeErrorDot(errorMessages)
   context.commit(
     ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES,
     errorMessages.includes('\n')

@@ -7,12 +7,20 @@
   --app-loading-color:  #f3f3f3;
   --app-loading-top-color: var(--app-color);
 
+  --button-hover-color: #FFFFFF;
+  --button-cancel-bg-color: #FFFFFF;
+  --button-cancel-color: var(--app-color);
+  --button-confirm-bg-color: #FFFFFF;
+  --button-confirm-color: var(--app-color);
+
   --card-border-color: #c4c7cf;
   --input-border-color: #9da3af;
 
   --calendar-border-color: #c4c7cf;
   --calendar-week-end-color: #f5f5f5;
   --calendar-today-color: #eff1f3;
+
+  --modal-background-color: rgba(0, 0, 0, 0.3);
 
   --nav-bar-background-color: #FFFFFF;
   --nav-bar-link-active: #485b6e;

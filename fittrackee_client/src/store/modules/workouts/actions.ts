@@ -1,6 +1,7 @@
 import { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
+import router from '@/router'
 import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
 import {
@@ -106,5 +107,20 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       .finally(() =>
         context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING, false)
       )
+  },
+  [WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IWorkoutPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .delete(`workouts/${payload.workoutId}`)
+      .then(() => {
+        context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
+        router.push('/')
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
   },
 }
