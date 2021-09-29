@@ -1,24 +1,82 @@
 <template>
   <div id="dashboard" v-if="authUser.username && sports.length > 0">
+    <div class="container mobile-menu">
+      <Card>
+        <template #content>
+          <button
+            class="mobile-menu-item"
+            :class="{ 'is-selected': isSelected === 'chart' }"
+            @click="updateDisplayColumn('chart')"
+          >
+            <i class="fa fa-bar-chart" aria-hidden="true" />
+          </button>
+          <button
+            class="mobile-menu-item"
+            :class="{ 'is-selected': isSelected === 'calendar' }"
+            @click="updateDisplayColumn('calendar')"
+          >
+            <i class="fa fa-calendar" aria-hidden="true" />
+          </button>
+          <button
+            class="mobile-menu-item"
+            :class="{ 'is-selected': isSelected === 'timeline' }"
+            @click="updateDisplayColumn('timeline')"
+          >
+            <i class="fa fa-map-o" aria-hidden="true" />
+          </button>
+          <button
+            class="mobile-menu-item"
+            :class="{ 'is-selected': isSelected === 'records' }"
+            @click="updateDisplayColumn('records')"
+          >
+            <i class="fa fa-trophy" aria-hidden="true" />
+          </button>
+        </template>
+      </Card>
+    </div>
     <div class="container">
       <UserStatsCards :user="authUser" />
     </div>
     <div class="container dashboard-container">
       <div class="left-container dashboard-sub-container">
-        <UserMonthStats :sports="sports" :user="authUser" />
-        <UserRecords :sports="sports" :user="authUser" />
+        <UserMonthStats
+          :sports="sports"
+          :user="authUser"
+          :class="{ 'is-hidden': !(isSelected === 'chart') }"
+        />
+        <UserRecords
+          :sports="sports"
+          :user="authUser"
+          :class="{ 'is-hidden': !(isSelected === 'records') }"
+        />
       </div>
       <div class="right-container dashboard-sub-container">
-        <UserCalendar :sports="sports" :user="authUser" />
-        <Timeline :sports="sports" :user="authUser" />
+        <UserCalendar
+          :sports="sports"
+          :user="authUser"
+          :class="{ 'is-hidden': !(isSelected === 'calendar') }"
+        />
+        <Timeline
+          :sports="sports"
+          :user="authUser"
+          :class="{ 'is-hidden': !(isSelected === 'timeline') }"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-  import { computed, ComputedRef, defineComponent, onUnmounted } from 'vue'
+  import {
+    ComputedRef,
+    Ref,
+    computed,
+    defineComponent,
+    ref,
+    onUnmounted,
+  } from 'vue'
 
+  import Card from '@/components/Common/Card.vue'
   import Timeline from '@/components/Dashboard/Timeline/index.vue'
   import UserCalendar from '@/components/Dashboard/UserCalendar/index.vue'
   import UserMonthStats from '@/components/Dashboard/UserMonthStats.vue'
@@ -32,6 +90,7 @@
   export default defineComponent({
     name: 'Dashboard',
     components: {
+      Card,
       Timeline,
       UserCalendar,
       UserMonthStats,
@@ -46,40 +105,90 @@
       const sports: ComputedRef<ISport[]> = computed(
         () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
       )
+      const isSelected: Ref<string> = ref('chart')
       onUnmounted(() => {
         store.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUTS)
       })
-      return { authUser, sports }
+
+      function updateDisplayColumn(target: string) {
+        isSelected.value = target
+      }
+
+      return { authUser, sports, isSelected, updateDisplayColumn }
     },
   })
 </script>
 
 <style lang="scss" scoped>
   @import '~@/scss/base';
-  .dashboard-container {
-    display: flex;
-    flex-direction: row;
-    padding-bottom: 30px;
-    .dashboard-sub-container {
-      display: flex;
-      flex-direction: column;
-    }
-    .left-container {
-      width: 32%;
-    }
-    .right-container {
-      width: 68%;
-    }
-  }
-  @media screen and (max-width: $small-limit) {
+  #dashboard {
     .dashboard-container {
       display: flex;
-      flex-direction: column;
-      .left-container {
-        width: 100%;
+      flex-direction: row;
+      padding-bottom: 30px;
+
+      .dashboard-sub-container {
+        display: flex;
+        flex-direction: column;
       }
+
+      .left-container {
+        width: 32%;
+      }
+
       .right-container {
-        width: 100%;
+        width: 68%;
+      }
+    }
+    .mobile-menu {
+      display: none;
+    }
+
+    @media screen and (max-width: $small-limit) {
+      .dashboard-container {
+        display: flex;
+        flex-direction: column;
+
+        .left-container {
+          width: 100%;
+        }
+
+        .right-container {
+          width: 100%;
+        }
+      }
+      .mobile-menu {
+        display: flex;
+        ::v-deep(.card) {
+          width: 100%;
+          .card-content {
+            display: flex;
+            justify-content: space-between;
+            padding: 0;
+            .mobile-menu-item {
+              display: flex;
+              justify-content: space-around;
+              border: none;
+              box-shadow: none;
+              padding: $default-padding;
+              width: 25%;
+
+              .fa-trophy {
+                color: var(--app-color);
+              }
+              &.is-selected {
+                .fa-trophy {
+                  color: var(--mobile-menu-selected-color);
+                }
+                color: var(--mobile-menu-selected-color);
+                background-color: var(--mobile-menu-selected-bgcolor);
+              }
+            }
+          }
+        }
+      }
+      .is-hidden {
+        display: none;
       }
     }
   }
