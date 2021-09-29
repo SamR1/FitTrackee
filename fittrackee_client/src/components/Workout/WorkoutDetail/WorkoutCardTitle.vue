@@ -149,6 +149,16 @@
       .fa {
         padding: 0 $default-padding * 0.3;
       }
+
+      @media screen and (max-width: $small-limit) {
+        .fa-trash,
+        .fa-edit {
+          border: solid 1px var(--card-border-color);
+          border-radius: $border-radius;
+          margin-left: $default-margin * 0.5;
+          padding: 0 $default-padding;
+        }
+      }
     }
   }
 </style>
