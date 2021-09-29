@@ -33,6 +33,7 @@ input, textarea, select {
   padding: $default-padding;
 
   &:disabled {
+    background-color:  var(--disabled-background-color);
     border-color: var(--disabled-color);
   }
 }

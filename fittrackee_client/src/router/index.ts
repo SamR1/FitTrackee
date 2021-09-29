@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
 import store from '@/store'
 import { USER_STORE } from '@/store/constants'
+import AddWorkout from '@/views/AddWorkout.vue'
 import Dashboard from '@/views/DashBoard.vue'
 import EditWorkout from '@/views/EditWorkout.vue'
 import LoginOrRegister from '@/views/LoginOrRegister.vue'
@@ -42,6 +43,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'WorkoutSegment',
     component: Workout,
     props: { displaySegment: true },
+  },
+  {
+    path: '/workouts/add',
+    name: 'AddWorkout',
+    component: AddWorkout,
   },
   { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundView },
 ]

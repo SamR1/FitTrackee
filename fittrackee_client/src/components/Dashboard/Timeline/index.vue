@@ -2,15 +2,15 @@
   <div id="timeline">
     <div class="section-title">{{ t('workouts.LATEST_WORKOUTS') }}</div>
     <WorkoutCard
-      v-for="index in [...Array(workoutsToDisplayCount()).keys()]"
-      :workout="workouts.length > 0 ? workouts[index] : null"
+      v-for="workout in workouts"
+      :workout="workout"
       :sport="
         workouts.length > 0
-          ? sports.filter((s) => s.id === workouts[index].sport_id)[0]
+          ? sports.filter((s) => s.id === workout.sport_id)[0]
           : null
       "
       :user="user"
-      :key="index"
+      :key="workout.id"
     />
     <div v-if="workouts.length === 0" class="no-workouts">
       {{ t('workouts.NO_WORKOUTS') }}
@@ -56,16 +56,13 @@
         required: true,
       },
     },
-    setup(props) {
+    setup() {
       const store = useStore()
       const { t } = useI18n()
 
       let page = ref(1)
       const per_page = 5
       onBeforeMount(() => loadWorkouts())
-
-      const initWorkoutsCount =
-        props.user.nb_workouts >= per_page ? per_page : props.user.nb_workouts
 
       const workouts: ComputedRef<IWorkout[]> = computed(
         () => store.getters[WORKOUTS_STORE.GETTERS.USER_WORKOUTS]
@@ -86,20 +83,13 @@
         page.value += 1
         loadWorkouts()
       }
-      function workoutsToDisplayCount() {
-        return workouts.value.length > initWorkoutsCount
-          ? workouts.value.length
-          : initWorkoutsCount
-      }
 
       return {
-        initWorkoutsCount,
         moreWorkoutsExist,
         per_page,
         workouts,
         t,
         loadMoreWorkouts,
-        workoutsToDisplayCount,
       }
     },
   })

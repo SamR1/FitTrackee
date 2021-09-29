@@ -28,7 +28,9 @@
             </div>
             <div class="nav-item">{{ t('statistics.STATISTICS') }}</div>
             <div class="nav-item">{{ t('administration.ADMIN') }}</div>
-            <div class="nav-item">{{ t('workouts.ADD_WORKOUT') }}</div>
+            <router-link class="nav-item" to="/workouts/add">
+              {{ t('workouts.ADD_WORKOUT') }}
+            </router-link>
             <div class="nav-item nav-separator" />
           </div>
         </div>

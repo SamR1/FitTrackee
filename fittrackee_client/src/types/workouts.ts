@@ -99,8 +99,12 @@ export interface IWorkoutObject {
 
 export interface IWorkoutForm {
   sport_id: number | null
-  title: string
   notes: string
+  title?: string
+  workout_date?: string
+  distance?: number
+  duration?: number
+  file?: Blob
 }
 
 export interface IWorkoutPayload {

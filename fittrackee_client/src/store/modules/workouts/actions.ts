@@ -2,13 +2,18 @@ import { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
 import router from '@/router'
-import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
+import { ROOT_STORE, USER_STORE, WORKOUTS_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
 import {
   IWorkoutsActions,
   IWorkoutsState,
 } from '@/store/modules/workouts/types'
-import { IWorkout, IWorkoutPayload, IWorkoutsPayload } from '@/types/workouts'
+import {
+  IWorkout,
+  IWorkoutForm,
+  IWorkoutPayload,
+  IWorkoutsPayload,
+} from '@/types/workouts'
 import { handleError } from '@/utils'
 
 const getWorkouts = (
@@ -113,37 +118,108 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     payload: IWorkoutPayload
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING, true)
     authApi
       .delete(`workouts/${payload.workoutId}`)
       .then(() => {
         context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
+        context.dispatch(USER_STORE.ACTIONS.GET_USER_PROFILE)
         router.push('/')
       })
       .catch((error) => {
         handleError(context, error)
       })
+      .finally(() =>
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING, false)
+      )
   },
   [WORKOUTS_STORE.ACTIONS.EDIT_WORKOUT](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: IWorkoutPayload
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING, true)
     authApi
       .patch(`workouts/${payload.workoutId}`, payload.data)
       .then(() => {
+        context.dispatch(USER_STORE.ACTIONS.GET_USER_PROFILE)
         context
           .dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, {
             workoutId: payload.workoutId,
           })
-          .then(() =>
+          .then(() => {
             router.push({
               name: 'Workout',
               params: { workoutId: payload.workoutId },
             })
-          )
+          })
       })
       .catch((error) => {
         handleError(context, error)
       })
+      .finally(() =>
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING, false)
+      )
+  },
+  [WORKOUTS_STORE.ACTIONS.ADD_WORKOUT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IWorkoutForm
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING, true)
+    if (!payload.file) {
+      throw new Error('No gpx file provided')
+    }
+    const form = new FormData()
+    form.append('file', payload.file)
+    form.append(
+      'data',
+      `{"sport_id": ${payload.sport_id}, "notes": "${payload.notes}"}`
+    )
+    authApi
+      .post('workouts', form, {
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      })
+      .then((res) => {
+        if (res.data.status === 'created') {
+          context.dispatch(USER_STORE.ACTIONS.GET_USER_PROFILE)
+          const workout: IWorkout = res.data.data.workouts[0]
+          router.push(
+            res.data.data.workouts.length === 1
+              ? `/workouts/${workout.id}`
+              : '/'
+          )
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+      .finally(() =>
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING, false)
+      )
+  },
+  [WORKOUTS_STORE.ACTIONS.ADD_WORKOUT_WITHOUT_GPX](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IWorkoutForm
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING, true)
+    authApi
+      .post('workouts/no_gpx', payload)
+      .then((res) => {
+        if (res.data.status === 'created') {
+          context.dispatch(USER_STORE.ACTIONS.GET_USER_PROFILE)
+          const workout: IWorkout = res.data.data.workouts[0]
+          router.push(`/workouts/${workout.id}`)
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+      .finally(() =>
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING, false)
+      )
   },
 }

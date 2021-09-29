@@ -1,10 +1,10 @@
 <template>
-  <div id="edit-workout">
+  <div id="add-workout">
     <div class="container">
       <WorkoutEdition
         :authUser="authUser"
         :sports="sports"
-        :workout="workoutData.workout"
+        :isCreation="true"
         :loading="workoutData.loading"
       />
     </div>
@@ -12,14 +12,7 @@
 </template>
 
 <script lang="ts">
-  import {
-    computed,
-    defineComponent,
-    watch,
-    onBeforeMount,
-    ComputedRef,
-  } from 'vue'
-  import { useRoute } from 'vue-router'
+  import { computed, defineComponent, ComputedRef } from 'vue'
 
   import WorkoutEdition from '@/components/Workout/WorkoutEdition.vue'
   import { SPORTS_STORE, USER_STORE, WORKOUTS_STORE } from '@/store/constants'
@@ -29,39 +22,21 @@
   import { useStore } from '@/use/useStore'
 
   export default defineComponent({
-    name: 'EditWorkout',
+    name: 'AddWorkout',
     components: {
       WorkoutEdition,
     },
     setup() {
-      const route = useRoute()
       const store = useStore()
-
-      onBeforeMount(() => {
-        store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, {
-          workoutId: route.params.workoutId,
-        })
-      })
-
-      const authUser: ComputedRef<IAuthUserProfile> = computed(
-        () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
-      )
       const sports: ComputedRef<ISport[]> = computed(
         () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
+      )
+      const authUser: ComputedRef<IAuthUserProfile> = computed(
+        () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
       )
       const workoutData: ComputedRef<IWorkoutData> = computed(
         () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUT_DATA]
       )
-
-      watch(
-        () => route.params.workoutId,
-        async (newWorkoutId) => {
-          if (!newWorkoutId) {
-            store.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
-          }
-        }
-      )
-
       return { authUser, sports, workoutData }
     },
   })

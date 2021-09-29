@@ -13,6 +13,7 @@ import {
   IWorkoutsPayload,
   IWorkoutData,
   IWorkoutPayload,
+  IWorkoutForm,
 } from '@/types/workouts'
 
 export interface IWorkoutsState {
@@ -41,6 +42,14 @@ export interface IWorkoutsActions {
   [WORKOUTS_STORE.ACTIONS.EDIT_WORKOUT](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: IWorkoutPayload
+  ): void
+  [WORKOUTS_STORE.ACTIONS.ADD_WORKOUT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IWorkoutForm
+  ): void
+  [WORKOUTS_STORE.ACTIONS.ADD_WORKOUT_WITHOUT_GPX](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IWorkoutForm
   ): void
 }
 

@@ -4,6 +4,7 @@
       :id="name"
       :name="name"
       :maxLenght="charLimit"
+      :disabled="disabled"
       v-model="text"
       @input="updateText"
     />
@@ -23,6 +24,10 @@
       charLimit: {
         type: Number,
         default: 500,
+      },
+      disabled: {
+        type: Boolean,
+        default: false,
       },
       input: {
         type: String,
