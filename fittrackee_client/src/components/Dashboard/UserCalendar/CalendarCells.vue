@@ -25,7 +25,15 @@
 
 <script lang="ts">
   import { addDays, format, isSameDay, isSameMonth, isToday } from 'date-fns'
-  import { defineComponent, PropType, toRefs } from 'vue'
+  import {
+    PropType,
+    Ref,
+    defineComponent,
+    ref,
+    toRefs,
+    watch,
+    onMounted,
+  } from 'vue'
 
   import CalendarWorkouts from '@/components/Dashboard/UserCalendar/CalendarWorkouts.vue'
   import { ISport } from '@/types/sports'
@@ -68,16 +76,22 @@
       },
     },
     setup(props) {
-      const rows = []
+      const rows: Ref<Date[][]> = ref([])
       let { startDate, endDate, weekStartingMonday } = toRefs(props)
-      let day = startDate.value
-      while (day <= endDate.value) {
-        const days = []
-        for (let i = 0; i < 7; i++) {
-          days.push(day)
-          day = addDays(day, 1)
+
+      onMounted(() => getDays())
+
+      function getDays() {
+        rows.value = []
+        let day = startDate.value
+        while (day <= endDate.value) {
+          const days: Date[] = []
+          for (let i = 0; i < 7; i++) {
+            days.push(day)
+            day = addDays(day, 1)
+          }
+          rows.value.push(days)
         }
-        rows.push(days)
       }
 
       function isWeekEnd(day: number): boolean {
@@ -99,6 +113,11 @@
         }
         return []
       }
+
+      watch(
+        () => props.currentDay,
+        () => getDays()
+      )
 
       return { rows, format, isSameMonth, isToday, isWeekEnd, filterWorkouts }
     },

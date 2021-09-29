@@ -1,6 +1,9 @@
 <template>
   <div class="calendar-header">
-    <div class="calendar-arrow calendar-arrow-left">
+    <div
+      class="calendar-arrow calendar-arrow-left"
+      @click="emit('displayPreviousMonth')"
+    >
       <i class="fa fa-chevron-left" aria-hidden="true" />
     </div>
     <div class="calendar-month">
@@ -8,7 +11,10 @@
         {{ format(day, 'MMM yyyy', localeOptions) }}
       </span>
     </div>
-    <div class="calendar-arrow calendar-arrow-right">
+    <div
+      class="calendar-arrow calendar-arrow-right"
+      @click="emit('displayNextMonth')"
+    >
       <i class="fa fa-chevron-right" aria-hidden="true" />
     </div>
   </div>
@@ -29,8 +35,9 @@
         required: true,
       },
     },
-    setup() {
-      return { format }
+    emits: ['displayNextMonth', 'displayPreviousMonth'],
+    setup(props, { emit }) {
+      return { emit, format }
     },
   })
 </script>
@@ -48,9 +55,11 @@
     }
     .calendar-arrow-left {
       text-align: left;
+      cursor: pointer;
     }
     .calendar-arrow-right {
       text-align: right;
+      cursor: pointer;
     }
     .calendar-month {
       font-weight: bold;
