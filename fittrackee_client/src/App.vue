@@ -1,4 +1,5 @@
 <template>
+  <div id="top" />
   <NavBar @menuInteraction="updateHideScrollBar" />
   <div v-if="appLoading" class="app-container">
     <div class="app-loading">
@@ -8,6 +9,15 @@
   <div v-else class="app-container" :class="{ 'hide-scroll': hideScrollBar }">
     <router-view v-if="appConfig" />
     <NoConfig v-else />
+  </div>
+  <div class="container scroll">
+    <div
+      class="scroll-button"
+      :class="{ 'display-button': displayScrollButton }"
+      @click="scrollToTop"
+    >
+      <i class="fa fa-chevron-up" aria-hidden="true"></i>
+    </div>
   </div>
   <Footer />
 </template>
@@ -34,6 +44,7 @@
     defineComponent,
     ref,
     onBeforeMount,
+    onMounted,
   } from 'vue'
 
   import Loader from '@/components/Common/Loader.vue'
@@ -77,19 +88,46 @@
         () => store.getters[ROOT_STORE.GETTERS.APP_LOADING]
       )
       const hideScrollBar = ref(false)
+      const displayScrollButton = ref(false)
+
+      onBeforeMount(() =>
+        store.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_CONFIG)
+      )
+      onMounted(() => scroll())
 
       function updateHideScrollBar(isMenuOpen: boolean) {
         hideScrollBar.value = isMenuOpen
       }
 
-      onBeforeMount(() =>
-        store.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_CONFIG)
-      )
+      function isScrolledToBottom(element: Element): boolean {
+        return (
+          element.getBoundingClientRect().top < window.innerHeight &&
+          element.getBoundingClientRect().bottom >= 0
+        )
+      }
+      function scroll() {
+        window.onscroll = () => {
+          let bottom = document.querySelector('#bottom')
+          displayScrollButton.value =
+            bottom !== null && isScrolledToBottom(bottom)
+        }
+      }
+      function scrollToTop() {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth',
+        })
+        setTimeout(() => {
+          displayScrollButton.value = false
+        }, 300)
+      }
 
       return {
         appConfig,
         appLoading,
         hideScrollBar,
+        displayScrollButton,
+        scrollToTop,
         updateHideScrollBar,
       }
     },
@@ -109,6 +147,27 @@
       display: flex;
       align-items: center;
       height: 100%;
+    }
+  }
+
+  .scroll {
+    display: flex;
+    justify-content: flex-end;
+    position: fixed;
+    bottom: 42px;
+    right: -15px;
+    padding: 0 $default-padding * 2.5;
+
+    .scroll-button {
+      background-color: var(--scroll-button-bg-color);
+      border-radius: $border-radius;
+      box-shadow: 1px 1px 3px lightgrey;
+      display: none;
+      padding: 0 $default-padding;
+
+      &.display-button {
+        display: block;
+      }
     }
   }
 </style>

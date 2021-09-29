@@ -27,6 +27,7 @@
             v-if="!displaySegment"
             :notes="workoutData.workout.notes"
           />
+          <div id="bottom" />
         </div>
         <div v-else>
           <NotFound v-if="!workoutData.loading" target="WORKOUT" />

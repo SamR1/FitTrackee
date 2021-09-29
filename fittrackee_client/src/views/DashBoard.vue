@@ -63,6 +63,7 @@
         />
       </div>
     </div>
+    <div id="bottom" />
   </div>
 </template>
 
@@ -122,10 +123,10 @@
 <style lang="scss" scoped>
   @import '~@/scss/base';
   #dashboard {
+    padding-bottom: 30px;
     .dashboard-container {
       display: flex;
       flex-direction: row;
-      padding-bottom: 30px;
 
       .dashboard-sub-container {
         display: flex;
