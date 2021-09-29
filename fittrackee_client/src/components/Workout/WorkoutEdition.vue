@@ -9,7 +9,7 @@
           <form @submit.prevent="updateWorkout">
             <div class="form-items">
               <div class="form-item-radio" v-if="isCreation">
-                <div class="radio">
+                <div>
                   <input
                     id="withGpx"
                     type="radio"
@@ -19,7 +19,7 @@
                   />
                   <label for="withGpx">{{ t('workouts.WITH_GPX') }}</label>
                 </div>
-                <div class="radio">
+                <div>
                   <input
                     id="withoutGpx"
                     type="radio"
@@ -52,13 +52,7 @@
               <div class="form-item" v-if="isCreation && withGpx">
                 <label for="gpxFile">
                   {{ t('workouts.GPX_FILE') }}
-                  <sup>
-                    <i class="fa fa-question-circle" aria-hidden="true" />
-                  </sup>
-                  {{ t('workouts.ZIP_FILE') }}
-                  <sup
-                    ><i class="fa fa-question-circle" aria-hidden="true" /></sup
-                  >:
+                  {{ t('workouts.ZIP_ARCHIVE_DESCRIPTION') }}:
                 </label>
                 <input
                   id="gpxFile"
@@ -68,6 +62,25 @@
                   :disabled="loading"
                   @input="updateFile"
                 />
+                <div class="files-help">
+                  <div>
+                    <strong>{{ t('workouts.GPX_FILE') }}:</strong>
+                    <ul>
+                      <li>{{ t('workouts.MAX_SIZE') }}: {{ fileSizeLimit }}</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <strong>{{ t('workouts.ZIP_ARCHIVE') }}:</strong>
+                    <ul>
+                      <li>{{ t('workouts.NO_FOLDER') }}</li>
+                      <li>
+                        {{ t('workouts.MAX_FILES') }}: {{ gpx_limit_import }}
+                      </li>
+                      <li>{{ t('workouts.MAX_SIZE') }}: {{ zipSizeLimit }}</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
               <div class="form-item" v-else>
                 <label for="title"> {{ t('workouts.TITLE') }}: </label>
@@ -206,11 +219,13 @@
   import ErrorMessage from '@/components/Common/ErrorMessage.vue'
   import Loader from '@/components/Common/Loader.vue'
   import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import { IAppConfig } from '@/types/application'
   import { ISport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'
   import { IWorkout, IWorkoutForm } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
+  import { getReadableFileSize } from '@/utils/files'
   import { translateSports } from '@/utils/sports'
 
   export default defineComponent({
@@ -257,6 +272,16 @@
       const translatedSports: ComputedRef<ISport[]> = computed(() =>
         translateSports(props.sports, t)
       )
+      const appConfig: ComputedRef<IAppConfig> = computed(
+        () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
+      )
+      const fileSizeLimit = appConfig.value.max_single_file_size
+        ? getReadableFileSize(appConfig.value.max_single_file_size)
+        : ''
+      const gpx_limit_import = appConfig.value.gpx_limit_import
+      const zipSizeLimit = appConfig.value.max_zip_file_size
+        ? getReadableFileSize(appConfig.value.max_zip_file_size)
+        : ''
       const errorMessages: ComputedRef<string | string[] | null> = computed(
         () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
       )
@@ -374,10 +399,14 @@
       onUnmounted(() => store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES))
 
       return {
+        appConfig,
         errorMessages,
+        fileSizeLimit,
+        gpx_limit_import,
         t,
         translatedSports,
         withGpx,
+        zipSizeLimit,
         workoutDataObject: workoutForm,
         onCancel,
         updateFile,
@@ -450,14 +479,15 @@
             .form-item-radio {
               display: flex;
               justify-content: space-around;
-              .radio {
-                label {
-                  font-weight: normal;
+              label {
+                font-weight: normal;
+                @media screen and (max-width: $small-limit) {
+                  font-size: 0.9em;
                 }
-                input {
-                  margin-top: -2px;
-                  vertical-align: middle;
-                }
+              }
+              input {
+                margin-top: -2px;
+                vertical-align: middle;
               }
             }
           }
@@ -467,6 +497,29 @@
             justify-content: flex-end;
             button {
               margin: $default-padding * 0.5;
+            }
+          }
+
+          .files-help {
+            display: flex;
+            justify-content: space-around;
+
+            background-color: var(--info-background-color);
+            border-radius: $border-radius;
+            color: var(--info-color);
+            font-size: 0.8em;
+
+            margin-top: $default-margin;
+            padding: $default-padding;
+            div {
+              display: flex;
+              @media screen and (max-width: $small-limit) {
+                flex-direction: column;
+              }
+              ul {
+                margin: 0;
+                padding: 0 $default-padding * 2;
+              }
             }
           }
         }

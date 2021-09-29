@@ -10,16 +10,19 @@
   "EDIT_WORKOUT": "Modifier la séance",
   "ELEVATION": "altitude",
   "END": "fin",
-  "GPX_FILE": ".gpx file",
+  "GPX_FILE": "fichier .gpx",
   "KM": "km",
   "LATEST_WORKOUTS": "Séances récentes",
   "LOAD_MORE_WORKOUT": "Charger les séances suivantes",
   "MAX_ALTITUDE": "altitude max",
+  "MAX_FILES": "fichiers max. ",
+  "MAX_SIZE": "taille max. ",
   "MAX_SPEED": "vitesse max",
   "MIN_ALTITUDE": "altitude min",
   "NEXT_SEGMENT": "Segment suivant",
   "NEXT_WORKOUT": "Séance suivante",
   "NO_DATA_CLEANING": "données issues du fichier gpx, sans correction",
+  "NO_FOLDER": "pas de répertoire",
   "NO_MAP": "Pas de carte",
   "NO_NEXT_SEGMENT": "Pas de segment suivant",
   "NO_NEXT_WORKOUT": "Pas de séance suivante",
@@ -66,5 +69,6 @@
   "WORKOUT": "séance | séances",
   "WORKOUT_DATE": "date de la séance",
   "WORKOUT_DELETION_CONFIRMATION": "Etes-vous sûr de vouloir supprimer cette séance ?",
-  "ZIP_FILE": "ou une archive .zip contenant des fichiers .gpx"
+  "ZIP_ARCHIVE": "archive .zip",
+  "ZIP_ARCHIVE_DESCRIPTION": "ou une archive .zip contenant des fichiers .gpx"
 }

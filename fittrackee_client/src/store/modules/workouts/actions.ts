@@ -168,7 +168,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING, true)
     if (!payload.file) {
-      throw new Error('No gpx file provided')
+      throw new Error('No file part')
     }
     const form = new FormData()
     form.append('file', payload.file)

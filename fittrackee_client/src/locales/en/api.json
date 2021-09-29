@@ -2,10 +2,18 @@
   "ERROR": {
     "UNKNOWN": "Error. Please try again or contact the administrator.",
     "Error, Please try again or contact the administrator": "Error. Please try again or contact the administrator.",
+    "File extension not allowed": "File extension not allowed.",
+    "File size is greater than the allowed size": "File size is greater than the allowed size.",
     "Invalid credentials": "Invalid credentials.",
-    "Network Error": "Network Error",
+    "Invalid payload": "Invalid data.",
+    "Invalid token, Please log in again": "Invalid token. Please log in again.",
+    "Network Error": "Network Error.",
+    "No file part": "No file provided.",
+    "No selected file": "No selected file.",
+    "Provide a valid auth token": "Provide a valid auth token.",
     "Password and password confirmation don't match": "Password and password confirmation don't match.",
     "Password: 8 characters required": "Password: 8 characters required.",
+    "Signature expired, Please log in again": "Signature expired. Please log in again.",
     "Username: 3 to 12 characters required": "Username: 3 to 12 characters required.",
     "Valid email must be provided": "Valid email must be provided."
   }
