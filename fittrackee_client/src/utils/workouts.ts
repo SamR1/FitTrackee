@@ -1,4 +1,5 @@
 import {
+  IWorkout,
   IWorkoutApiChartData,
   IWorkoutChartData,
   TCoordinates,
@@ -41,4 +42,28 @@ export const getDatasets = (
   })
 
   return { distance_labels, duration_labels, datasets, coordinates }
+}
+
+export const getDonutDatasets = (
+  workouts: IWorkout[]
+): Record<number, Record<string, number>> => {
+  const total = workouts.length
+  if (total === 0) {
+    return {}
+  }
+
+  const datasets: Record<number, Record<string, number>> = {}
+  workouts.map((workout) => {
+    if (!datasets[workout.sport_id]) {
+      datasets[workout.sport_id] = {
+        count: 0,
+        percentage: 0,
+      }
+    }
+    datasets[workout.sport_id].count += 1
+    datasets[workout.sport_id].percentage =
+      datasets[workout.sport_id].count / total
+  })
+
+  return datasets
 }

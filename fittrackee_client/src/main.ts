@@ -6,4 +6,11 @@ import i18n from './i18n'
 import router from './router'
 import store from './store'
 
-createApp(App).use(i18n).use(store).use(router).mount('#app')
+import { clickOutsideDirective } from '@/directives'
+
+createApp(App)
+  .use(i18n)
+  .use(store)
+  .use(router)
+  .directive('click-outside', clickOutsideDirective)
+  .mount('#app')

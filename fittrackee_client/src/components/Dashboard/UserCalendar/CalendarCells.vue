@@ -138,7 +138,7 @@
 
       .calendar-cell {
         border-right: solid 1px var(--calendar-border-color);
-        height: 3em;
+        height: 40px;
         flex-grow: 1;
         flex-basis: 8%;
         padding: $default-padding * 0.5 $default-padding $default-padding * 0.5

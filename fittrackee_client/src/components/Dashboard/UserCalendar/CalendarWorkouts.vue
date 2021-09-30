@@ -1,45 +1,54 @@
 <template>
   <div class="calendar-workouts">
-    <div v-for="(workout, index) in workouts.slice(0, 6)" :key="index">
-      <CalendarWorkout
-        :workout="workout"
-        :sportImg="getSportImg(workout, sports)"
-      />
-    </div>
-    <div v-if="workouts.length > 6">
-      <i
-        class="fa calendar-more"
-        :class="`fa-${isHidden ? 'plus' : 'times'}`"
-        aria-hidden="true"
-        title="show more workouts"
-        @click="displayMore"
-      />
-      <div v-if="!isHidden" class="more-workouts">
-        <div
-          v-for="(workout, index) in workouts.slice(6 - workouts.length)"
+    <div class="desktop-display">
+      <div
+        class="workouts-display"
+        v-if="workouts.length <= displayedWorkoutCount"
+      >
+        <CalendarWorkout
+          v-for="(workout, index) in workouts.slice(0, displayedWorkoutCount)"
           :key="index"
-        >
-          <CalendarWorkout
-            :workout="workout"
-            :sportImg="getSportImg(workout, sports)"
-          />
-        </div>
+          :workout="workout"
+          :sportImg="getSportImg(workout, sports)"
+        />
+      </div>
+      <div v-else class="donut-display">
+        <CalendarWorkoutsChart
+          :workouts="workouts"
+          :sports="sports"
+          :datasets="chartDatasets"
+          :colors="colors"
+        />
+      </div>
+    </div>
+    <div class="mobile-display">
+      <div class="donut-display" v-if="workouts.length > 0">
+        <CalendarWorkoutsChart
+          :workouts="workouts"
+          :sports="sports"
+          :datasets="chartDatasets"
+          :colors="colors"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-  import { PropType, defineComponent, ref } from 'vue'
+  import { PropType, computed, defineComponent } from 'vue'
 
   import CalendarWorkout from '@/components/Dashboard/UserCalendar/CalendarWorkout.vue'
+  import CalendarWorkoutsChart from '@/components/Dashboard/UserCalendar/CalendarWorkoutsChart.vue'
   import { ISport } from '@/types/sports'
   import { IWorkout } from '@/types/workouts'
+  import { getSportImg, sportIdColors } from '@/utils/sports'
+  import { getDonutDatasets } from '@/utils/workouts'
 
   export default defineComponent({
     name: 'CalendarWorkouts',
     components: {
       CalendarWorkout,
+      CalendarWorkoutsChart,
     },
     props: {
       workouts: {
@@ -51,17 +60,13 @@
         required: true,
       },
     },
-    setup() {
-      const isHidden = ref(true)
-      function getSportImg(workout: IWorkout, sports: ISport[]): string {
-        return sports
-          .filter((sport) => sport.id === workout.sport_id)
-          .map((sport) => sport.img)[0]
+    setup(props) {
+      return {
+        chartDatasets: computed(() => getDonutDatasets(props.workouts)),
+        colors: computed(() => sportIdColors(props.sports)),
+        displayedWorkoutCount: 6,
+        getSportImg,
       }
-      function displayMore() {
-        isHidden.value = !isHidden.value
-      }
-      return { isHidden, getSportImg, displayMore }
     },
   })
 </script>
@@ -69,32 +74,32 @@
 <style lang="scss">
   @import '~@/scss/base';
   .calendar-workouts {
-    display: flex;
-    flex-wrap: wrap;
-    position: relative;
-
-    .calendar-more {
-      position: absolute;
-      top: 30px;
-      right: -3px;
+    .desktop-display {
+      display: flex;
     }
-    .more-workouts {
-      background: whitesmoke;
+    .mobile-display {
+      display: none;
+    }
 
-      border-radius: 4px;
-      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
-        0 6px 20px 0 rgba(0, 0, 0, 0.19);
-      position: absolute;
-      top: 52px;
-      left: 0;
-      min-width: 53px;
-
-      margin-bottom: 20px;
-      padding: 10px 15px;
-
+    .workouts-display {
       display: flex;
       flex-wrap: wrap;
-      z-index: 1000;
+      position: relative;
+      margin: 0 $default-padding 0 0;
+    }
+    .donut-display {
+      display: flex;
+      height: 34px;
+      width: 34px;
+    }
+
+    @media screen and (max-width: $small-limit) {
+      .desktop-display {
+        display: none;
+      }
+      .mobile-display {
+        display: flex;
+      }
     }
   }
 </style>

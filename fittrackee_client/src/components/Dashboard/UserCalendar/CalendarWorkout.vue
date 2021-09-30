@@ -50,7 +50,8 @@
   @import '~@/scss/base';
 
   .calendar-workout {
-    padding: 2px 0;
+    display: flex;
+    padding: 1px;
     cursor: pointer;
     img {
       max-width: 18px;
@@ -58,8 +59,9 @@
     }
     sup {
       position: relative;
-      top: -0.6em;
-      left: -0.4em;
+      top: -8px;
+      left: -3px;
+      width: 2px;
       .custom-fa-small {
         font-size: 0.7em;
       }
