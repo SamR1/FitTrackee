@@ -11,12 +11,12 @@
           aria-hidden="true"
           @click="togglePane"
         />
-        <div v-for="(workout, index) in workouts" :key="index">
-          <CalendarWorkout
-            :workout="workout"
-            :sportImg="getSportImg(workout, sports)"
-          />
-        </div>
+        <CalendarWorkout
+          v-for="(workout, index) in workouts"
+          :key="index"
+          :workout="workout"
+          :sportLabel="getSportLabel(workout, sports)"
+        />
       </div>
     </div>
   </div>
@@ -29,7 +29,7 @@
   import DonutChart from '@/components/Dashboard/UserCalendar/DonutChart.vue'
   import { ISport } from '@/types/sports'
   import { IWorkout } from '@/types/workouts'
-  import { getSportImg } from '@/utils/sports'
+  import { getSportLabel } from '@/utils/sports'
 
   export default defineComponent({
     name: 'CalendarWorkoutsChart',
@@ -61,7 +61,7 @@
         event.stopPropagation()
         isHidden.value = !isHidden.value
       }
-      return { isHidden, getSportImg, togglePane }
+      return { isHidden, getSportLabel, togglePane }
     },
   })
 </script>

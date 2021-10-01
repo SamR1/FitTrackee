@@ -17,9 +17,7 @@
       <i class="fa fa-chevron-left" aria-hidden="true" />
     </div>
     <div class="workout-card-title">
-      <div class="sport-img">
-        <img alt="workout sport logo" :src="sport.img" />
-      </div>
+      <SportImage :sport-label="sport.label" />
       <div class="workout-title-date">
         <div class="workout-title" v-if="workoutObject.type === 'WORKOUT'">
           {{ workoutObject.title }}
@@ -86,11 +84,15 @@
   import { PropType, defineComponent } from 'vue'
   import { useI18n } from 'vue-i18n'
 
+  import SportImage from '@/components/Common/Sports/SportImage.vue'
   import { ISport } from '@/types/sports'
   import { IWorkoutObject } from '@/types/workouts'
 
   export default defineComponent({
     name: 'WorkoutCardTitle',
+    components: {
+      SportImage,
+    },
     props: {
       sport: {
         type: Object as PropType<ISport>,
@@ -129,11 +131,9 @@
       display: flex;
       flex-grow: 1;
       .sport-img {
-        img {
-          height: 35px;
-          width: 35px;
-          padding: 0 $default-padding;
-        }
+        height: 35px;
+        width: 35px;
+        padding: 0 $default-padding;
       }
       .workout-date {
         font-size: 0.8em;

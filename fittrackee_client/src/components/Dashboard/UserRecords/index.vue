@@ -9,10 +9,10 @@
         {{ t('workouts.NO_RECORDS') }}
       </div>
       <RecordsCard
-        v-for="sportLabel in Object.keys(recordsBySport).sort()"
-        :sportLabel="sportLabel"
-        :records="recordsBySport[sportLabel]"
-        :key="sportLabel"
+        v-for="sportTranslatedLabel in Object.keys(recordsBySport).sort()"
+        :sportTranslatedLabel="sportTranslatedLabel"
+        :records="recordsBySport[sportTranslatedLabel]"
+        :key="sportTranslatedLabel"
       />
     </div>
   </div>
@@ -52,7 +52,10 @@
           props.user.timezone
         )
       )
-      return { recordsBySport, t }
+      return {
+        recordsBySport,
+        t,
+      }
     },
   })
 </script>

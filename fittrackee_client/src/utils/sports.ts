@@ -1,13 +1,14 @@
-import { ISport } from '@/types/sports'
+import { ISport, ITranslatedSport } from '@/types/sports'
 import { IWorkout } from '@/types/workouts'
 
+// TODO: allow user to change colors
 export const sportColors: Record<string, string> = {
-  'Cycling (Sport)': '#55A8A3',
-  'Cycling (Transport)': '#98C3A9',
-  Hiking: '#D0838A',
-  'Mountain Biking': '#ECC77E',
-  Running: '#926692',
-  Walking: '#929292',
+  'Cycling (Sport)': '#4c9792',
+  'Cycling (Transport)': '#88af98',
+  Hiking: '#bb757c',
+  'Mountain Biking': '#d4b371',
+  Running: '#835b83',
+  Walking: '#838383',
 }
 
 export const sportIdColors = (sports: ISport[]): Record<number, string> => {
@@ -16,27 +17,31 @@ export const sportIdColors = (sports: ISport[]): Record<number, string> => {
   return colors
 }
 
-const sortSports = (a: ISport, b: ISport): number => {
-  const sportALabel = a.label.toLowerCase()
-  const sportBLabel = b.label.toLowerCase()
-  return sportALabel > sportBLabel ? 1 : sportALabel < sportBLabel ? -1 : 0
+const sortSports = (a: ITranslatedSport, b: ITranslatedSport): number => {
+  const sportATranslatedLabel = a.translatedLabel.toLowerCase()
+  const sportBTranslatedLabel = b.translatedLabel.toLowerCase()
+  return sportATranslatedLabel > sportBTranslatedLabel
+    ? 1
+    : sportATranslatedLabel < sportBTranslatedLabel
+    ? -1
+    : 0
 }
 
 export const translateSports = (
   sports: ISport[],
   t: CallableFunction,
   onlyActive = false
-): ISport[] =>
+): ITranslatedSport[] =>
   sports
     .filter((sport) => (onlyActive ? sport.is_active : true))
     .map((sport) => ({
       ...sport,
-      label: t(`sports.${sport.label}.LABEL`),
+      translatedLabel: t(`sports.${sport.label}.LABEL`),
     }))
     .sort(sortSports)
 
-export const getSportImg = (workout: IWorkout, sports: ISport[]): string => {
+export const getSportLabel = (workout: IWorkout, sports: ISport[]): string => {
   return sports
     .filter((sport) => sport.id === workout.sport_id)
-    .map((sport) => sport.img)[0]
+    .map((sport) => sport.label)[0]
 }

@@ -5,7 +5,7 @@
       $router.push({ name: 'Workout', params: { workoutId: workout.id } })
     "
   >
-    <img alt="workout sport logo" :src="sportImg" :title="workout.title" />
+    <SportImage :sport-label="sportLabel" :title="workout.title" />
     <sup>
       <i
         v-if="workout.records.length > 0"
@@ -25,16 +25,20 @@
   import { defineComponent, PropType } from 'vue'
   import { useI18n } from 'vue-i18n'
 
+  import SportImage from '@/components/Common/Sports/SportImage.vue'
   import { IWorkout } from '@/types/workouts'
 
   export default defineComponent({
     name: 'CalendarWorkouts',
+    components: {
+      SportImage,
+    },
     props: {
       workout: {
         type: Object as PropType<IWorkout>,
         required: true,
       },
-      sportImg: {
+      sportLabel: {
         type: String,
         required: true,
       },
@@ -53,9 +57,9 @@
     display: flex;
     padding: 1px;
     cursor: pointer;
-    img {
-      max-width: 18px;
-      max-height: 18px;
+    .sport-img {
+      width: 18px;
+      height: 18px;
     }
     sup {
       position: relative;
@@ -68,9 +72,9 @@
     }
 
     @media screen and (max-width: $small-limit) {
-      img {
-        max-width: 14px;
-        max-height: 14px;
+      .sport-img {
+        width: 14px;
+        height: 14px;
       }
       sup {
         .custom-fa-small {

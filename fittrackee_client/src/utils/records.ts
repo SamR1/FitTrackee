@@ -1,4 +1,4 @@
-import { ISport } from '@/types/sports'
+import { ITranslatedSport } from '@/types/sports'
 import { IRecord, IRecordsBySports } from '@/types/workouts'
 import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
 
@@ -35,19 +35,19 @@ export const formatRecord = (
 
 export const getRecordsBySports = (
   records: IRecord[],
-  sports: ISport[],
+  translatedSports: ITranslatedSport[],
   tz: string
 ): IRecordsBySports =>
   records.reduce((sportList: IRecordsBySports, record) => {
-    const sport = sports.find((s) => s.id === record.sport_id)
+    const sport = translatedSports.find((s) => s.id === record.sport_id)
     if (sport && sport.label) {
-      if (sportList[sport.label] === void 0) {
-        sportList[sport.label] = {
-          img: sport.img,
+      if (sportList[sport.translatedLabel] === void 0) {
+        sportList[sport.translatedLabel] = {
+          label: sport.label,
           records: [],
         }
       }
-      sportList[sport.label].records.push(formatRecord(record, tz))
+      sportList[sport.translatedLabel].records.push(formatRecord(record, tz))
     }
     return sportList
   }, {})

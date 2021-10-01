@@ -61,12 +61,7 @@
           "
         >
           <div>
-            <img
-              v-if="sport"
-              class="sport-img"
-              alt="workout sport logo"
-              :src="sport.img"
-            />
+            <SportImage v-if="sport" :sport-label="sport.label" />
           </div>
           <div>
             <i class="fa fa-clock-o" aria-hidden="true" />
@@ -88,6 +83,7 @@
   import { useI18n } from 'vue-i18n'
 
   import Card from '@/components/Common/Card.vue'
+  import SportImage from '@/components/Common/Sports/SportImage.vue'
   import StaticMap from '@/components/Common/StaticMap.vue'
   import { ROOT_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
@@ -102,6 +98,7 @@
     components: {
       Card,
       StaticMap,
+      SportImage,
     },
     props: {
       workout: {
@@ -196,8 +193,10 @@
             width: 28px;
           }
           div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
             width: 33%;
-            text-align: center;
           }
         }
         .workout-map,

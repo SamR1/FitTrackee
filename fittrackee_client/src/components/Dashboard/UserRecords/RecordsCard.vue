@@ -2,14 +2,8 @@
   <div class="records-card">
     <Card :without-title="false">
       <template #title>
-        <div>
-          <img
-            class="sport-img"
-            :alt="`${sportLabel} logo`"
-            :src="records.img"
-          />
-        </div>
-        {{ sportLabel }}
+        <SportImage :sport-label="records.label" />
+        {{ sportTranslatedLabel }}
       </template>
       <template #content>
         <div class="record" v-for="record in records.records" :key="record.id">
@@ -37,19 +31,21 @@
   import { useI18n } from 'vue-i18n'
 
   import Card from '@/components/Common/Card.vue'
+  import SportImage from '@/components/Common/Sports/SportImage.vue'
   import { IRecord } from '@/types/workouts'
 
   export default defineComponent({
     name: 'RecordsCard',
     components: {
       Card,
+      SportImage,
     },
     props: {
       records: {
         type: Object as PropType<IRecord[]>,
         required: true,
       },
-      sportLabel: {
+      sportTranslatedLabel: {
         type: String,
         required: true,
       },

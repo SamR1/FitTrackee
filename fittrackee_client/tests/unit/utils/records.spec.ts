@@ -1,6 +1,6 @@
 import { assert, expect } from 'chai'
 
-import { sports } from './fixtures'
+import { translatedSports } from './fixtures'
 
 import { formatRecord, getRecordsBySports } from '@/utils/records'
 
@@ -157,7 +157,7 @@ describe('getRecordsBySports', () => {
       },
       expected: {
         'Cycling (Sport)': {
-          img: '/img/sports/cycling-sport.png',
+          label: 'Cycling (Sport)',
           records: [
             {
               id: 9,
@@ -206,7 +206,7 @@ describe('getRecordsBySports', () => {
       },
       expected: {
         'Cycling (Sport)': {
-          img: '/img/sports/cycling-sport.png',
+          label: 'Cycling (Sport)',
           records: [
             {
               id: 9,
@@ -225,7 +225,7 @@ describe('getRecordsBySports', () => {
           ],
         },
         'Cycling (Transport)': {
-          img: '/img/sports/cycling-transport.png',
+          label: 'Cycling (Transport)',
           records: [
             {
               id: 10,
@@ -244,7 +244,7 @@ describe('getRecordsBySports', () => {
       assert.deepEqual(
         getRecordsBySports(
           testParams.input.records,
-          sports,
+          translatedSports,
           testParams.input.tz
         ),
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment

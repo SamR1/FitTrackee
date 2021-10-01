@@ -9,7 +9,7 @@
           v-for="(workout, index) in workouts.slice(0, displayedWorkoutCount)"
           :key="index"
           :workout="workout"
-          :sportImg="getSportImg(workout, sports)"
+          :sportLabel="getSportLabel(workout, sports)"
         />
       </div>
       <div v-else class="donut-display">
@@ -41,7 +41,7 @@
   import CalendarWorkoutsChart from '@/components/Dashboard/UserCalendar/CalendarWorkoutsChart.vue'
   import { ISport } from '@/types/sports'
   import { IWorkout } from '@/types/workouts'
-  import { getSportImg, sportIdColors } from '@/utils/sports'
+  import { getSportLabel, sportIdColors } from '@/utils/sports'
   import { getDonutDatasets } from '@/utils/workouts'
 
   export default defineComponent({
@@ -65,7 +65,7 @@
         chartDatasets: computed(() => getDonutDatasets(props.workouts)),
         colors: computed(() => sportIdColors(props.sports)),
         displayedWorkoutCount: 6,
-        getSportImg,
+        getSportLabel,
       }
     },
   })

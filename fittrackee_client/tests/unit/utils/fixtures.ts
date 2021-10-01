@@ -1,5 +1,8 @@
+import createI18n from '@/i18n'
 import { ISport } from '@/types/sports'
+import { translateSports } from '@/utils/sports'
 
+const { t } = createI18n.global
 export const sports: ISport[] = [
   {
     has_workouts: false,
@@ -23,3 +26,5 @@ export const sports: ISport[] = [
     label: 'Hiking',
   },
 ]
+
+export const translatedSports = translateSports(sports, t)
