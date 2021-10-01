@@ -112,7 +112,7 @@
         left: 0;
         min-width: 60px;
         @media screen and (max-width: $small-limit) {
-          min-width: 40px;
+          min-width: 70px;
         }
 
         margin-bottom: 20px;

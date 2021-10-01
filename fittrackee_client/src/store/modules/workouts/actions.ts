@@ -47,6 +47,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: IWorkoutsPayload
   ): void {
+    context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_CALENDAR_WORKOUTS)
     getWorkouts(context, payload, 'CALENDAR_WORKOUTS')
   },
   [WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS](

@@ -40,7 +40,7 @@
               <img
                 v-if="authUserPictureUrl !== ''"
                 class="nav-profile-user-img"
-                alt="User picture"
+                :alt="t('user.USER_PICTURE')"
                 :src="authUserPictureUrl"
               />
               <div v-else class="no-picture">

@@ -144,17 +144,29 @@ describe('dateIncrement', () => {
 describe('getCalendarStartAndEnd', () => {
   const testsParams = [
     {
-      description: 'returns empty string if no date provided',
+      description: 'returns start and end dates for calendar',
       inputDate: 'September 5, 2021 20:00:00',
+      inputWeekStartingMonday: false,
       expectedStartDate: 'August 29, 2021 00:00:00',
       expectedEndDate: 'October 2, 2021 23:59:59.999',
+    },
+    {
+      description:
+        'returns start and end dates for calendar when week starts on Monday',
+      inputDate: 'April 1, 2021 20:00:00',
+      inputWeekStartingMonday: true,
+      expectedStartDate: 'March 29, 2021 00:00:00',
+      expectedEndDate: 'May 2, 2021 23:59:59.999',
     },
   ]
 
   testsParams.map((testParams) =>
     it(testParams.description, () => {
       const date: Date = new Date(testParams.inputDate)
-      const results = getCalendarStartAndEnd(date, false)
+      const results = getCalendarStartAndEnd(
+        date,
+        testParams.inputWeekStartingMonday
+      )
       assert.deepEqual(results.start, new Date(testParams.expectedStartDate))
       assert.deepEqual(results.end, new Date(testParams.expectedEndDate))
     })

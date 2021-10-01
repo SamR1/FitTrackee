@@ -71,8 +71,8 @@
         font-size: 0.9em;
         .sport-img {
           padding-right: $default-padding;
-          height: 18px;
-          width: 18px;
+          height: 20px;
+          width: 20px;
         }
       }
       .card-content {
@@ -90,6 +90,16 @@
           .record-value {
             font-weight: bold;
             padding-right: $default-padding * 2;
+          }
+        }
+      }
+      @media screen and (max-width: $small-limit) {
+        font-size: 1em;
+        .card-title {
+          font-size: 1em;
+          .sport-img {
+            height: 22px;
+            width: 22px;
           }
         }
       }

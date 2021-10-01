@@ -7,7 +7,7 @@
             <img
               class="profile-img"
               v-if="userPictureUrl !== ''"
-              alt="User picture"
+              :alt="t('user.USER_PICTURE')"
               :src="userPictureUrl"
             />
             <div v-else class="no-picture">

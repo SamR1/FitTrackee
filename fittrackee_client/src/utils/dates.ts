@@ -58,7 +58,7 @@ export const getCalendarStartAndEnd = (
   const weekStartsOn = weekStartingMonday ? 1 : 0
   return {
     start: startOfWeek(monthStart, { weekStartsOn }),
-    end: endOfWeek(monthEnd),
+    end: endOfWeek(monthEnd, { weekStartsOn }),
   }
 }
 

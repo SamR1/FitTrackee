@@ -73,8 +73,9 @@
 
     @media screen and (max-width: $small-limit) {
       .sport-img {
-        width: 14px;
-        height: 14px;
+        padding: 3px;
+        width: 20px;
+        height: 20px;
       }
       sup {
         .custom-fa-small {

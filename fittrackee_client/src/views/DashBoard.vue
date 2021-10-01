@@ -146,6 +146,7 @@
     }
 
     @media screen and (max-width: $small-limit) {
+      padding-bottom: 60px;
       .dashboard-container {
         display: flex;
         flex-direction: column;

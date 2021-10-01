@@ -8,5 +8,6 @@
   "PASSWORD-CONFIRM": "Confirmation du mot de passe",
   "REGISTER": "S'inscrire",
   "REGISTER_DISABLED": "Désolé, les inscriptions sont désactivées.",
+  "USER_PICTURE": "photo de l'utilisateur",
   "USERNAME": "Nom d'utilisateur"
 }

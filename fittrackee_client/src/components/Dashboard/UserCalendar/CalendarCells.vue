@@ -157,6 +157,13 @@
       }
       .calendar-cell:last-child {
         border-right: 0;
+        @media screen and (max-width: $small-limit) {
+          .calendar-workouts {
+            .more-workouts {
+              left: -45px;
+            }
+          }
+        }
       }
       .disabled-cell {
         color: var(--app-color-light);
@@ -166,6 +173,16 @@
       }
       .today {
         background: var(--calendar-today-color);
+      }
+    }
+    @media screen and (max-width: $small-limit) {
+      .calendar-row:last-child {
+        .calendar-workouts {
+          .more-workouts {
+            top: inherit;
+            bottom: 20px;
+          }
+        }
       }
     }
   }
