@@ -10,7 +10,7 @@ import { IWorkoutsState } from '@/store/modules/workouts/types'
 
 export const getApiUrl = (): string => {
   return process.env.NODE_ENV === 'production'
-    ? '/api'
+    ? '/api/'
     : `${process.env.VUE_APP_API_URL}/api/`
 }
 
