@@ -1,6 +1,9 @@
 <template>
-  <div id="workout-edition">
-    <Card :without-title="false">
+  <div
+    id="workout-edition"
+    :class="{ 'center-form': workout && workout.with_gpx }"
+  >
+    <Card>
       <template #title>{{
         t(`workouts.${isCreation ? 'ADD' : 'EDIT'}_WORKOUT`)
       }}</template>
@@ -424,9 +427,14 @@
   #workout-edition {
     margin: 100px auto;
     width: 700px;
-    @media screen and (max-width: $small-limit) {
+    @media screen and (max-width: $medium-limit) {
       width: 100%;
       margin: 0 auto 50px auto;
+    }
+    @media screen and (max-width: $small-limit) {
+      &.center-form {
+        margin: 50px auto;
+      }
     }
 
     ::v-deep(.card) {
@@ -436,7 +444,7 @@
       }
 
       .card-content {
-        @media screen and (max-width: $small-limit) {
+        @media screen and (max-width: $medium-limit) {
           padding: $default-padding 0;
         }
 
@@ -454,7 +462,7 @@
               flex-direction: row;
               justify-content: space-between;
 
-              @media screen and (max-width: $small-limit) {
+              @media screen and (max-width: $medium-limit) {
                 flex-direction: column;
               }
             }
@@ -481,7 +489,7 @@
               justify-content: space-around;
               label {
                 font-weight: normal;
-                @media screen and (max-width: $small-limit) {
+                @media screen and (max-width: $medium-limit) {
                   font-size: 0.9em;
                 }
               }
@@ -513,7 +521,7 @@
             padding: $default-padding;
             div {
               display: flex;
-              @media screen and (max-width: $small-limit) {
+              @media screen and (max-width: $medium-limit) {
                 flex-direction: column;
               }
               ul {

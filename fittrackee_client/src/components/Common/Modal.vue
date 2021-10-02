@@ -1,7 +1,7 @@
 <template>
   <div id="modal">
     <div class="custom-modal">
-      <Card :without-title="false">
+      <Card>
         <template #title>
           {{ title }}
         </template>
@@ -79,6 +79,15 @@
       margin: 25% auto;
       z-index: 1250;
 
+      @media screen and (max-width: $medium-limit) {
+        margin: 15% auto;
+        width: 100%;
+      }
+      @media screen and (max-width: $small-limit) {
+        margin: 50% 0;
+        width: 100%;
+      }
+
       ::v-deep(.card) {
         border: 0;
         margin: 0;
@@ -100,13 +109,6 @@
             }
           }
         }
-      }
-    }
-
-    @media screen and (max-width: $small-limit) {
-      .custom-modal {
-        margin: 50% 0;
-        width: 100%;
       }
     }
   }

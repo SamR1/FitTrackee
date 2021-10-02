@@ -13,7 +13,7 @@
   import Error from '@/components/Common/Error.vue'
 
   export default defineComponent({
-    name: 'NotFoundView',
+    name: 'NotFound',
     components: {
       Error,
     },

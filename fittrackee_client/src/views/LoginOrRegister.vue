@@ -36,27 +36,35 @@
   @import '~@/scss/base';
 
   #loginOrRegister {
+    display: flex;
     height: 100%;
 
     .container {
       display: flex;
       flex-direction: row;
       justify-content: space-evenly;
-
-      height: 100%;
       margin-bottom: $default-margin * 2;
+      width: 100%;
 
       .container-sub {
         min-width: 50%;
+        height: 100%;
       }
-
-      @media screen and (max-width: $medium-limit) {
-        display: block;
+    }
+    @media screen and (max-width: $medium-limit) {
+      height: auto;
+      .container {
         .container-sub {
+          align-items: center;
           .bike-img {
-            margin-top: $default-margin * 1.5;
+            max-width: 60%;
           }
         }
+      }
+    }
+    @media screen and (max-width: $small-limit) {
+      .container {
+        flex-direction: column;
       }
     }
   }

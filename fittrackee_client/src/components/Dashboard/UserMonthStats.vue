@@ -1,6 +1,6 @@
 <template>
   <div class="user-month-stats">
-    <Card :without-title="false">
+    <Card>
       <template #title>{{ $t('dashboard.THIS_MONTH') }}</template>
       <template #content>
         <div v-if="Object.keys(statistics).length === 0">

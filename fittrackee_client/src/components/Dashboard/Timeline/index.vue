@@ -1,24 +1,33 @@
 <template>
   <div id="timeline">
     <div class="section-title">{{ t('workouts.LATEST_WORKOUTS') }}</div>
-    <WorkoutCard
-      v-for="workout in workouts"
-      :workout="workout"
-      :sport="
-        workouts.length > 0
-          ? sports.filter((s) => s.id === workout.sport_id)[0]
-          : null
-      "
-      :user="user"
-      :key="workout.id"
-    />
-    <div v-if="workouts.length === 0" class="no-workouts">
-      {{ t('workouts.NO_WORKOUTS') }}
+    <div v-if="user.nb_workouts > 0 && workouts.length === 0">
+      <WorkoutCard
+        v-for="index in [...Array(initWorkoutsCount).keys()]"
+        :user="user"
+        :key="index"
+      />
     </div>
-    <div v-if="moreWorkoutsExist" class="more-workouts">
-      <button @click="loadMoreWorkouts">
-        {{ t('workouts.LOAD_MORE_WORKOUT') }}
-      </button>
+    <div v-else>
+      <WorkoutCard
+        v-for="workout in workouts"
+        :workout="workout"
+        :sport="
+          workouts.length > 0
+            ? sports.filter((s) => s.id === workout.sport_id)[0]
+            : null
+        "
+        :user="user"
+        :key="workout.id"
+      />
+      <div v-if="workouts.length === 0" class="no-workouts">
+        {{ t('workouts.NO_WORKOUTS') }}
+      </div>
+      <div v-if="moreWorkoutsExist" class="more-workouts">
+        <button @click="loadMoreWorkouts">
+          {{ t('workouts.LOAD_MORE_WORKOUT') }}
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -56,12 +65,14 @@
         required: true,
       },
     },
-    setup() {
+    setup(props) {
       const store = useStore()
       const { t } = useI18n()
 
       let page = ref(1)
       const per_page = 5
+      const initWorkoutsCount =
+        props.user.nb_workouts >= per_page ? per_page : props.user.nb_workouts
       onBeforeMount(() => loadWorkouts())
 
       const workouts: ComputedRef<IWorkout[]> = computed(
@@ -85,6 +96,7 @@
       }
 
       return {
+        initWorkoutsCount,
         moreWorkoutsExist,
         per_page,
         workouts,

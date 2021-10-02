@@ -1,6 +1,6 @@
 <template>
   <div id="workout-note">
-    <Card :without-title="false">
+    <Card>
       <template #title>{{ t('workouts.NOTES') }}</template>
       <template #content>
         {{ notes && notes !== '' ? notes : t('workouts.NO_NOTES') }}</template

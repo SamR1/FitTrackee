@@ -1,5 +1,5 @@
 <template>
-  <div id="error404">
+  <div id="error">
     <div class="error-content">
       <h1>{{ title }}</h1>
       <p>{{ message }}</p>
@@ -37,7 +37,7 @@
 <style scoped lang="scss">
   @import '~@/scss/base';
 
-  #error404 {
+  #error {
     display: flex;
     align-items: center;
     justify-content: center;

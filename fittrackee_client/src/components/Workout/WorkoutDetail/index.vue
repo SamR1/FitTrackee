@@ -7,7 +7,7 @@
       @confirmAction="deleteWorkout(workoutObject.workoutId)"
       @cancelAction="updateDisplayModal(false)"
     />
-    <Card :without-title="false">
+    <Card>
       <template #title>
         <WorkoutCardTitle
           :sport="sport"
@@ -213,7 +213,7 @@
       .card-content {
         display: flex;
         flex-direction: row;
-        @media screen and (max-width: $small-limit) {
+        @media screen and (max-width: $medium-limit) {
           flex-direction: column;
         }
       }

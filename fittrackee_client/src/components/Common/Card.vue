@@ -16,7 +16,7 @@
     props: {
       withoutTitle: {
         type: Boolean,
-        default: true,
+        default: false,
       },
     },
   })

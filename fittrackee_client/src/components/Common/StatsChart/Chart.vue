@@ -35,11 +35,11 @@
     },
     setup(props) {
       const { t } = useI18n()
-      // eslint-disable-next-line
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       function getNumber(value: any): number {
         return isNaN(value) ? 0 : +value
       }
-      // eslint-disable-next-line
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       function getSum(total: any, value: any): number {
         return getNumber(total) + getNumber(value)
       }

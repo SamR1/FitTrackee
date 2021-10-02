@@ -1,6 +1,6 @@
 <template>
   <div class="user-stat-card">
-    <Card>
+    <Card :without-title="true">
       <template #content>
         <div class="stat-content">
           <div class="stat-icon">

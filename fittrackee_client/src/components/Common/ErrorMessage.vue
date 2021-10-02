@@ -1,8 +1,8 @@
 <template>
   <div class="error-message">
     <ul v-if="Array.isArray(message)">
-      <li v-for="(submessage, index) in message" :key="index">
-        {{ t(submessage) }}
+      <li v-for="(subMessage, index) in message" :key="index">
+        {{ t(subMessage) }}
       </li>
     </ul>
     <div v-else>{{ t(message) }}</div>
@@ -20,9 +20,7 @@
     },
     setup() {
       const { t } = useI18n()
-      return {
-        t,
-      }
+      return { t }
     },
   })
 </script>

@@ -7,6 +7,10 @@
           disabled: registration_disabled,
         }"
       >
+        <AlertMessage
+          message="user.REGISTER_DISABLED"
+          v-if="registration_disabled"
+        />
         <form @submit.prevent="onSubmit(action)">
           <div class="form-items">
             <input
@@ -48,10 +52,6 @@
           </button>
         </form>
         <ErrorMessage :message="errorMessages" v-if="errorMessages" />
-        <AlertMessage
-          message="user.REGISTER_DISABLED"
-          v-if="registration_disabled"
-        />
       </div>
     </div>
   </div>
@@ -133,9 +133,9 @@
         buttonText,
         errorMessages,
         formData,
-        onSubmit,
         registration_disabled,
         router,
+        onSubmit,
       }
     },
   })
@@ -162,15 +162,16 @@
           border-color: var(--disabled-color);
         }
       }
-      @media screen and (max-width: $medium-limit) {
-        margin-top: $default-margin;
-        width: 100%;
-      }
     }
 
     @media screen and (max-width: $medium-limit) {
       height: auto;
       margin-bottom: 50px;
+
+      #user-form {
+        margin-top: $default-margin;
+        width: 100%;
+      }
     }
   }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="dropdown-wrapper">
-    <div class="dropdown-selected" @click="openDropdown">
+    <div class="dropdown-selected" @click="toggleDropdown">
       <slot></slot>
     </div>
     <ul class="dropdown-list" v-if="isOpen">
@@ -41,25 +41,19 @@
       let isOpen = ref(false)
       let dropdownOptions = props.options.map((option) => option)
 
-      function openDropdown() {
-        isOpen.value = true
+      function toggleDropdown() {
+        isOpen.value = !isOpen.value
       }
       function updateSelected(option: IDropdownOption) {
         emit('selected', option)
         isOpen.value = false
       }
-      function getSelectedLabel(selectedValue: string) {
-        return props.options.filter(
-          (option: IDropdownOption) => option.value === selectedValue
-        )[0].label
-      }
 
       return {
         dropdownOptions,
-        updateSelected,
-        getSelectedLabel,
         isOpen,
-        openDropdown,
+        toggleDropdown,
+        updateSelected,
       }
     },
   })

@@ -52,10 +52,7 @@
           props.user.timezone
         )
       )
-      return {
-        recordsBySport,
-        t,
-      }
+      return { recordsBySport, t }
     },
   })
 </script>

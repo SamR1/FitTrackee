@@ -5,7 +5,7 @@
       <div class="leaflet-container" v-if="workoutData.workout.with_gpx">
         <LMap
           v-if="geoJson.jsonData && center && bounds.length === 2"
-          :zoom="options.zoom"
+          :zoom="13"
           :center="center"
           :bounds="bounds"
           ref="workoutMap"
@@ -108,17 +108,18 @@
       const appConfig: ComputedRef<IAppConfig> = computed(
         () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
       )
+      const center = computed(() => getCenter(bounds))
+      const geoJson = computed(() =>
+        props.workoutData && props.workoutData.gpx
+          ? getGeoJson(props.workoutData.gpx)
+          : {}
+      )
 
       return {
         appConfig,
-        bounds: bounds,
-        center: computed(() => getCenter(bounds)),
-        geoJson: computed(() =>
-          props.workoutData && props.workoutData.gpx
-            ? getGeoJson(props.workoutData.gpx)
-            : {}
-        ),
-        options: { zoom: 13 },
+        bounds,
+        center,
+        geoJson,
         t,
         workoutMap,
         fitBounds,

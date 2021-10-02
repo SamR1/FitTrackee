@@ -23,6 +23,7 @@
 <script lang="ts">
   import { format } from 'date-fns'
   import { defineComponent } from 'vue'
+
   export default defineComponent({
     name: 'CalendarHeader',
     props: {

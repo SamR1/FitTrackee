@@ -1,7 +1,7 @@
 <template>
   <div id="dashboard" v-if="authUser.username && sports.length > 0">
     <div class="container mobile-menu">
-      <Card>
+      <Card :without-title="true">
         <template #content>
           <button
             class="mobile-menu-item"
@@ -145,7 +145,7 @@
       display: none;
     }
 
-    @media screen and (max-width: $small-limit) {
+    @media screen and (max-width: $medium-limit) {
       padding-bottom: 60px;
       .dashboard-container {
         display: flex;

@@ -1,6 +1,6 @@
 <template>
   <div class="timeline-workout">
-    <Card>
+    <Card :without-title="true">
       <template #content>
         <div class="workout-user-date">
           <div class="workout-user">
@@ -83,7 +83,7 @@
   import { useI18n } from 'vue-i18n'
 
   import Card from '@/components/Common/Card.vue'
-  import SportImage from '@/components/Common/Sports/SportImage.vue'
+  import SportImage from '@/components/Common/SportImage/index.vue'
   import StaticMap from '@/components/Common/StaticMap.vue'
   import { ROOT_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'

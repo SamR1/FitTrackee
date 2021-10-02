@@ -1,20 +1,13 @@
 <template>
   <div id="about">
-    <img class="bike-img" v-bind:src="bike_image_url" alt="mountain bike" />
+    <img class="bike-img" :src="'/img/bike.svg'" alt="mountain bike" />
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent } from 'vue'
-
-  export default defineComponent({
+<script>
+  export default {
     name: 'About',
-    setup() {
-      return {
-        bike_image_url: './img/bike.svg',
-      }
-    },
-  })
+  }
 </script>
 
 <style scoped lang="scss">

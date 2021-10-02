@@ -10,7 +10,7 @@
       <span class="map-attribution-text">©</span>
       <a
         class="map-attribution-text"
-        href="http://www.openstreetmap.org/copyright"
+        href="https://www.openstreetmap.org/copyright"
         target="_blank"
         rel="noopener noreferrer"
       >

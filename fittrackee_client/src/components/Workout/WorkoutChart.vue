@@ -1,6 +1,6 @@
 <template>
   <div id="workout-chart">
-    <Card :without-title="false">
+    <Card>
       <template #title>{{ t('workouts.ANALYSIS') }} </template>
       <template #content>
         <div class="chart-radio">

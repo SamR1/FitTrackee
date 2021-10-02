@@ -1,6 +1,6 @@
 <template>
   <div id="user-calendar">
-    <Card class="calendar-card">
+    <Card class="calendar-card" :without-title="true">
       <template #content>
         <CalendarHeader
           :day="day"

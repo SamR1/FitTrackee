@@ -1,6 +1,6 @@
 <template>
   <div id="workout-segments">
-    <Card :without-title="false">
+    <Card>
       <template #title>{{ t('workouts.SEGMENT', 2) }}</template>
       <template #content>
         <ul>

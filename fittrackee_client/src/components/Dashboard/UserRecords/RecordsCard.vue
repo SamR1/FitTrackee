@@ -1,6 +1,6 @@
 <template>
   <div class="records-card">
-    <Card :without-title="false">
+    <Card>
       <template #title>
         <SportImage :sport-label="records.label" />
         {{ sportTranslatedLabel }}
@@ -31,7 +31,7 @@
   import { useI18n } from 'vue-i18n'
 
   import Card from '@/components/Common/Card.vue'
-  import SportImage from '@/components/Common/Sports/SportImage.vue'
+  import SportImage from '@/components/Common/SportImage/index.vue'
   import { IRecord } from '@/types/workouts'
 
   export default defineComponent({
@@ -93,7 +93,7 @@
           }
         }
       }
-      @media screen and (max-width: $small-limit) {
+      @media screen and (max-width: $medium-limit) {
         font-size: 1em;
         .card-title {
           font-size: 1em;
