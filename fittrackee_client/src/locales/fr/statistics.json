@@ -1,4 +1,9 @@
 {
   "STATISTICS": "Statistiques",
-  "TOTAL": "Total"
+  "TOTAL": "Total",
+  "TIME_FRAMES": {
+    "week": "semaine",
+    "month": "mois",
+    "year": "année"
+  }
 }

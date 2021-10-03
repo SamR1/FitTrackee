@@ -76,7 +76,7 @@ export const formatStats = (
   const dayKeys = getDateKeys(params, weekStartingMonday)
   const dateFormat = dateFormats[params.duration]
   const displayedSports = sports.filter((sport) =>
-    displayedSportsId.length == 0 ? true : displayedSportsId.includes(sport.id)
+    displayedSportsId.includes(sport.id)
   )
   const labels: string[] = []
   const datasets = getDatasets(displayedSports)

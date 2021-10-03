@@ -7,6 +7,7 @@ import Dashboard from '@/views/DashBoard.vue'
 import EditWorkout from '@/views/EditWorkout.vue'
 import LoginOrRegister from '@/views/LoginOrRegister.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
+import StatisticsView from '@/views/StatisticsView.vue'
 import Workout from '@/views/Workout.vue'
 
 const routes: Array<RouteRecordRaw> = [
@@ -26,6 +27,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Register',
     component: LoginOrRegister,
     props: { action: 'register' },
+  },
+  {
+    path: '/statistics',
+    name: 'Statistics',
+    component: StatisticsView,
   },
   {
     path: '/workouts/:workoutId',

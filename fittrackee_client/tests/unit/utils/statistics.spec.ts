@@ -254,57 +254,9 @@ describe('formatStats', () => {
     const expected: IStatisticsChartData = {
       labels: ['2021-05', '2021-06', '2021-07'],
       datasets: {
-        nb_workouts: [
-          {
-            label: 'Cycling (Sport)',
-            backgroundColor: ['#4c9792'],
-            data: [0, 0, 0],
-          },
-          {
-            label: 'Cycling (Transport)',
-            backgroundColor: ['#88af98'],
-            data: [0, 0, 0],
-          },
-          {
-            label: 'Hiking',
-            backgroundColor: ['#bb757c'],
-            data: [0, 0, 0],
-          },
-        ],
-        total_distance: [
-          {
-            label: 'Cycling (Sport)',
-            backgroundColor: ['#4c9792'],
-            data: [0, 0, 0],
-          },
-          {
-            label: 'Cycling (Transport)',
-            backgroundColor: ['#88af98'],
-            data: [0, 0, 0],
-          },
-          {
-            label: 'Hiking',
-            backgroundColor: ['#bb757c'],
-            data: [0, 0, 0],
-          },
-        ],
-        total_duration: [
-          {
-            label: 'Cycling (Sport)',
-            backgroundColor: ['#4c9792'],
-            data: [0, 0, 0],
-          },
-          {
-            label: 'Cycling (Transport)',
-            backgroundColor: ['#88af98'],
-            data: [0, 0, 0],
-          },
-          {
-            label: 'Hiking',
-            backgroundColor: ['#bb757c'],
-            data: [0, 0, 0],
-          },
-        ],
+        nb_workouts: [],
+        total_distance: [],
+        total_duration: [],
       },
     }
     assert.deepEqual(
@@ -352,7 +304,7 @@ describe('formatStats', () => {
     )
   })
 
-  it('returns empty datasets if data and no displayed sport provided', () => {
+  it('returns empty datasets if data provided but no displayed sport', () => {
     const inputStats: TStatisticsFromApi = {
       '2021-05': {
         1: {
@@ -389,57 +341,9 @@ describe('formatStats', () => {
     const expected: IStatisticsChartData = {
       labels: ['2021-05', '2021-06', '2021-07'],
       datasets: {
-        nb_workouts: [
-          {
-            label: 'Cycling (Sport)',
-            backgroundColor: ['#4c9792'],
-            data: [1, 1, 0],
-          },
-          {
-            label: 'Cycling (Transport)',
-            backgroundColor: ['#88af98'],
-            data: [0, 2, 0],
-          },
-          {
-            label: 'Hiking',
-            backgroundColor: ['#bb757c'],
-            data: [0, 0, 2],
-          },
-        ],
-        total_distance: [
-          {
-            label: 'Cycling (Sport)',
-            backgroundColor: ['#4c9792'],
-            data: [10, 15, 0],
-          },
-          {
-            label: 'Cycling (Transport)',
-            backgroundColor: ['#88af98'],
-            data: [0, 20, 0],
-          },
-          {
-            label: 'Hiking',
-            backgroundColor: ['#bb757c'],
-            data: [0, 0, 12],
-          },
-        ],
-        total_duration: [
-          {
-            label: 'Cycling (Sport)',
-            backgroundColor: ['#4c9792'],
-            data: [3000, 3500, 0],
-          },
-          {
-            label: 'Cycling (Transport)',
-            backgroundColor: ['#88af98'],
-            data: [0, 3000, 0],
-          },
-          {
-            label: 'Hiking',
-            backgroundColor: ['#bb757c'],
-            data: [0, 0, 5000],
-          },
-        ],
+        nb_workouts: [],
+        total_distance: [],
+        total_duration: [],
       },
     }
     assert.deepEqual(

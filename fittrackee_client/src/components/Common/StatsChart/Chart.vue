@@ -32,6 +32,14 @@
         type: String as PropType<TStatisticsDatasetKeys>,
         required: true,
       },
+      displayedSportIds: {
+        type: Array as PropType<number[]>,
+        required: true,
+      },
+      fullStats: {
+        type: Boolean,
+        required: true,
+      },
     },
     setup(props) {
       const { t } = useI18n()
@@ -54,7 +62,7 @@
         animation: false,
         layout: {
           padding: {
-            top: 22,
+            top: props.fullStats ? 40 : 22,
           },
         },
         scales: {
@@ -76,7 +84,7 @@
               },
             },
             afterFit: function (scale: LayoutItem) {
-              scale.width = 60
+              scale.width = props.fullStats ? 75 : 60
             },
           },
         },
@@ -84,13 +92,22 @@
           datalabels: {
             anchor: 'end',
             align: 'end',
+            rotation: function (context) {
+              return props.fullStats && context.chart.chartArea.width < 580
+                ? 310
+                : 0
+            },
+            display: function (context) {
+              return !(props.fullStats && context.chart.chartArea.width < 300)
+            },
             formatter: function (value, context) {
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               const total: number = context.chart.data.datasets
                 .map((d) => d.data[context.dataIndex])
                 .reduce((total, value) => getSum(total, value), 0)
-              return context.datasetIndex === 5 && total > 0
+              return context.datasetIndex ===
+                props.displayedSportIds.length - 1 && total > 0
                 ? formatTooltipValue(props.displayedData, total, false)
                 : null
             },
