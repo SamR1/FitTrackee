@@ -25,8 +25,10 @@
       const authUser: ComputedRef<IAuthUserProfile> = computed(
         () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
       )
-      const sports: ComputedRef<ISport[]> = computed(
-        () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
+      const sports: ComputedRef<ISport[]> = computed(() =>
+        store.getters[SPORTS_STORE.GETTERS.SPORTS].filter((sport) =>
+          authUser.value.sports_list.includes(sport.id)
+        )
       )
       return { authUser, sports }
     },
