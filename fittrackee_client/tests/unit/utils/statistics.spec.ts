@@ -258,7 +258,7 @@ describe('formatStats', () => {
       end: new Date('July 31, 2021 23:59:59.999'),
     }
     const expected: IStatisticsChartData = {
-      labels: ['2021-05', '2021-06', '2021-07'],
+      labels: ['05/2021', '06/2021', '07/2021'],
       datasets: {
         nb_workouts: [],
         total_distance: [],
@@ -279,7 +279,7 @@ describe('formatStats', () => {
       end: new Date('July 31, 2021 23:59:59.999'),
     }
     const expected: IStatisticsChartData = {
-      labels: ['2021-05', '2021-06', '2021-07'],
+      labels: ['05/2021', '06/2021', '07/2021'],
       datasets: {
         nb_workouts: [
           {
@@ -345,7 +345,7 @@ describe('formatStats', () => {
       end: new Date('July 31, 2021 23:59:59.999'),
     }
     const expected: IStatisticsChartData = {
-      labels: ['2021-05', '2021-06', '2021-07'],
+      labels: ['05/2021', '06/2021', '07/2021'],
       datasets: {
         nb_workouts: [],
         total_distance: [],
@@ -358,7 +358,7 @@ describe('formatStats', () => {
     )
   })
 
-  it('returns empty datasets if data and displayed sport provided', () => {
+  it('returns datasets when data and displayed sport provided', () => {
     const inputStats: TStatisticsFromApi = {
       '2021-05': {
         1: {
@@ -393,7 +393,7 @@ describe('formatStats', () => {
       end: new Date('July 31, 2021 23:59:59.999'),
     }
     const expected: IStatisticsChartData = {
-      labels: ['2021-05', '2021-06', '2021-07'],
+      labels: ['05/2021', '06/2021', '07/2021'],
       datasets: {
         nb_workouts: [
           {
@@ -420,6 +420,271 @@ describe('formatStats', () => {
     }
     assert.deepEqual(
       formatStats(inputParams, false, sports, [1], inputStats),
+      expected
+    )
+  })
+})
+
+describe('formatStats (duration)', () => {
+  it("returns datasets when duration is 'year'", () => {
+    const inputStats: TStatisticsFromApi = {
+      '2020': {
+        1: {
+          nb_workouts: 1,
+          total_distance: 10,
+          total_duration: 3000,
+        },
+      },
+      '2021': {
+        1: {
+          nb_workouts: 1,
+          total_distance: 15,
+          total_duration: 3500,
+        },
+        2: {
+          nb_workouts: 2,
+          total_distance: 20,
+          total_duration: 3000,
+        },
+      },
+      '2022': {
+        3: {
+          nb_workouts: 2,
+          total_distance: 20,
+          total_duration: 3000,
+        },
+      },
+    }
+    const inputParams = {
+      duration: 'year',
+      start: new Date('January 1, 2020 00:00:00'),
+      end: new Date('December 31, 2021 23:59:59.999'),
+    }
+    const expected: IStatisticsChartData = {
+      labels: ['2020', '2021'],
+      datasets: {
+        nb_workouts: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [1, 1],
+          },
+        ],
+        total_distance: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [10, 15],
+          },
+        ],
+        total_duration: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [3000, 3500],
+          },
+        ],
+      },
+    }
+    assert.deepEqual(
+      formatStats(inputParams, false, sports, [1], inputStats),
+      expected
+    )
+  })
+  it("returns datasets when duration is 'year'", () => {
+    const inputStats: TStatisticsFromApi = {
+      '2020': {
+        1: {
+          nb_workouts: 1,
+          total_distance: 10,
+          total_duration: 3000,
+        },
+      },
+      '2021': {
+        1: {
+          nb_workouts: 1,
+          total_distance: 15,
+          total_duration: 3500,
+        },
+        2: {
+          nb_workouts: 2,
+          total_distance: 20,
+          total_duration: 3000,
+        },
+      },
+      '2022': {
+        3: {
+          nb_workouts: 2,
+          total_distance: 20,
+          total_duration: 3000,
+        },
+      },
+    }
+    const inputParams = {
+      duration: 'year',
+      start: new Date('January 1, 2020 00:00:00'),
+      end: new Date('December 31, 2021 23:59:59.999'),
+    }
+    const expected: IStatisticsChartData = {
+      labels: ['2020', '2021'],
+      datasets: {
+        nb_workouts: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [1, 1],
+          },
+        ],
+        total_distance: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [10, 15],
+          },
+        ],
+        total_duration: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [3000, 3500],
+          },
+        ],
+      },
+    }
+    assert.deepEqual(
+      formatStats(inputParams, false, sports, [1], inputStats),
+      expected
+    )
+  })
+
+  it("returns datasets when duration is 'week' and week starts on Sunday", () => {
+    const inputStats: TStatisticsFromApi = {
+      '2021-10-03': {
+        1: {
+          nb_workouts: 1,
+          total_distance: 10,
+          total_duration: 3000,
+        },
+      },
+      '2021-10-10': {
+        1: {
+          nb_workouts: 1,
+          total_distance: 15,
+          total_duration: 3500,
+        },
+        2: {
+          nb_workouts: 2,
+          total_distance: 20,
+          total_duration: 3000,
+        },
+      },
+      '2021-10-17': {
+        3: {
+          nb_workouts: 2,
+          total_distance: 20,
+          total_duration: 3000,
+        },
+      },
+    }
+    const inputParams = {
+      duration: 'week',
+      start: new Date('October 03, 2021 00:00:00'),
+      end: new Date('October 23, 2021 23:59:59.999'),
+    }
+    const expected: IStatisticsChartData = {
+      labels: ['03/10/2021', '10/10/2021', '17/10/2021'],
+      datasets: {
+        nb_workouts: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [1, 1, 0],
+          },
+        ],
+        total_distance: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [10, 15, 0],
+          },
+        ],
+        total_duration: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [3000, 3500, 0],
+          },
+        ],
+      },
+    }
+    assert.deepEqual(
+      formatStats(inputParams, false, sports, [1], inputStats),
+      expected
+    )
+  })
+
+  it("returns datasets when duration is 'week' and week starts on Monday", () => {
+    const inputStats: TStatisticsFromApi = {
+      '2021-10-04': {
+        1: {
+          nb_workouts: 1,
+          total_distance: 10,
+          total_duration: 3000,
+        },
+      },
+      '2021-10-11': {
+        1: {
+          nb_workouts: 1,
+          total_distance: 15,
+          total_duration: 3500,
+        },
+        2: {
+          nb_workouts: 2,
+          total_distance: 20,
+          total_duration: 3000,
+        },
+      },
+      '2021-10-18': {
+        3: {
+          nb_workouts: 2,
+          total_distance: 20,
+          total_duration: 3000,
+        },
+      },
+    }
+    const inputParams = {
+      duration: 'week',
+      start: new Date('October 04, 2021 00:00:00'),
+      end: new Date('October 24, 2021 23:59:59.999'),
+    }
+    const expected: IStatisticsChartData = {
+      labels: ['04/10/2021', '11/10/2021', '18/10/2021'],
+      datasets: {
+        nb_workouts: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [1, 1, 0],
+          },
+        ],
+        total_distance: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [10, 15, 0],
+          },
+        ],
+        total_duration: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [3000, 3500, 0],
+          },
+        ],
+      },
+    }
+    assert.deepEqual(
+      formatStats(inputParams, true, sports, [1], inputStats),
       expected
     )
   })

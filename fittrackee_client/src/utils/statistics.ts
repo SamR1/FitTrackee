@@ -26,11 +26,19 @@ import {
 import { incrementDate, startDate } from '@/utils/dates'
 import { sportColors } from '@/utils/sports'
 
-// date format from api
-const dateFormats: Record<string, string> = {
-  week: 'yyyy-MM-dd',
-  month: 'yyyy-MM',
-  year: 'yyyy',
+const dateFormats: Record<string, Record<string, string>> = {
+  week: {
+    api: 'yyyy-MM-dd',
+    chart: 'dd/MM/yyyy',
+  },
+  month: {
+    api: 'yyyy-MM',
+    chart: 'MM/yyyy',
+  },
+  year: {
+    api: 'yyyy',
+    chart: 'yyyy',
+  },
 }
 
 export const datasetKeys: TStatisticsDatasetKeys[] = [
@@ -100,8 +108,9 @@ export const formatStats = (
   )
 
   dayKeys.map((key) => {
-    const date: string = format(key, dateFormat)
-    labels.push(date)
+    const date: string = format(key, dateFormat.api)
+    const label: string = format(key, dateFormat.chart)
+    labels.push(label)
     datasetKeys.map((datasetKey) => {
       datasets[datasetKey].map((dataset) => {
         dataset.data.push(
