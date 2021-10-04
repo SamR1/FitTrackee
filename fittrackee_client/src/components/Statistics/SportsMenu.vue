@@ -1,0 +1,97 @@
+<template>
+  <div class="sports-menu">
+    <label
+      v-for="sport in translatedSports"
+      type="checkbox"
+      :key="sport.id"
+      :style="{ color: sportColors[sport.label] }"
+    >
+      <input
+        type="checkbox"
+        :id="sport.id"
+        :name="sport.label"
+        :checked="selectedSportIds.includes(sport.id)"
+        @input="updateSelectedSportIds(sport.id)"
+      />
+      <SportImage :sport-label="sport.label" />
+      {{ sport.translatedLabel }}
+    </label>
+  </div>
+</template>
+
+<script lang="ts">
+  import { ComputedRef, PropType, computed, defineComponent } from 'vue'
+  import { useI18n } from 'vue-i18n'
+
+  import SportImage from '@/components/Common/SportImage/index.vue'
+  import { ISport, ITranslatedSport } from '@/types/sports'
+  import { translateSports, sportColors } from '@/utils/sports'
+
+  export default defineComponent({
+    name: 'SportsMenu',
+    components: {
+      SportImage,
+    },
+    props: {
+      selectedSportIds: {
+        type: Array as PropType<number[]>,
+        default: () => [],
+      },
+      userSports: {
+        type: Object as PropType<ISport[]>,
+        required: true,
+      },
+    },
+    emits: ['selectedSportIdsUpdate'],
+    setup(props, { emit }) {
+      const { t } = useI18n()
+      const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
+        translateSports(props.userSports, t)
+      )
+
+      function updateSelectedSportIds(sportId: number) {
+        emit('selectedSportIdsUpdate', sportId)
+      }
+
+      return {
+        sportColors,
+        translatedSports,
+        updateSelectedSportIds,
+      }
+    },
+  })
+</script>
+
+<style lang="scss">
+  @import '~@/scss/base.scss';
+  .sports-menu {
+    display: flex;
+    justify-content: space-between;
+    padding: $default-padding;
+    @media screen and (max-width: $medium-limit) {
+      justify-content: normal;
+      flex-wrap: wrap;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      font-size: 0.9em;
+      font-weight: normal;
+      min-width: 120px;
+      padding: $default-padding;
+      @media screen and (max-width: $medium-limit) {
+        min-width: 100px;
+      }
+      @media screen and (max-width: $x-small-limit) {
+        width: 100%;
+      }
+    }
+
+    .sport-img {
+      padding: 3px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+</style>

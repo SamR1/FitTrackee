@@ -1,7 +1,12 @@
 <template>
   <div id="statistics">
     <div class="container" v-if="authUser.username">
-      <Statistics :user="authUser" :sports="sports" />
+      <Card>
+        <template #title>{{ $t('statistics.STATISTICS') }}</template>
+        <template #content>
+          <Statistics :user="authUser" :sports="sports" />
+        </template>
+      </Card>
     </div>
   </div>
 </template>
@@ -9,6 +14,7 @@
 <script lang="ts">
   import { ComputedRef, computed, defineComponent } from 'vue'
 
+  import Card from '@/components/Common/Card.vue'
   import Statistics from '@/components/Statistics/index.vue'
   import { USER_STORE, SPORTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
@@ -18,6 +24,7 @@
   export default defineComponent({
     name: 'StatisticsView',
     components: {
+      Card,
       Statistics,
     },
     setup() {
@@ -38,6 +45,14 @@
 <style lang="scss" scoped>
   @import '~@/scss/base';
   #statistics {
-    height: 100%;
+    display: flex;
+    width: 100%;
+    margin-bottom: 30px;
+    .container {
+      width: 100%;
+      ::v-deep(.card) {
+        width: 100%;
+      }
+    }
   }
 </style>

@@ -7,7 +7,13 @@ import {
   TStatisticsDatasets,
   TStatisticsFromApi,
 } from '@/types/statistics'
-import { formatStats, getDateKeys, getDatasets } from '@/utils/statistics'
+import {
+  formatStats,
+  getDateKeys,
+  getDatasets,
+  getStatsDateParams,
+  updateChartParams,
+} from '@/utils/statistics'
 
 describe('getDateKeys (week starting Sunday)', () => {
   const testsParams = [
@@ -416,5 +422,426 @@ describe('formatStats', () => {
       formatStats(inputParams, false, sports, [1], inputStats),
       expected
     )
+  })
+})
+
+describe("getStatsDateParams when time frame is 'month')", () => {
+  const weekStartingMonday = [false, true]
+
+  weekStartingMonday.map((weekStartingMonday) => {
+    const testsParams = [
+      {
+        description: 'it returns date params when input date is 04/10/2021',
+        input: {
+          date: new Date('October 04, 2021 11:00:00'),
+        },
+        expected: {
+          duration: 'month',
+          start: new Date('November 01, 2020 00:00:00'),
+          end: new Date('October 31, 2021 23:59:59.999'),
+        },
+      },
+      {
+        description: 'it returns date params when input date is 03/02/2020',
+        input: {
+          date: new Date('February 03, 2020 23:30:00'),
+        },
+        expected: {
+          duration: 'month',
+          start: new Date('March 01, 2019 00:00:00'),
+          end: new Date('February 29, 2020 23:59:59.999'),
+        },
+      },
+    ]
+
+    testsParams.map((testParams) => {
+      it(testParams.description, () => {
+        assert.deepEqual(
+          getStatsDateParams(
+            testParams.input.date,
+            'month',
+            weekStartingMonday
+          ),
+          testParams.expected
+        )
+      })
+    })
+  })
+})
+
+describe("getStatsDateParams when time frame is 'year')", () => {
+  const weekStartingMonday = [false, true]
+
+  weekStartingMonday.map((weekStartingMonday) => {
+    const testsParams = [
+      {
+        description: 'it returns date params when input date is 04/10/2021',
+        input: {
+          date: new Date('October 04, 2021 11:00:00'),
+        },
+        expected: {
+          duration: 'year',
+          start: new Date('January 01, 2012 00:00:00'),
+          end: new Date('December 31, 2021 23:59:59.999'),
+        },
+      },
+      {
+        description: 'it returns date params when input date is 03/02/2020',
+        input: {
+          date: new Date('February 03, 2020 23:30:00'),
+        },
+        expected: {
+          duration: 'year',
+          start: new Date('January 01, 2011 00:00:00'),
+          end: new Date('December 31, 2020 23:59:59.999'),
+        },
+      },
+    ]
+
+    testsParams.map((testParams) => {
+      it(testParams.description, () => {
+        assert.deepEqual(
+          getStatsDateParams(testParams.input.date, 'year', weekStartingMonday),
+          testParams.expected
+        )
+      })
+    })
+  })
+})
+
+describe("getStatsDateParams when time frame is 'week')", () => {
+  const testsParams = [
+    {
+      description:
+        'it returns date params when input date is 04/10/2021, when week start on Sunday',
+      input: {
+        date: new Date('October 04, 2021 11:00:00'),
+        weekStartingMonday: false,
+      },
+      expected: {
+        duration: 'week',
+        start: new Date('August 01, 2021 00:00:00'),
+        end: new Date('October 09, 2021 23:59:59.999'),
+      },
+    },
+    {
+      description:
+        'it returns date params when input date is 03/02/2020, when week start on Sunday',
+      input: {
+        date: new Date('February 03, 2020 23:30:00'),
+        weekStartingMonday: false,
+      },
+      expected: {
+        duration: 'week',
+        start: new Date('December 01, 2019 00:00:00'),
+        end: new Date('February 08, 2020 23:59:59.999'),
+      },
+    },
+
+    {
+      description:
+        'it returns date params when input date is 04/10/2021, when week start on Monday',
+      input: {
+        date: new Date('October 04, 2021 11:00:00'),
+        weekStartingMonday: true,
+      },
+      expected: {
+        duration: 'week',
+        start: new Date('August 02, 2021 00:00:00'),
+        end: new Date('October 10, 2021 23:59:59.999'),
+      },
+    },
+    {
+      description:
+        'it returns date params when input date is 03/02/2020, when week start on Monday',
+      input: {
+        date: new Date('February 03, 2020 23:30:00'),
+        weekStartingMonday: true,
+      },
+      expected: {
+        duration: 'week',
+        start: new Date('December 02, 2019 00:00:00'),
+        end: new Date('February 09, 2020 23:59:59.999'),
+      },
+    },
+  ]
+
+  testsParams.map((testParams) => {
+    it(testParams.description, () => {
+      assert.deepEqual(
+        getStatsDateParams(
+          testParams.input.date,
+          'week',
+          testParams.input.weekStartingMonday
+        ),
+        testParams.expected
+      )
+    })
+  })
+})
+
+describe("updateChartParams when time frame is 'month')", () => {
+  const weekStartingMonday = [false, true]
+
+  weekStartingMonday.map((weekStartingMonday) => {
+    const testsParams = [
+      {
+        description:
+          'it return forward date params when start date is 01/11/2020',
+        input: {
+          chartParams: {
+            duration: 'month',
+            start: new Date('November 01, 2020 00:00:00'),
+            end: new Date('October 31, 2021 23:59:59.999'),
+          },
+          backward: false,
+        },
+        expected: {
+          duration: 'month',
+          start: new Date('December 01, 2020 00:00:00'),
+          end: new Date('November 30, 2021 23:59:59.999'),
+        },
+      },
+      {
+        description:
+          'it return forward date params when start date is 01/02/2019',
+        input: {
+          chartParams: {
+            duration: 'month',
+            start: new Date('February 01, 2019 00:00:00'),
+            end: new Date('January 31, 2020 23:59:59.999'),
+          },
+          backward: false,
+        },
+        expected: {
+          duration: 'month',
+          start: new Date('March 01, 2019 00:00:00'),
+          end: new Date('February 29, 2020 23:59:59.999'),
+        },
+      },
+      {
+        description:
+          'it return backward date params when input date is 01/12/2020',
+        input: {
+          chartParams: {
+            duration: 'month',
+            start: new Date('December 01, 2020 00:00:00'),
+            end: new Date('November 30, 2021 23:59:59.999'),
+          },
+          backward: true,
+        },
+        expected: {
+          duration: 'month',
+          start: new Date('November 01, 2020 00:00:00'),
+          end: new Date('October 31, 2021 23:59:59.999'),
+        },
+      },
+      {
+        description:
+          'it return backward date params when input date is 01/03/2019',
+        input: {
+          chartParams: {
+            duration: 'month',
+            start: new Date('March 01, 2019 00:00:00'),
+            end: new Date('February 29, 2020 23:59:59.999'),
+          },
+          backward: true,
+        },
+        expected: {
+          duration: 'month',
+          start: new Date('February 01, 2019 00:00:00'),
+          end: new Date('January 31, 2020 23:59:59.999'),
+        },
+      },
+    ]
+
+    testsParams.map((testParams) => {
+      it(testParams.description, () => {
+        assert.deepEqual(
+          updateChartParams(
+            testParams.input.chartParams,
+            testParams.input.backward,
+            weekStartingMonday
+          ),
+          testParams.expected
+        )
+      })
+    })
+  })
+})
+
+describe("updateChartParams when time frame is 'year')", () => {
+  const weekStartingMonday = [false, true]
+
+  weekStartingMonday.map((weekStartingMonday) => {
+    const testsParams = [
+      {
+        description: 'it returns date params when start date is 01/10/2012',
+        input: {
+          chartParams: {
+            duration: 'year',
+            start: new Date('January 01, 2012 00:00:00'),
+            end: new Date('December 31, 2021 23:59:59.999'),
+          },
+          backward: false,
+        },
+        expected: {
+          duration: 'year',
+          start: new Date('January 01, 2013 00:00:00'),
+          end: new Date('December 31, 2022 23:59:59.999'),
+        },
+      },
+      {
+        description: 'it returns date params when input date is 01/01/2011',
+        input: {
+          chartParams: {
+            duration: 'year',
+            start: new Date('January 01, 2011 00:00:00'),
+            end: new Date('December 31, 2020 23:59:59.999'),
+          },
+          backward: false,
+        },
+        expected: {
+          duration: 'year',
+          start: new Date('January 01, 2012 00:00:00'),
+          end: new Date('December 31, 2021 23:59:59.999'),
+        },
+      },
+      {
+        description: 'it returns date params when start date is 01/10/2013',
+        input: {
+          chartParams: {
+            duration: 'year',
+            start: new Date('January 01, 2013 00:00:00'),
+            end: new Date('December 31, 2022 23:59:59.999'),
+          },
+          backward: true,
+        },
+        expected: {
+          duration: 'year',
+          start: new Date('January 01, 2012 00:00:00'),
+          end: new Date('December 31, 2021 23:59:59.999'),
+        },
+      },
+      {
+        description: 'it returns date params when input date is 01/01/2012',
+        input: {
+          chartParams: {
+            duration: 'year',
+            start: new Date('January 01, 2012 00:00:00'),
+            end: new Date('December 31, 2021 23:59:59.999'),
+          },
+          backward: true,
+        },
+        expected: {
+          duration: 'year',
+          start: new Date('January 01, 2011 00:00:00'),
+          end: new Date('December 31, 2020 23:59:59.999'),
+        },
+      },
+    ]
+
+    testsParams.map((testParams) => {
+      it(testParams.description, () => {
+        assert.deepEqual(
+          updateChartParams(
+            testParams.input.chartParams,
+            testParams.input.backward,
+            weekStartingMonday
+          ),
+          testParams.expected
+        )
+      })
+    })
+  })
+})
+
+describe("updateChartParams when time frame is 'week')", () => {
+  const testsParams = [
+    {
+      description:
+        'it returns forward date params when start date is 01/09/2021 and week starts on Sunday',
+      input: {
+        chartParams: {
+          duration: 'week',
+          start: new Date('August 01, 2021 00:00:00'),
+          end: new Date('October 09, 2021 23:59:59.999'),
+        },
+        backward: false,
+        weekStartingMonday: false,
+      },
+      expected: {
+        duration: 'week',
+        start: new Date('August 08, 2021 00:00:00'),
+        end: new Date('October 16, 2021 23:59:59.999'),
+      },
+    },
+    {
+      description:
+        'it returns backward date params when start date is 01/09/2021 and week starts on Sunday',
+      input: {
+        chartParams: {
+          duration: 'week',
+          start: new Date('August 01, 2021 00:00:00'),
+          end: new Date('October 09, 2021 23:59:59.999'),
+        },
+        backward: true,
+        weekStartingMonday: false,
+      },
+      expected: {
+        duration: 'week',
+        start: new Date('July 25, 2021 00:00:00'),
+        end: new Date('October 02, 2021 23:59:59.999'),
+      },
+    },
+    {
+      description:
+        'it returns forward date params when start date is 01/09/2021 and week starts on Monday',
+      input: {
+        chartParams: {
+          duration: 'week',
+          start: new Date('August 02, 2021 00:00:00'),
+          end: new Date('October 10, 2021 23:59:59.999'),
+        },
+        backward: false,
+        weekStartingMonday: true,
+      },
+      expected: {
+        duration: 'week',
+        start: new Date('August 09, 2021 00:00:00'),
+        end: new Date('October 17, 2021 23:59:59.999'),
+      },
+    },
+    {
+      description:
+        'it returns backward date params when start date is 01/09/2021 and week starts on Monday',
+      input: {
+        chartParams: {
+          duration: 'week',
+          start: new Date('August 02, 2021 00:00:00'),
+          end: new Date('October 10, 2021 23:59:59.999'),
+        },
+        backward: true,
+        weekStartingMonday: true,
+      },
+      expected: {
+        duration: 'week',
+        start: new Date('July 26, 2021 00:00:00'),
+        end: new Date('October 03, 2021 23:59:59.999'),
+      },
+    },
+  ]
+
+  testsParams.map((testParams) => {
+    it(testParams.description, () => {
+      assert.deepEqual(
+        updateChartParams(
+          testParams.input.chartParams,
+          testParams.input.backward,
+          testParams.input.weekStartingMonday
+        ),
+        testParams.expected
+      )
+    })
   })
 })
