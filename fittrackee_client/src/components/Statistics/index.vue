@@ -123,9 +123,10 @@
   @import '~@/scss/base';
 
   #user-statistics {
-    .chart-radio {
+    ::v-deep(.chart-radio) {
       justify-content: space-around;
-      padding: $default-padding * 2 $default-padding;
+      padding: $default-padding * 3 $default-padding
+        $default-padding$default-padding;
     }
   }
 </style>
