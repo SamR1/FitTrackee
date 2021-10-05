@@ -14,7 +14,7 @@
         @input="updateSelectedSportIds(sport.id)"
       />
       <SportImage :sport-label="sport.label" />
-      {{ sport.translatedLabel }}
+      <span class="sport-label">{{ sport.translatedLabel }}</span>
     </label>
   </div>
 </template>
@@ -84,7 +84,10 @@
         min-width: 100px;
       }
       @media screen and (max-width: $x-small-limit) {
-        width: 100%;
+        min-width: 20px;
+        .sport-label {
+          display: none;
+        }
       }
     }
 
