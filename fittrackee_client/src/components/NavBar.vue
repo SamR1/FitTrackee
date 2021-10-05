@@ -29,7 +29,9 @@
             <router-link class="nav-item" to="/statistics">
               {{ t('statistics.STATISTICS') }}
             </router-link>
-            <div class="nav-item">{{ t('administration.ADMIN') }}</div>
+            <div v-if="isAuthenticated && authUser.admin" class="nav-item">
+              {{ t('administration.ADMIN') }}
+            </div>
             <router-link class="nav-item" to="/workouts/add">
               {{ t('workouts.ADD_WORKOUT') }}
             </router-link>
