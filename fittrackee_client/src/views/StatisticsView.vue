@@ -4,9 +4,14 @@
       <Card>
         <template #title>{{ $t('statistics.STATISTICS') }}</template>
         <template #content>
-          <Statistics :user="authUser" :sports="sports" />
+          <Statistics
+            :class="{ 'stats-disabled': authUser.nb_workouts === 0 }"
+            :user="authUser"
+            :sports="sports"
+          />
         </template>
       </Card>
+      <NoWorkouts v-if="authUser.nb_workouts === 0"></NoWorkouts>
     </div>
   </div>
 </template>
@@ -15,6 +20,7 @@
   import { ComputedRef, computed, defineComponent } from 'vue'
 
   import Card from '@/components/Common/Card.vue'
+  import NoWorkouts from '@/components/Common/NoWorkouts.vue'
   import Statistics from '@/components/Statistics/index.vue'
   import { USER_STORE, SPORTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
@@ -25,6 +31,7 @@
     name: 'StatisticsView',
     components: {
       Card,
+      NoWorkouts,
       Statistics,
     },
     setup() {
@@ -49,10 +56,9 @@
     width: 100%;
     margin-bottom: 30px;
     .container {
+      display: flex;
+      flex-direction: column;
       width: 100%;
-      ::v-deep(.card) {
-        width: 100%;
-      }
     }
   }
 </style>

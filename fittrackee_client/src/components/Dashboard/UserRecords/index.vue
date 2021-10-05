@@ -62,7 +62,10 @@
 
   .user-records {
     .no-records {
+      border: solid 1px var(--card-border-color);
+      border-radius: $border-radius;
       padding: $default-padding;
+      margin: $default-margin;
     }
   }
 </style>

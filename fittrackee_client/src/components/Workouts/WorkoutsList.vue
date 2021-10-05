@@ -93,6 +93,7 @@
         </div>
       </template>
     </Card>
+    <NoWorkouts v-if="workouts.length === 0" />
     <div v-if="moreWorkoutsExist" class="more-workouts">
       <button @click="loadMoreWorkouts">
         {{ t('workouts.LOAD_MORE_WORKOUT') }}
@@ -116,6 +117,7 @@
   import { useI18n } from 'vue-i18n'
 
   import Card from '@/components/Common/Card.vue'
+  import NoWorkouts from '@/components/Common/NoWorkouts.vue'
   import SportImage from '@/components/Common/SportImage/index.vue'
   import StaticMap from '@/components/Common/StaticMap.vue'
   import { WORKOUTS_STORE } from '@/store/constants'
@@ -130,6 +132,7 @@
     name: 'WorkoutsList',
     components: {
       Card,
+      NoWorkouts,
       SportImage,
       StaticMap,
     },
@@ -211,6 +214,8 @@
 
     ::v-deep(.card) {
       .card-content {
+        margin-bottom: 15px;
+
         .workouts-table {
           /* responsive table, adapted from: */
           /* https://uglyduck.ca/making-tables-responsive-with-minimal-css/ */

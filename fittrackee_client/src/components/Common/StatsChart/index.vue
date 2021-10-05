@@ -1,6 +1,6 @@
 <template>
   <div class="start-chart">
-    <div v-if="labels.length === 0">
+    <div v-if="hideChartIfNoData && emptyStats">
       {{ t('workouts.NO_WORKOUTS') }}
     </div>
     <div v-else>
@@ -99,6 +99,10 @@
         type: Boolean,
         default: false,
       },
+      hideChartIfNoData: {
+        type: Boolean,
+        default: false,
+      },
     },
     setup(props) {
       const store = useStore()
@@ -162,6 +166,7 @@
           () => formattedStats.value.datasets[displayedData.value]
         ),
         labels: computed(() => formattedStats.value.labels),
+        emptyStats: computed(() => Object.keys(statistics.value).length === 0),
         displayedData,
         t,
         updateDisplayData,

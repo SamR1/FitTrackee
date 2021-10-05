@@ -8,6 +8,7 @@
           :user="user"
           :chart-params="chartParams"
           :displayed-sport-ids="selectedSportIds"
+          :hide-chart-if-no-data="true"
         />
       </template>
     </Card>

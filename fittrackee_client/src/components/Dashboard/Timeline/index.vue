@@ -20,9 +20,7 @@
         :user="user"
         :key="workout.id"
       />
-      <div v-if="workouts.length === 0" class="no-workouts">
-        {{ t('workouts.NO_WORKOUTS') }}
-      </div>
+      <NoWorkouts v-if="workouts.length === 0" />
       <div v-if="moreWorkoutsExist" class="more-workouts">
         <button @click="loadMoreWorkouts">
           {{ t('workouts.LOAD_MORE_WORKOUT') }}
@@ -43,6 +41,7 @@
   } from 'vue'
   import { useI18n } from 'vue-i18n'
 
+  import NoWorkouts from '@/components/Common/NoWorkouts.vue'
   import WorkoutCard from '@/components/Dashboard/Timeline/WorkoutCard.vue'
   import { WORKOUTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
@@ -53,6 +52,7 @@
   export default defineComponent({
     name: 'Timeline',
     components: {
+      NoWorkouts,
       WorkoutCard,
     },
     props: {
@@ -115,10 +115,7 @@
 
   #timeline {
     margin-bottom: 20px;
-    .no-workouts {
-      margin-bottom: $default-margin * 2;
-      padding: $default-padding;
-    }
+
     .more-workouts {
       display: flex;
       justify-content: center;
