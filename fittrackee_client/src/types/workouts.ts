@@ -119,6 +119,15 @@ export interface IWorkoutsPayload {
   order?: string
   per_page?: number
   page?: number
+  ave_speed_from?: string
+  ave_speed_to?: string
+  max_speed_from?: string
+  max_speed_to?: string
+  distance_from?: string
+  distance_to?: string
+  duration_from?: string
+  duration_to?: string
+  sport_id?: string
 }
 
 export interface IWorkoutApiChartData {

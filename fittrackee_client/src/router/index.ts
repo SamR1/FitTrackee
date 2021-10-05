@@ -9,6 +9,7 @@ import LoginOrRegister from '@/views/LoginOrRegister.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import StatisticsView from '@/views/StatisticsView.vue'
 import Workout from '@/views/Workout.vue'
+import Workouts from '@/views/WorkoutsView.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -32,6 +33,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/statistics',
     name: 'Statistics',
     component: StatisticsView,
+  },
+  {
+    path: '/workouts',
+    name: 'Workouts',
+    component: Workouts,
   },
   {
     path: '/workouts/:workoutId',

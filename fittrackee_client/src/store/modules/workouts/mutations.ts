@@ -8,6 +8,12 @@ import {
 import { IWorkout, IWorkoutApiChartData } from '@/types/workouts'
 
 export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
+  [WORKOUTS_STORE.MUTATIONS.ADD_USER_WORKOUTS](
+    state: IWorkoutsState,
+    workouts: IWorkout[]
+  ) {
+    state.user_workouts = state.user_workouts.concat(workouts)
+  },
   [WORKOUTS_STORE.MUTATIONS.SET_CALENDAR_WORKOUTS](
     state: IWorkoutsState,
     workouts: IWorkout[]
@@ -18,7 +24,7 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
     state: IWorkoutsState,
     workouts: IWorkout[]
   ) {
-    state.user_workouts = state.user_workouts.concat(workouts)
+    state.user_workouts = workouts
   },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT](
     state: IWorkoutsState,

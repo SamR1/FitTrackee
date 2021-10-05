@@ -31,6 +31,10 @@ export interface IWorkoutsActions {
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: IWorkoutsPayload
   ): void
+  [WORKOUTS_STORE.ACTIONS.GET_MORE_USER_WORKOUTS](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IWorkoutsPayload
+  ): void
   [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: IWorkoutPayload
@@ -60,6 +64,10 @@ export interface IWorkoutsGetters {
 }
 
 export type TWorkoutsMutations<S = IWorkoutsState> = {
+  [WORKOUTS_STORE.MUTATIONS.ADD_USER_WORKOUTS](
+    state: S,
+    workouts: IWorkout[]
+  ): void
   [WORKOUTS_STORE.MUTATIONS.SET_CALENDAR_WORKOUTS](
     state: S,
     workouts: IWorkout[]

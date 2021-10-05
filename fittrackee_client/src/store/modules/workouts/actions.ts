@@ -19,7 +19,8 @@ import { handleError } from '@/utils'
 const getWorkouts = (
   context: ActionContext<IWorkoutsState, IRootState>,
   payload: IWorkoutsPayload,
-  target: string
+  target: string,
+  append = false
 ): void => {
   context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   authApi
@@ -31,6 +32,8 @@ const getWorkouts = (
         context.commit(
           target === 'CALENDAR_WORKOUTS'
             ? WORKOUTS_STORE.MUTATIONS.SET_CALENDAR_WORKOUTS
+            : append
+            ? WORKOUTS_STORE.MUTATIONS.ADD_USER_WORKOUTS
             : WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS,
           res.data.data.workouts
         )
@@ -55,6 +58,12 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     payload: IWorkoutsPayload
   ): void {
     getWorkouts(context, payload, 'USER_WORKOUTS')
+  },
+  [WORKOUTS_STORE.ACTIONS.GET_MORE_USER_WORKOUTS](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IWorkoutsPayload
+  ): void {
+    getWorkouts(context, payload, 'USER_WORKOUTS', true)
   },
   [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA](
     context: ActionContext<IWorkoutsState, IRootState>,

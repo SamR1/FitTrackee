@@ -23,9 +23,9 @@
             <router-link class="nav-item" to="/">{{
               t('dashboard.DASHBOARD')
             }}</router-link>
-            <div class="nav-item">
+            <router-link class="nav-item" to="/workouts">
               {{ capitalize(t('workouts.WORKOUT', 2)) }}
-            </div>
+            </router-link>
             <router-link class="nav-item" to="/statistics">
               {{ t('statistics.STATISTICS') }}
             </router-link>

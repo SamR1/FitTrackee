@@ -92,7 +92,10 @@
       }
       function loadMoreWorkouts() {
         page.value += 1
-        loadWorkouts()
+        store.dispatch(WORKOUTS_STORE.ACTIONS.GET_MORE_USER_WORKOUTS, {
+          page: page.value,
+          per_page,
+        })
       }
 
       return {

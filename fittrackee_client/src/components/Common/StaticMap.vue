@@ -1,6 +1,12 @@
 <template>
-  <div class="static-map">
+  <div class="static-map" :class="{ 'display-hover': displayHover }">
+    <img
+      v-if="displayHover"
+      :src="`${getApiUrl()}workouts/map/${workout.map}`"
+      alt=""
+    />
     <div
+      v-else
       class="bg-map-image"
       :style="{
         backgroundImage: `url(${getApiUrl()}workouts/map/${workout.map})`,
@@ -33,6 +39,10 @@
         type: Object as PropType<IWorkout>,
         required: true,
       },
+      displayHover: {
+        type: Boolean,
+        default: false,
+      },
     },
     setup() {
       return { getApiUrl }
@@ -46,6 +56,14 @@
   .static-map {
     display: flex;
     position: relative;
+
+    &.display-hover {
+      position: absolute;
+      margin-left: 20px;
+      margin-top: 10px;
+      width: 400px;
+      z-index: 100;
+    }
 
     .bg-map-image {
       background-size: cover;
