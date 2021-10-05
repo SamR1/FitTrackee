@@ -1,8 +1,19 @@
 <template>
   <div id="workouts" v-if="authUser.username">
     <div class="container workouts-container">
-      <div class="filters-container">
+      <div class="filters-container" :class="{ hidden: hiddenFilters }">
         <WorkoutsFilters :sports="translatedSports" @filter="updateParams" />
+      </div>
+      <div class="display-filters">
+        <div @click="toggleFilters">
+          <i
+            :class="`fa fa-caret-${hiddenFilters ? 'down' : 'up'}`"
+            aria-hidden="true"
+          />
+          <span>
+            {{ t(`workouts.${hiddenFilters ? 'DISPLAY' : 'HIDE'}_FILTERS`) }}
+          </span>
+        </div>
       </div>
       <div class="list-container">
         <WorkoutsList
@@ -46,11 +57,25 @@
         translateSports(sports.value, t)
       )
       const params: Ref<Record<string, string>> = ref({})
+      const hiddenFilters = ref(true)
 
       function updateParams(filters: Record<string, string>) {
         params.value = filters
+        hiddenFilters.value = true
       }
-      return { authUser, params, translatedSports, updateParams }
+      function toggleFilters() {
+        hiddenFilters.value = !hiddenFilters.value
+      }
+
+      return {
+        authUser,
+        hiddenFilters,
+        params,
+        t,
+        translatedSports,
+        toggleFilters,
+        updateParams,
+      }
     },
   })
 </script>
@@ -77,6 +102,33 @@
         width: 25%;
         @media screen and (max-width: $medium-limit) {
           width: 100%;
+
+          @media screen and (max-width: $small-limit) {
+            &.hidden {
+              display: none;
+            }
+          }
+        }
+      }
+
+      .display-filters {
+        display: none;
+        font-size: 0.8em;
+        padding: 0 $default-padding * 2;
+
+        span {
+          cursor: pointer;
+          font-weight: bold;
+          padding-left: $default-padding * 0.5;
+        }
+        .fa {
+          cursor: pointer;
+        }
+
+        @media screen and (max-width: $small-limit) {
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
         }
       }
 
