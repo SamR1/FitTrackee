@@ -255,6 +255,7 @@
 
             .static-map {
               display: none;
+              box-shadow: 3px 3px 3px 1px lightgrey;
             }
           }
 

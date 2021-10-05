@@ -60,8 +60,9 @@
     &.display-hover {
       position: absolute;
       margin-left: 20px;
-      margin-top: 10px;
+      margin-top: 3px;
       width: 400px;
+      height: 225px;
       z-index: 100;
     }
 
