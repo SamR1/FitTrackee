@@ -63,6 +63,9 @@
     </div>
     <div id="bottom" />
   </div>
+  <div v-else class="app-loading">
+    <Loader />
+  </div>
 </template>
 
 <script lang="ts">
@@ -75,6 +78,7 @@
     onUnmounted,
   } from 'vue'
 
+  import Loader from '@/components/Common/Loader.vue'
   import Timeline from '@/components/Dashboard/Timeline/index.vue'
   import UserCalendar from '@/components/Dashboard/UserCalendar/index.vue'
   import UserMonthStats from '@/components/Dashboard/UserMonthStats.vue'
@@ -88,6 +92,7 @@
   export default defineComponent({
     name: 'Dashboard',
     components: {
+      Loader,
       Timeline,
       UserCalendar,
       UserMonthStats,
