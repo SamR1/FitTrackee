@@ -4,12 +4,12 @@ import store from '@/store'
 import { USER_STORE } from '@/store/constants'
 import AddWorkout from '@/views/AddWorkout.vue'
 import Dashboard from '@/views/DashBoard.vue'
-import EditWorkout from '@/views/EditWorkout.vue'
 import LoginOrRegister from '@/views/LoginOrRegister.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import StatisticsView from '@/views/StatisticsView.vue'
-import Workout from '@/views/Workout.vue'
-import Workouts from '@/views/WorkoutsView.vue'
+import EditWorkout from '@/views/workouts/EditWorkout.vue'
+import Workout from '@/views/workouts/Workout.vue'
+import Workouts from '@/views/workouts/WorkoutsView.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
