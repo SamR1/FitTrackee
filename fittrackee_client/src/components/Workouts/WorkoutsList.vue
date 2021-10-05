@@ -1,98 +1,96 @@
 <template>
   <div class="workouts-list">
-    <Card :without-title="true">
-      <template #content>
-        <div class="workouts-table">
-          <table>
-            <thead>
-              <tr>
-                <th class="sport-col" />
-                <th>{{ capitalize(t('workouts.WORKOUT', 1)) }}</th>
-                <th>{{ capitalize(t('workouts.DATE')) }}</th>
-                <th>{{ capitalize(t('workouts.DISTANCE')) }}</th>
-                <th>{{ capitalize(t('workouts.DURATION')) }}</th>
-                <th>{{ capitalize(t('workouts.AVE_SPEED')) }}</th>
-                <th>{{ capitalize(t('workouts.MAX_SPEED')) }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="workout in workouts" :key="workout.id">
-                <td class="sport-col">
-                  <span class="cell-heading">
-                    {{ t('workouts.SPORT', 1) }}
-                  </span>
-                  <SportImage
-                    :title="
-                      sports.filter((s) => s.id === workout.sport_id)[0]
-                        .translatedLabel
-                    "
-                    :sport-label="
-                      sports.filter((s) => s.id === workout.sport_id)[0].label
-                    "
-                  ></SportImage>
-                </td>
-                <td class="workout-title">
-                  <span class="cell-heading">
-                    {{ capitalize(t('workouts.WORKOUT', 1)) }}
-                  </span>
-                  <router-link
-                    class="nav-item"
-                    :to="{ name: 'Workout', params: { workoutId: workout.id } }"
-                  >
-                    <i
-                      v-if="workout.with_gpx"
-                      class="fa fa-map-o"
-                      aria-hidden="true"
-                    />
-                    {{ workout.title }}
-                  </router-link>
-                  <StaticMap
+    <div class="box" :class="{ 'empty-table': workouts.length === 0 }">
+      <div class="workouts-table">
+        <table>
+          <thead>
+            <tr>
+              <th class="sport-col" />
+              <th>{{ capitalize(t('workouts.WORKOUT', 1)) }}</th>
+              <th>{{ capitalize(t('workouts.DATE')) }}</th>
+              <th>{{ capitalize(t('workouts.DISTANCE')) }}</th>
+              <th>{{ capitalize(t('workouts.DURATION')) }}</th>
+              <th>{{ capitalize(t('workouts.AVE_SPEED')) }}</th>
+              <th>{{ capitalize(t('workouts.MAX_SPEED')) }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="workout in workouts" :key="workout.id">
+              <td class="sport-col">
+                <span class="cell-heading">
+                  {{ t('workouts.SPORT', 1) }}
+                </span>
+                <SportImage
+                  :title="
+                    sports.filter((s) => s.id === workout.sport_id)[0]
+                      .translatedLabel
+                  "
+                  :sport-label="
+                    sports.filter((s) => s.id === workout.sport_id)[0].label
+                  "
+                ></SportImage>
+              </td>
+              <td class="workout-title">
+                <span class="cell-heading">
+                  {{ capitalize(t('workouts.WORKOUT', 1)) }}
+                </span>
+                <router-link
+                  class="nav-item"
+                  :to="{ name: 'Workout', params: { workoutId: workout.id } }"
+                >
+                  <i
                     v-if="workout.with_gpx"
-                    :workout="workout"
-                    :display-hover="true"
+                    class="fa fa-map-o"
+                    aria-hidden="true"
                   />
-                </td>
-                <td>
-                  <span class="cell-heading">
-                    {{ t('workouts.DATE') }}
-                  </span>
-                  {{
-                    format(
-                      getDateWithTZ(workout.workout_date, user.timezone),
-                      'dd/MM/yyyy HH:mm'
-                    )
-                  }}
-                </td>
-                <td class="text-right">
-                  <span class="cell-heading">
-                    {{ t('workouts.DISTANCE') }}
-                  </span>
-                  {{ Number(workout.distance).toFixed(2) }} km
-                </td>
-                <td class="text-right">
-                  <span class="cell-heading">
-                    {{ t('workouts.DURATION') }}
-                  </span>
-                  {{ workout.moving }}
-                </td>
-                <td class="text-right">
-                  <span class="cell-heading">
-                    {{ t('workouts.AVE_SPEED') }}
-                  </span>
-                  {{ workout.ave_speed }} km/h
-                </td>
-                <td class="text-right">
-                  <span class="cell-heading">
-                    {{ t('workouts.MAX_SPEED') }}
-                  </span>
-                  {{ workout.max_speed }} km/h
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </template>
-    </Card>
+                  {{ workout.title }}
+                </router-link>
+                <StaticMap
+                  v-if="workout.with_gpx"
+                  :workout="workout"
+                  :display-hover="true"
+                />
+              </td>
+              <td>
+                <span class="cell-heading">
+                  {{ t('workouts.DATE') }}
+                </span>
+                {{
+                  format(
+                    getDateWithTZ(workout.workout_date, user.timezone),
+                    'dd/MM/yyyy HH:mm'
+                  )
+                }}
+              </td>
+              <td class="text-right">
+                <span class="cell-heading">
+                  {{ t('workouts.DISTANCE') }}
+                </span>
+                {{ Number(workout.distance).toFixed(2) }} km
+              </td>
+              <td class="text-right">
+                <span class="cell-heading">
+                  {{ t('workouts.DURATION') }}
+                </span>
+                {{ workout.moving }}
+              </td>
+              <td class="text-right">
+                <span class="cell-heading">
+                  {{ t('workouts.AVE_SPEED') }}
+                </span>
+                {{ workout.ave_speed }} km/h
+              </td>
+              <td class="text-right">
+                <span class="cell-heading">
+                  {{ t('workouts.MAX_SPEED') }}
+                </span>
+                {{ workout.max_speed }} km/h
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
     <NoWorkouts v-if="workouts.length === 0" />
     <div v-if="moreWorkoutsExist" class="more-workouts">
       <button @click="loadMoreWorkouts">
@@ -116,7 +114,6 @@
   } from 'vue'
   import { useI18n } from 'vue-i18n'
 
-  import Card from '@/components/Common/Card.vue'
   import NoWorkouts from '@/components/Common/NoWorkouts.vue'
   import SportImage from '@/components/Common/SportImage/index.vue'
   import StaticMap from '@/components/Common/StaticMap.vue'
@@ -131,7 +128,6 @@
   export default defineComponent({
     name: 'WorkoutsList',
     components: {
-      Card,
       NoWorkouts,
       SportImage,
       StaticMap,
@@ -212,125 +208,127 @@
     margin-bottom: 50px;
     width: 100%;
 
-    ::v-deep(.card) {
-      .card-content {
+    .box {
+      @media screen and (max-width: $small-limit) {
+        &.empty-table {
+          display: none;
+        }
+      }
+      .workouts-table {
         margin-bottom: 15px;
+        /* responsive table, adapted from: */
+        /* https://uglyduck.ca/making-tables-responsive-with-minimal-css/ */
+        table {
+          width: 100%;
+          padding: $default-padding;
+          font-size: 0.9em;
+          border-collapse: collapse;
 
-        .workouts-table {
-          /* responsive table, adapted from: */
-          /* https://uglyduck.ca/making-tables-responsive-with-minimal-css/ */
-          table {
-            width: 100%;
+          thead th {
+            vertical-align: center;
             padding: $default-padding;
-            font-size: 0.9em;
-            border-collapse: collapse;
+            border-bottom: 2px solid var(--card-border-color);
+          }
 
-            thead th {
-              vertical-align: center;
+          tbody {
+            font-size: 0.95em;
+            td {
               padding: $default-padding;
-              border-bottom: 2px solid var(--card-border-color);
+              border-bottom: 1px solid var(--card-border-color);
+            }
+            tr:last-child td {
+              border: none;
+            }
+          }
+
+          .sport-col {
+            padding-right: 0;
+          }
+
+          .workout-title {
+            max-width: 90px;
+            position: relative;
+
+            .fa-map-o {
+              font-size: 0.75em;
+            }
+
+            .static-map {
+              display: none;
+            }
+          }
+
+          .workout-title:hover .static-map {
+            display: block;
+          }
+
+          .cell-heading {
+            background: var(--cell-heading-bg-color);
+            color: var(--cell-heading-color);
+            display: none;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 5px;
+            position: absolute;
+            text-transform: uppercase;
+            top: 0;
+            left: 0;
+          }
+
+          .sport-img {
+            height: 20px;
+            width: 20px;
+          }
+        }
+
+        @media screen and (max-width: $small-limit) {
+          table {
+            thead {
+              left: -9999px;
+              position: absolute;
+              visibility: hidden;
+            }
+
+            tr {
+              border-bottom: 0;
+              display: flex;
+              flex-direction: row;
+              flex-wrap: wrap;
+              margin-bottom: 40px;
+            }
+
+            td {
+              border: 1px solid var(--card-border-color);
+              margin: 0 -1px -1px 0;
+              padding-top: 25px !important;
+              position: relative;
+              text-align: center;
+              width: 45%;
             }
 
             tbody {
-              font-size: 0.95em;
-              td {
-                padding: $default-padding;
-                border-bottom: 1px solid var(--card-border-color);
-              }
               tr:last-child td {
-                border: none;
+                border: 1px solid var(--card-border-color);
               }
             }
 
             .sport-col {
-              padding-right: 0;
+              display: flex;
+              justify-content: center;
+              padding: $default-padding;
             }
-
-            .workout-title {
-              max-width: 90px;
-              position: relative;
-
-              .fa-map-o {
-                font-size: 0.75em;
-              }
-
-              .static-map {
-                display: none;
-              }
-            }
-
-            .workout-title:hover .static-map {
-              display: block;
-            }
-
             .cell-heading {
-              background: var(--cell-heading-bg-color);
-              color: var(--cell-heading-color);
-              display: none;
-              font-size: 10px;
-              font-weight: bold;
-              padding: 5px;
-              position: absolute;
-              text-transform: uppercase;
-              top: 0;
-              left: 0;
+              display: flex;
             }
-
-            .sport-img {
-              height: 20px;
-              width: 20px;
+            .workout-title {
+              max-width: initial;
             }
           }
-
-          @media screen and (max-width: $small-limit) {
-            table {
-              thead {
-                left: -9999px;
-                position: absolute;
-                visibility: hidden;
-              }
-
-              tr {
-                border-bottom: 0;
-                display: flex;
-                flex-direction: row;
-                flex-wrap: wrap;
-                margin-bottom: 40px;
-              }
-
-              td {
-                border: 1px solid var(--card-border-color);
-                margin: 0 -1px -1px 0;
-                padding-top: 25px !important;
-                position: relative;
-                text-align: center;
-                width: 45%;
-              }
-
-              tbody {
-                tr:last-child td {
-                  border: 1px solid var(--card-border-color);
-                }
-              }
-
-              .sport-col {
-                display: flex;
-                justify-content: center;
-                padding: $default-padding;
-              }
-              .cell-heading {
-                display: flex;
-              }
-              .workout-title {
-                max-width: initial;
-              }
-            }
-          }
-          @media screen and (max-width: $x-small-limit) {
-            table {
-              td {
-                width: 100%;
-              }
+        }
+        @media screen and (max-width: $x-small-limit) {
+          table {
+            td {
+              width: 100%;
             }
           }
         }

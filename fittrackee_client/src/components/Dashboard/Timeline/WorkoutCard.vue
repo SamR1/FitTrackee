@@ -1,79 +1,77 @@
 <template>
   <div class="timeline-workout">
-    <Card :without-title="true">
-      <template #content>
-        <div class="workout-user-date">
-          <div class="workout-user">
-            <img
-              class="profile-img"
-              v-if="userPictureUrl !== ''"
-              :alt="t('user.USER_PICTURE')"
-              :src="userPictureUrl"
-            />
-            <div v-else class="no-picture">
-              <i class="fa fa-user-circle-o" aria-hidden="true" />
-            </div>
-            <span v-if="user.username" class="workout-user-name">
-              {{ user.username }}
-            </span>
+    <div class="box">
+      <div class="workout-user-date">
+        <div class="workout-user">
+          <img
+            class="profile-img"
+            v-if="userPictureUrl !== ''"
+            :alt="t('user.USER_PICTURE')"
+            :src="userPictureUrl"
+          />
+          <div v-else class="no-picture">
+            <i class="fa fa-user-circle-o" aria-hidden="true" />
           </div>
-          <div
-            class="workout-date"
-            v-if="workout && user"
-            :title="
-              format(
-                getDateWithTZ(workout.workout_date, user.timezone),
-                'dd/MM/yyyy HH:mm'
-              )
-            "
-          >
-            {{
-              formatDistance(new Date(workout.workout_date), new Date(), {
-                addSuffix: true,
-                locale,
+          <span v-if="user.username" class="workout-user-name">
+            {{ user.username }}
+          </span>
+        </div>
+        <div
+          class="workout-date"
+          v-if="workout && user"
+          :title="
+            format(
+              getDateWithTZ(workout.workout_date, user.timezone),
+              'dd/MM/yyyy HH:mm'
+            )
+          "
+        >
+          {{
+            formatDistance(new Date(workout.workout_date), new Date(), {
+              addSuffix: true,
+              locale,
+            })
+          }}
+        </div>
+      </div>
+      <div
+        class="workout-map"
+        :class="{ 'no-cursor': !workout }"
+        @click="
+          workout
+            ? $router.push({
+                name: 'Workout',
+                params: { workoutId: workout.id },
               })
-            }}
+            : null
+        "
+      >
+        <div v-if="workout">
+          <StaticMap v-if="workout.with_gpx" :workout="workout" />
+          <div v-else class="no-map">
+            {{ t('workouts.NO_MAP') }}
           </div>
         </div>
-        <div
-          class="workout-map"
-          :class="{ 'no-cursor': !workout }"
-          @click="
-            workout
-              ? $router.push({
-                  name: 'Workout',
-                  params: { workoutId: workout.id },
-                })
-              : null
-          "
-        >
-          <div v-if="workout">
-            <StaticMap v-if="workout.with_gpx" :workout="workout" />
-            <div v-else class="no-map">
-              {{ t('workouts.NO_MAP') }}
-            </div>
-          </div>
+      </div>
+      <div
+        class="workout-data"
+        @click="
+          $router.push({ name: 'Workout', params: { workoutId: workout.id } })
+        "
+      >
+        <div>
+          <SportImage v-if="sport" :sport-label="sport.label" />
         </div>
-        <div
-          class="workout-data"
-          @click="
-            $router.push({ name: 'Workout', params: { workoutId: workout.id } })
-          "
-        >
-          <div>
-            <SportImage v-if="sport" :sport-label="sport.label" />
-          </div>
-          <div>
-            <i class="fa fa-clock-o" aria-hidden="true" />
-            <span v-if="workout">{{ workout.moving }}</span>
-          </div>
-          <div>
-            <i class="fa fa-road" aria-hidden="true" />
-            <span v-if="workout">{{ workout.distance }} km</span>
-          </div>
+        <div>
+          <i class="fa fa-clock-o" aria-hidden="true" />
+          <span v-if="workout">{{ workout.moving }}</span>
         </div>
-      </template>
-    </Card>
+        <div>
+          <i class="fa fa-road" aria-hidden="true" />
+          <span v-if="workout">{{ workout.distance }} km</span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -82,7 +80,6 @@
   import { PropType, defineComponent, ComputedRef, computed } from 'vue'
   import { useI18n } from 'vue-i18n'
 
-  import Card from '@/components/Common/Card.vue'
   import SportImage from '@/components/Common/SportImage/index.vue'
   import StaticMap from '@/components/Common/StaticMap.vue'
   import { ROOT_STORE } from '@/store/constants'
@@ -96,7 +93,6 @@
   export default defineComponent({
     name: 'WorkoutCard',
     components: {
-      Card,
       StaticMap,
       SportImage,
     },
@@ -145,70 +141,68 @@
   .timeline-workout {
     margin-bottom: $default-margin * 2;
 
-    ::v-deep(.card) {
-      .card-content {
+    .box {
+      flex-direction: column;
+      padding: 0;
+      .workout-user-date {
         display: flex;
-        flex-direction: column;
-        padding: 0;
-        .workout-user-date {
+        justify-content: space-between;
+        padding: $default-padding * 0.5 $default-padding;
+        .workout-user {
           display: flex;
-          justify-content: space-between;
-          padding: $default-padding * 0.5 $default-padding;
-          .workout-user {
-            display: flex;
-            .profile-img {
-              border-radius: 50%;
-              height: 25px;
-              width: 25px;
-            }
-            .fa-user-circle-o {
-              font-size: 1.5em;
-            }
-            .workout-user-name {
-              padding-left: 5px;
-            }
+          .profile-img {
+            border-radius: 50%;
+            height: 25px;
+            width: 25px;
           }
-          .workout-date {
-            font-size: 0.85em;
-            font-style: italic;
+          .fa-user-circle-o {
+            font-size: 1.5em;
+          }
+          .workout-user-name {
+            padding-left: 5px;
           }
         }
+        .workout-date {
+          font-size: 0.85em;
+          font-style: italic;
+        }
+      }
 
-        .workout-map {
-          background-color: var(--workout-no-map-bg-color);
+      .workout-map {
+        background-color: var(--workout-no-map-bg-color);
+        height: 150px;
+        .no-map {
+          line-height: 150px;
+        }
+        ::v-deep(.bg-map-image) {
           height: 150px;
-          .no-map {
-            line-height: 150px;
-          }
-          .bg-map-image {
-            height: 150px;
-          }
         }
+      }
 
-        .workout-data {
+      .workout-data {
+        display: flex;
+        padding-top: $default-padding * 0.5;
+        .sport-img {
+          height: 28px;
+          width: 28px;
+        }
+        div {
           display: flex;
-          padding-top: $default-padding * 0.5;
-          .sport-img {
-            height: 28px;
-            width: 28px;
-          }
-          div {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 33%;
-          }
+          justify-content: center;
+          align-items: center;
+          width: 33%;
         }
-        .workout-map,
-        .workout-data {
-          cursor: pointer;
-        }
-        .no-cursor {
-          cursor: default;
-        }
-        .fa {
-          padding-right: $default-padding;
-        }
+      }
+
+      .workout-map,
+      .workout-data {
+        cursor: pointer;
+      }
+      .no-cursor {
+        cursor: default;
+      }
+      .fa {
+        padding-right: $default-padding;
       }
     }
   }

@@ -1,5 +1,5 @@
 <template>
-  <div class="no-workouts">
+  <div class="no-workouts box">
     <div>
       {{ t('workouts.NO_WORKOUTS') }}
       <router-link to="/workouts/add">
@@ -27,9 +27,5 @@
   .no-workouts {
     display: flex;
     justify-content: center;
-    border: solid 1px var(--card-border-color);
-    border-radius: $border-radius;
-    padding: $default-padding;
-    margin: $default-margin;
   }
 </style>

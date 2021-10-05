@@ -1,30 +1,22 @@
 <template>
   <div class="user-stat-card">
-    <Card :without-title="true">
-      <template #content>
-        <div class="stat-content">
-          <div class="stat-icon">
-            <i class="fa" :class="`fa-${icon}`" />
-          </div>
-          <div class="stat-details">
-            <div class="stat-huge">{{ value }}</div>
-            <div class="stat">{{ text }}</div>
-          </div>
-        </div>
-      </template>
-    </Card>
+    <div class="stat-content box">
+      <div class="stat-icon">
+        <i class="fa" :class="`fa-${icon}`" />
+      </div>
+      <div class="stat-details">
+        <div class="stat-huge">{{ value }}</div>
+        <div class="stat">{{ text }}</div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
   import { defineComponent } from 'vue'
 
-  import Card from '@/components/Common/Card.vue'
   export default defineComponent({
     name: 'UserStatCard',
-    components: {
-      Card,
-    },
     props: {
       icon: {
         type: String,
@@ -56,6 +48,7 @@
       display: flex;
       flex-direction: row;
       justify-content: space-between;
+      padding: $default-padding $default-padding * 2;
 
       .stat-icon {
         width: 30%;

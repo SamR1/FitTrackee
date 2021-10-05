@@ -1,25 +1,23 @@
 <template>
   <div id="user-calendar">
-    <Card class="calendar-card" :without-title="true">
-      <template #content>
-        <CalendarHeader
-          :day="day"
-          locale-options="enGB"
-          @displayNextMonth="displayNextMonth"
-          @displayPreviousMonth="displayPreviousMonth"
-        />
-        <CalendarDays :start-date="calendarDates.start" locale-options="enGB" />
-        <CalendarCells
-          :currentDay="day"
-          :end-date="calendarDates.end"
-          :sports="sports"
-          :start-date="calendarDates.start"
-          :timezone="user.timezone"
-          :workouts="calendarWorkouts"
-          :weekStartingMonday="user.weekm"
-        />
-      </template>
-    </Card>
+    <div class="calendar-card box">
+      <CalendarHeader
+        :day="day"
+        locale-options="enGB"
+        @displayNextMonth="displayNextMonth"
+        @displayPreviousMonth="displayPreviousMonth"
+      />
+      <CalendarDays :start-date="calendarDates.start" locale-options="enGB" />
+      <CalendarCells
+        :currentDay="day"
+        :end-date="calendarDates.end"
+        :sports="sports"
+        :start-date="calendarDates.start"
+        :timezone="user.timezone"
+        :workouts="calendarWorkouts"
+        :weekStartingMonday="user.weekm"
+      />
+    </div>
   </div>
 </template>
 
@@ -34,7 +32,6 @@
     onBeforeMount,
   } from 'vue'
 
-  import Card from '@/components/Common/Card.vue'
   import CalendarCells from '@/components/Dashboard/UserCalendar/CalendarCells.vue'
   import CalendarDays from '@/components/Dashboard/UserCalendar/CalendarDays.vue'
   import CalendarHeader from '@/components/Dashboard/UserCalendar/CalendarHeader.vue'
@@ -51,7 +48,6 @@
       CalendarCells,
       CalendarDays,
       CalendarHeader,
-      Card,
     },
     props: {
       sports: {

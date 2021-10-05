@@ -1,38 +1,36 @@
 <template>
   <div id="dashboard" v-if="authUser.username && sports.length > 0">
     <div class="container mobile-menu">
-      <Card :without-title="true">
-        <template #content>
-          <button
-            class="mobile-menu-item"
-            :class="{ 'is-selected': isSelected === 'chart' }"
-            @click="updateDisplayColumn('chart')"
-          >
-            <i class="fa fa-bar-chart" aria-hidden="true" />
-          </button>
-          <button
-            class="mobile-menu-item"
-            :class="{ 'is-selected': isSelected === 'calendar' }"
-            @click="updateDisplayColumn('calendar')"
-          >
-            <i class="fa fa-calendar" aria-hidden="true" />
-          </button>
-          <button
-            class="mobile-menu-item"
-            :class="{ 'is-selected': isSelected === 'timeline' }"
-            @click="updateDisplayColumn('timeline')"
-          >
-            <i class="fa fa-map-o" aria-hidden="true" />
-          </button>
-          <button
-            class="mobile-menu-item"
-            :class="{ 'is-selected': isSelected === 'records' }"
-            @click="updateDisplayColumn('records')"
-          >
-            <i class="fa fa-trophy" aria-hidden="true" />
-          </button>
-        </template>
-      </Card>
+      <div class="box">
+        <div
+          class="mobile-menu-item"
+          :class="{ 'is-selected': isSelected === 'chart' }"
+          @click="updateDisplayColumn('chart')"
+        >
+          <i class="fa fa-bar-chart" aria-hidden="true" />
+        </div>
+        <div
+          class="mobile-menu-item"
+          :class="{ 'is-selected': isSelected === 'calendar' }"
+          @click="updateDisplayColumn('calendar')"
+        >
+          <i class="fa fa-calendar" aria-hidden="true" />
+        </div>
+        <div
+          class="mobile-menu-item"
+          :class="{ 'is-selected': isSelected === 'timeline' }"
+          @click="updateDisplayColumn('timeline')"
+        >
+          <i class="fa fa-map-o" aria-hidden="true" />
+        </div>
+        <div
+          class="mobile-menu-item"
+          :class="{ 'is-selected': isSelected === 'records' }"
+          @click="updateDisplayColumn('records')"
+        >
+          <i class="fa fa-trophy" aria-hidden="true" />
+        </div>
+      </div>
     </div>
     <div class="container">
       <UserStatsCards :user="authUser" />
@@ -77,7 +75,6 @@
     onUnmounted,
   } from 'vue'
 
-  import Card from '@/components/Common/Card.vue'
   import Timeline from '@/components/Dashboard/Timeline/index.vue'
   import UserCalendar from '@/components/Dashboard/UserCalendar/index.vue'
   import UserMonthStats from '@/components/Dashboard/UserMonthStats.vue'
@@ -91,7 +88,6 @@
   export default defineComponent({
     name: 'Dashboard',
     components: {
-      Card,
       Timeline,
       UserCalendar,
       UserMonthStats,
@@ -161,30 +157,31 @@
       }
       .mobile-menu {
         display: flex;
-        ::v-deep(.card) {
+        .box {
+          display: flex;
+          justify-content: space-between;
+          padding: 0;
           width: 100%;
-          .card-content {
-            display: flex;
-            justify-content: space-between;
-            padding: 0;
-            .mobile-menu-item {
-              display: flex;
-              justify-content: space-around;
-              border: none;
-              box-shadow: none;
-              padding: $default-padding;
-              width: 25%;
 
+          .mobile-menu-item {
+            display: flex;
+            justify-content: space-around;
+            border: none;
+            border-radius: $border-radius;
+            box-shadow: none;
+            font-size: 0.95em;
+            padding: $default-padding;
+            width: 25%;
+
+            .fa-trophy {
+              color: var(--app-color);
+            }
+            &.is-selected {
               .fa-trophy {
-                color: var(--app-color);
-              }
-              &.is-selected {
-                .fa-trophy {
-                  color: var(--mobile-menu-selected-color);
-                }
                 color: var(--mobile-menu-selected-color);
-                background-color: var(--mobile-menu-selected-bgcolor);
               }
+              color: var(--mobile-menu-selected-color);
+              background-color: var(--mobile-menu-selected-bgcolor);
             }
           }
         }
