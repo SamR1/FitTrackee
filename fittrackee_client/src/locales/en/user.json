@@ -5,6 +5,15 @@
   "LOGOUT": "Logout",
   "PASSWORD": "Password",
   "PASSWORD-CONFIRM": "Confirm Password",
+  "PROFILE": {
+    "BIO": "Bio",
+    "BIRTH_DATE": "Birth date",
+    "EDIT": "Edit profile",
+    "FIRST_NAME": "First name",
+    "LAST_NAME": "Last name",
+    "LOCATION": "Location",
+    "REGISTRATION_DATE": "Registration date"
+  },
   "REGISTER": "Register",
   "REGISTER_DISABLED": "Sorry, registration is disabled.",
   "USER_PICTURE": "user picture",

@@ -51,7 +51,9 @@
                 <i class="fa fa-user-circle-o" aria-hidden="true" />
               </div>
             </div>
-            <div class="nav-item">{{ authUser.username }}</div>
+            <router-link class="nav-item" to="/profile" @click="closeMenu">
+              {{ authUser.username }}
+            </router-link>
             <div class="nav-item nav-link" @click="logout">
               {{ t('user.LOGOUT') }}
             </div>

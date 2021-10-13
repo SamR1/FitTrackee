@@ -6,6 +6,15 @@
   "LOGOUT": "Se déconnecter",
   "PASSWORD": "Mot de passe",
   "PASSWORD-CONFIRM": "Confirmation du mot de passe",
+  "PROFILE": {
+    "BIO": "Bio",
+    "BIRTH_DATE": "Date de naissance",
+    "EDIT": "Modifier le profil",
+    "FIRST_NAME": "Prénom",
+    "LAST_NAME": "Nom",
+    "LOCATION": "Lieu",
+    "REGISTRATION_DATE": "Date d'inscription"
+  },
   "REGISTER": "S'inscrire",
   "REGISTER_DISABLED": "Désolé, les inscriptions sont désactivées.",
   "USER_PICTURE": "photo de l'utilisateur",
