@@ -1,5 +1,12 @@
 <template>
   <div id="user-profile-edition">
+    <Modal
+      v-if="displayModal"
+      :title="t('common.CONFIRMATION')"
+      :message="t('user.CONFIRM_ACCOUNT_DELETION')"
+      @confirmAction="deleteAccount(user.username)"
+      @cancelAction="updateDisplayModal(false)"
+    />
     <Card>
       <template #title>{{ t('user.PROFILE.EDITION') }}</template>
       <template #content>
@@ -113,6 +120,9 @@
               <button class="confirm" type="submit">
                 {{ t('buttons.SUBMIT') }}
               </button>
+              <button class="danger" @click.prevent="updateDisplayModal(true)">
+                {{ t('buttons.DELETE_MY_ACCOUNT') }}
+              </button>
               <button class="cancel" @click.prevent="$router.go(-1)">
                 {{ t('buttons.CANCEL') }}
               </button>
@@ -129,9 +139,11 @@
   import {
     ComputedRef,
     PropType,
+    Ref,
     computed,
     defineComponent,
     reactive,
+    ref,
     onMounted,
   } from 'vue'
   import { useI18n } from 'vue-i18n'
@@ -139,6 +151,7 @@
   import Card from '@/components/Common/Card.vue'
   import CustomTextArea from '@/components/Common/CustomTextArea.vue'
   import ErrorMessage from '@/components/Common/ErrorMessage.vue'
+  import Modal from '@/components/Common/Modal.vue'
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
   import { IAuthUserProfile, IUserPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -149,6 +162,7 @@
       Card,
       CustomTextArea,
       ErrorMessage,
+      Modal,
     },
     props: {
       user: {
@@ -195,6 +209,7 @@
       const errorMessages: ComputedRef<string | string[] | null> = computed(
         () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
       )
+      let displayModal: Ref<boolean> = ref(false)
 
       onMounted(() => {
         if (props.user) {
@@ -220,16 +235,25 @@
       function updateProfile() {
         store.dispatch(USER_STORE.ACTIONS.UPDATE_USER_PROFILE, userForm)
       }
+      function updateDisplayModal(value: boolean) {
+        displayModal.value = value
+      }
+      function deleteAccount(username: string) {
+        store.dispatch(USER_STORE.ACTIONS.DELETE_ACCOUNT, { username })
+      }
 
       return {
         availableLanguages,
+        displayModal,
         errorMessages,
         loading,
         registrationDate,
         t,
         userForm,
         weekStart,
+        deleteAccount,
         updateBio,
+        updateDisplayModal,
         updateProfile,
       }
     },

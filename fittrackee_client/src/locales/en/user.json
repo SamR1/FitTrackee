@@ -1,5 +1,6 @@
 {
   "EMAIL": "Email",
+  "CONFIRM_ACCOUNT_DELETION": "Are you sure you want to delete your account? All data will be deleted, this cannot be undone",
   "LANGUAGE": "Language",
   "LOGIN": "Login",
   "LOGOUT": "Logout",

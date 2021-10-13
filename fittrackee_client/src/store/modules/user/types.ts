@@ -10,6 +10,7 @@ import { IRootState } from '@/store/modules/root/types'
 import {
   IAuthUserProfile,
   ILoginOrRegisterData,
+  IUserDeletionPayload,
   IUserPayload,
 } from '@/types/user'
 
@@ -40,6 +41,11 @@ export interface IUserActions {
   [USER_STORE.ACTIONS.UPDATE_USER_PROFILE](
     context: ActionContext<IUserState, IRootState>,
     payload: IUserPayload
+  ): void
+
+  [USER_STORE.ACTIONS.DELETE_ACCOUNT](
+    context: ActionContext<IUserState, IRootState>,
+    payload: IUserDeletionPayload
   ): void
 }
 

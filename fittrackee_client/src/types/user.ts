@@ -35,6 +35,10 @@ export interface IUserPayload {
   password_conf: string
 }
 
+export interface IUserDeletionPayload {
+  username: string
+}
+
 export interface ILoginRegisterFormData {
   username: string
   email: string

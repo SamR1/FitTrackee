@@ -70,8 +70,8 @@ button {
     background: var(--button-cancel-bg-color);
     color: var(--button-cancel-color);
     &:hover {
-    background: var(--app-color);
-    color: var(--button-hover-color);
+      background: var(--app-color);
+      color: var(--button-hover-color);
     }
   }
 
@@ -79,11 +79,19 @@ button {
     background: var(--button-confirm-bg-color);
     color: var(--button-confirm-color);
     &:hover {
-    background: var(--app-color);
-    color: var(--button-hover-color);
+      background: var(--app-color);
+      color: var(--button-hover-color);
     }
   }
 
+  &.danger {
+    background: var(--button-danger-bg-color);
+    color: var(--button-danger-color);
+    &:hover {
+      background: var(--button-danger-hover-bg-color);
+      color: var(--button-danger-hover-color);
+    }
+  }
 }
 
 .box {

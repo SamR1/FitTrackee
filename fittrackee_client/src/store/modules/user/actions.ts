@@ -12,7 +12,11 @@ import {
 } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
 import { IUserActions, IUserState } from '@/store/modules/user/types'
-import { ILoginOrRegisterData, IUserPayload } from '@/types/user'
+import {
+  ILoginOrRegisterData,
+  IUserDeletionPayload,
+  IUserPayload,
+} from '@/types/user'
 import { handleError } from '@/utils'
 
 export const actions: ActionTree<IUserState, IRootState> & IUserActions = {
@@ -103,5 +107,23 @@ export const actions: ActionTree<IUserState, IRootState> & IUserActions = {
       .finally(() =>
         context.commit(USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
       )
+  },
+  [USER_STORE.ACTIONS.DELETE_ACCOUNT](
+    context: ActionContext<IUserState, IRootState>,
+    payload: IUserDeletionPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .delete(`users/${payload.username}`)
+      .then((res) => {
+        if (res.status === 204) {
+          context
+            .dispatch(USER_STORE.ACTIONS.LOGOUT)
+            .then(() => router.push('/'))
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
   },
 }

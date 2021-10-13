@@ -1,5 +1,6 @@
 {
   "CONFIRM-PASSWORD": "Confirmation du mot de passe",
+  "CONFIRM_ACCOUNT_DELETION": "Etes-vous sûr de vouloir supprimer votre compte ? Toutes les données seront définitivement effacés.",
   "EMAIL": "Email",
   "LANGUAGE": "Langue",
   "LOGIN": "Se connecter",
