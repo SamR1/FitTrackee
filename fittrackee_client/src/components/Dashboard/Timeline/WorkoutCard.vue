@@ -181,10 +181,11 @@
 
       .workout-data {
         display: flex;
-        padding-top: $default-padding * 0.5;
+        padding: $default-padding * 0.5;
+        font-size: 0.9em;
         .sport-img {
-          height: 28px;
-          width: 28px;
+          height: 25px;
+          width: 25px;
         }
         div {
           display: flex;
