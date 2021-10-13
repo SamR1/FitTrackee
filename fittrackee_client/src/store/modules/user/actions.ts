@@ -12,7 +12,7 @@ import {
 } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
 import { IUserActions, IUserState } from '@/store/modules/user/types'
-import { ILoginOrRegisterData } from '@/types/user'
+import { ILoginOrRegisterData, IUserPayload } from '@/types/user'
 import { handleError } from '@/utils'
 
 export const actions: ActionTree<IUserState, IRootState> & IUserActions = {
@@ -79,5 +79,29 @@ export const actions: ActionTree<IUserState, IRootState> & IUserActions = {
     context.commit(USER_STORE.MUTATIONS.CLEAR_AUTH_USER_TOKEN)
     context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUTS)
     router.push('/login')
+  },
+  [USER_STORE.ACTIONS.UPDATE_USER_PROFILE](
+    context: ActionContext<IUserState, IRootState>,
+    payload: IUserPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    authApi
+      .post('auth/profile/edit', payload)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE,
+            res.data.data
+          )
+          router.push('/profile')
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      )
   },
 }

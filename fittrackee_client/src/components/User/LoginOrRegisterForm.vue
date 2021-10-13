@@ -44,7 +44,7 @@
               type="password"
               required
               v-model="formData.password_conf"
-              :placeholder="t('user.PASSWORD-CONFIRM')"
+              :placeholder="t('user.PASSWORD_CONFIRM')"
             />
           </div>
           <button type="submit" :disabled="registration_disabled">

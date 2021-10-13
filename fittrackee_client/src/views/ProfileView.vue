@@ -1,6 +1,7 @@
 <template>
-  <div id="profile" class="container">
-    <Profile :user="authUser" v-if="authUser.username" />
+  <div id="profile" class="container" v-if="authUser.username">
+    <ProfileEdition :user="authUser" v-if="edition" />
+    <Profile :user="authUser" v-else />
   </div>
 </template>
 
@@ -8,6 +9,7 @@
   import { computed, ComputedRef, defineComponent } from 'vue'
 
   import Profile from '@/components/User/Profile.vue'
+  import ProfileEdition from '@/components/User/ProfileEdition.vue'
   import { USER_STORE } from '@/store/constants'
   import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -16,6 +18,13 @@
     name: 'ProfileView',
     components: {
       Profile,
+      ProfileEdition,
+    },
+    props: {
+      edition: {
+        type: Boolean,
+        required: true,
+      },
     },
     setup() {
       const store = useStore()

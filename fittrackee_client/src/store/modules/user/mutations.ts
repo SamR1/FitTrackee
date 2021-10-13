@@ -21,4 +21,10 @@ export const mutations: MutationTree<IUserState> & TUserMutations = {
   ) {
     state.authUserProfile = authUserProfile
   },
+  [USER_STORE.MUTATIONS.UPDATE_USER_LOADING](
+    state: IUserState,
+    loading: boolean
+  ) {
+    state.loading = loading
+  },
 }

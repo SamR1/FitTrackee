@@ -14,4 +14,7 @@ export const getters: GetterTree<IUserState, IRootState> & IUserGetters = {
   [USER_STORE.GETTERS.IS_AUTHENTICATED]: (state: IUserState) => {
     return state.authToken !== null
   },
+  [USER_STORE.GETTERS.USER_LOADING]: (state: IUserState) => {
+    return state.loading
+  },
 }

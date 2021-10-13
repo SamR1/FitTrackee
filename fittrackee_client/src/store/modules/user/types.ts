@@ -7,11 +7,16 @@ import {
 
 import { USER_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
-import { IAuthUserProfile, ILoginOrRegisterData } from '@/types/user'
+import {
+  IAuthUserProfile,
+  ILoginOrRegisterData,
+  IUserPayload,
+} from '@/types/user'
 
 export interface IUserState {
   authToken: string | null
   authUserProfile: IAuthUserProfile
+  loading: boolean
 }
 
 export interface IUserActions {
@@ -31,6 +36,11 @@ export interface IUserActions {
   [USER_STORE.ACTIONS.LOGOUT](
     context: ActionContext<IUserState, IRootState>
   ): void
+
+  [USER_STORE.ACTIONS.UPDATE_USER_PROFILE](
+    context: ActionContext<IUserState, IRootState>,
+    payload: IUserPayload
+  ): void
 }
 
 export interface IUserGetters {
@@ -39,6 +49,8 @@ export interface IUserGetters {
   [USER_STORE.GETTERS.AUTH_USER_PROFILE](state: IUserState): IAuthUserProfile
 
   [USER_STORE.GETTERS.IS_AUTHENTICATED](state: IUserState): boolean
+
+  [USER_STORE.GETTERS.USER_LOADING](state: IUserState): boolean
 }
 
 export type TUserMutations<S = IUserState> = {
@@ -48,6 +60,7 @@ export type TUserMutations<S = IUserState> = {
     state: S,
     authUserProfile: IAuthUserProfile
   ): void
+  [USER_STORE.MUTATIONS.UPDATE_USER_LOADING](state: S, loading: boolean): void
 }
 
 export type TUserStoreModule<S = IUserState> = Omit<

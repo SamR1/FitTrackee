@@ -64,7 +64,9 @@
         </dd>
       </dl>
       <div class="profile-buttons">
-        <button>{{ t('user.PROFILE.EDIT') }}</button>
+        <button @click="$router.push('/profile/edit')">
+          {{ t('user.PROFILE.EDIT') }}
+        </button>
         <button @click="$router.push('/')">{{ t('common.HOME') }}</button>
       </div>
     </div>

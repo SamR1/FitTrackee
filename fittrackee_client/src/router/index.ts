@@ -34,6 +34,13 @@ const routes: Array<RouteRecordRaw> = [
     path: '/profile',
     name: 'Profile',
     component: ProfileView,
+    props: { edition: false },
+  },
+  {
+    path: '/profile/edit',
+    name: 'ProfileEdition',
+    component: ProfileView,
+    props: { edition: true },
   },
   {
     path: '/statistics',
