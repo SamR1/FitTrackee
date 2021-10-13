@@ -20,8 +20,8 @@
   import { ComputedRef, computed, defineComponent } from 'vue'
 
   import Card from '@/components/Common/Card.vue'
-  import NoWorkouts from '@/components/Common/NoWorkouts.vue'
   import Statistics from '@/components/Statistics/index.vue'
+  import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
   import { USER_STORE, SPORTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'

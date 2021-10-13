@@ -114,9 +114,9 @@
   } from 'vue'
   import { useI18n } from 'vue-i18n'
 
-  import NoWorkouts from '@/components/Common/NoWorkouts.vue'
   import SportImage from '@/components/Common/SportImage/index.vue'
   import StaticMap from '@/components/Common/StaticMap.vue'
+  import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
   import { WORKOUTS_STORE } from '@/store/constants'
   import { ITranslatedSport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'

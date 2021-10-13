@@ -32,8 +32,8 @@
   import { useI18n } from 'vue-i18n'
 
   import StatChart from '@/components/Common/StatsChart/index.vue'
-  import SportsMenu from '@/components/Statistics/SportsMenu.vue'
   import StatsMenu from '@/components/Statistics/StatsMenu.vue'
+  import SportsMenu from '@/components/Statistics/StatsSportsMenu.vue'
   import { ISport, ITranslatedSport } from '@/types/sports'
   import { IStatisticsDateParams } from '@/types/statistics'
   import { IAuthUserProfile } from '@/types/user'

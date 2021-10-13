@@ -41,8 +41,8 @@
   } from 'vue'
   import { useI18n } from 'vue-i18n'
 
-  import NoWorkouts from '@/components/Common/NoWorkouts.vue'
-  import WorkoutCard from '@/components/Dashboard/Timeline/WorkoutCard.vue'
+  import WorkoutCard from '@/components/Workout/WorkoutCard.vue'
+  import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
   import { WORKOUTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'
