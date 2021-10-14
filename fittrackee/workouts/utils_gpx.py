@@ -42,7 +42,7 @@ def get_gpx_data(
     gpx_data['uphill'] = hill.uphill
     gpx_data['downhill'] = hill.downhill
 
-    mv = parsed_gpx.get_moving_data()
+    mv = parsed_gpx.get_moving_data(stopped_speed_threshold=0.1)
     gpx_data['moving_time'] = timedelta(seconds=mv.moving_time)
     gpx_data['stop_time'] = (
         timedelta(seconds=mv.stopped_time) + stopped_time_between_seg
@@ -105,8 +105,8 @@ def get_gpx_info(
             if update_map_data:
                 map_data.append([point.longitude, point.latitude])
         segment_max_speed = (
-            segment.get_moving_data().max_speed
-            if segment.get_moving_data().max_speed
+            segment.get_moving_data(stopped_speed_threshold=0.1).max_speed
+            if segment.get_moving_data(stopped_speed_threshold=0.1).max_speed
             else 0
         )
 
