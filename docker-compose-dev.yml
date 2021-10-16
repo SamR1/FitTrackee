@@ -26,6 +26,9 @@ services:
       - fittrackee-db
       - redis
       - mail
+    volumes:
+      - .:/usr/src/app
+      - fittrackee_upload:/uploads:rw
 
   fittrackee_client:
     container_name: fittrackee_client
@@ -58,3 +61,6 @@ services:
     ports:
       - "1025:1025"
       - "8025:8025"
+
+volumes:
+  fittrackee_upload:
