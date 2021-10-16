@@ -6,7 +6,7 @@ services:
     container_name: fittrackee-db
     build: ./db
     ports:
-      - 5435:5432
+      - "5435:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -15,7 +15,7 @@ services:
     container_name: fittrackee
     build: .
     ports:
-      - 5000:5000
+      - "5000:5000"
     env_file:
       - .env.docker
     depends_on:
@@ -32,12 +32,11 @@ services:
     image: "redis:latest"
     hostname: redis
     ports:
-      - 6379:6379
+      - "6379:6379"
 
   mail:
     container_name: fittrackee-mailhog
     image: "mailhog/mailhog"
     ports:
-      - 1025:1025
-      - 8025:8025
-
+      - "1025:1025"
+      - "8025:8025"
