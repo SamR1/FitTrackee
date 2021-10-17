@@ -6,7 +6,7 @@ services:
     container_name: fittrackee-db
     build: ./db
     ports:
-      - 5435:5432
+      - "5435:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -15,7 +15,7 @@ services:
     container_name: fittrackee
     build: .
     ports:
-      - 5000:5000
+      - "5000:5000"
     env_file:
       - .env.docker
     depends_on:
@@ -26,18 +26,41 @@ services:
       - fittrackee-db
       - redis
       - mail
+    volumes:
+      - .:/usr/src/app
+      - fittrackee_upload:/uploads:rw
+
+  fittrackee_client:
+    container_name: fittrackee_client
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_API_URL=http://0.0.0.0:5000
+    build:
+      context: ./fittrackee_client
+    volumes:
+      - ./fittrackee_client:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - fittrackee
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+    command: /bin/sh
 
   redis:
     container_name: fittrackee-redis
     image: "redis:latest"
     hostname: redis
     ports:
-      - 6379:6379
+      - "6379:6379"
 
   mail:
     container_name: fittrackee-mailhog
     image: "mailhog/mailhog"
     ports:
-      - 1025:1025
-      - 8025:8025
+      - "1025:1025"
+      - "8025:8025"
 
+volumes:
+  fittrackee_upload:

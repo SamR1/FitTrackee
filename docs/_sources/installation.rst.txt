@@ -664,9 +664,12 @@ Examples (to update depending on your application configuration and given distri
 Docker
 ~~~~~~
 
+Installation
+^^^^^^^^^^^^
+
 .. versionadded:: 0.4.4
 
-For evaluation purposes (at least for now), docker files are available,
+For evaluation purposes , docker files are available,
 installing **FitTrackee** from **sources**.
 
 - To install **FitTrackee** with database initialisation and run the application and dramatiq workers:
@@ -699,3 +702,21 @@ Open http://localhost:8025 to access `MailHog interface <https://github.com/mail
 .. code-block:: bash
 
     $ make docker-shell
+
+
+Client Development
+^^^^^^^^^^^^^^^^^^
+
+.. versionadded:: 0.4.10
+
+- in order to start client with React dev tools, install `fittrackee_client`
+
+.. code-block:: bash
+
+    $ make docker-build-client
+
+- start React app
+
+.. code-block:: bash
+
+    $ make docker-serve-client
