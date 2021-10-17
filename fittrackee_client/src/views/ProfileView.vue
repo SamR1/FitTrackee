@@ -8,7 +8,7 @@
 <script lang="ts">
   import { computed, ComputedRef, defineComponent } from 'vue'
 
-  import Profile from '@/components/User/Profile.vue'
+  import Profile from '@/components/User/ProfileDisplay/index.vue'
   import ProfileEdition from '@/components/User/ProfileEdition.vue'
   import { USER_STORE } from '@/store/constants'
   import { IAuthUserProfile } from '@/types/user'
