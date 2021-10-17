@@ -75,8 +75,8 @@ html:
 	$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 	rm -rf docsrc/build/html/_static/bootstrap-2.3.2
 	rm -rf docsrc/build/html/_static/bootswatch-2.3.2
-	find docsrc/build/html/_static/bootswatch-3.3.7/. -maxdepth 1 -not -name flatly -not -name fonts -exec rm -rf '{}' \; 2>/tmp/NULL
-	sed -i "s/\@import url(\"https:\/\/fonts.googleapis.com\/css?family=Lato:400,700,400italic\");//" docsrc/build/html/_static/bootswatch-3.3.7/flatly/bootstrap.min.css
+	find docsrc/build/html/_static/bootswatch-3.4.1/. -maxdepth 1 -not -name flatly -not -name fonts -exec rm -rf '{}' \; 2>/tmp/NULL
+	sed -i "s/\@import url(\"https:\/\/fonts.googleapis.com\/css?family=Lato:400,700,400italic\");//" docsrc/build/html/_static/bootswatch-3.4.1/flatly/bootstrap.min.css
 	cp -a docsrc/build/html/. docs
 
 install-db:
