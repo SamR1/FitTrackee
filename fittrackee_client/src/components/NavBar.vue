@@ -41,15 +41,7 @@
         <div class="nav-items-user-menu">
           <div class="nav-items-group" v-if="isAuthenticated">
             <div class="nav-item nav-profile-img">
-              <img
-                v-if="authUserPictureUrl !== ''"
-                class="nav-profile-user-img"
-                :alt="t('user.USER_PICTURE')"
-                :src="authUserPictureUrl"
-              />
-              <div v-else class="no-picture">
-                <i class="fa fa-user-circle-o" aria-hidden="true" />
-              </div>
+              <UserPicture :user="authUser" />
             </div>
             <router-link class="nav-item" to="/profile" @click="closeMenu">
               {{ authUser.username }}
@@ -86,6 +78,7 @@
   import { useI18n } from 'vue-i18n'
 
   import Dropdown from '@/components/Common/Dropdown.vue'
+  import UserPicture from '@/components/User/UserPicture.vue'
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
   import { IDropdownOption } from '@/types/forms'
   import { IAuthUserProfile } from '@/types/user'
@@ -96,6 +89,7 @@
     name: 'NavBar',
     components: {
       Dropdown,
+      UserPicture,
     },
     emits: ['menuInteraction'],
     setup(props, { emit }) {
@@ -249,15 +243,15 @@
 
       .nav-profile-img {
         margin-bottom: -$default-padding;
-        .nav-profile-user-img {
-          border-radius: 50%;
-          height: 32px;
-          width: 32px;
-          object-fit: cover;
-        }
-        .no-picture {
-          color: var(--app-a-color);
-          font-size: 1.7em;
+        ::v-deep(.user-picture) {
+          img {
+            height: 32px;
+            width: 32px;
+            object-fit: cover;
+          }
+          .no-picture {
+            font-size: 1.7em;
+          }
         }
       }
 

@@ -26,13 +26,20 @@ export interface IUserPayload {
   bio: string
   birth_date: string
   first_name: string
-  language: string
   last_name: string
   location: string
-  timezone: string
-  weekm: boolean
   password: string
   password_conf: string
+}
+
+export interface IUserPreferencesPayload {
+  language: string
+  timezone: string
+  weekm: boolean
+}
+
+export interface IUserPicturePayload {
+  picture: File
 }
 
 export interface IUserDeletionPayload {

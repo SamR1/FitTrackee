@@ -1,5 +1,4 @@
 {
-  "CONFIRM-PASSWORD": "Confirmation du mot de passe",
   "CONFIRM_ACCOUNT_DELETION": "Etes-vous sûr de vouloir supprimer votre compte ? Toutes les données seront définitivement effacés.",
   "EMAIL": "Email",
   "LANGUAGE": "Langue",
@@ -9,9 +8,11 @@
   "PASSWORD_CONFIRM": "Confirmation du mot de passe",
   "PASSWORD_CONFIRMATION": "Confirmation du mot de passe",
   "PROFILE": {
+    "BACK_TO_PROFILE": "Revenir au profil",
     "BIO": "Bio",
     "BIRTH_DATE": "Date de naissance",
     "EDIT": "Modifier le profil",
+    "EDIT_PREFERENCES": "Modifier les préférences",
     "EDITION": "Mise à jour du profil",
     "FIRST_DAY_OF_WEEK": "Premier jour de la semaine",
     "FIRST_NAME": "Prénom",
@@ -19,9 +20,16 @@
     "LAST_NAME": "Nom",
     "LOCATION": "Lieu",
     "MONDAY": "Lundi",
-    "PICTURE": "Avatar",
+    "PICTURE": "Image de profil",
+    "PICTURE_UPDATE": "Mettre à jour l'image",
+    "PICTURE_REMOVE": "Supprimer",
     "REGISTRATION_DATE": "Date d'inscription",
     "SUNDAY": "Dimanche",
+    "TABS": {
+      "PICTURE": "image",
+      "PREFERENCES": "préférences",
+      "PROFILE": "profil"
+    },
     "TIMEZONE": "Fuseau horaire"
   },
   "REGISTER": "S'inscrire",

@@ -468,9 +468,6 @@ def edit_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
     :<json string birth_date: user birth date (format: ``%Y-%m-%d``)
     :<json string password: user password
     :<json string password_conf: user password confirmation
-    :<json string timezone: user time zone
-    :<json string weekm: does week start on Monday?
-    :<json string language: language preferences
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -492,10 +489,7 @@ def edit_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
         'last_name',
         'bio',
         'birth_date',
-        'language',
         'location',
-        'timezone',
-        'weekm',
     }
     if not post_data or not post_data.keys() >= user_mandatory_data:
         return InvalidPayloadErrorResponse()
@@ -504,12 +498,9 @@ def edit_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
     last_name = post_data.get('last_name')
     bio = post_data.get('bio')
     birth_date = post_data.get('birth_date')
-    language = post_data.get('language')
     location = post_data.get('location')
     password = post_data.get('password')
     password_conf = post_data.get('password_conf')
-    timezone = post_data.get('timezone')
-    weekm = post_data.get('weekm')
 
     if password is not None and password != '':
         message = check_passwords(password, password_conf)
@@ -524,7 +515,6 @@ def edit_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
         user.first_name = first_name
         user.last_name = last_name
         user.bio = bio
-        user.language = language
         user.location = location
         user.birth_date = (
             datetime.datetime.strptime(birth_date, '%Y-%m-%d')
@@ -533,13 +523,147 @@ def edit_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
         )
         if password is not None and password != '':
             user.password = password
+        db.session.commit()
+
+        return {
+            'status': 'success',
+            'message': 'User profile updated.',
+            'data': user.serialize(),
+        }
+
+    # handler errors
+    except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(e, db=db)
+
+
+@auth_blueprint.route('/auth/profile/edit/preferences', methods=['POST'])
+@authenticate
+def edit_user_preferences(auth_user_id: int) -> Union[Dict, HttpResponse]:
+    """
+    edit authenticated user preferences
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/auth/profile/edit/preferences HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "admin": false,
+          "bio": null,
+          "birth_date": null,
+          "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+          "email": "sam@example.com",
+          "first_name": null,
+          "language": "en",
+          "last_name": null,
+          "location": null,
+          "nb_sports": 3,
+          "nb_workouts": 6,
+          "picture": false,
+          "records": [
+            {
+              "id": 9,
+              "record_type": "AS",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 10,
+              "record_type": "FD",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 11,
+              "record_type": "LD",
+              "sport_id": 1,
+              "user": "sam",
+              "value": "1:01:00",
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 12,
+              "record_type": "MS",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            }
+          ],
+          "sports_list": [
+              1,
+              4,
+              6
+          ],
+          "timezone": "Europe/Paris",
+          "total_distance": 67.895,
+          "total_duration": "6:50:27",
+          "username": "sam"
+          "weekm": true,
+        },
+        "message": "User preferences updated.",
+        "status": "success"
+      }
+
+    :<json string timezone: user time zone
+    :<json string weekm: does week start on Monday?
+    :<json string language: language preferences
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: User profile updated.
+    :statuscode 400:
+        - Invalid payload.
+        - Password and password confirmation don't match.
+    :statuscode 401:
+        - Provide a valid auth token.
+        - Signature expired. Please log in again.
+        - Invalid token. Please log in again.
+    :statuscode 500: Error. Please try again or contact the administrator.
+
+    """
+    # get post data
+    post_data = request.get_json()
+    user_mandatory_data = {
+        'language',
+        'timezone',
+        'weekm',
+    }
+    if not post_data or not post_data.keys() >= user_mandatory_data:
+        return InvalidPayloadErrorResponse()
+
+    language = post_data.get('language')
+    timezone = post_data.get('timezone')
+    weekm = post_data.get('weekm')
+
+    try:
+        user = User.query.filter_by(id=auth_user_id).first()
+        user.language = language
         user.timezone = timezone
         user.weekm = weekm
         db.session.commit()
 
         return {
             'status': 'success',
-            'message': 'User profile updated.',
+            'message': 'User preferences updated.',
             'data': user.serialize(),
         }
 

@@ -7,9 +7,13 @@
         @click="emit('arrowClick', true)"
       />
     </div>
-    <div class="time-frames">
-      <div class="time-frames-checkboxes">
-        <div v-for="frame in timeFrames" class="time-frame" :key="frame">
+    <div class="time-frames custom-checkboxes-group">
+      <div class="time-frames-checkboxes custom-checkboxes">
+        <div
+          v-for="frame in timeFrames"
+          class="time-frame custom-checkbox"
+          :key="frame"
+        >
           <label>
             <input
               type="radio"
@@ -75,42 +79,6 @@
 
     .chart-arrow {
       cursor: pointer;
-    }
-
-    .time-frames {
-      display: flex;
-      justify-content: space-around;
-
-      .time-frames-checkboxes {
-        display: inline-flex;
-
-        .time-frame {
-          label {
-            font-weight: normal;
-            float: left;
-            padding: 0 5px;
-            cursor: pointer;
-          }
-
-          label input {
-            display: none;
-          }
-
-          label span {
-            border: solid 1px var(--time-frame-border-color);
-            border-radius: 9%;
-            display: block;
-            font-size: 0.9em;
-            padding: 2px 6px;
-            text-align: center;
-          }
-
-          input:checked + span {
-            background-color: var(--time-frame-checked-bg-color);
-            color: var(--time-frame-checked-color);
-          }
-        }
-      }
     }
   }
 </style>

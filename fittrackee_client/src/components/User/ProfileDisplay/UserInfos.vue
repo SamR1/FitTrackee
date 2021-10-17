@@ -1,5 +1,5 @@
 <template>
-  <div id="user-infos">
+  <div id="user-infos" class="description-list">
     <dl>
       <dt>{{ t('user.PROFILE.REGISTRATION_DATE') }}:</dt>
       <dd>{{ registrationDate }}</dd>
@@ -43,8 +43,7 @@
   import { IAuthUserProfile } from '@/types/user'
 
   export default defineComponent({
-    name: 'Profile',
-    components: {},
+    name: 'UserInfos',
     props: {
       user: {
         type: Object as PropType<IAuthUserProfile>,
@@ -71,33 +70,6 @@
 <style lang="scss" scoped>
   @import '~@/scss/base.scss';
   #user-infos {
-    dl {
-      overflow: hidden;
-      width: 100%;
-      padding: 0 $default-padding;
-      dt {
-        font-weight: bold;
-        float: left;
-        width: 25%;
-      }
-      dd {
-        float: left;
-      }
-    }
-    @media screen and (max-width: $x-small-limit) {
-      dl {
-        overflow: auto;
-        width: initial;
-        dt {
-          font-weight: bold;
-          float: none;
-          width: initial;
-        }
-        dd {
-          float: none;
-        }
-      }
-    }
     .user-bio {
       white-space: pre-wrap;
     }

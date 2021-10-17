@@ -529,9 +529,6 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
                     birth_date='1980-01-01',
                     password='87654321',
                     password_conf='87654321',
-                    timezone='America/New_York',
-                    weekm=True,
-                    language='fr',
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -550,9 +547,9 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
         assert data['data']['birth_date']
         assert data['data']['bio'] == 'Nothing to tell'
         assert data['data']['location'] == 'Somewhere'
-        assert data['data']['timezone'] == 'America/New_York'
-        assert data['data']['weekm'] is True
-        assert data['data']['language'] == 'fr'
+        assert data['data']['timezone'] is None
+        assert data['data']['weekm'] is False
+        assert data['data']['language'] is None
         assert data['data']['nb_sports'] == 0
         assert data['data']['nb_workouts'] == 0
         assert data['data']['records'] == []
@@ -575,9 +572,6 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
                     location='Somewhere',
                     bio='Nothing to tell',
                     birth_date='1980-01-01',
-                    timezone='America/New_York',
-                    weekm=True,
-                    language='fr',
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -596,9 +590,9 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
         assert data['data']['birth_date']
         assert data['data']['bio'] == 'Nothing to tell'
         assert data['data']['location'] == 'Somewhere'
-        assert data['data']['timezone'] == 'America/New_York'
-        assert data['data']['weekm'] is True
-        assert data['data']['language'] == 'fr'
+        assert data['data']['timezone'] is None
+        assert data['data']['weekm'] is False
+        assert data['data']['language'] is None
         assert data['data']['nb_sports'] == 0
         assert data['data']['nb_workouts'] == 0
         assert data['data']['records'] == []
@@ -657,9 +651,6 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
                     birth_date='1980-01-01',
                     password='87654321',
                     password_conf='876543210',
-                    timezone='America/New_York',
-                    weekm=True,
-                    language='en',
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -689,9 +680,6 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
                     bio='just a random guy',
                     birth_date='1980-01-01',
                     password='87654321',
-                    timezone='America/New_York',
-                    weekm=True,
-                    language='en',
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -704,6 +692,83 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
             == 'Password and password confirmation don\'t match.\n'
         )
         assert response.status_code == 400
+
+
+class TestUserPreferencesUpdate(ApiTestCaseMixin):
+    def test_it_updates_user_preferences(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.post(
+            '/api/auth/profile/edit/preferences',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    timezone='America/New_York',
+                    weekm=True,
+                    language='fr',
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'User preferences updated.'
+        assert response.status_code == 200
+        assert data['data']['username'] == 'test'
+        assert data['data']['email'] == 'test@test.com'
+        assert not data['data']['admin']
+        assert data['data']['created_at']
+        assert data['data']['first_name'] is None
+        assert data['data']['last_name'] is None
+        assert data['data']['birth_date'] is None
+        assert data['data']['bio'] is None
+        assert data['data']['location'] is None
+        assert data['data']['timezone'] == 'America/New_York'
+        assert data['data']['weekm'] is True
+        assert data['data']['language'] == 'fr'
+        assert data['data']['nb_sports'] == 0
+        assert data['data']['nb_workouts'] == 0
+        assert data['data']['records'] == []
+        assert data['data']['sports_list'] == []
+        assert data['data']['total_distance'] == 0
+        assert data['data']['total_duration'] == '0:00:00'
+
+    def test_it_returns_error_if_fields_are_missing(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.post(
+            '/api/auth/profile/edit/preferences',
+            content_type='application/json',
+            data=json.dumps(dict(weekm=True)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'error'
+        assert data['message'] == 'Invalid payload.'
+        assert response.status_code == 400
+
+    def test_it_returns_error_if_payload_is_empty(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.post(
+            '/api/auth/profile/edit/preferences',
+            content_type='application/json',
+            data=json.dumps(dict()),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 400
+        assert 'Invalid payload.' in data['message']
+        assert 'error' in data['status']
 
 
 class TestUserPicture(ApiTestCaseMixin):

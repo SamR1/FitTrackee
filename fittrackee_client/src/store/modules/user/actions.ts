@@ -2,6 +2,7 @@ import { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
 import api from '@/api/defaultApi'
+import createI18n from '@/i18n'
 import router from '@/router'
 import {
   ROOT_STORE,
@@ -16,8 +17,12 @@ import {
   ILoginOrRegisterData,
   IUserDeletionPayload,
   IUserPayload,
+  IUserPicturePayload,
+  IUserPreferencesPayload,
 } from '@/types/user'
 import { handleError } from '@/utils'
+
+const { locale } = createI18n.global
 
 export const actions: ActionTree<IUserState, IRootState> & IUserActions = {
   [USER_STORE.ACTIONS.CHECK_AUTH_USER](
@@ -46,6 +51,13 @@ export const actions: ActionTree<IUserState, IRootState> & IUserActions = {
             USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE,
             res.data.data
           )
+          if (res.data.data.language) {
+            context.commit(
+              ROOT_STORE.MUTATIONS.UPDATE_LANG,
+              res.data.data.language
+            )
+            locale.value = res.data.data.language
+          }
           context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
         } else {
           handleError(context, null)
@@ -108,6 +120,61 @@ export const actions: ActionTree<IUserState, IRootState> & IUserActions = {
         context.commit(USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
       )
   },
+  [USER_STORE.ACTIONS.UPDATE_USER_PREFERENCES](
+    context: ActionContext<IUserState, IRootState>,
+    payload: IUserPreferencesPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    authApi
+      .post('auth/profile/edit/preferences', payload)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE,
+            res.data.data
+          )
+          router.push('/profile/preferences')
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      )
+  },
+  [USER_STORE.ACTIONS.UPDATE_USER_PICTURE](
+    context: ActionContext<IUserState, IRootState>,
+    payload: IUserPicturePayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    if (!payload.picture) {
+      throw new Error('No file part')
+    }
+    const form = new FormData()
+    form.append('file', payload.picture)
+    authApi
+      .post('auth/picture', form, {
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context
+            .dispatch(USER_STORE.ACTIONS.GET_USER_PROFILE)
+            .then(() => router.push('/profile'))
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      )
+  },
   [USER_STORE.ACTIONS.DELETE_ACCOUNT](
     context: ActionContext<IUserState, IRootState>,
     payload: IUserDeletionPayload
@@ -125,5 +192,26 @@ export const actions: ActionTree<IUserState, IRootState> & IUserActions = {
         }
       })
       .catch((error) => handleError(context, error))
+  },
+  [USER_STORE.ACTIONS.DELETE_PICTURE](
+    context: ActionContext<IUserState, IRootState>
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    authApi
+      .delete(`auth/picture`)
+      .then((res) => {
+        if (res.status === 204) {
+          context
+            .dispatch(USER_STORE.ACTIONS.GET_USER_PROFILE)
+            .then(() => router.push('/profile'))
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      )
   },
 }

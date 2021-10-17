@@ -149,3 +149,76 @@ button {
   text-align: center;
   vertical-align: center;
 }
+
+.custom-checkboxes-group {
+  display: flex;
+  justify-content: space-around;
+
+  .custom-checkboxes {
+    display: inline-flex;
+
+    @media screen and (max-width: $xx-small-limit) {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: $default-padding * .5;
+    }
+
+    .custom-checkbox {
+      label {
+        font-weight: normal;
+        float: left;
+        padding: 0 5px;
+        cursor: pointer;
+      }
+
+      label input {
+        display: none;
+      }
+
+      label span {
+        border: solid 1px var(--custom-checkbox-border-color);
+        border-radius: 5px;
+        display: block;
+        font-size: 0.9em;
+        padding: 2px 6px;
+        text-align: center;
+      }
+
+      input:checked + span {
+        background-color: var(--custom-checkbox-checked-bg-color);
+        color: var(--custom-checkbox-checked-color);
+      }
+    }
+  }
+}
+
+.description-list {
+  dl {
+    overflow: hidden;
+    width: 100%;
+    padding: 0 $default-padding;
+    dt {
+      font-weight: bold;
+      float: left;
+      width: 25%;
+    }
+    dd {
+      float: left;
+    }
+  }
+  @media screen and (max-width: $x-small-limit) {
+    dl {
+      overflow: auto;
+      width: initial;
+      dt {
+        font-weight: bold;
+        float: none;
+        width: initial;
+      }
+      dd {
+        float: none;
+      }
+    }
+  }
+}

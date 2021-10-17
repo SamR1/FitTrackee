@@ -12,6 +12,8 @@ import {
   ILoginOrRegisterData,
   IUserDeletionPayload,
   IUserPayload,
+  IUserPicturePayload,
+  IUserPreferencesPayload,
 } from '@/types/user'
 
 export interface IUserState {
@@ -43,9 +45,23 @@ export interface IUserActions {
     payload: IUserPayload
   ): void
 
+  [USER_STORE.ACTIONS.UPDATE_USER_PREFERENCES](
+    context: ActionContext<IUserState, IRootState>,
+    payload: IUserPreferencesPayload
+  ): void
+
+  [USER_STORE.ACTIONS.UPDATE_USER_PICTURE](
+    context: ActionContext<IUserState, IRootState>,
+    payload: IUserPicturePayload
+  ): void
+
   [USER_STORE.ACTIONS.DELETE_ACCOUNT](
     context: ActionContext<IUserState, IRootState>,
     payload: IUserDeletionPayload
+  ): void
+
+  [USER_STORE.ACTIONS.DELETE_PICTURE](
+    context: ActionContext<IUserState, IRootState>
   ): void
 }
 

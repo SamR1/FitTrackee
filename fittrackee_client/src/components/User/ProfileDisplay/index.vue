@@ -1,17 +1,7 @@
 <template>
   <div id="user-profile">
     <div class="box user-header">
-      <div class="user-picture">
-        <img
-          v-if="authUserPictureUrl !== ''"
-          class="nav-profile-user-img"
-          :alt="t('user.USER_PICTURE')"
-          :src="authUserPictureUrl"
-        />
-        <div v-else class="no-picture">
-          <i class="fa fa-user-circle-o" aria-hidden="true" />
-        </div>
-      </div>
+      <UserPicture :user="user" />
       <div class="user-details">
         <div class="user-name">{{ user.username }}</div>
         <div class="user-stats">
@@ -37,7 +27,9 @@
       </div>
     </div>
     <div class="box">
-      <UserInfos :user="user" />
+      <UserProfileTabs :tabs="tabs" :selectedTab="tab" :edition="false" />
+      <UserInfos :user="user" v-if="tab === 'PROFILE'" />
+      <UserPreferences :user="user" v-if="tab === 'PREFERENCES'" />
     </div>
   </div>
 </template>
@@ -47,28 +39,39 @@
   import { useI18n } from 'vue-i18n'
 
   import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
+  import UserPreferences from '@/components/User/ProfileDisplay/UserPreferences.vue'
+  import UserPicture from '@/components/User/UserPicture.vue'
+  import UserProfileTabs from '@/components/User/UserProfileTabs.vue'
   import { IAuthUserProfile } from '@/types/user'
   import { getApiUrl } from '@/utils'
 
   export default defineComponent({
-    name: 'Profile',
+    name: 'ProfileDisplay',
     components: {
       UserInfos,
+      UserPicture,
+      UserPreferences,
+      UserProfileTabs,
     },
     props: {
       user: {
         type: Object as PropType<IAuthUserProfile>,
         required: true,
       },
+      tab: {
+        type: String,
+        required: true,
+      },
     },
     setup(props) {
       const { t } = useI18n()
+      const tabs = ['PROFILE', 'PREFERENCES']
       const authUserPictureUrl: ComputedRef<string> = computed(() =>
         props.user.picture
           ? `${getApiUrl()}/users/${props.user.username}/picture?${Date.now()}`
           : ''
       )
-      return { authUserPictureUrl, t }
+      return { authUserPictureUrl, t, tabs }
     },
   })
 </script>
@@ -87,22 +90,6 @@
     .user-header {
       display: flex;
       align-items: stretch;
-
-      .user-picture {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-width: 30%;
-        img {
-          border-radius: 50%;
-          height: 90px;
-          width: 90px;
-        }
-        .no-picture {
-          color: var(--app-a-color);
-          font-size: 5.5em;
-        }
-      }
 
       .user-details {
         flex-grow: 1;

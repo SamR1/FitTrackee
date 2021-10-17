@@ -34,13 +34,31 @@ const routes: Array<RouteRecordRaw> = [
     path: '/profile',
     name: 'Profile',
     component: ProfileView,
-    props: { edition: false },
+    props: { edition: false, tab: 'PROFILE' },
+  },
+  {
+    path: '/profile/edit/picture',
+    name: 'UserPictureEdition',
+    component: ProfileView,
+    props: { edition: true, tab: 'PICTURE' },
+  },
+  {
+    path: '/profile/preferences',
+    name: 'UserPreferences',
+    component: ProfileView,
+    props: { edition: false, tab: 'PREFERENCES' },
+  },
+  {
+    path: '/profile/edit/preferences',
+    name: 'UserPreferencesEdition',
+    component: ProfileView,
+    props: { edition: true, tab: 'PREFERENCES' },
   },
   {
     path: '/profile/edit',
     name: 'ProfileEdition',
     component: ProfileView,
-    props: { edition: true },
+    props: { edition: true, tab: 'PROFILE' },
   },
   {
     path: '/statistics',
