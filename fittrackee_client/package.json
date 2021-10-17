@@ -11,19 +11,19 @@
     "i18next-browser-languagedetector": "^6.1.2",
     "i18next-xhr-backend": "^3.2.2",
     "leaflet": "^1.7.1",
-    "luxon": "^1.27.0",
+    "luxon": "^2.0.2",
     "object-hash": "^2.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",
     "react-i18next": "^11.11.0",
-    "react-leaflet": "^3.2.0",
-    "react-redux": "^7.2.4",
-    "react-router-dom": "^5.2.0",
+    "react-leaflet": "^3.2.2",
+    "react-redux": "^7.2.5",
+    "react-router-dom": "^5.3.0",
     "react-scripts": "^4.0.3",
     "react-timezone": "^2.4.0",
     "recharts": "^1.8.5",
-    "redux": "^4.1.0",
+    "redux": "^4.1.1",
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
@@ -44,8 +44,8 @@
   ],
   "devDependencies": {
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-testcafe": "^0.2.1",
-    "prettier": "^2.3.2"
+    "prettier": "^2.4.1"
   }
 }
