@@ -10,7 +10,9 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+  
   fittrackee:
     container_name: fittrackee
     build: .
@@ -28,7 +30,8 @@ services:
       - mail
     volumes:
       - .:/usr/src/app
-      - fittrackee_upload:/uploads:rw
+      - ./data/workouts:/usr/src/app/workouts
+      - ./data/uploads:/usr/src/app/uploads
 
   fittrackee_client:
     container_name: fittrackee_client
@@ -61,6 +64,3 @@ services:
     ports:
       - "1025:1025"
       - "8025:8025"
-
-volumes:
-  fittrackee_upload:
