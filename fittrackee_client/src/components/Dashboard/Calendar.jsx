@@ -13,7 +13,7 @@ import {
   startOfWeek,
   subMonths,
 } from 'date-fns'
-import { enGB, fr } from 'date-fns/locale'
+import { enUS, enGB, fr } from 'date-fns/locale'
 import React from 'react'
 import { connect } from 'react-redux'
 
@@ -165,8 +165,16 @@ class Calendar extends React.Component {
   }
 
   render() {
-    const localeOptions = {
-      locale: this.props.language === 'fr' ? fr : enGB,
+    let localeOptions = {}
+    switch (this.props.language) {
+      case 'fr':
+        localeOptions.locale = fr
+        break
+      case 'enUS asdf':
+        localeOptions.locale = enUS
+        break
+      default:
+        localeOptions.locale = enGB
     }
     return (
       <div className="card workout-card">

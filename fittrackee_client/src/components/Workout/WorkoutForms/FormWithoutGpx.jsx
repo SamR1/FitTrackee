@@ -1,11 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import i18n from '../../../i18n'
 import { addWorkoutWithoutGpx, editWorkout } from '../../../actions/workouts'
 import { history } from '../../../index'
 import { getDateWithTZ } from '../../../utils'
 import { formatWorkoutDate, translateSports } from '../../../utils/workouts'
 import CustomTextArea from '../../Common/CustomTextArea'
+import { convertBack } from '../../../utils/conversions'
 
 function FormWithoutGpx(props) {
   const { onAddOrEdit, sports, t, user, workout } = props
@@ -92,7 +94,7 @@ function FormWithoutGpx(props) {
       </div>
       <div className="form-group">
         <label>
-          {t('workouts:Distance')} (km):
+          {t('workouts:Distance')} ({t('common:km')}):
           <input
             name="distance"
             defaultValue={workout ? workout.distance : ''}
@@ -150,6 +152,11 @@ export default connect(
         notes: e.target.form.notes.value,
         sport_id: +e.target.form.sport_id.value,
         title: e.target.form.title.value,
+      }
+      if (i18n.t('km') === 'mi') {
+        if (data.distance) {
+          data.distance = `${convertBack(data.distance, 'mi')}`
+        }
       }
       if (workout) {
         data.id = workout.id

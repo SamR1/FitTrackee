@@ -25,3 +25,13 @@ def convert_value_to_integer(
         return int(val * 100)
     else:  # 'FD'
         return int(val * 1000)
+
+
+def convert_km_to_mi(value: str) -> float:
+    ret = round(value * 0.62137119223733, 2) if value else None
+    return ret
+
+
+def convert_m_to_ft(value: str) -> float:
+    ret = round(value * 3.280839895, 2) if value else None
+    return ret

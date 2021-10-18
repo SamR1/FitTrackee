@@ -3,12 +3,14 @@ import { Helmet } from 'react-helmet'
 import { withTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 
+import i18n from '../../i18n'
 import Message from '../Common/Message'
 import NoWorkouts from '../Common/NoWorkouts'
 import WorkoutsFilter from './WorkoutsFilter'
 import WorkoutsList from './WorkoutsList'
 import { getOrUpdateData } from '../../actions'
 import { getMoreWorkouts } from '../../actions/workouts'
+import { convertBack } from '../../utils/conversions'
 
 class Workouts extends React.Component {
   constructor(props, context) {
@@ -110,6 +112,50 @@ export default withTranslation()(
     }),
     dispatch => ({
       loadWorkouts: params => {
+        if (i18n.t('km') === 'mi') {
+          if (params.distance_from) {
+            params.distance_from = `${convertBack(
+              params.distance_from,
+              'mi',
+              'down'
+            )}`
+          }
+          if (params.distance_to) {
+            params.distance_to = `${convertBack(
+              params.distance_to,
+              'mi',
+              'up'
+            )}`
+          }
+          if (params.ave_speed_from) {
+            params.ave_speed_from = `${convertBack(
+              params.ave_speed_from,
+              'mi',
+              'down'
+            )}`
+          }
+          if (params.ave_speed_to) {
+            params.ave_speed_to = `${convertBack(
+              params.ave_speed_to,
+              'mi',
+              'up'
+            )}`
+          }
+          if (params.max_speed_from) {
+            params.max_speed_from = `${convertBack(
+              params.max_speed_from,
+              'mi',
+              'down'
+            )}`
+          }
+          if (params.max_speed_to) {
+            params.max_speed_to = `${convertBack(
+              params.max_speed_to,
+              'mi',
+              'up'
+            )}`
+          }
+        }
         dispatch(getOrUpdateData('getData', 'workouts', params))
       },
       loadMoreWorkouts: params => {

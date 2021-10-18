@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { convert } from '../../utils/conversions'
+
 export default function UserStatistics(props) {
   const { t, user } = props
   const days = user.total_duration.match(/day/g)
@@ -38,9 +40,9 @@ export default function UserStatistics(props) {
             </div>
             <div className="col-9 text-right">
               <div className="huge">
-                {Number(user.total_distance).toFixed(2)}
+                {convert(user.total_distance, t('common:km'))}
               </div>
-              <div>km</div>
+              <div>{t('common:km')}</div>
             </div>
           </div>
         </div>

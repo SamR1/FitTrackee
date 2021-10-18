@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import { ReactComponent as EnFlag } from '../../images/flags/en.svg'
+import { ReactComponent as EnUSFlag } from '../../images/flags/enUS.svg'
 import { ReactComponent as FrFlag } from '../../images/flags/fr.svg'
 import { updateLanguage } from '../../actions/index'
 
@@ -10,6 +11,11 @@ export const languages = [
     name: 'en',
     selected: true,
     flag: <EnFlag />,
+  },
+  {
+    name: 'enUS',
+    selected: false,
+    flag: <EnUSFlag />,
   },
   {
     name: 'fr',

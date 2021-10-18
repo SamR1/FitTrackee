@@ -49,7 +49,7 @@ export default class WorkoutsFilter extends React.PureComponent {
             </div>
             <div className="form-group">
               <label>
-                {t('workouts:Distance')} (km):
+                {t('workouts:Distance')} ({t('common:km')}):
                 <div className="container">
                   <div className="row">
                     <div className="col-5">
@@ -113,7 +113,7 @@ export default class WorkoutsFilter extends React.PureComponent {
             </div>
             <div className="form-group">
               <label>
-                {t('workouts:Average speed')} (km/h):
+                {t('workouts:Average speed')} ({t('common:km')}/h):
                 <div className="container">
                   <div className="row">
                     <div className="col-5">
@@ -145,7 +145,7 @@ export default class WorkoutsFilter extends React.PureComponent {
             </div>
             <div className="form-group">
               <label>
-                {t('workouts:Max. speed')} (km/h):
+                {t('workouts:Max. speed')} ({t('common:km')}/h):
                 <div className="container">
                   <div className="row">
                     <div className="col-5">

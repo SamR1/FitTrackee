@@ -1,0 +1,34 @@
+<svg id="Capa_1" enable-background="new 0 0 512 512" height="512"
+     viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <path d="m0,-1l0.58779,1.80902l-1.53885,-1.11804l1.90212,0l-1.53885,1.11804l0.58779,-1.80902z" fill="#fff" transform="scale(20)" id="s"/>
+  <g id="s7">
+   <g id="s6">
+    <use id="svg_1" y="35" x="37" xlink:href="#s"/>
+    <use id="svg_2" y="35" x="107" xlink:href="#s"/>
+    <use id="svg_3" y="35" x="177" xlink:href="#s"/>
+    <use id="svg_4" y="35" x="247" xlink:href="#s"/>
+    <use id="svg_5" y="35" x="317" xlink:href="#s"/>
+    <use id="svg_6" y="35" x="387" xlink:href="#s"/>
+   </g>
+   <use id="svg_7" y="35" x="457" xlink:href="#s"/>
+  </g>
+  <g id="u">
+   <use id="svg_8" xlink:href="#s7"/>
+   <use id="svg_9" y="40" x="35" xlink:href="#s6"/>
+   <use id="svg_10" y="80" xlink:href="#s7"/>
+   <use id="svg_11" y="120" x="35" xlink:href="#s6"/>
+   <use id="svg_12" y="160" xlink:href="#s7"/>
+   <use id="svg_13" y="200" x="35" xlink:href="#s6"/>
+   <use id="svg_14" y="240" xlink:href="#s7"/>
+   <use id="svg_15" y="280" x="35" xlink:href="#s6"/>
+  </g>
+ </defs>
+ <g>
+  <title>Layer 1</title>
+  <rect id="svg_16" fill="#B22234" height="650" width="1235"/>
+  <path id="svg_17" d="m0,75l1235,0m-1235,100l1235,0m-1235,100l1235,0m-1235,100l1235,0m-1235,100l1235,0m-1235,100l1235,0" stroke-width="50" stroke="#FFF"/>
+  <rect id="svg_18" fill="#3C3B6E" height="350" width="494"/>
+  <use id="svg_19" xlink:href="#u"/>
+ </g>
+</svg>

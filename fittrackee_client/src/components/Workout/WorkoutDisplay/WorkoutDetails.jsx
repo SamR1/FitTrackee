@@ -1,6 +1,7 @@
 import React from 'react'
 
 import WorkoutWeather from './WorkoutWeather'
+import { convert } from '../../../utils/conversions'
 
 export default function WorkoutDetails(props) {
   const { t, workout } = props
@@ -25,7 +26,8 @@ export default function WorkoutDetails(props) {
       </p>
       <p>
         <i className="fa fa-road custom-fa" aria-hidden="true" />
-        {t('workouts:Distance')}: {workout.distance} km
+        {t('workouts:Distance')}: {convert(workout.distance, t('common:km'))}{' '}
+        {t('common:km')}
         {workout.records &&
           workout.records.find(record => record.record_type === 'FD') && (
             <sup>
@@ -35,7 +37,8 @@ export default function WorkoutDetails(props) {
       </p>
       <p>
         <i className="fa fa-tachometer custom-fa" aria-hidden="true" />
-        {t('workouts:Average speed')}: {workout.ave_speed} km/h
+        {t('workouts:Average speed')}:{' '}
+        {convert(workout.ave_speed, t('common:km'))} {t('common:km')}/h
         {workout.records &&
           workout.records.find(record => record.record_type === 'AS') && (
             <sup>
@@ -43,7 +46,8 @@ export default function WorkoutDetails(props) {
             </sup>
           )}
         <br />
-        {t('workouts:Max. speed')}: {workout.max_speed} km/h
+        {t('workouts:Max. speed')}: {convert(workout.max_speed, t('common:km'))}{' '}
+        {t('common:km')}/h
         {workout.records &&
           workout.records.find(record => record.record_type === 'MS') && (
             <sup>
@@ -54,17 +58,21 @@ export default function WorkoutDetails(props) {
       {workout.min_alt && workout.max_alt && (
         <p>
           <i className="fi-mountains custom-fa" />
-          {t('workouts:Min. altitude')}: {workout.min_alt}m
+          {t('workouts:Min. altitude')}:
+          {convert(workout.min_alt, t('common:m'))} {t('common:m')}
           <br />
-          {t('workouts:Max. altitude')}: {workout.max_alt}m
+          {t('workouts:Max. altitude')}:{' '}
+          {convert(workout.max_alt, t('common:m'))} {t('common:m')}
         </p>
       )}
       {workout.ascent && workout.descent && (
         <p>
           <i className="fa fa-location-arrow custom-fa" />
-          {t('workouts:Ascent')}: {workout.ascent}m
+          {t('workouts:Ascent')}: {convert(workout.ascent, t('common:m'))}{' '}
+          {t('common:m')}
           <br />
-          {t('workouts:Descent')}: {workout.descent}m
+          {t('workouts:Descent')}: {convert(workout.descent, t('common:m'))}{' '}
+          {t('common:m')}
         </p>
       )}
       <WorkoutWeather workout={workout} t={t} />

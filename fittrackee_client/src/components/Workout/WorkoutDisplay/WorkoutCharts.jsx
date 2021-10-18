@@ -161,7 +161,7 @@ class WorkoutCharts extends React.Component {
                   />
                   <YAxis
                     label={{
-                      value: `${t('workouts:speed')} (km/h)`,
+                      value: `${t('workouts:speed')} (${t('common:km')}/h)`,
                       angle: -90,
                       position: 'left',
                     }}
@@ -169,7 +169,7 @@ class WorkoutCharts extends React.Component {
                   />
                   <YAxis
                     label={{
-                      value: `${t('workouts:elevation')} (m)`,
+                      value: `${t('workouts:elevation')} (${t('common:m')})`,
                       angle: -90,
                       position: 'right',
                     }}
@@ -185,7 +185,7 @@ class WorkoutCharts extends React.Component {
                       fill="#e5e5e5"
                       stroke="#cccccc"
                       dot={false}
-                      unit=" m"
+                      unit={' ' + t('common:m')}
                     />
                   )}
                   {this.displayData('speed') && (
@@ -197,13 +197,14 @@ class WorkoutCharts extends React.Component {
                       stroke="#8884d8"
                       strokeWidth={2}
                       dot={false}
-                      unit=" km/h"
+                      unit={' ' + t('common:km') + '/hr'}
                     />
                   )}
                   <Tooltip
                     labelFormatter={value =>
                       displayDistance
-                        ? `${t('workouts:distance')}: ${value} km`
+                        ? `${t('workouts:distance')}: ${value}
+                            ${t('common:km')}`
                         : `${t('workouts:duration')}: ${format(
                             value,
                             'HH:mm:ss'
