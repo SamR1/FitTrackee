@@ -75,6 +75,7 @@ def get_workouts(
                 workouts_list_by_sport[sport_id][
                     'total_duration'
                 ] += convert_timedelta_to_integer(workout.moving)
+
             # filter_type == 'by_time'
             else:
                 if time == 'week':
@@ -119,7 +120,7 @@ def get_workouts(
                 workouts_list_by_time[time_period][sport_id][
                     'total_duration'
                 ] += convert_timedelta_to_integer(workout.moving)
-        
+
         return {
             'status': 'success',
             'data': {

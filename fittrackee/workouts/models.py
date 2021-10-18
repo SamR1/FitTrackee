@@ -1,5 +1,4 @@
 import datetime
-import decimal
 import os
 from typing import Any, Dict, Optional, Union
 from uuid import UUID, uuid4
@@ -389,7 +388,7 @@ class WorkoutSegment(BaseModel):
         self.workout_uuid = workout_uuid
 
     def serialize(self) -> Dict:
-        ret = {
+        return {
             'workout_id': encode_uuid(self.workout_uuid),
             'segment_id': self.segment_id,
             'duration': str(self.duration) if self.duration else None,
@@ -403,7 +402,6 @@ class WorkoutSegment(BaseModel):
             'max_speed': float(self.max_speed) if self.max_speed else None,
             'ave_speed': float(self.ave_speed) if self.ave_speed else None,
         }
-        return ret
 
 
 class Record(BaseModel):

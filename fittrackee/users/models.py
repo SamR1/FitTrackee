@@ -11,7 +11,6 @@ from sqlalchemy.sql.expression import select
 from fittrackee import bcrypt, db
 from fittrackee.workouts.models import Workout
 
-
 from .utils_token import decode_user_token, get_user_token
 
 BaseModel: DeclarativeMeta = db.Model
@@ -121,7 +120,7 @@ class User(BaseModel):
                 .filter(Workout.user_id == self.id)
                 .first()
             )
-        ret = {
+        return {
             'username': self.username,
             'email': self.email,
             'created_at': self.created_at,
@@ -143,4 +142,3 @@ class User(BaseModel):
             'total_distance': float(total[0]),
             'total_duration': str(total[1]),
         }
-        return ret
