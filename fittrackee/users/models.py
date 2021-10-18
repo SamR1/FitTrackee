@@ -104,7 +104,7 @@ class User(BaseModel):
 
     def serialize(self) -> Dict:
         sports = []
-        total = (0, '0:00:00')
+        total = (0, '0:00:00', 0)
         if self.workouts_count > 0:  # type: ignore
             sports = (
                 db.session.query(Workout.sport_id)
