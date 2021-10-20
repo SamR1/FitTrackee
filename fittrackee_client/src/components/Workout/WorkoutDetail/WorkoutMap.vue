@@ -23,7 +23,7 @@
           />
         </LMap>
       </div>
-      <div v-else class="no-map">{{ t('workouts.NO_MAP') }}</div>
+      <div v-else class="no-map">{{ $t('workouts.NO_MAP') }}</div>
     </div>
   </div>
 </template>
@@ -32,7 +32,6 @@
   import { gpx } from '@tmcw/togeojson'
   import { LGeoJson, LMap, LMarker, LTileLayer } from '@vue-leaflet/vue-leaflet'
   import { ComputedRef, PropType, computed, defineComponent, ref } from 'vue'
-  import { useI18n } from 'vue-i18n'
 
   import { ROOT_STORE } from '@/store/constants'
   import { IAppConfig } from '@/types/application'
@@ -59,7 +58,6 @@
       },
     },
     setup(props) {
-      const { t } = useI18n()
       const store = useStore()
 
       function getGeoJson(gpxContent: string): GeoJSONData {
@@ -120,7 +118,6 @@
         bounds,
         center,
         geoJson,
-        t,
         workoutMap,
         fitBounds,
         getApiUrl,

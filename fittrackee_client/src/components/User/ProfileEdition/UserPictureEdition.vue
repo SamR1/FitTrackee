@@ -12,16 +12,16 @@
         />
         <div class="picture-buttons">
           <button type="submit" :disabled="!pictureFile">
-            {{ t('user.PROFILE.PICTURE_UPDATE') }}
+            {{ $t('user.PROFILE.PICTURE_UPDATE') }}
           </button>
           <button class="danger" v-if="user.picture" @click="deleteUserPicture">
-            {{ t('user.PROFILE.PICTURE_REMOVE') }}
+            {{ $t('user.PROFILE.PICTURE_REMOVE') }}
           </button>
           <button class="cancel" @click="$router.push('/profile')">
-            {{ t('user.PROFILE.BACK_TO_PROFILE') }}
+            {{ $t('user.PROFILE.BACK_TO_PROFILE') }}
           </button>
         </div>
-        <span>{{ t('workouts.MAX_SIZE') }}: {{ fileSizeLimit }}</span>
+        <span>{{ $t('workouts.MAX_SIZE') }}: {{ fileSizeLimit }}</span>
       </form>
     </div>
   </div>
@@ -36,7 +36,6 @@
     computed,
     ref,
   } from 'vue'
-  import { useI18n } from 'vue-i18n'
 
   import ErrorMessage from '@/components/Common/ErrorMessage.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
@@ -59,7 +58,6 @@
       },
     },
     setup() {
-      const { t } = useI18n()
       const store = useStore()
       const errorMessages: ComputedRef<string | string[] | null> = computed(
         () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
@@ -92,7 +90,6 @@
         errorMessages,
         fileSizeLimit,
         pictureFile,
-        t,
         deleteUserPicture,
         updateUserPicture,
         updatePictureFile,

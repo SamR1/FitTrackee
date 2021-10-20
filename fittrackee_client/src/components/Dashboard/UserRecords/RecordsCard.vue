@@ -31,7 +31,7 @@
   import { useI18n } from 'vue-i18n'
 
   import Card from '@/components/Common/Card.vue'
-  import SportImage from '@/components/Common/SportImage/index.vue'
+  import SportImage from '@/components/Common/Images/SportImage/index.vue'
   import { IRecord } from '@/types/workouts'
 
   export default defineComponent({

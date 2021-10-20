@@ -3,12 +3,12 @@
     <UserStatCard
       icon="calendar"
       :value="user.nb_workouts"
-      :text="t('workouts.WORKOUT', user.nb_workouts)"
+      :text="$t('workouts.WORKOUT', user.nb_workouts)"
     />
     <UserStatCard
       icon="road"
       :value="Number(user.total_distance).toFixed(2)"
-      :text="t('workouts.KM')"
+      :text="$t('workouts.KM')"
     />
     <UserStatCard
       icon="clock-o"
@@ -18,7 +18,7 @@
     <UserStatCard
       icon="tags"
       :value="user.nb_sports"
-      :text="t('workouts.SPORT', user.nb_sports)"
+      :text="$t('workouts.SPORT', user.nb_sports)"
     />
   </div>
 </template>
@@ -63,10 +63,7 @@
         }
       }
 
-      return {
-        t,
-        total_duration: computed(() => get_duration(total_duration)),
-      }
+      return { total_duration: computed(() => get_duration(total_duration)) }
     },
   })
 </script>

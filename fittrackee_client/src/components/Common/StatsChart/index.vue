@@ -1,7 +1,7 @@
 <template>
   <div class="start-chart">
     <div v-if="hideChartIfNoData && emptyStats">
-      {{ t('workouts.NO_WORKOUTS') }}
+      {{ $t('workouts.NO_WORKOUTS') }}
     </div>
     <div v-else>
       <div class="chart-radio">
@@ -12,7 +12,7 @@
             :checked="displayedData === 'total_distance'"
             @click="updateDisplayData"
           />
-          {{ t('workouts.DISTANCE') }}
+          {{ $t('workouts.DISTANCE') }}
         </label>
         <label>
           <input
@@ -21,7 +21,7 @@
             :checked="displayedData === 'total_duration'"
             @click="updateDisplayData"
           />
-          {{ t('workouts.DURATION') }}
+          {{ $t('workouts.DURATION') }}
         </label>
         <label>
           <input
@@ -30,7 +30,7 @@
             :checked="displayedData === 'nb_workouts'"
             @click="updateDisplayData"
           />
-          {{ t('workouts.WORKOUT', 2) }}
+          {{ $t('workouts.WORKOUT', 2) }}
         </label>
       </div>
       <Chart
@@ -57,7 +57,6 @@
     watch,
     onBeforeMount,
   } from 'vue'
-  import { useI18n } from 'vue-i18n'
 
   import Chart from '@/components/Common/StatsChart/Chart.vue'
   import { STATS_STORE } from '@/store/constants'
@@ -106,7 +105,6 @@
     },
     setup(props) {
       const store = useStore()
-      const { t } = useI18n()
 
       let displayedData: Ref<TStatisticsDatasetKeys> = ref('total_distance')
       const statistics: ComputedRef<TStatisticsFromApi> = computed(
@@ -168,7 +166,6 @@
         labels: computed(() => formattedStats.value.labels),
         emptyStats: computed(() => Object.keys(statistics.value).length === 0),
         displayedData,
-        t,
         updateDisplayData,
       }
     },

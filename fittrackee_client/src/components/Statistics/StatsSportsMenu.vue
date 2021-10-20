@@ -23,7 +23,7 @@
   import { ComputedRef, PropType, computed, defineComponent } from 'vue'
   import { useI18n } from 'vue-i18n'
 
-  import SportImage from '@/components/Common/SportImage/index.vue'
+  import SportImage from '@/components/Common/Images/SportImage/index.vue'
   import { ISport, ITranslatedSport } from '@/types/sports'
   import { translateSports, sportColors } from '@/utils/sports'
 

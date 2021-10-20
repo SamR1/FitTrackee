@@ -1,12 +1,20 @@
 {
   "CONFIRM_ACCOUNT_DELETION": "Etes-vous sûr de vouloir supprimer votre compte ? Toutes les données seront définitivement effacés.",
   "EMAIL": "Email",
+  "ENTER_EMAIL": "Saisir une adresse email",
+  "ENTER_PASSWORD": "Saisir un mot de passe",
+  "ENTER_PASSWORD_CONFIRMATION": "Confirmer le mot de passe",
+  "INVALID_TOKEN": "Jeton invalide, veullez demander une nouvelle réinitialisation de mot de passe.",
   "LANGUAGE": "Langue",
   "LOGIN": "Se connecter",
   "LOGOUT": "Se déconnecter",
   "PASSWORD": "Mot de passe",
   "PASSWORD_CONFIRM": "Confirmation du mot de passe",
   "PASSWORD_CONFIRMATION": "Confirmation du mot de passe",
+  "PASSWORD_FORGOTTEN": "Mot de passe oublié ?",
+  "PASSWORD_RESET": "Réinitialisation du mot de passe",
+  "PASSWORD_SENT_EMAIL_TEXT": "Vérifiez vore boite mail. Si vote adresse est dans notre base de données, vous recevrez un email avec un lien pour réinitialiser votre mot de passe.",
+  "PASSWORD_UPDATED": "Votre mot de passe a été mis à jour. Cliquez {0} pour vous connecter.",
   "PROFILE": {
     "BACK_TO_PROFILE": "Revenir au profil",
     "BIO": "Bio",
@@ -36,6 +44,7 @@
   },
   "REGISTER": "S'inscrire",
   "REGISTER_DISABLED": "Désolé, les inscriptions sont désactivées.",
+  "RESET_PASSWORD": "Réinitialiser votre mot de passe",
   "USER_PICTURE": "photo de l'utilisateur",
   "USERNAME": "Nom d'utilisateur"
 }

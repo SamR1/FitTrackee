@@ -17,12 +17,12 @@
   import { defineComponent } from 'vue'
   import { useI18n } from 'vue-i18n'
 
-  import CyclingSport from '@/components/Common/SportImage/CyclingSport.vue'
-  import CyclingTransport from '@/components/Common/SportImage/CyclingTransport.vue'
-  import Hiking from '@/components/Common/SportImage/Hiking.vue'
-  import MountainBiking from '@/components/Common/SportImage/MountainBiking.vue'
-  import Running from '@/components/Common/SportImage/Running.vue'
-  import Walking from '@/components/Common/SportImage/Walking.vue'
+  import CyclingSport from '@/components/Common/Images/SportImage/CyclingSport.vue'
+  import CyclingTransport from '@/components/Common/Images/SportImage/CyclingTransport.vue'
+  import Hiking from '@/components/Common/Images/SportImage/Hiking.vue'
+  import MountainBiking from '@/components/Common/Images/SportImage/MountainBiking.vue'
+  import Running from '@/components/Common/Images/SportImage/Running.vue'
+  import Walking from '@/components/Common/Images/SportImage/Walking.vue'
   import { sportColors } from '@/utils/sports'
 
   export default defineComponent({

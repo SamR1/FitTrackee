@@ -2,25 +2,26 @@
   <div id="workout-info">
     <div class="workout-data">
       <i class="fa fa-clock-o" aria-hidden="true" />
-      {{ t('workouts.DURATION') }}: <span>{{ workoutObject.moving }}</span>
+      {{ $t('workouts.DURATION') }}: <span>{{ workoutObject.moving }}</span>
       <WorkoutRecord :workoutObject="workoutObject" record_type="LD" />
       <div v-if="withPause">
-        ({{ t('workouts.PAUSES') }}: <span>{{ workoutObject.pauses }}</span> -
-        {{ t('workouts.TOTAL_DURATION') }}:
+        ({{ $t('workouts.PAUSES') }}: <span>{{ workoutObject.pauses }}</span> -
+        {{ $t('workouts.TOTAL_DURATION') }}:
         <span>{{ workoutObject.duration }})</span>
       </div>
     </div>
     <div class="workout-data">
       <i class="fa fa-road" aria-hidden="true" />
-      {{ t('workouts.DISTANCE') }}: <span>{{ workoutObject.distance }} km</span>
+      {{ $t('workouts.DISTANCE') }}:
+      <span>{{ workoutObject.distance }} km</span>
       <WorkoutRecord :workoutObject="workoutObject" record_type="FD" />
     </div>
     <div class="workout-data">
       <i class="fa fa-tachometer" aria-hidden="true" />
-      {{ t('workouts.AVERAGE_SPEED') }}:
+      {{ $t('workouts.AVERAGE_SPEED') }}:
       <span>{{ workoutObject.aveSpeed }} km/h</span
       ><WorkoutRecord :workoutObject="workoutObject" record_type="AS" /><br />
-      {{ t('workouts.MAX_SPEED') }}:
+      {{ $t('workouts.MAX_SPEED') }}:
       <span>{{ workoutObject.maxSpeed }} km/h</span>
       <WorkoutRecord :workoutObject="workoutObject" record_type="MS" />
     </div>
@@ -31,11 +32,11 @@
       <img
         class="mountains"
         src="/img/workouts/mountains.svg"
-        :alt="t('workouts.ELEVATION')"
+        :alt="$t('workouts.ELEVATION')"
       />
-      {{ t('workouts.MIN_ALTITUDE') }}: <span>{{ workoutObject.minAlt }} m</span
-      ><br />
-      {{ t('workouts.MAX_ALTITUDE') }}:
+      {{ $t('workouts.MIN_ALTITUDE') }}:
+      <span>{{ workoutObject.minAlt }} m</span><br />
+      {{ $t('workouts.MAX_ALTITUDE') }}:
       <span>{{ workoutObject.maxAlt }} m</span>
     </div>
     <div
@@ -43,9 +44,9 @@
       v-if="workoutObject.ascent !== null && workoutObject.descent !== null"
     >
       <i class="fa fa-location-arrow" aria-hidden="true" />
-      {{ t('workouts.ASCENT') }}: <span>{{ workoutObject.ascent }} m</span
+      {{ $t('workouts.ASCENT') }}: <span>{{ workoutObject.ascent }} m</span
       ><br />
-      {{ t('workouts.DESCENT') }}: <span>{{ workoutObject.descent }} m</span>
+      {{ $t('workouts.DESCENT') }}: <span>{{ workoutObject.descent }} m</span>
     </div>
     <WorkoutWeather :workoutObject="workoutObject" />
   </div>
@@ -53,7 +54,6 @@
 
 <script lang="ts">
   import { PropType, computed, defineComponent } from 'vue'
-  import { useI18n } from 'vue-i18n'
 
   import WorkoutRecord from '@/components/Workout/WorkoutDetail/WorkoutRecord.vue'
   import WorkoutWeather from '@/components/Workout/WorkoutDetail/WorkoutWeather.vue'
@@ -72,14 +72,12 @@
       },
     },
     setup(props) {
-      const { t } = useI18n()
       return {
         withPause: computed(
           () =>
             props.workoutObject.pauses !== '0:00:00' &&
             props.workoutObject.pauses !== null
         ),
-        t,
       }
     },
   })

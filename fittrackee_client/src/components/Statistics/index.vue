@@ -107,7 +107,6 @@
         chartParams,
         selectedTimeFrame,
         sportColors,
-        t,
         timeFrames,
         translatedSports,
         selectedSportIds,

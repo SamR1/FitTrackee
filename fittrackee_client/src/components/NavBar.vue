@@ -21,19 +21,19 @@
         <div class="nav-items-app-menu" @click="closeMenu()">
           <div class="nav-items-group" v-if="isAuthenticated">
             <router-link class="nav-item" to="/">{{
-              t('dashboard.DASHBOARD')
+              $t('dashboard.DASHBOARD')
             }}</router-link>
             <router-link class="nav-item" to="/workouts">
-              {{ capitalize(t('workouts.WORKOUT', 2)) }}
+              {{ capitalize($t('workouts.WORKOUT', 2)) }}
             </router-link>
             <router-link class="nav-item" to="/statistics">
-              {{ t('statistics.STATISTICS') }}
+              {{ $t('statistics.STATISTICS') }}
             </router-link>
             <div v-if="isAuthenticated && authUser.admin" class="nav-item">
-              {{ t('administration.ADMIN') }}
+              {{ $t('administration.ADMIN') }}
             </div>
             <router-link class="nav-item" to="/workouts/add">
-              {{ t('workouts.ADD_WORKOUT') }}
+              {{ $t('workouts.ADD_WORKOUT') }}
             </router-link>
             <div class="nav-item nav-separator" />
           </div>
@@ -47,15 +47,15 @@
               {{ authUser.username }}
             </router-link>
             <div class="nav-item nav-link" @click="logout">
-              {{ t('user.LOGOUT') }}
+              {{ $t('user.LOGOUT') }}
             </div>
           </div>
           <div class="nav-items-group" v-else>
             <router-link class="nav-item" to="/login" @click="closeMenu">{{
-              t('user.LOGIN')
+              $t('user.LOGIN')
             }}</router-link>
             <router-link class="nav-item" to="/register" @click="closeMenu">{{
-              t('user.REGISTER')
+              $t('user.REGISTER')
             }}</router-link>
           </div>
           <Dropdown
@@ -93,7 +93,7 @@
     },
     emits: ['menuInteraction'],
     setup(props, { emit }) {
-      const { t, locale, availableLocales } = useI18n()
+      const { locale, availableLocales } = useI18n()
       const store = useStore()
 
       const availableLanguages = availableLocales.map((l) => {
@@ -140,7 +140,6 @@
         isAuthenticated,
         isMenuOpen,
         language,
-        t,
         capitalize,
         openMenu,
         closeMenu,

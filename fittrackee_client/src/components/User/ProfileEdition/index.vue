@@ -1,7 +1,7 @@
 <template>
   <div id="user-profile-edition">
     <Card>
-      <template #title>{{ t(`user.PROFILE.${tab}_EDITION`) }}</template>
+      <template #title>{{ $t(`user.PROFILE.${tab}_EDITION`) }}</template>
       <template #content>
         <UserProfileTabs
           :tabs="tabs"
@@ -18,8 +18,7 @@
 </template>
 
 <script lang="ts">
-  import { PropType, defineComponent, ref, computed } from 'vue'
-  import { useI18n } from 'vue-i18n'
+  import { PropType, computed, defineComponent, ref } from 'vue'
 
   import Card from '@/components/Common/Card.vue'
   import UserInfosEdition from '@/components/User/ProfileEdition/UserInfosEdition.vue'
@@ -50,14 +49,13 @@
       },
     },
     setup(props) {
-      const { t } = useI18n()
       const store = useStore()
       const tabs = ['PROFILE', 'PICTURE', 'PREFERENCES']
       const selectedTab = ref(props.tab)
       const loading = computed(
         () => store.getters[USER_STORE.GETTERS.USER_LOADING]
       )
-      return { loading, selectedTab, t, tabs }
+      return { loading, selectedTab, tabs }
     },
   })
 </script>

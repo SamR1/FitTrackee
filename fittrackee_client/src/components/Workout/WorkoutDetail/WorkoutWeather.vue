@@ -9,17 +9,17 @@
           <th />
           <th>
             <div class="weather-th">
-              {{ t('workouts.START') }}
+              {{ $t('workouts.START') }}
               <img
                 class="weather-img"
                 :src="`/img/weather/${workoutObject.weatherStart.icon}.svg`"
                 :alt="
-                  t(
+                  $t(
                     `workouts.WEATHER.DARK_SKY.${workoutObject.weatherStart.icon}`
                   )
                 "
                 :title="
-                  t(
+                  $t(
                     `workouts.WEATHER.DARK_SKY.${workoutObject.weatherStart.icon}`
                   )
                 "
@@ -28,17 +28,17 @@
           </th>
           <th>
             <div class="weather-th">
-              {{ t('workouts.END') }}
+              {{ $t('workouts.END') }}
               <img
                 class="weather-img"
                 :src="`/img/weather/${workoutObject.weatherEnd.icon}.svg`"
                 :alt="
-                  t(
+                  $t(
                     `workouts.WEATHER.DARK_SKY.${workoutObject.weatherEnd.icon}`
                   )
                 "
                 :title="
-                  t(
+                  $t(
                     `workouts.WEATHER.DARK_SKY.${workoutObject.weatherEnd.icon}`
                   )
                 "
@@ -53,8 +53,8 @@
             <img
               class="weather-img weather-img-small"
               src="/img/weather/temperature.svg"
-              :alt="t(`workouts.WEATHER.TEMPERATURE`)"
-              :title="t(`workouts.WEATHER.TEMPERATURE`)"
+              :alt="$t(`workouts.WEATHER.TEMPERATURE`)"
+              :title="$t(`workouts.WEATHER.TEMPERATURE`)"
             />
           </td>
           <td>
@@ -69,8 +69,8 @@
             <img
               class="weather-img weather-img-small"
               src="/img/weather/pour-rain.svg"
-              :alt="t(`workouts.WEATHER.HUMIDITY`)"
-              :title="t(`workouts.WEATHER.HUMIDITY`)"
+              :alt="$t(`workouts.WEATHER.HUMIDITY`)"
+              :title="$t(`workouts.WEATHER.HUMIDITY`)"
             />
           </td>
           <td>
@@ -85,8 +85,8 @@
             <img
               class="weather-img weather-img-small"
               src="/img/weather/breeze.svg"
-              :alt="t(`workouts.WEATHER.WIND`)"
-              :title="t(`workouts.WEATHER.WIND`)"
+              :alt="$t(`workouts.WEATHER.WIND`)"
+              :title="$t(`workouts.WEATHER.WIND`)"
             />
           </td>
           <td>{{ Number(workoutObject.weatherStart.wind).toFixed(1) }}m/s</td>
@@ -99,9 +99,9 @@
 
 <script lang="ts">
   import { defineComponent, PropType } from 'vue'
-  import { useI18n } from 'vue-i18n'
 
   import { IWorkoutObject } from '@/types/workouts'
+
   export default defineComponent({
     name: 'WorkoutWeather',
     props: {
@@ -109,10 +109,6 @@
         type: Object as PropType<IWorkoutObject>,
         required: true,
       },
-    },
-    setup() {
-      const { t } = useI18n()
-      return { t }
     },
   })
 </script>

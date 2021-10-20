@@ -11,7 +11,7 @@
             :disabled="disabled"
             @input="$router.push(getPath(tab))"
           />
-          <span>{{ t(`user.PROFILE.TABS.${tab}`) }}</span>
+          <span>{{ $t(`user.PROFILE.TABS.${tab}`) }}</span>
         </label>
       </div>
     </div>
@@ -20,7 +20,6 @@
 
 <script lang="ts">
   import { PropType, defineComponent } from 'vue'
-  import { useI18n } from 'vue-i18n'
 
   export default defineComponent({
     name: 'UserProfileTabs',
@@ -43,7 +42,6 @@
       },
     },
     setup(props) {
-      const { t } = useI18n()
       function getPath(tab: string) {
         switch (tab) {
           case 'PICTURE':
@@ -55,7 +53,7 @@
             return `/profile${props.edition ? '/edit' : ''}`
         }
       }
-      return { t, getPath }
+      return { getPath }
     },
   })
 </script>

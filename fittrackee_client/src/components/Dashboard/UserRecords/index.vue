@@ -2,11 +2,11 @@
   <div class="user-records-section">
     <div class="section-title">
       <i class="fa fa-trophy custom-fa-small" aria-hidden="true" />
-      {{ t('workouts.RECORD', 2) }}
+      {{ $t('workouts.RECORD', 2) }}
     </div>
     <div class="user-records">
       <div v-if="Object.keys(recordsBySport).length === 0" class="no-records">
-        {{ t('workouts.NO_RECORDS') }}
+        {{ $t('workouts.NO_RECORDS') }}
       </div>
       <RecordsCard
         v-for="sportTranslatedLabel in Object.keys(recordsBySport).sort()"
@@ -52,7 +52,7 @@
           props.user.timezone
         )
       )
-      return { recordsBySport, t }
+      return { recordsBySport }
     },
   })
 </script>

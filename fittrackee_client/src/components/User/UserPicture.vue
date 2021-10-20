@@ -3,7 +3,7 @@
     <img
       v-if="authUserPictureUrl !== ''"
       class="nav-profile-user-img"
-      :alt="t('user.USER_PICTURE')"
+      :alt="$t('user.USER_PICTURE')"
       :src="authUserPictureUrl"
     />
     <div v-else class="no-picture">
@@ -14,10 +14,10 @@
 
 <script lang="ts">
   import { PropType, computed, defineComponent } from 'vue'
-  import { useI18n } from 'vue-i18n'
 
   import { IAuthUserProfile } from '@/types/user'
   import { getApiUrl } from '@/utils'
+
   export default defineComponent({
     name: 'UserPicture',
     props: {
@@ -27,14 +27,12 @@
       },
     },
     setup(props) {
-      const { t } = useI18n()
       return {
         authUserPictureUrl: computed(() =>
           props.user.picture
             ? `${getApiUrl()}users/${props.user.username}/picture?${Date.now()}`
             : ''
         ),
-        t,
       }
     },
   })

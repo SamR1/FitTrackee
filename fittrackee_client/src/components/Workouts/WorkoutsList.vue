@@ -6,19 +6,19 @@
           <thead>
             <tr>
               <th class="sport-col" />
-              <th>{{ capitalize(t('workouts.WORKOUT', 1)) }}</th>
-              <th>{{ capitalize(t('workouts.DATE')) }}</th>
-              <th>{{ capitalize(t('workouts.DISTANCE')) }}</th>
-              <th>{{ capitalize(t('workouts.DURATION')) }}</th>
-              <th>{{ capitalize(t('workouts.AVE_SPEED')) }}</th>
-              <th>{{ capitalize(t('workouts.MAX_SPEED')) }}</th>
+              <th>{{ capitalize($t('workouts.WORKOUT', 1)) }}</th>
+              <th>{{ capitalize($t('workouts.DATE')) }}</th>
+              <th>{{ capitalize($t('workouts.DISTANCE')) }}</th>
+              <th>{{ capitalize($t('workouts.DURATION')) }}</th>
+              <th>{{ capitalize($t('workouts.AVE_SPEED')) }}</th>
+              <th>{{ capitalize($t('workouts.MAX_SPEED')) }}</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="workout in workouts" :key="workout.id">
               <td class="sport-col">
                 <span class="cell-heading">
-                  {{ t('workouts.SPORT', 1) }}
+                  {{ $t('workouts.SPORT', 1) }}
                 </span>
                 <SportImage
                   :title="
@@ -32,7 +32,7 @@
               </td>
               <td class="workout-title">
                 <span class="cell-heading">
-                  {{ capitalize(t('workouts.WORKOUT', 1)) }}
+                  {{ capitalize($t('workouts.WORKOUT', 1)) }}
                 </span>
                 <router-link
                   class="nav-item"
@@ -53,7 +53,7 @@
               </td>
               <td>
                 <span class="cell-heading">
-                  {{ t('workouts.DATE') }}
+                  {{ $t('workouts.DATE') }}
                 </span>
                 {{
                   format(
@@ -64,25 +64,25 @@
               </td>
               <td class="text-right">
                 <span class="cell-heading">
-                  {{ t('workouts.DISTANCE') }}
+                  {{ $t('workouts.DISTANCE') }}
                 </span>
                 {{ Number(workout.distance).toFixed(2) }} km
               </td>
               <td class="text-right">
                 <span class="cell-heading">
-                  {{ t('workouts.DURATION') }}
+                  {{ $t('workouts.DURATION') }}
                 </span>
                 {{ workout.moving }}
               </td>
               <td class="text-right">
                 <span class="cell-heading">
-                  {{ t('workouts.AVE_SPEED') }}
+                  {{ $t('workouts.AVE_SPEED') }}
                 </span>
                 {{ workout.ave_speed }} km/h
               </td>
               <td class="text-right">
                 <span class="cell-heading">
-                  {{ t('workouts.MAX_SPEED') }}
+                  {{ $t('workouts.MAX_SPEED') }}
                 </span>
                 {{ workout.max_speed }} km/h
               </td>
@@ -94,7 +94,7 @@
     <NoWorkouts v-if="workouts.length === 0" />
     <div v-if="moreWorkoutsExist" class="more-workouts">
       <button @click="loadMoreWorkouts">
-        {{ t('workouts.LOAD_MORE_WORKOUT') }}
+        {{ $t('workouts.LOAD_MORE_WORKOUT') }}
       </button>
     </div>
     <div id="bottom" />
@@ -112,9 +112,8 @@
     watch,
     onBeforeMount,
   } from 'vue'
-  import { useI18n } from 'vue-i18n'
 
-  import SportImage from '@/components/Common/SportImage/index.vue'
+  import SportImage from '@/components/Common/Images/SportImage/index.vue'
   import StaticMap from '@/components/Common/StaticMap.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
   import { WORKOUTS_STORE } from '@/store/constants'
@@ -147,7 +146,6 @@
     },
     setup(props) {
       const store = useStore()
-      const { t } = useI18n()
       const workouts: ComputedRef<IWorkout[]> = computed(
         () => store.getters[WORKOUTS_STORE.GETTERS.USER_WORKOUTS]
       )
@@ -189,7 +187,6 @@
 
       return {
         moreWorkoutsExist,
-        t,
         workouts,
         capitalize,
         format,

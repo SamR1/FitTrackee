@@ -2,25 +2,20 @@
   <div class="error-message">
     <ul v-if="Array.isArray(message)">
       <li v-for="(subMessage, index) in message" :key="index">
-        {{ t(subMessage) }}
+        {{ $t(subMessage) }}
       </li>
     </ul>
-    <div v-else>{{ t(message) }}</div>
+    <div v-else>{{ $t(message) }}</div>
   </div>
 </template>
 
 <script lang="ts">
   import { defineComponent } from 'vue'
-  import { useI18n } from 'vue-i18n'
 
   export default defineComponent({
     name: 'ErrorMessage',
     props: {
       message: [String, Array],
-    },
-    setup() {
-      const { t } = useI18n()
-      return { t }
     },
   })
 </script>

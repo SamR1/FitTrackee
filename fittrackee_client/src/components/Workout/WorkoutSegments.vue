@@ -1,7 +1,7 @@
 <template>
   <div id="workout-segments">
     <Card>
-      <template #title>{{ t('workouts.SEGMENT', 2) }}</template>
+      <template #title>{{ $t('workouts.SEGMENT', 2) }}</template>
       <template #content>
         <ul>
           <li v-for="(segment, index) in segments" :key="segment.segment_id">
@@ -13,10 +13,10 @@
                   segmentId: index + 1,
                 },
               }"
-              >{{ t('workouts.SEGMENT', 1) }} {{ index + 1 }}</router-link
+              >{{ $t('workouts.SEGMENT', 1) }} {{ index + 1 }}</router-link
             >
-            ({{ t('workouts.DISTANCE') }}: {{ segment.distance }} km,
-            {{ t('workouts.DURATION') }}: {{ segment.duration }})
+            ({{ $t('workouts.DISTANCE') }}: {{ segment.distance }} km,
+            {{ $t('workouts.DURATION') }}: {{ segment.duration }})
           </li>
         </ul>
       </template>
@@ -26,7 +26,6 @@
 
 <script lang="ts">
   import { PropType, defineComponent } from 'vue'
-  import { useI18n } from 'vue-i18n'
 
   import Card from '@/components/Common/Card.vue'
   import { IWorkoutSegment } from '@/types/workouts'
@@ -41,10 +40,6 @@
         type: Object as PropType<IWorkoutSegment[]>,
         required: true,
       },
-    },
-    setup() {
-      const { t } = useI18n()
-      return { t }
     },
   })
 </script>

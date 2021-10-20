@@ -42,6 +42,16 @@ export interface IUserPicturePayload {
   picture: File
 }
 
+export interface IUserPasswordPayload {
+  email: string
+}
+
+export interface IUserPasswordResetPayload {
+  password: string
+  password_conf: string
+  token: string
+}
+
 export interface IUserDeletionPayload {
   username: string
 }

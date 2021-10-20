@@ -6,7 +6,7 @@
           <img
             class="profile-img"
             v-if="userPictureUrl !== ''"
-            :alt="t('user.USER_PICTURE')"
+            :alt="$t('user.USER_PICTURE')"
             :src="userPictureUrl"
           />
           <div v-else class="no-picture">
@@ -49,7 +49,7 @@
         <div v-if="workout">
           <StaticMap v-if="workout.with_gpx" :workout="workout" />
           <div v-else class="no-map">
-            {{ t('workouts.NO_MAP') }}
+            {{ $t('workouts.NO_MAP') }}
           </div>
         </div>
       </div>
@@ -78,9 +78,8 @@
 <script lang="ts">
   import { Locale, format, formatDistance } from 'date-fns'
   import { PropType, defineComponent, ComputedRef, computed } from 'vue'
-  import { useI18n } from 'vue-i18n'
 
-  import SportImage from '@/components/Common/SportImage/index.vue'
+  import SportImage from '@/components/Common/Images/SportImage/index.vue'
   import StaticMap from '@/components/Common/StaticMap.vue'
   import { ROOT_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
@@ -111,7 +110,6 @@
       },
     },
     setup(props) {
-      const { t } = useI18n()
       const store = useStore()
 
       const userPictureUrl: ComputedRef<string> = computed(() =>
@@ -128,7 +126,6 @@
         formatDistance,
         getDateWithTZ,
         locale,
-        t,
         userPictureUrl,
       }
     },

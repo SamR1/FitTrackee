@@ -6,6 +6,7 @@ import AddWorkout from '@/views/AddWorkout.vue'
 import Dashboard from '@/views/DashBoard.vue'
 import LoginOrRegister from '@/views/LoginOrRegister.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
+import PasswordResetView from '@/views/PasswordResetView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import StatisticsView from '@/views/StatisticsView.vue'
 import EditWorkout from '@/views/workouts/EditWorkout.vue'
@@ -35,6 +36,30 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Profile',
     component: ProfileView,
     props: { edition: false, tab: 'PROFILE' },
+  },
+  {
+    path: '/password-reset/sent',
+    name: 'PasswordEmailSent',
+    component: PasswordResetView,
+    props: { action: 'request-sent' },
+  },
+  {
+    path: '/password-reset/request',
+    name: 'PasswordResetRequest',
+    component: PasswordResetView,
+    props: { action: 'reset-request' },
+  },
+  {
+    path: '/password-reset/password-updated',
+    name: 'PasswordUpdated',
+    component: PasswordResetView,
+    props: { action: 'password-updated' },
+  },
+  {
+    path: '/password-reset',
+    name: 'PasswordReset',
+    component: PasswordResetView,
+    props: { action: 'reset' },
   },
   {
     path: '/profile/edit/picture',
@@ -100,18 +125,27 @@ const router = createRouter({
   routes,
 })
 
+const pathsWithoutAuthentication = [
+  '/login',
+  '/password-reset',
+  '/password-reset/password-updated',
+  '/password-reset/request',
+  '/password-reset/sent',
+  '/register',
+]
+
 router.beforeEach((to, from, next) => {
   store
     .dispatch(USER_STORE.ACTIONS.CHECK_AUTH_USER)
     .then(() => {
       if (
         store.getters[USER_STORE.GETTERS.IS_AUTHENTICATED] &&
-        ['/login', '/register'].includes(to.path)
+        pathsWithoutAuthentication.includes(to.path)
       ) {
         return next('/')
       } else if (
         !store.getters[USER_STORE.GETTERS.IS_AUTHENTICATED] &&
-        !['/login', '/register'].includes(to.path)
+        !pathsWithoutAuthentication.includes(to.path)
       ) {
         const path =
           to.path === '/'

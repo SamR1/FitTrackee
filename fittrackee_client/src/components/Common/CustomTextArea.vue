@@ -9,14 +9,13 @@
       @input="updateText"
     />
     <div class="remaining-chars">
-      {{ t('workouts.REMAINING_CHARS') }}: {{ text.length }}/{{ charLimit }}
+      {{ $t('workouts.REMAINING_CHARS') }}: {{ text.length }}/{{ charLimit }}
     </div>
   </div>
 </template>
 
 <script lang="ts">
   import { defineComponent, ref, watch } from 'vue'
-  import { useI18n } from 'vue-i18n'
 
   export default defineComponent({
     name: 'CustomTextarea',
@@ -40,7 +39,6 @@
     },
     emits: ['updateValue'],
     setup(props, { emit }) {
-      const { t } = useI18n()
       let text = ref('')
 
       function updateText(event: Event & { target: HTMLInputElement }) {
@@ -54,7 +52,7 @@
         }
       )
 
-      return { t, text, updateText }
+      return { text, updateText }
     },
   })
 </script>

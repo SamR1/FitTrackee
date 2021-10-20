@@ -2,8 +2,8 @@
   <div class="workout-detail">
     <Modal
       v-if="displayModal"
-      :title="t('common.CONFIRMATION')"
-      :message="t('workouts.WORKOUT_DELETION_CONFIRMATION')"
+      :title="$t('common.CONFIRMATION')"
+      :message="$t('workouts.WORKOUT_DELETION_CONFIRMATION')"
       @confirmAction="deleteWorkout(workoutObject.workoutId)"
       @cancelAction="updateDisplayModal(false)"
     />
@@ -36,7 +36,6 @@
     ref,
     watch,
   } from 'vue'
-  import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
 
   import Card from '@/components/Common/Card.vue'
@@ -90,7 +89,6 @@
     setup(props) {
       const route = useRoute()
       const store = useStore()
-      const { t } = useI18n()
 
       function getWorkoutObjectUrl(
         workout: IWorkout,
@@ -196,7 +194,6 @@
           getWorkoutObject(workout.value, segment.value)
         ),
         displayModal,
-        t,
         deleteWorkout,
         updateDisplayModal,
       }

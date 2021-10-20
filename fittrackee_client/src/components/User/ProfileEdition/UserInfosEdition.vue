@@ -2,8 +2,8 @@
   <div id="user-infos-edition">
     <Modal
       v-if="displayModal"
-      :title="t('common.CONFIRMATION')"
-      :message="t('user.CONFIRM_ACCOUNT_DELETION')"
+      :title="$t('common.CONFIRMATION')"
+      :message="$t('user.CONFIRM_ACCOUNT_DELETION')"
       @confirmAction="deleteAccount(user.username)"
       @cancelAction="updateDisplayModal(false)"
     />
@@ -11,15 +11,15 @@
       <ErrorMessage :message="errorMessages" v-if="errorMessages" />
       <form @submit.prevent="updateProfile">
         <label class="form-items" for="email">
-          {{ t('user.EMAIL') }}
+          {{ $t('user.EMAIL') }}
           <input id="email" :value="user.email" disabled />
         </label>
         <label class="form-items" for="registrationDate">
-          {{ t('user.PROFILE.REGISTRATION_DATE') }}
+          {{ $t('user.PROFILE.REGISTRATION_DATE') }}
           <input id="registrationDate" :value="registrationDate" disabled />
         </label>
         <label class="form-items" for="password">
-          {{ t('user.PASSWORD') }}
+          {{ $t('user.PASSWORD') }}
           <input
             id="password"
             type="password"
@@ -28,7 +28,7 @@
           />
         </label>
         <label class="form-items" for="passwordConfirmation">
-          {{ t('user.PASSWORD_CONFIRMATION') }}
+          {{ $t('user.PASSWORD_CONFIRMATION') }}
           <input
             id="passwordConfirmation"
             type="password"
@@ -38,7 +38,7 @@
         </label>
         <hr />
         <label class="form-items" for="first_name">
-          {{ t('user.PROFILE.FIRST_NAME') }}
+          {{ $t('user.PROFILE.FIRST_NAME') }}
           <input
             id="first_name"
             v-model="userForm.first_name"
@@ -46,11 +46,11 @@
           />
         </label>
         <label class="form-items" for="last_name">
-          {{ t('user.PROFILE.LAST_NAME') }}
+          {{ $t('user.PROFILE.LAST_NAME') }}
           <input id="last_name" v-model="userForm.last_name" />
         </label>
         <label class="form-items" for="birth_date">
-          {{ t('user.PROFILE.BIRTH_DATE') }}
+          {{ $t('user.PROFILE.BIRTH_DATE') }}
           <input
             id="birth_date"
             type="date"
@@ -60,7 +60,7 @@
           />
         </label>
         <label class="form-items" for="location">
-          {{ t('user.PROFILE.LOCATION') }}
+          {{ $t('user.PROFILE.LOCATION') }}
           <input
             id="location"
             v-model="userForm.location"
@@ -68,7 +68,7 @@
           />
         </label>
         <label class="form-items">
-          {{ t('user.PROFILE.BIO') }}
+          {{ $t('user.PROFILE.BIO') }}
           <CustomTextArea
             name="bio"
             :charLimit="200"
@@ -79,13 +79,13 @@
         </label>
         <div class="form-buttons">
           <button class="confirm" type="submit">
-            {{ t('buttons.SUBMIT') }}
+            {{ $t('buttons.SUBMIT') }}
           </button>
           <button class="cancel" @click.prevent="$router.go(-1)">
-            {{ t('buttons.CANCEL') }}
+            {{ $t('buttons.CANCEL') }}
           </button>
           <button class="danger" @click.prevent="updateDisplayModal(true)">
-            {{ t('buttons.DELETE_MY_ACCOUNT') }}
+            {{ $t('buttons.DELETE_MY_ACCOUNT') }}
           </button>
         </div>
       </form>
@@ -105,7 +105,6 @@
     ref,
     onMounted,
   } from 'vue'
-  import { useI18n } from 'vue-i18n'
 
   import CustomTextArea from '@/components/Common/CustomTextArea.vue'
   import ErrorMessage from '@/components/Common/ErrorMessage.vue'
@@ -128,7 +127,6 @@
       },
     },
     setup(props) {
-      const { t } = useI18n()
       const store = useStore()
       const userForm: IUserPayload = reactive({
         password: '',
@@ -185,7 +183,6 @@
         errorMessages,
         loading,
         registrationDate,
-        t,
         userForm,
         deleteAccount,
         updateBio,

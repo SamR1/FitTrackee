@@ -5,7 +5,7 @@
   >
     <Card>
       <template #title>{{
-        t(`workouts.${isCreation ? 'ADD' : 'EDIT'}_WORKOUT`)
+        $t(`workouts.${isCreation ? 'ADD' : 'EDIT'}_WORKOUT`)
       }}</template>
       <template #content>
         <div id="workout-form">
@@ -20,7 +20,7 @@
                     :disabled="loading"
                     @click="updateWithGpx"
                   />
-                  <label for="withGpx">{{ t('workouts.WITH_GPX') }}</label>
+                  <label for="withGpx">{{ $t('workouts.WITH_GPX') }}</label>
                 </div>
                 <div>
                   <input
@@ -31,12 +31,12 @@
                     @click="updateWithGpx"
                   />
                   <label for="withoutGpx">{{
-                    t('workouts.WITHOUT_GPX')
+                    $t('workouts.WITHOUT_GPX')
                   }}</label>
                 </div>
               </div>
               <div class="form-item">
-                <label> {{ t('workouts.SPORT', 1) }}: </label>
+                <label> {{ $t('workouts.SPORT', 1) }}: </label>
                 <select
                   id="sport"
                   required
@@ -54,8 +54,8 @@
               </div>
               <div class="form-item" v-if="isCreation && withGpx">
                 <label for="gpxFile">
-                  {{ t('workouts.GPX_FILE') }}
-                  {{ t('workouts.ZIP_ARCHIVE_DESCRIPTION') }}:
+                  {{ $t('workouts.GPX_FILE') }}
+                  {{ $t('workouts.ZIP_ARCHIVE_DESCRIPTION') }}:
                 </label>
                 <input
                   id="gpxFile"
@@ -67,26 +67,28 @@
                 />
                 <div class="files-help">
                   <div>
-                    <strong>{{ t('workouts.GPX_FILE') }}:</strong>
+                    <strong>{{ $t('workouts.GPX_FILE') }}:</strong>
                     <ul>
-                      <li>{{ t('workouts.MAX_SIZE') }}: {{ fileSizeLimit }}</li>
+                      <li>
+                        {{ $t('workouts.MAX_SIZE') }}: {{ fileSizeLimit }}
+                      </li>
                     </ul>
                   </div>
 
                   <div>
-                    <strong>{{ t('workouts.ZIP_ARCHIVE') }}:</strong>
+                    <strong>{{ $t('workouts.ZIP_ARCHIVE') }}:</strong>
                     <ul>
-                      <li>{{ t('workouts.NO_FOLDER') }}</li>
+                      <li>{{ $t('workouts.NO_FOLDER') }}</li>
                       <li>
-                        {{ t('workouts.MAX_FILES') }}: {{ gpx_limit_import }}
+                        {{ $t('workouts.MAX_FILES') }}: {{ gpx_limit_import }}
                       </li>
-                      <li>{{ t('workouts.MAX_SIZE') }}: {{ zipSizeLimit }}</li>
+                      <li>{{ $t('workouts.MAX_SIZE') }}: {{ zipSizeLimit }}</li>
                     </ul>
                   </div>
                 </div>
               </div>
               <div class="form-item" v-else>
-                <label for="title"> {{ t('workouts.TITLE') }}: </label>
+                <label for="title"> {{ $t('workouts.TITLE') }}: </label>
                 <input
                   id="title"
                   name="title"
@@ -99,7 +101,7 @@
               <div v-if="!withGpx">
                 <div class="workout-date-duration">
                   <div class="form-item">
-                    <label>{{ t('workouts.WORKOUT_DATE') }}:</label>
+                    <label>{{ $t('workouts.WORKOUT_DATE') }}:</label>
                     <div class="workout-date-time">
                       <input
                         id="workout-date"
@@ -121,7 +123,7 @@
                     </div>
                   </div>
                   <div class="form-item">
-                    <label>{{ t('workouts.DURATION') }}:</label>
+                    <label>{{ $t('workouts.DURATION') }}:</label>
                     <div>
                       <input
                         id="workout-duration-hour"
@@ -162,7 +164,7 @@
                   </div>
                 </div>
                 <div class="form-item">
-                  <label>{{ t('workouts.DISTANCE') }} (km):</label>
+                  <label>{{ $t('workouts.DISTANCE') }} (km):</label>
                   <input
                     type="number"
                     min="0"
@@ -174,7 +176,7 @@
                 </div>
               </div>
               <div class="form-item">
-                <label> {{ t('workouts.NOTES') }}: </label>
+                <label> {{ $t('workouts.NOTES') }}: </label>
                 <CustomTextArea
                   name="notes"
                   :input="workoutDataObject.notes"
@@ -189,10 +191,10 @@
             </div>
             <div v-else class="form-buttons">
               <button class="confirm" type="submit" :disabled="loading">
-                {{ t('buttons.SUBMIT') }}
+                {{ $t('buttons.SUBMIT') }}
               </button>
               <button class="cancel" @click.prevent="onCancel">
-                {{ t('buttons.CANCEL') }}
+                {{ $t('buttons.CANCEL') }}
               </button>
             </div>
           </form>
@@ -406,7 +408,6 @@
         errorMessages,
         fileSizeLimit,
         gpx_limit_import,
-        t,
         translatedSports,
         withGpx,
         zipSizeLimit,

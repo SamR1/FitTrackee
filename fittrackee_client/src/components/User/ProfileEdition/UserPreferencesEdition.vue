@@ -4,7 +4,7 @@
       <ErrorMessage :message="errorMessages" v-if="errorMessages" />
       <form @submit.prevent="updateProfile">
         <label class="form-items">
-          {{ t('user.PROFILE.LANGUAGE') }}
+          {{ $t('user.PROFILE.LANGUAGE') }}
           <select id="language" v-model="userForm.language" :disabled="loading">
             <option
               v-for="lang in availableLanguages"
@@ -16,7 +16,7 @@
           </select>
         </label>
         <label class="form-items" for="timezone">
-          {{ t('user.PROFILE.TIMEZONE') }}
+          {{ $t('user.PROFILE.TIMEZONE') }}
           <input
             id="timezone"
             v-model="userForm.timezone"
@@ -24,23 +24,23 @@
           />
         </label>
         <label class="form-items">
-          {{ t('user.PROFILE.FIRST_DAY_OF_WEEK') }}
+          {{ $t('user.PROFILE.FIRST_DAY_OF_WEEK') }}
           <select id="weekm" v-model="userForm.weekm" :disabled="loading">
             <option
               v-for="start in weekStart"
               :value="start.value"
               :key="start.value"
             >
-              {{ t(`user.PROFILE.${start.label}`) }}
+              {{ $t(`user.PROFILE.${start.label}`) }}
             </option>
           </select>
         </label>
         <div class="form-buttons">
           <button class="confirm" type="submit">
-            {{ t('buttons.SUBMIT') }}
+            {{ $t('buttons.SUBMIT') }}
           </button>
           <button class="cancel" @click.prevent="$router.go(-1)">
-            {{ t('buttons.CANCEL') }}
+            {{ $t('buttons.CANCEL') }}
           </button>
         </div>
       </form>
@@ -76,7 +76,7 @@
       },
     },
     setup(props) {
-      const { t, availableLocales } = useI18n()
+      const { availableLocales } = useI18n()
       const store = useStore()
       const userForm: IUserPreferencesPayload = reactive({
         language: '',
@@ -122,7 +122,6 @@
         availableLanguages,
         errorMessages,
         loading,
-        t,
         userForm,
         weekStart,
         updateProfile,

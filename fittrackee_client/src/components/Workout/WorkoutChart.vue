@@ -1,7 +1,7 @@
 <template>
   <div id="workout-chart">
     <Card>
-      <template #title>{{ t('workouts.ANALYSIS') }} </template>
+      <template #title>{{ $t('workouts.ANALYSIS') }} </template>
       <template #content>
         <div class="chart-radio">
           <label>
@@ -11,7 +11,7 @@
               :checked="displayDistance"
               @click="updateDisplayDistance"
             />
-            {{ t('workouts.DISTANCE') }}
+            {{ $t('workouts.DISTANCE') }}
           </label>
           <label>
             <input
@@ -20,7 +20,7 @@
               :checked="!displayDistance"
               @click="updateDisplayDistance"
             />
-            {{ t('workouts.DURATION') }}
+            {{ $t('workouts.DURATION') }}
           </label>
         </div>
         <LineChart
@@ -29,7 +29,7 @@
           @mouseleave="emitEmptyCoordinates"
         />
         <div class="no-data-cleaning">
-          {{ t('workouts.NO_DATA_CLEANING') }}
+          {{ $t('workouts.NO_DATA_CLEANING') }}
         </div>
       </template>
     </Card>
@@ -201,7 +201,6 @@
       return {
         displayDistance,
         lineChartProps,
-        t,
         emitEmptyCoordinates,
         updateDisplayDistance,
       }

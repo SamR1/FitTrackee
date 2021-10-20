@@ -1,6 +1,6 @@
 <template>
   <div id="timeline">
-    <div class="section-title">{{ t('workouts.LATEST_WORKOUTS') }}</div>
+    <div class="section-title">{{ $t('workouts.LATEST_WORKOUTS') }}</div>
     <div v-if="user.nb_workouts > 0 && workouts.length === 0">
       <WorkoutCard
         v-for="index in [...Array(initWorkoutsCount).keys()]"
@@ -23,7 +23,7 @@
       <NoWorkouts v-if="workouts.length === 0" />
       <div v-if="moreWorkoutsExist" class="more-workouts">
         <button @click="loadMoreWorkouts">
-          {{ t('workouts.LOAD_MORE_WORKOUT') }}
+          {{ $t('workouts.LOAD_MORE_WORKOUT') }}
         </button>
       </div>
     </div>
@@ -39,7 +39,6 @@
     ref,
     onBeforeMount,
   } from 'vue'
-  import { useI18n } from 'vue-i18n'
 
   import WorkoutCard from '@/components/Workout/WorkoutCard.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
@@ -67,7 +66,6 @@
     },
     setup(props) {
       const store = useStore()
-      const { t } = useI18n()
 
       let page = ref(1)
       const per_page = 5
@@ -103,7 +101,6 @@
         moreWorkoutsExist,
         per_page,
         workouts,
-        t,
         loadMoreWorkouts,
       }
     },

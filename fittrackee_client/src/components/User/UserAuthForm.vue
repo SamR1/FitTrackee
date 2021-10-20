@@ -1,5 +1,5 @@
 <template>
-  <div id="login-or-register-form">
+  <div id="user-auth-form">
     <div id="user-form">
       <div
         class="form-box"
@@ -19,38 +19,57 @@
               :disabled="registration_disabled"
               required
               v-model="formData.username"
-              :placeholder="t('user.USERNAME')"
+              :placeholder="$t('user.USERNAME')"
             />
             <input
+              v-if="action !== 'reset'"
               id="email"
               :disabled="registration_disabled"
               required
               type="email"
               v-model="formData.email"
-              :placeholder="t('user.EMAIL')"
+              :placeholder="
+                action === 'reset-request'
+                  ? $t('user.ENTER_EMAIL')
+                  : $t('user.EMAIL')
+              "
             />
             <input
+              v-if="action !== 'reset-request'"
               id="password"
               :disabled="registration_disabled"
               required
               type="password"
               v-model="formData.password"
-              :placeholder="t('user.PASSWORD')"
+              :placeholder="
+                action === 'reset'
+                  ? $t('user.ENTER_PASSWORD')
+                  : $t('user.PASSWORD')
+              "
             />
             <input
-              v-if="action === 'register'"
+              v-if="['register', 'reset'].includes(action)"
               id="confirm-password"
               :disabled="registration_disabled"
               type="password"
               required
               v-model="formData.password_conf"
-              :placeholder="t('user.PASSWORD_CONFIRM')"
+              :placeholder="
+                action === 'reset'
+                  ? $t('user.ENTER_PASSWORD_CONFIRMATION')
+                  : $t('user.PASSWORD_CONFIRM')
+              "
             />
           </div>
           <button type="submit" :disabled="registration_disabled">
-            {{ t(buttonText) }}
+            {{ $t(buttonText) }}
           </button>
         </form>
+        <div v-if="action === 'login'">
+          <router-link class="password-forgotten" to="/password-reset/request">
+            {{ $t('user.PASSWORD_FORGOTTEN') }}
+          </router-link>
+        </div>
         <ErrorMessage :message="errorMessages" v-if="errorMessages" />
       </div>
     </div>
@@ -59,19 +78,17 @@
 
 <script lang="ts">
   import { ComputedRef, computed, defineComponent, reactive, watch } from 'vue'
-  import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
 
   import AlertMessage from '@/components/Common/AlertMessage.vue'
   import ErrorMessage from '@/components/Common/ErrorMessage.vue'
-  import router from '@/router'
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
   import { IAppConfig } from '@/types/application'
   import { ILoginRegisterFormData } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   export default defineComponent({
-    name: 'LoginOrRegisterForm',
+    name: 'UserAuthForm',
     components: {
       AlertMessage,
       ErrorMessage,
@@ -81,6 +98,10 @@
         type: String,
         required: true,
       },
+      token: {
+        type: String,
+        default: '',
+      },
     },
     setup(props) {
       const formData: ILoginRegisterFormData = reactive({
@@ -89,12 +110,11 @@
         password: '',
         password_conf: '',
       })
-      const { t } = useI18n()
       const route = useRoute()
       const store = useStore()
 
       const buttonText: ComputedRef<string> = computed(() =>
-        props.action === 'register' ? 'buttons.REGISTER' : 'buttons.LOGIN'
+        getButtonText(props.action)
       )
       const errorMessages: ComputedRef<string | string[] | null> = computed(
         () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
@@ -108,11 +128,42 @@
           !appConfig.value.is_registration_enabled
       )
 
+      function getButtonText(action: string): string {
+        switch (action) {
+          case 'reset-request':
+          case 'reset':
+            return 'buttons.SUBMIT'
+          default:
+            return `buttons.${props.action.toUpperCase()}`
+        }
+      }
       function onSubmit(actionType: string) {
-        return store.dispatch(USER_STORE.ACTIONS.LOGIN_OR_REGISTER, {
-          actionType,
-          formData,
-        })
+        switch (actionType) {
+          case 'reset':
+            if (!props.token) {
+              return store.commit(
+                ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES,
+                'user.INVALID_TOKEN'
+              )
+            }
+            return store.dispatch(USER_STORE.ACTIONS.RESET_USER_PASSWORD, {
+              password: formData.password,
+              password_conf: formData.password_conf,
+              token: props.token,
+            })
+          case 'reset-request':
+            return store.dispatch(
+              USER_STORE.ACTIONS.SEND_PASSWORD_RESET_REQUEST,
+              {
+                email: formData.email,
+              }
+            )
+          default:
+            store.dispatch(USER_STORE.ACTIONS.LOGIN_OR_REGISTER, {
+              actionType,
+              formData,
+            })
+        }
       }
       function resetFormData() {
         formData.username = ''
@@ -128,13 +179,11 @@
         }
       )
       return {
-        t,
         appConfig,
         buttonText,
         errorMessages,
         formData,
         registration_disabled,
-        router,
         onSubmit,
       }
     },
@@ -144,7 +193,7 @@
 <style scoped lang="scss">
   @import '~@/scss/base';
 
-  #login-or-register-form {
+  #user-auth-form {
     display: flex;
     align-items: center;
 
@@ -153,6 +202,12 @@
 
     #user-form {
       width: 60%;
+
+      .password-forgotten {
+        font-size: 0.9em;
+        font-style: italic;
+        padding-left: $default-padding;
+      }
 
       button {
         margin: $default-margin;

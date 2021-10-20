@@ -10,10 +10,10 @@
           <ErrorMessage :message="errorMessages" v-if="errorMessages" />
           <div class="modal-buttons">
             <button class="confirm" @click="emit('confirmAction')">
-              {{ t('buttons.YES') }}
+              {{ $t('buttons.YES') }}
             </button>
             <button class="cancel" @click="emit('cancelAction')">
-              {{ t('buttons.NO') }}
+              {{ $t('buttons.NO') }}
             </button>
           </div>
         </template>
@@ -24,7 +24,6 @@
 
 <script lang="ts">
   import { ComputedRef, computed, defineComponent, onUnmounted } from 'vue'
-  import { useI18n } from 'vue-i18n'
 
   import Card from '@/components/Common/Card.vue'
   import ErrorMessage from '@/components/Common/ErrorMessage.vue'
@@ -49,13 +48,12 @@
     },
     emits: ['cancelAction', 'confirmAction'],
     setup(props, { emit }) {
-      const { t } = useI18n()
       const store = useStore()
       const errorMessages: ComputedRef<string | string[] | null> = computed(
         () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
       )
       onUnmounted(() => store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES))
-      return { errorMessages, t, emit }
+      return { errorMessages, emit }
     },
   })
 </script>

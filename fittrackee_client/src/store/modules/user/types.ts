@@ -11,6 +11,8 @@ import {
   IAuthUserProfile,
   ILoginOrRegisterData,
   IUserDeletionPayload,
+  IUserPasswordPayload,
+  IUserPasswordResetPayload,
   IUserPayload,
   IUserPicturePayload,
   IUserPreferencesPayload,
@@ -53,6 +55,16 @@ export interface IUserActions {
   [USER_STORE.ACTIONS.UPDATE_USER_PICTURE](
     context: ActionContext<IUserState, IRootState>,
     payload: IUserPicturePayload
+  ): void
+
+  [USER_STORE.ACTIONS.SEND_PASSWORD_RESET_REQUEST](
+    context: ActionContext<IUserState, IRootState>,
+    payload: IUserPasswordPayload
+  ): void
+
+  [USER_STORE.ACTIONS.RESET_USER_PASSWORD](
+    context: ActionContext<IUserState, IRootState>,
+    payload: IUserPasswordResetPayload
   ): void
 
   [USER_STORE.ACTIONS.DELETE_ACCOUNT](

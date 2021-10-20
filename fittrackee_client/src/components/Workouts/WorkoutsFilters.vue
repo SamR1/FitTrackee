@@ -4,18 +4,18 @@
       <div class="form">
         <div class="form-items-group">
           <div class="form-item">
-            <label> {{ t('workouts.FROM') }}: </label>
+            <label> {{ $t('workouts.FROM') }}: </label>
             <input name="from" type="date" @change="handleFilterChange" />
           </div>
           <div class="form-item">
-            <label> {{ t('workouts.TO') }}: </label>
+            <label> {{ $t('workouts.TO') }}: </label>
             <input name="to" type="date" @change="handleFilterChange" />
           </div>
         </div>
 
         <div class="form-items-group">
           <div class="form-item">
-            <label> {{ t('workouts.SPORT', 1) }}:</label>
+            <label> {{ $t('workouts.SPORT', 1) }}:</label>
             <select name="sport_id" @change="handleFilterChange">
               <option value="" />
               <option
@@ -31,7 +31,7 @@
 
         <div class="form-items-group">
           <div class="form-item">
-            <label> {{ t('workouts.DISTANCE') }} (km): </label>
+            <label> {{ $t('workouts.DISTANCE') }} (km): </label>
             <div class="form-inputs-group">
               <input
                 name="distance_from"
@@ -40,7 +40,7 @@
                 step="1"
                 @change="handleFilterChange"
               />
-              <span>{{ t('workouts.TO') }}</span>
+              <span>{{ $t('workouts.TO') }}</span>
               <input
                 name="distance_to"
                 type="number"
@@ -54,7 +54,7 @@
 
         <div class="form-items-group">
           <div class="form-item">
-            <label> {{ t('workouts.DURATION') }} (km): </label>
+            <label> {{ $t('workouts.DURATION') }} (km): </label>
             <div class="form-inputs-group">
               <input
                 name="duration_from"
@@ -63,7 +63,7 @@
                 placeholder="hh:mm"
                 type="text"
               />
-              <span>{{ t('workouts.TO') }}</span>
+              <span>{{ $t('workouts.TO') }}</span>
               <input
                 name="duration_to"
                 @change="handleFilterChange"
@@ -77,7 +77,7 @@
 
         <div class="form-items-group">
           <div class="form-item">
-            <label> {{ t('workouts.AVE_SPEED') }} (km): </label>
+            <label> {{ $t('workouts.AVE_SPEED') }} (km): </label>
             <div class="form-inputs-group">
               <input
                 min="0"
@@ -86,7 +86,7 @@
                 step="1"
                 type="number"
               />
-              <span>{{ t('workouts.TO') }}</span>
+              <span>{{ $t('workouts.TO') }}</span>
               <input
                 min="0"
                 name="ave_speed_to"
@@ -100,7 +100,7 @@
 
         <div class="form-items-group">
           <div class="form-item">
-            <label> {{ t('workouts.MAX_SPEED') }} (km): </label>
+            <label> {{ $t('workouts.MAX_SPEED') }} (km): </label>
 
             <div class="form-inputs-group">
               <input
@@ -110,7 +110,7 @@
                 step="1"
                 type="number"
               />
-              <span>{{ t('workouts.TO') }}</span>
+              <span>{{ $t('workouts.TO') }}</span>
               <input
                 min="0"
                 name="max_speed_to"
@@ -125,7 +125,7 @@
 
       <div class="form-button">
         <button class="confirm" @click="onFilter">
-          {{ t('buttons.FILTER') }}
+          {{ $t('buttons.FILTER') }}
         </button>
       </div>
     </div>
@@ -166,7 +166,7 @@
         emit('filter', { ...params })
       }
 
-      return { t, translatedSports, onFilter, handleFilterChange }
+      return { translatedSports, onFilter, handleFilterChange }
     },
   })
 </script>

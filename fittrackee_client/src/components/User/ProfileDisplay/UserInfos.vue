@@ -1,36 +1,36 @@
 <template>
   <div id="user-infos" class="description-list">
     <dl>
-      <dt>{{ t('user.PROFILE.REGISTRATION_DATE') }}:</dt>
+      <dt>{{ $t('user.PROFILE.REGISTRATION_DATE') }}:</dt>
       <dd>{{ registrationDate }}</dd>
     </dl>
     <dl>
-      <dt>{{ t('user.PROFILE.FIRST_NAME') }}:</dt>
+      <dt>{{ $t('user.PROFILE.FIRST_NAME') }}:</dt>
       <dd>{{ user.first_name }}</dd>
     </dl>
     <dl>
-      <dt>{{ t('user.PROFILE.LAST_NAME') }}:</dt>
+      <dt>{{ $t('user.PROFILE.LAST_NAME') }}:</dt>
       <dd>{{ user.last_name }}</dd>
     </dl>
     <dl>
-      <dt>{{ t('user.PROFILE.BIRTH_DATE') }}:</dt>
+      <dt>{{ $t('user.PROFILE.BIRTH_DATE') }}:</dt>
       <dd>{{ birthDate }}</dd>
     </dl>
     <dl>
-      <dt>{{ t('user.PROFILE.LOCATION') }}:</dt>
+      <dt>{{ $t('user.PROFILE.LOCATION') }}:</dt>
       <dd>{{ user.location }}</dd>
     </dl>
     <dl>
-      <dt>{{ t('user.PROFILE.BIO') }}:</dt>
+      <dt>{{ $t('user.PROFILE.BIO') }}:</dt>
       <dd class="user-bio">
         {{ user.bio }}
       </dd>
     </dl>
     <div class="profile-buttons">
       <button @click="$router.push('/profile/edit')">
-        {{ t('user.PROFILE.EDIT') }}
+        {{ $t('user.PROFILE.EDIT') }}
       </button>
-      <button @click="$router.push('/')">{{ t('common.HOME') }}</button>
+      <button @click="$router.push('/')">{{ $t('common.HOME') }}</button>
     </div>
   </div>
 </template>
@@ -38,7 +38,6 @@
 <script lang="ts">
   import { format } from 'date-fns'
   import { PropType, computed, defineComponent } from 'vue'
-  import { useI18n } from 'vue-i18n'
 
   import { IAuthUserProfile } from '@/types/user'
 
@@ -51,7 +50,6 @@
       },
     },
     setup(props) {
-      const { t } = useI18n()
       const registrationDate = computed(() =>
         props.user.created_at
           ? format(new Date(props.user.created_at), 'dd/MM/yyyy HH:mm')
@@ -62,7 +60,7 @@
           ? format(new Date(props.user.birth_date), 'dd/MM/yyyy')
           : ''
       )
-      return { birthDate, registrationDate, t }
+      return { birthDate, registrationDate }
     },
   })
 </script>

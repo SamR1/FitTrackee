@@ -16,6 +16,8 @@ import { IUserActions, IUserState } from '@/store/modules/user/types'
 import {
   ILoginOrRegisterData,
   IUserDeletionPayload,
+  IUserPasswordPayload,
+  IUserPasswordResetPayload,
   IUserPayload,
   IUserPicturePayload,
   IUserPreferencesPayload,
@@ -213,5 +215,37 @@ export const actions: ActionTree<IUserState, IRootState> & IUserActions = {
       .finally(() =>
         context.commit(USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
       )
+  },
+  [USER_STORE.ACTIONS.SEND_PASSWORD_RESET_REQUEST](
+    context: ActionContext<IUserState, IRootState>,
+    payload: IUserPasswordPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    api
+      .post('auth/password/reset-request', payload)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          router.push('/password-reset/sent')
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+  },
+  [USER_STORE.ACTIONS.RESET_USER_PASSWORD](
+    context: ActionContext<IUserState, IRootState>,
+    payload: IUserPasswordResetPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    api
+      .post('auth/password/update', payload)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          router.push('/password-reset/password-updated')
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
   },
 }

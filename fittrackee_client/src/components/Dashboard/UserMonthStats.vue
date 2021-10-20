@@ -18,7 +18,6 @@
 <script lang="ts">
   import { endOfMonth, startOfMonth } from 'date-fns'
   import { PropType, defineComponent } from 'vue'
-  import { useI18n } from 'vue-i18n'
 
   import Card from '@/components/Common/Card.vue'
   import StatChart from '@/components/Common/StatsChart/index.vue'
@@ -42,7 +41,6 @@
       },
     },
     setup(props) {
-      const { t } = useI18n()
       const date = new Date()
       return {
         chartParams: {
@@ -51,7 +49,6 @@
           end: endOfMonth(date),
         },
         selectedSportIds: props.sports.map((sport) => sport.id),
-        t,
       }
     },
   })

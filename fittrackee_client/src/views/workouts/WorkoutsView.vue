@@ -11,7 +11,7 @@
             aria-hidden="true"
           />
           <span>
-            {{ t(`workouts.${hiddenFilters ? 'DISPLAY' : 'HIDE'}_FILTERS`) }}
+            {{ $t(`workouts.${hiddenFilters ? 'DISPLAY' : 'HIDE'}_FILTERS`) }}
           </span>
         </div>
       </div>
@@ -71,7 +71,6 @@
         authUser,
         hiddenFilters,
         params,
-        t,
         translatedSports,
         toggleFilters,
         updateParams,

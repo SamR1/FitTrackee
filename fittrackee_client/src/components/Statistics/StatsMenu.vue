@@ -22,7 +22,7 @@
               :checked="selectedTimeFrame === frame"
               @input="onUpdateTimeFrame(frame)"
             />
-            <span>{{ t(`statistics.TIME_FRAMES.${frame}`) }}</span>
+            <span>{{ $t(`statistics.TIME_FRAMES.${frame}`) }}</span>
           </label>
         </div>
       </div>
@@ -39,13 +39,11 @@
 
 <script lang="ts">
   import { defineComponent, ref } from 'vue'
-  import { useI18n } from 'vue-i18n'
 
   export default defineComponent({
     name: 'StatsMenu',
     emits: ['arrowClick', 'timeFrameUpdate'],
     setup(props, { emit }) {
-      const { t } = useI18n()
       let selectedTimeFrame = ref('month')
       const timeFrames = ['week', 'month', 'year']
 
@@ -56,7 +54,6 @@
 
       return {
         selectedTimeFrame,
-        t,
         timeFrames,
         onUpdateTimeFrame,
         emit,

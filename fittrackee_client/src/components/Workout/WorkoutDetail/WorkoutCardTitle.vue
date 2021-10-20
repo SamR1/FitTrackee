@@ -5,8 +5,8 @@
       :class="{ inactive: !workoutObject.previousUrl }"
       :title="
         workoutObject.previousUrl
-          ? t(`workouts.PREVIOUS_${workoutObject.type}`)
-          : t(`workouts.NO_PREVIOUS_${workoutObject.type}`)
+          ? $t(`workouts.PREVIOUS_${workoutObject.type}`)
+          : $t(`workouts.NO_PREVIOUS_${workoutObject.type}`)
       "
       @click="
         workoutObject.previousUrl
@@ -42,7 +42,7 @@
           <span class="workout-segment">
             —
             <i class="fa fa-map-marker" aria-hidden="true" />
-            {{ t('workouts.SEGMENT') }}
+            {{ $t('workouts.SEGMENT') }}
             {{ workoutObject.segmentId + 1 }}
           </span>
         </div>
@@ -57,7 +57,7 @@
                 params: { workoutId: workoutObject.workoutId },
               }"
             >
-              > {{ t('workouts.BACK_TO_WORKOUT') }}
+              > {{ $t('workouts.BACK_TO_WORKOUT') }}
             </router-link></span
           >
         </div>
@@ -68,8 +68,8 @@
       :class="{ inactive: !workoutObject.nextUrl }"
       :title="
         workoutObject.nextUrl
-          ? t(`workouts.NEXT_${workoutObject.type}`)
-          : t(`workouts.NO_NEXT_${workoutObject.type}`)
+          ? $t(`workouts.NEXT_${workoutObject.type}`)
+          : $t(`workouts.NO_NEXT_${workoutObject.type}`)
       "
       @click="
         workoutObject.nextUrl ? $router.push(workoutObject.nextUrl) : null
@@ -82,9 +82,8 @@
 
 <script lang="ts">
   import { PropType, defineComponent } from 'vue'
-  import { useI18n } from 'vue-i18n'
 
-  import SportImage from '@/components/Common/SportImage/index.vue'
+  import SportImage from '@/components/Common/Images/SportImage/index.vue'
   import { ISport } from '@/types/sports'
   import { IWorkoutObject } from '@/types/workouts'
 
@@ -105,8 +104,7 @@
     },
     emits: ['displayModal'],
     setup(props, { emit }) {
-      const { t } = useI18n()
-      return { t, emit }
+      return { emit }
     },
   })
 </script>

@@ -15,7 +15,7 @@
   import { defineComponent } from 'vue'
 
   import BikePic from '@/components/BikePic.vue'
-  import LoginOrRegisterForm from '@/components/User/LoginOrRegisterForm.vue'
+  import LoginOrRegisterForm from '@/components/User/UserAuthForm.vue'
 
   export default defineComponent({
     name: 'NavBar',

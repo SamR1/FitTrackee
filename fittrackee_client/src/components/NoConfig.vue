@@ -66,7 +66,7 @@
             stroke: none;
             fill-rule: nonzero;
             fill: var(--app-color);
-            filter: drop-shadow(10px 10px 10px var(--app-shadow-color));
+            filter: var(--svg-filter);
           }
         }
       }

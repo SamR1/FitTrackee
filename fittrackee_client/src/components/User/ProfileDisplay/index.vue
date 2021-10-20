@@ -8,7 +8,7 @@
           <div class="user-stat">
             <span class="stat-number">{{ user.nb_workouts }}</span>
             <span class="stat-label">
-              {{ t('workouts.WORKOUT', user.nb_workouts) }}
+              {{ $t('workouts.WORKOUT', user.nb_workouts) }}
             </span>
           </div>
           <div class="user-stat">
@@ -20,7 +20,7 @@
           <div class="user-stat hide-small">
             <span class="stat-number">{{ user.nb_sports }}</span>
             <span class="stat-label">
-              {{ t('workouts.SPORT', user.nb_sports) }}
+              {{ $t('workouts.SPORT', user.nb_sports) }}
             </span>
           </div>
         </div>
@@ -36,7 +36,6 @@
 
 <script lang="ts">
   import { ComputedRef, PropType, computed, defineComponent } from 'vue'
-  import { useI18n } from 'vue-i18n'
 
   import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
   import UserPreferences from '@/components/User/ProfileDisplay/UserPreferences.vue'
@@ -64,14 +63,13 @@
       },
     },
     setup(props) {
-      const { t } = useI18n()
       const tabs = ['PROFILE', 'PREFERENCES']
       const authUserPictureUrl: ComputedRef<string> = computed(() =>
         props.user.picture
           ? `${getApiUrl()}/users/${props.user.username}/picture?${Date.now()}`
           : ''
       )
-      return { authUserPictureUrl, t, tabs }
+      return { authUserPictureUrl, tabs }
     },
   })
 </script>
