@@ -49,6 +49,10 @@ python-3.8:
 python-3.9:
   extends: .python
 
+python-3.10:
+  extends: .python
+  image: python:3.10
+
 firefox:
   stage: selenium
   services:
