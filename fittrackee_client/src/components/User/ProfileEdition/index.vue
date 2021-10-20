@@ -1,7 +1,7 @@
 <template>
   <div id="user-profile-edition">
     <Card>
-      <template #title>{{ t('user.PROFILE.EDITION') }}</template>
+      <template #title>{{ t(`user.PROFILE.${tab}_EDITION`) }}</template>
       <template #content>
         <UserProfileTabs
           :tabs="tabs"
