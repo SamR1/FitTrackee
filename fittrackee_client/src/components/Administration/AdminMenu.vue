@@ -1,0 +1,73 @@
+<template>
+  <div id="admin-menu" class="center-card">
+    <Card>
+      <template #title>{{ $t('admin.ADMINISTRATION') }}</template>
+      <template #content>
+        <AppStatsCards :app-statistics="appStatistics" />
+        <div class="admin-menu description-list">
+          <dl>
+            <dt>{{ $t('admin.APPLICATION') }}</dt>
+            <dd>
+              {{ $t('admin.UPDATE_APPLICATION_DESCRIPTION') }}
+            </dd>
+            <dt>{{ capitalize($t('workouts.SPORT', 0)) }}</dt>
+            <dd>
+              {{ $t('admin.ENABLE_DISABLE_SPORTS') }}
+            </dd>
+            <dt>{{ capitalize($t('admin.USER', 0)) }}</dt>
+            <dd>
+              {{ $t('admin.ADMIN_RIGHTS_DELETE_USER_ACCOUNT') }}
+            </dd>
+          </dl>
+        </div>
+      </template>
+    </Card>
+  </div>
+</template>
+
+<script lang="ts">
+  import { PropType, capitalize, defineComponent } from 'vue'
+
+  import AppStatsCards from '@/components/Administration/AppStatsCards.vue'
+  import Card from '@/components/Common/Card.vue'
+  import { IAppStatistics } from '@/types/application'
+
+  export default defineComponent({
+    name: 'AdminMenu',
+    components: {
+      AppStatsCards,
+      Card,
+    },
+    props: {
+      appStatistics: {
+        type: Object as PropType<IAppStatistics>,
+      },
+    },
+    setup() {
+      return { capitalize }
+    },
+  })
+</script>
+
+<style lang="scss" scoped>
+  @import '~@/scss/base.scss';
+
+  #admin-menu {
+    display: flex;
+    &.center-card {
+      width: 100%;
+    }
+
+    ::v-deep(.card) {
+      flex-grow: 1;
+
+      .admin-menu {
+        padding: 0 $default-padding;
+
+        dd {
+          margin-bottom: $default-margin * 3;
+        }
+      }
+    }
+  }
+</style>

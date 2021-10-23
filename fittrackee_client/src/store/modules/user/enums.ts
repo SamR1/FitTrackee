@@ -15,6 +15,7 @@ export enum UserActions {
 export enum UserGetters {
   AUTH_TOKEN = 'AUTH_TOKEN',
   AUTH_USER_PROFILE = 'AUTH_USER_PROFILE',
+  IS_ADMIN = 'IS_ADMIN',
   IS_AUTHENTICATED = 'IS_AUTHENTICATED',
   USER_LOADING = 'USER_LOADING',
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="user-stat-card">
+  <div class="stat-card">
     <div class="stat-content box">
       <div class="stat-icon">
         <i class="fa" :class="`fa-${icon}`" />
@@ -16,7 +16,7 @@
   import { defineComponent } from 'vue'
 
   export default defineComponent({
-    name: 'UserStatCard',
+    name: 'StatCard',
     props: {
       icon: {
         type: String,
@@ -36,7 +36,7 @@
 
 <style lang="scss">
   @import '~@/scss/base';
-  .user-stat-card {
+  .stat-card {
     flex: 1;
     max-width: 25%;
     @media screen and (max-width: $small-limit) {

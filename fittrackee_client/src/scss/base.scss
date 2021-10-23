@@ -195,30 +195,31 @@ button {
 
 .description-list {
   dl {
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    padding: 0 $default-padding;
     dt {
       font-weight: bold;
-      float: left;
-      width: 25%;
     }
     dd {
-      float: left;
+      margin-bottom: $default-margin;
     }
   }
-  @media screen and (max-width: $x-small-limit) {
-    dl {
-      overflow: auto;
-      width: initial;
-      dt {
-        font-weight: bold;
-        float: none;
-        width: initial;
-      }
-      dd {
-        float: none;
-      }
+}
+
+.center-card {
+  margin: 0 auto;
+  width: 700px;
+  &.with-margin {
+    margin-top: 100px;
+  }
+
+  @media screen and (max-width: $medium-limit) {
+    width: 100%;
+    margin: 0 auto 50px auto;
+
+    &.with-margin {
+      margin-top: 0;
     }
   }
 }

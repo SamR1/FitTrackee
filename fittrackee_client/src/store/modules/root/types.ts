@@ -7,7 +7,7 @@ import {
 } from 'vuex'
 
 import { ROOT_STORE } from '@/store/constants'
-import { IAppConfig, IApplication } from '@/types/application'
+import { IAppConfig, IApplication, IAppStatistics } from '@/types/application'
 
 export interface IRootState {
   root: boolean
@@ -22,12 +22,17 @@ export interface IRootActions {
   [ROOT_STORE.ACTIONS.GET_APPLICATION_CONFIG](
     context: ActionContext<IRootState, IRootState>
   ): void
+  [ROOT_STORE.ACTIONS.GET_APPLICATION_STATS](
+    context: ActionContext<IRootState, IRootState>
+  ): void
 }
 
 export interface IRootGetters {
   [ROOT_STORE.GETTERS.APP_CONFIG](state: IRootState): IAppConfig
 
   [ROOT_STORE.GETTERS.APP_LOADING](state: IRootState): boolean
+
+  [ROOT_STORE.GETTERS.APP_STATS](state: IRootState): IAppStatistics
 
   [ROOT_STORE.GETTERS.ERROR_MESSAGES](
     state: IRootState
@@ -43,6 +48,18 @@ export type TRootMutations<S = IRootState> = {
   [ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES](
     state: S,
     errorMessages: string
+  ): void
+  [ROOT_STORE.MUTATIONS.UPDATE_APPLICATION_CONFIG](
+    state: S,
+    config: IAppConfig
+  ): void
+  [ROOT_STORE.MUTATIONS.UPDATE_APPLICATION_LOADING](
+    state: S,
+    loading: boolean
+  ): void
+  [ROOT_STORE.MUTATIONS.UPDATE_APPLICATION_STATS](
+    state: S,
+    statistics: IAppStatistics
   ): void
   [ROOT_STORE.MUTATIONS.UPDATE_LANG](state: S, language: string): void
 }

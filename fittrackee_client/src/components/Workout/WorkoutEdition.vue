@@ -1,6 +1,7 @@
 <template>
   <div
     id="workout-edition"
+    class="center-card center-card with-margin"
     :class="{ 'center-form': workout && workout.with_gpx }"
   >
     <Card>
@@ -416,12 +417,6 @@
   @import '~@/scss/base';
 
   #workout-edition {
-    margin: 100px auto;
-    width: 700px;
-    @media screen and (max-width: $medium-limit) {
-      width: 100%;
-      margin: 0 auto 50px auto;
-    }
     @media screen and (max-width: $small-limit) {
       &.center-form {
         margin: 50px auto;

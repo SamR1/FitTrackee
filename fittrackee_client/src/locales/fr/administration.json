@@ -1,3 +1,11 @@
 {
-  "ADMIN": "Admin"
+  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Ajouter/retirer des droits d'adminsitration, supprimer des comptes utilisateurs.",
+  "ADMIN": "Admin",
+  "ADMINISTRATION": "Administration",
+  "APPLICATION": "Application",
+  "ENABLE_DISABLE_SPORTS": "Activer/désactiver des sports.",
+  "REGISTRATION_DISABLED": "Les inscriptions sont actuellement désactivées.",
+  "REGISTRATION_ENABLED": "Les inscriptions sont actuellement activées.",
+  "UPDATE_APPLICATION_DESCRIPTION": "Configurer l'application (nombre maximum d'utilisateurs inscrits, taille maximale des fichers).",
+  "USER": "utilisateur | utilisateurs"
 }

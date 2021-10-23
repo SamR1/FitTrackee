@@ -3,12 +3,8 @@
     <dl>
       <dt>{{ $t('user.PROFILE.LANGUAGE') }}:</dt>
       <dd>{{ language }}</dd>
-    </dl>
-    <dl>
       <dt>{{ $t('user.PROFILE.TIMEZONE') }}:</dt>
       <dd>{{ timezone }}</dd>
-    </dl>
-    <dl>
       <dt>{{ $t('user.PROFILE.FIRST_DAY_OF_WEEK') }}:</dt>
       <dd>{{ $t(`user.PROFILE.${fistDayOfWeek}`) }}</dd>
     </dl>

@@ -1,3 +1,11 @@
 {
-  "ADMIN": "Admin"
+  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Add/remove admin rights, delete user account.",
+  "ADMIN": "Admin",
+  "ADMINISTRATION": "Administration",
+  "APPLICATION": "Application",
+  "ENABLE_DISABLE_SPORTS": "Enable/disable sports.",
+  "REGISTRATION_DISABLED": "Registration is currently disabled.",
+  "REGISTRATION_ENABLED": "Registration is currently enabled.",
+  "UPDATE_APPLICATION_DESCRIPTION": "Update application configuration (maximum number of registered users, maximum files size).",
+  "USER": "user | users"
 }

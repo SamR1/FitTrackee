@@ -28,4 +28,22 @@ export const actions: ActionTree<IRootState, IRootState> & IRootActions = {
         context.commit(ROOT_STORE.MUTATIONS.UPDATE_APPLICATION_LOADING, false)
       )
   },
+  [ROOT_STORE.ACTIONS.GET_APPLICATION_STATS](
+    context: ActionContext<IRootState, IRootState>
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .get('stats/all')
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            ROOT_STORE.MUTATIONS.UPDATE_APPLICATION_STATS,
+            res.data.data
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+  },
 }

@@ -29,11 +29,15 @@
             <router-link class="nav-item" to="/statistics">
               {{ $t('statistics.STATISTICS') }}
             </router-link>
-            <div v-if="isAuthenticated && authUser.admin" class="nav-item">
-              {{ $t('administration.ADMIN') }}
-            </div>
             <router-link class="nav-item" to="/workouts/add">
               {{ $t('workouts.ADD_WORKOUT') }}
+            </router-link>
+            <router-link
+              class="nav-item"
+              v-if="isAuthenticated && authUser.admin"
+              to="/admin"
+            >
+              {{ $t('admin.ADMIN') }}
             </router-link>
             <div class="nav-item nav-separator" />
           </div>

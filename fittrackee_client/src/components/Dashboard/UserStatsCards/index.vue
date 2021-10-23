@@ -1,21 +1,21 @@
 <template>
   <div id="user-stats">
-    <UserStatCard
+    <StatCard
       icon="calendar"
       :value="user.nb_workouts"
       :text="$t('workouts.WORKOUT', user.nb_workouts)"
     />
-    <UserStatCard
+    <StatCard
       icon="road"
       :value="Number(user.total_distance).toFixed(2)"
       :text="$t('workouts.KM')"
     />
-    <UserStatCard
+    <StatCard
       icon="clock-o"
       :value="total_duration.days"
       :text="total_duration.duration"
     />
-    <UserStatCard
+    <StatCard
       icon="tags"
       :value="user.nb_sports"
       :text="$t('workouts.SPORT', user.nb_sports)"
@@ -27,13 +27,13 @@
   import { ComputedRef, PropType, defineComponent, computed } from 'vue'
   import { useI18n } from 'vue-i18n'
 
-  import UserStatCard from '@/components/Dashboard/UserStatsCards/UserStatCard.vue'
+  import StatCard from '@/components/Common/StatCard.vue'
   import { IAuthUserProfile } from '@/types/user'
 
   export default defineComponent({
     name: 'UserStatsCards',
     components: {
-      UserStatCard,
+      StatCard,
     },
     props: {
       user: {

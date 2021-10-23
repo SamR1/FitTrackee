@@ -10,7 +10,7 @@ import UserTranslations from './user.json'
 import WorkoutsTranslations from './workouts.json'
 
 export default {
-  administration: AdministrationTranslations,
+  admin: AdministrationTranslations,
   api: ApiTranslations,
   buttons: ButtonsTranslations,
   common: CommonTranslations,

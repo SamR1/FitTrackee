@@ -1,5 +1,5 @@
 <template>
-  <div id="user-profile-edition">
+  <div id="user-profile-edition" class="center-card">
     <Card>
       <template #title>
         {{ $t(`user.PROFILE.${tab}_EDITION`) }}
@@ -49,16 +49,3 @@
     },
   })
 </script>
-
-<style lang="scss" scoped>
-  @import '~@/scss/base.scss';
-
-  #user-profile-edition {
-    margin: auto;
-    width: 700px;
-    @media screen and (max-width: $medium-limit) {
-      width: 100%;
-      margin: 0 auto 50px auto;
-    }
-  }
-</style>

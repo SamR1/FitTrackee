@@ -163,6 +163,12 @@ const routes: Array<RouteRecordRaw> = [
       ),
   },
   {
+    path: '/admin',
+    name: 'Administration',
+    component: () =>
+      import(/* webpackChunkName: 'admin' */ '@/views/AdminView.vue'),
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: () =>

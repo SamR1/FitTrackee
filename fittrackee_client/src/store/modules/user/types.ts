@@ -82,6 +82,8 @@ export interface IUserGetters {
 
   [USER_STORE.GETTERS.AUTH_USER_PROFILE](state: IUserState): IAuthUserProfile
 
+  [USER_STORE.GETTERS.IS_ADMIN](state: IUserState): boolean
+
   [USER_STORE.GETTERS.IS_AUTHENTICATED](state: IUserState): boolean
 
   [USER_STORE.GETTERS.USER_LOADING](state: IUserState): boolean

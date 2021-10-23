@@ -1,5 +1,5 @@
 <template>
-  <div id="password-reset-request">
+  <div id="password-reset-request" class="center-card with-margin">
     <Card>
       <template #title>{{ $t('user.RESET_PASSWORD') }}</template>
       <template #content>
@@ -36,12 +36,6 @@
   @import '~@/scss/base';
 
   #password-reset-request {
-    margin: 100px auto;
-    width: 700px;
-    @media screen and (max-width: $medium-limit) {
-      width: 100%;
-    }
-
     ::v-deep(.card) {
       .card-content {
         #user-form {

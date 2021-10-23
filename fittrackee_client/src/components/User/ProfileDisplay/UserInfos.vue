@@ -3,24 +3,14 @@
     <dl>
       <dt>{{ $t('user.PROFILE.REGISTRATION_DATE') }}:</dt>
       <dd>{{ registrationDate }}</dd>
-    </dl>
-    <dl>
       <dt>{{ $t('user.PROFILE.FIRST_NAME') }}:</dt>
       <dd>{{ user.first_name }}</dd>
-    </dl>
-    <dl>
       <dt>{{ $t('user.PROFILE.LAST_NAME') }}:</dt>
       <dd>{{ user.last_name }}</dd>
-    </dl>
-    <dl>
       <dt>{{ $t('user.PROFILE.BIRTH_DATE') }}:</dt>
       <dd>{{ birthDate }}</dd>
-    </dl>
-    <dl>
       <dt>{{ $t('user.PROFILE.LOCATION') }}:</dt>
       <dd>{{ user.location }}</dd>
-    </dl>
-    <dl>
       <dt>{{ $t('user.PROFILE.BIO') }}:</dt>
       <dd class="user-bio">
         {{ user.bio }}

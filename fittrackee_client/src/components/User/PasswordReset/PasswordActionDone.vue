@@ -1,5 +1,5 @@
 <template>
-  <div id="password-action-done">
+  <div id="password-action-done" class="center-card center-card with-margin">
     <EmailSent v-if="action === 'request-sent'" />
     <Password v-else />
     <div class="password-message">
@@ -43,11 +43,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 100px auto;
-    width: 700px;
-    @media screen and (max-width: $medium-limit) {
-      width: 100%;
-    }
 
     svg {
       stroke: none;
