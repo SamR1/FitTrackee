@@ -1,41 +1,24 @@
 <template>
   <div id="profile" class="container" v-if="authUser.username">
-    <ProfileEdition :user="authUser" :tab="tab" v-if="edition" />
-    <Profile :user="authUser" :tab="tab" v-else />
+    <router-view :user="authUser"></router-view>
   </div>
 </template>
 
 <script lang="ts">
-  import { computed, defineComponent } from 'vue'
+  import { computed, ComputedRef, defineComponent } from 'vue'
 
-  import Profile from '@/components/User/ProfileDisplay/index.vue'
-  import ProfileEdition from '@/components/User/ProfileEdition/index.vue'
   import { USER_STORE } from '@/store/constants'
+  import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   export default defineComponent({
     name: 'ProfileView',
-    components: {
-      Profile,
-      ProfileEdition,
-    },
-    props: {
-      edition: {
-        type: Boolean,
-        required: true,
-      },
-      tab: {
-        type: String,
-        required: true,
-      },
-    },
     setup() {
       const store = useStore()
-      return {
-        authUser: computed(
-          () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
-        ),
-      }
+      const authUser: ComputedRef<IAuthUserProfile> = computed(
+        () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
+      )
+      return { authUser }
     },
   })
 </script>

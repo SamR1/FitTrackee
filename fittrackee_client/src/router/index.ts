@@ -1,17 +1,30 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
+import Profile from '@/components/User/ProfileDisplay/index.vue'
+import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
+import UserPreferences from '@/components/User/ProfileDisplay/UserPreferences.vue'
+import ProfileEdition from '@/components/User/ProfileEdition/index.vue'
+import UserInfosEdition from '@/components/User/ProfileEdition/UserInfosEdition.vue'
+import UserPictureEdition from '@/components/User/ProfileEdition/UserPictureEdition.vue'
+import UserPreferencesEdition from '@/components/User/ProfileEdition/UserPreferencesEdition.vue'
 import store from '@/store'
 import { USER_STORE } from '@/store/constants'
-import AddWorkout from '@/views/AddWorkout.vue'
 import Dashboard from '@/views/DashBoard.vue'
 import LoginOrRegister from '@/views/LoginOrRegister.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import PasswordResetView from '@/views/PasswordResetView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import StatisticsView from '@/views/StatisticsView.vue'
+import AddWorkout from '@/views/workouts/AddWorkout.vue'
 import EditWorkout from '@/views/workouts/EditWorkout.vue'
 import Workout from '@/views/workouts/Workout.vue'
 import Workouts from '@/views/workouts/WorkoutsView.vue'
+
+const getTabFromPath = (path: string): string => {
+  const regex = /(\/profile)(\/edit)*(\/*)/
+  const tag = path.replace(regex, '').toUpperCase()
+  return tag === '' ? 'PROFILE' : tag.toUpperCase()
+}
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -30,12 +43,6 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Register',
     component: LoginOrRegister,
     props: { action: 'register' },
-  },
-  {
-    path: '/profile',
-    name: 'Profile',
-    component: ProfileView,
-    props: { edition: false, tab: 'PROFILE' },
   },
   {
     path: '/password-reset/sent',
@@ -62,28 +69,56 @@ const routes: Array<RouteRecordRaw> = [
     props: { action: 'reset' },
   },
   {
-    path: '/profile/edit/picture',
-    name: 'UserPictureEdition',
+    path: '/profile',
+    name: 'Profile',
     component: ProfileView,
-    props: { edition: true, tab: 'PICTURE' },
-  },
-  {
-    path: '/profile/preferences',
-    name: 'UserPreferences',
-    component: ProfileView,
-    props: { edition: false, tab: 'PREFERENCES' },
-  },
-  {
-    path: '/profile/edit/preferences',
-    name: 'UserPreferencesEdition',
-    component: ProfileView,
-    props: { edition: true, tab: 'PREFERENCES' },
-  },
-  {
-    path: '/profile/edit',
-    name: 'ProfileEdition',
-    component: ProfileView,
-    props: { edition: true, tab: 'PROFILE' },
+    children: [
+      {
+        path: '',
+        name: 'UserProfile',
+        component: Profile,
+        props: (route) => ({
+          tab: getTabFromPath(route.path),
+        }),
+        children: [
+          {
+            path: '',
+            name: 'UserInfos',
+            component: UserInfos,
+          },
+          {
+            path: 'preferences',
+            name: 'UserPreferences',
+            component: UserPreferences,
+          },
+        ],
+      },
+      {
+        path: 'edit',
+        name: 'UserProfileEdition',
+        component: ProfileEdition,
+        props: (route) => ({
+          tab: getTabFromPath(route.path),
+        }),
+        children: [
+          {
+            path: '',
+            name: 'UserInfosEdition',
+            component: UserInfosEdition,
+          },
+          {
+            path: 'picture',
+            name: 'UserPictureEdition',
+            component: UserPictureEdition,
+          },
+          {
+            path: 'preferences',
+            name: 'UserPreferencesEdition',
+            component: UserPreferencesEdition,
+          },
+        ],
+      },
+    ],
   },
   {
     path: '/statistics',

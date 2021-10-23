@@ -39,7 +39,10 @@
           <button class="confirm" type="submit">
             {{ $t('buttons.SUBMIT') }}
           </button>
-          <button class="cancel" @click.prevent="$router.go(-1)">
+          <button
+            class="cancel"
+            @click.prevent="$router.push('/profile/preferences')"
+          >
             {{ $t('buttons.CANCEL') }}
           </button>
         </div>

@@ -81,7 +81,7 @@
           <button class="confirm" type="submit">
             {{ $t('buttons.SUBMIT') }}
           </button>
-          <button class="cancel" @click.prevent="$router.go(-1)">
+          <button class="cancel" @click.prevent="$router.push('/profile')">
             {{ $t('buttons.CANCEL') }}
           </button>
           <button class="danger" @click.prevent="updateDisplayModal(true)">
