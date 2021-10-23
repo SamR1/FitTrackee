@@ -74,7 +74,7 @@
 </template>
 
 <script lang="ts">
-  import { ComputedRef, computed, defineComponent, ref } from 'vue'
+  import { ComputedRef, computed, defineComponent, ref, capitalize } from 'vue'
   import { useI18n } from 'vue-i18n'
 
   import UserPicture from '@/components/User/UserPicture.vue'
@@ -82,7 +82,7 @@
   import { IDropdownOption } from '@/types/forms'
   import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
-  import { capitalize, getApiUrl } from '@/utils'
+  import { getApiUrl } from '@/utils'
 
   export default defineComponent({
     name: 'NavBar',

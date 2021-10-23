@@ -110,6 +110,7 @@
     defineComponent,
     ref,
     watch,
+    capitalize,
     onBeforeMount,
   } from 'vue'
 
@@ -121,7 +122,6 @@
   import { IAuthUserProfile } from '@/types/user'
   import { IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
-  import { capitalize } from '@/utils'
   import { getDateWithTZ } from '@/utils/dates'
 
   export default defineComponent({
