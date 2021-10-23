@@ -11,7 +11,7 @@ import {
 } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
 
-export const startDate = (
+export const getStartDate = (
   duration: string,
   day: Date,
   weekStartingMonday: boolean

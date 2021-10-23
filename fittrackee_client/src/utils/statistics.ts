@@ -23,7 +23,7 @@ import {
   TStatisticsDatasets,
   TStatisticsFromApi,
 } from '@/types/statistics'
-import { incrementDate, startDate } from '@/utils/dates'
+import { incrementDate, getStartDate } from '@/utils/dates'
 import { sportColors } from '@/utils/sports'
 
 const dateFormats: Record<string, Record<string, string>> = {
@@ -53,7 +53,7 @@ export const getDateKeys = (
 ): Date[] => {
   const days = []
   for (
-    let day = startDate(params.duration, params.start, weekStartingMonday);
+    let day = getStartDate(params.duration, params.start, weekStartingMonday);
     day <= params.end;
     day = incrementDate(params.duration, day)
   ) {

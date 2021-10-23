@@ -3,7 +3,7 @@ import { assert, expect } from 'chai'
 import {
   getCalendarStartAndEnd,
   incrementDate,
-  startDate,
+  getStartDate,
   formatWorkoutDate,
 } from '@/utils/dates'
 
@@ -34,7 +34,7 @@ describe('startDate (week starting Sunday)', () => {
       const day: Date = new Date(testParams.inputDate)
       const expected: Date = new Date(testParams.expectedDate)
       assert.deepEqual(
-        startDate(testParams.inputDuration, day, false),
+        getStartDate(testParams.inputDuration, day, false),
         expected
       )
     })
@@ -67,7 +67,10 @@ describe('startDate (week starting Monday)', () => {
     it(testParams.description, () => {
       const day: Date = new Date(testParams.inputDate)
       const expected: Date = new Date(testParams.expectedDate)
-      assert.deepEqual(startDate(testParams.inputDuration, day, true), expected)
+      assert.deepEqual(
+        getStartDate(testParams.inputDuration, day, true),
+        expected
+      )
     })
   )
 })
@@ -75,7 +78,7 @@ describe('startDate (week starting Monday)', () => {
 describe('startDate (week starting Monday)', () => {
   it('it throws an exception if duration is invalid', () => {
     const day: Date = new Date('August 21, 2021 20:00:00')
-    expect(() => startDate('invalid duration', day, true)).to.throw(
+    expect(() => getStartDate('invalid duration', day, true)).to.throw(
       'Invalid duration, expected: "week", "month", "year", got: "invalid duration"'
     )
   })
