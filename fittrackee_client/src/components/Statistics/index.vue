@@ -37,7 +37,7 @@
   import { ISport, ITranslatedSport } from '@/types/sports'
   import { IStatisticsDateParams } from '@/types/statistics'
   import { IAuthUserProfile } from '@/types/user'
-  import { translateSports, sportColors } from '@/utils/sports'
+  import { translateSports } from '@/utils/sports'
   import { getStatsDateParams, updateChartParams } from '@/utils/statistics'
 
   export default defineComponent({
@@ -106,7 +106,6 @@
       return {
         chartParams,
         selectedTimeFrame,
-        sportColors,
         timeFrames,
         translatedSports,
         selectedSportIds,

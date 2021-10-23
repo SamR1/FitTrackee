@@ -2,7 +2,7 @@
   <div
     class="sport-img"
     :style="{ fill: sportColors[sportLabel] }"
-    :title="title ? title : t(`sports.${sportLabel}.LABEL`)"
+    :title="title ? title : $t(`sports.${sportLabel}.LABEL`)"
   >
     <CyclingSport v-if="sportLabel === 'Cycling (Sport)'" />
     <CyclingTransport v-if="sportLabel === 'Cycling (Transport)'" />
@@ -14,8 +14,7 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent } from 'vue'
-  import { useI18n } from 'vue-i18n'
+  import { defineComponent, inject } from 'vue'
 
   import CyclingSport from '@/components/Common/Images/SportImage/CyclingSport.vue'
   import CyclingTransport from '@/components/Common/Images/SportImage/CyclingTransport.vue'
@@ -23,7 +22,6 @@
   import MountainBiking from '@/components/Common/Images/SportImage/MountainBiking.vue'
   import Running from '@/components/Common/Images/SportImage/Running.vue'
   import Walking from '@/components/Common/Images/SportImage/Walking.vue'
-  import { sportColors } from '@/utils/sports'
 
   export default defineComponent({
     name: 'SportImg',
@@ -46,8 +44,7 @@
       },
     },
     setup() {
-      const { t } = useI18n()
-      return { sportColors, t }
+      return { sportColors: inject('sportColors') }
     },
   })
 </script>

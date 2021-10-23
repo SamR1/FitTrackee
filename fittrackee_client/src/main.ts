@@ -8,8 +8,10 @@ import store from './store'
 
 import { customComponents } from '@/custom-components'
 import { clickOutsideDirective } from '@/directives'
+import { sportColors } from '@/utils/sports'
 
 const app = createApp(App)
+  .provide('sportColors', sportColors)
   .use(i18n)
   .use(store)
   .use(router)
