@@ -37,7 +37,6 @@
     ref,
   } from 'vue'
 
-  import ErrorMessage from '@/components/Common/ErrorMessage.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
   import { IAppConfig } from '@/types/application'
@@ -48,7 +47,6 @@
   export default defineComponent({
     name: 'UserPictureEdition',
     components: {
-      ErrorMessage,
       UserPicture,
     },
     props: {

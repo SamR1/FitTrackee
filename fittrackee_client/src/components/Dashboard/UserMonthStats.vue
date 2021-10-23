@@ -19,7 +19,6 @@
   import { endOfMonth, startOfMonth } from 'date-fns'
   import { PropType, defineComponent } from 'vue'
 
-  import Card from '@/components/Common/Card.vue'
   import StatChart from '@/components/Common/StatsChart/index.vue'
   import { ISport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'
@@ -27,7 +26,6 @@
   export default defineComponent({
     name: 'UserMonthStats',
     components: {
-      Card,
       StatChart,
     },
     props: {

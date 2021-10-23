@@ -25,17 +25,11 @@
 <script lang="ts">
   import { ComputedRef, computed, defineComponent, onUnmounted } from 'vue'
 
-  import Card from '@/components/Common/Card.vue'
-  import ErrorMessage from '@/components/Common/ErrorMessage.vue'
   import { ROOT_STORE } from '@/store/constants'
   import { useStore } from '@/use/useStore'
 
   export default defineComponent({
     name: 'Modal',
-    components: {
-      Card,
-      ErrorMessage,
-    },
     props: {
       title: {
         type: String,

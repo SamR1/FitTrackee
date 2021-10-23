@@ -27,14 +27,10 @@
 <script lang="ts">
   import { PropType, defineComponent } from 'vue'
 
-  import Card from '@/components/Common/Card.vue'
   import { IWorkoutSegment } from '@/types/workouts'
 
   export default defineComponent({
     name: 'WorkoutSegments',
-    components: {
-      Card,
-    },
     props: {
       segments: {
         type: Object as PropType<IWorkoutSegment[]>,

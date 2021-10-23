@@ -12,13 +12,8 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
 
-  import Card from '@/components/Common/Card.vue'
-
   export default defineComponent({
     name: 'WorkoutNotes',
-    components: {
-      Card,
-    },
     props: {
       notes: {
         type: String,

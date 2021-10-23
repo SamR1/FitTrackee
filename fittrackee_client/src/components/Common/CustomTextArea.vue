@@ -18,7 +18,7 @@
   import { defineComponent, ref, watch } from 'vue'
 
   export default defineComponent({
-    name: 'CustomTextarea',
+    name: 'CustomTextArea',
     props: {
       charLimit: {
         type: Number,

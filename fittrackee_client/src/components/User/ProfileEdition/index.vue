@@ -20,7 +20,6 @@
 <script lang="ts">
   import { PropType, computed, defineComponent, ref } from 'vue'
 
-  import Card from '@/components/Common/Card.vue'
   import UserInfosEdition from '@/components/User/ProfileEdition/UserInfosEdition.vue'
   import UserPictureEdition from '@/components/User/ProfileEdition/UserPictureEdition.vue'
   import UserPreferencesEdition from '@/components/User/ProfileEdition/UserPreferencesEdition.vue'
@@ -32,7 +31,6 @@
   export default defineComponent({
     name: 'ProfileEdition',
     components: {
-      Card,
       UserInfosEdition,
       UserPictureEdition,
       UserPreferencesEdition,

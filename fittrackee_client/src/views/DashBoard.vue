@@ -78,7 +78,6 @@
     onUnmounted,
   } from 'vue'
 
-  import Loader from '@/components/Common/Loader.vue'
   import Timeline from '@/components/Dashboard/Timeline.vue'
   import UserCalendar from '@/components/Dashboard/UserCalendar/index.vue'
   import UserMonthStats from '@/components/Dashboard/UserMonthStats.vue'
@@ -92,7 +91,6 @@
   export default defineComponent({
     name: 'Dashboard',
     components: {
-      Loader,
       Timeline,
       UserCalendar,
       UserMonthStats,

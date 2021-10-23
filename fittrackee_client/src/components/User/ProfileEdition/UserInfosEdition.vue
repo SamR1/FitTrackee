@@ -106,20 +106,12 @@
     onMounted,
   } from 'vue'
 
-  import CustomTextArea from '@/components/Common/CustomTextArea.vue'
-  import ErrorMessage from '@/components/Common/ErrorMessage.vue'
-  import Modal from '@/components/Common/Modal.vue'
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
   import { IAuthUserProfile, IUserPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   export default defineComponent({
     name: 'UserInfosEdition',
-    components: {
-      CustomTextArea,
-      ErrorMessage,
-      Modal,
-    },
     props: {
       user: {
         type: Object as PropType<IAuthUserProfile>,

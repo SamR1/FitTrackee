@@ -12,13 +12,11 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
 
-  import Card from '@/components/Common/Card.vue'
   import UserAuthForm from '@/components/User/UserAuthForm.vue'
 
   export default defineComponent({
     name: 'PasswordResetForm',
     components: {
-      Card,
       UserAuthForm,
     },
     props: {

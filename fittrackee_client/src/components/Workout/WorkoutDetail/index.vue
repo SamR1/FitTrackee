@@ -38,8 +38,6 @@
   } from 'vue'
   import { useRoute } from 'vue-router'
 
-  import Card from '@/components/Common/Card.vue'
-  import Modal from '@/components/Common/Modal.vue'
   import WorkoutCardTitle from '@/components/Workout/WorkoutDetail/WorkoutCardTitle.vue'
   import WorkoutData from '@/components/Workout/WorkoutDetail/WorkoutData.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap.vue'
@@ -59,8 +57,6 @@
   export default defineComponent({
     name: 'WorkoutDetail',
     components: {
-      Card,
-      Modal,
       WorkoutCardTitle,
       WorkoutData,
       WorkoutMap,

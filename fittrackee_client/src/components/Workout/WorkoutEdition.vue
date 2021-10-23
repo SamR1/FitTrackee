@@ -219,10 +219,6 @@
   import { useI18n } from 'vue-i18n'
   import { useRouter } from 'vue-router'
 
-  import Card from '@/components/Common/Card.vue'
-  import CustomTextArea from '@/components/Common/CustomTextArea.vue'
-  import ErrorMessage from '@/components/Common/ErrorMessage.vue'
-  import Loader from '@/components/Common/Loader.vue'
   import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import { IAppConfig } from '@/types/application'
   import { ISport } from '@/types/sports'
@@ -235,12 +231,6 @@
 
   export default defineComponent({
     name: 'WorkoutEdition',
-    components: {
-      Card,
-      CustomTextArea,
-      ErrorMessage,
-      Loader,
-    },
     props: {
       authUser: {
         type: Object as PropType<IAuthUserProfile>,

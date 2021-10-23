@@ -77,7 +77,6 @@
   import { ComputedRef, computed, defineComponent, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
 
-  import Dropdown from '@/components/Common/Dropdown.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
   import { IDropdownOption } from '@/types/forms'
@@ -88,7 +87,6 @@
   export default defineComponent({
     name: 'NavBar',
     components: {
-      Dropdown,
       UserPicture,
     },
     emits: ['menuInteraction'],

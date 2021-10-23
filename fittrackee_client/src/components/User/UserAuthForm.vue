@@ -80,8 +80,6 @@
   import { ComputedRef, computed, defineComponent, reactive, watch } from 'vue'
   import { useRoute } from 'vue-router'
 
-  import AlertMessage from '@/components/Common/AlertMessage.vue'
-  import ErrorMessage from '@/components/Common/ErrorMessage.vue'
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
   import { IAppConfig } from '@/types/application'
   import { ILoginRegisterFormData } from '@/types/user'
@@ -89,10 +87,6 @@
 
   export default defineComponent({
     name: 'UserAuthForm',
-    components: {
-      AlertMessage,
-      ErrorMessage,
-    },
     props: {
       action: {
         type: String,

@@ -59,16 +59,12 @@
   } from 'vue'
   import { useI18n } from 'vue-i18n'
 
-  import ErrorMessage from '@/components/Common/ErrorMessage.vue'
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
   import { IAuthUserProfile, IUserPreferencesPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   export default defineComponent({
     name: 'UserPreferencesEdition',
-    components: {
-      ErrorMessage,
-    },
     props: {
       user: {
         type: Object as PropType<IAuthUserProfile>,

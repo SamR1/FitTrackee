@@ -6,11 +6,17 @@ import i18n from './i18n'
 import router from './router'
 import store from './store'
 
+import { customComponents } from '@/custom-components'
 import { clickOutsideDirective } from '@/directives'
 
-createApp(App)
+const app = createApp(App)
   .use(i18n)
   .use(store)
   .use(router)
   .directive('click-outside', clickOutsideDirective)
-  .mount('#app')
+
+customComponents.forEach((component) => {
+  app.component(component.name, component)
+})
+
+app.mount('#app')

@@ -47,7 +47,6 @@
     onMounted,
   } from 'vue'
 
-  import Loader from '@/components/Common/Loader.vue'
   import Footer from '@/components/Footer.vue'
   import NavBar from '@/components/NavBar.vue'
   import NoConfig from '@/components/NoConfig.vue'
@@ -74,7 +73,6 @@
     name: 'App',
     components: {
       Footer,
-      Loader,
       NavBar,
       NoConfig,
     },

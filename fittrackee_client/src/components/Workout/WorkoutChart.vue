@@ -42,7 +42,6 @@
   import { LineChart, useLineChart } from 'vue-chart-3'
   import { useI18n } from 'vue-i18n'
 
-  import Card from '@/components/Common/Card.vue'
   import { IAuthUserProfile } from '@/types/user'
   import {
     IWorkoutChartData,
@@ -54,7 +53,6 @@
   export default defineComponent({
     name: 'WorkoutChart',
     components: {
-      Card,
       LineChart,
     },
     props: {
