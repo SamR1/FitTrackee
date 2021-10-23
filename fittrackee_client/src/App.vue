@@ -24,21 +24,6 @@
 
 <script lang="ts">
   import {
-    Chart,
-    BarElement,
-    LineElement,
-    PointElement,
-    Legend,
-    Title,
-    Tooltip,
-    Filler,
-    BarController,
-    CategoryScale,
-    LineController,
-    LinearScale,
-  } from 'chart.js'
-  import ChartDataLabels from 'chartjs-plugin-datalabels'
-  import {
     ComputedRef,
     computed,
     defineComponent,
@@ -53,21 +38,6 @@
   import { ROOT_STORE } from '@/store/constants'
   import { IAppConfig } from '@/types/application'
   import { useStore } from '@/use/useStore'
-
-  Chart.register(
-    BarElement,
-    LineElement,
-    PointElement,
-    Legend,
-    Title,
-    Tooltip,
-    Filler,
-    BarController,
-    CategoryScale,
-    LineController,
-    LinearScale,
-    ChartDataLabels
-  )
 
   export default defineComponent({
     name: 'App',

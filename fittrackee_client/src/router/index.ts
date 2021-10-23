@@ -9,16 +9,6 @@ import UserPictureEdition from '@/components/User/ProfileEdition/UserPictureEdit
 import UserPreferencesEdition from '@/components/User/ProfileEdition/UserPreferencesEdition.vue'
 import store from '@/store'
 import { USER_STORE } from '@/store/constants'
-import Dashboard from '@/views/DashBoard.vue'
-import LoginOrRegister from '@/views/LoginOrRegister.vue'
-import NotFoundView from '@/views/NotFoundView.vue'
-import PasswordResetView from '@/views/PasswordResetView.vue'
-import ProfileView from '@/views/ProfileView.vue'
-import StatisticsView from '@/views/StatisticsView.vue'
-import AddWorkout from '@/views/workouts/AddWorkout.vue'
-import EditWorkout from '@/views/workouts/EditWorkout.vue'
-import Workout from '@/views/workouts/Workout.vue'
-import Workouts from '@/views/workouts/WorkoutsView.vue'
 
 const getTabFromPath = (path: string): string => {
   const regex = /(\/profile)(\/edit)*(\/*)/
@@ -30,48 +20,56 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Dashboard',
-    component: Dashboard,
+    component: () =>
+      import(/* webpackChunkName: 'main' */ '@/views/DashBoard.vue'),
   },
   {
     path: '/login',
     name: 'Login',
-    component: LoginOrRegister,
+    component: () =>
+      import(/* webpackChunkName: 'main' */ '@/views/LoginOrRegister.vue'),
     props: { action: 'login' },
   },
   {
     path: '/register',
     name: 'Register',
-    component: LoginOrRegister,
+    component: () =>
+      import(/* webpackChunkName: 'main' */ '@/views/LoginOrRegister.vue'),
     props: { action: 'register' },
   },
   {
     path: '/password-reset/sent',
     name: 'PasswordEmailSent',
-    component: PasswordResetView,
+    component: () =>
+      import(/* webpackChunkName: 'reset' */ '@/views/PasswordResetView.vue'),
     props: { action: 'request-sent' },
   },
   {
     path: '/password-reset/request',
     name: 'PasswordResetRequest',
-    component: PasswordResetView,
+    component: () =>
+      import(/* webpackChunkName: 'reset' */ '@/views/PasswordResetView.vue'),
     props: { action: 'reset-request' },
   },
   {
     path: '/password-reset/password-updated',
     name: 'PasswordUpdated',
-    component: PasswordResetView,
+    component: () =>
+      import(/* webpackChunkName: 'reset' */ '@/views/PasswordResetView.vue'),
     props: { action: 'password-updated' },
   },
   {
     path: '/password-reset',
     name: 'PasswordReset',
-    component: PasswordResetView,
+    component: () =>
+      import(/* webpackChunkName: 'reset' */ '@/views/PasswordResetView.vue'),
     props: { action: 'reset' },
   },
   {
     path: '/profile',
     name: 'Profile',
-    component: ProfileView,
+    component: () =>
+      import(/* webpackChunkName: 'profile' */ '@/views/ProfileView.vue'),
     children: [
       {
         path: '',
@@ -123,36 +121,53 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/statistics',
     name: 'Statistics',
-    component: StatisticsView,
+    component: () =>
+      import(/* webpackChunkName: 'main' */ '@/views/StatisticsView.vue'),
   },
   {
     path: '/workouts',
     name: 'Workouts',
-    component: Workouts,
+    component: () =>
+      import(
+        /* webpackChunkName: 'workouts' */ '@/views/workouts/WorkoutsView.vue'
+      ),
   },
   {
     path: '/workouts/:workoutId',
     name: 'Workout',
-    component: Workout,
+    component: () =>
+      import(/* webpackChunkName: 'workouts' */ '@/views/workouts/Workout.vue'),
     props: { displaySegment: false },
   },
   {
     path: '/workouts/:workoutId/edit',
     name: 'EditWorkout',
-    component: EditWorkout,
+    component: () =>
+      import(
+        /* webpackChunkName: 'workouts' */ '@/views/workouts/EditWorkout.vue'
+      ),
   },
   {
     path: '/workouts/:workoutId/segment/:segmentId',
     name: 'WorkoutSegment',
-    component: Workout,
+    component: () =>
+      import(/* webpackChunkName: 'workouts' */ '@/views/workouts/Workout.vue'),
     props: { displaySegment: true },
   },
   {
     path: '/workouts/add',
     name: 'AddWorkout',
-    component: AddWorkout,
+    component: () =>
+      import(
+        /* webpackChunkName: 'workouts' */ '@/views/workouts/AddWorkout.vue'
+      ),
   },
-  { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundView },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    component: () =>
+      import(/* webpackChunkName: 'main' */ '@/views/NotFoundView.vue'),
+  },
 ]
 
 const router = createRouter({
