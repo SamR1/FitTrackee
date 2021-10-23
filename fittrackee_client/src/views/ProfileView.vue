@@ -6,12 +6,11 @@
 </template>
 
 <script lang="ts">
-  import { computed, ComputedRef, defineComponent } from 'vue'
+  import { computed, defineComponent } from 'vue'
 
   import Profile from '@/components/User/ProfileDisplay/index.vue'
   import ProfileEdition from '@/components/User/ProfileEdition/index.vue'
   import { USER_STORE } from '@/store/constants'
-  import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   export default defineComponent({
@@ -32,11 +31,10 @@
     },
     setup() {
       const store = useStore()
-      const authUser: ComputedRef<IAuthUserProfile> = computed(
-        () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
-      )
       return {
-        authUser,
+        authUser: computed(
+          () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
+        ),
       }
     },
   })

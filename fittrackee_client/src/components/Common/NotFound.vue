@@ -2,7 +2,7 @@
   <Error
     title="404"
     :message="$t(`error.NOT_FOUND.${target}`)"
-    :button-text="t('common.HOME')"
+    :button-text="$t('common.HOME')"
   />
 </template>
 
