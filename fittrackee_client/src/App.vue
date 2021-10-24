@@ -36,7 +36,7 @@
   import NavBar from '@/components/NavBar.vue'
   import NoConfig from '@/components/NoConfig.vue'
   import { ROOT_STORE } from '@/store/constants'
-  import { IAppConfig } from '@/types/application'
+  import { TAppConfig } from '@/types/application'
   import { useStore } from '@/use/useStore'
 
   export default defineComponent({
@@ -49,7 +49,7 @@
     setup() {
       const store = useStore()
 
-      const appConfig: ComputedRef<IAppConfig> = computed(
+      const appConfig: ComputedRef<TAppConfig> = computed(
         () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
       )
       const appLoading: ComputedRef<boolean> = computed(

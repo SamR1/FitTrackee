@@ -7,7 +7,12 @@ import {
 } from 'vuex'
 
 import { ROOT_STORE } from '@/store/constants'
-import { IAppConfig, IApplication, IAppStatistics } from '@/types/application'
+import {
+  TAppConfig,
+  IApplication,
+  IAppStatistics,
+  TAppConfigForm,
+} from '@/types/application'
 
 export interface IRootState {
   root: boolean
@@ -25,10 +30,14 @@ export interface IRootActions {
   [ROOT_STORE.ACTIONS.GET_APPLICATION_STATS](
     context: ActionContext<IRootState, IRootState>
   ): void
+  [ROOT_STORE.ACTIONS.UPDATE_APPLICATION_CONFIG](
+    context: ActionContext<IRootState, IRootState>,
+    payload: TAppConfigForm
+  ): void
 }
 
 export interface IRootGetters {
-  [ROOT_STORE.GETTERS.APP_CONFIG](state: IRootState): IAppConfig
+  [ROOT_STORE.GETTERS.APP_CONFIG](state: IRootState): TAppConfig
 
   [ROOT_STORE.GETTERS.APP_LOADING](state: IRootState): boolean
 
@@ -51,7 +60,7 @@ export type TRootMutations<S = IRootState> = {
   ): void
   [ROOT_STORE.MUTATIONS.UPDATE_APPLICATION_CONFIG](
     state: S,
-    config: IAppConfig
+    config: TAppConfig
   ): void
   [ROOT_STORE.MUTATIONS.UPDATE_APPLICATION_LOADING](
     state: S,

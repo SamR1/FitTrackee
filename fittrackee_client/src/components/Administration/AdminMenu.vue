@@ -6,7 +6,11 @@
         <AppStatsCards :app-statistics="appStatistics" />
         <div class="admin-menu description-list">
           <dl>
-            <dt>{{ $t('admin.APPLICATION') }}</dt>
+            <dt>
+              <router-link to="/admin/application">
+                {{ $t('admin.APPLICATION') }}
+              </router-link>
+            </dt>
             <dd>
               {{ $t('admin.UPDATE_APPLICATION_DESCRIPTION') }}
             </dd>

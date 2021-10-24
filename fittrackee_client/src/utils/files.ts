@@ -12,3 +12,8 @@ export const getReadableFileSize = (
   const suffix = suffixes[i]
   return asText ? `${size}${suffix}` : { size, suffix }
 }
+
+export const getFileSizeInMB = (fileSize: number): number => {
+  const value = fileSize / 1048576
+  return (!fileSize && 0) || +value.toFixed(2)
+}

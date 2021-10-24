@@ -1,8 +1,9 @@
 <template>
   <div id="admin">
     <div class="container" v-if="!userLoading">
-      <AdministrationMenu
+      <router-view
         v-if="isAuthUserAmin"
+        :appConfig="appConfig"
         :appStatistics="appStatistics"
       />
       <NotFound v-else />
@@ -13,16 +14,14 @@
 <script lang="ts">
   import { computed, ComputedRef, defineComponent, onBeforeMount } from 'vue'
 
-  import AdministrationMenu from '@/components/Administration/AdminMenu.vue'
   import NotFound from '@/components/Common/NotFound.vue'
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
-  import { IAppStatistics } from '@/types/application'
+  import { TAppConfig, IAppStatistics } from '@/types/application'
   import { useStore } from '@/use/useStore'
 
   export default defineComponent({
     name: 'Admin',
     components: {
-      AdministrationMenu,
       NotFound,
     },
     setup() {
@@ -35,6 +34,9 @@
       const appLoading: ComputedRef<boolean> = computed(
         () => store.getters[ROOT_STORE.GETTERS.APP_LOADING]
       )
+      const appConfig: ComputedRef<TAppConfig> = computed(
+        () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
+      )
       const appStatistics: ComputedRef<IAppStatistics> = computed(
         () => store.getters[ROOT_STORE.GETTERS.APP_STATS]
       )
@@ -45,11 +47,62 @@
         () => store.getters[USER_STORE.GETTERS.USER_LOADING]
       )
 
-      return { appLoading, appStatistics, isAuthUserAmin, userLoading }
+      return {
+        appConfig,
+        appLoading,
+        appStatistics,
+        isAuthUserAmin,
+        userLoading,
+      }
     },
   })
 </script>
 
 <style lang="scss" scoped>
   @import '~@/scss/base.scss';
+
+  #admin {
+    .admin-card {
+      width: 100%;
+      ::v-deep(.card) {
+        .admin-form {
+          display: flex;
+          flex-direction: column;
+
+          label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: $default-margin 0;
+            flex-wrap: wrap;
+
+            input {
+              width: 50%;
+              font-size: 0.9em;
+              margin-right: $default-margin * 5;
+              @media screen and (max-width: $medium-limit) {
+                margin-right: 0;
+              }
+              @media screen and (max-width: $small-limit) {
+                width: 100%;
+              }
+
+              &:disabled {
+                -webkit-appearance: none;
+                -moz-appearance: textfield;
+                background-color: white;
+                border-color: white;
+                color: var(--app-color);
+              }
+            }
+          }
+          .form-buttons {
+            display: flex;
+            gap: $default-padding;
+            margin-bottom: $default-margin;
+          }
+        }
+      }
+    }
+  }
 </style>

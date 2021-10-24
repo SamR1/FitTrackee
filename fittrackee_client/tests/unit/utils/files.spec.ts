@@ -1,6 +1,6 @@
 import { assert } from 'chai'
 
-import { getReadableFileSize } from '@/utils/files'
+import { getFileSizeInMB, getReadableFileSize } from '@/utils/files'
 
 describe('getReadableFileSize (as text)', () => {
   const testsParams = [
@@ -55,6 +55,35 @@ describe('getReadableFileSize (as object)', () => {
       assert.deepEqual(
         getReadableFileSize(testParams.inputFileSize, false),
         testParams.expectedReadableFileSize
+      )
+    })
+  })
+})
+
+describe('getFileSizeInMB', () => {
+  const testsParams = [
+    {
+      description: 'returns 0 if provided file size is 0',
+      inputFileSize: 0,
+      expectedFileSize: 0,
+    },
+    {
+      description: 'returns 1 (MB) if provided file size is 1048576',
+      inputFileSize: 1048576,
+      expectedFileSize: 1,
+    },
+    {
+      description: 'returns 2.53 (MB) if provided file size is 2652897',
+      inputFileSize: 2652897,
+      expectedFileSize: 2.53,
+    },
+  ]
+
+  testsParams.map((testParams) => {
+    it(testParams.description, () => {
+      assert.deepEqual(
+        getFileSizeInMB(testParams.inputFileSize),
+        testParams.expectedFileSize
       )
     })
   })

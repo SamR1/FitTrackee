@@ -34,7 +34,7 @@
   import { ComputedRef, PropType, computed, defineComponent, ref } from 'vue'
 
   import { ROOT_STORE } from '@/store/constants'
-  import { IAppConfig } from '@/types/application'
+  import { TAppConfig } from '@/types/application'
   import { GeoJSONData } from '@/types/geojson'
   import { IWorkoutData, TCoordinates } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
@@ -103,7 +103,7 @@
             ]
           : []
       )
-      const appConfig: ComputedRef<IAppConfig> = computed(
+      const appConfig: ComputedRef<TAppConfig> = computed(
         () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
       )
       const center = computed(() => getCenter(bounds))

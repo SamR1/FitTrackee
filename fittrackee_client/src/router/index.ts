@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
+import AdminApplication from '@/components/Administration/AdminApplication.vue'
+import AdminMenu from '@/components/Administration/AdminMenu.vue'
 import Profile from '@/components/User/ProfileDisplay/index.vue'
 import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
 import UserPreferences from '@/components/User/ProfileDisplay/UserPreferences.vue'
@@ -167,6 +169,24 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Administration',
     component: () =>
       import(/* webpackChunkName: 'admin' */ '@/views/AdminView.vue'),
+    children: [
+      {
+        path: '',
+        name: 'AdministrationMenu',
+        component: AdminMenu,
+      },
+      {
+        path: 'application',
+        name: 'ApplicationAdministration',
+        component: AdminApplication,
+      },
+      {
+        path: 'application/edit',
+        name: 'ApplicationAdministrationEdition',
+        component: AdminApplication,
+        props: { edition: true },
+      },
+    ],
   },
   {
     path: '/:pathMatch(.*)*',

@@ -39,7 +39,7 @@
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
-  import { IAppConfig } from '@/types/application'
+  import { TAppConfig } from '@/types/application'
   import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getReadableFileSize } from '@/utils/files'
@@ -60,7 +60,7 @@
       const errorMessages: ComputedRef<string | string[] | null> = computed(
         () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
       )
-      const appConfig: ComputedRef<IAppConfig> = computed(
+      const appConfig: ComputedRef<TAppConfig> = computed(
         () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
       )
       const fileSizeLimit = appConfig.value.max_single_file_size

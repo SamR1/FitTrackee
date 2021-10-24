@@ -81,7 +81,7 @@
   import { useRoute } from 'vue-router'
 
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
-  import { IAppConfig } from '@/types/application'
+  import { TAppConfig } from '@/types/application'
   import { ILoginRegisterFormData } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
@@ -113,7 +113,7 @@
       const errorMessages: ComputedRef<string | string[] | null> = computed(
         () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
       )
-      const appConfig: ComputedRef<IAppConfig> = computed(
+      const appConfig: ComputedRef<TAppConfig> = computed(
         () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
       )
       const registration_disabled: ComputedRef<boolean> = computed(

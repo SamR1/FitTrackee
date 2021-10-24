@@ -5,17 +5,26 @@ export interface IAppStatistics {
   workouts: number
 }
 
-export interface IAppConfig {
+export type TAppConfig = {
+  [key: string]: number | boolean | string
   federation_enabled: boolean
-  gpx_limit_import: number | null
+  gpx_limit_import: number
   is_registration_enabled: boolean
   map_attribution: string
-  max_single_file_size: number | null
-  max_users: number | null
-  max_zip_file_size: number | null
+  max_single_file_size: number
+  max_users: number
+  max_zip_file_size: number
 }
 
 export interface IApplication {
   statistics: IAppStatistics
-  config: IAppConfig
+  config: TAppConfig
+}
+
+export type TAppConfigForm = {
+  [key: string]: number
+  gpx_limit_import: number
+  max_single_file_size: number
+  max_users: number
+  max_zip_file_size: number
 }

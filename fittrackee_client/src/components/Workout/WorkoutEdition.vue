@@ -221,7 +221,7 @@
   import { useRouter } from 'vue-router'
 
   import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
-  import { IAppConfig } from '@/types/application'
+  import { TAppConfig } from '@/types/application'
   import { ISport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'
   import { IWorkout, IWorkoutForm } from '@/types/workouts'
@@ -268,7 +268,7 @@
       const translatedSports: ComputedRef<ISport[]> = computed(() =>
         translateSports(props.sports, t)
       )
-      const appConfig: ComputedRef<IAppConfig> = computed(
+      const appConfig: ComputedRef<TAppConfig> = computed(
         () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
       )
       const fileSizeLimit = appConfig.value.max_single_file_size

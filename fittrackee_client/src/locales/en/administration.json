@@ -3,6 +3,14 @@
   "ADMIN": "Admin",
   "ADMINISTRATION": "Administration",
   "APPLICATION": "Application",
+  "APP_CONFIG": {
+    "MAX_USERS_LABEL": "Max. number of active users",
+    "MAX_FILES_IN_ZIP_LABEL": "Max. files of zip archive",
+    "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Max. size of uploaded files (in Mb)",
+    "TITLE": "Application configuration",
+    "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. size of zip archive (in Mb)"
+  },
+  "BACK_TO_ADMIN": "Back to admin",
   "ENABLE_DISABLE_SPORTS": "Enable/disable sports.",
   "REGISTRATION_DISABLED": "Registration is currently disabled.",
   "REGISTRATION_ENABLED": "Registration is currently enabled.",
