@@ -45,7 +45,7 @@
                   v-model="workoutDataObject.sport_id"
                 >
                   <option
-                    v-for="sport in translatedSports"
+                    v-for="sport in translatedSports.filter((s) => s.is_active)"
                     :value="sport.id"
                     :key="sport.id"
                   >

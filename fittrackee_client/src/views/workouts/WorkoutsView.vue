@@ -2,7 +2,11 @@
   <div id="workouts" v-if="authUser.username">
     <div class="container workouts-container">
       <div class="filters-container" :class="{ hidden: hiddenFilters }">
-        <WorkoutsFilters :sports="translatedSports" @filter="updateParams" />
+        <WorkoutsFilters
+          :sports="translatedSports"
+          :authUser="authUser"
+          @filter="updateParams"
+        />
       </div>
       <div class="display-filters">
         <div @click="toggleFilters">

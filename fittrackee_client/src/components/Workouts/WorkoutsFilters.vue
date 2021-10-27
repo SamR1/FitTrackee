@@ -19,7 +19,9 @@
             <select name="sport_id" @change="handleFilterChange">
               <option value="" />
               <option
-                v-for="sport in translatedSports"
+                v-for="sport in translatedSports.filter((s) =>
+                  authUser.sports_list.includes(s.id)
+                )"
                 :value="sport.id"
                 :key="sport.id"
               >
@@ -137,11 +139,16 @@
   import { useI18n } from 'vue-i18n'
 
   import { ISport } from '@/types/sports'
+  import { IAuthUserProfile } from '@/types/user'
   import { translateSports } from '@/utils/sports'
 
   export default defineComponent({
     name: 'WorkoutsFilters',
     props: {
+      authUser: {
+        type: Object as PropType<IAuthUserProfile>,
+        required: true,
+      },
       sports: {
         type: Object as PropType<ISport[]>,
         required: true,
