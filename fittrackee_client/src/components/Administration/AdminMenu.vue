@@ -12,7 +12,16 @@
               </router-link>
             </dt>
             <dd>
-              {{ $t('admin.UPDATE_APPLICATION_DESCRIPTION') }}
+              {{ $t('admin.UPDATE_APPLICATION_DESCRIPTION') }}<br />
+              <span class="registration-status">
+                {{
+                  $t(
+                    `admin.REGISTRATION_${
+                      appConfig.is_registration_enabled ? 'ENABLED' : 'DISABLED'
+                    }`
+                  )
+                }}
+              </span>
             </dd>
             <dt>{{ capitalize($t('workouts.SPORT', 0)) }}</dt>
             <dd>
@@ -34,7 +43,7 @@
 
   import AppStatsCards from '@/components/Administration/AppStatsCards.vue'
   import Card from '@/components/Common/Card.vue'
-  import { IAppStatistics } from '@/types/application'
+  import { IAppStatistics, TAppConfig } from '@/types/application'
 
   export default defineComponent({
     name: 'AdminMenu',
@@ -43,6 +52,10 @@
       Card,
     },
     props: {
+      appConfig: {
+        type: Object as PropType<TAppConfig>,
+        required: true,
+      },
       appStatistics: {
         type: Object as PropType<IAppStatistics>,
       },
@@ -70,6 +83,9 @@
 
         dd {
           margin-bottom: $default-margin * 3;
+        }
+        .registration-status {
+          font-weight: bold;
         }
       }
     }

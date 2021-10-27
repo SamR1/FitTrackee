@@ -15,6 +15,12 @@
               :disabled="!edition"
             />
           </label>
+          <div class="user-limit-help">
+            <span class="info-box">
+              <i class="fa fa-info-circle" aria-hidden="true" />
+              {{ $t('admin.APP_CONFIG.MAX_USERS_HELP') }}
+            </span>
+          </div>
           <label for="max_single_file_size">
             {{ $t('admin.APP_CONFIG.SINGLE_UPLOAD_MAX_SIZE_LABEL') }}:
             <input
@@ -151,3 +157,17 @@
     },
   })
 </script>
+
+<style lang="scss" scoped>
+  @import '~@/scss/base.scss';
+
+  .user-limit-help {
+    display: flex;
+    span {
+      font-style: italic;
+    }
+    .fa-info-circle {
+      margin-right: $default-margin;
+    }
+  }
+</style>

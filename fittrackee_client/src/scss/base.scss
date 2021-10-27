@@ -101,6 +101,14 @@ button {
   margin: $default-margin;
 }
 
+.info-box {
+  background-color: var(--info-background-color);
+  border-radius: $border-radius;
+  color: var(--info-color);
+  font-size: 0.8em;
+  padding: $default-padding;
+}
+
 .container {
   display: flex;
   margin-left: auto;

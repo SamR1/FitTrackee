@@ -66,7 +66,7 @@
                   :disabled="loading"
                   @input="updateFile"
                 />
-                <div class="files-help">
+                <div class="files-help info-box">
                   <div>
                     <strong>{{ $t('workouts.GPX_FILE') }}:</strong>
                     <ul>
@@ -75,7 +75,6 @@
                       </li>
                     </ul>
                   </div>
-
                   <div>
                     <strong>{{ $t('workouts.ZIP_ARCHIVE') }}:</strong>
                     <ul>
@@ -497,14 +496,7 @@
           .files-help {
             display: flex;
             justify-content: space-around;
-
-            background-color: var(--info-background-color);
-            border-radius: $border-radius;
-            color: var(--info-color);
-            font-size: 0.8em;
-
             margin-top: $default-margin;
-            padding: $default-padding;
             div {
               display: flex;
               @media screen and (max-width: $medium-limit) {

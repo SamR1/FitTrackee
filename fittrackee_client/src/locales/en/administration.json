@@ -5,6 +5,7 @@
   "APPLICATION": "Application",
   "APP_CONFIG": {
     "MAX_USERS_LABEL": "Max. number of active users",
+    "MAX_USERS_HELP": "If 0, no limitation on registration.",
     "MAX_FILES_IN_ZIP_LABEL": "Max. files of zip archive",
     "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Max. size of uploaded files (in Mb)",
     "TITLE": "Application configuration",
