@@ -114,7 +114,6 @@
     onBeforeMount,
   } from 'vue'
 
-  import SportImage from '@/components/Common/Images/SportImage/index.vue'
   import StaticMap from '@/components/Common/StaticMap.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
   import { WORKOUTS_STORE } from '@/store/constants'
@@ -128,7 +127,6 @@
     name: 'WorkoutsList',
     components: {
       NoWorkouts,
-      SportImage,
       StaticMap,
     },
     props: {

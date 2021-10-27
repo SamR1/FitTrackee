@@ -24,7 +24,7 @@
   import Walking from '@/components/Common/Images/SportImage/Walking.vue'
 
   export default defineComponent({
-    name: 'SportImg',
+    name: 'SportImage',
     components: {
       CyclingSport,
       CyclingTransport,

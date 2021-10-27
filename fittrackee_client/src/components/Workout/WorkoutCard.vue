@@ -79,7 +79,6 @@
   import { Locale, format, formatDistance } from 'date-fns'
   import { PropType, defineComponent, ComputedRef, computed } from 'vue'
 
-  import SportImage from '@/components/Common/Images/SportImage/index.vue'
   import StaticMap from '@/components/Common/StaticMap.vue'
   import { ROOT_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
@@ -93,7 +92,6 @@
     name: 'WorkoutCard',
     components: {
       StaticMap,
-      SportImage,
     },
     props: {
       workout: {

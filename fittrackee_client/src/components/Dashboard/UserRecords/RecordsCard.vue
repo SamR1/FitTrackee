@@ -30,14 +30,10 @@
   import { PropType, defineComponent } from 'vue'
   import { useI18n } from 'vue-i18n'
 
-  import SportImage from '@/components/Common/Images/SportImage/index.vue'
   import { IRecord } from '@/types/workouts'
 
   export default defineComponent({
     name: 'RecordsCard',
-    components: {
-      SportImage,
-    },
     props: {
       records: {
         type: Object as PropType<IRecord[]>,

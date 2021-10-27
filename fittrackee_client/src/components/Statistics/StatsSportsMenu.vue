@@ -23,15 +23,11 @@
   import { ComputedRef, PropType, computed, defineComponent, inject } from 'vue'
   import { useI18n } from 'vue-i18n'
 
-  import SportImage from '@/components/Common/Images/SportImage/index.vue'
   import { ISport, ITranslatedSport } from '@/types/sports'
   import { translateSports } from '@/utils/sports'
 
   export default defineComponent({
     name: 'SportsMenu',
-    components: {
-      SportImage,
-    },
     props: {
       selectedSportIds: {
         type: Array as PropType<number[]>,

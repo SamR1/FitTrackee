@@ -25,14 +25,10 @@
   import { defineComponent, PropType } from 'vue'
   import { useI18n } from 'vue-i18n'
 
-  import SportImage from '@/components/Common/Images/SportImage/index.vue'
   import { IWorkout } from '@/types/workouts'
 
   export default defineComponent({
     name: 'CalendarWorkout',
-    components: {
-      SportImage,
-    },
     props: {
       workout: {
         type: Object as PropType<IWorkout>,

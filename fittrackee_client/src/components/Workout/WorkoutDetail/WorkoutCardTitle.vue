@@ -83,15 +83,11 @@
 <script lang="ts">
   import { PropType, defineComponent } from 'vue'
 
-  import SportImage from '@/components/Common/Images/SportImage/index.vue'
   import { ISport } from '@/types/sports'
   import { IWorkoutObject } from '@/types/workouts'
 
   export default defineComponent({
     name: 'WorkoutCardTitle',
-    components: {
-      SportImage,
-    },
     props: {
       sport: {
         type: Object as PropType<ISport>,
