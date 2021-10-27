@@ -1,7 +1,7 @@
 <template>
   <div class="workouts-list">
     <div class="box" :class="{ 'empty-table': workouts.length === 0 }">
-      <div class="workouts-table">
+      <div class="workouts-table responsive-table">
         <table>
           <thead>
             <tr>
@@ -210,122 +210,35 @@
         }
       }
       .workouts-table {
-        margin-bottom: 15px;
-        /* responsive table, adapted from: */
-        /* https://uglyduck.ca/making-tables-responsive-with-minimal-css/ */
-        table {
-          width: 100%;
-          padding: $default-padding;
-          font-size: 0.9em;
-          border-collapse: collapse;
-
-          thead th {
-            vertical-align: center;
-            padding: $default-padding;
-            border-bottom: 2px solid var(--card-border-color);
+        .sport-col {
+          padding-right: 0;
+        }
+        .workout-title {
+          max-width: 90px;
+          position: relative;
+          .fa-map-o {
+            font-size: 0.75em;
           }
-
-          tbody {
-            font-size: 0.95em;
-            td {
-              padding: $default-padding;
-              border-bottom: 1px solid var(--card-border-color);
-            }
-            tr:last-child td {
-              border: none;
-            }
-          }
-
-          .sport-col {
-            padding-right: 0;
-          }
-
-          .workout-title {
-            max-width: 90px;
-            position: relative;
-
-            .fa-map-o {
-              font-size: 0.75em;
-            }
-
-            .static-map {
-              display: none;
-              box-shadow: 3px 3px 3px 1px lightgrey;
-            }
-          }
-
-          .workout-title:hover .static-map {
-            display: block;
-          }
-
-          .cell-heading {
-            background: var(--cell-heading-bg-color);
-            color: var(--cell-heading-color);
+          .static-map {
             display: none;
-            font-size: 10px;
-            font-weight: bold;
-            padding: 5px;
-            position: absolute;
-            text-transform: uppercase;
-            top: 0;
-            left: 0;
-          }
-
-          .sport-img {
-            height: 20px;
-            width: 20px;
+            box-shadow: 3px 3px 3px 1px lightgrey;
           }
         }
-
+        .workout-title:hover .static-map {
+          display: block;
+        }
+        .sport-img {
+          height: 20px;
+          width: 20px;
+        }
         @media screen and (max-width: $small-limit) {
-          table {
-            thead {
-              left: -9999px;
-              position: absolute;
-              visibility: hidden;
-            }
-
-            tr {
-              border-bottom: 0;
-              display: flex;
-              flex-direction: row;
-              flex-wrap: wrap;
-              margin-bottom: 40px;
-            }
-
-            td {
-              border: 1px solid var(--card-border-color);
-              margin: 0 -1px -1px 0;
-              padding-top: 25px !important;
-              position: relative;
-              text-align: center;
-              width: 45%;
-            }
-
-            tbody {
-              tr:last-child td {
-                border: 1px solid var(--card-border-color);
-              }
-            }
-
-            .sport-col {
-              display: flex;
-              justify-content: center;
-              padding: $default-padding;
-            }
-            .cell-heading {
-              display: flex;
-            }
-            .workout-title {
-              max-width: initial;
-            }
+          .sport-col {
+            display: flex;
+            justify-content: center;
+            padding: $default-padding;
           }
-        }
-        @media screen and (max-width: $x-small-limit) {
-          table {
-            td {
-              width: 100%;
-            }
+          .workout-title {
+            max-width: initial;
           }
         }
       }

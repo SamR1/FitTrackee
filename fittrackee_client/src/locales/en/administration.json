@@ -15,6 +15,16 @@
   "ENABLE_DISABLE_SPORTS": "Enable/disable sports.",
   "REGISTRATION_DISABLED": "Registration is currently disabled.",
   "REGISTRATION_ENABLED": "Registration is currently enabled.",
+  "SPORTS": {
+    "TABLE": {
+      "ACTION": "Action",
+      "ACTIVE": "Active",
+      "HAS_WORKOUTS": "workouts exist",
+      "IMAGE": "Image",
+      "LABEL": "Label"
+    },
+    "TITLE": "Sports administration"
+  },
   "UPDATE_APPLICATION_DESCRIPTION": "Update application configuration (maximum number of registered users, maximum files size).",
   "USER": "user | users"
 }

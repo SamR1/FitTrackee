@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
 import AdminApplication from '@/components/Administration/AdminApplication.vue'
 import AdminMenu from '@/components/Administration/AdminMenu.vue'
+import AdminSports from '@/components/Administration/AdminSports.vue'
 import Profile from '@/components/User/ProfileDisplay/index.vue'
 import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
 import UserPreferences from '@/components/User/ProfileDisplay/UserPreferences.vue'
@@ -185,6 +186,11 @@ const routes: Array<RouteRecordRaw> = [
         name: 'ApplicationAdministrationEdition',
         component: AdminApplication,
         props: { edition: true },
+      },
+      {
+        path: 'sports',
+        name: 'SportsAdministration',
+        component: AdminSports,
       },
     ],
   },

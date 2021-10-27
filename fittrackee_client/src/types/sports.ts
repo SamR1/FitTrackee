@@ -5,6 +5,12 @@ export interface ISport {
   is_active: boolean
   label: string
 }
+
 export interface ITranslatedSport extends ISport {
   translatedLabel: string
+}
+
+export interface ISportPayload {
+  id: number
+  isActive: boolean
 }

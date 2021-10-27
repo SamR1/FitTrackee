@@ -1,7 +1,9 @@
 {
   "CANCEL": "Cancel",
   "DELETE_MY_ACCOUNT": "Delete my account",
+  "DISABLE": "Disable",
   "EDIT": "Edit",
+  "ENABLE": "Enable",
   "FILTER": "Filter",
   "LOGIN": "Log in",
   "NO": "No",

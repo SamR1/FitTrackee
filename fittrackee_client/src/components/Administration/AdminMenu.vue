@@ -23,7 +23,11 @@
                 }}
               </span>
             </dd>
-            <dt>{{ capitalize($t('workouts.SPORT', 0)) }}</dt>
+            <dt>
+              <router-link to="/admin/SPORTS">
+                {{ capitalize($t('workouts.SPORT', 0)) }}
+              </router-link>
+            </dt>
             <dd>
               {{ $t('admin.ENABLE_DISABLE_SPORTS') }}
             </dd>

@@ -1,5 +1,6 @@
 export enum SportsActions {
   GET_SPORTS = 'GET_SPORTS',
+  UPDATE_SPORTS = 'UPDATE_SPORTS',
 }
 
 export enum SportsGetters {

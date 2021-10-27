@@ -15,6 +15,16 @@
   "ENABLE_DISABLE_SPORTS": "Activer/désactiver des sports.",
   "REGISTRATION_DISABLED": "Les inscriptions sont actuellement désactivées.",
   "REGISTRATION_ENABLED": "Les inscriptions sont actuellement activées.",
+  "SPORTS": {
+    "TABLE": {
+      "ACTION": "Action",
+      "ACTIVE": "Actif",
+      "HAS_WORKOUTS": "des séances existent",
+      "IMAGE": "Image",
+      "LABEL": "Label"
+    },
+    "TITLE": "Administration - Sports"
+  },
   "UPDATE_APPLICATION_DESCRIPTION": "Configurer l'application (nombre maximum d'utilisateurs inscrits, taille maximale des fichers).",
   "USER": "utilisateur | utilisateurs"
 }

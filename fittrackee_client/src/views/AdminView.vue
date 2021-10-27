@@ -7,6 +7,7 @@
         :appStatistics="appStatistics"
       />
       <NotFound v-else />
+      <div id="bottom" />
     </div>
   </div>
 </template>
@@ -64,6 +65,8 @@
   #admin {
     .admin-card {
       width: 100%;
+      margin-bottom: 55px;
+
       ::v-deep(.card) {
         .admin-form {
           display: flex;

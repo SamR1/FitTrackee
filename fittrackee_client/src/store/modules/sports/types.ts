@@ -7,7 +7,7 @@ import {
 
 import { SPORTS_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
-import { ISport } from '@/types/sports'
+import { ISport, ISportPayload } from '@/types/sports'
 
 export interface ISportsState {
   sports: ISport[]
@@ -16,6 +16,10 @@ export interface ISportsState {
 export interface ISportsActions {
   [SPORTS_STORE.ACTIONS.GET_SPORTS](
     context: ActionContext<ISportsState, IRootState>
+  ): void
+  [SPORTS_STORE.ACTIONS.UPDATE_SPORTS](
+    context: ActionContext<ISportsState, IRootState>,
+    payload: ISportPayload
   ): void
 }
 
