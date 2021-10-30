@@ -118,7 +118,7 @@
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
   import { WORKOUTS_STORE } from '@/store/constants'
   import { ITranslatedSport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
+  import { IUserProfile } from '@/types/user'
   import { IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getDateWithTZ } from '@/utils/dates'
@@ -135,7 +135,7 @@
         required: true,
       },
       user: {
-        type: Object as PropType<IAuthUserProfile>,
+        type: Object as PropType<IUserProfile>,
         required: true,
       },
       sports: {

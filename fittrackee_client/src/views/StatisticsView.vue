@@ -23,7 +23,7 @@
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
   import { USER_STORE, SPORTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
+  import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   export default defineComponent({
@@ -34,7 +34,7 @@
     },
     setup() {
       const store = useStore()
-      const authUser: ComputedRef<IAuthUserProfile> = computed(
+      const authUser: ComputedRef<IUserProfile> = computed(
         () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
       )
       const sports: ComputedRef<ISport[]> = computed(() =>

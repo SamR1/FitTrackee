@@ -84,7 +84,7 @@
   import UserPicture from '@/components/User/UserPicture.vue'
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
   import { IDropdownOption } from '@/types/forms'
-  import { IAuthUserProfile } from '@/types/user'
+  import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getApiUrl } from '@/utils'
 
@@ -101,7 +101,7 @@
       const availableLanguages = availableLocales.map((l) => {
         return { label: l.toUpperCase(), value: l }
       })
-      const authUser: ComputedRef<IAuthUserProfile> = computed(
+      const authUser: ComputedRef<IUserProfile> = computed(
         () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
       )
       const isAuthenticated: ComputedRef<boolean> = computed(

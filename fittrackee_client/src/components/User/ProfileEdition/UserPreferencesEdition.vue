@@ -63,14 +63,14 @@
   import { useI18n } from 'vue-i18n'
 
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
-  import { IAuthUserProfile, IUserPreferencesPayload } from '@/types/user'
+  import { IUserProfile, IUserPreferencesPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   export default defineComponent({
     name: 'UserPreferencesEdition',
     props: {
       user: {
-        type: Object as PropType<IAuthUserProfile>,
+        type: Object as PropType<IUserProfile>,
         required: true,
       },
     },
@@ -108,7 +108,7 @@
         }
       })
 
-      function updateUserForm(user: IAuthUserProfile) {
+      function updateUserForm(user: IUserProfile) {
         userForm.language = user.language ? user.language : 'en'
         userForm.timezone = user.timezone ? user.timezone : 'Europe/Paris'
         userForm.weekm = user.weekm ? user.weekm : false

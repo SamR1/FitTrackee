@@ -40,7 +40,7 @@
   import UserPicture from '@/components/User/UserPicture.vue'
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
   import { TAppConfig } from '@/types/application'
-  import { IAuthUserProfile } from '@/types/user'
+  import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getReadableFileSize } from '@/utils/files'
 
@@ -51,7 +51,7 @@
     },
     props: {
       user: {
-        type: Object as PropType<IAuthUserProfile>,
+        type: Object as PropType<IUserProfile>,
         required: true,
       },
     },

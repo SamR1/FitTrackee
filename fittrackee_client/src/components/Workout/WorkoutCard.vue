@@ -82,7 +82,7 @@
   import StaticMap from '@/components/Common/StaticMap.vue'
   import { ROOT_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
+  import { IUserProfile } from '@/types/user'
   import { IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getApiUrl } from '@/utils'
@@ -99,7 +99,7 @@
         required: false,
       },
       user: {
-        type: Object as PropType<IAuthUserProfile>,
+        type: Object as PropType<IUserProfile>,
         required: true,
       },
       sport: {

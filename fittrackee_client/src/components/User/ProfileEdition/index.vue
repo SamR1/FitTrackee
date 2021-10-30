@@ -22,7 +22,7 @@
 
   import UserProfileTabs from '@/components/User/UserProfileTabs.vue'
   import { USER_STORE } from '@/store/constants'
-  import { IAuthUserProfile } from '@/types/user'
+  import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   export default defineComponent({
@@ -32,7 +32,7 @@
     },
     props: {
       user: {
-        type: Object as PropType<IAuthUserProfile>,
+        type: Object as PropType<IUserProfile>,
         required: true,
       },
       tab: {

@@ -42,7 +42,7 @@
   import { LineChart, useLineChart } from 'vue-chart-3'
   import { useI18n } from 'vue-i18n'
 
-  import { IAuthUserProfile } from '@/types/user'
+  import { IUserProfile } from '@/types/user'
   import {
     IWorkoutChartData,
     IWorkoutData,
@@ -57,7 +57,7 @@
     },
     props: {
       authUser: {
-        type: Object as PropType<IAuthUserProfile>,
+        type: Object as PropType<IUserProfile>,
         required: true,
       },
       workoutData: {

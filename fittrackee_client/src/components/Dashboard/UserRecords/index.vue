@@ -24,7 +24,7 @@
 
   import RecordsCard from '@/components/Dashboard/UserRecords/RecordsCard.vue'
   import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
+  import { IUserProfile } from '@/types/user'
   import { getRecordsBySports } from '@/utils/records'
   import { translateSports } from '@/utils/sports'
 
@@ -39,7 +39,7 @@
         required: true,
       },
       user: {
-        type: Object as PropType<IAuthUserProfile>,
+        type: Object as PropType<IUserProfile>,
         required: true,
       },
     },

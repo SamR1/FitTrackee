@@ -139,14 +139,14 @@
   import { useI18n } from 'vue-i18n'
 
   import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
+  import { IUserProfile } from '@/types/user'
   import { translateSports } from '@/utils/sports'
 
   export default defineComponent({
     name: 'WorkoutsFilters',
     props: {
       authUser: {
-        type: Object as PropType<IAuthUserProfile>,
+        type: Object as PropType<IUserProfile>,
         required: true,
       },
       sports: {

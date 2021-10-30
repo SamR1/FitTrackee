@@ -13,7 +13,7 @@
 
   import UserHeader from '@/components/User/ProfileDisplay/UserHeader.vue'
   import UserProfileTabs from '@/components/User/UserProfileTabs.vue'
-  import { IAuthUserProfile } from '@/types/user'
+  import { IUserProfile } from '@/types/user'
 
   export default defineComponent({
     name: 'ProfileDisplay',
@@ -23,7 +23,7 @@
     },
     props: {
       user: {
-        type: Object as PropType<IAuthUserProfile>,
+        type: Object as PropType<IUserProfile>,
         required: true,
       },
       tab: {

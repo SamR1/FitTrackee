@@ -107,14 +107,14 @@
   } from 'vue'
 
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
-  import { IAuthUserProfile, IUserPayload } from '@/types/user'
+  import { IUserProfile, IUserPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   export default defineComponent({
     name: 'UserInfosEdition',
     props: {
       user: {
-        type: Object as PropType<IAuthUserProfile>,
+        type: Object as PropType<IUserProfile>,
         required: true,
       },
     },
@@ -148,7 +148,7 @@
         }
       })
 
-      function updateUserForm(user: IAuthUserProfile) {
+      function updateUserForm(user: IUserProfile) {
         userForm.first_name = user.first_name ? user.first_name : ''
         userForm.last_name = user.last_name ? user.last_name : ''
         userForm.birth_date = user.birth_date

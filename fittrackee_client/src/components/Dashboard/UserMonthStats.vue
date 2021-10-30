@@ -21,7 +21,7 @@
 
   import StatChart from '@/components/Common/StatsChart/index.vue'
   import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
+  import { IUserProfile } from '@/types/user'
 
   export default defineComponent({
     name: 'UserMonthStats',
@@ -34,7 +34,7 @@
         required: true,
       },
       user: {
-        type: Object as PropType<IAuthUserProfile>,
+        type: Object as PropType<IUserProfile>,
         required: true,
       },
     },

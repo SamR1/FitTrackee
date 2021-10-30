@@ -1,8 +1,8 @@
 import { IUserState } from '@/store/modules/user/types'
-import { IAuthUserProfile } from '@/types/user'
+import { IUserProfile } from '@/types/user'
 
 export const userState: IUserState = {
   authToken: null,
-  authUserProfile: <IAuthUserProfile>{},
+  authUserProfile: <IUserProfile>{},
   loading: false,
 }

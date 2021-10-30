@@ -1,6 +1,6 @@
 import { IRecord } from '@/types/workouts'
 
-export interface IAuthUserProfile {
+export interface IUserProfile {
   admin: boolean
   bio: string | null
   birth_date: string | null

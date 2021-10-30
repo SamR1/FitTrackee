@@ -31,7 +31,7 @@
   import { PropType, computed, defineComponent } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
-  import { IAuthUserProfile } from '@/types/user'
+  import { IUserProfile } from '@/types/user'
   import { getApiUrl } from '@/utils'
 
   export default defineComponent({
@@ -41,7 +41,7 @@
     },
     props: {
       user: {
-        type: Object as PropType<IAuthUserProfile>,
+        type: Object as PropType<IUserProfile>,
         required: true,
       },
     },

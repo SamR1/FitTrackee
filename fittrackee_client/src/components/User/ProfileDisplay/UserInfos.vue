@@ -29,13 +29,13 @@
   import { format } from 'date-fns'
   import { PropType, computed, defineComponent } from 'vue'
 
-  import { IAuthUserProfile } from '@/types/user'
+  import { IUserProfile } from '@/types/user'
 
   export default defineComponent({
     name: 'UserInfos',
     props: {
       user: {
-        type: Object as PropType<IAuthUserProfile>,
+        type: Object as PropType<IUserProfile>,
         required: true,
       },
     },

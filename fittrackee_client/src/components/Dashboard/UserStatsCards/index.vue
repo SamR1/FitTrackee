@@ -28,7 +28,7 @@
   import { useI18n } from 'vue-i18n'
 
   import StatCard from '@/components/Common/StatCard.vue'
-  import { IAuthUserProfile } from '@/types/user'
+  import { IUserProfile } from '@/types/user'
 
   export default defineComponent({
     name: 'UserStatsCards',
@@ -37,7 +37,7 @@
     },
     props: {
       user: {
-        type: Object as PropType<IAuthUserProfile>,
+        type: Object as PropType<IUserProfile>,
         required: true,
       },
     },

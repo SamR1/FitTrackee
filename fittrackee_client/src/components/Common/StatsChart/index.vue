@@ -68,7 +68,7 @@
     TStatisticsFromApi,
     IStatisticsParams,
   } from '@/types/statistics'
-  import { IAuthUserProfile } from '@/types/user'
+  import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatStats } from '@/utils/statistics'
 
@@ -83,7 +83,7 @@
         required: true,
       },
       user: {
-        type: Object as PropType<IAuthUserProfile>,
+        type: Object as PropType<IUserProfile>,
         required: true,
       },
       chartParams: {
@@ -140,7 +140,7 @@
       }
       function getApiParams(
         chartParams: IStatisticsDateParams,
-        user: IAuthUserProfile
+        user: IUserProfile
       ): IStatisticsParams {
         return {
           from: format(chartParams.start, 'yyyy-MM-dd'),

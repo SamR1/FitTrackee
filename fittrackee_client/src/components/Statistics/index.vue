@@ -36,7 +36,7 @@
   import SportsMenu from '@/components/Statistics/StatsSportsMenu.vue'
   import { ISport, ITranslatedSport } from '@/types/sports'
   import { IStatisticsDateParams } from '@/types/statistics'
-  import { IAuthUserProfile } from '@/types/user'
+  import { IUserProfile } from '@/types/user'
   import { translateSports } from '@/utils/sports'
   import { getStatsDateParams, updateChartParams } from '@/utils/statistics'
 
@@ -53,7 +53,7 @@
         required: true,
       },
       user: {
-        type: Object as PropType<IAuthUserProfile>,
+        type: Object as PropType<IUserProfile>,
         required: true,
       },
     },

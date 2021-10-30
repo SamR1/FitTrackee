@@ -8,14 +8,14 @@
   import { computed, ComputedRef, defineComponent } from 'vue'
 
   import { USER_STORE } from '@/store/constants'
-  import { IAuthUserProfile } from '@/types/user'
+  import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   export default defineComponent({
     name: 'ProfileView',
     setup() {
       const store = useStore()
-      const authUser: ComputedRef<IAuthUserProfile> = computed(
+      const authUser: ComputedRef<IUserProfile> = computed(
         () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
       )
       return { authUser }
