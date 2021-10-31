@@ -46,7 +46,7 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
       .then((res) => {
         if (res.data.status === 'success') {
           context.commit(
-            USERS_STORE.MUTATIONS.UPDATE_USER,
+            USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS,
             res.data.data.users[0]
           )
         } else {

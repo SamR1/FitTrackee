@@ -34,7 +34,10 @@ export interface IUsersGetters {
 }
 
 export type TUsersMutations<S = IUsersState> = {
-  [USERS_STORE.MUTATIONS.UPDATE_USER](state: S, updatedUser: IUserProfile): void
+  [USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS](
+    state: S,
+    updatedUser: IUserProfile
+  ): void
   [USERS_STORE.MUTATIONS.UPDATE_USERS](state: S, users: IUserProfile[]): void
   [USERS_STORE.MUTATIONS.UPDATE_USERS_LOADING](state: S, loading: boolean): void
   [USERS_STORE.MUTATIONS.UPDATE_USERS_PAGINATION](
