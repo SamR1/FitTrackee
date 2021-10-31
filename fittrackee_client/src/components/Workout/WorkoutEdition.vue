@@ -166,6 +166,7 @@
                 <div class="form-item">
                   <label>{{ $t('workouts.DISTANCE') }} (km):</label>
                   <input
+                    name="workout-distance"
                     type="number"
                     min="0"
                     step="0.1"

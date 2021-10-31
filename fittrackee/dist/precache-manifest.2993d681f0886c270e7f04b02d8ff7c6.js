@@ -64,7 +64,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/img/workouts/mountains.svg"
   },
   {
-    "revision": "d31c98a045a9575934a29b6870e4155f",
+    "revision": "2cfd100ce4c5acaf0068499df96fa840",
     "url": "/index.html"
   },
   {
@@ -80,7 +80,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/css/admin.c784857e.css"
   },
   {
-    "revision": "62a8f1fddcb801ef130d",
+    "revision": "d9bfacb8dc8f5a151839",
     "url": "/static/css/app.6f17ce7a.css"
   },
   {
@@ -108,8 +108,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/css/reset.528e2916.css"
   },
   {
-    "revision": "79125f2c2b3a6ae866d6",
-    "url": "/static/css/workouts.e7912750.css"
+    "revision": "71aefc8221f9e9fcf5c2",
+    "url": "/static/css/workouts.80ddc1b5.css"
   },
   {
     "revision": "e719f9244c69e28e7d00e725ca1e280e",
@@ -196,8 +196,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/admin.b2c267a7.js"
   },
   {
-    "revision": "62a8f1fddcb801ef130d",
-    "url": "/static/js/app.ccf74644.js"
+    "revision": "d9bfacb8dc8f5a151839",
+    "url": "/static/js/app.da2a9740.js"
   },
   {
     "revision": "bd7d183c9f68e5f4027d",
@@ -240,7 +240,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/reset.607f183f.js"
   },
   {
-    "revision": "79125f2c2b3a6ae866d6",
-    "url": "/static/js/workouts.6d428fcc.js"
+    "revision": "71aefc8221f9e9fcf5c2",
+    "url": "/static/js/workouts.850179fa.js"
   }
 ]);
