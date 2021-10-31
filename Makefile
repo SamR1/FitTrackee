@@ -153,7 +153,7 @@ serve-dev:
 	$(MAKE) P="serve-client serve-python-dev" make-p
 
 serve-client:
-	cd fittrackee_client && $(NPM) serve
+	cd fittrackee_client && PORT=3000 $(NPM) serve
 
 serve-python:
 	echo 'Running on http://$(HOST):$(PORT)'
