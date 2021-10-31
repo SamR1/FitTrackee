@@ -136,6 +136,11 @@ export const actions: ActionTree<IUserState, IRootState> & IUserActions = {
             USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE,
             res.data.data
           )
+          context.commit(
+            ROOT_STORE.MUTATIONS.UPDATE_LANG,
+            res.data.data.language
+          )
+          locale.value = res.data.data.language
           router.push('/profile/preferences')
         } else {
           handleError(context, null)
