@@ -16,7 +16,6 @@ coverage.xml
 .venv
 /fittrackee.egg-info/
 /dist
-/fittrackee
 
 # CLIENT
 ###############
