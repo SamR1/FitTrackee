@@ -31,6 +31,23 @@
     "TABLE": {
       "ADD_ADMIN_RIGHTS": "Ajouter les drois d'admin",
       "REMOVE_ADMIN_RIGHTS": "Retirer les drois d'admin"
+    },
+    "SELECTS": {
+      "ORDER_BY": {
+        "LABEL": "trier par ",
+        "admin": "status administrateur",
+        "created_at": "date d'inscription",
+        "username": "nom d'utilisateur",
+        "workouts_count": "nombre de séances"
+      },
+      "ORDER": {
+        "LABEL": "tri",
+        "ASC": "ascendant",
+        "DESC": "descendant"
+      },
+      "PER_PAGE": {
+        "LABEL": "par page"
+      }
     }
   }
 }

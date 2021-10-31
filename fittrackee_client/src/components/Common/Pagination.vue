@@ -38,7 +38,7 @@
 <script lang="ts">
   import { PropType, defineComponent } from 'vue'
 
-  import { IPagination, IPaginationPayload } from '@/types/api'
+  import { IPagination, TPaginationPayload } from '@/types/api'
 
   export default defineComponent({
     name: 'Pagination',
@@ -52,7 +52,7 @@
         required: true,
       },
       query: {
-        type: Object as PropType<IPaginationPayload>,
+        type: Object as PropType<TPaginationPayload>,
         required: true,
       },
     },
@@ -60,7 +60,7 @@
       function rangePagination(pages: number): number[] {
         return Array.from({ length: pages }, (_, i) => i + 1)
       }
-      function getQuery(page: number, cursor?: number): IPaginationPayload {
+      function getQuery(page: number, cursor?: number): TPaginationPayload {
         const newQuery = Object.assign({}, props.query)
         newQuery.page = cursor ? page + cursor : page
         return newQuery

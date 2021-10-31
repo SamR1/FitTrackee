@@ -54,7 +54,7 @@
                 </td>
                 <td class="sport-action">
                   <span class="cell-heading">
-                    {{ $t('admin.SPORTS.TABLE.ACTION') }}
+                    {{ $t('admin.ACTION') }}
                   </span>
                   <div class="action-button">
                     <button

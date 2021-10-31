@@ -4,14 +4,14 @@ import authApi from '@/api/authApi'
 import { ROOT_STORE, USERS_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
 import { IUsersActions, IUsersState } from '@/store/modules/users/types'
-import { IPaginationPayload } from '@/types/api'
+import { TPaginationPayload } from '@/types/api'
 import { IAdminUserPayload } from '@/types/user'
 import { handleError } from '@/utils'
 
 export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
   [USERS_STORE.ACTIONS.GET_USERS](
     context: ActionContext<IUsersState, IRootState>,
-    payload: IPaginationPayload
+    payload: TPaginationPayload
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS_LOADING, true)
@@ -40,7 +40,6 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
     context: ActionContext<IUsersState, IRootState>,
     payload: IAdminUserPayload
   ): void {
-    console.log('payload', payload)
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     authApi
       .patch(`users/${payload.username}`, { admin: payload.admin })

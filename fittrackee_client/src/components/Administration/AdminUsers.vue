@@ -6,6 +6,12 @@
         <button class="top-button" @click.prevent="$router.push('/admin')">
           {{ $t('admin.BACK_TO_ADMIN') }}
         </button>
+        <AdminUsersSelects
+          :sort="sort"
+          :order_by="order_by"
+          :query="query"
+          @updateSelect="reloadUsers"
+        />
         <div class="responsive-table">
           <table>
             <thead>
@@ -101,35 +107,39 @@
     ComputedRef,
     computed,
     defineComponent,
+    reactive,
     watch,
     capitalize,
     onBeforeMount,
   } from 'vue'
-  import { useRoute, LocationQuery } from 'vue-router'
+  import { LocationQuery, useRoute, useRouter } from 'vue-router'
 
+  import AdminUsersSelects from '@/components/Administration/AdminUsersSelects.vue'
   import Pagination from '@/components/Common/Pagination.vue'
   import { ROOT_STORE, USER_STORE, USERS_STORE } from '@/store/constants'
-  import { IPagination, IPaginationPayload } from '@/types/api'
+  import { IPagination, TPaginationPayload } from '@/types/api'
   import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   export default defineComponent({
     name: 'AdminUsers',
     components: {
+      AdminUsersSelects,
       Pagination,
     },
     setup() {
       const store = useStore()
       const route = useRoute()
+      const router = useRouter()
 
-      const orders: string[] = ['asc', 'desc']
-      const order_types: string[] = [
+      const sort: string[] = ['asc', 'desc']
+      const order_by: string[] = [
         'admin',
         'created_at',
         'username',
         'workouts_count',
       ]
-      let query: IPaginationPayload = getQuery(route.query)
+      let query: TPaginationPayload = reactive(getQuery(route.query))
 
       const authUser: ComputedRef<IUserProfile> = computed(
         () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
@@ -144,7 +154,7 @@
         () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
       )
 
-      function loadUsers(queryParams: IPaginationPayload) {
+      function loadUsers(queryParams: TPaginationPayload) {
         store.dispatch(USERS_STORE.ACTIONS.GET_USERS, queryParams)
       }
       function getPage(page: string | (string | null)[] | null): number {
@@ -156,18 +166,16 @@
           : 10
       }
       function getOrder(order: string | (string | null)[] | null): string {
-        return order && typeof order === 'string' && orders.includes(order)
+        return order && typeof order === 'string' && sort.includes(order)
           ? order
           : 'asc'
       }
-      function getOrderBy(order_by: string | (string | null)[] | null): string {
-        return order_by &&
-          typeof order_by === 'string' &&
-          order_types.includes(order_by)
-          ? order_by
+      function getOrderBy(order: string | (string | null)[] | null): string {
+        return order && typeof order === 'string' && order_by.includes(order)
+          ? order
           : 'created_at'
       }
-      function getQuery(query: LocationQuery): IPaginationPayload {
+      function getQuery(query: LocationQuery): TPaginationPayload {
         return {
           page: getPage(query.page),
           per_page: getPerPage(query.per_page),
@@ -181,14 +189,24 @@
           admin,
         })
       }
+      function reloadUsers(queryParam: string, queryValue: string) {
+        query[queryParam] = queryValue
+        if (queryParam === 'per_page') {
+          query.page = 1
+        }
+        router.push({ path: '/admin/users', query })
+      }
 
       onBeforeMount(() => loadUsers(query))
 
       watch(
         () => route.query,
-        (newQuery) => {
-          query = getQuery(newQuery)
-          loadUsers(getQuery(newQuery))
+        (newQuery: LocationQuery) => {
+          query.page = getPage(newQuery.page)
+          query.per_page = getPerPage(newQuery.per_page)
+          query.order = getOrder(newQuery.order)
+          query.order_by = getOrderBy(newQuery.order_by)
+          loadUsers(query)
         }
       )
 
@@ -196,9 +214,12 @@
         authUser,
         errorMessages,
         pagination,
+        order_by,
         query,
+        sort,
         users,
         capitalize,
+        reloadUsers,
         updateUser,
       }
     },
@@ -224,6 +245,9 @@
       .top-button {
         display: block;
         margin-bottom: $default-margin * 2;
+      }
+      .pagination-center {
+        margin-top: -3 * $default-margin;
       }
     }
   }
