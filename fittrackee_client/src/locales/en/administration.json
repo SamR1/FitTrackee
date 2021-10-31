@@ -1,4 +1,5 @@
 {
+  "ACTION": "Action",
   "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Add/remove admin rights, delete user account.",
   "ADMIN": "Admin",
   "ADMINISTRATION": "Administration",
@@ -17,7 +18,6 @@
   "REGISTRATION_ENABLED": "Registration is currently enabled.",
   "SPORTS": {
     "TABLE": {
-      "ACTION": "Action",
       "ACTIVE": "Active",
       "HAS_WORKOUTS": "workouts exist",
       "IMAGE": "Image",
@@ -26,5 +26,11 @@
     "TITLE": "Sports administration"
   },
   "UPDATE_APPLICATION_DESCRIPTION": "Update application configuration (maximum number of registered users, maximum files size).",
-  "USER": "user | users"
+  "USER": "user | users",
+  "USERS": {
+    "TABLE": {
+      "ADD_ADMIN_RIGHTS": "Add admin rights",
+      "REMOVE_ADMIN_RIGHTS": "Remove admin rights"
+    }
+  }
 }

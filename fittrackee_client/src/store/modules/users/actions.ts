@@ -24,7 +24,7 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
           )
           context.commit(
             USERS_STORE.MUTATIONS.UPDATE_USERS_PAGINATION,
-            res.data.data.pagination
+            res.data.pagination
           )
         } else {
           handleError(context, null)

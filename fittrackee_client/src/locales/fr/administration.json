@@ -1,4 +1,5 @@
 {
+  "ACTION": "Action",
   "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Ajouter/retirer des droits d'adminsitration, supprimer des comptes utilisateurs.",
   "ADMIN": "Admin",
   "ADMINISTRATION": "Administration",
@@ -17,7 +18,6 @@
   "REGISTRATION_ENABLED": "Les inscriptions sont actuellement activées.",
   "SPORTS": {
     "TABLE": {
-      "ACTION": "Action",
       "ACTIVE": "Actif",
       "HAS_WORKOUTS": "des séances existent",
       "IMAGE": "Image",
@@ -26,5 +26,11 @@
     "TITLE": "Administration - Sports"
   },
   "UPDATE_APPLICATION_DESCRIPTION": "Configurer l'application (nombre maximum d'utilisateurs inscrits, taille maximale des fichers).",
-  "USER": "utilisateur | utilisateurs"
+  "USER": "utilisateur | utilisateurs",
+  "USERS": {
+    "TABLE": {
+      "ADD_ADMIN_RIGHTS": "Ajouter les drois d'admin",
+      "REMOVE_ADMIN_RIGHTS": "Retirer les drois d'admin"
+    }
+  }
 }

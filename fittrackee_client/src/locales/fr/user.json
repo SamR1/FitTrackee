@@ -1,4 +1,5 @@
 {
+  "ADMIN": "Admin",
   "CONFIRM_ACCOUNT_DELETION": "Etes-vous sûr de vouloir supprimer votre compte ? Toutes les données seront définitivement effacés.",
   "EMAIL": "Email",
   "ENTER_EMAIL": "Saisir une adresse email",

@@ -17,7 +17,7 @@
                 </th>
                 <th>{{ $t('admin.SPORTS.TABLE.ACTIVE') }}</th>
                 <th class="text-left sport-action">
-                  {{ $t('admin.SPORTS.TABLE.ACTION') }}
+                  {{ $t('admin.ACTION') }}
                 </th>
                 <th />
               </tr>
@@ -122,9 +122,6 @@
       td {
         font-size: 1.1em;
       }
-    }
-    .center-text {
-      text-align: center;
     }
     .sport-img {
       height: 35px;

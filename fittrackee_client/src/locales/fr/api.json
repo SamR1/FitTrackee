@@ -16,5 +16,9 @@
     "Signature expired, Please log in again": "Signature expirée. Merci de vous reconnecter.",
     "Username: 3 to 12 characters required": "3 à 12 caractères requis pour le nom.",
     "Valid email must be provided": "L'email fourni n'est pas valide."
+  },
+  "PAGINATION": {
+    "PREVIOUS": "précédent",
+    "NEXT": "suivant"
   }
 }

@@ -24,14 +24,18 @@
               </span>
             </dd>
             <dt>
-              <router-link to="/admin/SPORTS">
+              <router-link to="/admin/sports">
                 {{ capitalize($t('workouts.SPORT', 0)) }}
               </router-link>
             </dt>
             <dd>
               {{ $t('admin.ENABLE_DISABLE_SPORTS') }}
             </dd>
-            <dt>{{ capitalize($t('admin.USER', 0)) }}</dt>
+            <dt>
+              <router-link to="/admin/users">
+                {{ capitalize($t('admin.USER', 0)) }}
+              </router-link>
+            </dt>
             <dd>
               {{ $t('admin.ADMIN_RIGHTS_DELETE_USER_ACCOUNT') }}
             </dd>
