@@ -28,11 +28,10 @@
 </template>
 
 <script lang="ts">
-  import { PropType, computed, defineComponent } from 'vue'
+  import { PropType, defineComponent } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import { IUserProfile } from '@/types/user'
-  import { getApiUrl } from '@/utils'
 
   export default defineComponent({
     name: 'ProfileDisplay',
@@ -44,17 +43,6 @@
         type: Object as PropType<IUserProfile>,
         required: true,
       },
-    },
-    setup(props) {
-      return {
-        authUserPictureUrl: computed(() =>
-          props.user.picture
-            ? `${getApiUrl()}/users/${
-                props.user.username
-              }/picture?${Date.now()}`
-            : ''
-        ),
-      }
     },
   })
 </script>

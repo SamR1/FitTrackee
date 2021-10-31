@@ -31,7 +31,12 @@
             </thead>
             <tbody>
               <tr v-for="user in users" :key="user.username">
-                <td></td>
+                <td>
+                  <span class="cell-heading">
+                    {{ $t('user.PROFILE.PICTURE') }}
+                  </span>
+                  <UserPicture :user="user" />
+                </td>
                 <td>
                   <span class="cell-heading">
                     {{ $t('user.USERNAME') }}
@@ -116,6 +121,7 @@
 
   import AdminUsersSelects from '@/components/Administration/AdminUsersSelects.vue'
   import Pagination from '@/components/Common/Pagination.vue'
+  import UserPicture from '@/components/User/UserPicture.vue'
   import { ROOT_STORE, USER_STORE, USERS_STORE } from '@/store/constants'
   import { IPagination, TPaginationPayload } from '@/types/api'
   import { IUserProfile } from '@/types/user'
@@ -126,6 +132,7 @@
     components: {
       AdminUsersSelects,
       Pagination,
+      UserPicture,
     },
     setup() {
       const store = useStore()
@@ -239,6 +246,15 @@
     }
     .left-text {
       text-align: left;
+    }
+    ::v-deep(.user-picture) {
+      img {
+        height: 30px;
+        width: 30px;
+      }
+      .no-picture {
+        font-size: 2em;
+      }
     }
 
     @media screen and (max-width: $small-limit) {
