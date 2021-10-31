@@ -16,13 +16,13 @@
             class="fa fa-close close-icon nav-item"
             :class="{ 'menu-closed': !isMenuOpen }"
             @click="closeMenu()"
-          ></i>
+          />
         </div>
         <div class="nav-items-app-menu" @click="closeMenu()">
           <div class="nav-items-group" v-if="isAuthenticated">
-            <router-link class="nav-item" to="/">{{
-              $t('dashboard.DASHBOARD')
-            }}</router-link>
+            <router-link class="nav-item" to="/">
+              {{ $t('dashboard.DASHBOARD') }}
+            </router-link>
             <router-link class="nav-item" to="/workouts">
               {{ capitalize($t('workouts.WORKOUT', 2)) }}
             </router-link>
@@ -55,12 +55,12 @@
             </div>
           </div>
           <div class="nav-items-group" v-else>
-            <router-link class="nav-item" to="/login" @click="closeMenu">{{
-              $t('user.LOGIN')
-            }}</router-link>
-            <router-link class="nav-item" to="/register" @click="closeMenu">{{
-              $t('user.REGISTER')
-            }}</router-link>
+            <router-link class="nav-item" to="/login" @click="closeMenu">
+              {{ $t('user.LOGIN') }}
+            </router-link>
+            <router-link class="nav-item" to="/register" @click="closeMenu">
+              {{ $t('user.REGISTER') }}
+            </router-link>
           </div>
           <Dropdown
             v-if="availableLanguages && language"
@@ -87,6 +87,7 @@
   import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getApiUrl } from '@/utils'
+  import { availableLanguages } from '@/utils/locales'
 
   export default defineComponent({
     name: 'NavBar',
@@ -95,12 +96,9 @@
     },
     emits: ['menuInteraction'],
     setup(props, { emit }) {
-      const { locale, availableLocales } = useI18n()
+      const { locale } = useI18n()
       const store = useStore()
 
-      const availableLanguages = availableLocales.map((l) => {
-        return { label: l.toUpperCase(), value: l }
-      })
       const authUser: ComputedRef<IUserProfile> = computed(
         () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
       )

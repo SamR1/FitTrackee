@@ -18,7 +18,8 @@
 </template>
 
 <script lang="ts">
-  import { PropType, defineComponent, ref } from 'vue'
+  import { PropType, defineComponent, ref, watch } from 'vue'
+  import { useRoute } from 'vue-router'
 
   import { IDropdownOption, TDropdownOptions } from '@/types/forms'
 
@@ -38,6 +39,7 @@
       selected: (option: IDropdownOption) => option,
     },
     setup(props, { emit }) {
+      const route = useRoute()
       let isOpen = ref(false)
       let dropdownOptions = props.options.map((option) => option)
 
@@ -48,6 +50,11 @@
         emit('selected', option)
         isOpen.value = false
       }
+
+      watch(
+        () => route.path,
+        () => (isOpen.value = false)
+      )
 
       return {
         dropdownOptions,
@@ -64,14 +71,17 @@
     list-style-type: none;
     background-color: #ffffff;
     padding: 0;
-    margin: 5px 0;
+    margin-top: 5px;
+    margin-left: -20px !important;
     position: absolute;
     text-align: left;
     border: solid 1px lightgrey;
     box-shadow: 2px 2px 5px lightgrey;
+    width: auto !important;
 
     li {
       padding-top: 5px;
+      padding-right: 5px;
     }
     li:last-child {
       padding-bottom: 5px;

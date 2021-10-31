@@ -60,11 +60,11 @@
     reactive,
     onMounted,
   } from 'vue'
-  import { useI18n } from 'vue-i18n'
 
   import { ROOT_STORE, USER_STORE } from '@/store/constants'
   import { IUserProfile, IUserPreferencesPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { availableLanguages } from '@/utils/locales'
 
   export default defineComponent({
     name: 'UserPreferencesEdition',
@@ -75,15 +75,11 @@
       },
     },
     setup(props) {
-      const { availableLocales } = useI18n()
       const store = useStore()
       const userForm: IUserPreferencesPayload = reactive({
         language: '',
         timezone: 'Europe/Paris',
         weekm: false,
-      })
-      const availableLanguages = availableLocales.map((l) => {
-        return { label: l.toUpperCase(), value: l }
       })
       const weekStart = [
         {

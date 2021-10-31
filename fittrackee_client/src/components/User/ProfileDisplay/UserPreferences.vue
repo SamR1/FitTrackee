@@ -21,6 +21,7 @@
   import { PropType, computed, defineComponent } from 'vue'
 
   import { IUserProfile } from '@/types/user'
+  import { languageLabels } from '@/utils/locales'
 
   export default defineComponent({
     name: 'UserPreferences',
@@ -32,7 +33,9 @@
     },
     setup(props) {
       const language = computed(() =>
-        props.user.language ? props.user.language.toUpperCase() : 'EN'
+        props.user.language
+          ? languageLabels[props.user.language]
+          : languageLabels['en']
       )
       const fistDayOfWeek = computed(() =>
         props.user.weekm ? 'MONDAY' : 'SUNDAY'
