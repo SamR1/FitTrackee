@@ -5,6 +5,7 @@ import { ROOT_STORE, USERS_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
 import { IUsersActions, IUsersState } from '@/store/modules/users/types'
 import { IPaginationPayload } from '@/types/api'
+import { IAdminUserPayload } from '@/types/user'
 import { handleError } from '@/utils'
 
 export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
@@ -25,6 +26,29 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
           context.commit(
             USERS_STORE.MUTATIONS.UPDATE_USERS_PAGINATION,
             res.data.pagination
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS_LOADING, false)
+      )
+  },
+  [USERS_STORE.ACTIONS.UPDATE_USER](
+    context: ActionContext<IUsersState, IRootState>,
+    payload: IAdminUserPayload
+  ): void {
+    console.log('payload', payload)
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .patch(`users/${payload.username}`, { admin: payload.admin })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            USERS_STORE.MUTATIONS.UPDATE_USER,
+            res.data.data.users[0]
           )
         } else {
           handleError(context, null)

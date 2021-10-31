@@ -1,5 +1,6 @@
 export enum UsersActions {
   GET_USERS = 'GET_USERS',
+  UPDATE_USER = 'UPDATE_USER',
 }
 
 export enum UsersGetters {
@@ -9,6 +10,7 @@ export enum UsersGetters {
 }
 
 export enum UsersMutations {
+  UPDATE_USER = 'UPDATE_USER',
   UPDATE_USERS = 'UPDATE_USERS',
   UPDATE_USERS_LOADING = 'UPDATE_USERS_LOADING',
   UPDATE_USERS_PAGINATION = 'UPDATE_USERS_PAGINATION',

@@ -6,6 +6,17 @@ import { IPagination } from '@/types/api'
 import { IUserProfile } from '@/types/user'
 
 export const mutations: MutationTree<IUsersState> & TUsersMutations = {
+  [USERS_STORE.MUTATIONS.UPDATE_USER](
+    state: IUsersState,
+    updatedUser: IUserProfile
+  ) {
+    state.users = state.users.map((user) => {
+      if (user.username === updatedUser.username) {
+        return updatedUser
+      }
+      return user
+    })
+  },
   [USERS_STORE.MUTATIONS.UPDATE_USERS](
     state: IUsersState,
     users: IUserProfile[]

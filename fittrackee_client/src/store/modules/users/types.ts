@@ -8,7 +8,7 @@ import {
 import { USERS_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
 import { IPagination, IPaginationPayload } from '@/types/api'
-import { IUserProfile } from '@/types/user'
+import { IAdminUserPayload, IUserProfile } from '@/types/user'
 
 export interface IUsersState {
   users: IUserProfile[]
@@ -21,6 +21,10 @@ export interface IUsersActions {
     context: ActionContext<IUsersState, IRootState>,
     payload: IPaginationPayload
   ): void
+  [USERS_STORE.ACTIONS.UPDATE_USER](
+    context: ActionContext<IUsersState, IRootState>,
+    payload: IAdminUserPayload
+  ): void
 }
 
 export interface IUsersGetters {
@@ -30,6 +34,7 @@ export interface IUsersGetters {
 }
 
 export type TUsersMutations<S = IUsersState> = {
+  [USERS_STORE.MUTATIONS.UPDATE_USER](state: S, updatedUser: IUserProfile): void
   [USERS_STORE.MUTATIONS.UPDATE_USERS](state: S, users: IUserProfile[]): void
   [USERS_STORE.MUTATIONS.UPDATE_USERS_LOADING](state: S, loading: boolean): void
   [USERS_STORE.MUTATIONS.UPDATE_USERS_PAGINATION](

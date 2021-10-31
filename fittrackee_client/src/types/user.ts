@@ -32,6 +32,11 @@ export interface IUserPayload {
   password_conf: string
 }
 
+export interface IAdminUserPayload {
+  username: string
+  admin: boolean
+}
+
 export interface IUserPreferencesPayload {
   language: string
   timezone: string

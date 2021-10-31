@@ -63,7 +63,11 @@
                   <span class="cell-heading">
                     {{ $t('admin.ACTION') }}
                   </span>
-                  <button :class="{ danger: user.admin }">
+                  <button
+                    :class="{ danger: user.admin }"
+                    :disabled="user.username === authUser.username"
+                    @click="updateUser(user.username, !user.admin)"
+                  >
                     {{
                       $t(
                         `admin.USERS.TABLE.${
@@ -104,7 +108,7 @@
   import { useRoute, LocationQuery } from 'vue-router'
 
   import Pagination from '@/components/Common/Pagination.vue'
-  import { ROOT_STORE, USERS_STORE } from '@/store/constants'
+  import { ROOT_STORE, USER_STORE, USERS_STORE } from '@/store/constants'
   import { IPagination, IPaginationPayload } from '@/types/api'
   import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -127,6 +131,9 @@
       ]
       let query: IPaginationPayload = getQuery(route.query)
 
+      const authUser: ComputedRef<IUserProfile> = computed(
+        () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
+      )
       const users: ComputedRef<IUserProfile[]> = computed(
         () => store.getters[USERS_STORE.GETTERS.USERS]
       )
@@ -168,6 +175,12 @@
           order_by: getOrderBy(query.order_by),
         }
       }
+      function updateUser(username: string, admin: boolean) {
+        store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, {
+          username,
+          admin,
+        })
+      }
 
       onBeforeMount(() => loadUsers(query))
 
@@ -179,7 +192,15 @@
         }
       )
 
-      return { errorMessages, pagination, query, users, capitalize }
+      return {
+        authUser,
+        errorMessages,
+        pagination,
+        query,
+        users,
+        capitalize,
+        updateUser,
+      }
     },
   })
 </script>

@@ -91,6 +91,11 @@ button {
       background: var(--button-danger-hover-bg-color);
       color: var(--button-danger-hover-color);
     }
+    &:disabled {
+      background: var(--disabled-background-color);
+      border-color: var(--disabled-color);
+      color: var(--disabled-color);
+    }
   }
 }
 
