@@ -11,12 +11,23 @@ import { IPagination, TPaginationPayload } from '@/types/api'
 import { IAdminUserPayload, IUserProfile } from '@/types/user'
 
 export interface IUsersState {
+  user: IUserProfile
   users: IUserProfile[]
   loading: boolean
   pagination: IPagination
 }
 
 export interface IUsersActions {
+  [USERS_STORE.ACTIONS.EMPTY_USER](
+    context: ActionContext<IUsersState, IRootState>
+  ): void
+  [USERS_STORE.ACTIONS.EMPTY_USERS](
+    context: ActionContext<IUsersState, IRootState>
+  ): void
+  [USERS_STORE.ACTIONS.GET_USER](
+    context: ActionContext<IUsersState, IRootState>,
+    username: string
+  ): void
   [USERS_STORE.ACTIONS.GET_USERS](
     context: ActionContext<IUsersState, IRootState>,
     payload: TPaginationPayload
@@ -28,12 +39,14 @@ export interface IUsersActions {
 }
 
 export interface IUsersGetters {
+  [USERS_STORE.GETTERS.USER](state: IUsersState): IUserProfile
   [USERS_STORE.GETTERS.USERS](state: IUsersState): IUserProfile[]
   [USERS_STORE.GETTERS.USERS_LOADING](state: IUsersState): boolean
   [USERS_STORE.GETTERS.USERS_PAGINATION](state: IUsersState): IPagination
 }
 
 export type TUsersMutations<S = IUsersState> = {
+  [USERS_STORE.MUTATIONS.UPDATE_USER](state: S, user: IUserProfile): void
   [USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS](
     state: S,
     updatedUser: IUserProfile

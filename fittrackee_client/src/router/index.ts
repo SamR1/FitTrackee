@@ -129,6 +129,12 @@ const routes: Array<RouteRecordRaw> = [
       import(/* webpackChunkName: 'main' */ '@/views/StatisticsView.vue'),
   },
   {
+    path: '/users/:username',
+    name: 'User',
+    component: () =>
+      import(/* webpackChunkName: 'profile' */ '@/views/UserView.vue'),
+  },
+  {
     path: '/workouts',
     name: 'Workouts',
     component: () =>

@@ -6,6 +6,9 @@ import { IPagination } from '@/types/api'
 import { IUserProfile } from '@/types/user'
 
 export const mutations: MutationTree<IUsersState> & TUsersMutations = {
+  [USERS_STORE.MUTATIONS.UPDATE_USER](state: IUsersState, user: IUserProfile) {
+    state.user = user
+  },
   [USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS](
     state: IUsersState,
     updatedUser: IUserProfile

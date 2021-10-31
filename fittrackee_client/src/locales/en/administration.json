@@ -13,6 +13,8 @@
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. size of zip archive (in Mb)"
   },
   "BACK_TO_ADMIN": "Back to admin",
+  "CONFIRM_USER_ACCOUNT_DELETION": "Are you sure you want to delete {0} account? All data will be deleted, this cannot be undone.",
+  "DELETE_USER": "Delete user",
   "ENABLE_DISABLE_SPORTS": "Enable/disable sports.",
   "REGISTRATION_DISABLED": "Registration is currently disabled.",
   "REGISTRATION_ENABLED": "Registration is currently enabled.",

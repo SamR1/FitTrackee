@@ -6,7 +6,12 @@
           {{ title }}
         </template>
         <template #content>
-          <div class="modal-message">{{ message }}</div>
+          <div class="modal-message" v-if="strongMessage">
+            <i18n-t :keypath="message">
+              <span>{{ strongMessage }}</span>
+            </i18n-t>
+          </div>
+          <div class="modal-message" v-else>{{ message }}</div>
           <ErrorMessage :message="errorMessages" v-if="errorMessages" />
           <div class="modal-buttons">
             <button class="confirm" @click="emit('confirmAction')">
@@ -38,6 +43,10 @@
       message: {
         type: String,
         required: true,
+      },
+      strongMessage: {
+        type: String || null,
+        default: null,
       },
     },
     emits: ['cancelAction', 'confirmAction'],
@@ -90,6 +99,9 @@
 
           .modal-message {
             padding: $default-padding;
+            span {
+              font-weight: bold;
+            }
           }
 
           .modal-buttons {

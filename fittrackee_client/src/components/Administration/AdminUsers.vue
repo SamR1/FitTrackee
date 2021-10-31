@@ -41,7 +41,9 @@
                   <span class="cell-heading">
                     {{ $t('user.USERNAME') }}
                   </span>
-                  {{ user.username }}
+                  <router-link :to="`/users/${user.username}`">
+                    {{ user.username }}
+                  </router-link>
                 </td>
                 <td>
                   <span class="cell-heading">
@@ -116,6 +118,7 @@
     watch,
     capitalize,
     onBeforeMount,
+    onUnmounted,
   } from 'vue'
   import { LocationQuery, useRoute, useRouter } from 'vue-router'
 
@@ -216,6 +219,10 @@
           loadUsers(query)
         }
       )
+
+      onUnmounted(() => {
+        store.dispatch(USERS_STORE.ACTIONS.EMPTY_USERS)
+      })
 
       return {
         authUser,

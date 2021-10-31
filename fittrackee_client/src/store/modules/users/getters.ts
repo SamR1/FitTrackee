@@ -5,6 +5,9 @@ import { IRootState } from '@/store/modules/root/types'
 import { IUsersGetters, IUsersState } from '@/store/modules/users/types'
 
 export const getters: GetterTree<IUsersState, IRootState> & IUsersGetters = {
+  [USERS_STORE.GETTERS.USER]: (state: IUsersState) => {
+    return state.user
+  },
   [USERS_STORE.GETTERS.USERS]: (state: IUsersState) => {
     return state.users
   },
