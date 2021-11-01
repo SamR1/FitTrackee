@@ -86,9 +86,9 @@ class User(BaseModel):
         try:
             return decode_user_token(auth_token)
         except jwt.ExpiredSignatureError:
-            return 'Signature expired. Please log in again.'
+            return 'signature expired, please log in again'
         except jwt.InvalidTokenError:
-            return 'Invalid token. Please log in again.'
+            return 'invalid token, please log in again'
 
     @hybrid_property
     def workouts_count(self) -> int:

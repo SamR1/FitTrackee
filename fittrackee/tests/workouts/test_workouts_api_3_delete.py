@@ -58,7 +58,7 @@ class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
 
         assert response.status_code == 403
         assert 'error' in data['status']
-        assert 'You do not have permissions.' in data['message']
+        assert 'you do not have permissions' in data['message']
 
     def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask, user_1: User
@@ -91,7 +91,7 @@ class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
         assert response.status_code == 500
         assert 'error' in data['status']
         assert (
-            'Error. Please try again or contact the administrator.'
+            'error, please try again or contact the administrator'
             in data['message']
         )
 
@@ -137,4 +137,4 @@ class TestDeleteWorkoutWithoutGpx(ApiTestCaseMixin):
 
         assert response.status_code == 403
         assert 'error' in data['status']
-        assert 'You do not have permissions.' in data['message']
+        assert 'you do not have permissions' in data['message']

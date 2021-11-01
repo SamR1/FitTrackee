@@ -187,9 +187,9 @@ def get_workouts(auth_user_id: int) -> Union[Dict, HttpResponse]:
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 500:
 
     """
@@ -343,10 +343,10 @@ def get_workout(
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
-    :statuscode 403: You do not have permissions.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403: you do not have permissions
     :statuscode 404: workout not found
 
     """
@@ -377,7 +377,7 @@ def get_workout_data(
     if not workout:
         return DataNotFoundErrorResponse(
             data_type=data_type,
-            message=f'Workout not found (id: {workout_short_id})',
+            message=f'workout not found (id: {workout_short_id})',
         )
 
     error_response = can_view_workout(auth_user_id, workout.user_id)
@@ -385,7 +385,7 @@ def get_workout_data(
         return error_response
     if not workout.gpx or workout.gpx == '':
         return NotFoundErrorResponse(
-            f'No gpx file for this workout (id: {workout_short_id})'
+            f'no gpx file for this workout (id: {workout_short_id})'
         )
 
     try:
@@ -464,9 +464,9 @@ def get_workout_gpx(
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404:
         - workout not found
         - no gpx file for this workout
@@ -534,9 +534,9 @@ def get_workout_chart_data(
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404:
         - workout not found
         - no gpx file for this workout
@@ -588,9 +588,9 @@ def get_segment_gpx(
     :statuscode 200: success
     :statuscode 400: no gpx file for this workout
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404: workout not found
     :statuscode 500:
 
@@ -660,9 +660,9 @@ def get_segment_chart_data(
     :statuscode 200: success
     :statuscode 400: no gpx file for this workout
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404: workout not found
     :statuscode 500:
 
@@ -695,9 +695,9 @@ def get_map(map_id: int) -> Any:
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404: map does not exist
     :statuscode 500:
 
@@ -855,15 +855,15 @@ def post_workout(auth_user_id: int) -> Union[Tuple[Dict, int], HttpResponse]:
 
     :statuscode 201: workout created
     :statuscode 400:
-        - Invalid payload.
-        - No file part.
-        - No selected file.
-        - File extension not allowed.
+        - invalid payload
+        - no file part
+        - no selected file
+        - file extension not allowed
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
-    :statuscode 413: Error during picture update: file size exceeds 1.0MB.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 413: error during picture update: file size exceeds 1.0MB
     :statuscode 500:
 
     """
@@ -1030,9 +1030,9 @@ def post_workout_no_gpx(
     :statuscode 201: workout created
     :statuscode 400: invalid payload
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 500:
 
     """
@@ -1185,9 +1185,9 @@ def update_workout(
     :statuscode 200: workout updated
     :statuscode 400: invalid payload
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404: workout not found
     :statuscode 500:
 
@@ -1248,11 +1248,11 @@ def delete_workout(
 
     :statuscode 204: workout deleted
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404: workout not found
-    :statuscode 500: Error. Please try again or contact the administrator.
+    :statuscode 500: error, please try again or contact the administrator
 
     """
 

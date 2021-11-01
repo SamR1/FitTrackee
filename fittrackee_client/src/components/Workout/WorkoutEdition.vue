@@ -356,7 +356,12 @@
         } else {
           if (withGpx.value) {
             if (!gpxFile) {
-              throw new Error('No file provided !!')
+              const errorMessage = 'workouts.NO_FILE_PROVIDED'
+              store.commit(
+                ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES,
+                errorMessage
+              )
+              return
             }
             payload.file = gpxFile
             store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_WORKOUT, payload)

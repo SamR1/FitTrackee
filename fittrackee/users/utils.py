@@ -37,9 +37,9 @@ def check_passwords(password: str, password_conf: str) -> str:
     """
     ret = ''
     if password_conf != password:
-        ret = 'Password and password confirmation don\'t match.\n'
+        ret = 'password: password and password confirmation do not match\n'
     if len(password) < 8:
-        ret += 'Password: 8 characters required.\n'
+        ret += 'password: 8 characters required\n'
     return ret
 
 
@@ -53,9 +53,9 @@ def register_controls(
     """
     ret = ''
     if not 2 < len(username) < 13:
-        ret += 'Username: 3 to 12 characters required.\n'
+        ret += 'username: 3 to 12 characters required\n'
     if not is_valid_email(email):
-        ret += 'Valid email must be provided.\n'
+        ret += 'email: valid email must be provided\n'
     ret += check_passwords(password, password_conf)
     return ret
 
@@ -67,7 +67,7 @@ def verify_user(
     Return user id, if the provided token is valid and if user has admin
     rights if 'verify_admin' is True
     """
-    default_message = 'Provide a valid auth token.'
+    default_message = 'provide a valid auth token'
     auth_header = current_request.headers.get('Authorization')
     if not auth_header:
         return UnauthorizedErrorResponse(default_message), None

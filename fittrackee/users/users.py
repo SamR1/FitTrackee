@@ -155,9 +155,9 @@ def get_users(auth_user_id: int) -> Dict:
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
 
     """
     params = request.args.copy()
@@ -310,11 +310,11 @@ def get_single_user(
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404:
-        - User does not exist.
+        - user does not exist
     """
     try:
         user = User.query.filter_by(username=user_name).first()
@@ -350,7 +350,7 @@ def get_picture(user_name: str) -> Any:
 
     :statuscode 200: success
     :statuscode 404:
-        - User does not exist.
+        - user does not exist
         - No picture.
 
     """
@@ -466,12 +466,12 @@ def update_user(
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
-    :statuscode 403: You do not have permissions.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403: you do not have permissions
     :statuscode 404:
-        - User does not exist.
+        - user does not exist
     :statuscode 500:
     """
     user_data = request.get_json()
@@ -527,15 +527,15 @@ def delete_user(
 
     :statuscode 204: user account deleted
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 403:
-        - You do not have permissions.
+        - you do not have permissions
         - You can not delete your account, no other user has admin rights.
     :statuscode 404:
-        - User does not exist.
-    :statuscode 500: Error. Please try again or contact the administrator.
+        - user does not exist
+    :statuscode 500: error, please try again or contact the administrator
 
     """
     try:

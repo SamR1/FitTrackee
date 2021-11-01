@@ -468,7 +468,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 400
         assert data['status'] == 'fail'
-        assert data['message'] == 'File extension not allowed.'
+        assert data['message'] == 'file extension not allowed'
 
     def test_it_returns_400_if_sport_id_is_not_provided(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
@@ -489,7 +489,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 400
         assert data['status'] == 'error'
-        assert data['message'] == 'Invalid payload.'
+        assert data['message'] == 'invalid payload'
 
     def test_it_returns_500_if_sport_id_does_not_exists(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
@@ -530,7 +530,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 400
         assert data['status'] == 'fail'
-        assert data['message'] == 'No file part.'
+        assert data['message'] == 'no file part'
 
     def test_it_returns_error_if_file_size_exceeds_limit(
         self,
@@ -605,7 +605,7 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 400
         assert 'error' in data['status']
-        assert 'Invalid payload.' in data['message']
+        assert 'invalid payload' in data['message']
 
     def test_it_returns_500_if_workout_format_is_invalid(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
@@ -911,7 +911,7 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
         assert data['status'] == 'error'
         assert (
             data['message']
-            == 'Error. Please try again or contact the administrator.'
+            == 'error, please try again or contact the administrator'
         )
 
     def test_it_gets_an_workout_created_with_gpx(
@@ -1025,7 +1025,7 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 403
         assert 'error' in data['status']
-        assert data['message'] == 'You do not have permissions.'
+        assert data['message'] == 'you do not have permissions'
 
     def test_it_returns_500_on_invalid_segment_id(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str

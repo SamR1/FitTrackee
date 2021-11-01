@@ -15,11 +15,6 @@ export const getApiUrl = (): string => {
     : `${process.env.VUE_APP_API_URL}/api/`
 }
 
-// TODO: update api error messages to remove these workarounds
-const removeLastEndOfLine = (text: string): string => text.replace(/\n$/gm, '')
-const removeLastDot = (text: string): string => text.replace(/\.$/gm, '')
-const replaceInternalDots = (text: string): string => text.replace(/\./gm, ',')
-
 export const handleError = (
   context:
     | ActionContext<IRootState, IRootState>
@@ -31,25 +26,24 @@ export const handleError = (
   error: AxiosError | null,
   msg = 'UNKNOWN'
 ): void => {
-  let errorMessages = !error
+  const errorMessages = !error
     ? msg
     : error.response
     ? error.response.status === 413
-      ? 'File size is greater than the allowed size'
+      ? 'file size is greater than the allowed size'
       : error.response.data.message
       ? error.response.data.message
       : msg
     : error.message
     ? error.message
     : msg
-  errorMessages = removeLastEndOfLine(errorMessages)
-  errorMessages = replaceInternalDots(errorMessages)
   context.commit(
     ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES,
     errorMessages.includes('\n')
       ? errorMessages
           .split('\n')
-          .map((m: string) => `api.ERROR.${removeLastDot(m)}`)
-      : `api.ERROR.${removeLastDot(errorMessages)}`
+          .filter((m: string) => m !== '')
+          .map((m: string) => `api.ERROR.${m}`)
+      : `api.ERROR.${errorMessages}`
   )
 }

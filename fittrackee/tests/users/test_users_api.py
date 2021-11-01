@@ -102,7 +102,7 @@ class TestGetUser(ApiTestCaseMixin):
 
         assert response.status_code == 404
         assert 'not found' in data['status']
-        assert 'User does not exist.' in data['message']
+        assert 'user does not exist' in data['message']
 
 
 class TestGetUsers(ApiTestCaseMixin):
@@ -800,7 +800,7 @@ class TestGetUserPicture:
         data = json.loads(response.data.decode())
         assert response.status_code == 404
         assert 'not found' in data['status']
-        assert 'User does not exist.' in data['message']
+        assert 'user does not exist' in data['message']
 
 
 class TestUpdateUser(ApiTestCaseMixin):
@@ -866,7 +866,7 @@ class TestUpdateUser(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 400
         assert 'error' in data['status']
-        assert 'Invalid payload.' in data['message']
+        assert 'invalid payload' in data['message']
 
     def test_it_returns_error_if_payload_for_admin_rights_is_invalid(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -886,7 +886,7 @@ class TestUpdateUser(ApiTestCaseMixin):
         assert response.status_code == 500
         assert 'error' in data['status']
         assert (
-            'Error. Please try again or contact the administrator.'
+            'error, please try again or contact the administrator'
             in data['message']
         )
 
@@ -905,7 +905,7 @@ class TestUpdateUser(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 403
         assert 'error' in data['status']
-        assert 'You do not have permissions.' in data['message']
+        assert 'you do not have permissions' in data['message']
 
 
 class TestDeleteUser(ApiTestCaseMixin):
@@ -977,7 +977,7 @@ class TestDeleteUser(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 403
         assert 'error' in data['status']
-        assert 'You do not have permissions.' in data['message']
+        assert 'you do not have permissions' in data['message']
 
     def test_it_returns_error_when_deleting_non_existing_user(
         self, app: Flask, user_1: User
@@ -992,7 +992,7 @@ class TestDeleteUser(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 404
         assert 'not found' in data['status']
-        assert 'User does not exist.' in data['message']
+        assert 'user does not exist' in data['message']
 
     def test_admin_can_delete_another_user_account(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -1103,4 +1103,4 @@ class TestDeleteUser(ApiTestCaseMixin):
         assert response.status_code == 403
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
-        assert data['message'] == 'Error. Registration is disabled.'
+        assert data['message'] == 'error, registration is disabled'

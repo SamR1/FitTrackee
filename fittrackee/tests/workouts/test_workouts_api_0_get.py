@@ -94,7 +94,7 @@ class TestGetWorkouts(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 401
         assert 'error' in data['status']
-        assert 'Provide a valid auth token.' in data['message']
+        assert 'provide a valid auth token' in data['message']
 
 
 class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
@@ -228,7 +228,7 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         assert response.status_code == 500
         assert 'error' in data['status']
         assert (
-            'Error. Please try again or contact the administrator.'
+            'error, please try again or contact the administrator'
             in data['message']
         )
 
@@ -707,7 +707,7 @@ class TestGetWorkout(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 403
         assert 'error' in data['status']
-        assert 'You do not have permissions.' in data['message']
+        assert 'you do not have permissions' in data['message']
 
     def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask, user_1: User
@@ -738,7 +738,7 @@ class TestGetWorkout(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 404
         assert 'not found' in data['status']
-        assert f'Workout not found (id: {random_short_id})' in data['message']
+        assert f'workout not found (id: {random_short_id})' in data['message']
         assert data['data']['gpx'] == ''
 
     def test_it_returns_404_on_getting_chart_data_if_workout_does_not_exist(
@@ -755,7 +755,7 @@ class TestGetWorkout(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 404
         assert 'not found' in data['status']
-        assert f'Workout not found (id: {random_short_id})' in data['message']
+        assert f'workout not found (id: {random_short_id})' in data['message']
         assert data['data']['chart_data'] == ''
 
     def test_it_returns_404_on_getting_gpx_if_workout_have_no_gpx(
@@ -777,7 +777,7 @@ class TestGetWorkout(ApiTestCaseMixin):
         assert response.status_code == 404
         assert 'not found' in data['status']
         assert (
-            f'No gpx file for this workout (id: {workout_short_id})'
+            f'no gpx file for this workout (id: {workout_short_id})'
             in data['message']
         )
 
@@ -800,7 +800,7 @@ class TestGetWorkout(ApiTestCaseMixin):
         assert response.status_code == 404
         assert 'not found' in data['status']
         assert (
-            f'No gpx file for this workout (id: {workout_short_id})'
+            f'no gpx file for this workout (id: {workout_short_id})'
             in data['message']
         )
 
@@ -823,7 +823,7 @@ class TestGetWorkout(ApiTestCaseMixin):
         assert response.status_code == 500
         assert 'error' in data['status']
         assert (
-            'Error. Please try again or contact the administrator.'
+            'error, please try again or contact the administrator'
             in data['message']
         )
         assert 'data' not in data
@@ -847,7 +847,7 @@ class TestGetWorkout(ApiTestCaseMixin):
         assert response.status_code == 500
         assert 'error' in data['status']
         assert (
-            'Error. Please try again or contact the administrator.'
+            'error, please try again or contact the administrator'
             in data['message']
         )
         assert 'data' not in data

@@ -37,7 +37,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 404
         assert 'not found' in data['status']
-        assert 'User does not exist.' in data['message']
+        assert 'user does not exist' in data['message']
 
     def test_it_returns_error_if_date_format_is_invalid(
         self,
@@ -62,7 +62,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert response.status_code == 500
         assert 'error' in data['status']
         assert (
-            'Error. Please try again or contact the administrator.'
+            'error, please try again or contact the administrator'
             in data['message']
         )
 
@@ -867,7 +867,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 404
         assert 'not found' in data['status']
-        assert 'User does not exist.' in data['message']
+        assert 'user does not exist' in data['message']
 
     def test_it_returns_error_if_sport_does_not_exist(
         self,
@@ -888,7 +888,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 404
         assert 'not found' in data['status']
-        assert 'Sport does not exist.' in data['message']
+        assert 'sport does not exist' in data['message']
 
     def test_it_returns_error_if_sport_id_is_invalid(
         self,
@@ -910,7 +910,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         assert response.status_code == 500
         assert 'error' in data['status']
         assert (
-            'Error. Please try again or contact the administrator.'
+            'error, please try again or contact the administrator'
             in data['message']
         )
 
@@ -988,4 +988,4 @@ class TestGetAllStats(ApiTestCaseMixin):
         assert response.status_code == 403
         assert 'success' not in data['status']
         assert 'error' in data['status']
-        assert 'You do not have permissions.' in data['message']
+        assert 'you do not have permissions' in data['message']
