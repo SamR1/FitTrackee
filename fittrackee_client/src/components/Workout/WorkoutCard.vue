@@ -12,10 +12,27 @@
           <div v-else class="no-picture">
             <i class="fa fa-user-circle-o" aria-hidden="true" />
           </div>
-          <span v-if="user.username" class="workout-user-name">
+          <router-link
+            v-if="user.username"
+            class="workout-user-name"
+            :to="{
+              name: 'User',
+              params: { username: user.username },
+            }"
+          >
             {{ user.username }}
-          </span>
+          </router-link>
         </div>
+        <router-link
+          class="workout-title"
+          v-if="workout"
+          :to="{
+            name: 'Workout',
+            params: { workoutId: workout.id },
+          }"
+        >
+          {{ workout.title }}
+        </router-link>
         <div
           class="workout-date"
           v-if="workout && user"
