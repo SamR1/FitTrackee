@@ -64,7 +64,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/img/workouts/mountains.svg"
   },
   {
-    "revision": "9e86ef92a894641dfb2cb18d4eafa882",
+    "revision": "ea991ffce2185e4cc072abf683bedd86",
     "url": "/index.html"
   },
   {
@@ -80,7 +80,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/css/admin.c784857e.css"
   },
   {
-    "revision": "eb1b0ab18e7b390d39d4",
+    "revision": "7f1bfdb54f95f3215297",
     "url": "/static/css/app.24ba011a.css"
   },
   {
@@ -92,20 +92,20 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/css/leaflet.css"
   },
   {
-    "revision": "e459cb348928f86035a2",
-    "url": "/static/css/main.90171b28.css"
+    "revision": "05c628021239246381f3",
+    "url": "/static/css/main.4b6a4ae2.css"
   },
   {
     "revision": "7cbc2a35623621321963",
     "url": "/static/css/main~workouts.c12079e7.css"
   },
   {
-    "revision": "611a96d7197f82c08a4d",
-    "url": "/static/css/profile.23881524.css"
+    "revision": "c3fbb4741fcfd33236fb",
+    "url": "/static/css/profile.a602fc10.css"
   },
   {
-    "revision": "6942063225155477cb74",
-    "url": "/static/css/reset.528e2916.css"
+    "revision": "db3eca6d999a7b9aa538",
+    "url": "/static/css/reset.5eaa1e50.css"
   },
   {
     "revision": "afbde641dcb3d7f75c9f",
@@ -196,8 +196,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/admin.b2c267a7.js"
   },
   {
-    "revision": "eb1b0ab18e7b390d39d4",
-    "url": "/static/js/app.b02bdc1f.js"
+    "revision": "7f1bfdb54f95f3215297",
+    "url": "/static/js/app.1d2a8a56.js"
   },
   {
     "revision": "bd7d183c9f68e5f4027d",
@@ -224,20 +224,20 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/chunk-vendors.61765c73.js"
   },
   {
-    "revision": "e459cb348928f86035a2",
-    "url": "/static/js/main.44a7d380.js"
+    "revision": "05c628021239246381f3",
+    "url": "/static/js/main.96af01eb.js"
   },
   {
     "revision": "7cbc2a35623621321963",
     "url": "/static/js/main~workouts.44a477db.js"
   },
   {
-    "revision": "611a96d7197f82c08a4d",
-    "url": "/static/js/profile.a7cb3b48.js"
+    "revision": "c3fbb4741fcfd33236fb",
+    "url": "/static/js/profile.291e07db.js"
   },
   {
-    "revision": "6942063225155477cb74",
-    "url": "/static/js/reset.607f183f.js"
+    "revision": "db3eca6d999a7b9aa538",
+    "url": "/static/js/reset.60cf3dbf.js"
   },
   {
     "revision": "afbde641dcb3d7f75c9f",

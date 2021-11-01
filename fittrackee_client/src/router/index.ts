@@ -25,55 +25,63 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'Dashboard',
     component: () =>
-      import(/* webpackChunkName: 'main' */ '@/views/DashBoard.vue'),
+      import(/* webpackChunkName: 'main' */ '@/views/Dashboard.vue'),
   },
   {
     path: '/login',
     name: 'Login',
     component: () =>
-      import(/* webpackChunkName: 'main' */ '@/views/LoginOrRegister.vue'),
+      import(/* webpackChunkName: 'main' */ '@/views/user/LoginOrRegister.vue'),
     props: { action: 'login' },
   },
   {
     path: '/register',
     name: 'Register',
     component: () =>
-      import(/* webpackChunkName: 'main' */ '@/views/LoginOrRegister.vue'),
+      import(/* webpackChunkName: 'main' */ '@/views/user/LoginOrRegister.vue'),
     props: { action: 'register' },
   },
   {
     path: '/password-reset/sent',
     name: 'PasswordEmailSent',
     component: () =>
-      import(/* webpackChunkName: 'reset' */ '@/views/PasswordResetView.vue'),
+      import(
+        /* webpackChunkName: 'reset' */ '@/views/user/PasswordResetView.vue'
+      ),
     props: { action: 'request-sent' },
   },
   {
     path: '/password-reset/request',
     name: 'PasswordResetRequest',
     component: () =>
-      import(/* webpackChunkName: 'reset' */ '@/views/PasswordResetView.vue'),
+      import(
+        /* webpackChunkName: 'reset' */ '@/views/user/PasswordResetView.vue'
+      ),
     props: { action: 'reset-request' },
   },
   {
     path: '/password-reset/password-updated',
     name: 'PasswordUpdated',
     component: () =>
-      import(/* webpackChunkName: 'reset' */ '@/views/PasswordResetView.vue'),
+      import(
+        /* webpackChunkName: 'reset' */ '@/views/user/PasswordResetView.vue'
+      ),
     props: { action: 'password-updated' },
   },
   {
     path: '/password-reset',
     name: 'PasswordReset',
     component: () =>
-      import(/* webpackChunkName: 'reset' */ '@/views/PasswordResetView.vue'),
+      import(
+        /* webpackChunkName: 'reset' */ '@/views/user/PasswordResetView.vue'
+      ),
     props: { action: 'reset' },
   },
   {
     path: '/profile',
     name: 'Profile',
     component: () =>
-      import(/* webpackChunkName: 'profile' */ '@/views/ProfileView.vue'),
+      import(/* webpackChunkName: 'profile' */ '@/views/user/ProfileView.vue'),
     children: [
       {
         path: '',
@@ -132,7 +140,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/users/:username',
     name: 'User',
     component: () =>
-      import(/* webpackChunkName: 'profile' */ '@/views/UserView.vue'),
+      import(/* webpackChunkName: 'profile' */ '@/views/user/UserView.vue'),
   },
   {
     path: '/workouts',

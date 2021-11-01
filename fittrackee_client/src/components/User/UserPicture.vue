@@ -2,7 +2,7 @@
   <div class="user-picture">
     <img
       v-if="authUserPictureUrl !== ''"
-      class="nav-profile-user-img"
+      class="profile-user-img"
       :alt="$t('user.USER_PICTURE')"
       :src="authUserPictureUrl"
     />
@@ -30,7 +30,7 @@
       return {
         authUserPictureUrl: computed(() =>
           props.user.picture
-            ? `${getApiUrl()}users/${props.user.username}/picture?${Date.now()}`
+            ? `${getApiUrl()}users/${props.user.username}/picture`
             : ''
         ),
       }

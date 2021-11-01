@@ -3,15 +3,7 @@
     <div class="box">
       <div class="workout-user-date">
         <div class="workout-user">
-          <img
-            class="profile-img"
-            v-if="userPictureUrl !== ''"
-            :alt="$t('user.USER_PICTURE')"
-            :src="userPictureUrl"
-          />
-          <div v-else class="no-picture">
-            <i class="fa fa-user-circle-o" aria-hidden="true" />
-          </div>
+          <UserPicture :user="user" />
           <router-link
             v-if="user.username"
             class="workout-user-name"
@@ -97,18 +89,19 @@
   import { PropType, defineComponent, ComputedRef, computed } from 'vue'
 
   import StaticMap from '@/components/Common/StaticMap.vue'
+  import UserPicture from '@/components/User/UserPicture.vue'
   import { ROOT_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
   import { IUserProfile } from '@/types/user'
   import { IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
-  import { getApiUrl } from '@/utils'
   import { getDateWithTZ } from '@/utils/dates'
 
   export default defineComponent({
     name: 'WorkoutCard',
     components: {
       StaticMap,
+      UserPicture,
     },
     props: {
       workout: {
@@ -124,24 +117,16 @@
         required: false,
       },
     },
-    setup(props) {
+    setup() {
       const store = useStore()
-
-      const userPictureUrl: ComputedRef<string> = computed(() =>
-        props.user.picture
-          ? `${getApiUrl()}/users/${props.user.username}/picture?${Date.now()}`
-          : ''
-      )
       const locale: ComputedRef<Locale> = computed(
         () => store.getters[ROOT_STORE.GETTERS.LOCALE]
       )
-
       return {
         format,
         formatDistance,
         getDateWithTZ,
         locale,
-        userPictureUrl,
       }
     },
   })
@@ -162,13 +147,14 @@
         padding: $default-padding * 0.5 $default-padding;
         .workout-user {
           display: flex;
-          .profile-img {
-            border-radius: 50%;
-            height: 25px;
-            width: 25px;
-          }
-          .fa-user-circle-o {
-            font-size: 1.5em;
+          ::v-deep(.user-picture) {
+            img {
+              height: 25px;
+              width: 25px;
+            }
+            .no-picture {
+              font-size: 1.5em;
+            }
           }
           .workout-user-name {
             padding-left: 5px;

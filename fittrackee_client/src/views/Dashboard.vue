@@ -69,21 +69,14 @@
 </template>
 
 <script lang="ts">
-  import {
-    ComputedRef,
-    Ref,
-    computed,
-    defineComponent,
-    ref,
-    onUnmounted,
-  } from 'vue'
+  import { ComputedRef, Ref, computed, defineComponent, ref } from 'vue'
 
   import Timeline from '@/components/Dashboard/Timeline.vue'
   import UserCalendar from '@/components/Dashboard/UserCalendar/index.vue'
   import UserMonthStats from '@/components/Dashboard/UserMonthStats.vue'
   import UserRecords from '@/components/Dashboard/UserRecords/index.vue'
   import UserStatsCards from '@/components/Dashboard/UserStatsCards/index.vue'
-  import { SPORTS_STORE, USER_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import { SPORTS_STORE, USER_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
   import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -106,9 +99,6 @@
         () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
       )
       const isSelected: Ref<string> = ref('chart')
-      onUnmounted(() => {
-        store.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUTS)
-      })
 
       function updateDisplayColumn(target: string) {
         isSelected.value = target
