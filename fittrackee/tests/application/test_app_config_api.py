@@ -2,6 +2,7 @@ import json
 
 from flask import Flask
 
+import fittrackee
 from fittrackee.users.models import User
 
 from ..api_test_case import ApiTestCaseMixin
@@ -31,6 +32,7 @@ class TestGetConfig(ApiTestCaseMixin):
             'target="_blank" rel="noopener noreferrer">OpenStreetMap</a> '
             'contributors'
         )
+        assert data['data']['version'] == fittrackee.__version__
 
     def test_it_returns_error_if_application_has_no_config(
         self, app_no_config: Flask, user_1_admin: User

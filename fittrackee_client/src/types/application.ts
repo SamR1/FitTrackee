@@ -14,6 +14,7 @@ export type TAppConfig = {
   max_single_file_size: number
   max_users: number
   max_zip_file_size: number
+  version: string
 }
 
 export interface IApplication {

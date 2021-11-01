@@ -1,7 +1,10 @@
 <template>
   <div id="footer">
     <div class="footer-items">
-      <div class="footer-item"><strong>FitTrackee</strong> vx.xx</div>
+      <div class="footer-item">
+        <strong>FitTrackee</strong>
+        v{{ version }}
+      </div>
       <div class="footer-item bullet">•</div>
       <div class="footer-item">
         <a
@@ -33,6 +36,20 @@
     </div>
   </div>
 </template>
+
+<script lang="ts">
+  import { defineComponent } from 'vue'
+
+  export default defineComponent({
+    name: 'Footer',
+    props: {
+      version: {
+        type: String,
+        required: true,
+      },
+    },
+  })
+</script>
 
 <style scoped lang="scss">
   @import '~@/scss/base';

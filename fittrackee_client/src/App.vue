@@ -19,7 +19,7 @@
       <i class="fa fa-chevron-up" aria-hidden="true"></i>
     </div>
   </div>
-  <Footer />
+  <Footer v-if="appConfig" :version="appConfig ? appConfig.version : ''" />
 </template>
 
 <script lang="ts">

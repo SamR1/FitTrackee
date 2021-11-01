@@ -7,7 +7,7 @@ from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session
 
-from fittrackee import db
+from fittrackee import VERSION, db
 from fittrackee.users.models import User
 
 BaseModel: DeclarativeMeta = db.Model
@@ -40,6 +40,7 @@ class AppConfig(BaseModel):
             'max_zip_file_size': self.max_zip_file_size,
             'max_users': self.max_users,
             'map_attribution': self.map_attribution,
+            'version': VERSION,
         }
 
 
