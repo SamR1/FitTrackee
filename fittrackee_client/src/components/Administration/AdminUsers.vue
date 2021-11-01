@@ -55,7 +55,12 @@
                   <span class="cell-heading">
                     {{ $t('user.PROFILE.REGISTRATION_DATE') }}
                   </span>
-                  {{ user.created_at }}
+                  {{
+                    format(
+                      getDateWithTZ(user.created_at, authUser.timezone),
+                      'dd/MM/yyyy HH:mm'
+                    )
+                  }}
                 </td>
                 <td class="center-text">
                   <span class="cell-heading">
@@ -110,6 +115,7 @@
 </template>
 
 <script lang="ts">
+  import { format } from 'date-fns'
   import {
     ComputedRef,
     computed,
@@ -129,6 +135,7 @@
   import { IPagination, TPaginationPayload } from '@/types/api'
   import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { getDateWithTZ } from '@/utils/dates'
 
   export default defineComponent({
     name: 'AdminUsers',
@@ -233,6 +240,8 @@
         sort,
         users,
         capitalize,
+        format,
+        getDateWithTZ,
         reloadUsers,
         updateUser,
       }
