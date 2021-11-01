@@ -65,7 +65,7 @@ class TestRegistration:
 
         assert selenium.current_url == URL
         errors = selenium.find_element_by_class_name('error-message').text
-        assert 'That user already exists' in errors
+        assert 'Sorry, that user already exists.' in errors
 
     def test_user_can_not_register_if_email_is_already_taken(self, selenium):
         user_name = random_string()
@@ -80,7 +80,7 @@ class TestRegistration:
 
         assert selenium.current_url == URL
         errors = selenium.find_element_by_class_name('error-message').text
-        assert 'That user already exists' in errors
+        assert 'Sorry, that user already exists.' in errors
 
     def test_user_can_not_register_if_username_is_too_short(self, selenium):
         user_name = random_string(2)
@@ -125,7 +125,7 @@ class TestRegistration:
 
         assert selenium.current_url == URL
         errors = selenium.find_element_by_class_name('error-message').text
-        assert 'Password and password confirmation don\'t match' in errors
+        assert 'password and password confirmation don\'t match' in errors
 
     def test_it_displays_error_if_password_is_too_short(self, selenium):
         user_name = random_string()
