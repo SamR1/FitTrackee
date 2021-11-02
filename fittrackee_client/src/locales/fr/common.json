@@ -2,5 +2,18 @@
   "CONFIRMATION": "Confirmation",
   "DAY": "jour | jours",
   "HOME": "Accueil",
-  "HERE": "ici"
+  "HERE": "ici",
+  "SELECTS": {
+    "ORDER_BY": {
+      "LABEL": "trier par "
+    },
+    "ORDER": {
+      "LABEL": "tri",
+      "ASC": "ascendant",
+      "DESC": "descendant"
+    },
+    "PER_PAGE": {
+      "LABEL": "par page"
+    }
+  }
 }

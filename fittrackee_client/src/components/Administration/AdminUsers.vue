@@ -6,10 +6,11 @@
         <button class="top-button" @click.prevent="$router.push('/admin')">
           {{ $t('admin.BACK_TO_ADMIN') }}
         </button>
-        <AdminUsersSelects
+        <FilterSelects
           :sort="sortList"
           :order_by="orderByList"
           :query="query"
+          message="admin.USERS.SELECTS.ORDER_BY"
           @updateSelect="reloadUsers"
         />
         <div class="responsive-table">
@@ -128,7 +129,7 @@
   } from 'vue'
   import { LocationQuery, useRoute, useRouter } from 'vue-router'
 
-  import AdminUsersSelects from '@/components/Administration/AdminUsersSelects.vue'
+  import FilterSelects from '@/components/Common/FilterSelects.vue'
   import Pagination from '@/components/Common/Pagination.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import { ROOT_STORE, USER_STORE, USERS_STORE } from '@/store/constants'
@@ -141,7 +142,7 @@
   export default defineComponent({
     name: 'AdminUsers',
     components: {
-      AdminUsersSelects,
+      FilterSelects,
       Pagination,
       UserPicture,
     },

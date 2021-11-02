@@ -1,7 +1,7 @@
 <template>
   <div class="table-selects">
     <label>
-      {{ $t('admin.USERS.SELECTS.ORDER_BY.LABEL') }}:
+      {{ $t('common.SELECTS.ORDER_BY.LABEL') }}:
       <select
         name="order_by"
         id="order_by"
@@ -9,12 +9,12 @@
         @change="onSelectUpdate"
       >
         <option v-for="order in order_by" :value="order" :key="order">
-          {{ $t(`admin.USERS.SELECTS.ORDER_BY.${order}`) }}
+          {{ $t(`${message}.${order}`) }}
         </option>
       </select>
     </label>
     <label>
-      {{ $t('admin.USERS.SELECTS.ORDER.LABEL') }}:
+      {{ $t('common.SELECTS.ORDER.LABEL') }}:
       <select
         name="order"
         id="order"
@@ -22,12 +22,12 @@
         @change="onSelectUpdate"
       >
         <option v-for="order in sort" :value="order" :key="order">
-          {{ $t(`admin.USERS.SELECTS.ORDER.${order.toUpperCase()}`) }}
+          {{ $t(`common.SELECTS.ORDER.${order.toUpperCase()}`) }}
         </option>
       </select>
     </label>
     <label>
-      {{ $t('admin.USERS.SELECTS.PER_PAGE.LABEL') }}:
+      {{ $t('common.SELECTS.PER_PAGE.LABEL') }}:
       <select
         name="per_page"
         id="per_page"
@@ -48,7 +48,7 @@
   import { TPaginationPayload } from '@/types/api'
 
   export default defineComponent({
-    name: 'AdminUsersSelects',
+    name: 'FilterSelects',
     props: {
       order_by: {
         type: Object as PropType<string[]>,
@@ -62,6 +62,10 @@
         type: Object as PropType<string[]>,
         required: true,
       },
+      message: {
+        type: String,
+        required: true,
+      },
     },
     emits: ['updateSelect'],
     setup(props, { emit }) {
@@ -70,7 +74,7 @@
       }
 
       return {
-        per_page: [10, 50, 100],
+        per_page: [10, 25, 50, 100],
         onSelectUpdate,
       }
     },

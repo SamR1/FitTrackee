@@ -36,19 +36,10 @@
     },
     "SELECTS": {
       "ORDER_BY": {
-        "LABEL": "trier par ",
         "admin": "status administrateur",
         "created_at": "date d'inscription",
         "username": "nom d'utilisateur",
         "workouts_count": "nombre de séances"
-      },
-      "ORDER": {
-        "LABEL": "tri",
-        "ASC": "ascendant",
-        "DESC": "descendant"
-      },
-      "PER_PAGE": {
-        "LABEL": "par page"
       }
     }
   }
