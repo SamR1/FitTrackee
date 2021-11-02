@@ -157,9 +157,9 @@
 </template>
 
 <script lang="ts">
-  import { computed, ComputedRef, defineComponent, PropType } from 'vue'
+  import { computed, ComputedRef, defineComponent, PropType, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
-  import { useRouter } from 'vue-router'
+  import { LocationQuery, useRoute, useRouter } from 'vue-router'
 
   import { ISport } from '@/types/sports'
   import { IUserProfile } from '@/types/user'
@@ -180,12 +180,13 @@
     emits: ['filter'],
     setup(props, { emit }) {
       const { t } = useI18n()
+      const route = useRoute()
       const router = useRouter()
 
       const translatedSports: ComputedRef<ISport[]> = computed(() =>
         translateSports(props.sports, t)
       )
-      const params: Record<string, string> = {}
+      let params: LocationQuery = Object.assign({}, route.query)
 
       function handleFilterChange(event: Event & { target: HTMLInputElement }) {
         if (event.target.value === '') {
@@ -198,6 +199,13 @@
         emit('filter')
         router.push({ path: '/workouts', query: params })
       }
+
+      watch(
+        () => route.query,
+        (newQuery) => {
+          params = Object.assign({}, newQuery)
+        }
+      )
 
       return { translatedSports, onFilter, handleFilterChange }
     },

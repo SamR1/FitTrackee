@@ -9,7 +9,7 @@
         @change="onSelectUpdate"
       >
         <option v-for="order in order_by" :value="order" :key="order">
-          {{ $t(`${message}.${order}`) }}
+          {{ $t(`${message}.${order.toUpperCase()}`) }}
         </option>
       </select>
     </label>

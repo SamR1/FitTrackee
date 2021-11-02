@@ -36,10 +36,10 @@
     },
     "SELECTS": {
       "ORDER_BY": {
-        "admin": "admin status",
-        "created_at": "registration date",
-        "username": "username",
-        "workouts_count": "workout count"
+        "ADMIN": "admin status",
+        "CREATED_AT": "registration date",
+        "USERNAME": "username",
+        "WORKOUTS_COUNT": "workout count"
       }
     }
   }

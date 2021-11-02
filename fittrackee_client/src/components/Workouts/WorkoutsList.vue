@@ -1,6 +1,13 @@
 <template>
   <div class="workouts-list">
     <div class="box" :class="{ 'empty-table': workouts.length === 0 }">
+      <FilterSelects
+        :sort="sortList"
+        :order_by="orderByList"
+        :query="query"
+        message="workouts"
+        @updateSelect="reloadWorkouts"
+      />
       <div class="workouts-table responsive-table">
         <table>
           <thead>
@@ -103,26 +110,28 @@
     PropType,
     computed,
     defineComponent,
-    ref,
     watch,
     capitalize,
     onBeforeMount,
   } from 'vue'
-  import { LocationQuery, useRoute } from 'vue-router'
+  import { LocationQuery, useRoute, useRouter } from 'vue-router'
 
+  import FilterSelects from '@/components/Common/FilterSelects.vue'
   import StaticMap from '@/components/Common/StaticMap.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
   import { WORKOUTS_STORE } from '@/store/constants'
   import { ITranslatedSport } from '@/types/sports'
   import { IUserProfile } from '@/types/user'
-  import { IWorkout } from '@/types/workouts'
+  import { IWorkout, TWorkoutsPayload } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
+  import { getQuery, sortList, workoutsPayloadKeys } from '@/utils/api'
   import { getDateWithTZ } from '@/utils/dates'
   import { defaultOrder } from '@/utils/workouts'
 
   export default defineComponent({
     name: 'WorkoutsList',
     components: {
+      FilterSelects,
       NoWorkouts,
       StaticMap,
     },
@@ -138,39 +147,70 @@
     setup() {
       const store = useStore()
       const route = useRoute()
+      const router = useRouter()
 
+      const orderByList: string[] = [
+        'ave_speed',
+        'distance',
+        'duration',
+        'workout_date',
+      ]
       const workouts: ComputedRef<IWorkout[]> = computed(
         () => store.getters[WORKOUTS_STORE.GETTERS.USER_WORKOUTS]
       )
-      const per_page = 10
-      const page = ref(1)
+      let query: TWorkoutsPayload = getWorkoutsQuery(route.query)
 
       onBeforeMount(() => {
-        loadWorkouts(route.query)
+        loadWorkouts(query)
       })
 
-      function loadWorkouts(newQuery: LocationQuery) {
-        page.value = 1
-        store.dispatch(WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS, {
-          page: page.value,
-          per_page,
-          ...defaultOrder,
-          ...newQuery,
+      function loadWorkouts(payload: TWorkoutsPayload) {
+        store.dispatch(WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS, payload)
+      }
+      function reloadWorkouts(queryParam: string, queryValue: string) {
+        const newQuery: LocationQuery = Object.assign({}, route.query)
+        newQuery[queryParam] = queryValue
+        if (queryParam === 'per_page') {
+          newQuery['page'] = '1'
+        }
+        query = getWorkoutsQuery(newQuery)
+        router.push({ path: '/workouts', query })
+      }
+
+      function getWorkoutsQuery(newQuery: LocationQuery): TWorkoutsPayload {
+        query = getQuery(newQuery, orderByList, defaultOrder.order_by, {
+          defaultSort: defaultOrder.order,
+          query,
         })
+        Object.keys(newQuery)
+          .filter((k) => workoutsPayloadKeys.includes(k))
+          .map((k) => {
+            if (typeof newQuery[k] === 'string') {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              query[k] = newQuery[k]
+            }
+          })
+        return query
       }
 
       watch(
         () => route.query,
         async (newQuery) => {
-          loadWorkouts(newQuery)
+          query = getWorkoutsQuery(newQuery)
+          loadWorkouts(query)
         }
       )
 
       return {
+        query,
+        orderByList,
+        sortList,
         workouts,
         capitalize,
         format,
         getDateWithTZ,
+        reloadWorkouts,
       }
     },
   })

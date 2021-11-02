@@ -1,3 +1,5 @@
+import { TWorkoutsPayload } from '@/types/workouts'
+
 export interface IPagination {
   has_next: boolean
   has_prev: boolean
