@@ -4,6 +4,7 @@ import authApi from '@/api/authApi'
 import router from '@/router'
 import { ROOT_STORE, USER_STORE, WORKOUTS_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
+import { WorkoutsMutations } from '@/store/modules/workouts/enums'
 import {
   IWorkoutsActions,
   IWorkoutsState,
@@ -19,8 +20,7 @@ import { handleError } from '@/utils'
 const getWorkouts = (
   context: ActionContext<IWorkoutsState, IRootState>,
   payload: TWorkoutsPayload,
-  target: string,
-  append = false
+  target: WorkoutsMutations
 ): void => {
   context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   authApi
@@ -29,14 +29,7 @@ const getWorkouts = (
     })
     .then((res) => {
       if (res.data.status === 'success') {
-        context.commit(
-          target === 'CALENDAR_WORKOUTS'
-            ? WORKOUTS_STORE.MUTATIONS.SET_CALENDAR_WORKOUTS
-            : append
-            ? WORKOUTS_STORE.MUTATIONS.ADD_USER_WORKOUTS
-            : WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS,
-          res.data.data.workouts
-        )
+        context.commit(WORKOUTS_STORE.MUTATIONS[target], res.data.data.workouts)
       } else {
         handleError(context, null)
       }
@@ -51,19 +44,25 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     payload: TWorkoutsPayload
   ): void {
     context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_CALENDAR_WORKOUTS)
-    getWorkouts(context, payload, 'CALENDAR_WORKOUTS')
+    getWorkouts(context, payload, WorkoutsMutations['SET_CALENDAR_WORKOUTS'])
   },
   [WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: TWorkoutsPayload
   ): void {
-    getWorkouts(context, payload, 'USER_WORKOUTS')
+    getWorkouts(context, payload, WorkoutsMutations['SET_USER_WORKOUTS'])
   },
-  [WORKOUTS_STORE.ACTIONS.GET_MORE_USER_WORKOUTS](
+  [WORKOUTS_STORE.ACTIONS.GET_TIMELINE_WORKOUTS](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: TWorkoutsPayload
   ): void {
-    getWorkouts(context, payload, 'USER_WORKOUTS', true)
+    getWorkouts(context, payload, WorkoutsMutations['SET_TIMELINE_WORKOUTS'])
+  },
+  [WORKOUTS_STORE.ACTIONS.GET_MORE_TIMELINE_WORKOUTS](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: TWorkoutsPayload
+  ): void {
+    getWorkouts(context, payload, WorkoutsMutations['ADD_TIMELINE_WORKOUTS'])
   },
   [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA](
     context: ActionContext<IWorkoutsState, IRootState>,

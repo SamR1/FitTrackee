@@ -19,6 +19,7 @@ import {
 export interface IWorkoutsState {
   user_workouts: IWorkout[]
   calendar_workouts: IWorkout[]
+  timeline_workouts: IWorkout[]
   workoutData: IWorkoutData
 }
 
@@ -31,7 +32,11 @@ export interface IWorkoutsActions {
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: TWorkoutsPayload
   ): void
-  [WORKOUTS_STORE.ACTIONS.GET_MORE_USER_WORKOUTS](
+  [WORKOUTS_STORE.ACTIONS.GET_TIMELINE_WORKOUTS](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: TWorkoutsPayload
+  ): void
+  [WORKOUTS_STORE.ACTIONS.GET_MORE_TIMELINE_WORKOUTS](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: TWorkoutsPayload
   ): void
@@ -59,16 +64,21 @@ export interface IWorkoutsActions {
 
 export interface IWorkoutsGetters {
   [WORKOUTS_STORE.GETTERS.CALENDAR_WORKOUTS](state: IWorkoutsState): IWorkout[]
+  [WORKOUTS_STORE.GETTERS.TIMELINE_WORKOUTS](state: IWorkoutsState): IWorkout[]
   [WORKOUTS_STORE.GETTERS.USER_WORKOUTS](state: IWorkoutsState): IWorkout[]
   [WORKOUTS_STORE.GETTERS.WORKOUT_DATA](state: IWorkoutsState): IWorkoutData
 }
 
 export type TWorkoutsMutations<S = IWorkoutsState> = {
-  [WORKOUTS_STORE.MUTATIONS.ADD_USER_WORKOUTS](
+  [WORKOUTS_STORE.MUTATIONS.ADD_TIMELINE_WORKOUTS](
     state: S,
     workouts: IWorkout[]
   ): void
   [WORKOUTS_STORE.MUTATIONS.SET_CALENDAR_WORKOUTS](
+    state: S,
+    workouts: IWorkout[]
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_TIMELINE_WORKOUTS](
     state: S,
     workouts: IWorkout[]
   ): void

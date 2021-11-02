@@ -75,7 +75,7 @@
       onBeforeMount(() => loadWorkouts())
 
       const workouts: ComputedRef<IWorkout[]> = computed(
-        () => store.getters[WORKOUTS_STORE.GETTERS.USER_WORKOUTS]
+        () => store.getters[WORKOUTS_STORE.GETTERS.TIMELINE_WORKOUTS]
       )
       const moreWorkoutsExist: ComputedRef<boolean> = computed(() =>
         workouts.value.length > 0
@@ -84,7 +84,7 @@
       )
 
       function loadWorkouts() {
-        store.dispatch(WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS, {
+        store.dispatch(WORKOUTS_STORE.ACTIONS.GET_TIMELINE_WORKOUTS, {
           page: page.value,
           per_page,
           ...defaultOrder,
@@ -92,7 +92,7 @@
       }
       function loadMoreWorkouts() {
         page.value += 1
-        store.dispatch(WORKOUTS_STORE.ACTIONS.GET_MORE_USER_WORKOUTS, {
+        store.dispatch(WORKOUTS_STORE.ACTIONS.GET_MORE_TIMELINE_WORKOUTS, {
           page: page.value,
           per_page,
           ...defaultOrder,

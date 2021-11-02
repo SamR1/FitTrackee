@@ -92,11 +92,6 @@
       </div>
     </div>
     <NoWorkouts v-if="workouts.length === 0" />
-    <div v-if="moreWorkoutsExist" class="more-workouts">
-      <button @click="loadMoreWorkouts">
-        {{ $t('workouts.LOAD_MORE_WORKOUT') }}
-      </button>
-    </div>
     <div id="bottom" />
   </div>
 </template>
@@ -150,11 +145,6 @@
       )
       const per_page = 10
       const page = ref(1)
-      const moreWorkoutsExist: ComputedRef<boolean> = computed(() =>
-        workouts.value.length > 0
-          ? workouts.value[workouts.value.length - 1].previous_workout !== null
-          : false
-      )
 
       onBeforeMount(() => {
         loadWorkouts()
@@ -163,15 +153,6 @@
       function loadWorkouts() {
         page.value = 1
         store.dispatch(WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS, {
-          page: page.value,
-          per_page,
-          ...defaultOrder,
-          ...props.params,
-        })
-      }
-      function loadMoreWorkouts() {
-        page.value += 1
-        store.dispatch(WORKOUTS_STORE.ACTIONS.GET_MORE_USER_WORKOUTS, {
           page: page.value,
           per_page,
           ...defaultOrder,
@@ -187,12 +168,10 @@
       )
 
       return {
-        moreWorkoutsExist,
         workouts,
         capitalize,
         format,
         getDateWithTZ,
-        loadMoreWorkouts,
       }
     },
   })

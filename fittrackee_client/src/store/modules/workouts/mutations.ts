@@ -8,17 +8,23 @@ import {
 import { IWorkout, IWorkoutApiChartData } from '@/types/workouts'
 
 export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
-  [WORKOUTS_STORE.MUTATIONS.ADD_USER_WORKOUTS](
+  [WORKOUTS_STORE.MUTATIONS.ADD_TIMELINE_WORKOUTS](
     state: IWorkoutsState,
     workouts: IWorkout[]
   ) {
-    state.user_workouts = state.user_workouts.concat(workouts)
+    state.timeline_workouts = state.timeline_workouts.concat(workouts)
   },
   [WORKOUTS_STORE.MUTATIONS.SET_CALENDAR_WORKOUTS](
     state: IWorkoutsState,
     workouts: IWorkout[]
   ) {
     state.calendar_workouts = workouts
+  },
+  [WORKOUTS_STORE.MUTATIONS.SET_TIMELINE_WORKOUTS](
+    state: IWorkoutsState,
+    workouts: IWorkout[]
+  ) {
+    state.timeline_workouts = workouts
   },
   [WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS](
     state: IWorkoutsState,
