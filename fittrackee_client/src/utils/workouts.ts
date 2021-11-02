@@ -67,3 +67,8 @@ export const getDonutDatasets = (
 
   return datasets
 }
+
+export const defaultOrder = {
+  order: 'desc',
+  order_by: 'workout_date',
+}

@@ -38,9 +38,10 @@
   import { WORKOUTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
   import { IUserProfile } from '@/types/user'
-  import { IWorkout, IWorkoutsPayload } from '@/types/workouts'
+  import { IWorkout, TWorkoutsPayload } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getCalendarStartAndEnd } from '@/utils/dates'
+  import { defaultOrder } from '@/utils/workouts'
 
   export default defineComponent({
     name: 'UserCalendar',
@@ -78,11 +79,12 @@
           day.value,
           props.user.weekm
         )
-        const apiParams: IWorkoutsPayload = {
+        const apiParams: TWorkoutsPayload = {
           from: format(calendarDates.value.start, dateFormat),
           to: format(calendarDates.value.end, dateFormat),
-          order: 'desc',
+          page: 1,
           per_page: 100,
+          ...defaultOrder,
         }
         store.dispatch(WORKOUTS_STORE.ACTIONS.GET_CALENDAR_WORKOUTS, apiParams)
       }

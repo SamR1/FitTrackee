@@ -47,6 +47,7 @@
   import { IUserProfile } from '@/types/user'
   import { IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
+  import { defaultOrder } from '@/utils/workouts'
 
   export default defineComponent({
     name: 'Timeline',
@@ -86,6 +87,7 @@
         store.dispatch(WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS, {
           page: page.value,
           per_page,
+          ...defaultOrder,
         })
       }
       function loadMoreWorkouts() {
@@ -93,6 +95,7 @@
         store.dispatch(WORKOUTS_STORE.ACTIONS.GET_MORE_USER_WORKOUTS, {
           page: page.value,
           per_page,
+          ...defaultOrder,
         })
       }
 

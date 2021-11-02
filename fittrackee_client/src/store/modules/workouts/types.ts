@@ -10,7 +10,7 @@ import { IRootState } from '@/store/modules/root/types'
 import {
   IWorkout,
   IWorkoutApiChartData,
-  IWorkoutsPayload,
+  TWorkoutsPayload,
   IWorkoutData,
   IWorkoutPayload,
   IWorkoutForm,
@@ -25,15 +25,15 @@ export interface IWorkoutsState {
 export interface IWorkoutsActions {
   [WORKOUTS_STORE.ACTIONS.GET_CALENDAR_WORKOUTS](
     context: ActionContext<IWorkoutsState, IRootState>,
-    payload: IWorkoutsPayload
+    payload: TWorkoutsPayload
   ): void
   [WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS](
     context: ActionContext<IWorkoutsState, IRootState>,
-    payload: IWorkoutsPayload
+    payload: TWorkoutsPayload
   ): void
   [WORKOUTS_STORE.ACTIONS.GET_MORE_USER_WORKOUTS](
     context: ActionContext<IWorkoutsState, IRootState>,
-    payload: IWorkoutsPayload
+    payload: TWorkoutsPayload
   ): void
   [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA](
     context: ActionContext<IWorkoutsState, IRootState>,

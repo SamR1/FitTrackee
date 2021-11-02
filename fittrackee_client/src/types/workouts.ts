@@ -1,3 +1,4 @@
+import { TPaginationPayload } from '@/types/api'
 import { IChartDataset } from '@/types/chart'
 
 export interface IWorkoutSegment {
@@ -113,12 +114,9 @@ export interface IWorkoutPayload {
   data?: IWorkoutForm
 }
 
-export interface IWorkoutsPayload {
+export type TWorkoutsPayload = TPaginationPayload & {
   from?: string
   to?: string
-  order?: string
-  per_page?: number
-  page?: number
   ave_speed_from?: string
   ave_speed_to?: string
   max_speed_from?: string

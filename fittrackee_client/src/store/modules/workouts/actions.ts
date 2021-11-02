@@ -12,13 +12,13 @@ import {
   IWorkout,
   IWorkoutForm,
   IWorkoutPayload,
-  IWorkoutsPayload,
+  TWorkoutsPayload,
 } from '@/types/workouts'
 import { handleError } from '@/utils'
 
 const getWorkouts = (
   context: ActionContext<IWorkoutsState, IRootState>,
-  payload: IWorkoutsPayload,
+  payload: TWorkoutsPayload,
   target: string,
   append = false
 ): void => {
@@ -48,20 +48,20 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
   IWorkoutsActions = {
   [WORKOUTS_STORE.ACTIONS.GET_CALENDAR_WORKOUTS](
     context: ActionContext<IWorkoutsState, IRootState>,
-    payload: IWorkoutsPayload
+    payload: TWorkoutsPayload
   ): void {
     context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_CALENDAR_WORKOUTS)
     getWorkouts(context, payload, 'CALENDAR_WORKOUTS')
   },
   [WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS](
     context: ActionContext<IWorkoutsState, IRootState>,
-    payload: IWorkoutsPayload
+    payload: TWorkoutsPayload
   ): void {
     getWorkouts(context, payload, 'USER_WORKOUTS')
   },
   [WORKOUTS_STORE.ACTIONS.GET_MORE_USER_WORKOUTS](
     context: ActionContext<IWorkoutsState, IRootState>,
-    payload: IWorkoutsPayload
+    payload: TWorkoutsPayload
   ): void {
     getWorkouts(context, payload, 'USER_WORKOUTS', true)
   },
