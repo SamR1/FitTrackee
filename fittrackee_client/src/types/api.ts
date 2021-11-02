@@ -13,3 +13,8 @@ export type TPaginationPayload = {
   per_page: number
   page: number
 }
+
+export interface IQueryOptions {
+  defaultSort?: string
+  query?: TPaginationPayload
+}

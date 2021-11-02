@@ -7,8 +7,8 @@
           {{ $t('admin.BACK_TO_ADMIN') }}
         </button>
         <AdminUsersSelects
-          :sort="sort"
-          :order_by="order_by"
+          :sort="sortList"
+          :order_by="orderByList"
           :query="query"
           @updateSelect="reloadUsers"
         />
@@ -135,6 +135,7 @@
   import { IPagination, TPaginationPayload } from '@/types/api'
   import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { getQuery, sortList } from '@/utils/api'
   import { getDateWithTZ } from '@/utils/dates'
 
   export default defineComponent({
@@ -149,14 +150,16 @@
       const route = useRoute()
       const router = useRouter()
 
-      const sort: string[] = ['asc', 'desc']
-      const order_by: string[] = [
+      const orderByList: string[] = [
         'admin',
         'created_at',
         'username',
         'workouts_count',
       ]
-      let query: TPaginationPayload = reactive(getQuery(route.query))
+      const defaultOrderBy = 'created_at'
+      let query: TPaginationPayload = reactive(
+        getQuery(route.query, orderByList, defaultOrderBy)
+      )
 
       const authUser: ComputedRef<IUserProfile> = computed(
         () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
@@ -173,32 +176,6 @@
 
       function loadUsers(queryParams: TPaginationPayload) {
         store.dispatch(USERS_STORE.ACTIONS.GET_USERS, queryParams)
-      }
-      function getPage(page: string | (string | null)[] | null): number {
-        return page && typeof page === 'string' && +page > 0 ? +page : 1
-      }
-      function getPerPage(perPage: string | (string | null)[] | null): number {
-        return perPage && typeof perPage === 'string' && +perPage > 0
-          ? +perPage
-          : 10
-      }
-      function getOrder(order: string | (string | null)[] | null): string {
-        return order && typeof order === 'string' && sort.includes(order)
-          ? order
-          : 'asc'
-      }
-      function getOrderBy(order: string | (string | null)[] | null): string {
-        return order && typeof order === 'string' && order_by.includes(order)
-          ? order
-          : 'created_at'
-      }
-      function getQuery(query: LocationQuery): TPaginationPayload {
-        return {
-          page: getPage(query.page),
-          per_page: getPerPage(query.per_page),
-          order: getOrder(query.order),
-          order_by: getOrderBy(query.order_by),
-        }
       }
       function updateUser(username: string, admin: boolean) {
         store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, {
@@ -219,10 +196,7 @@
       watch(
         () => route.query,
         (newQuery: LocationQuery) => {
-          query.page = getPage(newQuery.page)
-          query.per_page = getPerPage(newQuery.per_page)
-          query.order = getOrder(newQuery.order)
-          query.order_by = getOrderBy(newQuery.order_by)
+          query = getQuery(newQuery, orderByList, defaultOrderBy, { query })
           loadUsers(query)
         }
       )
@@ -234,10 +208,10 @@
       return {
         authUser,
         errorMessages,
+        orderByList,
         pagination,
-        order_by,
         query,
-        sort,
+        sortList,
         users,
         capitalize,
         format,
