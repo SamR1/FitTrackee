@@ -15,5 +15,6 @@
     "PER_PAGE": {
       "LABEL": "par page"
     }
-  }
+  },
+  "TOTAL": "Total"
 }

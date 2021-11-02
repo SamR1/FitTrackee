@@ -8,16 +8,22 @@
           :event="pagination.has_prev ? 'click' : ''"
           :disabled="!pagination.has_prev"
         >
+          <i class="fa fa-chevron-left" aria-hidden="true" />
           {{ $t('api.PAGINATION.PREVIOUS') }}
         </router-link>
       </li>
       <li
-        v-for="page in rangePagination(pagination.pages)"
+        v-for="page in rangePagination(pagination.pages, pagination.page)"
         :key="page"
         class="page"
         :class="{ active: page === pagination.page }"
       >
-        <router-link class="page-link" :to="{ path, query: getQuery(page) }">
+        <span v-if="page === '...'"> ... </span>
+        <router-link
+          v-else
+          class="page-link"
+          :to="{ path, query: getQuery(+page) }"
+        >
           {{ page }}
         </router-link>
       </li>
@@ -29,6 +35,7 @@
           :disabled="!pagination.has_next"
         >
           {{ $t('api.PAGINATION.NEXT') }}
+          <i class="fa fa-chevron-right" aria-hidden="true" />
         </router-link>
       </li>
     </ul>
@@ -39,6 +46,7 @@
   import { PropType, defineComponent } from 'vue'
 
   import { IPagination, TPaginationPayload } from '@/types/api'
+  import { rangePagination } from '@/utils/api'
 
   export default defineComponent({
     name: 'Pagination',
@@ -57,9 +65,6 @@
       },
     },
     setup(props) {
-      function rangePagination(pages: number): number[] {
-        return Array.from({ length: pages }, (_, i) => i + 1)
-      }
       function getQuery(page: number, cursor?: number): TPaginationPayload {
         const newQuery = Object.assign({}, props.query)
         newQuery.page = cursor ? page + cursor : page
@@ -114,6 +119,18 @@
         border-top-right-radius: 5px;
         border-bottom-right-radius: 5px;
         margin-left: -1px;
+      }
+      .fa {
+        font-size: 0.8em;
+        padding: 0 $default-padding * 0.5;
+      }
+    }
+
+    @media screen and (max-width: $medium-limit) {
+      .pagination {
+        .page {
+          display: none;
+        }
       }
     }
   }

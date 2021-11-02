@@ -62,3 +62,55 @@ export const workoutsPayloadKeys = [
   'duration_to',
   'sport_id',
 ]
+
+const getRange = (stop: number, start = 1): number[] => {
+  return Array.from({ length: stop - start + 1 }, (_, i) => start + i)
+}
+
+export const rangePagination = (
+  pages: number,
+  currentPage: number
+): (string | number)[] => {
+  if (pages < 0) {
+    return []
+  }
+
+  if (pages < 9) {
+    return getRange(pages)
+  }
+
+  let pagination: (string | number)[] = [1, 2]
+  if (currentPage < 4) {
+    pagination = pagination.concat([3, 4, 5])
+  } else if (currentPage < 6) {
+    pagination = pagination.concat(getRange(currentPage + 2, 3))
+  } else {
+    pagination = pagination.concat(['...'])
+    if (currentPage < pages - 2) {
+      pagination = pagination.concat(getRange(currentPage + 2, currentPage - 2))
+    }
+  }
+  if (currentPage + 2 <= pages - 2) {
+    pagination = pagination.concat(['...'])
+    pagination = pagination.concat(getRange(pages, pages - 1))
+  } else {
+    if (
+      pagination[pagination.length - 1] !== '...' &&
+      pagination[pagination.length - 1] >= pages - 2 &&
+      pagination[pagination.length - 1] < pages
+    ) {
+      pagination = pagination.concat(
+        getRange(pages, +pagination[pagination.length - 1] + 1)
+      )
+    } else {
+      pagination = pagination.concat(
+        getRange(
+          pages,
+          currentPage < pages - 3 ? currentPage + 3 : currentPage - 5
+        )
+      )
+    }
+  }
+
+  return pagination
+}

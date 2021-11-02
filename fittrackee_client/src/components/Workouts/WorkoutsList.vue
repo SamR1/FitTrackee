@@ -1,6 +1,15 @@
 <template>
   <div class="workouts-list">
     <div class="box" :class="{ 'empty-table': workouts.length === 0 }">
+      <div class="total">
+        <span class="total-label">
+          {{ $t('common.TOTAL').toLowerCase() }}:
+        </span>
+        <span v-if="pagination.total">
+          {{ pagination.total }}
+          {{ $t('workouts.WORKOUT', pagination.total) }}
+        </span>
+      </div>
       <FilterSelects
         :sort="sortList"
         :order_by="orderByList"
@@ -9,6 +18,12 @@
         @updateSelect="reloadWorkouts"
       />
       <div class="workouts-table responsive-table">
+        <Pagination
+          class="top-pagination"
+          :pagination="pagination"
+          path="/workouts"
+          :query="query"
+        />
         <table>
           <thead>
             <tr>
@@ -96,6 +111,7 @@
             </tr>
           </tbody>
         </table>
+        <Pagination :pagination="pagination" path="/workouts" :query="query" />
       </div>
     </div>
     <NoWorkouts v-if="workouts.length === 0" />
@@ -117,9 +133,11 @@
   import { LocationQuery, useRoute, useRouter } from 'vue-router'
 
   import FilterSelects from '@/components/Common/FilterSelects.vue'
+  import Pagination from '@/components/Common/Pagination.vue'
   import StaticMap from '@/components/Common/StaticMap.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
   import { WORKOUTS_STORE } from '@/store/constants'
+  import { IPagination } from '@/types/api'
   import { ITranslatedSport } from '@/types/sports'
   import { IUserProfile } from '@/types/user'
   import { IWorkout, TWorkoutsPayload } from '@/types/workouts'
@@ -133,6 +151,7 @@
     components: {
       FilterSelects,
       NoWorkouts,
+      Pagination,
       StaticMap,
     },
     props: {
@@ -157,6 +176,9 @@
       ]
       const workouts: ComputedRef<IWorkout[]> = computed(
         () => store.getters[WORKOUTS_STORE.GETTERS.USER_WORKOUTS]
+      )
+      const pagination: ComputedRef<IPagination> = computed(
+        () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUTS_PAGINATION]
       )
       let query: TWorkoutsPayload = getWorkoutsQuery(route.query)
 
@@ -205,6 +227,7 @@
       return {
         query,
         orderByList,
+        pagination,
         sortList,
         workouts,
         capitalize,
@@ -225,11 +248,36 @@
     width: 100%;
 
     .box {
+      padding: $default-padding $default-padding * 2;
       @media screen and (max-width: $small-limit) {
         &.empty-table {
           display: none;
         }
       }
+
+      .total {
+        display: flex;
+        gap: $default-padding * 0.5;
+        .total-label {
+          font-weight: bold;
+        }
+      }
+
+      .top-pagination {
+        display: none;
+
+        @media screen and (max-width: $small-limit) {
+          display: flex;
+        }
+      }
+      ::v-deep(.pagination-center) {
+        @media screen and (max-width: $small-limit) {
+          ul {
+            margin-top: 0;
+          }
+        }
+      }
+
       .workouts-table {
         .sport-col {
           padding-right: 0;

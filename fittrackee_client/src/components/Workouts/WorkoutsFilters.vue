@@ -197,6 +197,9 @@
       }
       function onFilter() {
         emit('filter')
+        if ('page' in params) {
+          params['page'] = '1'
+        }
         router.push({ path: '/workouts', query: params })
       }
 

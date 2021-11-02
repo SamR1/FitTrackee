@@ -21,4 +21,7 @@ export const getters: GetterTree<IWorkoutsState, IRootState> &
   [WORKOUTS_STORE.GETTERS.WORKOUT_DATA]: (state: IWorkoutsState) => {
     return state.workoutData
   },
+  [WORKOUTS_STORE.GETTERS.WORKOUTS_PAGINATION]: (state: IWorkoutsState) => {
+    return state.pagination
+  },
 }

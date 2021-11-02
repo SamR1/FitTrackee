@@ -7,6 +7,7 @@ import {
 
 import { WORKOUTS_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
+import { IPagination } from '@/types/api'
 import {
   IWorkout,
   IWorkoutApiChartData,
@@ -21,6 +22,7 @@ export interface IWorkoutsState {
   calendar_workouts: IWorkout[]
   timeline_workouts: IWorkout[]
   workoutData: IWorkoutData
+  pagination: IPagination
 }
 
 export interface IWorkoutsActions {
@@ -67,6 +69,9 @@ export interface IWorkoutsGetters {
   [WORKOUTS_STORE.GETTERS.TIMELINE_WORKOUTS](state: IWorkoutsState): IWorkout[]
   [WORKOUTS_STORE.GETTERS.USER_WORKOUTS](state: IWorkoutsState): IWorkout[]
   [WORKOUTS_STORE.GETTERS.WORKOUT_DATA](state: IWorkoutsState): IWorkoutData
+  [WORKOUTS_STORE.GETTERS.WORKOUTS_PAGINATION](
+    state: IWorkoutsState
+  ): IPagination
 }
 
 export type TWorkoutsMutations<S = IWorkoutsState> = {
@@ -95,6 +100,10 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING](
     state: S,
     loading: boolean
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUTS_PAGINATION](
+    state: S,
+    pagination: IPagination
   ): void
   [WORKOUTS_STORE.MUTATIONS.EMPTY_CALENDAR_WORKOUTS](state: S): void
   [WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUTS](state: S): void

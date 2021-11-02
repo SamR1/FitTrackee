@@ -5,6 +5,7 @@ import {
   IWorkoutsState,
   TWorkoutsMutations,
 } from '@/store/modules/workouts/types'
+import { IPagination } from '@/types/api'
 import { IWorkout, IWorkoutApiChartData } from '@/types/workouts'
 
 export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
@@ -31,6 +32,12 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
     workouts: IWorkout[]
   ) {
     state.user_workouts = workouts
+  },
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUTS_PAGINATION](
+    state: IWorkoutsState,
+    pagination: IPagination
+  ) {
+    state.pagination = pagination
   },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT](
     state: IWorkoutsState,

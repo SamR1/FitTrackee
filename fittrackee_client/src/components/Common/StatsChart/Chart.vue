@@ -143,7 +143,7 @@
                   sum += tooltipItem.parsed.y
                 })
                 return (
-                  `${t('statistics.TOTAL')}: ` +
+                  `${t('common.TOTAL')}: ` +
                   formatTooltipValue(props.displayedData, sum)
                 )
               },
