@@ -53,6 +53,13 @@ class TestGetWorkouts(ApiTestCaseMixin):
         assert 1 == data['data']['workouts'][1]['sport_id']
         assert 10.0 == data['data']['workouts'][1]['distance']
         assert '1:00:00' == data['data']['workouts'][1]['duration']
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 2,
+        }
 
     def test_it_gets_no_workouts_for_authenticated_user_with_no_workouts(
         self,
@@ -83,6 +90,13 @@ class TestGetWorkouts(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 0
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 0,
+            'total': 0,
+        }
 
     def test_it_returns_401_if_user_is_not_authenticated(
         self, app: Flask
@@ -128,6 +142,13 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
             == data['data']['workouts'][4]['workout_date']
         )
         assert '0:17:04' == data['data']['workouts'][4]['duration']
+        assert data['pagination'] == {
+            'has_next': True,
+            'has_prev': False,
+            'page': 1,
+            'pages': 2,
+            'total': 7,
+        }
 
     def test_it_gets_first_page(
         self,
@@ -159,6 +180,13 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
             == data['data']['workouts'][4]['workout_date']
         )
         assert '0:17:04' == data['data']['workouts'][4]['duration']
+        assert data['pagination'] == {
+            'has_next': True,
+            'has_prev': False,
+            'page': 1,
+            'pages': 2,
+            'total': 7,
+        }
 
     def test_it_gets_second_page(
         self,
@@ -190,6 +218,13 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
             == data['data']['workouts'][1]['workout_date']
         )
         assert '0:17:04' == data['data']['workouts'][1]['duration']
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': True,
+            'page': 2,
+            'pages': 2,
+            'total': 7,
+        }
 
     def test_it_gets_empty_third_page(
         self,
@@ -209,6 +244,13 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 0
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': True,
+            'page': 3,
+            'pages': 2,
+            'total': 7,
+        }
 
     def test_it_returns_error_on_invalid_page_value(
         self,
@@ -259,6 +301,13 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
             'Thu, 01 Jun 2017 00:00:00 GMT'
             == data['data']['workouts'][5]['workout_date']
         )
+        assert data['pagination'] == {
+            'has_next': True,
+            'has_prev': False,
+            'page': 1,
+            'pages': 2,
+            'total': 7,
+        }
 
     @patch('fittrackee.workouts.workouts.MAX_WORKOUTS_PER_PAGE', 6)
     def test_it_gets_given_number_of_workouts_per_page(
@@ -287,6 +336,13 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
             'Fri, 23 Feb 2018 00:00:00 GMT'
             == data['data']['workouts'][2]['workout_date']
         )
+        assert data['pagination'] == {
+            'has_next': True,
+            'has_prev': False,
+            'page': 1,
+            'pages': 3,
+            'total': 7,
+        }
 
 
 class TestGetWorkoutsWithOrder(ApiTestCaseMixin):
@@ -316,6 +372,13 @@ class TestGetWorkoutsWithOrder(ApiTestCaseMixin):
             'Mon, 01 Jan 2018 00:00:00 GMT'
             == data['data']['workouts'][4]['workout_date']
         )
+        assert data['pagination'] == {
+            'has_next': True,
+            'has_prev': False,
+            'page': 1,
+            'pages': 2,
+            'total': 7,
+        }
 
     def test_it_gets_workouts_with_ascending_order(
         self,
@@ -343,6 +406,13 @@ class TestGetWorkoutsWithOrder(ApiTestCaseMixin):
             'Fri, 23 Feb 2018 00:00:00 GMT'
             == data['data']['workouts'][4]['workout_date']
         )
+        assert data['pagination'] == {
+            'has_next': True,
+            'has_prev': False,
+            'page': 1,
+            'pages': 2,
+            'total': 7,
+        }
 
     def test_it_gets_workouts_with_descending_order(
         self,
@@ -370,6 +440,133 @@ class TestGetWorkoutsWithOrder(ApiTestCaseMixin):
             'Mon, 01 Jan 2018 00:00:00 GMT'
             == data['data']['workouts'][4]['workout_date']
         )
+        assert data['pagination'] == {
+            'has_next': True,
+            'has_prev': False,
+            'page': 1,
+            'pages': 2,
+            'total': 7,
+        }
+
+
+class TestGetWorkoutsWithOrderBy(ApiTestCaseMixin):
+    def test_it_gets_workouts_ordered_by_workout_date(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_workouts_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.get(
+            '/api/workouts?order_by=workout_date',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 5
+        assert (
+            'Wed, 09 May 2018 00:00:00 GMT'
+            == data['data']['workouts'][0]['workout_date']
+        )
+        assert (
+            'Mon, 01 Jan 2018 00:00:00 GMT'
+            == data['data']['workouts'][4]['workout_date']
+        )
+        assert data['pagination'] == {
+            'has_next': True,
+            'has_prev': False,
+            'page': 1,
+            'pages': 2,
+            'total': 7,
+        }
+
+    def test_it_gets_workouts_ordered_by_distance(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_workouts_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.get(
+            '/api/workouts?order_by=distance',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 5
+        assert 10 == data['data']['workouts'][0]['distance']
+        assert 8 == data['data']['workouts'][4]['distance']
+        assert data['pagination'] == {
+            'has_next': True,
+            'has_prev': False,
+            'page': 1,
+            'pages': 2,
+            'total': 7,
+        }
+
+    def test_it_gets_workouts_ordered_by_duration(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_workouts_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.get(
+            '/api/workouts?order_by=duration',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 5
+        assert '1:40:00' == data['data']['workouts'][0]['duration']
+        assert '0:17:04' == data['data']['workouts'][4]['duration']
+        assert data['pagination'] == {
+            'has_next': True,
+            'has_prev': False,
+            'page': 1,
+            'pages': 2,
+            'total': 7,
+        }
+
+    def test_it_gets_workouts_ordered_by_average_speed(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_workouts_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.get(
+            '/api/workouts?order_by=ave_speed',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 5
+        assert 36 == data['data']['workouts'][0]['ave_speed']
+        assert 10.42 == data['data']['workouts'][4]['ave_speed']
+        assert data['pagination'] == {
+            'has_next': True,
+            'has_prev': False,
+            'page': 1,
+            'pages': 2,
+            'total': 7,
+        }
 
 
 class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
@@ -403,6 +600,13 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
             == data['data']['workouts'][1]['workout_date']
         )
         assert '0:16:40' == data['data']['workouts'][1]['duration']
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 2,
+        }
 
     def test_it_gets_no_workouts_with_date_filter(
         self,
@@ -422,6 +626,13 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 0
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 0,
+            'total': 0,
+        }
 
     def test_if_gets_workouts_with_date_filter_from(
         self,
@@ -450,6 +661,13 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
             'Sun, 01 Apr 2018 00:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
         )
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 2,
+        }
 
     def test_it_gets_workouts_with_date_filter_to(
         self,
@@ -477,6 +695,13 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
             'Mon, 20 Mar 2017 00:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
         )
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 2,
+        }
 
     def test_it_gets_workouts_with_distance_filter(
         self,
@@ -504,6 +729,13 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
             'Mon, 20 Mar 2017 00:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
         )
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 2,
+        }
 
     def test_it_gets_workouts_with_duration_filter(
         self,
@@ -527,6 +759,13 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
             'Thu, 01 Jun 2017 00:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 1,
+        }
 
     def test_it_gets_workouts_with_average_speed_filter(
         self,
@@ -550,6 +789,13 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
             'Fri, 23 Feb 2018 00:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 1,
+        }
 
     def test_it_gets_workouts_with_max_speed_filter(
         self,
@@ -577,6 +823,13 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
             'Sun, 01 Apr 2018 00:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 1,
+        }
 
     def test_it_gets_workouts_with_sport_filter(
         self,
@@ -602,6 +855,13 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
             'Sun, 01 Apr 2018 00:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 1,
+        }
 
 
 class TestGetWorkoutsWithFiltersAndPagination(ApiTestCaseMixin):
@@ -631,6 +891,13 @@ class TestGetWorkoutsWithFiltersAndPagination(ApiTestCaseMixin):
             'Mon, 20 Mar 2017 00:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
         )
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': True,
+            'page': 2,
+            'pages': 2,
+            'total': 7,
+        }
 
     def test_it_get_page_2_with_date_filter_and_ascending_order(
         self,
@@ -658,6 +925,13 @@ class TestGetWorkoutsWithFiltersAndPagination(ApiTestCaseMixin):
             'Wed, 09 May 2018 00:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
         )
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': True,
+            'page': 2,
+            'pages': 2,
+            'total': 7,
+        }
 
 
 class TestGetWorkout(ApiTestCaseMixin):

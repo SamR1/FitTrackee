@@ -206,12 +206,13 @@ def get_workouts(auth_user_id: int) -> Union[Dict, HttpResponse]:
         ave_speed_to = params.get('ave_speed_to')
         max_speed_from = params.get('max_speed_from')
         max_speed_to = params.get('max_speed_to')
-        order = params.get('order')
+        order_by = params.get('order_by', 'workout_date')
+        order = params.get('order', 'desc')
         sport_id = params.get('sport_id')
         per_page = int(params.get('per_page', DEFAULT_WORKOUTS_PER_PAGE))
         if per_page > MAX_WORKOUTS_PER_PAGE:
             per_page = MAX_WORKOUTS_PER_PAGE
-        workouts = (
+        workouts_pagination = (
             Workout.query.filter(
                 Workout.user_id == auth_user_id,
                 Workout.sport_id == sport_id if sport_id else True,
@@ -243,17 +244,45 @@ def get_workouts(auth_user_id: int) -> Union[Dict, HttpResponse]:
                 else True,
             )
             .order_by(
+                Workout.ave_speed.asc()
+                if order_by == 'ave_speed' and order == 'asc'
+                else True,
+                Workout.ave_speed.desc()
+                if order_by == 'ave_speed' and order == 'desc'
+                else True,
+                Workout.distance.asc()
+                if order_by == 'distance' and order == 'asc'
+                else True,
+                Workout.distance.desc()
+                if order_by == 'distance' and order == 'desc'
+                else True,
+                Workout.duration.asc()
+                if order_by == 'duration' and order == 'asc'
+                else True,
+                Workout.duration.desc()
+                if order_by == 'duration' and order == 'desc'
+                else True,
                 Workout.workout_date.asc()
-                if order == 'asc'
-                else Workout.workout_date.desc()
+                if order_by == 'workout_date' and order == 'asc'
+                else True,
+                Workout.workout_date.desc()
+                if order_by == 'workout_date' and order == 'desc'
+                else True,
             )
             .paginate(page, per_page, False)
-            .items
         )
+        workouts = workouts_pagination.items
         return {
             'status': 'success',
             'data': {
                 'workouts': [workout.serialize(params) for workout in workouts]
+            },
+            'pagination': {
+                'has_next': workouts_pagination.has_next,
+                'has_prev': workouts_pagination.has_prev,
+                'page': workouts_pagination.page,
+                'pages': workouts_pagination.pages,
+                'total': workouts_pagination.total,
             },
         }
     except Exception as e:
