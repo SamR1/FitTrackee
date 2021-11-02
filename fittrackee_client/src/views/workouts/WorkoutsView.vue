@@ -5,7 +5,7 @@
         <WorkoutsFilters
           :sports="translatedSports"
           :authUser="authUser"
-          @filter="updateParams"
+          @filter="toggleFilters"
         />
       </div>
       <div class="display-filters">
@@ -20,18 +20,14 @@
         </div>
       </div>
       <div class="list-container">
-        <WorkoutsList
-          :user="authUser"
-          :params="params"
-          :sports="translatedSports"
-        />
+        <WorkoutsList :user="authUser" :sports="translatedSports" />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-  import { ComputedRef, Ref, computed, defineComponent, ref } from 'vue'
+  import { ComputedRef, computed, defineComponent, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
 
   import WorkoutsFilters from '@/components/Workouts/WorkoutsFilters.vue'
@@ -60,13 +56,8 @@
       const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
         translateSports(sports.value, t)
       )
-      const params: Ref<Record<string, string>> = ref({})
       const hiddenFilters = ref(true)
 
-      function updateParams(filters: Record<string, string>) {
-        params.value = filters
-        hiddenFilters.value = true
-      }
       function toggleFilters() {
         hiddenFilters.value = !hiddenFilters.value
       }
@@ -74,10 +65,8 @@
       return {
         authUser,
         hiddenFilters,
-        params,
         translatedSports,
         toggleFilters,
-        updateParams,
       }
     },
   })

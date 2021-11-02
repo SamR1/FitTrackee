@@ -108,6 +108,7 @@
     capitalize,
     onBeforeMount,
   } from 'vue'
+  import { LocationQuery, useRoute } from 'vue-router'
 
   import StaticMap from '@/components/Common/StaticMap.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
@@ -126,10 +127,6 @@
       StaticMap,
     },
     props: {
-      params: {
-        type: Object as PropType<Record<string, string>>,
-        required: true,
-      },
       user: {
         type: Object as PropType<IUserProfile>,
         required: true,
@@ -138,8 +135,10 @@
         type: Object as PropType<ITranslatedSport[]>,
       },
     },
-    setup(props) {
+    setup() {
       const store = useStore()
+      const route = useRoute()
+
       const workouts: ComputedRef<IWorkout[]> = computed(
         () => store.getters[WORKOUTS_STORE.GETTERS.USER_WORKOUTS]
       )
@@ -147,23 +146,23 @@
       const page = ref(1)
 
       onBeforeMount(() => {
-        loadWorkouts()
+        loadWorkouts(route.query)
       })
 
-      function loadWorkouts() {
+      function loadWorkouts(newQuery: LocationQuery) {
         page.value = 1
         store.dispatch(WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS, {
           page: page.value,
           per_page,
           ...defaultOrder,
-          ...props.params,
+          ...newQuery,
         })
       }
 
       watch(
-        () => props.params,
-        async () => {
-          loadWorkouts()
+        () => route.query,
+        async (newQuery) => {
+          loadWorkouts(newQuery)
         }
       )
 

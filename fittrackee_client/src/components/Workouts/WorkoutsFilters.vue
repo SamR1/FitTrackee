@@ -5,18 +5,32 @@
         <div class="form-items-group">
           <div class="form-item">
             <label> {{ $t('workouts.FROM') }}: </label>
-            <input name="from" type="date" @change="handleFilterChange" />
+            <input
+              name="from"
+              type="date"
+              :value="$route.query.from"
+              @change="handleFilterChange"
+            />
           </div>
           <div class="form-item">
             <label> {{ $t('workouts.TO') }}: </label>
-            <input name="to" type="date" @change="handleFilterChange" />
+            <input
+              name="to"
+              type="date"
+              :value="$route.query.to"
+              @change="handleFilterChange"
+            />
           </div>
         </div>
 
         <div class="form-items-group">
           <div class="form-item">
             <label> {{ $t('workouts.SPORT', 1) }}:</label>
-            <select name="sport_id" @change="handleFilterChange">
+            <select
+              name="sport_id"
+              :value="$route.query.sport_id"
+              @change="handleFilterChange"
+            >
               <option value="" />
               <option
                 v-for="sport in translatedSports.filter((s) =>
@@ -40,6 +54,7 @@
                 type="number"
                 min="0"
                 step="1"
+                :value="$route.query.distance_from"
                 @change="handleFilterChange"
               />
               <span>{{ $t('workouts.TO') }}</span>
@@ -48,6 +63,7 @@
                 type="number"
                 min="0"
                 step="1"
+                :value="$route.query.distance_to"
                 @change="handleFilterChange"
               />
             </div>
@@ -60,6 +76,7 @@
             <div class="form-inputs-group">
               <input
                 name="duration_from"
+                :value="$route.query.duration_from"
                 @change="handleFilterChange"
                 pattern="^([0-9]*[0-9]):([0-5][0-9])$"
                 placeholder="hh:mm"
@@ -68,6 +85,7 @@
               <span>{{ $t('workouts.TO') }}</span>
               <input
                 name="duration_to"
+                :value="$route.query.duration_to"
                 @change="handleFilterChange"
                 pattern="^([0-9]*[0-9]):([0-5][0-9])$"
                 placeholder="hh:mm"
@@ -84,6 +102,7 @@
               <input
                 min="0"
                 name="ave_speed_from"
+                :value="$route.query.ave_speed_from"
                 @change="handleFilterChange"
                 step="1"
                 type="number"
@@ -92,6 +111,7 @@
               <input
                 min="0"
                 name="ave_speed_to"
+                :value="$route.query.ave_speed_to"
                 @change="handleFilterChange"
                 step="1"
                 type="number"
@@ -108,6 +128,7 @@
               <input
                 min="0"
                 name="max_speed_from"
+                :value="$route.query.max_speed_from"
                 @change="handleFilterChange"
                 step="1"
                 type="number"
@@ -116,6 +137,7 @@
               <input
                 min="0"
                 name="max_speed_to"
+                :value="$route.query.max_speed_to"
                 @change="handleFilterChange"
                 step="1"
                 type="number"
@@ -137,6 +159,7 @@
 <script lang="ts">
   import { computed, ComputedRef, defineComponent, PropType } from 'vue'
   import { useI18n } from 'vue-i18n'
+  import { useRouter } from 'vue-router'
 
   import { ISport } from '@/types/sports'
   import { IUserProfile } from '@/types/user'
@@ -154,9 +177,11 @@
         required: true,
       },
     },
-    emits: ['filter', 'filtersUpdate'],
+    emits: ['filter'],
     setup(props, { emit }) {
       const { t } = useI18n()
+      const router = useRouter()
+
       const translatedSports: ComputedRef<ISport[]> = computed(() =>
         translateSports(props.sports, t)
       )
@@ -170,7 +195,8 @@
         }
       }
       function onFilter() {
-        emit('filter', { ...params })
+        emit('filter')
+        router.push({ path: '/workouts', query: params })
       }
 
       return { translatedSports, onFilter, handleFilterChange }
