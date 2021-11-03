@@ -32,6 +32,24 @@
           />
           {{ $t('workouts.WORKOUT', 2) }}
         </label>
+        <label v-if="fullStats">
+          <input
+            type="radio"
+            name="total_ascent"
+            :checked="displayedData === 'total_ascent'"
+            @click="updateDisplayData"
+          />
+          {{ $t('workouts.ASCENT') }}
+        </label>
+        <label v-if="fullStats">
+          <input
+            type="radio"
+            name="total_descent"
+            :checked="displayedData === 'total_descent'"
+            @click="updateDisplayData"
+          />
+          {{ $t('workouts.DESCENT') }}
+        </label>
       </div>
       <Chart
         v-if="labels.length > 0"

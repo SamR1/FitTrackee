@@ -8,20 +8,32 @@ describe('formatTooltipValue', () => {
     {
       description: 'returns 3 if input is workouts count',
       inputDisplayedData: datasetKeys[0], // 'nb_workouts'
-      inputValue: 3,
-      expectedResult: '3',
+      inputValue: 30,
+      expectedResult: '30',
     },
     {
       description: 'returns 00m:03s if input is total duration',
       inputDisplayedData: datasetKeys[1], // 'total_duration'
-      inputValue: 3,
-      expectedResult: '00m 03s',
+      inputValue: 30,
+      expectedResult: '00m 30s',
     },
     {
-      description: 'returns 3.00 if input is total distance',
+      description: 'returns 3.00 km if input is total distance',
       inputDisplayedData: datasetKeys[2], // 'total_distance'
-      inputValue: 3,
-      expectedResult: '3.00 km',
+      inputValue: 30,
+      expectedResult: '30.00 km',
+    },
+    {
+      description: 'returns 0.003 km if input is total ascent',
+      inputDisplayedData: datasetKeys[3], // 'total_distance'
+      inputValue: 30,
+      expectedResult: '0.03 km',
+    },
+    {
+      description: 'returns 0.003 km if input is total descent',
+      inputDisplayedData: datasetKeys[4], // 'total_distance'
+      inputValue: 30,
+      expectedResult: '0.03 km',
     },
   ]
 
@@ -43,20 +55,32 @@ describe('formatTooltipValue (formatWithUnits = false)', () => {
     {
       description: 'returns 3 if input is workouts count',
       inputDisplayedData: datasetKeys[0], // 'nb_workouts'
-      inputValue: 3,
-      expectedResult: '3',
+      inputValue: 30,
+      expectedResult: '30',
     },
     {
       description: 'returns 00:03 if input is total duration',
       inputDisplayedData: datasetKeys[1], // 'total_duration'
-      inputValue: 3,
-      expectedResult: '00:03',
+      inputValue: 30,
+      expectedResult: '00:30',
     },
     {
-      description: 'returns 3.00 if input is total distance',
+      description: 'returns 3.00 km if input is total distance',
       inputDisplayedData: datasetKeys[2], // 'total_distance'
-      inputValue: 3,
-      expectedResult: '3.00 km',
+      inputValue: 30,
+      expectedResult: '30.00 km',
+    },
+    {
+      description: 'returns 0.003 km if input is total ascent',
+      inputDisplayedData: datasetKeys[3], // 'total_distance'
+      inputValue: 30,
+      expectedResult: '0.03 km',
+    },
+    {
+      description: 'returns 0.003 km if input is total descent',
+      inputDisplayedData: datasetKeys[4], // 'total_distance'
+      inputValue: 30,
+      expectedResult: '0.03 km',
     },
   ]
 

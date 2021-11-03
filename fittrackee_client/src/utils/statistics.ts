@@ -45,6 +45,8 @@ export const datasetKeys: TStatisticsDatasetKeys[] = [
   'nb_workouts',
   'total_duration',
   'total_distance',
+  'total_ascent',
+  'total_descent',
 ]
 
 export const getDateKeys = (
@@ -78,12 +80,16 @@ export const getDatasets = (displayedSports: ISport[]): TStatisticsDatasets => {
     nb_workouts: [],
     total_distance: [],
     total_duration: [],
+    total_ascent: [],
+    total_descent: [],
   }
   displayedSports.map((sport) => {
     const color = sportColors[sport.label]
     datasets.nb_workouts.push(getStatisticsChartDataset(sport.label, color))
     datasets.total_distance.push(getStatisticsChartDataset(sport.label, color))
     datasets.total_duration.push(getStatisticsChartDataset(sport.label, color))
+    datasets.total_ascent.push(getStatisticsChartDataset(sport.label, color))
+    datasets.total_descent.push(getStatisticsChartDataset(sport.label, color))
   })
   return datasets
 }

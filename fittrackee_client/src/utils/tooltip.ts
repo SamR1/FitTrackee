@@ -6,9 +6,15 @@ export const formatTooltipValue = (
   value: number,
   formatWithUnits = true
 ): string => {
-  return displayedData === 'total_duration'
-    ? formatDuration(value, formatWithUnits)
-    : displayedData === 'total_distance'
-    ? value.toFixed(2) + ' km'
-    : value.toString()
+  switch (displayedData) {
+    case 'total_duration':
+      return formatDuration(value, formatWithUnits)
+    case 'total_distance':
+      return value.toFixed(2) + ' km'
+    case 'total_ascent':
+    case 'total_descent':
+      return (value / 1000).toFixed(2) + ' km'
+    default:
+      return value.toString()
+  }
 }

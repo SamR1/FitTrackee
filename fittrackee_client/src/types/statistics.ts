@@ -22,6 +22,8 @@ export type TStatisticsDatasetKeys =
   | 'nb_workouts'
   | 'total_duration'
   | 'total_distance'
+  | 'total_ascent'
+  | 'total_descent'
 
 export type TStatistics = {
   [key in TStatisticsDatasetKeys]: number

@@ -218,6 +218,40 @@ describe('getDatasets', () => {
           data: [],
         },
       ],
+      total_ascent: [
+        {
+          label: 'Cycling (Sport)',
+          backgroundColor: ['#4c9792'],
+          data: [],
+        },
+        {
+          label: 'Cycling (Transport)',
+          backgroundColor: ['#88af98'],
+          data: [],
+        },
+        {
+          label: 'Hiking',
+          backgroundColor: ['#bb757c'],
+          data: [],
+        },
+      ],
+      total_descent: [
+        {
+          label: 'Cycling (Sport)',
+          backgroundColor: ['#4c9792'],
+          data: [],
+        },
+        {
+          label: 'Cycling (Transport)',
+          backgroundColor: ['#88af98'],
+          data: [],
+        },
+        {
+          label: 'Hiking',
+          backgroundColor: ['#bb757c'],
+          data: [],
+        },
+      ],
     }
     assert.deepEqual(getDatasets(sports), expected)
   })
@@ -244,6 +278,20 @@ describe('getDatasets', () => {
           data: [],
         },
       ],
+      total_ascent: [
+        {
+          label: 'Cycling (Transport)',
+          backgroundColor: ['#88af98'],
+          data: [],
+        },
+      ],
+      total_descent: [
+        {
+          label: 'Cycling (Transport)',
+          backgroundColor: ['#88af98'],
+          data: [],
+        },
+      ],
     }
     assert.deepEqual(getDatasets([sports[1]]), expected)
   })
@@ -263,6 +311,8 @@ describe('formatStats', () => {
         nb_workouts: [],
         total_distance: [],
         total_duration: [],
+        total_ascent: [],
+        total_descent: [],
       },
     }
     assert.deepEqual(
@@ -302,6 +352,20 @@ describe('formatStats', () => {
             data: [0, 0, 0],
           },
         ],
+        total_ascent: [
+          {
+            label: 'Cycling (Transport)',
+            backgroundColor: ['#88af98'],
+            data: [0, 0, 0],
+          },
+        ],
+        total_descent: [
+          {
+            label: 'Cycling (Transport)',
+            backgroundColor: ['#88af98'],
+            data: [0, 0, 0],
+          },
+        ],
       },
     }
     assert.deepEqual(
@@ -317,6 +381,8 @@ describe('formatStats', () => {
           nb_workouts: 1,
           total_distance: 10,
           total_duration: 3000,
+          total_ascent: 150,
+          total_descent: 100,
         },
       },
       '2021-06': {
@@ -324,11 +390,15 @@ describe('formatStats', () => {
           nb_workouts: 1,
           total_distance: 15,
           total_duration: 3500,
+          total_ascent: 250,
+          total_descent: 150,
         },
         2: {
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
+          total_ascent: 150,
+          total_descent: 200,
         },
       },
       '2021-07': {
@@ -336,6 +406,8 @@ describe('formatStats', () => {
           nb_workouts: 2,
           total_distance: 12,
           total_duration: 5000,
+          total_ascent: 100,
+          total_descent: 100,
         },
       },
     }
@@ -350,6 +422,8 @@ describe('formatStats', () => {
         nb_workouts: [],
         total_distance: [],
         total_duration: [],
+        total_ascent: [],
+        total_descent: [],
       },
     }
     assert.deepEqual(
@@ -365,6 +439,8 @@ describe('formatStats', () => {
           nb_workouts: 1,
           total_distance: 10,
           total_duration: 3000,
+          total_ascent: 150,
+          total_descent: 100,
         },
       },
       '2021-06': {
@@ -372,11 +448,15 @@ describe('formatStats', () => {
           nb_workouts: 1,
           total_distance: 15,
           total_duration: 3500,
+          total_ascent: 250,
+          total_descent: 150,
         },
         2: {
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
+          total_ascent: 150,
+          total_descent: 200,
         },
       },
       '2021-07': {
@@ -384,6 +464,8 @@ describe('formatStats', () => {
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
+          total_ascent: 100,
+          total_descent: 100,
         },
       },
     }
@@ -416,6 +498,20 @@ describe('formatStats', () => {
             data: [3000, 3500, 0],
           },
         ],
+        total_ascent: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [150, 250, 0],
+          },
+        ],
+        total_descent: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [100, 150, 0],
+          },
+        ],
       },
     }
     assert.deepEqual(
@@ -433,6 +529,8 @@ describe('formatStats (duration)', () => {
           nb_workouts: 1,
           total_distance: 10,
           total_duration: 3000,
+          total_ascent: 150,
+          total_descent: 100,
         },
       },
       '2021': {
@@ -440,11 +538,15 @@ describe('formatStats (duration)', () => {
           nb_workouts: 1,
           total_distance: 15,
           total_duration: 3500,
+          total_ascent: 250,
+          total_descent: 150,
         },
         2: {
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
+          total_ascent: 150,
+          total_descent: 200,
         },
       },
       '2022': {
@@ -452,6 +554,8 @@ describe('formatStats (duration)', () => {
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
+          total_ascent: 100,
+          total_descent: 100,
         },
       },
     }
@@ -482,6 +586,20 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [3000, 3500],
+          },
+        ],
+        total_ascent: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [150, 250],
+          },
+        ],
+        total_descent: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [100, 150],
           },
         ],
       },
@@ -498,6 +616,8 @@ describe('formatStats (duration)', () => {
           nb_workouts: 1,
           total_distance: 10,
           total_duration: 3000,
+          total_ascent: 150,
+          total_descent: 100,
         },
       },
       '2021': {
@@ -505,11 +625,15 @@ describe('formatStats (duration)', () => {
           nb_workouts: 1,
           total_distance: 15,
           total_duration: 3500,
+          total_ascent: 250,
+          total_descent: 150,
         },
         2: {
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
+          total_ascent: 150,
+          total_descent: 200,
         },
       },
       '2022': {
@@ -517,6 +641,8 @@ describe('formatStats (duration)', () => {
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
+          total_ascent: 100,
+          total_descent: 100,
         },
       },
     }
@@ -547,6 +673,20 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [3000, 3500],
+          },
+        ],
+        total_ascent: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [150, 250],
+          },
+        ],
+        total_descent: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [100, 150],
           },
         ],
       },
@@ -564,6 +704,8 @@ describe('formatStats (duration)', () => {
           nb_workouts: 1,
           total_distance: 10,
           total_duration: 3000,
+          total_ascent: 150,
+          total_descent: 100,
         },
       },
       '2021-10-10': {
@@ -571,11 +713,15 @@ describe('formatStats (duration)', () => {
           nb_workouts: 1,
           total_distance: 15,
           total_duration: 3500,
+          total_ascent: 250,
+          total_descent: 150,
         },
         2: {
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
+          total_ascent: 150,
+          total_descent: 200,
         },
       },
       '2021-10-17': {
@@ -583,6 +729,8 @@ describe('formatStats (duration)', () => {
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
+          total_ascent: 100,
+          total_descent: 100,
         },
       },
     }
@@ -615,6 +763,20 @@ describe('formatStats (duration)', () => {
             data: [3000, 3500, 0],
           },
         ],
+        total_ascent: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [150, 250, 0],
+          },
+        ],
+        total_descent: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [100, 150, 0],
+          },
+        ],
       },
     }
     assert.deepEqual(
@@ -630,6 +792,8 @@ describe('formatStats (duration)', () => {
           nb_workouts: 1,
           total_distance: 10,
           total_duration: 3000,
+          total_ascent: 150,
+          total_descent: 100,
         },
       },
       '2021-10-11': {
@@ -637,11 +801,15 @@ describe('formatStats (duration)', () => {
           nb_workouts: 1,
           total_distance: 15,
           total_duration: 3500,
+          total_ascent: 250,
+          total_descent: 150,
         },
         2: {
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
+          total_ascent: 150,
+          total_descent: 200,
         },
       },
       '2021-10-18': {
@@ -649,6 +817,8 @@ describe('formatStats (duration)', () => {
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
+          total_ascent: 100,
+          total_descent: 100,
         },
       },
     }
@@ -679,6 +849,20 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [3000, 3500, 0],
+          },
+        ],
+        total_ascent: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [150, 250, 0],
+          },
+        ],
+        total_descent: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [100, 150, 0],
           },
         ],
       },
