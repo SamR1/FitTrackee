@@ -15,6 +15,14 @@ def user_1() -> User:
 
 
 @pytest.fixture()
+def user_1_upper() -> User:
+    user = User(username='TEST', email='TEST@TEST.COM', password='12345678')
+    db.session.add(user)
+    db.session.commit()
+    return user
+
+
+@pytest.fixture()
 def user_1_admin() -> User:
     admin = User(
         username='admin', email='admin@example.com', password='12345678'

@@ -4,7 +4,7 @@ from typing import Dict, Tuple, Union
 
 import jwt
 from flask import Blueprint, current_app, request
-from sqlalchemy import exc, or_
+from sqlalchemy import exc, func, or_
 from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
@@ -117,7 +117,10 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     try:
         # check for existing user
         user = User.query.filter(
-            or_(User.username == username, User.email == email)
+            or_(
+                func.lower(User.username) == func.lower(username),
+                func.lower(User.email) == func.lower(email),
+            )
         ).first()
         if user:
             return InvalidPayloadErrorResponse(
@@ -193,11 +196,13 @@ def login_user() -> Union[Dict, HttpResponse]:
     post_data = request.get_json()
     if not post_data:
         return InvalidPayloadErrorResponse()
-    email = post_data.get('email')
+    email = post_data.get('email', '')
     password = post_data.get('password')
     try:
         # check for existing user
-        user = User.query.filter(User.email == email).first()
+        user = User.query.filter(
+            func.lower(User.email) == func.lower(email)
+        ).first()
         if user and bcrypt.check_password_hash(user.password, password):
             # generate auth token
             auth_token = user.encode_auth_token(user.id)

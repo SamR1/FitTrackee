@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from io import BytesIO
 from unittest.mock import Mock, patch
 
+import pytest
 from flask import Flask
 from freezegun import freeze_time
 
@@ -37,8 +38,38 @@ class TestUserRegistration:
         assert response.content_type == 'application/json'
         assert response.status_code == 201
 
-    def test_it_returns_error_if_user_already_exists(
-        self, app: Flask, user_1: User
+    @pytest.mark.parametrize(
+        'input_username',
+        ['test', 'TEST'],
+    )
+    def test_it_returns_error_if_user_already_exists_with_same_username(
+        self, app: Flask, user_1: User, input_username: str
+    ) -> None:
+        client = app.test_client()
+        response = client.post(
+            '/api/auth/register',
+            data=json.dumps(
+                dict(
+                    username=input_username,
+                    email='another_email@test.com',
+                    password='12345678',
+                    password_conf='12345678',
+                )
+            ),
+            content_type='application/json',
+        )
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'error'
+        assert data['message'] == 'sorry, that user already exists'
+        assert response.content_type == 'application/json'
+        assert response.status_code == 400
+
+    @pytest.mark.parametrize(
+        'input_email',
+        ['test@test.com', 'TEST@TEST.COM'],
+    )
+    def test_it_returns_error_if_user_already_exists_with_same_email(
+        self, app: Flask, user_1: User, input_email: str
     ) -> None:
         client = app.test_client()
         response = client.post(
@@ -292,12 +323,40 @@ class TestUserRegistration:
 
 
 class TestUserLogin:
-    def test_user_can_register(self, app: Flask, user_1: User) -> None:
+    @pytest.mark.parametrize(
+        'input_email',
+        ['test@test.com', 'TEST@TEST.COM'],
+    )
+    def test_user_can_login(
+        self, app: Flask, user_1: User, input_email: str
+    ) -> None:
         client = app.test_client()
 
         response = client.post(
             '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
+            data=json.dumps(dict(email=input_email, password='12345678')),
+            content_type='application/json',
+        )
+
+        assert response.content_type == 'application/json'
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'successfully logged in'
+        assert data['auth_token']
+
+    @pytest.mark.parametrize(
+        'input_email',
+        ['test@test.com', 'TEST@TEST.COM'],
+    )
+    def test_user_can_login_when_user_email_is_uppercase(
+        self, app: Flask, user_1_upper: User, input_email: str
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/login',
+            data=json.dumps(dict(email=input_email, password='12345678')),
             content_type='application/json',
         )
 
