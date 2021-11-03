@@ -2,10 +2,10 @@ import { AxiosError } from 'axios'
 import { ActionContext } from 'vuex'
 
 import { ROOT_STORE } from '@/store/constants'
+import { IAuthUserState } from '@/store/modules/authUser/types'
 import { IRootState } from '@/store/modules/root/types'
 import { ISportsState } from '@/store/modules/sports/types'
 import { IStatisticsState } from '@/store/modules/statistics/types'
-import { IUserState } from '@/store/modules/user/types'
 import { IUsersState } from '@/store/modules/users/types'
 import { IWorkoutsState } from '@/store/modules/workouts/types'
 
@@ -18,7 +18,7 @@ export const getApiUrl = (): string => {
 export const handleError = (
   context:
     | ActionContext<IRootState, IRootState>
-    | ActionContext<IUserState, IRootState>
+    | ActionContext<IAuthUserState, IRootState>
     | ActionContext<IStatisticsState, IRootState>
     | ActionContext<ISportsState, IRootState>
     | ActionContext<IUsersState, IRootState>

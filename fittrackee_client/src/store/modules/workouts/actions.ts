@@ -2,7 +2,7 @@ import { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
 import router from '@/router'
-import { ROOT_STORE, USER_STORE, WORKOUTS_STORE } from '@/store/constants'
+import { ROOT_STORE, AUTH_USER_STORE, WORKOUTS_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
 import { WorkoutsMutations } from '@/store/modules/workouts/enums'
 import {
@@ -138,7 +138,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       .delete(`workouts/${payload.workoutId}`)
       .then(() => {
         context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
-        context.dispatch(USER_STORE.ACTIONS.GET_USER_PROFILE)
+        context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
         router.push('/')
       })
       .catch((error) => {
@@ -157,7 +157,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     authApi
       .patch(`workouts/${payload.workoutId}`, payload.data)
       .then(() => {
-        context.dispatch(USER_STORE.ACTIONS.GET_USER_PROFILE)
+        context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
         context
           .dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, {
             workoutId: payload.workoutId,
@@ -199,7 +199,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       })
       .then((res) => {
         if (res.data.status === 'created') {
-          context.dispatch(USER_STORE.ACTIONS.GET_USER_PROFILE)
+          context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
           const workout: IWorkout = res.data.data.workouts[0]
           router.push(
             res.data.data.workouts.length === 1
@@ -225,7 +225,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       .post('workouts/no_gpx', payload)
       .then((res) => {
         if (res.data.status === 'created') {
-          context.dispatch(USER_STORE.ACTIONS.GET_USER_PROFILE)
+          context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
           const workout: IWorkout = res.data.data.workouts[0]
           router.push(`/workouts/${workout.id}`)
         }

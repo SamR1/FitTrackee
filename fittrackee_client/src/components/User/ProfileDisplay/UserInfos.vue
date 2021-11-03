@@ -54,7 +54,7 @@
     ref,
   } from 'vue'
 
-  import { USER_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE } from '@/store/constants'
   import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
@@ -73,7 +73,7 @@
     setup(props) {
       const store = useStore()
       const authUser: ComputedRef<IUserProfile> = computed(
-        () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
+        () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
       )
       const registrationDate = computed(() =>
         props.user.created_at
@@ -91,7 +91,7 @@
         displayModal.value = value
       }
       function deleteUserAccount(username: string) {
-        store.dispatch(USER_STORE.ACTIONS.DELETE_ACCOUNT, { username })
+        store.dispatch(AUTH_USER_STORE.ACTIONS.DELETE_ACCOUNT, { username })
       }
 
       return {

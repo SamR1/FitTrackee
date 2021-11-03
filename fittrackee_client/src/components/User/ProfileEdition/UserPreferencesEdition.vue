@@ -61,7 +61,7 @@
     onMounted,
   } from 'vue'
 
-  import { ROOT_STORE, USER_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import { IUserProfile, IUserPreferencesPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { availableLanguages } from '@/utils/locales'
@@ -92,7 +92,7 @@
         },
       ]
       const loading = computed(
-        () => store.getters[USER_STORE.GETTERS.USER_LOADING]
+        () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
       )
       const errorMessages: ComputedRef<string | string[] | null> = computed(
         () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
@@ -110,7 +110,10 @@
         userForm.weekm = user.weekm ? user.weekm : false
       }
       function updateProfile() {
-        store.dispatch(USER_STORE.ACTIONS.UPDATE_USER_PREFERENCES, userForm)
+        store.dispatch(
+          AUTH_USER_STORE.ACTIONS.UPDATE_USER_PREFERENCES,
+          userForm
+        )
       }
 
       return {

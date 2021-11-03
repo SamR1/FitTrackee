@@ -132,7 +132,7 @@
   import FilterSelects from '@/components/Common/FilterSelects.vue'
   import Pagination from '@/components/Common/Pagination.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
-  import { ROOT_STORE, USER_STORE, USERS_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
   import { IPagination, TPaginationPayload } from '@/types/api'
   import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -163,7 +163,7 @@
       )
 
       const authUser: ComputedRef<IUserProfile> = computed(
-        () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
+        () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
       )
       const users: ComputedRef<IUserProfile[]> = computed(
         () => store.getters[USERS_STORE.GETTERS.USERS]

@@ -82,7 +82,7 @@
   import { useI18n } from 'vue-i18n'
 
   import UserPicture from '@/components/User/UserPicture.vue'
-  import { ROOT_STORE, USER_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import { IDropdownOption } from '@/types/forms'
   import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -100,10 +100,10 @@
       const store = useStore()
 
       const authUser: ComputedRef<IUserProfile> = computed(
-        () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
+        () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
       )
       const isAuthenticated: ComputedRef<boolean> = computed(
-        () => store.getters[USER_STORE.GETTERS.IS_AUTHENTICATED]
+        () => store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED]
       )
       const authUserPictureUrl: ComputedRef<string> = computed(() =>
         isAuthenticated.value && authUser.value.picture
@@ -130,7 +130,7 @@
         store.commit(ROOT_STORE.MUTATIONS.UPDATE_LANG, option.value)
       }
       function logout() {
-        store.dispatch(USER_STORE.ACTIONS.LOGOUT)
+        store.dispatch(AUTH_USER_STORE.ACTIONS.LOGOUT)
       }
 
       return {

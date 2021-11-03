@@ -7,7 +7,7 @@
 <script lang="ts">
   import { computed, ComputedRef, defineComponent } from 'vue'
 
-  import { USER_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE } from '@/store/constants'
   import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
@@ -16,7 +16,7 @@
     setup() {
       const store = useStore()
       const authUser: ComputedRef<IUserProfile> = computed(
-        () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
+        () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
       )
       return { authUser }
     },

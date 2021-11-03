@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 import store from '@/store'
-import { USER_STORE } from '@/store/constants'
+import { AUTH_USER_STORE } from '@/store/constants'
 import { getApiUrl } from '@/utils'
 
 const authApi = axios.create({
@@ -10,7 +10,7 @@ const authApi = axios.create({
 
 authApi.interceptors.request.use(
   (config) => {
-    const authToken = store.getters[USER_STORE.GETTERS.AUTH_TOKEN]
+    const authToken = store.getters[AUTH_USER_STORE.GETTERS.AUTH_TOKEN]
     if (authToken) {
       const auth = `Bearer ${authToken}`
       if (config.headers.Authorization !== auth) {

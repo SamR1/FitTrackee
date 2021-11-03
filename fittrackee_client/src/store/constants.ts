@@ -1,4 +1,9 @@
 import {
+  AuthUserActions,
+  AuthUserGetters,
+  AuthUserMutations,
+} from '@/store/modules/authUser/enums'
+import {
   RootActions,
   RootGetters,
   RootMutations,
@@ -13,11 +18,6 @@ import {
   StatisticsGetters,
   StatisticsMutations,
 } from '@/store/modules/statistics/enums'
-import {
-  UserActions,
-  UserGetters,
-  UserMutations,
-} from '@/store/modules/user/enums'
 import {
   UsersActions,
   UsersGetters,
@@ -47,10 +47,10 @@ export const STATS_STORE = {
   MUTATIONS: StatisticsMutations,
 }
 
-export const USER_STORE = {
-  ACTIONS: UserActions,
-  GETTERS: UserGetters,
-  MUTATIONS: UserMutations,
+export const AUTH_USER_STORE = {
+  ACTIONS: AuthUserActions,
+  GETTERS: AuthUserGetters,
+  MUTATIONS: AuthUserMutations,
 }
 
 export const USERS_STORE = {

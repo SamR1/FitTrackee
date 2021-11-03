@@ -12,7 +12,7 @@ import UserInfosEdition from '@/components/User/ProfileEdition/UserInfosEdition.
 import UserPictureEdition from '@/components/User/ProfileEdition/UserPictureEdition.vue'
 import UserPreferencesEdition from '@/components/User/ProfileEdition/UserPreferencesEdition.vue'
 import store from '@/store'
-import { USER_STORE } from '@/store/constants'
+import { AUTH_USER_STORE } from '@/store/constants'
 
 const getTabFromPath = (path: string): string => {
   const regex = /(\/profile)(\/edit)*(\/*)/
@@ -238,15 +238,15 @@ const pathsWithoutAuthentication = [
 
 router.beforeEach((to, from, next) => {
   store
-    .dispatch(USER_STORE.ACTIONS.CHECK_AUTH_USER)
+    .dispatch(AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER)
     .then(() => {
       if (
-        store.getters[USER_STORE.GETTERS.IS_AUTHENTICATED] &&
+        store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED] &&
         pathsWithoutAuthentication.includes(to.path)
       ) {
         return next('/')
       } else if (
-        !store.getters[USER_STORE.GETTERS.IS_AUTHENTICATED] &&
+        !store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED] &&
         !pathsWithoutAuthentication.includes(to.path)
       ) {
         const path =

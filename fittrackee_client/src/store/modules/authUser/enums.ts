@@ -1,4 +1,4 @@
-export enum UserActions {
+export enum AuthUserActions {
   CHECK_AUTH_USER = 'CHECK_AUTH_USER',
   DELETE_ACCOUNT = 'DELETE_ACCOUNT',
   DELETE_PICTURE = 'DELETE_PICTURE',
@@ -12,7 +12,7 @@ export enum UserActions {
   UPDATE_USER_PREFERENCES = 'UPDATE_USER_PREFERENCES',
 }
 
-export enum UserGetters {
+export enum AuthUserGetters {
   AUTH_TOKEN = 'AUTH_TOKEN',
   AUTH_USER_PROFILE = 'AUTH_USER_PROFILE',
   IS_ADMIN = 'IS_ADMIN',
@@ -20,7 +20,7 @@ export enum UserGetters {
   USER_LOADING = 'USER_LOADING',
 }
 
-export enum UserMutations {
+export enum AuthUserMutations {
   CLEAR_AUTH_USER_TOKEN = 'CLEAR_AUTH_USER_TOKEN',
   UPDATE_AUTH_TOKEN = 'UPDATE_AUTH_TOKEN',
   UPDATE_AUTH_USER_PROFILE = 'UPDATE_AUTH_USER_PROFILE',

@@ -16,7 +16,7 @@
   import { computed, ComputedRef, defineComponent, onBeforeMount } from 'vue'
 
   import NotFound from '@/components/Common/NotFound.vue'
-  import { ROOT_STORE, USER_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import { TAppConfig, IAppStatistics } from '@/types/application'
   import { useStore } from '@/use/useStore'
 
@@ -42,10 +42,10 @@
         () => store.getters[ROOT_STORE.GETTERS.APP_STATS]
       )
       const isAuthUserAmin: ComputedRef<boolean> = computed(
-        () => store.getters[USER_STORE.GETTERS.IS_ADMIN]
+        () => store.getters[AUTH_USER_STORE.GETTERS.IS_ADMIN]
       )
       const userLoading: ComputedRef<boolean> = computed(
-        () => store.getters[USER_STORE.GETTERS.USER_LOADING]
+        () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
       )
 
       return {

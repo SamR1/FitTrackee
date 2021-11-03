@@ -32,7 +32,7 @@
 
   import WorkoutsFilters from '@/components/Workouts/WorkoutsFilters.vue'
   import WorkoutsList from '@/components/Workouts/WorkoutsList.vue'
-  import { USER_STORE, SPORTS_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE, SPORTS_STORE } from '@/store/constants'
   import { ISport, ITranslatedSport } from '@/types/sports'
   import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -48,7 +48,7 @@
       const { t } = useI18n()
       const store = useStore()
       const authUser: ComputedRef<IUserProfile> = computed(
-        () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
+        () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
       )
       const sports: ComputedRef<ISport[]> = computed(
         () => store.getters[SPORTS_STORE.GETTERS.SPORTS]

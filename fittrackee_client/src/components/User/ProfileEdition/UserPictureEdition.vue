@@ -38,7 +38,7 @@
   } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
-  import { ROOT_STORE, USER_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import { TAppConfig } from '@/types/application'
   import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -69,7 +69,7 @@
       let pictureFile: Ref<File | null> = ref(null)
 
       function deleteUserPicture() {
-        store.dispatch(USER_STORE.ACTIONS.DELETE_PICTURE)
+        store.dispatch(AUTH_USER_STORE.ACTIONS.DELETE_PICTURE)
       }
       function updatePictureFile(event: Event & { target: HTMLInputElement }) {
         if (event.target.files) {
@@ -78,7 +78,7 @@
       }
       function updateUserPicture() {
         if (pictureFile.value) {
-          store.dispatch(USER_STORE.ACTIONS.UPDATE_USER_PICTURE, {
+          store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PICTURE, {
             picture: pictureFile.value,
           })
         }

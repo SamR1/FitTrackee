@@ -21,7 +21,7 @@
 
   import Statistics from '@/components/Statistics/index.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
-  import { USER_STORE, SPORTS_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE, SPORTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
   import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -35,7 +35,7 @@
     setup() {
       const store = useStore()
       const authUser: ComputedRef<IUserProfile> = computed(
-        () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
+        () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
       )
       const sports: ComputedRef<ISport[]> = computed(() =>
         store.getters[SPORTS_STORE.GETTERS.SPORTS].filter((sport) =>

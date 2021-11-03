@@ -21,7 +21,7 @@
   import { computed, defineComponent, PropType } from 'vue'
 
   import UserProfileTabs from '@/components/User/UserProfileTabs.vue'
-  import { USER_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE } from '@/store/constants'
   import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
@@ -43,7 +43,9 @@
     setup() {
       const store = useStore()
       return {
-        loading: computed(() => store.getters[USER_STORE.GETTERS.USER_LOADING]),
+        loading: computed(
+          () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
+        ),
         tabs: ['PROFILE', 'PICTURE', 'PREFERENCES'],
       }
     },

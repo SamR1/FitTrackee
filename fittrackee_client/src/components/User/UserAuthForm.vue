@@ -80,7 +80,7 @@
   import { ComputedRef, computed, defineComponent, reactive, watch } from 'vue'
   import { useRoute } from 'vue-router'
 
-  import { ROOT_STORE, USER_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import { TAppConfig } from '@/types/application'
   import { ILoginRegisterFormData } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -140,20 +140,20 @@
                 'user.INVALID_TOKEN'
               )
             }
-            return store.dispatch(USER_STORE.ACTIONS.RESET_USER_PASSWORD, {
+            return store.dispatch(AUTH_USER_STORE.ACTIONS.RESET_USER_PASSWORD, {
               password: formData.password,
               password_conf: formData.password_conf,
               token: props.token,
             })
           case 'reset-request':
             return store.dispatch(
-              USER_STORE.ACTIONS.SEND_PASSWORD_RESET_REQUEST,
+              AUTH_USER_STORE.ACTIONS.SEND_PASSWORD_RESET_REQUEST,
               {
                 email: formData.email,
               }
             )
           default:
-            store.dispatch(USER_STORE.ACTIONS.LOGIN_OR_REGISTER, {
+            store.dispatch(AUTH_USER_STORE.ACTIONS.LOGIN_OR_REGISTER, {
               actionType,
               formData,
               redirectUrl: route.query.from,

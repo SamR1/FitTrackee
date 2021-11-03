@@ -106,7 +106,7 @@
     onMounted,
   } from 'vue'
 
-  import { ROOT_STORE, USER_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import { IUserProfile, IUserPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
@@ -135,7 +135,7 @@
           : ''
       )
       const loading = computed(
-        () => store.getters[USER_STORE.GETTERS.USER_LOADING]
+        () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
       )
       const errorMessages: ComputedRef<string | string[] | null> = computed(
         () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
@@ -161,13 +161,13 @@
         userForm.bio = value
       }
       function updateProfile() {
-        store.dispatch(USER_STORE.ACTIONS.UPDATE_USER_PROFILE, userForm)
+        store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PROFILE, userForm)
       }
       function updateDisplayModal(value: boolean) {
         displayModal.value = value
       }
       function deleteAccount(username: string) {
-        store.dispatch(USER_STORE.ACTIONS.DELETE_ACCOUNT, { username })
+        store.dispatch(AUTH_USER_STORE.ACTIONS.DELETE_ACCOUNT, { username })
       }
 
       return {

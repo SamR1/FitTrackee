@@ -15,7 +15,11 @@
   import { computed, defineComponent, ComputedRef } from 'vue'
 
   import WorkoutEdition from '@/components/Workout/WorkoutEdition.vue'
-  import { SPORTS_STORE, USER_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import {
+    AUTH_USER_STORE,
+    SPORTS_STORE,
+    WORKOUTS_STORE,
+  } from '@/store/constants'
   import { ISport } from '@/types/sports'
   import { IUserProfile } from '@/types/user'
   import { IWorkoutData } from '@/types/workouts'
@@ -32,7 +36,7 @@
         () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
       )
       const authUser: ComputedRef<IUserProfile> = computed(
-        () => store.getters[USER_STORE.GETTERS.AUTH_USER_PROFILE]
+        () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
       )
       const workoutData: ComputedRef<IWorkoutData> = computed(
         () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUT_DATA]
