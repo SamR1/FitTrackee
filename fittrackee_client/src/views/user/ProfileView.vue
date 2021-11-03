@@ -1,5 +1,5 @@
 <template>
-  <div id="profile" class="container" v-if="authUser.username">
+  <div id="profile" class="container view" v-if="authUser.username">
     <router-view :user="authUser"></router-view>
   </div>
 </template>

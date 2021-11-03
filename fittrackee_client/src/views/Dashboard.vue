@@ -1,5 +1,9 @@
 <template>
-  <div id="dashboard" v-if="authUser.username && sports.length > 0">
+  <div
+    id="dashboard"
+    class="view"
+    v-if="authUser.username && sports.length > 0"
+  >
     <div class="container mobile-menu">
       <div class="box">
         <div
@@ -112,7 +116,6 @@
 <style lang="scss" scoped>
   @import '~@/scss/base';
   #dashboard {
-    padding-bottom: 30px;
     .dashboard-container {
       display: flex;
       flex-direction: row;

@@ -1,5 +1,5 @@
 <template>
-  <div id="workout">
+  <div id="workout" class="view">
     <div class="container">
       <div class="workout-container" v-if="sports.length > 0">
         <div v-if="workoutData.workout.id">
@@ -153,7 +153,6 @@
   @import '~@/scss/base';
   #workout {
     display: flex;
-    margin-bottom: 45px;
     .container {
       width: 100%;
       padding: 0;

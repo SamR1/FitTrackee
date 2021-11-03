@@ -1,5 +1,5 @@
 <template>
-  <div id="statistics">
+  <div id="statistics" class="view">
     <div class="container" v-if="authUser.username">
       <Card>
         <template #title>{{ $t('statistics.STATISTICS') }}</template>
@@ -52,7 +52,6 @@
   #statistics {
     display: flex;
     width: 100%;
-    margin-bottom: 30px;
     .container {
       display: flex;
       flex-direction: column;

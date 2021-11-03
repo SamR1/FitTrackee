@@ -1,5 +1,5 @@
 <template>
-  <div id="edit-workout">
+  <div id="edit-workout" class="view">
     <div class="container">
       <WorkoutEdition
         :authUser="authUser"

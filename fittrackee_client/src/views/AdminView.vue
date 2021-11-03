@@ -1,5 +1,5 @@
 <template>
-  <div id="admin">
+  <div id="admin" class="view">
     <div class="container" v-if="!userLoading">
       <router-view
         v-if="isAuthUserAmin"
@@ -65,7 +65,6 @@
   #admin {
     .admin-card {
       width: 100%;
-      margin-bottom: 55px;
 
       ::v-deep(.card) {
         .admin-form {

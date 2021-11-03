@@ -1,5 +1,5 @@
 <template>
-  <div id="user" v-if="user.username">
+  <div id="user" class="view" v-if="user.username">
     <UserHeader :user="user" />
     <div class="box">
       <UserInfos :user="user" :from-admin="true" />

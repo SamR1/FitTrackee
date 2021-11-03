@@ -1,5 +1,5 @@
 <template>
-  <div id="password-reset">
+  <div id="password-reset" class="view">
     <div class="container">
       <PasswordResetRequest
         v-if="action.startsWith('reset')"

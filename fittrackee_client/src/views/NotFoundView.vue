@@ -1,5 +1,5 @@
 <template>
-  <div class="not-found">
+  <div class="not-found view">
     <NotFound />
   </div>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <div id="loginOrRegister">
+  <div id="loginOrRegister" class="view">
     <div class="container">
       <div class="container-sub">
         <BikePic />

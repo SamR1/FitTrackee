@@ -1,5 +1,5 @@
 <template>
-  <div id="add-workout">
+  <div id="add-workout" class="view">
     <div class="container">
       <WorkoutEdition
         :authUser="authUser"
@@ -41,7 +41,3 @@
     },
   })
 </script>
-
-<style lang="scss" scoped>
-  @import '~@/scss/base';
-</style>

@@ -1,5 +1,5 @@
 <template>
-  <div id="workouts" v-if="authUser.username">
+  <div id="workouts" v-if="authUser.username" class="view">
     <div class="container workouts-container">
       <div class="filters-container" :class="{ hidden: hiddenFilters }">
         <WorkoutsFilters

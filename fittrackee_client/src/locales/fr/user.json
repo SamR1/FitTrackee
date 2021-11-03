@@ -14,7 +14,7 @@
   "PASSWORD_CONFIRMATION": "Confirmation du mot de passe",
   "PASSWORD_FORGOTTEN": "Mot de passe oublié ?",
   "PASSWORD_RESET": "Réinitialisation du mot de passe",
-  "PASSWORD_SENT_EMAIL_TEXT": "Vérifiez vore boite mail. Si vote adresse est dans notre base de données, vous recevrez un email avec un lien pour réinitialiser votre mot de passe.",
+  "PASSWORD_SENT_EMAIL_TEXT": "Vérifiez votre boite mail. Si vote adresse est dans notre base de données, vous recevrez un email avec un lien pour réinitialiser votre mot de passe.",
   "PASSWORD_UPDATED": "Votre mot de passe a été mis à jour. Cliquez {0} pour vous connecter.",
   "PROFILE": {
     "BACK_TO_PROFILE": "Revenir au profil",
