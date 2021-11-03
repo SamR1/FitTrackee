@@ -9,6 +9,7 @@ import {
   SPORTS_STORE,
   STATS_STORE,
   USER_STORE,
+  USERS_STORE,
   WORKOUTS_STORE,
 } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
@@ -25,6 +26,17 @@ import {
 import { handleError } from '@/utils'
 
 const { locale } = createI18n.global
+
+const removeUserData = (context: ActionContext<IUserState, IRootState>) => {
+  localStorage.removeItem('authToken')
+  context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+  context.commit(STATS_STORE.MUTATIONS.EMPTY_USER_STATS)
+  context.commit(USER_STORE.MUTATIONS.CLEAR_AUTH_USER_TOKEN)
+  context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS, [])
+  context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUTS)
+  context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
+  router.push('/login')
+}
 
 export const actions: ActionTree<IUserState, IRootState> & IUserActions = {
   [USER_STORE.ACTIONS.CHECK_AUTH_USER](
@@ -63,9 +75,13 @@ export const actions: ActionTree<IUserState, IRootState> & IUserActions = {
           context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
         } else {
           handleError(context, null)
+          removeUserData(context)
         }
       })
-      .catch((error) => handleError(context, error))
+      .catch((error) => {
+        handleError(context, error)
+        removeUserData(context)
+      })
   },
   [USER_STORE.ACTIONS.LOGIN_OR_REGISTER](
     context: ActionContext<IUserState, IRootState>,
@@ -91,12 +107,7 @@ export const actions: ActionTree<IUserState, IRootState> & IUserActions = {
   [USER_STORE.ACTIONS.LOGOUT](
     context: ActionContext<IUserState, IRootState>
   ): void {
-    localStorage.removeItem('authToken')
-    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
-    context.commit(STATS_STORE.MUTATIONS.EMPTY_USER_STATS)
-    context.commit(USER_STORE.MUTATIONS.CLEAR_AUTH_USER_TOKEN)
-    context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUTS)
-    router.push('/login')
+    removeUserData(context)
   },
   [USER_STORE.ACTIONS.UPDATE_USER_PROFILE](
     context: ActionContext<IUserState, IRootState>,

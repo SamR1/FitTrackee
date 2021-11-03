@@ -69,6 +69,7 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
   [WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUTS](state: IWorkoutsState) {
     state.calendar_workouts = []
     state.user_workouts = []
+    state.timeline_workouts = []
   },
   [WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT](state: IWorkoutsState) {
     state.workoutData = {
