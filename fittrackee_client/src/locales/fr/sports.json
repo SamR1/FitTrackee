@@ -11,8 +11,23 @@
   "Mountain Biking": {
     "LABEL": "VTT"
   },
+  "Mountain Biking (Electric)": {
+    "LABEL": "VTT (Electrique)"
+  },
+  "Rowing": {
+    "LABEL": "Aviron"
+  },
   "Running": {
     "LABEL": "Course"
+  },
+  "Skiing (Alpine)": {
+    "LABEL": "Ski (Alpin)"
+  },
+  "Skiing (Cross Country)": {
+    "LABEL": "Ski (Randonnée)"
+  },
+  "Trail": {
+    "LABEL": "Trail"
   },
   "Walking": {
     "LABEL": "Marche"
