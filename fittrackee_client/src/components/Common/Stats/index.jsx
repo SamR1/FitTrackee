@@ -40,6 +40,7 @@ class Statistics extends React.PureComponent {
       displayEmpty,
       t,
       user,
+      withElevation,
     } = this.props
     if (!displayEmpty && Object.keys(statistics).length === 0) {
       return <span>{t('common:No workouts.')}</span>
@@ -51,7 +52,14 @@ class Statistics extends React.PureComponent {
       displayedSports,
       user.weekm
     )
-    return <StatsChart sports={sports} stats={stats} t={t} />
+    return (
+      <StatsChart
+        sports={sports}
+        stats={stats}
+        t={t}
+        withElevation={withElevation}
+      />
+    )
   }
 }
 

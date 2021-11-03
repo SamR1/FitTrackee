@@ -5,7 +5,7 @@ import { formatDuration } from '../../../utils/stats'
 const formatValue = (displayedData, value) =>
   displayedData === 'duration'
     ? formatDuration(value, true)
-    : displayedData === 'distance'
+    : ['distance', 'ascent', 'descent'].includes(displayedData)
     ? value.toFixed(2)
     : value
 

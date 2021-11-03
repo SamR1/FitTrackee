@@ -67,6 +67,8 @@ def get_workouts(
                         'nb_workouts': 0,
                         'total_distance': 0.0,
                         'total_duration': 0,
+                        'total_ascent': 0.0,
+                        'total_descent': 0.0,
                     }
                 workouts_list_by_sport[sport_id]['nb_workouts'] += 1
                 workouts_list_by_sport[sport_id]['total_distance'] += float(
@@ -75,6 +77,14 @@ def get_workouts(
                 workouts_list_by_sport[sport_id][
                     'total_duration'
                 ] += convert_timedelta_to_integer(workout.moving)
+                if workout.ascent:
+                    workouts_list_by_sport[sport_id]['total_ascent'] += float(
+                        workout.ascent
+                    )
+                if workout.descent:
+                    workouts_list_by_sport[sport_id]['total_descent'] += float(
+                        workout.descent
+                    )
 
             # filter_type == 'by_time'
             else:
@@ -110,6 +120,8 @@ def get_workouts(
                         'nb_workouts': 0,
                         'total_distance': 0.0,
                         'total_duration': 0,
+                        'total_ascent': 0.0,
+                        'total_descent': 0.0,
                     }
                 workouts_list_by_time[time_period][sport_id][
                     'nb_workouts'
@@ -120,7 +132,14 @@ def get_workouts(
                 workouts_list_by_time[time_period][sport_id][
                     'total_duration'
                 ] += convert_timedelta_to_integer(workout.moving)
-
+                if workout.ascent:
+                    workouts_list_by_time[time_period][sport_id][
+                        'total_ascent'
+                    ] += float(workout.ascent)
+                if workout.descent:
+                    workouts_list_by_time[time_period][sport_id][
+                        'total_descent'
+                    ] += float(workout.descent)
         return {
             'status': 'success',
             'data': {
@@ -171,6 +190,8 @@ def get_workouts_by_time(
             "2017": {
               "3": {
                 "nb_workouts": 2,
+                "total_ascent": 203.0,
+                "total_ascent": 156.0,
                 "total_distance": 15.282,
                 "total_duration": 12341
               }
@@ -178,11 +199,15 @@ def get_workouts_by_time(
             "2019": {
               "1": {
                 "nb_workouts": 3,
+                "total_ascent": 150.0,
+                "total_ascent": 178.0,
                 "total_distance": 47,
                 "total_duration": 9960
               },
               "2": {
                 "nb_workouts": 1,
+                "total_ascent": 46.0,
+                "total_ascent": 78.0,
                 "total_distance": 5.613,
                 "total_duration": 1267
               }
@@ -268,16 +293,22 @@ def get_workouts_by_sport(
           "statistics": {
             "1": {
               "nb_workouts": 3,
+              "total_ascent": 150.0,
+              "total_ascent": 178.0,
               "total_distance": 47,
               "total_duration": 9960
             },
             "2": {
               "nb_workouts": 1,
+              "total_ascent": 46.0,
+              "total_ascent": 78.0,
               "total_distance": 5.613,
               "total_duration": 1267
             },
             "3": {
               "nb_workouts": 2,
+              "total_ascent": 203.0,
+              "total_ascent": 156.0,
               "total_distance": 15.282,
               "total_duration": 12341
             }

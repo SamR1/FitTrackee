@@ -3,6 +3,11 @@
   "Cycling (Transport)": "Vélo (Transport)",
   "Hiking": "Randonnée",
   "Mountain Biking": "VTT",
+  "Mountain Biking (Electric)": "VTT (Electrique)",  
   "Running": "Course",
-  "Walking": "Marche"
+  "Walking": "Marche",
+  "Trail" : "Trail",
+  "Skiing (Alpine)" : "Ski (Alpin)",
+  "Skiing (Cross Country)" : "Ski (Randonnée)",
+  "Rowing" : "Aviron"
 }

@@ -358,8 +358,14 @@ label {
 }
 
 .record-table table, .record-table th, .record-table td{
-  font-size: 0.9em;
+  font-size: 0.85em;
   padding: 0.1em;
+}
+@media only screen and (min-width: 1200px) {
+  .record-table table, .record-table th, .record-table td{
+    font-size: 0.9em;
+    padding: 0.1em;
+  }
 }
 
 .remaining-chars {
@@ -483,6 +489,15 @@ label {
 
 .workout-card {
   margin-bottom: 15px;
+}
+
+.col-with-map {
+  font-size: .87em;
+}
+@media only screen and (min-width: 1200px) {
+  .col-with-map {
+    font-size: 1em;
+  }
 }
 
 .workout-details {

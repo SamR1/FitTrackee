@@ -28,7 +28,7 @@ export default class StatsCharts extends React.PureComponent {
 
   render() {
     const { displayedData } = this.state
-    const { sports, stats, t } = this.props
+    const { sports, stats, t, withElevation } = this.props
     if (Object.keys(stats).length === 0) {
       return t('common:No workouts.')
     }
@@ -53,6 +53,28 @@ export default class StatsCharts extends React.PureComponent {
             />
             {t('statistics:duration')}
           </label>
+          {withElevation && (
+            <>
+              <label className="radioLabel col">
+                <input
+                  type="radio"
+                  name="ascent"
+                  checked={displayedData === 'ascent'}
+                  onChange={e => this.handleRadioChange(e)}
+                />
+                {t('statistics:ascent')}
+              </label>
+              <label className="radioLabel col">
+                <input
+                  type="radio"
+                  name="descent"
+                  checked={displayedData === 'descent'}
+                  onChange={e => this.handleRadioChange(e)}
+                />
+                {t('statistics:descent')}
+              </label>
+            </>
+          )}
           <label className="radioLabel col">
             <input
               type="radio"

@@ -175,6 +175,7 @@ class Statistics extends React.Component {
                 displayedSports={displayedSports}
                 statsParams={statsParams}
                 t={t}
+                withElevation
               />
               <div className="row chart-workouts">
                 {translatedSports.map(sport => (

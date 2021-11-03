@@ -4,13 +4,17 @@ import togeojson from '@mapbox/togeojson'
 import { getDateWithTZ } from './index'
 
 export const workoutColors = [
-  '#55a8a3',
-  '#98C3A9',
-  '#D0838A',
-  '#ECC77E',
-  '#926692',
-  '#929292',
-  '#428bca',
+  '#55a8a3', // Cycling (sport)
+  '#98C3A9', // Cycling (transport)
+  '#D0838A', // Hiking
+  '#ECC77E', // Mountain bike
+  '#926692', // Running
+  '#929292', // Walking
+  '#f7af88', // Mountain Biking (Electric)
+  '#fbc2a6', // Trail
+  '#67a4bd', // Skiing (Alpine)
+  '#9498d0', // Skiing (Cross Country)
+  '#fad783', // Rowing
 ]
 
 export const recordsLabels = [

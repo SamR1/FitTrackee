@@ -2,6 +2,8 @@
   "workouts": "workouts",
   "distance": "distance",
   "duration": "duration",
+  "ascent": "ascent",
+  "descent": "descent",
   "month": "month",
   "Statistics": "Statistics",
   "year": "year",

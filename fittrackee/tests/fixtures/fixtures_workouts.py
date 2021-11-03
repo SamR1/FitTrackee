@@ -108,8 +108,11 @@ def seven_workouts_user_1() -> Workout:
     )
     workout.ave_speed = float(workout.distance) / (1024 / 3600)
     workout.moving = workout.duration
+    workout.ascent = 120
+    workout.descent = 200
     db.session.add(workout)
     db.session.flush()
+
     workout = Workout(
         user_id=1,
         sport_id=1,
@@ -119,8 +122,11 @@ def seven_workouts_user_1() -> Workout:
     )
     workout.ave_speed = float(workout.distance) / (3456 / 3600)
     workout.moving = workout.duration
+    workout.ascent = 100
+    workout.descent = 80
     db.session.add(workout)
     db.session.flush()
+
     workout = Workout(
         user_id=1,
         sport_id=1,
@@ -130,8 +136,11 @@ def seven_workouts_user_1() -> Workout:
     )
     workout.ave_speed = float(workout.distance) / (1024 / 3600)
     workout.moving = workout.duration
+    workout.ascent = 80
+    workout.descent = 100
     db.session.add(workout)
     db.session.flush()
+
     workout = Workout(
         user_id=1,
         sport_id=1,
@@ -141,8 +150,11 @@ def seven_workouts_user_1() -> Workout:
     )
     workout.ave_speed = float(workout.distance) / (600 / 3600)
     workout.moving = workout.duration
+    workout.ascent = 120
+    workout.descent = 180
     db.session.add(workout)
     db.session.flush()
+
     workout = Workout(
         user_id=1,
         sport_id=1,
@@ -152,8 +164,11 @@ def seven_workouts_user_1() -> Workout:
     )
     workout.ave_speed = float(workout.distance) / (1000 / 3600)
     workout.moving = workout.duration
+    workout.ascent = 100
+    workout.descent = 200
     db.session.add(workout)
     db.session.flush()
+
     workout = Workout(
         user_id=1,
         sport_id=1,
@@ -163,8 +178,11 @@ def seven_workouts_user_1() -> Workout:
     )
     workout.ave_speed = float(workout.distance) / (6000 / 3600)
     workout.moving = workout.duration
+    workout.ascent = 40
+    workout.descent = 20
     db.session.add(workout)
     db.session.flush()
+
     workout = Workout(
         user_id=1,
         sport_id=1,

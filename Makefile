@@ -134,6 +134,9 @@ migrate-db:
 recalculate:
 	$(FLASK) recalculate
 
+revision:
+	$(FLASK) db revision --directory $(MIGRATIONS) --message $(MIGRATION_MESSAGE)
+
 run:
 	$(MAKE) P="run-server run-workers" make-p
 

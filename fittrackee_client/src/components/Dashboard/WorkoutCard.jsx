@@ -29,7 +29,7 @@ export default function WorkoutCard(props) {
               <StaticMap workout={workout} />
             </div>
           )}
-          <div className="col">
+          <div className={`col${workout.map ? ' col-with-map' : ''}`}>
             <p>
               <i className="fa fa-clock-o" aria-hidden="true" />{' '}
               {t('workouts:Duration')}: {workout.moving}
@@ -43,7 +43,25 @@ export default function WorkoutCard(props) {
               )}
               <i className="fa fa-road" aria-hidden="true" />{' '}
               {t('workouts:Distance')}: {workout.distance} km
+              <br />
             </p>
+            {workout.min_alt && workout.max_alt && (
+              <p>
+                <i className="fi-mountains custom-fa" />
+                {t('workouts:Min. altitude')}: {workout.min_alt}m
+                <br />
+                {t('workouts:Max. altitude')}: {workout.max_alt}m
+                <br />
+              </p>
+            )}
+            {workout.ascent && workout.descent && (
+              <p>
+                <i className="fa fa-location-arrow custom-fa" />
+                {t('workouts:Ascent')}: {workout.ascent}m
+                <br />
+                {t('workouts:Descent')}: {workout.descent}m
+              </p>
+            )}
           </div>
         </div>
       </div>
