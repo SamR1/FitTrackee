@@ -343,17 +343,13 @@
         if (props.workout) {
           if (props.workout.with_gpx) {
             payload.title = workoutForm.title
-            store.dispatch(WORKOUTS_STORE.ACTIONS.EDIT_WORKOUT, {
-              workoutId: props.workout.id,
-              data: payload,
-            })
           } else {
             formatPayload(payload)
-            store.dispatch(
-              WORKOUTS_STORE.ACTIONS.ADD_WORKOUT_WITHOUT_GPX,
-              payload
-            )
           }
+          store.dispatch(WORKOUTS_STORE.ACTIONS.EDIT_WORKOUT, {
+            workoutId: props.workout.id,
+            data: payload,
+          })
         } else {
           if (withGpx.value) {
             if (!gpxFile) {
