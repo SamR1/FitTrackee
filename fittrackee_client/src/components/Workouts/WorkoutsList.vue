@@ -34,6 +34,8 @@
               <th>{{ capitalize($t('workouts.DURATION')) }}</th>
               <th>{{ capitalize($t('workouts.AVE_SPEED')) }}</th>
               <th>{{ capitalize($t('workouts.MAX_SPEED')) }}</th>
+              <th>{{ capitalize($t('workouts.ASCENT')) }}</th>
+              <th>{{ capitalize($t('workouts.DESCENT')) }}</th>
             </tr>
           </thead>
           <tbody>
@@ -111,6 +113,18 @@
                   {{ $t('workouts.MAX_SPEED') }}
                 </span>
                 {{ workout.max_speed }} km/h
+              </td>
+              <td class="text-right">
+                <span class="cell-heading">
+                  {{ $t('workouts.ASCENT') }}
+                </span>
+                <span v-if="workout.with_gpx">{{ workout.ascent }} m</span>
+              </td>
+              <td class="text-right">
+                <span class="cell-heading">
+                  {{ $t('workouts.DESCENT') }}
+                </span>
+                <span v-if="workout.with_gpx">{{ workout.descent }} m</span>
               </td>
             </tr>
           </tbody>
