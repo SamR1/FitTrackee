@@ -24,6 +24,7 @@
     "successfully registered": "Successfully registered.",
     "user does not exist": "User does not exist.",
     "username: 3 to 12 characters required": "Username: 3 to 12 characters required.",
+    "you can not delete your account, no other user has admin rights": "You can not delete your account, no other user has admin rights.",
     "you do not have permissions": "You do not have permissions."
   },
   "PAGINATION": {

@@ -1038,7 +1038,7 @@ class TestDeleteUser(ApiTestCaseMixin):
         assert response.status_code == 403
         assert 'error' in data['status']
         assert (
-            'You can not delete your account, no other user has admin rights.'
+            'you can not delete your account, no other user has admin rights'
             in data['message']
         )
 

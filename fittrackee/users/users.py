@@ -532,7 +532,7 @@ def delete_user(
         - invalid token, please log in again
     :statuscode 403:
         - you do not have permissions
-        - You can not delete your account, no other user has admin rights.
+        - you can not delete your account, no other user has admin rights
     :statuscode 404:
         - user does not exist
     :statuscode 500: error, please try again or contact the administrator
@@ -551,8 +551,8 @@ def delete_user(
             and User.query.filter_by(admin=True).count() == 1
         ):
             return ForbiddenErrorResponse(
-                'You can not delete your account, '
-                'no other user has admin rights.'
+                'you can not delete your account, '
+                'no other user has admin rights'
             )
 
         for workout in Workout.query.filter_by(user_id=user.id).all():
