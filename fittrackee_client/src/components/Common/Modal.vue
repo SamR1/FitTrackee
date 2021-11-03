@@ -14,11 +14,15 @@
           <div class="modal-message" v-else>{{ message }}</div>
           <ErrorMessage :message="errorMessages" v-if="errorMessages" />
           <div class="modal-buttons">
-            <button class="confirm" @click="emit('confirmAction')">
+            <button
+              class="confirm"
+              v-if="!errorMessages"
+              @click="emit('confirmAction')"
+            >
               {{ $t('buttons.YES') }}
             </button>
             <button class="cancel" @click="emit('cancelAction')">
-              {{ $t('buttons.NO') }}
+              {{ $t(`buttons.${errorMessages ? 'CANCEL' : 'NO'}`) }}
             </button>
           </div>
         </template>
