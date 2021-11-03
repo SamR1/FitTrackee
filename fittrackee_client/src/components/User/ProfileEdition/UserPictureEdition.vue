@@ -10,6 +10,12 @@
           accept=".png,.jpg,.gif"
           @input="updatePictureFile"
         />
+        <div class="picture-help">
+          <span class="info-box">
+            <i class="fa fa-info-circle" aria-hidden="true" />
+            {{ $t('workouts.MAX_SIZE') }}: {{ fileSizeLimit }}
+          </span>
+        </div>
         <div class="picture-buttons">
           <button type="submit" :disabled="!pictureFile">
             {{ $t('user.PROFILE.PICTURE_UPDATE') }}
@@ -21,7 +27,6 @@
             {{ $t('user.PROFILE.BACK_TO_PROFILE') }}
           </button>
         </div>
-        <span>{{ $t('workouts.MAX_SIZE') }}: {{ fileSizeLimit }}</span>
       </form>
     </div>
   </div>
@@ -120,12 +125,27 @@
           font-size: 0.9em;
           padding-left: $default-padding * 0.5;
         }
+
+        .picture-help {
+          display: flex;
+          span {
+            font-style: italic;
+            padding: $default-padding;
+          }
+          .fa-info-circle {
+            margin-right: $default-margin;
+          }
+        }
       }
       .picture-buttons {
         display: flex;
         flex-direction: row;
         align-items: center;
         gap: $default-padding;
+      }
+
+      .picture-buttons,
+      .picture-help {
         @media screen and (max-width: $x-small-limit) {
           flex-direction: column;
           align-items: stretch;
