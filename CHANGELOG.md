@@ -1,5 +1,12 @@
 # Change log
 
+## Version 0.5.0 (unreleased)
+
+#### New Features
+
+* [#18](https://github.com/SamR1/FitTrackee/issues/18) - Better UI
+
+
 ## Version 0.4.9 (2021/07/16)
 
 #### New Features

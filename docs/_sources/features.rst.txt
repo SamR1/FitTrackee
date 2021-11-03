@@ -94,3 +94,6 @@ Administration
 ~~~~~~~~~~~~~~
 .. figure:: _images/fittrackee_screenshot-05.png
    :alt: FitTrackee Administration
+
+.. figure:: _images/fittrackee_screenshot-06.png
+   :alt: FitTrackee Sports Administration

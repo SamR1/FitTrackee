@@ -3,10 +3,11 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/fittrackee.svg)](https://pypi.org/project/fittrackee/) 
 [![Python Version](https://img.shields.io/badge/python-3.7+-brightgreen.svg)](https://python.org)
-[![Flask Version](https://img.shields.io/badge/flask-1.1-brightgreen.svg)](http://flask.pocoo.org/) 
+[![Flask Version](https://img.shields.io/badge/flask-2.0-brightgreen.svg)](http://flask.pocoo.org/) 
 [![code style: black](https://img.shields.io/badge/code%20style-black-black)](https://github.com/psf/black) 
 [![type check: mypy](https://img.shields.io/badge/type%20check-mypy-blue)](http://mypy-lang.org/)  
-[![React Version](https://img.shields.io/badge/react-17.0-brightgreen.svg)](https://reactjs.org/) 
+[![Typescript Version](https://img.shields.io/npm/types/typescript)](https://www.typescriptlang.org/) 
+[![Vue Version](https://img.shields.io/badge/vue-3.1-brightgreen.svg)](https://v3.vuejs.org/) 
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)  
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/290a285f22e94132904dc13b4dd19d1d)](https://www.codacy.com/app/SamR1/FitTrackee)
 [![pipeline status](https://gitlab.com/SamR1/FitTrackee/badges/master/pipeline.svg)](https://gitlab.com/SamR1/FitTrackee/-/commits/master)

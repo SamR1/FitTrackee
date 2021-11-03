@@ -3,8 +3,9 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Authentication &#8212; FitTrackee 0.4.9
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Authentication &#8212; FitTrackee 0.5.0
  documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
@@ -39,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4.9
+        <span class="navbar-text navbar-version pull-left"><b>0.5.0
 </b></span>
       </div>
 
@@ -144,7 +145,7 @@
 
 <span class="p">{</span>
   <span class="nt">&quot;auth_token&quot;</span><span class="p">:</span> <span class="s2">&quot;JSON Web Token&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Successfully registered.&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;successfully registered&quot;</span><span class="p">,</span>
   <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span>
 <span class="p">}</span>
 </pre></div>
@@ -156,7 +157,7 @@
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
 <span class="p">{</span>
-  <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Errors: Valid email must be provided.\n&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Errors: email: valid email must be provided\n&quot;</span><span class="p">,</span>
   <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;error&quot;</span>
 <span class="p">}</span>
 </pre></div>
@@ -172,24 +173,24 @@
 </dd>
 <dt class="field-even">Status Codes</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.2">201 Created</a> – Successfully registered.</p></li>
+<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.2">201 Created</a> – successfully registered</p></li>
 <li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a> – <ul>
-<li><p>Invalid payload.</p></li>
-<li><p>Sorry. That user already exists.</p></li>
+<li><p>invalid payload</p></li>
+<li><p>sorry, that user already exists</p></li>
 <li><dl class="simple">
 <dt>Errors:</dt><dd><ul>
-<li><p>3 to 12 characters required for usernanme.</p></li>
-<li><p>Valid email must be provided.</p></li>
-<li><p>Password and password confirmation don’t match.</p></li>
-<li><p>8 characters required for password.</p></li>
+<li><p>username: 3 to 12 characters required</p></li>
+<li><p>email: valid email must be provided</p></li>
+<li><p>password: password and password confirmation don’t match</p></li>
+<li><p>password: 8 characters required</p></li>
 </ul>
 </dd>
 </dl>
 </li>
 </ul>
 </p></li>
-<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a> – Error. Registration is disabled.</p></li>
-<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – Error. Please try again or contact the administrator.</p></li>
+<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a> – error, registration is disabled</p></li>
+<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – error, please try again or contact the administrator</p></li>
 </ul>
 </dd>
 </dl>
@@ -213,7 +214,7 @@
 
 <span class="p">{</span>
   <span class="nt">&quot;auth_token&quot;</span><span class="p">:</span> <span class="s2">&quot;JSON Web Token&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Successfully logged in.&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;successfully logged in&quot;</span><span class="p">,</span>
   <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span>
 <span class="p">}</span>
 </pre></div>
@@ -225,7 +226,7 @@
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
 <span class="p">{</span>
-  <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Invalid credentials.&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;invalid credentials&quot;</span><span class="p">,</span>
   <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;error&quot;</span>
 <span class="p">}</span>
 </pre></div>
@@ -239,10 +240,10 @@
 </dd>
 <dt class="field-even">Status Codes</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – Successfully logged in.</p></li>
-<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a> – Invalid payload.</p></li>
-<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – Invalid credentials.</p></li>
-<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – Error. Please try again or contact the administrator.</p></li>
+<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – successfully logged in</p></li>
+<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a> – invalid payload</p></li>
+<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – invalid credentials</p></li>
+<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – error, please try again or contact the administrator</p></li>
 </ul>
 </dd>
 </dl>
@@ -265,7 +266,7 @@
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
 <span class="p">{</span>
-  <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Successfully logged out.&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;successfully logged out&quot;</span><span class="p">,</span>
   <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span>
 <span class="p">}</span>
 </pre></div>
@@ -277,7 +278,7 @@
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
 <span class="p">{</span>
-  <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Provide a valid auth token.&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;provide a valid auth token&quot;</span><span class="p">,</span>
   <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;error&quot;</span>
 <span class="p">}</span>
 </pre></div>
@@ -290,8 +291,8 @@
 </dd>
 <dt class="field-even">Status Codes</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – Successfully logged out.</p></li>
-<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – Provide a valid auth token.</p></li>
+<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – successfully logged out</p></li>
+<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – provide a valid auth token</p></li>
 </ul>
 </dd>
 </dl>
@@ -324,6 +325,44 @@
     <span class="nt">&quot;nb_sports&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
     <span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
     <span class="nt">&quot;picture&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nt">&quot;records&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+        <span class="nt">&quot;record_type&quot;</span><span class="p">:</span> <span class="s2">&quot;AS&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;sport_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;sam&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+        <span class="nt">&quot;workout_date&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 07 Jul 2019 08:00:00 GMT&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;workout_id&quot;</span><span class="p">:</span> <span class="s2">&quot;hvYBqYBRa7wwXpaStWR4V2&quot;</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="nt">&quot;record_type&quot;</span><span class="p">:</span> <span class="s2">&quot;FD&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;sport_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;sam&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+        <span class="nt">&quot;workout_date&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 07 Jul 2019 08:00:00 GMT&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;workout_id&quot;</span><span class="p">:</span> <span class="s2">&quot;hvYBqYBRa7wwXpaStWR4V2&quot;</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+        <span class="nt">&quot;record_type&quot;</span><span class="p">:</span> <span class="s2">&quot;LD&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;sport_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;sam&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1:01:00&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;workout_date&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 07 Jul 2019 08:00:00 GMT&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;workout_id&quot;</span><span class="p">:</span> <span class="s2">&quot;hvYBqYBRa7wwXpaStWR4V2&quot;</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+        <span class="nt">&quot;record_type&quot;</span><span class="p">:</span> <span class="s2">&quot;MS&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;sport_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;sam&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+        <span class="nt">&quot;workout_date&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 07 Jul 2019 08:00:00 GMT&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;workout_id&quot;</span><span class="p">:</span> <span class="s2">&quot;hvYBqYBRa7wwXpaStWR4V2&quot;</span>
+      <span class="p">}</span>
+    <span class="p">],</span>
     <span class="nt">&quot;sports_list&quot;</span><span class="p">:</span> <span class="p">[</span>
         <span class="mi">1</span><span class="p">,</span>
         <span class="mi">4</span><span class="p">,</span>
@@ -349,9 +388,9 @@
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – success.</p></li>
 <li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
-<li><p>Provide a valid auth token.</p></li>
-<li><p>Signature expired. Please log in again.</p></li>
-<li><p>Invalid token. Please log in again.</p></li>
+<li><p>provide a valid auth token</p></li>
+<li><p>signature expired, please log in again</p></li>
+<li><p>invalid token, please log in again</p></li>
 </ul>
 </p></li>
 </ul>
@@ -386,6 +425,44 @@
     <span class="nt">&quot;nb_sports&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
     <span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
     <span class="nt">&quot;picture&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nt">&quot;records&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+        <span class="nt">&quot;record_type&quot;</span><span class="p">:</span> <span class="s2">&quot;AS&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;sport_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;sam&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+        <span class="nt">&quot;workout_date&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 07 Jul 2019 08:00:00 GMT&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;workout_id&quot;</span><span class="p">:</span> <span class="s2">&quot;hvYBqYBRa7wwXpaStWR4V2&quot;</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="nt">&quot;record_type&quot;</span><span class="p">:</span> <span class="s2">&quot;FD&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;sport_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;sam&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+        <span class="nt">&quot;workout_date&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 07 Jul 2019 08:00:00 GMT&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;workout_id&quot;</span><span class="p">:</span> <span class="s2">&quot;hvYBqYBRa7wwXpaStWR4V2&quot;</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+        <span class="nt">&quot;record_type&quot;</span><span class="p">:</span> <span class="s2">&quot;LD&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;sport_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;sam&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1:01:00&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;workout_date&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 07 Jul 2019 08:00:00 GMT&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;workout_id&quot;</span><span class="p">:</span> <span class="s2">&quot;hvYBqYBRa7wwXpaStWR4V2&quot;</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+        <span class="nt">&quot;record_type&quot;</span><span class="p">:</span> <span class="s2">&quot;MS&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;sport_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;sam&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+        <span class="nt">&quot;workout_date&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 07 Jul 2019 08:00:00 GMT&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;workout_id&quot;</span><span class="p">:</span> <span class="s2">&quot;hvYBqYBRa7wwXpaStWR4V2&quot;</span>
+      <span class="p">}</span>
+    <span class="p">],</span>
     <span class="nt">&quot;sports_list&quot;</span><span class="p">:</span> <span class="p">[</span>
         <span class="mi">1</span><span class="p">,</span>
         <span class="mi">4</span><span class="p">,</span>
@@ -397,7 +474,7 @@
     <span class="nt">&quot;username&quot;</span><span class="p">:</span> <span class="nt">&quot;sam&quot;</span>
     <span class="nt">&quot;weekm&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
   <span class="p">},</span>
-  <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;User profile updated.&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;user profile updated&quot;</span><span class="p">,</span>
   <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span>
 <span class="p">}</span>
 </pre></div>
@@ -412,9 +489,6 @@
 <li><p><strong>birth_date</strong> (<em>string</em>) – user birth date (format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span></code>)</p></li>
 <li><p><strong>password</strong> (<em>string</em>) – user password</p></li>
 <li><p><strong>password_conf</strong> (<em>string</em>) – user password confirmation</p></li>
-<li><p><strong>timezone</strong> (<em>string</em>) – user time zone</p></li>
-<li><p><strong>weekm</strong> (<em>string</em>) – does week start on Monday?</p></li>
-<li><p><strong>language</strong> (<em>string</em>) – language preferences</p></li>
 </ul>
 </dd>
 <dt class="field-even">Request Headers</dt>
@@ -424,19 +498,19 @@
 </dd>
 <dt class="field-odd">Status Codes</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – User profile updated.</p></li>
+<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – user profile updated</p></li>
 <li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a> – <ul>
-<li><p>Invalid payload.</p></li>
-<li><p>Password and password confirmation don’t match.</p></li>
+<li><p>invalid payload</p></li>
+<li><p>password: password and password confirmation don’t match</p></li>
 </ul>
 </p></li>
 <li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
-<li><p>Provide a valid auth token.</p></li>
-<li><p>Signature expired. Please log in again.</p></li>
-<li><p>Invalid token. Please log in again.</p></li>
+<li><p>provide a valid auth token</p></li>
+<li><p>signature expired, please log in again</p></li>
+<li><p>invalid token, please log in again</p></li>
 </ul>
 </p></li>
-<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – Error. Please try again or contact the administrator.</p></li>
+<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – error, please try again or contact the administrator</p></li>
 </ul>
 </dd>
 </dl>
@@ -456,7 +530,7 @@
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
 <span class="p">{</span>
-  <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;User picture updated.&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;user picture updated&quot;</span><span class="p">,</span>
   <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span>
 <span class="p">}</span>
 </pre></div>
@@ -474,22 +548,22 @@
 </dd>
 <dt class="field-odd">Status Codes</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – User picture updated.</p></li>
+<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – user picture updated</p></li>
 <li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a> – <ul>
-<li><p>Invalid payload.</p></li>
-<li><p>No file part.</p></li>
-<li><p>No selected file.</p></li>
-<li><p>File extension not allowed.</p></li>
+<li><p>invalid payload</p></li>
+<li><p>no file part</p></li>
+<li><p>no selected file</p></li>
+<li><p>file extension not allowed</p></li>
 </ul>
 </p></li>
 <li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
-<li><p>Provide a valid auth token.</p></li>
-<li><p>Signature expired. Please log in again.</p></li>
-<li><p>Invalid token. Please log in again.</p></li>
+<li><p>provide a valid auth token</p></li>
+<li><p>signature expired, please log in again</p></li>
+<li><p>invalid token, please log in again</p></li>
 </ul>
 </p></li>
-<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.14">413 Request Entity Too Large</a> – Error during picture update: file size exceeds 1.0MB.</p></li>
-<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – Error during picture update.</p></li>
+<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.14">413 Request Entity Too Large</a> – error during picture update: file size exceeds 1.0MB</p></li>
+<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – error during picture update</p></li>
 </ul>
 </dd>
 </dl>
@@ -519,12 +593,12 @@
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.5">204 No Content</a> – picture deleted</p></li>
 <li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
-<li><p>Provide a valid auth token.</p></li>
-<li><p>Signature expired. Please log in again.</p></li>
-<li><p>Invalid token. Please log in again.</p></li>
+<li><p>provide a valid auth token</p></li>
+<li><p>signature expired, please log in again</p></li>
+<li><p>invalid token, please log in again</p></li>
 </ul>
 </p></li>
-<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – Error during picture deletion.</p></li>
+<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – error during picture deletion</p></li>
 </ul>
 </dd>
 </dl>
@@ -544,7 +618,7 @@
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
 <span class="p">{</span>
-  <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Password reset request processed.&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;password reset request processed&quot;</span><span class="p">,</span>
   <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span>
 <span class="p">}</span>
 </pre></div>
@@ -557,8 +631,8 @@
 </dd>
 <dt class="field-even">Status Codes</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – Password reset request processed.</p></li>
-<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a> – Invalid payload.</p></li>
+<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – password reset request processed</p></li>
+<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a> – invalid payload</p></li>
 </ul>
 </dd>
 </dl>
@@ -578,7 +652,7 @@
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
 <span class="p">{</span>
-  <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Password updated.&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;password updated&quot;</span><span class="p">,</span>
   <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span>
 <span class="p">}</span>
 </pre></div>
@@ -593,10 +667,10 @@
 </dd>
 <dt class="field-even">Status Codes</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – Password updated.</p></li>
-<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a> – Invalid payload.</p></li>
-<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – Invalid token.</p></li>
-<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – Error. Please try again or contact the administrator.</p></li>
+<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – password updated</p></li>
+<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a> – invalid payload</p></li>
+<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – invalid token, please request a new token</p></li>
+<li><p><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – error, please try again or contact the administrator</p></li>
 </ul>
 </dd>
 </dl>

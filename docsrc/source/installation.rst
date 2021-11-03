@@ -1,7 +1,7 @@
 Installation
 ############
 
-This application is written in Python (API) and Javascript (client):
+This application is written in Python (API) and Typescript (client):
 
 - API:
     - Flask
@@ -10,9 +10,9 @@ This application is written in Python (API) and Javascript (client):
     - `python-forecast.io <https://github.com/ZeevG/python-forecast.io>`_ to fetch weather data from `Dark Sky <https://darksky.net>`__ (former forecast.io)
     - `dramatiq <https://flask-dramatiq.readthedocs.io/en/latest/>`_ for task queue
 - Client:
-    - React/Redux
+    - Vue3/Vuex
     - `Leaflet <https://leafletjs.com/>`__ to display map
-    - `Recharts <https://github.com/recharts/recharts>`__ to display charts with elevation and speed
+    - `Chart.js <https://www.chartjs.org/>`__ to display charts with elevation and speed
 
 Sports and weather icons are made by `Freepik <https://www.freepik.com/>`__ from `www.flaticon.com <https://www.flaticon.com/>`__.
 
