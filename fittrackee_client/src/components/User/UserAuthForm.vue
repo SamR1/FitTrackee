@@ -156,6 +156,7 @@
             store.dispatch(USER_STORE.ACTIONS.LOGIN_OR_REGISTER, {
               actionType,
               formData,
+              redirectUrl: route.query.from,
             })
         }
       }

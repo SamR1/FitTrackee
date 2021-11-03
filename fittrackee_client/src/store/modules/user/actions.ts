@@ -97,7 +97,11 @@ export const actions: ActionTree<IUserState, IRootState> & IUserActions = {
           context.commit(USER_STORE.MUTATIONS.UPDATE_AUTH_TOKEN, token)
           context
             .dispatch(USER_STORE.ACTIONS.GET_USER_PROFILE)
-            .then(() => router.push('/'))
+            .then(() =>
+              router.push(
+                typeof data.redirectUrl === 'string' ? data.redirectUrl : '/'
+              )
+            )
         } else {
           handleError(context, null)
         }

@@ -1,3 +1,5 @@
+import { LocationQueryValue } from 'vue-router'
+
 import { IRecord } from '@/types/workouts'
 
 export interface IUserProfile {
@@ -71,4 +73,5 @@ export interface ILoginRegisterFormData {
 export interface ILoginOrRegisterData {
   actionType: string
   formData: ILoginRegisterFormData
+  redirectUrl?: string | null | LocationQueryValue[]
 }
