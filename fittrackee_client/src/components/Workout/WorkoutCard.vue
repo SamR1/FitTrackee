@@ -64,20 +64,33 @@
       </div>
       <div
         class="workout-data"
+        :class="{ 'without-gpx': workout && !workout.with_gpx }"
         @click="
           $router.push({ name: 'Workout', params: { workoutId: workout.id } })
         "
       >
-        <div>
+        <div class="img">
           <SportImage v-if="sport" :sport-label="sport.label" />
         </div>
-        <div>
+        <div class="data">
           <i class="fa fa-clock-o" aria-hidden="true" />
           <span v-if="workout">{{ workout.moving }}</span>
         </div>
-        <div>
+        <div class="data">
           <i class="fa fa-road" aria-hidden="true" />
           <span v-if="workout">{{ workout.distance }} km</span>
+        </div>
+        <div class="data elevation" v-if="workout && workout.with_gpx">
+          <img
+            class="mountains"
+            src="/img/workouts/mountains.svg"
+            :alt="$t('workouts.ELEVATION')"
+          />
+          <span> {{ workout.min_alt }}/{{ workout.max_alt }} m </span>
+        </div>
+        <div class="data altitude" v-if="workout && workout.with_gpx">
+          <i class="fa fa-location-arrow" aria-hidden="true" />
+          <span> {{ workout.ascent }}/{{ workout.descent }} m </span>
         </div>
       </div>
     </div>
@@ -134,6 +147,10 @@
 
 <style lang="scss" scoped>
   @import '~@/scss/base';
+
+  .mountains {
+    padding-right: $default-padding * 0.5;
+  }
 
   .timeline-workout {
     margin-bottom: $default-margin * 2;
@@ -192,11 +209,40 @@
           height: 25px;
           width: 25px;
         }
-        div {
+        .img,
+        .data {
           display: flex;
-          justify-content: center;
           align-items: center;
-          width: 33%;
+        }
+        .img {
+          justify-content: flex-end;
+          width: 10%;
+        }
+        .data {
+          justify-content: center;
+          width: 22%;
+        }
+        @media screen and (max-width: $x-small-limit) {
+          .img {
+            justify-content: center;
+            width: 20%;
+          }
+          .data {
+            justify-content: center;
+            width: 40%;
+          }
+          .altitude,
+          .elevation {
+            display: none;
+          }
+        }
+
+        &.without-gpx {
+          .img,
+          .data {
+            justify-content: center;
+            width: 33%;
+          }
         }
       }
 

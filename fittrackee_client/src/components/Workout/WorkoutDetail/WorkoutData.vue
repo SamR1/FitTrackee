@@ -90,11 +90,7 @@
     flex-direction: column;
     padding: $default-padding $default-padding * 2;
     width: 100%;
-    .mountains {
-      margin-bottom: -3px;
-      height: 16px;
-      filter: var(--workout-img-color);
-    }
+
     .workout-data {
       text-transform: capitalize;
       padding: $default-padding * 0.5 0;

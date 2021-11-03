@@ -147,6 +147,12 @@ button {
   color: var(--workout-trophy-color)
 }
 
+.mountains {
+  margin-bottom: -3px;
+  height: 16px;
+  filter: var(--workout-img-color);
+}
+
 .section-title {
   font-weight: bold;
   padding-top: $default-padding * 1.5;
