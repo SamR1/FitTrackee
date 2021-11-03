@@ -164,6 +164,13 @@
           font-size: 0.85em;
           font-style: italic;
         }
+        .workout-title {
+          display: block;
+          padding: 0 $default-padding;
+          @media screen and (max-width: $x-small-limit) {
+            display: none;
+          }
+        }
       }
 
       .workout-map {
