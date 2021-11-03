@@ -1,15 +1,11 @@
 <template>
   <div class="static-map" :class="{ 'display-hover': displayHover }">
-    <img
-      v-if="displayHover"
-      :src="`${getApiUrl()}workouts/map/${workout.map}`"
-      alt=""
-    />
+    <img v-if="displayHover" :src="imageUrl" alt="" />
     <div
       v-else
       class="bg-map-image"
       :style="{
-        backgroundImage: `url(${getApiUrl()}workouts/map/${workout.map})`,
+        backgroundImage: `url(${imageUrl})`,
       }"
     />
     <div class="map-attribution">
@@ -44,8 +40,9 @@
         default: false,
       },
     },
-    setup() {
-      return { getApiUrl }
+    setup(props) {
+      const imageUrl = `${getApiUrl()}workouts/map/${props.workout.map}`
+      return { imageUrl }
     },
   })
 </script>

@@ -5,7 +5,7 @@
         <span class="total-label">
           {{ $t('common.TOTAL').toLowerCase() }}:
         </span>
-        <span v-if="pagination.total">
+        <span v-if="pagination.total !== null">
           {{ pagination.total }}
           {{ $t('workouts.WORKOUT', pagination.total) }}
         </span>
@@ -17,7 +17,7 @@
         message="workouts"
         @updateSelect="reloadWorkouts"
       />
-      <div class="workouts-table responsive-table">
+      <div class="workouts-table responsive-table" v-if="workouts.length > 0">
         <Pagination
           class="top-pagination"
           :pagination="pagination"
@@ -50,9 +50,13 @@
                   :sport-label="
                     sports.filter((s) => s.id === workout.sport_id)[0].label
                   "
-                ></SportImage>
+                />
               </td>
-              <td class="workout-title">
+              <td
+                class="workout-title"
+                @mouseover="onHover(workout.id)"
+                @mouseleave="onHover(null)"
+              >
                 <span class="cell-heading">
                   {{ capitalize($t('workouts.WORKOUT', 1)) }}
                 </span>
@@ -68,7 +72,7 @@
                   {{ workout.title }}
                 </router-link>
                 <StaticMap
-                  v-if="workout.with_gpx"
+                  v-if="workout.with_gpx && hoverWorkoutId === workout.id"
                   :workout="workout"
                   :display-hover="true"
                 />
@@ -124,8 +128,10 @@
   import {
     ComputedRef,
     PropType,
+    Ref,
     computed,
     defineComponent,
+    ref,
     watch,
     capitalize,
     onBeforeMount,
@@ -181,6 +187,7 @@
         () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUTS_PAGINATION]
       )
       let query: TWorkoutsPayload = getWorkoutsQuery(route.query)
+      const hoverWorkoutId: Ref<string | null> = ref(null)
 
       onBeforeMount(() => {
         loadWorkouts(query)
@@ -216,6 +223,10 @@
         return query
       }
 
+      function onHover(workoutId: string | null) {
+        hoverWorkoutId.value = workoutId
+      }
+
       watch(
         () => route.query,
         async (newQuery) => {
@@ -226,6 +237,7 @@
 
       return {
         query,
+        hoverWorkoutId,
         orderByList,
         pagination,
         sortList,
@@ -233,6 +245,7 @@
         capitalize,
         format,
         getDateWithTZ,
+        onHover,
         reloadWorkouts,
       }
     },
@@ -308,6 +321,9 @@
           }
           .workout-title {
             max-width: initial;
+          }
+          .workout-title:hover .static-map {
+            display: none;
           }
         }
       }
