@@ -66,8 +66,18 @@
           </button>
         </form>
         <div v-if="action === 'login'">
-          <router-link class="password-forgotten" to="/password-reset/request">
+          <router-link class="links" to="/register">
+            {{ $t('user.REGISTER') }}
+          </router-link>
+          -
+          <router-link class="links" to="/password-reset/request">
             {{ $t('user.PASSWORD_FORGOTTEN') }}
+          </router-link>
+        </div>
+        <div v-else>
+          <span class="account">{{ $t('user.ALREADY_HAVE_ACCOUNT') }}</span>
+          <router-link class="links" to="/login">
+            {{ $t('user.LOGIN') }}
           </router-link>
         </div>
         <ErrorMessage :message="errorMessages" v-if="errorMessages" />
@@ -198,10 +208,14 @@
     #user-form {
       width: 60%;
 
-      .password-forgotten {
+      .account {
+        font-size: 0.9em;
+        padding-left: $default-padding;
+      }
+      .links {
         font-size: 0.9em;
         font-style: italic;
-        padding-left: $default-padding;
+        padding: 0 $default-padding;
       }
 
       button {
