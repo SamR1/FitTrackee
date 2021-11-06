@@ -37,7 +37,7 @@ services:
     container_name: fittrackee_client
     environment:
       - NODE_ENV=development
-      - REACT_APP_API_URL=http://localhost:5000
+      - VUE_APP_API_URL=http://localhost:5000
     build:
       context: ./fittrackee_client
     volumes:

@@ -80,7 +80,6 @@
 <li><a class="reference internal" href="#">Installation</a><ul>
 <li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li><a class="reference internal" href="#environment-variables">Environment variables</a><ul>
-<li><a class="reference internal" href="#deprecated-variables">Deprecated variables</a></li>
 <li><a class="reference internal" href="#emails">Emails</a></li>
 <li><a class="reference internal" href="#map-tile-server">Map tile server</a></li>
 </ul>
@@ -106,7 +105,7 @@
 <li><a class="reference internal" href="#deployment">Deployment</a></li>
 <li><a class="reference internal" href="#docker">Docker</a><ul>
 <li><a class="reference internal" href="#id5">Installation</a></li>
-<li><a class="reference internal" href="#client-development">Client Development</a></li>
+<li><a class="reference internal" href="#development">Development</a></li>
 </ul>
 </li>
 </ul>
@@ -439,86 +438,11 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 </dd></dl>
 
 <dl class="std envvar">
-<dt class="sig sig-object std" id="envvar-REACT_APP_API_URL">
-<span class="sig-name descname"><span class="pre">REACT_APP_API_URL</span></span><a class="headerlink" href="#envvar-REACT_APP_API_URL" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object std" id="envvar-VUE_APP_API_URL">
+<span class="sig-name descname"><span class="pre">VUE_APP_API_URL</span></span><a class="headerlink" href="#envvar-VUE_APP_API_URL" title="Permalink to this definition">¶</a></dt>
 <dd><p><strong>FitTrackee</strong> API URL, only needed in dev environment.</p>
 </dd></dl>
 
-<section id="deprecated-variables">
-<h3>Deprecated variables<a class="headerlink" href="#deprecated-variables" title="Permalink to this headline">¶</a></h3>
-<dl class="std envvar">
-<dt class="sig sig-object std" id="envvar-REACT_APP_GPX_LIMIT_IMPORT">
-<span class="sig-name descname"><span class="pre">REACT_APP_GPX_LIMIT_IMPORT</span></span><a class="headerlink" href="#envvar-REACT_APP_GPX_LIMIT_IMPORT" title="Permalink to this definition">¶</a></dt>
-<dd><div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.3.0: </span>now stored in database</p>
-</div>
-<p>Maximum number of gpx file in zip archive.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>10</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std envvar">
-<dt class="sig sig-object std" id="envvar-REACT_APP_MAX_SINGLE_FILE_SIZE">
-<span class="sig-name descname"><span class="pre">REACT_APP_MAX_SINGLE_FILE_SIZE</span></span><a class="headerlink" href="#envvar-REACT_APP_MAX_SINGLE_FILE_SIZE" title="Permalink to this definition">¶</a></dt>
-<dd><div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.3.0: </span>now stored in database</p>
-</div>
-<p>Maximum size of a gpx or picture file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>1MB</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std envvar">
-<dt class="sig sig-object std" id="envvar-REACT_APP_MAX_ZIP_FILE_SIZE">
-<span class="sig-name descname"><span class="pre">REACT_APP_MAX_ZIP_FILE_SIZE</span></span><a class="headerlink" href="#envvar-REACT_APP_MAX_ZIP_FILE_SIZE" title="Permalink to this definition">¶</a></dt>
-<dd><div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.3.0: </span>now stored in database</p>
-</div>
-<p>Maximum size of a zip archive.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>10MB</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std envvar">
-<dt class="sig sig-object std" id="envvar-REACT_APP_ALLOW_REGISTRATION">
-<span class="sig-name descname"><span class="pre">REACT_APP_ALLOW_REGISTRATION</span></span><a class="headerlink" href="#envvar-REACT_APP_ALLOW_REGISTRATION" title="Permalink to this definition">¶</a></dt>
-<dd><div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.3.0: </span>now stored in database</p>
-</div>
-<p>Allows users to register.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>true</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std envvar">
-<dt class="sig sig-object std" id="envvar-REACT_APP_THUNDERFOREST_API_KEY">
-<span class="sig-name descname"><span class="pre">REACT_APP_THUNDERFOREST_API_KEY</span></span><a class="headerlink" href="#envvar-REACT_APP_THUNDERFOREST_API_KEY" title="Permalink to this definition">¶</a></dt>
-<dd><div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.4.0: </span>see <a class="reference external" href="installation.html#envvar-TILE_SERVER_URL">TILE_SERVER_URL</a></p>
-</div>
-<p>ThunderForest API key.</p>
-</dd></dl>
-
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<div class="line-block">
-<div class="line">Since FitTrackee 0.3.0, some applications parameters are now stored in database.</div>
-<div class="line">Related environment variables are needed to initialize database when upgrading from version prior 0.3.0.</div>
-</div>
-</div>
-</section>
 <section id="emails">
 <h3>Emails<a class="headerlink" href="#emails" title="Permalink to this headline">¶</a></h3>
 <div class="versionadded">
@@ -689,7 +613,7 @@ $ <span class="nb">cd</span> FitTrackee
 <ul class="simple">
 <li><p>Create <strong>.env</strong> from example and update it
 (see <a class="reference external" href="installation.html#environment-variables">Environment variables</a>).</p></li>
-<li><p>Install Python virtualenv, React and all related packages and
+<li><p>Install Python virtualenv, Vue and all related packages and
 initialize the database:</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make install-dev
@@ -720,11 +644,11 @@ and the password <code class="docutils literal notranslate"><span class="pre">mp
 </div>
 </div>
 <ul class="simple">
-<li><p>Download the last release (for now, it is the release v0.4.9):</p></li>
+<li><p>Download the last release (for now, it is the release v0.5.0):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.4.9.tar.gz
-$ tar -xzf v0.4.9.tar.gz
-$ mv FitTrackee-0.4.9 FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.5.0.tar.gz
+$ tar -xzf v0.5.0.tar.gz
+$ mv FitTrackee-0.5.0 FitTrackee
 $ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
@@ -798,11 +722,11 @@ $ make upgrade-db
 <ul class="simple">
 <li><p>Stop the application</p></li>
 <li><p>Change to the directory where FitTrackee directory is located</p></li>
-<li><p>Download the last release (for now, it is the release v0.4.9) and overwrite existing files:</p></li>
+<li><p>Download the last release (for now, it is the release v0.5.0) and overwrite existing files:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.4.9.tar.gz
-$ tar -xzf v0.4.9.tar.gz
-$ cp -R FitTrackee-0.4.9/* FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.5.0.tar.gz
+$ tar -xzf v0.5.0.tar.gz
+$ cp -R FitTrackee-0.5.0/* FitTrackee/
 $ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
@@ -976,22 +900,28 @@ $ make docker-build docker-run docker-init
 </pre></div>
 </div>
 </section>
-<section id="client-development">
-<h3>Client Development<a class="headerlink" href="#client-development" title="Permalink to this headline">¶</a></h3>
+<section id="development">
+<h3>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h3>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.4.10.</span></p>
+<p><span class="versionmodified added">New in version 0.5.0.</span></p>
 </div>
 <ul class="simple">
-<li><p>in order to start client with React dev tools, install <cite>fittrackee_client</cite></p></li>
+<li><p>an additional step is to install <cite>fittrackee_client</cite></p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make docker-build-client
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>start React app</p></li>
+<li><p>to start <strong>FitTrackee</strong> with client dev tools:</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make docker-serve-client
 </pre></div>
+</div>
+<p>Open <a class="reference external" href="http://localhost:3000">http://localhost:3000</a> and log in (the email is <code class="docutils literal notranslate"><span class="pre">admin&#64;example.com</span></code>
+and the password <code class="docutils literal notranslate"><span class="pre">mpwoadmin</span></code>) or register</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Some environment variables need to be updated like <cite>UI_URL</cite></p>
 </div>
 </section>
 </section>

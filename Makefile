@@ -54,7 +54,7 @@ docker-run-workers:
 
 docker-serve-client:
 	docker-compose -f docker-compose-dev.yml up -d fittrackee_client
-	docker-compose -f docker-compose-dev.yml exec fittrackee_client react-scripts start
+	docker-compose -f docker-compose-dev.yml exec fittrackee_client yarn serve
 
 docker-shell:
 	docker-compose -f docker-compose-dev.yml exec fittrackee docker/shell.sh
