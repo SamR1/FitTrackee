@@ -13,7 +13,7 @@ authApi.interceptors.request.use(
     const authToken = store.getters[AUTH_USER_STORE.GETTERS.AUTH_TOKEN]
     if (authToken) {
       const auth = `Bearer ${authToken}`
-      if (config.headers.Authorization !== auth) {
+      if (config.headers && config.headers.Authorization !== auth) {
         config.headers.Authorization = `Bearer ${authToken}`
       }
     }

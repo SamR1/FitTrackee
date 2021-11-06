@@ -1,6 +1,6 @@
 {
   "name": "fittrackee_client",
-  "version": "0.1.0",
+  "version": "0.5.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -13,24 +13,24 @@
   "dependencies": {
     "@tmcw/togeojson": "^4.5.0",
     "@vue-leaflet/vue-leaflet": "^0.6.1",
-    "axios": "^0.21.1",
-    "chart.js": "^3.5.1",
+    "axios": "^0.24.0",
+    "chart.js": "^3.6.0",
     "chartjs-plugin-datalabels": "^2.0.0",
-    "core-js": "^3.6.5",
-    "date-fns": "^2.23.0",
+    "core-js": "^3.19.1",
+    "date-fns": "^2.25.0",
     "date-fns-tz": "^1.1.6",
     "leaflet": "^1.7.1",
     "register-service-worker": "^1.7.1",
     "vue": "^3.0.0",
-    "vue-chart-3": "^0.5.8",
+    "vue-chart-3": "^0.5.11",
     "vue-i18n": "^9.1.9",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
-    "@intlify/vue-i18n-loader": "^2.1.0",
+    "@intlify/vue-i18n-loader": "^3.3.0",
     "@types/chai": "^4.2.11",
-    "@types/mocha": "^5.2.4",
+    "@types/mocha": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -41,7 +41,6 @@
     "@vue/cli-plugin-unit-mocha": "~4.5.0",
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
-    "@vue/compiler-sfc": "^3.0.0",
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^7.0.0",
     "@vue/test-utils": "^2.0.0-0",
@@ -54,8 +53,8 @@
     "prettier": "^2.2.1",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
-    "typescript": "~4.1.5",
-    "vue-cli-plugin-i18n": "~2.1.1"
+    "typescript": "~4.4.4",
+    "vue-cli-plugin-i18n": "~2.3.1"
   },
   "eslintConfig": {
     "root": true,
