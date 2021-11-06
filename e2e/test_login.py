@@ -24,11 +24,11 @@ class TestLogin:
         assert button.get_attribute('type') == 'submit'
         assert 'Log in' in button.text
 
-        forgot_password_link = selenium.find_element_by_class_name(
-            'password-forgotten'
-        )
-        assert forgot_password_link.tag_name == 'a'
-        assert 'Forgot password?' in forgot_password_link.text
+        links = selenium.find_elements_by_class_name('links')
+        assert links[0].tag_name == 'a'
+        assert 'Register' in links[0].text
+        assert links[1].tag_name == 'a'
+        assert 'Forgot password?' in links[1].text
 
     def test_user_can_log_in(self, selenium):
         user = {

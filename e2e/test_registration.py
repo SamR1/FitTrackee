@@ -29,6 +29,10 @@ class TestRegistration:
         assert button.get_attribute('type') == 'submit'
         assert 'Register' in button.text
 
+        link = selenium.find_element_by_class_name('links')
+        assert link.tag_name == 'a'
+        assert 'Login' in link.text
+
     def test_user_can_register(self, selenium):
         user = register_valid_user(selenium)
 
