@@ -16,11 +16,11 @@
         </a>
         under
         <a
-          href="https://choosealicense.com/licenses/gpl-3.0/"
+          href="https://choosealicense.com/licenses/agpl-3.0/"
           target="_blank"
           rel="noopener noreferrer"
         >
-          GPLv3 </a
+          AGPLv3 </a
         >license
       </div>
       <div class="footer-item bullet">•</div>
