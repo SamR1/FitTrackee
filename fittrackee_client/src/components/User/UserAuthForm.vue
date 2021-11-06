@@ -74,7 +74,7 @@
             {{ $t('user.PASSWORD_FORGOTTEN') }}
           </router-link>
         </div>
-        <div v-else>
+        <div v-if="action === 'register'">
           <span class="account">{{ $t('user.ALREADY_HAVE_ACCOUNT') }}</span>
           <router-link class="links" to="/login">
             {{ $t('user.LOGIN') }}
