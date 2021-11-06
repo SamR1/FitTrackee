@@ -256,10 +256,10 @@ def get_workouts(auth_user_id: int) -> Union[Dict, HttpResponse]:
                 Workout.distance.desc()
                 if order_by == 'distance' and order == 'desc'
                 else True,
-                Workout.duration.asc()
+                Workout.moving.asc()
                 if order_by == 'duration' and order == 'asc'
                 else True,
-                Workout.duration.desc()
+                Workout.moving.desc()
                 if order_by == 'duration' and order == 'desc'
                 else True,
                 Workout.workout_date.asc()
