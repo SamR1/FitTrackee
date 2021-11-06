@@ -86,11 +86,17 @@
             src="/img/workouts/mountains.svg"
             :alt="$t('workouts.ELEVATION')"
           />
-          <span> {{ workout.min_alt }}/{{ workout.max_alt }} m </span>
+          <div class="data-values">
+            <span>{{ workout.min_alt }}/</span>
+            <span>{{ workout.max_alt }} m </span>
+          </div>
         </div>
         <div class="data altitude" v-if="workout && workout.with_gpx">
           <i class="fa fa-location-arrow" aria-hidden="true" />
-          <span> {{ workout.ascent }}/{{ workout.descent }} m </span>
+          <div class="data-values">
+            <span>+ {{ workout.ascent }}/</span>
+            <span>- {{ workout.descent }} m </span>
+          </div>
         </div>
       </div>
     </div>
@@ -213,6 +219,10 @@
         .data {
           display: flex;
           align-items: center;
+          .data-values {
+            display: flex;
+            flex-wrap: wrap;
+          }
         }
         .img {
           justify-content: flex-end;
