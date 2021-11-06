@@ -2,20 +2,32 @@
 
 ## Version 0.5.0 (unreleased)
 
+### Issues Closed
+
 #### New Features
 
 * [#18](https://github.com/SamR1/FitTrackee/issues/18) - Better UI
 
+#### Bugs Fixed
+
+### Pull Requests
+
+* [#84/#93](https://github.com/SamR1/FitTrackee/pull/93) - Add elevation data and new sports
+
+#### Misc
+
+* [#104](https://github.com/SamR1/FitTrackee/issues/104) - Switch to AGPLv3 license
+
 
 ## Version 0.4.9 (2021/07/16)
+
+### Issues Closed
 
 #### New Features
 
 * [#83](https://github.com/SamR1/Fittrackee/issues/83) - allow using configured tile server to generate static maps  
   **Note**: to keep using the default tile server, set environment variable `DEFAULT_STATICMAP` to `True`
 * [#81](https://github.com/SamR1/Fittrackee/issues/81) - display remaining characters in textarea
-
-### Issues Closed
 
 #### Bugs Fixed
 

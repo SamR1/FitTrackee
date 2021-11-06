@@ -53,12 +53,12 @@ pytest-isort = "^2.0"
 pytest-runner = "^5.3"
 pytest-selenium = "^2.0.1"
 recommonmark = "^0.7"
-sphinx = "<4.0"
 sphinx-bootstrap-theme = "^0.8.0"
 sphinxcontrib-httpdomain = "^1.7"
 types-pytz = "^2021.3.0"
 types-requests = "^2.25.0"
 types-freezegun = "^1.1"
+Sphinx = "^4.2"
 
 [tool.poetry.scripts]
 fittrackee = 'fittrackee.__main__:main'

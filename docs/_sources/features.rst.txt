@@ -39,12 +39,17 @@ Account
 
 Workouts
 ^^^^^^^^
-- 6 sports are supported:
+- 11 sports are supported:
      - Cycling (Sport)
      - Cycling (Transport)
      - Hiking
-     - Montain Biking
+     - Mountain Biking
+     - Mountain Biking (Electric)  (**new in 0.5.0**)
+     - Rowing  (**new in 0.5.0**)
      - Running
+     - Skiing (Alpine) (**new in 0.5.0**)
+     - Skiing (Cross Country)  (**new in 0.5.0**)
+     - Trail  (**new in 0.5.0**)
      - Walking
 - Dashboard with month calendar displaying workouts and record. The week can start on Sunday or Monday (which can be changed in the user settings). The calendar displays up to 100 workouts.
 - Workout creation by uploading a gpx file. A workout can even be created without gpx (the user must enter date, time, duration and distance)
