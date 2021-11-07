@@ -223,7 +223,6 @@
       function getWorkoutsQuery(newQuery: LocationQuery): TWorkoutsPayload {
         query = getQuery(newQuery, orderByList, defaultOrder.order_by, {
           defaultSort: defaultOrder.order,
-          query,
         })
         Object.keys(newQuery)
           .filter((k) => workoutsPayloadKeys.includes(k))

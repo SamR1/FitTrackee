@@ -35,7 +35,7 @@ export const getQuery = (
 ): TPaginationPayload => {
   const queryOptions = options || {}
   const defaultSort = queryOptions.defaultSort || 'asc'
-  const query = queryOptions.query || <TPaginationPayload>{}
+  const query = <TPaginationPayload>{}
 
   query.page = getNumberQueryValue(locationQuery.page, defaultPage)
   query.per_page = getNumberQueryValue(locationQuery.per_page, defaultPerPage)

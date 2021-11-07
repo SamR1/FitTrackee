@@ -236,6 +236,24 @@ describe('getQuery w/ default values and input pagination payload', () => {
       { page: 3, per_page: 10, order: 'asc', order_by: 'workouts_count' }
     )
   })
+
+  it('returns query with only pagination keys', () => {
+    assert.deepEqual(
+      getQuery(
+        {
+          page: '3',
+          per_page: '10',
+          order: 'asc',
+          order_by: 'workouts_count',
+          sport_id: '1',
+        },
+        orderByList,
+        defaultOrderBy,
+        { query: inputQuery }
+      ),
+      { page: 3, per_page: 10, order: 'asc', order_by: 'workouts_count' }
+    )
+  })
 })
 
 describe('rangePagination', () => {

@@ -151,6 +151,9 @@
         <button class="confirm" @click="onFilter">
           {{ $t('buttons.FILTER') }}
         </button>
+        <button class="confirm" @click="onClearFilter">
+          {{ $t('buttons.CLEAR_FILTER') }}
+        </button>
       </div>
     </div>
   </div>
@@ -202,6 +205,10 @@
         }
         router.push({ path: '/workouts', query: params })
       }
+      function onClearFilter() {
+        emit('filter')
+        router.push({ path: '/workouts', query: {} })
+      }
 
       watch(
         () => route.query,
@@ -210,7 +217,7 @@
         }
       )
 
-      return { translatedSports, onFilter, handleFilterChange }
+      return { translatedSports, onClearFilter, onFilter, handleFilterChange }
     },
   })
 </script>
@@ -262,10 +269,11 @@
     .form-button {
       display: flex;
       justify-content: center;
+      flex-wrap: wrap;
+      margin: $default-margin * 0.5;
 
       button {
-        margin: $default-padding * 2 $default-padding * 0.5 $default-padding
-          $default-padding * 0.5;
+        margin-top: $default-margin;
         width: 100%;
       }
     }
@@ -298,6 +306,7 @@
       }
 
       .form-button {
+        flex-wrap: initial;
         button {
           margin: $default-padding $default-padding * 0.5;
           width: 100%;
@@ -332,9 +341,16 @@
         }
       }
       .form-button {
+        flex-wrap: initial;
         button {
           margin: $default-padding $default-padding * 0.5;
         }
+      }
+    }
+
+    @media screen and (max-width: $x-small-limit) {
+      .form-button {
+        flex-wrap: wrap;
       }
     }
   }
