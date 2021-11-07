@@ -62,12 +62,8 @@
   @import '~@/scss/base.scss';
   .sports-menu {
     display: flex;
-    justify-content: space-between;
     flex-wrap: wrap;
     padding: $default-padding;
-    @media screen and (max-width: $medium-limit) {
-      justify-content: normal;
-    }
 
     label {
       display: flex;

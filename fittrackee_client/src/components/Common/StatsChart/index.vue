@@ -196,11 +196,15 @@
     .chart-radio {
       display: flex;
       justify-content: space-between;
+      flex-wrap: wrap;
       padding: $default-padding;
 
       label {
         font-size: 0.85em;
         font-weight: normal;
+        @media screen and (max-width: $small-limit) {
+          padding-bottom: $default-padding;
+        }
       }
     }
   }
