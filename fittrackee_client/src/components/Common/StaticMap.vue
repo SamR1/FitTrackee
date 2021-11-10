@@ -22,29 +22,21 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent, PropType } from 'vue'
+<script setup lang="ts">
+  import { toRefs, withDefaults } from 'vue'
 
   import { IWorkout } from '@/types/workouts'
   import { getApiUrl } from '@/utils'
 
-  export default defineComponent({
-    name: 'StaticMap',
-    props: {
-      workout: {
-        type: Object as PropType<IWorkout>,
-        required: true,
-      },
-      displayHover: {
-        type: Boolean,
-        default: false,
-      },
-    },
-    setup(props) {
-      const imageUrl = `${getApiUrl()}workouts/map/${props.workout.map}`
-      return { imageUrl }
-    },
+  interface Props {
+    workout: IWorkout
+    displayHover?: boolean
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    displayHover: false,
   })
+  const { displayHover } = toRefs(props)
+  const imageUrl = `${getApiUrl()}workouts/map/${props.workout.map}`
 </script>
 
 <style lang="scss">

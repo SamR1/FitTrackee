@@ -12,30 +12,22 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { PropType, computed, defineComponent } from 'vue'
+<script setup lang="ts">
+  import { computed } from 'vue'
 
   import { IUserProfile } from '@/types/user'
   import { getApiUrl } from '@/utils'
 
-  export default defineComponent({
-    name: 'UserPicture',
-    props: {
-      user: {
-        type: Object as PropType<IUserProfile>,
-        required: true,
-      },
-    },
-    setup(props) {
-      return {
-        authUserPictureUrl: computed(() =>
-          props.user.picture
-            ? `${getApiUrl()}users/${props.user.username}/picture`
-            : ''
-        ),
-      }
-    },
-  })
+  interface Props {
+    user: IUserProfile
+  }
+  const props = defineProps<Props>()
+
+  const authUserPictureUrl = computed(() =>
+    props.user.picture
+      ? `${getApiUrl()}users/${props.user.username}/picture`
+      : ''
+  )
 </script>
 
 <style lang="scss">

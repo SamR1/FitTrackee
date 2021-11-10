@@ -11,14 +11,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import {
-    computed,
-    defineComponent,
-    watch,
-    onBeforeMount,
-    ComputedRef,
-  } from 'vue'
+<script setup lang="ts">
+  import { computed, watch, onBeforeMount, ComputedRef } from 'vue'
   import { useRoute } from 'vue-router'
 
   import WorkoutEdition from '@/components/Workout/WorkoutEdition.vue'
@@ -32,41 +26,31 @@
   import { IWorkoutData } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
 
-  export default defineComponent({
-    name: 'EditWorkout',
-    components: {
-      WorkoutEdition,
-    },
-    setup() {
-      const route = useRoute()
-      const store = useStore()
+  const route = useRoute()
+  const store = useStore()
 
-      onBeforeMount(() => {
-        store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, {
-          workoutId: route.params.workoutId,
-        })
-      })
+  const authUser: ComputedRef<IUserProfile> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
+  )
+  const sports: ComputedRef<ISport[]> = computed(
+    () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
+  )
+  const workoutData: ComputedRef<IWorkoutData> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUT_DATA]
+  )
 
-      const authUser: ComputedRef<IUserProfile> = computed(
-        () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-      )
-      const sports: ComputedRef<ISport[]> = computed(
-        () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
-      )
-      const workoutData: ComputedRef<IWorkoutData> = computed(
-        () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUT_DATA]
-      )
-
-      watch(
-        () => route.params.workoutId,
-        async (newWorkoutId) => {
-          if (!newWorkoutId) {
-            store.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
-          }
-        }
-      )
-
-      return { authUser, sports, workoutData }
-    },
+  onBeforeMount(() => {
+    store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, {
+      workoutId: route.params.workoutId,
+    })
   })
+
+  watch(
+    () => route.params.workoutId,
+    async (newWorkoutId) => {
+      if (!newWorkoutId) {
+        store.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
+      }
+    }
+  )
 </script>

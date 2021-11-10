@@ -12,51 +12,30 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { computed, ComputedRef, defineComponent, onBeforeMount } from 'vue'
+<script setup lang="ts">
+  import { computed, ComputedRef, onBeforeMount } from 'vue'
 
   import NotFound from '@/components/Common/NotFound.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import { TAppConfig, IAppStatistics } from '@/types/application'
   import { useStore } from '@/use/useStore'
 
-  export default defineComponent({
-    name: 'Admin',
-    components: {
-      NotFound,
-    },
-    setup() {
-      const store = useStore()
+  const store = useStore()
 
-      onBeforeMount(() =>
-        store.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_STATS)
-      )
+  const appConfig: ComputedRef<TAppConfig> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
+  )
+  const appStatistics: ComputedRef<IAppStatistics> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.APP_STATS]
+  )
+  const isAuthUserAmin: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.IS_ADMIN]
+  )
+  const userLoading: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
+  )
 
-      const appLoading: ComputedRef<boolean> = computed(
-        () => store.getters[ROOT_STORE.GETTERS.APP_LOADING]
-      )
-      const appConfig: ComputedRef<TAppConfig> = computed(
-        () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
-      )
-      const appStatistics: ComputedRef<IAppStatistics> = computed(
-        () => store.getters[ROOT_STORE.GETTERS.APP_STATS]
-      )
-      const isAuthUserAmin: ComputedRef<boolean> = computed(
-        () => store.getters[AUTH_USER_STORE.GETTERS.IS_ADMIN]
-      )
-      const userLoading: ComputedRef<boolean> = computed(
-        () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
-      )
-
-      return {
-        appConfig,
-        appLoading,
-        appStatistics,
-        isAuthUserAmin,
-        userLoading,
-      }
-    },
-  })
+  onBeforeMount(() => store.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_STATS))
 </script>
 
 <style lang="scss" scoped>

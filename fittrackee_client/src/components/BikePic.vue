@@ -1,19 +1,13 @@
 <template>
-  <div id="about">
+  <div id="bike">
     <img class="bike-img" :src="'/img/bike.svg'" alt="mountain bike" />
   </div>
 </template>
 
-<script>
-  export default {
-    name: 'About',
-  }
-</script>
-
 <style scoped lang="scss">
   @import '~@/scss/base';
 
-  #about {
+  #bike {
     display: flex;
     justify-content: center;
 

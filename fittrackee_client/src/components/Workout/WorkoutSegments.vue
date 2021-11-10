@@ -24,20 +24,17 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { PropType, defineComponent } from 'vue'
+<script setup lang="ts">
+  import { toRefs } from 'vue'
 
   import { IWorkoutSegment } from '@/types/workouts'
 
-  export default defineComponent({
-    name: 'WorkoutSegments',
-    props: {
-      segments: {
-        type: Object as PropType<IWorkoutSegment[]>,
-        required: true,
-      },
-    },
-  })
+  interface Props {
+    segments: IWorkoutSegment[]
+  }
+  const props = defineProps<Props>()
+
+  const { segments } = toRefs(props)
 </script>
 
 <style lang="scss" scoped>

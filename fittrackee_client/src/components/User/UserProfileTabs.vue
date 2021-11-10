@@ -18,44 +18,32 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { PropType, defineComponent } from 'vue'
+<script setup lang="ts">
+  import { toRefs, withDefaults } from 'vue'
 
-  export default defineComponent({
-    name: 'UserProfileTabs',
-    props: {
-      tabs: {
-        type: Object as PropType<string[]>,
-        required: true,
-      },
-      selectedTab: {
-        type: String,
-        required: true,
-      },
-      edition: {
-        type: Boolean,
-        required: true,
-      },
-      disabled: {
-        type: Boolean,
-        default: false,
-      },
-    },
-    setup(props) {
-      function getPath(tab: string) {
-        switch (tab) {
-          case 'PICTURE':
-            return '/profile/edit/picture'
-          case 'PREFERENCES':
-            return `/profile${props.edition ? '/edit' : ''}/preferences`
-          default:
-          case 'PROFILE':
-            return `/profile${props.edition ? '/edit' : ''}`
-        }
-      }
-      return { getPath }
-    },
+  interface Props {
+    tabs: string[]
+    selectedTab: string
+    edition: boolean
+    disabled?: boolean
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    disabled: false,
   })
+
+  const { tabs, selectedTab, disabled } = toRefs(props)
+
+  function getPath(tab: string) {
+    switch (tab) {
+      case 'PICTURE':
+        return '/profile/edit/picture'
+      case 'PREFERENCES':
+        return `/profile${props.edition ? '/edit' : ''}/preferences`
+      default:
+      case 'PROFILE':
+        return `/profile${props.edition ? '/edit' : ''}`
+    }
+  }
 </script>
 
 <style lang="scss">

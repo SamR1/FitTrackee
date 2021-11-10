@@ -70,6 +70,12 @@
       "plugin:import/recommended",
       "plugin:import/typescript"
     ],
+    "globals": {
+      "defineProps": "readonly",
+      "defineEmits": "readonly",
+      "defineExpose": "readonly",
+      "withDefaults": "readonly"
+    },
     "settings": {
       "import/resolver": "typescript"
     },

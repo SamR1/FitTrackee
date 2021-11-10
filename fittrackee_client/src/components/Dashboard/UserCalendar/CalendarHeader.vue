@@ -20,27 +20,19 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
   import { format } from 'date-fns'
-  import { defineComponent } from 'vue'
+  import { toRefs } from 'vue'
 
-  export default defineComponent({
-    name: 'CalendarHeader',
-    props: {
-      day: {
-        type: Date,
-        required: true,
-      },
-      localeOptions: {
-        type: String,
-        required: true,
-      },
-    },
-    emits: ['displayNextMonth', 'displayPreviousMonth'],
-    setup(props, { emit }) {
-      return { emit, format }
-    },
-  })
+  interface Props {
+    day: Date
+    localeOptions: string
+  }
+  const props = defineProps<Props>()
+
+  const emit = defineEmits(['displayNextMonth', 'displayPreviousMonth'])
+
+  const { day, localeOptions } = toRefs(props)
 </script>
 
 <style lang="scss">

@@ -12,26 +12,16 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent } from 'vue'
+<script setup lang="ts">
+  import { toRefs } from 'vue'
 
-  export default defineComponent({
-    name: 'StatCard',
-    props: {
-      icon: {
-        type: String,
-        required: true,
-      },
-      value: {
-        type: [String, Number],
-        required: true,
-      },
-      text: {
-        type: String,
-        required: true,
-      },
-    },
-  })
+  interface Props {
+    icon: string
+    text: string
+    value: string | number
+  }
+  const props = defineProps<Props>()
+  const { icon, text, value } = toRefs(props)
 </script>
 
 <style lang="scss">

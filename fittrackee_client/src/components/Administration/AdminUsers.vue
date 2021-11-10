@@ -115,12 +115,11 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
   import { format } from 'date-fns'
   import {
     ComputedRef,
     computed,
-    defineComponent,
     reactive,
     watch,
     capitalize,
@@ -139,89 +138,63 @@
   import { getQuery, sortList } from '@/utils/api'
   import { getDateWithTZ } from '@/utils/dates'
 
-  export default defineComponent({
-    name: 'AdminUsers',
-    components: {
-      FilterSelects,
-      Pagination,
-      UserPicture,
-    },
-    setup() {
-      const store = useStore()
-      const route = useRoute()
-      const router = useRouter()
+  const store = useStore()
+  const route = useRoute()
+  const router = useRouter()
 
-      const orderByList: string[] = [
-        'admin',
-        'created_at',
-        'username',
-        'workouts_count',
-      ]
-      const defaultOrderBy = 'created_at'
-      let query: TPaginationPayload = reactive(
-        getQuery(route.query, orderByList, defaultOrderBy)
-      )
+  const orderByList: string[] = [
+    'admin',
+    'created_at',
+    'username',
+    'workouts_count',
+  ]
+  const defaultOrderBy = 'created_at'
+  let query: TPaginationPayload = reactive(
+    getQuery(route.query, orderByList, defaultOrderBy)
+  )
+  const authUser: ComputedRef<IUserProfile> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
+  )
+  const users: ComputedRef<IUserProfile[]> = computed(
+    () => store.getters[USERS_STORE.GETTERS.USERS]
+  )
+  const pagination: ComputedRef<IPagination> = computed(
+    () => store.getters[USERS_STORE.GETTERS.USERS_PAGINATION]
+  )
+  const errorMessages: ComputedRef<string | string[] | null> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
+  )
 
-      const authUser: ComputedRef<IUserProfile> = computed(
-        () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-      )
-      const users: ComputedRef<IUserProfile[]> = computed(
-        () => store.getters[USERS_STORE.GETTERS.USERS]
-      )
-      const pagination: ComputedRef<IPagination> = computed(
-        () => store.getters[USERS_STORE.GETTERS.USERS_PAGINATION]
-      )
-      const errorMessages: ComputedRef<string | string[] | null> = computed(
-        () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-      )
+  onBeforeMount(() => loadUsers(query))
 
-      function loadUsers(queryParams: TPaginationPayload) {
-        store.dispatch(USERS_STORE.ACTIONS.GET_USERS, queryParams)
-      }
-      function updateUser(username: string, admin: boolean) {
-        store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, {
-          username,
-          admin,
-        })
-      }
-      function reloadUsers(queryParam: string, queryValue: string) {
-        query[queryParam] = queryValue
-        if (queryParam === 'per_page') {
-          query.page = 1
-        }
-        router.push({ path: '/admin/users', query })
-      }
+  function loadUsers(queryParams: TPaginationPayload) {
+    store.dispatch(USERS_STORE.ACTIONS.GET_USERS, queryParams)
+  }
+  function updateUser(username: string, admin: boolean) {
+    store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, {
+      username,
+      admin,
+    })
+  }
+  function reloadUsers(queryParam: string, queryValue: string) {
+    query[queryParam] = queryValue
+    if (queryParam === 'per_page') {
+      query.page = 1
+    }
+    router.push({ path: '/admin/users', query })
+  }
 
-      onBeforeMount(() => loadUsers(query))
-
-      watch(
-        () => route.query,
-        (newQuery: LocationQuery) => {
-          query = getQuery(newQuery, orderByList, defaultOrderBy, { query })
-          loadUsers(query)
-        }
-      )
-
-      onUnmounted(() => {
-        store.dispatch(USERS_STORE.ACTIONS.EMPTY_USERS)
-      })
-
-      return {
-        authUser,
-        errorMessages,
-        orderByList,
-        pagination,
-        query,
-        sortList,
-        users,
-        capitalize,
-        format,
-        getDateWithTZ,
-        reloadUsers,
-        updateUser,
-      }
-    },
+  onUnmounted(() => {
+    store.dispatch(USERS_STORE.ACTIONS.EMPTY_USERS)
   })
+
+  watch(
+    () => route.query,
+    (newQuery: LocationQuery) => {
+      query = getQuery(newQuery, orderByList, defaultOrderBy, { query })
+      loadUsers(query)
+    }
+  )
 </script>
 
 <style lang="scss" scoped>

@@ -82,13 +82,12 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
   import {
     ComputedRef,
-    PropType,
     computed,
-    defineComponent,
     reactive,
+    withDefaults,
     onBeforeMount,
   } from 'vue'
   import { useRouter } from 'vue-router'
@@ -98,64 +97,55 @@
   import { useStore } from '@/use/useStore'
   import { getFileSizeInMB } from '@/utils/files'
 
-  export default defineComponent({
-    name: 'AdminApplication',
-    props: {
-      appConfig: {
-        type: Object as PropType<TAppConfig>,
-        required: true,
-      },
-      edition: {
-        type: Boolean,
-        default: false,
-      },
-    },
-    setup(props) {
-      const store = useStore()
-      const router = useRouter()
-      const appData: TAppConfigForm = reactive({
-        max_users: 0,
-        max_single_file_size: 0,
-        max_zip_file_size: 0,
-        gpx_limit_import: 0,
-      })
-      const errorMessages: ComputedRef<string | string[] | null> = computed(
-        () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-      )
-
-      onBeforeMount(() => {
-        if (props.appConfig) {
-          updateForm(props.appConfig)
-        }
-      })
-
-      function updateForm(appConfig: TAppConfig) {
-        Object.keys(appData).map((key) => {
-          ;['max_single_file_size', 'max_zip_file_size'].includes(key)
-            ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              (appData[key] = getFileSizeInMB(appConfig[key]))
-            : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              (appData[key] = appConfig[key])
-        })
-      }
-
-      function onCancel() {
-        updateForm(props.appConfig)
-        store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
-        router.push('/admin/application')
-      }
-      function onSubmit() {
-        const formData: TAppConfigForm = Object.assign({}, appData)
-        formData.max_single_file_size *= 1048576
-        formData.max_zip_file_size *= 1048576
-        store.dispatch(ROOT_STORE.ACTIONS.UPDATE_APPLICATION_CONFIG, formData)
-      }
-
-      return { appData, errorMessages, onCancel, onSubmit }
-    },
+  interface Props {
+    appConfig: TAppConfig
+    edition?: boolean
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    edition: false,
   })
+
+  const store = useStore()
+  const router = useRouter()
+
+  const appData: TAppConfigForm = reactive({
+    max_users: 0,
+    max_single_file_size: 0,
+    max_zip_file_size: 0,
+    gpx_limit_import: 0,
+  })
+  const errorMessages: ComputedRef<string | string[] | null> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
+  )
+
+  onBeforeMount(() => {
+    if (props.appConfig) {
+      updateForm(props.appConfig)
+    }
+  })
+
+  function updateForm(appConfig: TAppConfig) {
+    Object.keys(appData).map((key) => {
+      ;['max_single_file_size', 'max_zip_file_size'].includes(key)
+        ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          (appData[key] = getFileSizeInMB(appConfig[key]))
+        : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          (appData[key] = appConfig[key])
+    })
+  }
+  function onCancel() {
+    updateForm(props.appConfig)
+    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    router.push('/admin/application')
+  }
+  function onSubmit() {
+    const formData: TAppConfigForm = Object.assign({}, appData)
+    formData.max_single_file_size *= 1048576
+    formData.max_zip_file_size *= 1048576
+    store.dispatch(ROOT_STORE.ACTIONS.UPDATE_APPLICATION_CONFIG, formData)
+  }
 </script>
 
 <style lang="scss" scoped>

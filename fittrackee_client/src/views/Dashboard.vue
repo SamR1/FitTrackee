@@ -72,8 +72,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { ComputedRef, Ref, computed, defineComponent, ref } from 'vue'
+<script setup lang="ts">
+  import { ComputedRef, Ref, computed, ref } from 'vue'
 
   import Timeline from '@/components/Dashboard/Timeline.vue'
   import UserCalendar from '@/components/Dashboard/UserCalendar/index.vue'
@@ -85,32 +85,19 @@
   import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
-  export default defineComponent({
-    name: 'Dashboard',
-    components: {
-      Timeline,
-      UserCalendar,
-      UserMonthStats,
-      UserRecords,
-      UserStatsCards,
-    },
-    setup() {
-      const store = useStore()
-      const authUser: ComputedRef<IUserProfile> = computed(
-        () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-      )
-      const sports: ComputedRef<ISport[]> = computed(
-        () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
-      )
-      const isSelected: Ref<string> = ref('chart')
+  const store = useStore()
 
-      function updateDisplayColumn(target: string) {
-        isSelected.value = target
-      }
+  const authUser: ComputedRef<IUserProfile> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
+  )
+  const sports: ComputedRef<ISport[]> = computed(
+    () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
+  )
+  const isSelected: Ref<string> = ref('chart')
 
-      return { authUser, sports, isSelected, updateDisplayColumn }
-    },
-  })
+  function updateDisplayColumn(target: string) {
+    isSelected.value = target
+  }
 </script>
 
 <style lang="scss" scoped>

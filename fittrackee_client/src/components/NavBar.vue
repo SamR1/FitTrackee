@@ -77,8 +77,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { ComputedRef, computed, defineComponent, ref, capitalize } from 'vue'
+<script setup lang="ts">
+  import { ComputedRef, computed, ref, capitalize } from 'vue'
   import { useI18n } from 'vue-i18n'
 
   import UserPicture from '@/components/User/UserPicture.vue'
@@ -86,68 +86,39 @@
   import { IDropdownOption } from '@/types/forms'
   import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
-  import { getApiUrl } from '@/utils'
   import { availableLanguages } from '@/utils/locales'
 
-  export default defineComponent({
-    name: 'NavBar',
-    components: {
-      UserPicture,
-    },
-    emits: ['menuInteraction'],
-    setup(props, { emit }) {
-      const { locale } = useI18n()
-      const store = useStore()
+  const emit = defineEmits(['menuInteraction'])
 
-      const authUser: ComputedRef<IUserProfile> = computed(
-        () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-      )
-      const isAuthenticated: ComputedRef<boolean> = computed(
-        () => store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED]
-      )
-      const authUserPictureUrl: ComputedRef<string> = computed(() =>
-        isAuthenticated.value && authUser.value.picture
-          ? `${getApiUrl()}/users/${
-              authUser.value.username
-            }/picture?${Date.now()}`
-          : ''
-      )
-      const language: ComputedRef<string> = computed(
-        () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
-      )
-      let isMenuOpen = ref(false)
+  const { locale } = useI18n()
+  const store = useStore()
 
-      function openMenu() {
-        isMenuOpen.value = true
-        emit('menuInteraction', true)
-      }
-      function closeMenu() {
-        isMenuOpen.value = false
-        emit('menuInteraction', false)
-      }
-      function updateLanguage(option: IDropdownOption) {
-        locale.value = option.value.toString()
-        store.commit(ROOT_STORE.MUTATIONS.UPDATE_LANG, option.value)
-      }
-      function logout() {
-        store.dispatch(AUTH_USER_STORE.ACTIONS.LOGOUT)
-      }
+  const authUser: ComputedRef<IUserProfile> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
+  )
+  const isAuthenticated: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED]
+  )
+  const language: ComputedRef<string> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
+  )
+  let isMenuOpen = ref(false)
 
-      return {
-        availableLanguages,
-        authUser,
-        authUserPictureUrl,
-        isAuthenticated,
-        isMenuOpen,
-        language,
-        capitalize,
-        openMenu,
-        closeMenu,
-        updateLanguage,
-        logout,
-      }
-    },
-  })
+  function openMenu() {
+    isMenuOpen.value = true
+    emit('menuInteraction', true)
+  }
+  function closeMenu() {
+    isMenuOpen.value = false
+    emit('menuInteraction', false)
+  }
+  function updateLanguage(option: IDropdownOption) {
+    locale.value = option.value.toString()
+    store.commit(ROOT_STORE.MUTATIONS.UPDATE_LANG, option.value)
+  }
+  function logout() {
+    store.dispatch(AUTH_USER_STORE.ACTIONS.LOGOUT)
+  }
 </script>
 
 <style scoped lang="scss">

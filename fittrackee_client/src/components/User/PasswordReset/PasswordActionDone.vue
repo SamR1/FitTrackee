@@ -15,25 +15,18 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent } from 'vue'
+<script setup lang="ts">
+  import { toRefs } from 'vue'
 
   import EmailSent from '@/components/Common/Images/EmailSent.vue'
   import Password from '@/components/Common/Images/Password.vue'
 
-  export default defineComponent({
-    name: 'PasswordActionDone',
-    components: {
-      EmailSent,
-      Password,
-    },
-    props: {
-      action: {
-        type: String,
-        required: true,
-      },
-    },
-  })
+  interface Props {
+    action: string
+  }
+  const props = defineProps<Props>()
+
+  const { action } = toRefs(props)
 </script>
 
 <style scoped lang="scss">

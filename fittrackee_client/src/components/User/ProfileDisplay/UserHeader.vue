@@ -27,24 +27,18 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { PropType, defineComponent } from 'vue'
+<script setup lang="ts">
+  import { toRefs } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import { IUserProfile } from '@/types/user'
 
-  export default defineComponent({
-    name: 'ProfileDisplay',
-    components: {
-      UserPicture,
-    },
-    props: {
-      user: {
-        type: Object as PropType<IUserProfile>,
-        required: true,
-      },
-    },
-  })
+  interface Props {
+    user: IUserProfile
+  }
+  const props = defineProps<Props>()
+
+  const { user } = toRefs(props)
 </script>
 
 <style lang="scss" scoped>

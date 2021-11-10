@@ -34,7 +34,7 @@
         :value="query.per_page"
         @change="onSelectUpdate"
       >
-        <option v-for="nb in per_page" :value="nb" :key="nb">
+        <option v-for="nb in perPage" :value="nb" :key="nb">
           {{ nb }}
         </option>
       </select>
@@ -42,43 +42,27 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { PropType, defineComponent } from 'vue'
+<script setup lang="ts">
+  import { toRefs } from 'vue'
 
   import { TPaginationPayload } from '@/types/api'
 
-  export default defineComponent({
-    name: 'FilterSelects',
-    props: {
-      order_by: {
-        type: Object as PropType<string[]>,
-        required: true,
-      },
-      query: {
-        type: Object as PropType<TPaginationPayload>,
-        required: true,
-      },
-      sort: {
-        type: Object as PropType<string[]>,
-        required: true,
-      },
-      message: {
-        type: String,
-        required: true,
-      },
-    },
-    emits: ['updateSelect'],
-    setup(props, { emit }) {
-      function onSelectUpdate(event: Event & { target: HTMLInputElement }) {
-        emit('updateSelect', event.target.id, event.target.value)
-      }
+  interface Props {
+    order_by: string[]
+    query: TPaginationPayload
+    sort: string[]
+    message: string
+  }
+  const props = defineProps<Props>()
 
-      return {
-        per_page: [10, 25, 50, 100],
-        onSelectUpdate,
-      }
-    },
-  })
+  const emit = defineEmits(['updateSelect'])
+
+  const { order_by, query, sort, message } = toRefs(props)
+  const perPage = [10, 25, 50, 100]
+
+  function onSelectUpdate(event: Event & { target: HTMLInputElement }) {
+    emit('updateSelect', event.target.id, event.target.value)
+  }
 </script>
 
 <style lang="scss" scoped>

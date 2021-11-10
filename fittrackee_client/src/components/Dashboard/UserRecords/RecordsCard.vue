@@ -7,9 +7,9 @@
       </template>
       <template #content>
         <div class="record" v-for="record in records.records" :key="record.id">
-          <span class="record-type">{{
-            t(`workouts.RECORD_${record.record_type}`)
-          }}</span>
+          <span class="record-type">
+            {{ $t(`workouts.RECORD_${record.record_type}`) }}
+          </span>
           <span class="record-value">{{ record.value }}</span>
           <span class="record-date">
             <router-link
@@ -17,8 +17,9 @@
                 name: 'Workout',
                 params: { workoutId: record.workout_id },
               }"
-              >{{ record.workout_date }}</router-link
             >
+              {{ record.workout_date }}
+            </router-link>
           </span>
         </div>
       </template>
@@ -26,29 +27,18 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { PropType, defineComponent } from 'vue'
-  import { useI18n } from 'vue-i18n'
+<script setup lang="ts">
+  import { toRefs } from 'vue'
 
-  import { IRecord } from '@/types/workouts'
+  import { IRecordsBySports } from '@/types/workouts'
 
-  export default defineComponent({
-    name: 'RecordsCard',
-    props: {
-      records: {
-        type: Object as PropType<IRecord[]>,
-        required: true,
-      },
-      sportTranslatedLabel: {
-        type: String,
-        required: true,
-      },
-    },
-    setup() {
-      const { t } = useI18n()
-      return { t }
-    },
-  })
+  interface Props {
+    records: IRecordsBySports
+    sportTranslatedLabel: string
+  }
+  const props = defineProps<Props>()
+
+  const { records, sportTranslatedLabel } = toRefs(props)
 </script>
 
 <style lang="scss" scoped>

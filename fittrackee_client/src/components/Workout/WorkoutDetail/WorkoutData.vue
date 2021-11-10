@@ -3,7 +3,7 @@
     <div class="workout-data">
       <i class="fa fa-clock-o" aria-hidden="true" />
       {{ $t('workouts.DURATION') }}: <span>{{ workoutObject.moving }}</span>
-      <WorkoutRecord :workoutObject="workoutObject" record_type="LD" />
+      <WorkoutRecord :workoutObject="workoutObject" recordType="LD" />
       <div v-if="withPause">
         ({{ $t('workouts.PAUSES') }}: <span>{{ workoutObject.pauses }}</span> -
         {{ $t('workouts.TOTAL_DURATION') }}:
@@ -14,16 +14,16 @@
       <i class="fa fa-road" aria-hidden="true" />
       {{ $t('workouts.DISTANCE') }}:
       <span>{{ workoutObject.distance }} km</span>
-      <WorkoutRecord :workoutObject="workoutObject" record_type="FD" />
+      <WorkoutRecord :workoutObject="workoutObject" recordType="FD" />
     </div>
     <div class="workout-data">
       <i class="fa fa-tachometer" aria-hidden="true" />
       {{ $t('workouts.AVERAGE_SPEED') }}:
       <span>{{ workoutObject.aveSpeed }} km/h</span
-      ><WorkoutRecord :workoutObject="workoutObject" record_type="AS" /><br />
+      ><WorkoutRecord :workoutObject="workoutObject" recordType="AS" /><br />
       {{ $t('workouts.MAX_SPEED') }}:
       <span>{{ workoutObject.maxSpeed }} km/h</span>
-      <WorkoutRecord :workoutObject="workoutObject" record_type="MS" />
+      <WorkoutRecord :workoutObject="workoutObject" recordType="MS" />
     </div>
     <div
       class="workout-data"
@@ -52,35 +52,24 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { PropType, computed, defineComponent } from 'vue'
+<script setup lang="ts">
+  import { computed, toRefs } from 'vue'
 
   import WorkoutRecord from '@/components/Workout/WorkoutDetail/WorkoutRecord.vue'
   import WorkoutWeather from '@/components/Workout/WorkoutDetail/WorkoutWeather.vue'
   import { IWorkoutObject } from '@/types/workouts'
 
-  export default defineComponent({
-    name: 'WorkoutData',
-    components: {
-      WorkoutRecord,
-      WorkoutWeather,
-    },
-    props: {
-      workoutObject: {
-        type: Object as PropType<IWorkoutObject>,
-        required: true,
-      },
-    },
-    setup(props) {
-      return {
-        withPause: computed(
-          () =>
-            props.workoutObject.pauses !== '0:00:00' &&
-            props.workoutObject.pauses !== null
-        ),
-      }
-    },
-  })
+  interface Props {
+    workoutObject: IWorkoutObject
+  }
+  const props = defineProps<Props>()
+
+  const { workoutObject } = toRefs(props)
+  const withPause = computed(
+    () =>
+      props.workoutObject.pauses !== '0:00:00' &&
+      props.workoutObject.pauses !== null
+  )
 </script>
 
 <style lang="scss" scoped>

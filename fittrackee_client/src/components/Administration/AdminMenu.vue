@@ -3,7 +3,7 @@
     <Card>
       <template #title>{{ $t('admin.ADMINISTRATION') }}</template>
       <template #content>
-        <AppStatsCards :app-statistics="appStatistics" />
+        <AppStatsCards :appStatistics="appStatistics" />
         <div class="admin-menu description-list">
           <dl>
             <dt>
@@ -46,32 +46,22 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { PropType, capitalize, defineComponent } from 'vue'
+<script setup lang="ts">
+  import { capitalize, toRefs, withDefaults } from 'vue'
 
   import AppStatsCards from '@/components/Administration/AppStatsCards.vue'
   import Card from '@/components/Common/Card.vue'
   import { IAppStatistics, TAppConfig } from '@/types/application'
 
-  export default defineComponent({
-    name: 'AdminMenu',
-    components: {
-      AppStatsCards,
-      Card,
-    },
-    props: {
-      appConfig: {
-        type: Object as PropType<TAppConfig>,
-        required: true,
-      },
-      appStatistics: {
-        type: Object as PropType<IAppStatistics>,
-      },
-    },
-    setup() {
-      return { capitalize }
-    },
+  interface Props {
+    appConfig: TAppConfig
+    appStatistics?: IAppStatistics
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    appStatistics: () => ({} as IAppStatistics),
   })
+
+  const { appConfig, appStatistics } = toRefs(props)
 </script>
 
 <style lang="scss" scoped>

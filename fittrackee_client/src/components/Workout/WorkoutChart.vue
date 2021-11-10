@@ -36,9 +36,9 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
   import { ChartData, ChartOptions } from 'chart.js'
-  import { ComputedRef, PropType, computed, defineComponent, ref } from 'vue'
+  import { ComputedRef, computed, ref } from 'vue'
   import { LineChart, useLineChart } from 'vue-chart-3'
   import { useI18n } from 'vue-i18n'
 
@@ -50,160 +50,142 @@
   } from '@/types/workouts'
   import { getDatasets } from '@/utils/workouts'
 
-  export default defineComponent({
-    name: 'WorkoutChart',
-    components: {
-      LineChart,
-    },
-    props: {
-      authUser: {
-        type: Object as PropType<IUserProfile>,
-        required: true,
+  interface Props {
+    authUser: IUserProfile
+    workoutData: IWorkoutData
+  }
+  const props = defineProps<Props>()
+
+  const emit = defineEmits(['getCoordinates'])
+
+  const { t } = useI18n()
+
+  let displayDistance = ref(true)
+  const datasets: ComputedRef<IWorkoutChartData> = computed(() =>
+    getDatasets(props.workoutData.chartData, t)
+  )
+  let chartData: ComputedRef<ChartData<'line'>> = computed(() => ({
+    labels: displayDistance.value
+      ? datasets.value.distance_labels
+      : datasets.value.duration_labels,
+    datasets: JSON.parse(
+      JSON.stringify([
+        datasets.value.datasets.speed,
+        datasets.value.datasets.elevation,
+      ])
+    ),
+  }))
+  const coordinates: ComputedRef<TCoordinates[]> = computed(
+    () => datasets.value.coordinates
+  )
+  const options = computed<ChartOptions<'line'>>(() => ({
+    responsive: true,
+    maintainAspectRatio: true,
+    animation: false,
+    layout: {
+      padding: {
+        top: 22,
       },
-      workoutData: {
-        type: Object as PropType<IWorkoutData>,
-        required: true,
+    },
+    scales: {
+      [displayDistance.value ? 'xDistance' : 'xDuration']: {
+        grid: {
+          drawOnChartArea: false,
+        },
+        ticks: {
+          count: 10,
+          callback: function (value) {
+            return displayDistance.value
+              ? Number(value).toFixed(2)
+              : formatDuration(value)
+          },
+        },
+        type: 'linear',
+        bounds: 'data',
+        title: {
+          display: true,
+          text: displayDistance.value
+            ? t('workouts.DISTANCE') + ' (km)'
+            : t('workouts.DURATION'),
+        },
+      },
+      ySpeed: {
+        grid: {
+          drawOnChartArea: false,
+        },
+        position: 'left',
+        title: {
+          display: true,
+          text: t('workouts.SPEED') + ' (km/h)',
+        },
+      },
+      yElevation: {
+        beginAtZero: true,
+        grid: {
+          drawOnChartArea: false,
+        },
+        position: 'right',
+        title: {
+          display: true,
+          text: t('workouts.ELEVATION') + ' (m)',
+        },
       },
     },
-    emits: ['getCoordinates'],
-    setup(props, { emit }) {
-      const { t } = useI18n()
-
-      let displayDistance = ref(true)
-      const datasets: ComputedRef<IWorkoutChartData> = computed(() =>
-        getDatasets(props.workoutData.chartData, t)
-      )
-      let chartData: ComputedRef<ChartData<'line'>> = computed(() => ({
-        labels: displayDistance.value
-          ? datasets.value.distance_labels
-          : datasets.value.duration_labels,
-        datasets: JSON.parse(
-          JSON.stringify([
-            datasets.value.datasets.speed,
-            datasets.value.datasets.elevation,
-          ])
-        ),
-      }))
-      const coordinates: ComputedRef<TCoordinates[]> = computed(
-        () => datasets.value.coordinates
-      )
-      const options = computed<ChartOptions<'line'>>(() => ({
-        responsive: true,
-        maintainAspectRatio: true,
-        animation: false,
-        layout: {
-          padding: {
-            top: 22,
-          },
-        },
-        scales: {
-          [displayDistance.value ? 'xDistance' : 'xDuration']: {
-            grid: {
-              drawOnChartArea: false,
-            },
-            ticks: {
-              count: 10,
-              callback: function (value) {
-                return displayDistance.value
-                  ? Number(value).toFixed(2)
-                  : formatDuration(value)
-              },
-            },
-            type: 'linear',
-            bounds: 'data',
-            title: {
-              display: true,
-              text: displayDistance.value
-                ? t('workouts.DISTANCE') + ' (km)'
-                : t('workouts.DURATION'),
-            },
-          },
-          ySpeed: {
-            grid: {
-              drawOnChartArea: false,
-            },
-            position: 'left',
-            title: {
-              display: true,
-              text: t('workouts.SPEED') + ' (km/h)',
-            },
-          },
-          yElevation: {
-            beginAtZero: true,
-            grid: {
-              drawOnChartArea: false,
-            },
-            position: 'right',
-            title: {
-              display: true,
-              text: t('workouts.ELEVATION') + ' (m)',
-            },
-          },
-        },
-        elements: {
-          point: {
-            pointStyle: 'circle',
-            pointRadius: 0,
-          },
-        },
-        plugins: {
-          datalabels: {
-            display: false,
-          },
-          tooltip: {
-            interaction: {
-              intersect: false,
-              mode: 'index',
-            },
-            callbacks: {
-              label: function (context) {
-                const label = ` ${context.dataset.label}: ${context.formattedValue}`
-                return context.dataset.yAxisID === 'yElevation'
-                  ? label + ' m'
-                  : label + ' km/h'
-              },
-              title: function (tooltipItems) {
-                if (tooltipItems.length > 0) {
-                  emitCoordinates(coordinates.value[tooltipItems[0].dataIndex])
-                }
-                return tooltipItems.length === 0
-                  ? ''
-                  : displayDistance.value
-                  ? `${t('workouts.DISTANCE')}: ${tooltipItems[0].label} km`
-                  : `${t('workouts.DURATION')}: ${formatDuration(
-                      tooltipItems[0].label.replace(',', '')
-                    )}`
-              },
-            },
-          },
-        },
-      }))
-
-      function updateDisplayDistance() {
-        displayDistance.value = !displayDistance.value
-      }
-      function formatDuration(duration: string | number): string {
-        return new Date(+duration * 1000).toISOString().substr(11, 8)
-      }
-      function emitCoordinates(coordinates: TCoordinates) {
-        emit('getCoordinates', coordinates)
-      }
-      function emitEmptyCoordinates() {
-        emitCoordinates({ latitude: null, longitude: null })
-      }
-
-      const { lineChartProps } = useLineChart({
-        chartData,
-        options,
-      })
-      return {
-        displayDistance,
-        lineChartProps,
-        emitEmptyCoordinates,
-        updateDisplayDistance,
-      }
+    elements: {
+      point: {
+        pointStyle: 'circle',
+        pointRadius: 0,
+      },
     },
+    plugins: {
+      datalabels: {
+        display: false,
+      },
+      tooltip: {
+        interaction: {
+          intersect: false,
+          mode: 'index',
+        },
+        callbacks: {
+          label: function (context) {
+            const label = ` ${context.dataset.label}: ${context.formattedValue}`
+            return context.dataset.yAxisID === 'yElevation'
+              ? label + ' m'
+              : label + ' km/h'
+          },
+          title: function (tooltipItems) {
+            if (tooltipItems.length > 0) {
+              emitCoordinates(coordinates.value[tooltipItems[0].dataIndex])
+            }
+            return tooltipItems.length === 0
+              ? ''
+              : displayDistance.value
+              ? `${t('workouts.DISTANCE')}: ${tooltipItems[0].label} km`
+              : `${t('workouts.DURATION')}: ${formatDuration(
+                  tooltipItems[0].label.replace(',', '')
+                )}`
+          },
+        },
+      },
+    },
+  }))
+  const { lineChartProps } = useLineChart({
+    chartData,
+    options,
   })
+
+  function updateDisplayDistance() {
+    displayDistance.value = !displayDistance.value
+  }
+  function formatDuration(duration: string | number): string {
+    return new Date(+duration * 1000).toISOString().substr(11, 8)
+  }
+  function emitCoordinates(coordinates: TCoordinates) {
+    emit('getCoordinates', coordinates)
+  }
+  function emitEmptyCoordinates() {
+    emitCoordinates({ latitude: null, longitude: null })
+  }
 </script>
 
 <style lang="scss" scoped>

@@ -4,23 +4,18 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { computed, ComputedRef, defineComponent } from 'vue'
+<script setup lang="ts">
+  import { ComputedRef, computed } from 'vue'
 
   import { AUTH_USER_STORE } from '@/store/constants'
   import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
-  export default defineComponent({
-    name: 'ProfileView',
-    setup() {
-      const store = useStore()
-      const authUser: ComputedRef<IUserProfile> = computed(
-        () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-      )
-      return { authUser }
-    },
-  })
+  const store = useStore()
+
+  const authUser: ComputedRef<IUserProfile> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
+  )
 </script>
 
 <style lang="scss" scoped>

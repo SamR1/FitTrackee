@@ -23,45 +23,34 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { PropType, defineComponent, computed } from 'vue'
+<script setup lang="ts">
+  import { computed, withDefaults } from 'vue'
 
   import StatCard from '@/components/Common/StatCard.vue'
   import { IAppStatistics } from '@/types/application'
   import { getReadableFileSize } from '@/utils/files'
 
-  export default defineComponent({
-    name: 'UserStatsCards',
-    components: {
-      StatCard,
-    },
-    props: {
-      appStatistics: {
-        type: Object as PropType<IAppStatistics>,
-        default: () => {
-          return {}
-        },
-      },
-    },
-    setup(props) {
-      return {
-        uploadDirSize: computed(() =>
-          props.appStatistics.uploads_dir_size
-            ? getReadableFileSize(props.appStatistics.uploads_dir_size, false)
-            : { size: 0, suffix: 'bytes' }
-        ),
-        usersCount: computed(() =>
-          props.appStatistics.users ? props.appStatistics.users : 0
-        ),
-        sportsCount: computed(() =>
-          props.appStatistics.sports ? props.appStatistics.sports : 0
-        ),
-        workoutCount: computed(() =>
-          props.appStatistics.workouts ? props.appStatistics.workouts : 0
-        ),
-      }
-    },
+  interface Props {
+    appStatistics?: IAppStatistics
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    appStatistics: () => ({} as IAppStatistics),
   })
+
+  const uploadDirSize = computed(() =>
+    props.appStatistics.uploads_dir_size
+      ? getReadableFileSize(props.appStatistics.uploads_dir_size, false)
+      : { size: 0, suffix: 'bytes' }
+  )
+  const usersCount = computed(() =>
+    props.appStatistics.users ? props.appStatistics.users : 0
+  )
+  const sportsCount = computed(() =>
+    props.appStatistics.sports ? props.appStatistics.sports : 0
+  )
+  const workoutCount = computed(() =>
+    props.appStatistics.workouts ? props.appStatistics.workouts : 0
+  )
 </script>
 
 <style lang="scss">

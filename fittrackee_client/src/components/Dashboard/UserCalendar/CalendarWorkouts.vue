@@ -34,8 +34,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { PropType, computed, defineComponent } from 'vue'
+<script setup lang="ts">
+  import { computed, toRefs } from 'vue'
 
   import CalendarWorkout from '@/components/Dashboard/UserCalendar/CalendarWorkout.vue'
   import CalendarWorkoutsChart from '@/components/Dashboard/UserCalendar/CalendarWorkoutsChart.vue'
@@ -44,31 +44,16 @@
   import { getSportLabel, sportIdColors } from '@/utils/sports'
   import { getDonutDatasets } from '@/utils/workouts'
 
-  export default defineComponent({
-    name: 'CalendarWorkouts',
-    components: {
-      CalendarWorkout,
-      CalendarWorkoutsChart,
-    },
-    props: {
-      workouts: {
-        type: Object as PropType<IWorkout[]>,
-        required: true,
-      },
-      sports: {
-        type: Object as PropType<ISport[]>,
-        required: true,
-      },
-    },
-    setup(props) {
-      return {
-        chartDatasets: computed(() => getDonutDatasets(props.workouts)),
-        colors: computed(() => sportIdColors(props.sports)),
-        displayedWorkoutCount: 6,
-        getSportLabel,
-      }
-    },
-  })
+  interface Props {
+    workouts: IWorkout[]
+    sports: ISport[]
+  }
+  const props = defineProps<Props>()
+
+  const { workouts, sports } = toRefs(props)
+  const chartDatasets = computed(() => getDonutDatasets(props.workouts))
+  const colors = computed(() => sportIdColors(props.sports))
+  const displayedWorkoutCount = 6
 </script>
 
 <style lang="scss">

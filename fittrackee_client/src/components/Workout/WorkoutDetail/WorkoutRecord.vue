@@ -3,7 +3,7 @@
     class="workout-record"
     v-if="
       workoutObject.records &&
-      workoutObject.records.find((record) => record.record_type === record_type)
+      workoutObject.records.find((record) => record.record_type === recordType)
     "
   >
     <sup>
@@ -12,24 +12,18 @@
   </span>
 </template>
 
-<script lang="ts">
-  import { defineComponent, PropType } from 'vue'
+<script setup lang="ts">
+  import { toRefs } from 'vue'
 
   import { IWorkoutObject } from '@/types/workouts'
 
-  export default defineComponent({
-    name: 'WorkoutRecord',
-    props: {
-      record_type: {
-        type: String,
-        required: true,
-      },
-      workoutObject: {
-        type: Object as PropType<IWorkoutObject>,
-        required: true,
-      },
-    },
-  })
+  interface Props {
+    recordType: string
+    workoutObject: IWorkoutObject
+  }
+  const props = defineProps<Props>()
+
+  const { recordType, workoutObject } = toRefs(props)
 </script>
 
 <style lang="scss" scoped>

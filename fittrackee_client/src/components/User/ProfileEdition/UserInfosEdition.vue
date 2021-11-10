@@ -93,16 +93,15 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
   import { format } from 'date-fns'
   import {
     ComputedRef,
-    PropType,
     Ref,
     computed,
-    defineComponent,
     reactive,
     ref,
+    toRefs,
     onMounted,
   } from 'vue'
 
@@ -110,79 +109,63 @@
   import { IUserProfile, IUserPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
-  export default defineComponent({
-    name: 'UserInfosEdition',
-    props: {
-      user: {
-        type: Object as PropType<IUserProfile>,
-        required: true,
-      },
-    },
-    setup(props) {
-      const store = useStore()
-      const userForm: IUserPayload = reactive({
-        password: '',
-        password_conf: '',
-        first_name: '',
-        last_name: '',
-        birth_date: '',
-        location: '',
-        bio: '',
-      })
-      const registrationDate = computed(() =>
-        props.user.created_at
-          ? format(new Date(props.user.created_at), 'dd/MM/yyyy HH:mm')
-          : ''
-      )
-      const loading = computed(
-        () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
-      )
-      const errorMessages: ComputedRef<string | string[] | null> = computed(
-        () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-      )
-      let displayModal: Ref<boolean> = ref(false)
+  interface Props {
+    user: IUserProfile
+  }
+  const props = defineProps<Props>()
 
-      onMounted(() => {
-        if (props.user) {
-          updateUserForm(props.user)
-        }
-      })
+  const store = useStore()
 
-      function updateUserForm(user: IUserProfile) {
-        userForm.first_name = user.first_name ? user.first_name : ''
-        userForm.last_name = user.last_name ? user.last_name : ''
-        userForm.birth_date = user.birth_date
-          ? format(new Date(user.birth_date), 'yyyy-MM-dd')
-          : ''
-        userForm.location = user.location ? user.location : ''
-        userForm.bio = user.bio ? user.bio : ''
-      }
-      function updateBio(value: string) {
-        userForm.bio = value
-      }
-      function updateProfile() {
-        store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PROFILE, userForm)
-      }
-      function updateDisplayModal(value: boolean) {
-        displayModal.value = value
-      }
-      function deleteAccount(username: string) {
-        store.dispatch(AUTH_USER_STORE.ACTIONS.DELETE_ACCOUNT, { username })
-      }
-
-      return {
-        displayModal,
-        errorMessages,
-        loading,
-        registrationDate,
-        userForm,
-        deleteAccount,
-        updateBio,
-        updateDisplayModal,
-        updateProfile,
-      }
-    },
+  const { user } = toRefs(props)
+  const userForm: IUserPayload = reactive({
+    password: '',
+    password_conf: '',
+    first_name: '',
+    last_name: '',
+    birth_date: '',
+    location: '',
+    bio: '',
   })
+  const registrationDate = computed(() =>
+    props.user.created_at
+      ? format(new Date(props.user.created_at), 'dd/MM/yyyy HH:mm')
+      : ''
+  )
+  const loading = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
+  )
+  const errorMessages: ComputedRef<string | string[] | null> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
+  )
+  let displayModal: Ref<boolean> = ref(false)
+
+  onMounted(() => {
+    if (props.user) {
+      updateUserForm(props.user)
+    }
+  })
+
+  function updateUserForm(user: IUserProfile) {
+    userForm.first_name = user.first_name ? user.first_name : ''
+    userForm.last_name = user.last_name ? user.last_name : ''
+    userForm.birth_date = user.birth_date
+      ? format(new Date(user.birth_date), 'yyyy-MM-dd')
+      : ''
+    userForm.location = user.location ? user.location : ''
+    userForm.bio = user.bio ? user.bio : ''
+  }
+  function updateBio(value: string) {
+    userForm.bio = value
+  }
+  function updateProfile() {
+    store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PROFILE, userForm)
+  }
+  function updateDisplayModal(value: boolean) {
+    displayModal.value = value
+  }
+  function deleteAccount(username: string) {
+    store.dispatch(AUTH_USER_STORE.ACTIONS.DELETE_ACCOUNT, { username })
+  }
 </script>
 
 <style lang="scss">

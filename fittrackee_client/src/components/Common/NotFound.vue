@@ -6,21 +6,15 @@
   />
 </template>
 
-<script lang="ts">
-  import { defineComponent } from 'vue'
+<script setup lang="ts">
+  import { toRefs, withDefaults } from 'vue'
 
   import Error from '@/components/Common/Error.vue'
-
-  export default defineComponent({
-    name: 'NotFound',
-    components: {
-      Error,
-    },
-    props: {
-      target: {
-        type: String,
-        default: 'PAGE',
-      },
-    },
+  interface Props {
+    target?: string
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    target: 'PAGE',
   })
+  const { target } = toRefs(props)
 </script>

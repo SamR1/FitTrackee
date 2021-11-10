@@ -27,74 +27,56 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { Ref, defineComponent, ref, watch } from 'vue'
+<script setup lang="ts">
+  import { Ref, ref, toRefs, watch, withDefaults } from 'vue'
 
   import { timeZones } from '@/utils/timezone'
 
-  export default defineComponent({
-    name: 'TimezoneDropdown',
-    props: {
-      disabled: {
-        type: Boolean,
-        default: false,
-      },
-      input: {
-        type: String,
-        required: true,
-      },
-    },
-    emits: ['updateTimezone'],
-    setup(props, { emit }) {
-      const timezone: Ref<string> = ref(props.input)
-      const isOpen: Ref<boolean> = ref(false)
-      const tzList: Ref<HTMLInputElement | null> = ref(null)
-      const focusItemIndex: Ref<number> = ref(0)
-
-      function matchTimezone(t: string): RegExpMatchArray | null {
-        return t.toLowerCase().match(timezone.value.toLowerCase())
-      }
-      function onMouseOver(index: number) {
-        focusItemIndex.value = index
-      }
-      function onUpdateTimezone(value: string) {
-        timezone.value = value
-        isOpen.value = false
-        emit('updateTimezone', value)
-      }
-      function onEnter(event: Event & { target: HTMLInputElement }) {
-        event.preventDefault()
-        if (tzList.value?.firstElementChild?.innerHTML) {
-          onUpdateTimezone(tzList.value?.firstElementChild?.innerHTML)
-        }
-      }
-      function openDropdown(event: Event & { target: HTMLInputElement }) {
-        event.preventDefault()
-        isOpen.value = true
-        timezone.value = event.target.value.trim()
-      }
-
-      watch(
-        () => props.input,
-        (value) => {
-          timezone.value = value
-        }
-      )
-
-      return {
-        focusItemIndex,
-        isOpen,
-        timezone,
-        timeZones,
-        tzList,
-        matchTimezone,
-        onEnter,
-        onMouseOver,
-        onUpdateTimezone,
-        openDropdown,
-      }
-    },
+  interface Props {
+    input: string
+    disabled?: boolean
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    disabled: false,
   })
+
+  const emit = defineEmits(['updateTimezone'])
+
+  const { input, disabled } = toRefs(props)
+  const timezone: Ref<string> = ref(props.input)
+  const isOpen: Ref<boolean> = ref(false)
+  const tzList: Ref<HTMLInputElement | null> = ref(null)
+  const focusItemIndex: Ref<number> = ref(0)
+
+  function matchTimezone(t: string): RegExpMatchArray | null {
+    return t.toLowerCase().match(timezone.value.toLowerCase())
+  }
+  function onMouseOver(index: number) {
+    focusItemIndex.value = index
+  }
+  function onUpdateTimezone(value: string) {
+    timezone.value = value
+    isOpen.value = false
+    emit('updateTimezone', value)
+  }
+  function onEnter(event: Event & { target: HTMLInputElement }) {
+    event.preventDefault()
+    if (tzList.value?.firstElementChild?.innerHTML) {
+      onUpdateTimezone(tzList.value?.firstElementChild?.innerHTML)
+    }
+  }
+  function openDropdown(event: Event & { target: HTMLInputElement }) {
+    event.preventDefault()
+    isOpen.value = true
+    timezone.value = event.target.value.trim()
+  }
+
+  watch(
+    () => props.input,
+    (value) => {
+      timezone.value = value
+    }
+  )
 </script>
 
 <style lang="scss" scoped>

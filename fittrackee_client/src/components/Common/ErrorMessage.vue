@@ -9,15 +9,14 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent } from 'vue'
+<script setup lang="ts">
+  import { toRefs } from 'vue'
 
-  export default defineComponent({
-    name: 'ErrorMessage',
-    props: {
-      message: [String, Array],
-    },
-  })
+  interface Props {
+    message: string | string[]
+  }
+  const props = defineProps<Props>()
+  const { message } = toRefs(props)
 </script>
 
 <style scoped lang="scss">

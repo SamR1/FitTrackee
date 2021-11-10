@@ -82,8 +82,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { ComputedRef, computed, defineComponent } from 'vue'
+<script setup lang="ts">
+  import { ComputedRef, computed } from 'vue'
   import { useI18n } from 'vue-i18n'
 
   import { ROOT_STORE, SPORTS_STORE } from '@/store/constants'
@@ -91,28 +91,22 @@
   import { useStore } from '@/use/useStore'
   import { translateSports } from '@/utils/sports'
 
-  export default defineComponent({
-    name: 'AdminSports',
-    setup() {
-      const { t } = useI18n()
-      const store = useStore()
-      const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
-        translateSports(store.getters[SPORTS_STORE.GETTERS.SPORTS], t)
-      )
-      const errorMessages: ComputedRef<string | string[] | null> = computed(
-        () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-      )
+  const { t } = useI18n()
+  const store = useStore()
 
-      function updateSportStatus(id: number, isActive: boolean) {
-        store.dispatch(SPORTS_STORE.ACTIONS.UPDATE_SPORTS, {
-          id,
-          isActive,
-        })
-      }
+  const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
+    translateSports(store.getters[SPORTS_STORE.GETTERS.SPORTS], t)
+  )
+  const errorMessages: ComputedRef<string | string[] | null> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
+  )
 
-      return { errorMessages, translatedSports, updateSportStatus }
-    },
-  })
+  function updateSportStatus(id: number, isActive: boolean) {
+    store.dispatch(SPORTS_STORE.ACTIONS.UPDATE_SPORTS, {
+      id,
+      isActive,
+    })
+  }
 </script>
 
 <style lang="scss" scoped>

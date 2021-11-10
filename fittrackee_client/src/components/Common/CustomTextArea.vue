@@ -14,47 +14,35 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent, ref, watch } from 'vue'
+<script setup lang="ts">
+  import { ref, watch, withDefaults } from 'vue'
 
-  export default defineComponent({
-    name: 'CustomTextArea',
-    props: {
-      charLimit: {
-        type: Number,
-        default: 500,
-      },
-      disabled: {
-        type: Boolean,
-        default: false,
-      },
-      input: {
-        type: String,
-        default: '',
-      },
-      name: {
-        type: String,
-        required: true,
-      },
-    },
-    emits: ['updateValue'],
-    setup(props, { emit }) {
-      let text = ref('')
-
-      function updateText(event: Event & { target: HTMLInputElement }) {
-        emit('updateValue', event.target.value)
-      }
-
-      watch(
-        () => props.input,
-        (value) => {
-          text.value = value
-        }
-      )
-
-      return { text, updateText }
-    },
+  interface Props {
+    name: string
+    charLimit?: number
+    disabled?: boolean
+    input?: string
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    charLimit: 500,
+    disabled: false,
+    input: '',
   })
+
+  const emit = defineEmits(['updateValue'])
+
+  let text = ref('')
+
+  function updateText(event: Event & { target: HTMLInputElement }) {
+    emit('updateValue', event.target.value)
+  }
+
+  watch(
+    () => props.input,
+    (value) => {
+      text.value = value
+    }
+  )
 </script>
 
 <style lang="scss" scoped>

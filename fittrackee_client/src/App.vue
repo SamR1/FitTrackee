@@ -22,15 +22,8 @@
   <Footer v-if="appConfig" :version="appConfig ? appConfig.version : ''" />
 </template>
 
-<script lang="ts">
-  import {
-    ComputedRef,
-    computed,
-    defineComponent,
-    ref,
-    onBeforeMount,
-    onMounted,
-  } from 'vue'
+<script setup lang="ts">
+  import { ComputedRef, computed, ref, onBeforeMount, onMounted } from 'vue'
 
   import Footer from '@/components/Footer.vue'
   import NavBar from '@/components/NavBar.vue'
@@ -39,67 +32,44 @@
   import { TAppConfig } from '@/types/application'
   import { useStore } from '@/use/useStore'
 
-  export default defineComponent({
-    name: 'App',
-    components: {
-      Footer,
-      NavBar,
-      NoConfig,
-    },
-    setup() {
-      const store = useStore()
+  const store = useStore()
 
-      const appConfig: ComputedRef<TAppConfig> = computed(
-        () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
-      )
-      const appLoading: ComputedRef<boolean> = computed(
-        () => store.getters[ROOT_STORE.GETTERS.APP_LOADING]
-      )
-      const hideScrollBar = ref(false)
-      const displayScrollButton = ref(false)
+  const appConfig: ComputedRef<TAppConfig> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
+  )
+  const appLoading: ComputedRef<boolean> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.APP_LOADING]
+  )
+  const hideScrollBar = ref(false)
+  const displayScrollButton = ref(false)
 
-      onBeforeMount(() =>
-        store.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_CONFIG)
-      )
-      onMounted(() => scroll())
+  onBeforeMount(() => store.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_CONFIG))
+  onMounted(() => scroll())
 
-      function updateHideScrollBar(isMenuOpen: boolean) {
-        hideScrollBar.value = isMenuOpen
-      }
-
-      function isScrolledToBottom(element: Element): boolean {
-        return (
-          element.getBoundingClientRect().top < window.innerHeight &&
-          element.getBoundingClientRect().bottom >= 0
-        )
-      }
-      function scroll() {
-        window.onscroll = () => {
-          let bottom = document.querySelector('#bottom')
-          displayScrollButton.value =
-            bottom !== null && isScrolledToBottom(bottom)
-        }
-      }
-      function scrollToTop() {
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth',
-        })
-        setTimeout(() => {
-          displayScrollButton.value = false
-        }, 300)
-      }
-
-      return {
-        appConfig,
-        appLoading,
-        hideScrollBar,
-        displayScrollButton,
-        scrollToTop,
-        updateHideScrollBar,
-      }
-    },
-  })
+  function updateHideScrollBar(isMenuOpen: boolean) {
+    hideScrollBar.value = isMenuOpen
+  }
+  function isScrolledToBottom(element: Element): boolean {
+    return (
+      element.getBoundingClientRect().top < window.innerHeight &&
+      element.getBoundingClientRect().bottom >= 0
+    )
+  }
+  function scroll() {
+    window.onscroll = () => {
+      let bottom = document.querySelector('#bottom')
+      displayScrollButton.value = bottom !== null && isScrolledToBottom(bottom)
+    }
+  }
+  function scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+    setTimeout(() => {
+      displayScrollButton.value = false
+    }, 300)
+  }
 </script>
 
 <style lang="scss" scoped>

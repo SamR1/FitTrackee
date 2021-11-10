@@ -17,53 +17,37 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { PropType, defineComponent, ref, watch } from 'vue'
+<script setup lang="ts">
+  import { ref, watch } from 'vue'
   import { useRoute } from 'vue-router'
 
   import { IDropdownOption, TDropdownOptions } from '@/types/forms'
+  interface Props {
+    options: TDropdownOptions
+    selected: string
+  }
+  const props = defineProps<Props>()
 
-  export default defineComponent({
-    name: 'Dropdown',
-    props: {
-      options: {
-        type: Object as PropType<TDropdownOptions>,
-        required: true,
-      },
-      selected: {
-        type: String,
-        required: true,
-      },
-    },
-    emits: {
-      selected: (option: IDropdownOption) => option,
-    },
-    setup(props, { emit }) {
-      const route = useRoute()
-      let isOpen = ref(false)
-      let dropdownOptions = props.options.map((option) => option)
-
-      function toggleDropdown() {
-        isOpen.value = !isOpen.value
-      }
-      function updateSelected(option: IDropdownOption) {
-        emit('selected', option)
-        isOpen.value = false
-      }
-
-      watch(
-        () => route.path,
-        () => (isOpen.value = false)
-      )
-
-      return {
-        dropdownOptions,
-        isOpen,
-        toggleDropdown,
-        updateSelected,
-      }
-    },
+  const emit = defineEmits({
+    selected: (option: IDropdownOption) => option,
   })
+
+  const route = useRoute()
+  let isOpen = ref(false)
+  let dropdownOptions = props.options.map((option) => option)
+
+  function toggleDropdown() {
+    isOpen.value = !isOpen.value
+  }
+  function updateSelected(option: IDropdownOption) {
+    emit('selected', option)
+    isOpen.value = false
+  }
+
+  watch(
+    () => route.path,
+    () => (isOpen.value = false)
+  )
 </script>
 
 <style scoped lang="scss">

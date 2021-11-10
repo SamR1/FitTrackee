@@ -7,14 +7,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import {
-    ComputedRef,
-    computed,
-    defineComponent,
-    onBeforeMount,
-    onBeforeUnmount,
-  } from 'vue'
+<script setup lang="ts">
+  import { ComputedRef, computed, onBeforeMount, onBeforeUnmount } from 'vue'
   import { useRoute } from 'vue-router'
 
   import UserHeader from '@/components/User/ProfileDisplay/UserHeader.vue'
@@ -23,35 +17,21 @@
   import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
-  export default defineComponent({
-    name: 'UserView',
-    components: {
-      UserHeader,
-      UserInfos,
-    },
-    setup() {
-      const route = useRoute()
-      const store = useStore()
+  const route = useRoute()
+  const store = useStore()
 
-      const user: ComputedRef<IUserProfile> = computed(
-        () => store.getters[USERS_STORE.GETTERS.USER]
-      )
+  const user: ComputedRef<IUserProfile> = computed(
+    () => store.getters[USERS_STORE.GETTERS.USER]
+  )
 
-      onBeforeMount(() => {
-        if (
-          route.params.username &&
-          typeof route.params.username === 'string'
-        ) {
-          store.dispatch(USERS_STORE.ACTIONS.GET_USER, route.params.username)
-        }
-      })
+  onBeforeMount(() => {
+    if (route.params.username && typeof route.params.username === 'string') {
+      store.dispatch(USERS_STORE.ACTIONS.GET_USER, route.params.username)
+    }
+  })
 
-      onBeforeUnmount(() => {
-        store.dispatch(USERS_STORE.ACTIONS.EMPTY_USER)
-      })
-
-      return { user }
-    },
+  onBeforeUnmount(() => {
+    store.dispatch(USERS_STORE.ACTIONS.EMPTY_USER)
   })
 </script>
 

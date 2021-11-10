@@ -4,15 +4,12 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent } from 'vue'
-
-  export default defineComponent({
-    name: 'AlertMessage',
-    props: {
-      message: String,
-    },
-  })
+<script setup lang="ts">
+  import { toRefs } from 'vue'
+  const props = defineProps<{
+    message: string
+  }>()
+  const { message } = toRefs(props)
 </script>
 
 <style scoped lang="scss">

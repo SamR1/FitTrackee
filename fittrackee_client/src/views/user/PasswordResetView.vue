@@ -11,37 +11,28 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { computed, defineComponent, onBeforeMount } from 'vue'
+<script setup lang="ts">
+  import { computed, toRefs, onBeforeMount } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
 
   import PasswordEmailSent from '@/components/User/PasswordReset/PasswordActionDone.vue'
   import PasswordResetRequest from '@/components/User/PasswordReset/PasswordResetForm.vue'
-  export default defineComponent({
-    name: 'PasswordResetView',
-    components: {
-      PasswordEmailSent,
-      PasswordResetRequest,
-    },
-    props: {
-      action: {
-        type: String,
-        required: true,
-      },
-    },
-    setup(props) {
-      const route = useRoute()
-      const router = useRouter()
-      const token = computed(() => route.query.token)
 
-      onBeforeMount(() => {
-        if (props.action === 'reset' && !token.value) {
-          router.push('/')
-        }
-      })
+  interface Props {
+    action: string
+  }
+  const props = defineProps<Props>()
 
-      return { token }
-    },
+  const route = useRoute()
+  const router = useRouter()
+
+  const { action } = toRefs(props)
+  const token = computed(() => route.query.token)
+
+  onBeforeMount(() => {
+    if (props.action === 'reset' && !token.value) {
+      router.push('/')
+    }
   })
 </script>
 

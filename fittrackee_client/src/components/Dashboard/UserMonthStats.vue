@@ -15,41 +15,28 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
   import { endOfMonth, startOfMonth } from 'date-fns'
-  import { PropType, defineComponent } from 'vue'
+  import { toRefs } from 'vue'
 
   import StatChart from '@/components/Common/StatsChart/index.vue'
   import { ISport } from '@/types/sports'
   import { IUserProfile } from '@/types/user'
 
-  export default defineComponent({
-    name: 'UserMonthStats',
-    components: {
-      StatChart,
-    },
-    props: {
-      sports: {
-        type: Object as PropType<ISport[]>,
-        required: true,
-      },
-      user: {
-        type: Object as PropType<IUserProfile>,
-        required: true,
-      },
-    },
-    setup(props) {
-      const date = new Date()
-      return {
-        chartParams: {
-          duration: 'week',
-          start: startOfMonth(date),
-          end: endOfMonth(date),
-        },
-        selectedSportIds: props.sports.map((sport) => sport.id),
-      }
-    },
-  })
+  interface Props {
+    sports: ISport[]
+    user: IUserProfile
+  }
+  const props = defineProps<Props>()
+
+  const { sports, user } = toRefs(props)
+  const date = new Date()
+  const chartParams = {
+    duration: 'week',
+    start: startOfMonth(date),
+    end: endOfMonth(date),
+  }
+  const selectedSportIds = props.sports.map((sport) => sport.id)
 </script>
 
 <style lang="scss" scoped>

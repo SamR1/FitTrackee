@@ -9,14 +9,6 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent } from 'vue'
-
-  export default defineComponent({
-    name: 'NoWorkouts',
-  })
-</script>
-
 <style lang="scss" scoped>
   @import '~@/scss/base.scss';
   .no-workouts {

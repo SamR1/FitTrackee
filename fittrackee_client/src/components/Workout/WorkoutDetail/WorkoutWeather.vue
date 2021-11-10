@@ -97,20 +97,17 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent, PropType } from 'vue'
+<script setup lang="ts">
+  import { toRefs } from 'vue'
 
   import { IWorkoutObject } from '@/types/workouts'
 
-  export default defineComponent({
-    name: 'WorkoutWeather',
-    props: {
-      workoutObject: {
-        type: Object as PropType<IWorkoutObject>,
-        required: true,
-      },
-    },
-  })
+  interface Props {
+    workoutObject: IWorkoutObject
+  }
+  const props = defineProps<Props>()
+
+  const { workoutObject } = toRefs(props)
 </script>
 
 <style lang="scss" scoped>

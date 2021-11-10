@@ -22,8 +22,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { PropType, defineComponent, ref } from 'vue'
+<script setup lang="ts">
+  import { ref, toRefs } from 'vue'
 
   import CalendarWorkout from '@/components/Dashboard/UserCalendar/CalendarWorkout.vue'
   import DonutChart from '@/components/Dashboard/UserCalendar/DonutChart.vue'
@@ -31,39 +31,21 @@
   import { IWorkout } from '@/types/workouts'
   import { getSportLabel } from '@/utils/sports'
 
-  export default defineComponent({
-    name: 'CalendarWorkoutsChart',
-    components: {
-      CalendarWorkout,
-      DonutChart,
-    },
-    props: {
-      colors: {
-        type: Object as PropType<Record<number, string>>,
-        required: true,
-      },
-      datasets: {
-        type: Object as PropType<Record<number, Record<string, number>>>,
-        required: true,
-      },
-      sports: {
-        type: Object as PropType<ISport[]>,
-        required: true,
-      },
-      workouts: {
-        type: Object as PropType<IWorkout[]>,
-        required: true,
-      },
-    },
-    setup() {
-      const isHidden = ref(true)
-      function togglePane(event: Event & { target: HTMLElement }) {
-        event.stopPropagation()
-        isHidden.value = !isHidden.value
-      }
-      return { isHidden, getSportLabel, togglePane }
-    },
-  })
+  interface Props {
+    colors: Record<number, string>
+    datasets: Record<number, Record<string, number>>
+    sports: ISport[]
+    workouts: IWorkout[]
+  }
+  const props = defineProps<Props>()
+
+  const { colors, datasets, sports, workouts } = toRefs(props)
+  const isHidden = ref(true)
+
+  function togglePane(event: Event & { target: HTMLElement }) {
+    event.stopPropagation()
+    isHidden.value = !isHidden.value
+  }
 </script>
 
 <style lang="scss" scoped>

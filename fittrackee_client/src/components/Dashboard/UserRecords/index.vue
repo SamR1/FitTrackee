@@ -18,8 +18,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { computed, defineComponent, PropType } from 'vue'
+<script setup lang="ts">
+  import { computed } from 'vue'
   import { useI18n } from 'vue-i18n'
 
   import RecordsCard from '@/components/Dashboard/UserRecords/RecordsCard.vue'
@@ -28,33 +28,21 @@
   import { getRecordsBySports } from '@/utils/records'
   import { translateSports } from '@/utils/sports'
 
-  export default defineComponent({
-    name: 'UserRecords',
-    components: {
-      RecordsCard,
-    },
-    props: {
-      sports: {
-        type: Object as PropType<ISport[]>,
-        required: true,
-      },
-      user: {
-        type: Object as PropType<IUserProfile>,
-        required: true,
-      },
-    },
-    setup(props) {
-      const { t } = useI18n()
-      const recordsBySport = computed(() =>
-        getRecordsBySports(
-          props.user.records,
-          translateSports(props.sports, t),
-          props.user.timezone
-        )
-      )
-      return { recordsBySport }
-    },
-  })
+  interface Props {
+    sports: ISport[]
+    user: IUserProfile
+  }
+  const props = defineProps<Props>()
+
+  const { t } = useI18n()
+
+  const recordsBySport = computed(() =>
+    getRecordsBySports(
+      props.user.records,
+      translateSports(props.sports, t),
+      props.user.timezone
+    )
+  )
 </script>
 
 <style lang="scss" scoped>

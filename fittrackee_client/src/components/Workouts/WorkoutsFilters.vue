@@ -159,8 +159,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { computed, ComputedRef, defineComponent, PropType, watch } from 'vue'
+<script setup lang="ts">
+  import { ComputedRef, computed, toRefs, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { LocationQuery, useRoute, useRouter } from 'vue-router'
 
@@ -168,58 +168,49 @@
   import { IUserProfile } from '@/types/user'
   import { translateSports } from '@/utils/sports'
 
-  export default defineComponent({
-    name: 'WorkoutsFilters',
-    props: {
-      authUser: {
-        type: Object as PropType<IUserProfile>,
-        required: true,
-      },
-      sports: {
-        type: Object as PropType<ISport[]>,
-        required: true,
-      },
-    },
-    emits: ['filter'],
-    setup(props, { emit }) {
-      const { t } = useI18n()
-      const route = useRoute()
-      const router = useRouter()
+  interface Props {
+    authUser: IUserProfile
+    sports: ISport[]
+  }
+  const props = defineProps<Props>()
 
-      const translatedSports: ComputedRef<ISport[]> = computed(() =>
-        translateSports(props.sports, t)
-      )
-      let params: LocationQuery = Object.assign({}, route.query)
+  const emit = defineEmits(['filter'])
 
-      function handleFilterChange(event: Event & { target: HTMLInputElement }) {
-        if (event.target.value === '') {
-          delete params[event.target.name]
-        } else {
-          params[event.target.name] = event.target.value
-        }
-      }
-      function onFilter() {
-        emit('filter')
-        if ('page' in params) {
-          params['page'] = '1'
-        }
-        router.push({ path: '/workouts', query: params })
-      }
-      function onClearFilter() {
-        emit('filter')
-        router.push({ path: '/workouts', query: {} })
-      }
+  const { t } = useI18n()
+  const route = useRoute()
+  const router = useRouter()
 
-      watch(
-        () => route.query,
-        (newQuery) => {
-          params = Object.assign({}, newQuery)
-        }
-      )
+  const { authUser } = toRefs(props)
+  const translatedSports: ComputedRef<ISport[]> = computed(() =>
+    translateSports(props.sports, t)
+  )
+  let params: LocationQuery = Object.assign({}, route.query)
 
-      return { translatedSports, onClearFilter, onFilter, handleFilterChange }
-    },
-  })
+  function handleFilterChange(event: Event & { target: HTMLInputElement }) {
+    if (event.target.value === '') {
+      delete params[event.target.name]
+    } else {
+      params[event.target.name] = event.target.value
+    }
+  }
+  function onFilter() {
+    emit('filter')
+    if ('page' in params) {
+      params['page'] = '1'
+    }
+    router.push({ path: '/workouts', query: params })
+  }
+  function onClearFilter() {
+    emit('filter')
+    router.push({ path: '/workouts', query: {} })
+  }
+
+  watch(
+    () => route.query,
+    (newQuery) => {
+      params = Object.assign({}, newQuery)
+    }
+  )
 </script>
 
 <style lang="scss" scoped>

@@ -80,29 +80,21 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { PropType, defineComponent } from 'vue'
+<script setup lang="ts">
+  import { toRefs } from 'vue'
 
   import { ISport } from '@/types/sports'
   import { IWorkoutObject } from '@/types/workouts'
 
-  export default defineComponent({
-    name: 'WorkoutCardTitle',
-    props: {
-      sport: {
-        type: Object as PropType<ISport>,
-        required: true,
-      },
-      workoutObject: {
-        type: Object as PropType<IWorkoutObject>,
-        required: true,
-      },
-    },
-    emits: ['displayModal'],
-    setup(props, { emit }) {
-      return { emit }
-    },
-  })
+  interface Props {
+    sport: ISport
+    workoutObject: IWorkoutObject
+  }
+  const props = defineProps<Props>()
+
+  const emit = defineEmits(['displayModal'])
+
+  const { sport, workoutObject } = toRefs(props)
 </script>
 
 <style lang="scss" scoped>

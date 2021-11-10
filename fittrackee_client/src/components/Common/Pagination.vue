@@ -42,37 +42,27 @@
   </nav>
 </template>
 
-<script lang="ts">
-  import { PropType, defineComponent } from 'vue'
+<script setup lang="ts">
+  import { toRefs } from 'vue'
 
-  import { IPagination, TPaginationPayload } from '@/types/api'
+  import { IPagination } from '@/types/api'
+  import { TWorkoutsPayload } from '@/types/workouts'
   import { rangePagination } from '@/utils/api'
 
-  export default defineComponent({
-    name: 'Pagination',
-    props: {
-      pagination: {
-        type: Object as PropType<IPagination>,
-        required: true,
-      },
-      path: {
-        type: String,
-        required: true,
-      },
-      query: {
-        type: Object as PropType<TPaginationPayload>,
-        required: true,
-      },
-    },
-    setup(props) {
-      function getQuery(page: number, cursor?: number): TPaginationPayload {
-        const newQuery = Object.assign({}, props.query)
-        newQuery.page = cursor ? page + cursor : page
-        return newQuery
-      }
-      return { rangePagination, getQuery }
-    },
-  })
+  interface Props {
+    pagination: IPagination
+    path: string
+    query: TWorkoutsPayload
+  }
+  const props = defineProps<Props>()
+
+  const { pagination, path, query } = toRefs(props)
+
+  function getQuery(page: number, cursor?: number): TWorkoutsPayload {
+    const newQuery = Object.assign({}, query.value)
+    newQuery.page = cursor ? page + cursor : page
+    return newQuery
+  }
 </script>
 
 <style lang="scss" scoped>

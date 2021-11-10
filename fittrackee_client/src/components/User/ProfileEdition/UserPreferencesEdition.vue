@@ -51,15 +51,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import {
-    ComputedRef,
-    PropType,
-    computed,
-    defineComponent,
-    reactive,
-    onMounted,
-  } from 'vue'
+<script setup lang="ts">
+  import { ComputedRef, computed, reactive, onMounted } from 'vue'
 
   import TimezoneDropdown from '@/components/User/ProfileEdition/TimezoneDropdown.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
@@ -67,71 +60,50 @@
   import { useStore } from '@/use/useStore'
   import { availableLanguages } from '@/utils/locales'
 
-  export default defineComponent({
-    name: 'UserPreferencesEdition',
-    components: {
-      TimezoneDropdown,
-    },
-    props: {
-      user: {
-        type: Object as PropType<IUserProfile>,
-        required: true,
-      },
-    },
-    setup(props) {
-      const store = useStore()
-      const userForm: IUserPreferencesPayload = reactive({
-        language: '',
-        timezone: 'Europe/Paris',
-        weekm: false,
-      })
-      const weekStart = [
-        {
-          label: 'MONDAY',
-          value: true,
-        },
-        {
-          label: 'SUNDAY',
-          value: false,
-        },
-      ]
-      const loading = computed(
-        () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
-      )
-      const errorMessages: ComputedRef<string | string[] | null> = computed(
-        () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-      )
+  interface Props {
+    user: IUserProfile
+  }
+  const props = defineProps<Props>()
 
-      onMounted(() => {
-        if (props.user) {
-          updateUserForm(props.user)
-        }
-      })
+  const store = useStore()
 
-      function updateUserForm(user: IUserProfile) {
-        userForm.language = user.language ? user.language : 'en'
-        userForm.timezone = user.timezone ? user.timezone : 'Europe/Paris'
-        userForm.weekm = user.weekm ? user.weekm : false
-      }
-      function updateProfile() {
-        store.dispatch(
-          AUTH_USER_STORE.ACTIONS.UPDATE_USER_PREFERENCES,
-          userForm
-        )
-      }
-      function updateTZ(value: string) {
-        userForm.timezone = value
-      }
-
-      return {
-        availableLanguages,
-        errorMessages,
-        loading,
-        userForm,
-        weekStart,
-        updateProfile,
-        updateTZ,
-      }
-    },
+  const userForm: IUserPreferencesPayload = reactive({
+    language: '',
+    timezone: 'Europe/Paris',
+    weekm: false,
   })
+  const weekStart = [
+    {
+      label: 'MONDAY',
+      value: true,
+    },
+    {
+      label: 'SUNDAY',
+      value: false,
+    },
+  ]
+  const loading = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
+  )
+  const errorMessages: ComputedRef<string | string[] | null> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
+  )
+
+  onMounted(() => {
+    if (props.user) {
+      updateUserForm(props.user)
+    }
+  })
+
+  function updateUserForm(user: IUserProfile) {
+    userForm.language = user.language ? user.language : 'en'
+    userForm.timezone = user.timezone ? user.timezone : 'Europe/Paris'
+    userForm.weekm = user.weekm ? user.weekm : false
+  }
+  function updateProfile() {
+    store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PREFERENCES, userForm)
+  }
+  function updateTZ(value: string) {
+    userForm.timezone = value
+  }
 </script>

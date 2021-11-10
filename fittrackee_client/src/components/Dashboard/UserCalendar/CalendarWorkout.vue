@@ -13,7 +13,7 @@
         aria-hidden="true"
         :title="
           workout.records.map(
-            (record) => ` ${t(`workouts.RECORD_${record.record_type}`)}`
+            (record) => ` ${$t(`workouts.RECORD_${record.record_type}`)}`
           )
         "
       />
@@ -21,29 +21,17 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent, PropType } from 'vue'
-  import { useI18n } from 'vue-i18n'
+<script setup lang="ts">
+  import { toRefs } from 'vue'
 
   import { IWorkout } from '@/types/workouts'
+  interface Props {
+    workout: IWorkout
+    sportLabel: string
+  }
+  const props = defineProps<Props>()
 
-  export default defineComponent({
-    name: 'CalendarWorkout',
-    props: {
-      workout: {
-        type: Object as PropType<IWorkout>,
-        required: true,
-      },
-      sportLabel: {
-        type: String,
-        required: true,
-      },
-    },
-    setup() {
-      const { t } = useI18n()
-      return { t }
-    },
-  })
+  const { workout, sportLabel } = toRefs(props)
 </script>
 
 <style lang="scss">

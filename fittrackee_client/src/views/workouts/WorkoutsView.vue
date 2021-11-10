@@ -26,8 +26,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { ComputedRef, computed, defineComponent, ref } from 'vue'
+<script setup lang="ts">
+  import { ComputedRef, computed, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
 
   import WorkoutsFilters from '@/components/Workouts/WorkoutsFilters.vue'
@@ -38,38 +38,23 @@
   import { useStore } from '@/use/useStore'
   import { translateSports } from '@/utils/sports'
 
-  export default defineComponent({
-    name: 'WorkoutsView',
-    components: {
-      WorkoutsFilters,
-      WorkoutsList,
-    },
-    setup() {
-      const { t } = useI18n()
-      const store = useStore()
-      const authUser: ComputedRef<IUserProfile> = computed(
-        () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-      )
-      const sports: ComputedRef<ISport[]> = computed(
-        () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
-      )
-      const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
-        translateSports(sports.value, t)
-      )
-      const hiddenFilters = ref(true)
+  const { t } = useI18n()
+  const store = useStore()
 
-      function toggleFilters() {
-        hiddenFilters.value = !hiddenFilters.value
-      }
+  const authUser: ComputedRef<IUserProfile> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
+  )
+  const sports: ComputedRef<ISport[]> = computed(
+    () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
+  )
+  const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
+    translateSports(sports.value, t)
+  )
+  const hiddenFilters = ref(true)
 
-      return {
-        authUser,
-        hiddenFilters,
-        translatedSports,
-        toggleFilters,
-      }
-    },
-  })
+  function toggleFilters() {
+    hiddenFilters.value = !hiddenFilters.value
+  }
 </script>
 
 <style lang="scss" scoped>

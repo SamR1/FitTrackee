@@ -4,15 +4,6 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent } from 'vue'
-
+<script setup lang="ts">
   import NotFound from '@/components/Common/NotFound.vue'
-
-  export default defineComponent({
-    name: 'NotFoundView',
-    components: {
-      NotFound,
-    },
-  })
 </script>

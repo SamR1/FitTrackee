@@ -8,35 +8,21 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { PropType, defineComponent } from 'vue'
+<script setup lang="ts">
+  import { toRefs } from 'vue'
 
   import UserHeader from '@/components/User/ProfileDisplay/UserHeader.vue'
   import UserProfileTabs from '@/components/User/UserProfileTabs.vue'
   import { IUserProfile } from '@/types/user'
 
-  export default defineComponent({
-    name: 'ProfileDisplay',
-    components: {
-      UserHeader,
-      UserProfileTabs,
-    },
-    props: {
-      user: {
-        type: Object as PropType<IUserProfile>,
-        required: true,
-      },
-      tab: {
-        type: String,
-        required: true,
-      },
-    },
-    setup() {
-      return {
-        tabs: ['PROFILE', 'PREFERENCES'],
-      }
-    },
-  })
+  interface Props {
+    user: IUserProfile
+    tab: string
+  }
+  const props = defineProps<Props>()
+
+  const { user, tab } = toRefs(props)
+  const tabs = ['PROFILE', 'PREFERENCES']
 </script>
 
 <style lang="scss" scoped>

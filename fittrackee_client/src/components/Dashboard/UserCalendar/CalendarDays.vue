@@ -6,30 +6,19 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
   import { format, addDays } from 'date-fns'
-  import { defineComponent } from 'vue'
 
-  export default defineComponent({
-    name: 'CalendarDays',
-    props: {
-      startDate: {
-        type: Date,
-        required: true,
-      },
-      localeOptions: {
-        type: String,
-        required: true,
-      },
-    },
-    setup(props) {
-      const days = []
-      for (let i = 0; i < 7; i++) {
-        days.push(addDays(props.startDate, i))
-      }
-      return { days, addDays, format }
-    },
-  })
+  interface Props {
+    startDate: Date
+    localeOptions: string
+  }
+  const props = defineProps<Props>()
+
+  const days = []
+  for (let i = 0; i < 7; i++) {
+    days.push(addDays(props.startDate, i))
+  }
 </script>
 
 <style lang="scss">

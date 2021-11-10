@@ -31,38 +31,30 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { ComputedRef, computed, defineComponent, onUnmounted } from 'vue'
+<script setup lang="ts">
+  import { ComputedRef, computed, toRefs, withDefaults, onUnmounted } from 'vue'
 
   import { ROOT_STORE } from '@/store/constants'
   import { useStore } from '@/use/useStore'
 
-  export default defineComponent({
-    name: 'Modal',
-    props: {
-      title: {
-        type: String,
-        required: true,
-      },
-      message: {
-        type: String,
-        required: true,
-      },
-      strongMessage: {
-        type: String || null,
-        default: null,
-      },
-    },
-    emits: ['cancelAction', 'confirmAction'],
-    setup(props, { emit }) {
-      const store = useStore()
-      const errorMessages: ComputedRef<string | string[] | null> = computed(
-        () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-      )
-      onUnmounted(() => store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES))
-      return { errorMessages, emit }
-    },
+  interface Props {
+    title: string
+    message: string
+    strongMessage?: string | null
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    strongMessage: () => null,
   })
+
+  const emit = defineEmits(['cancelAction', 'confirmAction'])
+
+  const store = useStore()
+
+  const { title, message, strongMessage } = toRefs(props)
+  const errorMessages: ComputedRef<string | string[] | null> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
+  )
+  onUnmounted(() => store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES))
 </script>
 
 <style lang="scss" scoped>

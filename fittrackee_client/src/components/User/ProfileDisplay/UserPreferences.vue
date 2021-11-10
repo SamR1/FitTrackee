@@ -17,35 +17,26 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { PropType, computed, defineComponent } from 'vue'
+<script setup lang="ts">
+  import { computed } from 'vue'
 
   import { IUserProfile } from '@/types/user'
   import { languageLabels } from '@/utils/locales'
 
-  export default defineComponent({
-    name: 'UserPreferences',
-    props: {
-      user: {
-        type: Object as PropType<IUserProfile>,
-        required: true,
-      },
-    },
-    setup(props) {
-      const language = computed(() =>
-        props.user.language
-          ? languageLabels[props.user.language]
-          : languageLabels['en']
-      )
-      const fistDayOfWeek = computed(() =>
-        props.user.weekm ? 'MONDAY' : 'SUNDAY'
-      )
-      const timezone = computed(() =>
-        props.user.timezone ? props.user.timezone : 'Europe/Paris'
-      )
-      return { fistDayOfWeek, language, timezone }
-    },
-  })
+  interface Props {
+    user: IUserProfile
+  }
+  const props = defineProps<Props>()
+
+  const language = computed(() =>
+    props.user.language
+      ? languageLabels[props.user.language]
+      : languageLabels['en']
+  )
+  const fistDayOfWeek = computed(() => (props.user.weekm ? 'MONDAY' : 'SUNDAY'))
+  const timezone = computed(() =>
+    props.user.timezone ? props.user.timezone : 'Europe/Paris'
+  )
 </script>
 
 <style lang="scss" scoped>

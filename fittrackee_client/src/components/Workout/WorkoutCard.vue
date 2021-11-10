@@ -17,7 +17,7 @@
         </div>
         <router-link
           class="workout-title"
-          v-if="workout"
+          v-if="workout.id"
           :to="{
             name: 'Workout',
             params: { workoutId: workout.id },
@@ -27,7 +27,7 @@
         </router-link>
         <div
           class="workout-date"
-          v-if="workout && user"
+          v-if="workout.workout_date && user"
           :title="
             format(
               getDateWithTZ(workout.workout_date, user.timezone),
@@ -47,7 +47,7 @@
         class="workout-map"
         :class="{ 'no-cursor': !workout }"
         @click="
-          workout
+          workout.id
             ? $router.push({
                 name: 'Workout',
                 params: { workoutId: workout.id },
@@ -66,11 +66,16 @@
         class="workout-data"
         :class="{ 'without-gpx': workout && !workout.with_gpx }"
         @click="
-          $router.push({ name: 'Workout', params: { workoutId: workout.id } })
+          workout.id
+            ? $router.push({
+                name: 'Workout',
+                params: { workoutId: workout.id },
+              })
+            : null
         "
       >
         <div class="img">
-          <SportImage v-if="sport" :sport-label="sport.label" />
+          <SportImage v-if="sport.label" :sport-label="sport.label" />
         </div>
         <div class="data">
           <i class="fa fa-clock-o" aria-hidden="true" />
@@ -103,9 +108,9 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
   import { Locale, format, formatDistance } from 'date-fns'
-  import { PropType, defineComponent, ComputedRef, computed } from 'vue'
+  import { ComputedRef, computed, toRefs, withDefaults } from 'vue'
 
   import StaticMap from '@/components/Common/StaticMap.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
@@ -116,39 +121,22 @@
   import { useStore } from '@/use/useStore'
   import { getDateWithTZ } from '@/utils/dates'
 
-  export default defineComponent({
-    name: 'WorkoutCard',
-    components: {
-      StaticMap,
-      UserPicture,
-    },
-    props: {
-      workout: {
-        type: Object as PropType<IWorkout>,
-        required: false,
-      },
-      user: {
-        type: Object as PropType<IUserProfile>,
-        required: true,
-      },
-      sport: {
-        type: Object as PropType<ISport>,
-        required: false,
-      },
-    },
-    setup() {
-      const store = useStore()
-      const locale: ComputedRef<Locale> = computed(
-        () => store.getters[ROOT_STORE.GETTERS.LOCALE]
-      )
-      return {
-        format,
-        formatDistance,
-        getDateWithTZ,
-        locale,
-      }
-    },
+  interface Props {
+    user: IUserProfile
+    workout?: IWorkout
+    sport?: ISport
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    workout: () => ({} as IWorkout),
+    sport: () => ({} as ISport),
   })
+
+  const store = useStore()
+
+  const { user, workout, sport } = toRefs(props)
+  const locale: ComputedRef<Locale> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.LOCALE]
+  )
 </script>
 
 <style lang="scss" scoped>

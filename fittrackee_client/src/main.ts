@@ -48,7 +48,7 @@ const app = createApp(App)
   .directive('click-outside', clickOutsideDirective)
 
 customComponents.forEach((component) => {
-  app.component(component.name, component)
+  app.component(component.name, component.target)
 })
 
 app.mount('#app')

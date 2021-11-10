@@ -17,37 +17,25 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { computed, defineComponent, PropType } from 'vue'
+<script setup lang="ts">
+  import { computed, toRefs } from 'vue'
 
   import UserProfileTabs from '@/components/User/UserProfileTabs.vue'
   import { AUTH_USER_STORE } from '@/store/constants'
   import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
-  export default defineComponent({
-    name: 'ProfileEdition',
-    components: {
-      UserProfileTabs,
-    },
-    props: {
-      user: {
-        type: Object as PropType<IUserProfile>,
-        required: true,
-      },
-      tab: {
-        type: String,
-        required: true,
-      },
-    },
-    setup() {
-      const store = useStore()
-      return {
-        loading: computed(
-          () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
-        ),
-        tabs: ['PROFILE', 'PICTURE', 'PREFERENCES'],
-      }
-    },
-  })
+  interface Props {
+    user: IUserProfile
+    tab: string
+  }
+  const props = defineProps<Props>()
+
+  const store = useStore()
+
+  const { user, tab } = toRefs(props)
+  const tabs = ['PROFILE', 'PICTURE', 'PREFERENCES']
+  const loading = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
+  )
 </script>

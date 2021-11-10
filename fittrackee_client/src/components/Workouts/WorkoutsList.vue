@@ -137,15 +137,14 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
   import { format } from 'date-fns'
   import {
     ComputedRef,
-    PropType,
     Ref,
     computed,
-    defineComponent,
     ref,
+    toRefs,
     watch,
     capitalize,
     onBeforeMount,
@@ -166,103 +165,76 @@
   import { getDateWithTZ } from '@/utils/dates'
   import { defaultOrder } from '@/utils/workouts'
 
-  export default defineComponent({
-    name: 'WorkoutsList',
-    components: {
-      FilterSelects,
-      NoWorkouts,
-      Pagination,
-      StaticMap,
-    },
-    props: {
-      user: {
-        type: Object as PropType<IUserProfile>,
-        required: true,
-      },
-      sports: {
-        type: Object as PropType<ITranslatedSport[]>,
-      },
-    },
-    setup() {
-      const store = useStore()
-      const route = useRoute()
-      const router = useRouter()
+  interface Props {
+    user: IUserProfile
+    sports: ITranslatedSport[]
+  }
+  const props = defineProps<Props>()
 
-      const orderByList: string[] = [
-        'ave_speed',
-        'distance',
-        'duration',
-        'workout_date',
-      ]
-      const workouts: ComputedRef<IWorkout[]> = computed(
-        () => store.getters[WORKOUTS_STORE.GETTERS.USER_WORKOUTS]
-      )
-      const pagination: ComputedRef<IPagination> = computed(
-        () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUTS_PAGINATION]
-      )
-      let query: TWorkoutsPayload = getWorkoutsQuery(route.query)
-      const hoverWorkoutId: Ref<string | null> = ref(null)
+  const store = useStore()
+  const route = useRoute()
+  const router = useRouter()
 
-      onBeforeMount(() => {
-        loadWorkouts(query)
-      })
+  const { user, sports } = toRefs(props)
+  const orderByList: string[] = [
+    'ave_speed',
+    'distance',
+    'duration',
+    'workout_date',
+  ]
+  const workouts: ComputedRef<IWorkout[]> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.USER_WORKOUTS]
+  )
+  const pagination: ComputedRef<IPagination> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUTS_PAGINATION]
+  )
+  let query: TWorkoutsPayload = getWorkoutsQuery(route.query)
+  const hoverWorkoutId: Ref<string | null> = ref(null)
 
-      function loadWorkouts(payload: TWorkoutsPayload) {
-        store.dispatch(WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS, payload)
-      }
-      function reloadWorkouts(queryParam: string, queryValue: string) {
-        const newQuery: LocationQuery = Object.assign({}, route.query)
-        newQuery[queryParam] = queryValue
-        if (queryParam === 'per_page') {
-          newQuery['page'] = '1'
-        }
-        query = getWorkoutsQuery(newQuery)
-        router.push({ path: '/workouts', query })
-      }
-
-      function getWorkoutsQuery(newQuery: LocationQuery): TWorkoutsPayload {
-        query = getQuery(newQuery, orderByList, defaultOrder.order_by, {
-          defaultSort: defaultOrder.order,
-        })
-        Object.keys(newQuery)
-          .filter((k) => workoutsPayloadKeys.includes(k))
-          .map((k) => {
-            if (typeof newQuery[k] === 'string') {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              query[k] = newQuery[k]
-            }
-          })
-        return query
-      }
-
-      function onHover(workoutId: string | null) {
-        hoverWorkoutId.value = workoutId
-      }
-
-      watch(
-        () => route.query,
-        async (newQuery) => {
-          query = getWorkoutsQuery(newQuery)
-          loadWorkouts(query)
-        }
-      )
-
-      return {
-        query,
-        hoverWorkoutId,
-        orderByList,
-        pagination,
-        sortList,
-        workouts,
-        capitalize,
-        format,
-        getDateWithTZ,
-        onHover,
-        reloadWorkouts,
-      }
-    },
+  onBeforeMount(() => {
+    loadWorkouts(query)
   })
+
+  function loadWorkouts(payload: TWorkoutsPayload) {
+    store.dispatch(WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS, payload)
+  }
+  function reloadWorkouts(queryParam: string, queryValue: string) {
+    const newQuery: LocationQuery = Object.assign({}, route.query)
+    newQuery[queryParam] = queryValue
+    if (queryParam === 'per_page') {
+      newQuery['page'] = '1'
+    }
+    query = getWorkoutsQuery(newQuery)
+    router.push({ path: '/workouts', query })
+  }
+
+  function getWorkoutsQuery(newQuery: LocationQuery): TWorkoutsPayload {
+    query = getQuery(newQuery, orderByList, defaultOrder.order_by, {
+      defaultSort: defaultOrder.order,
+    })
+    Object.keys(newQuery)
+      .filter((k) => workoutsPayloadKeys.includes(k))
+      .map((k) => {
+        if (typeof newQuery[k] === 'string') {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          query[k] = newQuery[k]
+        }
+      })
+    return query
+  }
+
+  function onHover(workoutId: string | null) {
+    hoverWorkoutId.value = workoutId
+  }
+
+  watch(
+    () => route.query,
+    async (newQuery) => {
+      query = getWorkoutsQuery(newQuery)
+      loadWorkouts(query)
+    }
+  )
 </script>
 
 <style lang="scss" scoped>

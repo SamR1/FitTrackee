@@ -20,8 +20,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent, inject } from 'vue'
+<script setup lang="ts">
+  import { inject, toRefs, withDefaults } from 'vue'
 
   import CyclingSport from '@/components/Common/Images/SportImage/CyclingSport.vue'
   import CyclingTransport from '@/components/Common/Images/SportImage/CyclingTransport.vue'
@@ -35,33 +35,14 @@
   import Trail from '@/components/Common/Images/SportImage/Trail.vue'
   import Walking from '@/components/Common/Images/SportImage/Walking.vue'
 
-  export default defineComponent({
-    name: 'SportImage',
-    components: {
-      CyclingSport,
-      CyclingTransport,
-      Hiking,
-      MountainBiking,
-      MountainBikingElectric,
-      Rowing,
-      Running,
-      SkiingAlpine,
-      SkiingCrossCountry,
-      Trail,
-      Walking,
-    },
-    props: {
-      sportLabel: {
-        type: String,
-        required: true,
-      },
-      title: {
-        type: String,
-        required: false,
-      },
-    },
-    setup() {
-      return { sportColors: inject('sportColors') }
-    },
+  interface Props {
+    sportLabel: string
+    title?: string
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    title: '',
   })
+
+  const { sportLabel, title } = toRefs(props)
+  const sportColors = inject('sportColors')
 </script>

@@ -23,105 +23,71 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
   import { addDays, format, isSameDay, isSameMonth, isToday } from 'date-fns'
-  import {
-    PropType,
-    Ref,
-    defineComponent,
-    ref,
-    toRefs,
-    watch,
-    onMounted,
-  } from 'vue'
+  import { Ref, ref, toRefs, watch, onMounted } from 'vue'
 
   import CalendarWorkouts from '@/components/Dashboard/UserCalendar/CalendarWorkouts.vue'
   import { ISport } from '@/types/sports'
   import { IWorkout } from '@/types/workouts'
   import { getDateWithTZ } from '@/utils/dates'
 
-  export default defineComponent({
-    name: 'CalendarCells',
-    components: {
-      CalendarWorkouts,
-    },
-    props: {
-      currentDay: {
-        type: Date,
-        required: true,
-      },
-      endDate: {
-        type: Date,
-        required: true,
-      },
-      sports: {
-        type: Object as PropType<ISport[]>,
-        required: true,
-      },
-      startDate: {
-        type: Date,
-        required: true,
-      },
-      timezone: {
-        type: String,
-        required: true,
-      },
-      weekStartingMonday: {
-        type: Boolean,
-        required: true,
-      },
-      workouts: {
-        type: Object as PropType<IWorkout[]>,
-        required: true,
-      },
-    },
-    setup(props) {
-      const rows: Ref<Date[][]> = ref([])
-      let { startDate, endDate, weekStartingMonday } = toRefs(props)
+  interface Props {
+    currentDay: Date
+    endDate: Date
+    sports: ISport[]
+    startDate: Date
+    timezone: string
+    weekStartingMonday: boolean
+    workouts: IWorkout[]
+  }
+  const props = defineProps<Props>()
 
-      onMounted(() => getDays())
+  const {
+    currentDay,
+    endDate,
+    sports,
+    startDate,
+    timezone,
+    weekStartingMonday,
+    workouts,
+  } = toRefs(props)
+  const rows: Ref<Date[][]> = ref([])
 
-      function getDays() {
-        rows.value = []
-        let day = startDate.value
-        while (day <= endDate.value) {
-          const days: Date[] = []
-          for (let i = 0; i < 7; i++) {
-            days.push(day)
-            day = addDays(day, 1)
-          }
-          rows.value.push(days)
-        }
+  onMounted(() => getDays())
+
+  function getDays() {
+    rows.value = []
+    let day = startDate.value
+    while (day <= endDate.value) {
+      const days: Date[] = []
+      for (let i = 0; i < 7; i++) {
+        days.push(day)
+        day = addDays(day, 1)
       }
+      rows.value.push(days)
+    }
+  }
+  function isWeekEnd(day: number): boolean {
+    return weekStartingMonday.value
+      ? [5, 6].includes(day)
+      : [0, 6].includes(day)
+  }
+  function filterWorkouts(day: Date, workouts: IWorkout[]) {
+    if (workouts) {
+      return workouts
+        .filter((workout) =>
+          isSameDay(getDateWithTZ(workout.workout_date, timezone), day)
+        )
+        .reverse()
+    }
+    return []
+  }
 
-      function isWeekEnd(day: number): boolean {
-        return weekStartingMonday.value
-          ? [5, 6].includes(day)
-          : [0, 6].includes(day)
-      }
-
-      function filterWorkouts(day: Date, workouts: IWorkout[]) {
-        if (workouts) {
-          return workouts
-            .filter((workout) =>
-              isSameDay(
-                getDateWithTZ(workout.workout_date, props.timezone),
-                day
-              )
-            )
-            .reverse()
-        }
-        return []
-      }
-
-      watch(
-        () => props.currentDay,
-        () => getDays()
-      )
-
-      return { rows, format, isSameMonth, isToday, isWeekEnd, filterWorkouts }
-    },
-  })
+  watch(
+    () => props.currentDay,
+    () => getDays()
+  )
 </script>
 
 <style lang="scss">

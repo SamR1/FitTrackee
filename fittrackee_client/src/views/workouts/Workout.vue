@@ -37,13 +37,13 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
   import {
     ComputedRef,
     Ref,
     computed,
-    defineComponent,
     ref,
+    toRefs,
     watch,
     onBeforeMount,
     onUnmounted,
@@ -65,92 +65,72 @@
   import { IWorkoutData, IWorkoutPayload, TCoordinates } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
 
-  export default defineComponent({
-    name: 'Workout',
-    components: {
-      NotFound,
-      WorkoutChart,
-      WorkoutDetail,
-      WorkoutNotes,
-      WorkoutSegments,
-    },
-    props: {
-      displaySegment: {
-        type: Boolean,
-        required: true,
-      },
-    },
-    setup(props) {
-      const route = useRoute()
-      const store = useStore()
+  interface Props {
+    displaySegment: boolean
+  }
+  const props = defineProps<Props>()
 
-      onBeforeMount(() => {
-        const payload: IWorkoutPayload = { workoutId: route.params.workoutId }
-        if (props.displaySegment) {
-          payload.segmentId = route.params.segmentId
+  const route = useRoute()
+  const store = useStore()
+
+  const { displaySegment } = toRefs(props)
+  const workoutData: ComputedRef<IWorkoutData> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUT_DATA]
+  )
+  const authUser: ComputedRef<IUserProfile> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
+  )
+  const sports: ComputedRef<ISport[]> = computed(
+    () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
+  )
+  let markerCoordinates: Ref<TCoordinates> = ref({
+    latitude: null,
+    longitude: null,
+  })
+
+  onBeforeMount(() => {
+    const payload: IWorkoutPayload = { workoutId: route.params.workoutId }
+    if (props.displaySegment) {
+      payload.segmentId = route.params.segmentId
+    }
+    store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, payload)
+  })
+
+  onUnmounted(() => {
+    store.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
+  })
+
+  function updateCoordinates(coordinates: TCoordinates) {
+    markerCoordinates.value = {
+      latitude: coordinates.latitude,
+      longitude: coordinates.longitude,
+    }
+  }
+
+  watch(
+    () => route.params.workoutId,
+    async (newWorkoutId) => {
+      if (newWorkoutId) {
+        store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, {
+          workoutId: newWorkoutId,
+        })
+      }
+    }
+  )
+  watch(
+    () => route.params.segmentId,
+    async (newSegmentId) => {
+      if (route.params.workoutId) {
+        const payload: IWorkoutPayload = {
+          workoutId: route.params.workoutId,
+        }
+        if (newSegmentId) {
+          payload.segmentId = newSegmentId
         }
         store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, payload)
-      })
-
-      const workoutData: ComputedRef<IWorkoutData> = computed(
-        () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUT_DATA]
-      )
-      const authUser: ComputedRef<IUserProfile> = computed(
-        () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-      )
-      const sports: ComputedRef<ISport[]> = computed(
-        () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
-      )
-      let markerCoordinates: Ref<TCoordinates> = ref({
-        latitude: null,
-        longitude: null,
-      })
-
-      function updateCoordinates(coordinates: TCoordinates) {
-        markerCoordinates.value = {
-          latitude: coordinates.latitude,
-          longitude: coordinates.longitude,
-        }
       }
-
-      watch(
-        () => route.params.workoutId,
-        async (newWorkoutId) => {
-          if (newWorkoutId) {
-            store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, {
-              workoutId: newWorkoutId,
-            })
-          }
-        }
-      )
-      watch(
-        () => route.params.segmentId,
-        async (newSegmentId) => {
-          if (route.params.workoutId) {
-            const payload: IWorkoutPayload = {
-              workoutId: route.params.workoutId,
-            }
-            if (newSegmentId) {
-              payload.segmentId = newSegmentId
-            }
-            store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, payload)
-          }
-        }
-      )
-
-      onUnmounted(() => {
-        store.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
-      })
-
-      return {
-        authUser,
-        markerCoordinates,
-        sports,
-        workoutData,
-        updateCoordinates,
-      }
-    },
-  })
+    }
+  )
 </script>
 
 <style lang="scss" scoped>

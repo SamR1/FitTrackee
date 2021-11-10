@@ -32,15 +32,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import {
-    ComputedRef,
-    PropType,
-    Ref,
-    defineComponent,
-    computed,
-    ref,
-  } from 'vue'
+<script setup lang="ts">
+  import { ComputedRef, Ref, computed, ref, toRefs } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
@@ -49,56 +42,40 @@
   import { useStore } from '@/use/useStore'
   import { getReadableFileSize } from '@/utils/files'
 
-  export default defineComponent({
-    name: 'UserPictureEdition',
-    components: {
-      UserPicture,
-    },
-    props: {
-      user: {
-        type: Object as PropType<IUserProfile>,
-        required: true,
-      },
-    },
-    setup() {
-      const store = useStore()
-      const errorMessages: ComputedRef<string | string[] | null> = computed(
-        () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-      )
-      const appConfig: ComputedRef<TAppConfig> = computed(
-        () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
-      )
-      const fileSizeLimit = appConfig.value.max_single_file_size
-        ? getReadableFileSize(appConfig.value.max_single_file_size)
-        : ''
-      let pictureFile: Ref<File | null> = ref(null)
+  interface Props {
+    user: IUserProfile
+  }
+  const props = defineProps<Props>()
 
-      function deleteUserPicture() {
-        store.dispatch(AUTH_USER_STORE.ACTIONS.DELETE_PICTURE)
-      }
-      function updatePictureFile(event: Event & { target: HTMLInputElement }) {
-        if (event.target.files) {
-          pictureFile.value = event.target.files[0]
-        }
-      }
-      function updateUserPicture() {
-        if (pictureFile.value) {
-          store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PICTURE, {
-            picture: pictureFile.value,
-          })
-        }
-      }
+  const store = useStore()
 
-      return {
-        errorMessages,
-        fileSizeLimit,
-        pictureFile,
-        deleteUserPicture,
-        updateUserPicture,
-        updatePictureFile,
-      }
-    },
-  })
+  const { user } = toRefs(props)
+  const errorMessages: ComputedRef<string | string[] | null> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
+  )
+  const appConfig: ComputedRef<TAppConfig> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
+  )
+  const fileSizeLimit = appConfig.value.max_single_file_size
+    ? getReadableFileSize(appConfig.value.max_single_file_size)
+    : ''
+  let pictureFile: Ref<File | null> = ref(null)
+
+  function deleteUserPicture() {
+    store.dispatch(AUTH_USER_STORE.ACTIONS.DELETE_PICTURE)
+  }
+  function updatePictureFile(event: Event & { target: HTMLInputElement }) {
+    if (event.target.files) {
+      pictureFile.value = event.target.files[0]
+    }
+  }
+  function updateUserPicture() {
+    if (pictureFile.value) {
+      store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PICTURE, {
+        picture: pictureFile.value,
+      })
+    }
+  }
 </script>
 
 <style lang="scss" scoped>

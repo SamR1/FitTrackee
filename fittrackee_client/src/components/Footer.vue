@@ -37,18 +37,15 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent } from 'vue'
+<script setup lang="ts">
+  import { toRefs } from 'vue'
 
-  export default defineComponent({
-    name: 'Footer',
-    props: {
-      version: {
-        type: String,
-        required: true,
-      },
-    },
-  })
+  interface Props {
+    version: string
+  }
+  const props = defineProps<Props>()
+
+  const { version } = toRefs(props)
 </script>
 
 <style scoped lang="scss">

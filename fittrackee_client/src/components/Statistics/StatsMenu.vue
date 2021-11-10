@@ -37,29 +37,18 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent, ref } from 'vue'
+<script setup lang="ts">
+  import { ref } from 'vue'
 
-  export default defineComponent({
-    name: 'StatsMenu',
-    emits: ['arrowClick', 'timeFrameUpdate'],
-    setup(props, { emit }) {
-      let selectedTimeFrame = ref('month')
-      const timeFrames = ['week', 'month', 'year']
+  const emit = defineEmits(['arrowClick', 'timeFrameUpdate'])
 
-      function onUpdateTimeFrame(timeFrame: string) {
-        selectedTimeFrame.value = timeFrame
-        emit('timeFrameUpdate', timeFrame)
-      }
+  let selectedTimeFrame = ref('month')
+  const timeFrames = ['week', 'month', 'year']
 
-      return {
-        selectedTimeFrame,
-        timeFrames,
-        onUpdateTimeFrame,
-        emit,
-      }
-    },
-  })
+  function onUpdateTimeFrame(timeFrame: string) {
+    selectedTimeFrame.value = timeFrame
+    emit('timeFrameUpdate', timeFrame)
+  }
 </script>
 
 <style lang="scss" scoped>

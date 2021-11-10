@@ -86,8 +86,15 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { ComputedRef, computed, defineComponent, reactive, watch } from 'vue'
+<script setup lang="ts">
+  import {
+    ComputedRef,
+    computed,
+    reactive,
+    toRefs,
+    watch,
+    withDefaults,
+  } from 'vue'
   import { useRoute } from 'vue-router'
 
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
@@ -95,104 +102,90 @@
   import { ILoginRegisterFormData } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
-  export default defineComponent({
-    name: 'UserAuthForm',
-    props: {
-      action: {
-        type: String,
-        required: true,
-      },
-      token: {
-        type: String,
-        default: '',
-      },
-    },
-    setup(props) {
-      const formData: ILoginRegisterFormData = reactive({
-        username: '',
-        email: '',
-        password: '',
-        password_conf: '',
-      })
-      const route = useRoute()
-      const store = useStore()
-
-      const buttonText: ComputedRef<string> = computed(() =>
-        getButtonText(props.action)
-      )
-      const errorMessages: ComputedRef<string | string[] | null> = computed(
-        () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-      )
-      const appConfig: ComputedRef<TAppConfig> = computed(
-        () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
-      )
-      const registration_disabled: ComputedRef<boolean> = computed(
-        () =>
-          props.action === 'register' &&
-          !appConfig.value.is_registration_enabled
-      )
-
-      function getButtonText(action: string): string {
-        switch (action) {
-          case 'reset-request':
-          case 'reset':
-            return 'buttons.SUBMIT'
-          default:
-            return `buttons.${props.action.toUpperCase()}`
-        }
-      }
-      function onSubmit(actionType: string) {
-        switch (actionType) {
-          case 'reset':
-            if (!props.token) {
-              return store.commit(
-                ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES,
-                'user.INVALID_TOKEN'
-              )
-            }
-            return store.dispatch(AUTH_USER_STORE.ACTIONS.RESET_USER_PASSWORD, {
-              password: formData.password,
-              password_conf: formData.password_conf,
-              token: props.token,
-            })
-          case 'reset-request':
-            return store.dispatch(
-              AUTH_USER_STORE.ACTIONS.SEND_PASSWORD_RESET_REQUEST,
-              {
-                email: formData.email,
-              }
-            )
-          default:
-            store.dispatch(AUTH_USER_STORE.ACTIONS.LOGIN_OR_REGISTER, {
-              actionType,
-              formData,
-              redirectUrl: route.query.from,
-            })
-        }
-      }
-      function resetFormData() {
-        formData.username = ''
-        formData.email = ''
-        formData.password = ''
-        formData.password_conf = ''
-      }
-      watch(
-        () => route.path,
-        async () => {
-          store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
-          resetFormData()
-        }
-      )
-      return {
-        appConfig,
-        buttonText,
-        errorMessages,
-        formData,
-        registration_disabled,
-        onSubmit,
-      }
-    },
+  interface Props {
+    action: string
+    token?: string
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    token: '',
   })
+
+  const route = useRoute()
+  const store = useStore()
+
+  const { action } = toRefs(props)
+  const formData: ILoginRegisterFormData = reactive({
+    username: '',
+    email: '',
+    password: '',
+    password_conf: '',
+  })
+  const buttonText: ComputedRef<string> = computed(() =>
+    getButtonText(props.action)
+  )
+  const errorMessages: ComputedRef<string | string[] | null> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
+  )
+  const appConfig: ComputedRef<TAppConfig> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
+  )
+  const registration_disabled: ComputedRef<boolean> = computed(
+    () =>
+      props.action === 'register' && !appConfig.value.is_registration_enabled
+  )
+
+  function getButtonText(action: string): string {
+    switch (action) {
+      case 'reset-request':
+      case 'reset':
+        return 'buttons.SUBMIT'
+      default:
+        return `buttons.${props.action.toUpperCase()}`
+    }
+  }
+  function onSubmit(actionType: string) {
+    switch (actionType) {
+      case 'reset':
+        if (!props.token) {
+          return store.commit(
+            ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES,
+            'user.INVALID_TOKEN'
+          )
+        }
+        return store.dispatch(AUTH_USER_STORE.ACTIONS.RESET_USER_PASSWORD, {
+          password: formData.password,
+          password_conf: formData.password_conf,
+          token: props.token,
+        })
+      case 'reset-request':
+        return store.dispatch(
+          AUTH_USER_STORE.ACTIONS.SEND_PASSWORD_RESET_REQUEST,
+          {
+            email: formData.email,
+          }
+        )
+      default:
+        store.dispatch(AUTH_USER_STORE.ACTIONS.LOGIN_OR_REGISTER, {
+          actionType,
+          formData,
+          redirectUrl: route.query.from,
+        })
+    }
+  }
+  function resetFormData() {
+    formData.username = ''
+    formData.email = ''
+    formData.password = ''
+    formData.password_conf = ''
+  }
+
+  watch(
+    () => route.path,
+    async () => {
+      store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+      resetFormData()
+    }
+  )
 </script>
 
 <style scoped lang="scss">

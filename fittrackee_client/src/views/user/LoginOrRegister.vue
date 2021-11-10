@@ -11,25 +11,18 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent } from 'vue'
+<script setup lang="ts">
+  import { toRefs } from 'vue'
 
   import BikePic from '@/components/BikePic.vue'
   import LoginOrRegisterForm from '@/components/User/UserAuthForm.vue'
 
-  export default defineComponent({
-    name: 'NavBar',
-    components: {
-      BikePic,
-      LoginOrRegisterForm,
-    },
-    props: {
-      action: {
-        type: String,
-        required: true,
-      },
-    },
-  })
+  interface Props {
+    action: string
+  }
+  const props = defineProps<Props>()
+
+  const { action } = toRefs(props)
 </script>
 
 <style lang="scss">

@@ -16,8 +16,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { ComputedRef, computed, defineComponent } from 'vue'
+<script setup lang="ts">
+  import { ComputedRef, computed } from 'vue'
 
   import Statistics from '@/components/Statistics/index.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
@@ -26,25 +26,16 @@
   import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
-  export default defineComponent({
-    name: 'StatisticsView',
-    components: {
-      NoWorkouts,
-      Statistics,
-    },
-    setup() {
-      const store = useStore()
-      const authUser: ComputedRef<IUserProfile> = computed(
-        () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-      )
-      const sports: ComputedRef<ISport[]> = computed(() =>
-        store.getters[SPORTS_STORE.GETTERS.SPORTS].filter((sport) =>
-          authUser.value.sports_list.includes(sport.id)
-        )
-      )
-      return { authUser, sports }
-    },
-  })
+  const store = useStore()
+
+  const authUser: ComputedRef<IUserProfile> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
+  )
+  const sports: ComputedRef<ISport[]> = computed(() =>
+    store.getters[SPORTS_STORE.GETTERS.SPORTS].filter((sport) =>
+      authUser.value.sports_list.includes(sport.id)
+    )
+  )
 </script>
 
 <style lang="scss" scoped>

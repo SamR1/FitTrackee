@@ -31,9 +31,9 @@
                     :disabled="loading"
                     @click="updateWithGpx"
                   />
-                  <label for="withoutGpx">{{
-                    $t('workouts.WITHOUT_GPX')
-                  }}</label>
+                  <label for="withoutGpx">
+                    {{ $t('workouts.WITHOUT_GPX') }}
+                  </label>
                 </div>
               </div>
               <div class="form-item">
@@ -42,7 +42,7 @@
                   id="sport"
                   required
                   :disabled="loading"
-                  v-model="workoutDataObject.sport_id"
+                  v-model="workoutForm.sport_id"
                 >
                   <option
                     v-for="sport in translatedSports.filter((s) => s.is_active)"
@@ -95,7 +95,7 @@
                   type="text"
                   :required="!isCreation"
                   :disabled="loading"
-                  v-model="workoutDataObject.title"
+                  v-model="workoutForm.title"
                 />
               </div>
               <div v-if="!withGpx">
@@ -109,7 +109,7 @@
                         type="date"
                         required
                         :disabled="loading"
-                        v-model="workoutDataObject.workoutDate"
+                        v-model="workoutForm.workoutDate"
                       />
                       <input
                         id="workout-time"
@@ -118,7 +118,7 @@
                         type="time"
                         required
                         :disabled="loading"
-                        v-model="workoutDataObject.workoutTime"
+                        v-model="workoutForm.workoutTime"
                       />
                     </div>
                   </div>
@@ -134,7 +134,7 @@
                         pattern="^([0-9]*[0-9])$"
                         required
                         :disabled="loading"
-                        v-model="workoutDataObject.workoutDurationHour"
+                        v-model="workoutForm.workoutDurationHour"
                       />
                       :
                       <input
@@ -146,7 +146,7 @@
                         placeholder="MM"
                         required
                         :disabled="loading"
-                        v-model="workoutDataObject.workoutDurationMinutes"
+                        v-model="workoutForm.workoutDurationMinutes"
                       />
                       :
                       <input
@@ -158,7 +158,7 @@
                         placeholder="SS"
                         required
                         :disabled="loading"
-                        v-model="workoutDataObject.workoutDurationSeconds"
+                        v-model="workoutForm.workoutDurationSeconds"
                       />
                     </div>
                   </div>
@@ -172,7 +172,7 @@
                     step="0.1"
                     required
                     :disabled="loading"
-                    v-model="workoutDataObject.workoutDistance"
+                    v-model="workoutForm.workoutDistance"
                   />
                 </div>
               </div>
@@ -180,7 +180,7 @@
                 <label> {{ $t('workouts.NOTES') }}: </label>
                 <CustomTextArea
                   name="notes"
-                  :input="workoutDataObject.notes"
+                  :input="workoutForm.notes"
                   :disabled="loading"
                   @updateValue="updateNotes"
                 />
@@ -205,17 +205,17 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
   import {
     ComputedRef,
-    PropType,
-    defineComponent,
     computed,
     reactive,
     ref,
+    toRefs,
     watch,
     onMounted,
     onUnmounted,
+    withDefaults,
   } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRouter } from 'vue-router'
@@ -230,189 +230,154 @@
   import { getReadableFileSize } from '@/utils/files'
   import { translateSports } from '@/utils/sports'
 
-  export default defineComponent({
-    name: 'WorkoutEdition',
-    props: {
-      authUser: {
-        type: Object as PropType<IUserProfile>,
-        required: true,
-      },
-      isCreation: {
-        type: Boolean,
-        default: false,
-      },
-      loading: {
-        type: Boolean,
-        default: false,
-      },
-      sports: {
-        type: Object as PropType<ISport[]>,
-        required: true,
-      },
-      workout: {
-        type: Object as PropType<IWorkout>,
-        required: false,
-      },
-    },
-    setup(props) {
-      const { t } = useI18n()
-      const store = useStore()
-      const router = useRouter()
-
-      onMounted(() => {
-        if (props.workout && props.workout.id) {
-          formatWorkoutForm(props.workout)
-        }
-      })
-
-      const translatedSports: ComputedRef<ISport[]> = computed(() =>
-        translateSports(props.sports, t)
-      )
-      const appConfig: ComputedRef<TAppConfig> = computed(
-        () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
-      )
-      const fileSizeLimit = appConfig.value.max_single_file_size
-        ? getReadableFileSize(appConfig.value.max_single_file_size)
-        : ''
-      const gpx_limit_import = appConfig.value.gpx_limit_import
-      const zipSizeLimit = appConfig.value.max_zip_file_size
-        ? getReadableFileSize(appConfig.value.max_zip_file_size)
-        : ''
-      const errorMessages: ComputedRef<string | string[] | null> = computed(
-        () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-      )
-      const workoutForm = reactive({
-        sport_id: '',
-        title: '',
-        notes: '',
-        workoutDate: '',
-        workoutTime: '',
-        workoutDurationHour: '',
-        workoutDurationMinutes: '',
-        workoutDurationSeconds: '',
-        workoutDistance: '',
-      })
-      let withGpx = ref(
-        props.workout ? props.workout.with_gpx : props.isCreation
-      )
-      let gpxFile: File | null = null
-
-      function updateNotes(value: string) {
-        workoutForm.notes = value
-      }
-      function updateWithGpx() {
-        withGpx.value = !withGpx.value
-      }
-      function updateFile(event: Event & { target: HTMLInputElement }) {
-        if (event.target.files) {
-          gpxFile = event.target.files[0]
-        }
-      }
-      function formatWorkoutForm(workout: IWorkout) {
-        workoutForm.sport_id = `${workout.sport_id}`
-        workoutForm.title = workout.title
-        workoutForm.notes = workout.notes
-        if (!workout.with_gpx) {
-          const workoutDateTime = formatWorkoutDate(
-            getDateWithTZ(workout.workout_date, props.authUser.timezone),
-            'yyyy-MM-dd'
-          )
-          const duration = workout.duration.split(':')
-          workoutForm.workoutDistance = `${workout.distance}`
-          workoutForm.workoutDate = workoutDateTime.workout_date
-          workoutForm.workoutTime = workoutDateTime.workout_time
-          workoutForm.workoutDurationHour = duration[0]
-          workoutForm.workoutDurationMinutes = duration[1]
-          workoutForm.workoutDurationSeconds = duration[2]
-        }
-      }
-      function formatPayload(payload: IWorkoutForm) {
-        payload.title = workoutForm.title
-        payload.distance = +workoutForm.workoutDistance
-        payload.duration =
-          +workoutForm.workoutDurationHour * 3600 +
-          +workoutForm.workoutDurationMinutes * 60 +
-          +workoutForm.workoutDurationSeconds
-        payload.workout_date = `${workoutForm.workoutDate} ${workoutForm.workoutTime}`
-      }
-      function updateWorkout() {
-        const payload: IWorkoutForm = {
-          sport_id: +workoutForm.sport_id,
-          notes: workoutForm.notes,
-        }
-        if (props.workout) {
-          if (props.workout.with_gpx) {
-            payload.title = workoutForm.title
-          } else {
-            formatPayload(payload)
-          }
-          store.dispatch(WORKOUTS_STORE.ACTIONS.EDIT_WORKOUT, {
-            workoutId: props.workout.id,
-            data: payload,
-          })
-        } else {
-          if (withGpx.value) {
-            if (!gpxFile) {
-              const errorMessage = 'workouts.NO_FILE_PROVIDED'
-              store.commit(
-                ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES,
-                errorMessage
-              )
-              return
-            }
-            payload.file = gpxFile
-            store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_WORKOUT, payload)
-          } else {
-            formatPayload(payload)
-            store.dispatch(
-              WORKOUTS_STORE.ACTIONS.ADD_WORKOUT_WITHOUT_GPX,
-              payload
-            )
-          }
-        }
-      }
-      function onCancel() {
-        if (props.workout) {
-          router.push({
-            name: 'Workout',
-            params: { workoutId: props.workout.id },
-          })
-        } else {
-          router.go(-1)
-        }
-      }
-
-      watch(
-        () => props.workout,
-        async (
-          newWorkout: IWorkout | undefined,
-          previousWorkout: IWorkout | undefined
-        ) => {
-          if (newWorkout !== previousWorkout && newWorkout && newWorkout.id) {
-            formatWorkoutForm(newWorkout)
-          }
-        }
-      )
-
-      onUnmounted(() => store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES))
-
-      return {
-        appConfig,
-        errorMessages,
-        fileSizeLimit,
-        gpx_limit_import,
-        translatedSports,
-        withGpx,
-        zipSizeLimit,
-        workoutDataObject: workoutForm,
-        onCancel,
-        updateFile,
-        updateNotes,
-        updateWithGpx,
-        updateWorkout,
-      }
-    },
+  interface Props {
+    authUser: IUserProfile
+    sports: ISport[]
+    isCreation?: boolean
+    loading?: boolean
+    workout?: IWorkout
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    isCreation: false,
+    loading: false,
+    workout: () => ({} as IWorkout),
   })
+
+  const { t } = useI18n()
+  const store = useStore()
+  const router = useRouter()
+
+  const { workout, isCreation, loading } = toRefs(props)
+  const translatedSports: ComputedRef<ISport[]> = computed(() =>
+    translateSports(props.sports, t)
+  )
+  const appConfig: ComputedRef<TAppConfig> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
+  )
+  const fileSizeLimit = appConfig.value.max_single_file_size
+    ? getReadableFileSize(appConfig.value.max_single_file_size)
+    : ''
+  const gpx_limit_import = appConfig.value.gpx_limit_import
+  const zipSizeLimit = appConfig.value.max_zip_file_size
+    ? getReadableFileSize(appConfig.value.max_zip_file_size)
+    : ''
+  const errorMessages: ComputedRef<string | string[] | null> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
+  )
+  const workoutForm = reactive({
+    sport_id: '',
+    title: '',
+    notes: '',
+    workoutDate: '',
+    workoutTime: '',
+    workoutDurationHour: '',
+    workoutDurationMinutes: '',
+    workoutDurationSeconds: '',
+    workoutDistance: '',
+  })
+  let withGpx = ref(
+    props.workout.id ? props.workout.with_gpx : props.isCreation
+  )
+  let gpxFile: File | null = null
+
+  onMounted(() => {
+    if (props.workout.id) {
+      formatWorkoutForm(props.workout)
+    }
+  })
+
+  function updateNotes(value: string) {
+    workoutForm.notes = value
+  }
+  function updateWithGpx() {
+    withGpx.value = !withGpx.value
+  }
+  function updateFile(event: Event & { target: HTMLInputElement }) {
+    if (event.target.files) {
+      gpxFile = event.target.files[0]
+    }
+  }
+  function formatWorkoutForm(workout: IWorkout) {
+    workoutForm.sport_id = `${workout.sport_id}`
+    workoutForm.title = workout.title
+    workoutForm.notes = workout.notes
+    if (!workout.with_gpx) {
+      const workoutDateTime = formatWorkoutDate(
+        getDateWithTZ(workout.workout_date, props.authUser.timezone),
+        'yyyy-MM-dd'
+      )
+      const duration = workout.duration.split(':')
+      workoutForm.workoutDistance = `${workout.distance}`
+      workoutForm.workoutDate = workoutDateTime.workout_date
+      workoutForm.workoutTime = workoutDateTime.workout_time
+      workoutForm.workoutDurationHour = duration[0]
+      workoutForm.workoutDurationMinutes = duration[1]
+      workoutForm.workoutDurationSeconds = duration[2]
+    }
+  }
+  function formatPayload(payload: IWorkoutForm) {
+    payload.title = workoutForm.title
+    payload.distance = +workoutForm.workoutDistance
+    payload.duration =
+      +workoutForm.workoutDurationHour * 3600 +
+      +workoutForm.workoutDurationMinutes * 60 +
+      +workoutForm.workoutDurationSeconds
+    payload.workout_date = `${workoutForm.workoutDate} ${workoutForm.workoutTime}`
+  }
+  function updateWorkout() {
+    const payload: IWorkoutForm = {
+      sport_id: +workoutForm.sport_id,
+      notes: workoutForm.notes,
+    }
+    if (props.workout.id) {
+      if (props.workout.with_gpx) {
+        payload.title = workoutForm.title
+      } else {
+        formatPayload(payload)
+      }
+      store.dispatch(WORKOUTS_STORE.ACTIONS.EDIT_WORKOUT, {
+        workoutId: props.workout.id,
+        data: payload,
+      })
+    } else {
+      if (withGpx.value) {
+        if (!gpxFile) {
+          const errorMessage = 'workouts.NO_FILE_PROVIDED'
+          store.commit(ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES, errorMessage)
+          return
+        }
+        payload.file = gpxFile
+        store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_WORKOUT, payload)
+      } else {
+        formatPayload(payload)
+        store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_WORKOUT_WITHOUT_GPX, payload)
+      }
+    }
+  }
+  function onCancel() {
+    if (props.workout.id) {
+      router.push({
+        name: 'Workout',
+        params: { workoutId: props.workout.id },
+      })
+    } else {
+      router.go(-1)
+    }
+  }
+
+  onUnmounted(() => store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES))
+
+  watch(
+    () => props.workout,
+    async (
+      newWorkout: IWorkout | undefined,
+      previousWorkout: IWorkout | undefined
+    ) => {
+      if (newWorkout !== previousWorkout && newWorkout && newWorkout.id) {
+        formatWorkoutForm(newWorkout)
+      }
+    }
+  )
 </script>
 
 <style lang="scss" scoped>

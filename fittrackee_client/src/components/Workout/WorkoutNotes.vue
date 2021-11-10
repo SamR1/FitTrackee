@@ -9,18 +9,17 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent } from 'vue'
+<script setup lang="ts">
+  import { toRefs, withDefaults } from 'vue'
 
-  export default defineComponent({
-    name: 'WorkoutNotes',
-    props: {
-      notes: {
-        type: String,
-        required: false,
-      },
-    },
+  interface Props {
+    notes?: string | null
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    notes: () => null,
   })
+
+  const { notes } = toRefs(props)
 </script>
 
 <style lang="scss" scoped>

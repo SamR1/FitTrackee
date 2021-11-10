@@ -2,13 +2,6 @@
   <div class="loader" />
 </template>
 
-<script lang="ts">
-  import { defineComponent } from 'vue'
-  export default defineComponent({
-    name: 'Loader',
-  })
-</script>
-
 <style scoped lang="scss">
   @import '~@/scss/base';
   .loader {

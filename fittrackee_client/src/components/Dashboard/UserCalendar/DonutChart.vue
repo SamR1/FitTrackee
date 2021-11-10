@@ -22,52 +22,34 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { PropType, defineComponent } from 'vue'
+<script setup lang="ts">
+  import { toRefs } from 'vue'
 
-  export default defineComponent({
-    name: 'DonutChart',
-    props: {
-      colors: {
-        type: Object as PropType<Record<number, string>>,
-        required: true,
-      },
-      datasets: {
-        type: Object as PropType<Record<number, Record<string, number>>>,
-        required: true,
-      },
-    },
-    setup() {
-      let angleOffset = -90
-      const cx = 16
-      const cy = 16
-      const radius = 14
-      const circumference = 2 * Math.PI * radius
+  interface Props {
+    colors: Record<number, string>
+    datasets: Record<number, Record<string, number>>
+  }
+  const props = defineProps<Props>()
 
-      function calculateStrokeDashOffset(
-        percentage: number,
-        circumference: number
-      ): number {
-        return circumference - percentage * circumference
-      }
-      function returnCircleTransformValue(
-        index: number,
-        percentage: number
-      ): string {
-        const rotation = `rotate(${angleOffset}, ${cx}, ${cy})`
-        angleOffset = percentage * 360 + angleOffset
-        return rotation
-      }
+  const { colors, datasets } = toRefs(props)
+  let angleOffset = -90
+  const cx = 16
+  const cy = 16
+  const radius = 14
+  const circumference = 2 * Math.PI * radius
 
-      return {
-        angleOffset,
-        circumference,
-        cx,
-        cy,
-        radius,
-        calculateStrokeDashOffset,
-        returnCircleTransformValue,
-      }
-    },
-  })
+  function calculateStrokeDashOffset(
+    percentage: number,
+    circumference: number
+  ): number {
+    return circumference - percentage * circumference
+  }
+  function returnCircleTransformValue(
+    index: number,
+    percentage: number
+  ): string {
+    const rotation = `rotate(${angleOffset}, ${cx}, ${cy})`
+    angleOffset = percentage * 360 + angleOffset
+    return rotation
+  }
 </script>

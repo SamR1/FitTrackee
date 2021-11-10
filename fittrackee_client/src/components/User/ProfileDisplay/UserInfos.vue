@@ -43,67 +43,46 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
   import { format } from 'date-fns'
-  import {
-    ComputedRef,
-    PropType,
-    Ref,
-    computed,
-    defineComponent,
-    ref,
-  } from 'vue'
+  import { ComputedRef, Ref, computed, ref, toRefs, withDefaults } from 'vue'
 
   import { AUTH_USER_STORE } from '@/store/constants'
   import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
-  export default defineComponent({
-    name: 'UserInfos',
-    props: {
-      user: {
-        type: Object as PropType<IUserProfile>,
-        required: true,
-      },
-      fromAdmin: {
-        type: Boolean,
-        default: false,
-      },
-    },
-    setup(props) {
-      const store = useStore()
-      const authUser: ComputedRef<IUserProfile> = computed(
-        () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-      )
-      const registrationDate = computed(() =>
-        props.user.created_at
-          ? format(new Date(props.user.created_at), 'dd/MM/yyyy HH:mm')
-          : ''
-      )
-      const birthDate = computed(() =>
-        props.user.birth_date
-          ? format(new Date(props.user.birth_date), 'dd/MM/yyyy')
-          : ''
-      )
-      let displayModal: Ref<boolean> = ref(false)
-
-      function updateDisplayModal(value: boolean) {
-        displayModal.value = value
-      }
-      function deleteUserAccount(username: string) {
-        store.dispatch(AUTH_USER_STORE.ACTIONS.DELETE_ACCOUNT, { username })
-      }
-
-      return {
-        authUser,
-        birthDate,
-        displayModal,
-        registrationDate,
-        deleteUserAccount,
-        updateDisplayModal,
-      }
-    },
+  interface Props {
+    user: IUserProfile
+    fromAdmin?: boolean
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    fromAdmin: false,
   })
+
+  const store = useStore()
+
+  const { user, fromAdmin } = toRefs(props)
+  const authUser: ComputedRef<IUserProfile> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
+  )
+  const registrationDate = computed(() =>
+    props.user.created_at
+      ? format(new Date(props.user.created_at), 'dd/MM/yyyy HH:mm')
+      : ''
+  )
+  const birthDate = computed(() =>
+    props.user.birth_date
+      ? format(new Date(props.user.birth_date), 'dd/MM/yyyy')
+      : ''
+  )
+  let displayModal: Ref<boolean> = ref(false)
+
+  function updateDisplayModal(value: boolean) {
+    displayModal.value = value
+  }
+  function deleteUserAccount(username: string) {
+    store.dispatch(AUTH_USER_STORE.ACTIONS.DELETE_ACCOUNT, { username })
+  }
 </script>
 
 <style lang="scss" scoped>

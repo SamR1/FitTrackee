@@ -19,43 +19,34 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { ComputedRef, PropType, computed, defineComponent, inject } from 'vue'
+<script setup lang="ts">
+  import { ComputedRef, computed, inject, withDefaults, toRefs } from 'vue'
   import { useI18n } from 'vue-i18n'
 
   import { ISport, ITranslatedSport } from '@/types/sports'
   import { translateSports } from '@/utils/sports'
 
-  export default defineComponent({
-    name: 'SportsMenu',
-    props: {
-      selectedSportIds: {
-        type: Array as PropType<number[]>,
-        default: () => [],
-      },
-      userSports: {
-        type: Object as PropType<ISport[]>,
-        required: true,
-      },
-    },
-    emits: ['selectedSportIdsUpdate'],
-    setup(props, { emit }) {
-      const { t } = useI18n()
-      const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
-        translateSports(props.userSports, t)
-      )
-
-      function updateSelectedSportIds(sportId: number) {
-        emit('selectedSportIdsUpdate', sportId)
-      }
-
-      return {
-        sportColors: inject('sportColors'),
-        translatedSports,
-        updateSelectedSportIds,
-      }
-    },
+  interface Props {
+    userSports: ISport[]
+    selectedSportIds?: number[]
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    selectedSportIds: () => [],
   })
+
+  const emit = defineEmits(['selectedSportIdsUpdate'])
+
+  const { t } = useI18n()
+
+  const sportColors = inject('sportColors')
+  const { selectedSportIds } = toRefs(props)
+  const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
+    translateSports(props.userSports, t)
+  )
+
+  function updateSelectedSportIds(sportId: number) {
+    emit('selectedSportIdsUpdate', sportId)
+  }
 </script>
 
 <style lang="scss">

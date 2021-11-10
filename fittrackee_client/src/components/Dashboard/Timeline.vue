@@ -30,15 +30,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import {
-    ComputedRef,
-    PropType,
-    computed,
-    defineComponent,
-    ref,
-    onBeforeMount,
-  } from 'vue'
+<script setup lang="ts">
+  import { ComputedRef, computed, ref, onBeforeMount, toRefs } from 'vue'
 
   import WorkoutCard from '@/components/Workout/WorkoutCard.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
@@ -49,65 +42,44 @@
   import { useStore } from '@/use/useStore'
   import { defaultOrder } from '@/utils/workouts'
 
-  export default defineComponent({
-    name: 'Timeline',
-    components: {
-      NoWorkouts,
-      WorkoutCard,
-    },
-    props: {
-      sports: {
-        type: Object as PropType<ISport[]>,
-        required: true,
-      },
-      user: {
-        type: Object as PropType<IUserProfile>,
-        required: true,
-      },
-    },
-    setup(props) {
-      const store = useStore()
+  interface Props {
+    sports: ISport[]
+    user: IUserProfile
+  }
+  const props = defineProps<Props>()
 
-      let page = ref(1)
-      const per_page = 5
-      const initWorkoutsCount =
-        props.user.nb_workouts >= per_page ? per_page : props.user.nb_workouts
-      onBeforeMount(() => loadWorkouts())
+  const store = useStore()
 
-      const workouts: ComputedRef<IWorkout[]> = computed(
-        () => store.getters[WORKOUTS_STORE.GETTERS.TIMELINE_WORKOUTS]
-      )
-      const moreWorkoutsExist: ComputedRef<boolean> = computed(() =>
-        workouts.value.length > 0
-          ? workouts.value[workouts.value.length - 1].previous_workout !== null
-          : false
-      )
+  const { sports, user } = toRefs(props)
+  let page = ref(1)
+  const per_page = 5
+  const initWorkoutsCount =
+    props.user.nb_workouts >= per_page ? per_page : props.user.nb_workouts
+  onBeforeMount(() => loadWorkouts())
+  const workouts: ComputedRef<IWorkout[]> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.TIMELINE_WORKOUTS]
+  )
+  const moreWorkoutsExist: ComputedRef<boolean> = computed(() =>
+    workouts.value.length > 0
+      ? workouts.value[workouts.value.length - 1].previous_workout !== null
+      : false
+  )
 
-      function loadWorkouts() {
-        store.dispatch(WORKOUTS_STORE.ACTIONS.GET_TIMELINE_WORKOUTS, {
-          page: page.value,
-          per_page,
-          ...defaultOrder,
-        })
-      }
-      function loadMoreWorkouts() {
-        page.value += 1
-        store.dispatch(WORKOUTS_STORE.ACTIONS.GET_MORE_TIMELINE_WORKOUTS, {
-          page: page.value,
-          per_page,
-          ...defaultOrder,
-        })
-      }
-
-      return {
-        initWorkoutsCount,
-        moreWorkoutsExist,
-        per_page,
-        workouts,
-        loadMoreWorkouts,
-      }
-    },
-  })
+  function loadWorkouts() {
+    store.dispatch(WORKOUTS_STORE.ACTIONS.GET_TIMELINE_WORKOUTS, {
+      page: page.value,
+      per_page,
+      ...defaultOrder,
+    })
+  }
+  function loadMoreWorkouts() {
+    page.value += 1
+    store.dispatch(WORKOUTS_STORE.ACTIONS.GET_MORE_TIMELINE_WORKOUTS, {
+      page: page.value,
+      per_page,
+      ...defaultOrder,
+    })
+  }
 </script>
 
 <style lang="scss" scoped>

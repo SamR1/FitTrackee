@@ -9,27 +9,20 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent } from 'vue'
+<script setup lang="ts">
+  import { toRefs, withDefaults } from 'vue'
 
   import UserAuthForm from '@/components/User/UserAuthForm.vue'
 
-  export default defineComponent({
-    name: 'PasswordResetForm',
-    components: {
-      UserAuthForm,
-    },
-    props: {
-      action: {
-        type: String,
-        required: true,
-      },
-      token: {
-        type: String,
-        default: '',
-      },
-    },
+  interface Props {
+    action: string
+    token?: string
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    token: '',
   })
+
+  const { action, token } = toRefs(props)
 </script>
 
 <style scoped lang="scss">

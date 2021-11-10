@@ -8,12 +8,12 @@ import Loader from '@/components/Common/Loader.vue'
 import Modal from '@/components/Common/Modal.vue'
 
 export const customComponents = [
-  AlertMessage,
-  Card,
-  CustomTextArea,
-  Dropdown,
-  ErrorMessage,
-  Loader,
-  Modal,
-  SportImage,
+  { target: AlertMessage, name: 'AlertMessage' },
+  { target: Card, name: 'Card' },
+  { target: CustomTextArea, name: 'CustomTextArea' },
+  { target: Dropdown, name: 'Dropdown' },
+  { target: ErrorMessage, name: 'ErrorMessage' },
+  { target: Loader, name: 'Loader' },
+  { target: Modal, name: 'Modal' },
+  { target: SportImage, name: 'SportImage' },
 ]

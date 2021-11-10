@@ -19,16 +19,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import {
-    ComputedRef,
-    PropType,
-    Ref,
-    computed,
-    defineComponent,
-    ref,
-    watch,
-  } from 'vue'
+<script setup lang="ts">
+  import { ComputedRef, Ref, computed, ref, toRefs, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
 
   import StatChart from '@/components/Common/StatsChart/index.vue'
@@ -40,81 +32,57 @@
   import { translateSports } from '@/utils/sports'
   import { getStatsDateParams, updateChartParams } from '@/utils/statistics'
 
-  export default defineComponent({
-    name: 'Statistics',
-    components: {
-      SportsMenu,
-      StatChart,
-      StatsMenu,
-    },
-    props: {
-      sports: {
-        type: Object as PropType<ISport[]>,
-        required: true,
-      },
-      user: {
-        type: Object as PropType<IUserProfile>,
-        required: true,
-      },
-    },
-    setup(props) {
-      const { t } = useI18n()
-      let selectedTimeFrame = ref('month')
-      const timeFrames = ['week', 'month', 'year']
-      const chartParams: Ref<IStatisticsDateParams> = ref(
-        getChartParams(selectedTimeFrame.value)
-      )
-      const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
-        translateSports(props.sports, t)
-      )
-      const selectedSportIds: Ref<number[]> = ref(getSports(props.sports))
+  interface Props {
+    sports: ISport[]
+    user: IUserProfile
+  }
+  const props = defineProps<Props>()
 
-      function updateTimeFrame(timeFrame: string) {
-        selectedTimeFrame.value = timeFrame
-        chartParams.value = getChartParams(selectedTimeFrame.value)
-      }
-      function getChartParams(timeFrame: string): IStatisticsDateParams {
-        return getStatsDateParams(new Date(), timeFrame, props.user.weekm)
-      }
-      function handleOnClickArrows(backward: boolean) {
-        chartParams.value = updateChartParams(
-          chartParams.value,
-          backward,
-          props.user.weekm
-        )
-      }
-      function getSports(sports: ISport[]) {
-        return sports.map((sport) => sport.id)
-      }
-      function updateSelectedSportIds(sportId: number) {
-        if (selectedSportIds.value.includes(sportId)) {
-          selectedSportIds.value = selectedSportIds.value.filter(
-            (id) => id !== sportId
-          )
-        } else {
-          selectedSportIds.value.push(sportId)
-        }
-      }
+  const { t } = useI18n()
 
-      watch(
-        () => props.sports,
-        (newSports) => {
-          selectedSportIds.value = getSports(newSports)
-        }
+  const { sports, user } = toRefs(props)
+  let selectedTimeFrame = ref('month')
+  const chartParams: Ref<IStatisticsDateParams> = ref(
+    getChartParams(selectedTimeFrame.value)
+  )
+  const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
+    translateSports(props.sports, t)
+  )
+  const selectedSportIds: Ref<number[]> = ref(getSports(props.sports))
+
+  function updateTimeFrame(timeFrame: string) {
+    selectedTimeFrame.value = timeFrame
+    chartParams.value = getChartParams(selectedTimeFrame.value)
+  }
+  function getChartParams(timeFrame: string): IStatisticsDateParams {
+    return getStatsDateParams(new Date(), timeFrame, props.user.weekm)
+  }
+  function handleOnClickArrows(backward: boolean) {
+    chartParams.value = updateChartParams(
+      chartParams.value,
+      backward,
+      props.user.weekm
+    )
+  }
+  function getSports(sports: ISport[]) {
+    return sports.map((sport) => sport.id)
+  }
+  function updateSelectedSportIds(sportId: number) {
+    if (selectedSportIds.value.includes(sportId)) {
+      selectedSportIds.value = selectedSportIds.value.filter(
+        (id) => id !== sportId
       )
+    } else {
+      selectedSportIds.value.push(sportId)
+    }
+  }
 
-      return {
-        chartParams,
-        selectedTimeFrame,
-        timeFrames,
-        translatedSports,
-        selectedSportIds,
-        handleOnClickArrows,
-        updateSelectedSportIds,
-        updateTimeFrame,
-      }
-    },
-  })
+  watch(
+    () => props.sports,
+    (newSports) => {
+      selectedSportIds.value = getSports(newSports)
+    }
+  )
 </script>
 
 <style lang="scss" scoped>

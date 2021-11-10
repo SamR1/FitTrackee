@@ -10,28 +10,19 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent } from 'vue'
+<script setup lang="ts">
+  import { toRefs, withDefaults } from 'vue'
 
-  export default defineComponent({
-    name: 'Error',
-    props: {
-      title: {
-        type: String,
-        required: true,
-      },
-      message: {
-        type: String,
-      },
-      buttonText: {
-        type: String,
-      },
-      path: {
-        type: String,
-        default: '/',
-      },
-    },
+  interface Props {
+    title: string
+    message: string
+    buttonText: string
+    path?: string
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    path: '/',
   })
+  const { buttonText, title, message, path } = toRefs(props)
 </script>
 
 <style scoped lang="scss">
