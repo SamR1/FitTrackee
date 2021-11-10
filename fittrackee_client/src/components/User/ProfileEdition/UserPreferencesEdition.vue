@@ -15,12 +15,12 @@
             </option>
           </select>
         </label>
-        <label class="form-items" for="timezone">
+        <label class="form-items">
           {{ $t('user.PROFILE.TIMEZONE') }}
-          <input
-            id="timezone"
-            v-model="userForm.timezone"
+          <TimezoneDropdown
+            :input="userForm.timezone"
             :disabled="loading"
+            @updateTimezone="updateTZ"
           />
         </label>
         <label class="form-items">
@@ -61,6 +61,7 @@
     onMounted,
   } from 'vue'
 
+  import TimezoneDropdown from '@/components/User/ProfileEdition/TimezoneDropdown.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import { IUserProfile, IUserPreferencesPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -68,6 +69,9 @@
 
   export default defineComponent({
     name: 'UserPreferencesEdition',
+    components: {
+      TimezoneDropdown,
+    },
     props: {
       user: {
         type: Object as PropType<IUserProfile>,
@@ -115,6 +119,9 @@
           userForm
         )
       }
+      function updateTZ(value: string) {
+        userForm.timezone = value
+      }
 
       return {
         availableLanguages,
@@ -123,6 +130,7 @@
         userForm,
         weekStart,
         updateProfile,
+        updateTZ,
       }
     },
   })
