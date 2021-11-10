@@ -10,13 +10,15 @@
 
 #### Bugs Fixed
 
-### Pull Requests
-
-* [#84/#93](https://github.com/SamR1/FitTrackee/pull/93) - Add elevation data and new sports
+* [#95](https://github.com/SamR1/FitTrackee/issues/95) - Some workouts seem to be missing on statistics chart
 
 #### Misc
 
 * [#104](https://github.com/SamR1/FitTrackee/issues/104) - Switch to AGPLv3 license
+
+### Pull Requests
+
+* [#84/#93](https://github.com/SamR1/FitTrackee/pull/93) - Add elevation data and new sports
 
 
 ## Version 0.4.9 (2021/07/16)
