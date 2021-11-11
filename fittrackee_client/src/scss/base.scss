@@ -39,6 +39,12 @@ input, textarea, select {
   }
 }
 
+form.errors {
+  :invalid {
+    outline: 2px solid var(--input-error-color);
+  }
+}
+
 label {
   font-weight: bold;
 }

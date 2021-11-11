@@ -11,13 +11,17 @@
           message="user.REGISTER_DISABLED"
           v-if="registration_disabled"
         />
-        <form @submit.prevent="onSubmit(action)">
+        <form
+          :class="{ errors: formErrors }"
+          @submit.prevent="onSubmit(action)"
+        >
           <div class="form-items">
             <input
               v-if="action === 'register'"
               id="username"
               :disabled="registration_disabled"
               required
+              @invalid="invalidateForm"
               v-model="formData.username"
               :placeholder="$t('user.USERNAME')"
             />
@@ -26,6 +30,7 @@
               id="email"
               :disabled="registration_disabled"
               required
+              @invalid="invalidateForm"
               type="email"
               v-model="formData.email"
               :placeholder="
@@ -39,6 +44,7 @@
               id="password"
               :disabled="registration_disabled"
               required
+              @invalid="invalidateForm"
               type="password"
               v-model="formData.password"
               :placeholder="
@@ -53,6 +59,7 @@
               :disabled="registration_disabled"
               type="password"
               required
+              @invalid="invalidateForm"
               v-model="formData.password_conf"
               :placeholder="
                 action === 'reset'
@@ -91,6 +98,7 @@
     ComputedRef,
     computed,
     reactive,
+    ref,
     toRefs,
     watch,
     withDefaults,
@@ -133,6 +141,7 @@
     () =>
       props.action === 'register' && !appConfig.value.is_registration_enabled
   )
+  const formErrors = ref(false)
 
   function getButtonText(action: string): string {
     switch (action) {
@@ -142,6 +151,9 @@
       default:
         return `buttons.${props.action.toUpperCase()}`
     }
+  }
+  function invalidateForm() {
+    formErrors.value = true
   }
   function onSubmit(actionType: string) {
     switch (actionType) {
@@ -183,6 +195,7 @@
     () => route.path,
     async () => {
       store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+      formErrors.value = false
       resetFormData()
     }
   )

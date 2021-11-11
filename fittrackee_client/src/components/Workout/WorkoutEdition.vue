@@ -10,7 +10,7 @@
       }}</template>
       <template #content>
         <div id="workout-form">
-          <form @submit.prevent="updateWorkout">
+          <form :class="{ errors: formErrors }" @submit.prevent="updateWorkout">
             <div class="form-items">
               <div class="form-item-radio" v-if="isCreation">
                 <div>
@@ -41,6 +41,7 @@
                 <select
                   id="sport"
                   required
+                  @invalid="invalidateForm"
                   :disabled="loading"
                   v-model="workoutForm.sport_id"
                 >
@@ -64,6 +65,8 @@
                   type="file"
                   accept=".gpx, .zip"
                   :disabled="loading"
+                  required
+                  @invalid="invalidateForm"
                   @input="updateFile"
                 />
                 <div class="files-help info-box">
@@ -94,6 +97,7 @@
                   name="title"
                   type="text"
                   :required="!isCreation"
+                  @invalid="invalidateForm"
                   :disabled="loading"
                   v-model="workoutForm.title"
                 />
@@ -108,6 +112,7 @@
                         name="workout-date"
                         type="date"
                         required
+                        @invalid="invalidateForm"
                         :disabled="loading"
                         v-model="workoutForm.workoutDate"
                       />
@@ -117,6 +122,7 @@
                         class="workout-time"
                         type="time"
                         required
+                        @invalid="invalidateForm"
                         :disabled="loading"
                         v-model="workoutForm.workoutTime"
                       />
@@ -133,6 +139,7 @@
                         placeholder="HH"
                         pattern="^([0-9]*[0-9])$"
                         required
+                        @invalid="invalidateForm"
                         :disabled="loading"
                         v-model="workoutForm.workoutDurationHour"
                       />
@@ -145,6 +152,7 @@
                         pattern="^([0-5][0-9])$"
                         placeholder="MM"
                         required
+                        @invalid="invalidateForm"
                         :disabled="loading"
                         v-model="workoutForm.workoutDurationMinutes"
                       />
@@ -157,6 +165,7 @@
                         pattern="^([0-5][0-9])$"
                         placeholder="SS"
                         required
+                        @invalid="invalidateForm"
                         :disabled="loading"
                         v-model="workoutForm.workoutDurationSeconds"
                       />
@@ -171,6 +180,7 @@
                     min="0"
                     step="0.1"
                     required
+                    @invalid="invalidateForm"
                     :disabled="loading"
                     v-model="workoutForm.workoutDistance"
                   />
@@ -279,6 +289,7 @@
     props.workout.id ? props.workout.with_gpx : props.isCreation
   )
   let gpxFile: File | null = null
+  const formErrors = ref(false)
 
   onMounted(() => {
     if (props.workout.id) {
@@ -291,6 +302,7 @@
   }
   function updateWithGpx() {
     withGpx.value = !withGpx.value
+    formErrors.value = false
   }
   function updateFile(event: Event & { target: HTMLInputElement }) {
     if (event.target.files) {
@@ -363,6 +375,9 @@
     } else {
       router.go(-1)
     }
+  }
+  function invalidateForm() {
+    formErrors.value = true
   }
 
   onUnmounted(() => store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES))

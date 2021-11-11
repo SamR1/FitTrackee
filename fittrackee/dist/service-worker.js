@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.cc6cd612d3010f62e8a6b2d637ce02fb.js"
+  "/precache-manifest.cf4ee6309ccad810ffa908b5895175ac.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "fittrackee_client"});
