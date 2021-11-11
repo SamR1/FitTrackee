@@ -1,17 +1,17 @@
 <template>
   <div class="calendar-days">
     <div class="calendar-day" v-for="(day, index) in days" :key="index">
-      {{ format(day, 'EEE', localeOptions) }}
+      {{ format(day, 'EEE', { locale: localeOptions }) }}
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { format, addDays } from 'date-fns'
+  import { Locale, format, addDays } from 'date-fns'
 
   interface Props {
     startDate: Date
-    localeOptions: string
+    localeOptions: Locale
   }
   const props = defineProps<Props>()
 

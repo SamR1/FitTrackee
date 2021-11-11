@@ -3,11 +3,14 @@
     <div class="calendar-card box">
       <CalendarHeader
         :day="day"
-        locale-options="enGB"
+        :locale-options="localeOptions"
         @displayNextMonth="displayNextMonth"
         @displayPreviousMonth="displayPreviousMonth"
       />
-      <CalendarDays :start-date="calendarDates.start" locale-options="enGB" />
+      <CalendarDays
+        :start-date="calendarDates.start"
+        :locale-options="localeOptions"
+      />
       <CalendarCells
         :currentDay="day"
         :end-date="calendarDates.end"
@@ -22,13 +25,13 @@
 </template>
 
 <script setup lang="ts">
-  import { addMonths, format, subMonths } from 'date-fns'
+  import { Locale, addMonths, format, subMonths } from 'date-fns'
   import { ComputedRef, computed, ref, toRefs, onBeforeMount } from 'vue'
 
   import CalendarCells from '@/components/Dashboard/UserCalendar/CalendarCells.vue'
   import CalendarDays from '@/components/Dashboard/UserCalendar/CalendarDays.vue'
   import CalendarHeader from '@/components/Dashboard/UserCalendar/CalendarHeader.vue'
-  import { WORKOUTS_STORE } from '@/store/constants'
+  import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
   import { IUserProfile } from '@/types/user'
   import { IWorkout, TWorkoutsPayload } from '@/types/workouts'
@@ -50,6 +53,9 @@
   let calendarDates = ref(getCalendarStartAndEnd(day.value, props.user.weekm))
   const calendarWorkouts: ComputedRef<IWorkout[]> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.CALENDAR_WORKOUTS]
+  )
+  const localeOptions: ComputedRef<Locale> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.LOCALE]
   )
 
   onBeforeMount(() => getCalendarWorkouts())

@@ -8,7 +8,7 @@
     </div>
     <div class="calendar-month">
       <span>
-        {{ format(day, 'MMM yyyy', localeOptions) }}
+        {{ format(day, 'MMM yyyy', { locale: localeOptions }) }}
       </span>
     </div>
     <div
@@ -21,12 +21,12 @@
 </template>
 
 <script setup lang="ts">
-  import { format } from 'date-fns'
+  import { Locale, format } from 'date-fns'
   import { toRefs } from 'vue'
 
   interface Props {
     day: Date
-    localeOptions: string
+    localeOptions: Locale
   }
   const props = defineProps<Props>()
 
