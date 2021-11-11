@@ -8,17 +8,17 @@
       <div class="box">
         <div
           class="mobile-menu-item"
-          :class="{ 'is-selected': isSelected === 'chart' }"
-          @click="updateDisplayColumn('chart')"
-        >
-          <i class="fa fa-bar-chart" aria-hidden="true" />
-        </div>
-        <div
-          class="mobile-menu-item"
           :class="{ 'is-selected': isSelected === 'calendar' }"
           @click="updateDisplayColumn('calendar')"
         >
           <i class="fa fa-calendar" aria-hidden="true" />
+        </div>
+        <div
+          class="mobile-menu-item"
+          :class="{ 'is-selected': isSelected === 'chart' }"
+          @click="updateDisplayColumn('chart')"
+        >
+          <i class="fa fa-bar-chart" aria-hidden="true" />
         </div>
         <div
           class="mobile-menu-item"
@@ -93,7 +93,7 @@
   const sports: ComputedRef<ISport[]> = computed(
     () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
   )
-  const isSelected: Ref<string> = ref('chart')
+  const isSelected: Ref<string> = ref('calendar')
 
   function updateDisplayColumn(target: string) {
     isSelected.value = target
