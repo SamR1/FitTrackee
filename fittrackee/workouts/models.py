@@ -193,10 +193,12 @@ class Workout(BaseModel):
                 <= datetime.datetime.strptime(date_to, '%Y-%m-%d')
                 if date_to
                 else True,
-                Workout.distance >= int(distance_from)
+                Workout.distance >= float(distance_from)
                 if distance_from
                 else True,
-                Workout.distance <= int(distance_to) if distance_to else True,
+                Workout.distance <= float(distance_to)
+                if distance_to
+                else True,
                 Workout.duration >= convert_in_duration(duration_from)
                 if duration_from
                 else True,
@@ -233,10 +235,12 @@ class Workout(BaseModel):
                 <= datetime.datetime.strptime(date_to, '%Y-%m-%d')
                 if date_to
                 else True,
-                Workout.distance >= int(distance_from)
+                Workout.distance >= float(distance_from)
                 if distance_from
                 else True,
-                Workout.distance <= int(distance_to) if distance_to else True,
+                Workout.distance <= float(distance_to)
+                if distance_to
+                else True,
                 Workout.duration >= convert_in_duration(duration_from)
                 if duration_from
                 else True,

@@ -69,6 +69,44 @@ def get_users(auth_user_id: int) -> Dict:
               "nb_sports": 3,
               "nb_workouts": 6,
               "picture": false,
+              "records": [
+                {
+                  "id": 9,
+                  "record_type": "AS",
+                  "sport_id": 1,
+                  "user": "admin",
+                  "value": 18,
+                  "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                  "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+                },
+                {
+                  "id": 10,
+                  "record_type": "FD",
+                  "sport_id": 1,
+                  "user": "admin",
+                  "value": 18,
+                  "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                  "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+                },
+                {
+                  "id": 11,
+                  "record_type": "LD",
+                  "sport_id": 1,
+                  "user": "admin",
+                  "value": "1:01:00",
+                  "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                  "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+                },
+                {
+                  "id": 12,
+                  "record_type": "MS",
+                  "sport_id": 1,
+                  "user": "admin",
+                  "value": 18,
+                  "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                  "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+                }
+              ],
               "sports_list": [
                   1,
                   4,
@@ -92,6 +130,7 @@ def get_users(auth_user_id: int) -> Dict:
               "nb_sports": 0,
               "nb_workouts": 0,
               "picture": false,
+              "records": [],
               "sports_list": [],
               "timezone": "Europe/Paris",
               "total_distance": 0,
@@ -116,9 +155,9 @@ def get_users(auth_user_id: int) -> Dict:
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
 
     """
     params = request.args.copy()
@@ -212,6 +251,44 @@ def get_single_user(
             "nb_sports": 3,
             "nb_workouts": 6,
             "picture": false,
+            "records": [
+              {
+                "id": 9,
+                "record_type": "AS",
+                "sport_id": 1,
+                "user": "admin",
+                "value": 18,
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              },
+              {
+                "id": 10,
+                "record_type": "FD",
+                "sport_id": 1,
+                "user": "admin",
+                "value": 18,
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              },
+              {
+                "id": 11,
+                "record_type": "LD",
+                "sport_id": 1,
+                "user": "admin",
+                "value": "1:01:00",
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              },
+              {
+                "id": 12,
+                "record_type": "MS",
+                "sport_id": 1,
+                "user": "admin",
+                "value": 18,
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              }
+            ],
             "sports_list": [
                 1,
                 4,
@@ -233,11 +310,11 @@ def get_single_user(
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404:
-        - User does not exist.
+        - user does not exist
     """
     try:
         user = User.query.filter_by(username=user_name).first()
@@ -273,7 +350,7 @@ def get_picture(user_name: str) -> Any:
 
     :statuscode 200: success
     :statuscode 404:
-        - User does not exist.
+        - user does not exist
         - No picture.
 
     """
@@ -328,6 +405,44 @@ def update_user(
             "nb_workouts": 6,
             "nb_sports": 3,
             "picture": false,
+            "records": [
+              {
+                "id": 9,
+                "record_type": "AS",
+                "sport_id": 1,
+                "user": "admin",
+                "value": 18,
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              },
+              {
+                "id": 10,
+                "record_type": "FD",
+                "sport_id": 1,
+                "user": "admin",
+                "value": 18,
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              },
+              {
+                "id": 11,
+                "record_type": "LD",
+                "sport_id": 1,
+                "user": "admin",
+                "value": "1:01:00",
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              },
+              {
+                "id": 12,
+                "record_type": "MS",
+                "sport_id": 1,
+                "user": "admin",
+                "value": 18,
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              }
+            ],
             "sports_list": [
                 1,
                 4,
@@ -351,12 +466,12 @@ def update_user(
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
-    :statuscode 403: You do not have permissions.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403: you do not have permissions
     :statuscode 404:
-        - User does not exist.
+        - user does not exist
     :statuscode 500:
     """
     user_data = request.get_json()
@@ -412,15 +527,15 @@ def delete_user(
 
     :statuscode 204: user account deleted
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 403:
-        - You do not have permissions.
-        - You can not delete your account, no other user has admin rights.
+        - you do not have permissions
+        - you can not delete your account, no other user has admin rights
     :statuscode 404:
-        - User does not exist.
-    :statuscode 500: Error. Please try again or contact the administrator.
+        - user does not exist
+    :statuscode 500: error, please try again or contact the administrator
 
     """
     try:
@@ -436,8 +551,8 @@ def delete_user(
             and User.query.filter_by(admin=True).count() == 1
         ):
             return ForbiddenErrorResponse(
-                'You can not delete your account, '
-                'no other user has admin rights.'
+                'you can not delete your account, '
+                'no other user has admin rights'
             )
 
         for workout in Workout.query.filter_by(user_id=user.id).all():

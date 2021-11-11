@@ -1,11 +1,8 @@
 {
-  "workouts": "séances",
-  "distance": "distance",
-  "duration": "durée",
-  "ascent": "dénivelé +",
-  "descent": "dénivelé -",
-  "month": "mois",
-  "Statistics": "Statistiques",
-  "year": "année",
-  "week": "semaine"
+  "STATISTICS": "Statistiques",
+  "TIME_FRAMES": {
+    "week": "semaine",
+    "month": "mois",
+    "year": "année"
+  }
 }

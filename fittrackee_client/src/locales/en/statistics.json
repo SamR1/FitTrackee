@@ -1,11 +1,8 @@
 {
-  "workouts": "workouts",
-  "distance": "distance",
-  "duration": "duration",
-  "ascent": "ascent",
-  "descent": "descent",
-  "month": "month",
-  "Statistics": "Statistics",
-  "year": "year",
-  "week": "week"
+  "STATISTICS": "Statistics",
+  "TIME_FRAMES": {
+    "week": "week",
+    "month": "month",
+    "year": "year"
+  }
 }

@@ -1,40 +1,20 @@
 {
-  "workouts count": "nombre d'séances",
-  "Add workout": "Ajouter une séance",
-  "admin rights": "droits d'admin",
-  "ascending": "ascendant",
-  "Back": "Revenir à la page précédente",
-  "Back to home": "Retour à l'accueil",
-  "Cancel": "Annuler",
-  "Confirmation": "Confirmation",
-  "Dashboard": "Tableau de Bord",
-  "descending": "descendant",
-  "Edit": "Modifier",
-  "day": "jour",
-  "days": "jours",
-  "Next": "Page suivante",
-  "No": "Non",
-  "no": "non",
-  "No records.": "Pas de records.",
-  "No workouts.": "Pas de séances.",
-  "Page not found": "Page introuvable",
-  "Previous": "Page précédente",
-  "remaining characters": "nombre de caractères restants ",
-  "registration date": "date d'inscription",
-  "Sort": "Tri",
-  "Sort by": "Trier par",
-  "Sport": "Sport",
-  "sport": "sport",
-  "Sports": "Sports",
-  "sports": "sports",
-  "Statistics": "Statistiques",
-  "Submit": "Valider",
-  "to": "à",
-  "user name": "utilisateur",
-  "Workout": "Séance",
-  "Workouts": "Séances",
-  "workout": "séance",
-  "workouts": "séances",
-  "Yes": "Oui",
-  "yes": "oui"
+  "CONFIRMATION": "Confirmation",
+  "DAY": "jour | jours",
+  "HOME": "Accueil",
+  "HERE": "ici",
+  "SELECTS": {
+    "ORDER_BY": {
+      "LABEL": "trier par "
+    },
+    "ORDER": {
+      "LABEL": "tri",
+      "ASC": "ascendant",
+      "DESC": "descendant"
+    },
+    "PER_PAGE": {
+      "LABEL": "par page"
+    }
+  },
+  "TOTAL": "Total"
 }

@@ -44,12 +44,13 @@ def get_application_config() -> Union[Dict, HttpResponse]:
           "max_zip_file_size": 10485760,
           "max_users": 0,
           "map_attribution": "&copy; <a href=http://www.openstreetmap.org/copyright>OpenStreetMap</a> contributors"
+          "version": "0.5.0"
         },
         "status": "success"
       }
 
     :statuscode 200: success
-    :statuscode 500: Error on getting configuration.
+    :statuscode 500: error on getting configuration
     """
 
     try:
@@ -57,7 +58,7 @@ def get_application_config() -> Union[Dict, HttpResponse]:
         return {'status': 'success', 'data': config.serialize()}
     except (MultipleResultsFound, NoResultFound) as e:
         return handle_error_and_return_response(
-            e, message='Error on getting configuration.'
+            e, message='error on getting configuration'
         )
 
 
@@ -107,11 +108,11 @@ def update_application_config(auth_user_id: int) -> Union[Dict, HttpResponse]:
     :statuscode 200: success
     :statuscode 400: invalid payload
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
-    :statuscode 403: You do not have permissions.
-    :statuscode 500: Error on updating configuration.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403: you do not have permissions
+    :statuscode 500: error when updating configuration
     """
     config_data = request.get_json()
     if not config_data:
@@ -145,7 +146,7 @@ def update_application_config(auth_user_id: int) -> Union[Dict, HttpResponse]:
 
     except Exception as e:
         return handle_error_and_return_response(
-            e, message='Error on updating configuration.'
+            e, message='error when updating configuration'
         )
 
 

@@ -86,9 +86,9 @@ class User(BaseModel):
         try:
             return decode_user_token(auth_token)
         except jwt.ExpiredSignatureError:
-            return 'Signature expired. Please log in again.'
+            return 'signature expired, please log in again'
         except jwt.InvalidTokenError:
-            return 'Invalid token. Please log in again.'
+            return 'invalid token, please log in again'
 
     @hybrid_property
     def workouts_count(self) -> int:
@@ -136,6 +136,7 @@ class User(BaseModel):
             'language': self.language,
             'nb_sports': len(sports),
             'nb_workouts': self.workouts_count,
+            'records': [record.serialize() for record in self.records],
             'sports_list': [
                 sport for sportslist in sports for sport in sportslist
             ],

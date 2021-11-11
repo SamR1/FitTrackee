@@ -1,0 +1,339 @@
+@import 'colors';
+@import 'fonts';
+@import 'vars';
+
+body {
+  margin: 0;
+}
+
+#app {
+  font-family: 'PT Sans', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--app-color);
+
+  background-color: var(--app-background-color);
+
+  margin: 0;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--app-a-color);
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+}
+
+input, textarea, select {
+  background-color:  var(--input-bg-color);
+  border-radius: $border-radius;
+  border: solid 1px var(--input-border-color);
+  padding: $default-padding;
+
+  &:disabled {
+    background-color:  var(--disabled-background-color);
+    border-color: var(--disabled-color);
+  }
+}
+
+form.errors {
+  :invalid {
+    outline: 2px solid var(--input-error-color);
+  }
+}
+
+label {
+  font-weight: bold;
+}
+
+button {
+  background: var(--app-background-color);
+  border: solid 1px var(--input-border-color);
+  border-radius: $border-radius;
+  box-shadow: 2px 2px 2px var(--app-shadow-color);
+  color: var(--app-color);
+  padding: 6px 14px;
+
+  &:hover {
+    background: var(--app-color);
+    color: var(--button-hover-color);
+  }
+
+  &:enabled:active {
+    box-shadow: 2px 0 2px var(--app-shadow-color);
+    transform: translateY(2px);
+  }
+
+  &:disabled {
+    background: var(--disabled-background-color);
+    border-color: var(--disabled-color);
+    color: var(--disabled-color);
+  }
+
+  &.cancel {
+    background: var(--button-cancel-bg-color);
+    color: var(--button-cancel-color);
+    &:hover {
+      background: var(--app-color);
+      color: var(--button-hover-color);
+    }
+  }
+
+  &.confirm {
+    background: var(--button-confirm-bg-color);
+    color: var(--button-confirm-color);
+    &:hover {
+      background: var(--app-color);
+      color: var(--button-hover-color);
+    }
+  }
+
+  &.danger {
+    background: var(--button-danger-bg-color);
+    color: var(--button-danger-color);
+    &:hover {
+      background: var(--button-danger-hover-bg-color);
+      color: var(--button-danger-hover-color);
+    }
+    &:disabled {
+      background: var(--disabled-background-color);
+      border-color: var(--disabled-color);
+      color: var(--disabled-color);
+    }
+  }
+}
+
+.box {
+  border: solid 1px var(--card-border-color);
+  border-radius: $border-radius;
+  padding: $default-padding;
+  margin: $default-margin;
+}
+
+.info-box {
+  background-color: var(--info-background-color);
+  border-radius: $border-radius;
+  color: var(--info-color);
+  font-size: 0.8em;
+  padding: $default-padding;
+}
+
+.container {
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+  max-width: $container-width;
+}
+
+.form-box {
+  .form-items {
+      display: flex;
+      flex-direction: column;
+
+      input {
+        margin: $default-margin;
+        padding: $default-padding * .5;
+      }
+    }
+}
+
+.upper {
+  text-transform: uppercase;
+}
+
+.view  {
+  padding-bottom: 35px;
+}
+
+.fa-trophy {
+  color: var(--workout-trophy-color)
+}
+
+.mountains {
+  margin-bottom: -3px;
+  height: 16px;
+  filter: var(--workout-img-color);
+}
+
+.section-title {
+  font-weight: bold;
+  padding-top: $default-padding * 1.5;
+  padding-left: $default-padding;
+  text-transform: capitalize;
+}
+
+.no-map {
+  background-color: var(--workout-no-map-bg-color);
+  background-image: url('/img/workouts/map.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  color: var(--workout-no-map-color);
+  font-style: italic;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: center;
+}
+
+.custom-checkboxes-group {
+  display: flex;
+  justify-content: space-around;
+
+  .custom-checkboxes {
+    display: inline-flex;
+
+    @media screen and (max-width: $xx-small-limit) {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: $default-padding * .5;
+    }
+
+    .custom-checkbox {
+      label {
+        font-weight: normal;
+        float: left;
+        padding: 0 5px;
+        cursor: pointer;
+      }
+
+      label input {
+        display: none;
+      }
+
+      label span {
+        border: solid 1px var(--custom-checkbox-border-color);
+        border-radius: 5px;
+        display: block;
+        font-size: 0.9em;
+        padding: 2px 6px;
+        text-align: center;
+      }
+
+      input:checked + span {
+        background-color: var(--custom-checkbox-checked-bg-color);
+        color: var(--custom-checkbox-checked-color);
+      }
+    }
+  }
+}
+
+.description-list {
+  dl {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    dt {
+      font-weight: bold;
+    }
+    dd {
+      margin-bottom: $default-margin;
+    }
+  }
+}
+
+.center-card {
+  margin: 0 auto;
+  width: 700px;
+  &.with-margin {
+    margin-top: 100px;
+  }
+
+  @media screen and (max-width: $medium-limit) {
+    width: 100%;
+    margin: 0 auto 50px auto;
+
+    &.with-margin {
+      margin-top: 0;
+    }
+  }
+}
+
+.center-text {
+  text-align: center;
+}
+
+.responsive-table {
+  margin-bottom: 15px;
+  /* responsive table, adapted from: */
+  /* https://uglyduck.ca/making-tables-responsive-with-minimal-css/ */
+  table {
+    width: 100%;
+    padding: $default-padding;
+    font-size: 0.9em;
+    border-collapse: collapse;
+
+    thead th {
+      vertical-align: center;
+      padding: $default-padding;
+      border-bottom: 2px solid var(--card-border-color);
+    }
+
+    tbody {
+      font-size: 0.95em;
+      td {
+        padding: $default-padding;
+        border-bottom: 1px solid var(--card-border-color);
+      }
+      tr:last-child td {
+        border: none;
+      }
+    }
+    .cell-heading {
+      background: var(--cell-heading-bg-color);
+      color: var(--cell-heading-color);
+      display: none;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 5px;
+      position: absolute;
+      text-transform: uppercase;
+      top: 0;
+      left: 0;
+    }
+  }
+  @media screen and (max-width: $small-limit) {
+    table {
+      thead {
+        left: -9999px;
+        position: absolute;
+        visibility: hidden;
+      }
+      tr {
+        border-bottom: 0;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-bottom: 40px;
+      }
+      td {
+        border: 1px solid var(--card-border-color);
+        margin: 0 -1px -1px 0;
+        padding-top: 25px !important;
+        position: relative;
+        text-align: center;
+        width: 45%;
+      }
+      tbody {
+        tr:last-child td {
+          border: 1px solid var(--card-border-color);
+        }
+      }
+      .cell-heading {
+        display: flex;
+      }
+    }
+  }
+  @media screen and (max-width: $x-small-limit) {
+    table {
+      td {
+        width: 100%;
+      }
+    }
+  }
+}

@@ -4,7 +4,7 @@ from typing import Dict, Tuple, Union
 
 import jwt
 from flask import Blueprint, current_app, request
-from sqlalchemy import exc, or_
+from sqlalchemy import exc, func, or_
 from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
@@ -52,7 +52,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
 
       {
         "auth_token": "JSON Web Token",
-        "message": "Successfully registered.",
+        "message": "successfully registered",
         "status": "success"
       }
 
@@ -64,7 +64,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
       Content-Type: application/json
 
       {
-        "message": "Errors: Valid email must be provided.\\n",
+        "message": "Errors: email: valid email must be provided\\n",
         "status": "error"
       }
 
@@ -73,23 +73,23 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     :<json string password: password (8 characters required)
     :<json string password_conf: password confirmation
 
-    :statuscode 201: Successfully registered.
+    :statuscode 201: successfully registered
     :statuscode 400:
-        - Invalid payload.
-        - Sorry. That user already exists.
+        - invalid payload
+        - sorry, that user already exists
         - Errors:
-            - 3 to 12 characters required for usernanme.
-            - Valid email must be provided.
-            - Password and password confirmation don't match.
-            - 8 characters required for password.
+            - username: 3 to 12 characters required
+            - email: valid email must be provided
+            - password: password and password confirmation don't match
+            - password: 8 characters required
     :statuscode 403:
-        Error. Registration is disabled.
+        error, registration is disabled
     :statuscode 500:
-        Error. Please try again or contact the administrator.
+        error, please try again or contact the administrator
 
     """
     if not current_app.config.get('is_registration_enabled'):
-        return ForbiddenErrorResponse('Error. Registration is disabled.')
+        return ForbiddenErrorResponse('error, registration is disabled')
 
     # get post data
     post_data = request.get_json()
@@ -117,11 +117,14 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     try:
         # check for existing user
         user = User.query.filter(
-            or_(User.username == username, User.email == email)
+            or_(
+                func.lower(User.username) == func.lower(username),
+                func.lower(User.email) == func.lower(email),
+            )
         ).first()
         if user:
             return InvalidPayloadErrorResponse(
-                'Sorry. That user already exists.'
+                'sorry, that user already exists'
             )
 
         # add new user to db
@@ -133,7 +136,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
         auth_token = new_user.encode_auth_token(new_user.id)
         return {
             'status': 'success',
-            'message': 'Successfully registered.',
+            'message': 'successfully registered',
             'auth_token': auth_token,
         }, 201
     # handler errors
@@ -164,7 +167,7 @@ def login_user() -> Union[Dict, HttpResponse]:
 
       {
         "auth_token": "JSON Web Token",
-        "message": "Successfully logged in.",
+        "message": "successfully logged in",
         "status": "success"
       }
 
@@ -176,37 +179,39 @@ def login_user() -> Union[Dict, HttpResponse]:
       Content-Type: application/json
 
       {
-        "message": "Invalid credentials.",
+        "message": "invalid credentials",
         "status": "error"
       }
 
     :<json string email: user email
     :<json string password_conf: password confirmation
 
-    :statuscode 200: Successfully logged in.
-    :statuscode 400: Invalid payload.
-    :statuscode 401: Invalid credentials.
-    :statuscode 500: Error. Please try again or contact the administrator.
+    :statuscode 200: successfully logged in
+    :statuscode 400: invalid payload
+    :statuscode 401: invalid credentials
+    :statuscode 500: error, please try again or contact the administrator
 
     """
     # get post data
     post_data = request.get_json()
     if not post_data:
         return InvalidPayloadErrorResponse()
-    email = post_data.get('email')
+    email = post_data.get('email', '')
     password = post_data.get('password')
     try:
         # check for existing user
-        user = User.query.filter(User.email == email).first()
+        user = User.query.filter(
+            func.lower(User.email) == func.lower(email)
+        ).first()
         if user and bcrypt.check_password_hash(user.password, password):
             # generate auth token
             auth_token = user.encode_auth_token(user.id)
             return {
                 'status': 'success',
-                'message': 'Successfully logged in.',
+                'message': 'successfully logged in',
                 'auth_token': auth_token,
             }
-        return UnauthorizedErrorResponse('Invalid credentials.')
+        return UnauthorizedErrorResponse('invalid credentials')
     # handler errors
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)
@@ -235,7 +240,7 @@ def logout_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
       Content-Type: application/json
 
       {
-        "message": "Successfully logged out.",
+        "message": "successfully logged out",
         "status": "success"
       }
 
@@ -247,20 +252,20 @@ def logout_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
       Content-Type: application/json
 
       {
-        "message": "Provide a valid auth token.",
+        "message": "provide a valid auth token",
         "status": "error"
       }
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: Successfully logged out.
-    :statuscode 401: Provide a valid auth token.
+    :statuscode 200: successfully logged out
+    :statuscode 401: provide a valid auth token
 
     """
     # get auth token
     auth_header = request.headers.get('Authorization')
     if not auth_header:
-        return UnauthorizedErrorResponse('Provide a valid auth token.')
+        return UnauthorizedErrorResponse('provide a valid auth token')
 
     auth_token = auth_header.split(' ')[1]
     resp = User.decode_auth_token(auth_token)
@@ -269,7 +274,7 @@ def logout_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
 
     return {
         'status': 'success',
-        'message': 'Successfully logged out.',
+        'message': 'successfully logged out',
     }
 
 
@@ -309,6 +314,44 @@ def get_authenticated_user_profile(
           "nb_sports": 3,
           "nb_workouts": 6,
           "picture": false,
+          "records": [
+            {
+              "id": 9,
+              "record_type": "AS",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 10,
+              "record_type": "FD",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 11,
+              "record_type": "LD",
+              "sport_id": 1,
+              "user": "sam",
+              "value": "1:01:00",
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 12,
+              "record_type": "MS",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            }
+          ],
           "sports_list": [
               1,
               4,
@@ -327,9 +370,9 @@ def get_authenticated_user_profile(
 
     :statuscode 200: success.
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
 
     """
     user = User.query.filter_by(id=auth_user_id).first()
@@ -370,6 +413,44 @@ def edit_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
           "nb_sports": 3,
           "nb_workouts": 6,
           "picture": false,
+          "records": [
+            {
+              "id": 9,
+              "record_type": "AS",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 10,
+              "record_type": "FD",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 11,
+              "record_type": "LD",
+              "sport_id": 1,
+              "user": "sam",
+              "value": "1:01:00",
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 12,
+              "record_type": "MS",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            }
+          ],
           "sports_list": [
               1,
               4,
@@ -381,7 +462,7 @@ def edit_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
           "username": "sam"
           "weekm": true,
         },
-        "message": "User profile updated.",
+        "message": "user profile updated",
         "status": "success"
       }
 
@@ -392,21 +473,18 @@ def edit_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
     :<json string birth_date: user birth date (format: ``%Y-%m-%d``)
     :<json string password: user password
     :<json string password_conf: user password confirmation
-    :<json string timezone: user time zone
-    :<json string weekm: does week start on Monday?
-    :<json string language: language preferences
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: User profile updated.
+    :statuscode 200: user profile updated
     :statuscode 400:
-        - Invalid payload.
-        - Password and password confirmation don't match.
+        - invalid payload
+        - password: password and password confirmation don't match
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
-    :statuscode 500: Error. Please try again or contact the administrator.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 500: error, please try again or contact the administrator
 
     """
     # get post data
@@ -416,10 +494,7 @@ def edit_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
         'last_name',
         'bio',
         'birth_date',
-        'language',
         'location',
-        'timezone',
-        'weekm',
     }
     if not post_data or not post_data.keys() >= user_mandatory_data:
         return InvalidPayloadErrorResponse()
@@ -428,12 +503,9 @@ def edit_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
     last_name = post_data.get('last_name')
     bio = post_data.get('bio')
     birth_date = post_data.get('birth_date')
-    language = post_data.get('language')
     location = post_data.get('location')
     password = post_data.get('password')
     password_conf = post_data.get('password_conf')
-    timezone = post_data.get('timezone')
-    weekm = post_data.get('weekm')
 
     if password is not None and password != '':
         message = check_passwords(password, password_conf)
@@ -448,7 +520,6 @@ def edit_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
         user.first_name = first_name
         user.last_name = last_name
         user.bio = bio
-        user.language = language
         user.location = location
         user.birth_date = (
             datetime.datetime.strptime(birth_date, '%Y-%m-%d')
@@ -457,13 +528,147 @@ def edit_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
         )
         if password is not None and password != '':
             user.password = password
+        db.session.commit()
+
+        return {
+            'status': 'success',
+            'message': 'user profile updated',
+            'data': user.serialize(),
+        }
+
+    # handler errors
+    except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(e, db=db)
+
+
+@auth_blueprint.route('/auth/profile/edit/preferences', methods=['POST'])
+@authenticate
+def edit_user_preferences(auth_user_id: int) -> Union[Dict, HttpResponse]:
+    """
+    edit authenticated user preferences
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/auth/profile/edit/preferences HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "admin": false,
+          "bio": null,
+          "birth_date": null,
+          "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+          "email": "sam@example.com",
+          "first_name": null,
+          "language": "en",
+          "last_name": null,
+          "location": null,
+          "nb_sports": 3,
+          "nb_workouts": 6,
+          "picture": false,
+          "records": [
+            {
+              "id": 9,
+              "record_type": "AS",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 10,
+              "record_type": "FD",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 11,
+              "record_type": "LD",
+              "sport_id": 1,
+              "user": "sam",
+              "value": "1:01:00",
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 12,
+              "record_type": "MS",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            }
+          ],
+          "sports_list": [
+              1,
+              4,
+              6
+          ],
+          "timezone": "Europe/Paris",
+          "total_distance": 67.895,
+          "total_duration": "6:50:27",
+          "username": "sam"
+          "weekm": true,
+        },
+        "message": "user preferences updated",
+        "status": "success"
+      }
+
+    :<json string timezone: user time zone
+    :<json string weekm: does week start on Monday?
+    :<json string language: language preferences
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: user preferences updated
+    :statuscode 400:
+        - invalid payload
+        - password: password and password confirmation don't match
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 500: error, please try again or contact the administrator
+
+    """
+    # get post data
+    post_data = request.get_json()
+    user_mandatory_data = {
+        'language',
+        'timezone',
+        'weekm',
+    }
+    if not post_data or not post_data.keys() >= user_mandatory_data:
+        return InvalidPayloadErrorResponse()
+
+    language = post_data.get('language')
+    timezone = post_data.get('timezone')
+    weekm = post_data.get('weekm')
+
+    try:
+        user = User.query.filter_by(id=auth_user_id).first()
+        user.language = language
         user.timezone = timezone
         user.weekm = weekm
         db.session.commit()
 
         return {
             'status': 'success',
-            'message': 'User profile updated.',
+            'message': 'user preferences updated',
             'data': user.serialize(),
         }
 
@@ -493,7 +698,7 @@ def edit_picture(auth_user_id: int) -> Union[Dict, HttpResponse]:
       Content-Type: application/json
 
       {
-        "message": "User picture updated.",
+        "message": "user picture updated",
         "status": "success"
       }
 
@@ -501,18 +706,18 @@ def edit_picture(auth_user_id: int) -> Union[Dict, HttpResponse]:
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: User picture updated.
+    :statuscode 200: user picture updated
     :statuscode 400:
-        - Invalid payload.
-        - No file part.
-        - No selected file.
-        - File extension not allowed.
+        - invalid payload
+        - no file part
+        - no selected file
+        - file extension not allowed
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
-    :statuscode 413: Error during picture update: file size exceeds 1.0MB.
-    :statuscode 500: Error during picture update.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 413: error during picture update: file size exceeds 1.0MB
+    :statuscode 500: error during picture update
 
     """
     try:
@@ -550,12 +755,12 @@ def edit_picture(auth_user_id: int) -> Union[Dict, HttpResponse]:
         db.session.commit()
         return {
             'status': 'success',
-            'message': 'User picture updated.',
+            'message': 'user picture updated',
         }
 
     except (exc.IntegrityError, ValueError) as e:
         return handle_error_and_return_response(
-            e, message='Error during picture update.', status='fail', db=db
+            e, message='error during picture update', status='fail', db=db
         )
 
 
@@ -583,10 +788,10 @@ def del_picture(auth_user_id: int) -> Union[Tuple[Dict, int], HttpResponse]:
 
     :statuscode 204: picture deleted
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
-    :statuscode 500: Error during picture deletion.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 500: error during picture deletion
 
     """
     try:
@@ -599,7 +804,7 @@ def del_picture(auth_user_id: int) -> Union[Tuple[Dict, int], HttpResponse]:
         return {'status': 'no content'}, 204
     except (exc.IntegrityError, ValueError) as e:
         return handle_error_and_return_response(
-            e, message='Error during picture deletion.', status='fail', db=db
+            e, message='error during picture deletion', status='fail', db=db
         )
 
 
@@ -623,14 +828,14 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
       Content-Type: application/json
 
       {
-        "message": "Password reset request processed.",
+        "message": "password reset request processed",
         "status": "success"
       }
 
     :<json string email: user email
 
-    :statuscode 200: Password reset request processed.
-    :statuscode 400: Invalid payload.
+    :statuscode 200: password reset request processed
+    :statuscode 400: invalid payload
 
     """
     post_data = request.get_json()
@@ -662,7 +867,7 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
         reset_password_email.send(user_data, email_data)
     return {
         'status': 'success',
-        'message': 'Password reset request processed.',
+        'message': 'password reset request processed',
     }
 
 
@@ -686,7 +891,7 @@ def update_password() -> Union[Dict, HttpResponse]:
       Content-Type: application/json
 
       {
-        "message": "Password updated.",
+        "message": "password updated",
         "status": "success"
       }
 
@@ -694,10 +899,10 @@ def update_password() -> Union[Dict, HttpResponse]:
     :<json string password_conf: password confirmation
     :<json string token: password reset token
 
-    :statuscode 200: Password updated.
-    :statuscode 400: Invalid payload.
-    :statuscode 401: Invalid token.
-    :statuscode 500: Error. Please try again or contact the administrator.
+    :statuscode 200: password updated
+    :statuscode 400: invalid payload
+    :statuscode 401: invalid token, please request a new token
+    :statuscode 500: error, please try again or contact the administrator
 
     """
     post_data = request.get_json()
@@ -731,7 +936,7 @@ def update_password() -> Union[Dict, HttpResponse]:
         db.session.commit()
         return {
             'status': 'success',
-            'message': 'Password updated.',
+            'message': 'password updated',
         }
     except (exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)

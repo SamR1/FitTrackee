@@ -187,9 +187,9 @@ def get_workouts(auth_user_id: int) -> Union[Dict, HttpResponse]:
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 500:
 
     """
@@ -206,12 +206,13 @@ def get_workouts(auth_user_id: int) -> Union[Dict, HttpResponse]:
         ave_speed_to = params.get('ave_speed_to')
         max_speed_from = params.get('max_speed_from')
         max_speed_to = params.get('max_speed_to')
-        order = params.get('order')
+        order_by = params.get('order_by', 'workout_date')
+        order = params.get('order', 'desc')
         sport_id = params.get('sport_id')
         per_page = int(params.get('per_page', DEFAULT_WORKOUTS_PER_PAGE))
         if per_page > MAX_WORKOUTS_PER_PAGE:
             per_page = MAX_WORKOUTS_PER_PAGE
-        workouts = (
+        workouts_pagination = (
             Workout.query.filter(
                 Workout.user_id == auth_user_id,
                 Workout.sport_id == sport_id if sport_id else True,
@@ -219,10 +220,12 @@ def get_workouts(auth_user_id: int) -> Union[Dict, HttpResponse]:
                 Workout.workout_date < date_to + timedelta(seconds=1)
                 if date_to
                 else True,
-                Workout.distance >= int(distance_from)
+                Workout.distance >= float(distance_from)
                 if distance_from
                 else True,
-                Workout.distance <= int(distance_to) if distance_to else True,
+                Workout.distance <= float(distance_to)
+                if distance_to
+                else True,
                 Workout.moving >= convert_in_duration(duration_from)
                 if duration_from
                 else True,
@@ -243,17 +246,45 @@ def get_workouts(auth_user_id: int) -> Union[Dict, HttpResponse]:
                 else True,
             )
             .order_by(
+                Workout.ave_speed.asc()
+                if order_by == 'ave_speed' and order == 'asc'
+                else True,
+                Workout.ave_speed.desc()
+                if order_by == 'ave_speed' and order == 'desc'
+                else True,
+                Workout.distance.asc()
+                if order_by == 'distance' and order == 'asc'
+                else True,
+                Workout.distance.desc()
+                if order_by == 'distance' and order == 'desc'
+                else True,
+                Workout.moving.asc()
+                if order_by == 'duration' and order == 'asc'
+                else True,
+                Workout.moving.desc()
+                if order_by == 'duration' and order == 'desc'
+                else True,
                 Workout.workout_date.asc()
-                if order == 'asc'
-                else Workout.workout_date.desc()
+                if order_by == 'workout_date' and order == 'asc'
+                else True,
+                Workout.workout_date.desc()
+                if order_by == 'workout_date' and order == 'desc'
+                else True,
             )
             .paginate(page, per_page, False)
-            .items
         )
+        workouts = workouts_pagination.items
         return {
             'status': 'success',
             'data': {
                 'workouts': [workout.serialize(params) for workout in workouts]
+            },
+            'pagination': {
+                'has_next': workouts_pagination.has_next,
+                'has_prev': workouts_pagination.has_prev,
+                'page': workouts_pagination.page,
+                'pages': workouts_pagination.pages,
+                'total': workouts_pagination.total,
             },
         }
     except Exception as e:
@@ -343,10 +374,10 @@ def get_workout(
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
-    :statuscode 403: You do not have permissions.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403: you do not have permissions
     :statuscode 404: workout not found
 
     """
@@ -377,7 +408,7 @@ def get_workout_data(
     if not workout:
         return DataNotFoundErrorResponse(
             data_type=data_type,
-            message=f'Workout not found (id: {workout_short_id})',
+            message=f'workout not found (id: {workout_short_id})',
         )
 
     error_response = can_view_workout(auth_user_id, workout.user_id)
@@ -385,7 +416,7 @@ def get_workout_data(
         return error_response
     if not workout.gpx or workout.gpx == '':
         return NotFoundErrorResponse(
-            f'No gpx file for this workout (id: {workout_short_id})'
+            f'no gpx file for this workout (id: {workout_short_id})'
         )
 
     try:
@@ -464,9 +495,9 @@ def get_workout_gpx(
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404:
         - workout not found
         - no gpx file for this workout
@@ -534,9 +565,9 @@ def get_workout_chart_data(
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404:
         - workout not found
         - no gpx file for this workout
@@ -588,9 +619,9 @@ def get_segment_gpx(
     :statuscode 200: success
     :statuscode 400: no gpx file for this workout
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404: workout not found
     :statuscode 500:
 
@@ -660,9 +691,9 @@ def get_segment_chart_data(
     :statuscode 200: success
     :statuscode 400: no gpx file for this workout
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404: workout not found
     :statuscode 500:
 
@@ -695,9 +726,9 @@ def get_map(map_id: int) -> Any:
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404: map does not exist
     :statuscode 500:
 
@@ -855,15 +886,15 @@ def post_workout(auth_user_id: int) -> Union[Tuple[Dict, int], HttpResponse]:
 
     :statuscode 201: workout created
     :statuscode 400:
-        - Invalid payload.
-        - No file part.
-        - No selected file.
-        - File extension not allowed.
+        - invalid payload
+        - no file part
+        - no selected file
+        - file extension not allowed
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
-    :statuscode 413: Error during picture update: file size exceeds 1.0MB.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 413: error during picture update: file size exceeds 1.0MB
     :statuscode 500:
 
     """
@@ -1030,9 +1061,9 @@ def post_workout_no_gpx(
     :statuscode 201: workout created
     :statuscode 400: invalid payload
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 500:
 
     """
@@ -1185,9 +1216,9 @@ def update_workout(
     :statuscode 200: workout updated
     :statuscode 400: invalid payload
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404: workout not found
     :statuscode 500:
 
@@ -1248,11 +1279,11 @@ def delete_workout(
 
     :statuscode 204: workout deleted
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404: workout not found
-    :statuscode 500: Error. Please try again or contact the administrator.
+    :statuscode 500: error, please try again or contact the administrator
 
     """
 

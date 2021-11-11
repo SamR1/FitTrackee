@@ -8,13 +8,16 @@ class TestProfile:
         user = register_valid_user(selenium)
 
         selenium.get(URL)
+        user_header = selenium.find_element_by_class_name('user-header')
+        assert user['username'] in user_header.text
+        assert '0\nworkouts' in user_header.text
+        assert '0\nkm' in user_header.text
+        assert '0\nsports' in user_header.text
 
-        assert 'Profile' in selenium.find_element_by_tag_name('h1').text
-        assert (
-            user['username']
-            in selenium.find_element_by_class_name('userName').text
-        )
-        assert (
-            user['username']
-            in selenium.find_element_by_class_name('userName').text
-        )
+        user_infos = selenium.find_element_by_id('user-infos')
+        assert 'Registration date' in user_infos.text
+        assert 'First name' in user_infos.text
+        assert 'Last name' in user_infos.text
+        assert 'Birth date' in user_infos.text
+        assert 'Location' in user_infos.text
+        assert 'Bio' in user_infos.text

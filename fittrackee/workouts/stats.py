@@ -42,7 +42,7 @@ def get_workouts(
             if sport_id:
                 sport = Sport.query.filter_by(id=sport_id).first()
                 if not sport:
-                    return NotFoundErrorResponse('Sport does not exist.')
+                    return NotFoundErrorResponse('sport does not exist')
 
         workouts = (
             Workout.query.filter(
@@ -247,11 +247,11 @@ def get_workouts_by_time(
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404:
-        - User does not exist.
+        - user does not exist
 
     """
     return get_workouts(user_name, 'by_time')
@@ -340,12 +340,12 @@ def get_workouts_by_sport(
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404:
-        - User does not exist.
-        - Sport does not exist.
+        - user does not exist
+        - sport does not exist
 
     """
     return get_workouts(user_name, 'by_sport')
@@ -387,10 +387,10 @@ def get_application_stats(auth_user_id: int) -> Dict:
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
-    :statuscode 403: You do not have permissions.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403: you do not have permissions
     """
 
     nb_workouts = Workout.query.filter().count()

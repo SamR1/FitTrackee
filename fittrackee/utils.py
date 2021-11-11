@@ -18,11 +18,11 @@ def verify_extension_and_size(
     Return error Response if file is invalid
     """
     if 'file' not in req.files:
-        return InvalidPayloadErrorResponse('No file part.', 'fail')
+        return InvalidPayloadErrorResponse('no file part', 'fail')
 
     file = req.files['file']
     if not file.filename or file.filename == '':
-        return InvalidPayloadErrorResponse('No selected file.', 'fail')
+        return InvalidPayloadErrorResponse('no selected file', 'fail')
 
     allowed_extensions = (
         'WORKOUT_ALLOWED_EXTENSIONS'
@@ -42,7 +42,7 @@ def verify_extension_and_size(
         and file_extension in current_app.config[allowed_extensions]
     ):
         return InvalidPayloadErrorResponse(
-            'File extension not allowed.', 'fail'
+            'file extension not allowed', 'fail'
         )
 
     if (
