@@ -220,10 +220,12 @@ def get_workouts(auth_user_id: int) -> Union[Dict, HttpResponse]:
                 Workout.workout_date < date_to + timedelta(seconds=1)
                 if date_to
                 else True,
-                Workout.distance >= int(distance_from)
+                Workout.distance >= float(distance_from)
                 if distance_from
                 else True,
-                Workout.distance <= int(distance_to) if distance_to else True,
+                Workout.distance <= float(distance_to)
+                if distance_to
+                else True,
                 Workout.moving >= convert_in_duration(duration_from)
                 if duration_from
                 else True,

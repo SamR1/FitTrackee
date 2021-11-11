@@ -713,7 +713,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.get(
-            '/api/workouts?distance_from=5&distance_to=8',
+            '/api/workouts?distance_from=5&distance_to=8.1',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 

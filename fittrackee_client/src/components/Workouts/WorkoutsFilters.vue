@@ -53,7 +53,7 @@
                 name="distance_from"
                 type="number"
                 min="0"
-                step="1"
+                step="0.1"
                 :value="$route.query.distance_from"
                 @change="handleFilterChange"
               />
@@ -62,7 +62,7 @@
                 name="distance_to"
                 type="number"
                 min="0"
-                step="1"
+                step="0.1"
                 :value="$route.query.distance_to"
                 @change="handleFilterChange"
               />
@@ -104,7 +104,7 @@
                 name="ave_speed_from"
                 :value="$route.query.ave_speed_from"
                 @change="handleFilterChange"
-                step="1"
+                step="0.1"
                 type="number"
               />
               <span>{{ $t('workouts.TO') }}</span>
@@ -113,7 +113,7 @@
                 name="ave_speed_to"
                 :value="$route.query.ave_speed_to"
                 @change="handleFilterChange"
-                step="1"
+                step="0.1"
                 type="number"
               />
             </div>
@@ -130,7 +130,7 @@
                 name="max_speed_from"
                 :value="$route.query.max_speed_from"
                 @change="handleFilterChange"
-                step="1"
+                step="0.1"
                 type="number"
               />
               <span>{{ $t('workouts.TO') }}</span>
@@ -139,7 +139,7 @@
                 name="max_speed_to"
                 :value="$route.query.max_speed_to"
                 @change="handleFilterChange"
-                step="1"
+                step="0.1"
                 type="number"
               />
             </div>
