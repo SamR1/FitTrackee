@@ -3,8 +3,8 @@
     <Card>
       <template #title>{{ $t('workouts.NOTES') }}</template>
       <template #content>
-        {{ notes && notes !== '' ? notes : $t('workouts.NO_NOTES') }}</template
-      >
+        {{ notes && notes !== '' ? notes : $t('workouts.NO_NOTES') }}
+      </template>
     </Card>
   </div>
 </template>
@@ -27,6 +27,7 @@
   #workout-note {
     ::v-deep(.card-content) {
       font-style: italic;
+      white-space: pre-wrap;
     }
   }
 </style>

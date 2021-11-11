@@ -39,7 +39,7 @@
                 :value="sport.id"
                 :key="sport.id"
               >
-                {{ sport.label }}
+                {{ sport.translatedLabel }}
               </option>
             </select>
           </div>

@@ -50,7 +50,7 @@
                     :value="sport.id"
                     :key="sport.id"
                   >
-                    {{ sport.label }}
+                    {{ sport.translatedLabel }}
                   </option>
                 </select>
               </div>
@@ -178,7 +178,7 @@
                     name="workout-distance"
                     type="number"
                     min="0"
-                    step="0.1"
+                    step="0.01"
                     required
                     @invalid="invalidateForm"
                     :disabled="loading"

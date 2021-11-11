@@ -38,6 +38,7 @@
     justify-content: center;
     align-items: center;
     min-width: 30%;
+    line-height: 1.2em;
     img {
       border-radius: 50%;
       height: 90px;
