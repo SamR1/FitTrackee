@@ -72,6 +72,7 @@ class Sport(BaseModel):
     label = db.Column(db.String(50), unique=True, nullable=False)
     img = db.Column(db.String(255), unique=True, nullable=True)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
+    stopped_speed_threshold = db.Column(db.Float, default=1.0, nullable=False)
     workouts = db.relationship(
         'Workout', lazy=True, backref=db.backref('sports', lazy='joined')
     )

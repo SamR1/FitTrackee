@@ -20,6 +20,7 @@ def get_gpx_data(
     max_speed: float,
     start: int,
     stopped_time_between_seg: timedelta,
+    stopped_speed_threshold: float,
 ) -> Dict:
     """
     Returns data from parsed gpx file
@@ -42,7 +43,9 @@ def get_gpx_data(
     gpx_data['uphill'] = hill.uphill
     gpx_data['downhill'] = hill.downhill
 
-    mv = parsed_gpx.get_moving_data(stopped_speed_threshold=0.1)
+    mv = parsed_gpx.get_moving_data(
+        stopped_speed_threshold=stopped_speed_threshold
+    )
     gpx_data['moving_time'] = timedelta(seconds=mv.moving_time)
     gpx_data['stop_time'] = (
         timedelta(seconds=mv.stopped_time) + stopped_time_between_seg
@@ -58,6 +61,7 @@ def get_gpx_data(
 
 def get_gpx_info(
     gpx_file: str,
+    stopped_speed_threshold: float,
     update_map_data: Optional[bool] = True,
     update_weather_data: Optional[bool] = True,
 ) -> Tuple:
@@ -104,23 +108,30 @@ def get_gpx_info(
 
             if update_map_data:
                 map_data.append([point.longitude, point.latitude])
-        segment_max_speed = (
-            segment.get_moving_data(stopped_speed_threshold=0.1).max_speed
-            if segment.get_moving_data(stopped_speed_threshold=0.1).max_speed
-            else 0
-        )
+        calculated_max_speed = segment.get_moving_data(
+            stopped_speed_threshold=stopped_speed_threshold
+        ).max_speed
+        segment_max_speed = calculated_max_speed if calculated_max_speed else 0
 
         if segment_max_speed > max_speed:
             max_speed = segment_max_speed
 
         segment_data = get_gpx_data(
-            segment, segment_max_speed, segment_start, no_stopped_time
+            segment,
+            segment_max_speed,
+            segment_start,
+            no_stopped_time,
+            stopped_speed_threshold,
         )
         segment_data['idx'] = segment_idx
         gpx_data['segments'].append(segment_data)
 
     full_gpx_data = get_gpx_data(
-        gpx, max_speed, start, stopped_time_between_seg
+        gpx,
+        max_speed,
+        start,
+        stopped_time_between_seg,
+        stopped_speed_threshold,
     )
     gpx_data = {**gpx_data, **full_gpx_data}
 
