@@ -51,6 +51,7 @@
   "SPEED": "speed",
   "SPORT": "sport | sports",
   "START": "start",
+  "START_ELEVATION_AT_ZERO": "Elevation axis beginning at 0",
   "TITLE": "title",
   "TO": "to",
   "TOTAL_DURATION": "total duration",

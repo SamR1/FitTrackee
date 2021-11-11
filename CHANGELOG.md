@@ -6,6 +6,7 @@
 
 #### New Features
 
+* [#91](https://github.com/SamR1/FitTrackee/issues/91) - Display elevation chart with min and max altitude of workout
 * [#18](https://github.com/SamR1/FitTrackee/issues/18) - Better UI
 
 #### Bugs Fixed

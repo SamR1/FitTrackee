@@ -51,6 +51,7 @@
   "SPEED": "vitesse",
   "SPORT": "sport | sports",
   "START": "début",
+  "START_ELEVATION_AT_ZERO": "Axe pour l'altitude démarrant à 0",
   "TITLE": "titre",
   "TO": "jusqu'au",
   "TOTAL_DURATION": "durée totale",

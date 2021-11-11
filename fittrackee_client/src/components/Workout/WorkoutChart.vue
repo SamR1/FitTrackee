@@ -28,8 +28,21 @@
           class="line-chart"
           @mouseleave="emitEmptyCoordinates"
         />
-        <div class="no-data-cleaning">
-          {{ $t('workouts.NO_DATA_CLEANING') }}
+        <div class="chart-info">
+          <div class="no-data-cleaning">
+            {{ $t('workouts.NO_DATA_CLEANING') }}
+          </div>
+
+          <div class="elevation-start">
+            <label>
+              <input
+                type="checkbox"
+                :checked="beginElevationAtZero"
+                @click="beginElevationAtZero = !beginElevationAtZero"
+              />
+              {{ $t('workouts.START_ELEVATION_AT_ZERO') }}
+            </label>
+          </div>
         </div>
       </template>
     </Card>
@@ -61,6 +74,7 @@
   const { t } = useI18n()
 
   let displayDistance = ref(true)
+  let beginElevationAtZero = ref(true)
   const datasets: ComputedRef<IWorkoutChartData> = computed(() =>
     getDatasets(props.workoutData.chartData, t)
   )
@@ -120,7 +134,7 @@
         },
       },
       yElevation: {
-        beginAtZero: true,
+        beginAtZero: beginElevationAtZero.value,
         grid: {
           drawOnChartArea: false,
         },
@@ -206,7 +220,9 @@
             padding: 0 $default-padding;
           }
         }
-        .no-data-cleaning {
+        .chart-info {
+          display: flex;
+          justify-content: space-between;
           font-size: 0.85em;
           font-style: italic;
         }
@@ -215,8 +231,15 @@
       @media screen and (max-width: $small-limit) {
         .card-content {
           padding: $default-padding 0;
-          .no-data-cleaning {
-            padding: 0 $default-padding * 2;
+          .chart-info {
+            display: flex;
+            flex-direction: column-reverse;
+            .elevation-start {
+              padding: $default-padding $default-padding * 1.5 0;
+            }
+            .no-data-cleaning {
+              padding: 0 $default-padding * 2;
+            }
           }
         }
       }
