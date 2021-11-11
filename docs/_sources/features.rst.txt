@@ -51,6 +51,11 @@ Workouts
      - Skiing (Cross Country)  (**new in 0.5.0**)
      - Trail  (**new in 0.5.0**)
      - Walking
+- (*new in 0.5.0*) Stopped speed threshold used by `gpxpy <https://github.com/tkrajina/gpxpy>`_ is not the default one (0.1 km/h instead of 1 km/h) for the following sports:
+     - Hiking
+     - Skiing (Cross Country)
+     - Trail
+     - Walking
 - Dashboard with month calendar displaying workouts and record. The week can start on Sunday or Monday (which can be changed in the user settings). The calendar displays up to 100 workouts.
 - Workout creation by uploading a gpx file. A workout can even be created without gpx (the user must enter date, time, duration and distance)
 - A workout with a gpx file can be displayed with map, weather (if the DarkSky API key is provided) and charts (speed and elevation). Segments can be displayed

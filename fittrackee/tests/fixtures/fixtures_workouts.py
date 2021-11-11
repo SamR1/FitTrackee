@@ -2,9 +2,11 @@ import datetime
 from io import BytesIO
 from typing import Generator
 from unittest.mock import Mock, patch
+from uuid import uuid4
 
 import pytest
 from PIL import Image
+from werkzeug.datastructures import FileStorage
 
 from fittrackee import db
 from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
@@ -43,6 +45,7 @@ def sport_1_cycling_inactive() -> Sport:
 @pytest.fixture()
 def sport_2_running() -> Sport:
     sport = Sport(label='Running')
+    sport.stopped_speed_threshold = 0.1
     db.session.add(sport)
     db.session.commit()
     return sport
@@ -574,4 +577,11 @@ def gpx_file_with_segments() -> str:
         '    </trkseg>'
         '  </trk>'
         '</gpx>'
+    )
+
+
+@pytest.fixture()
+def gpx_file_storage(gpx_file: str) -> FileStorage:
+    return FileStorage(
+        filename=f'{uuid4().hex}.gpx', stream=BytesIO(str.encode(gpx_file))
     )

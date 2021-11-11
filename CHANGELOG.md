@@ -19,6 +19,7 @@
 
 ### Pull Requests
 
+* [#98/#109](https://github.com/SamR1/FitTrackee/pull/109) - Added stopped_speed_threshold to support slow movement
 * [#84/#93](https://github.com/SamR1/FitTrackee/pull/93) - Add elevation data and new sports
 
 
