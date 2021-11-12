@@ -18,7 +18,10 @@ export const sportColors: Record<string, string> = {
 
 export const sportIdColors = (sports: ISport[]): Record<number, string> => {
   const colors: Record<number, string> = {}
-  sports.map((sport) => (colors[sport.id] = sportColors[sport.label]))
+  sports.map(
+    (sport) =>
+      (colors[sport.id] = sport.color ? sport.color : sportColors[sport.label])
+  )
   return colors
 }
 

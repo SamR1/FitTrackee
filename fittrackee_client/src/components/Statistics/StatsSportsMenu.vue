@@ -4,7 +4,7 @@
       v-for="sport in translatedSports"
       type="checkbox"
       :key="sport.id"
-      :style="{ color: sportColors[sport.label] }"
+      :style="{ color: sport.color ? sport.color : sportColors[sport.label] }"
     >
       <input
         type="checkbox"
