@@ -31,10 +31,15 @@ Administration
 
   - enable or disable a sport (a sport can be disabled even if workout with this sport exists)
 
-Account
-^^^^^^^
+Account & preferences
+^^^^^^^^^^^^^^^^^^^^^
 - A user can create, update and deleted his account
 - A user can reset his password (*new in 0.3.0*)
+- A user can set language, timezone and first day of week.
+- A user can set sport preferences (*new in 0.5.0*):
+     - disable/enable a sport (if a sport is disabled by an administrator, it can not be enabled by user). A disabled sport will not appear in dropdown when adding a workout.
+     - change sport color (used for sport image and statistics)
+     - can override stopped speed threshold (for next uploaded gpx files)
 
 
 Workouts
@@ -51,15 +56,19 @@ Workouts
      - Skiing (Cross Country)  (**new in 0.5.0**)
      - Trail  (**new in 0.5.0**)
      - Walking
-- (*new in 0.5.0*) Stopped speed threshold used by `gpxpy <https://github.com/tkrajina/gpxpy>`_ is not the default one (0.1 km/h instead of 1 km/h) for the following sports:
+- (*new in 0.5.0*) Stopped speed threshold used by `gpxpy <https://github.com/tkrajina/gpxpy>`_ is not the default one for the following sports (0.1 km/h instead of 1 km/h):
      - Hiking
      - Skiing (Cross Country)
      - Trail
      - Walking
-- Dashboard with month calendar displaying workouts and record. The week can start on Sunday or Monday (which can be changed in the user settings). The calendar displays up to 100 workouts.
-- Workout creation by uploading a gpx file. A workout can even be created without gpx (the user must enter date, time, duration and distance)
-- A workout with a gpx file can be displayed with map, weather (if the DarkSky API key is provided) and charts (speed and elevation). Segments can be displayed
-- Workout edition and deletion. User can add a note
+
+.. note::
+  It can be overridden in user preferences.
+
+- Dashboard with month calendar displaying workouts and record. The week can start on Sunday or Monday (which can be changed in the user preferences). The calendar displays up to 100 workouts.
+- Workout creation by uploading a gpx file. A workout can even be created without gpx (the user must enter date, time, duration and distance).
+- A workout with a gpx file can be displayed with map, weather (if the DarkSky API key is provided) and charts (speed and elevation). Segments can be displayed.
+- Workout edition and deletion. User can add a note.
 - User statistics
 - User records by sports:
     - average speed
@@ -73,7 +82,7 @@ Workouts
 
 Translations
 ^^^^^^^^^^^^
-FitTrackee is available in English and French (which can be saved in the user settings).
+FitTrackee is available in English and French (which can be saved in the user preferences).
 
 
 Dashboard
