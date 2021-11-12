@@ -10,7 +10,6 @@ from ..api_test_case import ApiTestCaseMixin
 expected_sport_1_cycling_result = {
     'id': 1,
     'label': 'Cycling',
-    'img': None,
     'is_active': True,
 }
 expected_sport_1_cycling_admin_result = expected_sport_1_cycling_result.copy()
@@ -19,7 +18,6 @@ expected_sport_1_cycling_admin_result['has_workouts'] = False
 expected_sport_2_running_result = {
     'id': 2,
     'label': 'Running',
-    'img': None,
     'is_active': True,
 }
 expected_sport_2_running_admin_result = expected_sport_2_running_result.copy()
@@ -28,7 +26,6 @@ expected_sport_2_running_admin_result['has_workouts'] = False
 expected_sport_1_cycling_inactive_result = {
     'id': 1,
     'label': 'Cycling',
-    'img': None,
     'is_active': False,
 }
 expected_sport_1_cycling_inactive_admin_result = (

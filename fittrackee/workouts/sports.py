@@ -45,37 +45,31 @@ def get_sports(auth_user_id: int) -> Dict:
           "sports": [
             {
               "id": 1,
-              "img": "/img/sports/cycling-sport.png",
               "is_active": true,
               "label": "Cycling (Sport)"
             },
             {
               "id": 2,
-              "img": "/img/sports/cycling-transport.png",
               "is_active": true,
               "label": "Cycling (Transport)"
             },
             {
               "id": 3,
-              "img": "/img/sports/hiking.png",
               "is_active": true,
               "label": "Hiking"
             },
             {
               "id": 4,
-              "img": "/img/sports/mountain-biking.png",
               "is_active": true,
               "label": "Mountain Biking"
             },
             {
               "id": 5,
-              "img": "/img/sports/running.png",
               "is_active": true,
               "label": "Running"
             },
             {
               "id": 6,
-              "img": "/img/sports/walking.png",
               "is_active": true,
               "label": "Walking"
             }
@@ -97,42 +91,36 @@ def get_sports(auth_user_id: int) -> Dict:
             {
               "has_workouts": true,
               "id": 1,
-              "img": "/img/sports/cycling-sport.png",
               "is_active": true,
               "label": "Cycling (Sport)"
             },
             {
               "has_workouts": false,
               "id": 2,
-              "img": "/img/sports/cycling-transport.png",
               "is_active": true,
               "label": "Cycling (Transport)"
             },
             {
               "has_workouts": false,
               "id": 3,
-              "img": "/img/sports/hiking.png",
               "is_active": true,
               "label": "Hiking"
             },
             {
               "has_workouts": false,
               "id": 4,
-              "img": "/img/sports/mountain-biking.png",
               "is_active": true,
               "label": "Mountain Biking"
             },
             {
               "has_workouts": false,
               "id": 5,
-              "img": "/img/sports/running.png",
               "is_active": true,
               "label": "Running"
             },
             {
               "has_workouts": false,
               "id": 6,
-              "img": "/img/sports/walking.png",
               "is_active": true,
               "label": "Walking"
             }
@@ -187,7 +175,6 @@ def get_sport(auth_user_id: int, sport_id: int) -> Union[Dict, HttpResponse]:
           "sports": [
             {
               "id": 1,
-              "img": "/img/sports/cycling-sport.png",
               "is_active": true,
               "label": "Cycling (Sport)"
             }
@@ -209,7 +196,6 @@ def get_sport(auth_user_id: int, sport_id: int) -> Union[Dict, HttpResponse]:
             {
               "has_workouts": false,
               "id": 1,
-              "img": "/img/sports/cycling-sport.png",
               "is_active": true,
               "label": "Cycling (Sport)"
             }
@@ -286,7 +272,6 @@ def update_sport(
             {
               "has_workouts": false,
               "id": 1,
-              "img": "/img/sports/cycling-sport.png",
               "is_active": false,
               "label": "Cycling (Sport)"
             }

@@ -70,7 +70,6 @@ class Sport(BaseModel):
     __tablename__ = 'sports'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     label = db.Column(db.String(50), unique=True, nullable=False)
-    img = db.Column(db.String(255), unique=True, nullable=True)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     stopped_speed_threshold = db.Column(db.Float, default=1.0, nullable=False)
     workouts = db.relationship(
@@ -90,7 +89,6 @@ class Sport(BaseModel):
         serialized_sport = {
             'id': self.id,
             'label': self.label,
-            'img': self.img,
             'is_active': self.is_active,
         }
         if is_admin:
