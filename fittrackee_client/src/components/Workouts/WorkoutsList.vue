@@ -49,12 +49,8 @@
                     sports.filter((s) => s.id === workout.sport_id)[0]
                       .translatedLabel
                   "
-                  :sport-label="
-                    sports.filter((s) => s.id === workout.sport_id)[0].label
-                  "
-                  :color="
-                    sports.filter((s) => s.id === workout.sport_id)[0].color
-                  "
+                  :sport-label="getSportLabel(workout, sports)"
+                  :color="getSportColor(workout, sports)"
                 />
               </td>
               <td
@@ -166,6 +162,7 @@
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList, workoutsPayloadKeys } from '@/utils/api'
   import { getDateWithTZ } from '@/utils/dates'
+  import { getSportColor, getSportLabel } from '@/utils/sports'
   import { defaultOrder } from '@/utils/workouts'
 
   interface Props {
