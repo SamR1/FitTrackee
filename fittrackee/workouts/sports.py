@@ -11,7 +11,7 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.users.decorators import authenticate, authenticate_as_admin
-from fittrackee.users.models import User
+from fittrackee.users.models import User, UserSportPreference
 
 from .models import Sport
 
@@ -44,34 +44,52 @@ def get_sports(auth_user_id: int) -> Dict:
         "data": {
           "sports": [
             {
+              "color": null,
               "id": 1,
               "is_active": true,
-              "label": "Cycling (Sport)"
+              "is_active_for_user": true,
+              "label": "Cycling (Sport)",
+              "stopped_speed_threshold": 1
             },
             {
+              "color": null,
               "id": 2,
               "is_active": true,
-              "label": "Cycling (Transport)"
+              "is_active_for_user": true,
+              "label": "Cycling (Transport)",
+              "stopped_speed_threshold": 1
             },
             {
+              "color": null,
               "id": 3,
               "is_active": true,
-              "label": "Hiking"
+              "is_active_for_user": true,
+              "label": "Hiking",
+              "stopped_speed_threshold": 0.1
             },
             {
+              "color": null,
               "id": 4,
               "is_active": true,
-              "label": "Mountain Biking"
+              "is_active_for_user": true,
+              "label": "Mountain Biking",
+              "stopped_speed_threshold": 1
             },
             {
+              "color": null,
               "id": 5,
               "is_active": true,
-              "label": "Running"
+              "is_active_for_user": true,
+              "label": "Running",
+              "stopped_speed_threshold": 0.1
             },
             {
+              "color": null,
               "id": 6,
               "is_active": true,
-              "label": "Walking"
+              "is_active_for_user": true,
+              "label": "Walking",
+              "stopped_speed_threshold": 0.1
             }
           ]
         },
@@ -89,40 +107,58 @@ def get_sports(auth_user_id: int) -> Dict:
         "data": {
           "sports": [
             {
+              "color": null,
               "has_workouts": true,
               "id": 1,
               "is_active": true,
-              "label": "Cycling (Sport)"
+              "is_active_for_user": true,
+              "label": "Cycling (Sport)",
+              "stopped_speed_threshold": 1
             },
             {
+              "color": null,
               "has_workouts": false,
               "id": 2,
               "is_active": true,
-              "label": "Cycling (Transport)"
+              "is_active_for_user": true,
+              "label": "Cycling (Transport)",
+              "stopped_speed_threshold": 1
             },
             {
+              "color": null,
               "has_workouts": false,
               "id": 3,
               "is_active": true,
-              "label": "Hiking"
+              "is_active_for_user": true,
+              "label": "Hiking",
+              "stopped_speed_threshold": 0.1
             },
             {
+              "color": null,
               "has_workouts": false,
               "id": 4,
               "is_active": true,
-              "label": "Mountain Biking"
+              "is_active_for_user": true,
+              "label": "Mountain Biking",
+              "stopped_speed_threshold": 1
             },
             {
+              "color": null,
               "has_workouts": false,
               "id": 5,
               "is_active": true,
-              "label": "Running"
+              "is_active_for_user": true,
+              "label": "Running",
+              "stopped_speed_threshold": 0.1
             },
             {
+              "color": null,
               "has_workouts": false,
               "id": 6,
               "is_active": true,
-              "label": "Walking"
+              "is_active_for_user": true,
+              "label": "Walking",
+              "stopped_speed_threshold": 0.1
             }
           ]
         },
@@ -142,9 +178,22 @@ def get_sports(auth_user_id: int) -> Dict:
     """
     user = User.query.filter_by(id=int(auth_user_id)).first()
     sports = Sport.query.order_by(Sport.id).all()
+    sports_data = []
+    for sport in sports:
+        sport_preferences = UserSportPreference.query.filter_by(
+            user_id=user.id, sport_id=sport.id
+        ).first()
+        sports_data.append(
+            sport.serialize(
+                is_admin=user.admin,
+                sport_preferences=sport_preferences.serialize()
+                if sport_preferences
+                else None,
+            )
+        )
     return {
         'status': 'success',
-        'data': {'sports': [sport.serialize(user.admin) for sport in sports]},
+        'data': {'sports': sports_data},
     }
 
 
@@ -174,9 +223,12 @@ def get_sport(auth_user_id: int, sport_id: int) -> Union[Dict, HttpResponse]:
         "data": {
           "sports": [
             {
+              "color": null,
               "id": 1,
               "is_active": true,
-              "label": "Cycling (Sport)"
+              "is_active_for_user": true,
+              "label": "Cycling (Sport)",
+              "stopped_speed_threshold": 1
             }
           ]
         },
@@ -194,10 +246,13 @@ def get_sport(auth_user_id: int, sport_id: int) -> Union[Dict, HttpResponse]:
         "data": {
           "sports": [
             {
+              "color": null,
               "has_workouts": false,
               "id": 1,
               "is_active": true,
-              "label": "Cycling (Sport)"
+              "is_active_for_user": true,
+              "label": "Cycling (Sport)",
+              "stopped_speed_threshold": 1
             }
           ]
         },
@@ -234,9 +289,21 @@ def get_sport(auth_user_id: int, sport_id: int) -> Union[Dict, HttpResponse]:
     user = User.query.filter_by(id=int(auth_user_id)).first()
     sport = Sport.query.filter_by(id=sport_id).first()
     if sport:
+        sport_preferences = UserSportPreference.query.filter_by(
+            user_id=user.id, sport_id=sport.id
+        ).first()
         return {
             'status': 'success',
-            'data': {'sports': [sport.serialize(user.admin)]},
+            'data': {
+                'sports': [
+                    sport.serialize(
+                        is_admin=user.admin,
+                        sport_preferences=sport_preferences.serialize()
+                        if sport_preferences
+                        else None,
+                    )
+                ]
+            },
         }
     return DataNotFoundErrorResponse('sports')
 
@@ -270,10 +337,13 @@ def update_sport(
         "data": {
           "sports": [
             {
+              "color": null,
               "has_workouts": false,
               "id": 1,
               "is_active": false,
-              "label": "Cycling (Sport)"
+              "is_active_for_user": false,
+              "label": "Cycling (Sport)",
+              "stopped_speed_threshold": 1
             }
           ]
         },
@@ -317,15 +387,28 @@ def update_sport(
         return InvalidPayloadErrorResponse()
 
     try:
+        user = User.query.filter_by(id=int(auth_user_id)).first()
         sport = Sport.query.filter_by(id=sport_id).first()
         if not sport:
             return DataNotFoundErrorResponse('sports')
 
         sport.is_active = sport_data.get('is_active')
         db.session.commit()
+        sport_preferences = UserSportPreference.query.filter_by(
+            user_id=user.id, sport_id=sport.id
+        ).first()
         return {
             'status': 'success',
-            'data': {'sports': [sport.serialize(True)]},
+            'data': {
+                'sports': [
+                    sport.serialize(
+                        is_admin=user.admin,
+                        sport_preferences=sport_preferences.serialize()
+                        if sport_preferences
+                        else None,
+                    )
+                ]
+            },
         }
 
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:

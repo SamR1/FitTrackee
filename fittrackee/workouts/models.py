@@ -85,11 +85,30 @@ class Sport(BaseModel):
     def __init__(self, label: str) -> None:
         self.label = label
 
-    def serialize(self, is_admin: Optional[bool] = False) -> Dict:
+    def serialize(
+        self,
+        is_admin: Optional[bool] = False,
+        sport_preferences: Optional[Dict] = None,
+    ) -> Dict:
         serialized_sport = {
             'id': self.id,
             'label': self.label,
             'is_active': self.is_active,
+            'is_active_for_user': (
+                self.is_active
+                if sport_preferences is None
+                else (sport_preferences['is_active'] and self.is_active)
+            ),
+            'color': (
+                None
+                if sport_preferences is None
+                else sport_preferences['color']
+            ),
+            'stopped_speed_threshold': (
+                self.stopped_speed_threshold
+                if sport_preferences is None
+                else sport_preferences['stopped_speed_threshold']
+            ),
         }
         if is_admin:
             serialized_sport['has_workouts'] = len(self.workouts) > 0

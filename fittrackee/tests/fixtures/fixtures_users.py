@@ -96,3 +96,17 @@ def user_sport_1_preference(
     db.session.add(user_sport)
     db.session.commit()
     return user_sport
+
+
+@pytest.fixture()
+def user_admin_sport_1_preference(
+    user_1_admin: User, sport_1_cycling: Sport
+) -> UserSportPreference:
+    user_sport = UserSportPreference(
+        user_id=user_1_admin.id,
+        sport_id=sport_1_cycling.id,
+        stopped_speed_threshold=sport_1_cycling.stopped_speed_threshold,
+    )
+    db.session.add(user_sport)
+    db.session.commit()
+    return user_sport

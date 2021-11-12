@@ -40,11 +40,6 @@ class User(BaseModel):
         'Record', lazy=True, backref=db.backref('user', lazy='joined')
     )
     language = db.Column(db.String(50), nullable=True)
-    sport_preferences = db.relationship(
-        'UserSportPreference',
-        lazy=True,
-        backref=db.backref('user', lazy='joined'),
-    )
 
     def __repr__(self) -> str:
         return f'<User {self.username!r}>'
