@@ -52,6 +52,9 @@
                   :sport-label="
                     sports.filter((s) => s.id === workout.sport_id)[0].label
                   "
+                  :color="
+                    sports.filter((s) => s.id === workout.sport_id)[0].color
+                  "
                 />
               </td>
               <td

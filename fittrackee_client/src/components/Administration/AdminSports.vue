@@ -35,6 +35,7 @@
                   <SportImage
                     :title="sport.translatedLabel"
                     :sport-label="sport.label"
+                    :color="sport.color"
                   />
                 </td>
                 <td class="sport-label">
@@ -126,9 +127,6 @@
       font-size: 0.95em;
       font-style: italic;
       padding: 0 $default-padding;
-    }
-    .text-left {
-      text-align: left;
     }
     .sport-action {
       padding-left: $default-padding * 4;

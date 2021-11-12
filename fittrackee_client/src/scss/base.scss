@@ -254,8 +254,11 @@ button {
   }
 }
 
-.center-text {
+.text-center {
   text-align: center;
+}
+.text-left {
+  text-align: left;
 }
 
 .responsive-table {
@@ -336,4 +339,15 @@ button {
       }
     }
   }
+}
+
+.profile-buttons {
+  display: flex;
+  gap: $default-padding;
+}
+
+.medium-sport-img {
+  height: 35px;
+  width: 35px;
+  margin: 0 auto;
 }

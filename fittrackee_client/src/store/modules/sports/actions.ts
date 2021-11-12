@@ -1,7 +1,7 @@
 import { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
-import { ROOT_STORE, SPORTS_STORE } from '@/store/constants'
+import { AUTH_USER_STORE, ROOT_STORE, SPORTS_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
 import { ISportsActions, ISportsState } from '@/store/modules/sports/types'
 import { ISportPayload } from '@/types/sports'
@@ -20,6 +20,7 @@ export const actions: ActionTree<ISportsState, IRootState> & ISportsActions = {
             SPORTS_STORE.MUTATIONS.SET_SPORTS,
             res.data.data.sports
           )
+          context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
         } else {
           handleError(context, null)
         }

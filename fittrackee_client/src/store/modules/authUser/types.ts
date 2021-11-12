@@ -16,6 +16,7 @@ import {
   IUserPayload,
   IUserPicturePayload,
   IUserPreferencesPayload,
+  IUserSportPreferencesPayload,
 } from '@/types/user'
 
 export interface IAuthUserState {
@@ -50,6 +51,11 @@ export interface IAuthUserActions {
   [AUTH_USER_STORE.ACTIONS.UPDATE_USER_PREFERENCES](
     context: ActionContext<IAuthUserState, IRootState>,
     payload: IUserPreferencesPayload
+  ): void
+
+  [AUTH_USER_STORE.ACTIONS.UPDATE_USER_SPORT_PREFERENCES](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IUserSportPreferencesPayload
   ): void
 
   [AUTH_USER_STORE.ACTIONS.UPDATE_USER_PICTURE](

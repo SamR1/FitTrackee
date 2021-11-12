@@ -91,9 +91,5 @@
     .user-bio {
       white-space: pre-wrap;
     }
-    .profile-buttons {
-      display: flex;
-      gap: $default-padding;
-    }
   }
 </style>

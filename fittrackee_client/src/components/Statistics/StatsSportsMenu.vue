@@ -13,7 +13,7 @@
         :checked="selectedSportIds.includes(sport.id)"
         @input="updateSelectedSportIds(sport.id)"
       />
-      <SportImage :sport-label="sport.label" />
+      <SportImage :sport-label="sport.label" :color="sport.color" />
       <span class="sport-label">{{ sport.translatedLabel }}</span>
     </label>
   </div>

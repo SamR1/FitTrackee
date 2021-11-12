@@ -38,7 +38,7 @@ export const translateSports = (
   onlyActive = false
 ): ITranslatedSport[] =>
   sports
-    .filter((sport) => (onlyActive ? sport.is_active : true))
+    .filter((sport) => (onlyActive ? sport.is_active_for_user : true))
     .map((sport) => ({
       ...sport,
       translatedLabel: t(`sports.${sport.label}.LABEL`),
@@ -49,4 +49,13 @@ export const getSportLabel = (workout: IWorkout, sports: ISport[]): string => {
   return sports
     .filter((sport) => sport.id === workout.sport_id)
     .map((sport) => sport.label)[0]
+}
+
+export const getSportColor = (
+  workout: IWorkout,
+  sports: ISport[]
+): string | null => {
+  return sports
+    .filter((sport) => sport.id === workout.sport_id)
+    .map((sport) => sport.color)[0]
 }

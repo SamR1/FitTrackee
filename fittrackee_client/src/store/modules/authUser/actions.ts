@@ -25,6 +25,7 @@ import {
   IUserPayload,
   IUserPicturePayload,
   IUserPreferencesPayload,
+  IUserSportPreferencesPayload,
 } from '@/types/user'
 import { handleError } from '@/utils'
 
@@ -171,6 +172,26 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
       .finally(() =>
         context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
       )
+  },
+  [AUTH_USER_STORE.ACTIONS.UPDATE_USER_SPORT_PREFERENCES](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IUserSportPreferencesPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    authApi
+      .post('auth/profile/edit/sports', payload)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+        context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      })
   },
   [AUTH_USER_STORE.ACTIONS.UPDATE_USER_PICTURE](
     context: ActionContext<IAuthUserState, IRootState>,

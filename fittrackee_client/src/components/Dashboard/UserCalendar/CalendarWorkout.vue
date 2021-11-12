@@ -5,7 +5,11 @@
       $router.push({ name: 'Workout', params: { workoutId: workout.id } })
     "
   >
-    <SportImage :sport-label="sportLabel" :title="workout.title" />
+    <SportImage
+      :sport-label="sportLabel"
+      :title="workout.title"
+      :color="sportColor"
+    />
     <sup>
       <i
         v-if="workout.records.length > 0"
@@ -28,6 +32,7 @@
   interface Props {
     workout: IWorkout
     sportLabel: string
+    sportColor: string | null
   }
   const props = defineProps<Props>()
 

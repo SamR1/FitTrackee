@@ -38,13 +38,3 @@
     props.user.timezone ? props.user.timezone : 'Europe/Paris'
   )
 </script>
-
-<style lang="scss" scoped>
-  @import '~@/scss/base.scss';
-  #user-preferences {
-    .profile-buttons {
-      display: flex;
-      gap: $default-padding;
-    }
-  }
-</style>
