@@ -1,6 +1,6 @@
 from flask import Flask
 
-from fittrackee.users.models import User
+from fittrackee.users.models import User, UserSportPreference
 from fittrackee.workouts.models import Sport, Workout
 
 
@@ -59,3 +59,19 @@ class TestUserModel:
             == workout_cycling_user_1.short_id
         )
         assert serialized_user['records'][0]['workout_date']
+
+
+class TestUserSportModel:
+    def test_user_model(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        user_sport_1_preference: UserSportPreference,
+    ) -> None:
+        serialized_user_sport = user_sport_1_preference.serialize()
+        assert serialized_user_sport['user_id'] == user_1.id
+        assert serialized_user_sport['sport_id'] == sport_1_cycling.id
+        assert serialized_user_sport['color'] is None
+        assert serialized_user_sport['is_active']
+        assert serialized_user_sport['stopped_speed_threshold'] == 1

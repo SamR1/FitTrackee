@@ -40,6 +40,11 @@ class User(BaseModel):
         'Record', lazy=True, backref=db.backref('user', lazy='joined')
     )
     language = db.Column(db.String(50), nullable=True)
+    sport_preferences = db.relationship(
+        'UserSportPreference',
+        lazy=True,
+        backref=db.backref('user', lazy='joined'),
+    )
 
     def __repr__(self) -> str:
         return f'<User {self.username!r}>'
@@ -142,4 +147,42 @@ class User(BaseModel):
             ],
             'total_distance': float(total[0]),
             'total_duration': str(total[1]),
+        }
+
+
+class UserSportPreference(BaseModel):
+    __tablename__ = 'users_sports_preferences'
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id'),
+        primary_key=True,
+    )
+    sport_id = db.Column(
+        db.Integer,
+        db.ForeignKey('sports.id'),
+        primary_key=True,
+    )
+    color = db.Column(db.String(50), nullable=True)
+    is_active = db.Column(db.Boolean, default=True, nullable=False)
+    stopped_speed_threshold = db.Column(db.Float, default=1.0, nullable=False)
+
+    def __init__(
+        self,
+        user_id: int,
+        sport_id: int,
+        stopped_speed_threshold: float,
+    ) -> None:
+        self.user_id = user_id
+        self.sport_id = sport_id
+        self.is_active = True
+        self.stopped_speed_threshold = stopped_speed_threshold
+
+    def serialize(self) -> Dict:
+        return {
+            'user_id': self.user_id,
+            'sport_id': self.sport_id,
+            'color': self.color,
+            'is_active': self.is_active,
+            'stopped_speed_threshold': self.stopped_speed_threshold,
         }

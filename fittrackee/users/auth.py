@@ -1,5 +1,6 @@
 import datetime
 import os
+import re
 from typing import Dict, Tuple, Union
 
 import jwt
@@ -10,6 +11,7 @@ from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, bcrypt, db
 from fittrackee.responses import (
+    DataNotFoundErrorResponse,
     ForbiddenErrorResponse,
     HttpResponse,
     InvalidPayloadErrorResponse,
@@ -19,14 +21,17 @@ from fittrackee.responses import (
 )
 from fittrackee.tasks import reset_password_email
 from fittrackee.utils import get_readable_duration, verify_extension_and_size
+from fittrackee.workouts.models import Sport
 from fittrackee.workouts.utils_files import get_absolute_file_path
 
 from .decorators import authenticate
-from .models import User
+from .models import User, UserSportPreference
 from .utils import check_passwords, register_controls
 from .utils_token import decode_user_token
 
 auth_blueprint = Blueprint('auth', __name__)
+
+HEX_COLOR_REGEX = regex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
 
 
 @auth_blueprint.route('/auth/register', methods=['POST'])
@@ -670,6 +675,108 @@ def edit_user_preferences(auth_user_id: int) -> Union[Dict, HttpResponse]:
             'status': 'success',
             'message': 'user preferences updated',
             'data': user.serialize(),
+        }
+
+    # handler errors
+    except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(e, db=db)
+
+
+@auth_blueprint.route('/auth/profile/edit/sports', methods=['POST'])
+@authenticate
+def edit_user_sport_preferences(
+    auth_user_id: int,
+) -> Union[Dict, HttpResponse]:
+    """
+    edit authenticated user sport preferences
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/auth/profile/edit/sports HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "color": "#000000",
+          "is_active": true,
+          "sport_id": 1,
+          "stopped_speed_threshold": 1,
+          "user_id": 1
+        },
+        "message": "user sport preferences updated",
+        "status": "success"
+      }
+
+    :<json string color: valid hexadecimal color
+    :<json boolean is_active: is sport available when adding a workout
+    :<json float stopped_speed_threshold: stopped speed threshold used by gpxpy
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: user preferences updated
+    :statuscode 400:
+        - invalid payload
+        - invalid hexadecimal color
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 500: error, please try again or contact the administrator
+
+    """
+    post_data = request.get_json()
+    if (
+        not post_data
+        or 'sport_id' not in post_data
+        or len(post_data.keys()) == 1
+    ):
+        return InvalidPayloadErrorResponse()
+
+    sport_id = post_data.get('sport_id')
+    sport = Sport.query.filter_by(id=sport_id).first()
+    if not sport:
+        return DataNotFoundErrorResponse('sports')
+
+    color = post_data.get('color')
+    is_active = post_data.get('is_active')
+    stopped_speed_threshold = post_data.get('stopped_speed_threshold')
+
+    try:
+        user_sport = UserSportPreference.query.filter_by(
+            user_id=auth_user_id,
+            sport_id=sport_id,
+        ).first()
+        if not user_sport:
+            user_sport = UserSportPreference(
+                user_id=auth_user_id,
+                sport_id=sport_id,
+                stopped_speed_threshold=sport.stopped_speed_threshold,
+            )
+            db.session.add(user_sport)
+            db.session.flush()
+        if color:
+            if re.match(HEX_COLOR_REGEX, color) is None:
+                return InvalidPayloadErrorResponse('invalid hexadecimal color')
+            user_sport.color = color
+        if is_active is not None:
+            user_sport.is_active = is_active
+        if stopped_speed_threshold:
+            user_sport.stopped_speed_threshold = stopped_speed_threshold
+        db.session.commit()
+
+        return {
+            'status': 'success',
+            'message': 'user sport preferences updated',
+            'data': user_sport.serialize(),
         }
 
     # handler errors

@@ -830,6 +830,186 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert 'error' in data['status']
 
 
+class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
+    def test_it_returns_error_if_payload_is_empty(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(dict()),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 400
+        assert 'invalid payload' in data['message']
+        assert 'error' in data['status']
+
+    def test_it_returns_error_if_sport_id_is_missing(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(dict(is_active=True)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'error'
+        assert data['message'] == 'invalid payload'
+        assert response.status_code == 400
+
+    def test_it_returns_error_if_sport_not_found(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(dict(sport_id=1, is_active=True)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 404
+        assert 'not found' in data['status']
+
+    def test_it_returns_error_if_payload_contains_only_sport_id(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(dict(sport_id=1)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'error'
+        assert data['message'] == 'invalid payload'
+        assert response.status_code == 400
+
+    def test_it_returns_error_if_color_is_invalid(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=sport_1_cycling.id,
+                    color='invalid',
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'error'
+        assert data['message'] == 'invalid hexadecimal color'
+        assert response.status_code == 400
+
+    @pytest.mark.parametrize(
+        'input_color',
+        ['#000000', '#FFF'],
+    )
+    def test_it_updates_sport_color_for_auth_user(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_2_running: Sport,
+        input_color: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=sport_2_running.id,
+                    color=input_color,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'user sport preferences updated'
+        assert response.status_code == 200
+        assert data['data']['user_id'] == user_1.id
+        assert data['data']['sport_id'] == sport_2_running.id
+        assert data['data']['color'] == input_color
+        assert data['data']['is_active'] is True
+        assert data['data']['stopped_speed_threshold'] == 0.1
+
+    def test_it_disables_sport_for_auth_user(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=sport_1_cycling.id,
+                    is_active=False,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'user sport preferences updated'
+        assert response.status_code == 200
+        assert data['data']['user_id'] == user_1.id
+        assert data['data']['sport_id'] == sport_1_cycling.id
+        assert data['data']['color'] is None
+        assert data['data']['is_active'] is False
+        assert data['data']['stopped_speed_threshold'] == 1
+
+    def test_it_updates_stopped_speed_threshold_for_auth_user(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=sport_1_cycling.id,
+                    stopped_speed_threshold=0.5,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'user sport preferences updated'
+        assert response.status_code == 200
+        assert data['data']['user_id'] == user_1.id
+        assert data['data']['sport_id'] == sport_1_cycling.id
+        assert data['data']['color'] is None
+        assert data['data']['is_active']
+        assert data['data']['stopped_speed_threshold'] == 0.5
+
+
 class TestUserPicture(ApiTestCaseMixin):
     def test_it_updates_user_picture(self, app: Flask, user_1: User) -> None:
         client, auth_token = self.get_test_client_and_auth_token(app)
