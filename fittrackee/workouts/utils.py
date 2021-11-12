@@ -15,7 +15,7 @@ from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
 from fittrackee import db
-from fittrackee.users.models import User
+from fittrackee.users.models import User, UserSportPreference
 
 from .exceptions import WorkoutException
 from .models import Sport, Workout, WorkoutSegment
@@ -400,6 +400,14 @@ def process_files(
             f"Sport id: {workout_data.get('sport_id')} does not exist",
         )
     user = User.query.filter_by(id=auth_user_id).first()
+    sport_preferences = UserSportPreference.query.filter_by(
+        user_id=user.id, sport_id=sport.id
+    ).first()
+    stopped_speed_threshold = (
+        sport.stopped_speed_threshold
+        if sport_preferences is None
+        else sport_preferences.stopped_speed_threshold
+    )
 
     common_params = {
         'user': user,
@@ -418,14 +426,14 @@ def process_files(
             process_one_gpx_file(
                 common_params,
                 filename,
-                sport.stopped_speed_threshold,
+                stopped_speed_threshold,
             )
         ]
     else:
         return process_zip_archive(
             common_params,
             folders['extract_dir'],
-            sport.stopped_speed_threshold,
+            stopped_speed_threshold,
         )
 
 
