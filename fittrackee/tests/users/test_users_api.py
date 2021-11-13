@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 from flask import Flask
 
-from fittrackee.users.models import User
+from fittrackee.users.models import User, UserSportPreference
 from fittrackee.workouts.models import Sport, Workout
 
 from ..api_test_case import ApiTestCaseMixin
@@ -936,6 +936,22 @@ class TestDeleteUser(ApiTestCaseMixin):
                 Authorization=f'Bearer {auth_token}',
             ),
         )
+
+        response = client.delete(
+            '/api/users/test',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+
+    def test_user_with_preferences_can_delete_its_own_account(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        user_sport_1_preference: UserSportPreference,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.delete(
             '/api/users/test',

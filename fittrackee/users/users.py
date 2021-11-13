@@ -14,10 +14,11 @@ from fittrackee.responses import (
     UserNotFoundErrorResponse,
     handle_error_and_return_response,
 )
+from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 from fittrackee.workouts.utils_files import get_absolute_file_path
 
 from .decorators import authenticate, authenticate_as_admin
-from .models import User, Workout
+from .models import User, UserSportPreference
 
 users_blueprint = Blueprint('users', __name__)
 
@@ -555,9 +556,15 @@ def delete_user(
                 'no other user has admin rights'
             )
 
-        for workout in Workout.query.filter_by(user_id=user.id).all():
-            db.session.delete(workout)
-            db.session.flush()
+        db.session.query(UserSportPreference).filter(
+            UserSportPreference.user_id == user.id
+        ).delete()
+        db.session.query(Record).filter(Record.user_id == user.id).delete()
+        db.session.query(WorkoutSegment).filter(
+            WorkoutSegment.workout_id == Workout.id, Workout.user_id == user.id
+        ).delete(synchronize_session=False)
+        db.session.query(Workout).filter(Workout.user_id == user.id).delete()
+        db.session.flush()
         user_picture = user.picture
         db.session.delete(user)
         db.session.commit()
