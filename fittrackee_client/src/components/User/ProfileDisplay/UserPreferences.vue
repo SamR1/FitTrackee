@@ -7,6 +7,14 @@
       <dd>{{ timezone }}</dd>
       <dt>{{ $t('user.PROFILE.FIRST_DAY_OF_WEEK') }}:</dt>
       <dd>{{ $t(`user.PROFILE.${fistDayOfWeek}`) }}</dd>
+      <dt>{{ $t('user.PROFILE.UNITS.LABEL') }}:</dt>
+      <dd>
+        {{
+          $t(
+            `user.PROFILE.UNITS.${user.imperial_units ? 'IMPERIAL' : 'METRIC'}`
+          )
+        }}
+      </dd>
     </dl>
     <div class="profile-buttons">
       <button @click="$router.push('/profile/edit/preferences')">

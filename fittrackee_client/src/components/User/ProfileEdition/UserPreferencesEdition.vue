@@ -35,6 +35,22 @@
             </option>
           </select>
         </label>
+        <label class="form-items">
+          {{ $t('user.PROFILE.UNITS.LABEL') }}
+          <select
+            id="imperial_units"
+            v-model="userForm.imperial_units"
+            :disabled="loading"
+          >
+            <option
+              v-for="unit in imperialUnits"
+              :value="unit.value"
+              :key="unit.value"
+            >
+              {{ $t(`user.PROFILE.UNITS.${unit.label}`) }}
+            </option>
+          </select>
+        </label>
         <div class="form-buttons">
           <button class="confirm" type="submit">
             {{ $t('buttons.SUBMIT') }}
@@ -68,6 +84,7 @@
   const store = useStore()
 
   const userForm: IUserPreferencesPayload = reactive({
+    imperial_units: false,
     language: '',
     timezone: 'Europe/Paris',
     weekm: false,
@@ -79,6 +96,16 @@
     },
     {
       label: 'SUNDAY',
+      value: false,
+    },
+  ]
+  const imperialUnits = [
+    {
+      label: 'IMPERIAL',
+      value: true,
+    },
+    {
+      label: 'METRIC',
       value: false,
     },
   ]
@@ -96,6 +123,7 @@
   })
 
   function updateUserForm(user: IUserProfile) {
+    userForm.imperial_units = user.imperial_units ? user.imperial_units : false
     userForm.language = user.language ? user.language : 'en'
     userForm.timezone = user.timezone ? user.timezone : 'Europe/Paris'
     userForm.weekm = user.weekm ? user.weekm : false

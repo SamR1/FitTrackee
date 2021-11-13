@@ -53,6 +53,11 @@
       "LABEL": "label",
       "STOPPED_SPEED_THRESHOLD": "stopped speed threshold"
     },
+    "UNITS": {
+      "LABEL": "Units for distance",
+      "IMPERIAL": "Imperial system (mi, ft)",
+      "METRIC": "Metric system (m, km)"
+    },
     "TIMEZONE": "Timezone"
   },
   "REGISTER": "Register",
