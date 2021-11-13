@@ -18,7 +18,10 @@ export const sportColors: Record<string, string> = {
 
 export const sportIdColors = (sports: ISport[]): Record<number, string> => {
   const colors: Record<number, string> = {}
-  sports.map((sport) => (colors[sport.id] = sportColors[sport.label]))
+  sports.map(
+    (sport) =>
+      (colors[sport.id] = sport.color ? sport.color : sportColors[sport.label])
+  )
   return colors
 }
 
@@ -35,10 +38,17 @@ const sortSports = (a: ITranslatedSport, b: ITranslatedSport): number => {
 export const translateSports = (
   sports: ISport[],
   t: CallableFunction,
-  onlyActive = false
+  onlyActive = false,
+  userSports: number[] | null = null
 ): ITranslatedSport[] =>
   sports
-    .filter((sport) => (onlyActive ? sport.is_active : true))
+    .filter((sport) =>
+      onlyActive
+        ? userSports === null
+          ? sport.is_active_for_user
+          : userSports.includes(sport.id) || sport.is_active
+        : true
+    )
     .map((sport) => ({
       ...sport,
       translatedLabel: t(`sports.${sport.label}.LABEL`),
@@ -49,4 +59,13 @@ export const getSportLabel = (workout: IWorkout, sports: ISport[]): string => {
   return sports
     .filter((sport) => sport.id === workout.sport_id)
     .map((sport) => sport.label)[0]
+}
+
+export const getSportColor = (
+  workout: IWorkout,
+  sports: ISport[]
+): string | null => {
+  return sports
+    .filter((sport) => sport.id === workout.sport_id)
+    .map((sport) => sport.color)[0]
 }

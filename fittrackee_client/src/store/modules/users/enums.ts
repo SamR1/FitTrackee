@@ -4,6 +4,7 @@ export enum UsersActions {
   GET_USER = 'GET_USER',
   GET_USERS = 'GET_USERS',
   UPDATE_USER = 'UPDATE_USER',
+  DELETE_USER_ACCOUNT = 'DELETE_USER_ACCOUNT',
 }
 
 export enum UsersGetters {

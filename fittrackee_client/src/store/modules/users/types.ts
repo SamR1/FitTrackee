@@ -8,7 +8,11 @@ import {
 import { USERS_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
 import { IPagination, TPaginationPayload } from '@/types/api'
-import { IAdminUserPayload, IUserProfile } from '@/types/user'
+import {
+  IAdminUserPayload,
+  IUserDeletionPayload,
+  IUserProfile,
+} from '@/types/user'
 
 export interface IUsersState {
   user: IUserProfile
@@ -35,6 +39,10 @@ export interface IUsersActions {
   [USERS_STORE.ACTIONS.UPDATE_USER](
     context: ActionContext<IUsersState, IRootState>,
     payload: IAdminUserPayload
+  ): void
+  [USERS_STORE.ACTIONS.DELETE_USER_ACCOUNT](
+    context: ActionContext<IUsersState, IRootState>,
+    payload: IUserDeletionPayload
   ): void
 }
 

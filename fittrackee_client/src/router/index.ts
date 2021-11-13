@@ -11,6 +11,7 @@ import ProfileEdition from '@/components/User/ProfileEdition/index.vue'
 import UserInfosEdition from '@/components/User/ProfileEdition/UserInfosEdition.vue'
 import UserPictureEdition from '@/components/User/ProfileEdition/UserPictureEdition.vue'
 import UserPreferencesEdition from '@/components/User/ProfileEdition/UserPreferencesEdition.vue'
+import UserSportPreferences from '@/components/User/UserSportPreferences.vue'
 import store from '@/store'
 import { AUTH_USER_STORE } from '@/store/constants'
 
@@ -101,6 +102,12 @@ const routes: Array<RouteRecordRaw> = [
             name: 'UserPreferences',
             component: UserPreferences,
           },
+          {
+            path: 'sports',
+            name: 'UserSportPreferences',
+            component: UserSportPreferences,
+            props: { isEdition: false },
+          },
         ],
       },
       {
@@ -125,6 +132,12 @@ const routes: Array<RouteRecordRaw> = [
             path: 'preferences',
             name: 'UserPreferencesEdition',
             component: UserPreferencesEdition,
+          },
+          {
+            path: 'sports',
+            name: 'UserSportPreferencesEdition',
+            component: UserSportPreferences,
+            props: { isEdition: true },
           },
         ],
       },

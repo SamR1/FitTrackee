@@ -45,6 +45,13 @@ export interface IUserPreferencesPayload {
   weekm: boolean
 }
 
+export interface IUserSportPreferencesPayload {
+  sport_id: number
+  color: string | null
+  is_active: boolean
+  stopped_speed_threshold: number
+}
+
 export interface IUserPicturePayload {
   picture: File
 }
@@ -61,6 +68,7 @@ export interface IUserPasswordResetPayload {
 
 export interface IUserDeletionPayload {
   username: string
+  fromAdmin?: boolean
 }
 
 export interface ILoginRegisterFormData {

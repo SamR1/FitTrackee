@@ -17,6 +17,7 @@ import {
   IAuthUserState,
 } from '@/store/modules/authUser/types'
 import { IRootState } from '@/store/modules/root/types'
+import { deleteUserAccount } from '@/store/modules/users/actions'
 import {
   ILoginOrRegisterData,
   IUserDeletionPayload,
@@ -25,6 +26,7 @@ import {
   IUserPayload,
   IUserPicturePayload,
   IUserPreferencesPayload,
+  IUserSportPreferencesPayload,
 } from '@/types/user'
 import { handleError } from '@/utils'
 
@@ -172,6 +174,26 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
         context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
       )
   },
+  [AUTH_USER_STORE.ACTIONS.UPDATE_USER_SPORT_PREFERENCES](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IUserSportPreferencesPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    authApi
+      .post('auth/profile/edit/sports', payload)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+        context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      })
+  },
   [AUTH_USER_STORE.ACTIONS.UPDATE_USER_PICTURE](
     context: ActionContext<IAuthUserState, IRootState>,
     payload: IUserPicturePayload
@@ -207,19 +229,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
     context: ActionContext<IAuthUserState, IRootState>,
     payload: IUserDeletionPayload
   ): void {
-    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
-    authApi
-      .delete(`users/${payload.username}`)
-      .then((res) => {
-        if (res.status === 204) {
-          context
-            .dispatch(AUTH_USER_STORE.ACTIONS.LOGOUT)
-            .then(() => router.push('/'))
-        } else {
-          handleError(context, null)
-        }
-      })
-      .catch((error) => handleError(context, error))
+    deleteUserAccount(context, payload)
   },
   [AUTH_USER_STORE.ACTIONS.DELETE_PICTURE](
     context: ActionContext<IAuthUserState, IRootState>

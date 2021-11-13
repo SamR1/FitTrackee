@@ -84,7 +84,7 @@ export const getDatasets = (displayedSports: ISport[]): TStatisticsDatasets => {
     total_descent: [],
   }
   displayedSports.map((sport) => {
-    const color = sportColors[sport.label]
+    const color = sport.color ? sport.color : sportColors[sport.label]
     datasets.nb_workouts.push(getStatisticsChartDataset(sport.label, color))
     datasets.total_distance.push(getStatisticsChartDataset(sport.label, color))
     datasets.total_duration.push(getStatisticsChartDataset(sport.label, color))

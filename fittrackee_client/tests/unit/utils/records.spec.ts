@@ -157,6 +157,7 @@ describe('getRecordsBySports', () => {
       },
       expected: {
         'Cycling (Sport)': {
+          color: null,
           label: 'Cycling (Sport)',
           records: [
             {
@@ -206,6 +207,7 @@ describe('getRecordsBySports', () => {
       },
       expected: {
         'Cycling (Sport)': {
+          color: null,
           label: 'Cycling (Sport)',
           records: [
             {
@@ -225,6 +227,7 @@ describe('getRecordsBySports', () => {
           ],
         },
         'Cycling (Transport)': {
+          color: '#000000',
           label: 'Cycling (Transport)',
           records: [
             {

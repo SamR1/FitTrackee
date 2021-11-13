@@ -10,6 +10,7 @@
           :key="index"
           :workout="workout"
           :sportLabel="getSportLabel(workout, sports)"
+          :sportColor="getSportColor(workout, sports)"
         />
       </div>
       <div v-else class="donut-display">
@@ -41,7 +42,7 @@
   import CalendarWorkoutsChart from '@/components/Dashboard/UserCalendar/CalendarWorkoutsChart.vue'
   import { ISport } from '@/types/sports'
   import { IWorkout } from '@/types/workouts'
-  import { getSportLabel, sportIdColors } from '@/utils/sports'
+  import { getSportColor, getSportLabel, sportIdColors } from '@/utils/sports'
   import { getDonutDatasets } from '@/utils/workouts'
 
   interface Props {

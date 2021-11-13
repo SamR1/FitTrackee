@@ -44,6 +44,7 @@ export const getRecordsBySports = (
       if (sportList[sport.translatedLabel] === void 0) {
         sportList[sport.translatedLabel] = {
           label: sport.label,
+          color: sport.color,
           records: [],
         }
       }

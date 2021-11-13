@@ -23,6 +23,7 @@
     "BIRTH_DATE": "Date de naissance",
     "EDIT": "Modifier le profil",
     "EDIT_PREFERENCES": "Modifier les préférences",
+    "EDIT_SPORTS_PREFERENCES": "Modifier les préférences des sports",
     "FIRST_DAY_OF_WEEK": "Premier jour de la semaine",
     "FIRST_NAME": "Prénom",
     "LANGUAGE": "Langue",
@@ -36,11 +37,21 @@
     "PREFERENCES_EDITION": "Mise à jour des préférences",
     "PROFILE_EDITION": "Mise à jour du profil",
     "REGISTRATION_DATE": "Date d'inscription",
+    "SPORTS_EDITION": "Mise à jour des préférences des sports",
     "SUNDAY": "Dimanche",
     "TABS": {
       "PICTURE": "image",
       "PREFERENCES": "préférences",
-      "PROFILE": "profil"
+      "PROFILE": "profil",
+      "SPORTS": "sports"
+    },
+    "SPORT": {
+      "ACTION": "action",
+      "COLOR": "couleur",
+      "DISABLED_BY_ADMIN": "désactivé par l'administrateur",
+      "IS_ACTIVE": "actif",
+      "LABEL": "label",
+      "STOPPED_SPEED_THRESHOLD": "seuil de vitesse arrêtée"
     },
     "TIMEZONE": "Fuseau horaire"
   },

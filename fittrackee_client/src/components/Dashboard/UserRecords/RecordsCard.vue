@@ -2,7 +2,7 @@
   <div class="records-card">
     <Card>
       <template #title>
-        <SportImage :sport-label="records.label" />
+        <SportImage :sport-label="records.label" :color="records.color" />
         {{ sportTranslatedLabel }}
       </template>
       <template #content>

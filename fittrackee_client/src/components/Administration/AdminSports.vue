@@ -24,7 +24,7 @@
             </thead>
             <tbody>
               <tr v-for="sport in translatedSports" :key="sport.id">
-                <td class="center-text">
+                <td class="text-center">
                   <span class="cell-heading">id</span>
                   {{ sport.id }}
                 </td>
@@ -35,6 +35,7 @@
                   <SportImage
                     :title="sport.translatedLabel"
                     :sport-label="sport.label"
+                    :color="sport.color"
                   />
                 </td>
                 <td class="sport-label">
@@ -43,12 +44,12 @@
                   </span>
                   {{ sport.translatedLabel }}
                 </td>
-                <td class="center-text">
+                <td class="text-center">
                   <span class="cell-heading">
                     {{ $t('admin.SPORTS.TABLE.ACTIVE') }}
                   </span>
                   <i
-                    :class="`fa fa${sport.is_active ? '-check' : ''}-square-o`"
+                    :class="`fa fa${sport.is_active ? '-check' : ''}`"
                     aria-hidden="true"
                   />
                 </td>
@@ -126,9 +127,6 @@
       font-size: 0.95em;
       font-style: italic;
       padding: 0 $default-padding;
-    }
-    .text-left {
-      text-align: left;
     }
     .sport-action {
       padding-left: $default-padding * 4;

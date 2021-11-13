@@ -80,7 +80,7 @@
 <li><a class="reference internal" href="#">Features</a><ul>
 <li><a class="reference internal" href="#list">List</a><ul>
 <li><a class="reference internal" href="#administration">Administration</a></li>
-<li><a class="reference internal" href="#account">Account</a></li>
+<li><a class="reference internal" href="#account-preferences">Account &amp; preferences</a></li>
 <li><a class="reference internal" href="#workouts">Workouts</a></li>
 <li><a class="reference internal" href="#translations">Translations</a></li>
 </ul>
@@ -174,12 +174,30 @@
 </li>
 </ul>
 </section>
-<section id="account">
-<h3>Account<a class="headerlink" href="#account" title="Permalink to this headline">¶</a></h3>
+<section id="account-preferences">
+<h3>Account &amp; preferences<a class="headerlink" href="#account-preferences" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>A user can create, update and deleted his account</p></li>
 <li><p>A user can reset his password (<em>new in 0.3.0</em>)</p></li>
+<li><p>A user can set language, timezone and first day of week.</p></li>
+<li><dl class="simple">
+<dt>A user can set sport preferences (<em>new in 0.5.0</em>):</dt><dd><ul>
+<li><p>change sport color (used for sport image and charts)</p></li>
+<li><p>can override stopped speed threshold (for next uploaded gpx files)</p></li>
+<li><p>disable/enable a sport.</p></li>
 </ul>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">If a sport is disabled by an administrator, it can not be enabled by a user. In this case, it will only appear in preferences if it has user’s workouts and the user can only change sport color.</div>
+<div class="line">A disabled sport (by admin or user) will not appear in dropdown when <strong>adding a workout</strong>.</div>
+<div class="line">A workout with a disabled sport will still be displayed in the application.</div>
+</div>
+</div>
 </section>
 <section id="workouts">
 <h3>Workouts<a class="headerlink" href="#workouts" title="Permalink to this headline">¶</a></h3>
@@ -202,7 +220,7 @@
 </dl>
 </li>
 <li><dl class="simple">
-<dt>(<em>new in 0.5.0</em>) Stopped speed threshold used by <a class="reference external" href="https://github.com/tkrajina/gpxpy">gpxpy</a> is not the default one (0.1 km/h instead of 1 km/h) for the following sports:</dt><dd><ul>
+<dt>(<em>new in 0.5.0</em>) Stopped speed threshold used by <a class="reference external" href="https://github.com/tkrajina/gpxpy">gpxpy</a> is not the default one for the following sports (0.1 km/h instead of 1 km/h):</dt><dd><ul>
 <li><p>Hiking</p></li>
 <li><p>Skiing (Cross Country)</p></li>
 <li><p>Trail</p></li>
@@ -211,10 +229,16 @@
 </dd>
 </dl>
 </li>
-<li><p>Dashboard with month calendar displaying workouts and record. The week can start on Sunday or Monday (which can be changed in the user settings). The calendar displays up to 100 workouts.</p></li>
-<li><p>Workout creation by uploading a gpx file. A workout can even be created without gpx (the user must enter date, time, duration and distance)</p></li>
-<li><p>A workout with a gpx file can be displayed with map, weather (if the DarkSky API key is provided) and charts (speed and elevation). Segments can be displayed</p></li>
-<li><p>Workout edition and deletion. User can add a note</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It can be overridden in user preferences.</p>
+</div>
+<ul class="simple">
+<li><p>Dashboard with month calendar displaying workouts and record. The week can start on Sunday or Monday (which can be changed in the user preferences). The calendar displays up to 100 workouts.</p></li>
+<li><p>Workout creation by uploading a gpx file. A workout can even be created without gpx (the user must enter date, time, duration and distance).</p></li>
+<li><p>A workout with a gpx file can be displayed with map, weather (if the DarkSky API key is provided) and charts (speed and elevation). Segments can be displayed.</p></li>
+<li><p>Workout edition and deletion. User can add a note.</p></li>
 <li><p>User statistics</p></li>
 <li><dl class="simple">
 <dt>User records by sports:</dt><dd><ul>
@@ -226,16 +250,16 @@
 </dd>
 </dl>
 </li>
-<li><p>Workouts list and filter</p></li>
+<li><p>Workouts list and filter. Only sports with workouts are displayed in sport dropdown.</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>for now, only the owner of the workout can see it.</p>
+<p>For now, only the owner of the workout can see it.</p>
 </div>
 </section>
 <section id="translations">
 <h3>Translations<a class="headerlink" href="#translations" title="Permalink to this headline">¶</a></h3>
-<p>FitTrackee is available in English and French (which can be saved in the user settings).</p>
+<p>FitTrackee is available in English and French (which can be saved in the user preferences).</p>
 </section>
 </section>
 <section id="dashboard">

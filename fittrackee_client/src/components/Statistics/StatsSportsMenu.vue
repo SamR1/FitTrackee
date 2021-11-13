@@ -4,7 +4,7 @@
       v-for="sport in translatedSports"
       type="checkbox"
       :key="sport.id"
-      :style="{ color: sportColors[sport.label] }"
+      :style="{ color: sport.color ? sport.color : sportColors[sport.label] }"
     >
       <input
         type="checkbox"
@@ -13,7 +13,7 @@
         :checked="selectedSportIds.includes(sport.id)"
         @input="updateSelectedSportIds(sport.id)"
       />
-      <SportImage :sport-label="sport.label" />
+      <SportImage :sport-label="sport.label" :color="sport.color" />
       <span class="sport-label">{{ sport.translatedLabel }}</span>
     </label>
   </div>

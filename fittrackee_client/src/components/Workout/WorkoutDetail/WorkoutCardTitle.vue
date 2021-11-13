@@ -17,7 +17,7 @@
       <i class="fa fa-chevron-left" aria-hidden="true" />
     </div>
     <div class="workout-card-title">
-      <SportImage :sport-label="sport.label" />
+      <SportImage :sport-label="sport.label" :color="sport.color" />
       <div class="workout-title-date">
         <div class="workout-title" v-if="workoutObject.type === 'WORKOUT'">
           {{ workoutObject.title }}

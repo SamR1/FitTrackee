@@ -75,7 +75,11 @@
         "
       >
         <div class="img">
-          <SportImage v-if="sport.label" :sport-label="sport.label" />
+          <SportImage
+            v-if="sport.label"
+            :sport-label="sport.label"
+            :color="sport.color"
+          />
         </div>
         <div class="data">
           <i class="fa fa-clock-o" aria-hidden="true" />

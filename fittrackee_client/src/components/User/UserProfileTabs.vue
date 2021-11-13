@@ -38,7 +38,10 @@
       case 'PICTURE':
         return '/profile/edit/picture'
       case 'PREFERENCES':
-        return `/profile${props.edition ? '/edit' : ''}/preferences`
+      case 'SPORTS':
+        return `/profile${
+          props.edition ? '/edit' : ''
+        }/${tab.toLocaleLowerCase()}`
       default:
       case 'PROFILE':
         return `/profile${props.edition ? '/edit' : ''}`

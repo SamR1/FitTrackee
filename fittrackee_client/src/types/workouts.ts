@@ -27,8 +27,9 @@ export interface IRecord {
 }
 
 export interface IRecordsBySport {
-  [key: string]: string | Record<string, string | number>[]
+  [key: string]: string | Record<string, string | number>[] | null
   label: string
+  color: string | null
   records: Record<string, string | number>[]
 }
 

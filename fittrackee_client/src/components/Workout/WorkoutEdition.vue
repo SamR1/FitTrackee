@@ -46,7 +46,7 @@
                   v-model="workoutForm.sport_id"
                 >
                   <option
-                    v-for="sport in translatedSports.filter((s) => s.is_active)"
+                    v-for="sport in translatedSports"
                     :value="sport.id"
                     :key="sport.id"
                   >
@@ -259,7 +259,12 @@
 
   const { workout, isCreation, loading } = toRefs(props)
   const translatedSports: ComputedRef<ISport[]> = computed(() =>
-    translateSports(props.sports, t)
+    translateSports(
+      props.sports,
+      t,
+      true,
+      workout.value.id ? [workout.value.sport_id] : null
+    )
   )
   const appConfig: ComputedRef<TAppConfig> = computed(
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]

@@ -1,7 +1,7 @@
 <template>
   <div
     class="sport-img"
-    :style="{ fill: sportColors[sportLabel] }"
+    :style="{ fill: color ? color : sportColors[sportLabel] }"
     :title="title ? title : $t(`sports.${sportLabel}.LABEL`)"
   >
     <CyclingSport v-if="sportLabel === 'Cycling (Sport)'" />
@@ -37,12 +37,13 @@
 
   interface Props {
     sportLabel: string
+    color: string | null
     title?: string
   }
   const props = withDefaults(defineProps<Props>(), {
     title: '',
   })
 
-  const { sportLabel, title } = toRefs(props)
+  const { color, sportLabel, title } = toRefs(props)
   const sportColors = inject('sportColors')
 </script>
