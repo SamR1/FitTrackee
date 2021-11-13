@@ -37,9 +37,15 @@ Account & preferences
 - A user can reset his password (*new in 0.3.0*)
 - A user can set language, timezone and first day of week.
 - A user can set sport preferences (*new in 0.5.0*):
-     - disable/enable a sport (if a sport is disabled by an administrator, it can not be enabled by user). A disabled sport will not appear in dropdown when adding a workout.
-     - change sport color (used for sport image and statistics)
+     - change sport color (used for sport image and charts)
      - can override stopped speed threshold (for next uploaded gpx files)
+     - disable/enable a sport.
+
+.. note::
+  | If a sport is disabled by an administrator, it can not be enabled by a user. In this case, it will only appear in preferences if it has user's workouts and the user can only change sport color.
+  | A disabled sport (by admin or user) will not appear in dropdown when **adding a workout**.
+  | A workout with a disabled sport will still be displayed in the application.
+
 
 
 Workouts
@@ -75,10 +81,10 @@ Workouts
     - farest distance
     - longest duration
     - maximum speed
-- Workouts list and filter
+- Workouts list and filter. Only sports with workouts are displayed in sport dropdown.
 
 .. note::
-    for now, only the owner of the workout can see it.
+    For now, only the owner of the workout can see it.
 
 Translations
 ^^^^^^^^^^^^

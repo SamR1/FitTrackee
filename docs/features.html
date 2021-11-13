@@ -182,14 +182,22 @@
 <li><p>A user can set language, timezone and first day of week.</p></li>
 <li><dl class="simple">
 <dt>A user can set sport preferences (<em>new in 0.5.0</em>):</dt><dd><ul>
-<li><p>disable/enable a sport (if a sport is disabled by an administrator, it can not be enabled by user). A disabled sport will not appear in dropdown when adding a workout.</p></li>
-<li><p>change sport color (used for sport image and statistics)</p></li>
+<li><p>change sport color (used for sport image and charts)</p></li>
 <li><p>can override stopped speed threshold (for next uploaded gpx files)</p></li>
+<li><p>disable/enable a sport.</p></li>
 </ul>
 </dd>
 </dl>
 </li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">If a sport is disabled by an administrator, it can not be enabled by a user. In this case, it will only appear in preferences if it has user’s workouts and the user can only change sport color.</div>
+<div class="line">A disabled sport (by admin or user) will not appear in dropdown when <strong>adding a workout</strong>.</div>
+<div class="line">A workout with a disabled sport will still be displayed in the application.</div>
+</div>
+</div>
 </section>
 <section id="workouts">
 <h3>Workouts<a class="headerlink" href="#workouts" title="Permalink to this headline">¶</a></h3>
@@ -242,11 +250,11 @@
 </dd>
 </dl>
 </li>
-<li><p>Workouts list and filter</p></li>
+<li><p>Workouts list and filter. Only sports with workouts are displayed in sport dropdown.</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>for now, only the owner of the workout can see it.</p>
+<p>For now, only the owner of the workout can see it.</p>
 </div>
 </section>
 <section id="translations">
