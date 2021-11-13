@@ -14,6 +14,7 @@ class TestUserModel:
         assert serialized_user['admin'] is False
         assert serialized_user['first_name'] is None
         assert serialized_user['last_name'] is None
+        assert serialized_user['imperial_units'] is False
         assert serialized_user['bio'] is None
         assert serialized_user['location'] is None
         assert serialized_user['birth_date'] is None

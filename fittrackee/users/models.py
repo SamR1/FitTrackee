@@ -40,6 +40,7 @@ class User(BaseModel):
         'Record', lazy=True, backref=db.backref('user', lazy='joined')
     )
     language = db.Column(db.String(50), nullable=True)
+    imperial_units = db.Column(db.Boolean, default=False, nullable=False)
 
     def __repr__(self) -> str:
         return f'<User {self.username!r}>'
@@ -142,6 +143,7 @@ class User(BaseModel):
             ],
             'total_distance': float(total[0]),
             'total_duration': str(total[1]),
+            'imperial_units': self.imperial_units,
         }
 
 
