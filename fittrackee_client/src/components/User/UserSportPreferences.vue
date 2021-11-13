@@ -299,11 +299,9 @@
     }
 
     @media screen and (max-width: $small-limit) {
-      .sport-label {
-        width: 100%;
-      }
+      .sport-label,
       .action-buttons {
-        width: 100%;
+        width: 45%;
       }
       .edition-buttons {
         justify-content: center;
@@ -311,6 +309,12 @@
       .mobile-display {
         display: flex;
         margin: $default-margin * 2 0 $default-margin;
+      }
+    }
+    @media screen and (max-width: $x-small-limit) {
+      .sport-label,
+      .action-buttons {
+        width: 100%;
       }
     }
   }
