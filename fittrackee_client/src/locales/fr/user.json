@@ -48,6 +48,7 @@
     "SPORT": {
       "ACTION": "action",
       "COLOR": "couleur",
+      "DISABLED_BY_ADMIN": "désactivé par l'administrateur",
       "IS_ACTIVE": "actif",
       "LABEL": "label",
       "STOPPED_SPEED_THRESHOLD": "seuil de vitesse arrêtée"

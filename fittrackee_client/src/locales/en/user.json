@@ -48,6 +48,7 @@
     "SPORT": {
       "ACTION": "action",
       "COLOR": "color",
+      "DISABLED_BY_ADMIN": "disabled by admin",
       "IS_ACTIVE": "active",
       "LABEL": "label",
       "STOPPED_SPEED_THRESHOLD": "stopped speed threshold"

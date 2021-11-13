@@ -16,7 +16,7 @@ export const sports: ISport[] = [
   },
   {
     color: '#000000',
-    has_workouts: false,
+    has_workouts: true,
     id: 2,
     img: '/img/sports/cycling-transport.png',
     is_active: false,

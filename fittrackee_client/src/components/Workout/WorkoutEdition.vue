@@ -259,7 +259,12 @@
 
   const { workout, isCreation, loading } = toRefs(props)
   const translatedSports: ComputedRef<ISport[]> = computed(() =>
-    translateSports(props.sports, t, true)
+    translateSports(
+      props.sports,
+      t,
+      true,
+      workout.value.id ? [workout.value.sport_id] : null
+    )
   )
   const appConfig: ComputedRef<TAppConfig> = computed(
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]

@@ -24,7 +24,7 @@
             </thead>
             <tbody>
               <tr v-for="sport in translatedSports" :key="sport.id">
-                <td class="center-text">
+                <td class="text-center">
                   <span class="cell-heading">id</span>
                   {{ sport.id }}
                 </td>
@@ -44,12 +44,12 @@
                   </span>
                   {{ sport.translatedLabel }}
                 </td>
-                <td class="center-text">
+                <td class="text-center">
                   <span class="cell-heading">
                     {{ $t('admin.SPORTS.TABLE.ACTIVE') }}
                   </span>
                   <i
-                    :class="`fa fa${sport.is_active ? '-check' : ''}-square-o`"
+                    :class="`fa fa${sport.is_active ? '-check' : ''}`"
                     aria-hidden="true"
                   />
                 </td>

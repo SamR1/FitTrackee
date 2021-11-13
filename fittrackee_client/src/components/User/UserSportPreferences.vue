@@ -22,6 +22,7 @@
           <tr>
             <th>{{ $t('user.PROFILE.SPORT.COLOR') }}</th>
             <th class="text-left">{{ $t('workouts.SPORT', 0) }}</th>
+            <th>{{ $t('workouts.WORKOUT', 0) }}</th>
             <th>{{ $t('user.PROFILE.SPORT.IS_ACTIVE') }}</th>
             <th>{{ $t('user.PROFILE.SPORT.STOPPED_SPEED_THRESHOLD') }}</th>
             <th v-if="isEdition">{{ $t('user.PROFILE.SPORT.ACTION') }}</th>
@@ -47,11 +48,17 @@
                 :color="sport.color ? sport.color : sportColors[sport.label]"
               />
             </td>
-            <td class="sport-label">
+            <td
+              class="sport-label"
+              :class="{ 'disabled-sport': !sport.is_active }"
+            >
               <span class="cell-heading">
                 {{ $t('user.PROFILE.SPORT.LABEL') }}
               </span>
               {{ sport.translatedLabel }}
+              <span class="disabled-message" v-if="!sport.is_active">
+                ({{ $t('user.PROFILE.SPORT.DISABLED_BY_ADMIN') }})
+              </span>
               <i
                 v-if="loading && isSportInEdition(sport.id)"
                 class="fa fa-refresh fa-spin fa-fw"
@@ -61,31 +68,49 @@
                 v-if="errorMessages && sportPayload.sport_id === sport.id"
               />
             </td>
-            <td class="text-center">
+            <td
+              class="text-center"
+              :class="{ 'disabled-sport': !sport.is_active }"
+            >
+              <span class="cell-heading">
+                {{ $t('workouts.WORKOUT', 0) }}
+              </span>
+              <i
+                :class="`fa fa${
+                  user.sports_list.includes(sport.id) ? '-check' : ''
+                }`"
+                aria-hidden="true"
+              />
+            </td>
+            <td
+              class="text-center"
+              :class="{ 'disabled-sport': !sport.is_active }"
+            >
               <span class="cell-heading">
                 {{ $t('user.PROFILE.SPORT.IS_ACTIVE') }}
               </span>
               <input
-                v-if="isSportInEdition(sport.id)"
+                v-if="isSportInEdition(sport.id) && sport.is_active"
                 type="checkbox"
                 :checked="sport.is_active_for_user"
                 @change="updateIsActive"
               />
               <i
                 v-else
-                :class="`fa fa${
-                  sport.is_active_for_user ? '-check' : ''
-                }-square-o`"
+                :class="`fa fa${sport.is_active_for_user ? '-check' : ''}`"
                 aria-hidden="true"
               />
             </td>
-            <td class="text-center">
+            <td
+              class="text-center"
+              :class="{ 'disabled-sport': !sport.is_active }"
+            >
               <span class="cell-heading">
                 {{ $t('user.PROFILE.SPORT.STOPPED_SPEED_THRESHOLD') }}
               </span>
               <input
                 class="threshold-input"
-                v-if="isSportInEdition(sport.id)"
+                v-if="isSportInEdition(sport.id) && sport.is_active"
                 type="number"
                 min="0"
                 step="0.1"
@@ -139,11 +164,12 @@
 
   import { AUTH_USER_STORE, ROOT_STORE, SPORTS_STORE } from '@/store/constants'
   import { ISport, ITranslatedSport } from '@/types/sports'
-  import { IUserSportPreferencesPayload } from '@/types/user'
+  import { IUserProfile, IUserSportPreferencesPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { translateSports } from '@/utils/sports'
 
   interface Props {
+    user: IUserProfile
     isEdition: boolean
   }
   const props = defineProps<Props>()
@@ -151,13 +177,13 @@
   const store = useStore()
   const { t } = useI18n()
 
-  const { isEdition } = toRefs(props)
+  const { isEdition, user } = toRefs(props)
   const sportColors = inject('sportColors')
   const sports: ComputedRef<ISport[]> = computed(
     () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
   )
   const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
-    translateSports(sports.value, t)
+    translateSports(sports.value, t, true, user.value.sports_list)
   )
   const loading = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
@@ -235,6 +261,17 @@
     }
     .sport-label {
       width: 170px;
+    }
+    .disabled-sport {
+      font-style: italic;
+      color: var(--disabled-sport-color);
+
+      .disabled-message {
+        font-size: 0.9em;
+      }
+      .cell-heading {
+        font-style: normal;
+      }
     }
     .action-buttons {
       width: 70px;

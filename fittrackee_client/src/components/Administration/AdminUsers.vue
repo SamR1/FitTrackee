@@ -63,13 +63,13 @@
                     )
                   }}
                 </td>
-                <td class="center-text">
+                <td class="text-center">
                   <span class="cell-heading">
                     {{ capitalize($t('workouts.WORKOUT', 0)) }}
                   </span>
                   {{ user.nb_workouts }}
                 </td>
-                <td class="center-text">
+                <td class="text-center">
                   <span class="cell-heading">
                     {{ $t('user.ADMIN') }}
                   </span>
@@ -78,7 +78,7 @@
                     aria-hidden="true"
                   />
                 </td>
-                <td class="center-text">
+                <td class="text-center">
                   <span class="cell-heading">
                     {{ $t('admin.ACTION') }}
                   </span>
