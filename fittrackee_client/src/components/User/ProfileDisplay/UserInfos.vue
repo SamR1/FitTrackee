@@ -47,7 +47,7 @@
   import { format } from 'date-fns'
   import { ComputedRef, Ref, computed, ref, toRefs, withDefaults } from 'vue'
 
-  import { AUTH_USER_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE, USERS_STORE } from '@/store/constants'
   import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
@@ -81,7 +81,7 @@
     displayModal.value = value
   }
   function deleteUserAccount(username: string) {
-    store.dispatch(AUTH_USER_STORE.ACTIONS.DELETE_ACCOUNT, { username })
+    store.dispatch(USERS_STORE.ACTIONS.DELETE_USER_ACCOUNT, { username })
   }
 </script>
 

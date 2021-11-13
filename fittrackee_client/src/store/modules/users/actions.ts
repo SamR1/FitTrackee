@@ -1,12 +1,39 @@
 import { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
-import { ROOT_STORE, USERS_STORE } from '@/store/constants'
+import router from '@/router'
+import { AUTH_USER_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
+import { IAuthUserState } from '@/store/modules/authUser/types'
 import { IRootState } from '@/store/modules/root/types'
 import { IUsersActions, IUsersState } from '@/store/modules/users/types'
 import { TPaginationPayload } from '@/types/api'
-import { IAdminUserPayload } from '@/types/user'
+import { IAdminUserPayload, IUserDeletionPayload } from '@/types/user'
 import { handleError } from '@/utils'
+
+export const deleteUserAccount = (
+  context:
+    | ActionContext<IAuthUserState, IRootState>
+    | ActionContext<IUsersState, IRootState>,
+  payload: IUserDeletionPayload
+): void => {
+  context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+  authApi
+    .delete(`users/${payload.username}`)
+    .then((res) => {
+      if (res.status === 204) {
+        if (payload.fromAdmin) {
+          router.push('/admin/users')
+        } else {
+          context
+            .dispatch(AUTH_USER_STORE.ACTIONS.LOGOUT)
+            .then(() => router.push('/'))
+        }
+      } else {
+        handleError(context, null)
+      }
+    })
+    .catch((error) => handleError(context, error))
+}
 
 export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
   [USERS_STORE.ACTIONS.EMPTY_USER](
@@ -93,5 +120,14 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
       .finally(() =>
         context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS_LOADING, false)
       )
+  },
+  [USERS_STORE.ACTIONS.DELETE_USER_ACCOUNT](
+    context: ActionContext<IUsersState, IRootState>,
+    payload: IUserDeletionPayload
+  ): void {
+    deleteUserAccount(context, {
+      username: payload.username,
+      fromAdmin: true,
+    })
   },
 }

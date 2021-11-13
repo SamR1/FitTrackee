@@ -68,6 +68,7 @@ export interface IUserPasswordResetPayload {
 
 export interface IUserDeletionPayload {
   username: string
+  fromAdmin?: boolean
 }
 
 export interface ILoginRegisterFormData {

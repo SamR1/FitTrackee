@@ -17,6 +17,7 @@ import {
   IAuthUserState,
 } from '@/store/modules/authUser/types'
 import { IRootState } from '@/store/modules/root/types'
+import { deleteUserAccount } from '@/store/modules/users/actions'
 import {
   ILoginOrRegisterData,
   IUserDeletionPayload,
@@ -228,19 +229,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
     context: ActionContext<IAuthUserState, IRootState>,
     payload: IUserDeletionPayload
   ): void {
-    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
-    authApi
-      .delete(`users/${payload.username}`)
-      .then((res) => {
-        if (res.status === 204) {
-          context
-            .dispatch(AUTH_USER_STORE.ACTIONS.LOGOUT)
-            .then(() => router.push('/'))
-        } else {
-          handleError(context, null)
-        }
-      })
-      .catch((error) => handleError(context, error))
+    deleteUserAccount(context, payload)
   },
   [AUTH_USER_STORE.ACTIONS.DELETE_PICTURE](
     context: ActionContext<IAuthUserState, IRootState>
