@@ -5,10 +5,12 @@ import {
   TCoordinates,
   TWorkoutDatasets,
 } from '@/types/workouts'
+import { convertStatsDistance } from '@/utils/units'
 
 export const getDatasets = (
   chartData: IWorkoutApiChartData[],
-  t: CallableFunction
+  t: CallableFunction,
+  useImperialUnits: boolean
 ): IWorkoutChartData => {
   const datasets: TWorkoutDatasets = {
     speed: {
@@ -36,8 +38,12 @@ export const getDatasets = (
   chartData.map((data) => {
     distance_labels.push(data.distance)
     duration_labels.push(data.duration)
-    datasets.speed.data.push(data.speed)
-    datasets.elevation.data.push(data.elevation)
+    datasets.speed.data.push(
+      convertStatsDistance('km', data.speed, useImperialUnits)
+    )
+    datasets.elevation.data.push(
+      convertStatsDistance('m', data.elevation, useImperialUnits)
+    )
     coordinates.push({ latitude: data.latitude, longitude: data.longitude })
   })
 

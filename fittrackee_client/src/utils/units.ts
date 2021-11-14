@@ -54,3 +54,12 @@ export const convertDistance = (
   }
   return convertedDistance
 }
+
+export const convertStatsDistance = (
+  unitFrom: TUnit,
+  value: number,
+  useImperialUnits: boolean
+): number => {
+  const unitTo = useImperialUnits ? units[unitFrom].defaultTarget : unitFrom
+  return useImperialUnits ? convertDistance(value, unitFrom, unitTo, 2) : value
+}

@@ -19,7 +19,6 @@
             <Distance
               :distance="segment.distance"
               unitFrom="km"
-              :strong="true"
               :useImperialUnits="useImperialUnits"
             />, {{ $t('workouts.DURATION') }}: {{ segment.duration }})
           </li>

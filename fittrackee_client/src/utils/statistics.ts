@@ -25,7 +25,7 @@ import {
 } from '@/types/statistics'
 import { incrementDate, getStartDate } from '@/utils/dates'
 import { sportColors } from '@/utils/sports'
-import { convertDistance, units } from '@/utils/units'
+import { convertStatsDistance } from '@/utils/units'
 
 const dateFormats: Record<string, Record<string, string>> = {
   week: {
@@ -103,13 +103,12 @@ export const convertStatsValue = (
   switch (datasetKey) {
     case 'total_distance':
     case 'total_ascent':
-    case 'total_descent': {
-      const unitFrom = datasetKey === 'total_distance' ? 'km' : 'm'
-      const unitTo = useImperialUnits ? units[unitFrom].defaultTarget : unitFrom
-      return useImperialUnits
-        ? convertDistance(value, unitFrom, unitTo, 2)
-        : value
-    }
+    case 'total_descent':
+      return convertStatsDistance(
+        datasetKey === 'total_distance' ? 'km' : 'm',
+        value,
+        useImperialUnits
+      )
     default:
     case 'nb_workouts':
     case 'total_duration':

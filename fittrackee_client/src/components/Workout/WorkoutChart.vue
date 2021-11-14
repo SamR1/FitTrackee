@@ -55,12 +55,14 @@
   import { LineChart, useLineChart } from 'vue-chart-3'
   import { useI18n } from 'vue-i18n'
 
+  import { TUnit } from '@/types/units'
   import { IUserProfile } from '@/types/user'
   import {
     IWorkoutChartData,
     IWorkoutData,
     TCoordinates,
   } from '@/types/workouts'
+  import { units } from '@/utils/units'
   import { getDatasets } from '@/utils/workouts'
 
   interface Props {
@@ -76,8 +78,10 @@
   let displayDistance = ref(true)
   let beginElevationAtZero = ref(true)
   const datasets: ComputedRef<IWorkoutChartData> = computed(() =>
-    getDatasets(props.workoutData.chartData, t)
+    getDatasets(props.workoutData.chartData, t, props.authUser.imperial_units)
   )
+  const fromKmUnit = getUnitTo('km')
+  const fromMUnit = getUnitTo('m')
   let chartData: ComputedRef<ChartData<'line'>> = computed(() => ({
     labels: displayDistance.value
       ? datasets.value.distance_labels
@@ -119,7 +123,7 @@
         title: {
           display: true,
           text: displayDistance.value
-            ? t('workouts.DISTANCE') + ' (km)'
+            ? t('workouts.DISTANCE') + ` (${fromKmUnit})`
             : t('workouts.DURATION'),
         },
       },
@@ -130,7 +134,7 @@
         position: 'left',
         title: {
           display: true,
-          text: t('workouts.SPEED') + ' (km/h)',
+          text: t('workouts.SPEED') + ` (${fromKmUnit}/h)`,
         },
       },
       yElevation: {
@@ -141,7 +145,7 @@
         position: 'right',
         title: {
           display: true,
-          text: t('workouts.ELEVATION') + ' (m)',
+          text: t('workouts.ELEVATION') + ` (${fromMUnit})`,
         },
       },
     },
@@ -164,8 +168,8 @@
           label: function (context) {
             const label = ` ${context.dataset.label}: ${context.formattedValue}`
             return context.dataset.yAxisID === 'yElevation'
-              ? label + ' m'
-              : label + ' km/h'
+              ? label + ` ${fromMUnit}`
+              : label + ` ${fromKmUnit}/h`
           },
           title: function (tooltipItems) {
             if (tooltipItems.length > 0) {
@@ -174,7 +178,9 @@
             return tooltipItems.length === 0
               ? ''
               : displayDistance.value
-              ? `${t('workouts.DISTANCE')}: ${tooltipItems[0].label} km`
+              ? `${t('workouts.DISTANCE')}: ${
+                  tooltipItems[0].label
+                } ${fromKmUnit}`
               : `${t('workouts.DURATION')}: ${formatDuration(
                   tooltipItems[0].label.replace(',', '')
                 )}`
@@ -199,6 +205,11 @@
   }
   function emitEmptyCoordinates() {
     emitCoordinates({ latitude: null, longitude: null })
+  }
+  function getUnitTo(unitFrom: TUnit): TUnit {
+    return props.authUser.imperial_units
+      ? units[unitFrom].defaultTarget
+      : unitFrom
   }
 </script>
 
