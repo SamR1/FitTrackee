@@ -5,21 +5,25 @@ export const units: Record<string, IUnit> = {
     unit: 'ft',
     system: 'imperial',
     multiplier: 1,
+    defaultTarget: 'm',
   },
   mi: {
     unit: 'mi',
     system: 'imperial',
     multiplier: 5280,
+    defaultTarget: 'km',
   },
   m: {
     unit: 'm',
     system: 'metric',
     multiplier: 1,
+    defaultTarget: 'ft',
   },
   km: {
     unit: 'm',
     system: 'metric',
     multiplier: 1000,
+    defaultTarget: 'mi',
   },
 }
 

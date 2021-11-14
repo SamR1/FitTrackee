@@ -20,7 +20,10 @@
           :workoutData="workoutData"
           :markerCoordinates="markerCoordinates"
         />
-        <WorkoutData :workoutObject="workoutObject" />
+        <WorkoutData
+          :workoutObject="workoutObject"
+          :useImperialUnits="authUser.imperial_units"
+        />
       </template>
     </Card>
   </div>
@@ -68,7 +71,7 @@
   const route = useRoute()
   const store = useStore()
 
-  const { markerCoordinates, workoutData } = toRefs(props)
+  const { authUser, markerCoordinates, workoutData } = toRefs(props)
   const workout: ComputedRef<IWorkout> = computed(
     () => props.workoutData.workout
   )

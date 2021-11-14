@@ -13,16 +13,34 @@
     <div class="workout-data">
       <i class="fa fa-road" aria-hidden="true" />
       {{ $t('workouts.DISTANCE') }}:
-      <span>{{ workoutObject.distance }} km</span>
+      <Distance
+        :distance="workoutObject.distance"
+        :digits="3"
+        unitFrom="km"
+        :strong="true"
+        :useImperialUnits="useImperialUnits"
+      />
       <WorkoutRecord :workoutObject="workoutObject" recordType="FD" />
     </div>
     <div class="workout-data">
       <i class="fa fa-tachometer" aria-hidden="true" />
       {{ $t('workouts.AVERAGE_SPEED') }}:
-      <span>{{ workoutObject.aveSpeed }} km/h</span
-      ><WorkoutRecord :workoutObject="workoutObject" recordType="AS" /><br />
+      <Distance
+        :distance="workoutObject.aveSpeed"
+        unitFrom="km"
+        :speed="true"
+        :strong="true"
+        :useImperialUnits="useImperialUnits"
+      />
+      <WorkoutRecord :workoutObject="workoutObject" recordType="AS" /><br />
       {{ $t('workouts.MAX_SPEED') }}:
-      <span>{{ workoutObject.maxSpeed }} km/h</span>
+      <Distance
+        :distance="workoutObject.maxSpeed"
+        unitFrom="km"
+        :speed="true"
+        :strong="true"
+        :useImperialUnits="useImperialUnits"
+      />
       <WorkoutRecord :workoutObject="workoutObject" recordType="MS" />
     </div>
     <div
@@ -35,18 +53,39 @@
         :alt="$t('workouts.ELEVATION')"
       />
       {{ $t('workouts.MIN_ALTITUDE') }}:
-      <span>{{ workoutObject.minAlt }} m</span><br />
+      <Distance
+        :distance="workoutObject.minAlt"
+        unitFrom="m"
+        :strong="true"
+        :useImperialUnits="useImperialUnits"
+      /><br />
       {{ $t('workouts.MAX_ALTITUDE') }}:
-      <span>{{ workoutObject.maxAlt }} m</span>
+      <Distance
+        :distance="workoutObject.maxAlt"
+        unitFrom="m"
+        :strong="true"
+        :useImperialUnits="useImperialUnits"
+      />
     </div>
     <div
       class="workout-data"
       v-if="workoutObject.ascent !== null && workoutObject.descent !== null"
     >
       <i class="fa fa-location-arrow" aria-hidden="true" />
-      {{ $t('workouts.ASCENT') }}: <span>{{ workoutObject.ascent }} m</span
-      ><br />
-      {{ $t('workouts.DESCENT') }}: <span>{{ workoutObject.descent }} m</span>
+      {{ $t('workouts.ASCENT') }}:
+      <Distance
+        :distance="workoutObject.ascent"
+        unitFrom="m"
+        :strong="true"
+        :useImperialUnits="useImperialUnits"
+      /><br />
+      {{ $t('workouts.DESCENT') }}:
+      <Distance
+        :distance="workoutObject.descent"
+        unitFrom="m"
+        :strong="true"
+        :useImperialUnits="useImperialUnits"
+      />
     </div>
     <WorkoutWeather :workoutObject="workoutObject" />
   </div>
@@ -61,10 +100,11 @@
 
   interface Props {
     workoutObject: IWorkoutObject
+    useImperialUnits: boolean
   }
   const props = defineProps<Props>()
 
-  const { workoutObject } = toRefs(props)
+  const { workoutObject, useImperialUnits } = toRefs(props)
   const withPause = computed(
     () =>
       props.workoutObject.pauses !== '0:00:00' &&

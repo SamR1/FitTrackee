@@ -10,4 +10,5 @@ export interface IUnit {
   unit: TUnit
   system: TUnitSystem
   multiplier: number
+  defaultTarget: TUnit
 }

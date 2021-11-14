@@ -13,6 +13,7 @@
         :sportTranslatedLabel="sportTranslatedLabel"
         :records="recordsBySport[sportTranslatedLabel]"
         :key="sportTranslatedLabel"
+        :useImperialUnits="user.imperial_units"
       />
     </div>
   </div>
@@ -40,7 +41,8 @@
     getRecordsBySports(
       props.user.records,
       translateSports(props.sports, t),
-      props.user.timezone
+      props.user.timezone,
+      props.user.imperial_units
     )
   )
 </script>

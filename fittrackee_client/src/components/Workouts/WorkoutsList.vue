@@ -93,7 +93,11 @@
                 <span class="cell-heading">
                   {{ $t('workouts.DISTANCE') }}
                 </span>
-                {{ Number(workout.distance).toFixed(2) }} km
+                <Distance
+                  :distance="workout.distance"
+                  unitFrom="km"
+                  :useImperialUnits="user.imperial_units"
+                />
               </td>
               <td class="text-right">
                 <span class="cell-heading">
@@ -105,25 +109,45 @@
                 <span class="cell-heading">
                   {{ $t('workouts.AVE_SPEED') }}
                 </span>
-                {{ workout.ave_speed }} km/h
+                <Distance
+                  :distance="workout.ave_speed"
+                  unitFrom="km"
+                  :speed="true"
+                  :useImperialUnits="user.imperial_units"
+                />
               </td>
               <td class="text-right">
                 <span class="cell-heading">
                   {{ $t('workouts.MAX_SPEED') }}
                 </span>
-                {{ workout.max_speed }} km/h
+                <Distance
+                  :distance="workout.max_speed"
+                  unitFrom="km"
+                  :speed="true"
+                  :useImperialUnits="user.imperial_units"
+                />
               </td>
               <td class="text-right">
                 <span class="cell-heading">
                   {{ $t('workouts.ASCENT') }}
                 </span>
-                <span v-if="workout.with_gpx">{{ workout.ascent }} m</span>
+                <Distance
+                  v-if="workout.with_gpx"
+                  :distance="workout.ascent"
+                  unitFrom="m"
+                  :useImperialUnits="user.imperial_units"
+                />
               </td>
               <td class="text-right">
                 <span class="cell-heading">
                   {{ $t('workouts.DESCENT') }}
                 </span>
-                <span v-if="workout.with_gpx">{{ workout.descent }} m</span>
+                <Distance
+                  v-if="workout.with_gpx"
+                  :distance="workout.descent"
+                  unitFrom="m"
+                  :useImperialUnits="user.imperial_units"
+                />
               </td>
             </tr>
           </tbody>

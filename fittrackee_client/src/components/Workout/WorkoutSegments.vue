@@ -15,8 +15,13 @@
               }"
               >{{ $t('workouts.SEGMENT', 1) }} {{ index + 1 }}</router-link
             >
-            ({{ $t('workouts.DISTANCE') }}: {{ segment.distance }} km,
-            {{ $t('workouts.DURATION') }}: {{ segment.duration }})
+            ({{ $t('workouts.DISTANCE') }}:
+            <Distance
+              :distance="segment.distance"
+              unitFrom="km"
+              :strong="true"
+              :useImperialUnits="useImperialUnits"
+            />, {{ $t('workouts.DURATION') }}: {{ segment.duration }})
           </li>
         </ul>
       </template>
@@ -31,10 +36,11 @@
 
   interface Props {
     segments: IWorkoutSegment[]
+    useImperialUnits: boolean
   }
   const props = defineProps<Props>()
 
-  const { segments } = toRefs(props)
+  const { segments, useImperialUnits } = toRefs(props)
 </script>
 
 <style lang="scss" scoped>
