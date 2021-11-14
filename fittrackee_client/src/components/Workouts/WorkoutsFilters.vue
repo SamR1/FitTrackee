@@ -47,7 +47,7 @@
 
         <div class="form-items-group">
           <div class="form-item">
-            <label> {{ $t('workouts.DISTANCE') }} (km): </label>
+            <label> {{ $t('workouts.DISTANCE') }} ({{ toUnit }}): </label>
             <div class="form-inputs-group">
               <input
                 name="distance_from"
@@ -72,7 +72,7 @@
 
         <div class="form-items-group">
           <div class="form-item">
-            <label> {{ $t('workouts.DURATION') }} (km): </label>
+            <label> {{ $t('workouts.DURATION') }} ({{ toUnit }}): </label>
             <div class="form-inputs-group">
               <input
                 name="duration_from"
@@ -97,7 +97,7 @@
 
         <div class="form-items-group">
           <div class="form-item">
-            <label> {{ $t('workouts.AVE_SPEED') }} (km): </label>
+            <label> {{ $t('workouts.AVE_SPEED') }} ({{ toUnit }}): </label>
             <div class="form-inputs-group">
               <input
                 min="0"
@@ -122,7 +122,7 @@
 
         <div class="form-items-group">
           <div class="form-item">
-            <label> {{ $t('workouts.MAX_SPEED') }} (km): </label>
+            <label> {{ $t('workouts.MAX_SPEED') }} ({{ toUnit }}): </label>
 
             <div class="form-inputs-group">
               <input
@@ -167,6 +167,7 @@
   import { ISport } from '@/types/sports'
   import { IUserProfile } from '@/types/user'
   import { translateSports } from '@/utils/sports'
+  import { units } from '@/utils/units'
 
   interface Props {
     authUser: IUserProfile
@@ -181,6 +182,10 @@
   const router = useRouter()
 
   const { authUser } = toRefs(props)
+
+  const toUnit = authUser.value.imperial_units
+    ? units['km'].defaultTarget
+    : 'km'
   const translatedSports: ComputedRef<ISport[]> = computed(() =>
     translateSports(props.sports, t)
   )

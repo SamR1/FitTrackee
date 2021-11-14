@@ -45,8 +45,9 @@
                   {{ $t('workouts.SPORT', 1) }}
                 </span>
                 <SportImage
+                  v-if="sports.length > 0"
                   :title="
-                    sports.filter((s) => s.id === workout.sport_id)[0]
+                    sports.find((s) => s.id === workout.sport_id)
                       .translatedLabel
                   "
                   :sport-label="getSportLabel(workout, sports)"
@@ -187,6 +188,7 @@
   import { getQuery, sortList, workoutsPayloadKeys } from '@/utils/api'
   import { getDateWithTZ } from '@/utils/dates'
   import { getSportColor, getSportLabel } from '@/utils/sports'
+  import { convertDistance } from '@/utils/units'
   import { defaultOrder } from '@/utils/workouts'
 
   interface Props {
@@ -220,7 +222,10 @@
   })
 
   function loadWorkouts(payload: TWorkoutsPayload) {
-    store.dispatch(WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS, payload)
+    store.dispatch(
+      WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS,
+      user.value.imperial_units ? getConvertedPayload(payload) : payload
+    )
   }
   function reloadWorkouts(queryParam: string, queryValue: string) {
     const newQuery: LocationQuery = Object.assign({}, route.query)
@@ -246,6 +251,18 @@
         }
       })
     return query
+  }
+
+  function getConvertedPayload(payload: TWorkoutsPayload): TWorkoutsPayload {
+    const convertedPayload: TWorkoutsPayload = {
+      ...payload,
+    }
+    Object.entries(convertedPayload).map((entry) => {
+      if (entry[0].match('speed|distance')) {
+        convertedPayload[entry[0]] = convertDistance(+entry[1], 'mi', 'km')
+      }
+    })
+    return convertedPayload
   }
 
   function onHover(workoutId: string | null) {
