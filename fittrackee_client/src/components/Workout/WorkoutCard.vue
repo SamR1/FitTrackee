@@ -188,6 +188,7 @@
       .workout-user-date {
         display: flex;
         justify-content: space-between;
+        align-items: flex-start;
         padding: $default-padding * 0.5 $default-padding;
         .workout-user {
           display: flex;
@@ -201,15 +202,18 @@
             }
           }
           .workout-user-name {
+            white-space: nowrap;
             padding-left: 5px;
           }
         }
         .workout-date {
           font-size: 0.85em;
           font-style: italic;
+          white-space: nowrap;
         }
         .workout-title {
           display: block;
+          text-align: center;
           padding: 0 $default-padding;
           @media screen and (max-width: $x-small-limit) {
             display: none;
