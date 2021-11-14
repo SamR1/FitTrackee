@@ -5,7 +5,11 @@
       :value="user.nb_workouts"
       :text="$t('workouts.WORKOUT', user.nb_workouts)"
     />
-    <StatCard icon="road" :value="totalDistance" :text="unitTo" />
+    <StatCard
+      icon="road"
+      :value="totalDistance"
+      :text="unitTo === 'mi' ? 'miles' : unitTo"
+    />
     <StatCard
       icon="clock-o"
       :value="totalDuration.days"

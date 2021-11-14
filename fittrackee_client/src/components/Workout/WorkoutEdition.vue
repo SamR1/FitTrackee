@@ -137,7 +137,7 @@
                         class="workout-duration"
                         type="text"
                         placeholder="HH"
-                        pattern="^([0-9]*[0-9])$"
+                        pattern="^([0-1]?[0-9]|2[0-3])$"
                         required
                         @invalid="invalidateForm"
                         :disabled="loading"

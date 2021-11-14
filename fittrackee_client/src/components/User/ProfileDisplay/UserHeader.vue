@@ -19,7 +19,7 @@
             :useImperialUnits="user.imperial_units"
           />
           <span class="stat-label">
-            {{ user.imperial_units ? 'mi' : 'km' }}
+            {{ user.imperial_units ? 'miles' : 'km' }}
           </span>
         </div>
         <div class="user-stat hide-small">

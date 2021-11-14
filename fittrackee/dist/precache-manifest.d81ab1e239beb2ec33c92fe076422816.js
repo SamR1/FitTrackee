@@ -64,7 +64,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/img/workouts/mountains.svg"
   },
   {
-    "revision": "32c52f8c4e8110c8e2b56ed11785070e",
+    "revision": "a83d95cb780cb551f9c6e0257addee7a",
     "url": "/index.html"
   },
   {
@@ -80,8 +80,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/css/admin.babfd43e.css"
   },
   {
-    "revision": "20cf09e603abcf3de75f",
-    "url": "/static/css/app.67b49472.css"
+    "revision": "580dbac1a3cc1ff6f809",
+    "url": "/static/css/app.2b8c39ab.css"
   },
   {
     "revision": "82c1118c918377daaa71a320ab8eea42",
@@ -92,7 +92,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/css/leaflet.css"
   },
   {
-    "revision": "e947669500c2a5c15e48",
+    "revision": "3e2dd5ce7fd86f47e0e5",
     "url": "/static/css/main.f9856c63.css"
   },
   {
@@ -108,8 +108,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/css/reset.46776e72.css"
   },
   {
-    "revision": "546fe7284ac94a69b990",
-    "url": "/static/css/workouts.e26f093d.css"
+    "revision": "03d9a79c5f845c47ef9c",
+    "url": "/static/css/workouts.84cbed34.css"
   },
   {
     "revision": "e719f9244c69e28e7d00e725ca1e280e",
@@ -196,8 +196,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/admin.2f1d393d.js"
   },
   {
-    "revision": "20cf09e603abcf3de75f",
-    "url": "/static/js/app.7327f9ef.js"
+    "revision": "580dbac1a3cc1ff6f809",
+    "url": "/static/js/app.28d0829a.js"
   },
   {
     "revision": "bd7d183c9f68e5f4027d",
@@ -224,8 +224,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/chunk-vendors.caa4fc1c.js"
   },
   {
-    "revision": "e947669500c2a5c15e48",
-    "url": "/static/js/main.a53955db.js"
+    "revision": "3e2dd5ce7fd86f47e0e5",
+    "url": "/static/js/main.23f4d3a6.js"
   },
   {
     "revision": "ac1280c03a31a5894834",
@@ -240,7 +240,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/reset.518e646f.js"
   },
   {
-    "revision": "546fe7284ac94a69b990",
-    "url": "/static/js/workouts.d8661465.js"
+    "revision": "03d9a79c5f845c47ef9c",
+    "url": "/static/js/workouts.ca9449b1.js"
   }
 ]);
