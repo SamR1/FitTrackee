@@ -8,6 +8,13 @@ export const state: IRootState = {
   language: 'en',
   locale: enUS,
   errorMessages: null,
-  application: <IApplication>{},
+  application: <IApplication>{
+    statistics: {
+      sports: 0,
+      uploads_dir_size: 0,
+      users: 0,
+      workouts: 0,
+    },
+  },
   appLoading: false,
 }

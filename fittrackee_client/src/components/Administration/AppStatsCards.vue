@@ -2,18 +2,18 @@
   <div id="user-stats">
     <StatCard
       icon="users"
-      :value="usersCount"
-      :text="$t('admin.USER', usersCount)"
+      :value="appStatistics.users"
+      :text="$t('admin.USER', appStatistics.users)"
     />
     <StatCard
       icon="tags"
-      :value="sportsCount"
-      :text="$t('workouts.SPORT', sportsCount)"
+      :value="appStatistics.sports"
+      :text="$t('workouts.SPORT', appStatistics.sports)"
     />
     <StatCard
       icon="calendar"
-      :value="workoutCount"
-      :text="$t('workouts.WORKOUT', workoutCount)"
+      :value="appStatistics.workouts"
+      :text="$t('workouts.WORKOUT', appStatistics.workouts)"
     />
     <StatCard
       icon="folder-open"
@@ -24,32 +24,20 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, withDefaults } from 'vue'
+  import { computed, toRefs } from 'vue'
 
   import StatCard from '@/components/Common/StatCard.vue'
   import { IAppStatistics } from '@/types/application'
   import { getReadableFileSize } from '@/utils/files'
 
   interface Props {
-    appStatistics?: IAppStatistics
+    appStatistics: IAppStatistics
   }
-  const props = withDefaults(defineProps<Props>(), {
-    appStatistics: () => ({} as IAppStatistics),
-  })
+  const props = defineProps<Props>()
 
+  const { appStatistics } = toRefs(props)
   const uploadDirSize = computed(() =>
-    props.appStatistics.uploads_dir_size
-      ? getReadableFileSize(props.appStatistics.uploads_dir_size, false)
-      : { size: 0, suffix: 'bytes' }
-  )
-  const usersCount = computed(() =>
-    props.appStatistics.users ? props.appStatistics.users : 0
-  )
-  const sportsCount = computed(() =>
-    props.appStatistics.sports ? props.appStatistics.sports : 0
-  )
-  const workoutCount = computed(() =>
-    props.appStatistics.workouts ? props.appStatistics.workouts : 0
+    getReadableFileSize(appStatistics.value.uploads_dir_size, false)
   )
 </script>
 
