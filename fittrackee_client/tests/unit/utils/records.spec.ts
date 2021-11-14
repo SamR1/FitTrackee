@@ -150,7 +150,7 @@ describe('formatRecord after conversion', () => {
       expected: {
         id: 10,
         record_type: 'FD',
-        value: '11.18 mi',
+        value: '11.185 mi',
         workout_date: '2019/07/08',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
       },
@@ -470,7 +470,7 @@ describe('getRecordsBySports after conversion', () => {
             {
               id: 10,
               record_type: 'FD',
-              value: '11.18 mi',
+              value: '11.185 mi',
               workout_date: '2019/07/08',
               workout_id: 'n6JcLPQt3QtZWFfiSnYm4C',
             },

@@ -49,7 +49,7 @@
           unitTo.value,
           digits.value
         )
-      : distance.value.toFixed(digits.value)
+      : parseFloat(distance.value.toFixed(digits.value))
   )
 </script>
 

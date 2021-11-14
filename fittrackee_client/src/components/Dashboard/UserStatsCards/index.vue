@@ -45,7 +45,7 @@
     : defaultUnitFrom
   const totalDistance = user.value.imperial_units
     ? convertDistance(user.value.total_distance, defaultUnitFrom, unitTo, 2)
-    : user.value.total_distance
+    : parseFloat(user.value.total_distance.toFixed(2))
 
   function get_duration(total_duration: ComputedRef<string>) {
     const duration = total_duration.value.match(/day/g)

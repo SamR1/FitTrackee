@@ -25,7 +25,7 @@ export const formatRecord = (
       )} ${unitTo}/h`
       break
     case 'FD':
-      value = `${convertDistance(+record.value, unitFrom, unitTo, 2)} ${unitTo}`
+      value = `${convertDistance(+record.value, unitFrom, unitTo, 3)} ${unitTo}`
       break
     case 'LD':
       value = record.value

@@ -182,7 +182,7 @@
                     name="workout-distance"
                     type="number"
                     min="0"
-                    step="0.01"
+                    step="0.001"
                     required
                     @invalid="invalidateForm"
                     :disabled="loading"
@@ -332,7 +332,7 @@
       workoutForm.workoutDistance = `${
         authUser.value.imperial_units
           ? convertDistance(workout.distance, 'km', 'mi', 2)
-          : workout.distance
+          : parseFloat(workout.distance.toFixed(2))
       }`
       workoutForm.workoutDate = workoutDateTime.workout_date
       workoutForm.workoutTime = workoutDateTime.workout_time
