@@ -1,5 +1,6 @@
 <template>
   <span class="distance" :class="{ strong }">{{ convertedDistance }}</span>
+  {{ ' ' }}
   <span v-if="displayUnit" class="unit" :class="{ strong }">
     {{ unitTo }}{{ speed ? '/h' : '' }}
   </span>
@@ -55,9 +56,6 @@
 
 <style lang="scss" scoped>
   @import '~@/scss/base.scss';
-  .unit {
-    padding-left: $default-padding * 0.5;
-  }
   .strong {
     font-weight: bold;
   }

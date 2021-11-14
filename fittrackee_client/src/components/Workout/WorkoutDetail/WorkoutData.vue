@@ -2,17 +2,19 @@
   <div id="workout-info">
     <div class="workout-data">
       <i class="fa fa-clock-o" aria-hidden="true" />
-      {{ $t('workouts.DURATION') }}: <span>{{ workoutObject.moving }}</span>
+      <span class="label"> {{ $t('workouts.DURATION') }} </span>:
+      <span class="value">{{ workoutObject.moving }}</span>
       <WorkoutRecord :workoutObject="workoutObject" recordType="LD" />
       <div v-if="withPause">
-        ({{ $t('workouts.PAUSES') }}: <span>{{ workoutObject.pauses }}</span> -
+        ({{ $t('workouts.PAUSES') }}:
+        <span class="value">{{ workoutObject.pauses }}</span> -
         {{ $t('workouts.TOTAL_DURATION') }}:
-        <span>{{ workoutObject.duration }})</span>
+        <span class="value">{{ workoutObject.duration }})</span>
       </div>
     </div>
     <div class="workout-data">
       <i class="fa fa-road" aria-hidden="true" />
-      {{ $t('workouts.DISTANCE') }}:
+      <span class="label"> {{ $t('workouts.DISTANCE') }} </span>:
       <Distance
         :distance="workoutObject.distance"
         :digits="3"
@@ -24,7 +26,8 @@
     </div>
     <div class="workout-data">
       <i class="fa fa-tachometer" aria-hidden="true" />
-      {{ $t('workouts.AVERAGE_SPEED') }}:
+      <span class="label">{{ $t('workouts.AVERAGE_SPEED') }}</span
+      >:
       <Distance
         :distance="workoutObject.aveSpeed"
         unitFrom="km"
@@ -33,7 +36,7 @@
         :useImperialUnits="useImperialUnits"
       />
       <WorkoutRecord :workoutObject="workoutObject" recordType="AS" /><br />
-      {{ $t('workouts.MAX_SPEED') }}:
+      <span class="label"> {{ $t('workouts.MAX_SPEED') }} </span>:
       <Distance
         :distance="workoutObject.maxSpeed"
         unitFrom="km"
@@ -52,14 +55,16 @@
         src="/img/workouts/mountains.svg"
         :alt="$t('workouts.ELEVATION')"
       />
-      {{ $t('workouts.MIN_ALTITUDE') }}:
+      <span class="label">{{ $t('workouts.MIN_ALTITUDE') }}</span
+      >:
       <Distance
         :distance="workoutObject.minAlt"
         unitFrom="m"
         :strong="true"
         :useImperialUnits="useImperialUnits"
       /><br />
-      {{ $t('workouts.MAX_ALTITUDE') }}:
+      <span class="label">{{ $t('workouts.MAX_ALTITUDE') }}</span
+      >:
       <Distance
         :distance="workoutObject.maxAlt"
         unitFrom="m"
@@ -72,14 +77,15 @@
       v-if="workoutObject.ascent !== null && workoutObject.descent !== null"
     >
       <i class="fa fa-location-arrow" aria-hidden="true" />
-      {{ $t('workouts.ASCENT') }}:
+      <span class="label">{{ $t('workouts.ASCENT') }}</span
+      >:
       <Distance
         :distance="workoutObject.ascent"
         unitFrom="m"
         :strong="true"
         :useImperialUnits="useImperialUnits"
       /><br />
-      {{ $t('workouts.DESCENT') }}:
+      <span class="label"> {{ $t('workouts.DESCENT') }} </span>:
       <Distance
         :distance="workoutObject.descent"
         unitFrom="m"
@@ -123,11 +129,17 @@
     padding: $default-padding $default-padding * 2;
     width: 100%;
 
-    .workout-data {
-      text-transform: capitalize;
-      padding: $default-padding * 0.5 0;
+    .fa,
+    .mountains {
+      padding-right: $default-padding * 0.5;
+    }
 
-      span {
+    .workout-data {
+      padding: $default-padding * 0.5 0;
+      .label {
+        text-transform: capitalize;
+      }
+      .value {
         font-weight: bold;
         text-transform: lowercase;
       }
