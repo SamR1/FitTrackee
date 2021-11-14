@@ -87,7 +87,10 @@
         :useImperialUnits="useImperialUnits"
       />
     </div>
-    <WorkoutWeather :workoutObject="workoutObject" />
+    <WorkoutWeather
+      :workoutObject="workoutObject"
+      :useImperialUnits="useImperialUnits"
+    />
   </div>
 </template>
 
