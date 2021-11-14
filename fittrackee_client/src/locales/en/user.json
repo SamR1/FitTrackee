@@ -55,7 +55,7 @@
     },
     "UNITS": {
       "LABEL": "Units for distance",
-      "IMPERIAL": "Imperial system (mi, ft)",
+      "IMPERIAL": "Imperial system (ft, mi)",
       "METRIC": "Metric system (m, km)"
     },
     "TIMEZONE": "Timezone"
