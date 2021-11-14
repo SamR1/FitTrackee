@@ -58,6 +58,7 @@
         :displayedData="displayedData"
         :displayedSportIds="displayedSportIds"
         :fullStats="fullStats"
+        :useImperialUnits="user.imperial_units"
       />
     </div>
   </div>
@@ -134,7 +135,8 @@
           props.user.weekm,
           props.sports,
           props.displayedSportIds,
-          statistics.value
+          statistics.value,
+          props.user.imperial_units
         )
       )
 

@@ -316,7 +316,7 @@ describe('formatStats', () => {
       },
     }
     assert.deepEqual(
-      formatStats(inputParams, false, sports, [], inputStats),
+      formatStats(inputParams, false, sports, [], inputStats, false),
       expected
     )
   })
@@ -369,7 +369,7 @@ describe('formatStats', () => {
       },
     }
     assert.deepEqual(
-      formatStats(inputParams, false, sports, [2], inputStats),
+      formatStats(inputParams, false, sports, [2], inputStats, false),
       expected
     )
   })
@@ -427,7 +427,7 @@ describe('formatStats', () => {
       },
     }
     assert.deepEqual(
-      formatStats(inputParams, false, sports, [], inputStats),
+      formatStats(inputParams, false, sports, [], inputStats, false),
       expected
     )
   })
@@ -515,7 +515,7 @@ describe('formatStats', () => {
       },
     }
     assert.deepEqual(
-      formatStats(inputParams, false, sports, [1], inputStats),
+      formatStats(inputParams, false, sports, [1], inputStats, false),
       expected
     )
   })
@@ -605,7 +605,7 @@ describe('formatStats (duration)', () => {
       },
     }
     assert.deepEqual(
-      formatStats(inputParams, false, sports, [1], inputStats),
+      formatStats(inputParams, false, sports, [1], inputStats, false),
       expected
     )
   })
@@ -692,7 +692,7 @@ describe('formatStats (duration)', () => {
       },
     }
     assert.deepEqual(
-      formatStats(inputParams, false, sports, [1], inputStats),
+      formatStats(inputParams, false, sports, [1], inputStats, false),
       expected
     )
   })
@@ -780,7 +780,7 @@ describe('formatStats (duration)', () => {
       },
     }
     assert.deepEqual(
-      formatStats(inputParams, false, sports, [1], inputStats),
+      formatStats(inputParams, false, sports, [1], inputStats, false),
       expected
     )
   })
@@ -868,7 +868,95 @@ describe('formatStats (duration)', () => {
       },
     }
     assert.deepEqual(
-      formatStats(inputParams, true, sports, [1], inputStats),
+      formatStats(inputParams, true, sports, [1], inputStats, false),
+      expected
+    )
+  })
+
+  it('returns datasets after conversion to imperial units', () => {
+    const inputStats: TStatisticsFromApi = {
+      '2021-10-03': {
+        1: {
+          nb_workouts: 1,
+          total_distance: 10,
+          total_duration: 3000,
+          total_ascent: 150,
+          total_descent: 100,
+        },
+      },
+      '2021-10-10': {
+        1: {
+          nb_workouts: 1,
+          total_distance: 15,
+          total_duration: 3500,
+          total_ascent: 250,
+          total_descent: 150,
+        },
+        2: {
+          nb_workouts: 2,
+          total_distance: 20,
+          total_duration: 3000,
+          total_ascent: 150,
+          total_descent: 200,
+        },
+      },
+      '2021-10-17': {
+        3: {
+          nb_workouts: 2,
+          total_distance: 20,
+          total_duration: 3000,
+          total_ascent: 100,
+          total_descent: 100,
+        },
+      },
+    }
+    const inputParams = {
+      duration: 'week',
+      start: new Date('October 03, 2021 00:00:00'),
+      end: new Date('October 23, 2021 23:59:59.999'),
+    }
+    const expected: IStatisticsChartData = {
+      labels: ['03/10/2021', '10/10/2021', '17/10/2021'],
+      datasets: {
+        nb_workouts: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [1, 1, 0],
+          },
+        ],
+        total_distance: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [6.21, 9.32, 0],
+          },
+        ],
+        total_duration: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [3000, 3500, 0],
+          },
+        ],
+        total_ascent: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [492.13, 820.21, 0],
+          },
+        ],
+        total_descent: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [328.08, 492.13, 0],
+          },
+        ],
+      },
+    }
+    assert.deepEqual(
+      formatStats(inputParams, false, sports, [1], inputStats, true),
       expected
     )
   })

@@ -40,6 +40,10 @@
         type: Boolean,
         required: true,
       },
+      useImperialUnits: {
+        type: Boolean,
+        required: true,
+      },
     },
     setup(props) {
       const { t } = useI18n()
@@ -80,7 +84,12 @@
             ticks: {
               maxTicksLimit: 6,
               callback: function (value) {
-                return formatTooltipValue(props.displayedData, +value, false)
+                return formatTooltipValue(
+                  props.displayedData,
+                  +value,
+                  props.useImperialUnits,
+                  false
+                )
               },
             },
             afterFit: function (scale: LayoutItem) {
@@ -108,7 +117,12 @@
                 .reduce((total, value) => getSum(total, value), 0)
               return context.datasetIndex ===
                 props.displayedSportIds.length - 1 && total > 0
-                ? formatTooltipValue(props.displayedData, total, false)
+                ? formatTooltipValue(
+                    props.displayedData,
+                    total,
+                    props.useImperialUnits,
+                    false
+                  )
                 : null
             },
           },
@@ -132,7 +146,8 @@
                 if (context.parsed.y !== null) {
                   label += formatTooltipValue(
                     props.displayedData,
-                    context.parsed.y
+                    context.parsed.y,
+                    props.useImperialUnits
                   )
                 }
                 return label
@@ -144,7 +159,11 @@
                 })
                 return (
                   `${t('common.TOTAL')}: ` +
-                  formatTooltipValue(props.displayedData, sum)
+                  formatTooltipValue(
+                    props.displayedData,
+                    sum,
+                    props.useImperialUnits
+                  )
                 )
               },
             },
