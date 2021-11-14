@@ -487,6 +487,7 @@ class TestUserProfile(ApiTestCaseMixin):
         assert not data['data']['admin']
         assert data['data']['timezone'] is None
         assert data['data']['weekm'] is False
+        assert data['data']['imperial_units'] is False
         assert data['data']['language'] is None
         assert data['data']['nb_sports'] == 0
         assert data['data']['nb_workouts'] == 0
@@ -517,6 +518,7 @@ class TestUserProfile(ApiTestCaseMixin):
         assert data['data']['last_name'] == 'Doe'
         assert data['data']['birth_date']
         assert data['data']['bio'] == 'just a random guy'
+        assert data['data']['imperial_units'] is False
         assert data['data']['location'] == 'somewhere'
         assert data['data']['timezone'] == 'America/New_York'
         assert data['data']['weekm'] is False
@@ -553,6 +555,7 @@ class TestUserProfile(ApiTestCaseMixin):
         assert data['data']['created_at']
         assert not data['data']['admin']
         assert data['data']['timezone'] is None
+        assert data['data']['imperial_units'] is False
         assert data['data']['nb_sports'] == 2
         assert data['data']['nb_workouts'] == 2
         assert len(data['data']['records']) == 6
@@ -605,6 +608,7 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
         assert data['data']['last_name'] == 'Doe'
         assert data['data']['birth_date']
         assert data['data']['bio'] == 'Nothing to tell'
+        assert data['data']['imperial_units'] is False
         assert data['data']['location'] == 'Somewhere'
         assert data['data']['timezone'] is None
         assert data['data']['weekm'] is False
@@ -648,6 +652,7 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
         assert data['data']['last_name'] == 'Doe'
         assert data['data']['birth_date']
         assert data['data']['bio'] == 'Nothing to tell'
+        assert data['data']['imperial_units'] is False
         assert data['data']['location'] == 'Somewhere'
         assert data['data']['timezone'] is None
         assert data['data']['weekm'] is False
@@ -767,6 +772,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     timezone='America/New_York',
                     weekm=True,
                     language='fr',
+                    imperial_units=True,
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -784,6 +790,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert data['data']['last_name'] is None
         assert data['data']['birth_date'] is None
         assert data['data']['bio'] is None
+        assert data['data']['imperial_units']
         assert data['data']['location'] is None
         assert data['data']['timezone'] == 'America/New_York'
         assert data['data']['weekm'] is True

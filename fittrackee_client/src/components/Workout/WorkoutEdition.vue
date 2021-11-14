@@ -137,7 +137,7 @@
                         class="workout-duration"
                         type="text"
                         placeholder="HH"
-                        pattern="^([0-9]*[0-9])$"
+                        pattern="^([0-1]?[0-9]|2[0-3])$"
                         required
                         @invalid="invalidateForm"
                         :disabled="loading"
@@ -173,12 +173,16 @@
                   </div>
                 </div>
                 <div class="form-item">
-                  <label>{{ $t('workouts.DISTANCE') }} (km):</label>
+                  <label>
+                    {{ $t('workouts.DISTANCE') }} ({{
+                      authUser.imperial_units ? 'mi' : 'km'
+                    }}):
+                  </label>
                   <input
                     name="workout-distance"
                     type="number"
                     min="0"
-                    step="0.01"
+                    step="0.001"
                     required
                     @invalid="invalidateForm"
                     :disabled="loading"
@@ -239,6 +243,7 @@
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
   import { getReadableFileSize } from '@/utils/files'
   import { translateSports } from '@/utils/sports'
+  import { convertDistance } from '@/utils/units'
 
   interface Props {
     authUser: IUserProfile
@@ -257,7 +262,7 @@
   const store = useStore()
   const router = useRouter()
 
-  const { workout, isCreation, loading } = toRefs(props)
+  const { authUser, workout, isCreation, loading } = toRefs(props)
   const translatedSports: ComputedRef<ISport[]> = computed(() =>
     translateSports(
       props.sports,
@@ -324,7 +329,11 @@
         'yyyy-MM-dd'
       )
       const duration = workout.duration.split(':')
-      workoutForm.workoutDistance = `${workout.distance}`
+      workoutForm.workoutDistance = `${
+        authUser.value.imperial_units
+          ? convertDistance(workout.distance, 'km', 'mi', 2)
+          : parseFloat(workout.distance.toFixed(2))
+      }`
       workoutForm.workoutDate = workoutDateTime.workout_date
       workoutForm.workoutTime = workoutDateTime.workout_time
       workoutForm.workoutDurationHour = duration[0]
@@ -334,7 +343,9 @@
   }
   function formatPayload(payload: IWorkoutForm) {
     payload.title = workoutForm.title
-    payload.distance = +workoutForm.workoutDistance
+    payload.distance = authUser.value.imperial_units
+      ? convertDistance(+workoutForm.workoutDistance, 'mi', 'km', 3)
+      : +workoutForm.workoutDistance
     payload.duration =
       +workoutForm.workoutDurationHour * 3600 +
       +workoutForm.workoutDurationMinutes * 60 +

@@ -22,6 +22,7 @@
           <WorkoutSegments
             v-if="!displaySegment && workoutData.workout.segments.length > 1"
             :segments="workoutData.workout.segments"
+            :useImperialUnits="authUser.imperial_units"
           />
           <WorkoutNotes
             v-if="!displaySegment"

@@ -7,8 +7,8 @@
     />
     <StatCard
       icon="road"
-      :value="Number(user.total_distance).toFixed(2)"
-      :text="$t('workouts.KM')"
+      :value="totalDistance"
+      :text="unitTo === 'mi' ? 'miles' : unitTo"
     />
     <StatCard
       icon="clock-o"
@@ -28,7 +28,9 @@
   import { useI18n } from 'vue-i18n'
 
   import StatCard from '@/components/Common/StatCard.vue'
+  import { TUnit } from '@/types/units'
   import { IUserProfile } from '@/types/user'
+  import { convertDistance, units } from '@/utils/units'
   interface Props {
     user: IUserProfile
   }
@@ -41,6 +43,13 @@
     () => props.user.total_duration
   )
   const totalDuration = computed(() => get_duration(userTotalDuration))
+  const defaultUnitFrom: TUnit = 'km'
+  const unitTo: TUnit = user.value.imperial_units
+    ? units[defaultUnitFrom].defaultTarget
+    : defaultUnitFrom
+  const totalDistance = user.value.imperial_units
+    ? convertDistance(user.value.total_distance, defaultUnitFrom, unitTo, 2)
+    : parseFloat(user.value.total_distance.toFixed(2))
 
   function get_duration(total_duration: ComputedRef<string>) {
     const duration = total_duration.value.match(/day/g)

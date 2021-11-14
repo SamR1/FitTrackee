@@ -89,8 +89,26 @@
               :title="$t(`workouts.WEATHER.WIND`)"
             />
           </td>
-          <td>{{ Number(workoutObject.weatherStart.wind).toFixed(1) }}m/s</td>
-          <td>{{ Number(workoutObject.weatherEnd.wind).toFixed(1) }}m/s</td>
+          <td>
+            <Distance
+              :distance="workoutObject.weatherStart.wind"
+              unitFrom="m"
+              :digits="1"
+              :displayUnit="false"
+              :useImperialUnits="useImperialUnits"
+            />
+            {{ useImperialUnits ? 'ft' : 'm' }}/s
+          </td>
+          <td>
+            <Distance
+              :distance="workoutObject.weatherEnd.wind"
+              unitFrom="m"
+              :digits="1"
+              :displayUnit="false"
+              :useImperialUnits="useImperialUnits"
+            />
+            {{ useImperialUnits ? 'ft' : 'm' }}/s
+          </td>
         </tr>
       </tbody>
     </table>
@@ -104,10 +122,11 @@
 
   interface Props {
     workoutObject: IWorkoutObject
+    useImperialUnits: boolean
   }
   const props = defineProps<Props>()
 
-  const { workoutObject } = toRefs(props)
+  const { useImperialUnits, workoutObject } = toRefs(props)
 </script>
 
 <style lang="scss" scoped>

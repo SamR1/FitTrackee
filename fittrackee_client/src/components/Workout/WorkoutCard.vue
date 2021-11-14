@@ -87,7 +87,13 @@
         </div>
         <div class="data">
           <i class="fa fa-road" aria-hidden="true" />
-          <span v-if="workout">{{ workout.distance }} km</span>
+          <Distance
+            v-if="workout.id"
+            :distance="workout.distance"
+            :digits="3"
+            unitFrom="km"
+            :useImperialUnits="useImperialUnits"
+          />
         </div>
         <div class="data elevation" v-if="workout && workout.with_gpx">
           <img
@@ -96,15 +102,37 @@
             :alt="$t('workouts.ELEVATION')"
           />
           <div class="data-values">
-            <span>{{ workout.min_alt }}/</span>
-            <span>{{ workout.max_alt }} m </span>
+            <Distance
+              v-if="workout.id"
+              :distance="workout.min_alt"
+              unitFrom="m"
+              :displayUnit="false"
+              :useImperialUnits="useImperialUnits"
+            />/
+            <Distance
+              v-if="workout.id"
+              :distance="workout.max_alt"
+              unitFrom="m"
+              :useImperialUnits="useImperialUnits"
+            />
           </div>
         </div>
         <div class="data altitude" v-if="workout && workout.with_gpx">
           <i class="fa fa-location-arrow" aria-hidden="true" />
           <div class="data-values">
-            <span>+ {{ workout.ascent }}/</span>
-            <span>- {{ workout.descent }} m </span>
+            +<Distance
+              v-if="workout.id"
+              :distance="workout.ascent"
+              unitFrom="m"
+              :displayUnit="false"
+              :useImperialUnits="useImperialUnits"
+            />/-
+            <Distance
+              v-if="workout.id"
+              :distance="workout.descent"
+              unitFrom="m"
+              :useImperialUnits="useImperialUnits"
+            />
           </div>
         </div>
       </div>
@@ -127,6 +155,7 @@
 
   interface Props {
     user: IUserProfile
+    useImperialUnits: boolean
     workout?: IWorkout
     sport?: ISport
   }
@@ -137,7 +166,7 @@
 
   const store = useStore()
 
-  const { user, workout, sport } = toRefs(props)
+  const { user, workout, sport, useImperialUnits } = toRefs(props)
   const locale: ComputedRef<Locale> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LOCALE]
   )

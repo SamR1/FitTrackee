@@ -5,6 +5,7 @@
       <WorkoutCard
         v-for="index in [...Array(initWorkoutsCount).keys()]"
         :user="user"
+        :useImperialUnits="user.imperial_units"
         :key="index"
       />
     </div>
@@ -18,6 +19,7 @@
             : null
         "
         :user="user"
+        :useImperialUnits="user.imperial_units"
         :key="workout.id"
       />
       <NoWorkouts v-if="workouts.length === 0" />

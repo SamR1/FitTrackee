@@ -1,6 +1,7 @@
 import AlertMessage from '@/components/Common/AlertMessage.vue'
 import Card from '@/components/Common/Card.vue'
 import CustomTextArea from '@/components/Common/CustomTextArea.vue'
+import Distance from '@/components/Common/Distance.vue'
 import Dropdown from '@/components/Common/Dropdown.vue'
 import ErrorMessage from '@/components/Common/ErrorMessage.vue'
 import SportImage from '@/components/Common/Images/SportImage/index.vue'
@@ -11,6 +12,7 @@ export const customComponents = [
   { target: AlertMessage, name: 'AlertMessage' },
   { target: Card, name: 'Card' },
   { target: CustomTextArea, name: 'CustomTextArea' },
+  { target: Distance, name: 'Distance' },
   { target: Dropdown, name: 'Dropdown' },
   { target: ErrorMessage, name: 'ErrorMessage' },
   { target: Loader, name: 'Loader' },

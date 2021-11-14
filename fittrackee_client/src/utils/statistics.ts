@@ -25,6 +25,7 @@ import {
 } from '@/types/statistics'
 import { incrementDate, getStartDate } from '@/utils/dates'
 import { sportColors } from '@/utils/sports'
+import { convertStatsDistance } from '@/utils/units'
 
 const dateFormats: Record<string, Record<string, string>> = {
   week: {
@@ -94,12 +95,34 @@ export const getDatasets = (displayedSports: ISport[]): TStatisticsDatasets => {
   return datasets
 }
 
+export const convertStatsValue = (
+  datasetKey: TStatisticsDatasetKeys,
+  value: number,
+  useImperialUnits: boolean
+): number => {
+  switch (datasetKey) {
+    case 'total_distance':
+    case 'total_ascent':
+    case 'total_descent':
+      return convertStatsDistance(
+        datasetKey === 'total_distance' ? 'km' : 'm',
+        value,
+        useImperialUnits
+      )
+    default:
+    case 'nb_workouts':
+    case 'total_duration':
+      return value
+  }
+}
+
 export const formatStats = (
   params: IStatisticsDateParams,
   weekStartingMonday: boolean,
   sports: ISport[],
   displayedSportsId: number[],
-  apiStats: TStatisticsFromApi
+  apiStats: TStatisticsFromApi,
+  useImperialUnits: boolean
 ): IStatisticsChartData => {
   const dayKeys = getDateKeys(params, weekStartingMonday)
   const dateFormat = dateFormats[params.duration]
@@ -123,7 +146,11 @@ export const formatStats = (
           apiStats !== {} &&
             date in apiStats &&
             sportsId[dataset.label] in apiStats[date]
-            ? apiStats[date][sportsId[dataset.label]][datasetKey]
+            ? convertStatsValue(
+                datasetKey,
+                apiStats[date][sportsId[dataset.label]][datasetKey],
+                useImperialUnits
+              )
             : 0
         )
       })

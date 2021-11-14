@@ -313,6 +313,7 @@ def get_authenticated_user_profile(
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
           "email": "sam@example.com",
           "first_name": null,
+          "imperial_units": false,
           "language": "en",
           "last_name": null,
           "location": null,
@@ -412,6 +413,7 @@ def edit_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
           "email": "sam@example.com",
           "first_name": null,
+          "imperial_units": false,
           "language": "en",
           "last_name": null,
           "location": null,
@@ -574,6 +576,7 @@ def edit_user_preferences(auth_user_id: int) -> Union[Dict, HttpResponse]:
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
           "email": "sam@example.com",
           "first_name": null,
+          "imperial_units": false,
           "language": "en",
           "last_name": null,
           "location": null,
@@ -653,6 +656,7 @@ def edit_user_preferences(auth_user_id: int) -> Union[Dict, HttpResponse]:
     # get post data
     post_data = request.get_json()
     user_mandatory_data = {
+        'imperial_units',
         'language',
         'timezone',
         'weekm',
@@ -660,12 +664,14 @@ def edit_user_preferences(auth_user_id: int) -> Union[Dict, HttpResponse]:
     if not post_data or not post_data.keys() >= user_mandatory_data:
         return InvalidPayloadErrorResponse()
 
+    imperial_units = post_data.get('imperial_units')
     language = post_data.get('language')
     timezone = post_data.get('timezone')
     weekm = post_data.get('weekm')
 
     try:
         user = User.query.filter_by(id=auth_user_id).first()
+        user.imperial_units = imperial_units
         user.language = language
         user.timezone = timezone
         user.weekm = weekm

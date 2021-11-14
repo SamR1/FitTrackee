@@ -45,6 +45,11 @@
       "PROFILE": "profil",
       "SPORTS": "sports"
     },
+    "UNITS": {
+      "LABEL": "Unités pour les distances ",
+      "IMPERIAL": "Système impérial (ft, mi)",
+      "METRIC": "Système métrique (m, km)"
+    },
     "SPORT": {
       "ACTION": "action",
       "COLOR": "couleur",

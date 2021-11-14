@@ -9,6 +9,7 @@ export interface IUserProfile {
   created_at: string
   email: string
   first_name: string | null
+  imperial_units: boolean
   language: string | null
   last_name: string | null
   location: string | null
@@ -40,6 +41,7 @@ export interface IAdminUserPayload {
 }
 
 export interface IUserPreferencesPayload {
+  imperial_units: boolean
   language: string
   timezone: string
   weekm: boolean

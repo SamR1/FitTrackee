@@ -45,8 +45,9 @@
                   {{ $t('workouts.SPORT', 1) }}
                 </span>
                 <SportImage
+                  v-if="sports.length > 0"
                   :title="
-                    sports.filter((s) => s.id === workout.sport_id)[0]
+                    sports.find((s) => s.id === workout.sport_id)
                       .translatedLabel
                   "
                   :sport-label="getSportLabel(workout, sports)"
@@ -93,7 +94,11 @@
                 <span class="cell-heading">
                   {{ $t('workouts.DISTANCE') }}
                 </span>
-                {{ Number(workout.distance).toFixed(2) }} km
+                <Distance
+                  :distance="workout.distance"
+                  unitFrom="km"
+                  :useImperialUnits="user.imperial_units"
+                />
               </td>
               <td class="text-right">
                 <span class="cell-heading">
@@ -105,25 +110,45 @@
                 <span class="cell-heading">
                   {{ $t('workouts.AVE_SPEED') }}
                 </span>
-                {{ workout.ave_speed }} km/h
+                <Distance
+                  :distance="workout.ave_speed"
+                  unitFrom="km"
+                  :speed="true"
+                  :useImperialUnits="user.imperial_units"
+                />
               </td>
               <td class="text-right">
                 <span class="cell-heading">
                   {{ $t('workouts.MAX_SPEED') }}
                 </span>
-                {{ workout.max_speed }} km/h
+                <Distance
+                  :distance="workout.max_speed"
+                  unitFrom="km"
+                  :speed="true"
+                  :useImperialUnits="user.imperial_units"
+                />
               </td>
               <td class="text-right">
                 <span class="cell-heading">
                   {{ $t('workouts.ASCENT') }}
                 </span>
-                <span v-if="workout.with_gpx">{{ workout.ascent }} m</span>
+                <Distance
+                  v-if="workout.with_gpx"
+                  :distance="workout.ascent"
+                  unitFrom="m"
+                  :useImperialUnits="user.imperial_units"
+                />
               </td>
               <td class="text-right">
                 <span class="cell-heading">
                   {{ $t('workouts.DESCENT') }}
                 </span>
-                <span v-if="workout.with_gpx">{{ workout.descent }} m</span>
+                <Distance
+                  v-if="workout.with_gpx"
+                  :distance="workout.descent"
+                  unitFrom="m"
+                  :useImperialUnits="user.imperial_units"
+                />
               </td>
             </tr>
           </tbody>
@@ -163,6 +188,7 @@
   import { getQuery, sortList, workoutsPayloadKeys } from '@/utils/api'
   import { getDateWithTZ } from '@/utils/dates'
   import { getSportColor, getSportLabel } from '@/utils/sports'
+  import { convertDistance } from '@/utils/units'
   import { defaultOrder } from '@/utils/workouts'
 
   interface Props {
@@ -196,7 +222,10 @@
   })
 
   function loadWorkouts(payload: TWorkoutsPayload) {
-    store.dispatch(WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS, payload)
+    store.dispatch(
+      WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS,
+      user.value.imperial_units ? getConvertedPayload(payload) : payload
+    )
   }
   function reloadWorkouts(queryParam: string, queryValue: string) {
     const newQuery: LocationQuery = Object.assign({}, route.query)
@@ -222,6 +251,18 @@
         }
       })
     return query
+  }
+
+  function getConvertedPayload(payload: TWorkoutsPayload): TWorkoutsPayload {
+    const convertedPayload: TWorkoutsPayload = {
+      ...payload,
+    }
+    Object.entries(convertedPayload).map((entry) => {
+      if (entry[0].match('speed|distance')) {
+        convertedPayload[entry[0]] = convertDistance(+entry[1], 'mi', 'km')
+      }
+    })
+    return convertedPayload
   }
 
   function onHover(workoutId: string | null) {

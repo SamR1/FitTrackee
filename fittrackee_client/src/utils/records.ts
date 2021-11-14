@@ -1,19 +1,31 @@
 import { ITranslatedSport } from '@/types/sports'
+import { TUnit } from '@/types/units'
 import { IRecord, IRecordsBySports } from '@/types/workouts'
 import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
+import { convertDistance, units } from '@/utils/units'
 
 export const formatRecord = (
   record: IRecord,
-  tz: string
+  tz: string,
+  useImperialUnits: boolean
 ): Record<string, string | number> => {
+  const unitFrom: TUnit = 'km'
+  const unitTo: TUnit = useImperialUnits
+    ? units[unitFrom].defaultTarget
+    : unitFrom
   let value
   switch (record.record_type) {
     case 'AS':
     case 'MS':
-      value = `${record.value} km/h`
+      value = `${convertDistance(
+        +record.value,
+        unitFrom,
+        unitTo,
+        2
+      )} ${unitTo}/h`
       break
     case 'FD':
-      value = `${record.value} km`
+      value = `${convertDistance(+record.value, unitFrom, unitTo, 3)} ${unitTo}`
       break
     case 'LD':
       value = record.value
@@ -36,7 +48,8 @@ export const formatRecord = (
 export const getRecordsBySports = (
   records: IRecord[],
   translatedSports: ITranslatedSport[],
-  tz: string
+  tz: string,
+  useImperialUnits: boolean
 ): IRecordsBySports =>
   records.reduce((sportList: IRecordsBySports, record) => {
     const sport = translatedSports.find((s) => s.id === record.sport_id)
@@ -48,7 +61,9 @@ export const getRecordsBySports = (
           records: [],
         }
       }
-      sportList[sport.translatedLabel].records.push(formatRecord(record, tz))
+      sportList[sport.translatedLabel].records.push(
+        formatRecord(record, tz, useImperialUnits)
+      )
     }
     return sportList
   }, {})
