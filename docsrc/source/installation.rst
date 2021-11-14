@@ -14,7 +14,7 @@ This application is written in Python (API) and Typescript (client):
     - `Leaflet <https://leafletjs.com/>`__ to display map
     - `Chart.js <https://www.chartjs.org/>`__ to display charts with elevation and speed
 
-Sports and weather icons are made by `Freepik <https://www.freepik.com/>`__ from `www.flaticon.com <https://www.flaticon.com/>`__.
+Logo, sports and weather icons are made by `Freepik <https://www.freepik.com/>`__ from `www.flaticon.com <https://www.flaticon.com/>`__.
 
 Prerequisites
 ~~~~~~~~~~~~~
@@ -132,6 +132,8 @@ deployment method.
 
     Email URL with credentials, see `Emails <installation.html#emails>`__.
 
+    .. warning::
+        If the email URL is invalid, the application may not start.
 
 .. envvar:: SENDER_EMAIL
 
