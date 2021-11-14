@@ -34,8 +34,9 @@ Administration
 Account & preferences
 ^^^^^^^^^^^^^^^^^^^^^
 - A user can create, update and deleted his account
-- A user can reset his password (*new in 0.3.0*)
 - A user can set language, timezone and first day of week.
+- A user can reset his password (*new in 0.3.0*)
+- A user can choose between metric system and imperial system for distance, elevation and speed display (*new in 0.5.0*)
 - A user can set sport preferences (*new in 0.5.0*):
      - change sport color (used for sport image and charts)
      - can override stopped speed threshold (for next uploaded gpx files)
@@ -72,7 +73,7 @@ Workouts
   It can be overridden in user preferences.
 
 - Dashboard with month calendar displaying workouts and record. The week can start on Sunday or Monday (which can be changed in the user preferences). The calendar displays up to 100 workouts.
-- Workout creation by uploading a gpx file. A workout can even be created without gpx (the user must enter date, time, duration and distance).
+- Workout creation by uploading a gpx file (related data are stored in database with metric system). A workout can even be created without gpx (the user must enter date, time, duration and distance).
 - A workout with a gpx file can be displayed with map, weather (if the DarkSky API key is provided) and charts (speed and elevation). Segments can be displayed.
 - Workout edition and deletion. User can add a note.
 - User statistics

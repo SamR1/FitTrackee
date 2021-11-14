@@ -6,6 +6,7 @@
 
 #### New Features
 
+* [#99](https://github.com/SamR1/FitTrackee/issues/99) - Display workout with imperial units 
 * [#91](https://github.com/SamR1/FitTrackee/issues/91) - Display elevation chart with min and max altitude of workout
 * [#90](https://github.com/SamR1/FitTrackee/issues/90) - Add user sports preferences
 * [#18](https://github.com/SamR1/FitTrackee/issues/18) - Better UI
@@ -23,7 +24,7 @@
 * [#98/#109](https://github.com/SamR1/FitTrackee/pull/109) - Added stopped_speed_threshold to support slow movement
 * [#84/#93](https://github.com/SamR1/FitTrackee/pull/93) - Add elevation data and new sports
 
-In this release 5 issue were closed.
+In this release 6 issue were closed.
 
 
 ## Version 0.4.9 (2021/07/16)
