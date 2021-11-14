@@ -49,7 +49,7 @@
           unitTo.value,
           digits.value
         )
-      : distance.value
+      : distance.value.toFixed(digits.value)
   )
 </script>
 

@@ -11,10 +11,16 @@
           </span>
         </div>
         <div class="user-stat">
-          <span class="stat-number">{{
-            Number(user.total_distance).toFixed(0)
-          }}</span>
-          <span class="stat-label">km</span>
+          <Distance
+            :distance="user.total_distance"
+            unitFrom="km"
+            :digits="0"
+            :displayUnit="false"
+            :useImperialUnits="user.imperial_units"
+          />
+          <span class="stat-label">
+            {{ user.imperial_units ? 'mi' : 'km' }}
+          </span>
         </div>
         <div class="user-stat hide-small">
           <span class="stat-number">{{ user.nb_sports }}</span>
@@ -72,6 +78,7 @@
           .stat-label {
             padding: 0 $default-padding * 0.5;
           }
+          ::v-deep(.distance),
           .stat-number {
             font-weight: bold;
             font-size: 1.5em;
@@ -87,6 +94,7 @@
         .user-stats {
           gap: $default-padding * 2;
           .user-stat {
+            ::v-deep(.distance),
             .stat-number {
               font-weight: bold;
               font-size: 1.2em;
