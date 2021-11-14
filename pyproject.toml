@@ -11,12 +11,13 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Web Environment",
     "Framework :: Flask",
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "License :: OSI Approved :: GNU Affero General Public License v3",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
     "Programming Language :: JavaScript"
 ]
 exclude = ["fittrackee/tests"]
@@ -35,7 +36,7 @@ psycopg2-binary = "^2.9"
 pyjwt = "^2.3"
 python-forecastio = "^1.4"
 pytz = "^2021.3"
-shortuuid = "^1.0.1"
+shortuuid = "^1.0.8"
 staticmap = "^0.5.4"
 tqdm = "^4.62"
 SQLAlchemy = "1.4.26"
@@ -56,9 +57,9 @@ recommonmark = "^0.7"
 sphinx-bootstrap-theme = "^0.8.0"
 sphinxcontrib-httpdomain = "^1.7"
 types-pytz = "^2021.3.0"
-types-requests = "^2.25.0"
+types-requests = "^2.26.0"
 types-freezegun = "^1.1"
-Sphinx = "^4.2"
+Sphinx = "^4.3"
 
 [tool.poetry.scripts]
 fittrackee = 'fittrackee.__main__:main'
