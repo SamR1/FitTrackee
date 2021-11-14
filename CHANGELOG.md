@@ -1,6 +1,6 @@
 # Change log
 
-## Version 0.5.0 (unreleased)
+## Version 0.5.0 (2021/11/14)
 
 ### Issues Closed
 
@@ -21,10 +21,14 @@
 
 ### Pull Requests
 
+* [#101](https://github.com/SamR1/FitTrackee/pull/101) - Docker updates for full files 
+* [#100](https://github.com/SamR1/FitTrackee/pull/100) - Add client application in docker for development
 * [#98/#109](https://github.com/SamR1/FitTrackee/pull/109) - Added stopped_speed_threshold to support slow movement
 * [#84/#93](https://github.com/SamR1/FitTrackee/pull/93) - Add elevation data and new sports
 
-In this release 6 issue were closed.
+In this release 6 issues were closed.
+
+**Note:** This release contains database migrations.
 
 
 ## Version 0.4.9 (2021/07/16)
@@ -42,7 +46,8 @@ In this release 6 issue were closed.
 * [#82](https://github.com/SamR1/Fittrackee/issues/82) - a user can not modify his birth day
 * [#80](https://github.com/SamR1/Fittrackee/issues/80) - can not save notes with control characters
 
-In this release 4 issue were closed.
+In this release 4 issues were closed.
+
 
 ## Version 0.4.8 (2021/07/03)
 
