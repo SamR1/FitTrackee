@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-  import { toRefs, withDefaults } from 'vue'
+  import { ComputedRef, computed, toRefs, withDefaults } from 'vue'
 
   import { TUnit } from '@/types/units'
   import { units, convertDistance } from '@/utils/units'
@@ -36,12 +36,21 @@
     unitFrom,
     useImperialUnits,
   } = toRefs(props)
-  const unitTo: TUnit = useImperialUnits.value
-    ? units[unitFrom.value].defaultTarget
-    : unitFrom.value
-  const convertedDistance = useImperialUnits.value
-    ? convertDistance(distance.value, unitFrom.value, unitTo, digits.value)
-    : distance
+  const unitTo: ComputedRef<TUnit> = computed(() =>
+    useImperialUnits.value
+      ? units[unitFrom.value].defaultTarget
+      : unitFrom.value
+  )
+  const convertedDistance = computed(() =>
+    useImperialUnits.value
+      ? convertDistance(
+          distance.value,
+          unitFrom.value,
+          unitTo.value,
+          digits.value
+        )
+      : distance.value
+  )
 </script>
 
 <style lang="scss" scoped>
