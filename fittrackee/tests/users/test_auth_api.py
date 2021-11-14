@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from io import BytesIO
 from unittest.mock import Mock, patch
 
+import pytest
 from flask import Flask
 from freezegun import freeze_time
 
@@ -32,13 +33,43 @@ class TestUserRegistration:
 
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
-        assert data['message'] == 'Successfully registered.'
+        assert data['message'] == 'successfully registered'
         assert data['auth_token']
         assert response.content_type == 'application/json'
         assert response.status_code == 201
 
-    def test_it_returns_error_if_user_already_exists(
-        self, app: Flask, user_1: User
+    @pytest.mark.parametrize(
+        'input_username',
+        ['test', 'TEST'],
+    )
+    def test_it_returns_error_if_user_already_exists_with_same_username(
+        self, app: Flask, user_1: User, input_username: str
+    ) -> None:
+        client = app.test_client()
+        response = client.post(
+            '/api/auth/register',
+            data=json.dumps(
+                dict(
+                    username=input_username,
+                    email='another_email@test.com',
+                    password='12345678',
+                    password_conf='12345678',
+                )
+            ),
+            content_type='application/json',
+        )
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'error'
+        assert data['message'] == 'sorry, that user already exists'
+        assert response.content_type == 'application/json'
+        assert response.status_code == 400
+
+    @pytest.mark.parametrize(
+        'input_email',
+        ['test@test.com', 'TEST@TEST.COM'],
+    )
+    def test_it_returns_error_if_user_already_exists_with_same_email(
+        self, app: Flask, user_1: User, input_email: str
     ) -> None:
         client = app.test_client()
         response = client.post(
@@ -55,7 +86,7 @@ class TestUserRegistration:
         )
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
-        assert data['message'] == 'Sorry. That user already exists.'
+        assert data['message'] == 'sorry, that user already exists'
         assert response.content_type == 'application/json'
         assert response.status_code == 400
 
@@ -79,7 +110,7 @@ class TestUserRegistration:
 
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
-        assert data['message'] == "Username: 3 to 12 characters required.\n"
+        assert data['message'] == "username: 3 to 12 characters required\n"
         assert response.content_type == 'application/json'
         assert response.status_code == 400
 
@@ -101,7 +132,7 @@ class TestUserRegistration:
         )
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
-        assert data['message'] == "Username: 3 to 12 characters required.\n"
+        assert data['message'] == "username: 3 to 12 characters required\n"
         assert response.content_type == 'application/json'
         assert response.status_code == 400
 
@@ -123,7 +154,7 @@ class TestUserRegistration:
 
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
-        assert data['message'] == "Valid email must be provided.\n"
+        assert data['message'] == "email: valid email must be provided\n"
         assert response.content_type == 'application/json'
         assert response.status_code == 400
 
@@ -147,7 +178,7 @@ class TestUserRegistration:
 
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
-        assert data['message'] == "Password: 8 characters required.\n"
+        assert data['message'] == "password: 8 characters required\n"
         assert response.content_type == 'application/json'
         assert response.status_code == 400
 
@@ -171,7 +202,7 @@ class TestUserRegistration:
         assert data['status'] == 'error'
         assert (
             data['message']
-            == "Password and password confirmation don\'t match.\n"
+            == "password: password and password confirmation do not match\n"
         )
         assert response.content_type == 'application/json'
         assert response.status_code == 400
@@ -185,7 +216,7 @@ class TestUserRegistration:
         )
         data = json.loads(response.data.decode())
         assert response.status_code, 400
-        assert 'Invalid payload.', data['message']
+        assert 'invalid payload', data['message']
         assert 'error', data['status']
 
     def test_it_returns_error_if_username_is_missing(self, app: Flask) -> None:
@@ -205,7 +236,7 @@ class TestUserRegistration:
 
         data = json.loads(response.data.decode())
         assert response.status_code == 400
-        assert 'Invalid payload.' in data['message']
+        assert 'invalid payload' in data['message']
         assert 'error' in data['status']
 
     def test_it_returns_error_if_email_is_missing(self, app: Flask) -> None:
@@ -225,7 +256,7 @@ class TestUserRegistration:
 
         data = json.loads(response.data.decode())
         assert response.status_code == 400
-        assert 'Invalid payload.' in data['message']
+        assert 'invalid payload' in data['message']
         assert 'error' in data['status']
 
     def test_it_returns_error_if_password_is_missing(self, app: Flask) -> None:
@@ -245,7 +276,7 @@ class TestUserRegistration:
 
         data = json.loads(response.data.decode())
         assert response.status_code == 400
-        assert 'Invalid payload.', data['message']
+        assert 'invalid payload', data['message']
         assert 'error', data['status']
 
     def test_it_returns_error_if_password_confirmation_is_missing(
@@ -263,7 +294,7 @@ class TestUserRegistration:
         )
         data = json.loads(response.data.decode())
         assert response.status_code == 400
-        assert 'Invalid payload.' in data['message']
+        assert 'invalid payload' in data['message']
         assert 'error' in data['status']
 
     def test_it_returns_error_if_username_is_invalid(self, app: Flask) -> None:
@@ -285,19 +316,25 @@ class TestUserRegistration:
         data = json.loads(response.data.decode())
         assert response.status_code == 500
         assert (
-            'Error. Please try again or contact the administrator.'
+            'error, please try again or contact the administrator'
             in data['message']
         )
         assert 'error' in data['status']
 
 
 class TestUserLogin:
-    def test_user_can_register(self, app: Flask, user_1: User) -> None:
+    @pytest.mark.parametrize(
+        'input_email',
+        ['test@test.com', 'TEST@TEST.COM'],
+    )
+    def test_user_can_login(
+        self, app: Flask, user_1: User, input_email: str
+    ) -> None:
         client = app.test_client()
 
         response = client.post(
             '/api/auth/login',
-            data=json.dumps(dict(email='test@test.com', password='12345678')),
+            data=json.dumps(dict(email=input_email, password='12345678')),
             content_type='application/json',
         )
 
@@ -305,7 +342,29 @@ class TestUserLogin:
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
-        assert data['message'] == 'Successfully logged in.'
+        assert data['message'] == 'successfully logged in'
+        assert data['auth_token']
+
+    @pytest.mark.parametrize(
+        'input_email',
+        ['test@test.com', 'TEST@TEST.COM'],
+    )
+    def test_user_can_login_when_user_email_is_uppercase(
+        self, app: Flask, user_1_upper: User, input_email: str
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/login',
+            data=json.dumps(dict(email=input_email, password='12345678')),
+            content_type='application/json',
+        )
+
+        assert response.content_type == 'application/json'
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'successfully logged in'
         assert data['auth_token']
 
     def test_it_returns_error_if_user_does_not_exists(
@@ -323,7 +382,7 @@ class TestUserLogin:
         assert response.status_code == 401
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
-        assert data['message'] == 'Invalid credentials.'
+        assert data['message'] == 'invalid credentials'
 
     def test_it_returns_error_on_invalid_payload(self, app: Flask) -> None:
         client = app.test_client()
@@ -338,7 +397,7 @@ class TestUserLogin:
         assert response.status_code == 400
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
-        assert data['message'] == 'Invalid payload.'
+        assert data['message'] == 'invalid payload'
 
     def test_it_returns_error_if_password_is_invalid(
         self, app: Flask, user_1: User
@@ -355,7 +414,7 @@ class TestUserLogin:
         assert response.status_code == 401
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
-        assert data['message'] == 'Invalid credentials.'
+        assert data['message'] == 'invalid credentials'
 
 
 class TestUserLogout(ApiTestCaseMixin):
@@ -370,7 +429,7 @@ class TestUserLogout(ApiTestCaseMixin):
 
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
-        assert data['message'] == 'Successfully logged out.'
+        assert data['message'] == 'successfully logged out'
         assert response.status_code == 200
 
     def test_it_returns_error_with_expired_token(
@@ -386,7 +445,7 @@ class TestUserLogout(ApiTestCaseMixin):
             )
             data = json.loads(response.data.decode())
             assert data['status'] == 'error'
-            assert data['message'] == 'Signature expired. Please log in again.'
+            assert data['message'] == 'signature expired, please log in again'
             assert response.status_code == 401
 
     def test_it_returns_error_with_invalid_token(self, app: Flask) -> None:
@@ -396,7 +455,7 @@ class TestUserLogout(ApiTestCaseMixin):
         )
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
-        assert data['message'] == 'Invalid token. Please log in again.'
+        assert data['message'] == 'invalid token, please log in again'
         assert response.status_code == 401
 
     def test_it_returns_error_with_invalid_headers(self, app: Flask) -> None:
@@ -404,7 +463,7 @@ class TestUserLogout(ApiTestCaseMixin):
         response = client.get('/api/auth/logout', headers=dict())
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
-        assert data['message'] == 'Provide a valid auth token.'
+        assert data['message'] == 'provide a valid auth token'
         assert response.status_code == 401
 
 
@@ -428,9 +487,11 @@ class TestUserProfile(ApiTestCaseMixin):
         assert not data['data']['admin']
         assert data['data']['timezone'] is None
         assert data['data']['weekm'] is False
+        assert data['data']['imperial_units'] is False
         assert data['data']['language'] is None
         assert data['data']['nb_sports'] == 0
         assert data['data']['nb_workouts'] == 0
+        assert data['data']['records'] == []
         assert data['data']['sports_list'] == []
         assert data['data']['total_distance'] == 0
         assert data['data']['total_duration'] == '0:00:00'
@@ -457,12 +518,14 @@ class TestUserProfile(ApiTestCaseMixin):
         assert data['data']['last_name'] == 'Doe'
         assert data['data']['birth_date']
         assert data['data']['bio'] == 'just a random guy'
+        assert data['data']['imperial_units'] is False
         assert data['data']['location'] == 'somewhere'
         assert data['data']['timezone'] == 'America/New_York'
         assert data['data']['weekm'] is False
         assert data['data']['language'] == 'en'
         assert data['data']['nb_sports'] == 0
         assert data['data']['nb_workouts'] == 0
+        assert data['data']['records'] == []
         assert data['data']['sports_list'] == []
         assert data['data']['total_distance'] == 0
         assert data['data']['total_duration'] == '0:00:00'
@@ -492,8 +555,10 @@ class TestUserProfile(ApiTestCaseMixin):
         assert data['data']['created_at']
         assert not data['data']['admin']
         assert data['data']['timezone'] is None
+        assert data['data']['imperial_units'] is False
         assert data['data']['nb_sports'] == 2
         assert data['data']['nb_workouts'] == 2
+        assert len(data['data']['records']) == 6
         assert data['data']['sports_list'] == [1, 2]
         assert data['data']['total_distance'] == 22
         assert data['data']['total_duration'] == '2:40:00'
@@ -506,7 +571,7 @@ class TestUserProfile(ApiTestCaseMixin):
         )
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
-        assert data['message'] == 'Invalid token. Please log in again.'
+        assert data['message'] == 'invalid token, please log in again'
         assert response.status_code == 401
 
 
@@ -526,9 +591,6 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
                     birth_date='1980-01-01',
                     password='87654321',
                     password_conf='87654321',
-                    timezone='America/New_York',
-                    weekm=True,
-                    language='fr',
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -536,7 +598,7 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
 
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
-        assert data['message'] == 'User profile updated.'
+        assert data['message'] == 'user profile updated'
         assert response.status_code == 200
         assert data['data']['username'] == 'test'
         assert data['data']['email'] == 'test@test.com'
@@ -546,12 +608,14 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
         assert data['data']['last_name'] == 'Doe'
         assert data['data']['birth_date']
         assert data['data']['bio'] == 'Nothing to tell'
+        assert data['data']['imperial_units'] is False
         assert data['data']['location'] == 'Somewhere'
-        assert data['data']['timezone'] == 'America/New_York'
-        assert data['data']['weekm'] is True
-        assert data['data']['language'] == 'fr'
+        assert data['data']['timezone'] is None
+        assert data['data']['weekm'] is False
+        assert data['data']['language'] is None
         assert data['data']['nb_sports'] == 0
         assert data['data']['nb_workouts'] == 0
+        assert data['data']['records'] == []
         assert data['data']['sports_list'] == []
         assert data['data']['total_distance'] == 0
         assert data['data']['total_duration'] == '0:00:00'
@@ -571,9 +635,6 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
                     location='Somewhere',
                     bio='Nothing to tell',
                     birth_date='1980-01-01',
-                    timezone='America/New_York',
-                    weekm=True,
-                    language='fr',
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -581,7 +642,7 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
 
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
-        assert data['message'] == 'User profile updated.'
+        assert data['message'] == 'user profile updated'
         assert response.status_code == 200
         assert data['data']['username'] == 'test'
         assert data['data']['email'] == 'test@test.com'
@@ -591,12 +652,14 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
         assert data['data']['last_name'] == 'Doe'
         assert data['data']['birth_date']
         assert data['data']['bio'] == 'Nothing to tell'
+        assert data['data']['imperial_units'] is False
         assert data['data']['location'] == 'Somewhere'
-        assert data['data']['timezone'] == 'America/New_York'
-        assert data['data']['weekm'] is True
-        assert data['data']['language'] == 'fr'
+        assert data['data']['timezone'] is None
+        assert data['data']['weekm'] is False
+        assert data['data']['language'] is None
         assert data['data']['nb_sports'] == 0
         assert data['data']['nb_workouts'] == 0
+        assert data['data']['records'] == []
         assert data['data']['sports_list'] == []
         assert data['data']['total_distance'] == 0
         assert data['data']['total_duration'] == '0:00:00'
@@ -615,7 +678,7 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
 
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
-        assert data['message'] == 'Invalid payload.'
+        assert data['message'] == 'invalid payload'
         assert response.status_code == 400
 
     def test_it_returns_error_if_payload_is_empty(
@@ -632,7 +695,7 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
 
         data = json.loads(response.data.decode())
         assert response.status_code == 400
-        assert 'Invalid payload.' in data['message']
+        assert 'invalid payload' in data['message']
         assert 'error' in data['status']
 
     def test_it_returns_error_if_passwords_mismatch(
@@ -652,9 +715,6 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
                     birth_date='1980-01-01',
                     password='87654321',
                     password_conf='876543210',
-                    timezone='America/New_York',
-                    weekm=True,
-                    language='en',
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -664,7 +724,7 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
         assert data['status'] == 'error'
         assert (
             data['message']
-            == 'Password and password confirmation don\'t match.\n'
+            == 'password: password and password confirmation do not match\n'
         )
         assert response.status_code == 400
 
@@ -684,9 +744,6 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
                     bio='just a random guy',
                     birth_date='1980-01-01',
                     password='87654321',
-                    timezone='America/New_York',
-                    weekm=True,
-                    language='en',
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -696,9 +753,268 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
         assert data['status'] == 'error'
         assert (
             data['message']
-            == 'Password and password confirmation don\'t match.\n'
+            == 'password: password and password confirmation do not match\n'
         )
         assert response.status_code == 400
+
+
+class TestUserPreferencesUpdate(ApiTestCaseMixin):
+    def test_it_updates_user_preferences(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.post(
+            '/api/auth/profile/edit/preferences',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    timezone='America/New_York',
+                    weekm=True,
+                    language='fr',
+                    imperial_units=True,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'user preferences updated'
+        assert response.status_code == 200
+        assert data['data']['username'] == 'test'
+        assert data['data']['email'] == 'test@test.com'
+        assert not data['data']['admin']
+        assert data['data']['created_at']
+        assert data['data']['first_name'] is None
+        assert data['data']['last_name'] is None
+        assert data['data']['birth_date'] is None
+        assert data['data']['bio'] is None
+        assert data['data']['imperial_units']
+        assert data['data']['location'] is None
+        assert data['data']['timezone'] == 'America/New_York'
+        assert data['data']['weekm'] is True
+        assert data['data']['language'] == 'fr'
+        assert data['data']['nb_sports'] == 0
+        assert data['data']['nb_workouts'] == 0
+        assert data['data']['records'] == []
+        assert data['data']['sports_list'] == []
+        assert data['data']['total_distance'] == 0
+        assert data['data']['total_duration'] == '0:00:00'
+
+    def test_it_returns_error_if_fields_are_missing(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.post(
+            '/api/auth/profile/edit/preferences',
+            content_type='application/json',
+            data=json.dumps(dict(weekm=True)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'error'
+        assert data['message'] == 'invalid payload'
+        assert response.status_code == 400
+
+    def test_it_returns_error_if_payload_is_empty(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.post(
+            '/api/auth/profile/edit/preferences',
+            content_type='application/json',
+            data=json.dumps(dict()),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 400
+        assert 'invalid payload' in data['message']
+        assert 'error' in data['status']
+
+
+class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
+    def test_it_returns_error_if_payload_is_empty(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(dict()),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 400
+        assert 'invalid payload' in data['message']
+        assert 'error' in data['status']
+
+    def test_it_returns_error_if_sport_id_is_missing(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(dict(is_active=True)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'error'
+        assert data['message'] == 'invalid payload'
+        assert response.status_code == 400
+
+    def test_it_returns_error_if_sport_not_found(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(dict(sport_id=1, is_active=True)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 404
+        assert 'not found' in data['status']
+
+    def test_it_returns_error_if_payload_contains_only_sport_id(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(dict(sport_id=1)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'error'
+        assert data['message'] == 'invalid payload'
+        assert response.status_code == 400
+
+    def test_it_returns_error_if_color_is_invalid(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=sport_1_cycling.id,
+                    color='invalid',
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'error'
+        assert data['message'] == 'invalid hexadecimal color'
+        assert response.status_code == 400
+
+    @pytest.mark.parametrize(
+        'input_color',
+        ['#000000', '#FFF'],
+    )
+    def test_it_updates_sport_color_for_auth_user(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_2_running: Sport,
+        input_color: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=sport_2_running.id,
+                    color=input_color,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'user sport preferences updated'
+        assert response.status_code == 200
+        assert data['data']['user_id'] == user_1.id
+        assert data['data']['sport_id'] == sport_2_running.id
+        assert data['data']['color'] == input_color
+        assert data['data']['is_active'] is True
+        assert data['data']['stopped_speed_threshold'] == 0.1
+
+    def test_it_disables_sport_for_auth_user(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=sport_1_cycling.id,
+                    is_active=False,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'user sport preferences updated'
+        assert response.status_code == 200
+        assert data['data']['user_id'] == user_1.id
+        assert data['data']['sport_id'] == sport_1_cycling.id
+        assert data['data']['color'] is None
+        assert data['data']['is_active'] is False
+        assert data['data']['stopped_speed_threshold'] == 1
+
+    def test_it_updates_stopped_speed_threshold_for_auth_user(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=sport_1_cycling.id,
+                    stopped_speed_threshold=0.5,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'user sport preferences updated'
+        assert response.status_code == 200
+        assert data['data']['user_id'] == user_1.id
+        assert data['data']['sport_id'] == sport_1_cycling.id
+        assert data['data']['color'] is None
+        assert data['data']['is_active']
+        assert data['data']['stopped_speed_threshold'] == 0.5
 
 
 class TestUserPicture(ApiTestCaseMixin):
@@ -716,7 +1032,7 @@ class TestUserPicture(ApiTestCaseMixin):
 
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
-        assert data['message'] == 'User picture updated.'
+        assert data['message'] == 'user picture updated'
         assert response.status_code == 200
         assert 'avatar.png' in user_1.picture
 
@@ -731,7 +1047,7 @@ class TestUserPicture(ApiTestCaseMixin):
 
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
-        assert data['message'] == 'User picture updated.'
+        assert data['message'] == 'user picture updated'
         assert response.status_code == 200
         assert 'avatar.png' not in user_1.picture
         assert 'avatar2.png' in user_1.picture
@@ -751,7 +1067,7 @@ class TestUserPicture(ApiTestCaseMixin):
 
         data = json.loads(response.data.decode())
         assert data['status'] == 'fail'
-        assert data['message'] == 'No file part.'
+        assert data['message'] == 'no file part'
         assert response.status_code == 400
 
     def test_it_returns_error_if_file_is_invalid(
@@ -770,7 +1086,7 @@ class TestUserPicture(ApiTestCaseMixin):
 
         data = json.loads(response.data.decode())
         assert data['status'] == 'fail'
-        assert data['message'] == 'File extension not allowed.'
+        assert data['message'] == 'file extension not allowed'
         assert response.status_code == 400
 
     def test_it_returns_error_if_image_size_exceeds_file_limit(
@@ -865,7 +1181,7 @@ class TestRegistrationConfiguration:
         assert response.status_code == 403
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
-        assert data['message'] == 'Error. Registration is disabled.'
+        assert data['message'] == 'error, registration is disabled'
 
     def test_it_disables_registration_on_user_registration(
         self,
@@ -903,7 +1219,7 @@ class TestRegistrationConfiguration:
         assert response.status_code == 403
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
-        assert data['message'] == 'Error. Registration is disabled.'
+        assert data['message'] == 'error, registration is disabled'
 
     def test_it_does_not_disable_registration_on_user_registration(
         self,
@@ -954,7 +1270,7 @@ class TestPasswordResetRequest:
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
-        assert data['message'] == 'Password reset request processed.'
+        assert data['message'] == 'password reset request processed'
 
     def test_it_does_not_return_error_when_user_does_not_exist(
         self, app: Flask
@@ -970,7 +1286,7 @@ class TestPasswordResetRequest:
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
-        assert data['message'] == 'Password reset request processed.'
+        assert data['message'] == 'password reset request processed'
 
     def test_it_returns_error_on_invalid_payload(self, app: Flask) -> None:
         client = app.test_client()
@@ -983,7 +1299,7 @@ class TestPasswordResetRequest:
 
         assert response.status_code == 400
         data = json.loads(response.data.decode())
-        assert data['message'] == 'Invalid payload.'
+        assert data['message'] == 'invalid payload'
         assert data['status'] == 'error'
 
     def test_it_returns_error_on_empty_payload(self, app: Flask) -> None:
@@ -997,7 +1313,7 @@ class TestPasswordResetRequest:
 
         assert response.status_code == 400
         data = json.loads(response.data.decode())
-        assert data['message'] == 'Invalid payload.'
+        assert data['message'] == 'invalid payload'
         assert data['status'] == 'error'
 
 
@@ -1019,7 +1335,7 @@ class TestPasswordUpdate:
         assert response.status_code == 400
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
-        assert data['message'] == 'Invalid payload.'
+        assert data['message'] == 'invalid payload'
 
     def test_it_returns_error_if_token_is_missing(self, app: Flask) -> None:
         client = app.test_client()
@@ -1038,7 +1354,7 @@ class TestPasswordUpdate:
         assert response.status_code == 400
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
-        assert data['message'] == 'Invalid payload.'
+        assert data['message'] == 'invalid payload'
 
     def test_it_returns_error_if_password_is_missing(self, app: Flask) -> None:
         client = app.test_client()
@@ -1057,7 +1373,7 @@ class TestPasswordUpdate:
         assert response.status_code == 400
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
-        assert data['message'] == 'Invalid payload.'
+        assert data['message'] == 'invalid payload'
 
     def test_it_returns_error_if_password_confirmation_is_missing(
         self, app: Flask
@@ -1078,7 +1394,7 @@ class TestPasswordUpdate:
         assert response.status_code == 400
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
-        assert data['message'] == 'Invalid payload.'
+        assert data['message'] == 'invalid payload'
 
     def test_it_returns_error_if_token_is_invalid(self, app: Flask) -> None:
         token = get_user_token(1)
@@ -1099,7 +1415,7 @@ class TestPasswordUpdate:
         assert response.status_code == 401
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
-        assert data['message'] == 'Invalid token. Please request a new token.'
+        assert data['message'] == 'invalid token, please request a new token'
 
     def test_it_returns_error_if_token_is_expired(
         self, app: Flask, user_1: User
@@ -1125,7 +1441,7 @@ class TestPasswordUpdate:
             data = json.loads(response.data.decode())
             assert data['status'] == 'error'
             assert (
-                data['message'] == 'Invalid token. Please request a new token.'
+                data['message'] == 'invalid token, please request a new token'
             )
 
     def test_it_returns_error_if_password_is_invalid(
@@ -1149,7 +1465,7 @@ class TestPasswordUpdate:
         assert response.status_code == 400
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
-        assert data['message'] == 'Password: 8 characters required.\n'
+        assert data['message'] == 'password: 8 characters required\n'
 
     def test_it_update_password(self, app: Flask, user_1: User) -> None:
         token = get_user_token(user_1.id, password_reset=True)
@@ -1170,4 +1486,4 @@ class TestPasswordUpdate:
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
-        assert data['message'] == 'Password updated.'
+        assert data['message'] == 'password updated'

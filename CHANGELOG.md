@@ -1,6 +1,39 @@
 # Change log
 
+## Version 0.5.0 (2021/11/14)
+
+### Issues Closed
+
+#### New Features
+
+* [#99](https://github.com/SamR1/FitTrackee/issues/99) - Display workout with imperial units 
+* [#91](https://github.com/SamR1/FitTrackee/issues/91) - Display elevation chart with min and max altitude of workout
+* [#90](https://github.com/SamR1/FitTrackee/issues/90) - Add user sports preferences
+* [#18](https://github.com/SamR1/FitTrackee/issues/18) - Better UI
+
+#### Bugs Fixed
+
+* [#95](https://github.com/SamR1/FitTrackee/issues/95) - Some workouts seem to be missing on statistics chart
+
+#### Misc
+
+* [#104](https://github.com/SamR1/FitTrackee/issues/104) - Switch to AGPLv3 license
+
+### Pull Requests
+
+* [#101](https://github.com/SamR1/FitTrackee/pull/101) - Docker updates for full files 
+* [#100](https://github.com/SamR1/FitTrackee/pull/100) - Add client application in docker for development
+* [#98/#109](https://github.com/SamR1/FitTrackee/pull/109) - Added stopped_speed_threshold to support slow movement
+* [#84/#93](https://github.com/SamR1/FitTrackee/pull/93) - Add elevation data and new sports
+
+In this release 6 issues were closed.
+
+**Note:** This release contains database migrations.
+
+
 ## Version 0.4.9 (2021/07/16)
+
+### Issues Closed
 
 #### New Features
 
@@ -8,14 +41,13 @@
   **Note**: to keep using the default tile server, set environment variable `DEFAULT_STATICMAP` to `True`
 * [#81](https://github.com/SamR1/Fittrackee/issues/81) - display remaining characters in textarea
 
-### Issues Closed
-
 #### Bugs Fixed
 
 * [#82](https://github.com/SamR1/Fittrackee/issues/82) - a user can not modify his birth day
 * [#80](https://github.com/SamR1/Fittrackee/issues/80) - can not save notes with control characters
 
-In this release 4 issue were closed.
+In this release 4 issues were closed.
+
 
 ## Version 0.4.8 (2021/07/03)
 

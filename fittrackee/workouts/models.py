@@ -70,8 +70,8 @@ class Sport(BaseModel):
     __tablename__ = 'sports'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     label = db.Column(db.String(50), unique=True, nullable=False)
-    img = db.Column(db.String(255), unique=True, nullable=True)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
+    stopped_speed_threshold = db.Column(db.Float, default=1.0, nullable=False)
     workouts = db.relationship(
         'Workout', lazy=True, backref=db.backref('sports', lazy='joined')
     )
@@ -85,12 +85,30 @@ class Sport(BaseModel):
     def __init__(self, label: str) -> None:
         self.label = label
 
-    def serialize(self, is_admin: Optional[bool] = False) -> Dict:
+    def serialize(
+        self,
+        is_admin: Optional[bool] = False,
+        sport_preferences: Optional[Dict] = None,
+    ) -> Dict:
         serialized_sport = {
             'id': self.id,
             'label': self.label,
-            'img': self.img,
             'is_active': self.is_active,
+            'is_active_for_user': (
+                self.is_active
+                if sport_preferences is None
+                else (sport_preferences['is_active'] and self.is_active)
+            ),
+            'color': (
+                None
+                if sport_preferences is None
+                else sport_preferences['color']
+            ),
+            'stopped_speed_threshold': (
+                self.stopped_speed_threshold
+                if sport_preferences is None
+                else sport_preferences['stopped_speed_threshold']
+            ),
         }
         if is_admin:
             serialized_sport['has_workouts'] = len(self.workouts) > 0
@@ -193,10 +211,12 @@ class Workout(BaseModel):
                 <= datetime.datetime.strptime(date_to, '%Y-%m-%d')
                 if date_to
                 else True,
-                Workout.distance >= int(distance_from)
+                Workout.distance >= float(distance_from)
                 if distance_from
                 else True,
-                Workout.distance <= int(distance_to) if distance_to else True,
+                Workout.distance <= float(distance_to)
+                if distance_to
+                else True,
                 Workout.duration >= convert_in_duration(duration_from)
                 if duration_from
                 else True,
@@ -233,10 +253,12 @@ class Workout(BaseModel):
                 <= datetime.datetime.strptime(date_to, '%Y-%m-%d')
                 if date_to
                 else True,
-                Workout.distance >= int(distance_from)
+                Workout.distance >= float(distance_from)
                 if distance_from
                 else True,
-                Workout.distance <= int(distance_to) if distance_to else True,
+                Workout.distance <= float(distance_to)
+                if distance_to
+                else True,
                 Workout.duration >= convert_in_duration(duration_from)
                 if duration_from
                 else True,

@@ -1,51 +1,114 @@
 {
   "name": "fittrackee_client",
-  "version": "0.4.9",
+  "version": "0.5.0",
   "private": true,
-  "dependencies": {
-    "@mapbox/togeojson": "^0.16.0",
-    "connected-react-router": "^6.9.1",
-    "date-fns": "^2.22.1",
-    "history": "^4.10.1",
-    "i18next": "^20.3.2",
-    "i18next-browser-languagedetector": "^6.1.2",
-    "i18next-xhr-backend": "^3.2.2",
-    "leaflet": "^1.7.1",
-    "luxon": "^1.27.0",
-    "object-hash": "^2.2.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-helmet": "^6.1.0",
-    "react-i18next": "^11.11.0",
-    "react-leaflet": "^3.2.0",
-    "react-redux": "^7.2.4",
-    "react-router-dom": "^5.2.0",
-    "react-scripts": "^4.0.3",
-    "react-timezone": "^2.4.0",
-    "recharts": "^1.8.5",
-    "redux": "^4.1.0",
-    "redux-thunk": "^2.3.0"
-  },
   "scripts": {
-    "start": "PORT=$CLIENT_PORT react-scripts start",
-    "build": "NODE_ENV=production react-scripts build && rm -rf ../fittrackee/dist/* && cp -a build/. ../fittrackee/dist",
-    "eject": "react-scripts eject",
-    "lint": "node_modules/.bin/eslint --cache --ext .jsx --ext .js src",
-    "lint-fix": "node_modules/.bin/eslint --cache --ext .jsx --ext .js src --fix"
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "test:unit": "vue-cli-service test:unit",
+    "lint": "vue-cli-service lint",
+    "lint-fix": "vue-cli-service lint --fix",
+    "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\""
+  },
+  "dependencies": {
+    "@tmcw/togeojson": "^4.5.0",
+    "@vue-leaflet/vue-leaflet": "^0.6.1",
+    "axios": "^0.24.0",
+    "chart.js": "^3.6.0",
+    "chartjs-plugin-datalabels": "^2.0.0",
+    "core-js": "^3.19.1",
+    "date-fns": "^2.25.0",
+    "date-fns-tz": "^1.1.6",
+    "leaflet": "^1.7.1",
+    "register-service-worker": "^1.7.1",
+    "vue": "^3.0.0",
+    "vue-chart-3": "^0.5.11",
+    "vue-i18n": "^9.1.9",
+    "vue-router": "^4.0.0-0",
+    "vuex": "^4.0.0-0"
+  },
+  "devDependencies": {
+    "@intlify/vue-i18n-loader": "^3.3.0",
+    "@types/chai": "^4.2.11",
+    "@types/mocha": "^9.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "@typescript-eslint/parser": "^4.18.0",
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-pwa": "~4.5.0",
+    "@vue/cli-plugin-router": "~4.5.0",
+    "@vue/cli-plugin-typescript": "~4.5.0",
+    "@vue/cli-plugin-unit-mocha": "~4.5.0",
+    "@vue/cli-plugin-vuex": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "@vue/eslint-config-prettier": "^6.0.0",
+    "@vue/eslint-config-typescript": "^7.0.0",
+    "@vue/test-utils": "^2.0.0-0",
+    "chai": "^4.1.2",
+    "eslint": "^6.7.2",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-import": "^2.24.1",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-vue": "^7.0.0",
+    "prettier": "^2.2.1",
+    "sass": "^1.26.5",
+    "sass-loader": "^8.0.2",
+    "typescript": "~4.4.4",
+    "vue-cli-plugin-i18n": "~2.3.1"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/vue3-essential",
+      "eslint:recommended",
+      "@vue/typescript/recommended",
+      "@vue/prettier",
+      "@vue/prettier/@typescript-eslint",
+      "plugin:import/recommended",
+      "plugin:import/typescript"
+    ],
+    "globals": {
+      "defineProps": "readonly",
+      "defineEmits": "readonly",
+      "defineExpose": "readonly",
+      "withDefaults": "readonly"
+    },
+    "settings": {
+      "import/resolver": "typescript"
+    },
+    "parserOptions": {
+      "ecmaVersion": 2020
+    },
+    "rules": {
+      "import/order": [
+        "error",
+        {
+          "newlines-between": "always",
+          "alphabetize": {
+            "order": "asc",
+            "caseInsensitive": true
+          }
+        }
+      ]
+    },
+    "overrides": [
+      {
+        "files": [
+          "**/__tests__/*.{j,t}s?(x)",
+          "**/tests/unit/**/*.spec.{j,t}s?(x)"
+        ],
+        "env": {
+          "mocha": true
+        }
+      }
+    ]
   },
   "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
-  "devDependencies": {
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^3.4.0",
-    "eslint-plugin-testcafe": "^0.2.1",
-    "prettier": "^2.3.2"
-  }
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
 }

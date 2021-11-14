@@ -15,7 +15,7 @@ from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
 from fittrackee import db
-from fittrackee.users.models import User
+from fittrackee.users.models import User, UserSportPreference
 
 from .exceptions import WorkoutException
 from .models import Sport, Workout, WorkoutSegment
@@ -289,12 +289,16 @@ def get_map_hash(map_filepath: str) -> str:
     return md5.hexdigest()
 
 
-def process_one_gpx_file(params: Dict, filename: str) -> Workout:
+def process_one_gpx_file(
+    params: Dict, filename: str, stopped_speed_threshold: float
+) -> Workout:
     """
     Get all data from a gpx file to create an workout with map image
     """
     try:
-        gpx_data, map_data, weather_data = get_gpx_info(params['file_path'])
+        gpx_data, map_data, weather_data = get_gpx_info(
+            params['file_path'], stopped_speed_threshold
+        )
         auth_user_id = params['user'].id
         new_filepath = get_new_file_path(
             auth_user_id=auth_user_id,
@@ -341,7 +345,9 @@ def process_one_gpx_file(params: Dict, filename: str) -> Workout:
         raise WorkoutException('fail', 'Error during workout save.', e)
 
 
-def process_zip_archive(common_params: Dict, extract_dir: str) -> List:
+def process_zip_archive(
+    common_params: Dict, extract_dir: str, stopped_speed_threshold: float
+) -> List:
     """
     Get files from a zip archive and create workouts, if number of files
     does not exceed defined limit.
@@ -365,7 +371,9 @@ def process_zip_archive(common_params: Dict, extract_dir: str) -> List:
             file_path = os.path.join(extract_dir, gpx_file)
             params = common_params
             params['file_path'] = file_path
-            new_workout = process_one_gpx_file(params, gpx_file)
+            new_workout = process_one_gpx_file(
+                params, gpx_file, stopped_speed_threshold
+            )
             new_workouts.append(new_workout)
 
     return new_workouts
@@ -392,6 +400,14 @@ def process_files(
             f"Sport id: {workout_data.get('sport_id')} does not exist",
         )
     user = User.query.filter_by(id=auth_user_id).first()
+    sport_preferences = UserSportPreference.query.filter_by(
+        user_id=user.id, sport_id=sport.id
+    ).first()
+    stopped_speed_threshold = (
+        sport.stopped_speed_threshold
+        if sport_preferences is None
+        else sport_preferences.stopped_speed_threshold
+    )
 
     common_params = {
         'user': user,
@@ -406,9 +422,19 @@ def process_files(
         raise WorkoutException('error', 'Error during workout file save.', e)
 
     if extension == ".gpx":
-        return [process_one_gpx_file(common_params, filename)]
+        return [
+            process_one_gpx_file(
+                common_params,
+                filename,
+                stopped_speed_threshold,
+            )
+        ]
     else:
-        return process_zip_archive(common_params, folders['extract_dir'])
+        return process_zip_archive(
+            common_params,
+            folders['extract_dir'],
+            stopped_speed_threshold,
+        )
 
 
 def get_upload_dir_size() -> int:

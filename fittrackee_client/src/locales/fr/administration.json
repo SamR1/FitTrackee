@@ -1,34 +1,46 @@
 {
-  "Actions": "Actions",
-  "Active": "Active",
-  "Add admin rights": "Ajouter des droits d'admin",
-  "Add/remove admin rights, delete user account.": "Ajouter/retirer des droits d'adminsitration, supprimer des comptes utilisateurs.",
-  "Administration": "Administration",
-  "workouts exist": "des séances existent",
-  "Application": "Application",
-  "Application configuration": "Configuration de l'application",
-  "Back": "Retour",
-  "Disable": "désactiver",
-  "Enable": "activer",
-  "Enable/disable sports.": "Activer/désactiver des sports.",
-  "FitTrackee administration": "Administration de FitTrackee",
-  "id": "id",
-  "if 0, no limitation": "si égal à 0, pas limite d'inscription",
-  "Image": "Image",
-  "Label": "Label",
-  "Max. number of active users": "Nombre maximum d'utilisateurs actifs",
-  "Max. files of zip archive": "Nombre max. de fichiers dans une archive zip",
-  "Max. size of uploaded files": "Taille max. des fichiers",
-  "Max. size of uploaded files (in Mb)": "Taille max. des fichiers (en Mo)",
-  "Max. size of zip archive": "Taille max. des archives zip",
-  "Max. size of zip archive (in Mb)": "Taille max. des archives zip (en Mo)",
-  "Registration is currently disabled.": "Les inscriptions sont actuellement désactivées.",
-  "Registration is currently enabled.": "Les inscriptions sont actuellement activées.",
-  "Remove admin rights": "Retirer des droits d'admin",
-  "Sports": "Sports",
-  "Update application configuration (maximum number of registered users, maximum files size).": "Configurer l'application (nombre maximum d'utilisateurs inscrits, taille maximale des fichers).",
-  "uploads": "fichiers",
-  "user": "user",
-  "Users": "Utilisateurs",
-  "users": "utilisateurs"
+  "ACTION": "Action",
+  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Ajouter/retirer des droits d'administration, supprimer des comptes utilisateurs.",
+  "ADMIN": "Admin",
+  "ADMINISTRATION": "Administration",
+  "APPLICATION": "Application",
+  "APP_CONFIG": {
+    "MAX_USERS_LABEL": "Nombre maximum d'utilisateurs actifs ",
+    "MAX_USERS_HELP": "Si égal à 0, pas limite d'inscription",
+    "MAX_FILES_IN_ZIP_LABEL": "Taille max. des archives zip (en Mo) ",
+    "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Taille max. des fichiers (en Mo) ",
+    "TITLE": "Configuration de l'application",
+    "ZIP_UPLOAD_MAX_SIZE_LABEL": "Nombre max. de fichiers dans une archive zip "
+  },
+  "BACK_TO_ADMIN": "Revenir à l'admin",
+  "CONFIRM_USER_ACCOUNT_DELETION": "Etes-vous sûr de vouloir supprimer le compte de {0} ? Toutes les données seront définitivement.",
+  "DELETE_USER": "Supprimer l'utilisateur",
+  "ENABLE_DISABLE_SPORTS": "Activer/désactiver des sports.",
+  "REGISTRATION_DISABLED": "Les inscriptions sont actuellement désactivées.",
+  "REGISTRATION_ENABLED": "Les inscriptions sont actuellement activées.",
+  "SPORTS": {
+    "TABLE": {
+      "ACTIVE": "Actif",
+      "HAS_WORKOUTS": "des séances existent",
+      "IMAGE": "Image",
+      "LABEL": "Label"
+    },
+    "TITLE": "Administration - Sports"
+  },
+  "UPDATE_APPLICATION_DESCRIPTION": "Configurer l'application (nombre maximum d'utilisateurs inscrits, taille maximale des fichers).",
+  "USER": "utilisateur | utilisateurs",
+  "USERS": {
+    "TABLE": {
+      "ADD_ADMIN_RIGHTS": "Ajouter les drois d'admin",
+      "REMOVE_ADMIN_RIGHTS": "Retirer les drois d'admin"
+    },
+    "SELECTS": {
+      "ORDER_BY": {
+        "ADMIN": "status administrateur",
+        "CREATED_AT": "date d'inscription",
+        "USERNAME": "nom d'utilisateur",
+        "WORKOUTS_COUNT": "nombre de séances"
+      }
+    }
+  }
 }

@@ -5,12 +5,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Users &#8212; FitTrackee 0.4.9
+    <title>Users &#8212; FitTrackee 0.5.0
  documentation</title>
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
     <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
@@ -22,9 +22,9 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js "></script>
 <script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js "></script>
 <script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4.9
+        <span class="navbar-text navbar-version pull-left"><b>0.5.0
 </b></span>
       </div>
 
@@ -128,8 +128,8 @@
   <section id="users">
 <h1>Users<a class="headerlink" href="#users" title="Permalink to this headline">¶</a></h1>
 <dl class="http get">
-<dt id="get--api-users">
-<code class="sig-name descname"><span class="pre">GET</span> </code><code class="sig-name descname"><span class="pre">/api/users</span></code><a class="headerlink" href="#get--api-users" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object http" id="get--api-users">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/users</span></span><a class="headerlink" href="#get--api-users" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all users</p>
 <p><strong>Example request</strong>:</p>
 <ul class="simple">
@@ -160,12 +160,51 @@
         <span class="nt">&quot;created_at&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 14 Jul 2019 14:09:58 GMT&quot;</span><span class="p">,</span>
         <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;admin@example.com&quot;</span><span class="p">,</span>
         <span class="nt">&quot;first_name&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nt">&quot;imperial_units&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
         <span class="nt">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span>
         <span class="nt">&quot;last_name&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
         <span class="nt">&quot;location&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
         <span class="nt">&quot;nb_sports&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
         <span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
         <span class="nt">&quot;picture&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nt">&quot;records&quot;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+            <span class="nt">&quot;record_type&quot;</span><span class="p">:</span> <span class="s2">&quot;AS&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;sport_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;admin&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+            <span class="nt">&quot;workout_date&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 07 Jul 2019 08:00:00 GMT&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;workout_id&quot;</span><span class="p">:</span> <span class="s2">&quot;hvYBqYBRa7wwXpaStWR4V2&quot;</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+            <span class="nt">&quot;record_type&quot;</span><span class="p">:</span> <span class="s2">&quot;FD&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;sport_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;admin&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+            <span class="nt">&quot;workout_date&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 07 Jul 2019 08:00:00 GMT&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;workout_id&quot;</span><span class="p">:</span> <span class="s2">&quot;hvYBqYBRa7wwXpaStWR4V2&quot;</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+            <span class="nt">&quot;record_type&quot;</span><span class="p">:</span> <span class="s2">&quot;LD&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;sport_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;admin&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1:01:00&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;workout_date&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 07 Jul 2019 08:00:00 GMT&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;workout_id&quot;</span><span class="p">:</span> <span class="s2">&quot;hvYBqYBRa7wwXpaStWR4V2&quot;</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+            <span class="nt">&quot;record_type&quot;</span><span class="p">:</span> <span class="s2">&quot;MS&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;sport_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;admin&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+            <span class="nt">&quot;workout_date&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 07 Jul 2019 08:00:00 GMT&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;workout_id&quot;</span><span class="p">:</span> <span class="s2">&quot;hvYBqYBRa7wwXpaStWR4V2&quot;</span>
+          <span class="p">}</span>
+        <span class="p">],</span>
         <span class="nt">&quot;sports_list&quot;</span><span class="p">:</span> <span class="p">[</span>
             <span class="mi">1</span><span class="p">,</span>
             <span class="mi">4</span><span class="p">,</span>
@@ -189,6 +228,7 @@
         <span class="nt">&quot;nb_sports&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
         <span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
         <span class="nt">&quot;picture&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nt">&quot;records&quot;</span><span class="p">:</span> <span class="p">[],</span>
         <span class="nt">&quot;sports_list&quot;</span><span class="p">:</span> <span class="p">[],</span>
         <span class="nt">&quot;timezone&quot;</span><span class="p">:</span> <span class="s2">&quot;Europe/Paris&quot;</span><span class="p">,</span>
         <span class="nt">&quot;total_distance&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
@@ -219,16 +259,16 @@
 </dd>
 <dt class="field-odd">Request Headers</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a> – OAuth 2.0 Bearer Token</p></li>
+<li><p><span><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
 </ul>
 </dd>
 <dt class="field-even">Status Codes</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – success</p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
-<li><p>Provide a valid auth token.</p></li>
-<li><p>Signature expired. Please log in again.</p></li>
-<li><p>Invalid token. Please log in again.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p>provide a valid auth token</p></li>
+<li><p>signature expired, please log in again</p></li>
+<li><p>invalid token, please log in again</p></li>
 </ul>
 </p></li>
 </ul>
@@ -237,8 +277,8 @@
 </dd></dl>
 
 <dl class="http get">
-<dt id="get--api-users-(user_name)">
-<code class="sig-name descname"><span class="pre">GET</span> </code><code class="sig-name descname"><span class="pre">/api/users/</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-users-(user_name)" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object http" id="get--api-users-(user_name)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/users/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-users-(user_name)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get single user details</p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/users/admin</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -258,12 +298,51 @@
       <span class="nt">&quot;created_at&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 14 Jul 2019 14:09:58 GMT&quot;</span><span class="p">,</span>
       <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;admin@example.com&quot;</span><span class="p">,</span>
       <span class="nt">&quot;first_name&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+      <span class="nt">&quot;imperial_units&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
       <span class="nt">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span>
       <span class="nt">&quot;last_name&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
       <span class="nt">&quot;location&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
       <span class="nt">&quot;nb_sports&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
       <span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
       <span class="nt">&quot;picture&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+      <span class="nt">&quot;records&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+          <span class="nt">&quot;record_type&quot;</span><span class="p">:</span> <span class="s2">&quot;AS&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;sport_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+          <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;admin&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+          <span class="nt">&quot;workout_date&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 07 Jul 2019 08:00:00 GMT&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;workout_id&quot;</span><span class="p">:</span> <span class="s2">&quot;hvYBqYBRa7wwXpaStWR4V2&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+          <span class="nt">&quot;record_type&quot;</span><span class="p">:</span> <span class="s2">&quot;FD&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;sport_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+          <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;admin&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+          <span class="nt">&quot;workout_date&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 07 Jul 2019 08:00:00 GMT&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;workout_id&quot;</span><span class="p">:</span> <span class="s2">&quot;hvYBqYBRa7wwXpaStWR4V2&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+          <span class="nt">&quot;record_type&quot;</span><span class="p">:</span> <span class="s2">&quot;LD&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;sport_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+          <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;admin&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1:01:00&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;workout_date&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 07 Jul 2019 08:00:00 GMT&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;workout_id&quot;</span><span class="p">:</span> <span class="s2">&quot;hvYBqYBRa7wwXpaStWR4V2&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+          <span class="nt">&quot;record_type&quot;</span><span class="p">:</span> <span class="s2">&quot;MS&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;sport_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+          <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;admin&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+          <span class="nt">&quot;workout_date&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 07 Jul 2019 08:00:00 GMT&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;workout_id&quot;</span><span class="p">:</span> <span class="s2">&quot;hvYBqYBRa7wwXpaStWR4V2&quot;</span>
+        <span class="p">}</span>
+      <span class="p">],</span>
       <span class="nt">&quot;sports_list&quot;</span><span class="p">:</span> <span class="p">[</span>
           <span class="mi">1</span><span class="p">,</span>
           <span class="mi">4</span><span class="p">,</span>
@@ -288,20 +367,20 @@
 </dd>
 <dt class="field-even">Request Headers</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a> – OAuth 2.0 Bearer Token</p></li>
+<li><p><span><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Status Codes</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – success</p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
-<li><p>Provide a valid auth token.</p></li>
-<li><p>Signature expired. Please log in again.</p></li>
-<li><p>Invalid token. Please log in again.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p>provide a valid auth token</p></li>
+<li><p>signature expired, please log in again</p></li>
+<li><p>invalid token, please log in again</p></li>
 </ul>
 </p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a> – <ul>
-<li><p>User does not exist.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
+<li><p>user does not exist</p></li>
 </ul>
 </p></li>
 </ul>
@@ -310,8 +389,8 @@
 </dd></dl>
 
 <dl class="http get">
-<dt id="get--api-users-(user_name)-picture">
-<code class="sig-name descname"><span class="pre">GET</span> </code><code class="sig-name descname"><span class="pre">/api/users/</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><code class="sig-name descname"><span class="pre">/picture</span></code><a class="headerlink" href="#get--api-users-(user_name)-picture" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object http" id="get--api-users-(user_name)-picture">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/users/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/picture</span></span><a class="headerlink" href="#get--api-users-(user_name)-picture" title="Permalink to this definition">¶</a></dt>
 <dd><p>get user picture</p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/users/admin/picture</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -331,9 +410,9 @@
 </dd>
 <dt class="field-even">Status Codes</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – success</p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a> – <ul>
-<li><p>User does not exist.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
+<li><p>user does not exist</p></li>
 <li><p>No picture.</p></li>
 </ul>
 </p></li>
@@ -343,8 +422,8 @@
 </dd></dl>
 
 <dl class="http patch">
-<dt id="patch--api-users-(user_name)">
-<code class="sig-name descname"><span class="pre">PATCH</span> </code><code class="sig-name descname"><span class="pre">/api/users/</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#patch--api-users-(user_name)" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object http" id="patch--api-users-(user_name)">
+<span class="sig-name descname"><span class="pre">PATCH</span> </span><span class="sig-name descname"><span class="pre">/api/users/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#patch--api-users-(user_name)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update user to add admin rights</p>
 <p>Only user with admin rights can modify another user</p>
 <p><strong>Example request</strong>:</p>
@@ -365,12 +444,51 @@
       <span class="nt">&quot;created_at&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 14 Jul 2019 14:09:58 GMT&quot;</span><span class="p">,</span>
       <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;admin@example.com&quot;</span><span class="p">,</span>
       <span class="nt">&quot;first_name&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+      <span class="nt">&quot;imperial_units&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
       <span class="nt">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span>
       <span class="nt">&quot;last_name&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
       <span class="nt">&quot;location&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
       <span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
       <span class="nt">&quot;nb_sports&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
       <span class="nt">&quot;picture&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+      <span class="nt">&quot;records&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+          <span class="nt">&quot;record_type&quot;</span><span class="p">:</span> <span class="s2">&quot;AS&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;sport_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+          <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;admin&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+          <span class="nt">&quot;workout_date&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 07 Jul 2019 08:00:00 GMT&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;workout_id&quot;</span><span class="p">:</span> <span class="s2">&quot;hvYBqYBRa7wwXpaStWR4V2&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+          <span class="nt">&quot;record_type&quot;</span><span class="p">:</span> <span class="s2">&quot;FD&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;sport_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+          <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;admin&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+          <span class="nt">&quot;workout_date&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 07 Jul 2019 08:00:00 GMT&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;workout_id&quot;</span><span class="p">:</span> <span class="s2">&quot;hvYBqYBRa7wwXpaStWR4V2&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+          <span class="nt">&quot;record_type&quot;</span><span class="p">:</span> <span class="s2">&quot;LD&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;sport_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+          <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;admin&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1:01:00&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;workout_date&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 07 Jul 2019 08:00:00 GMT&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;workout_id&quot;</span><span class="p">:</span> <span class="s2">&quot;hvYBqYBRa7wwXpaStWR4V2&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+          <span class="nt">&quot;record_type&quot;</span><span class="p">:</span> <span class="s2">&quot;MS&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;sport_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+          <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;admin&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+          <span class="nt">&quot;workout_date&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun, 07 Jul 2019 08:00:00 GMT&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;workout_id&quot;</span><span class="p">:</span> <span class="s2">&quot;hvYBqYBRa7wwXpaStWR4V2&quot;</span>
+        <span class="p">}</span>
+      <span class="p">],</span>
       <span class="nt">&quot;sports_list&quot;</span><span class="p">:</span> <span class="p">[</span>
           <span class="mi">1</span><span class="p">,</span>
           <span class="mi">4</span><span class="p">,</span>
@@ -400,32 +518,32 @@
 </dd>
 <dt class="field-odd">Request Headers</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a> – OAuth 2.0 Bearer Token</p></li>
+<li><p><span><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
 </ul>
 </dd>
 <dt class="field-even">Status Codes</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – success</p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
-<li><p>Provide a valid auth token.</p></li>
-<li><p>Signature expired. Please log in again.</p></li>
-<li><p>Invalid token. Please log in again.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p>provide a valid auth token</p></li>
+<li><p>signature expired, please log in again</p></li>
+<li><p>invalid token, please log in again</p></li>
 </ul>
 </p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a> – You do not have permissions.</p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a> – <ul>
-<li><p>User does not exist.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – you do not have permissions</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
+<li><p>user does not exist</p></li>
 </ul>
 </p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – </p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – </p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="http delete">
-<dt id="delete--api-users-(user_name)">
-<code class="sig-name descname"><span class="pre">DELETE</span> </code><code class="sig-name descname"><span class="pre">/api/users/</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#delete--api-users-(user_name)" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object http" id="delete--api-users-(user_name)">
+<span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/users/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#delete--api-users-(user_name)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete a user account</p>
 <p>A user can only delete his own account</p>
 <p>An admin can delete all accounts except his account if he’s the only
@@ -449,28 +567,28 @@ one admin</p>
 </dd>
 <dt class="field-even">Request Headers</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a> – OAuth 2.0 Bearer Token</p></li>
+<li><p><span><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Status Codes</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.5">204 No Content</a> – user account deleted</p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a> – <ul>
-<li><p>Provide a valid auth token.</p></li>
-<li><p>Signature expired. Please log in again.</p></li>
-<li><p>Invalid token. Please log in again.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.5">204 No Content</a></span> – user account deleted</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p>provide a valid auth token</p></li>
+<li><p>signature expired, please log in again</p></li>
+<li><p>invalid token, please log in again</p></li>
 </ul>
 </p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a> – <ul>
-<li><p>You do not have permissions.</p></li>
-<li><p>You can not delete your account, no other user has admin rights.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p>you do not have permissions</p></li>
+<li><p>you can not delete your account, no other user has admin rights</p></li>
 </ul>
 </p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a> – <ul>
-<li><p>User does not exist.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
+<li><p>user does not exist</p></li>
 </ul>
 </p></li>
-<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a> – Error. Please try again or contact the administrator.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – error, please try again or contact the administrator</p></li>
 </ul>
 </dd>
 </dl>
@@ -491,7 +609,7 @@ one admin</p>
     </p>
     <p>
         &copy; Copyright 2018 - 2021, SamR1.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.0.<br/>
     </p>
   </div>
 </footer>

@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 from flask import Flask
 
-from fittrackee.users.models import User
+from fittrackee.users.models import User, UserSportPreference
 from fittrackee.workouts.models import Sport, Workout
 
 from ..api_test_case import ApiTestCaseMixin
@@ -36,12 +36,14 @@ class TestGetUser(ApiTestCaseMixin):
         assert user['last_name'] is None
         assert user['birth_date'] is None
         assert user['bio'] is None
+        assert user['imperial_units'] is False
         assert user['location'] is None
         assert user['timezone'] is None
         assert user['weekm'] is False
         assert user['language'] is None
         assert user['nb_sports'] == 0
         assert user['nb_workouts'] == 0
+        assert user['records'] == []
         assert user['sports_list'] == []
         assert user['total_distance'] == 0
         assert user['total_duration'] == '0:00:00'
@@ -76,10 +78,12 @@ class TestGetUser(ApiTestCaseMixin):
         assert user['last_name'] is None
         assert user['birth_date'] is None
         assert user['bio'] is None
+        assert user['imperial_units'] is False
         assert user['location'] is None
         assert user['timezone'] is None
         assert user['weekm'] is False
         assert user['language'] is None
+        assert len(user['records']) == 6
         assert user['nb_sports'] == 2
         assert user['nb_workouts'] == 2
         assert user['sports_list'] == [1, 2]
@@ -100,7 +104,7 @@ class TestGetUser(ApiTestCaseMixin):
 
         assert response.status_code == 404
         assert 'not found' in data['status']
-        assert 'User does not exist.' in data['message']
+        assert 'user does not exist' in data['message']
 
 
 class TestGetUsers(ApiTestCaseMixin):
@@ -127,25 +131,31 @@ class TestGetUsers(ApiTestCaseMixin):
         assert 'test@test.com' in data['data']['users'][0]['email']
         assert 'toto@toto.com' in data['data']['users'][1]['email']
         assert 'sam@test.com' in data['data']['users'][2]['email']
+        assert data['data']['users'][0]['imperial_units'] is False
         assert data['data']['users'][0]['timezone'] is None
         assert data['data']['users'][0]['weekm'] is False
         assert data['data']['users'][0]['language'] is None
         assert data['data']['users'][0]['nb_sports'] == 0
         assert data['data']['users'][0]['nb_workouts'] == 0
+        assert data['data']['users'][0]['records'] == []
         assert data['data']['users'][0]['sports_list'] == []
         assert data['data']['users'][0]['total_distance'] == 0
         assert data['data']['users'][0]['total_duration'] == '0:00:00'
+        assert data['data']['users'][1]['imperial_units'] is False
         assert data['data']['users'][1]['timezone'] is None
         assert data['data']['users'][1]['weekm'] is False
         assert data['data']['users'][1]['language'] is None
         assert data['data']['users'][1]['nb_sports'] == 0
         assert data['data']['users'][1]['nb_workouts'] == 0
+        assert data['data']['users'][1]['records'] == []
         assert data['data']['users'][1]['sports_list'] == []
         assert data['data']['users'][1]['total_distance'] == 0
         assert data['data']['users'][1]['total_duration'] == '0:00:00'
+        assert data['data']['users'][2]['imperial_units'] is False
         assert data['data']['users'][2]['timezone'] is None
         assert data['data']['users'][2]['weekm'] is True
         assert data['data']['users'][2]['language'] is None
+        assert data['data']['users'][2]['records'] == []
         assert data['data']['users'][2]['nb_sports'] == 0
         assert data['data']['users'][2]['nb_workouts'] == 0
         assert data['data']['users'][2]['sports_list'] == []
@@ -191,24 +201,30 @@ class TestGetUsers(ApiTestCaseMixin):
         assert 'test@test.com' in data['data']['users'][0]['email']
         assert 'toto@toto.com' in data['data']['users'][1]['email']
         assert 'sam@test.com' in data['data']['users'][2]['email']
+        assert data['data']['users'][0]['imperial_units'] is False
         assert data['data']['users'][0]['timezone'] is None
         assert data['data']['users'][0]['weekm'] is False
         assert data['data']['users'][0]['nb_sports'] == 2
         assert data['data']['users'][0]['nb_workouts'] == 2
+        assert len(data['data']['users'][0]['records']) == 6
         assert data['data']['users'][0]['sports_list'] == [1, 2]
         assert data['data']['users'][0]['total_distance'] == 22.0
         assert data['data']['users'][0]['total_duration'] == '2:40:00'
+        assert data['data']['users'][1]['imperial_units'] is False
         assert data['data']['users'][1]['timezone'] is None
         assert data['data']['users'][1]['weekm'] is False
         assert data['data']['users'][1]['nb_sports'] == 1
         assert data['data']['users'][1]['nb_workouts'] == 1
+        assert len(data['data']['users'][1]['records']) == 2
         assert data['data']['users'][1]['sports_list'] == [1]
         assert data['data']['users'][1]['total_distance'] == 15
         assert data['data']['users'][1]['total_duration'] == '1:00:00'
+        assert data['data']['users'][2]['imperial_units'] is False
         assert data['data']['users'][2]['timezone'] is None
         assert data['data']['users'][2]['weekm'] is True
         assert data['data']['users'][2]['nb_sports'] == 0
         assert data['data']['users'][2]['nb_workouts'] == 0
+        assert len(data['data']['users'][2]['records']) == 0
         assert data['data']['users'][2]['sports_list'] == []
         assert data['data']['users'][2]['total_distance'] == 0
         assert data['data']['users'][2]['total_duration'] == '0:00:00'
@@ -792,7 +808,7 @@ class TestGetUserPicture:
         data = json.loads(response.data.decode())
         assert response.status_code == 404
         assert 'not found' in data['status']
-        assert 'User does not exist.' in data['message']
+        assert 'user does not exist' in data['message']
 
 
 class TestUpdateUser(ApiTestCaseMixin):
@@ -858,7 +874,7 @@ class TestUpdateUser(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 400
         assert 'error' in data['status']
-        assert 'Invalid payload.' in data['message']
+        assert 'invalid payload' in data['message']
 
     def test_it_returns_error_if_payload_for_admin_rights_is_invalid(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -878,7 +894,7 @@ class TestUpdateUser(ApiTestCaseMixin):
         assert response.status_code == 500
         assert 'error' in data['status']
         assert (
-            'Error. Please try again or contact the administrator.'
+            'error, please try again or contact the administrator'
             in data['message']
         )
 
@@ -897,7 +913,7 @@ class TestUpdateUser(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 403
         assert 'error' in data['status']
-        assert 'You do not have permissions.' in data['message']
+        assert 'you do not have permissions' in data['message']
 
 
 class TestDeleteUser(ApiTestCaseMixin):
@@ -928,6 +944,22 @@ class TestDeleteUser(ApiTestCaseMixin):
                 Authorization=f'Bearer {auth_token}',
             ),
         )
+
+        response = client.delete(
+            '/api/users/test',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+
+    def test_user_with_preferences_can_delete_its_own_account(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        user_sport_1_preference: UserSportPreference,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
 
         response = client.delete(
             '/api/users/test',
@@ -969,7 +1001,7 @@ class TestDeleteUser(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 403
         assert 'error' in data['status']
-        assert 'You do not have permissions.' in data['message']
+        assert 'you do not have permissions' in data['message']
 
     def test_it_returns_error_when_deleting_non_existing_user(
         self, app: Flask, user_1: User
@@ -984,7 +1016,7 @@ class TestDeleteUser(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 404
         assert 'not found' in data['status']
-        assert 'User does not exist.' in data['message']
+        assert 'user does not exist' in data['message']
 
     def test_admin_can_delete_another_user_account(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -1030,7 +1062,7 @@ class TestDeleteUser(ApiTestCaseMixin):
         assert response.status_code == 403
         assert 'error' in data['status']
         assert (
-            'You can not delete your account, no other user has admin rights.'
+            'you can not delete your account, no other user has admin rights'
             in data['message']
         )
 
@@ -1095,4 +1127,4 @@ class TestDeleteUser(ApiTestCaseMixin):
         assert response.status_code == 403
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
-        assert data['message'] == 'Error. Registration is disabled.'
+        assert data['message'] == 'error, registration is disabled'

@@ -1,7 +1,7 @@
 Installation
 ############
 
-This application is written in Python (API) and Javascript (client):
+This application is written in Python (API) and Typescript (client):
 
 - API:
     - Flask
@@ -10,11 +10,11 @@ This application is written in Python (API) and Javascript (client):
     - `python-forecast.io <https://github.com/ZeevG/python-forecast.io>`_ to fetch weather data from `Dark Sky <https://darksky.net>`__ (former forecast.io)
     - `dramatiq <https://flask-dramatiq.readthedocs.io/en/latest/>`_ for task queue
 - Client:
-    - React/Redux
+    - Vue3/Vuex
     - `Leaflet <https://leafletjs.com/>`__ to display map
-    - `Recharts <https://github.com/recharts/recharts>`__ to display charts with elevation and speed
+    - `Chart.js <https://www.chartjs.org/>`__ to display charts with elevation and speed
 
-Sports and weather icons are made by `Freepik <https://www.freepik.com/>`__ from `www.flaticon.com <https://www.flaticon.com/>`__.
+Logo, sports and weather icons are made by `Freepik <https://www.freepik.com/>`__ from `www.flaticon.com <https://www.flaticon.com/>`__.
 
 Prerequisites
 ~~~~~~~~~~~~~
@@ -132,6 +132,8 @@ deployment method.
 
     Email URL with credentials, see `Emails <installation.html#emails>`__.
 
+    .. warning::
+        If the email URL is invalid, the application may not start.
 
 .. envvar:: SENDER_EMAIL
 
@@ -191,60 +193,10 @@ deployment method.
     **Dark Sky** API key for weather data (not mandatory).
 
 
-.. envvar:: REACT_APP_API_URL
+.. envvar:: VUE_APP_API_URL
 
     **FitTrackee** API URL, only needed in dev environment.
 
-
-
-Deprecated variables
-^^^^^^^^^^^^^^^^^^^^
-
-.. envvar:: REACT_APP_GPX_LIMIT_IMPORT
-
-    .. deprecated:: 0.3.0 now stored in database
-
-    Maximum number of gpx file in zip archive.
-
-    :default: 10
-
-
-.. envvar:: REACT_APP_MAX_SINGLE_FILE_SIZE
-
-    .. deprecated:: 0.3.0 now stored in database
-
-    Maximum size of a gpx or picture file.
-
-    :default: 1MB
-
-
-.. envvar:: REACT_APP_MAX_ZIP_FILE_SIZE
-
-    .. deprecated:: 0.3.0 now stored in database
-
-    Maximum size of a zip archive.
-
-    :default: 10MB
-
-
-.. envvar:: REACT_APP_ALLOW_REGISTRATION
-
-    .. deprecated:: 0.3.0 now stored in database
-
-    Allows users to register.
-
-    :default: true
-
-
-.. envvar:: REACT_APP_THUNDERFOREST_API_KEY
-
-    .. deprecated:: 0.4.0 see `TILE_SERVER_URL <installation.html#envvar-TILE_SERVER_URL>`__
-
-    ThunderForest API key.
-
-.. warning::
-    | Since FitTrackee 0.3.0, some applications parameters are now stored in database.
-    | Related environment variables are needed to initialize database when upgrading from version prior 0.3.0.
 
 
 Emails
@@ -409,7 +361,7 @@ Dev environment
 -  Create **.env** from example and update it
    (see `Environment variables <installation.html#environment-variables>`__).
 
--  Install Python virtualenv, React and all related packages and
+-  Install Python virtualenv, Vue and all related packages and
    initialize the database:
 
 .. code:: bash
@@ -439,13 +391,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.4.9):
+-  Download the last release (for now, it is the release v0.5.0):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.4.9.tar.gz
-   $ tar -xzf v0.4.9.tar.gz
-   $ mv FitTrackee-0.4.9 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.5.0.tar.gz
+   $ tar -xzf v0.5.0.tar.gz
+   $ mv FitTrackee-0.5.0 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -520,13 +472,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.4.9) and overwrite existing files:
+- Download the last release (for now, it is the release v0.5.0) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.4.9.tar.gz
-   $ tar -xzf v0.4.9.tar.gz
-   $ cp -R FitTrackee-0.4.9/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.5.0.tar.gz
+   $ tar -xzf v0.5.0.tar.gz
+   $ cp -R FitTrackee-0.5.0/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -664,9 +616,12 @@ Examples (to update depending on your application configuration and given distri
 Docker
 ~~~~~~
 
+Installation
+^^^^^^^^^^^^
+
 .. versionadded:: 0.4.4
 
-For evaluation purposes (at least for now), docker files are available,
+For evaluation purposes , docker files are available,
 installing **FitTrackee** from **sources**.
 
 - To install **FitTrackee** with database initialisation and run the application and dramatiq workers:
@@ -699,3 +654,27 @@ Open http://localhost:8025 to access `MailHog interface <https://github.com/mail
 .. code-block:: bash
 
     $ make docker-shell
+
+
+Development
+^^^^^^^^^^^
+
+.. versionadded:: 0.5.0
+
+- an additional step is to install `fittrackee_client`
+
+.. code-block:: bash
+
+    $ make docker-build-client
+
+- to start **FitTrackee** with client dev tools:
+
+.. code-block:: bash
+
+    $ make docker-serve-client
+
+Open http://localhost:3000 and log in (the email is ``admin@example.com``
+and the password ``mpwoadmin``) or register
+
+.. note::
+    Some environment variables need to be updated like `UI_URL`

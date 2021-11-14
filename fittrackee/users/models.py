@@ -40,6 +40,7 @@ class User(BaseModel):
         'Record', lazy=True, backref=db.backref('user', lazy='joined')
     )
     language = db.Column(db.String(50), nullable=True)
+    imperial_units = db.Column(db.Boolean, default=False, nullable=False)
 
     def __repr__(self) -> str:
         return f'<User {self.username!r}>'
@@ -86,9 +87,9 @@ class User(BaseModel):
         try:
             return decode_user_token(auth_token)
         except jwt.ExpiredSignatureError:
-            return 'Signature expired. Please log in again.'
+            return 'signature expired, please log in again'
         except jwt.InvalidTokenError:
-            return 'Invalid token. Please log in again.'
+            return 'invalid token, please log in again'
 
     @hybrid_property
     def workouts_count(self) -> int:
@@ -136,9 +137,49 @@ class User(BaseModel):
             'language': self.language,
             'nb_sports': len(sports),
             'nb_workouts': self.workouts_count,
+            'records': [record.serialize() for record in self.records],
             'sports_list': [
                 sport for sportslist in sports for sport in sportslist
             ],
             'total_distance': float(total[0]),
             'total_duration': str(total[1]),
+            'imperial_units': self.imperial_units,
+        }
+
+
+class UserSportPreference(BaseModel):
+    __tablename__ = 'users_sports_preferences'
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id'),
+        primary_key=True,
+    )
+    sport_id = db.Column(
+        db.Integer,
+        db.ForeignKey('sports.id'),
+        primary_key=True,
+    )
+    color = db.Column(db.String(50), nullable=True)
+    is_active = db.Column(db.Boolean, default=True, nullable=False)
+    stopped_speed_threshold = db.Column(db.Float, default=1.0, nullable=False)
+
+    def __init__(
+        self,
+        user_id: int,
+        sport_id: int,
+        stopped_speed_threshold: float,
+    ) -> None:
+        self.user_id = user_id
+        self.sport_id = sport_id
+        self.is_active = True
+        self.stopped_speed_threshold = stopped_speed_threshold
+
+    def serialize(self) -> Dict:
+        return {
+            'user_id': self.user_id,
+            'sport_id': self.sport_id,
+            'color': self.color,
+            'is_active': self.is_active,
+            'stopped_speed_threshold': self.stopped_speed_threshold,
         }

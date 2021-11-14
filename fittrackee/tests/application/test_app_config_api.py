@@ -2,6 +2,7 @@ import json
 
 from flask import Flask
 
+import fittrackee
 from fittrackee.users.models import User
 
 from ..api_test_case import ApiTestCaseMixin
@@ -31,6 +32,7 @@ class TestGetConfig(ApiTestCaseMixin):
             'target="_blank" rel="noopener noreferrer">OpenStreetMap</a> '
             'contributors'
         )
+        assert data['data']['version'] == fittrackee.__version__
 
     def test_it_returns_error_if_application_has_no_config(
         self, app_no_config: Flask, user_1_admin: User
@@ -48,7 +50,7 @@ class TestGetConfig(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 500
         assert 'error' in data['status']
-        assert 'Error on getting configuration.' in data['message']
+        assert 'error on getting configuration' in data['message']
 
     def test_it_returns_error_if_application_has_several_config(
         self, app: Flask, app_config: Flask, user_1_admin: User
@@ -66,7 +68,7 @@ class TestGetConfig(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 500
         assert 'error' in data['status']
-        assert 'Error on getting configuration.' in data['message']
+        assert 'error on getting configuration' in data['message']
 
 
 class TestUpdateConfig(ApiTestCaseMixin):
@@ -138,7 +140,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         assert response.status_code == 403
         assert 'success' not in data['status']
         assert 'error' in data['status']
-        assert 'You do not have permissions.' in data['message']
+        assert 'you do not have permissions' in data['message']
 
     def test_it_returns_400_if_invalid_is_payload(
         self, app: Flask, user_1_admin: User
@@ -157,7 +159,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 400
         assert 'error' in data['status']
-        assert 'Invalid payload.' in data['message']
+        assert 'invalid payload' in data['message']
 
     def test_it_returns_error_on_update_if_application_has_no_config(
         self, app_no_config: Flask, user_1_admin: User
@@ -176,7 +178,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 500
         assert 'error' in data['status']
-        assert 'Error on updating configuration.' in data['message']
+        assert 'error when updating configuration' in data['message']
 
     def test_it_raises_error_if_archive_max_size_is_below_files_max_size(
         self, app: Flask, user_1_admin: User

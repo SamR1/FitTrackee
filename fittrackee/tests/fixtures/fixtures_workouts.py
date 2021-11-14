@@ -2,9 +2,11 @@ import datetime
 from io import BytesIO
 from typing import Generator
 from unittest.mock import Mock, patch
+from uuid import uuid4
 
 import pytest
 from PIL import Image
+from werkzeug.datastructures import FileStorage
 
 from fittrackee import db
 from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
@@ -43,6 +45,7 @@ def sport_1_cycling_inactive() -> Sport:
 @pytest.fixture()
 def sport_2_running() -> Sport:
     sport = Sport(label='Running')
+    sport.stopped_speed_threshold = 0.1
     db.session.add(sport)
     db.session.commit()
     return sport
@@ -108,8 +111,11 @@ def seven_workouts_user_1() -> Workout:
     )
     workout.ave_speed = float(workout.distance) / (1024 / 3600)
     workout.moving = workout.duration
+    workout.ascent = 120
+    workout.descent = 200
     db.session.add(workout)
     db.session.flush()
+
     workout = Workout(
         user_id=1,
         sport_id=1,
@@ -119,8 +125,11 @@ def seven_workouts_user_1() -> Workout:
     )
     workout.ave_speed = float(workout.distance) / (3456 / 3600)
     workout.moving = workout.duration
+    workout.ascent = 100
+    workout.descent = 80
     db.session.add(workout)
     db.session.flush()
+
     workout = Workout(
         user_id=1,
         sport_id=1,
@@ -130,8 +139,11 @@ def seven_workouts_user_1() -> Workout:
     )
     workout.ave_speed = float(workout.distance) / (1024 / 3600)
     workout.moving = workout.duration
+    workout.ascent = 80
+    workout.descent = 100
     db.session.add(workout)
     db.session.flush()
+
     workout = Workout(
         user_id=1,
         sport_id=1,
@@ -141,8 +153,11 @@ def seven_workouts_user_1() -> Workout:
     )
     workout.ave_speed = float(workout.distance) / (600 / 3600)
     workout.moving = workout.duration
+    workout.ascent = 120
+    workout.descent = 180
     db.session.add(workout)
     db.session.flush()
+
     workout = Workout(
         user_id=1,
         sport_id=1,
@@ -152,8 +167,11 @@ def seven_workouts_user_1() -> Workout:
     )
     workout.ave_speed = float(workout.distance) / (1000 / 3600)
     workout.moving = workout.duration
+    workout.ascent = 100
+    workout.descent = 200
     db.session.add(workout)
     db.session.flush()
+
     workout = Workout(
         user_id=1,
         sport_id=1,
@@ -163,8 +181,11 @@ def seven_workouts_user_1() -> Workout:
     )
     workout.ave_speed = float(workout.distance) / (6000 / 3600)
     workout.moving = workout.duration
+    workout.ascent = 40
+    workout.descent = 20
     db.session.add(workout)
     db.session.flush()
+
     workout = Workout(
         user_id=1,
         sport_id=1,
@@ -556,4 +577,11 @@ def gpx_file_with_segments() -> str:
         '    </trkseg>'
         '  </trk>'
         '</gpx>'
+    )
+
+
+@pytest.fixture()
+def gpx_file_storage(gpx_file: str) -> FileStorage:
+    return FileStorage(
+        filename=f'{uuid4().hex}.gpx', stream=BytesIO(str.encode(gpx_file))
     )

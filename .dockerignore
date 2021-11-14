@@ -9,3 +9,4 @@
 docker-compose-dev.yml
 Makefile.custom.config
 *.log
+data

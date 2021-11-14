@@ -173,7 +173,7 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 403
         assert 'error' in data['status']
-        assert 'You do not have permissions.' in data['message']
+        assert 'you do not have permissions' in data['message']
 
     def test_it_updates_sport(
         self,
@@ -217,7 +217,7 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 400
         assert 'error' in data['status']
-        assert 'Invalid payload.' in data['message']
+        assert 'invalid payload' in data['message']
 
     def test_it_raises_500_if_sport_does_not_exists(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
@@ -236,7 +236,7 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         assert response.status_code == 500
         assert 'error' in data['status']
         assert (
-            'Error. Please try again or contact the administrator.'
+            'error, please try again or contact the administrator'
             in data['message']
         )
 
@@ -405,7 +405,7 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 403
         assert 'error' in data['status']
-        assert 'You do not have permissions.' in data['message']
+        assert 'you do not have permissions' in data['message']
 
     def test_it_updates_an_workout_wo_gpx_with_timezone(
         self,
@@ -564,7 +564,7 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 400
         assert 'error' in data['status']
-        assert 'Invalid payload.' in data['message']
+        assert 'invalid payload' in data['message']
 
     def test_it_returns_500_if_date_format_is_invalid(
         self,
@@ -593,7 +593,7 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         assert response.status_code == 500
         assert 'error' in data['status']
         assert (
-            'Error. Please try again or contact the administrator.'
+            'error, please try again or contact the administrator'
             in data['message']
         )
 

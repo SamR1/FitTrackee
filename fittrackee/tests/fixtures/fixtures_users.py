@@ -3,12 +3,21 @@ import datetime
 import pytest
 
 from fittrackee import db
-from fittrackee.users.models import User
+from fittrackee.users.models import User, UserSportPreference
+from fittrackee.workouts.models import Sport
 
 
 @pytest.fixture()
 def user_1() -> User:
     user = User(username='test', email='test@test.com', password='12345678')
+    db.session.add(user)
+    db.session.commit()
+    return user
+
+
+@pytest.fixture()
+def user_1_upper() -> User:
+    user = User(username='TEST', email='TEST@TEST.COM', password='12345678')
     db.session.add(user)
     db.session.commit()
     return user
@@ -73,3 +82,31 @@ def user_3() -> User:
     db.session.add(user)
     db.session.commit()
     return user
+
+
+@pytest.fixture()
+def user_sport_1_preference(
+    user_1: User, sport_1_cycling: Sport
+) -> UserSportPreference:
+    user_sport = UserSportPreference(
+        user_id=user_1.id,
+        sport_id=sport_1_cycling.id,
+        stopped_speed_threshold=sport_1_cycling.stopped_speed_threshold,
+    )
+    db.session.add(user_sport)
+    db.session.commit()
+    return user_sport
+
+
+@pytest.fixture()
+def user_admin_sport_1_preference(
+    user_1_admin: User, sport_1_cycling: Sport
+) -> UserSportPreference:
+    user_sport = UserSportPreference(
+        user_id=user_1_admin.id,
+        sport_id=sport_1_cycling.id,
+        stopped_speed_threshold=sport_1_cycling.stopped_speed_threshold,
+    )
+    db.session.add(user_sport)
+    db.session.commit()
+    return user_sport
