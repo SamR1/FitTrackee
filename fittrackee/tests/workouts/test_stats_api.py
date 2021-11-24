@@ -109,6 +109,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2017': {
                 '1': {
+                    'average_speed': 14.0,
                     'nb_workouts': 2,
                     'total_ascent': 220.0,
                     'total_descent': 280.0,
@@ -118,6 +119,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             },
             '2018': {
                 '1': {
+                    'average_speed': 18.79,
                     'nb_workouts': 5,
                     'total_ascent': 340.0,
                     'total_descent': 500.0,
@@ -125,6 +127,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'total_duration': 11624,
                 },
                 '2': {
+                    'average_speed': 7.2,
                     'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
@@ -156,6 +159,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2018': {
                 '1': {
+                    'average_speed': 4.8,
                     'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
@@ -163,6 +167,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'total_duration': 6000,
                 },
                 '2': {
+                    'average_speed': 7.2,
                     'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
@@ -195,6 +200,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2018': {
                 '1': {
+                    'average_speed': 4.8,
                     'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
@@ -202,6 +208,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'total_duration': 6000,
                 },
                 '2': {
+                    'average_speed': 7.2,
                     'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
@@ -233,6 +240,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2017': {
                 '1': {
+                    'average_speed': 14.0,
                     'nb_workouts': 2,
                     'total_ascent': 220.0,
                     'total_descent': 280.0,
@@ -242,6 +250,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             },
             '2018': {
                 '1': {
+                    'average_speed': 18.79,
                     'nb_workouts': 5,
                     'total_ascent': 340.0,
                     'total_descent': 500.0,
@@ -249,6 +258,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'total_duration': 11624,
                 },
                 '2': {
+                    'average_speed': 7.2,
                     'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
@@ -280,6 +290,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2018': {
                 '1': {
+                    'average_speed': 4.8,
                     'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
@@ -287,6 +298,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'total_duration': 6000,
                 },
                 '2': {
+                    'average_speed': 7.2,
                     'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
@@ -319,6 +331,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2018': {
                 '1': {
+                    'average_speed': 4.8,
                     'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
@@ -326,6 +339,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'total_duration': 6000,
                 },
                 '2': {
+                    'average_speed': 7.2,
                     'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
@@ -357,6 +371,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2017-03': {
                 '1': {
+                    'average_speed': 17.58,
                     'nb_workouts': 1,
                     'total_ascent': 120.0,
                     'total_descent': 200.0,
@@ -366,6 +381,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             },
             '2017-06': {
                 '1': {
+                    'average_speed': 10.42,
                     'nb_workouts': 1,
                     'total_ascent': 100.0,
                     'total_descent': 80.0,
@@ -375,6 +391,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             },
             '2018-01': {
                 '1': {
+                    'average_speed': 35.16,
                     'nb_workouts': 1,
                     'total_ascent': 80.0,
                     'total_descent': 100.0,
@@ -384,6 +401,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             },
             '2018-02': {
                 '1': {
+                    'average_speed': 21.0,
                     'nb_workouts': 2,
                     'total_ascent': 220.0,
                     'total_descent': 380.0,
@@ -393,6 +411,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             },
             '2018-04': {
                 '1': {
+                    'average_speed': 4.8,
                     'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
@@ -400,6 +419,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'total_duration': 6000,
                 },
                 '2': {
+                    'average_speed': 7.2,
                     'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
@@ -409,6 +429,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             },
             '2018-05': {
                 '1': {
+                    'average_speed': 12.0,
                     'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
@@ -440,6 +461,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2017-03': {
                 '1': {
+                    'average_speed': 17.58,
                     'nb_workouts': 1,
                     'total_ascent': 120.0,
                     'total_descent': 200.0,
@@ -449,6 +471,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             },
             '2017-06': {
                 '1': {
+                    'average_speed': 10.42,
                     'nb_workouts': 1,
                     'total_ascent': 100.0,
                     'total_descent': 80.0,
@@ -458,6 +481,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             },
             '2018-01': {
                 '1': {
+                    'average_speed': 35.16,
                     'nb_workouts': 1,
                     'total_ascent': 80.0,
                     'total_descent': 100.0,
@@ -467,6 +491,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             },
             '2018-02': {
                 '1': {
+                    'average_speed': 21.0,
                     'nb_workouts': 2,
                     'total_ascent': 220.0,
                     'total_descent': 380.0,
@@ -476,6 +501,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             },
             '2018-04': {
                 '1': {
+                    'average_speed': 4.8,
                     'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
@@ -483,6 +509,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'total_duration': 6000,
                 },
                 '2': {
+                    'average_speed': 7.2,
                     'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
@@ -492,6 +519,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             },
             '2018-05': {
                 '1': {
+                    'average_speed': 12.0,
                     'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
@@ -523,6 +551,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2018-04': {
                 '1': {
+                    'average_speed': 4.8,
                     'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
@@ -530,6 +559,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'total_duration': 6000,
                 },
                 '2': {
+                    'average_speed': 7.2,
                     'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
@@ -561,6 +591,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2017-03-19': {
                 '1': {
+                    'average_speed': 17.58,
                     'nb_workouts': 1,
                     'total_ascent': 120.0,
                     'total_descent': 200.0,
@@ -570,6 +601,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             },
             '2017-05-28': {
                 '1': {
+                    'average_speed': 10.42,
                     'nb_workouts': 1,
                     'total_ascent': 100.0,
                     'total_descent': 80.0,
@@ -579,6 +611,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             },
             '2017-12-31': {
                 '1': {
+                    'average_speed': 35.16,
                     'nb_workouts': 1,
                     'total_ascent': 80.0,
                     'total_descent': 100.0,
@@ -588,6 +621,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             },
             '2018-02-18': {
                 '1': {
+                    'average_speed': 21.0,
                     'nb_workouts': 2,
                     'total_ascent': 220.0,
                     'total_descent': 380.0,
@@ -597,6 +631,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             },
             '2018-04-01': {
                 '1': {
+                    'average_speed': 4.8,
                     'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
@@ -604,6 +639,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'total_duration': 6000,
                 },
                 '2': {
+                    'average_speed': 7.2,
                     'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
@@ -613,6 +649,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             },
             '2018-05-06': {
                 '1': {
+                    'average_speed': 12.0,
                     'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
@@ -644,6 +681,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2018-04-01': {
                 '1': {
+                    'average_speed': 4.8,
                     'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
@@ -651,6 +689,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'total_duration': 6000,
                 },
                 '2': {
+                    'average_speed': 7.2,
                     'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
@@ -682,6 +721,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2017-03-20': {
                 '1': {
+                    'average_speed': 17.58,
                     'nb_workouts': 1,
                     'total_ascent': 120.0,
                     'total_descent': 200.0,
@@ -691,6 +731,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             },
             '2017-05-29': {
                 '1': {
+                    'average_speed': 10.42,
                     'nb_workouts': 1,
                     'total_ascent': 100.0,
                     'total_descent': 80.0,
@@ -700,6 +741,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             },
             '2018-01-01': {
                 '1': {
+                    'average_speed': 35.16,
                     'nb_workouts': 1,
                     'total_ascent': 80.0,
                     'total_descent': 100.0,
@@ -709,6 +751,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             },
             '2018-02-19': {
                 '1': {
+                    'average_speed': 21.0,
                     'nb_workouts': 2,
                     'total_ascent': 220.0,
                     'total_descent': 380.0,
@@ -718,6 +761,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             },
             '2018-03-26': {
                 '1': {
+                    'average_speed': 4.8,
                     'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
@@ -725,6 +769,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'total_duration': 6000,
                 },
                 '2': {
+                    'average_speed': 7.2,
                     'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
@@ -734,6 +779,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             },
             '2018-05-07': {
                 '1': {
+                    'average_speed': 12.0,
                     'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
@@ -765,6 +811,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2018-03-26': {
                 '1': {
+                    'average_speed': 4.8,
                     'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
@@ -772,6 +819,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'total_duration': 6000,
                 },
                 '2': {
+                    'average_speed': 7.2,
                     'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
@@ -804,6 +852,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert data['data']['statistics'] == {
             '1': {
+                'average_speed': 17.42,
                 'nb_workouts': 7,
                 'total_ascent': 560.0,
                 'total_descent': 780.0,
@@ -811,6 +860,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 'total_duration': 16104,
             },
             '2': {
+                'average_speed': 7.2,
                 'nb_workouts': 1,
                 'total_ascent': 0.0,
                 'total_descent': 0.0,
@@ -840,6 +890,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert data['data']['statistics'] == {
             '1': {
+                'average_speed': 17.42,
                 'nb_workouts': 7,
                 'total_ascent': 560.0,
                 'total_descent': 780.0,

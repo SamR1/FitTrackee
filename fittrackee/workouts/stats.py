@@ -16,7 +16,11 @@ from fittrackee.users.decorators import authenticate, authenticate_as_admin
 from fittrackee.users.models import User
 
 from .models import Sport, Workout
-from .utils import get_datetime_from_request_args, get_upload_dir_size
+from .utils import (
+    get_average_speed,
+    get_datetime_from_request_args,
+    get_upload_dir_size,
+)
 from .utils_format import convert_timedelta_to_integer
 
 stats_blueprint = Blueprint('stats', __name__)
@@ -64,6 +68,7 @@ def get_workouts(
                 sport_id = workout.sport_id
                 if sport_id not in workouts_list_by_sport:
                     workouts_list_by_sport[sport_id] = {
+                        'average_speed': 0.0,
                         'nb_workouts': 0,
                         'total_distance': 0.0,
                         'total_duration': 0,
@@ -71,6 +76,13 @@ def get_workouts(
                         'total_descent': 0.0,
                     }
                 workouts_list_by_sport[sport_id]['nb_workouts'] += 1
+                workouts_list_by_sport[sport_id][
+                    'average_speed'
+                ] = get_average_speed(
+                    workouts_list_by_sport[sport_id]['nb_workouts'],  # type: ignore  # noqa
+                    workouts_list_by_sport[sport_id]['average_speed'],
+                    workout.ave_speed,
+                )
                 workouts_list_by_sport[sport_id]['total_distance'] += float(
                     workout.distance
                 )
@@ -117,6 +129,7 @@ def get_workouts(
                     workouts_list_by_time[time_period] = {}
                 if sport_id not in workouts_list_by_time[time_period]:
                     workouts_list_by_time[time_period][sport_id] = {
+                        'average_speed': 0.0,
                         'nb_workouts': 0,
                         'total_distance': 0.0,
                         'total_duration': 0,
@@ -126,6 +139,17 @@ def get_workouts(
                 workouts_list_by_time[time_period][sport_id][
                     'nb_workouts'
                 ] += 1
+                workouts_list_by_time[time_period][sport_id][
+                    'average_speed'
+                ] = get_average_speed(
+                    workouts_list_by_time[time_period][sport_id][
+                        'nb_workouts'
+                    ],
+                    workouts_list_by_time[time_period][sport_id][
+                        'average_speed'
+                    ],
+                    workout.ave_speed,
+                )
                 workouts_list_by_time[time_period][sport_id][
                     'total_distance'
                 ] += float(workout.distance)
@@ -189,6 +213,7 @@ def get_workouts_by_time(
           "statistics": {
             "2017": {
               "3": {
+                "average_speed": 4.48,
                 "nb_workouts": 2,
                 "total_ascent": 203.0,
                 "total_ascent": 156.0,
@@ -198,6 +223,7 @@ def get_workouts_by_time(
             },
             "2019": {
               "1": {
+                "average_speed": 16.99,
                 "nb_workouts": 3,
                 "total_ascent": 150.0,
                 "total_ascent": 178.0,
@@ -205,6 +231,7 @@ def get_workouts_by_time(
                 "total_duration": 9960
               },
               "2": {
+                "average_speed": 15.95,
                 "nb_workouts": 1,
                 "total_ascent": 46.0,
                 "total_ascent": 78.0,
@@ -292,6 +319,7 @@ def get_workouts_by_sport(
         "data": {
           "statistics": {
             "1": {
+              "average_speed": 16.99,
               "nb_workouts": 3,
               "total_ascent": 150.0,
               "total_ascent": 178.0,
@@ -299,6 +327,7 @@ def get_workouts_by_sport(
               "total_duration": 9960
             },
             "2": {
+              "average_speed": 15.95,
               "nb_workouts": 1,
               "total_ascent": 46.0,
               "total_ascent": 78.0,
@@ -306,6 +335,7 @@ def get_workouts_by_sport(
               "total_duration": 1267
             },
             "3": {
+              "average_speed": 4.46,
               "nb_workouts": 2,
               "total_ascent": 203.0,
               "total_ascent": 156.0,
