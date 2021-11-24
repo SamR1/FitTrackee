@@ -558,7 +558,7 @@ class TestUserProfile(ApiTestCaseMixin):
         assert data['data']['imperial_units'] is False
         assert data['data']['nb_sports'] == 2
         assert data['data']['nb_workouts'] == 2
-        assert len(data['data']['records']) == 6
+        assert len(data['data']['records']) == 8
         assert data['data']['sports_list'] == [1, 2]
         assert data['data']['total_distance'] == 22
         assert data['data']['total_duration'] == '2:40:00'

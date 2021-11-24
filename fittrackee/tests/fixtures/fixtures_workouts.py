@@ -51,6 +51,14 @@ def sport_2_running() -> Sport:
     return sport
 
 
+def update_workout(workout: Workout) -> None:
+    workout.ave_speed = float(workout.distance) / (
+        workout.duration.seconds / 3600
+    )
+    workout.max_speed = workout.ave_speed
+    workout.moving = workout.duration
+
+
 @pytest.fixture()
 def workout_cycling_user_1() -> Workout:
     workout = Workout(
@@ -60,9 +68,7 @@ def workout_cycling_user_1() -> Workout:
         distance=10,
         duration=datetime.timedelta(seconds=3600),
     )
-    workout.max_speed = 10
-    workout.ave_speed = 10
-    workout.moving = workout.duration
+    update_workout(workout)
     db.session.add(workout)
     db.session.commit()
     return workout
@@ -94,7 +100,7 @@ def workout_running_user_1() -> Workout:
         distance=12,
         duration=datetime.timedelta(seconds=6000),
     )
-    workout.moving = workout.duration
+    update_workout(workout)
     db.session.add(workout)
     db.session.commit()
     return workout
@@ -109,8 +115,7 @@ def seven_workouts_user_1() -> Workout:
         distance=5,
         duration=datetime.timedelta(seconds=1024),
     )
-    workout.ave_speed = float(workout.distance) / (1024 / 3600)
-    workout.moving = workout.duration
+    update_workout(workout)
     workout.ascent = 120
     workout.descent = 200
     db.session.add(workout)
@@ -123,8 +128,7 @@ def seven_workouts_user_1() -> Workout:
         distance=10,
         duration=datetime.timedelta(seconds=3456),
     )
-    workout.ave_speed = float(workout.distance) / (3456 / 3600)
-    workout.moving = workout.duration
+    update_workout(workout)
     workout.ascent = 100
     workout.descent = 80
     db.session.add(workout)
@@ -137,8 +141,7 @@ def seven_workouts_user_1() -> Workout:
         distance=10,
         duration=datetime.timedelta(seconds=1024),
     )
-    workout.ave_speed = float(workout.distance) / (1024 / 3600)
-    workout.moving = workout.duration
+    update_workout(workout)
     workout.ascent = 80
     workout.descent = 100
     db.session.add(workout)
@@ -151,8 +154,7 @@ def seven_workouts_user_1() -> Workout:
         distance=1,
         duration=datetime.timedelta(seconds=600),
     )
-    workout.ave_speed = float(workout.distance) / (600 / 3600)
-    workout.moving = workout.duration
+    update_workout(workout)
     workout.ascent = 120
     workout.descent = 180
     db.session.add(workout)
@@ -165,8 +167,7 @@ def seven_workouts_user_1() -> Workout:
         distance=10,
         duration=datetime.timedelta(seconds=1000),
     )
-    workout.ave_speed = float(workout.distance) / (1000 / 3600)
-    workout.moving = workout.duration
+    update_workout(workout)
     workout.ascent = 100
     workout.descent = 200
     db.session.add(workout)
@@ -179,8 +180,7 @@ def seven_workouts_user_1() -> Workout:
         distance=8,
         duration=datetime.timedelta(seconds=6000),
     )
-    workout.ave_speed = float(workout.distance) / (6000 / 3600)
-    workout.moving = workout.duration
+    update_workout(workout)
     workout.ascent = 40
     workout.descent = 20
     db.session.add(workout)
@@ -193,8 +193,7 @@ def seven_workouts_user_1() -> Workout:
         distance=10,
         duration=datetime.timedelta(seconds=3000),
     )
-    workout.ave_speed = float(workout.distance) / (3000 / 3600)
-    workout.moving = workout.duration
+    update_workout(workout)
     db.session.add(workout)
     db.session.commit()
     return workout
@@ -209,7 +208,7 @@ def workout_cycling_user_2() -> Workout:
         distance=15,
         duration=datetime.timedelta(seconds=3600),
     )
-    workout.moving = workout.duration
+    update_workout(workout)
     db.session.add(workout)
     db.session.commit()
     return workout
