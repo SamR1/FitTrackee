@@ -77,7 +77,7 @@
             },
           },
           y: {
-            stacked: true,
+            stacked: props.displayedData !== 'average_speed',
             grid: {
               drawOnChartArea: false,
             },
@@ -101,29 +101,50 @@
           datalabels: {
             anchor: 'end',
             align: 'end',
+            color: function (context) {
+              return props.displayedData === 'average_speed' &&
+                context.dataset.backgroundColor
+                ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
+                  context.dataset.backgroundColor[0]
+                : '#666666'
+            },
             rotation: function (context) {
               return props.fullStats && context.chart.chartArea.width < 580
                 ? 310
                 : 0
             },
             display: function (context) {
-              return !(props.fullStats && context.chart.chartArea.width < 300)
+              return props.fullStats && context.chart.chartArea.width < 300
+                ? false
+                : props.displayedData === 'average_speed'
+                ? 'auto'
+                : true
             },
             formatter: function (value, context) {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              const total: number = context.chart.data.datasets
-                .map((d) => d.data[context.dataIndex])
-                .reduce((total, value) => getSum(total, value), 0)
-              return context.datasetIndex ===
-                props.displayedSportIds.length - 1 && total > 0
-                ? formatTooltipValue(
-                    props.displayedData,
-                    total,
-                    props.useImperialUnits,
-                    false
-                  )
-                : null
+              if (props.displayedData === 'average_speed') {
+                return formatTooltipValue(
+                  props.displayedData,
+                  value,
+                  props.useImperialUnits,
+                  false
+                )
+              } else {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                const total: number = context.chart.data.datasets
+                  .map((d) => d.data[context.dataIndex])
+                  .reduce((total, value) => getSum(total, value), 0)
+                return context.datasetIndex ===
+                  props.displayedSportIds.length - 1 && total > 0
+                  ? formatTooltipValue(
+                      props.displayedData,
+                      total,
+                      props.useImperialUnits,
+                      false
+                    )
+                  : null
+              }
             },
           },
           legend: {
@@ -133,6 +154,8 @@
             interaction: {
               intersect: true,
               mode: 'index',
+              position:
+                props.displayedData === 'average_speed' ? 'nearest' : 'average',
             },
             filter: function (tooltipItem) {
               return tooltipItem.formattedValue !== '0'
@@ -153,6 +176,9 @@
                 return label
               },
               footer: function (tooltipItems) {
+                if (props.displayedData === 'average_speed') {
+                  return ''
+                }
                 let sum = 0
                 tooltipItems.map((tooltipItem) => {
                   sum += tooltipItem.parsed.y

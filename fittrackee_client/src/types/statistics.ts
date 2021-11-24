@@ -19,6 +19,7 @@ export interface IStatisticsDateParams {
 }
 
 export type TStatisticsDatasetKeys =
+  | 'average_speed'
   | 'nb_workouts'
   | 'total_duration'
   | 'total_distance'

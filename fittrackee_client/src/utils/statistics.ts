@@ -43,6 +43,7 @@ const dateFormats: Record<string, Record<string, string>> = {
 }
 
 export const datasetKeys: TStatisticsDatasetKeys[] = [
+  'average_speed',
   'nb_workouts',
   'total_duration',
   'total_distance',
@@ -67,17 +68,25 @@ export const getDateKeys = (
 
 const getStatisticsChartDataset = (
   sportLabel: string,
-  color: string
+  color: string,
+  isLineChart = false
 ): IChartDataset => {
-  return {
+  const dataset: IChartDataset = {
     label: sportLabel,
     backgroundColor: [color],
     data: [],
   }
+  if (isLineChart) {
+    dataset.type = 'line'
+    dataset.borderColor = [color]
+    dataset.spanGaps = true
+  }
+  return dataset
 }
 
 export const getDatasets = (displayedSports: ISport[]): TStatisticsDatasets => {
   const datasets: TStatisticsDatasets = {
+    average_speed: [],
     nb_workouts: [],
     total_distance: [],
     total_duration: [],
@@ -86,6 +95,9 @@ export const getDatasets = (displayedSports: ISport[]): TStatisticsDatasets => {
   }
   displayedSports.map((sport) => {
     const color = sport.color ? sport.color : sportColors[sport.label]
+    datasets.average_speed.push(
+      getStatisticsChartDataset(sport.label, color, true)
+    )
     datasets.nb_workouts.push(getStatisticsChartDataset(sport.label, color))
     datasets.total_distance.push(getStatisticsChartDataset(sport.label, color))
     datasets.total_duration.push(getStatisticsChartDataset(sport.label, color))
@@ -101,11 +113,12 @@ export const convertStatsValue = (
   useImperialUnits: boolean
 ): number => {
   switch (datasetKey) {
+    case 'average_speed':
     case 'total_distance':
     case 'total_ascent':
     case 'total_descent':
       return convertStatsDistance(
-        datasetKey === 'total_distance' ? 'km' : 'm',
+        ['average_speed', 'total_distance'].includes(datasetKey) ? 'km' : 'm',
         value,
         useImperialUnits
       )
@@ -151,6 +164,8 @@ export const formatStats = (
                 apiStats[date][sportsId[dataset.label]][datasetKey],
                 useImperialUnits
               )
+            : datasetKey === 'average_speed'
+            ? null
             : 0
         )
       })

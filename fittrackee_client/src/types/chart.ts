@@ -4,6 +4,8 @@ export interface IChartDataset {
   borderColor?: string[]
   borderWidth?: number
   fill?: boolean
-  data: number[]
+  data: (number | null)[]
   yAxisID?: string
+  type?: string
+  spanGaps?: boolean
 }
