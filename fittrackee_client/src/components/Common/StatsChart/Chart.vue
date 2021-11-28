@@ -118,7 +118,9 @@
               return props.fullStats && context.chart.chartArea.width < 300
                 ? false
                 : props.displayedData === 'average_speed'
-                ? 'auto'
+                ? props.displayedSportIds.length == 1
+                  ? 'auto'
+                  : false
                 : true
             },
             formatter: function (value, context) {
