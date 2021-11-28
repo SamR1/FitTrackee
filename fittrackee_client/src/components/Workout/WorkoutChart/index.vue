@@ -23,6 +23,7 @@
             {{ $t('workouts.DURATION') }}
           </label>
         </div>
+        <div id="chart-legend" />
         <LineChart
           v-bind="lineChartProps"
           class="line-chart"
@@ -55,6 +56,7 @@
   import { LineChart, useLineChart } from 'vue-chart-3'
   import { useI18n } from 'vue-i18n'
 
+  import { htmlLegendPlugin } from '@/components/Workout/WorkoutChart/legend'
   import { TUnit } from '@/types/units'
   import { IUserProfile } from '@/types/user'
   import {
@@ -187,11 +189,18 @@
           },
         },
       },
+      legend: {
+        display: false,
+      },
+      htmlLegend: {
+        containerID: 'chart-legend',
+      },
     },
   }))
   const { lineChartProps } = useLineChart({
     chartData,
     options,
+    plugins: [htmlLegendPlugin],
   })
 
   function updateDisplayDistance() {
@@ -236,6 +245,33 @@
           justify-content: space-between;
           font-size: 0.85em;
           font-style: italic;
+        }
+        #chart-legend {
+          display: flex;
+          justify-content: center;
+
+          ul {
+            display: flex;
+            margin-bottom: 0;
+            padding: 0;
+
+            li {
+              cursor: pointer;
+              display: flex;
+              font-size: 0.85em;
+              padding: 0 $default-padding * 0.5;
+
+              span {
+                border-radius: 50%;
+                border-style: solid;
+                border-width: 1.5px;
+                height: 10px;
+                margin-top: 4px;
+                margin-left: 2px;
+                width: 10px;
+              }
+            }
+          }
         }
       }
 
