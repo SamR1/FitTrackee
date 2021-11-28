@@ -448,3 +448,16 @@ def get_upload_dir_size() -> int:
             fp = os.path.join(dir_path, f)
             total_size += os.path.getsize(fp)
     return total_size
+
+
+def get_average_speed(
+    nb_workouts: int, total_average_speed: float, workout_average_speed: float
+) -> float:
+    return round(
+        (
+            (total_average_speed * (nb_workouts - 1))
+            + float(workout_average_speed)
+        )
+        / nb_workouts,
+        2,
+    )

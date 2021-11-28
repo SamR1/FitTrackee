@@ -1,5 +1,16 @@
 # Change log
 
+## Version 0.5.1 (unreleased)
+
+### Issues Closed
+
+#### New Features
+
+* [#5](https://github.com/SamR1/FitTrackee/issues/5) - Display a chart with average speed
+
+In this release 1 issue was closed.  
+
+
 ## Version 0.5.0 (2021/11/14)
 
 ### Issues Closed

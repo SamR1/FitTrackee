@@ -167,6 +167,32 @@ describe('getDateKeys (week starting Monday)', () => {
 describe('getDatasets', () => {
   it('returns chart datasets (when no displayed data provided)', () => {
     const expected: TStatisticsDatasets = {
+      average_speed: [
+        {
+          label: 'Cycling (Sport)',
+          backgroundColor: ['#4c9792'],
+          borderColor: ['#4c9792'],
+          data: [],
+          type: 'line',
+          spanGaps: true,
+        },
+        {
+          label: 'Cycling (Transport)',
+          backgroundColor: ['#000000'],
+          borderColor: ['#000000'],
+          data: [],
+          type: 'line',
+          spanGaps: true,
+        },
+        {
+          label: 'Hiking',
+          backgroundColor: ['#bb757c'],
+          borderColor: ['#bb757c'],
+          data: [],
+          type: 'line',
+          spanGaps: true,
+        },
+      ],
       nb_workouts: [
         {
           label: 'Cycling (Sport)',
@@ -257,6 +283,16 @@ describe('getDatasets', () => {
   })
   it('returns chart datasets with only displayed sports', () => {
     const expected: TStatisticsDatasets = {
+      average_speed: [
+        {
+          label: 'Cycling (Transport)',
+          backgroundColor: ['#000000'],
+          borderColor: ['#000000'],
+          data: [],
+          type: 'line',
+          spanGaps: true,
+        },
+      ],
       nb_workouts: [
         {
           label: 'Cycling (Transport)',
@@ -308,6 +344,7 @@ describe('formatStats', () => {
     const expected: IStatisticsChartData = {
       labels: ['05/2021', '06/2021', '07/2021'],
       datasets: {
+        average_speed: [],
         nb_workouts: [],
         total_distance: [],
         total_duration: [],
@@ -331,6 +368,16 @@ describe('formatStats', () => {
     const expected: IStatisticsChartData = {
       labels: ['05/2021', '06/2021', '07/2021'],
       datasets: {
+        average_speed: [
+          {
+            label: 'Cycling (Transport)',
+            backgroundColor: ['#000000'],
+            borderColor: ['#000000'],
+            data: [null, null, null],
+            type: 'line',
+            spanGaps: true,
+          },
+        ],
         nb_workouts: [
           {
             label: 'Cycling (Transport)',
@@ -378,6 +425,7 @@ describe('formatStats', () => {
     const inputStats: TStatisticsFromApi = {
       '2021-05': {
         1: {
+          average_speed: 12,
           nb_workouts: 1,
           total_distance: 10,
           total_duration: 3000,
@@ -387,6 +435,7 @@ describe('formatStats', () => {
       },
       '2021-06': {
         1: {
+          average_speed: 18,
           nb_workouts: 1,
           total_distance: 15,
           total_duration: 3500,
@@ -394,6 +443,7 @@ describe('formatStats', () => {
           total_descent: 150,
         },
         2: {
+          average_speed: 24,
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
@@ -403,6 +453,7 @@ describe('formatStats', () => {
       },
       '2021-07': {
         3: {
+          average_speed: 8.64,
           nb_workouts: 2,
           total_distance: 12,
           total_duration: 5000,
@@ -419,6 +470,7 @@ describe('formatStats', () => {
     const expected: IStatisticsChartData = {
       labels: ['05/2021', '06/2021', '07/2021'],
       datasets: {
+        average_speed: [],
         nb_workouts: [],
         total_distance: [],
         total_duration: [],
@@ -436,6 +488,7 @@ describe('formatStats', () => {
     const inputStats: TStatisticsFromApi = {
       '2021-05': {
         1: {
+          average_speed: 12,
           nb_workouts: 1,
           total_distance: 10,
           total_duration: 3000,
@@ -445,6 +498,7 @@ describe('formatStats', () => {
       },
       '2021-06': {
         1: {
+          average_speed: 18,
           nb_workouts: 1,
           total_distance: 15,
           total_duration: 3500,
@@ -452,6 +506,7 @@ describe('formatStats', () => {
           total_descent: 150,
         },
         2: {
+          average_speed: 24,
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
@@ -461,6 +516,7 @@ describe('formatStats', () => {
       },
       '2021-07': {
         3: {
+          average_speed: 8.64,
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
@@ -477,6 +533,16 @@ describe('formatStats', () => {
     const expected: IStatisticsChartData = {
       labels: ['05/2021', '06/2021', '07/2021'],
       datasets: {
+        average_speed: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            borderColor: ['#4c9792'],
+            data: [12, 18, null],
+            type: 'line',
+            spanGaps: true,
+          },
+        ],
         nb_workouts: [
           {
             label: 'Cycling (Sport)',
@@ -526,6 +592,7 @@ describe('formatStats (duration)', () => {
     const inputStats: TStatisticsFromApi = {
       '2020': {
         1: {
+          average_speed: 12,
           nb_workouts: 1,
           total_distance: 10,
           total_duration: 3000,
@@ -535,6 +602,7 @@ describe('formatStats (duration)', () => {
       },
       '2021': {
         1: {
+          average_speed: 18,
           nb_workouts: 1,
           total_distance: 15,
           total_duration: 3500,
@@ -542,6 +610,7 @@ describe('formatStats (duration)', () => {
           total_descent: 150,
         },
         2: {
+          average_speed: 14,
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
@@ -551,6 +620,7 @@ describe('formatStats (duration)', () => {
       },
       '2022': {
         3: {
+          average_speed: 14,
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
@@ -567,6 +637,16 @@ describe('formatStats (duration)', () => {
     const expected: IStatisticsChartData = {
       labels: ['2020', '2021'],
       datasets: {
+        average_speed: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            borderColor: ['#4c9792'],
+            data: [12, 18],
+            type: 'line',
+            spanGaps: true,
+          },
+        ],
         nb_workouts: [
           {
             label: 'Cycling (Sport)',
@@ -613,6 +693,7 @@ describe('formatStats (duration)', () => {
     const inputStats: TStatisticsFromApi = {
       '2020': {
         1: {
+          average_speed: 12,
           nb_workouts: 1,
           total_distance: 10,
           total_duration: 3000,
@@ -622,6 +703,7 @@ describe('formatStats (duration)', () => {
       },
       '2021': {
         1: {
+          average_speed: 18,
           nb_workouts: 1,
           total_distance: 15,
           total_duration: 3500,
@@ -629,6 +711,7 @@ describe('formatStats (duration)', () => {
           total_descent: 150,
         },
         2: {
+          average_speed: 24,
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
@@ -638,6 +721,7 @@ describe('formatStats (duration)', () => {
       },
       '2022': {
         3: {
+          average_speed: 8.64,
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
@@ -654,6 +738,16 @@ describe('formatStats (duration)', () => {
     const expected: IStatisticsChartData = {
       labels: ['2020', '2021'],
       datasets: {
+        average_speed: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            borderColor: ['#4c9792'],
+            data: [12, 18],
+            type: 'line',
+            spanGaps: true,
+          },
+        ],
         nb_workouts: [
           {
             label: 'Cycling (Sport)',
@@ -701,6 +795,7 @@ describe('formatStats (duration)', () => {
     const inputStats: TStatisticsFromApi = {
       '2021-10-03': {
         1: {
+          average_speed: 12,
           nb_workouts: 1,
           total_distance: 10,
           total_duration: 3000,
@@ -710,6 +805,7 @@ describe('formatStats (duration)', () => {
       },
       '2021-10-10': {
         1: {
+          average_speed: 18,
           nb_workouts: 1,
           total_distance: 15,
           total_duration: 3500,
@@ -717,6 +813,7 @@ describe('formatStats (duration)', () => {
           total_descent: 150,
         },
         2: {
+          average_speed: 24,
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
@@ -726,6 +823,7 @@ describe('formatStats (duration)', () => {
       },
       '2021-10-17': {
         3: {
+          average_speed: 8.64,
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
@@ -742,6 +840,16 @@ describe('formatStats (duration)', () => {
     const expected: IStatisticsChartData = {
       labels: ['03/10/2021', '10/10/2021', '17/10/2021'],
       datasets: {
+        average_speed: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            borderColor: ['#4c9792'],
+            data: [12, 18, null],
+            type: 'line',
+            spanGaps: true,
+          },
+        ],
         nb_workouts: [
           {
             label: 'Cycling (Sport)',
@@ -789,6 +897,7 @@ describe('formatStats (duration)', () => {
     const inputStats: TStatisticsFromApi = {
       '2021-10-04': {
         1: {
+          average_speed: 12,
           nb_workouts: 1,
           total_distance: 10,
           total_duration: 3000,
@@ -798,6 +907,7 @@ describe('formatStats (duration)', () => {
       },
       '2021-10-11': {
         1: {
+          average_speed: 18,
           nb_workouts: 1,
           total_distance: 15,
           total_duration: 3500,
@@ -805,6 +915,7 @@ describe('formatStats (duration)', () => {
           total_descent: 150,
         },
         2: {
+          average_speed: 24,
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
@@ -814,6 +925,7 @@ describe('formatStats (duration)', () => {
       },
       '2021-10-18': {
         3: {
+          average_speed: 8.64,
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
@@ -830,6 +942,16 @@ describe('formatStats (duration)', () => {
     const expected: IStatisticsChartData = {
       labels: ['04/10/2021', '11/10/2021', '18/10/2021'],
       datasets: {
+        average_speed: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            borderColor: ['#4c9792'],
+            data: [12, 18, null],
+            type: 'line',
+            spanGaps: true,
+          },
+        ],
         nb_workouts: [
           {
             label: 'Cycling (Sport)',
@@ -877,6 +999,7 @@ describe('formatStats (duration)', () => {
     const inputStats: TStatisticsFromApi = {
       '2021-10-03': {
         1: {
+          average_speed: 12,
           nb_workouts: 1,
           total_distance: 10,
           total_duration: 3000,
@@ -886,6 +1009,7 @@ describe('formatStats (duration)', () => {
       },
       '2021-10-10': {
         1: {
+          average_speed: 18,
           nb_workouts: 1,
           total_distance: 15,
           total_duration: 3500,
@@ -893,6 +1017,7 @@ describe('formatStats (duration)', () => {
           total_descent: 150,
         },
         2: {
+          average_speed: 24,
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
@@ -902,6 +1027,7 @@ describe('formatStats (duration)', () => {
       },
       '2021-10-17': {
         3: {
+          average_speed: 8.64,
           nb_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
@@ -918,6 +1044,16 @@ describe('formatStats (duration)', () => {
     const expected: IStatisticsChartData = {
       labels: ['03/10/2021', '10/10/2021', '17/10/2021'],
       datasets: {
+        average_speed: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            borderColor: ['#4c9792'],
+            data: [7.46, 11.18, null],
+            type: 'line',
+            spanGaps: true,
+          },
+        ],
         nb_workouts: [
           {
             label: 'Cycling (Sport)',

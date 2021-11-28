@@ -76,7 +76,13 @@ Workouts
 - Workout creation by uploading a gpx file (related data are stored in database with metric system). A workout can even be created without gpx (the user must enter date, time, duration and distance).
 - A workout with a gpx file can be displayed with map, weather (if the DarkSky API key is provided) and charts (speed and elevation). Segments can be displayed.
 - Workout edition and deletion. User can add a note.
-- User statistics
+- User statistics, by time period (week, month, year) and sport:
+    - total distance
+    - total duration
+    - total workouts
+    - total ascent  (**new in 0.5.0**)
+    - total descent  (**new in 0.5.0**)
+    - average speed  (**new in 0.5.1**)
 - User records by sports:
     - average speed
     - farest distance

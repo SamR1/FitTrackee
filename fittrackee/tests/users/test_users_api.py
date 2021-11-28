@@ -83,7 +83,7 @@ class TestGetUser(ApiTestCaseMixin):
         assert user['timezone'] is None
         assert user['weekm'] is False
         assert user['language'] is None
-        assert len(user['records']) == 6
+        assert len(user['records']) == 8
         assert user['nb_sports'] == 2
         assert user['nb_workouts'] == 2
         assert user['sports_list'] == [1, 2]
@@ -206,7 +206,7 @@ class TestGetUsers(ApiTestCaseMixin):
         assert data['data']['users'][0]['weekm'] is False
         assert data['data']['users'][0]['nb_sports'] == 2
         assert data['data']['users'][0]['nb_workouts'] == 2
-        assert len(data['data']['users'][0]['records']) == 6
+        assert len(data['data']['users'][0]['records']) == 8
         assert data['data']['users'][0]['sports_list'] == [1, 2]
         assert data['data']['users'][0]['total_distance'] == 22.0
         assert data['data']['users'][0]['total_duration'] == '2:40:00'
@@ -215,7 +215,7 @@ class TestGetUsers(ApiTestCaseMixin):
         assert data['data']['users'][1]['weekm'] is False
         assert data['data']['users'][1]['nb_sports'] == 1
         assert data['data']['users'][1]['nb_workouts'] == 1
-        assert len(data['data']['users'][1]['records']) == 2
+        assert len(data['data']['users'][1]['records']) == 4
         assert data['data']['users'][1]['sports_list'] == [1]
         assert data['data']['users'][1]['total_distance'] == 15
         assert data['data']['users'][1]['total_duration'] == '1:00:00'
