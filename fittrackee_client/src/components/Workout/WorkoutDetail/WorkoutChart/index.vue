@@ -262,13 +262,13 @@
               padding: 0 $default-padding * 0.5;
 
               span {
-                border-radius: 50%;
+                border-radius: 5%;
                 border-style: solid;
                 border-width: 1.5px;
                 height: 10px;
                 margin-top: 4px;
                 margin-left: 2px;
-                width: 10px;
+                width: 20px;
               }
             }
           }
