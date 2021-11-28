@@ -56,7 +56,7 @@
   import { LineChart, useLineChart } from 'vue-chart-3'
   import { useI18n } from 'vue-i18n'
 
-  import { htmlLegendPlugin } from '@/components/Workout/WorkoutChart/legend'
+  import { htmlLegendPlugin } from '@/components/Workout/WorkoutDetail/WorkoutChart/legend'
   import { TUnit } from '@/types/units'
   import { IUserProfile } from '@/types/user'
   import {

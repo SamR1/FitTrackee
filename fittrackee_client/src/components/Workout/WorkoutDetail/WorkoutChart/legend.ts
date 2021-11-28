@@ -50,8 +50,8 @@ export const htmlLegendPlugin = {
 
       const boxSpan = document.createElement('span')
       if (boxSpan) {
-        boxSpan.style.background = `${item.fillStyle}`
-        boxSpan.style.borderColor = `${item.strokeStyle}`
+        boxSpan.style.background = String(item.fillStyle)
+        boxSpan.style.borderColor = String(item.strokeStyle)
       }
 
       li.appendChild(checkBox)

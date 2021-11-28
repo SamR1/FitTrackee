@@ -52,10 +52,10 @@
   import { useRoute } from 'vue-router'
 
   import NotFound from '@/components/Common/NotFound.vue'
-  import WorkoutChart from '@/components/Workout/WorkoutChart/index.vue'
   import WorkoutDetail from '@/components/Workout/WorkoutDetail/index.vue'
-  import WorkoutNotes from '@/components/Workout/WorkoutNotes.vue'
-  import WorkoutSegments from '@/components/Workout/WorkoutSegments.vue'
+  import WorkoutChart from '@/components/Workout/WorkoutDetail/WorkoutChart/index.vue'
+  import WorkoutNotes from '@/components/Workout/WorkoutDetail/WorkoutNotes.vue'
+  import WorkoutSegments from '@/components/Workout/WorkoutDetail/WorkoutSegments.vue'
   import {
     AUTH_USER_STORE,
     SPORTS_STORE,
