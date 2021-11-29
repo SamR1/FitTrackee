@@ -122,7 +122,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base';
+  @import '~@/scss/vars.scss';
   #workout-info {
     display: flex;
     flex-direction: column;

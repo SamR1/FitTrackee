@@ -27,7 +27,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base';
   .workout-record {
     sup {
       font-size: 75%;

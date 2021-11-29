@@ -39,7 +39,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base';
   #statistics {
     display: flex;
     width: 100%;

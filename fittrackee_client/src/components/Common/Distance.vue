@@ -55,7 +55,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base.scss';
   .strong {
     font-weight: bold;
   }

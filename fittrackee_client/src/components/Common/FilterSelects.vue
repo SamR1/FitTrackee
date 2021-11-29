@@ -66,7 +66,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base.scss';
+  @import '~@/scss/vars.scss';
 
   .table-selects {
     display: flex;

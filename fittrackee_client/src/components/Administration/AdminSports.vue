@@ -111,7 +111,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base.scss';
+  @import '~@/scss/vars.scss';
   #admin-sports {
     table {
       td {

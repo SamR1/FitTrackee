@@ -101,7 +101,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base';
+  @import '~@/scss/vars.scss';
   #dashboard {
     .dashboard-container {
       display: flex;

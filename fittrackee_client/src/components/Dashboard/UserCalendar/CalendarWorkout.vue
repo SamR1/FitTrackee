@@ -40,7 +40,7 @@
 </script>
 
 <style lang="scss">
-  @import '~@/scss/base';
+  @import '~@/scss/vars.scss';
 
   .calendar-workout {
     display: flex;

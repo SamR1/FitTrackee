@@ -85,8 +85,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base';
-
   #timeline {
     margin-bottom: 20px;
 

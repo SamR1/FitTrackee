@@ -49,7 +49,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base';
+  @import '~@/scss/vars.scss';
   .calendar-workouts-chart {
     display: flex;
 

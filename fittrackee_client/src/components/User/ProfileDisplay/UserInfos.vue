@@ -86,7 +86,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base.scss';
   #user-infos {
     .user-bio {
       white-space: pre-wrap;

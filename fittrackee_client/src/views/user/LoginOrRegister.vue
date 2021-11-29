@@ -25,8 +25,8 @@
   const { action } = toRefs(props)
 </script>
 
-<style lang="scss">
-  @import '~@/scss/base';
+<style lang="scss" scoped>
+  @import '~@/scss/vars.scss';
 
   #loginOrRegister {
     display: flex;

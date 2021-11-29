@@ -23,7 +23,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base.scss';
   #workout-note {
     ::v-deep(.card-content) {
       font-style: italic;

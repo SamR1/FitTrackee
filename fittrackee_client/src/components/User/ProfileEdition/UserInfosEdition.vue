@@ -169,7 +169,7 @@
 </script>
 
 <style lang="scss">
-  @import '~@/scss/base.scss';
+  @import '~@/scss/vars.scss';
 
   .form-buttons {
     flex-direction: row;

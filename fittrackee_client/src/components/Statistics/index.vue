@@ -86,7 +86,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base';
+  @import '~@/scss/vars.scss';
 
   #user-statistics {
     &.stats-disabled {

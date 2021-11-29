@@ -246,7 +246,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base.scss';
+  @import '~@/scss/vars.scss';
   #user-sport-preferences {
     .sport-img {
       height: 35px;

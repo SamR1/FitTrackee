@@ -26,8 +26,6 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/base';
-
   #password-reset-request {
     ::v-deep(.card) {
       .card-content {

@@ -31,8 +31,6 @@
 </script>
 
 <style lang="scss">
-  @import '~@/scss/base.scss';
-
   .user-picture {
     display: flex;
     justify-content: center;
