@@ -20,7 +20,7 @@
       <SportImage :sport-label="sport.label" :color="sport.color" />
       <div class="workout-title-date">
         <div class="workout-title" v-if="workoutObject.type === 'WORKOUT'">
-          {{ workoutObject.title }}
+          <span>{{ workoutObject.title }}</span>
           <i
             class="fa fa-edit"
             aria-hidden="true"
@@ -140,10 +140,18 @@
     .workout-card-title {
       display: flex;
       flex-grow: 1;
+      align-items: center;
       .sport-img {
-        height: 35px;
-        width: 35px;
         padding: 0 $default-padding;
+        ::v-deep(svg) {
+          height: 35px;
+          width: 35px;
+        }
+      }
+      .workout-title {
+        span {
+          margin-right: $default-margin * 0.5;
+        }
       }
       .workout-date {
         font-size: 0.8em;
@@ -165,10 +173,7 @@
         .fa-download,
         .fa-trash,
         .fa-edit {
-          border: solid 1px var(--card-border-color);
-          border-radius: $border-radius;
-          margin-left: $default-margin * 0.5;
-          padding: 0 $default-padding;
+          padding: 0 $default-padding * 0.7;
         }
       }
     }
