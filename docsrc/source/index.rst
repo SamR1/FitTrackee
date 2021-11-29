@@ -32,8 +32,8 @@ Table of contents
 .. toctree::
    :maxdepth: 2
 
-   installation
    features
+   installation
    api/index
    troubleshooting/index
    changelog

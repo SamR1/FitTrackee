@@ -20,7 +20,7 @@
       <SportImage :sport-label="sport.label" :color="sport.color" />
       <div class="workout-title-date">
         <div class="workout-title" v-if="workoutObject.type === 'WORKOUT'">
-          {{ workoutObject.title }}
+          <span>{{ workoutObject.title }}</span>
           <i
             class="fa fa-edit"
             aria-hidden="true"
@@ -30,6 +30,12 @@
                 params: { workoutId: workoutObject.workoutId },
               })
             "
+          />
+          <i
+            v-if="workoutObject.with_gpx"
+            class="fa fa-download"
+            aria-hidden="true"
+            @click.prevent="downloadGpx(workoutObject.workoutId)"
           />
           <i
             class="fa fa-trash"
@@ -58,8 +64,8 @@
               }"
             >
               > {{ $t('workouts.BACK_TO_WORKOUT') }}
-            </router-link></span
-          >
+            </router-link>
+          </span>
         </div>
       </div>
     </div>
@@ -83,6 +89,7 @@
 <script setup lang="ts">
   import { toRefs } from 'vue'
 
+  import authApi from '@/api/authApi'
   import { ISport } from '@/types/sports'
   import { IWorkoutObject } from '@/types/workouts'
 
@@ -95,6 +102,23 @@
   const emit = defineEmits(['displayModal'])
 
   const { sport, workoutObject } = toRefs(props)
+
+  async function downloadGpx(workoutId: string) {
+    await authApi
+      .get(`workouts/${workoutId}/gpx/download`, {
+        responseType: 'blob',
+      })
+      .then((response) => {
+        const gpxFileUrl = window.URL.createObjectURL(
+          new Blob([response.data], { type: 'application/gpx+xml' })
+        )
+        const gpxLink = document.createElement('a')
+        gpxLink.href = gpxFileUrl
+        gpxLink.setAttribute('download', `${workoutId}.gpx`)
+        document.body.appendChild(gpxLink)
+        gpxLink.click()
+      })
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -116,10 +140,18 @@
     .workout-card-title {
       display: flex;
       flex-grow: 1;
+      align-items: center;
       .sport-img {
-        height: 35px;
-        width: 35px;
         padding: 0 $default-padding;
+        ::v-deep(svg) {
+          height: 35px;
+          width: 35px;
+        }
+      }
+      .workout-title {
+        span {
+          margin-right: $default-margin * 0.5;
+        }
       }
       .workout-date {
         font-size: 0.8em;
@@ -133,16 +165,15 @@
       }
 
       .fa {
+        cursor: pointer;
         padding: 0 $default-padding * 0.3;
       }
 
       @media screen and (max-width: $small-limit) {
+        .fa-download,
         .fa-trash,
         .fa-edit {
-          border: solid 1px var(--card-border-color);
-          border-radius: $border-radius;
-          margin-left: $default-margin * 0.5;
-          padding: 0 $default-padding;
+          padding: 0 $default-padding * 0.7;
         }
       }
     }

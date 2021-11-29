@@ -11,6 +11,7 @@ Workouts
     workouts.get_segment_gpx,
     workouts.get_map,
     workouts.get_map_tile,
+    workouts.download_workout_gpx,
     workouts.post_workout,
     workouts.post_workout_no_gpx,
     workouts.update_workout,
