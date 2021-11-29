@@ -20,7 +20,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/base';
+  @import '~@/scss/vars.scss';
   .error-message {
     background: var(--error-background-color);
     color: var(--error-color);

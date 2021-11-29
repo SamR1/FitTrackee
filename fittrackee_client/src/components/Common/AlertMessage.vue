@@ -13,7 +13,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/base';
+  @import '~@/scss/vars.scss';
   .alert-message {
     background: var(--alert-background-color);
     color: var(--alert-color);

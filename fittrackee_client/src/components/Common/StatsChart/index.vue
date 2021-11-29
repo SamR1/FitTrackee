@@ -202,7 +202,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base';
+  @import '~@/scss/vars';
   .start-chart {
     .chart-radio {
       display: flex;

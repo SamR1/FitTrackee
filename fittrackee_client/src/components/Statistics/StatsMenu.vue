@@ -52,8 +52,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base';
-
   .chart-menu {
     display: flex;
 

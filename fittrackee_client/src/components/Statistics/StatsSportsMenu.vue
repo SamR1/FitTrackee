@@ -50,7 +50,7 @@
 </script>
 
 <style lang="scss">
-  @import '~@/scss/base.scss';
+  @import '~@/scss/vars.scss';
   .sports-menu {
     display: flex;
     flex-wrap: wrap;

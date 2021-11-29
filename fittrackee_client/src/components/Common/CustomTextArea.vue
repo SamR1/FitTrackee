@@ -46,7 +46,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base.scss';
   .custom-textarea {
     display: flex;
     flex-direction: column;

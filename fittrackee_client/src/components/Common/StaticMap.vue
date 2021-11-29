@@ -40,8 +40,6 @@
 </script>
 
 <style lang="scss">
-  @import '~@/scss/base';
-
   .static-map {
     display: flex;
     position: relative;

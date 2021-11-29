@@ -198,7 +198,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base.scss';
+  @import '~@/scss/vars.scss';
   #admin-users {
     .top-button {
       display: none;

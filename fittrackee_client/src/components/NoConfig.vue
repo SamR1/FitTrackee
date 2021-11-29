@@ -29,7 +29,7 @@
 </template>
 
 <style scoped lang="scss">
-  @import '~@/scss/base';
+  @import '~@/scss/vars.scss';
 
   #no-config {
     display: flex;

@@ -72,8 +72,8 @@
   }
 </script>
 
-<style lang="scss" scoped>
-  @import '~@/scss/base';
+<style lang="scss">
+  @import '~@/scss/base.scss';
   .app-container {
     height: $app-height;
 

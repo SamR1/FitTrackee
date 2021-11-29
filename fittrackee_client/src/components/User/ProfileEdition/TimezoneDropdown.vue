@@ -80,7 +80,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base.scss';
+  @import '~@/scss/vars.scss';
 
   #tz-dropdown {
     display: flex;

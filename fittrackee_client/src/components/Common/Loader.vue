@@ -3,7 +3,6 @@
 </template>
 
 <style scoped lang="scss">
-  @import '~@/scss/base';
   .loader {
     animation: spin 2s linear infinite;
     border: 14px solid var(--app-loading-color);

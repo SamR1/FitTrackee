@@ -279,7 +279,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base.scss';
+  @import '~@/scss/vars.scss';
   .workouts-list {
     display: flex;
     flex-direction: column;

@@ -82,7 +82,6 @@
 </script>
 
 <style lang="scss">
-  @import '~@/scss/base';
   #user-calendar {
     .calendar-card {
       padding: 0;
