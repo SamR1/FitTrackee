@@ -151,8 +151,9 @@
       type: props.displaySegment ? 'SEGMENT' : 'WORKOUT',
       workoutDate: workoutDate.workout_date,
       weatherEnd: segment ? null : workout.weather_end,
-      workoutId: workout.id,
       weatherStart: segment ? null : workout.weather_start,
+      with_gpx: workout.with_gpx,
+      workoutId: workout.id,
       workoutTime: workoutDate.workout_time,
     }
   }
