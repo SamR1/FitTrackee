@@ -1,6 +1,6 @@
 # Change log
 
-## Version 0.5.1 (unreleased)
+## Version 0.5.1 (2021/11/30)
 
 ### Issues Closed
 
