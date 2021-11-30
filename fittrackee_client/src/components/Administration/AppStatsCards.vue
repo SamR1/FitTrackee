@@ -42,7 +42,6 @@
 </script>
 
 <style lang="scss">
-  @import '~@/scss/base';
   #user-stats {
     display: flex;
     flex-wrap: wrap;

@@ -1139,3 +1139,89 @@ class TestGetWorkout(ApiTestCaseMixin):
         assert response.status_code == 404
         assert 'not found' in data['status']
         assert 'Map does not exist' in data['message']
+
+
+class TestDownloadWorkoutGpx(ApiTestCaseMixin):
+    def test_it_returns_404_if_workout_does_not_exist(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.get(
+            f'/api/workouts/{get_random_short_id()}/gpx/download',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 404
+        assert 'not found' in data['status']
+        assert 'workout not found' in data['message']
+
+    def test_it_returns_404_if_workout_does_not_have_gpx(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.get(
+            f'/api/workouts/{workout_cycling_user_1.short_id}/gpx/download',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 404
+        assert 'not found' in data['status']
+        assert 'no gpx file for workout' in data['message']
+
+    def test_it_returns_404_if_workout_belongs_to_a_different_user(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.get(
+            f'/api/workouts/{workout_cycling_user_2.short_id}/gpx/download',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 404
+        assert 'not found' in data['status']
+        assert 'workout not found' in data['message']
+
+    def test_it_calls_send_from_directory_if_workout_has_gpx(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        gpx_file_path = 'file.gpx'
+        workout_cycling_user_1.gpx = gpx_file_path
+        with patch('fittrackee.workouts.workouts.send_from_directory') as mock:
+            mock.return_value = 'file'
+            client, auth_token = self.get_test_client_and_auth_token(app)
+
+            client.get(
+                (
+                    f'/api/workouts/{workout_cycling_user_1.short_id}/'
+                    'gpx/download'
+                ),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        mock.assert_called_once_with(
+            app.config['UPLOAD_FOLDER'],
+            gpx_file_path,
+            mimetype='application/gpx+xml',
+            as_attachment=True,
+        )

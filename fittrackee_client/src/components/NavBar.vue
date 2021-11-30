@@ -122,7 +122,9 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/base';
+  @import '~@/scss/fonts.scss';
+  @import '~@/scss/colors.scss';
+  @import '~@/scss/vars.scss';
 
   #nav {
     background: var(--nav-bar-background-color);

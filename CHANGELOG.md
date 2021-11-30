@@ -1,5 +1,18 @@
 # Change log
 
+## Version 0.5.1 (2021/11/30)
+
+### Issues Closed
+
+#### New Features
+
+* [#116](https://github.com/SamR1/FitTrackee/issues/116) - Better UI for Speed and Elevation buttons in the graph of the Workout screen
+* [#115](https://github.com/SamR1/FitTrackee/issues/115) - Add option to download the GPX file of a Workout
+* [#5](https://github.com/SamR1/FitTrackee/issues/5) - Display a chart with average speed
+
+In this release 3 issue were closed.  
+
+
 ## Version 0.5.0 (2021/11/14)
 
 ### Issues Closed

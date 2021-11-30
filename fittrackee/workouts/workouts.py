@@ -2,10 +2,16 @@ import json
 import os
 import shutil
 from datetime import timedelta
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 import requests
-from flask import Blueprint, Response, current_app, request, send_file
+from flask import (
+    Blueprint,
+    Response,
+    current_app,
+    request,
+    send_from_directory,
+)
 from sqlalchemy import exc
 from werkzeug.exceptions import RequestEntityTooLarge
 
@@ -703,8 +709,67 @@ def get_segment_chart_data(
     )
 
 
+@workouts_blueprint.route(
+    '/workouts/<string:workout_short_id>/gpx/download', methods=['GET']
+)
+@authenticate
+def download_workout_gpx(
+    auth_user_id: int, workout_short_id: str
+) -> Union[HttpResponse, Response]:
+    """
+    Download gpx file
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/gpx/download HTTP/1.1
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/gpx+xml
+
+    :param integer auth_user_id: authenticate user id (from JSON Web Token)
+    :param string workout_short_id: workout short id
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 404:
+        - workout not found
+        - no gpx file for workout
+    """
+    workout_uuid = decode_short_id(workout_short_id)
+    workout = Workout.query.filter_by(
+        uuid=workout_uuid, user_id=auth_user_id
+    ).first()
+    if not workout:
+        return DataNotFoundErrorResponse(
+            data_type='workout',
+            message=f'workout not found (id: {workout_short_id})',
+        )
+
+    if workout.gpx is None:
+        return DataNotFoundErrorResponse(
+            data_type='gpx',
+            message=f'no gpx file for workout (id: {workout_short_id})',
+        )
+
+    return send_from_directory(
+        current_app.config['UPLOAD_FOLDER'],
+        workout.gpx,
+        mimetype='application/gpx+xml',
+        as_attachment=True,
+    )
+
+
 @workouts_blueprint.route('/workouts/map/<map_id>', methods=['GET'])
-def get_map(map_id: int) -> Any:
+def get_map(map_id: int) -> Union[HttpResponse, Response]:
     """
     Get map image for workouts with gpx
 
@@ -737,8 +802,10 @@ def get_map(map_id: int) -> Any:
         workout = Workout.query.filter_by(map_id=map_id).first()
         if not workout:
             return NotFoundErrorResponse('Map does not exist.')
-        absolute_map_filepath = get_absolute_file_path(workout.map)
-        return send_file(absolute_map_filepath)
+        return send_from_directory(
+            current_app.config['UPLOAD_FOLDER'],
+            workout.map,
+        )
     except Exception as e:
         return handle_error_and_return_response(e)
 

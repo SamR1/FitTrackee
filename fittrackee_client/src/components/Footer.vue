@@ -49,7 +49,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/base';
+  @import '~@/scss/vars.scss';
 
   #footer {
     display: flex;

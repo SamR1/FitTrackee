@@ -35,6 +35,15 @@
         <label v-if="fullStats">
           <input
             type="radio"
+            name="average_speed"
+            :checked="displayedData === 'average_speed'"
+            @click="updateDisplayData"
+          />
+          {{ $t('workouts.AVERAGE_SPEED') }}
+        </label>
+        <label v-if="fullStats">
+          <input
+            type="radio"
             name="total_ascent"
             :checked="displayedData === 'total_ascent'"
             @click="updateDisplayData"
@@ -193,7 +202,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base';
+  @import '~@/scss/vars';
   .start-chart {
     .chart-radio {
       display: flex;

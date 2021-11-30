@@ -26,8 +26,6 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/base';
-
   #error {
     display: flex;
     align-items: center;

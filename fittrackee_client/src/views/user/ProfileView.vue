@@ -20,7 +20,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base.scss';
+  @import '~@/scss/vars.scss';
   #profile {
     display: flex;
     flex-direction: column;

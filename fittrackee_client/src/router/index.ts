@@ -14,6 +14,9 @@ import UserPreferencesEdition from '@/components/User/ProfileEdition/UserPrefere
 import UserSportPreferences from '@/components/User/UserSportPreferences.vue'
 import store from '@/store'
 import { AUTH_USER_STORE } from '@/store/constants'
+import Dashboard from '@/views/Dashboard.vue'
+import NotFoundView from '@/views/NotFoundView.vue'
+import LoginOrRegister from '@/views/user/LoginOrRegister.vue'
 
 const getTabFromPath = (path: string): string => {
   const regex = /(\/profile)(\/edit)*(\/*)/
@@ -25,21 +28,18 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Dashboard',
-    component: () =>
-      import(/* webpackChunkName: 'main' */ '@/views/Dashboard.vue'),
+    component: Dashboard,
   },
   {
     path: '/login',
     name: 'Login',
-    component: () =>
-      import(/* webpackChunkName: 'main' */ '@/views/user/LoginOrRegister.vue'),
+    component: LoginOrRegister,
     props: { action: 'login' },
   },
   {
     path: '/register',
     name: 'Register',
-    component: () =>
-      import(/* webpackChunkName: 'main' */ '@/views/user/LoginOrRegister.vue'),
+    component: LoginOrRegister,
     props: { action: 'register' },
   },
   {
@@ -147,7 +147,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/statistics',
     name: 'Statistics',
     component: () =>
-      import(/* webpackChunkName: 'main' */ '@/views/StatisticsView.vue'),
+      import(/* webpackChunkName: 'statistics' */ '@/views/StatisticsView.vue'),
   },
   {
     path: '/users/:username',
@@ -230,8 +230,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
-    component: () =>
-      import(/* webpackChunkName: 'main' */ '@/views/NotFoundView.vue'),
+    component: NotFoundView,
   },
 ]
 

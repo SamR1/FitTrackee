@@ -25,7 +25,7 @@
 </script>
 
 <style lang="scss">
-  @import '~@/scss/base';
+  @import '~@/scss/vars.scss';
   .stat-card {
     flex: 1;
     max-width: 25%;

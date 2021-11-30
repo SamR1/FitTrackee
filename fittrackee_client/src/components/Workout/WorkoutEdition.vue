@@ -412,7 +412,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base';
+  @import '~@/scss/vars.scss';
 
   #workout-edition {
     @media screen and (max-width: $small-limit) {

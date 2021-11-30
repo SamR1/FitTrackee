@@ -1,6 +1,6 @@
 {
   "name": "fittrackee_client",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -22,13 +22,13 @@
     "leaflet": "^1.7.1",
     "register-service-worker": "^1.7.1",
     "vue": "^3.0.0",
-    "vue-chart-3": "^0.5.11",
+    "vue-chart-3": "^3.0.3",
     "vue-i18n": "^9.1.9",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
-    "@intlify/vue-i18n-loader": "^3.3.0",
+    "@intlify/vue-i18n-loader": "^4.0.1",
     "@types/chai": "^4.2.11",
     "@types/mocha": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
@@ -52,7 +52,7 @@
     "eslint-plugin-vue": "^7.0.0",
     "prettier": "^2.2.1",
     "sass": "^1.26.5",
-    "sass-loader": "^8.0.2",
+    "sass-loader": "^10.2.0",
     "typescript": "~4.4.4",
     "vue-cli-plugin-i18n": "~2.3.1"
   },

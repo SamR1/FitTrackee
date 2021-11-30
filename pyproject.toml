@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "0.5.0"
+version = "0.5.1"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "GPL-3.0"
@@ -39,10 +39,10 @@ pytz = "^2021.3"
 shortuuid = "^1.0.8"
 staticmap = "^0.5.4"
 tqdm = "^4.62"
-SQLAlchemy = "1.4.26"
+SQLAlchemy = "1.4.27"
 
 [tool.poetry.dev-dependencies]
-black = "^21.10b0"
+black = "^21.11b1"
 freezegun = "^1.1"
 mypy = "^0.910"
 pyopenssl = "^20.0"
@@ -56,8 +56,8 @@ pytest-selenium = "^2.0.1"
 recommonmark = "^0.7"
 sphinx-bootstrap-theme = "^0.8.0"
 sphinxcontrib-httpdomain = "^1.7"
-types-pytz = "^2021.3.0"
-types-requests = "^2.26.0"
+types-pytz = "^2021.3.1"
+types-requests = "^2.26.1"
 types-freezegun = "^1.1"
 Sphinx = "^4.3"
 

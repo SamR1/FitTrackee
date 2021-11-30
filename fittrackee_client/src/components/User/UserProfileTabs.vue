@@ -50,7 +50,7 @@
 </script>
 
 <style lang="scss">
-  @import '~@/scss/base.scss';
+  @import '~@/scss/vars.scss';
 
   .profile-tabs {
     margin: $default-margin 0 $default-margin;

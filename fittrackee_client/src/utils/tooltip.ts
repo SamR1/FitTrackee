@@ -11,6 +11,8 @@ export const formatTooltipValue = (
   const unitFrom = 'km'
   const unitTo = useImperialUnits ? units[unitFrom].defaultTarget : unitFrom
   switch (displayedData) {
+    case 'average_speed':
+      return `${value.toFixed(2)} ${unitTo}/h`
     case 'total_duration':
       return formatDuration(value, formatWithUnits)
     case 'total_distance':

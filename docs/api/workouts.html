@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Workouts &#8212; FitTrackee 0.5.0
+    <title>Workouts &#8212; FitTrackee 0.5.1
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.5.0
+        <span class="navbar-text navbar-version pull-left"><b>0.5.1
 </b></span>
       </div>
 
@@ -59,8 +59,8 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">API documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../troubleshooting/index.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change log</a></li>
@@ -692,6 +692,45 @@
 <p>Status codes are status codes returned by tile server</p>
 </dd></dl>
 
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)-gpx-download">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/gpx/download</span></span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)-gpx-download" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download gpx file</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF/gpx/download</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/gpx+xml</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
+<li><p><strong>workout_short_id</strong> (<em>string</em>) – workout short id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p>provide a valid auth token</p></li>
+<li><p>signature expired, please log in again</p></li>
+<li><p>invalid token, please log in again</p></li>
+</ul>
+</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
+<li><p>workout not found</p></li>
+<li><p>no gpx file for workout</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-workouts">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/workouts</span></span><a class="headerlink" href="#post--api-workouts" title="Permalink to this definition">¶</a></dt>
@@ -1132,7 +1171,7 @@
     </p>
     <p>
         &copy; Copyright 2018 - 2021, SamR1.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1.<br/>
     </p>
   </div>
 </footer>

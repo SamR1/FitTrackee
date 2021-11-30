@@ -69,7 +69,6 @@
 </script>
 
 <style lang="scss">
-  @import '~@/scss/base';
   #user-stats {
     display: flex;
     flex: 1 0 25%;

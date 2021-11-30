@@ -106,7 +106,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base';
+  @import '~@/scss/vars.scss';
   #workout-map {
     padding: $default-padding 0;
     .leaflet-container,
