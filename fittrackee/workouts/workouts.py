@@ -2,7 +2,7 @@ import json
 import os
 import shutil
 from datetime import timedelta
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 import requests
 from flask import (
@@ -10,7 +10,6 @@ from flask import (
     Response,
     current_app,
     request,
-    send_file,
     send_from_directory,
 )
 from sqlalchemy import exc
@@ -770,7 +769,7 @@ def download_workout_gpx(
 
 
 @workouts_blueprint.route('/workouts/map/<map_id>', methods=['GET'])
-def get_map(map_id: int) -> Any:
+def get_map(map_id: int) -> Union[HttpResponse, Response]:
     """
     Get map image for workouts with gpx
 
@@ -803,8 +802,10 @@ def get_map(map_id: int) -> Any:
         workout = Workout.query.filter_by(map_id=map_id).first()
         if not workout:
             return NotFoundErrorResponse('Map does not exist.')
-        absolute_map_filepath = get_absolute_file_path(workout.map)
-        return send_file(absolute_map_filepath)
+        return send_from_directory(
+            current_app.config['UPLOAD_FOLDER'],
+            workout.map,
+        )
     except Exception as e:
         return handle_error_and_return_response(e)
 
