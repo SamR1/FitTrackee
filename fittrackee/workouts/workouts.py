@@ -1288,7 +1288,7 @@ def update_workout(
         if response_object:
             return response_object
 
-        workout = edit_workout(workout, workout_data, auth_user.id)
+        workout = edit_workout(workout, workout_data, auth_user)
         db.session.commit()
         return {
             'status': 'success',
