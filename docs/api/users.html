@@ -242,13 +242,8 @@
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Query Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Query Parameters</dt>
-<dd class="field-even"><ul class="simple">
 <li><p><strong>page</strong> (<em>integer</em>) – page if using pagination (default: 1)</p></li>
 <li><p><strong>per_page</strong> (<em>integer</em>) – number of users per page (default: 10, max: 50)</p></li>
 <li><p><strong>q</strong> (<em>string</em>) – query on user name</p></li>
@@ -257,13 +252,13 @@
 <li><p><strong>order</strong> (<em>string</em>) – sorting order (default: <code class="docutils literal notranslate"><span class="pre">asc</span></code>)</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Request Headers</dt>
-<dd class="field-odd"><ul class="simple">
+<dt class="field-even">Request Headers</dt>
+<dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
 </ul>
 </dd>
-<dt class="field-even">Status Codes</dt>
-<dd class="field-even"><ul class="simple">
+<dt class="field-odd">Status Codes</dt>
+<dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
 <li><p>provide a valid auth token</p></li>
@@ -361,7 +356,6 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
 <li><p><strong>user_name</strong> (<em>integer</em>) – user name</p></li>
 </ul>
 </dd>
@@ -507,7 +501,6 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
 <li><p><strong>user_name</strong> (<em>string</em>) – user name</p></li>
 </ul>
 </dd>
@@ -561,7 +554,6 @@ one admin</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
 <li><p><strong>user_name</strong> (<em>string</em>) – user name</p></li>
 </ul>
 </dd>

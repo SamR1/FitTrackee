@@ -56,8 +56,8 @@ def verify_user(
     current_request: Request, verify_admin: bool
 ) -> Tuple[Optional[HttpResponse], Optional[User]]:
     """
-    Return user id, if the provided token is valid and if user has admin
-    rights if 'verify_admin' is True
+    Return authenticated user, if the provided token is valid and user has
+    admin rights if 'verify_admin' is True
     """
     default_message = 'provide a valid auth token'
     auth_header = current_request.headers.get('Authorization')
