@@ -299,9 +299,9 @@ def process_one_gpx_file(
         gpx_data, map_data, weather_data = get_gpx_info(
             params['file_path'], stopped_speed_threshold
         )
-        auth_user_id = params['user'].id
+        auth_user = params['auth_user']
         new_filepath = get_new_file_path(
-            auth_user_id=auth_user_id,
+            auth_user_id=auth_user.id,
             workout_date=gpx_data['start'],
             old_filename=filename,
             sport=params['sport_label'],
@@ -311,7 +311,7 @@ def process_one_gpx_file(
         gpx_data['filename'] = new_filepath
 
         map_filepath = get_new_file_path(
-            auth_user_id=auth_user_id,
+            auth_user_id=auth_user.id,
             workout_date=gpx_data['start'],
             extension='.png',
             sport=params['sport_label'],
@@ -325,7 +325,7 @@ def process_one_gpx_file(
 
     try:
         new_workout = create_workout(
-            params['user'], params['workout_data'], gpx_data
+            auth_user, params['workout_data'], gpx_data
         )
         new_workout.map = map_filepath
         new_workout.map_id = get_map_hash(map_filepath)
@@ -380,7 +380,7 @@ def process_zip_archive(
 
 
 def process_files(
-    auth_user_id: int,
+    auth_user: User,
     workout_data: Dict,
     workout_file: FileStorage,
     folders: Dict,
@@ -399,9 +399,8 @@ def process_files(
             'error',
             f"Sport id: {workout_data.get('sport_id')} does not exist",
         )
-    user = User.query.filter_by(id=auth_user_id).first()
     sport_preferences = UserSportPreference.query.filter_by(
-        user_id=user.id, sport_id=sport.id
+        user_id=auth_user.id, sport_id=sport.id
     ).first()
     stopped_speed_threshold = (
         sport.stopped_speed_threshold
@@ -410,7 +409,7 @@ def process_files(
     )
 
     common_params = {
-        'user': user,
+        'auth_user': auth_user,
         'workout_data': workout_data,
         'file_path': file_path,
         'sport_label': sport.label,

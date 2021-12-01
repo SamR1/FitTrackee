@@ -12,14 +12,6 @@ from fittrackee.responses import (
 from .models import User
 
 
-def is_admin(user_id: int) -> bool:
-    """
-    Return if user has admin rights
-    """
-    user = User.query.filter_by(id=user_id).first()
-    return user.admin
-
-
 def is_valid_email(email: str) -> bool:
     """
     Return if email format is valid

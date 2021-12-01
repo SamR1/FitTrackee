@@ -980,7 +980,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     try:
         new_workouts = process_files(
-            auth_user.id, workout_data, workout_file, folders
+            auth_user, workout_data, workout_file, folders
         )
         if len(new_workouts) > 0:
             response_object = {
