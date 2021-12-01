@@ -11,6 +11,8 @@ build-client: lint-client
 
 check-all: lint-all type-check test-python test-client
 
+check-python: lint-python type-check test-python
+
 clean:
 	rm -rf .mypy_cache
 	rm -rf .pytest_cache

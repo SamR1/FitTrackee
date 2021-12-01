@@ -179,7 +179,7 @@ def get_workouts(
 @stats_blueprint.route('/stats/<user_name>/by_time', methods=['GET'])
 @authenticate
 def get_workouts_by_time(
-    auth_user_id: int, user_name: str
+    auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
     """
     Get workouts statistics for a user by time
@@ -258,7 +258,6 @@ def get_workouts_by_time(
         "status": "success"
       }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param integer user_name: user name
 
     :query string from: start date (format: ``%Y-%m-%d``)
@@ -287,7 +286,7 @@ def get_workouts_by_time(
 @stats_blueprint.route('/stats/<user_name>/by_sport', methods=['GET'])
 @authenticate
 def get_workouts_by_sport(
-    auth_user_id: int, user_name: str
+    auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
     """
     Get workouts statistics for a user by sport
@@ -361,7 +360,6 @@ def get_workouts_by_sport(
         "status": "success"
       }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param integer user_name: user name
 
     :query integer sport_id: sport id
@@ -383,7 +381,7 @@ def get_workouts_by_sport(
 
 @stats_blueprint.route('/stats/all', methods=['GET'])
 @authenticate_as_admin
-def get_application_stats(auth_user_id: int) -> Dict:
+def get_application_stats(auth_user: User) -> Dict:
     """
     Get all application statistics
 
@@ -410,8 +408,6 @@ def get_application_stats(auth_user_id: int) -> Dict:
         },
         "status": "success"
       }
-
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 

@@ -20,7 +20,7 @@ sports_blueprint = Blueprint('sports', __name__)
 
 @sports_blueprint.route('/sports', methods=['GET'])
 @authenticate
-def get_sports(auth_user_id: int) -> Dict:
+def get_sports(auth_user: User) -> Dict:
     """
     Get all sports
 
@@ -165,8 +165,6 @@ def get_sports(auth_user_id: int) -> Dict:
         "status": "success"
       }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
-
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: success
@@ -176,16 +174,15 @@ def get_sports(auth_user_id: int) -> Dict:
         - invalid token, please log in again
 
     """
-    user = User.query.filter_by(id=int(auth_user_id)).first()
     sports = Sport.query.order_by(Sport.id).all()
     sports_data = []
     for sport in sports:
         sport_preferences = UserSportPreference.query.filter_by(
-            user_id=user.id, sport_id=sport.id
+            user_id=auth_user.id, sport_id=sport.id
         ).first()
         sports_data.append(
             sport.serialize(
-                is_admin=user.admin,
+                is_admin=auth_user.admin,
                 sport_preferences=sport_preferences.serialize()
                 if sport_preferences
                 else None,
@@ -199,7 +196,7 @@ def get_sports(auth_user_id: int) -> Dict:
 
 @sports_blueprint.route('/sports/<int:sport_id>', methods=['GET'])
 @authenticate
-def get_sport(auth_user_id: int, sport_id: int) -> Union[Dict, HttpResponse]:
+def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
     """
     Get a sport
 
@@ -273,7 +270,6 @@ def get_sport(auth_user_id: int, sport_id: int) -> Union[Dict, HttpResponse]:
         "status": "not found"
       }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param integer sport_id: sport id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
@@ -286,18 +282,17 @@ def get_sport(auth_user_id: int, sport_id: int) -> Union[Dict, HttpResponse]:
     :statuscode 404: sport not found
 
     """
-    user = User.query.filter_by(id=int(auth_user_id)).first()
     sport = Sport.query.filter_by(id=sport_id).first()
     if sport:
         sport_preferences = UserSportPreference.query.filter_by(
-            user_id=user.id, sport_id=sport.id
+            user_id=auth_user.id, sport_id=sport.id
         ).first()
         return {
             'status': 'success',
             'data': {
                 'sports': [
                     sport.serialize(
-                        is_admin=user.admin,
+                        is_admin=auth_user.admin,
                         sport_preferences=sport_preferences.serialize()
                         if sport_preferences
                         else None,
@@ -310,9 +305,7 @@ def get_sport(auth_user_id: int, sport_id: int) -> Union[Dict, HttpResponse]:
 
 @sports_blueprint.route('/sports/<int:sport_id>', methods=['PATCH'])
 @authenticate_as_admin
-def update_sport(
-    auth_user_id: int, sport_id: int
-) -> Union[Dict, HttpResponse]:
+def update_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
     """
     Update a sport
     Authenticated user must be an admin
@@ -364,7 +357,6 @@ def update_sport(
         "status": "not found"
       }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param integer sport_id: sport id
 
     :<json string is_active: sport active status
@@ -387,7 +379,6 @@ def update_sport(
         return InvalidPayloadErrorResponse()
 
     try:
-        user = User.query.filter_by(id=int(auth_user_id)).first()
         sport = Sport.query.filter_by(id=sport_id).first()
         if not sport:
             return DataNotFoundErrorResponse('sports')
@@ -395,14 +386,14 @@ def update_sport(
         sport.is_active = sport_data.get('is_active')
         db.session.commit()
         sport_preferences = UserSportPreference.query.filter_by(
-            user_id=user.id, sport_id=sport.id
+            user_id=auth_user.id, sport_id=sport.id
         ).first()
         return {
             'status': 'success',
             'data': {
                 'sports': [
                     sport.serialize(
-                        is_admin=user.admin,
+                        is_admin=auth_user.admin,
                         sport_preferences=sport_preferences.serialize()
                         if sport_preferences
                         else None,
