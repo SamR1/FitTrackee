@@ -369,6 +369,7 @@ def get_workout(
           },
           "status": "not found"
         }
+
     :param string workout_short_id: workout short id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
