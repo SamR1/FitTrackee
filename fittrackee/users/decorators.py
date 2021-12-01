@@ -13,11 +13,10 @@ def authenticate(f: Callable) -> Callable:
     def decorated_function(
         *args: Any, **kwargs: Any
     ) -> Union[Callable, HttpResponse]:
-        verify_admin = False
-        response_object, resp = verify_user(request, verify_admin)
+        response_object, user = verify_user(request, verify_admin=False)
         if response_object:
             return response_object
-        return f(resp, *args, **kwargs)
+        return f(user, *args, **kwargs)
 
     return decorated_function
 
@@ -27,10 +26,9 @@ def authenticate_as_admin(f: Callable) -> Callable:
     def decorated_function(
         *args: Any, **kwargs: Any
     ) -> Union[Callable, HttpResponse]:
-        verify_admin = True
-        response_object, resp = verify_user(request, verify_admin)
+        response_object, user = verify_user(request, verify_admin=True)
         if response_object:
             return response_object
-        return f(resp, *args, **kwargs)
+        return f(user, *args, **kwargs)
 
     return decorated_function

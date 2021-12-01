@@ -62,7 +62,7 @@ def register_controls(
 
 def verify_user(
     current_request: Request, verify_admin: bool
-) -> Tuple[Optional[HttpResponse], Optional[int]]:
+) -> Tuple[Optional[HttpResponse], Optional[User]]:
     """
     Return user id, if the provided token is valid and if user has admin
     rights if 'verify_admin' is True
@@ -78,9 +78,9 @@ def verify_user(
     user = User.query.filter_by(id=resp).first()
     if not user:
         return UnauthorizedErrorResponse(default_message), None
-    if verify_admin and not is_admin(resp):
+    if verify_admin and not user.admin:
         return ForbiddenErrorResponse(), None
-    return None, resp
+    return None, user
 
 
 def can_view_workout(
