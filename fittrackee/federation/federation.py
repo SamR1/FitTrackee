@@ -4,15 +4,11 @@ from flask import Blueprint, request
 
 from fittrackee.federation.exceptions import RemoteActorException
 from fittrackee.federation.utils_user import create_remote_user
-from fittrackee.responses import (
-    HttpResponse,
-    InvalidPayloadErrorResponse,
-    UserNotFoundErrorResponse,
-)
+from fittrackee.responses import HttpResponse, InvalidPayloadErrorResponse
 from fittrackee.users.decorators import authenticate
 from fittrackee.users.models import User
 
-from .decorators import federation_required
+from .decorators import federation_required, get_local_actor_from_username
 from .inbox import inbox
 from .models import Actor, Domain
 
@@ -23,7 +19,10 @@ ap_federation_blueprint = Blueprint('ap_federation', __name__)
     '/user/<string:preferred_username>', methods=['GET']
 )
 @federation_required
-def get_actor(app_domain: Domain, preferred_username: str) -> HttpResponse:
+@get_local_actor_from_username
+def get_actor(
+    local_actor: Actor, app_domain: Domain, preferred_username: str
+) -> HttpResponse:
     """
     Get a local actor
 
@@ -73,15 +72,8 @@ def get_actor(app_domain: Domain, preferred_username: str) -> HttpResponse:
     :statuscode 404: user does not exist
 
     """
-    actor = Actor.query.filter_by(
-        preferred_username=preferred_username,
-        domain_id=app_domain.id,
-    ).first()
-    if not actor:
-        return UserNotFoundErrorResponse()
-
     return HttpResponse(
-        response=actor.serialize(),
+        response=local_actor.serialize(),
         content_type='application/jrd+json; charset=utf-8',
     )
 
@@ -171,8 +163,9 @@ def remote_actor(
     '/user/<string:preferred_username>/inbox', methods=['POST']
 )
 @federation_required
+@get_local_actor_from_username
 def user_inbox(
-    app_domain: Domain, preferred_username: str
+    local_actor: Actor, app_domain: Domain, preferred_username: str
 ) -> Union[Dict, HttpResponse]:
     """
     Post an activity to user inbox
@@ -205,4 +198,4 @@ def user_inbox(
     :statuscode 404: user does not exist
 
     """
-    return inbox(request, app_domain, preferred_username)
+    return inbox(request)

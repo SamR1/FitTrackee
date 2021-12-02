@@ -7,9 +7,10 @@ from fittrackee import appLog
 from fittrackee.responses import (
     DisabledFederationErrorResponse,
     InternalServerErrorResponse,
+    UserNotFoundErrorResponse,
 )
 
-from .models import Domain
+from .models import Actor, Domain
 
 
 def federation_required(f: Callable) -> Callable:
@@ -24,5 +25,23 @@ def federation_required(f: Callable) -> Callable:
             appLog.error('Local domain does not exist.')
             return InternalServerErrorResponse()
         return f(app_domain, *args, **kwargs)
+
+    return decorated_function
+
+
+def get_local_actor_from_username(f: Callable) -> Callable:
+    @wraps(f)
+    def decorated_function(*args: Any, **kwargs: Any) -> Callable:
+        app_domain = args[0]
+        preferred_username = kwargs.get('preferred_username')
+        if not preferred_username:
+            return UserNotFoundErrorResponse()
+        actor = Actor.query.filter_by(
+            preferred_username=preferred_username,
+            domain_id=app_domain.id,
+        ).first()
+        if not actor:
+            return UserNotFoundErrorResponse()
+        return f(actor, *args, **kwargs)
 
     return decorated_function

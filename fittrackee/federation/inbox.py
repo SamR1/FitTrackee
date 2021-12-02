@@ -1,6 +1,6 @@
 from datetime import datetime
 from json import dumps
-from typing import Dict, Optional, Union
+from typing import Dict, Union
 from urllib.parse import urlparse
 
 import requests
@@ -11,11 +11,10 @@ from fittrackee.responses import (
     HttpResponse,
     InvalidPayloadErrorResponse,
     UnauthorizedErrorResponse,
-    UserNotFoundErrorResponse,
 )
 
 from .exceptions import InvalidSignatureException
-from .models import Actor, Domain
+from .models import Actor
 from .signature import (
     VALID_DATE_FORMAT,
     SignatureVerification,
@@ -26,18 +25,7 @@ from .tasks.activity import handle_activity
 from .utils import is_invalid_activity_data
 
 
-def inbox(
-    request: Request, app_domain: Domain, username: Optional[str]
-) -> Union[Dict, HttpResponse]:
-    # if user inbox
-    if username:
-        recipient = Actor.query.filter_by(
-            preferred_username=username,
-            domain_id=app_domain.id,
-        ).first()
-        if not recipient:
-            return UserNotFoundErrorResponse()
-
+def inbox(request: Request) -> Union[Dict, HttpResponse]:
     activity_data = request.get_json()
     if not activity_data or is_invalid_activity_data(activity_data):
         return InvalidPayloadErrorResponse()
