@@ -28,7 +28,7 @@ from .exceptions import (
     FollowRequestAlreadyRejectedError,
     UserNotFoundException,
 )
-from .models import User, UserSportPreference
+from .models import FollowRequest, User, UserSportPreference
 from .roles import UserRole
 from .utils.admin import set_admin_rights
 
@@ -633,3 +633,73 @@ def follow_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     except FollowRequestAlreadyRejectedError:
         return ForbiddenErrorResponse()
     return successful_response_dict
+
+
+@users_blueprint.route('/users/<user_name>/followers', methods=['GET'])
+@authenticate
+def get_followers(
+    auth_user: User, user_name: str
+) -> Union[Dict, HttpResponse]:
+    params = request.args.copy()
+    page = int(params.get('page', 1))
+    user = User.query.filter_by(username=user_name).first()
+    if not user:
+        return UserNotFoundErrorResponse()
+
+    followers_pagination = user.followers.order_by(
+        FollowRequest.updated_at.desc()
+    ).paginate(page, USER_PER_PAGE, False)
+
+    return {
+        'status': 'success',
+        'data': {
+            'followers': [
+                follower.serialize(
+                    role=UserRole.ADMIN if auth_user.admin else UserRole.USER
+                )
+                for follower in followers_pagination.items
+            ]
+        },
+        'pagination': {
+            'has_next': followers_pagination.has_next,
+            'has_prev': followers_pagination.has_prev,
+            'page': followers_pagination.page,
+            'pages': followers_pagination.pages,
+            'total': followers_pagination.total,
+        },
+    }
+
+
+@users_blueprint.route('/users/<user_name>/following', methods=['GET'])
+@authenticate
+def get_following(
+    auth_user: User, user_name: str
+) -> Union[Dict, HttpResponse]:
+    params = request.args.copy()
+    page = int(params.get('page', 1))
+    user = User.query.filter_by(username=user_name).first()
+    if not user:
+        return UserNotFoundErrorResponse()
+
+    following_pagination = user.following.order_by(
+        FollowRequest.updated_at.desc()
+    ).paginate(page, USER_PER_PAGE, False)
+
+    return {
+        'status': 'success',
+        'data': {
+            'following': [
+                following.serialize(
+                    role=UserRole.ADMIN if auth_user.admin else UserRole.USER
+                )
+                for following in following_pagination.items
+            ]
+        },
+        'pagination': {
+            'has_next': following_pagination.has_next,
+            'has_prev': following_pagination.has_prev,
+            'page': following_pagination.page,
+            'pages': following_pagination.pages,
+            'total': following_pagination.total,
+        },
+    }
