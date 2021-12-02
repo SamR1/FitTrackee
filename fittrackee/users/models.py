@@ -3,7 +3,7 @@ from typing import Dict, Optional, Union
 
 import jwt
 from flask import current_app
-from sqlalchemy import func
+from sqlalchemy import and_, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.sql.expression import select
 
@@ -154,6 +154,32 @@ class User(BaseModel):
     )
     manually_approves_followers = db.Column(
         db.Boolean, default=True, nullable=False
+    )
+    followers = db.relationship(
+        'User',
+        secondary='follow_requests',
+        primaryjoin=and_(
+            id == FollowRequest.followed_user_id,
+            FollowRequest.is_approved == True,  # noqa
+        ),
+        secondaryjoin=and_(
+            id == FollowRequest.follower_user_id,
+        ),
+        lazy='dynamic',
+        viewonly=True,
+    )
+    following = db.relationship(
+        'User',
+        secondary='follow_requests',
+        primaryjoin=and_(
+            id == FollowRequest.follower_user_id,
+            FollowRequest.is_approved == True,  # noqa
+        ),
+        secondaryjoin=and_(
+            id == FollowRequest.followed_user_id,
+        ),
+        lazy='dynamic',
+        viewonly=True,
     )
 
     def __repr__(self) -> str:

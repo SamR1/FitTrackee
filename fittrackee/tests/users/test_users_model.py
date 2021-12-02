@@ -230,3 +230,61 @@ class TestUserFollowingModel:
         assert follow_request in user_2.sent_follow_requests.all()
         assert follow_request.is_approved is True
         assert follow_request.updated_at is not None
+
+
+class TestUserFollowers:
+    def test_it_returns_empty_list_if_no_followers(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        assert user_1.followers.all() == []
+
+    def test_it_returns_empty_list_if_follow_request_is_not_approved(
+        self,
+        app: Flask,
+        user_1: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        assert user_1.followers.all() == []
+
+    def test_it_returns_follower_if_follow_request_is_approved(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        follow_request_from_user_2_to_user_1.is_approved = True
+        follow_request_from_user_2_to_user_1.updated_at = datetime.now()
+
+        assert user_1.followers.all() == [user_2]
+
+
+class TestUserFollowing:
+    def test_it_returns_empty_list_if_no_followers(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        assert user_1.following.all() == []
+
+    def test_it_returns_empty_list_if_follow_request_is_not_approved(
+        self,
+        app: Flask,
+        user_1: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        assert user_1.following.all() == []
+
+    def test_it_returns_follower_if_follow_request_is_approved(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        follow_request_from_user_1_to_user_2.is_approved = True
+        follow_request_from_user_1_to_user_2.updated_at = datetime.now()
+
+        assert user_1.following.all() == [user_2]
