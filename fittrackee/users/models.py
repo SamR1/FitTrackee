@@ -366,6 +366,8 @@ class User(BaseModel):
             'first_name': self.first_name,
             'last_name': self.last_name,
             'bio': self.bio,
+            'followers': self.followers.count(),
+            'following': self.following.count(),
             'location': self.location,
             'birth_date': self.birth_date,
             'picture': self.picture is not None,

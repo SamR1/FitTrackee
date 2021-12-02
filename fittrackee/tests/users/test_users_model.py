@@ -22,6 +22,8 @@ class TestUserModel:
         assert 'created_at' in serialized_user
         assert serialized_user['admin'] is False
         assert serialized_user['first_name'] is None
+        assert serialized_user['followers'] == 0
+        assert serialized_user['following'] == 0
         assert serialized_user['last_name'] is None
         assert serialized_user['bio'] is None
         assert serialized_user['location'] is None
@@ -113,6 +115,30 @@ class TestUserModel:
             == workout_cycling_user_1.short_id
         )
         assert serialized_user['records'][0]['workout_date']
+
+    def test_it_returns_followers_count(
+        self,
+        app: Flask,
+        user_1: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        follow_request_from_user_2_to_user_1.is_approved = True
+        follow_request_from_user_2_to_user_1.updated_at = datetime.utcnow()
+
+        serialized_user = user_1.serialize()
+        assert serialized_user['followers'] == 1
+
+    def test_it_returns_following_count(
+        self,
+        app: Flask,
+        user_1: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        follow_request_from_user_1_to_user_2.is_approved = True
+        follow_request_from_user_1_to_user_2.updated_at = datetime.utcnow()
+
+        serialized_user = user_1.serialize()
+        assert serialized_user['following'] == 1
 
 
 class TestUserSportModel:

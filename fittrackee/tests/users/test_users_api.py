@@ -25,6 +25,8 @@ class GetUserTestCase(ApiTestCaseMixin):
         assert user_dict['birth_date'] is None
         assert user_dict['bio'] is None
         assert user_dict['location'] is None
+        assert user_dict['followers'] == 0
+        assert user_dict['following'] == 0
         assert 'imperial_units' not in user_dict
         assert 'language' not in user_dict
         assert 'timezone' not in user_dict
