@@ -25,7 +25,9 @@ class AppConfig(BaseModel):
     @property
     def is_registration_enabled(self) -> bool:
         try:
-            nb_users = User.query.count()
+            nb_users = User.query.filter(
+                User.is_remote == False  # noqa
+            ).count()
         except exc.ProgrammingError as e:
             # workaround for user model related migrations
             if 'psycopg2.errors.UndefinedColumn' in str(e):
