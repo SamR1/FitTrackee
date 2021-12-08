@@ -147,6 +147,7 @@ class TestUserInbox(ApiTestCaseMixin):
         assert 'error' in data['status']
         assert 'Invalid signature.' in data['message']
 
+    @pytest.mark.disable_autouse_generate_keys
     def test_it_returns_401_if_signature_is_invalid(
         self, app_with_federation: Flask, user_1: User
     ) -> None:
@@ -175,6 +176,7 @@ class TestUserInbox(ApiTestCaseMixin):
         assert 'error' in data['status']
         assert 'Invalid signature.' in data['message']
 
+    @pytest.mark.disable_autouse_generate_keys
     @patch('fittrackee.federation.inbox.handle_activity')
     def test_it_returns_200_if_activity_and_signature_are_valid(
         self,
@@ -191,6 +193,7 @@ class TestUserInbox(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
 
+    @pytest.mark.disable_autouse_generate_keys
     @patch('fittrackee.federation.inbox.handle_activity')
     def test_it_calls_handle_activity_task(
         self,

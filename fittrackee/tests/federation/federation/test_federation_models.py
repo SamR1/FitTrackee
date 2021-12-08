@@ -122,6 +122,7 @@ class TestActivityPubLocalPersonActorModel:
             == f'https://{ap_url}/federation/inbox'
         )
 
+    @pytest.mark.disable_autouse_generate_keys
     def test_generated_key_is_valid(
         self, app_with_federation: Flask, user_1: User
     ) -> None:
