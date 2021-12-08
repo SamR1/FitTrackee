@@ -121,6 +121,21 @@ class TestActivityPubLocalPersonActorModel:
             serialized_actor['endpoints']['sharedInbox']
             == f'https://{ap_url}/federation/inbox'
         )
+        assert 'icon' not in serialized_actor
+
+    def test_it_returns_icon_if_user_has_picture(
+        self, app_with_federation: Flask, user_1: User
+    ) -> None:
+        user_1.picture = 'path/image.jpg'
+        actor_1 = user_1.actor
+        serialized_actor = actor_1.serialize()
+        ap_url = app_with_federation.config['AP_DOMAIN']
+
+        assert serialized_actor['icon'] == {
+            'type': 'Image',
+            'mediaType': 'image/jpeg',
+            'url': f'https://{ap_url}/api/users/{user_1.username}/picture',
+        }
 
     @pytest.mark.disable_autouse_generate_keys
     def test_generated_key_is_valid(

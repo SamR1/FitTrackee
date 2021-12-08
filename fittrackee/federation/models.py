@@ -10,6 +10,12 @@ from .constants import AP_CTX
 from .enums import ActorType
 from .utils import generate_keys, get_ap_url
 
+MEDIA_TYPE = {
+    'gif': 'image/gif',
+    'jpg': 'image/jpeg',
+    'png': 'image/png',
+}
+
 
 class Domain(BaseModel):
     """ActivityPub Domain"""
@@ -144,7 +150,7 @@ class Actor(BaseModel):
         self.last_fetch_date = datetime.utcnow()
 
     def serialize(self) -> Dict:
-        return {
+        actor_dict = {
             '@context': AP_CTX,
             'id': self.activitypub_id,
             'type': self.type.value,
@@ -163,3 +169,14 @@ class Actor(BaseModel):
             },
             'endpoints': {'sharedInbox': self.shared_inbox_url},
         }
+        if self.user.picture:
+            extension = self.user.picture.rsplit('.', 1)[1].lower()
+            actor_dict['icon'] = {
+                'type': 'Image',
+                'mediaType': MEDIA_TYPE[extension],
+                'url': (
+                    f'https://{current_app.config["AP_DOMAIN"]}'
+                    f'/api/users/{self.user.username}/picture'
+                ),
+            }
+        return actor_dict
