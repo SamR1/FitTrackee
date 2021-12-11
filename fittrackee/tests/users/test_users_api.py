@@ -6,6 +6,7 @@ from unittest.mock import patch
 
 from flask import Flask
 
+from fittrackee.federation.models import Actor
 from fittrackee.users.models import User, UserSportPreference
 from fittrackee.workouts.models import Sport, Workout
 
@@ -1293,3 +1294,18 @@ class TestDeleteUser(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
         assert data['message'] == 'error, registration is disabled'
+
+    def test_it_deletes_actor_when_deleting_user(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        actor_id = user_2.actor_id
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        client.delete(
+            f'/api/users/{user_2.username}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert Actor.query.filter_by(id=actor_id).first() is None

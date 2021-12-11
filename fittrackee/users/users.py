@@ -680,6 +680,7 @@ def delete_user(
         db.session.flush()
         user_picture = user.picture
         db.session.delete(user)
+        db.session.delete(user.actor)
         db.session.commit()
         if user_picture:
             picture_path = get_absolute_file_path(user.picture)

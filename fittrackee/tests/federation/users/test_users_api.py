@@ -2,6 +2,7 @@ import json
 
 from flask import Flask
 
+from fittrackee.federation.models import Actor
 from fittrackee.users.models import User
 
 from ...test_case_mixins import ApiTestCaseMixin
@@ -59,3 +60,20 @@ class TestGetRemoteUsers(ApiTestCaseMixin):
         assert len(data['data']['users']) == 1
         assert data['data']['users'][0]['username'] == remote_user.username
         assert data['data']['users'][0]['is_remote']
+
+
+class TestDeleteUser(ApiTestCaseMixin):
+    def test_it_deletes_actor_when_deleting_user(
+        self, app_with_federation: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        actor_id = user_2.actor_id
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1_admin.email
+        )
+
+        client.delete(
+            f'/api/users/{user_2.username}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert Actor.query.filter_by(id=actor_id).first() is None
