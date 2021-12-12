@@ -199,6 +199,7 @@ def downgrade():
     )
     op.drop_constraint('users_actor_id_fkey', 'users', type_='foreignkey')
     op.drop_constraint('users_actor_id_key', 'users', type_='unique')
+    op.drop_column('users', 'is_remote')
     op.drop_column('users', 'manually_approves_followers')
     op.drop_column('users', 'actor_id')
 
