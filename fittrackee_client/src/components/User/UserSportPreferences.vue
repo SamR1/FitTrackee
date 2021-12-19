@@ -138,6 +138,12 @@
                 <button :disabled="loading" @click="updateSportInEdition(null)">
                   {{ $t('buttons.CANCEL') }}
                 </button>
+                <button
+                  :disabled="loading"
+                  @click="(e) => resetSport(e, sport.id)"
+                >
+                  {{ $t('buttons.RESET') }}
+                </button>
               </div>
             </td>
           </tr>
@@ -234,6 +240,13 @@
       sportPayload
     )
   }
+  function resetSport(event: Event, sportId: number) {
+    event.preventDefault()
+    store.dispatch(
+      AUTH_USER_STORE.ACTIONS.RESET_USER_SPORT_PREFERENCES,
+      sportId
+    )
+  }
 
   watch(
     () => loading.value,
@@ -286,6 +299,11 @@
         text-align: center;
         min-width: 80px;
       }
+    }
+    .sport-btn {
+      display: flex;
+      background: yellow;
+      gap: $default-padding;
     }
     .threshold-input {
       padding: $default-padding * 0.5;
