@@ -135,6 +135,12 @@
                 <button :disabled="loading" @click="updateSport">
                   {{ $t('buttons.SUBMIT') }}
                 </button>
+                <button
+                  :disabled="loading"
+                  @click="(e) => resetSport(e, sport.id)"
+                >
+                  {{ $t('buttons.RESET') }}
+                </button>
                 <button :disabled="loading" @click="updateSportInEdition(null)">
                   {{ $t('buttons.CANCEL') }}
                 </button>
@@ -232,6 +238,13 @@
     store.dispatch(
       AUTH_USER_STORE.ACTIONS.UPDATE_USER_SPORT_PREFERENCES,
       sportPayload
+    )
+  }
+  function resetSport(event: Event, sportId: number) {
+    event.preventDefault()
+    store.dispatch(
+      AUTH_USER_STORE.ACTIONS.RESET_USER_SPORT_PREFERENCES,
+      sportId
     )
   }
 
