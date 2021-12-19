@@ -686,6 +686,54 @@
 <li><p>invalid token, please log in again</p></li>
 </ul>
 </p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
+<li><p>sport does not exist</p></li>
+</ul>
+</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – error, please try again or contact the administrator</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http delete">
+<dt class="sig sig-object http" id="delete--api-auth-profile-reset-sports-(sport_id)">
+<span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/reset/sports/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sport_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#delete--api-auth-profile-reset-sports-(sport_id)" title="Permalink to this definition">¶</a></dt>
+<dd><p>reset authenticated user preferences for a given sport</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/api/auth/profile/reset/sports/1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">204</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sport_id</strong> (<em>string</em>) – sport id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Request Headers</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Status Codes</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.5">204 No Content</a></span> – user preferences deleted</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p>provide a valid auth token</p></li>
+<li><p>signature expired, please log in again</p></li>
+<li><p>invalid token, please log in again</p></li>
+</ul>
+</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
+<li><p>sport does not exist</p></li>
+</ul>
+</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – error, please try again or contact the administrator</p></li>
 </ul>
 </dd>
