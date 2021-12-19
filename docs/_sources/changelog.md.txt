@@ -1,5 +1,18 @@
 # Change log
 
+## Version 0.5.2 (2021/12/19)
+
+### Issues Closed
+
+#### New Features
+
+* [#123](https://github.com/SamR1/FitTrackee/issues/123) - Allow user to reset preferences for a sport
+* [#121](https://github.com/SamR1/FitTrackee/issues/121) - Add activity : snowshoes
+
+In this release 2 issue were closed.  
+**Note:** This release contains database migration.
+
+
 ## Version 0.5.1 (2021/11/30)
 
 ### Issues Closed

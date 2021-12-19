@@ -1,9 +1,9 @@
 [tool.poetry]
 name = "fittrackee"
-version = "0.5.1"
+version = "0.5.2"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
-license = "GPL-3.0"
+license = "AGPL-3.0"
 readme = "README.md"
 homepage = "https://github.com/SamR1/FitTrackee"
 documentation = "https://samr1.github.io/FitTrackee"
