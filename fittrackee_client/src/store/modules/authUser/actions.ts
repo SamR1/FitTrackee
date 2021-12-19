@@ -174,6 +174,26 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
         context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
       )
   },
+  [AUTH_USER_STORE.ACTIONS.RESET_USER_SPORT_PREFERENCES](
+    context: ActionContext<IAuthUserState, IRootState>,
+    sportId: number
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    authApi
+      .delete(`auth/profile/reset/sports/${sportId}`)
+      .then((res) => {
+        if (res.status === 204) {
+          context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+        context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      })
+  },
   [AUTH_USER_STORE.ACTIONS.UPDATE_USER_SPORT_PREFERENCES](
     context: ActionContext<IAuthUserState, IRootState>,
     payload: IUserSportPreferencesPayload

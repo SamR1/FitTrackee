@@ -3,6 +3,7 @@ from typing import Dict
 from flask import Blueprint
 
 from fittrackee.users.decorators import authenticate
+from fittrackee.users.models import User
 
 from .models import Record
 
@@ -11,7 +12,7 @@ records_blueprint = Blueprint('records', __name__)
 
 @records_blueprint.route('/records', methods=['GET'])
 @authenticate
-def get_records(auth_user_id: int) -> Dict:
+def get_records(auth_user: User) -> Dict:
     """
     Get all records for authenticated user.
 
@@ -95,8 +96,6 @@ def get_records(auth_user_id: int) -> Dict:
         "status": "success"
       }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
-
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: success
@@ -107,7 +106,7 @@ def get_records(auth_user_id: int) -> Dict:
 
     """
     records = (
-        Record.query.filter_by(user_id=auth_user_id)
+        Record.query.filter_by(user_id=auth_user.id)
         .order_by(Record.sport_id.asc(), Record.record_type.asc())
         .all()
     )

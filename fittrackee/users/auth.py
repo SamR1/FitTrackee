@@ -11,10 +11,10 @@ from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, bcrypt, db
 from fittrackee.responses import (
-    DataNotFoundErrorResponse,
     ForbiddenErrorResponse,
     HttpResponse,
     InvalidPayloadErrorResponse,
+    NotFoundErrorResponse,
     PayloadTooLargeErrorResponse,
     UnauthorizedErrorResponse,
     handle_error_and_return_response,
@@ -224,7 +224,7 @@ def login_user() -> Union[Dict, HttpResponse]:
 
 @auth_blueprint.route('/auth/logout', methods=['GET'])
 @authenticate
-def logout_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
+def logout_user(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     user logout
 
@@ -274,7 +274,7 @@ def logout_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
 
     auth_token = auth_header.split(' ')[1]
     resp = User.decode_auth_token(auth_token)
-    if isinstance(auth_user_id, str):
+    if isinstance(resp, str):
         return UnauthorizedErrorResponse(resp)
 
     return {
@@ -286,7 +286,7 @@ def logout_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
 @auth_blueprint.route('/auth/profile', methods=['GET'])
 @authenticate
 def get_authenticated_user_profile(
-    auth_user_id: int,
+    auth_user: User,
 ) -> Union[Dict, HttpResponse]:
     """
     get authenticated user info
@@ -381,13 +381,12 @@ def get_authenticated_user_profile(
         - invalid token, please log in again
 
     """
-    user = User.query.filter_by(id=auth_user_id).first()
-    return {'status': 'success', 'data': user.serialize()}
+    return {'status': 'success', 'data': auth_user.serialize()}
 
 
 @auth_blueprint.route('/auth/profile/edit', methods=['POST'])
 @authenticate
-def edit_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
+def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     edit authenticated user
 
@@ -523,24 +522,23 @@ def edit_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
         ).decode()
 
     try:
-        user = User.query.filter_by(id=auth_user_id).first()
-        user.first_name = first_name
-        user.last_name = last_name
-        user.bio = bio
-        user.location = location
-        user.birth_date = (
+        auth_user.first_name = first_name
+        auth_user.last_name = last_name
+        auth_user.bio = bio
+        auth_user.location = location
+        auth_user.birth_date = (
             datetime.datetime.strptime(birth_date, '%Y-%m-%d')
             if birth_date
             else None
         )
         if password is not None and password != '':
-            user.password = password
+            auth_user.password = password
         db.session.commit()
 
         return {
             'status': 'success',
             'message': 'user profile updated',
-            'data': user.serialize(),
+            'data': auth_user.serialize(),
         }
 
     # handler errors
@@ -550,7 +548,7 @@ def edit_user(auth_user_id: int) -> Union[Dict, HttpResponse]:
 
 @auth_blueprint.route('/auth/profile/edit/preferences', methods=['POST'])
 @authenticate
-def edit_user_preferences(auth_user_id: int) -> Union[Dict, HttpResponse]:
+def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     edit authenticated user preferences
 
@@ -670,17 +668,16 @@ def edit_user_preferences(auth_user_id: int) -> Union[Dict, HttpResponse]:
     weekm = post_data.get('weekm')
 
     try:
-        user = User.query.filter_by(id=auth_user_id).first()
-        user.imperial_units = imperial_units
-        user.language = language
-        user.timezone = timezone
-        user.weekm = weekm
+        auth_user.imperial_units = imperial_units
+        auth_user.language = language
+        auth_user.timezone = timezone
+        auth_user.weekm = weekm
         db.session.commit()
 
         return {
             'status': 'success',
             'message': 'user preferences updated',
-            'data': user.serialize(),
+            'data': auth_user.serialize(),
         }
 
     # handler errors
@@ -691,7 +688,7 @@ def edit_user_preferences(auth_user_id: int) -> Union[Dict, HttpResponse]:
 @auth_blueprint.route('/auth/profile/edit/sports', methods=['POST'])
 @authenticate
 def edit_user_sport_preferences(
-    auth_user_id: int,
+    auth_user: User,
 ) -> Union[Dict, HttpResponse]:
     """
     edit authenticated user sport preferences
@@ -736,6 +733,8 @@ def edit_user_sport_preferences(
         - provide a valid auth token
         - signature expired, please log in again
         - invalid token, please log in again
+    :statuscode 404:
+        - sport does not exist
     :statuscode 500: error, please try again or contact the administrator
 
     """
@@ -750,7 +749,7 @@ def edit_user_sport_preferences(
     sport_id = post_data.get('sport_id')
     sport = Sport.query.filter_by(id=sport_id).first()
     if not sport:
-        return DataNotFoundErrorResponse('sports')
+        return NotFoundErrorResponse('sport does not exist')
 
     color = post_data.get('color')
     is_active = post_data.get('is_active')
@@ -758,12 +757,12 @@ def edit_user_sport_preferences(
 
     try:
         user_sport = UserSportPreference.query.filter_by(
-            user_id=auth_user_id,
+            user_id=auth_user.id,
             sport_id=sport_id,
         ).first()
         if not user_sport:
             user_sport = UserSportPreference(
-                user_id=auth_user_id,
+                user_id=auth_user.id,
                 sport_id=sport_id,
                 stopped_speed_threshold=sport.stopped_speed_threshold,
             )
@@ -790,9 +789,66 @@ def edit_user_sport_preferences(
         return handle_error_and_return_response(e, db=db)
 
 
+@auth_blueprint.route(
+    '/auth/profile/reset/sports/<sport_id>', methods=['DELETE']
+)
+@authenticate
+def reset_user_sport_preferences(
+    auth_user: User, sport_id: int
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    reset authenticated user preferences for a given sport
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      DELETE /api/auth/profile/reset/sports/1 HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 204 OK
+      Content-Type: application/json
+
+    :param string sport_id: sport id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 204: user preferences deleted
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 404:
+        - sport does not exist
+    :statuscode 500: error, please try again or contact the administrator
+
+    """
+    sport = Sport.query.filter_by(id=sport_id).first()
+    if not sport:
+        return NotFoundErrorResponse('sport does not exist')
+
+    try:
+        user_sport = UserSportPreference.query.filter_by(
+            user_id=auth_user.id,
+            sport_id=sport_id,
+        ).first()
+        if user_sport:
+            db.session.delete(user_sport)
+            db.session.commit()
+        return {'status': 'no content'}, 204
+
+    # handler errors
+    except (exc.IntegrityError, exc.OperationalError) as e:
+        return handle_error_and_return_response(e, db=db)
+
+
 @auth_blueprint.route('/auth/picture', methods=['POST'])
 @authenticate
-def edit_picture(auth_user_id: int) -> Union[Dict, HttpResponse]:
+def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     update authenticated user picture
 
@@ -848,23 +904,22 @@ def edit_picture(auth_user_id: int) -> Union[Dict, HttpResponse]:
     file = request.files['file']
     filename = secure_filename(file.filename)  # type: ignore
     dirpath = os.path.join(
-        current_app.config['UPLOAD_FOLDER'], 'pictures', str(auth_user_id)
+        current_app.config['UPLOAD_FOLDER'], 'pictures', str(auth_user.id)
     )
     if not os.path.exists(dirpath):
         os.makedirs(dirpath)
     absolute_picture_path = os.path.join(dirpath, filename)
     relative_picture_path = os.path.join(
-        'pictures', str(auth_user_id), filename
+        'pictures', str(auth_user.id), filename
     )
 
     try:
-        user = User.query.filter_by(id=auth_user_id).first()
-        if user.picture is not None:
-            old_picture_path = get_absolute_file_path(user.picture)
+        if auth_user.picture is not None:
+            old_picture_path = get_absolute_file_path(auth_user.picture)
             if os.path.isfile(get_absolute_file_path(old_picture_path)):
                 os.remove(old_picture_path)
         file.save(absolute_picture_path)
-        user.picture = relative_picture_path
+        auth_user.picture = relative_picture_path
         db.session.commit()
         return {
             'status': 'success',
@@ -879,7 +934,7 @@ def edit_picture(auth_user_id: int) -> Union[Dict, HttpResponse]:
 
 @auth_blueprint.route('/auth/picture', methods=['DELETE'])
 @authenticate
-def del_picture(auth_user_id: int) -> Union[Tuple[Dict, int], HttpResponse]:
+def del_picture(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     delete authenticated user picture
 
@@ -908,11 +963,10 @@ def del_picture(auth_user_id: int) -> Union[Tuple[Dict, int], HttpResponse]:
 
     """
     try:
-        user = User.query.filter_by(id=auth_user_id).first()
-        picture_path = get_absolute_file_path(user.picture)
+        picture_path = get_absolute_file_path(auth_user.picture)
         if os.path.isfile(picture_path):
             os.remove(picture_path)
-        user.picture = None
+        auth_user.picture = None
         db.session.commit()
         return {'status': 'no content'}, 204
     except (exc.IntegrityError, ValueError) as e:

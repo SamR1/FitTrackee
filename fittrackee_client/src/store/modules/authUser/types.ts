@@ -73,6 +73,11 @@ export interface IAuthUserActions {
     payload: IUserPasswordResetPayload
   ): void
 
+  [AUTH_USER_STORE.ACTIONS.RESET_USER_SPORT_PREFERENCES](
+    context: ActionContext<IAuthUserState, IRootState>,
+    sportId: number
+  ): void
+
   [AUTH_USER_STORE.ACTIONS.DELETE_ACCOUNT](
     context: ActionContext<IAuthUserState, IRootState>,
     payload: IUserDeletionPayload

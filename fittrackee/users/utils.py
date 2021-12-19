@@ -12,14 +12,6 @@ from fittrackee.responses import (
 from .models import User
 
 
-def is_admin(user_id: int) -> bool:
-    """
-    Return if user has admin rights
-    """
-    user = User.query.filter_by(id=user_id).first()
-    return user.admin
-
-
 def is_valid_email(email: str) -> bool:
     """
     Return if email format is valid
@@ -62,10 +54,10 @@ def register_controls(
 
 def verify_user(
     current_request: Request, verify_admin: bool
-) -> Tuple[Optional[HttpResponse], Optional[int]]:
+) -> Tuple[Optional[HttpResponse], Optional[User]]:
     """
-    Return user id, if the provided token is valid and if user has admin
-    rights if 'verify_admin' is True
+    Return authenticated user, if the provided token is valid and user has
+    admin rights if 'verify_admin' is True
     """
     default_message = 'provide a valid auth token'
     auth_header = current_request.headers.get('Authorization')
@@ -78,9 +70,9 @@ def verify_user(
     user = User.query.filter_by(id=resp).first()
     if not user:
         return UnauthorizedErrorResponse(default_message), None
-    if verify_admin and not is_admin(resp):
+    if verify_admin and not user.admin:
         return ForbiddenErrorResponse(), None
-    return None, resp
+    return None, user
 
 
 def can_view_workout(

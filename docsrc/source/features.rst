@@ -61,11 +61,13 @@ Workouts
      - Running
      - Skiing (Alpine) (**new in 0.5.0**)
      - Skiing (Cross Country)  (**new in 0.5.0**)
+     - Snowshoes  (**new in 0.5.2**)
      - Trail  (**new in 0.5.0**)
      - Walking
 - (*new in 0.5.0*) Stopped speed threshold used by `gpxpy <https://github.com/tkrajina/gpxpy>`_ is not the default one for the following sports (0.1 km/h instead of 1 km/h):
      - Hiking
      - Skiing (Cross Country)
+     - Snowshoes
      - Trail
      - Walking
 

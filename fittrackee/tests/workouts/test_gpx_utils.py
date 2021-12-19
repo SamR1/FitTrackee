@@ -46,7 +46,7 @@ class TestStoppedSpeedThreshold:
         ) as gpx_track_segment_mock:
 
             process_files(
-                auth_user_id=user_1.id,
+                auth_user=user_1,
                 folders=folders,
                 workout_data={'sport_id': sport_id},
                 workout_file=gpx_file_storage,
@@ -76,7 +76,7 @@ class TestStoppedSpeedThreshold:
         ) as gpx_track_segment_mock:
 
             process_files(
-                auth_user_id=user_1.id,
+                auth_user=user_1,
                 folders=folders,
                 workout_data={'sport_id': sport_1_cycling.id},
                 workout_file=gpx_file_storage,

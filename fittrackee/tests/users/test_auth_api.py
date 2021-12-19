@@ -7,7 +7,7 @@ import pytest
 from flask import Flask
 from freezegun import freeze_time
 
-from fittrackee.users.models import User
+from fittrackee.users.models import User, UserSportPreference
 from fittrackee.users.utils_token import get_user_token
 from fittrackee.workouts.models import Sport, Workout
 
@@ -887,6 +887,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 404
         assert 'not found' in data['status']
+        assert 'sport does not exist' in data['message']
 
     def test_it_returns_error_if_payload_contains_only_sport_id(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
@@ -1015,6 +1016,58 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         assert data['data']['color'] is None
         assert data['data']['is_active']
         assert data['data']['stopped_speed_threshold'] == 0.5
+
+
+class TestUserSportPreferencesReset(ApiTestCaseMixin):
+    def test_it_returns_error_if_sport_does_not_exist(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.delete(
+            '/api/auth/profile/reset/sports/1',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 404
+        data = json.loads(response.data.decode())
+        assert 'not found' in data['status']
+        assert 'sport does not exist' in data['message']
+
+    def test_it_resets_sport_preferences(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        user_sport_1_preference: UserSportPreference,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.delete(
+            f'/api/auth/profile/reset/sports/{sport_1_cycling.id}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+        assert (
+            UserSportPreference.query.filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+            ).first()
+            is None
+        )
+
+    def test_it_does_not_raise_error_if_sport_preferences_do_not_exist(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        response = client.delete(
+            f'/api/auth/profile/reset/sports/{sport_1_cycling.id}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
 
 
 class TestUserPicture(ApiTestCaseMixin):

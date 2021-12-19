@@ -10,6 +10,7 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.users.decorators import authenticate_as_admin
+from fittrackee.users.models import User
 
 from .models import AppConfig
 from .utils import update_app_config_from_database, verify_app_config
@@ -44,7 +45,7 @@ def get_application_config() -> Union[Dict, HttpResponse]:
           "max_zip_file_size": 10485760,
           "max_users": 0,
           "map_attribution": "&copy; <a href=http://www.openstreetmap.org/copyright>OpenStreetMap</a> contributors"
-          "version": "0.5.1"
+          "version": "0.5.2"
         },
         "status": "success"
       }
@@ -64,7 +65,7 @@ def get_application_config() -> Union[Dict, HttpResponse]:
 
 @config_blueprint.route('/config', methods=['PATCH'])
 @authenticate_as_admin
-def update_application_config(auth_user_id: int) -> Union[Dict, HttpResponse]:
+def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Update Application config
 
@@ -94,8 +95,6 @@ def update_application_config(auth_user_id: int) -> Union[Dict, HttpResponse]:
         },
         "status": "success"
       }
-
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
 
     :<json integer gpx_limit_import: max number of files in zip archive
     :<json boolean is_registration_enabled: is registration enabled ?

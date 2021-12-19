@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Configuration &#8212; FitTrackee 0.5.1
+    <title>Configuration &#8212; FitTrackee 0.5.2
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.5.1
+        <span class="navbar-text navbar-version pull-left"><b>0.5.2
 </b></span>
       </div>
 
@@ -148,7 +148,7 @@
     <span class="nt">&quot;max_zip_file_size&quot;</span><span class="p">:</span> <span class="mi">10485760</span><span class="p">,</span>
     <span class="nt">&quot;max_users&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
     <span class="nt">&quot;map_attribution&quot;</span><span class="p">:</span> <span class="nt">&quot;&amp;copy; &lt;a href=http://www.openstreetmap.org/copyright&gt;OpenStreetMap&lt;/a&gt; contributors&quot;</span>
-    <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.5.1&quot;</span>
+    <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.5.2&quot;</span>
   <span class="p">},</span>
   <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span>
 <span class="p">}</span>
@@ -191,13 +191,8 @@
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Request JSON Object</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Request JSON Object</dt>
-<dd class="field-even"><ul class="simple">
 <li><p><strong>gpx_limit_import</strong> (<em>integer</em>) – max number of files in zip archive</p></li>
 <li><p><strong>is_registration_enabled</strong> (<em>boolean</em>) – is registration enabled ?</p></li>
 <li><p><strong>max_single_file_size</strong> (<em>integer</em>) – max size of a single file</p></li>
@@ -205,13 +200,13 @@
 <li><p><strong>max_users</strong> (<em>integer</em>) – max users allowed to register on instance</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Request Headers</dt>
-<dd class="field-odd"><ul class="simple">
+<dt class="field-even">Request Headers</dt>
+<dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
 </ul>
 </dd>
-<dt class="field-even">Status Codes</dt>
-<dd class="field-even"><ul class="simple">
+<dt class="field-odd">Status Codes</dt>
+<dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – invalid payload</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>

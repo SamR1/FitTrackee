@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Workouts &#8212; FitTrackee 0.5.1
+    <title>Workouts &#8212; FitTrackee 0.5.2
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.5.1
+        <span class="navbar-text navbar-version pull-left"><b>0.5.2
 </b></span>
       </div>
 
@@ -241,13 +241,8 @@
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Query Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Query Parameters</dt>
-<dd class="field-even"><ul class="simple">
 <li><p><strong>page</strong> (<em>integer</em>) – page if using pagination (default: 1)</p></li>
 <li><p><strong>per_page</strong> (<em>integer</em>) – number of workouts per page
 (default: 5, max: 100)</p></li>
@@ -265,13 +260,13 @@
 <li><p><strong>order</strong> (<em>string</em>) – sorting order (default: <code class="docutils literal notranslate"><span class="pre">desc</span></code>)</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Request Headers</dt>
-<dd class="field-odd"><ul class="simple">
+<dt class="field-even">Request Headers</dt>
+<dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
 </ul>
 </dd>
-<dt class="field-even">Status Codes</dt>
-<dd class="field-even"><ul class="simple">
+<dt class="field-odd">Status Codes</dt>
+<dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
 <li><p>provide a valid auth token</p></li>
@@ -355,7 +350,6 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
 <li><p><strong>workout_short_id</strong> (<em>string</em>) – workout short id</p></li>
 </ul>
 </dd>
@@ -405,7 +399,6 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
 <li><p><strong>workout_short_id</strong> (<em>string</em>) – workout short id</p></li>
 </ul>
 </dd>
@@ -478,7 +471,6 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
 <li><p><strong>workout_short_id</strong> (<em>string</em>) – workout short id</p></li>
 </ul>
 </dd>
@@ -551,7 +543,6 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
 <li><p><strong>workout_short_id</strong> (<em>string</em>) – workout short id</p></li>
 <li><p><strong>segment_id</strong> (<em>integer</em>) – segment id</p></li>
 </ul>
@@ -603,7 +594,6 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
 <li><p><strong>workout_short_id</strong> (<em>string</em>) – workout short id</p></li>
 <li><p><strong>segment_id</strong> (<em>integer</em>) – segment id</p></li>
 </ul>
@@ -708,7 +698,6 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
 <li><p><strong>workout_short_id</strong> (<em>string</em>) – workout short id</p></li>
 </ul>
 </dd>
@@ -820,24 +809,19 @@
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Form Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Form Parameters</dt>
-<dd class="field-even"><ul class="simple">
 <li><p><strong>file</strong> – gpx file (allowed extensions: .gpx, .zip)</p></li>
 <li><p><strong>data</strong> – sport id and notes (example: <code class="docutils literal notranslate"><span class="pre">{&quot;sport_id&quot;:</span> <span class="pre">1,</span> <span class="pre">&quot;notes&quot;:</span> <span class="pre">&quot;&quot;}</span></code>)</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Request Headers</dt>
-<dd class="field-odd"><ul class="simple">
+<dt class="field-even">Request Headers</dt>
+<dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
 </ul>
 </dd>
-<dt class="field-even">Status Codes</dt>
-<dd class="field-even"><ul class="simple">
+<dt class="field-odd">Status Codes</dt>
+<dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.2">201 Created</a></span> – workout created</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
 <li><p>invalid payload</p></li>
@@ -948,13 +932,8 @@
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Request JSON Object</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Request JSON Object</dt>
-<dd class="field-even"><ul class="simple">
 <li><p><strong>workout_date</strong> (<em>string</em>) – workout date  (format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span> <span class="pre">%H:%M</span></code>)</p></li>
 <li><p><strong>distance</strong> (<em>float</em>) – workout distance in km</p></li>
 <li><p><strong>duration</strong> (<em>integer</em>) – workout duration in seconds</p></li>
@@ -963,13 +942,13 @@
 <li><p><strong>title</strong> (<em>string</em>) – workout title</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Request Headers</dt>
-<dd class="field-odd"><ul class="simple">
+<dt class="field-even">Request Headers</dt>
+<dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
 </ul>
 </dd>
-<dt class="field-even">Status Codes</dt>
-<dd class="field-even"><ul class="simple">
+<dt class="field-odd">Status Codes</dt>
+<dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.2">201 Created</a></span> – workout created</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – invalid payload</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
@@ -1075,7 +1054,6 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
 <li><p><strong>workout_short_id</strong> (<em>string</em>) – workout short id</p></li>
 </ul>
 </dd>
@@ -1131,7 +1109,6 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auth_user_id</strong> (<em>integer</em>) – authenticate user id (from JSON Web Token)</p></li>
 <li><p><strong>workout_short_id</strong> (<em>string</em>) – workout short id</p></li>
 </ul>
 </dd>

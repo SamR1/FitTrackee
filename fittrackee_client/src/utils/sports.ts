@@ -12,6 +12,7 @@ export const sportColors: Record<string, string> = {
   Running: '#835b83',
   'Skiing (Alpine)': '#67a4bd',
   'Skiing (Cross Country)': '#9498d0',
+  Snowshoes: '#5780a8',
   Trail: '#09a98a',
   Walking: '#838383',
 }

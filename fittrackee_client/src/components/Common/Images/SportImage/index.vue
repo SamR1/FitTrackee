@@ -15,6 +15,7 @@
     <Running v-if="sportLabel === 'Running'" />
     <SkiingAlpine v-if="sportLabel === 'Skiing (Alpine)'" />
     <SkiingCrossCountry v-if="sportLabel === 'Skiing (Cross Country)'" />
+    <Snowshoes v-if="sportLabel === 'Snowshoes'" />
     <Trail v-if="sportLabel === 'Trail'" />
     <Walking v-if="sportLabel === 'Walking'" />
   </div>
@@ -32,6 +33,7 @@
   import Running from '@/components/Common/Images/SportImage/Running.vue'
   import SkiingAlpine from '@/components/Common/Images/SportImage/SkiingAlpine.vue'
   import SkiingCrossCountry from '@/components/Common/Images/SportImage/SkiingCrossCountry.vue'
+  import Snowshoes from '@/components/Common/Images/SportImage/Snowshoes.vue'
   import Trail from '@/components/Common/Images/SportImage/Trail.vue'
   import Walking from '@/components/Common/Images/SportImage/Walking.vue'
 

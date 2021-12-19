@@ -27,7 +27,7 @@ USER_PER_PAGE = 10
 
 @users_blueprint.route('/users', methods=['GET'])
 @authenticate
-def get_users(auth_user_id: int) -> Dict:
+def get_users(auth_user: User) -> Dict:
     """
     Get all users
 
@@ -144,8 +144,6 @@ def get_users(auth_user_id: int) -> Dict:
         "status": "success"
       }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
-
     :query integer page: page if using pagination (default: 1)
     :query integer per_page: number of users per page (default: 10, max: 50)
     :query string q: query on user name
@@ -219,7 +217,7 @@ def get_users(auth_user_id: int) -> Dict:
 @users_blueprint.route('/users/<user_name>', methods=['GET'])
 @authenticate
 def get_single_user(
-    auth_user_id: int, user_name: str
+    auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
     """
     Get single user details
@@ -306,7 +304,6 @@ def get_single_user(
         "status": "success"
       }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param integer user_name: user name
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
@@ -371,9 +368,7 @@ def get_picture(user_name: str) -> Any:
 
 @users_blueprint.route('/users/<user_name>', methods=['PATCH'])
 @authenticate_as_admin
-def update_user(
-    auth_user_id: int, user_name: str
-) -> Union[Dict, HttpResponse]:
+def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     """
     Update user to add admin rights
 
@@ -461,7 +456,6 @@ def update_user(
         "status": "success"
       }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param string user_name: user name
 
     :<json boolean admin: does the user have administrator rights
@@ -500,7 +494,7 @@ def update_user(
 @users_blueprint.route('/users/<user_name>', methods=['DELETE'])
 @authenticate
 def delete_user(
-    auth_user_id: int, user_name: str
+    auth_user: User, user_name: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Delete a user account
@@ -524,7 +518,6 @@ def delete_user(
       HTTP/1.1 204 NO CONTENT
       Content-Type: application/json
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param string user_name: user name
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
@@ -543,12 +536,11 @@ def delete_user(
 
     """
     try:
-        auth_user = User.query.filter_by(id=auth_user_id).first()
         user = User.query.filter_by(username=user_name).first()
         if not user:
             return UserNotFoundErrorResponse()
 
-        if user.id != auth_user_id and not auth_user.admin:
+        if user.id != auth_user.id and not auth_user.admin:
             return ForbiddenErrorResponse()
         if (
             user.admin is True
