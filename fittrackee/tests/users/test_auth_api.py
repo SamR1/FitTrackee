@@ -1042,8 +1042,6 @@ class TestUserSportPreferencesReset(ApiTestCaseMixin):
         user_sport_1_preference: UserSportPreference,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(app)
-        user_sport_1_preference.is_active = False
-        user_sport_1_preference.stopped_speed_threshold = 0.5
 
         response = client.delete(
             f'/api/auth/profile/reset/sports/{sport_1_cycling.id}',
