@@ -135,14 +135,14 @@
                 <button :disabled="loading" @click="updateSport">
                   {{ $t('buttons.SUBMIT') }}
                 </button>
-                <button :disabled="loading" @click="updateSportInEdition(null)">
-                  {{ $t('buttons.CANCEL') }}
-                </button>
                 <button
                   :disabled="loading"
                   @click="(e) => resetSport(e, sport.id)"
                 >
                   {{ $t('buttons.RESET') }}
+                </button>
+                <button :disabled="loading" @click="updateSportInEdition(null)">
+                  {{ $t('buttons.CANCEL') }}
                 </button>
               </div>
             </td>
@@ -299,11 +299,6 @@
         text-align: center;
         min-width: 80px;
       }
-    }
-    .sport-btn {
-      display: flex;
-      background: yellow;
-      gap: $default-padding;
     }
     .threshold-input {
       padding: $default-padding * 0.5;
