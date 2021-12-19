@@ -11,10 +11,10 @@ from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, bcrypt, db
 from fittrackee.responses import (
-    DataNotFoundErrorResponse,
     ForbiddenErrorResponse,
     HttpResponse,
     InvalidPayloadErrorResponse,
+    NotFoundErrorResponse,
     PayloadTooLargeErrorResponse,
     UnauthorizedErrorResponse,
     handle_error_and_return_response,
@@ -733,6 +733,8 @@ def edit_user_sport_preferences(
         - provide a valid auth token
         - signature expired, please log in again
         - invalid token, please log in again
+    :statuscode 404:
+        - sport does not exist
     :statuscode 500: error, please try again or contact the administrator
 
     """
@@ -747,7 +749,7 @@ def edit_user_sport_preferences(
     sport_id = post_data.get('sport_id')
     sport = Sport.query.filter_by(id=sport_id).first()
     if not sport:
-        return DataNotFoundErrorResponse('sports')
+        return NotFoundErrorResponse('sport does not exist')
 
     color = post_data.get('color')
     is_active = post_data.get('is_active')
@@ -784,6 +786,63 @@ def edit_user_sport_preferences(
 
     # handler errors
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(e, db=db)
+
+
+@auth_blueprint.route(
+    '/auth/profile/reset/sports/<sport_id>', methods=['DELETE']
+)
+@authenticate
+def reset_user_sport_preferences(
+    auth_user: User, sport_id: int
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    reset authenticated user preferences for a given sport
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      DELETE /api/auth/profile/reset/sports/1 HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 204 OK
+      Content-Type: application/json
+
+    :param string sport_id: sport id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 204: user preferences deleted
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 404:
+        - sport does not exist
+    :statuscode 500: error, please try again or contact the administrator
+
+    """
+    sport = Sport.query.filter_by(id=sport_id).first()
+    if not sport:
+        return NotFoundErrorResponse('sport does not exist')
+
+    try:
+        user_sport = UserSportPreference.query.filter_by(
+            user_id=auth_user.id,
+            sport_id=sport_id,
+        ).first()
+        if user_sport:
+            db.session.delete(user_sport)
+            db.session.commit()
+        return {'status': 'no content'}, 204
+
+    # handler errors
+    except (exc.IntegrityError, exc.OperationalError) as e:
         return handle_error_and_return_response(e, db=db)
 
 
