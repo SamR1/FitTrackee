@@ -189,7 +189,7 @@
     () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
   )
   const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
-    translateSports(sports.value, t, true, user.value.sports_list)
+    translateSports(sports.value, t, 'is_active', user.value.sports_list)
   )
   const loading = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
