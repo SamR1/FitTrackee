@@ -69,7 +69,7 @@ class EmailTemplate:
 class Email:
     def __init__(self, app: Optional[Flask] = None) -> None:
         self.host = 'localhost'
-        self.port = 1025
+        self.port = 25
         self.use_tls = False
         self.use_ssl = False
         self.username = None
