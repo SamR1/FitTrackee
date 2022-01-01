@@ -1,4 +1,4 @@
-import { ISport, ITranslatedSport } from '@/types/sports'
+import { ISport, ITranslatedSport, TActiveStatus } from '@/types/sports'
 import { IWorkout } from '@/types/workouts'
 
 // TODO: allow user to change colors
@@ -39,16 +39,14 @@ const sortSports = (a: ITranslatedSport, b: ITranslatedSport): number => {
 export const translateSports = (
   sports: ISport[],
   t: CallableFunction,
-  onlyActive = false,
-  userSports: number[] | null = null
+  activeStatus: TActiveStatus = 'all',
+  sportsToInclude: number[] = []
 ): ITranslatedSport[] =>
   sports
     .filter((sport) =>
-      onlyActive
-        ? userSports === null
-          ? sport.is_active_for_user
-          : userSports.includes(sport.id) || sport.is_active
-        : true
+      activeStatus === 'all'
+        ? true
+        : sportsToInclude.includes(sport.id) || sport[activeStatus]
     )
     .map((sport) => ({
       ...sport,

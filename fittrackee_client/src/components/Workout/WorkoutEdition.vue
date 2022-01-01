@@ -267,8 +267,8 @@
     translateSports(
       props.sports,
       t,
-      true,
-      workout.value.id ? [workout.value.sport_id] : null
+      'is_active_for_user',
+      workout.value.id ? [workout.value.sport_id] : []
     )
   )
   const appConfig: ComputedRef<TAppConfig> = computed(

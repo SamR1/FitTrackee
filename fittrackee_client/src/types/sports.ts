@@ -17,3 +17,5 @@ export interface ISportPayload {
   id: number
   isActive: boolean
 }
+
+export type TActiveStatus = 'is_active' | 'is_active_for_user' | 'all'
