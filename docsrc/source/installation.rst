@@ -210,6 +210,11 @@ To send emails, a valid ``EMAIL_URL`` must be provided:
 - with STARTTLS: ``smtp://username:password@smtp.example.com:587/?tls=True``
 
 
+.. versionadded:: 0.5.3
+
+| Credentials can be omitted: ``smtp://smtp.example.com:25``.
+| If ``:<port>`` is omitted, the port defaults to 25.
+
 Map tile server
 ^^^^^^^^^^^^^^^
 .. versionadded:: 0.4.0

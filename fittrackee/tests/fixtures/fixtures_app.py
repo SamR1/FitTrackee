@@ -125,13 +125,23 @@ def app_no_config() -> Generator:
 
 @pytest.fixture
 def app_ssl(monkeypatch: pytest.MonkeyPatch) -> Generator:
-    monkeypatch.setenv('EMAIL_URL', 'smtp://none:none@0.0.0.0:1025?ssl=True')
+    monkeypatch.setenv(
+        'EMAIL_URL', 'smtp://username:password@0.0.0.0:1025?ssl=True'
+    )
     yield from get_app(with_config=True)
 
 
 @pytest.fixture
 def app_tls(monkeypatch: pytest.MonkeyPatch) -> Generator:
-    monkeypatch.setenv('EMAIL_URL', 'smtp://none:none@0.0.0.0:1025?tls=True')
+    monkeypatch.setenv(
+        'EMAIL_URL', 'smtp://username:password@0.0.0.0:1025?tls=True'
+    )
+    yield from get_app(with_config=True)
+
+
+@pytest.fixture
+def app_wo_email_auth(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv('EMAIL_URL', 'smtp://0.0.0.0:1025')
     yield from get_app(with_config=True)
 
 
