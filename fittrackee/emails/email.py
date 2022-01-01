@@ -110,7 +110,8 @@ class Email:
         with self.smtp(
             self.host, self.port, **connection_params  # type: ignore
         ) as smtp:
-            smtp.login(self.username, self.password)  # type: ignore
+            if self.username and self.password:
+                smtp.login(self.username, self.password)  # type: ignore
             if self.use_tls:
                 smtp.starttls(context=context)
             smtp.sendmail(self.sender_email, recipient, message.as_string())

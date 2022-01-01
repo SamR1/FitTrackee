@@ -63,7 +63,8 @@ class TestEmailSending(CallArgsMixin):
         )
 
         smtp = mock_smtp.return_value.__enter__.return_value
-        assert smtp.starttls.not_called
+        assert smtp.login.call_count == 1
+        smtp.starttls.assert_not_called()
         self.assert_smtp(smtp)
 
     @patch('smtplib.SMTP_SSL')
@@ -79,7 +80,8 @@ class TestEmailSending(CallArgsMixin):
         )
 
         smtp = mock_smtp_ssl.return_value.__enter__.return_value
-        assert smtp.starttls.not_called
+        assert smtp.login.call_count == 1
+        smtp.starttls.assert_not_called()
         self.assert_smtp(smtp)
 
     @patch('smtplib.SMTP_SSL')
@@ -95,5 +97,24 @@ class TestEmailSending(CallArgsMixin):
         )
 
         smtp = mock_smtp.return_value.__enter__.return_value
+        assert smtp.login.call_count == 1
         assert smtp.starttls.call_count == 1
+        self.assert_smtp(smtp)
+
+    @patch('smtplib.SMTP_SSL')
+    @patch('smtplib.SMTP')
+    def test_it_sends_message_without_authentication(
+        self, mock_smtp: Mock, mock_smtp_ssl: Mock, app_wo_email_auth: Flask
+    ) -> None:
+
+        email_service.send(
+            template='password_reset_request',
+            lang='en',
+            recipient='test@test.com',
+            data=self.email_data,
+        )
+
+        smtp = mock_smtp.return_value.__enter__.return_value
+        smtp.login.assert_not_called()
+        smtp.starttls.assert_not_called()
         self.assert_smtp(smtp)

@@ -9,7 +9,9 @@ def parse_email_url(email_url: str) -> Dict:
     parsed_url = parse_url(email_url)
     if parsed_url.scheme != 'smtp':
         raise InvalidEmailUrlScheme()
-    credentials = parsed_url.auth.split(':')
+    credentials = (
+        parsed_url.auth.split(':') if parsed_url.auth else [None, None]
+    )
     return {
         'host': parsed_url.host,
         'port': parsed_url.port,
