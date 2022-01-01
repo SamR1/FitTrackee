@@ -77,7 +77,7 @@
     if (workouts) {
       return workouts
         .filter((workout) =>
-          isSameDay(getDateWithTZ(workout.workout_date, timezone), day)
+          isSameDay(getDateWithTZ(workout.workout_date, timezone.value), day)
         )
         .reverse()
     }
