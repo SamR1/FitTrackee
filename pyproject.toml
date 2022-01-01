@@ -24,7 +24,7 @@ exclude = ["fittrackee/tests"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-dramatiq = {version = "^1.12.0", extras = ["redis"]}
+dramatiq = {version = "^1.12.1", extras = ["redis"]}
 flask = "^2.0"
 flask-bcrypt = "^0.7.1"
 flask-dramatiq = "^0.6.0"
@@ -39,12 +39,12 @@ pytz = "^2021.3"
 shortuuid = "^1.0.8"
 staticmap = "^0.5.4"
 tqdm = "^4.62"
-SQLAlchemy = "1.4.28"
+SQLAlchemy = "1.4.29"
 
 [tool.poetry.dev-dependencies]
 black = "^21.12b0"
 freezegun = "^1.1"
-mypy = "^0.920"
+mypy = "^0.930"
 pyopenssl = "^20.0"
 pytest = "^6.2"
 pytest-black = "^0.3.12"
