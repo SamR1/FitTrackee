@@ -11,7 +11,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from fittrackee.emails.email import Email
 
-VERSION = __version__ = '0.5.2'
+VERSION = __version__ = '0.5.3'
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 migrate = Migrate()

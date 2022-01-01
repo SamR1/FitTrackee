@@ -69,7 +69,7 @@ class EmailTemplate:
 class Email:
     def __init__(self, app: Optional[Flask] = None) -> None:
         self.host = 'localhost'
-        self.port = 1025
+        self.port = 25
         self.use_tls = False
         self.use_ssl = False
         self.username = None
@@ -110,7 +110,8 @@ class Email:
         with self.smtp(
             self.host, self.port, **connection_params  # type: ignore
         ) as smtp:
-            smtp.login(self.username, self.password)  # type: ignore
+            if self.username and self.password:
+                smtp.login(self.username, self.password)  # type: ignore
             if self.use_tls:
                 smtp.starttls(context=context)
             smtp.sendmail(self.sender_email, recipient, message.as_string())
