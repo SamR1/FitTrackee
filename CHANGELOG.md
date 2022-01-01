@@ -1,5 +1,17 @@
 # Change log
 
+## Version 0.5.3 (2022/01/01)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#129](https://github.com/SamR1/FitTrackee/issues/129) - Display only active sports when editing a workout
+* [#127](https://github.com/SamR1/FitTrackee/issues/127) - parse_email_url() can't validate a legitimate EMAIL_URI such as "smtp://localhost:25"
+
+In this release 2 issues were closed.
+
+
 ## Version 0.5.2 (2021/12/19)
 
 ### Issues Closed
@@ -9,7 +21,7 @@
 * [#123](https://github.com/SamR1/FitTrackee/issues/123) - Allow user to reset preferences for a sport
 * [#121](https://github.com/SamR1/FitTrackee/issues/121) - Add activity : snowshoes
 
-In this release 2 issue were closed.  
+In this release 2 issues were closed.  
 **Note:** This release contains database migration.
 
 
@@ -23,7 +35,7 @@ In this release 2 issue were closed.
 * [#115](https://github.com/SamR1/FitTrackee/issues/115) - Add option to download the GPX file of a Workout
 * [#5](https://github.com/SamR1/FitTrackee/issues/5) - Display a chart with average speed
 
-In this release 3 issue were closed.  
+In this release 3 issues were closed.  
 
 
 ## Version 0.5.0 (2021/11/14)
