@@ -1,5 +1,16 @@
 # Change log
 
+## Version 0.5.4 (2022/01/01)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#131](https://github.com/SamR1/FitTrackee/issues/131) - No workouts displayed on calendar
+
+In this release 1 issue was closed.
+
+
 ## Version 0.5.3 (2022/01/01)
 
 ### Issues Closed

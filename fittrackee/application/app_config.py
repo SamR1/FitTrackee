@@ -45,7 +45,7 @@ def get_application_config() -> Union[Dict, HttpResponse]:
           "max_zip_file_size": 10485760,
           "max_users": 0,
           "map_attribution": "&copy; <a href=http://www.openstreetmap.org/copyright>OpenStreetMap</a> contributors"
-          "version": "0.5.3"
+          "version": "0.5.4"
         },
         "status": "success"
       }
