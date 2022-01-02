@@ -74,6 +74,7 @@
   "REGISTER": "S'inscrire",
   "REGISTER_DISABLED": "Désolé, les inscriptions sont désactivées.",
   "RESET_PASSWORD": "Réinitialiser votre mot de passe",
+  "USER": "utilisateur | utilisateurs",
   "USER_PICTURE": "photo de l'utilisateur",
   "USERNAME": "Nom d'utilisateur"
 }

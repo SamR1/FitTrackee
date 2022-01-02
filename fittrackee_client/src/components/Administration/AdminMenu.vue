@@ -42,7 +42,7 @@
             </dd>
             <dt>
               <router-link to="/admin/users">
-                {{ capitalize($t('admin.USER', 0)) }}
+                {{ capitalize($t('user.USER', 0)) }}
               </router-link>
             </dt>
             <dd>

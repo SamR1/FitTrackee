@@ -3,44 +3,7 @@
     <UserPicture :user="user" />
     <div class="user-details">
       <div class="user-name">{{ user.username }}</div>
-      <div class="user-stats">
-        <div class="user-stat">
-          <span class="stat-number">{{ user.nb_workouts }}</span>
-          <span class="stat-label">
-            {{ $t('workouts.WORKOUT', user.nb_workouts) }}
-          </span>
-        </div>
-        <div class="user-stat" v-if="'total_distance' in user">
-          <Distance
-            :distance="user.total_distance"
-            unitFrom="km"
-            :digits="0"
-            :displayUnit="false"
-            :useImperialUnits="authUser ? authUser.imperial_units : false"
-          />
-          <span class="stat-label">
-            {{ user.imperial_units ? 'miles' : 'km' }}
-          </span>
-        </div>
-        <div class="user-stat hide-small" v-if="'nb_sports' in user">
-          <span class="stat-number">{{ user.nb_sports }}</span>
-          <span class="stat-label">
-            {{ $t('workouts.SPORT', user.nb_sports) }}
-          </span>
-        </div>
-        <div class="user-stat hide-small">
-          <span class="stat-number">{{ user.following }}</span>
-          <span class="stat-label">
-            {{ $t('user.FOLLOWING', user.following) }}
-          </span>
-        </div>
-        <div class="user-stat hide-small">
-          <span class="stat-number">{{ user.followers }}</span>
-          <span class="stat-label">
-            {{ $t('user.FOLLOWER', user.followers) }}
-          </span>
-        </div>
-      </div>
+      <UserStats :authUser="authUser" :user="user" />
     </div>
   </div>
 </template>
@@ -49,6 +12,7 @@
   import { toRefs } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
+  import UserStats from '@/components/User/UserStats.vue'
   import { IAuthUserProfile, IUserProfile } from '@/types/user'
 
   interface Props {
@@ -83,21 +47,15 @@
         height: 60%;
       }
 
-      .user-stats {
-        display: flex;
+      ::v-deep(.user-stats) {
         gap: $default-padding * 4;
         .user-stat {
-          display: flex;
           flex-direction: column;
           align-items: center;
           padding-top: $default-padding;
-          .stat-number,
-          .stat-label {
-            padding: 0 $default-padding * 0.5;
-          }
+
           ::v-deep(.distance),
           .stat-number {
-            font-weight: bold;
             font-size: 1.5em;
           }
         }
@@ -108,12 +66,11 @@
           font-size: 1.5em;
         }
 
-        .user-stats {
+        ::v-deep(.user-stats) {
           gap: $default-padding * 2;
           .user-stat {
             ::v-deep(.distance),
             .stat-number {
-              font-weight: bold;
               font-size: 1.2em;
             }
 

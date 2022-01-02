@@ -187,7 +187,6 @@
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList, workoutsPayloadKeys } from '@/utils/api'
   import { getDateWithTZ } from '@/utils/dates'
-  import { getSportColor, getSportLabel } from '@/utils/sports'
   import { convertDistance } from '@/utils/units'
   import { defaultOrder } from '@/utils/workouts'
 

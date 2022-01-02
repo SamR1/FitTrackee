@@ -31,7 +31,6 @@
     "TITLE": "Administration - Sports"
   },
   "UPDATE_APPLICATION_DESCRIPTION": "Configurer l'application (nombre maximum d'utilisateurs inscrits, taille maximale des fichers).",
-  "USER": "utilisateur | utilisateurs",
   "USERS": {
     "TABLE": {
       "ADD_ADMIN_RIGHTS": "Ajouter les drois d'admin",

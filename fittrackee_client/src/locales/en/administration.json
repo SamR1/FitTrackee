@@ -31,7 +31,6 @@
     "TITLE": "Sports administration"
   },
   "UPDATE_APPLICATION_DESCRIPTION": "Update application configuration (maximum number of registered users, maximum files size).",
-  "USER": "user | users",
   "USERS": {
     "TABLE": {
       "ADD_ADMIN_RIGHTS": "Add admin rights",

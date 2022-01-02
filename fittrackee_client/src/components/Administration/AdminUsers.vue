@@ -1,7 +1,7 @@
 <template>
   <div id="admin-users" class="admin-card">
     <Card>
-      <template #title>{{ capitalize($t('admin.USER', 0)) }}</template>
+      <template #title>{{ capitalize($t('user.USER', 0)) }}</template>
       <template #content>
         <button class="top-button" @click.prevent="$router.push('/admin')">
           {{ $t('admin.BACK_TO_ADMIN') }}

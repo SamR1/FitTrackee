@@ -75,5 +75,6 @@
   "REGISTER_DISABLED": "Sorry, registration is disabled.",
   "RESET_PASSWORD": "Reset your password",
   "USER_PICTURE": "user picture",
+  "USER": "user | users",
   "USERNAME": "Username"
 }

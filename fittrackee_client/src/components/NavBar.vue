@@ -29,6 +29,9 @@
             <router-link class="nav-item" to="/statistics">
               {{ $t('statistics.STATISTICS') }}
             </router-link>
+            <router-link class="nav-item" to="/users">
+              {{ capitalize($t('user.USER', 0)) }}
+            </router-link>
             <router-link class="nav-item" to="/workouts/add">
               {{ $t('workouts.ADD_WORKOUT') }}
             </router-link>
