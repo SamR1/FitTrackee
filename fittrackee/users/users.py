@@ -151,6 +151,8 @@ def get_users(auth_user: User) -> Dict:
               "first_name": null,
               "followers": 0,
               "following": 0,
+              "follows": false,
+              "is_followed_by": false,
               "is_remote": false,
               "last_name": null,
               "location": null,
@@ -215,6 +217,8 @@ def get_users(auth_user: User) -> Dict:
               "first_name": null,
               "followers": 0,
               "following": 0,
+              "follows": false,
+              "is_followed_by": false,
               "is_remote": false,
               "last_name": null,
               "location": null,
@@ -298,6 +302,8 @@ def get_remote_users(
               "first_name": null,
               "followers": 0,
               "following": 0,
+              "follows": false,
+              "is_followed_by": false,
               "is_remote": true,
               "last_name": null,
               "location": null,
@@ -345,6 +351,7 @@ def get_single_user(
 ) -> Union[Dict, HttpResponse]:
     """
     Get single user details.
+    If a user is authenticated, it returns relationships.
     If authenticated user has admin rights, user email is returned.
 
     **Example request**:
@@ -374,6 +381,8 @@ def get_single_user(
             "first_name": null,
             "followers": 0,
             "following": 0,
+            "follows": false,
+            "is_followed_by": false,
             "is_remote": false,
             "last_name": null,
             "location": null,
@@ -451,6 +460,8 @@ def get_single_user(
             "first_name": null,
             "followers": 0,
             "following": 0,
+            "follows": false,
+            "is_followed_by": false,
             "is_remote": false,
             "last_name": null,
             "location": null,
@@ -559,6 +570,8 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
             "first_name": null,
             "followers": 0,
             "following": 0,
+            "follows": false,
+            "is_followed_by": false,
             "is_remote": false,
             "last_name": null,
             "location": null,
@@ -905,6 +918,8 @@ def get_followers(
               "first_name": null,
               "followers": 1,
               "following": 1,
+              "follows": true,
+              "is_followed_by": false,
               "is_remote": false,
               "last_name": null,
               "location": null,
@@ -995,6 +1010,8 @@ def get_following(
               "first_name": null,
               "followers": 1,
               "following": 1,
+              "follows": false,
+              "is_followed_by": true,
               "is_remote": false,
               "last_name": null,
               "location": null,
