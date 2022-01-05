@@ -18,19 +18,19 @@
         {{ user.imperial_units ? 'miles' : 'km' }}
       </span>
     </div>
-    <div class="user-stat hide-small" v-if="'nb_sports' in user">
+    <div class="user-stat" v-if="'nb_sports' in user">
       <span class="stat-number">{{ user.nb_sports }}</span>
       <span class="stat-label">
         {{ $t('workouts.SPORT', user.nb_sports) }}
       </span>
     </div>
-    <div class="user-stat hide-small">
+    <div class="user-stat">
       <span class="stat-number">{{ user.following }}</span>
       <span class="stat-label">
         {{ $t('user.FOLLOWING', user.following) }}
       </span>
     </div>
-    <div class="user-stat hide-small">
+    <div class="user-stat">
       <span class="stat-number">{{ user.followers }}</span>
       <span class="stat-label">
         {{ $t('user.FOLLOWER', user.followers) }}

@@ -86,11 +86,11 @@
       display: flex;
       align-content: flex-start;
       flex-wrap: wrap;
-      justify-content: space-between;
       padding: 0;
+      width: 100%;
 
       .user-box {
-        width: 25%;
+        width: 33%;
         @media screen and (max-width: $medium-limit) {
           width: 50%;
         }

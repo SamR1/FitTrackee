@@ -48,34 +48,67 @@
       }
 
       ::v-deep(.user-stats) {
+        flex-wrap: nowrap;
         gap: $default-padding * 4;
         .user-stat {
           flex-direction: column;
           align-items: center;
           padding-top: $default-padding;
 
-          ::v-deep(.distance),
+          .distance,
           .stat-number {
             font-size: 1.5em;
           }
         }
       }
+    }
 
-      @media screen and (max-width: $x-small-limit) {
+    @media screen and (max-width: $small-limit) {
+      .user-details {
         .user-name {
           font-size: 1.5em;
         }
 
         ::v-deep(.user-stats) {
-          gap: $default-padding * 2;
+          margin-top: $default-margin * 0.5;
+          align-content: space-between;
+          flex-wrap: wrap;
+          gap: $default-padding;
+
           .user-stat {
-            ::v-deep(.distance),
+            padding: 0;
+            flex-direction: row;
+            .distance,
             .stat-number {
               font-size: 1.2em;
             }
+          }
+        }
+      }
+    }
 
-            &.hide-small {
-              display: none;
+    @media screen and (max-width: $x-small-limit) {
+      ::v-deep(.user-picture) {
+        img {
+          height: 50px;
+          width: 50px;
+        }
+        .no-picture {
+          font-size: 3em;
+        }
+      }
+      .user-details {
+        .user-name {
+          font-size: 1.5em;
+        }
+
+        ::v-deep(.user-stats) {
+          gap: $default-padding * 0.5;
+
+          .user-stat {
+            .distance,
+            .stat-number {
+              font-size: 1em;
             }
           }
         }
