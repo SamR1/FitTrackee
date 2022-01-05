@@ -47,11 +47,12 @@
         </div>
         <div class="nav-items-user-menu">
           <div class="nav-items-group" v-if="isAuthenticated">
-            <div class="nav-item nav-profile-img">
+            <router-link
+              class="nav-item nav-profile-img"
+              to="/profile"
+              @click="closeMenu"
+            >
               <UserPicture :user="authUser" />
-            </div>
-            <router-link class="nav-item" to="/profile" @click="closeMenu">
-              {{ authUser.username }}
             </router-link>
             <div class="nav-item nav-link" @click="logout">
               {{ $t('user.LOGOUT') }}
