@@ -424,6 +424,60 @@ class TestUserFollowingModel:
         assert follow_request.updated_at is not None
 
 
+class TestUserUnfollowModel:
+    def test_it_raises_error_if_follow_request_does_not_exist(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+
+        with pytest.raises(NotExistingFollowRequestError):
+            user_1.unfollows(user_2)
+
+    def test_user_1_unfollows_user_2(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        follow_request_from_user_1_to_user_2.is_approved = True
+        follow_request_from_user_1_to_user_2.updated_at = datetime.utcnow()
+
+        user_1.unfollows(user_2)
+
+        assert user_1.following.count() == 0
+        assert user_2.followers.count() == 0
+
+    def test_it_removes_pending_follow_request(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_1.unfollows(user_2)
+
+        assert user_1.sent_follow_requests.all() == []
+
+    @patch('fittrackee.users.models.send_to_users_inbox')
+    def test_it_does_not_call_send_to_user_inbox_when_federation_is_disabled(
+        self,
+        send_to_users_inbox_mock: Mock,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        follow_request_from_user_1_to_user_2.is_approved = True
+        follow_request_from_user_1_to_user_2.updated_at = datetime.utcnow()
+
+        user_1.unfollows(user_2)
+
+        send_to_users_inbox_mock.send.assert_not_called()
+
+
 class TestUserFollowers:
     def test_it_returns_empty_list_if_no_followers(
         self,

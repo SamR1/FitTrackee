@@ -70,7 +70,7 @@ class FollowRequest(BaseModel):
             'to_user': self.to_user.serialize(),
         }
 
-    def get_activity(self) -> Dict:
+    def get_activity(self, undo: bool = False) -> Dict:
         if not current_app.config['federation_enabled']:
             raise FederationDisabledException()
         follow_activity = {
@@ -85,20 +85,33 @@ class FollowRequest(BaseModel):
         if self.updated_at is None:
             activity = follow_activity.copy()
         else:
-            activity = {
-                'id': (
-                    f'{self.to_user.actor.activitypub_id}#'
-                    f'{"accept" if self.is_approved else "reject"}s/'
-                    f'follow/{self.from_user.actor.fullname}'
-                ),
-                'type': (
+            if undo:
+                activity = {
+                    'id': (
+                        f'{self.from_user.actor.activitypub_id}#'
+                        f'undoes/'
+                        f'follow/{self.from_user.actor.fullname}'
+                    ),
+                    'type': ActivityType.UNDO.value,
+                    'actor': self.from_user.actor.activitypub_id,
+                    'object': follow_activity,
+                }
+            else:
+                activity_type = (
                     ActivityType.ACCEPT.value
                     if self.is_approved
                     else ActivityType.REJECT.value
-                ),
-                'actor': self.to_user.actor.activitypub_id,
-                'object': follow_activity,
-            }
+                )
+                activity = {
+                    'id': (
+                        f'{self.to_user.actor.activitypub_id}#'
+                        f'{"accept" if self.is_approved else "reject"}s/'
+                        f'follow/{self.from_user.actor.fullname}'
+                    ),
+                    'type': activity_type,
+                    'actor': self.to_user.actor.activitypub_id,
+                    'object': follow_activity,
+                }
         activity['@context'] = AP_CTX
         return activity
 
@@ -301,6 +314,38 @@ class User(BaseModel):
                 )
 
         return follow_request
+
+    def unfollows(self, target: 'User') -> None:
+        existing_follow_request = FollowRequest.query.filter_by(
+            follower_user_id=self.id, followed_user_id=target.id
+        ).first()
+        if not existing_follow_request:
+            raise NotExistingFollowRequestError()
+
+        if current_app.config['federation_enabled']:
+            undo_activity = existing_follow_request.get_activity(undo=True)
+
+            # send Undo activity to remote followed user
+            if target.actor.is_remote:
+                send_to_users_inbox.send(
+                    sender_id=self.actor.id,
+                    activity=undo_activity,
+                    recipients=[target.actor.inbox_url],
+                )
+
+        db.session.delete(existing_follow_request)
+        db.session.commit()
+        return None
+
+    def undoes_follow(self, follower: 'User') -> None:
+        existing_follow_request = FollowRequest.query.filter_by(
+            followed_user_id=self.id, follower_user_id=follower.id
+        ).first()
+        if not existing_follow_request:
+            raise NotExistingFollowRequestError()
+        db.session.delete(existing_follow_request)
+        db.session.commit()
+        return None
 
     def _processes_follow_request_from(
         self, user: 'User', approved: bool

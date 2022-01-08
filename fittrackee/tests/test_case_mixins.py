@@ -1,6 +1,6 @@
 import json
 import sys
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 from unittest.mock import Mock
 
 from flask import Flask
@@ -79,6 +79,7 @@ class UserInboxTestMixin(BaseTestMixin):
         local_actor: Actor,
         remote_actor: Actor,
         base_object: Any,
+        activity_args: Optional[Dict] = None,
     ) -> None:
         send_to_users_inbox_mock.send.assert_called_once()
         self.assert_call_args_keys_equal(
@@ -88,7 +89,9 @@ class UserInboxTestMixin(BaseTestMixin):
         call_args = self.get_call_kwargs(send_to_users_inbox_mock.send)
         assert call_args['sender_id'] == local_actor.id
         assert call_args['recipients'] == [remote_actor.inbox_url]
-        activity = base_object.get_activity()
+        activity = base_object.get_activity(
+            {} if activity_args is None else activity_args
+        )
         del activity['id']
         self.assert_dict_contains_subset(call_args['activity'], activity)
 

@@ -32,6 +32,7 @@ from .decorators import (
 )
 from .exceptions import (
     FollowRequestAlreadyRejectedError,
+    NotExistingFollowRequestError,
     UserNotFoundException,
 )
 from .models import FollowRequest, User, UserSportPreference
@@ -833,6 +834,83 @@ def follow_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
         auth_user.send_follow_request_to(target_user)
     except FollowRequestAlreadyRejectedError:
         return ForbiddenErrorResponse()
+    return successful_response_dict
+
+
+@users_blueprint.route('/users/<user_name>/unfollow', methods=['POST'])
+@authenticate
+def unfollow_user(
+    auth_user: User, user_name: str
+) -> Union[Dict, HttpResponse]:
+    """
+    Unfollow a user.
+    If federation is enabled, it sends a Undo activity to the remote instance
+    if the targeted user is a remote user.
+
+    **Example request**:
+
+    - unfollow local user
+
+    .. sourcecode:: http
+
+      POST /api/users/john_doe/unfollow HTTP/1.1
+      Content-Type: application/json
+
+    - unfollow remote user
+
+    .. sourcecode:: http
+
+      POST /api/users/sam@remote-instance.net/unfollow HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "status": "success",
+        "message": "Undo for a follow request to user 'john_doe' is sent.",
+      }
+
+
+    :param string user_name: user name
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403:
+        - you do not have permissions
+    :statuscode 404:
+        - user does not exist
+    :statuscode 500: error, please try again or contact the administrator
+
+    """
+    successful_response_dict = {
+        'status': 'success',
+        'message': f"Undo for a follow request to user '{user_name}' is sent.",
+    }
+
+    try:
+        target_user = get_user_from_username(user_name)
+    except (
+        ActorNotFoundException,
+        DomainNotFoundException,
+        UserNotFoundException,
+    ) as e:
+        appLog.error(f'Error when following a user: {e}')
+        return UserNotFoundErrorResponse()
+
+    try:
+        auth_user.unfollows(target_user)
+    except NotExistingFollowRequestError:
+        return NotFoundErrorResponse(message='relationship does not exist')
     return successful_response_dict
 
 

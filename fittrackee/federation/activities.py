@@ -23,8 +23,6 @@ class AbstractActivity(ABC):
     def process_activity(self) -> None:
         pass
 
-
-class FollowBaseActivity(AbstractActivity):
     def get_actors(
         self, create_remote_actor: bool = False
     ) -> Tuple[Actor, Actor]:
@@ -42,11 +40,14 @@ class FollowBaseActivity(AbstractActivity):
                     f'actor not found for {self.activity_name()}'
                 )
 
-        object_actor_activitypub_id = (
-            self.activity['object']
-            if isinstance(self.activity['object'], str)
-            else self.activity['object']['actor']
-        )
+        if isinstance(self.activity['object'], str):
+            object_actor_activitypub_id = self.activity['object']
+        else:
+            object_actor_activitypub_id = (
+                self.activity['object']['object']
+                if self.activity['type'] == 'Undo'
+                else self.activity['object']['actor']
+            )
         object_actor = Actor.query.filter_by(
             activitypub_id=object_actor_activitypub_id
         ).first()
@@ -56,6 +57,8 @@ class FollowBaseActivity(AbstractActivity):
             )
         return actor, object_actor
 
+
+class FollowBaseActivity(AbstractActivity):
     @abstractmethod
     def process_activity(self) -> None:
         pass
@@ -107,5 +110,21 @@ class RejectActivity(FollowBaseActivity):
         except FollowRequestAlreadyProcessedError as e:
             appLog.error(
                 f'{self.activity_name()}: follow request already processed.'
+            )
+            raise e
+
+
+class UndoActivity(AbstractActivity):
+    def process_activity(self) -> None:
+        if self.activity['object']['type'] == 'Follow':
+            self.undoes_follow()
+
+    def undoes_follow(self) -> None:
+        follower_actor, followed_actor = self.get_actors()
+        try:
+            followed_actor.user.undoes_follow(follower_actor.user)
+        except NotExistingFollowRequestError as e:
+            appLog.error(
+                f'{self.activity_name()}: follow request does not exist.'
             )
             raise e

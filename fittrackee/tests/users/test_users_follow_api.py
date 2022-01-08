@@ -118,3 +118,88 @@ class TestFollowWithoutFederation(ApiTestCaseMixin):
         )
 
         send_to_users_inbox_mock.send.assert_not_called()
+
+
+class TestUnfollowWithoutFederation(ApiTestCaseMixin):
+    def test_it_raises_error_if_target_user_does_not_exist(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f'/api/users/{random_string()}/unfollow',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 404
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'not found'
+        assert data['message'] == 'user does not exist'
+
+    def test_it_raises_error_if_follow_request_does_not_exist(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f'/api/users/{user_2.username}/unfollow',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 404
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'not found'
+        assert data['message'] == 'relationship does not exist'
+
+    def test_it_removes_follow_request(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f'/api/users/{user_2.username}/unfollow',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == (
+            "Undo for a follow request to user "
+            f"'{user_2.username}' is sent."
+        )
+        assert user_1.following.count() == 0
+
+    @patch('fittrackee.users.models.send_to_users_inbox')
+    def test_it_does_not_call_send_to_user_inbox(
+        self,
+        send_to_users_inbox_mock: Mock,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        client.post(
+            f'/api/users/{user_2.username}/unfollow',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        send_to_users_inbox_mock.send.assert_not_called()

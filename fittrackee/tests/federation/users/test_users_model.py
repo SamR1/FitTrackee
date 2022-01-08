@@ -160,3 +160,30 @@ class TestUserFollowingModelWithFederation:
             activity=follow_request.get_activity(),
             recipients=[remote_actor.inbox_url],
         )
+
+
+class TestUserUnfollowModelWithFederation:
+    @patch('fittrackee.users.models.send_to_users_inbox')
+    def test_local_actor_sends_undo_activity_to_remote_actor(
+        self,
+        send_to_users_inbox_mock: Mock,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user: User,
+        follow_request_from_user_1_to_remote_user: FollowRequest,
+    ) -> None:
+        follow_request_from_user_1_to_remote_user.is_approved = True
+        follow_request_from_user_1_to_remote_user.updated_at = (
+            datetime.utcnow()
+        )
+        expected_activity = (
+            follow_request_from_user_1_to_remote_user.get_activity(undo=True)
+        )
+
+        user_1.unfollows(remote_user)
+
+        send_to_users_inbox_mock.send.assert_called_with(
+            sender_id=user_1.actor.id,
+            activity=expected_activity,
+            recipients=[remote_user.actor.inbox_url],
+        )
