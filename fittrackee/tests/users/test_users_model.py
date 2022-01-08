@@ -70,8 +70,8 @@ class TestUserModel:
         assert 'language' not in serialized_user
         assert 'timezone' not in serialized_user
         assert 'weekm' not in serialized_user
-        assert serialized_user['follows'] is False
-        assert serialized_user['is_followed_by'] is False
+        assert serialized_user['follows'] == 'false'
+        assert serialized_user['is_followed_by'] == 'false'
 
     def test_user_model_as_regular_user(
         self, app: Flask, user_1: User, user_2: User
@@ -92,8 +92,8 @@ class TestUserModel:
         assert 'language' not in serialized_user
         assert 'timezone' not in serialized_user
         assert 'weekm' not in serialized_user
-        assert serialized_user['follows'] is False
-        assert serialized_user['is_followed_by'] is False
+        assert serialized_user['follows'] == 'false'
+        assert serialized_user['is_followed_by'] == 'false'
 
     def test_user_model_when_no_user_provided(
         self, app: Flask, user_1: User
@@ -158,14 +158,34 @@ class TestUserModel:
         serialized_user = user_2.serialize(user_1)
         assert serialized_user['followers'] == 0
         assert serialized_user['following'] == 0
-        assert serialized_user['follows'] == 0
-        assert serialized_user['is_followed_by'] == 0
+        assert serialized_user['follows'] == 'false'
+        assert serialized_user['is_followed_by'] == 'false'
 
         serialized_user = user_1.serialize(user_2)
         assert serialized_user['followers'] == 0
         assert serialized_user['following'] == 0
-        assert serialized_user['follows'] == 0
-        assert serialized_user['is_followed_by'] == 0
+        assert serialized_user['follows'] == 'false'
+        assert serialized_user['is_followed_by'] == 'false'
+
+    def test_it_returns_pending_follow_request(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+
+        serialized_user = user_2.serialize(user_1)
+        assert serialized_user['followers'] == 0
+        assert serialized_user['following'] == 0
+        assert serialized_user['follows'] == 'pending'
+        assert serialized_user['is_followed_by'] == 'false'
+
+        serialized_user = user_1.serialize(user_2)
+        assert serialized_user['followers'] == 0
+        assert serialized_user['following'] == 0
+        assert serialized_user['follows'] == 'false'
+        assert serialized_user['is_followed_by'] == 'pending'
 
     def test_it_returns_user_1_is_followed_by_user_2(
         self,
@@ -180,14 +200,36 @@ class TestUserModel:
         serialized_user = user_2.serialize(user_1)
         assert serialized_user['followers'] == 0
         assert serialized_user['following'] == 1
-        assert serialized_user['follows'] == 1
-        assert serialized_user['is_followed_by'] == 0
+        assert serialized_user['follows'] == 'true'
+        assert serialized_user['is_followed_by'] == 'false'
 
         serialized_user = user_1.serialize(user_2)
         assert serialized_user['followers'] == 1
         assert serialized_user['following'] == 0
-        assert serialized_user['follows'] == 0
-        assert serialized_user['is_followed_by'] == 1
+        assert serialized_user['follows'] == 'false'
+        assert serialized_user['is_followed_by'] == 'true'
+
+    def test_it_returns_user_1_is_not_followed_by_user_2_when_followed_request_is_rejected(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        follow_request_from_user_2_to_user_1.is_approved = False
+        follow_request_from_user_2_to_user_1.updated_at = datetime.utcnow()
+
+        serialized_user = user_2.serialize(user_1)
+        assert serialized_user['followers'] == 0
+        assert serialized_user['following'] == 0
+        assert serialized_user['follows'] == 'false'
+        assert serialized_user['is_followed_by'] == 'false'
+
+        serialized_user = user_1.serialize(user_2)
+        assert serialized_user['followers'] == 0
+        assert serialized_user['following'] == 0
+        assert serialized_user['follows'] == 'false'
+        assert serialized_user['is_followed_by'] == 'false'
 
     def test_it_returns_user_1_and_user_2_follow_each_other(
         self,
@@ -205,14 +247,14 @@ class TestUserModel:
         serialized_user = user_2.serialize(user_1)
         assert serialized_user['followers'] == 1
         assert serialized_user['following'] == 1
-        assert serialized_user['follows'] == 1
-        assert serialized_user['is_followed_by'] == 1
+        assert serialized_user['follows'] == 'true'
+        assert serialized_user['is_followed_by'] == 'true'
 
         serialized_user = user_1.serialize(user_2)
         assert serialized_user['followers'] == 1
         assert serialized_user['following'] == 1
-        assert serialized_user['follows'] == 1
-        assert serialized_user['is_followed_by'] == 1
+        assert serialized_user['follows'] == 'true'
+        assert serialized_user['is_followed_by'] == 'true'
 
     def test_user_is_not_remote_when_federation_is_disabled(
         self, app: Flask, user_1: User

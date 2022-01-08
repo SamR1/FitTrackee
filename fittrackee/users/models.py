@@ -337,17 +337,27 @@ class User(BaseModel):
         )
         return follow_request
 
-    def is_followed_by(self, user: 'User') -> bool:
+    @staticmethod
+    def follow_request_status(follow_request: FollowRequest) -> str:
+        if follow_request is None or (
+            follow_request.updated_at and not follow_request.is_approved
+        ):
+            return 'false'
+        if follow_request.is_approved:
+            return 'true'
+        return 'pending'
+
+    def is_followed_by(self, user: 'User') -> str:
         follow_request = FollowRequest.query.filter_by(
             follower_user_id=user.id, followed_user_id=self.id
         ).first()
-        return follow_request.is_approved if follow_request else False
+        return self.follow_request_status(follow_request)
 
-    def follows(self, user: 'User') -> bool:
+    def follows(self, user: 'User') -> str:
         follow_request = FollowRequest.query.filter_by(
             follower_user_id=self.id, followed_user_id=user.id
         ).first()
-        return follow_request.is_approved if follow_request else False
+        return self.follow_request_status(follow_request)
 
     def get_user_url(self) -> str:
         """Return user url on user interface"""
