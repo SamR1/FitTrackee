@@ -166,11 +166,11 @@
   import {
     ComputedRef,
     Ref,
+    capitalize,
     computed,
     ref,
     toRefs,
     watch,
-    capitalize,
     onBeforeMount,
   } from 'vue'
   import { LocationQuery, useRoute, useRouter } from 'vue-router'
@@ -182,16 +182,17 @@
   import { WORKOUTS_STORE } from '@/store/constants'
   import { IPagination } from '@/types/api'
   import { ITranslatedSport } from '@/types/sports'
-  import { IUserProfile } from '@/types/user'
+  import { IAuthUserProfile } from '@/types/user'
   import { IWorkout, TWorkoutsPayload } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList, workoutsPayloadKeys } from '@/utils/api'
   import { getDateWithTZ } from '@/utils/dates'
+  import { getSportColor, getSportLabel } from '@/utils/sports'
   import { convertDistance } from '@/utils/units'
   import { defaultOrder } from '@/utils/workouts'
 
   interface Props {
-    user: IUserProfile
+    user: IAuthUserProfile
     sports: ITranslatedSport[]
   }
   const props = defineProps<Props>()
