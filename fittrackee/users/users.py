@@ -65,7 +65,7 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
     query = params.get('q')
     users_pagination = (
         User.query.filter(
-            User.username.like('%' + query + '%') if query else True,
+            User.username.ilike('%' + query + '%') if query else True,
             User.is_remote == remote,
         )
         .order_by(

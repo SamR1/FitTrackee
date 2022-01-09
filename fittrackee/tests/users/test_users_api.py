@@ -856,6 +856,27 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
             'total': 1,
         }
 
+    def test_filtering_on_username_is_case_insensitive(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?q=TOTO',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 1
+        assert 'toto' in data['data']['users'][0]['username']
+
     def test_it_returns_empty_users_list_filtering_on_username(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
