@@ -7,12 +7,13 @@ import {
 
 import { USERS_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
-import { IPagination, TPaginationPayload } from '@/types/api'
+import { IPagination } from '@/types/api'
 import {
   IAdminUserPayload,
   IUserDeletionPayload,
   IUserProfile,
   IUserRelationshipPayload,
+  TUsersPayload,
 } from '@/types/user'
 
 export interface IUsersState {
@@ -35,7 +36,7 @@ export interface IUsersActions {
   ): void
   [USERS_STORE.ACTIONS.GET_USERS](
     context: ActionContext<IUsersState, IRootState>,
-    payload: TPaginationPayload
+    payload: TUsersPayload
   ): void
   [USERS_STORE.ACTIONS.UPDATE_USER](
     context: ActionContext<IUsersState, IRootState>,

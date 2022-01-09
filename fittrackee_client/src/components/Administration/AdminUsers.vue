@@ -133,7 +133,7 @@
   import UserPicture from '@/components/User/UserPicture.vue'
   import { AUTH_USER_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
   import { IPagination, TPaginationPayload } from '@/types/api'
-  import { IUserProfile } from '@/types/user'
+  import { IUserProfile, TUsersPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList } from '@/utils/api'
   import { getDateWithTZ } from '@/utils/dates'
@@ -167,7 +167,7 @@
 
   onBeforeMount(() => loadUsers(query))
 
-  function loadUsers(queryParams: TPaginationPayload) {
+  function loadUsers(queryParams: TUsersPayload) {
     store.dispatch(USERS_STORE.ACTIONS.GET_USERS, queryParams)
   }
   function updateUser(username: string, admin: boolean) {

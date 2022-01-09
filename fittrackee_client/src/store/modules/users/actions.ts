@@ -6,11 +6,11 @@ import { AUTH_USER_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
 import { IAuthUserState } from '@/store/modules/authUser/types'
 import { IRootState } from '@/store/modules/root/types'
 import { IUsersActions, IUsersState } from '@/store/modules/users/types'
-import { TPaginationPayload } from '@/types/api'
 import {
   IAdminUserPayload,
   IUserDeletionPayload,
   IUserRelationshipPayload,
+  TUsersPayload,
 } from '@/types/user'
 import { handleError } from '@/utils'
 
@@ -78,7 +78,7 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
   },
   [USERS_STORE.ACTIONS.GET_USERS](
     context: ActionContext<IUsersState, IRootState>,
-    payload: TPaginationPayload
+    payload: TUsersPayload
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS_LOADING, true)

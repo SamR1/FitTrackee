@@ -1,5 +1,6 @@
 import { LocationQueryValue } from 'vue-router'
 
+import { TPaginationPayload } from '@/types/api'
 import { IRecord } from '@/types/workouts'
 
 export type TPrivacyLevels = 'private' | 'followers_only' | 'public'
@@ -110,4 +111,8 @@ export interface ILoginOrRegisterData {
   actionType: string
   formData: ILoginRegisterFormData
   redirectUrl?: string | null | LocationQueryValue[]
+}
+
+export type TUsersPayload = TPaginationPayload & {
+  q?: string
 }

@@ -1,5 +1,6 @@
 <template>
   <div class="users-list">
+    <UsersFilters @filterOnUsername="searchUsers" />
     <div class="container users-container">
       <div v-for="user in users" :key="user.username" class="user-box">
         <UserCard
@@ -26,18 +27,18 @@
     computed,
     onBeforeMount,
     onUnmounted,
-    reactive,
     ref,
     toRefs,
     watch,
   } from 'vue'
-  import { LocationQuery, useRoute } from 'vue-router'
+  import { LocationQuery, useRoute, useRouter } from 'vue-router'
 
   import Pagination from '@/components/Common/Pagination.vue'
   import UserCard from '@/components/User/UserCard.vue'
+  import UsersFilters from '@/components/Users/UsersFilters.vue'
   import { USERS_STORE } from '@/store/constants'
-  import { IPagination, TPaginationPayload } from '@/types/api'
-  import { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import { IPagination } from '@/types/api'
+  import { IAuthUserProfile, IUserProfile, TUsersPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getQuery } from '@/utils/api'
 
@@ -48,13 +49,12 @@
 
   const store = useStore()
   const route = useRoute()
+  const router = useRouter()
 
   const { authUser } = toRefs(props)
   const orderByList: string[] = ['created_at', 'username', 'workouts_count']
   const defaultOrderBy = 'created_at'
-  let query: TPaginationPayload = reactive(
-    getQuery(route.query, orderByList, defaultOrderBy)
-  )
+  let query: TUsersPayload = getUsersQuery(route.query)
   const users: ComputedRef<IUserProfile[]> = computed(
     () => store.getters[USERS_STORE.GETTERS.USERS]
   )
@@ -65,11 +65,31 @@
 
   onBeforeMount(() => loadUsers(query))
 
-  function loadUsers(queryParams: TPaginationPayload) {
+  function loadUsers(queryParams: TUsersPayload) {
+    queryParams.per_page = 9
     store.dispatch(USERS_STORE.ACTIONS.GET_USERS, queryParams)
   }
   function storeUser(username: string) {
     updatedUser.value = username
+  }
+  function searchUsers(username: Ref<string>) {
+    if (username.value !== '') {
+      query = { q: username.value }
+    } else {
+      const newQuery: LocationQuery = Object.assign({}, route.query)
+      query = getUsersQuery(newQuery)
+    }
+    router.push({ path: '/users', query })
+  }
+
+  function getUsersQuery(newQuery: LocationQuery): TUsersPayload {
+    query = getQuery(newQuery, orderByList, defaultOrderBy)
+    if (newQuery.q) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      query.q = newQuery.q
+    }
+    return query
   }
 
   onUnmounted(() => {
@@ -79,7 +99,7 @@
   watch(
     () => route.query,
     (newQuery: LocationQuery) => {
-      query = getQuery(newQuery, orderByList, defaultOrderBy, { query })
+      query = getUsersQuery(newQuery)
       loadUsers(query)
     }
   )
