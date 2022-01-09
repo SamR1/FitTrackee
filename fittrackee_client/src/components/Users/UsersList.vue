@@ -2,7 +2,12 @@
   <div class="users-list">
     <div class="container users-container">
       <div v-for="user in users" :key="user.username" class="user-box">
-        <UserCard :authUser="authUser" :user="user" />
+        <UserCard
+          :authUser="authUser"
+          :user="user"
+          :updatedUser="updatedUser"
+          @updatedUserRelationship="storeUser"
+        />
       </div>
     </div>
     <Pagination
@@ -17,10 +22,12 @@
 <script setup lang="ts">
   import {
     ComputedRef,
+    Ref,
     computed,
     onBeforeMount,
     onUnmounted,
     reactive,
+    ref,
     toRefs,
     watch,
   } from 'vue'
@@ -54,11 +61,15 @@
   const pagination: ComputedRef<IPagination> = computed(
     () => store.getters[USERS_STORE.GETTERS.USERS_PAGINATION]
   )
+  const updatedUser: Ref<string | null> = ref(null)
 
   onBeforeMount(() => loadUsers(query))
 
   function loadUsers(queryParams: TPaginationPayload) {
     store.dispatch(USERS_STORE.ACTIONS.GET_USERS, queryParams)
+  }
+  function storeUser(username: string) {
+    updatedUser.value = username
   }
 
   onUnmounted(() => {

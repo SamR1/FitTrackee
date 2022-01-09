@@ -1,13 +1,16 @@
 {
   "ADMIN": "Admin",
   "ALREADY_HAVE_ACCOUNT": "Already have an account?",
+  "CANCEL_FOLLOW_REQUEST": "Cancel follow request",
   "CONFIRM_ACCOUNT_DELETION": "Are you sure you want to delete your account? All data will be deleted, this cannot be undone",
   "EMAIL": "Email",
   "ENTER_EMAIL": "Enter an email address",
   "ENTER_PASSWORD": "Enter a password",
   "ENTER_PASSWORD_CONFIRMATION": "Confirm the password",
+  "FOLLOW": "follow",
   "FOLLOWER": "follower | followers",
   "FOLLOWING": "following | following",
+  "FOLLOWS_YOU": "follows you",
   "INVALID_TOKEN": "Invalid token, please request a new password reset.",
   "LANGUAGE": "Language",
   "LOGIN": "Login",
@@ -73,8 +76,10 @@
   },
   "REGISTER": "Register",
   "REGISTER_DISABLED": "Sorry, registration is disabled.",
+  "UNFOLLOW": "unfollow",
   "RESET_PASSWORD": "Reset your password",
   "USER_PICTURE": "user picture",
   "USER": "user | users",
-  "USERNAME": "Username"
+  "USERNAME": "Username",
+  "YOU": "you"
 }

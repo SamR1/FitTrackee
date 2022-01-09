@@ -343,6 +343,7 @@ button {
 
 .profile-buttons {
   display: flex;
+  align-items: baseline;
   gap: $default-padding;
 }
 

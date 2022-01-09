@@ -7,7 +7,11 @@ import { IAuthUserState } from '@/store/modules/authUser/types'
 import { IRootState } from '@/store/modules/root/types'
 import { IUsersActions, IUsersState } from '@/store/modules/users/types'
 import { TPaginationPayload } from '@/types/api'
-import { IAdminUserPayload, IUserDeletionPayload } from '@/types/user'
+import {
+  IAdminUserPayload,
+  IUserDeletionPayload,
+  IUserRelationshipPayload,
+} from '@/types/user'
 import { handleError } from '@/utils'
 
 export const deleteUserAccount = (
@@ -112,6 +116,37 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
             USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS,
             res.data.data.users[0]
           )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS_LOADING, false)
+      )
+  },
+  [USERS_STORE.ACTIONS.UPDATE_RELATIONSHIP](
+    context: ActionContext<IUsersState, IRootState>,
+    payload: IUserRelationshipPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS_LOADING, true)
+    authApi
+      .post(`users/${payload.username}/${payload.action}`)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          authApi.get(`users/${payload.username}`).then((res) => {
+            if (res.data.status === 'success') {
+              context.commit(
+                payload.fromUserInfos
+                  ? USERS_STORE.MUTATIONS.UPDATE_USER
+                  : USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS,
+                res.data.data.users[0]
+              )
+            } else {
+              handleError(context, null)
+            }
+          })
         } else {
           handleError(context, null)
         }

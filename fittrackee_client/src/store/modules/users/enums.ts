@@ -5,6 +5,7 @@ export enum UsersActions {
   GET_USERS = 'GET_USERS',
   UPDATE_USER = 'UPDATE_USER',
   DELETE_USER_ACCOUNT = 'DELETE_USER_ACCOUNT',
+  UPDATE_RELATIONSHIP = 'UPDATE_RELATIONSHIP',
 }
 
 export enum UsersGetters {

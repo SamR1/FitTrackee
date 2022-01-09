@@ -47,16 +47,35 @@
       >
         {{ $t('user.PROFILE.EDIT') }}
       </button>
-      <button @click="$router.push('/')">{{ $t('common.HOME') }}</button>
+      <UserRelationshipActions
+        v-if="authUser?.username"
+        :authUser="authUser"
+        :user="user"
+        :fromUserInfos="true"
+      />
+      <div>
+        <button
+          @click="
+            $route.query.from === 'users' ? $router.go(-1) : $router.push('/')
+          "
+        >
+          {{
+            $t($route.query.from === 'users' ? 'buttons.BACK' : 'common.HOME')
+          }}
+        </button>
+      </div>
     </div>
+
+    <ErrorMessage :message="errorMessages" v-if="errorMessages" />
   </div>
 </template>
 
 <script setup lang="ts">
   import { format } from 'date-fns'
-  import { Ref, computed, ref, toRefs } from 'vue'
+  import { Ref, computed, ref, toRefs, ComputedRef } from 'vue'
 
-  import { USERS_STORE } from '@/store/constants'
+  import UserRelationshipActions from '@/components/User/UserRelationshipActions.vue'
+  import { ROOT_STORE, USERS_STORE } from '@/store/constants'
   import { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
@@ -69,6 +88,9 @@
   const store = useStore()
 
   const { authUser, user } = toRefs(props)
+  const errorMessages: ComputedRef<string | string[] | null> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
+  )
   const registrationDate = computed(() =>
     props.user.created_at
       ? format(new Date(props.user.created_at), 'dd/MM/yyyy HH:mm')

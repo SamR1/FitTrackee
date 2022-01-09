@@ -5,30 +5,54 @@
         <UserPicture :user="user" />
         <router-link
           class="user-name"
-          :to="`/users/${user.username}?from=admin`"
+          :to="`/users/${user.username}?from=users`"
         >
           {{ user.username }}
         </router-link>
       </div>
       <UserStats :authUser="authUser" :user="user" />
     </div>
+    <UserRelationshipActions
+      :authUser="authUser"
+      :user="user"
+      :fromUserInfos="false"
+      @updatedUser="emitUser"
+    />
+    <ErrorMessage
+      :message="errorMessages"
+      v-if="errorMessages && updatedUser === user.username"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-  import { toRefs } from 'vue'
+  import { ComputedRef, computed, toRefs } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
+  import UserRelationshipActions from '@/components/User/UserRelationshipActions.vue'
   import UserStats from '@/components/User/UserStats.vue'
+  import { ROOT_STORE } from '@/store/constants'
   import { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import { useStore } from '@/use/useStore'
 
   interface Props {
     authUser: IAuthUserProfile
     user: IUserProfile
+    updatedUser?: string
   }
   const props = defineProps<Props>()
 
-  const { authUser, user } = toRefs(props)
+  const store = useStore()
+
+  const { authUser, updatedUser, user } = toRefs(props)
+  const errorMessages: ComputedRef<string | string[] | null> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
+  )
+  const emit = defineEmits(['updatedUserRelationship'])
+
+  function emitUser(username: string) {
+    emit('updatedUserRelationship', username)
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -47,9 +71,6 @@
         margin: $default-margin 0;
         width: 50%;
 
-        .user-name {
-          //font-size: 0.8em;
-        }
         ::v-deep(.user-picture) {
           img {
             height: 70px;

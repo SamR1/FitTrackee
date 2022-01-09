@@ -12,6 +12,7 @@ import {
   IAdminUserPayload,
   IUserDeletionPayload,
   IUserProfile,
+  IUserRelationshipPayload,
 } from '@/types/user'
 
 export interface IUsersState {
@@ -39,6 +40,10 @@ export interface IUsersActions {
   [USERS_STORE.ACTIONS.UPDATE_USER](
     context: ActionContext<IUsersState, IRootState>,
     payload: IAdminUserPayload
+  ): void
+  [USERS_STORE.ACTIONS.UPDATE_RELATIONSHIP](
+    context: ActionContext<IUsersState, IRootState>,
+    payload: IUserRelationshipPayload
   ): void
   [USERS_STORE.ACTIONS.DELETE_USER_ACCOUNT](
     context: ActionContext<IUsersState, IRootState>,

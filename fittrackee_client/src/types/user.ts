@@ -3,6 +3,7 @@ import { LocationQueryValue } from 'vue-router'
 import { IRecord } from '@/types/workouts'
 
 export type TPrivacyLevels = 'private' | 'followers_only' | 'public'
+export type TRelationships = 'follow' | 'unfollow'
 
 export interface IUserProfile {
   admin: boolean
@@ -13,6 +14,8 @@ export interface IUserProfile {
   first_name: string | null
   followers: IUserProfile[]
   following: IUserProfile[]
+  follows: string
+  is_followed_by: string
   last_name: string | null
   location: string | null
   map_visibility: TPrivacyLevels
@@ -53,6 +56,12 @@ export interface IUserPayload {
 export interface IAdminUserPayload {
   username: string
   admin: boolean
+}
+
+export interface IUserRelationshipPayload {
+  username: string
+  action: TRelationships
+  fromUserInfos: boolean
 }
 
 export interface IUserPreferencesPayload {
