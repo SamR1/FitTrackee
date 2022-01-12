@@ -1,7 +1,12 @@
 <template>
   <div class="users-filters">
     <div class="search-username">
-      <input id="username" name="username" v-model="username" />
+      <input
+        id="username"
+        name="username"
+        v-model="username"
+        @keyup.enter="searchUsers"
+      />
       <i
         v-if="username !== ''"
         class="fa fa-times position-absolute"

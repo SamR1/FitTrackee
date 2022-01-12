@@ -143,6 +143,7 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
                   : USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS,
                 res.data.data.users[0]
               )
+              context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
             } else {
               handleError(context, null)
             }
