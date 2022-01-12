@@ -9,7 +9,7 @@ import { IUsersActions, IUsersState } from '@/store/modules/users/types'
 import {
   IAdminUserPayload,
   IUserDeletionPayload,
-  IUserRelationshipPayload,
+  IUserRelationshipActionPayload,
   TUsersPayload,
 } from '@/types/user'
 import { handleError } from '@/utils'
@@ -127,7 +127,7 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
   },
   [USERS_STORE.ACTIONS.UPDATE_RELATIONSHIP](
     context: ActionContext<IUsersState, IRootState>,
-    payload: IUserRelationshipPayload
+    payload: IUserRelationshipActionPayload
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS_LOADING, true)

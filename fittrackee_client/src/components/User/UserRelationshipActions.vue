@@ -9,18 +9,22 @@
       >
         {{
           capitalize(
-            $t(`user.${user.is_followed_by === 'true' ? 'UN' : ''}FOLLOW`)
+            $t(
+              `user.RELATIONSHIPS.${
+                user.is_followed_by === 'true' ? 'UN' : ''
+              }FOLLOW`
+            )
           )
         }}
       </button>
     </div>
     <div v-else>
       <button @click="updateRelationship(user.username, true)">
-        {{ capitalize($t('user.CANCEL_FOLLOW_REQUEST')) }}
+        {{ capitalize($t('user.RELATIONSHIPS.CANCEL_FOLLOW_REQUEST')) }}
       </button>
     </div>
     <div class="follows-you" v-if="user.follows === 'true'">
-      {{ $t('user.FOLLOWS_YOU') }}
+      {{ $t('user.RELATIONSHIPS.FOLLOWS_YOU') }}
     </div>
   </div>
   <div

@@ -4,7 +4,7 @@ import { TPaginationPayload } from '@/types/api'
 import { IRecord } from '@/types/workouts'
 
 export type TPrivacyLevels = 'private' | 'followers_only' | 'public'
-export type TRelationships = 'follow' | 'unfollow'
+export type TRelationshipAction = 'follow' | 'unfollow'
 
 export interface IUserProfile {
   admin: boolean
@@ -59,9 +59,9 @@ export interface IAdminUserPayload {
   admin: boolean
 }
 
-export interface IUserRelationshipPayload {
+export interface IUserRelationshipActionPayload {
   username: string
-  action: TRelationships
+  action: TRelationshipAction
   fromUserInfos: boolean
 }
 

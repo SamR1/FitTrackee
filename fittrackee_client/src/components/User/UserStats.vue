@@ -27,13 +27,13 @@
     <div class="user-stat">
       <span class="stat-number">{{ user.following }}</span>
       <span class="stat-label">
-        {{ $t('user.FOLLOWING', user.following) }}
+        {{ $t('user.RELATIONSHIPS.FOLLOWING', user.following) }}
       </span>
     </div>
     <div class="user-stat">
       <span class="stat-number">{{ user.followers }}</span>
       <span class="stat-label">
-        {{ $t('user.FOLLOWER', user.followers) }}
+        {{ $t('user.RELATIONSHIPS.FOLLOWER', user.followers) }}
       </span>
     </div>
   </div>
