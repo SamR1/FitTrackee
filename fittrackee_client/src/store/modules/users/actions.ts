@@ -10,6 +10,7 @@ import {
   IAdminUserPayload,
   IUserDeletionPayload,
   IUserRelationshipActionPayload,
+  IUserRelationshipsPayload,
   TUsersPayload,
 } from '@/types/user'
 import { handleError } from '@/utils'
@@ -51,6 +52,13 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS, [])
+    context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS_PAGINATION, {})
+  },
+  [USERS_STORE.ACTIONS.EMPTY_RELATIONSHIPS](
+    context: ActionContext<IUsersState, IRootState>
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(USERS_STORE.MUTATIONS.UPDATE_USER_RELATIONSHIPS, [])
     context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS_PAGINATION, {})
   },
   [USERS_STORE.ACTIONS.GET_USER](
@@ -138,9 +146,11 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
           authApi.get(`users/${payload.username}`).then((res) => {
             if (res.data.status === 'success') {
               context.commit(
-                payload.fromUserInfos
+                payload.from === 'userInfos'
                   ? USERS_STORE.MUTATIONS.UPDATE_USER
-                  : USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS,
+                  : payload.from === 'userCard'
+                  ? USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS
+                  : USERS_STORE.MUTATIONS.UPDATE_USER_IN_RELATIONSHIPS,
                 res.data.data.users[0]
               )
               context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
@@ -148,6 +158,35 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
               handleError(context, null)
             }
           })
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS_LOADING, false)
+      )
+  },
+  [USERS_STORE.ACTIONS.GET_RELATIONSHIPS](
+    context: ActionContext<IUsersState, IRootState>,
+    payload: IUserRelationshipsPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS_LOADING, true)
+    authApi
+      .get(`users/${payload.username}/${payload.relationship}`, {
+        params: { page: payload.page },
+      })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            USERS_STORE.MUTATIONS.UPDATE_USER_RELATIONSHIPS,
+            res.data.data[payload.relationship]
+          )
+          context.commit(
+            USERS_STORE.MUTATIONS.UPDATE_USERS_PAGINATION,
+            res.data.pagination
+          )
         } else {
           handleError(context, null)
         }

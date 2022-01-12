@@ -25,13 +25,31 @@
       </span>
     </div>
     <div class="user-stat">
-      <span class="stat-number">{{ user.following }}</span>
+      <router-link
+        :to="`/${
+          $route.path.includes('/profile')
+            ? 'profile'
+            : `users/${user.username}`
+        }/following`"
+        class="stat-number"
+      >
+        {{ user.following }}
+      </router-link>
       <span class="stat-label">
         {{ $t('user.RELATIONSHIPS.FOLLOWING', user.following) }}
       </span>
     </div>
     <div class="user-stat">
-      <span class="stat-number">{{ user.followers }}</span>
+      <router-link
+        :to="`/${
+          $route.path.includes('/profile')
+            ? 'profile'
+            : `users/${user.username}`
+        }/followers`"
+        class="stat-number"
+      >
+        {{ user.followers }}
+      </router-link>
       <span class="stat-label">
         {{ $t('user.RELATIONSHIPS.FOLLOWER', user.followers) }}
       </span>

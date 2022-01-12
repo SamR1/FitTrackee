@@ -77,6 +77,8 @@
     "FOLLOWER": "abonné | abonnés",
     "FOLLOWING": "abonnement | abonnements",
     "FOLLOWS_YOU": "vous suit",
+    "NO_FOLLOWERS": "Pas d'abonnés pour le moment.",
+    "NO_FOLLOWING": "Pas d'abonnements pour le moment.",
     "UNFOLLOW": "se désabonner"
   },
   "RESET_PASSWORD": "Réinitialiser votre mot de passe",

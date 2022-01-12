@@ -2,7 +2,12 @@
   <div id="user-profile">
     <UserHeader :user="user" />
     <div class="box">
-      <UserProfileTabs :tabs="tabs" :selectedTab="tab" :edition="false" />
+      <UserProfileTabs
+        v-if="tab in tabs"
+        :tabs="tabs"
+        :selectedTab="tab"
+        :edition="false"
+      />
       <router-view :user="user"></router-view>
     </div>
   </div>

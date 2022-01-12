@@ -15,7 +15,7 @@
     <UserRelationshipActions
       :authUser="authUser"
       :user="user"
-      :fromUserInfos="false"
+      :from="from ? from : 'userCard'"
       @updatedUser="emitUser"
     />
     <ErrorMessage
@@ -39,10 +39,13 @@
     authUser: IAuthUserProfile
     user: IUserProfile
     updatedUser?: string
+    from?: string
   }
   const props = defineProps<Props>()
 
   const store = useStore()
+
+  const { from } = toRefs(props)
 
   const { authUser, updatedUser, user } = toRefs(props)
   const errorMessages: ComputedRef<string | string[] | null> = computed(

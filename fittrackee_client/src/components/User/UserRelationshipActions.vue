@@ -29,7 +29,7 @@
   </div>
   <div
     class="user-actions"
-    v-if="user.username === authUser.username && !fromUserInfos"
+    v-if="user.username === authUser.username && from !== 'userInfos'"
   >
     <div class="follows-you">
       {{ $t('user.YOU') }}
@@ -47,13 +47,13 @@
   interface Props {
     authUser: IAuthUserProfile
     user: IUserProfile
-    fromUserInfos: boolean
+    from: string
   }
   const props = defineProps<Props>()
 
   const store = useStore()
 
-  const { authUser, fromUserInfos, user } = toRefs(props)
+  const { authUser, from, user } = toRefs(props)
 
   const emit = defineEmits(['updatedUser'])
 
@@ -62,7 +62,7 @@
     store.dispatch(USERS_STORE.ACTIONS.UPDATE_RELATIONSHIP, {
       username,
       action: `${following ? 'un' : ''}follow`,
-      fromUserInfos: fromUserInfos.value,
+      from: from.value,
     })
   }
 </script>

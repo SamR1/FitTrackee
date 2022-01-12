@@ -11,6 +11,7 @@ import ProfileEdition from '@/components/User/ProfileEdition/index.vue'
 import UserInfosEdition from '@/components/User/ProfileEdition/UserInfosEdition.vue'
 import UserPictureEdition from '@/components/User/ProfileEdition/UserPictureEdition.vue'
 import UserPreferencesEdition from '@/components/User/ProfileEdition/UserPreferencesEdition.vue'
+import UserRelationships from '@/components/User/UserRelationships.vue'
 import UserSportPreferences from '@/components/User/UserSportPreferences.vue'
 import store from '@/store'
 import { AUTH_USER_STORE } from '@/store/constants'
@@ -108,6 +109,18 @@ const routes: Array<RouteRecordRaw> = [
             component: UserSportPreferences,
             props: { isEdition: false },
           },
+          {
+            path: 'followers',
+            name: 'AuthUserFollowers',
+            component: UserRelationships,
+            props: { relationship: 'followers' },
+          },
+          {
+            path: 'following',
+            name: 'AuthUserFollowing',
+            component: UserRelationships,
+            props: { relationship: 'following' },
+          },
         ],
       },
       {
@@ -160,6 +173,20 @@ const routes: Array<RouteRecordRaw> = [
     name: 'User',
     component: () =>
       import(/* webpackChunkName: 'users' */ '@/views/user/UserView.vue'),
+    children: [
+      {
+        path: 'followers',
+        name: 'UserFollowers',
+        component: UserRelationships,
+        props: { relationship: 'followers' },
+      },
+      {
+        path: 'following',
+        name: 'UserFollowing',
+        component: UserRelationships,
+        props: { relationship: 'following' },
+      },
+    ],
   },
   {
     path: '/workouts',

@@ -77,6 +77,8 @@
     "FOLLOWER": "follower | followers",
     "FOLLOWING": "following | following",
     "FOLLOWS_YOU": "follows you",
+    "NO_FOLLOWERS": "No followers yet.",
+    "NO_FOLLOWING": "No following yet.",
     "UNFOLLOW": "unfollow"
   },
   "RESET_PASSWORD": "Reset your password",

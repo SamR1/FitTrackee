@@ -51,7 +51,7 @@
         v-if="authUser?.username"
         :authUser="authUser"
         :user="user"
-        :fromUserInfos="true"
+        from="userInfos"
       />
       <div>
         <button

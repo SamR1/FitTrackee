@@ -4,6 +4,7 @@ import { IUserProfile } from '@/types/user'
 
 export const usersState: IUsersState = {
   user: <IUserProfile>{},
+  user_relationships: [],
   users: [],
   loading: false,
   pagination: <IPagination>{},

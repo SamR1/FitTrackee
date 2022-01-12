@@ -13,11 +13,13 @@ import {
   IUserDeletionPayload,
   IUserProfile,
   IUserRelationshipActionPayload,
+  IUserRelationshipsPayload,
   TUsersPayload,
 } from '@/types/user'
 
 export interface IUsersState {
   user: IUserProfile
+  user_relationships: IUserProfile[]
   users: IUserProfile[]
   loading: boolean
   pagination: IPagination
@@ -28,6 +30,9 @@ export interface IUsersActions {
     context: ActionContext<IUsersState, IRootState>
   ): void
   [USERS_STORE.ACTIONS.EMPTY_USERS](
+    context: ActionContext<IUsersState, IRootState>
+  ): void
+  [USERS_STORE.ACTIONS.EMPTY_RELATIONSHIPS](
     context: ActionContext<IUsersState, IRootState>
   ): void
   [USERS_STORE.ACTIONS.GET_USER](
@@ -46,6 +51,10 @@ export interface IUsersActions {
     context: ActionContext<IUsersState, IRootState>,
     payload: IUserRelationshipActionPayload
   ): void
+  [USERS_STORE.ACTIONS.GET_RELATIONSHIPS](
+    context: ActionContext<IUsersState, IRootState>,
+    payload: IUserRelationshipsPayload
+  ): void
   [USERS_STORE.ACTIONS.DELETE_USER_ACCOUNT](
     context: ActionContext<IUsersState, IRootState>,
     payload: IUserDeletionPayload
@@ -54,6 +63,7 @@ export interface IUsersActions {
 
 export interface IUsersGetters {
   [USERS_STORE.GETTERS.USER](state: IUsersState): IUserProfile
+  [USERS_STORE.GETTERS.USER_RELATIONSHIPS](state: IUsersState): IUserProfile[]
   [USERS_STORE.GETTERS.USERS](state: IUsersState): IUserProfile[]
   [USERS_STORE.GETTERS.USERS_LOADING](state: IUsersState): boolean
   [USERS_STORE.GETTERS.USERS_PAGINATION](state: IUsersState): IPagination
@@ -64,6 +74,14 @@ export type TUsersMutations<S = IUsersState> = {
   [USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS](
     state: S,
     updatedUser: IUserProfile
+  ): void
+  [USERS_STORE.MUTATIONS.UPDATE_USER_IN_RELATIONSHIPS](
+    state: S,
+    updatedUser: IUserProfile
+  ): void
+  [USERS_STORE.MUTATIONS.UPDATE_USER_RELATIONSHIPS](
+    state: S,
+    relationship: IUserProfile[]
   ): void
   [USERS_STORE.MUTATIONS.UPDATE_USERS](state: S, users: IUserProfile[]): void
   [USERS_STORE.MUTATIONS.UPDATE_USERS_LOADING](state: S, loading: boolean): void

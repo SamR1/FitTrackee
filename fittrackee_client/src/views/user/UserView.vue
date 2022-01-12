@@ -2,14 +2,25 @@
   <div id="user" class="view" v-if="user.username">
     <UserHeader :authUser="authUser" :user="user" />
     <div class="box">
-      <UserInfos :authUser="authUser" :user="user" />
+      <router-view
+        v-if="$route.path.includes('follow')"
+        :authUser="authUser"
+        :user="user"
+      />
+      <UserInfos v-else :authUser="authUser" :user="user" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, onBeforeMount, onBeforeUnmount } from 'vue'
-  import { useRoute } from 'vue-router'
+  import {
+    ComputedRef,
+    computed,
+    onBeforeMount,
+    onBeforeUnmount,
+    watch,
+  } from 'vue'
+  import { LocationQuery, useRoute } from 'vue-router'
 
   import UserHeader from '@/components/User/ProfileDisplay/UserHeader.vue'
   import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
@@ -28,14 +39,27 @@
   )
 
   onBeforeMount(() => {
-    if (route.params.username && typeof route.params.username === 'string') {
-      store.dispatch(USERS_STORE.ACTIONS.GET_USER, route.params.username)
-    }
+    getUser(route.params)
   })
+
+  function getUser(params: LocationQuery) {
+    if (params.username && typeof params.username === 'string') {
+      store.dispatch(USERS_STORE.ACTIONS.GET_USER, params.username)
+      store.dispatch(USERS_STORE.ACTIONS.EMPTY_RELATIONSHIPS)
+    }
+  }
 
   onBeforeUnmount(() => {
     store.dispatch(USERS_STORE.ACTIONS.EMPTY_USER)
+    store.dispatch(USERS_STORE.ACTIONS.EMPTY_RELATIONSHIPS)
   })
+
+  watch(
+    () => route.params,
+    (newParam: LocationQuery) => {
+      getUser(newParam)
+    }
+  )
 </script>
 
 <style lang="scss" scoped>
