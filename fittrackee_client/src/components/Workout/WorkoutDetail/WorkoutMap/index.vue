@@ -2,47 +2,65 @@
   <div id="workout-map">
     <div v-if="workoutData.loading" class="leaflet-container" />
     <div v-else>
-      <div class="leaflet-container" v-if="workoutData.workout.with_gpx">
-        <LMap
-          v-if="geoJson.jsonData && center && bounds.length === 2"
-          :zoom="13"
-          :maxZoom="19"
-          :center="center"
-          :bounds="bounds"
-          ref="workoutMap"
-          @ready="fitBounds(bounds)"
+      <VFullscreen v-if="workoutData.workout.with_gpx" v-model="isFullscreen">
+        <div
+          class="leaflet-container"
+          :class="{ 'fullscreen-map': isFullscreen }"
         >
-          <LControlLayers />
-          <LControl position="topleft" class="reset-button" @click="resetZoom">
-            <i class="fa fa-refresh" aria-hidden="true"></i>
-          </LControl>
-          <LTileLayer
-            :url="`${getApiUrl()}workouts/map_tile/{s}/{z}/{x}/{y}.png`"
-            :attribution="appConfig.map_attribution"
+          <LMap
+            v-if="geoJson.jsonData && center && bounds.length === 2"
+            :zoom="13"
+            :maxZoom="19"
+            :center="center"
             :bounds="bounds"
-          />
-          <LGeoJson :geojson="geoJson.jsonData" />
-          <LMarker
-            v-if="markerCoordinates.latitude"
-            :lat-lng="[markerCoordinates.latitude, markerCoordinates.longitude]"
-          />
-          <LLayerGroup
-            :name="$t('workouts.START_AND_FINISH')"
-            layer-type="overlay"
+            ref="workoutMap"
+            @ready="fitBounds(bounds)"
           >
-            <CustomMarker
-              v-if="startMarkerCoordinates.latitude"
-              :markerCoordinates="startMarkerCoordinates"
-              :isStart="true"
+            <LControlLayers />
+            <LControl position="topleft" class="map-control" @click="resetZoom">
+              <i class="fa fa-refresh" aria-hidden="true" />
+            </LControl>
+            <LControl
+              position="topleft"
+              class="map-control"
+              @click="toggleFullscreen"
+            >
+              <i
+                :class="`fa fa-${isFullscreen ? 'compress' : 'arrows-alt'}`"
+                aria-hidden="true"
+              />
+            </LControl>
+            <LTileLayer
+              :url="`${getApiUrl()}workouts/map_tile/{s}/{z}/{x}/{y}.png`"
+              :attribution="appConfig.map_attribution"
+              :bounds="bounds"
             />
-            <CustomMarker
-              v-if="endMarkerCoordinates.latitude"
-              :markerCoordinates="endMarkerCoordinates"
-              :isStart="false"
+            <LGeoJson :geojson="geoJson.jsonData" />
+            <LMarker
+              v-if="markerCoordinates.latitude"
+              :lat-lng="[
+                markerCoordinates.latitude,
+                markerCoordinates.longitude,
+              ]"
             />
-          </LLayerGroup>
-        </LMap>
-      </div>
+            <LLayerGroup
+              :name="$t('workouts.START_AND_FINISH')"
+              layer-type="overlay"
+            >
+              <CustomMarker
+                v-if="startMarkerCoordinates.latitude"
+                :markerCoordinates="startMarkerCoordinates"
+                :isStart="true"
+              />
+              <CustomMarker
+                v-if="endMarkerCoordinates.latitude"
+                :markerCoordinates="endMarkerCoordinates"
+                :isStart="false"
+              />
+            </LLayerGroup>
+          </LMap>
+        </div>
+      </VFullscreen>
       <div v-else class="no-map">{{ $t('workouts.NO_MAP') }}</div>
     </div>
   </div>
@@ -114,6 +132,7 @@
         }
       : {}
   )
+  const isFullscreen = ref(false)
 
   function getGeoJson(gpxContent: string): GeoJSONData {
     if (!gpxContent || gpxContent !== '') {
@@ -157,6 +176,14 @@
   function resetZoom() {
     workoutMap.value?.leafletObject.fitBounds(getBounds())
   }
+  function toggleFullscreen() {
+    isFullscreen.value = !isFullscreen.value
+    if (!isFullscreen.value) {
+      setTimeout(() => {
+        resetZoom()
+      }, 100)
+    }
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -171,12 +198,20 @@
     .no-map {
       line-height: 400px;
     }
-    .reset-button {
+    .map-control {
       background: #ffffff;
       padding: 5px 10px;
       border: 2px solid #bfc0ab;
       border-radius: 3px;
       color: #000000;
+    }
+    ::v-deep(.fullscreen) {
+      display: flex;
+      align-items: center;
+      .fullscreen-map {
+        height: 100%;
+        width: 100%;
+      }
     }
 
     @media screen and (max-width: $small-limit) {

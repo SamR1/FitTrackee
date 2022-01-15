@@ -8501,6 +8501,11 @@ schema-utils@^3.0.0:
     ajv "^6.12.5"
     ajv-keywords "^3.5.2"
 
+screenfull@^5.1.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/screenfull/-/screenfull-5.2.0.tgz#6533d524d30621fc1283b9692146f3f13a93d1ba"
+  integrity sha512-9BakfsO2aUQN2K9Fdbj87RJIEZ82Q9IGim7FqM5OsebfoFC6ZHXgDq/KvniuLTPdeM8wY2o6Dj3WQ7KeQCj3cA==
+
 select-hose@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/select-hose/-/select-hose-2.0.0.tgz#625d8658f865af43ec962bfc376a37359a4994ca"
@@ -9772,6 +9777,13 @@ vue-eslint-parser@^7.0.0, vue-eslint-parser@^7.10.0:
     esquery "^1.4.0"
     lodash "^4.17.21"
     semver "^6.3.0"
+
+vue-fullscreen@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/vue-fullscreen/-/vue-fullscreen-3.1.1.tgz#385097e0b43f4604ded99adb0ceb225dea3e0326"
+  integrity sha512-I59sIO0O22116gwVPo1qM2cNf5binEC5vTswIm8qJsqgatGfFquIJANpoVggSUS2EgUF0Xg4tHliT1ITcwQw8Q==
+  dependencies:
+    screenfull "^5.1.0"
 
 vue-hot-reload-api@^2.3.0:
   version "2.3.4"
