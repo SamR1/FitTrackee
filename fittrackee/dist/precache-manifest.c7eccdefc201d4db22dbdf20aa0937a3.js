@@ -56,6 +56,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/img/weather/wind.svg"
   },
   {
+    "revision": "375196b7ade7c07c3b64ac4cb8b850a8",
+    "url": "/img/workouts/finish.svg"
+  },
+  {
     "revision": "a41d3168615e9c642fe96c36bcca146d",
     "url": "/img/workouts/map.svg"
   },
@@ -64,7 +68,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/img/workouts/mountains.svg"
   },
   {
-    "revision": "7ce3d4a81d9f667215bebe48b746b393",
+    "revision": "97f6a197b6c2869e0cb2ff0e7697af86",
+    "url": "/img/workouts/start.svg"
+  },
+  {
+    "revision": "c26adc3efe5f26cacdbb91b86e3a5e38",
     "url": "/index.html"
   },
   {
@@ -80,7 +88,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/css/admin.e77f8b26.css"
   },
   {
-    "revision": "deb60b4c004895727e7a",
+    "revision": "58739c2038f30839f6ea",
     "url": "/static/css/app.b54fa5fe.css"
   },
   {
@@ -104,8 +112,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/css/statistics.2afdc8a9.css"
   },
   {
-    "revision": "c180861cd9daea671c18",
-    "url": "/static/css/workouts.45a25b09.css"
+    "revision": "af09a25559d1f134383d",
+    "url": "/static/css/workouts.c5521765.css"
   },
   {
     "revision": "e719f9244c69e28e7d00e725ca1e280e",
@@ -192,8 +200,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/admin.5f46d0fe.js"
   },
   {
-    "revision": "deb60b4c004895727e7a",
-    "url": "/static/js/app.17fba770.js"
+    "revision": "58739c2038f30839f6ea",
+    "url": "/static/js/app.15c3e6ab.js"
   },
   {
     "revision": "bd7d183c9f68e5f4027d",
@@ -216,8 +224,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/chunk-2d22523a.4b710d99.js"
   },
   {
-    "revision": "a1f6010de5e5ea58347b",
-    "url": "/static/js/chunk-vendors.96f7cd19.js"
+    "revision": "3e9cb690e510bff131b5",
+    "url": "/static/js/chunk-vendors.6e2f6ef7.js"
   },
   {
     "revision": "00382d944a1bc6fca08b",
@@ -232,7 +240,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/statistics.d03ca304.js"
   },
   {
-    "revision": "c180861cd9daea671c18",
-    "url": "/static/js/workouts.29d99435.js"
+    "revision": "af09a25559d1f134383d",
+    "url": "/static/js/workouts.dcd0b64a.js"
   }
 ]);

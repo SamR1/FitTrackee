@@ -14,6 +14,7 @@ import {
 } from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 import { createApp } from 'vue'
+import VueFullscreen from 'vue-fullscreen'
 
 import './registerServiceWorker'
 import App from './App.vue'
@@ -45,6 +46,7 @@ const app = createApp(App)
   .use(i18n)
   .use(store)
   .use(router)
+  .use(VueFullscreen, { name: 'VFullscreen' })
   .directive('click-outside', clickOutsideDirective)
 
 customComponents.forEach((component) => {

@@ -50,6 +50,7 @@
   "SPEED": "vitesse",
   "SPORT": "sport | sports",
   "START": "début",
+  "START_AND_FINISH": "Départ et arrivée",
   "START_ELEVATION_AT_ZERO": "démarrer l'axe de l'altitude à 0",
   "TITLE": "titre",
   "TO": "jusqu'au",

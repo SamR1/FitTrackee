@@ -50,6 +50,7 @@
   "SPEED": "speed",
   "SPORT": "sport | sports",
   "START": "start",
+  "START_AND_FINISH": "Start and finish",
   "START_ELEVATION_AT_ZERO": "start elevation axis at zero",
   "TITLE": "title",
   "TO": "to",
