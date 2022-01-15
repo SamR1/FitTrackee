@@ -6,6 +6,7 @@
         <LMap
           v-if="geoJson.jsonData && center && bounds.length === 2"
           :zoom="13"
+          :maxZoom="19"
           :center="center"
           :bounds="bounds"
           ref="workoutMap"
@@ -21,6 +22,16 @@
             v-if="markerCoordinates.latitude"
             :lat-lng="[markerCoordinates.latitude, markerCoordinates.longitude]"
           />
+          <CustomMarker
+            v-if="startMarkerCoordinates.latitude"
+            :markerCoordinates="startMarkerCoordinates"
+            :isStart="true"
+          />
+          <CustomMarker
+            v-if="endMarkerCoordinates.latitude"
+            :markerCoordinates="endMarkerCoordinates"
+            :isStart="false"
+          />
         </LMap>
       </div>
       <div v-else class="no-map">{{ $t('workouts.NO_MAP') }}</div>
@@ -33,6 +44,7 @@
   import { LGeoJson, LMap, LMarker, LTileLayer } from '@vue-leaflet/vue-leaflet'
   import { ComputedRef, computed, ref, toRefs, withDefaults } from 'vue'
 
+  import CustomMarker from '@/components/Workout/WorkoutDetail/WorkoutMap/CustomMarker.vue'
   import { ROOT_STORE } from '@/store/constants'
   import { TAppConfig } from '@/types/application'
   import { GeoJSONData } from '@/types/geojson'
@@ -75,6 +87,26 @@
   const geoJson = computed(() =>
     props.workoutData && props.workoutData.gpx
       ? getGeoJson(props.workoutData.gpx)
+      : {}
+  )
+  const startMarkerCoordinates = computed(() =>
+    props.workoutData && props.workoutData.chartData.length > 0
+      ? {
+          latitude: props.workoutData.chartData[0].latitude,
+          longitude: props.workoutData.chartData[0].longitude,
+        }
+      : {}
+  )
+  const endMarkerCoordinates = computed(() =>
+    props.workoutData && props.workoutData.chartData.length > 0
+      ? {
+          latitude:
+            props.workoutData.chartData[props.workoutData.chartData.length - 1]
+              .latitude,
+          longitude:
+            props.workoutData.chartData[props.workoutData.chartData.length - 1]
+              .longitude,
+        }
       : {}
   )
 

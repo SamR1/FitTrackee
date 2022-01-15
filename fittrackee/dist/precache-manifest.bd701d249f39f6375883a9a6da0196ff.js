@@ -56,6 +56,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/img/weather/wind.svg"
   },
   {
+    "revision": "375196b7ade7c07c3b64ac4cb8b850a8",
+    "url": "/img/workouts/finish.svg"
+  },
+  {
     "revision": "a41d3168615e9c642fe96c36bcca146d",
     "url": "/img/workouts/map.svg"
   },
@@ -64,7 +68,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/img/workouts/mountains.svg"
   },
   {
-    "revision": "b148e2458cece523e545d46ecd59f98a",
+    "revision": "97f6a197b6c2869e0cb2ff0e7697af86",
+    "url": "/img/workouts/start.svg"
+  },
+  {
+    "revision": "924f568f416aab39ae0a5c8aff2099e2",
     "url": "/index.html"
   },
   {
@@ -80,7 +88,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/css/admin.e77f8b26.css"
   },
   {
-    "revision": "393bf45f8daf682466f9",
+    "revision": "a45a19cb57e12684f42f",
     "url": "/static/css/app.b54fa5fe.css"
   },
   {
@@ -104,8 +112,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/css/statistics.2afdc8a9.css"
   },
   {
-    "revision": "44dda44e57ecb35de6a3",
-    "url": "/static/css/workouts.45a25b09.css"
+    "revision": "c117380682fdc8558935",
+    "url": "/static/css/workouts.174e6470.css"
   },
   {
     "revision": "e719f9244c69e28e7d00e725ca1e280e",
@@ -192,8 +200,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/admin.5f46d0fe.js"
   },
   {
-    "revision": "393bf45f8daf682466f9",
-    "url": "/static/js/app.92a86e8b.js"
+    "revision": "a45a19cb57e12684f42f",
+    "url": "/static/js/app.eec8f9f6.js"
   },
   {
     "revision": "bd7d183c9f68e5f4027d",
@@ -232,7 +240,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/statistics.d03ca304.js"
   },
   {
-    "revision": "44dda44e57ecb35de6a3",
-    "url": "/static/js/workouts.1b3d1aa1.js"
+    "revision": "c117380682fdc8558935",
+    "url": "/static/js/workouts.562af40b.js"
   }
 ]);
