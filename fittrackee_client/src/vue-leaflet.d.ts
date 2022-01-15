@@ -5,7 +5,6 @@ declare module '@vue-leaflet/vue-leaflet' {
   export const LTileLayer: DefineComponent
   export const LMarker: DefineComponent
   export const LGeoJson: DefineComponent
-  export const LPolyline: DefineComponent
-  export const LPolygon: DefineComponent
-  export const LRectangle: DefineComponent
+  export const LControlLayers: DefineComponent
+  export const LLayerGroup: DefineComponent
 }

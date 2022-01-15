@@ -12,6 +12,7 @@
           ref="workoutMap"
           @ready="fitBounds(bounds)"
         >
+          <LControlLayers />
           <LTileLayer
             :url="`${getApiUrl()}workouts/map_tile/{s}/{z}/{x}/{y}.png`"
             :attribution="appConfig.map_attribution"
@@ -22,16 +23,21 @@
             v-if="markerCoordinates.latitude"
             :lat-lng="[markerCoordinates.latitude, markerCoordinates.longitude]"
           />
-          <CustomMarker
-            v-if="startMarkerCoordinates.latitude"
-            :markerCoordinates="startMarkerCoordinates"
-            :isStart="true"
-          />
-          <CustomMarker
-            v-if="endMarkerCoordinates.latitude"
-            :markerCoordinates="endMarkerCoordinates"
-            :isStart="false"
-          />
+          <LLayerGroup
+            :name="$t('workouts.START_AND_FINISH')"
+            layer-type="overlay"
+          >
+            <CustomMarker
+              v-if="startMarkerCoordinates.latitude"
+              :markerCoordinates="startMarkerCoordinates"
+              :isStart="true"
+            />
+            <CustomMarker
+              v-if="endMarkerCoordinates.latitude"
+              :markerCoordinates="endMarkerCoordinates"
+              :isStart="false"
+            />
+          </LLayerGroup>
         </LMap>
       </div>
       <div v-else class="no-map">{{ $t('workouts.NO_MAP') }}</div>
@@ -41,8 +47,16 @@
 
 <script setup lang="ts">
   import { gpx } from '@tmcw/togeojson'
-  import { LGeoJson, LMap, LMarker, LTileLayer } from '@vue-leaflet/vue-leaflet'
+  import {
+    LGeoJson,
+    LMap,
+    LMarker,
+    LTileLayer,
+    LControlLayers,
+    LLayerGroup,
+  } from '@vue-leaflet/vue-leaflet'
   import { ComputedRef, computed, ref, toRefs, withDefaults } from 'vue'
+  import 'leaflet/dist/leaflet.css'
 
   import CustomMarker from '@/components/Workout/WorkoutDetail/WorkoutMap/CustomMarker.vue'
   import { ROOT_STORE } from '@/store/constants'
