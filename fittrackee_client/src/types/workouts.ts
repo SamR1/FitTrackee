@@ -43,6 +43,7 @@ export interface IWeather {
   summary: string
   temperature: number
   wind: number
+  windBearing?: number
 }
 
 export interface IWorkout {

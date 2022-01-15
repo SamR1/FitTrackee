@@ -29,6 +29,7 @@ def get_weather(point: GPXRoutePoint) -> Optional[Dict]:
             'temperature': weather.temperature,
             'humidity': weather.humidity,
             'wind': weather.windSpeed,
+            'windBearing': weather.windBearing,
         }
     except Exception as e:
         appLog.error(e)
