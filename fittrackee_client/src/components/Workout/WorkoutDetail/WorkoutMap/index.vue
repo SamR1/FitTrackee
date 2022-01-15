@@ -13,6 +13,9 @@
           @ready="fitBounds(bounds)"
         >
           <LControlLayers />
+          <LControl position="topleft" class="reset-button" @click="resetZoom">
+            <i class="fa fa-refresh" aria-hidden="true"></i>
+          </LControl>
           <LTileLayer
             :url="`${getApiUrl()}workouts/map_tile/{s}/{z}/{x}/{y}.png`"
             :attribution="appConfig.map_attribution"
@@ -48,12 +51,13 @@
 <script setup lang="ts">
   import { gpx } from '@tmcw/togeojson'
   import {
+    LControl,
+    LControlLayers,
     LGeoJson,
+    LLayerGroup,
     LMap,
     LMarker,
     LTileLayer,
-    LControlLayers,
-    LLayerGroup,
   } from '@vue-leaflet/vue-leaflet'
   import { ComputedRef, computed, ref, toRefs, withDefaults } from 'vue'
   import 'leaflet/dist/leaflet.css'
@@ -80,20 +84,7 @@
   const workoutMap = ref<null | {
     leafletObject: { fitBounds: (bounds: number[][]) => null }
   }>(null)
-  const bounds = computed(() =>
-    props.workoutData
-      ? [
-          [
-            props.workoutData.workout.bounds[0],
-            props.workoutData.workout.bounds[1],
-          ],
-          [
-            props.workoutData.workout.bounds[2],
-            props.workoutData.workout.bounds[3],
-          ],
-        ]
-      : []
-  )
+  const bounds = computed(() => getBounds())
   const appConfig: ComputedRef<TAppConfig> = computed(
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
   )
@@ -149,6 +140,23 @@
       workoutMap.value?.leafletObject.fitBounds(bounds)
     }
   }
+  function getBounds() {
+    return props.workoutData
+      ? [
+          [
+            props.workoutData.workout.bounds[0],
+            props.workoutData.workout.bounds[1],
+          ],
+          [
+            props.workoutData.workout.bounds[2],
+            props.workoutData.workout.bounds[3],
+          ],
+        ]
+      : []
+  }
+  function resetZoom() {
+    workoutMap.value?.leafletObject.fitBounds(getBounds())
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -162,6 +170,13 @@
     }
     .no-map {
       line-height: 400px;
+    }
+    .reset-button {
+      background: #ffffff;
+      padding: 5px 10px;
+      border: 2px solid #bfc0ab;
+      border-radius: 3px;
+      color: #000000;
     }
 
     @media screen and (max-width: $small-limit) {

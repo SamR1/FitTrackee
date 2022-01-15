@@ -7,4 +7,5 @@ declare module '@vue-leaflet/vue-leaflet' {
   export const LGeoJson: DefineComponent
   export const LControlLayers: DefineComponent
   export const LLayerGroup: DefineComponent
+  export const LControl: DefineComponent
 }
