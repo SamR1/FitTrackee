@@ -64,7 +64,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/img/workouts/mountains.svg"
   },
   {
-    "revision": "7ce3d4a81d9f667215bebe48b746b393",
+    "revision": "b148e2458cece523e545d46ecd59f98a",
     "url": "/index.html"
   },
   {
@@ -80,7 +80,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/css/admin.e77f8b26.css"
   },
   {
-    "revision": "deb60b4c004895727e7a",
+    "revision": "393bf45f8daf682466f9",
     "url": "/static/css/app.b54fa5fe.css"
   },
   {
@@ -104,7 +104,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/css/statistics.2afdc8a9.css"
   },
   {
-    "revision": "c180861cd9daea671c18",
+    "revision": "44dda44e57ecb35de6a3",
     "url": "/static/css/workouts.45a25b09.css"
   },
   {
@@ -192,8 +192,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/admin.5f46d0fe.js"
   },
   {
-    "revision": "deb60b4c004895727e7a",
-    "url": "/static/js/app.17fba770.js"
+    "revision": "393bf45f8daf682466f9",
+    "url": "/static/js/app.92a86e8b.js"
   },
   {
     "revision": "bd7d183c9f68e5f4027d",
@@ -216,8 +216,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/chunk-2d22523a.4b710d99.js"
   },
   {
-    "revision": "a1f6010de5e5ea58347b",
-    "url": "/static/js/chunk-vendors.96f7cd19.js"
+    "revision": "3f898f17e41e7bdac2f9",
+    "url": "/static/js/chunk-vendors.d887e943.js"
   },
   {
     "revision": "00382d944a1bc6fca08b",
@@ -232,7 +232,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/statistics.d03ca304.js"
   },
   {
-    "revision": "c180861cd9daea671c18",
-    "url": "/static/js/workouts.29d99435.js"
+    "revision": "44dda44e57ecb35de6a3",
+    "url": "/static/js/workouts.1b3d1aa1.js"
   }
 ]);
