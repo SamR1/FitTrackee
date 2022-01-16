@@ -11,7 +11,7 @@
     <div class="wind-bearing">
       <i
         v-if="weather.windBearing"
-        class="fa fa-long-arrow-up"
+        class="fa fa-long-arrow-down"
         :style="{
           transform: `rotate(${weather.windBearing}deg)`,
         }"
