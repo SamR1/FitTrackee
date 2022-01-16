@@ -60,6 +60,24 @@
     "HUMIDITY": "humidity",
     "TEMPERATURE": "temperature",
     "WIND": "wind",
+    "WIND_DIRECTIONS": {
+      "N": "N",
+      "NNE": "NNE",
+      "NE": "NE",
+      "ENE": "ENE",
+      "E": "E",
+      "ESE": "ESE",
+      "SE": "SE",
+      "SSE": "SSE",
+      "S": "S",
+      "SSW": "SSW",
+      "SW": "SW",
+      "WSW": "WSW",
+      "W": "W",
+      "WNW": "WNW",
+      "NW": "NW",
+      "NNW": "NNW"
+    },
     "DARK_SKY": {
       "clear-day": "clear day",
       "clear-night": "clear night",
@@ -70,7 +88,7 @@
       "rain": "rain",
       "sleet": "sleet",
       "snow": "snow",
-      "wind":  "wind"
+      "wind": "wind"
     }
   },
   "WITH_GPX": "with .gpx file",
