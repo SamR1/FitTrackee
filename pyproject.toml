@@ -59,7 +59,7 @@ sphinxcontrib-httpdomain = "^1.7"
 types-pytz = "^2021.3"
 types-requests = "^2.27"
 types-freezegun = "^1.1"
-Sphinx = "^4.3"
+Sphinx = "^4.4.0"
 
 [tool.poetry.scripts]
 fittrackee = 'fittrackee.__main__:main'

@@ -36,7 +36,7 @@
   }
   const props = defineProps<Props>()
 
-  const { workout, sportLabel } = toRefs(props)
+  const { workout, sportLabel, sportColor } = toRefs(props)
 </script>
 
 <style lang="scss">

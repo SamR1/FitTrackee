@@ -71,6 +71,7 @@ def get_app(
 @pytest.fixture
 def app(monkeypatch: pytest.MonkeyPatch) -> Generator:
     monkeypatch.setenv('EMAIL_URL', 'smtp://none:none@0.0.0.0:1025')
+    monkeypatch.setenv('WEATHER_API_KEY', '')
     if os.getenv('TILE_SERVER_URL'):
         monkeypatch.delenv('TILE_SERVER_URL')
     if os.getenv('MAP_ATTRIBUTION'):

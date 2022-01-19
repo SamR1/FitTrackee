@@ -208,6 +208,7 @@
     ::v-deep(.fullscreen) {
       display: flex;
       align-items: center;
+      z-index: 1000; // partial fix on iOS
       .fullscreen-map {
         height: 100%;
         width: 100%;

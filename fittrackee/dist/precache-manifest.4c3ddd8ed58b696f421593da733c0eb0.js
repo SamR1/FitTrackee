@@ -72,7 +72,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/img/workouts/start.svg"
   },
   {
-    "revision": "493ca68b0529951c123ad94e2e8864b1",
+    "revision": "e9074c535af74e7b85362dc2eb23feaa",
     "url": "/index.html"
   },
   {
@@ -88,8 +88,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/css/admin.e77f8b26.css"
   },
   {
-    "revision": "be8240ee93d2f582e2be",
-    "url": "/static/css/app.b54fa5fe.css"
+    "revision": "4d38944ec60644a91359",
+    "url": "/static/css/app.af0fab25.css"
   },
   {
     "revision": "82c1118c918377daaa71a320ab8eea42",
@@ -112,8 +112,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/css/statistics.2afdc8a9.css"
   },
   {
-    "revision": "9276c3f7a6a4697c1656",
-    "url": "/static/css/workouts.fe5cb36d.css"
+    "revision": "5cad43c771a5e97d7b9f",
+    "url": "/static/css/workouts.67711f5b.css"
   },
   {
     "revision": "e719f9244c69e28e7d00e725ca1e280e",
@@ -200,8 +200,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/admin.5f46d0fe.js"
   },
   {
-    "revision": "be8240ee93d2f582e2be",
-    "url": "/static/js/app.d9d90958.js"
+    "revision": "4d38944ec60644a91359",
+    "url": "/static/js/app.fa3ee1c1.js"
   },
   {
     "revision": "bd7d183c9f68e5f4027d",
@@ -224,8 +224,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/chunk-2d22523a.4b710d99.js"
   },
   {
-    "revision": "3e9cb690e510bff131b5",
-    "url": "/static/js/chunk-vendors.6e2f6ef7.js"
+    "revision": "47ba7e29b140bfa35ca2",
+    "url": "/static/js/chunk-vendors.b837642f.js"
   },
   {
     "revision": "00382d944a1bc6fca08b",
@@ -240,7 +240,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/statistics.d03ca304.js"
   },
   {
-    "revision": "9276c3f7a6a4697c1656",
-    "url": "/static/js/workouts.becfe714.js"
+    "revision": "5cad43c771a5e97d7b9f",
+    "url": "/static/js/workouts.37e2d33a.js"
   }
 ]);
