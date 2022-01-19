@@ -43,7 +43,7 @@
 
   import WorkoutCardTitle from '@/components/Workout/WorkoutDetail/WorkoutCardTitle.vue'
   import WorkoutData from '@/components/Workout/WorkoutDetail/WorkoutData.vue'
-  import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap.vue'
+  import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap/index.vue'
   import { WORKOUTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
   import { IUserProfile } from '@/types/user'

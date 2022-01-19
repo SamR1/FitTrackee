@@ -90,24 +90,16 @@
             />
           </td>
           <td>
-            <Distance
-              :distance="workoutObject.weatherStart.wind"
-              unitFrom="m"
-              :digits="1"
-              :displayUnit="false"
+            <WeatherWind
+              :weather="workoutObject.weatherStart"
               :useImperialUnits="useImperialUnits"
             />
-            {{ useImperialUnits ? 'ft' : 'm' }}/s
           </td>
           <td>
-            <Distance
-              :distance="workoutObject.weatherEnd.wind"
-              unitFrom="m"
-              :digits="1"
-              :displayUnit="false"
+            <WeatherWind
+              :weather="workoutObject.weatherEnd"
               :useImperialUnits="useImperialUnits"
             />
-            {{ useImperialUnits ? 'ft' : 'm' }}/s
           </td>
         </tr>
       </tbody>
@@ -118,6 +110,7 @@
 <script setup lang="ts">
   import { toRefs } from 'vue'
 
+  import WeatherWind from '@/components/Workout/WorkoutDetail/WeatherWind.vue'
   import { IWorkoutObject } from '@/types/workouts'
 
   interface Props {
