@@ -1,5 +1,23 @@
 # Change log
 
+## Version 0.5.5 (2022/01/19)
+
+### Issues Closed
+
+#### New Features
+
+* [#140](https://github.com/SamR1/FitTrackee/issues/140) - Add a fullscreen control to workout map
+* [#138](https://github.com/SamR1/FitTrackee/issues/138) - Add control to reset map to initial position
+* [#135](https://github.com/SamR1/FitTrackee/issues/135) - Start and finish markers
+* [#134](https://github.com/SamR1/FitTrackee/issues/134) - Wind direction
+
+#### Bugs Fixed
+
+* [877fa0f](https://github.com/SamR1/FitTrackee/commit/877fa0faaabc0130402638905fe04f84563eb278) - fix sport icon color (when changed) on calendar on small resolutions
+
+In this release 4 issues were closed.
+
+
 ## Version 0.5.4 (2022/01/01)
 
 ### Issues Closed

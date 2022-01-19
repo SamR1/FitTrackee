@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Features &#8212; FitTrackee 0.5.4
+    <title>Features &#8212; FitTrackee 0.5.5
  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css" />
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.5.4
+        <span class="navbar-text navbar-version pull-left"><b>0.5.5
 </b></span>
       </div>
 
@@ -237,14 +237,24 @@
 <p class="admonition-title">Note</p>
 <p>It can be overridden in user preferences.</p>
 </div>
-<ul class="simple">
+<ul>
 <li><p>Dashboard with month calendar displaying workouts and record. The week can start on Sunday or Monday (which can be changed in the user preferences). The calendar displays up to 100 workouts.</p></li>
 <li><p>Workout creation by uploading a gpx file (related data are stored in database with metric system). A workout can even be created without gpx (the user must enter date, time, duration and distance).</p></li>
-<li><p>A workout with a gpx file can be displayed with map, weather (if the DarkSky API key is provided) and charts (speed and elevation). Segments can be displayed.</p></li>
-<li><p>Workout gpx file can be downloaded  (<strong>new in 0.5.1</strong>)</p></li>
+<li><div class="line-block">
+<div class="line">A workout with a gpx file can be displayed with map and charts (speed and elevation).</div>
+<div class="line">Controls allow full screen view and position reset (<strong>new in 0.5.5</strong>).</div>
+</div>
+</li>
+<li><div class="line-block">
+<div class="line">If DarkSky API key is provided, weather is displayed in workout detail.</div>
+<div class="line">Wind is displayed, with arrow indicating direction (a tooltip can be displayed with the direction that the wind is coming <strong>from</strong>) (<strong>new in 0.5.5</strong>).</div>
+</div>
+</li>
+<li><p>Segments can be displayed.</p></li>
+<li><p>Workout gpx file can be downloaded (<strong>new in 0.5.1</strong>)</p></li>
 <li><p>Workout edition and deletion. User can add a note.</p></li>
 <li><dl class="simple">
-<dt>User statistics, by time period (week, month, year) and sport:</dt><dd><ul>
+<dt>User statistics, by time period (week, month, year) and sport:</dt><dd><ul class="simple">
 <li><p>total distance</p></li>
 <li><p>total duration</p></li>
 <li><p>total workouts</p></li>
@@ -256,7 +266,7 @@
 </dl>
 </li>
 <li><dl class="simple">
-<dt>User records by sports:</dt><dd><ul>
+<dt>User records by sports:</dt><dd><ul class="simple">
 <li><p>average speed</p></li>
 <li><p>farest distance</p></li>
 <li><p>longest duration</p></li>
