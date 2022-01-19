@@ -72,7 +72,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/img/workouts/start.svg"
   },
   {
-    "revision": "3ccc5da3ad48294d7c6f628b31b1e41d",
+    "revision": "e9074c535af74e7b85362dc2eb23feaa",
     "url": "/index.html"
   },
   {
@@ -224,8 +224,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/chunk-2d22523a.4b710d99.js"
   },
   {
-    "revision": "3e9cb690e510bff131b5",
-    "url": "/static/js/chunk-vendors.6e2f6ef7.js"
+    "revision": "47ba7e29b140bfa35ca2",
+    "url": "/static/js/chunk-vendors.b837642f.js"
   },
   {
     "revision": "00382d944a1bc6fca08b",
