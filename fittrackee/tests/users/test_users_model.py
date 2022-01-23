@@ -261,6 +261,7 @@ class TestUserModel:
     ) -> None:
         assert user_1.is_remote is False
         assert user_1.serialize()['is_remote'] is False
+        assert 'fullname' not in user_1.serialize()
 
 
 class TestUserSportModel:

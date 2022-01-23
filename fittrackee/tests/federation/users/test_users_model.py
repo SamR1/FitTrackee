@@ -13,12 +13,18 @@ class TestUserModel:
     ) -> None:
         assert user_1.is_remote is False
         assert user_1.serialize()['is_remote'] is False
+        assert 'fullname' not in user_1.serialize()
 
     def test_user_is_remote_when_actor_is_remote(
         self, app_with_federation: Flask, remote_user: User
     ) -> None:
+        print(remote_user.serialize()['fullname'])
         assert remote_user.is_remote is True
         assert remote_user.serialize()['is_remote'] is True
+        assert (
+            remote_user.serialize()['fullname']
+            == f'@{remote_user.actor.fullname}'
+        )
 
 
 class TestFollowRequestModelWithFederation:

@@ -458,6 +458,8 @@ class User(BaseModel):
             'workouts_visibility': self.workouts_visibility.value,
             'username': self.username,
         }
+        if self.is_remote:
+            serialized_user['fullname'] = f'@{self.actor.fullname}'
 
         if role is not None:
             total = (0, '0:00:00')
