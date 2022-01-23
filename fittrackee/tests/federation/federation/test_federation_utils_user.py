@@ -85,7 +85,7 @@ class TestCreateRemoteUser:
         random_actor: RandomActor,
     ) -> None:
         with patch(
-            'fittrackee.federation.utils_user.fetch_remote_actor',
+            'fittrackee.federation.utils_user.fetch_account_from_webfinger',
             side_effect=ActorNotFoundException(),
         ), pytest.raises(
             RemoteActorException,
@@ -139,7 +139,7 @@ class TestCreateRemoteUser:
         input_webfinger: Dict,
     ) -> None:
         with patch(
-            'fittrackee.federation.utils_user.fetch_remote_actor',
+            'fittrackee.federation.utils_user.fetch_account_from_webfinger',
             return_value={},
         ), pytest.raises(
             RemoteActorException,
@@ -159,10 +159,10 @@ class TestCreateRemoteUser:
         random_actor: RandomActor,
     ) -> None:
         with patch(
-            'fittrackee.federation.utils_user.fetch_remote_actor',
+            'fittrackee.federation.utils_user.fetch_account_from_webfinger',
             return_value=random_actor.get_webfinger(),
         ), patch(
-            'fittrackee.federation.utils_user.get_remote_actor',
+            'fittrackee.federation.utils_user.get_remote_actor_url',
             side_effect=ActorNotFoundException(),
         ), pytest.raises(
             RemoteActorException,
@@ -182,10 +182,10 @@ class TestCreateRemoteUser:
         remote_user_object = random_actor.get_remote_user_object()
         del remote_user_object['preferredUsername']
         with patch(
-            'fittrackee.federation.utils_user.fetch_remote_actor',
+            'fittrackee.federation.utils_user.fetch_account_from_webfinger',
             return_value=random_actor.get_webfinger(),
         ), patch(
-            'fittrackee.federation.utils_user.get_remote_actor',
+            'fittrackee.federation.utils_user.get_remote_actor_url',
             return_value=remote_user_object,
         ), pytest.raises(
             RemoteActorException,
@@ -203,10 +203,10 @@ class TestCreateRemoteUser:
         random_actor: RandomActor,
     ) -> None:
         with patch(
-            'fittrackee.federation.utils_user.fetch_remote_actor',
+            'fittrackee.federation.utils_user.fetch_account_from_webfinger',
             return_value=random_actor.get_webfinger(),
         ), patch(
-            'fittrackee.federation.utils_user.get_remote_actor',
+            'fittrackee.federation.utils_user.get_remote_actor_url',
             return_value={
                 'preferredUsername': random_actor.preferred_username,
             },
@@ -228,10 +228,10 @@ class TestCreateRemoteUser:
         random_actor.domain = f'https://{remote_domain.name}'
         random_actor.manually_approves_followers = False
         with patch(
-            'fittrackee.federation.utils_user.fetch_remote_actor',
+            'fittrackee.federation.utils_user.fetch_account_from_webfinger',
             return_value=random_actor.get_webfinger(),
         ), patch(
-            'fittrackee.federation.utils_user.get_remote_actor',
+            'fittrackee.federation.utils_user.get_remote_actor_url',
             return_value=random_actor.get_remote_user_object(),
         ):
 
@@ -251,10 +251,10 @@ class TestCreateRemoteUser:
         random_actor: RandomActor,
     ) -> None:
         with patch(
-            'fittrackee.federation.utils_user.fetch_remote_actor',
+            'fittrackee.federation.utils_user.fetch_account_from_webfinger',
             return_value=random_actor.get_webfinger(),
         ), patch(
-            'fittrackee.federation.utils_user.get_remote_actor',
+            'fittrackee.federation.utils_user.get_remote_actor_url',
             return_value=random_actor.get_remote_user_object(),
         ):
             user = create_remote_user(
@@ -270,10 +270,10 @@ class TestCreateRemoteUser:
     ) -> None:
         remote_actor_object = random_actor.get_remote_user_object()
         with patch(
-            'fittrackee.federation.utils_user.fetch_remote_actor',
+            'fittrackee.federation.utils_user.fetch_account_from_webfinger',
             return_value=random_actor.get_webfinger(),
         ), patch(
-            'fittrackee.federation.utils_user.get_remote_actor',
+            'fittrackee.federation.utils_user.get_remote_actor_url',
             return_value=remote_actor_object,
         ), patch(
             'fittrackee.federation.utils_user.store_or_delete_user_picture'
@@ -293,7 +293,7 @@ class TestCreateRemoteUser:
         remote_user_object['manuallyApprovesFollowers'] = False
         last_fetched = remote_user.actor.last_fetch_date
         with patch(
-            'fittrackee.federation.utils_user.fetch_remote_actor',
+            'fittrackee.federation.utils_user.fetch_account_from_webfinger',
             return_value={
                 'subject': f'acct:{remote_user.actor.fullname}',
                 'links': [
@@ -305,7 +305,7 @@ class TestCreateRemoteUser:
                 ],
             },
         ), patch(
-            'fittrackee.federation.utils_user.get_remote_actor',
+            'fittrackee.federation.utils_user.get_remote_actor_url',
             return_value=remote_user_object,
         ):
             create_remote_user(
@@ -328,10 +328,10 @@ class TestCreateRemoteUser:
         check constrains on User model
         """
         with patch(
-            'fittrackee.federation.utils_user.fetch_remote_actor',
+            'fittrackee.federation.utils_user.fetch_account_from_webfinger',
             return_value=random_actor.get_webfinger(),
         ), patch(
-            'fittrackee.federation.utils_user.get_remote_actor',
+            'fittrackee.federation.utils_user.get_remote_actor_url',
             return_value=random_actor.get_remote_user_object(),
         ):
             user = create_remote_user(
@@ -370,10 +370,10 @@ class TestGetUserFromUsername:
         self, app_with_federation: Flask, random_actor: RandomActor
     ) -> None:
         with patch(
-            'fittrackee.federation.utils_user.fetch_remote_actor',
+            'fittrackee.federation.utils_user.fetch_account_from_webfinger',
             return_value=random_actor.get_webfinger(),
         ), patch(
-            'fittrackee.federation.utils_user.get_remote_actor',
+            'fittrackee.federation.utils_user.get_remote_actor_url',
             return_value=random_actor.get_remote_user_object(),
         ):
             user = get_user_from_username(

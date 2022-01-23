@@ -9,8 +9,8 @@ from fittrackee import db
 from fittrackee.federation.exceptions import RemoteActorException
 from fittrackee.federation.models import MEDIA_TYPES, Actor, Domain
 from fittrackee.federation.remote_actor import (
-    fetch_remote_actor,
-    get_remote_actor,
+    fetch_account_from_webfinger,
+    get_remote_actor_url,
 )
 from fittrackee.files import get_absolute_file_path
 from fittrackee.users.exceptions import UserNotFoundException
@@ -78,7 +78,7 @@ def create_remote_user(username: str, domain: str) -> User:
 
     # get account links via Webfinger
     try:
-        webfinger = fetch_remote_actor(username, domain)
+        webfinger = fetch_account_from_webfinger(username, domain)
     except ActorNotFoundException:
         raise RemoteActorException('can not fetch remote actor')
     remote_actor_url = next(
@@ -91,7 +91,7 @@ def create_remote_user(username: str, domain: str) -> User:
         )
 
     try:
-        remote_actor_object = get_remote_actor(remote_actor_url['href'])
+        remote_actor_object = get_remote_actor_url(remote_actor_url['href'])
     except ActorNotFoundException:
         raise RemoteActorException('can not fetch remote actor')
 

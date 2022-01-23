@@ -121,10 +121,10 @@ class TestGetUsersWithRemoteUser(ApiTestCaseMixin):
         )
 
         with patch(
-            'fittrackee.federation.utils_user.fetch_remote_actor',
+            'fittrackee.federation.utils_user.fetch_account_from_webfinger',
             return_value=random_actor.get_webfinger(),
         ), patch(
-            'fittrackee.federation.utils_user.get_remote_actor',
+            'fittrackee.federation.utils_user.get_remote_actor_url',
             return_value=random_actor.get_remote_user_object(),
         ):
             response = client.get(
@@ -157,7 +157,7 @@ class TestGetUsersWithRemoteUser(ApiTestCaseMixin):
         )
 
         with patch(
-            'fittrackee.federation.utils_user.fetch_remote_actor',
+            'fittrackee.federation.utils_user.fetch_account_from_webfinger',
             side_effect={},
         ):
             response = client.get(

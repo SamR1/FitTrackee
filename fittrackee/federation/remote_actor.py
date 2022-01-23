@@ -5,7 +5,7 @@ import requests
 from fittrackee.federation.exceptions import ActorNotFoundException
 
 
-def get_remote_actor(actor_url: str) -> Dict:
+def get_remote_actor_url(actor_url: str) -> Dict:
     response = requests.get(
         actor_url,
         headers={'Accept': 'application/activity+json'},
@@ -16,7 +16,7 @@ def get_remote_actor(actor_url: str) -> Dict:
     return response.json()
 
 
-def fetch_remote_actor(username: str, domain: str) -> Dict:
+def fetch_account_from_webfinger(username: str, domain: str) -> Dict:
     response = requests.get(
         f'https://{domain}/.well-known/webfinger?'
         f'resource=acct:{username}@{domain}',
