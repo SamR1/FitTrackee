@@ -10,6 +10,7 @@
   "LANGUAGE": "Langue",
   "LOGIN": "Se connecter",
   "LOGOUT": "Se déconnecter",
+  "NO_USERS_FOUND": "Aucun utilisateur.",
   "PASSWORD": "Mot de passe",
   "PASSWORD_CONFIRM": "Confirmation du mot de passe",
   "PASSWORD_CONFIRMATION": "Confirmation du mot de passe",

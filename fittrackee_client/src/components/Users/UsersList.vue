@@ -1,7 +1,7 @@
 <template>
   <div class="users-list">
     <UsersFilters @filterOnUsername="searchUsers" />
-    <div class="container users-container">
+    <div class="container users-container" v-if="users.length > 0">
       <div v-for="user in users" :key="user.username" class="user-box">
         <UserCard
           :authUser="authUser"
@@ -10,6 +10,9 @@
           @updatedUserRelationship="storeUser"
         />
       </div>
+    </div>
+    <div class="no-users" v-else>
+      {{ $t('user.NO_USERS_FOUND') }}
     </div>
     <Pagination
       v-if="pagination.page"
@@ -129,6 +132,10 @@
           width: 100%;
         }
       }
+    }
+
+    .no-users {
+      padding: $default-padding;
     }
   }
 </style>
