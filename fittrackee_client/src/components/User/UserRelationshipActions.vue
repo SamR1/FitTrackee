@@ -1,9 +1,12 @@
 <template>
-  <div class="user-actions" v-if="user.username !== authUser.username">
+  <div class="user-actions" v-if="!isAuthUser(user, authUser)">
     <div v-if="user.is_followed_by !== 'pending'">
       <button
         @click="
-          updateRelationship(user.username, user.is_followed_by === 'true')
+          updateRelationship(
+            user.is_remote ? user.fullname : user.username,
+            user.is_followed_by === 'true'
+          )
         "
         :class="{ danger: user.is_followed_by === 'true' }"
       >
@@ -19,7 +22,14 @@
       </button>
     </div>
     <div v-else>
-      <button @click="updateRelationship(user.username, true)">
+      <button
+        @click="
+          updateRelationship(
+            user.is_remote ? user.fullname : user.username,
+            true
+          )
+        "
+      >
         {{ capitalize($t('user.RELATIONSHIPS.CANCEL_FOLLOW_REQUEST')) }}
       </button>
     </div>
@@ -29,7 +39,7 @@
   </div>
   <div
     class="user-actions"
-    v-if="user.username === authUser.username && from !== 'userInfos'"
+    v-if="isAuthUser(user, authUser) && from !== 'userInfos'"
   >
     <div class="follows-you">
       {{ $t('user.YOU') }}
@@ -64,6 +74,9 @@
       action: `${following ? 'un' : ''}follow`,
       from: from.value,
     })
+  }
+  function isAuthUser(user: IUserProfile, authUser: IAuthUserProfile): boolean {
+    return !user.is_remote && user.username === authUser.username
   }
 </script>
 

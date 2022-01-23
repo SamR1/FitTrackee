@@ -17,7 +17,9 @@ export interface IUserProfile {
   followers: IUserProfile[]
   following: IUserProfile[]
   follows: string
+  fullname?: string
   is_followed_by: string
+  is_remote: boolean
   last_name: string | null
   location: string | null
   map_visibility: TPrivacyLevels

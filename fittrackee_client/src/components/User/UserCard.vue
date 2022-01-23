@@ -9,6 +9,9 @@
         >
           {{ user.username }}
         </router-link>
+        <div class="remote-user-account" v-if="user.is_remote">
+          {{ user.fullname }}
+        </div>
       </div>
       <UserStats :authUser="authUser" :user="user" />
     </div>
@@ -65,6 +68,7 @@
     padding: $default-padding $default-padding * 2;
     .user-card {
       display: flex;
+      min-height: 140px;
 
       .user-header {
         display: flex;
@@ -82,6 +86,12 @@
           .no-picture {
             font-size: 4.4em;
           }
+        }
+
+        .remote-user-account {
+          font-size: 0.8em;
+          font-style: italic;
+          margin-top: -10px;
         }
       }
       ::v-deep(.user-stats) {
