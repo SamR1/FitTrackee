@@ -86,6 +86,25 @@ def upgrade():
             'domain_id', 'preferred_username', name='domain_username_unique'
         ),
     )
+    op.create_table(
+        'remote_actors_stats',
+        sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column('actor_id', sa.Integer(), nullable=False),
+        sa.Column('items', sa.Integer(), server_default=sa.text('0'), nullable=False),
+        sa.Column('followers', sa.Integer(), server_default=sa.text('0'), nullable=False),
+        sa.Column('following', sa.Integer(), server_default=sa.text('0'), nullable=False),
+        sa.ForeignKeyConstraint(
+            ['actor_id'],
+            ['actors.id'],
+        ),
+        sa.PrimaryKeyConstraint('id'),
+    )
+    op.create_index(
+        op.f('ix_remote_actors_stats_actor_id'),
+        'remote_actors_stats',
+        ['actor_id'],
+        unique=True
+    )
 
     op.add_column(
         'users',
@@ -233,6 +252,12 @@ def downgrade():
     op.drop_column('users', 'is_remote')
     op.drop_column('users', 'manually_approves_followers')
     op.drop_column('users', 'actor_id')
+
+    op.drop_index(
+        op.f('ix_remote_actors_stats_actor_id'),
+        table_name='remote_actors_stats'
+    )
+    op.drop_table('remote_actors_stats')
 
     op.drop_table('actors')
     op.execute('DROP TYPE actor_types')

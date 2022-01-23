@@ -15,6 +15,7 @@ from fittrackee.federation.utils_user import (
     get_user_from_username,
     get_username_and_domain,
     store_or_delete_user_picture,
+    update_remote_actor_stats,
 )
 from fittrackee.files import get_absolute_file_path
 from fittrackee.users.exceptions import UserNotFoundException
@@ -284,6 +285,29 @@ class TestCreateRemoteUser:
 
         store_or_delete_mock.assert_called_with(remote_actor_object, user)
 
+    def test_it_calls_update_remote_actor_stats(
+        self,
+        app_with_federation: Flask,
+        random_actor: RandomActor,
+    ) -> None:
+        remote_actor_object = random_actor.get_remote_user_object()
+        with patch(
+            'fittrackee.federation.utils_user.fetch_account_from_webfinger',
+            return_value=random_actor.get_webfinger(),
+        ), patch(
+            'fittrackee.federation.utils_user.get_remote_actor_url',
+            return_value=remote_actor_object,
+        ), patch(
+            'fittrackee.federation.utils_user.store_or_delete_user_picture'
+        ), patch(
+            'fittrackee.federation.utils_user.update_remote_actor_stats'
+        ) as update_remote_actor_stats_mock:
+            user = create_remote_user(
+                random_actor.preferred_username, random_actor.domain
+            )
+
+        update_remote_actor_stats_mock.assert_called_with(user.actor)
+
     def test_it_returns_updated_remote_actor_if_remote_actor_exists(
         self, app_with_federation: Flask, remote_user: User
     ) -> None:
@@ -525,3 +549,65 @@ class TestStoreOrDeleteUserPicture:
         os_remove_mock.assert_called_with(
             get_absolute_file_path(user_picture_path)
         )
+
+
+class TestUpdateRemoteActorStats:
+    def test_it_does_not_raise_error_if_actor_url_is_not_reachable(
+        self, app_with_federation: Flask, remote_user: User
+    ) -> None:
+        with patch(
+            'requests.get', return_value=generate_response(status_code=400)
+        ):
+
+            update_remote_actor_stats(remote_user.actor)
+
+        assert remote_user.actor.stats.items == 0
+
+    def test_it_does_not_fetch_actor_urls_if_user_is_local(
+        self, app_with_federation: Flask, user_1: User
+    ) -> None:
+        with patch('requests.get') as get_mock:
+
+            update_remote_actor_stats(user_1.actor)
+
+        get_mock.assert_not_called()
+
+    def test_it_updates_followers_count(
+        self, app_with_federation: Flask, remote_user: User
+    ) -> None:
+        expected_followers_count = 10
+        response_content = {
+            '@context': 'https://www.w3.org/ns/activitystreams',
+            'id': remote_user.actor.followers_url,
+            'type': 'OrderedCollection',
+            'totalItems': expected_followers_count,
+            'first': f'{remote_user.actor.followers_url}?page=1',
+        }
+        with patch(
+            'requests.get',
+            return_value=generate_response(content=response_content),
+        ):
+
+            update_remote_actor_stats(remote_user.actor)
+
+        assert remote_user.actor.stats.followers == expected_followers_count
+
+    def test_it_updates_following_count(
+        self, app_with_federation: Flask, remote_user: User
+    ) -> None:
+        expected_following_count = 33
+        response_content = {
+            '@context': 'https://www.w3.org/ns/activitystreams',
+            'id': remote_user.actor.following_url,
+            'type': 'OrderedCollection',
+            'totalItems': expected_following_count,
+            'first': f'{remote_user.actor.following_url}?page=1',
+        }
+        with patch(
+            'requests.get',
+            return_value=generate_response(content=response_content),
+        ):
+
+            update_remote_actor_stats(remote_user.actor)
+
+        assert remote_user.actor.stats.following == expected_following_count

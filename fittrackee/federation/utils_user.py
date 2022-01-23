@@ -20,6 +20,7 @@ from .exceptions import ActorNotFoundException, DomainNotFoundException
 
 FULL_NAME_REGEX = r'^@?([\w_\-\.]+)@([\w_\-\.]+\.[a-z]{2,})$'
 MEDIA_EXTENSIONS = {value: key for (key, value) in MEDIA_TYPES.items()}
+ACTOR_URL_TYPES = ['followers', 'following']
 
 
 def get_username_and_domain(full_name: str) -> Tuple:
@@ -62,6 +63,19 @@ def store_or_delete_user_picture(
         if os.path.isfile(picture_path):
             os.remove(picture_path)
         user.picture = None
+
+
+def update_remote_actor_stats(actor: Actor) -> None:
+    # TODO: handle stats.items (after implementing outbox)
+    if not actor.is_remote:
+        return
+
+    for url_type in ACTOR_URL_TYPES:
+        try:
+            data = get_remote_actor_url(getattr(actor, f'{url_type}_url'))
+        except ActorNotFoundException:
+            return
+        setattr(actor.stats, url_type, data.get('totalItems', 0))
 
 
 def create_remote_user(username: str, domain: str) -> User:
@@ -130,6 +144,7 @@ def create_remote_user(username: str, domain: str) -> User:
         'manuallyApprovesFollowers'
     ]
     store_or_delete_user_picture(remote_actor_object, actor.user)
+    update_remote_actor_stats(actor)
     db.session.commit()
     return actor.user
 

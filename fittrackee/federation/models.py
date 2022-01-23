@@ -1,7 +1,11 @@
 from datetime import datetime
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 from flask import current_app
+from sqlalchemy.engine.base import Connection
+from sqlalchemy.event import listens_for
+from sqlalchemy.orm.mapper import Mapper
+from sqlalchemy.orm.session import Session
 from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, db
@@ -82,6 +86,9 @@ class Actor(BaseModel):
 
     domain = db.relationship('Domain', back_populates='actors')
     user = db.relationship('User', uselist=False, back_populates='actor')
+    stats = db.relationship(
+        'RemoteActorStats', cascade='all, delete', uselist=False
+    )
 
     def __str__(self) -> str:
         return f'<Actor \'{self.name}\'>'
@@ -109,6 +116,15 @@ class Actor(BaseModel):
                 preferred_username, 'shared_inbox'
             )
             self.generate_keys()
+
+    @classmethod
+    def generate_stats_if_remote(
+        cls, actor_id: int, domain_id: int, session: Session
+    ) -> None:
+        domain = Domain.query.filter_by(id=domain_id).first()
+        if domain.name != current_app.config['AP_DOMAIN']:
+            stats = RemoteActorStats(actor_id=actor_id)
+            session.add(stats)
 
     def generate_keys(self) -> None:
         self.public_key, self.private_key = generate_keys()
@@ -180,3 +196,35 @@ class Actor(BaseModel):
                 ),
             }
         return actor_dict
+
+
+@listens_for(Actor, 'after_insert')
+def on_actor_insert(
+    mapper: Mapper, connection: Connection, actor: Actor
+) -> None:
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session: Session, context: Any) -> None:
+        Actor.generate_stats_if_remote(
+            actor_id=actor.id, domain_id=actor.domain_id, session=session
+        )
+
+
+class RemoteActorStats(BaseModel):
+    """ActivityPub Remote Actor statistics"""
+
+    __tablename__ = 'remote_actors_stats'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    actor_id = db.Column(
+        db.Integer,
+        db.ForeignKey('actors.id'),
+        nullable=False,
+        index=True,
+        unique=True,
+    )
+    items = db.Column(db.Integer, default=0, nullable=False)
+    followers = db.Column(db.Integer, default=0, nullable=False)
+    following = db.Column(db.Integer, default=0, nullable=False)
+
+    def __init__(self, actor_id: int) -> None:
+        self.actor_id = actor_id

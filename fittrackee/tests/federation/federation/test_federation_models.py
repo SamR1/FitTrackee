@@ -7,7 +7,7 @@ from Crypto.Signature import pkcs1_15
 from flask import Flask
 
 from fittrackee.federation.constants import AP_CTX
-from fittrackee.federation.models import Actor, Domain
+from fittrackee.federation.models import Actor, Domain, RemoteActorStats
 from fittrackee.federation.utils import get_ap_url
 from fittrackee.users.models import User
 
@@ -149,6 +149,14 @@ class TestActivityPubLocalPersonActorModel:
         # it raises ValueError if signature is invalid
         signer.verify(hashed_message, signer.sign(hashed_message))
 
+    def test_it_does_not_create_remote_actor_stats(
+        self, app_with_federation: Flask, user_1: User
+    ) -> None:
+        stats = RemoteActorStats.query.filter_by(
+            actor_id=user_1.actor_id
+        ).first()
+        assert stats is None
+
 
 class TestActivityPubRemotePersonActorModel:
     def test_actor_is_remote(
@@ -212,6 +220,17 @@ class TestActivityPubRemotePersonActorModel:
             serialized_actor['endpoints']['sharedInbox']
             == f'{remote_domain_url}/inbox'
         )
+
+    def test_it_creates_remote_actor_stats(
+        self, app_with_federation: Flask, remote_user: User
+    ) -> None:
+        stats = RemoteActorStats.query.filter_by(
+            actor_id=remote_user.actor_id
+        ).first()
+
+        assert stats.items == 0
+        assert stats.followers == 0
+        assert stats.following == 0
 
 
 class TestActivityPubActorModel:

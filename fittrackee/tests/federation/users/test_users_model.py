@@ -18,13 +18,24 @@ class TestUserModel:
     def test_user_is_remote_when_actor_is_remote(
         self, app_with_federation: Flask, remote_user: User
     ) -> None:
-        print(remote_user.serialize()['fullname'])
         assert remote_user.is_remote is True
         assert remote_user.serialize()['is_remote'] is True
         assert (
             remote_user.serialize()['fullname']
             == f'@{remote_user.actor.fullname}'
         )
+
+    def test_it_returns_remote_actor_stats_when_user_is_remote(
+        self, app_with_federation: Flask, remote_user: User
+    ) -> None:
+        expected_followers = 10
+        expected_following = 23
+        remote_user.actor.stats.followers = expected_followers
+        remote_user.actor.stats.following = expected_following
+
+        serialized_user = remote_user.serialize()
+        assert serialized_user['followers'] == expected_followers
+        assert serialized_user['following'] == expected_following
 
 
 class TestFollowRequestModelWithFederation:
