@@ -4,7 +4,7 @@
       <input
         id="username"
         name="username"
-        v-model="username"
+        v-model.trim="username"
         @keyup.enter="searchUsers"
       />
       <i

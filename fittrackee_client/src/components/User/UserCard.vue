@@ -5,7 +5,9 @@
         <UserPicture :user="user" />
         <router-link
           class="user-name"
-          :to="`/users/${user.username}?from=users`"
+          :to="`/users/${
+            user.is_remote ? user.fullname : user.username
+          }?from=users`"
         >
           {{ user.username }}
         </router-link>
@@ -13,12 +15,13 @@
           {{ user.fullname }}
         </div>
       </div>
-      <UserStats :authUser="authUser" :user="user" />
+      <UserStats :user="user" />
     </div>
     <UserRelationshipActions
       :authUser="authUser"
       :user="user"
       :from="from ? from : 'userCard'"
+      :displayFollowsYou="true"
       @updatedUser="emitUser"
     />
     <ErrorMessage

@@ -8,7 +8,7 @@
       @confirmAction="deleteUserAccount(user.username)"
       @cancelAction="updateDisplayModal(false)"
     />
-    <dl>
+    <dl v-if="!user.is_remote">
       <dt>{{ $t('user.PROFILE.REGISTRATION_DATE') }}:</dt>
       <dd>{{ registrationDate }}</dd>
       <dt>{{ $t('user.PROFILE.FIRST_NAME') }}:</dt>
@@ -24,6 +24,13 @@
         {{ user.bio }}
       </dd>
     </dl>
+    <div v-else class="remote-user-account">
+      <i18n-t keypath="user.USER_FROM_REMOTE_INSTANCE_ORIGINAL_LINK">
+        <a :href="user.profile_link" target="_blank">
+          {{ $t('common.HERE') }}
+        </a>
+      </i18n-t>
+    </div>
     <div
       class="profile-buttons"
       v-if="authUser && authUser.admin && $route.query.from === 'admin'"
@@ -39,10 +46,7 @@
     </div>
     <div class="profile-buttons" v-else>
       <button
-        v-if="
-          $route.path === '/profile' ||
-          (authUser && authUser.username === user.username)
-        "
+        v-if="$route.path === '/profile' || isAuthUser(user, authUser)"
         @click="$router.push('/profile/edit')"
       >
         {{ $t('user.PROFILE.EDIT') }}
@@ -78,6 +82,7 @@
   import { ROOT_STORE, USERS_STORE } from '@/store/constants'
   import { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { isAuthUser } from '@/utils/user'
 
   interface Props {
     user: IUserProfile
@@ -112,9 +117,18 @@
 </script>
 
 <style lang="scss" scoped>
+  @import '~@/scss/vars.scss';
+
   #user-infos {
     .user-bio {
       white-space: pre-wrap;
+    }
+
+    .remote-user-account {
+      margin: $default-margin * 2 0;
+      a {
+        text-decoration: underline;
+      }
     }
   }
 </style>

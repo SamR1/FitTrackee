@@ -33,7 +33,10 @@
         {{ capitalize($t('user.RELATIONSHIPS.CANCEL_FOLLOW_REQUEST')) }}
       </button>
     </div>
-    <div class="follows-you" v-if="user.follows === 'true'">
+    <div
+      class="follows-you"
+      v-if="displayFollowsYou && user.follows === 'true'"
+    >
       {{ $t('user.RELATIONSHIPS.FOLLOWS_YOU') }}
     </div>
   </div>
@@ -48,22 +51,26 @@
 </template>
 
 <script lang="ts" setup>
-  import { capitalize, toRefs } from 'vue'
+  import { capitalize, toRefs, withDefaults } from 'vue'
 
   import { USERS_STORE } from '@/store/constants'
   import { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { isAuthUser } from '@/utils/user'
 
   interface Props {
     authUser: IAuthUserProfile
     user: IUserProfile
     from: string
+    displayFollowsYou?: boolean
   }
-  const props = defineProps<Props>()
+  const props = withDefaults(defineProps<Props>(), {
+    displayFollowsYou: false,
+  })
 
   const store = useStore()
 
-  const { authUser, from, user } = toRefs(props)
+  const { authUser, from, user, displayFollowsYou } = toRefs(props)
 
   const emit = defineEmits(['updatedUser'])
 
@@ -75,9 +82,6 @@
       from: from.value,
     })
   }
-  function isAuthUser(user: IUserProfile, authUser: IAuthUserProfile): boolean {
-    return !user.is_remote && user.username === authUser.username
-  }
 </script>
 
 <style lang="scss" scoped>
@@ -88,15 +92,6 @@
     justify-content: space-between;
     align-items: flex-end;
     min-height: 35px;
-
-    .follows-you {
-      font-size: 0.7em;
-      font-style: italic;
-      text-transform: uppercase;
-      padding: $default-padding * 0.5 $default-padding;
-      background-color: var(--text-background-color);
-      border-radius: $border-radius;
-    }
 
     .pending {
       border-radius: $border-radius;

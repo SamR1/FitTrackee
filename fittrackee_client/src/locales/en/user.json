@@ -85,6 +85,7 @@
   "RESET_PASSWORD": "Reset your password",
   "USER_PICTURE": "user picture",
   "USER": "user | users",
+  "USER_FROM_REMOTE_INSTANCE_ORIGINAL_LINK": "This user is from a remote instance (click {0} to display the original profile)",
   "USERNAME": "Username",
   "YOU": "you"
 }

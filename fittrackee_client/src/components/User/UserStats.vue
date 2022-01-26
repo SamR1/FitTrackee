@@ -26,11 +26,7 @@
     </div>
     <div class="user-stat">
       <router-link
-        :to="`/${
-          $route.path.includes('/profile')
-            ? 'profile'
-            : `users/${user.username}`
-        }/following`"
+        :to="`/${getURL(user, authUser, $route.path)}/following`"
         class="stat-number"
       >
         {{ user.following }}
@@ -41,11 +37,7 @@
     </div>
     <div class="user-stat">
       <router-link
-        :to="`/${
-          $route.path.includes('/profile')
-            ? 'profile'
-            : `users/${user.username}`
-        }/followers`"
+        :to="`/${getURL(user, authUser, $route.path)}/followers`"
         class="stat-number"
       >
         {{ user.followers }}
@@ -58,17 +50,35 @@
 </template>
 
 <script setup lang="ts">
-  import { toRefs } from 'vue'
+  import { ComputedRef, computed, toRefs } from 'vue'
 
+  import { AUTH_USER_STORE } from '@/store/constants'
   import { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import { useStore } from '@/use/useStore'
 
   interface Props {
-    authUser: IAuthUserProfile
     user: IUserProfile
   }
   const props = defineProps<Props>()
 
-  const { authUser, user } = toRefs(props)
+  const { user } = toRefs(props)
+  const store = useStore()
+  const authUser: ComputedRef<IAuthUserProfile> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
+  )
+  function getURL(
+    user: IUserProfile,
+    authUser: IAuthUserProfile,
+    currentPath: string
+  ) {
+    if (user.is_remote) {
+      return `users/${user.fullname}`
+    }
+    return user.username === authUser?.username &&
+      currentPath.includes('/profile')
+      ? 'profile'
+      : `users/${user.username}`
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -86,6 +96,10 @@
       .stat-number {
         font-weight: bold;
       }
+    }
+
+    .router-link-exact-active {
+      text-decoration: underline;
     }
   }
 </style>

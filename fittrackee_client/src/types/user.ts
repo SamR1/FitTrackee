@@ -26,6 +26,7 @@ export interface IUserProfile {
   nb_sports?: number
   nb_workouts: number
   picture: string | boolean
+  profile_link?: string
   records?: IRecord[]
   sports_list?: number[]
   total_distance?: number

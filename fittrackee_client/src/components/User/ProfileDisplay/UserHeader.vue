@@ -1,9 +1,20 @@
 <template>
   <div class="box user-header">
+    <div class="follows-you" v-if="user.follows === 'true'">
+      {{ $t('user.RELATIONSHIPS.FOLLOWS_YOU') }}
+    </div>
     <UserPicture :user="user" />
     <div class="user-details">
       <div class="user-name">{{ user.username }}</div>
-      <UserStats :authUser="authUser" :user="user" />
+      <a
+        class="remote-user-account"
+        v-if="user.is_remote"
+        :href="user.profile_link"
+        target="_blank"
+      >
+        {{ user.fullname }}
+      </a>
+      <UserStats :user="user" />
     </div>
   </div>
 </template>
@@ -21,7 +32,7 @@
   }
   const props = defineProps<Props>()
 
-  const { authUser, user } = toRefs(props)
+  const { user } = toRefs(props)
 </script>
 
 <style lang="scss" scoped>
@@ -30,6 +41,13 @@
   .user-header {
     display: flex;
     align-items: stretch;
+    position: relative;
+
+    .follows-you {
+      position: absolute;
+      margin-top: -$default-margin;
+      margin-left: -$default-margin;
+    }
 
     ::v-deep(.user-picture) {
       min-width: 20%;

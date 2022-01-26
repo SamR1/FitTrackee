@@ -347,6 +347,15 @@ button {
   gap: $default-padding;
 }
 
+.follows-you {
+  font-size: 0.7em;
+  font-style: italic;
+  text-transform: uppercase;
+  padding: $default-padding * 0.5 $default-padding;
+  background-color: var(--text-background-color);
+  border-radius: $border-radius;
+}
+
 .medium-sport-img {
   height: 35px;
   width: 35px;
