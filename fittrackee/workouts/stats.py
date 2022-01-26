@@ -30,7 +30,10 @@ def get_workouts(
     Return user workouts by sport or by time
     """
     try:
-        user = User.query.filter_by(username=user_name).first()
+        user = User.query.filter(
+            User.username == user_name,
+            User.is_remote == False,  # noqa
+        ).first()
         if not user:
             return UserNotFoundErrorResponse()
 

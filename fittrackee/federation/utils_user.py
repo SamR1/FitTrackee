@@ -1,6 +1,6 @@
 import os
 import re
-from typing import Dict, Tuple
+from typing import Dict, Optional, Tuple
 
 import requests
 from flask import current_app
@@ -16,7 +16,7 @@ from fittrackee.files import get_absolute_file_path
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.models import User
 
-from .exceptions import ActorNotFoundException, DomainNotFoundException
+from .exceptions import ActorNotFoundException
 
 FULL_NAME_REGEX = r'^@?([\w_\-\.]+)@([\w_\-\.]+\.[a-z]{2,})$'
 MEDIA_EXTENSIONS = {value: key for (key, value) in MEDIA_TYPES.items()}
@@ -78,6 +78,14 @@ def update_remote_actor_stats(actor: Actor) -> None:
         setattr(actor.stats, url_type, data.get('totalItems', 0))
 
 
+def update_actor_data(actor: Actor, remote_actor_object: Dict) -> None:
+    actor.user.manually_approves_followers = remote_actor_object[
+        'manuallyApprovesFollowers'
+    ]
+    store_or_delete_user_picture(remote_actor_object, actor.user)
+    update_remote_actor_stats(actor)
+
+
 def create_remote_user(username: str, domain: str) -> User:
     if domain == current_app.config['UI_URL']:
         raise RemoteActorException(
@@ -117,41 +125,56 @@ def create_remote_user(username: str, domain: str) -> User:
         ).first()
     except KeyError:
         raise RemoteActorException('invalid remote actor object')
+    if actor:
+        raise RemoteActorException('actor already exists')
 
-    if not actor:
-        try:
-            actor = Actor(
-                preferred_username=remote_actor_object['preferredUsername'],
-                domain_id=remote_domain.id,
-                remote_user_data=remote_actor_object,
-            )
-        except KeyError:
-            raise RemoteActorException('invalid remote actor object')
-        db.session.add(actor)
-        db.session.flush()
-        user = User(
-            username=remote_actor_object['name'],
-            email=None,
-            password=None,
-            is_remote=True,
+    try:
+        actor = Actor(
+            preferred_username=remote_actor_object['preferredUsername'],
+            domain_id=remote_domain.id,
+            remote_user_data=remote_actor_object,
         )
-        db.session.add(user)
-        user.actor_id = actor.id
-    else:
-        actor.update_remote_data(remote_actor_object)
-        actor.user.username = remote_actor_object['name']
-    actor.user.manually_approves_followers = remote_actor_object[
-        'manuallyApprovesFollowers'
-    ]
-    store_or_delete_user_picture(remote_actor_object, actor.user)
-    update_remote_actor_stats(actor)
+    except KeyError:
+        raise RemoteActorException('invalid remote actor object')
+    db.session.add(actor)
+    db.session.flush()
+    user = User(
+        username=(
+            remote_actor_object['name']
+            if remote_actor_object['name']
+            else remote_actor_object['preferredUsername']
+        ),
+        email=None,
+        password=None,
+        is_remote=True,
+    )
+    db.session.add(user)
+    user.actor_id = actor.id
+    update_actor_data(actor, remote_actor_object)
     db.session.commit()
     return actor.user
 
 
+def update_remote_user(actor: Actor) -> None:
+    if not actor.is_remote:
+        return None
+
+    try:
+        remote_actor_object = get_remote_actor_url(actor.activitypub_id)
+    except ActorNotFoundException:
+        raise RemoteActorException('can not fetch remote actor')
+    actor.user.username = (
+        remote_actor_object['name']
+        if remote_actor_object['name']
+        else remote_actor_object['preferredUsername']
+    )
+    update_actor_data(actor, remote_actor_object)
+    db.session.commit()
+
+
 def get_user_from_username(
     user_name: str,
-    with_creation: bool = False,  # or refresh actor if exists
+    with_action: Optional[str] = None,  # create or refresh remote actor
 ) -> User:
     name, domain_name = get_username_and_domain(user_name)
     if domain_name is None:  # local actor
@@ -162,20 +185,19 @@ def get_user_from_username(
     else:  # remote actor
         actor = None
         domain = Domain.query.filter_by(name=domain_name).first()
-        if not domain and not with_creation:
-            raise DomainNotFoundException(domain_name)
+        if not domain and not with_action:
+            raise UserNotFoundException()
         if domain:
             actor = Actor.query.filter_by(
                 preferred_username=name, domain_id=domain.id
             ).first()
         if not actor:
-            if with_creation:
+            if with_action == 'creation':
                 return create_remote_user(name, domain_name)
             else:
-                raise ActorNotFoundException()
-        if with_creation:
-            update_remote_actor_stats(actor)
-            db.session.commit()
+                raise UserNotFoundException()
+        if with_action == 'refresh':  # refresh existing actor
+            update_remote_user(actor)
         user = actor.user
     if not user:
         raise UserNotFoundException()

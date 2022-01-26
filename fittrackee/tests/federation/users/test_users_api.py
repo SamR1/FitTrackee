@@ -114,8 +114,7 @@ class TestGetRemoteUsers(ApiTestCaseMixin):
         )
 
         with patch(
-            'requests.get',
-            return_value=generate_response(content={'totalItems': 0}),
+            'fittrackee.federation.utils_user.update_remote_user',
         ):
             response = client.get(
                 f'/api/users/remote?q=@{remote_user.actor.fullname}',
@@ -234,12 +233,15 @@ class TestGetRemoteUser(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
         )
+        with patch(
+            'requests.get', return_value=generate_response(status_code=404)
+        ):
 
-        response = client.get(
-            f'/api/users/@{random_actor.fullname}',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
+            response = client.get(
+                f'/api/users/@{random_actor.fullname}',
+                content_type='application/json',
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
 
         assert response.status_code == 404
         data = json.loads(response.data.decode())
@@ -252,15 +254,101 @@ class TestGetRemoteUser(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
         )
+        with patch(
+            'fittrackee.federation.utils_user.update_remote_user',
+        ):
 
-        response = client.get(
-            f'/api/users/@{remote_user.actor.fullname}',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
+            response = client.get(
+                f'/api/users/@{remote_user.actor.fullname}',
+                content_type='application/json',
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         assert data['data']['users'][0]['username'] == remote_user.username
+
+    def test_it_calls_update_remote_user(
+        self, app_with_federation: Flask, user_1: User, remote_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+        with patch(
+            'fittrackee.federation.utils_user.update_remote_user',
+        ) as update_remote_user_mock:
+
+            client.get(
+                f'/api/users/@{remote_user.actor.fullname}',
+                content_type='application/json',
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        update_remote_user_mock.assert_called_with(remote_user.actor)
+
+
+class TestGetUserPicture(ApiTestCaseMixin):
+    def test_it_returns_error_if_local_user_with_same_username_does_not_exist(
+        self, app_with_federation: Flask, remote_user: User
+    ) -> None:
+        client = app_with_federation.test_client()
+
+        response = client.get(f'/api/users/{remote_user.username}/picture')
+
+        assert response.status_code == 404
+        data = json.loads(response.data.decode())
+        assert 'not found' in data['status']
+        assert 'user does not exist' in data['message']
+
+
+class TestUpdateUser(ApiTestCaseMixin):
+    def test_it_updates_local_user_when_remote_user_exists_with_same_username(
+        self,
+        app_with_federation: Flask,
+        user_1_admin: User,
+        remote_user: User,
+        user_2: User,
+    ) -> None:
+        remote_user.username = user_2.username
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1_admin.email
+        )
+
+        response = client.patch(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            data=json.dumps(dict(admin=True)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 1
+        user = data['data']['users'][0]
+        assert user['email'] == user_2.email
+        assert user['is_remote'] is False
+
+    def test_it_raise_error_when_updating_remote_user(
+        self,
+        app_with_federation: Flask,
+        user_1_admin: User,
+        remote_user: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1_admin.email
+        )
+
+        response = client.patch(
+            f'/api/users/@{remote_user.actor.fullname}',
+            content_type='application/json',
+            data=json.dumps(dict(admin=True)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert 'error' in data['status']
+        assert 'invalid payload' in data['message']

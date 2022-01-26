@@ -9,13 +9,14 @@ from fittrackee.federation.exceptions import (
     ActorNotFoundException,
     RemoteActorException,
 )
-from fittrackee.federation.models import Actor, Domain
+from fittrackee.federation.models import Domain
 from fittrackee.federation.utils_user import (
     create_remote_user,
     get_user_from_username,
     get_username_and_domain,
     store_or_delete_user_picture,
     update_remote_actor_stats,
+    update_remote_user,
 )
 from fittrackee.files import get_absolute_file_path
 from fittrackee.users.exceptions import UserNotFoundException
@@ -246,7 +247,7 @@ class TestCreateRemoteUser:
             == random_actor.manually_approves_followers
         )
 
-    def test_it_creates_remote_actor_when_actor_and_domain_dont_exist(
+    def test_it_creates_remote_actor_when_actor_and_domain_does_not_exist(
         self,
         app_with_federation: Flask,
         random_actor: RandomActor,
@@ -263,6 +264,26 @@ class TestCreateRemoteUser:
             )
 
         assert user.username == random_actor.name
+
+    def test_it_uses_preferred_name_as_username_if_name_is_empty(
+        self,
+        app_with_federation: Flask,
+        random_actor: RandomActor,
+    ) -> None:
+        remote_user_object = random_actor.get_remote_user_object()
+        remote_user_object['name'] = ""
+        with patch(
+            'fittrackee.federation.utils_user.fetch_account_from_webfinger',
+            return_value=random_actor.get_webfinger(),
+        ), patch(
+            'fittrackee.federation.utils_user.get_remote_actor_url',
+            return_value=remote_user_object,
+        ):
+            user = create_remote_user(
+                random_actor.preferred_username, random_actor.domain
+            )
+
+        assert user.username == random_actor.preferred_username
 
     def test_it_calls_store_or_delete_user_picture(
         self,
@@ -308,14 +329,13 @@ class TestCreateRemoteUser:
 
         update_remote_actor_stats_mock.assert_called_with(user.actor)
 
-    def test_it_returns_updated_remote_actor_if_remote_actor_exists(
+    def test_it_raises_error_if_remote_actor_exists(
         self, app_with_federation: Flask, remote_user: User
     ) -> None:
         remote_user_object = remote_user.actor.serialize()
         updated_name = random_string()
         remote_user_object['name'] = updated_name
         remote_user_object['manuallyApprovesFollowers'] = False
-        last_fetched = remote_user.actor.last_fetch_date
         with patch(
             'fittrackee.federation.utils_user.fetch_account_from_webfinger',
             return_value={
@@ -331,16 +351,14 @@ class TestCreateRemoteUser:
         ), patch(
             'fittrackee.federation.utils_user.get_remote_actor_url',
             return_value=remote_user_object,
+        ), pytest.raises(
+            RemoteActorException,
+            match='Invalid remote actor: actor already exists.',
         ):
             create_remote_user(
                 remote_user.actor.preferred_username,
                 remote_user.actor.domain.name,
             )
-
-        updated_actor = Actor.query.filter_by(id=remote_user.actor.id).first()
-        assert updated_actor.name == updated_name
-        assert updated_actor.last_fetch_date != last_fetched
-        assert updated_actor.user.manually_approves_followers is False
 
     def test_it_creates_additional_remote_actor(
         self,
@@ -365,24 +383,137 @@ class TestCreateRemoteUser:
             assert user.username == random_actor.name
 
 
-class TestGetUserFromUsername:
-    def test_it_raises_exception_if_no_user(
+class TestUpdateRemoteUser:
+    def test_it_does_not_update_user_if_local(
+        self, app_with_federation: Flask, user_1: User
+    ) -> None:
+        with patch('requests.get') as get_mock:
+
+            update_remote_user(user_1.actor)
+
+        get_mock.assert_not_called()
+
+    def test_it_raises_exception_if_can_not_fetch_user(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+    ) -> None:
+        with patch(
+            'fittrackee.federation.utils_user.get_remote_actor_url',
+            side_effect=ActorNotFoundException(),
+        ), pytest.raises(
+            RemoteActorException,
+            match='Invalid remote actor: can not fetch remote actor.',
+        ):
+
+            update_remote_user(remote_user.actor)
+
+    def test_it_updates_user_username(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+    ) -> None:
+        expected_name = random_string()[0:30]
+        with patch(
+            'fittrackee.federation.utils_user.get_remote_actor_url',
+            return_value={
+                'name': expected_name,
+                'manuallyApprovesFollowers': True,
+            },
+        ):
+
+            update_remote_user(remote_user.actor)
+
+        assert remote_user.username == expected_name
+
+    def test_it_updates_manually_approves_followers(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+    ) -> None:
+        with patch(
+            'fittrackee.federation.utils_user.get_remote_actor_url',
+            return_value={
+                'name': random_string()[0:30],
+                'manuallyApprovesFollowers': False,
+            },
+        ):
+
+            update_remote_user(remote_user.actor)
+
+        assert remote_user.manually_approves_followers is False
+
+    def test_it_calls_store_or_delete_user_picture(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+    ) -> None:
+        remote_actor_object = {
+            'name': random_string()[0:30],
+            'manuallyApprovesFollowers': False,
+        }
+        with patch(
+            'fittrackee.federation.utils_user.get_remote_actor_url',
+            return_value=remote_actor_object,
+        ), patch(
+            'fittrackee.federation.utils_user.update_remote_actor_stats'
+        ), patch(
+            'fittrackee.federation.utils_user.store_or_delete_user_picture'
+        ) as store_or_delete_user_picture_mock:
+
+            update_remote_user(remote_user.actor)
+
+        store_or_delete_user_picture_mock.assert_called_with(
+            remote_actor_object, remote_user
+        )
+
+    def test_it_calls_update_remote_actor_stats(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+    ) -> None:
+
+        with patch(
+            'fittrackee.federation.utils_user.get_remote_actor_url',
+            return_value={
+                'name': random_string()[0:30],
+                'manuallyApprovesFollowers': False,
+            },
+        ), patch(
+            'fittrackee.federation.utils_user.store_or_delete_user_picture'
+        ), patch(
+            'fittrackee.federation.utils_user.update_remote_actor_stats'
+        ) as update_remote_actor_stats_mock:
+
+            update_remote_user(remote_user.actor)
+
+        update_remote_actor_stats_mock.assert_called_with(remote_user.actor)
+
+
+class TestGetUserFromUsernameWithoutUpdate:
+    def test_it_raises_exception_if_no_local_user(
         self, app_with_federation: Flask
     ) -> None:
         with pytest.raises(UserNotFoundException):
             get_user_from_username(random_string())
 
-    def test_it_raises_exception_if_only_remote_user_exists_when_usernme_provided(  # noqa
+    def test_it_raises_exception_if_no_remote_user(
+        self, app_with_federation: Flask, random_actor: RandomActor
+    ) -> None:
+        with pytest.raises(UserNotFoundException):
+            get_user_from_username(random_actor.fullname)
+
+    def test_it_raises_exception_if_no_remote_user_with_provided_domain(
+        self, app_with_federation: Flask, remote_domain: Domain
+    ) -> None:
+        with pytest.raises(UserNotFoundException):
+            get_user_from_username(f'{random_string()}@{remote_domain.name}')
+
+    def test_it_raises_exception_if_only_remote_user_exists_when_username_provided(  # noqa
         self, app_with_federation: Flask, user_1: User, remote_user: User
     ) -> None:
         with pytest.raises(UserNotFoundException):
             get_user_from_username(remote_user.username)
-
-    def test_it_raises_exception_if_no_local_user_and_with_creation(
-        self, app_with_federation: Flask, user_1: User
-    ) -> None:
-        with pytest.raises(UserNotFoundException):
-            get_user_from_username(random_string(), with_creation=True)
 
     def test_it_returns_local_user(
         self, app_with_federation: Flask, user_1: User
@@ -396,6 +527,24 @@ class TestGetUserFromUsername:
             get_user_from_username(remote_user.actor.fullname) == remote_user
         )
 
+
+class TestGetUserFromUsernameWithAction:
+    def test_it_raises_exception_if_no_local_user_and_with_creation(
+        self, app_with_federation: Flask
+    ) -> None:
+        """only remote user can be created"""
+        with pytest.raises(UserNotFoundException):
+            get_user_from_username(random_string(), with_action='creation')
+
+    def test_it_raises_exception_if_no_remote_user_and_with_refresh(
+        self, app_with_federation: Flask, random_actor: RandomActor
+    ) -> None:
+        """only remote user can be created"""
+        with pytest.raises(UserNotFoundException):
+            get_user_from_username(
+                f'@{random_actor.fullname}', with_action='refresh'
+            )
+
     def test_it_creates_and_returns_remote_user_if_not_existing_and_with_creation(  # noqa
         self, app_with_federation: Flask, random_actor: RandomActor
     ) -> None:
@@ -407,7 +556,7 @@ class TestGetUserFromUsername:
             return_value=random_actor.get_remote_user_object(),
         ):
             user = get_user_from_username(
-                random_actor.fullname, with_creation=True
+                random_actor.fullname, with_action='creation'
             )
 
         assert user.username == random_actor.name
@@ -427,10 +576,22 @@ class TestGetUserFromUsername:
             return_value=random_actor.get_remote_user_object(),
         ):
             user = get_user_from_username(
-                random_actor.fullname, with_creation=True
+                random_actor.fullname, with_action='creation'
             )
 
         assert user.username == random_actor.name
+
+    def test_it_calls_update_remote_user_if_remote_user_exists_and_with_refresh(  # noqa
+        self, app_with_federation: Flask, remote_user: User
+    ) -> None:
+        with patch(
+            'fittrackee.federation.utils_user.update_remote_user'
+        ) as update_remote_user_mock:
+            get_user_from_username(
+                remote_user.actor.fullname, with_action='refresh'
+            )
+
+        update_remote_user_mock.assert_called_with(remote_user.actor)
 
 
 class TestStoreOrDeleteUserPicture:
