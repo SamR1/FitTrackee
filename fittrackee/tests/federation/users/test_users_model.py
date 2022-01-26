@@ -24,6 +24,10 @@ class TestUserModel:
             remote_user.serialize()['fullname']
             == f'@{remote_user.actor.fullname}'
         )
+        assert (
+            remote_user.serialize()['profile_link']
+            == remote_user.actor.profile_url
+        )
 
     def test_it_returns_remote_actor_stats_when_user_is_remote(
         self, app_with_federation: Flask, remote_user: User

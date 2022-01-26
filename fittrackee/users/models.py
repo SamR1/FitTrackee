@@ -462,6 +462,7 @@ class User(BaseModel):
             serialized_user['fullname'] = f'@{self.actor.fullname}'
             serialized_user['followers'] = self.actor.stats.followers
             serialized_user['following'] = self.actor.stats.following
+            serialized_user['profile_link'] = self.actor.profile_url
         else:
             serialized_user['followers'] = self.followers.count()
             serialized_user['following'] = self.following.count()

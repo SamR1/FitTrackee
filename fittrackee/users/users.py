@@ -348,6 +348,7 @@ def get_remote_users(
               "nb_sports": 0,
               "nb_workouts": 0,
               "picture": false,
+              "profile_link": "https://example.com/@sam"
               "records": [],
               "sports_list": [],
               "total_distance": 0,
