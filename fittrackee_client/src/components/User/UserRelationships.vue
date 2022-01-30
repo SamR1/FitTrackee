@@ -38,6 +38,7 @@
   import { AUTH_USER_STORE, USERS_STORE } from '@/store/constants'
   import { IPagination } from '@/types/api'
   import {
+    IAuthUserProfile,
     IUserProfile,
     IUserRelationshipsPayload,
     TRelationships,
@@ -59,7 +60,7 @@
     relationship: relationship.value,
     page: 1,
   }
-  const authUser: ComputedRef<IUserProfile> = computed(
+  const authUser: ComputedRef<IAuthUserProfile> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
   )
   const relationships: ComputedRef<IUserProfile[]> = computed(

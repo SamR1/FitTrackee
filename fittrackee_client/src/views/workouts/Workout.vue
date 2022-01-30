@@ -62,7 +62,7 @@
     WORKOUTS_STORE,
   } from '@/store/constants'
   import { ISport } from '@/types/sports'
-  import { IUserProfile } from '@/types/user'
+  import { IAuthUserProfile } from '@/types/user'
   import { IWorkoutData, IWorkoutPayload, TCoordinates } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
 
@@ -78,7 +78,7 @@
   const workoutData: ComputedRef<IWorkoutData> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUT_DATA]
   )
-  const authUser: ComputedRef<IUserProfile> = computed(
+  const authUser: ComputedRef<IAuthUserProfile> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
   )
   const sports: ComputedRef<ISport[]> = computed(

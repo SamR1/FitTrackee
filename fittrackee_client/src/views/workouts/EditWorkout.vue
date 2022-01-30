@@ -22,14 +22,14 @@
     WORKOUTS_STORE,
   } from '@/store/constants'
   import { ISport } from '@/types/sports'
-  import { IUserProfile } from '@/types/user'
+  import { IAuthUserProfile } from '@/types/user'
   import { IWorkoutData } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
 
   const route = useRoute()
   const store = useStore()
 
-  const authUser: ComputedRef<IUserProfile> = computed(
+  const authUser: ComputedRef<IAuthUserProfile> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
   )
   const sports: ComputedRef<ISport[]> = computed(

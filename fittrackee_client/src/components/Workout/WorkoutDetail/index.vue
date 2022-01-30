@@ -46,7 +46,7 @@
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap/index.vue'
   import { WORKOUTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
-  import { IUserProfile } from '@/types/user'
+  import { IAuthUserProfile } from '@/types/user'
   import {
     IWorkout,
     IWorkoutData,
@@ -58,7 +58,7 @@
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
 
   interface Props {
-    authUser: IUserProfile
+    authUser: IAuthUserProfile
     displaySegment: boolean
     sports: ISport[]
     workoutData: IWorkoutData
