@@ -73,6 +73,10 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
             AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE,
             res.data.data
           )
+          context.commit(
+            USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS,
+            res.data.data
+          )
           if (res.data.data.language) {
             context.commit(
               ROOT_STORE.MUTATIONS.UPDATE_LANG,

@@ -5,9 +5,7 @@
         <UserPicture :user="user" />
         <router-link
           class="user-name"
-          :to="`/users/${
-            user.is_remote ? user.fullname : user.username
-          }?from=users`"
+          :to="`/users/${getUserName(user)}?from=users`"
         >
           {{ user.username }}
         </router-link>
@@ -40,6 +38,7 @@
   import { ROOT_STORE } from '@/store/constants'
   import { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { getUserName } from '@/utils/user'
 
   interface Props {
     authUser: IAuthUserProfile

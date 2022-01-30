@@ -3,10 +3,7 @@
     <div v-if="user.is_followed_by !== 'pending'">
       <button
         @click="
-          updateRelationship(
-            user.is_remote ? user.fullname : user.username,
-            user.is_followed_by === 'true'
-          )
+          updateRelationship(getUserName(user), user.is_followed_by === 'true')
         "
         :class="{ danger: user.is_followed_by === 'true' }"
       >
@@ -22,14 +19,7 @@
       </button>
     </div>
     <div v-else>
-      <button
-        @click="
-          updateRelationship(
-            user.is_remote ? user.fullname : user.username,
-            true
-          )
-        "
-      >
+      <button @click="updateRelationship(getUserName(user), true)">
         {{ capitalize($t('user.RELATIONSHIPS.CANCEL_FOLLOW_REQUEST')) }}
       </button>
     </div>
@@ -56,7 +46,7 @@
   import { USERS_STORE } from '@/store/constants'
   import { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
-  import { isAuthUser } from '@/utils/user'
+  import { isAuthUser, getUserName } from '@/utils/user'
 
   interface Props {
     authUser: IAuthUserProfile

@@ -84,8 +84,8 @@
                   </span>
                   <button
                     :class="{ danger: user.admin }"
-                    :disabled="user.username === authUser.username"
-                    @click="updateUser(user.username, !user.admin)"
+                    :disabled="getUserName(user) === getUserName(authUser)"
+                    @click="updateUser(getUserName(user), !user.admin)"
                   >
                     {{
                       $t(
@@ -137,6 +137,7 @@
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList } from '@/utils/api'
   import { getDateWithTZ } from '@/utils/dates'
+  import { getUserName } from '@/utils/user'
 
   const store = useStore()
   const route = useRoute()

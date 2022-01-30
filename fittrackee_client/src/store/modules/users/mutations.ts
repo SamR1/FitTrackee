@@ -4,6 +4,7 @@ import { USERS_STORE } from '@/store/constants'
 import { IUsersState, TUsersMutations } from '@/store/modules/users/types'
 import { IPagination } from '@/types/api'
 import { IUserProfile } from '@/types/user'
+import { getUserName } from '@/utils/user'
 
 export const mutations: MutationTree<IUsersState> & TUsersMutations = {
   [USERS_STORE.MUTATIONS.UPDATE_USER](state: IUsersState, user: IUserProfile) {
@@ -14,7 +15,7 @@ export const mutations: MutationTree<IUsersState> & TUsersMutations = {
     updatedUser: IUserProfile
   ) {
     state.users = state.users.map((user) => {
-      if (user.username === updatedUser.username) {
+      if (getUserName(user) === getUserName(updatedUser)) {
         return updatedUser
       }
       return user
@@ -25,7 +26,7 @@ export const mutations: MutationTree<IUsersState> & TUsersMutations = {
     updatedUser: IUserProfile
   ) {
     state.user_relationships = state.user_relationships.map((user) => {
-      if (user.username === updatedUser.username) {
+      if (getUserName(user) === getUserName(updatedUser)) {
         return updatedUser
       }
       return user

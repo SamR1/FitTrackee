@@ -44,6 +44,7 @@
     TRelationships,
   } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { getUserName } from '@/utils/user'
 
   interface Props {
     user: IUserProfile
@@ -56,7 +57,7 @@
 
   const { relationship, user } = toRefs(props)
   const payload: IUserRelationshipsPayload = {
-    username: user.value.username,
+    username: getUserName(user.value),
     relationship: relationship.value,
     page: 1,
   }
@@ -98,13 +99,13 @@
     }
   )
   watch(
-    () => authUser.value.following,
+    () => user.value.following,
     () => {
       loadRelationships(payload)
     }
   )
   watch(
-    () => authUser.value.followers,
+    () => user.value.followers,
     () => {
       loadRelationships(payload)
     }
