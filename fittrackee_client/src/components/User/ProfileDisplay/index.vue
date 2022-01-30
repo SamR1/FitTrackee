@@ -3,7 +3,7 @@
     <UserHeader :user="user" />
     <div class="box">
       <UserProfileTabs
-        v-if="tab in tabs"
+        v-if="tabs.includes(tab)"
         :tabs="tabs"
         :selectedTab="tab"
         :edition="false"
