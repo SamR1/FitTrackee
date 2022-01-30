@@ -11,6 +11,7 @@
   "LOGIN": "Se connecter",
   "LOGOUT": "Se déconnecter",
   "LOGOUT_CONFIRMATION": "Etes-vous sûr de vouloir vous déconnecter",
+  "ONLY_USERS_FROM_THIS_INSTANCE_ARE_DISPLAYED": ", seuls les {0} de cette instance sont affichés",
   "NO_USERS_FOUND": "Aucun utilisateur.",
   "PASSWORD": "Mot de passe",
   "PASSWORD_CONFIRM": "Confirmation du mot de passe",
@@ -85,7 +86,7 @@
   },
   "RESET_PASSWORD": "Réinitialiser votre mot de passe",
   "USER": "utilisateur | utilisateurs",
-  "USER_FROM_REMOTE_INSTANCE_ORIGINAL_LINK": "Cet utilisateur provient d'une autre instance (cliquez {0} pour afficher le profil d'origine)",
+  "USER_FROM_REMOTE_INSTANCE_ORIGINAL_LINK": "Cet utilisateur provient d'une autre instance{1} (cliquez {0} pour afficher le profil d'origine).",
   "USER_PICTURE": "photo de l'utilisateur",
   "USERNAME": "Nom d'utilisateur",
   "YOU": "vous"

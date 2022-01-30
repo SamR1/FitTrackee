@@ -11,6 +11,7 @@
   "LOGIN": "Login",
   "LOGOUT": "Logout",
   "LOGOUT_CONFIRMATION": "Are you sure you want to log out?",
+  "ONLY_USERS_FROM_THIS_INSTANCE_ARE_DISPLAYED": ", only {0} from this instance are displayed",
   "NO_USERS_FOUND": "No users found.",
   "PASSWORD": "Password",
   "PASSWORD_CONFIRM": "Confirm Password",
@@ -86,7 +87,7 @@
   "RESET_PASSWORD": "Reset your password",
   "USER_PICTURE": "user picture",
   "USER": "user | users",
-  "USER_FROM_REMOTE_INSTANCE_ORIGINAL_LINK": "This user is from a remote instance (click {0} to display the original profile)",
+  "USER_FROM_REMOTE_INSTANCE_ORIGINAL_LINK": "This user is from a remote instance{1} (click {0} to display the original profile).",
   "USERNAME": "Username",
   "YOU": "you"
 }

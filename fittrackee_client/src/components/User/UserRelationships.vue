@@ -1,5 +1,22 @@
 <template>
   <div class="relationships">
+    <div v-if="user.is_remote" class="remote-user">
+      <i18n-t keypath="user.USER_FROM_REMOTE_INSTANCE_ORIGINAL_LINK">
+        <a :href="user.profile_link" target="_blank">
+          {{ $t('common.HERE') }}
+        </a>
+        <i18n-t keypath="user.ONLY_USERS_FROM_THIS_INSTANCE_ARE_DISPLAYED">
+          {{
+            $t(
+              `user.RELATIONSHIPS.${relationship
+                .toUpperCase()
+                .replace('S', '')}`,
+              0
+            )
+          }}
+        </i18n-t>
+      </i18n-t>
+    </div>
     <div v-if="relationships.length > 0">
       <div class="user-relationships">
         <UserCard
@@ -19,6 +36,17 @@
     <p v-else class="no-relationships">
       {{ $t(`user.RELATIONSHIPS.NO_${relationship.toUpperCase()}`) }}
     </p>
+    <div class="profile-buttons">
+      <button
+        @click="
+          $route.path.startsWith('/profile')
+            ? $router.push('/profile')
+            : $router.push(`/users/${getUserName(user)}`)
+        "
+      >
+        {{ $t('user.PROFILE.BACK_TO_PROFILE') }}
+      </button>
+    </div>
   </div>
 </template>
 
@@ -130,7 +158,14 @@
       }
     }
     .no-relationships {
-      padding: 0 $default-padding;
+      padding: 0 $default-padding * 0.5;
+    }
+    .remote-user {
+      padding: $default-padding * 0.5;
+
+      a {
+        text-decoration: underline;
+      }
     }
   }
 </style>
