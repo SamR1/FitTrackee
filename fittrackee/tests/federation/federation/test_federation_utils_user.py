@@ -593,6 +593,19 @@ class TestGetUserFromUsernameWithAction:
 
         update_remote_user_mock.assert_called_with(remote_user.actor)
 
+    def test_it_does_not_raise_error_if_refresh_fails(
+        self, app_with_federation: Flask, remote_user: User
+    ) -> None:
+        with patch(
+            'fittrackee.federation.utils_user.update_remote_user',
+            side_effect=RemoteActorException(),
+        ):
+            user = get_user_from_username(
+                remote_user.actor.fullname, with_action='refresh'
+            )
+
+        assert user == remote_user
+
 
 class TestStoreOrDeleteUserPicture:
     @pytest.mark.parametrize(

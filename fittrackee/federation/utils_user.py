@@ -5,7 +5,7 @@ from typing import Dict, Optional, Tuple
 import requests
 from flask import current_app
 
-from fittrackee import db
+from fittrackee import appLog, db
 from fittrackee.federation.exceptions import RemoteActorException
 from fittrackee.federation.models import MEDIA_TYPES, Actor, Domain
 from fittrackee.federation.remote_actor import (
@@ -197,7 +197,10 @@ def get_user_from_username(
             else:
                 raise UserNotFoundException()
         if with_action == 'refresh':  # refresh existing actor
-            update_remote_user(actor)
+            try:
+                update_remote_user(actor)
+            except (ActorNotFoundException, RemoteActorException) as e:
+                appLog.error(f'Error when update user {actor.fullname}: {e}')
         user = actor.user
     if not user:
         raise UserNotFoundException()
