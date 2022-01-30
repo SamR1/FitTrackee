@@ -9,7 +9,7 @@
       />
       <i
         v-if="username !== ''"
-        class="fa fa-times position-absolute"
+        class="fa fa-times"
         aria-hidden="true"
         @click="resetFilter"
       />
@@ -50,7 +50,6 @@
     align-items: center;
     padding: $default-padding;
     gap: $default-padding;
-    position: relative;
 
     .fa {
       font-size: 1.5em;
