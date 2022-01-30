@@ -10,6 +10,7 @@
   "LANGUAGE": "Language",
   "LOGIN": "Login",
   "LOGOUT": "Logout",
+  "LOGOUT_CONFIRMATION": "Are you sure you want to log out?",
   "NO_USERS_FOUND": "No users found.",
   "PASSWORD": "Password",
   "PASSWORD_CONFIRM": "Confirm Password",

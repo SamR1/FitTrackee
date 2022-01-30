@@ -1,5 +1,12 @@
 <template>
   <div id="nav">
+    <Modal
+      v-if="displayModal"
+      :title="$t('common.CONFIRMATION')"
+      :message="$t('user.LOGOUT_CONFIRMATION')"
+      @confirmAction="logout"
+      @cancelAction="updateDisplayModal(false)"
+    />
     <div class="nav-container">
       <div class="nav-app-name">
         <div class="nav-item app-name" @click="$router.push('/')">
@@ -53,8 +60,19 @@
               @click="closeMenu"
             >
               <UserPicture :user="authUser" />
+              {{ authUser.username }}
             </router-link>
-            <div class="nav-item nav-link" @click="logout">
+            <div
+              class="nav-item nav-link logout-fa"
+              @click="updateDisplayModal(true)"
+              :title="$t('user.LOGOUT')"
+            >
+              <i class="fa fa-sign-out" aria-hidden="true" />
+            </div>
+            <div
+              class="nav-item nav-link logout-text"
+              @click="updateDisplayModal(true)"
+            >
               {{ $t('user.LOGOUT') }}
             </div>
           </div>
@@ -82,7 +100,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, ref, capitalize } from 'vue'
+  import { ComputedRef, computed, ref, capitalize, Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
 
   import UserPicture from '@/components/User/UserPicture.vue'
@@ -97,6 +115,7 @@
   const { locale } = useI18n()
   const store = useStore()
 
+  let displayModal: Ref<boolean> = ref(false)
   const authUser: ComputedRef<IUserProfile> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
   )
@@ -122,6 +141,10 @@
   }
   function logout() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.LOGOUT)
+    displayModal.value = false
+  }
+  function updateDisplayModal(value: boolean) {
+    displayModal.value = value
   }
 </script>
 
@@ -197,6 +220,7 @@
 
       .nav-items-group {
         display: flex;
+        align-items: flex-start;
       }
       .nav-item {
         padding: 0 10px;
@@ -218,6 +242,9 @@
       }
 
       .nav-profile-img {
+        display: flex;
+        gap: $default-padding;
+        align-items: flex-start;
         margin-bottom: -$default-padding;
         ::v-deep(.user-picture) {
           img {
@@ -232,6 +259,12 @@
       }
 
       .nav-separator {
+        display: none;
+      }
+      .logout-fa {
+        display: block;
+      }
+      .logout-text {
         display: none;
       }
     }
@@ -294,21 +327,25 @@
         .nav-items-group {
           display: flex;
           flex-direction: column;
+
+          .logout-fa {
+            display: none;
+          }
+          .logout-text {
+            display: block;
+          }
         }
 
         .nav-item {
           padding: 7px 25px;
         }
 
-        .nav-profile-img {
-          display: none;
-        }
-
         .nav-separator {
           display: flex;
           border-top: solid 1px var(--nav-border-color);
           margin: 0 $default-margin * 2;
-          padding: 0;
+          padding: 0 0 $default-padding;
+          width: 88%;
         }
       }
     }
