@@ -20,7 +20,7 @@ class TestGetFollowRequestWithoutFederation(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/follow_requests',
+            '/api/follow-requests',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -44,7 +44,7 @@ class TestGetFollowRequestWithoutFederation(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/follow_requests',
+            '/api/follow-requests',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -70,7 +70,7 @@ class TestGetFollowRequestPagination(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/follow_requests',
+            '/api/follow-requests',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -100,7 +100,7 @@ class TestGetFollowRequestPagination(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/follow_requests?page=2',
+            '/api/follow-requests?page=2',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -131,7 +131,7 @@ class TestGetFollowRequestPagination(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/follow_requests?per_page=10',
+            '/api/follow-requests?per_page=10',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -161,7 +161,7 @@ class TestGetFollowRequestPagination(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/follow_requests?order=desc',
+            '/api/follow-requests?order=desc',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -185,7 +185,7 @@ class TestGetFollowRequestPagination(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/follow_requests?per_page=1',
+            '/api/follow-requests?per_page=1',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -215,7 +215,7 @@ class TestGetFollowRequestPagination(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/follow_requests?page=2&per_page=1&order=desc',
+            '/api/follow-requests?page=2&per_page=1&order=desc',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -242,7 +242,7 @@ class FollowRequestTestCase(ApiTestCaseMixin):
         user_name: str,
         action: str,
     ) -> None:
-        url = f'/api/follow_requests/{user_name}/{action}'
+        url = f'/api/follow-requests/{user_name}/{action}'
         self.assert_return_not_found(
             url, client, auth_token, 'Follow request does not exist.'
         )
@@ -254,7 +254,7 @@ class FollowRequestTestCase(ApiTestCaseMixin):
         user_name: str,
         action: str,
     ) -> None:
-        url = f'/api/follow_requests/{user_name}/{action}'
+        url = f'/api/follow-requests/{user_name}/{action}'
         response = client.post(
             url,
             content_type='application/json',
@@ -275,7 +275,7 @@ class FollowRequestTestCase(ApiTestCaseMixin):
         user_name: str,
         action: str,
     ) -> None:
-        url = f'/api/follow_requests/{user_name}/{action}'
+        url = f'/api/follow-requests/{user_name}/{action}'
         response = client.post(
             url,
             content_type='application/json',
@@ -301,7 +301,7 @@ class TestAcceptFollowRequestWithoutFederation(FollowRequestTestCase):
         )
 
         self.assert_return_user_not_found(
-            f'/api/follow_requests/{random_string()}/accept',
+            f'/api/follow-requests/{random_string()}/accept',
             client,
             auth_token,
         )
@@ -360,7 +360,7 @@ class TestRejectFollowRequestWithoutFederation(FollowRequestTestCase):
         )
 
         self.assert_return_user_not_found(
-            f'/api/follow_requests/{random_string()}/reject',
+            f'/api/follow-requests/{random_string()}/reject',
             client,
             auth_token,
         )

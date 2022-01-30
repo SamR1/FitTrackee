@@ -1,6 +1,7 @@
 import os
 from typing import Dict, Union
 from unittest.mock import patch
+from urllib.parse import urlparse
 
 import pytest
 from flask import Flask
@@ -11,7 +12,8 @@ from fittrackee.federation.exceptions import (
 )
 from fittrackee.federation.models import Domain
 from fittrackee.federation.utils_user import (
-    create_remote_user,
+    create_remote_user_from_username,
+    get_or_create_remote_domain_from_url,
     get_user_from_username,
     get_username_and_domain,
     store_or_delete_user_picture,
@@ -64,6 +66,51 @@ class TestGetUsernameAndDomain:
         assert get_username_and_domain(input_user_account) == (None, None)
 
 
+class TestGetOrCreateDomainFromActorUrl:
+    @pytest.mark.parametrize(
+        'input_desc,input_url',
+        [
+            ('empty string', ''),
+            ('random string', random_string()),
+        ],
+    )
+    def test_it_raises_exception_when_url_is_invalid(
+        self, input_desc: str, input_url: str
+    ) -> None:
+        with pytest.raises(RemoteActorException, match='invalid actor url'):
+
+            get_or_create_remote_domain_from_url(input_url)
+
+    def test_it_raises_an_error_if_domain_is_local(
+        self, app_with_federation: Flask, user_1: User
+    ) -> None:
+        with pytest.raises(
+            RemoteActorException,
+            match='the provided account is not a remote account',
+        ):
+
+            get_or_create_remote_domain_from_url(user_1.actor.activitypub_id)
+
+    def test_it_creates_and_returns_remote_domain(
+        self, app_with_federation: Flask, random_actor: RandomActor
+    ) -> None:
+        domain = get_or_create_remote_domain_from_url(
+            random_actor.activitypub_id
+        )
+
+        assert isinstance(domain, Domain)
+        assert domain.name == urlparse(random_actor.activitypub_id).netloc
+
+    def test_it_returns_existing_remote_domain(
+        self, app_with_federation: Flask, remote_domain: Domain
+    ) -> None:
+        domain = get_or_create_remote_domain_from_url(
+            f'https://{remote_domain.name}/users/random'
+        )
+
+        assert domain == remote_domain
+
+
 class TestCreateRemoteUser:
     def test_it_returns_error_if_remote_actor_domain_is_local(
         self, app_with_federation: Flask
@@ -76,8 +123,8 @@ class TestCreateRemoteUser:
             ),
         ):
 
-            create_remote_user(
-                random_string(), app_with_federation.config["UI_URL"]
+            create_remote_user_from_username(
+                random_string(), app_with_federation.config['AP_DOMAIN']
             )
 
     def test_it_returns_error_if_remote_webfinger_returns_error(
@@ -94,7 +141,7 @@ class TestCreateRemoteUser:
             match='Invalid remote actor: can not fetch remote actor.',
         ):
 
-            create_remote_user(
+            create_remote_user_from_username(
                 random_actor.preferred_username, random_actor.domain
             )
 
@@ -150,7 +197,7 @@ class TestCreateRemoteUser:
                 'from webfinger endpoint.'
             ),
         ):
-            create_remote_user(
+            create_remote_user_from_username(
                 random_actor.preferred_username, random_actor.domain
             )
 
@@ -171,7 +218,7 @@ class TestCreateRemoteUser:
             match='Invalid remote actor: can not fetch remote actor.',
         ):
 
-            create_remote_user(
+            create_remote_user_from_username(
                 random_actor.preferred_username, random_actor.domain
             )
 
@@ -194,7 +241,7 @@ class TestCreateRemoteUser:
             match='Invalid remote actor: invalid remote actor object.',
         ):
 
-            create_remote_user(
+            create_remote_user_from_username(
                 random_actor.preferred_username, random_actor.domain
             )
 
@@ -217,7 +264,7 @@ class TestCreateRemoteUser:
             match='Invalid remote actor: invalid remote actor object.',
         ):
 
-            create_remote_user(
+            create_remote_user_from_username(
                 random_actor.preferred_username, random_actor.domain
             )
 
@@ -237,7 +284,7 @@ class TestCreateRemoteUser:
             return_value=random_actor.get_remote_user_object(),
         ):
 
-            user = create_remote_user(
+            user = create_remote_user_from_username(
                 random_actor.preferred_username, random_actor.domain
             )
 
@@ -259,7 +306,7 @@ class TestCreateRemoteUser:
             'fittrackee.federation.utils_user.get_remote_actor_url',
             return_value=random_actor.get_remote_user_object(),
         ):
-            user = create_remote_user(
+            user = create_remote_user_from_username(
                 random_actor.preferred_username, random_actor.domain
             )
 
@@ -279,7 +326,7 @@ class TestCreateRemoteUser:
             'fittrackee.federation.utils_user.get_remote_actor_url',
             return_value=remote_user_object,
         ):
-            user = create_remote_user(
+            user = create_remote_user_from_username(
                 random_actor.preferred_username, random_actor.domain
             )
 
@@ -300,7 +347,7 @@ class TestCreateRemoteUser:
         ), patch(
             'fittrackee.federation.utils_user.store_or_delete_user_picture'
         ) as store_or_delete_mock:
-            user = create_remote_user(
+            user = create_remote_user_from_username(
                 random_actor.preferred_username, random_actor.domain
             )
 
@@ -323,7 +370,7 @@ class TestCreateRemoteUser:
         ), patch(
             'fittrackee.federation.utils_user.update_remote_actor_stats'
         ) as update_remote_actor_stats_mock:
-            user = create_remote_user(
+            user = create_remote_user_from_username(
                 random_actor.preferred_username, random_actor.domain
             )
 
@@ -355,7 +402,7 @@ class TestCreateRemoteUser:
             RemoteActorException,
             match='Invalid remote actor: actor already exists.',
         ):
-            create_remote_user(
+            create_remote_user_from_username(
                 remote_user.actor.preferred_username,
                 remote_user.actor.domain.name,
             )
@@ -376,7 +423,7 @@ class TestCreateRemoteUser:
             'fittrackee.federation.utils_user.get_remote_actor_url',
             return_value=random_actor.get_remote_user_object(),
         ):
-            user = create_remote_user(
+            user = create_remote_user_from_username(
                 random_actor.preferred_username, random_actor.domain
             )
 

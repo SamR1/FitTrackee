@@ -27,7 +27,7 @@
   const props = defineProps<Props>()
 
   const { user, tab } = toRefs(props)
-  const tabs = ['PROFILE', 'PREFERENCES', 'SPORTS']
+  const tabs = ['PROFILE', 'PREFERENCES', 'SPORTS', 'FOLLOW-REQUESTS']
 </script>
 
 <style lang="scss" scoped>

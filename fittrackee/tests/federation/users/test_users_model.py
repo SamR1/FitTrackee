@@ -50,8 +50,6 @@ class TestFollowRequestModelWithFederation:
         user_2: User,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
-        actor_1 = user_1.actor
-        actor_2 = user_2.actor
         assert '<FollowRequest from user \'1\' to user \'2\'>' == str(
             follow_request_from_user_1_to_user_2
         )
@@ -59,8 +57,8 @@ class TestFollowRequestModelWithFederation:
         serialized_follow_request = (
             follow_request_from_user_1_to_user_2.serialize()
         )
-        assert serialized_follow_request['from_user'] == actor_1.serialize()
-        assert serialized_follow_request['to_user'] == actor_2.serialize()
+        assert serialized_follow_request['from_user'] == user_1.serialize()
+        assert serialized_follow_request['to_user'] == user_2.serialize()
 
     def test_it_returns_follow_activity_object(
         self,

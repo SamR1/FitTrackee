@@ -5,4 +5,5 @@ export const authUserState: IAuthUserState = {
   authToken: null,
   authUserProfile: <IAuthUserProfile>{},
   loading: false,
+  followRequests: [],
 }

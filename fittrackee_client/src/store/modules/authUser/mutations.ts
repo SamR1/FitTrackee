@@ -5,7 +5,7 @@ import {
   IAuthUserState,
   TAuthUserMutations,
 } from '@/store/modules/authUser/types'
-import { IAuthUserProfile } from '@/types/user'
+import { IAuthUserProfile, IUserProfile } from '@/types/user'
 
 export const mutations: MutationTree<IAuthUserState> & TAuthUserMutations = {
   [AUTH_USER_STORE.MUTATIONS.CLEAR_AUTH_USER_TOKEN](state: IAuthUserState) {
@@ -23,6 +23,12 @@ export const mutations: MutationTree<IAuthUserState> & TAuthUserMutations = {
     authUserProfile: IAuthUserProfile
   ) {
     state.authUserProfile = authUserProfile
+  },
+  [AUTH_USER_STORE.MUTATIONS.UPDATE_FOLLOW_REQUESTS](
+    state: IAuthUserState,
+    followRequests: IUserProfile[]
+  ) {
+    state.followRequests = followRequests
   },
   [AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING](
     state: IAuthUserState,

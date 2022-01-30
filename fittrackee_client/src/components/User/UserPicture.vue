@@ -17,6 +17,7 @@
 
   import { IUserProfile } from '@/types/user'
   import { getApiUrl } from '@/utils'
+  import { getUserName } from '@/utils/user'
 
   interface Props {
     user: IUserProfile
@@ -25,7 +26,7 @@
 
   const authUserPictureUrl = computed(() =>
     props.user.picture
-      ? `${getApiUrl()}users/${props.user.username}/picture`
+      ? `${getApiUrl()}users/${getUserName(props.user)}/picture`
       : ''
   )
 </script>

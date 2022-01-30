@@ -4,6 +4,10 @@ from typing import Dict, Tuple
 from fittrackee import appLog
 from fittrackee.federation.exceptions import ActorNotFoundException
 from fittrackee.federation.models import Actor
+from fittrackee.federation.utils_user import (
+    create_remote_user,
+    get_or_create_remote_domain_from_url,
+)
 from fittrackee.users.exceptions import (
     FollowRequestAlreadyProcessedError,
     FollowRequestAlreadyRejectedError,
@@ -22,7 +26,9 @@ class AbstractActivity(ABC):
     def process_activity(self) -> None:
         pass
 
-    def get_actors(self) -> Tuple[Actor, Actor]:
+    def get_actors(
+        self, create_remote_actor: bool = False
+    ) -> Tuple[Actor, Actor]:
         """
         return actors from activity 'actor' and 'object'
         """
@@ -30,9 +36,18 @@ class AbstractActivity(ABC):
             activitypub_id=self.activity['actor']
         ).first()
         if not actor:
-            raise ActorNotFoundException(
-                f'actor not found for {self.activity_name()}'
-            )
+            if create_remote_actor:
+                remote_domain = get_or_create_remote_domain_from_url(
+                    self.activity['actor']
+                )
+                user = create_remote_user(
+                    remote_domain, self.activity['actor']
+                )
+                actor = user.actor
+            else:
+                raise ActorNotFoundException(
+                    f'actor not found for {self.activity_name()}'
+                )
 
         if isinstance(self.activity['object'], str):
             object_actor_activitypub_id = self.activity['object']
@@ -60,7 +75,9 @@ class FollowBaseActivity(AbstractActivity):
 
 class FollowActivity(FollowBaseActivity):
     def process_activity(self) -> None:
-        follower_actor, followed_actor = self.get_actors()
+        follower_actor, followed_actor = self.get_actors(
+            create_remote_actor=True
+        )
         try:
             follower_actor.user.send_follow_request_to(followed_actor.user)
         except FollowRequestAlreadyRejectedError as e:

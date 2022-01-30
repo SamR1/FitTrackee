@@ -1,4 +1,5 @@
 from typing import Dict, Optional, Union
+from unittest.mock import patch
 
 import pytest
 from flask import Flask
@@ -158,7 +159,7 @@ class TestFollowActivity(FollowRequestActivitiesTestCase):
         with pytest.raises(FollowRequestAlreadyRejectedError):
             activity.process_activity()
 
-    def test_it_creates_follow_request(
+    def test_it_creates_follow_request_with_existing_remote_user(
         self,
         app_with_federation: Flask,
         user_1: User,
@@ -179,6 +180,34 @@ class TestFollowActivity(FollowRequestActivitiesTestCase):
             followed_user_id=user_1.id,
         ).first()
         assert follow_request is not None
+
+    def test_it_creates_remote_user_and_follow_request(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        random_actor: RandomActor,
+    ) -> None:
+        follow_activity = self.generate_follow_activity(
+            follower_actor_id=random_actor.activitypub_id,
+            followed_actor=user_1.actor,
+        )
+        activity = get_activity_instance({'type': follow_activity['type']})(
+            activity_dict=follow_activity
+        )
+        with patch(
+            'fittrackee.federation.utils_user.get_remote_actor_url',
+            return_value=random_actor.get_remote_user_object(),
+        ), patch(
+            'fittrackee.federation.utils_user.store_or_delete_user_picture'
+        ), patch(
+            'fittrackee.federation.utils_user.update_remote_actor_stats'
+        ):
+            activity.process_activity()
+
+        follow_request = FollowRequest.query.filter_by(
+            followed_user_id=user_1.id,
+        ).first()
+        assert follow_request.from_user.actor.fullname == random_actor.fullname
 
     def test_it_does_not_raise_error_if_pending_follow_request_already_exist(
         self,

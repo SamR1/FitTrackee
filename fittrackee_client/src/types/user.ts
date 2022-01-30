@@ -6,6 +6,7 @@ import { IRecord } from '@/types/workouts'
 export type TPrivacyLevels = 'private' | 'followers_only' | 'public'
 export type TRelationshipAction = 'follow' | 'unfollow'
 export type TRelationships = 'followers' | 'following'
+export type TFollowRequestAction = 'accept' | 'reject'
 
 export interface IUserProfile {
   admin: boolean
@@ -126,4 +127,13 @@ export interface IUserRelationshipsPayload {
   username: string
   relationship: TRelationships
   page: number
+}
+
+export interface IFollowRequestsPayload {
+  page: number
+}
+
+export interface IFollowRequestsActionPayload {
+  username: string
+  action: TFollowRequestAction
 }

@@ -52,6 +52,7 @@
     "SPORTS_EDITION": "Sports preferences edition",
     "SUNDAY": "Sunday",
     "TABS": {
+      "FOLLOW-REQUESTS": "follow requests",
       "PICTURE": "picture",
       "PREFERENCES": "preferences",
       "PROFILE": "profile",
@@ -82,6 +83,7 @@
     "FOLLOWS_YOU": "follows you",
     "NO_FOLLOWERS": "No followers yet.",
     "NO_FOLLOWING": "No following yet.",
+    "NO_FOLLOW_REQUESTS": "No follow requests to check.",
     "UNFOLLOW": "unfollow"
   },
   "RESET_PASSWORD": "Reset your password",

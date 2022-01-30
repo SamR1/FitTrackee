@@ -52,6 +52,7 @@
     "SPORTS_EDITION": "Mise à jour des préférences des sports",
     "SUNDAY": "Dimanche",
     "TABS": {
+      "FOLLOW-REQUESTS": "demandes d'abonnement",
       "PICTURE": "image",
       "PREFERENCES": "préférences",
       "PROFILE": "profil",
@@ -82,6 +83,7 @@
     "FOLLOWS_YOU": "vous suit",
     "NO_FOLLOWERS": "Pas d'abonnés pour le moment.",
     "NO_FOLLOWING": "Pas d'abonnements pour le moment.",
+    "NO_FOLLOW_REQUESTS": "Pas de demandes d'abonnement à valider.",
     "UNFOLLOW": "se désabonner"
   },
   "RESET_PASSWORD": "Réinitialiser votre mot de passe",

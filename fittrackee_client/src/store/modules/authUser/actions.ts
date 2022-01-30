@@ -19,6 +19,8 @@ import {
 import { IRootState } from '@/store/modules/root/types'
 import { deleteUserAccount } from '@/store/modules/users/actions'
 import {
+  IFollowRequestsActionPayload,
+  IFollowRequestsPayload,
   ILoginOrRegisterData,
   IUserDeletionPayload,
   IUserPasswordPayload,
@@ -39,6 +41,7 @@ const removeAuthUserData = (
   context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   context.commit(STATS_STORE.MUTATIONS.EMPTY_USER_STATS)
   context.commit(AUTH_USER_STORE.MUTATIONS.CLEAR_AUTH_USER_TOKEN)
+  context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_FOLLOW_REQUESTS, [])
   context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS, [])
   context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUTS)
   context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
@@ -95,6 +98,35 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
         removeAuthUserData(context)
       })
   },
+  [AUTH_USER_STORE.ACTIONS.GET_FOLLOW_REQUESTS](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IFollowRequestsPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    authApi
+      .get('follow-requests', { params: payload })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            AUTH_USER_STORE.MUTATIONS.UPDATE_FOLLOW_REQUESTS,
+            res.data.data.follow_requests
+          )
+          context.commit(
+            USERS_STORE.MUTATIONS.UPDATE_USERS_PAGINATION,
+            res.data.pagination
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+      .finally(() =>
+        context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      )
+  },
   [AUTH_USER_STORE.ACTIONS.LOGIN_OR_REGISTER](
     context: ActionContext<IAuthUserState, IRootState>,
     data: ILoginOrRegisterData
@@ -124,6 +156,29 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
     context: ActionContext<IAuthUserState, IRootState>
   ): void {
     removeAuthUserData(context)
+  },
+  [AUTH_USER_STORE.ACTIONS.UPDATE_FOLLOW_REQUESTS](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IFollowRequestsActionPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .post(`follow-requests/${payload.username}/${payload.action}`)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context
+            .dispatch(AUTH_USER_STORE.ACTIONS.GET_FOLLOW_REQUESTS)
+            .then(() =>
+              context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+            )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      )
   },
   [AUTH_USER_STORE.ACTIONS.UPDATE_USER_PROFILE](
     context: ActionContext<IAuthUserState, IRootState>,

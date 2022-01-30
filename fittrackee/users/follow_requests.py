@@ -29,7 +29,7 @@ FOLLOW_REQUESTS_PER_PAGE = 10
 MAX_FOLLOW_REQUESTS_PER_PAGE = 50
 
 
-@follow_requests_blueprint.route('/follow_requests', methods=['GET'])
+@follow_requests_blueprint.route('/follow-requests', methods=['GET'])
 @authenticate
 def get_follow_requests(auth_user: User) -> Dict:
     """
@@ -41,13 +41,13 @@ def get_follow_requests(auth_user: User) -> Dict:
 
     .. sourcecode:: http
 
-      GET /api/follow_requests/ HTTP/1.1
+      GET /api/follow-requests/ HTTP/1.1
 
     - with some query parameters
 
     .. sourcecode:: http
 
-      GET /api/follow_requests?page=1&order=desc  HTTP/1.1
+      GET /api/follow-requests?page=1&order=desc  HTTP/1.1
 
     **Example responses**:
 
@@ -92,51 +92,6 @@ def get_follow_requests(auth_user: User) -> Dict:
         "status": "success"
       }
 
-    - if federation is enabled
-
-    .. sourcecode:: http
-
-      HTTP/1.1 200 OK
-      Content-Type: application/json
-
-      {
-        "data": {
-          "follow_requests": [
-            {
-              "@context": [
-                "https://www.w3.org/ns/activitystreams",
-                "https://w3id.org/security/v1"
-              ],
-              "endpoints": {
-                "sharedInbox": "https://example.com/federation/inbox"
-              },
-              "followers": "https://example.com/federation/user/Sam/followers",
-              "following": "https://example.com/federation/user/Sam/following",
-              "id": "https://example.com/federation/user/Sam",
-              "inbox": "https://example.com/federation/user/Sam/inbox",
-              "manuallyApprovesFollowers": true,
-              "name": "Sam",
-              "outbox": "https://example.com/federation/user/Sam/outbox",
-              "preferredUsername": "Sam",
-              "publicKey": {
-                "id": "https://example.com/federation/user/Sam#main-key",
-                "owner": "https://example.com/federation/user/Sam",
-                "publicKeyPem": "[PUBLIC KEY]"
-              },
-              "type": "Person",
-              "url": "https://example.com/users/Sam"
-            }
-          ]
-        },
-        "pagination": {
-          "has_next": false,
-          "has_prev": false,
-          "page": 1,
-          "pages": 1,
-          "total": 1
-        },
-        "status": "success"
-      }
 
     :query integer page: page if using pagination (default: 1)
     :query integer per_page: number of follow requests per page
@@ -223,7 +178,7 @@ def process_follow_request(
 
 
 @follow_requests_blueprint.route(
-    '/follow_requests/<user_name>/accept', methods=['POST']
+    '/follow-requests/<user_name>/accept', methods=['POST']
 )
 @authenticate
 def accept_follow_request(
@@ -238,13 +193,13 @@ def accept_follow_request(
 
     .. sourcecode:: http
 
-      POST /api/follow_requests/Sam/accept HTTP/1.1
+      POST /api/follow-requests/Sam/accept HTTP/1.1
 
     - from remote instance
 
     .. sourcecode:: http
 
-      POST /api/follow_requests/sam@remote-instance.net/accept HTTP/1.1
+      POST /api/follow-requests/sam@remote-instance.net/accept HTTP/1.1
 
     **Example responses**:
 
@@ -278,7 +233,7 @@ def accept_follow_request(
 
 
 @follow_requests_blueprint.route(
-    '/follow_requests/<user_name>/reject', methods=['POST']
+    '/follow-requests/<user_name>/reject', methods=['POST']
 )
 @authenticate
 def reject_follow_request(
@@ -293,13 +248,13 @@ def reject_follow_request(
 
     .. sourcecode:: http
 
-      POST /api/follow_requests/Sam/reject HTTP/1.1
+      POST /api/follow-requests/Sam/reject HTTP/1.1
 
     - from remote instance
 
     .. sourcecode:: http
 
-      POST /api/follow_requests/sam@remote-instance.net/reject HTTP/1.1
+      POST /api/follow-requests/sam@remote-instance.net/reject HTTP/1.1
 
     **Example responses**:
 

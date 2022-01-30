@@ -60,11 +60,6 @@ class FollowRequest(BaseModel):
         return not self.is_approved and self.updated_at is not None
 
     def serialize(self) -> Dict:
-        if current_app.config['federation_enabled']:
-            return {
-                'from_user': self.from_user.actor.serialize(),
-                'to_user': self.to_user.actor.serialize(),
-            }
         return {
             'from_user': self.from_user.serialize(),
             'to_user': self.to_user.serialize(),

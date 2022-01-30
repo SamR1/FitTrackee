@@ -1,6 +1,7 @@
 import os
 import re
 from typing import Dict, Optional, Tuple
+from urllib.parse import urlparse
 
 import requests
 from flask import current_app
@@ -86,34 +87,30 @@ def update_actor_data(actor: Actor, remote_actor_object: Dict) -> None:
     update_remote_actor_stats(actor)
 
 
-def create_remote_user(username: str, domain: str) -> User:
-    if domain == current_app.config['UI_URL']:
+def get_or_create_remote_domain(domain_name: str) -> Domain:
+    if domain_name == current_app.config['AP_DOMAIN']:
         raise RemoteActorException(
             'the provided account is not a remote account'
         )
 
-    remote_domain = Domain.query.filter_by(name=domain).first()
+    remote_domain = Domain.query.filter_by(name=domain_name).first()
     if not remote_domain:
-        remote_domain = Domain(name=domain)
+        remote_domain = Domain(name=domain_name)
         db.session.add(remote_domain)
-        db.session.flush()
+        db.session.commit()
+    return remote_domain
 
-    # get account links via Webfinger
-    try:
-        webfinger = fetch_account_from_webfinger(username, domain)
-    except ActorNotFoundException:
-        raise RemoteActorException('can not fetch remote actor')
-    remote_actor_url = next(
-        (item for item in webfinger.get('links', []) if item['rel'] == 'self'),
-        None,
-    )
-    if not remote_actor_url:
-        raise RemoteActorException(
-            'invalid data fetched from webfinger endpoint'
-        )
 
+def get_or_create_remote_domain_from_url(actor_url: str) -> Domain:
+    domain_name = urlparse(actor_url).netloc
+    if not domain_name:
+        raise RemoteActorException('invalid actor url')
+    return get_or_create_remote_domain(domain_name)
+
+
+def create_remote_user(remote_domain: Domain, remote_actor_url: str) -> User:
     try:
-        remote_actor_object = get_remote_actor_url(remote_actor_url['href'])
+        remote_actor_object = get_remote_actor_url(remote_actor_url)
     except ActorNotFoundException:
         raise RemoteActorException('can not fetch remote actor')
 
@@ -155,6 +152,26 @@ def create_remote_user(username: str, domain: str) -> User:
     return actor.user
 
 
+def create_remote_user_from_username(username: str, domain_name: str) -> User:
+    remote_domain = get_or_create_remote_domain(domain_name)
+
+    # get account links via Webfinger
+    try:
+        webfinger = fetch_account_from_webfinger(username, domain_name)
+    except ActorNotFoundException:
+        raise RemoteActorException('can not fetch remote actor')
+    remote_actor_url = next(
+        (item for item in webfinger.get('links', []) if item['rel'] == 'self'),
+        None,
+    )
+    if not remote_actor_url:
+        raise RemoteActorException(
+            'invalid data fetched from webfinger endpoint'
+        )
+
+    return create_remote_user(remote_domain, remote_actor_url['href'])
+
+
 def update_remote_user(actor: Actor) -> None:
     if not actor.is_remote:
         return None
@@ -193,7 +210,7 @@ def get_user_from_username(
             ).first()
         if not actor:
             if with_action == 'creation':
-                return create_remote_user(name, domain_name)
+                return create_remote_user_from_username(name, domain_name)
             else:
                 raise UserNotFoundException()
         if with_action == 'refresh':  # refresh existing actor

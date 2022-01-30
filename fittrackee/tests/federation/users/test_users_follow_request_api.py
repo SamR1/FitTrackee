@@ -20,7 +20,7 @@ class TestGetFollowRequestWithFederation(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/follow_requests',
+            '/api/follow-requests',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -30,7 +30,7 @@ class TestGetFollowRequestWithFederation(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert data['data']['follow_requests'] == []
 
-    def test_it_returns_current_user_follow_requests_with_actors(
+    def test_it_returns_current_user_follow_requests(
         self,
         app_with_federation: Flask,
         user_1: User,
@@ -46,7 +46,7 @@ class TestGetFollowRequestWithFederation(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/follow_requests',
+            '/api/follow-requests',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -55,8 +55,8 @@ class TestGetFollowRequestWithFederation(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert len(data['data']['follow_requests']) == 1
-        assert data['data']['follow_requests'][0]['name'] == 'toto'
-        assert '@context' in data['data']['follow_requests'][0]
+        assert data['data']['follow_requests'][0]['username'] == 'toto'
+        assert data['data']['follow_requests'][0]['nb_workouts'] == 0
 
 
 class TestAcceptLocalFollowRequestWithFederation(FollowRequestTestCase):
@@ -70,7 +70,7 @@ class TestAcceptLocalFollowRequestWithFederation(FollowRequestTestCase):
         )
 
         self.assert_return_user_not_found(
-            f'/api/follow_requests/{random_string()}/accept',
+            f'/api/follow-requests/{random_string()}/accept',
             client,
             auth_token,
         )
@@ -132,7 +132,7 @@ class TestAcceptLocalFollowRequestWithFederation(FollowRequestTestCase):
         )
 
         client.post(
-            f'/api/follow_requests/{user_2.username}/accept',
+            f'/api/follow-requests/{user_2.username}/accept',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -178,7 +178,7 @@ class TestAcceptRemoteFollowRequestWithFederation(
         )
 
         client.post(
-            f'/api/follow_requests/{remote_actor.fullname}/accept',
+            f'/api/follow-requests/{remote_actor.fullname}/accept',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -206,7 +206,7 @@ class TestRejectLocalFollowRequestWithFederation(FollowRequestTestCase):
         )
 
         self.assert_return_user_not_found(
-            f'/api/follow_requests/{random_string()}/reject',
+            f'/api/follow-requests/{random_string()}/reject',
             client,
             auth_token,
         )
@@ -267,7 +267,7 @@ class TestRejectLocalFollowRequestWithFederation(FollowRequestTestCase):
         )
 
         client.post(
-            f'/api/follow_requests/{user_2.username}/reject',
+            f'/api/follow-requests/{user_2.username}/reject',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -313,7 +313,7 @@ class TestRejectRemoteFollowRequestWithFederation(
         )
 
         client.post(
-            f'/api/follow_requests/{remote_actor.fullname}/reject',
+            f'/api/follow-requests/{remote_actor.fullname}/reject',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )

@@ -37,6 +37,7 @@
     switch (tab) {
       case 'PICTURE':
         return '/profile/edit/picture'
+      case 'FOLLOW-REQUESTS':
       case 'PREFERENCES':
       case 'SPORTS':
         return `/profile${
@@ -54,5 +55,16 @@
 
   .profile-tabs {
     margin: $default-margin 0 $default-margin;
+  }
+  @media screen and (max-width: $small-limit) {
+    .profile-tabs-checkboxes {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+
+      .profile-tab {
+        padding-bottom: $default-padding * 0.5;
+      }
+    }
   }
 </style>
