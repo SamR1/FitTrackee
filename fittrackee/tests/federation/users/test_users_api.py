@@ -137,6 +137,42 @@ class TestGetRemoteUsers(ApiTestCaseMixin):
             'total': 1,
         }
 
+    def test_it_calls_update_remote_user_when_remote_user_exists(
+        self, app_with_federation: Flask, user_1: User, remote_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        with patch(
+            'fittrackee.federation.utils_user.update_remote_user',
+        ) as update_remote_user_mock:
+            client.get(
+                f'/api/users/remote?q=@{remote_user.actor.fullname}',
+                content_type='application/json',
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        update_remote_user_mock.assert_called_with(remote_user.actor)
+
+    def test_it_does_not_call_update_remote_user_for_local_user(
+        self, app_with_federation: Flask, user_1: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        with patch(
+            'fittrackee.federation.utils_user.update_remote_user',
+        ) as update_remote_user_mock:
+            client.get(
+                f'/api/users/remote?q={user_2.username}',
+                content_type='application/json',
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        update_remote_user_mock.assert_not_called()
+
     def test_it_creates_and_returns_remote_user(
         self,
         app_with_federation: Flask,

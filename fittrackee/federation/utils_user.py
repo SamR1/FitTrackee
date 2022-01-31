@@ -213,7 +213,8 @@ def get_user_from_username(
                 return create_remote_user_from_username(name, domain_name)
             else:
                 raise UserNotFoundException()
-        if with_action == 'refresh':  # refresh existing actor
+
+        if with_action is not None:  # refresh existing actor
             try:
                 update_remote_user(actor)
             except (ActorNotFoundException, RemoteActorException) as e:
