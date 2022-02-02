@@ -318,7 +318,7 @@ class Workout(BaseModel):
             next_workout = None
             previous_workout = None
 
-        return {
+        workout = {
             'id': self.short_id,  # WARNING: client use uuid as id
             'user': self.user.serialize(),
             'sport_id': self.sport_id,
@@ -349,12 +349,14 @@ class Workout(BaseModel):
             'segments': [segment.serialize() for segment in self.segments],
             'records': [record.serialize() for record in self.records],
             'map': self.map_id if self.map and can_see_map_data else None,
-            'map_visibility': self.calculated_map_visibility.value,
             'weather_start': self.weather_start,
             'weather_end': self.weather_end,
-            'workout_visibility': self.workout_visibility.value,
             'notes': self.notes if user_status == 'owner' else None,
         }
+        if user_status == 'owner':
+            workout['workout_visibility'] = self.workout_visibility.value
+            workout['map_visibility'] = self.calculated_map_visibility.value
+        return workout
 
     @classmethod
     def get_user_workout_records(

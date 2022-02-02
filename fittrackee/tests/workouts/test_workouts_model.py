@@ -323,6 +323,8 @@ class TestWorkoutModelAsFollower(WorkoutModelTestCase):
         assert serialized_workout['map'] == workout.map
         assert serialized_workout['bounds'] == workout.bounds
         assert serialized_workout['with_gpx'] is True
+        assert 'map_visibility' not in serialized_workout
+        assert 'workout_visibility' not in serialized_workout
 
     @pytest.mark.parametrize(
         'input_map_visibility,input_workout_visibility',
@@ -355,6 +357,8 @@ class TestWorkoutModelAsFollower(WorkoutModelTestCase):
         assert serialized_workout['map'] is None
         assert serialized_workout['bounds'] == []
         assert serialized_workout['with_gpx'] is False
+        assert 'map_visibility' not in serialized_workout
+        assert 'workout_visibility' not in serialized_workout
 
     def test_serializer_does_not_return_next_workout(
         self,
@@ -444,6 +448,8 @@ class TestWorkoutModelAsOther(WorkoutModelTestCase):
         assert serialized_workout['map'] == workout.map
         assert serialized_workout['bounds'] == workout.bounds
         assert serialized_workout['with_gpx'] is True
+        assert 'map_visibility' not in serialized_workout
+        assert 'workout_visibility' not in serialized_workout
 
     @pytest.mark.parametrize(
         'input_map_visibility,input_workout_visibility',
@@ -476,6 +482,8 @@ class TestWorkoutModelAsOther(WorkoutModelTestCase):
         assert serialized_workout['map'] is None
         assert serialized_workout['bounds'] == []
         assert serialized_workout['with_gpx'] is False
+        assert 'map_visibility' not in serialized_workout
+        assert 'workout_visibility' not in serialized_workout
 
     def test_serializer_does_not_return_next_workout(
         self,
@@ -508,3 +516,5 @@ class TestWorkoutModelAsOther(WorkoutModelTestCase):
         )
 
         assert serialized_workout['previous_workout'] is None
+        assert 'map_visibility' not in serialized_workout
+        assert 'workout_visibility' not in serialized_workout
