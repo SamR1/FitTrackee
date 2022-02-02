@@ -15,6 +15,7 @@ from werkzeug.utils import secure_filename
 from fittrackee import db
 from fittrackee.files import get_absolute_file_path
 from fittrackee.users.models import User, UserSportPreference
+from fittrackee.users.privacy_levels import PrivacyLevel
 
 from ..exceptions import WorkoutException
 from ..models import Sport, Workout, WorkoutSegment
@@ -117,6 +118,12 @@ def create_workout(
         duration=duration,
     )
     new_workout.notes = workout_data.get('notes')
+    new_workout.map_visibility = PrivacyLevel(
+        workout_data.get('map_visibility', user.map_visibility.value)
+    )
+    new_workout.workout_visibility = PrivacyLevel(
+        workout_data.get('workout_visibility', user.workouts_visibility.value)
+    )
 
     if title is not None and title != '':
         new_workout.title = title
