@@ -27,9 +27,7 @@ class TestUserModel:
         assert serialized_user['location'] is None
         assert serialized_user['birth_date'] is None
         assert serialized_user['picture'] is False
-        assert serialized_user['map_visibility'] == 'private'
         assert serialized_user['nb_workouts'] == 0
-        assert serialized_user['workouts_visibility'] == 'private'
 
     def test_user_model_as_auth_user(self, app: Flask, user_1: User) -> None:
         assert '<User \'test\'>' == str(user_1)
@@ -48,6 +46,8 @@ class TestUserModel:
         assert serialized_user['language'] is None
         assert serialized_user['timezone'] is None
         assert serialized_user['weekm'] is False
+        assert serialized_user['map_visibility'] == 'private'
+        assert serialized_user['workouts_visibility'] == 'private'
         assert 'follows' not in serialized_user
         assert 'is_followed_by' not in serialized_user
 
@@ -72,6 +72,8 @@ class TestUserModel:
         assert 'weekm' not in serialized_user
         assert serialized_user['follows'] == 'false'
         assert serialized_user['is_followed_by'] == 'false'
+        assert 'map_visibility' not in serialized_user
+        assert 'workouts_visibility' not in serialized_user
 
     def test_user_model_as_regular_user(
         self, app: Flask, user_1: User, user_2: User
@@ -94,6 +96,8 @@ class TestUserModel:
         assert 'weekm' not in serialized_user
         assert serialized_user['follows'] == 'false'
         assert serialized_user['is_followed_by'] == 'false'
+        assert 'map_visibility' not in serialized_user
+        assert 'workouts_visibility' not in serialized_user
 
     def test_user_model_when_no_user_provided(
         self, app: Flask, user_1: User
@@ -115,6 +119,8 @@ class TestUserModel:
         assert 'weekm' not in serialized_user
         assert 'follows' not in serialized_user
         assert 'is_followed_by' not in serialized_user
+        assert 'map_visibility' not in serialized_user
+        assert 'workouts_visibility' not in serialized_user
 
     def test_encode_auth_token(self, app: Flask, user_1: User) -> None:
         auth_token = user_1.encode_auth_token(user_1.id)

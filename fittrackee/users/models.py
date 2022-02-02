@@ -447,10 +447,8 @@ class User(BaseModel):
             'is_remote': self.is_remote,
             'last_name': self.last_name,
             'location': self.location,
-            'map_visibility': self.map_visibility.value,
             'nb_workouts': self.workouts_count,
             'picture': self.picture is not None,
-            'workouts_visibility': self.workouts_visibility.value,
             'username': self.username,
         }
         if self.is_remote:
@@ -494,6 +492,8 @@ class User(BaseModel):
                     'language': self.language,
                     'timezone': self.timezone,
                     'weekm': self.weekm,
+                    'map_visibility': self.map_visibility.value,
+                    'workouts_visibility': self.workouts_visibility.value,
                 },
             }
 
