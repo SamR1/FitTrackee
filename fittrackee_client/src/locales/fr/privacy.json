@@ -1,0 +1,11 @@
+{
+  "LEVELS": {
+    "private": "Privé (seulement moi)",
+    "followers_only": "Abonnées uniquement",
+    "public": "Public (tout le monde)"
+  },
+  "MAP_VISIBILITY": "Visibilité de la carte et de l'analyse",
+  "VISIBILITY": "visibilité",
+  "WORKOUT_VISIBILITY": "Visibilité de la séance",
+  "WORKOUTS_VISIBILITY": "Visibilité des données relatives aux séances"
+}

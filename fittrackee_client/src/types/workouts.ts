@@ -1,5 +1,6 @@
 import { TPaginationPayload } from '@/types/api'
 import { IChartDataset } from '@/types/chart'
+import { TPrivacyLevels } from '@/types/user'
 
 export interface IWorkoutSegment {
   ascent: number
@@ -56,6 +57,7 @@ export interface IWorkout {
   duration: string
   id: string
   map: string | null
+  map_visibility: TPrivacyLevels
   max_alt: number | null
   max_speed: number
   min_alt: number | null
@@ -74,6 +76,7 @@ export interface IWorkout {
   weather_start: IWeather | null
   with_gpx: boolean
   workout_date: string
+  workout_visibility: TPrivacyLevels
 }
 
 export interface IWorkoutObject {
@@ -84,6 +87,7 @@ export interface IWorkoutObject {
   duration: string
   maxAlt: number | null
   maxSpeed: number
+  mapVisibility: TPrivacyLevels | null
   minAlt: number | null
   moving: string
   nextUrl: string | null
@@ -99,6 +103,7 @@ export interface IWorkoutObject {
   with_gpx: boolean
   workoutId: string
   workoutTime: string
+  workoutVisibility: TPrivacyLevels | null
 }
 
 export interface IWorkoutForm {
@@ -109,6 +114,8 @@ export interface IWorkoutForm {
   distance?: number
   duration?: number
   file?: Blob
+  map_visibility?: TPrivacyLevels
+  workout_visibility: TPrivacyLevels
 }
 
 export interface IWorkoutPayload {

@@ -16,14 +16,17 @@
         />
       </template>
       <template #content>
-        <WorkoutMap
-          :workoutData="workoutData"
-          :markerCoordinates="markerCoordinates"
-        />
-        <WorkoutData
-          :workoutObject="workoutObject"
-          :useImperialUnits="authUser.imperial_units"
-        />
+        <div class="workout-map-data">
+          <WorkoutMap
+            :workoutData="workoutData"
+            :markerCoordinates="markerCoordinates"
+          />
+          <WorkoutData
+            :workoutObject="workoutObject"
+            :useImperialUnits="authUser.imperial_units"
+          />
+        </div>
+        <WorkoutVisibility :workoutObject="workoutObject" />
       </template>
     </Card>
   </div>
@@ -44,6 +47,7 @@
   import WorkoutCardTitle from '@/components/Workout/WorkoutDetail/WorkoutCardTitle.vue'
   import WorkoutData from '@/components/Workout/WorkoutDetail/WorkoutData.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap/index.vue'
+  import WorkoutVisibility from '@/components/Workout/WorkoutDetail/WorkoutVisibility.vue'
   import { WORKOUTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'
@@ -138,6 +142,7 @@
       distance: segment ? segment.distance : workout.distance,
       descent: segment ? segment.descent : workout.descent,
       duration: segment ? segment.duration : workout.duration,
+      mapVisibility: segment ? null : workout.map_visibility,
       maxAlt: segment ? segment.max_alt : workout.max_alt,
       maxSpeed: segment ? segment.max_speed : workout.max_speed,
       minAlt: segment ? segment.min_alt : workout.min_alt,
@@ -155,6 +160,7 @@
       with_gpx: workout.with_gpx,
       workoutId: workout.id,
       workoutTime: workoutDate.workout_time,
+      workoutVisibility: segment ? null : workout.workout_visibility,
     }
   }
   function updateDisplayModal(value: boolean) {
@@ -184,9 +190,16 @@
       width: 100%;
       .card-content {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
+        .workout-map-data {
+          display: flex;
+          flex-direction: row;
+        }
         @media screen and (max-width: $medium-limit) {
-          flex-direction: column;
+          .workout-map-data {
+            display: flex;
+            flex-direction: column;
+          }
         }
       }
     }

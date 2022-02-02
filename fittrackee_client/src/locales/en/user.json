@@ -20,15 +20,6 @@
   "PASSWORD_RESET": "Password reset",
   "PASSWORD_SENT_EMAIL_TEXT": "Check your email. If your address is in our database, you'll received an email with a link to reset your password.",
   "PASSWORD_UPDATED": "Your password have been updated. Click {0} to log in.",
-  "PRIVACY": {
-    "LEVELS": {
-      "private": "Private (only me)",
-      "followers_only": "Followers only",
-      "public": "Public (everyone)"
-    },
-    "MAP_VISIBILITY": "Map and analysis visibility",
-    "WORKOUTS_VISIBILITY": "Workouts related data visibility"
-  },
   "PROFILE": {
     "BACK_TO_PROFILE": "Back to profile",
     "BIO": "Bio",

@@ -1,0 +1,11 @@
+{
+  "LEVELS": {
+    "private": "Private (only me)",
+    "followers_only": "Followers only",
+    "public": "Public (everyone)"
+  },
+  "MAP_VISIBILITY": "Map and analysis visibility",
+  "VISIBILITY": "visibility",
+  "WORKOUT_VISIBILITY": "Workout visibility",
+  "WORKOUTS_VISIBILITY": "Workouts related data visibility"
+}

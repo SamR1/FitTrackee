@@ -189,7 +189,9 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     form.append('file', payload.file)
     form.append(
       'data',
-      `{"sport_id": ${payload.sport_id}, "notes": "${payload.notes}"}`
+      `{"sport_id": ${payload.sport_id}, "notes": "${payload.notes}",` +
+        ` "workout_visibility": "${payload.workout_visibility}",` +
+        ` "map_visibility": "${payload.map_visibility}"}`
     )
     authApi
       .post('workouts', form, {

@@ -52,26 +52,31 @@
           </select>
         </label>
         <label class="form-items">
-          {{ $t('user.PRIVACY.WORKOUTS_VISIBILITY') }}
+          {{ $t('privacy.WORKOUTS_VISIBILITY') }}
           <select
             id="workouts_visibility"
             v-model="userForm.workouts_visibility"
             :disabled="loading"
+            @change="updateMapVisibility"
           >
             <option v-for="level in privacyLevels" :value="level" :key="level">
-              {{ $t(`user.PRIVACY.LEVELS.${level}`) }}
+              {{ $t(`privacy.LEVELS.${level}`) }}
             </option>
           </select>
         </label>
         <label class="form-items">
-          {{ $t('user.PRIVACY.MAP_VISIBILITY') }}
+          {{ $t('privacy.MAP_VISIBILITY') }}
           <select
             id="map_visibility"
             v-model="userForm.map_visibility"
             :disabled="loading"
           >
-            <option v-for="level in privacyLevels" :value="level" :key="level">
-              {{ $t(`user.PRIVACY.LEVELS.${level}`) }}
+            <option
+              v-for="level in mapPrivacyLevels"
+              :value="level"
+              :key="level"
+            >
+              {{ $t(`privacy.LEVELS.${level}`) }}
             </option>
           </select>
         </label>
@@ -96,13 +101,14 @@
 
   import TimezoneDropdown from '@/components/User/ProfileEdition/TimezoneDropdown.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import {
-    IUserPreferencesPayload,
-    TPrivacyLevels,
-    IAuthUserProfile,
-  } from '@/types/user'
+  import { IUserPreferencesPayload, IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { availableLanguages } from '@/utils/locales'
+  import {
+    privacyLevels,
+    getUpdatedMapVisibility,
+    getMapVisibilityLevels,
+  } from '@/utils/privacy'
 
   interface Props {
     user: IAuthUserProfile
@@ -139,16 +145,14 @@
       value: false,
     },
   ]
-  const privacyLevels: TPrivacyLevels[] = [
-    'private',
-    'followers_only',
-    'public',
-  ]
   const loading = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
   )
   const errorMessages: ComputedRef<string | string[] | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
+  )
+  const mapPrivacyLevels = computed(() =>
+    getMapVisibilityLevels(userForm.workouts_visibility)
   )
 
   onMounted(() => {
@@ -174,5 +178,11 @@
   }
   function updateTZ(value: string) {
     userForm.timezone = value
+  }
+  function updateMapVisibility() {
+    userForm.map_visibility = getUpdatedMapVisibility(
+      userForm.map_visibility,
+      userForm.workouts_visibility
+    )
   }
 </script>

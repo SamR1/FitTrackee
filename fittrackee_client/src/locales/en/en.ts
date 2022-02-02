@@ -4,6 +4,7 @@ import ButtonsTranslations from './buttons.json'
 import CommonTranslations from './common.json'
 import DashboardTranslations from './dashboard.json'
 import ErrorTranslations from './error.json'
+import PrivacyLevelsTranslations from './privacy.json'
 import SportsTranslations from './sports.json'
 import StatisticsTranslations from './statistics.json'
 import UserTranslations from './user.json'
@@ -16,6 +17,7 @@ export default {
   common: CommonTranslations,
   dashboard: DashboardTranslations,
   error: ErrorTranslations,
+  privacy: PrivacyLevelsTranslations,
   sports: SportsTranslations,
   statistics: StatisticsTranslations,
   user: UserTranslations,

@@ -15,10 +15,10 @@
           )
         }}
       </dd>
-      <dt>{{ $t('user.PRIVACY.WORKOUTS_VISIBILITY') }}:</dt>
-      <dd>{{ $t(`user.PRIVACY.LEVELS.${user.workouts_visibility}`) }}</dd>
-      <dt>{{ $t('user.PRIVACY.MAP_VISIBILITY') }}:</dt>
-      <dd>{{ $t(`user.PRIVACY.LEVELS.${user.map_visibility}`) }}</dd>
+      <dt>{{ $t('privacy.WORKOUTS_VISIBILITY') }}:</dt>
+      <dd>{{ $t(`privacy.LEVELS.${user.workouts_visibility}`) }}</dd>
+      <dt>{{ $t('privacy.MAP_VISIBILITY') }}:</dt>
+      <dd>{{ $t(`privacy.LEVELS.${user.map_visibility}`) }}</dd>
     </dl>
     <div class="profile-buttons">
       <button @click="$router.push('/profile/edit/preferences')">
