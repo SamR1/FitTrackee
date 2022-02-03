@@ -23,7 +23,6 @@ export interface IUserProfile {
   is_remote: boolean
   last_name: string | null
   location: string | null
-  map_visibility: TPrivacyLevels
   nb_sports?: number
   nb_workouts: number
   picture: string | boolean
@@ -33,13 +32,13 @@ export interface IUserProfile {
   total_distance?: number
   total_duration?: string
   username: string
-  workouts_visibility: TPrivacyLevels
 }
 
 export interface IAuthUserProfile extends IUserProfile {
   email: string
   imperial_units: boolean
   language: string | null
+  map_visibility: TPrivacyLevels
   nb_sports: number
   records: IRecord[]
   sports_list: number[]
@@ -47,6 +46,7 @@ export interface IAuthUserProfile extends IUserProfile {
   total_distance: number
   total_duration: string
   weekm: boolean
+  workouts_visibility: TPrivacyLevels
 }
 
 export interface IUserPayload {

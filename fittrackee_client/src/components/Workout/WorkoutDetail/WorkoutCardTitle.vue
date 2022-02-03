@@ -24,6 +24,7 @@
           <i
             class="fa fa-edit"
             aria-hidden="true"
+            v-if="isWorkoutOwner"
             @click="
               $router.push({
                 name: 'EditWorkout',
@@ -32,13 +33,14 @@
             "
           />
           <i
-            v-if="workoutObject.with_gpx"
+            v-if="workoutObject.with_gpx && isWorkoutOwner"
             class="fa fa-download"
             aria-hidden="true"
             @click.prevent="downloadGpx(workoutObject.workoutId)"
           />
           <i
             class="fa fa-trash"
+            v-if="isWorkoutOwner"
             aria-hidden="true"
             @click="emit('displayModal', true)"
           />
@@ -96,12 +98,13 @@
   interface Props {
     sport: ISport
     workoutObject: IWorkoutObject
+    isWorkoutOwner: boolean
   }
   const props = defineProps<Props>()
 
   const emit = defineEmits(['displayModal'])
 
-  const { sport, workoutObject } = toRefs(props)
+  const { isWorkoutOwner, sport, workoutObject } = toRefs(props)
 
   async function downloadGpx(workoutId: string) {
     await authApi

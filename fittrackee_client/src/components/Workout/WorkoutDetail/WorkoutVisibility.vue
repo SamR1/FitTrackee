@@ -1,5 +1,5 @@
 <template>
-  <div class="workout-visibility-levels">
+  <div class="workout-visibility-levels" v-if="workoutObject.workoutVisibility">
     {{ $t('privacy.VISIBILITY') }}:
     <div class="visibility">
       <span v-if="workoutObject.with_gpx" class="workout-visibility">

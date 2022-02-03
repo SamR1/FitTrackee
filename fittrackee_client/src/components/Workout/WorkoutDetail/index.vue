@@ -12,6 +12,7 @@
         <WorkoutCardTitle
           :sport="sport"
           :workoutObject="workoutObject"
+          :isWorkoutOwner="isWorkoutOwner"
           @displayModal="updateDisplayModal(true)"
         />
       </template>
@@ -26,7 +27,10 @@
             :useImperialUnits="authUser.imperial_units"
           />
         </div>
-        <WorkoutVisibility :workoutObject="workoutObject" />
+        <WorkoutVisibility
+          :workoutObject="workoutObject"
+          v-if="workoutObject.workoutVisibility"
+        />
       </template>
     </Card>
   </div>
@@ -67,6 +71,7 @@
     sports: ISport[]
     workoutData: IWorkoutData
     markerCoordinates?: TCoordinates
+    isWorkoutOwner: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
     markerCoordinates: () => ({} as TCoordinates),
@@ -75,7 +80,8 @@
   const route = useRoute()
   const store = useStore()
 
-  const { authUser, markerCoordinates, workoutData } = toRefs(props)
+  const { authUser, isWorkoutOwner, markerCoordinates, workoutData } =
+    toRefs(props)
   const workout: ComputedRef<IWorkout> = computed(
     () => props.workoutData.workout
   )

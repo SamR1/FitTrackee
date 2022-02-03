@@ -3,12 +3,14 @@
     <div class="container">
       <div class="workout-container" v-if="sports.length > 0">
         <div v-if="workoutData.workout.id">
+          <WorkoutUser :user="workoutData.workout.user"></WorkoutUser>
           <WorkoutDetail
             :workoutData="workoutData"
             :sports="sports"
             :authUser="authUser"
             :markerCoordinates="markerCoordinates"
             :displaySegment="displaySegment"
+            :isWorkoutOwner="isWorkoutOwner"
           />
           <WorkoutChart
             v-if="
@@ -25,7 +27,7 @@
             :useImperialUnits="authUser.imperial_units"
           />
           <WorkoutNotes
-            v-if="!displaySegment"
+            v-if="!displaySegment && isWorkoutOwner"
             :notes="workoutData.workout.notes"
           />
           <div id="bottom" />
@@ -56,6 +58,7 @@
   import WorkoutChart from '@/components/Workout/WorkoutDetail/WorkoutChart/index.vue'
   import WorkoutNotes from '@/components/Workout/WorkoutDetail/WorkoutNotes.vue'
   import WorkoutSegments from '@/components/Workout/WorkoutDetail/WorkoutSegments.vue'
+  import WorkoutUser from '@/components/Workout/WorkoutDetail/WorkoutUser.vue'
   import {
     AUTH_USER_STORE,
     SPORTS_STORE,
@@ -65,6 +68,7 @@
   import { IAuthUserProfile } from '@/types/user'
   import { IWorkoutData, IWorkoutPayload, TCoordinates } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
+  import { getUserName } from '@/utils/user'
 
   interface Props {
     displaySegment: boolean
@@ -88,6 +92,11 @@
     latitude: null,
     longitude: null,
   })
+  const isWorkoutOwner = computed(
+    () =>
+      getUserName(authUser.value) ===
+      getUserName(workoutData.value.workout.user)
+  )
 
   onBeforeMount(() => {
     const payload: IWorkoutPayload = { workoutId: route.params.workoutId }
@@ -143,6 +152,22 @@
       padding: 0;
       .workout-container {
         width: 100%;
+
+        .user-header {
+          align-items: center;
+          ::v-deep(.user-picture) {
+            img {
+              height: 50px;
+              width: 50px;
+            }
+            .no-picture {
+              font-size: 3em;
+            }
+          }
+          ::v-deep(.user-details) {
+            flex-direction: row;
+          }
+        }
       }
       .workout-loading {
         height: $app-height;
