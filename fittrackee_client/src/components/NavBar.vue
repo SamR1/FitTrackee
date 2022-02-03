@@ -58,9 +58,10 @@
               class="nav-item nav-profile-img"
               to="/profile"
               @click="closeMenu"
+              :title="authUser.username"
             >
               <UserPicture :user="authUser" />
-              {{ authUser.username }}
+              <span class="user-name">{{ authUser.username }}</span>
             </router-link>
             <div
               class="nav-item nav-link logout-fa"
@@ -247,6 +248,7 @@
         align-items: flex-start;
         margin-bottom: -$default-padding;
         ::v-deep(.user-picture) {
+          min-width: auto;
           img {
             height: 32px;
             width: 32px;
@@ -254,7 +256,14 @@
           }
           .no-picture {
             font-size: 1.7em;
+            padding: 0;
           }
+        }
+        .user-name {
+          max-width: 180px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
       }
 

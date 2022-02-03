@@ -6,10 +6,15 @@
         <router-link
           class="user-name"
           :to="`/users/${getUserName(user)}?from=users`"
+          :title="user.username"
         >
           {{ user.username }}
         </router-link>
-        <div class="remote-user-account" v-if="user.is_remote">
+        <div
+          class="remote-user-account"
+          v-if="user.is_remote"
+          :title="user.fullname"
+        >
           {{ user.fullname }}
         </div>
       </div>
@@ -87,6 +92,20 @@
           }
           .no-picture {
             font-size: 4.4em;
+          }
+        }
+
+        .remote-user-account,
+        .user-name {
+          max-width: 170px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          @media screen and (max-width: $small-limit) {
+            max-width: fit-content;
+          }
+          @media screen and (max-width: $x-small-limit) {
+            max-width: 170px;
           }
         }
 
