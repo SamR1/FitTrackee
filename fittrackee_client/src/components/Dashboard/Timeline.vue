@@ -18,7 +18,7 @@
             ? sports.filter((s) => s.id === workout.sport_id)[0]
             : null
         "
-        :user="user"
+        :user="workout.user"
         :useImperialUnits="user.imperial_units"
         :key="workout.id"
       />

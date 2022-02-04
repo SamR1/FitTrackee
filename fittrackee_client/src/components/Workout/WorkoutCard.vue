@@ -11,6 +11,7 @@
               name: 'User',
               params: { username: user.username },
             }"
+            :title="user.username"
           >
             {{ user.username }}
           </router-link>
@@ -193,6 +194,7 @@
         .workout-user {
           display: flex;
           ::v-deep(.user-picture) {
+            min-width: min-content;
             img {
               height: 25px;
               width: 25px;
@@ -202,8 +204,17 @@
             }
           }
           .workout-user-name {
-            white-space: nowrap;
             padding-left: 5px;
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            @media screen and (max-width: $small-limit) {
+              max-width: fit-content;
+            }
+            @media screen and (max-width: $x-small-limit) {
+              max-width: 170px;
+            }
           }
         }
         .workout-date {

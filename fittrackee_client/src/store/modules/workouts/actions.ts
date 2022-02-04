@@ -24,7 +24,7 @@ const getWorkouts = (
 ): void => {
   context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   authApi
-    .get('workouts', {
+    .get(target.match('TIMELINE') ? 'timeline' : 'workouts', {
       params: payload,
     })
     .then((res) => {
