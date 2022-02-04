@@ -1,17 +1,18 @@
 <template>
   <div class="user-month-stats">
-    <Card>
-      <template #title>{{ $t('dashboard.THIS_MONTH') }}</template>
-      <template #content>
-        <StatChart
-          :sports="sports"
-          :user="user"
-          :chart-params="chartParams"
-          :displayed-sport-ids="selectedSportIds"
-          :hide-chart-if-no-data="true"
-        />
-      </template>
-    </Card>
+    <div class="section-title">
+      <i class="fa fa-calendar custom-fa-small" aria-hidden="true" />
+      {{ $t('dashboard.THIS_MONTH') }}
+    </div>
+    <div class="box">
+      <StatChart
+        :sports="sports"
+        :user="user"
+        :chart-params="chartParams"
+        :displayed-sport-ids="selectedSportIds"
+        :hide-chart-if-no-data="true"
+      />
+    </div>
   </div>
 </template>
 
