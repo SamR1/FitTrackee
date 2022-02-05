@@ -73,10 +73,14 @@ class Sport(BaseModel):
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     stopped_speed_threshold = db.Column(db.Float, default=1.0, nullable=False)
     workouts = db.relationship(
-        'Workout', lazy=True, backref=db.backref('sports', lazy='joined')
+        'Workout',
+        lazy=True,
+        backref=db.backref('sport', lazy='joined', single_parent=True),
     )
     records = db.relationship(
-        'Record', lazy=True, backref=db.backref('sports', lazy='joined')
+        'Record',
+        lazy=True,
+        backref=db.backref('sport', lazy='joined', single_parent=True),
     )
 
     def __repr__(self) -> str:
@@ -157,17 +161,17 @@ class Workout(BaseModel):
         'WorkoutSegment',
         lazy=True,
         cascade='all, delete',
-        backref=db.backref('workouts', lazy='joined', single_parent=True),
+        backref=db.backref('workout', lazy='joined', single_parent=True),
     )
     records = db.relationship(
         'Record',
         lazy=True,
         cascade='all, delete',
-        backref=db.backref('workouts', lazy='joined', single_parent=True),
+        backref=db.backref('workout', lazy='joined', single_parent=True),
     )
 
     def __str__(self) -> str:
-        return f'<Workout \'{self.sports.label}\' - {self.workout_date}>'
+        return f'<Workout \'{self.sport.label}\' - {self.workout_date}>'
 
     def __init__(
         self,
@@ -450,7 +454,7 @@ class Record(BaseModel):
 
     def __str__(self) -> str:
         return (
-            f'<Record {self.sports.label} - '
+            f'<Record {self.sport.label} - '
             f'{self.record_type} - '
             f"{self.workout_date.strftime('%Y-%m-%d')}>"
         )
@@ -503,7 +507,7 @@ def on_record_delete(
 ) -> None:
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session: Session, context: Any) -> None:
-        workout = old_record.workouts
+        workout = old_record.workout
         new_records = Workout.get_user_workout_records(
             workout.user_id, workout.sport_id
         )

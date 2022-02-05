@@ -34,10 +34,14 @@ class User(BaseModel):
     # does the week start Monday?
     weekm = db.Column(db.Boolean(50), default=False, nullable=False)
     workouts = db.relationship(
-        'Workout', lazy=True, backref=db.backref('user', lazy='joined')
+        'Workout',
+        lazy=True,
+        backref=db.backref('user', lazy='joined', single_parent=True),
     )
     records = db.relationship(
-        'Record', lazy=True, backref=db.backref('user', lazy='joined')
+        'Record',
+        lazy=True,
+        backref=db.backref('user', lazy='joined', single_parent=True),
     )
     language = db.Column(db.String(50), nullable=True)
     imperial_units = db.Column(db.Boolean, default=False, nullable=False)
