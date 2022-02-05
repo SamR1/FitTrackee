@@ -124,9 +124,11 @@ class Workout(BaseModel):
         unique=True,
         nullable=False,
     )
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(
+        db.Integer, db.ForeignKey('users.id'), index=True, nullable=False
+    )
     sport_id = db.Column(
-        db.Integer, db.ForeignKey('sports.id'), nullable=False
+        db.Integer, db.ForeignKey('sports.id'), index=True, nullable=False
     )
     title = db.Column(db.String(255), nullable=True)
     gpx = db.Column(db.String(255), nullable=True)
@@ -134,7 +136,7 @@ class Workout(BaseModel):
     modification_date = db.Column(
         db.DateTime, onupdate=datetime.datetime.utcnow
     )
-    workout_date = db.Column(db.DateTime, nullable=False)
+    workout_date = db.Column(db.DateTime, index=True, nullable=False)
     duration = db.Column(db.Interval, nullable=False)
     pauses = db.Column(db.Interval, nullable=True)
     moving = db.Column(db.Interval, nullable=True)
@@ -147,7 +149,7 @@ class Workout(BaseModel):
     ave_speed = db.Column(db.Numeric(6, 2), nullable=True)  # km/h
     bounds = db.Column(postgresql.ARRAY(db.Float), nullable=True)
     map = db.Column(db.String(255), nullable=True)
-    map_id = db.Column(db.String(50), nullable=True)
+    map_id = db.Column(db.String(50), index=True, nullable=True)
     weather_start = db.Column(JSON, nullable=True)
     weather_end = db.Column(JSON, nullable=True)
     notes = db.Column(db.String(500), nullable=True)
