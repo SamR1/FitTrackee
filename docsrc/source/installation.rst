@@ -230,17 +230,17 @@ To keep using **ThunderForest Outdoors**, the configuration is:
 .. note::
     | Check the terms of service of tile provider for map attribution
 
-From PyPI
-~~~~~~~~~
-
-.. note::
-    | Recommended way on production.
+Installation
+~~~~~~~~~~~~
 
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
-Installation
-^^^^^^^^^^^^
+From PyPI
+^^^^^^^^^
+
+.. note::
+    | Recommended way on production.
 
 - Create and activate a virtualenv
 
@@ -298,41 +298,8 @@ For instance, copy and update ``.env`` file from ``.env.example`` and source the
     | To start application and workers with **systemd** service, see `Deployment <installation.html#deployment>`__
 
 
-Upgrade
-^^^^^^^
-
-.. warning::
-    | Before upgrading, make a backup of all data:
-    | - database (with `pg_dump <https://www.postgresql.org/docs/11/app-pgdump.html>`__ for instance)
-    | - upload directory (see `Environment variables <installation.html#environment-variables>`__)
-
-- Activate the virtualenv
-
-- Upgrade with pip
-
-.. code-block:: bash
-
-    $ pip install -U fittrackee
-
-- Update environment variables if needed and source environment variables file
-
-.. code-block:: bash
-
-    $ nano .env
-    $ source .env
-
-- Upgrade database if needed
-
-.. code-block:: bash
-
-    $ fittrackee_upgrade_db
-
-
-- Restart the application and task queue workers.
-
-
 From sources
-~~~~~~~~~~~~~
+^^^^^^^^^^^^
 
 .. warning::
     | Since FitTrackee 0.2.1, Python packages installation needs Poetry.
@@ -348,10 +315,6 @@ From sources
         $ poetry config virtualenvs.in-project true
 
     For other OS, see `Poetry Documentation <https://python-poetry.org/docs/#installation>`__
-
-
-Installation
-^^^^^^^^^^^^
 
 Dev environment
 """""""""""""""
@@ -396,13 +359,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.5.5):
+-  Download the last release (for now, it is the release v0.5.6):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.5.5.tar.gz
-   $ tar -xzf v0.5.5.tar.gz
-   $ mv FitTrackee-0.5.5 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.5.6.tar.gz
+   $ tar -xzf v0.5.6.tar.gz
+   $ mv FitTrackee-0.5.6 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -431,14 +394,46 @@ Open http://localhost:5000, log in as admin (the email is
 ``admin@example.com`` and the password ``mpwoadmin``) and change the
 password
 
+
 Upgrade
-^^^^^^^
+~~~~~~~
 
 .. warning::
     | Before upgrading, make a backup of all data:
     | - database (with `pg_dump <https://www.postgresql.org/docs/11/app-pgdump.html>`__ for instance)
     | - upload directory (see `Environment variables <installation.html#environment-variables>`__)
 
+
+From PyPI
+^^^^^^^^^
+
+- Activate the virtualenv
+
+- Upgrade with pip
+
+.. code-block:: bash
+
+    $ pip install -U fittrackee
+
+- Update environment variables if needed and source environment variables file
+
+.. code-block:: bash
+
+    $ nano .env
+    $ source .env
+
+- Upgrade database if needed (see changelog for migrations):
+
+.. code-block:: bash
+
+    $ fittrackee_upgrade_db
+
+
+- Restart the application and task queue workers.
+
+
+From sources
+^^^^^^^^^^^^
 
 Dev environment
 """""""""""""""
@@ -451,11 +446,16 @@ Dev environment
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
 
-- Upgrade packages and database:
+- Upgrade packages:
 
 .. code:: bash
 
    $ make install-dev
+
+- Upgrade database if needed (see changelog for migrations):
+
+.. code:: bash
+
    $ make upgrade-db
 
 - Restart the server:
@@ -477,22 +477,27 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.5.5) and overwrite existing files:
+- Download the last release (for now, it is the release v0.5.6) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.5.5.tar.gz
-   $ tar -xzf v0.5.5.tar.gz
-   $ cp -R FitTrackee-0.5.5/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.5.6.tar.gz
+   $ tar -xzf v0.5.6.tar.gz
+   $ cp -R FitTrackee-0.5.6/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
 
-- Upgrade packages and database:
+- Upgrade packages:
 
 .. code:: bash
 
-   $ make install-python
+   $ make install-dev
+
+- Upgrade database if needed (see changelog for migrations):
+
+.. code:: bash
+
    $ make upgrade-db
 
 - Restart the server and dramatiq workers:
@@ -503,7 +508,7 @@ Prod environment
 
 
 Deployment
-~~~~~~~~~~~~~
+~~~~~~~~~~
 
 There are several ways to start **FitTrackee** web application and task queue
 library.
@@ -591,7 +596,7 @@ Examples (to update depending on your application configuration and given distri
 .. code-block::
 
     server {
-        listen 443 ssl;
+        listen 443 ssl http2;
         server_name example.com;
         ssl_certificate fullchain.pem;
         ssl_certificate_key privkey.pem;
@@ -666,7 +671,7 @@ Development
 
 .. versionadded:: 0.5.0
 
-- an additional step is to install `fittrackee_client`
+- an additional step is needed to install `fittrackee_client`
 
 .. code-block:: bash
 
