@@ -73,10 +73,14 @@ class Sport(BaseModel):
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     stopped_speed_threshold = db.Column(db.Float, default=1.0, nullable=False)
     workouts = db.relationship(
-        'Workout', lazy=True, backref=db.backref('sports', lazy='joined')
+        'Workout',
+        lazy=True,
+        backref=db.backref('sport', lazy='joined', single_parent=True),
     )
     records = db.relationship(
-        'Record', lazy=True, backref=db.backref('sports', lazy='joined')
+        'Record',
+        lazy=True,
+        backref=db.backref('sport', lazy='joined', single_parent=True),
     )
 
     def __repr__(self) -> str:
@@ -124,9 +128,11 @@ class Workout(BaseModel):
         unique=True,
         nullable=False,
     )
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(
+        db.Integer, db.ForeignKey('users.id'), index=True, nullable=False
+    )
     sport_id = db.Column(
-        db.Integer, db.ForeignKey('sports.id'), nullable=False
+        db.Integer, db.ForeignKey('sports.id'), index=True, nullable=False
     )
     title = db.Column(db.String(255), nullable=True)
     gpx = db.Column(db.String(255), nullable=True)
@@ -134,7 +140,7 @@ class Workout(BaseModel):
     modification_date = db.Column(
         db.DateTime, onupdate=datetime.datetime.utcnow
     )
-    workout_date = db.Column(db.DateTime, nullable=False)
+    workout_date = db.Column(db.DateTime, index=True, nullable=False)
     duration = db.Column(db.Interval, nullable=False)
     pauses = db.Column(db.Interval, nullable=True)
     moving = db.Column(db.Interval, nullable=True)
@@ -147,7 +153,7 @@ class Workout(BaseModel):
     ave_speed = db.Column(db.Numeric(6, 2), nullable=True)  # km/h
     bounds = db.Column(postgresql.ARRAY(db.Float), nullable=True)
     map = db.Column(db.String(255), nullable=True)
-    map_id = db.Column(db.String(50), nullable=True)
+    map_id = db.Column(db.String(50), index=True, nullable=True)
     weather_start = db.Column(JSON, nullable=True)
     weather_end = db.Column(JSON, nullable=True)
     notes = db.Column(db.String(500), nullable=True)
@@ -155,17 +161,17 @@ class Workout(BaseModel):
         'WorkoutSegment',
         lazy=True,
         cascade='all, delete',
-        backref=db.backref('workouts', lazy='joined', single_parent=True),
+        backref=db.backref('workout', lazy='joined', single_parent=True),
     )
     records = db.relationship(
         'Record',
         lazy=True,
         cascade='all, delete',
-        backref=db.backref('workouts', lazy='joined', single_parent=True),
+        backref=db.backref('workout', lazy='joined', single_parent=True),
     )
 
     def __str__(self) -> str:
-        return f'<Workout \'{self.sports.label}\' - {self.workout_date}>'
+        return f'<Workout \'{self.sport.label}\' - {self.workout_date}>'
 
     def __init__(
         self,
@@ -448,7 +454,7 @@ class Record(BaseModel):
 
     def __str__(self) -> str:
         return (
-            f'<Record {self.sports.label} - '
+            f'<Record {self.sport.label} - '
             f'{self.record_type} - '
             f"{self.workout_date.strftime('%Y-%m-%d')}>"
         )
@@ -501,7 +507,7 @@ def on_record_delete(
 ) -> None:
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session: Session, context: Any) -> None:
-        workout = old_record.workouts
+        workout = old_record.workout
         new_records = Workout.get_user_workout_records(
             workout.user_id, workout.sport_id
         )

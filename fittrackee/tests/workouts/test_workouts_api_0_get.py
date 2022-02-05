@@ -593,13 +593,13 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
             'Fri, 23 Feb 2018 00:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
-        assert '0:10:00' == data['data']['workouts'][0]['duration']
+        assert '0:16:40' == data['data']['workouts'][0]['duration']
         assert 'creation_date' in data['data']['workouts'][1]
         assert (
             'Fri, 23 Feb 2018 00:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
         )
-        assert '0:16:40' == data['data']['workouts'][1]['duration']
+        assert '0:10:00' == data['data']['workouts'][1]['duration']
         assert data['pagination'] == {
             'has_next': False,
             'has_prev': False,
