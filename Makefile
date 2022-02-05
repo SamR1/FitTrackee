@@ -16,6 +16,7 @@ check-python: lint-python type-check test-python
 clean:
 	rm -rf .mypy_cache
 	rm -rf .pytest_cache
+	rm -rf e2e/.pytest_cache
 
 clean-install: clean
 	rm -fr $(NODE_MODULES)

@@ -1,5 +1,22 @@
 # Change log
 
+## Version 0.5.6 (2022/02/05)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#146](https://github.com/SamR1/FitTrackee/issues/146) - incorrect label on workouts filters
+
+### Pull Requests
+
+* [#145](https://github.com/SamR1/FitTrackee/pull/145) - fix on database models 
+
+
+In this release 1 issue was closed.  
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/installation.html#upgrade))
+
+
 ## Version 0.5.5 (2022/01/19)
 
 ### Issues Closed
