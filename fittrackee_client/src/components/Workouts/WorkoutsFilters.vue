@@ -72,7 +72,7 @@
 
         <div class="form-items-group">
           <div class="form-item">
-            <label> {{ $t('workouts.DURATION') }} ({{ toUnit }}): </label>
+            <label> {{ $t('workouts.DURATION') }}: </label>
             <div class="form-inputs-group">
               <input
                 name="duration_from"
@@ -97,7 +97,7 @@
 
         <div class="form-items-group">
           <div class="form-item">
-            <label> {{ $t('workouts.AVE_SPEED') }} ({{ toUnit }}): </label>
+            <label> {{ $t('workouts.AVE_SPEED') }} ({{ toUnit }}/h): </label>
             <div class="form-inputs-group">
               <input
                 min="0"
@@ -122,7 +122,7 @@
 
         <div class="form-items-group">
           <div class="form-item">
-            <label> {{ $t('workouts.MAX_SPEED') }} ({{ toUnit }}): </label>
+            <label> {{ $t('workouts.MAX_SPEED') }} ({{ toUnit }}/h): </label>
 
             <div class="form-inputs-group">
               <input
