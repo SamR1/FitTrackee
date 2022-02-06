@@ -380,7 +380,8 @@ def get_workouts_by_sport(
 @authenticate_as_admin
 def get_application_stats(auth_user: User) -> Dict:
     """
-    Get all application statistics
+    Get all application statistics.
+    Users count is local users count when federation is enabled.
 
     **Example requests**:
 
@@ -417,7 +418,7 @@ def get_application_stats(auth_user: User) -> Dict:
     """
 
     nb_workouts = Workout.query.filter().count()
-    nb_users = User.query.filter().count()
+    nb_users = User.query.filter(User.is_remote == False).count()  # noqa
     nb_sports = (
         db.session.query(func.count(Workout.sport_id))
         .group_by(Workout.sport_id)
