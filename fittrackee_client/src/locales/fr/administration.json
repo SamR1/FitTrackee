@@ -5,6 +5,7 @@
   "ADMINISTRATION": "Administration",
   "APPLICATION": "Application",
   "APP_CONFIG": {
+    "FEDERATION_ENABLED": "Fédération activée",
     "MAX_USERS_LABEL": "Nombre maximum d'utilisateurs actifs ",
     "MAX_USERS_HELP": "Si égal à 0, pas limite d'inscription",
     "MAX_FILES_IN_ZIP_LABEL": "Taille max. des archives zip (en Mo) ",
@@ -16,6 +17,8 @@
   "CONFIRM_USER_ACCOUNT_DELETION": "Etes-vous sûr de vouloir supprimer le compte de {0} ? Toutes les données seront définitivement.",
   "DELETE_USER": "Supprimer l'utilisateur",
   "ENABLE_DISABLE_SPORTS": "Activer/désactiver des sports.",
+  "FEDERATION_DISABLED": "La fédération de l'instance est actuellement désactivée.",
+  "FEDERATION_ENABLED": "La fédération de l'instance est actuellement activée.",
   "REGISTRATION_DISABLED": "Les inscriptions sont actuellement désactivées.",
   "REGISTRATION_ENABLED": "Les inscriptions sont actuellement activées.",
   "SPORTS": {

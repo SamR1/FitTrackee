@@ -23,7 +23,8 @@ export interface IApplication {
 }
 
 export type TAppConfigForm = {
-  [key: string]: number
+  [key: string]: number | boolean
+  federation_enabled: boolean
   gpx_limit_import: number
   max_single_file_size: number
   max_users: number

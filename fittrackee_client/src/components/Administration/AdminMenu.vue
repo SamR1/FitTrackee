@@ -11,8 +11,17 @@
                 {{ $t('admin.APPLICATION') }}
               </router-link>
             </dt>
-            <dd>
-              {{ $t('admin.UPDATE_APPLICATION_DESCRIPTION') }}<br />
+            <dd class="application-config-details">
+              {{ $t('admin.UPDATE_APPLICATION_DESCRIPTION') }}
+              <span class="federation-status">
+                {{
+                  $t(
+                    `admin.FEDERATION_${
+                      appConfig.federation_enabled ? 'ENABLED' : 'DISABLED'
+                    }`
+                  )
+                }}
+              </span>
               <span class="registration-status">
                 {{
                   $t(
@@ -82,8 +91,13 @@
         dd {
           margin-bottom: $default-margin * 3;
         }
-        .registration-status {
-          font-weight: bold;
+        .application-config-details {
+          display: flex;
+          flex-direction: column;
+          .federation-status,
+          .registration-status {
+            font-weight: bold;
+          }
         }
       }
     }

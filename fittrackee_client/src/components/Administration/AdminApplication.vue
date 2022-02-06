@@ -4,6 +4,27 @@
       <template #title>{{ $t('admin.APP_CONFIG.TITLE') }}</template>
       <template #content>
         <form class="admin-form" @submit.prevent="onSubmit">
+          <div class="federation">
+            <label for="federation_enabled">
+              {{ $t('admin.APP_CONFIG.FEDERATION_ENABLED') }}:
+            </label>
+            <div class="federation-checkbox">
+              <input
+                v-if="edition"
+                id="federation_enabled"
+                name="federation_enabled"
+                type="checkbox"
+                v-model="appData.federation_enabled"
+              />
+              <i
+                v-else
+                :class="`fa fa${
+                  appData.federation_enabled ? '-check' : ''
+                }-square-o`"
+                aria-hidden="true"
+              />
+            </div>
+          </div>
           <label for="max_users">
             {{ $t('admin.APP_CONFIG.MAX_USERS_LABEL') }}:
             <input
@@ -109,6 +130,7 @@
   const router = useRouter()
 
   const appData: TAppConfigForm = reactive({
+    federation_enabled: false,
     max_users: 0,
     max_single_file_size: 0,
     max_zip_file_size: 0,
@@ -158,6 +180,29 @@
     }
     .fa-info-circle {
       margin-right: $default-margin;
+    }
+  }
+
+  .federation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: $default-margin 0;
+
+    .federation-checkbox {
+      width: 51%;
+      margin-right: $default-margin * 5;
+
+      input[type='checkbox'] {
+        margin-left: -$default-padding;
+      }
+
+      @media screen and (max-width: $medium-limit) {
+        margin-right: 0;
+        input[type='checkbox'] {
+          margin-left: -$default-padding;
+        }
+      }
     }
   }
 </style>
