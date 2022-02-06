@@ -10,7 +10,7 @@
             {{ $t('workouts.WORKOUT', user.nb_workouts) }}
           </span>
         </div>
-        <div class="user-stat" v-if="user.total_distance">
+        <div class="user-stat" v-if="'total_distance' in user">
           <Distance
             :distance="user.total_distance"
             unitFrom="km"
@@ -22,7 +22,7 @@
             {{ user.imperial_units ? 'miles' : 'km' }}
           </span>
         </div>
-        <div class="user-stat hide-small" v-if="user.nb_sports">
+        <div class="user-stat hide-small" v-if="'nb_sports' in user">
           <span class="stat-number">{{ user.nb_sports }}</span>
           <span class="stat-label">
             {{ $t('workouts.SPORT', user.nb_sports) }}
