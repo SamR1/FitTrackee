@@ -15,6 +15,10 @@
           )
         }}
       </dd>
+      <dt>{{ $t('user.PRIVACY.WORKOUTS_VISIBILITY') }}:</dt>
+      <dd>{{ $t(`user.PRIVACY.LEVELS.${user.workouts_visibility}`) }}</dd>
+      <dt>{{ $t('user.PRIVACY.MAP_VISIBILITY') }}:</dt>
+      <dd>{{ $t(`user.PRIVACY.LEVELS.${user.map_visibility}`) }}</dd>
     </dl>
     <div class="profile-buttons">
       <button @click="$router.push('/profile/edit/preferences')">
@@ -26,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue'
+  import { computed, toRefs } from 'vue'
 
   import { IAuthUserProfile } from '@/types/user'
   import { languageLabels } from '@/utils/locales'
@@ -36,6 +40,7 @@
   }
   const props = defineProps<Props>()
 
+  const { user } = toRefs(props)
   const language = computed(() =>
     props.user.language
       ? languageLabels[props.user.language]

@@ -2,6 +2,8 @@ import { LocationQueryValue } from 'vue-router'
 
 import { IRecord } from '@/types/workouts'
 
+export type TPrivacyLevels = 'private' | 'followers_only' | 'public'
+
 export interface IUserProfile {
   admin: boolean
   bio: string | null
@@ -13,6 +15,7 @@ export interface IUserProfile {
   following: IUserProfile[]
   last_name: string | null
   location: string | null
+  map_visibility: TPrivacyLevels
   nb_sports?: number
   nb_workouts: number
   picture: string | boolean
@@ -21,6 +24,7 @@ export interface IUserProfile {
   total_distance?: number
   total_duration?: string
   username: string
+  workouts_visibility: TPrivacyLevels
 }
 
 export interface IAuthUserProfile extends IUserProfile {
@@ -54,8 +58,10 @@ export interface IAdminUserPayload {
 export interface IUserPreferencesPayload {
   imperial_units: boolean
   language: string
+  map_visibility: TPrivacyLevels
   timezone: string
   weekm: boolean
+  workouts_visibility: TPrivacyLevels
 }
 
 export interface IUserSportPreferencesPayload {

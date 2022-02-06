@@ -51,6 +51,30 @@
             </option>
           </select>
         </label>
+        <label class="form-items">
+          {{ $t('user.PRIVACY.WORKOUTS_VISIBILITY') }}
+          <select
+            id="workouts_visibility"
+            v-model="userForm.workouts_visibility"
+            :disabled="loading"
+          >
+            <option v-for="level in privacyLevels" :value="level" :key="level">
+              {{ $t(`user.PRIVACY.LEVELS.${level}`) }}
+            </option>
+          </select>
+        </label>
+        <label class="form-items">
+          {{ $t('user.PRIVACY.MAP_VISIBILITY') }}
+          <select
+            id="map_visibility"
+            v-model="userForm.map_visibility"
+            :disabled="loading"
+          >
+            <option v-for="level in privacyLevels" :value="level" :key="level">
+              {{ $t(`user.PRIVACY.LEVELS.${level}`) }}
+            </option>
+          </select>
+        </label>
         <div class="form-buttons">
           <button class="confirm" type="submit">
             {{ $t('buttons.SUBMIT') }}
@@ -72,12 +96,16 @@
 
   import TimezoneDropdown from '@/components/User/ProfileEdition/TimezoneDropdown.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import { IUserProfile, IUserPreferencesPayload } from '@/types/user'
+  import {
+    IUserPreferencesPayload,
+    TPrivacyLevels,
+    IAuthUserProfile,
+  } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { availableLanguages } from '@/utils/locales'
 
   interface Props {
-    user: IUserProfile
+    user: IAuthUserProfile
   }
   const props = defineProps<Props>()
 
@@ -86,8 +114,10 @@
   const userForm: IUserPreferencesPayload = reactive({
     imperial_units: false,
     language: '',
+    map_visibility: 'private',
     timezone: 'Europe/Paris',
     weekm: false,
+    workouts_visibility: 'private',
   })
   const weekStart = [
     {
@@ -109,6 +139,11 @@
       value: false,
     },
   ]
+  const privacyLevels: TPrivacyLevels[] = [
+    'private',
+    'followers_only',
+    'public',
+  ]
   const loading = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
   )
@@ -122,11 +157,17 @@
     }
   })
 
-  function updateUserForm(user: IUserProfile) {
+  function updateUserForm(user: IAuthUserProfile) {
     userForm.imperial_units = user.imperial_units ? user.imperial_units : false
     userForm.language = user.language ? user.language : 'en'
+    userForm.map_visibility = user.map_visibility
+      ? user.map_visibility
+      : 'private'
     userForm.timezone = user.timezone ? user.timezone : 'Europe/Paris'
     userForm.weekm = user.weekm ? user.weekm : false
+    userForm.workouts_visibility = user.workouts_visibility
+      ? user.workouts_visibility
+      : 'private'
   }
   function updateProfile() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PREFERENCES, userForm)
