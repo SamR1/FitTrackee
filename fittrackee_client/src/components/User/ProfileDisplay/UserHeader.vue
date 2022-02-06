@@ -16,7 +16,7 @@
             unitFrom="km"
             :digits="0"
             :displayUnit="false"
-            :useImperialUnits="user.imperial_units"
+            :useImperialUnits="authUser ? authUser.imperial_units : false"
           />
           <span class="stat-label">
             {{ user.imperial_units ? 'miles' : 'km' }}
@@ -49,14 +49,15 @@
   import { toRefs } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
-  import { IUserProfile } from '@/types/user'
+  import { IAuthUserProfile, IUserProfile } from '@/types/user'
 
   interface Props {
     user: IUserProfile
+    authUser?: IAuthUserProfile
   }
   const props = defineProps<Props>()
 
-  const { user } = toRefs(props)
+  const { authUser, user } = toRefs(props)
 </script>
 
 <style lang="scss" scoped>

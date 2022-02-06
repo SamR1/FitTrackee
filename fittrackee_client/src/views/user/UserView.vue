@@ -1,8 +1,8 @@
 <template>
   <div id="user" class="view" v-if="user.username">
-    <UserHeader :user="user" />
+    <UserHeader :authUser="authUser" :user="user" />
     <div class="box">
-      <UserInfos :user="user" :from-admin="true" />
+      <UserInfos :authUser="authUser" :user="user" />
     </div>
   </div>
 </template>
@@ -13,13 +13,16 @@
 
   import UserHeader from '@/components/User/ProfileDisplay/UserHeader.vue'
   import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
-  import { USERS_STORE } from '@/store/constants'
-  import { IUserProfile } from '@/types/user'
+  import { AUTH_USER_STORE, USERS_STORE } from '@/store/constants'
+  import { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   const route = useRoute()
   const store = useStore()
 
+  const authUser: ComputedRef<IAuthUserProfile> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
+  )
   const user: ComputedRef<IUserProfile> = computed(
     () => store.getters[USERS_STORE.GETTERS.USER]
   )

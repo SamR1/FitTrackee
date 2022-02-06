@@ -24,7 +24,10 @@
         {{ user.bio }}
       </dd>
     </dl>
-    <div class="profile-buttons" v-if="fromAdmin">
+    <div
+      class="profile-buttons"
+      v-if="authUser && authUser.admin && $route.query.from === 'admin'"
+    >
       <button
         class="danger"
         v-if="authUser.username !== user.username"
@@ -35,7 +38,13 @@
       <button @click="$router.go(-1)">{{ $t('buttons.BACK') }}</button>
     </div>
     <div class="profile-buttons" v-else>
-      <button @click="$router.push('/profile/edit')">
+      <button
+        v-if="
+          $route.path === '/profile' ||
+          (authUser && authUser.username === user.username)
+        "
+        @click="$router.push('/profile/edit')"
+      >
         {{ $t('user.PROFILE.EDIT') }}
       </button>
       <button @click="$router.push('/')">{{ $t('common.HOME') }}</button>
@@ -45,26 +54,21 @@
 
 <script setup lang="ts">
   import { format } from 'date-fns'
-  import { ComputedRef, Ref, computed, ref, toRefs, withDefaults } from 'vue'
+  import { Ref, computed, ref, toRefs } from 'vue'
 
-  import { AUTH_USER_STORE, USERS_STORE } from '@/store/constants'
-  import { IUserProfile } from '@/types/user'
+  import { USERS_STORE } from '@/store/constants'
+  import { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   interface Props {
     user: IUserProfile
-    fromAdmin?: boolean
+    authUser?: IAuthUserProfile
   }
-  const props = withDefaults(defineProps<Props>(), {
-    fromAdmin: false,
-  })
+  const props = defineProps<Props>()
 
   const store = useStore()
 
-  const { user, fromAdmin } = toRefs(props)
-  const authUser: ComputedRef<IUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
+  const { authUser, user } = toRefs(props)
   const registrationDate = computed(() =>
     props.user.created_at
       ? format(new Date(props.user.created_at), 'dd/MM/yyyy HH:mm')

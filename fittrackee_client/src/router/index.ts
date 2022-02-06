@@ -252,12 +252,18 @@ router.beforeEach((to, from, next) => {
   store
     .dispatch(AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER)
     .then(() => {
+      if (to.path.startsWith('/users')) {
+        return next()
+      }
+
       if (
         store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED] &&
         pathsWithoutAuthentication.includes(to.path)
       ) {
         return next('/')
-      } else if (
+      }
+
+      if (
         !store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED] &&
         !pathsWithoutAuthentication.includes(to.path)
       ) {
