@@ -7,21 +7,32 @@ export interface IUserProfile {
   bio: string | null
   birth_date: string | null
   created_at: string
-  email: string
+  email?: string
   first_name: string | null
-  imperial_units: boolean
-  language: string | null
+  followers: IUserProfile[]
+  following: IUserProfile[]
   last_name: string | null
   location: string | null
-  nb_sports: number
+  nb_sports?: number
   nb_workouts: number
   picture: string | boolean
+  records?: IRecord[]
+  sports_list?: number[]
+  total_distance?: number
+  total_duration?: string
+  username: string
+}
+
+export interface IAuthUserProfile extends IUserProfile {
+  email: string
+  imperial_units: boolean
+  language: string | null
+  nb_sports: number
   records: IRecord[]
   sports_list: number[]
   timezone: string
   total_distance: number
   total_duration: string
-  username: string
   weekm: boolean
 }
 

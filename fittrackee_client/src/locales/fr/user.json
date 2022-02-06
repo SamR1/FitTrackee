@@ -6,6 +6,8 @@
   "ENTER_EMAIL": "Saisir une adresse email",
   "ENTER_PASSWORD": "Saisir un mot de passe",
   "ENTER_PASSWORD_CONFIRMATION": "Confirmer le mot de passe",
+  "FOLLOWER": "abonné | abonnés",
+  "FOLLOWING": "abonnement | abonnements",
   "INVALID_TOKEN": "Jeton invalide, veullez demander une nouvelle réinitialisation de mot de passe.",
   "LANGUAGE": "Langue",
   "LOGIN": "Se connecter",

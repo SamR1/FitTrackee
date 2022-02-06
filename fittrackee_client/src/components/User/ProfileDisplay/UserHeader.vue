@@ -10,7 +10,7 @@
             {{ $t('workouts.WORKOUT', user.nb_workouts) }}
           </span>
         </div>
-        <div class="user-stat">
+        <div class="user-stat" v-if="user.total_distance">
           <Distance
             :distance="user.total_distance"
             unitFrom="km"
@@ -22,10 +22,22 @@
             {{ user.imperial_units ? 'miles' : 'km' }}
           </span>
         </div>
-        <div class="user-stat hide-small">
+        <div class="user-stat hide-small" v-if="user.nb_sports">
           <span class="stat-number">{{ user.nb_sports }}</span>
           <span class="stat-label">
             {{ $t('workouts.SPORT', user.nb_sports) }}
+          </span>
+        </div>
+        <div class="user-stat hide-small">
+          <span class="stat-number">{{ user.following }}</span>
+          <span class="stat-label">
+            {{ $t('user.FOLLOWING', user.following) }}
+          </span>
+        </div>
+        <div class="user-stat hide-small">
+          <span class="stat-number">{{ user.followers }}</span>
+          <span class="stat-label">
+            {{ $t('user.FOLLOWER', user.followers) }}
           </span>
         </div>
       </div>
@@ -53,6 +65,10 @@
   .user-header {
     display: flex;
     align-items: stretch;
+
+    ::v-deep(.user-picture) {
+      min-width: 20%;
+    }
 
     .user-details {
       flex-grow: 1;

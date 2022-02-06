@@ -8,7 +8,7 @@ import {
 import { AUTH_USER_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
 import {
-  IUserProfile,
+  IAuthUserProfile,
   ILoginOrRegisterData,
   IUserDeletionPayload,
   IUserPasswordPayload,
@@ -21,7 +21,7 @@ import {
 
 export interface IAuthUserState {
   authToken: string | null
-  authUserProfile: IUserProfile
+  authUserProfile: IAuthUserProfile
   loading: boolean
 }
 
@@ -93,7 +93,7 @@ export interface IAuthUserGetters {
 
   [AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE](
     state: IAuthUserState
-  ): IUserProfile
+  ): IAuthUserProfile
 
   [AUTH_USER_STORE.GETTERS.IS_ADMIN](state: IAuthUserState): boolean
 
@@ -110,7 +110,7 @@ export type TAuthUserMutations<S = IAuthUserState> = {
   ): void
   [AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE](
     state: S,
-    authUserProfile: IUserProfile
+    authUserProfile: IAuthUserProfile
   ): void
   [AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING](
     state: S,

@@ -6,6 +6,8 @@
   "ENTER_EMAIL": "Enter an email address",
   "ENTER_PASSWORD": "Enter a password",
   "ENTER_PASSWORD_CONFIRMATION": "Confirm the password",
+  "FOLLOWER": "follower | followers",
+  "FOLLOWING": "following | following",
   "INVALID_TOKEN": "Invalid token, please request a new password reset.",
   "LANGUAGE": "Language",
   "LOGIN": "Login",

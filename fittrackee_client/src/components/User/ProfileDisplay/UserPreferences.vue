@@ -28,11 +28,11 @@
 <script setup lang="ts">
   import { computed } from 'vue'
 
-  import { IUserProfile } from '@/types/user'
+  import { IAuthUserProfile } from '@/types/user'
   import { languageLabels } from '@/utils/locales'
 
   interface Props {
-    user: IUserProfile
+    user: IAuthUserProfile
   }
   const props = defineProps<Props>()
 
