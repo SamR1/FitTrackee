@@ -36,6 +36,11 @@ def webfinger(app_domain: Domain) -> HttpResponse:
         "subject": "acct:Sam@example.com",
         "links": [
           {
+            "href": "https://example.com/user/Sam",
+            "rel": "http://webfinger.net/rel/profile-page",
+            "type": "text/html"
+          },
+          {
             "href": "https://example.com/federation/user/Sam",
             "rel": "self",
             "type": "application/activity+json"
@@ -76,10 +81,15 @@ def webfinger(app_domain: Domain) -> HttpResponse:
         'subject': f'acct:{actor.fullname}',
         'links': [
             {
+                'href': f'{actor.profile_url}',
+                'rel': 'http://webfinger.net/rel/profile-page',
+                'type': 'text/html',
+            },
+            {
                 'href': actor.activitypub_id,
                 'rel': 'self',
                 'type': 'application/activity+json',
-            }
+            },
         ],
     }
     return HttpResponse(

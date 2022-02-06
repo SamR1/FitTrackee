@@ -65,6 +65,7 @@ class Actor(BaseModel):
     preferred_username = db.Column(db.String(255), nullable=False)
     public_key = db.Column(db.String(5000), nullable=True)
     private_key = db.Column(db.String(5000), nullable=True)
+    profile_url = db.Column(db.String(255), nullable=False)
     inbox_url = db.Column(db.String(255), nullable=False)
     outbox_url = db.Column(db.String(255), nullable=False)
     followers_url = db.Column(db.String(255), nullable=False)
@@ -98,6 +99,7 @@ class Actor(BaseModel):
             self.activitypub_id = get_ap_url(preferred_username, 'user_url')
             self.followers_url = get_ap_url(preferred_username, 'followers')
             self.following_url = get_ap_url(preferred_username, 'following')
+            self.profile_url = get_ap_url(preferred_username, 'profile_url')
             self.inbox_url = get_ap_url(preferred_username, 'inbox')
             self.outbox_url = get_ap_url(preferred_username, 'outbox')
             self.shared_inbox_url = get_ap_url(
@@ -132,6 +134,7 @@ class Actor(BaseModel):
         ]
         self.followers_url = remote_user_data['followers']
         self.following_url = remote_user_data['following']
+        self.profile_url = remote_user_data.get('url', remote_user_data['id'])
         self.inbox_url = remote_user_data['inbox']
         self.outbox_url = remote_user_data['outbox']
         self.shared_inbox_url = remote_user_data.get('endpoints', {}).get(
@@ -147,6 +150,7 @@ class Actor(BaseModel):
             'type': self.type.value,
             'preferredUsername': self.preferred_username,
             'name': self.name,
+            'url': self.profile_url,
             'inbox': self.inbox_url,
             'outbox': self.outbox_url,
             'followers': self.followers_url,

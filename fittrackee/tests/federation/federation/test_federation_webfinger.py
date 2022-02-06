@@ -115,11 +115,21 @@ class TestWebfinger:
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['links'][0] == {
-            'href': actor_1.activitypub_id,
-            'rel': 'self',
-            'type': 'application/activity+json',
-        }
+        assert data['links'] == [
+            {
+                'href': (
+                    f'https://{actor_1.domain.name}/users/'
+                    f'{actor_1.user.username}'
+                ),
+                'rel': 'http://webfinger.net/rel/profile-page',
+                'type': 'text/html',
+            },
+            {
+                'href': actor_1.activitypub_id,
+                'rel': 'self',
+                'type': 'application/activity+json',
+            },
+        ]
 
     def test_it_returns_error_if_federation_is_disabled(
         self, app: Flask, app_actor: Actor

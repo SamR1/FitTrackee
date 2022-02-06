@@ -45,9 +45,10 @@ def get_remote_user_object(
     username: str,
     preferred_username: str,
     domain: str,
+    profile_url: Optional[str] = None,
 ) -> Dict:
     user_url = f'{domain}/users/{username}'
-    return {
+    user_object = {
         '@context': [
             'https://www.w3.org/ns/activitystreams',
             'https://w3id.org/security/v1',
@@ -68,6 +69,9 @@ def get_remote_user_object(
         },
         'endpoints': {'sharedInbox': f'{domain}/inbox'},
     }
+    if profile_url:
+        user_object['url'] = profile_url
+    return user_object
 
 
 @dataclass
@@ -86,9 +90,13 @@ class RandomActor:
     def activitypub_id(self) -> str:
         return f'{self.domain}/users/{self.preferred_username}'
 
+    @property
+    def profile_url(self) -> str:
+        return f'{self.domain}/{self.preferred_username}'
+
     def get_remote_user_object(self) -> Dict:
         return get_remote_user_object(
-            self.name, self.preferred_username, self.domain
+            self.name, self.preferred_username, self.domain, self.profile_url
         )
 
 

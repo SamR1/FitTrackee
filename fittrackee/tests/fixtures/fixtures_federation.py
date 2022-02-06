@@ -75,6 +75,32 @@ def remote_actor(
         username=user_2.username,
         preferred_username=user_2.username,
         domain=domain,
+        profile_url=f'{domain}/{user_2.username}',
+    )
+    actor = Actor(
+        preferred_username=user_2.username,
+        domain_id=remote_domain.id,
+        remote_user_data=remote_user_object,
+    )
+    db.session.add(actor)
+    db.session.flush()
+    user_2.name = user_2.username.capitalize()
+    user_2.actor_id = actor.id
+    db.session.commit()
+    return actor
+
+
+@pytest.fixture()
+def remote_actor_without_profile_page(
+    user_2: User,
+    app_with_federation: Flask,
+    remote_domain: Domain,
+) -> Actor:
+    domain = f'https://{remote_domain.name}'
+    remote_user_object = get_remote_user_object(
+        username=user_2.username,
+        preferred_username=user_2.username,
+        domain=domain,
     )
     actor = Actor(
         preferred_username=user_2.username,

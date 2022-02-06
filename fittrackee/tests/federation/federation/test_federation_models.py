@@ -90,6 +90,7 @@ class TestActivityPubLocalPersonActorModel:
             serialized_actor['preferredUsername'] == actor_1.preferred_username
         )
         assert serialized_actor['name'] == actor_1.user.username
+        assert serialized_actor['url'] == actor_1.profile_url
         assert serialized_actor['inbox'] == (
             f'https://{ap_url}/federation/user/'
             f'{actor_1.preferred_username}/inbox'
@@ -136,11 +137,21 @@ class TestActivityPubRemotePersonActorModel:
         assert remote_actor.is_remote
 
     def test_it_returns_fullname(
-        self, app_with_federation: Flask, actor_1: Actor
+        self, app_with_federation: Flask, remote_actor: Actor
     ) -> None:
         assert (
-            actor_1.fullname
-            == f'{actor_1.preferred_username}@{actor_1.domain.name}'
+            remote_actor.fullname
+            == f'{remote_actor.preferred_username}@{remote_actor.domain.name}'
+        )
+
+    def test_it_returns_ap_id_if_no_profile_url_provided(
+        self,
+        app_with_federation: Flask,
+        remote_actor_without_profile_page: Actor,
+    ) -> None:
+        assert (
+            remote_actor_without_profile_page.profile_url
+            == remote_actor_without_profile_page.activitypub_id
         )
 
     def test_it_returns_serialized_object(
@@ -162,6 +173,7 @@ class TestActivityPubRemotePersonActorModel:
             == remote_actor.preferred_username
         )
         assert serialized_actor['name'] == remote_actor.user.username
+        assert serialized_actor['url'] == remote_actor.profile_url
         assert serialized_actor['inbox'] == f'{user_url}/inbox'
         assert serialized_actor['outbox'] == f'{user_url}/outbox'
         assert serialized_actor['followers'] == f'{user_url}/followers'

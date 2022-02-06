@@ -63,6 +63,7 @@ def upgrade():
         sa.Column('preferred_username', sa.String(length=255), nullable=False),
         sa.Column('public_key', sa.String(length=5000), nullable=True),
         sa.Column('private_key', sa.String(length=5000), nullable=True),
+        sa.Column('profile_url', sa.String(length=255), nullable=False),
         sa.Column('inbox_url', sa.String(length=255), nullable=False),
         sa.Column('outbox_url', sa.String(length=255), nullable=False),
         sa.Column('followers_url', sa.String(length=255), nullable=False),
@@ -115,8 +116,8 @@ def upgrade():
         op.execute(
             "INSERT INTO actors ("
             "activitypub_id, domain_id, preferred_username, public_key, "
-            "private_key, followers_url, following_url, inbox_url, "
-            "outbox_url, shared_inbox_url, created_at, "
+            "private_key, followers_url, following_url, profile_url, "
+            "inbox_url, outbox_url, shared_inbox_url, created_at, "
             "manually_approves_followers) "
             "VALUES ("
             f"'{get_ap_url(user.username, 'user_url')}', "
@@ -124,6 +125,7 @@ def upgrade():
             f"'{public_key}', '{private_key}', "
             f"'{get_ap_url(user.username, 'followers')}', "
             f"'{get_ap_url(user.username, 'following')}', "
+            f"'{get_ap_url(user.username, 'profile_url')}', "
             f"'{get_ap_url(user.username, 'inbox')}', "
             f"'{get_ap_url(user.username, 'outbox')}', "
             f"'{get_ap_url(user.username, 'shared_inbox')}', "

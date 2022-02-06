@@ -37,6 +37,8 @@ def get_ap_url(username: str, url_type: str) -> str:
         return f'{ap_url_user}/{url_type}'
     if url_type == 'shared_inbox':
         return f'{ap_url}inbox'
+    if url_type == 'profile_url':
+        return f"https://{current_app.config['AP_DOMAIN']}/users/{username}"
     raise Exception('Invalid \'url_type\'.')
 
 
