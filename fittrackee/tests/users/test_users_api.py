@@ -327,7 +327,7 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             'total': 3,
         }
 
-    @patch('fittrackee.users.users.USER_PER_PAGE', 2)
+    @patch('fittrackee.users.users.USERS_PER_PAGE', 2)
     def test_it_gets_first_page_on_users_list(
         self,
         app: Flask,
@@ -356,7 +356,7 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             'total': 3,
         }
 
-    @patch('fittrackee.users.users.USER_PER_PAGE', 2)
+    @patch('fittrackee.users.users.USERS_PER_PAGE', 2)
     def test_it_gets_next_page_on_users_list(
         self,
         app: Flask,

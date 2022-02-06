@@ -34,7 +34,7 @@ from .utils.admin import set_admin_rights
 
 users_blueprint = Blueprint('users', __name__)
 
-USER_PER_PAGE = 10
+USERS_PER_PAGE = 10
 
 
 @users_blueprint.cli.command('set-admin')
@@ -185,7 +185,7 @@ def get_users(auth_user: User) -> Dict:
     """
     params = request.args.copy()
     page = int(params.get('page', 1))
-    per_page = int(params.get('per_page', USER_PER_PAGE))
+    per_page = int(params.get('per_page', USERS_PER_PAGE))
     if per_page > 50:
         per_page = 50
     order_by = params.get('order_by')
@@ -613,6 +613,56 @@ def delete_user(
 @users_blueprint.route('/users/<user_name>/follow', methods=['POST'])
 @authenticate
 def follow_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
+    """
+    Send a follow request to a user.
+    If federation is enabled, it sends a follow request to remote instance
+    if the targeted user is a remote user.
+
+    **Example request**:
+
+    - follow local user
+
+    .. sourcecode:: http
+
+      POST /api/users/john_doe/follow HTTP/1.1
+      Content-Type: application/json
+
+    - follow remote user
+
+    .. sourcecode:: http
+
+      POST /api/users/sam@remote-instance.net/follow HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "status": "success",
+        "message": "Follow request to user 'john_doe' is sent.",
+      }
+
+
+    :param string user_name: user name
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403:
+        - you do not have permissions
+    :statuscode 404:
+        - user does not exist
+    :statuscode 500: error, please try again or contact the administrator
+
+    """
     successful_response_dict = {
         'status': 'success',
         'message': f"Follow request to user '{user_name}' is sent.",
@@ -635,39 +685,132 @@ def follow_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     return successful_response_dict
 
 
+def get_user_relationships(
+    auth_user: User, user_name: str, relation: str
+) -> Union[Dict, HttpResponse]:
+    params = request.args.copy()
+    try:
+        page = int(params.get('page', 1))
+    except ValueError:
+        page = 1
+
+    user = User.query.filter_by(username=user_name).first()
+    if not user:
+        return UserNotFoundErrorResponse()
+
+    relations_object = (
+        user.followers if relation == 'followers' else user.following
+    )
+
+    paginated_relations = relations_object.order_by(
+        FollowRequest.updated_at.desc()
+    ).paginate(page, USERS_PER_PAGE, False)
+
+    return {
+        'status': 'success',
+        'data': {
+            relation: [
+                user.serialize(
+                    role=UserRole.ADMIN if auth_user.admin else UserRole.USER
+                )
+                for user in paginated_relations.items
+            ]
+        },
+        'pagination': {
+            'has_next': paginated_relations.has_next,
+            'has_prev': paginated_relations.has_prev,
+            'page': paginated_relations.page,
+            'pages': paginated_relations.pages,
+            'total': paginated_relations.total,
+        },
+    }
+
+
 @users_blueprint.route('/users/<user_name>/followers', methods=['GET'])
 @authenticate
 def get_followers(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
-    params = request.args.copy()
-    page = int(params.get('page', 1))
-    user = User.query.filter_by(username=user_name).first()
-    if not user:
-        return UserNotFoundErrorResponse()
+    """
+    Get user followers.
+    If the authenticate user has admin rights, it returns following users with
+    additional field 'email'
 
-    followers_pagination = user.followers.order_by(
-        FollowRequest.updated_at.desc()
-    ).paginate(page, USER_PER_PAGE, False)
+    **Example request**:
 
-    return {
-        'status': 'success',
-        'data': {
-            'followers': [
-                follower.serialize(
-                    role=UserRole.ADMIN if auth_user.admin else UserRole.USER
-                )
-                for follower in followers_pagination.items
-            ]
+    - without parameters
+
+    .. sourcecode:: http
+
+      GET /api/users/sam/followers HTTP/1.1
+      Content-Type: application/json
+
+    - with page parameter
+
+    .. sourcecode:: http
+
+      GET /api/users/sam/followers?page=1 HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "followers": [
+            {
+              "admin": false,
+              "bio": null,
+              "birth_date": null,
+              "created_at": "Thu, 02 Dec 2021 17:50:48 GMT",
+              "first_name": null,
+              "followers": 1,
+              "following": 1,
+              "last_name": null,
+              "location": null,
+              "nb_sports": 0,
+              "nb_workouts": 0,
+              "picture": false,
+              "records": [],
+              "sports_list": [],
+              "total_distance": 0.0,
+              "total_duration": "0:00:00",
+              "username": "JohnDoe"
+            }
+          ]
         },
-        'pagination': {
-            'has_next': followers_pagination.has_next,
-            'has_prev': followers_pagination.has_prev,
-            'page': followers_pagination.page,
-            'pages': followers_pagination.pages,
-            'total': followers_pagination.total,
+        "pagination": {
+          "has_next": false,
+          "has_prev": false,
+          "page": 1,
+          "pages": 1,
+          "total": 1
         },
-    }
+        "status": "success"
+      }
+
+    :param string user_name: user name
+
+    :query integer page: page if using pagination (default: 1)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403:
+        - you do not have permissions
+    :statuscode 404:
+        - user does not exist
+
+    """
+    return get_user_relationships(auth_user, user_name, 'followers')
 
 
 @users_blueprint.route('/users/<user_name>/following', methods=['GET'])
@@ -675,31 +818,83 @@ def get_followers(
 def get_following(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
-    params = request.args.copy()
-    page = int(params.get('page', 1))
-    user = User.query.filter_by(username=user_name).first()
-    if not user:
-        return UserNotFoundErrorResponse()
+    """
+    Get user following.
+    If the authenticate user has admin rights, it returns following users with
+    additional field 'email'
 
-    following_pagination = user.following.order_by(
-        FollowRequest.updated_at.desc()
-    ).paginate(page, USER_PER_PAGE, False)
+    **Example request**:
 
-    return {
-        'status': 'success',
-        'data': {
-            'following': [
-                following.serialize(
-                    role=UserRole.ADMIN if auth_user.admin else UserRole.USER
-                )
-                for following in following_pagination.items
-            ]
+    - without parameters
+
+    .. sourcecode:: http
+
+      GET /api/users/sam/following HTTP/1.1
+      Content-Type: application/json
+
+    - with page parameter
+
+    .. sourcecode:: http
+
+      GET /api/users/sam/following?page=1 HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "following": [
+            {
+              "admin": false,
+              "bio": null,
+              "birth_date": null,
+              "created_at": "Thu, 02 Dec 2021 17:50:48 GMT",
+              "first_name": null,
+              "followers": 1,
+              "following": 1,
+              "last_name": null,
+              "location": null,
+              "nb_sports": 0,
+              "nb_workouts": 0,
+              "picture": false,
+              "records": [],
+              "sports_list": [],
+              "total_distance": 0.0,
+              "total_duration": "0:00:00",
+              "username": "JohnDoe"
+            }
+          ]
         },
-        'pagination': {
-            'has_next': following_pagination.has_next,
-            'has_prev': following_pagination.has_prev,
-            'page': following_pagination.page,
-            'pages': following_pagination.pages,
-            'total': following_pagination.total,
+        "pagination": {
+          "has_next": false,
+          "has_prev": false,
+          "page": 1,
+          "pages": 1,
+          "total": 1
         },
-    }
+        "status": "success"
+      }
+
+    :param string user_name: user name
+
+    :query integer page: page if using pagination (default: 1)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403:
+        - you do not have permissions
+    :statuscode 404:
+        - user does not exist
+
+    """
+    return get_user_relationships(auth_user, user_name, 'following')

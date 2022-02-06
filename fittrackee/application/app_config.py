@@ -39,6 +39,7 @@ def get_application_config() -> Union[Dict, HttpResponse]:
 
       {
         "data": {
+          "federation_enabled": false,
           "gpx_limit_import": 10,
           "is_registration_enabled": false,
           "max_single_file_size": 1048576,
@@ -87,17 +88,21 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
 
       {
         "data": {
+          "federation_enabled": true,
           "gpx_limit_import": 10,
           "is_registration_enabled": true,
           "max_single_file_size": 1048576,
           "max_zip_file_size": 10485760,
-          "max_users": 10
+          "max_users": 10,
+          "map_attribution": "&copy; <a href=http://www.openstreetmap.org/copyright>OpenStreetMap</a> contributors"
+          "version": "0.5.1"
         },
         "status": "success"
       }
 
+    :<json boolean federation_enabled: is federation enabled?
     :<json integer gpx_limit_import: max number of files in zip archive
-    :<json boolean is_registration_enabled: is registration enabled ?
+    :<json boolean is_registration_enabled: is registration enabled?
     :<json integer max_single_file_size: max size of a single file
     :<json integer max_zip_file_size: max size of a zip archive
     :<json integer max_users: max users allowed to register on instance

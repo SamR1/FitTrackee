@@ -32,6 +32,127 @@ MAX_FOLLOW_REQUESTS_PER_PAGE = 50
 @follow_requests_blueprint.route('/follow_requests', methods=['GET'])
 @authenticate
 def get_follow_requests(auth_user: User) -> Dict:
+    """
+    Get follow requests to process, received by authenticated user.
+
+    **Example requests**:
+
+    - without parameters
+
+    .. sourcecode:: http
+
+      GET /api/follow_requests/ HTTP/1.1
+
+    - with some query parameters
+
+    .. sourcecode:: http
+
+      GET /api/follow_requests?page=1&order=desc  HTTP/1.1
+
+    **Example responses**:
+
+    - if federation is disabled
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "follow_requests": [
+            {
+              "admin": false,
+              "bio": null,
+              "birth_date": null,
+              "created_at": "Thu, 02 Dec 2021 17:50:48 GMT",
+              "first_name": null,
+              "followers": 1,
+              "following": 1,
+              "last_name": null,
+              "location": null,
+              "nb_sports": 0,
+              "nb_workouts": 0,
+              "picture": false,
+              "records": [],
+              "sports_list": [],
+              "total_distance": 0.0,
+              "total_duration": "0:00:00",
+              "username": "Sam"
+            }
+          ]
+        },
+        "pagination": {
+          "has_next": false,
+          "has_prev": false,
+          "page": 1,
+          "pages": 1,
+          "total": 1
+        },
+        "status": "success"
+      }
+
+    - if federation is enabled
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "follow_requests": [
+            {
+              "@context": [
+                "https://www.w3.org/ns/activitystreams",
+                "https://w3id.org/security/v1"
+              ],
+              "endpoints": {
+                "sharedInbox": "https://example.com/federation/inbox"
+              },
+              "followers": "https://example.com/federation/user/Sam/followers",
+              "following": "https://example.com/federation/user/Sam/following",
+              "id": "https://example.com/federation/user/Sam",
+              "inbox": "https://example.com/federation/user/Sam/inbox",
+              "manuallyApprovesFollowers": true,
+              "name": "Sam",
+              "outbox": "https://example.com/federation/user/Sam/outbox",
+              "preferredUsername": "Sam",
+              "publicKey": {
+                "id": "https://example.com/federation/user/Sam#main-key",
+                "owner": "https://example.com/federation/user/Sam",
+                "publicKeyPem": "[PUBLIC KEY]"
+              },
+              "type": "Person",
+              "url": "https://example.com/users/Sam"
+            }
+          ]
+        },
+        "pagination": {
+          "has_next": false,
+          "has_prev": false,
+          "page": 1,
+          "pages": 1,
+          "total": 1
+        },
+        "status": "success"
+      }
+
+    :query integer page: page if using pagination (default: 1)
+    :query integer per_page: number of follow requests per page
+                             (default: 10, max: 50)
+    :query string order: sorting order (default: ``asc``)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 500:
+
+    """
     params = request.args.copy()
     page = int(params.get('page', 1))
     per_page = int(params.get('per_page', FOLLOW_REQUESTS_PER_PAGE))
@@ -108,6 +229,51 @@ def process_follow_request(
 def accept_follow_request(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
+    """
+    Accept a follow request.
+
+    **Example requests**:
+
+    - from local instance
+
+    .. sourcecode:: http
+
+      POST /api/follow_requests/Sam/accept HTTP/1.1
+
+    - from remote instance
+
+    .. sourcecode:: http
+
+      POST /api/follow_requests/sam@remote-instance.net/accept HTTP/1.1
+
+    **Example responses**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "status": "success",
+        "message": "Follow request from user 'Sam' is accepted.",
+      }
+
+    :param string user_name: user name
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 400:
+        - Follow request from user 'user_name' already accepted.
+    :statuscode 404:
+        - user does not exist
+        - Follow request does not exist.
+
+    """
     return process_follow_request(auth_user, user_name, 'accept')
 
 
@@ -118,4 +284,49 @@ def accept_follow_request(
 def reject_follow_request(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
+    """
+    Reject a follow request.
+
+    **Example requests**:
+
+    - from local instance
+
+    .. sourcecode:: http
+
+      POST /api/follow_requests/Sam/reject HTTP/1.1
+
+    - from remote instance
+
+    .. sourcecode:: http
+
+      POST /api/follow_requests/sam@remote-instance.net/reject HTTP/1.1
+
+    **Example responses**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "status": "success",
+        "message": "Follow request from user 'Sam' is rejected.",
+      }
+
+    :param string user_name: user name
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 400:
+        - Follow request from user 'user_name' already rejected.
+    :statuscode 404:
+        - user does not exist
+        - Follow request does not exist.
+
+    """
     return process_follow_request(auth_user, user_name, 'reject')

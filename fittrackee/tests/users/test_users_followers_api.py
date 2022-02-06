@@ -188,7 +188,7 @@ class TestFollowersPagination(FollowersAsUserTestCase):
             'total': 0,
         }
 
-    @patch('fittrackee.users.users.USER_PER_PAGE', 1)
+    @patch('fittrackee.users.users.USERS_PER_PAGE', 1)
     def test_it_returns_first_page_on_followers_list(
         self,
         app: Flask,
@@ -223,7 +223,7 @@ class TestFollowersPagination(FollowersAsUserTestCase):
             'total': 2,
         }
 
-    @patch('fittrackee.users.users.USER_PER_PAGE', 1)
+    @patch('fittrackee.users.users.USERS_PER_PAGE', 1)
     def test_it_returns_page_2_on_followers_list(
         self,
         app: Flask,
@@ -426,7 +426,7 @@ class TestFollowingPagination(FollowersAsUserTestCase):
             'total': 0,
         }
 
-    @patch('fittrackee.users.users.USER_PER_PAGE', 1)
+    @patch('fittrackee.users.users.USERS_PER_PAGE', 1)
     def test_it_returns_first_page_on_following_list(
         self,
         app: Flask,
@@ -461,7 +461,7 @@ class TestFollowingPagination(FollowersAsUserTestCase):
             'total': 2,
         }
 
-    @patch('fittrackee.users.users.USER_PER_PAGE', 1)
+    @patch('fittrackee.users.users.USERS_PER_PAGE', 1)
     def test_it_returns_page_2_on_followers_list(
         self,
         app: Flask,
