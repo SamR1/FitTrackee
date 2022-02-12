@@ -8,11 +8,8 @@ import gunicorn.app.base
 from flask import Flask
 from flask_dramatiq import worker
 from flask_migrate import upgrade
-from tqdm import tqdm
 
 from fittrackee import create_app, db
-from fittrackee.workouts.models import Workout
-from fittrackee.workouts.utils import update_workout
 
 HOST = os.getenv('HOST', '0.0.0.0')
 PORT = os.getenv('PORT', '5000')
@@ -50,31 +47,13 @@ def upgrade_db() -> None:
 
 @app.cli.command('drop-db')
 def drop_db() -> None:
-    """Empty database for dev environments."""
+    """Empty database and delete uploaded files for dev environments."""
     db.engine.execute("DROP TABLE IF EXISTS alembic_version;")
     db.drop_all()
     db.session.commit()
     print('Database dropped.')
     shutil.rmtree(app.config['UPLOAD_FOLDER'], ignore_errors=True)
     print('Uploaded files deleted.')
-
-
-@app.cli.command()
-def recalculate() -> None:
-    print("Starting workouts data refresh")
-    workouts = (
-        Workout.query.filter(Workout.gpx != None)  # noqa
-        .order_by(Workout.workout_date.asc())  # noqa
-        .all()
-    )
-    if len(workouts) == 0:
-        print('➡️  no workouts to upgrade.')
-        return None
-    pbar = tqdm(workouts)
-    for workout in pbar:
-        update_workout(workout)
-        pbar.set_postfix(activitiy_id=workout.id)
-    db.session.commit()
 
 
 def main() -> None:
