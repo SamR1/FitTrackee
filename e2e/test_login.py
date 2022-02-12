@@ -1,4 +1,9 @@
-from .utils import TEST_URL, assert_navbar, login_valid_user
+from .utils import (
+    TEST_URL,
+    assert_navbar,
+    login_valid_user,
+    register_valid_user_and_logout,
+)
 
 URL = f'{TEST_URL}/login'
 
@@ -31,11 +36,7 @@ class TestLogin:
         assert 'Forgot password?' in links[1].text
 
     def test_user_can_log_in(self, selenium):
-        user = {
-            'username': 'admin',
-            'email': 'admin@example.com',
-            'password': 'mpwoadmin',
-        }
+        user = register_valid_user_and_logout(selenium)
 
         login_valid_user(selenium, user)
 

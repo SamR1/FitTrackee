@@ -4,6 +4,7 @@ from .utils import (
     random_string,
     register,
     register_valid_user,
+    register_valid_user_and_logout,
 )
 
 URL = f'{TEST_URL}/register'
@@ -57,30 +58,20 @@ class TestRegistration:
     def test_user_can_not_register_if_username_is_already_taken(
         self, selenium
     ):
-        user_name = random_string()
-        user_infos = {
-            'username': 'admin',
-            'email': f'{user_name}@example.com',
-            'password': 'p@ssw0rd',
-            'password_conf': 'p@ssw0rd',
-        }
+        user = register_valid_user_and_logout(selenium)
+        user['email'] = f'{random_string()}@example.com'
 
-        register(selenium, user_infos)
+        register(selenium, user)
 
         assert selenium.current_url == URL
         errors = selenium.find_element_by_class_name('error-message').text
         assert 'Sorry, that user already exists.' in errors
 
     def test_user_can_not_register_if_email_is_already_taken(self, selenium):
-        user_name = random_string()
-        user_infos = {
-            'username': user_name,
-            'email': 'admin@example.com',
-            'password': 'p@ssw0rd',
-            'password_conf': 'p@ssw0rd',
-        }
+        user = register_valid_user_and_logout(selenium)
+        user['username'] = random_string()
 
-        register(selenium, user_infos)
+        register(selenium, user)
 
         assert selenium.current_url == URL
         errors = selenium.find_element_by_class_name('error-message').text
