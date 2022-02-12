@@ -4,12 +4,15 @@ import os
 import shutil
 from typing import Dict, Optional
 
+import click
 import gunicorn.app.base
 from flask import Flask
 from flask_dramatiq import worker
 from flask_migrate import upgrade
 
 from fittrackee import create_app, db
+from fittrackee.users.exceptions import UserNotFoundException
+from fittrackee.users.utils import set_admin_rights
 
 HOST = os.getenv('HOST', '0.0.0.0')
 PORT = os.getenv('PORT', '5000')
@@ -54,6 +57,17 @@ def drop_db() -> None:
     print('Database dropped.')
     shutil.rmtree(app.config['UPLOAD_FOLDER'], ignore_errors=True)
     print('Uploaded files deleted.')
+
+
+@app.cli.command('set-admin')
+@click.argument('username')
+def set_admin(username: str) -> None:
+    """Set admin rights for given user"""
+    try:
+        set_admin_rights(username)
+        print(f"User '{username}' updated.")
+    except UserNotFoundException:
+        print(f"User '{username}' not found.")
 
 
 def main() -> None:

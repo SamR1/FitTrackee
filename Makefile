@@ -161,6 +161,9 @@ serve-python-dev:
 	echo 'Running on https://$(HOST):$(PORT)'
 	$(FLASK) run --with-threads -h $(HOST) -p $(PORT) --cert=adhoc
 
+set-admin:
+	$(FLASK) set-admin $(USERNAME)
+
 test-e2e: init-db
 	$(PYTEST) e2e --driver firefox $(PYTEST_ARGS)
 
