@@ -11,8 +11,6 @@ from flask_migrate import upgrade
 from tqdm import tqdm
 
 from fittrackee import create_app, db
-from fittrackee.application.utils import init_config
-from fittrackee.database_utils import init_database
 from fittrackee.workouts.models import Workout
 from fittrackee.workouts.utils import update_workout
 
@@ -61,12 +59,6 @@ def drop_db() -> None:
     print('Uploaded files deleted.')
 
 
-@app.cli.command('init-data')
-def init_data() -> None:
-    """Init the database and application config."""
-    init_database(app)
-
-
 @app.cli.command()
 def recalculate() -> None:
     print("Starting workouts data refresh")
@@ -83,20 +75,6 @@ def recalculate() -> None:
         update_workout(workout)
         pbar.set_postfix(activitiy_id=workout.id)
     db.session.commit()
-
-
-@app.cli.command('init-app-config')
-def init_app_config() -> None:
-    """Init application configuration."""
-    print("Init application configuration")
-    config_created, _ = init_config()
-    if config_created:
-        print("Creation done!")
-    else:
-        print(
-            "Application configuration already existing in database. "
-            "Please use web application to update it."
-        )
 
 
 def main() -> None:

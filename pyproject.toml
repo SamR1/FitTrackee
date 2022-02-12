@@ -63,7 +63,6 @@ Sphinx = "^4.4.0"
 
 [tool.poetry.scripts]
 fittrackee = 'fittrackee.__main__:main'
-fittrackee_init_data = 'fittrackee.__main__:init_data'
 fittrackee_upgrade_db = 'fittrackee.__main__:upgrade_db'
 fittrackee_worker = 'fittrackee.__main__:dramatiq_worker'
 

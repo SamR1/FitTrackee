@@ -85,15 +85,10 @@ html:
 install-db:
 	psql -U postgres -f db/create.sql
 	$(FLASK) db upgrade --directory $(MIGRATIONS)
-	$(FLASK) init-data
-
-init-app-config:
-	$(FLASK) init-app-config
 
 init-db:
 	$(FLASK) drop-db
 	$(FLASK) db upgrade --directory $(MIGRATIONS)
-	$(FLASK) init-data
 
 install: install-client install-python
 
