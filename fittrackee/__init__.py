@@ -3,7 +3,13 @@ import os
 from importlib import import_module, reload
 from typing import Any
 
-from flask import Flask, Response, render_template, send_file
+from flask import (
+    Flask,
+    Response,
+    render_template,
+    send_file,
+    send_from_directory,
+)
 from flask_bcrypt import Bcrypt
 from flask_dramatiq import Dramatiq
 from flask_migrate import Migrate
@@ -112,12 +118,12 @@ def create_app() -> Flask:
     def catch_all(path: str) -> Any:
         # workaround to serve images (not in static directory)
         if path.startswith('img/'):
-            return send_file(
-                os.path.join(
+            return send_from_directory(
+                directory=os.path.join(
                     app.root_path,  # type: ignore
                     'dist',
-                    path,
-                )
+                ),
+                path=path,
             )
         else:
             return render_template('index.html')
