@@ -1,25 +1,19 @@
 # source for StandaloneApplication class:
 # http://docs.gunicorn.org/en/stable/custom.html
 import os
-import shutil
 from typing import Dict, Optional
 
-import click
 import gunicorn.app.base
 from flask import Flask
-from flask_dramatiq import worker
 from flask_migrate import upgrade
 
-from fittrackee import create_app, db
-from fittrackee.users.exceptions import UserNotFoundException
-from fittrackee.users.utils import set_admin_rights
+from fittrackee import create_app
 
 HOST = os.getenv('HOST', '0.0.0.0')
 PORT = os.getenv('PORT', '5000')
 WORKERS = os.getenv('APP_WORKERS', 1)
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 app = create_app()
-dramatiq_worker = worker
 
 
 class StandaloneApplication(gunicorn.app.base.BaseApplication):
@@ -46,28 +40,6 @@ class StandaloneApplication(gunicorn.app.base.BaseApplication):
 def upgrade_db() -> None:
     with app.app_context():
         upgrade(directory=BASEDIR + '/migrations')
-
-
-@app.cli.command('drop-db')
-def drop_db() -> None:
-    """Empty database and delete uploaded files for dev environments."""
-    db.engine.execute("DROP TABLE IF EXISTS alembic_version;")
-    db.drop_all()
-    db.session.commit()
-    print('Database dropped.')
-    shutil.rmtree(app.config['UPLOAD_FOLDER'], ignore_errors=True)
-    print('Uploaded files deleted.')
-
-
-@app.cli.command('set-admin')
-@click.argument('username')
-def set_admin(username: str) -> None:
-    """Set admin rights for given user"""
-    try:
-        set_admin_rights(username)
-        print(f"User '{username}' updated.")
-    except UserNotFoundException:
-        print(f"User '{username}' not found.")
 
 
 def main() -> None:
