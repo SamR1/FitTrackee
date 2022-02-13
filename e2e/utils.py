@@ -54,6 +54,24 @@ def register_valid_user(selenium):
     return user
 
 
+def register_valid_user_and_logout(selenium):
+    user_name = random_string()
+    user = {
+        'username': user_name,
+        'email': f'{user_name}@example.com',
+        'password': 'p@ssw0rd',
+        'password_conf': 'p@ssw0rd',
+    }
+    register(selenium, user)
+    WebDriverWait(selenium, 15).until(EC.url_changes(f"{TEST_URL}/register"))
+
+    user_menu = selenium.find_element_by_class_name('nav-items-user-menu')
+    logout_link = user_menu.find_elements_by_class_name('nav-item')[2]
+    logout_link.click()
+    selenium.implicitly_wait(1)
+    return user
+
+
 def login_valid_user(selenium, user):
     login(selenium, user)
     WebDriverWait(selenium, 10).until(EC.url_changes(f"{TEST_URL}/login"))

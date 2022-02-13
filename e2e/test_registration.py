@@ -4,6 +4,7 @@ from .utils import (
     random_string,
     register,
     register_valid_user,
+    register_valid_user_and_logout,
 )
 
 URL = f'{TEST_URL}/register'
@@ -57,64 +58,24 @@ class TestRegistration:
     def test_user_can_not_register_if_username_is_already_taken(
         self, selenium
     ):
-        user_name = random_string()
-        user_infos = {
-            'username': 'admin',
-            'email': f'{user_name}@example.com',
-            'password': 'p@ssw0rd',
-            'password_conf': 'p@ssw0rd',
-        }
+        user = register_valid_user_and_logout(selenium)
+        user['email'] = f'{random_string()}@example.com'
 
-        register(selenium, user_infos)
+        register(selenium, user)
 
         assert selenium.current_url == URL
         errors = selenium.find_element_by_class_name('error-message').text
         assert 'Sorry, that user already exists.' in errors
 
     def test_user_can_not_register_if_email_is_already_taken(self, selenium):
-        user_name = random_string()
-        user_infos = {
-            'username': user_name,
-            'email': 'admin@example.com',
-            'password': 'p@ssw0rd',
-            'password_conf': 'p@ssw0rd',
-        }
+        user = register_valid_user_and_logout(selenium)
+        user['username'] = random_string()
 
-        register(selenium, user_infos)
+        register(selenium, user)
 
         assert selenium.current_url == URL
         errors = selenium.find_element_by_class_name('error-message').text
         assert 'Sorry, that user already exists.' in errors
-
-    def test_user_can_not_register_if_username_is_too_short(self, selenium):
-        user_name = random_string(2)
-        user_infos = {
-            'username': user_name,
-            'email': 'admin@example.com',
-            'password': 'p@ssw0rd',
-            'password_conf': 'p@ssw0rd',
-        }
-
-        register(selenium, user_infos)
-
-        assert selenium.current_url == URL
-        errors = selenium.find_element_by_class_name('error-message').text
-        assert 'Username: 3 to 12 characters required' in errors
-
-    def test_user_can_not_register_if_username_is_too_long(self, selenium):
-        user_name = random_string(13)
-        user_infos = {
-            'username': user_name,
-            'email': 'admin@example.com',
-            'password': 'p@ssw0rd',
-            'password_conf': 'p@ssw0rd',
-        }
-
-        register(selenium, user_infos)
-
-        assert selenium.current_url == URL
-        errors = selenium.find_element_by_class_name('error-message').text
-        assert 'Username: 3 to 12 characters required' in errors
 
     def test_it_displays_error_if_passwords_do_not_match(self, selenium):
         user_name = random_string()
@@ -130,18 +91,3 @@ class TestRegistration:
         assert selenium.current_url == URL
         errors = selenium.find_element_by_class_name('error-message').text
         assert 'password and password confirmation don\'t match' in errors
-
-    def test_it_displays_error_if_password_is_too_short(self, selenium):
-        user_name = random_string()
-        user_infos = {
-            'username': user_name,
-            'email': f'{user_name}@example.com',
-            'password': 'p@ss',
-            'password_conf': 'p@ss',
-        }
-
-        register(selenium, user_infos)
-
-        assert selenium.current_url == URL
-        errors = selenium.find_element_by_class_name('error-message').text
-        assert 'Password: 8 characters required' in errors

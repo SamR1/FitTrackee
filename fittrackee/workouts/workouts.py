@@ -14,6 +14,7 @@ from flask import (
 )
 from sqlalchemy import exc
 from werkzeug.exceptions import RequestEntityTooLarge
+from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db
 from fittrackee.responses import (
@@ -829,7 +830,12 @@ def get_map_tile(s: str, z: str, x: str, y: str) -> Tuple[Response, int]:
     Status codes are status codes returned by tile server
 
     """
-    url = current_app.config['TILE_SERVER']['URL'].format(s=s, z=z, x=x, y=y)
+    url = current_app.config['TILE_SERVER']['URL'].format(
+        s=secure_filename(s),
+        z=secure_filename(z),
+        x=secure_filename(x),
+        y=secure_filename(y),
+    )
     headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:88.0)'}
     response = requests.get(url, headers=headers)
     return (

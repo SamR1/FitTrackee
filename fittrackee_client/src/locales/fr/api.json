@@ -17,13 +17,11 @@
     "Network Error": "Erreur Réseau.",
     "password: password and password confirmation do not match": "Mot de passe : les mots de passe saisis sont différents.",
     "provide a valid auth token": "Merci de fournir un jeton de connexion valide.",
-    "password: 8 characters required": "Mot de passe : 8 caractères minimum.",
     "sport does not exist": "Ce sport n'existe pas.",
     "signature expired, please log in again": "Signature expirée. Merci de vous reconnecter.",
     "sorry, that user already exists": "Désolé, cet utilisateur existe déjà.",
     "successfully registered": "Inscription validée.",
     "user does not exist": "L'utilisateur n'existe pas",
-    "username: 3 to 12 characters required": "Nom d'utilisateur : 3 à 12 caractères requis.",
     "you can not delete your account, no other user has admin rights": "Vous ne pouvez pas supprimer votre compte, aucun autre utilisateur n'a des droits d'administration.",
     "you do not have permissions": "Vous n'avez pas les permissions nécessaires."
   },

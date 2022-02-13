@@ -59,6 +59,9 @@ docker-serve-client:
 	docker-compose -f docker-compose-dev.yml up -d fittrackee_client
 	docker-compose -f docker-compose-dev.yml exec fittrackee_client yarn serve
 
+docker-set-admin:
+	docker-compose -f docker-compose-dev.yml exec fittrackee docker/set-admin.sh $(USERNAME)
+
 docker-shell:
 	docker-compose -f docker-compose-dev.yml exec fittrackee docker/shell.sh
 
@@ -85,15 +88,10 @@ html:
 install-db:
 	psql -U postgres -f db/create.sql
 	$(FLASK) db upgrade --directory $(MIGRATIONS)
-	$(FLASK) init-data
-
-init-app-config:
-	$(FLASK) init-app-config
 
 init-db:
 	$(FLASK) drop-db
 	$(FLASK) db upgrade --directory $(MIGRATIONS)
-	$(FLASK) init-data
 
 install: install-client install-python
 
@@ -133,9 +131,6 @@ mail:
 migrate-db:
 	$(FLASK) db migrate --directory $(MIGRATIONS)
 
-recalculate:
-	$(FLASK) recalculate
-
 revision:
 	$(FLASK) db revision --directory $(MIGRATIONS) --message $(MIGRATION_MESSAGE)
 
@@ -165,6 +160,9 @@ serve-python:
 serve-python-dev:
 	echo 'Running on https://$(HOST):$(PORT)'
 	$(FLASK) run --with-threads -h $(HOST) -p $(PORT) --cert=adhoc
+
+set-admin:
+	$(FLASK) users set-admin $(USERNAME)
 
 test-e2e: init-db
 	$(PYTEST) e2e --driver firefox $(PYTEST_ARGS)

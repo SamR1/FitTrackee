@@ -189,14 +189,12 @@ def edit_workout(
     workout: Workout, workout_data: Dict, auth_user: User
 ) -> Workout:
     """
-    Edit an workout
+    Edit a workout
     Note: the gpx file is NOT modified
 
     In a next version, map_data and weather_data will be updated
     (case of a modified gpx file, see issue #7)
     """
-    if workout_data.get('refresh'):
-        workout = update_workout(workout)
     if workout_data.get('sport_id'):
         workout.sport_id = workout_data.get('sport_id')
     if workout_data.get('title'):

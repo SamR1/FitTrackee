@@ -7,7 +7,6 @@ from flask import Flask
 
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
-from fittrackee.workouts.utils_id import decode_short_id
 
 from ..api_test_case import ApiTestCaseMixin
 from .utils import get_random_short_id, post_an_workout
@@ -619,37 +618,3 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         assert response.status_code == 404
         assert 'not found' in data['status']
         assert len(data['data']['workouts']) == 0
-
-
-class TestRefreshWorkoutWithGpx:
-    def test_refresh_an_workout_with_gpx(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        sport_2_running: Sport,
-        gpx_file: str,
-    ) -> None:
-        token, workout_short_id = post_an_workout(app, gpx_file)
-        workout_uuid = decode_short_id(workout_short_id)
-        client = app.test_client()
-
-        # Edit some workout data
-        workout = Workout.query.filter_by(uuid=workout_uuid).first()
-        workout.ascent = 1000
-        workout.min_alt = -100
-
-        response = client.patch(
-            f'/api/workouts/{workout_short_id}',
-            content_type='application/json',
-            data=json.dumps(dict(refresh=True)),
-            headers=dict(Authorization=f'Bearer {token}'),
-        )
-        data = json.loads(response.data.decode())
-
-        assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 1
-        assert 1 == data['data']['workouts'][0]['sport_id']
-        assert 0.4 == data['data']['workouts'][0]['ascent']
-        assert 975.0 == data['data']['workouts'][0]['min_alt']

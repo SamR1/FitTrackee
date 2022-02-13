@@ -3,12 +3,14 @@ from typing import Optional, Tuple
 
 from flask import Request
 
+from fittrackee import db
 from fittrackee.responses import (
     ForbiddenErrorResponse,
     HttpResponse,
     UnauthorizedErrorResponse,
 )
 
+from .exceptions import UserNotFoundException
 from .models import User
 
 
@@ -35,17 +37,30 @@ def check_passwords(password: str, password_conf: str) -> str:
     return ret
 
 
-def register_controls(
-    username: str, email: str, password: str, password_conf: str
-) -> str:
+def check_username(username: str) -> str:
     """
-    Verify if user name, email and passwords are valid
-
-    If not, it returns not empty string
+    Return if username is valid
     """
     ret = ''
     if not 2 < len(username) < 13:
         ret += 'username: 3 to 12 characters required\n'
+    if not re.match(r'^[a-zA-Z0-9_]+$', username):
+        ret += (
+            'username: only alphanumeric characters and the '
+            'underscore character "_" allowed\n'
+        )
+    return ret
+
+
+def register_controls(
+    username: str, email: str, password: str, password_conf: str
+) -> str:
+    """
+    Verify if username, email and passwords are valid
+
+    If not, it returns not empty string
+    """
+    ret = check_username(username)
     if not is_valid_email(email):
         ret += 'email: valid email must be provided\n'
     ret += check_passwords(password, password_conf)
@@ -84,3 +99,11 @@ def can_view_workout(
     if auth_user_id != workout_user_id:
         return ForbiddenErrorResponse()
     return None
+
+
+def set_admin_rights(username: str) -> None:
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        raise UserNotFoundException()
+    user.admin = True
+    db.session.commit()
