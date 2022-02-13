@@ -6,7 +6,7 @@ from email.mime.text import MIMEText
 from typing import Dict, Optional, Type, Union
 
 from flask import Flask
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from .utils_email import parse_email_url
 
@@ -38,7 +38,10 @@ class EmailMessage:
 
 class EmailTemplate:
     def __init__(self, template_directory: str) -> None:
-        self._env = Environment(loader=FileSystemLoader(template_directory))
+        self._env = Environment(
+            autoescape=select_autoescape(['html', 'htm', 'xml']),
+            loader=FileSystemLoader(template_directory),
+        )
 
     def get_content(
         self, template_name: str, lang: str, part: str, data: Dict
