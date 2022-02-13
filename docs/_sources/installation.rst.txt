@@ -269,18 +269,11 @@ For instance, copy and update ``.env`` file from ``.env.example`` and source the
     $ nano .env
     $ source .env
 
-
-- Upgrade database schema
+- Initialize database schema
 
 .. code-block:: bash
 
     $ fittrackee_upgrade_db
-
-- Initialize database
-
-.. code-block:: bash
-
-    $ fittrackee_init_data
 
 - Start the application
 
@@ -296,6 +289,14 @@ For instance, copy and update ``.env`` file from ``.env.example`` and source the
 
 .. note::
     | To start application and workers with **systemd** service, see `Deployment <installation.html#deployment>`__
+
+- Open http://localhost:3000 and register
+
+- To set admin rights to the newly created account, use the following command:
+
+.. code:: bash
+
+   $ fittrackee_set_admin <username>
 
 
 From sources
@@ -349,8 +350,13 @@ Dev environment
 
    $ make run-workers
 
-Open http://localhost:3000 and log in (the email is ``admin@example.com``
-and the password ``mpwoadmin``) or register
+- Open http://localhost:3000 and register
+
+- To set admin rights to the newly created account, use the following command:
+
+.. code:: bash
+
+   $  make set-admin USERNAME=<username>
 
 
 Production environment
@@ -390,9 +396,13 @@ Production environment
 
    $ make run
 
-Open http://localhost:5000, log in as admin (the email is
-``admin@example.com`` and the password ``mpwoadmin``) and change the
-password
+- Open http://localhost:5000 and register
+
+- To set admin rights to the newly created account, use the following command:
+
+.. code:: bash
+
+   $  make set-admin USERNAME=<username>
 
 
 Upgrade
@@ -642,9 +652,15 @@ installing **FitTrackee** from **sources**.
     $ cd FitTrackee
     $ make docker-build docker-run docker-init
 
-Open http://localhost:5000, log in as admin (the email is `admin@example.com` and the password `mpwoadmin`) or register.
+Open http://localhost:5000 and register.
 
 Open http://localhost:8025 to access `MailHog interface <https://github.com/mailhog/MailHog>`_ (email testing tool)
+
+- To set admin rights to the newly created account, use the following command:
+
+.. code:: bash
+
+   $ make docker-set-admin USERNAME=<username>
 
 - To stop **Fittrackee**:
 
@@ -683,8 +699,7 @@ Development
 
     $ make docker-serve-client
 
-Open http://localhost:3000 and log in (the email is ``admin@example.com``
-and the password ``mpwoadmin``) or register
+Open http://localhost:3000
 
 .. note::
     Some environment variables need to be updated like `UI_URL`
