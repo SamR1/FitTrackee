@@ -1,7 +1,6 @@
 # source for StandaloneApplication class:
 # http://docs.gunicorn.org/en/stable/custom.html
 import os
-import shutil
 from typing import Dict, Optional
 
 import click
@@ -9,7 +8,7 @@ import gunicorn.app.base
 from flask import Flask
 from flask_migrate import upgrade
 
-from fittrackee import create_app, db
+from fittrackee import create_app
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.utils import set_admin_rights
 
@@ -44,17 +43,6 @@ class StandaloneApplication(gunicorn.app.base.BaseApplication):
 def upgrade_db() -> None:
     with app.app_context():
         upgrade(directory=BASEDIR + '/migrations')
-
-
-@app.cli.command('drop-db')
-def drop_db() -> None:
-    """Empty database and delete uploaded files for dev environments."""
-    db.engine.execute("DROP TABLE IF EXISTS alembic_version;")
-    db.drop_all()
-    db.session.commit()
-    print('Database dropped.')
-    shutil.rmtree(app.config['UPLOAD_FOLDER'], ignore_errors=True)
-    print('Uploaded files deleted.')
 
 
 @app.cli.command('set-admin')
