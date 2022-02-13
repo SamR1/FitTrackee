@@ -37,6 +37,21 @@ def check_passwords(password: str, password_conf: str) -> str:
     return ret
 
 
+def check_username(username: str) -> str:
+    """
+    Return if username is valid
+    """
+    ret = ''
+    if not 2 < len(username) < 13:
+        ret += 'username: 3 to 12 characters required\n'
+    if not re.match(r'^[a-zA-Z0-9_]+$', username):
+        ret += (
+            'username: only alphanumeric characters and the '
+            'underscore character "_" allowed\n'
+        )
+    return ret
+
+
 def register_controls(
     username: str, email: str, password: str, password_conf: str
 ) -> str:
@@ -45,9 +60,7 @@ def register_controls(
 
     If not, it returns not empty string
     """
-    ret = ''
-    if not 2 < len(username) < 13:
-        ret += 'username: 3 to 12 characters required\n'
+    ret = check_username(username)
     if not is_valid_email(email):
         ret += 'email: valid email must be provided\n'
     ret += check_passwords(password, password_conf)
