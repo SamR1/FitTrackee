@@ -7,7 +7,6 @@ from typing import Dict, Optional
 import click
 import gunicorn.app.base
 from flask import Flask
-from flask_dramatiq import worker
 from flask_migrate import upgrade
 
 from fittrackee import create_app, db
@@ -19,7 +18,6 @@ PORT = os.getenv('PORT', '5000')
 WORKERS = os.getenv('APP_WORKERS', 1)
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 app = create_app()
-dramatiq_worker = worker
 
 
 class StandaloneApplication(gunicorn.app.base.BaseApplication):
