@@ -162,7 +162,7 @@ serve-python-dev:
 	$(FLASK) run --with-threads -h $(HOST) -p $(PORT) --cert=adhoc
 
 set-admin:
-	$(FLASK) set-admin $(USERNAME)
+	$(FLASK) users set-admin $(USERNAME)
 
 test-e2e: init-db
 	$(PYTEST) e2e --driver firefox $(PYTEST_ARGS)
