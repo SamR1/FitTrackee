@@ -51,16 +51,16 @@ def create_app() -> Flask:
     email_service.init_email(app)
 
     # get configuration from database
-    from .application.models import AppConfig
-    from .application.utils import init_config, update_app_config_from_database
+    from .application.utils import (
+        get_or_init_config,
+        update_app_config_from_database,
+    )
 
     with app.app_context():
         # Note: check if "app_config" table exist to avoid errors when
         # dropping tables on dev environments
         if db.engine.dialect.has_table(db.engine.connect(), 'app_config'):
-            db_app_config = AppConfig.query.one_or_none()
-            if not db_app_config:
-                _, db_app_config = init_config()
+            db_app_config = get_or_init_config()
             update_app_config_from_database(app, db_app_config)
 
     from .application.app_config import config_blueprint  # noqa

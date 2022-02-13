@@ -6,4 +6,3 @@ source .env.docker
 
 flask drop-db
 flask db upgrade --directory fittrackee/migrations
-flask init-data

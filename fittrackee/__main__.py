@@ -4,17 +4,15 @@ import os
 import shutil
 from typing import Dict, Optional
 
+import click
 import gunicorn.app.base
 from flask import Flask
 from flask_dramatiq import worker
 from flask_migrate import upgrade
-from tqdm import tqdm
 
 from fittrackee import create_app, db
-from fittrackee.application.utils import init_config
-from fittrackee.database_utils import init_database
-from fittrackee.workouts.models import Workout
-from fittrackee.workouts.utils import update_workout
+from fittrackee.users.exceptions import UserNotFoundException
+from fittrackee.users.utils import set_admin_rights
 
 HOST = os.getenv('HOST', '0.0.0.0')
 PORT = os.getenv('PORT', '5000')
@@ -52,7 +50,7 @@ def upgrade_db() -> None:
 
 @app.cli.command('drop-db')
 def drop_db() -> None:
-    """Empty database for dev environments."""
+    """Empty database and delete uploaded files for dev environments."""
     db.engine.execute("DROP TABLE IF EXISTS alembic_version;")
     db.drop_all()
     db.session.commit()
@@ -61,42 +59,15 @@ def drop_db() -> None:
     print('Uploaded files deleted.')
 
 
-@app.cli.command('init-data')
-def init_data() -> None:
-    """Init the database and application config."""
-    init_database(app)
-
-
-@app.cli.command()
-def recalculate() -> None:
-    print("Starting workouts data refresh")
-    workouts = (
-        Workout.query.filter(Workout.gpx != None)  # noqa
-        .order_by(Workout.workout_date.asc())  # noqa
-        .all()
-    )
-    if len(workouts) == 0:
-        print('➡️  no workouts to upgrade.')
-        return None
-    pbar = tqdm(workouts)
-    for workout in pbar:
-        update_workout(workout)
-        pbar.set_postfix(activitiy_id=workout.id)
-    db.session.commit()
-
-
-@app.cli.command('init-app-config')
-def init_app_config() -> None:
-    """Init application configuration."""
-    print("Init application configuration")
-    config_created, _ = init_config()
-    if config_created:
-        print("Creation done!")
-    else:
-        print(
-            "Application configuration already existing in database. "
-            "Please use web application to update it."
-        )
+@app.cli.command('set-admin')
+@click.argument('username')
+def set_admin(username: str) -> None:
+    """Set admin rights for given user"""
+    try:
+        set_admin_rights(username)
+        print(f"User '{username}' updated.")
+    except UserNotFoundException:
+        print(f"User '{username}' not found.")
 
 
 def main() -> None:

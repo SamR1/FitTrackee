@@ -527,15 +527,9 @@ $ <span class="nb">source</span> .env
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Upgrade database schema</p></li>
+<li><p>Initialize database schema</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ fittrackee_upgrade_db
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Initialize database</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ fittrackee_init_data
 </pre></div>
 </div>
 <ul class="simple">
@@ -555,6 +549,13 @@ $ <span class="nb">source</span> .env
 <div class="line-block">
 <div class="line">To start application and workers with <strong>systemd</strong> service, see <a class="reference external" href="installation.html#deployment">Deployment</a></div>
 </div>
+</div>
+<ul class="simple">
+<li><p>Open <a class="reference external" href="http://localhost:3000">http://localhost:3000</a> and register</p></li>
+<li><p>To set admin rights to the newly created account, use the following command:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ fittrackee_set_admin &lt;username&gt;
+</pre></div>
 </div>
 </section>
 <section id="from-sources">
@@ -606,8 +607,13 @@ $ make install-db
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make run-workers
 </pre></div>
 </div>
-<p>Open <a class="reference external" href="http://localhost:3000">http://localhost:3000</a> and log in (the email is <code class="docutils literal notranslate"><span class="pre">admin&#64;example.com</span></code>
-and the password <code class="docutils literal notranslate"><span class="pre">mpwoadmin</span></code>) or register</p>
+<ul class="simple">
+<li><p>Open <a class="reference external" href="http://localhost:3000">http://localhost:3000</a> and register</p></li>
+<li><p>To set admin rights to the newly created account, use the following command:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$  make set-admin <span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;
+</pre></div>
+</div>
 </section>
 <section id="production-environment">
 <h4>Production environment<a class="headerlink" href="#production-environment" title="Permalink to this headline">¶</a></h4>
@@ -647,9 +653,13 @@ database credentials</strong>):</p></li>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make run
 </pre></div>
 </div>
-<p>Open <a class="reference external" href="http://localhost:5000">http://localhost:5000</a>, log in as admin (the email is
-<code class="docutils literal notranslate"><span class="pre">admin&#64;example.com</span></code> and the password <code class="docutils literal notranslate"><span class="pre">mpwoadmin</span></code>) and change the
-password</p>
+<ul class="simple">
+<li><p>Open <a class="reference external" href="http://localhost:5000">http://localhost:5000</a> and register</p></li>
+<li><p>To set admin rights to the newly created account, use the following command:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$  make set-admin <span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;
+</pre></div>
+</div>
 </section>
 </section>
 </section>
@@ -892,8 +902,14 @@ $ <span class="nb">cd</span> FitTrackee
 $ make docker-build docker-run docker-init
 </pre></div>
 </div>
-<p>Open <a class="reference external" href="http://localhost:5000">http://localhost:5000</a>, log in as admin (the email is <cite>admin&#64;example.com</cite> and the password <cite>mpwoadmin</cite>) or register.</p>
+<p>Open <a class="reference external" href="http://localhost:5000">http://localhost:5000</a> and register.</p>
 <p>Open <a class="reference external" href="http://localhost:8025">http://localhost:8025</a> to access <a class="reference external" href="https://github.com/mailhog/MailHog">MailHog interface</a> (email testing tool)</p>
+<ul class="simple">
+<li><p>To set admin rights to the newly created account, use the following command:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make docker-set-admin <span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;
+</pre></div>
+</div>
 <ul class="simple">
 <li><p>To stop <strong>Fittrackee</strong>:</p></li>
 </ul>
@@ -930,8 +946,7 @@ $ make docker-build docker-run docker-init
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make docker-serve-client
 </pre></div>
 </div>
-<p>Open <a class="reference external" href="http://localhost:3000">http://localhost:3000</a> and log in (the email is <code class="docutils literal notranslate"><span class="pre">admin&#64;example.com</span></code>
-and the password <code class="docutils literal notranslate"><span class="pre">mpwoadmin</span></code>) or register</p>
+<p>Open <a class="reference external" href="http://localhost:3000">http://localhost:3000</a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Some environment variables need to be updated like <cite>UI_URL</cite></p>

@@ -3,12 +3,14 @@ from typing import Optional, Tuple
 
 from flask import Request
 
+from fittrackee import db
 from fittrackee.responses import (
     ForbiddenErrorResponse,
     HttpResponse,
     UnauthorizedErrorResponse,
 )
 
+from .exceptions import UserNotFoundException
 from .models import User
 
 
@@ -39,7 +41,7 @@ def register_controls(
     username: str, email: str, password: str, password_conf: str
 ) -> str:
     """
-    Verify if user name, email and passwords are valid
+    Verify if username, email and passwords are valid
 
     If not, it returns not empty string
     """
@@ -84,3 +86,11 @@ def can_view_workout(
     if auth_user_id != workout_user_id:
         return ForbiddenErrorResponse()
     return None
+
+
+def set_admin_rights(username: str) -> None:
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        raise UserNotFoundException()
+    user.admin = True
+    db.session.commit()
