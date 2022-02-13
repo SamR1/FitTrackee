@@ -59,6 +59,9 @@ docker-serve-client:
 	docker-compose -f docker-compose-dev.yml up -d fittrackee_client
 	docker-compose -f docker-compose-dev.yml exec fittrackee_client yarn serve
 
+docker-set-admin:
+	docker-compose -f docker-compose-dev.yml exec fittrackee docker/set-admin.sh $(USERNAME)
+
 docker-shell:
 	docker-compose -f docker-compose-dev.yml exec fittrackee docker/shell.sh
 
