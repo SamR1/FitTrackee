@@ -1,5 +1,42 @@
 # Change log
 
+## Version 0.5.7 (2022/02/13)
+
+This release contains several fixes including security fixes.  
+Thanks to @DanielSiersleben for the report.
+
+And from now on, admin account is not created on application initialization.  
+A new command is added to set administration rights on the account created after registration 
+(see [documentation](https://samr1.github.io/FitTrackee/installation.html#upgrade))
+
+### Issues Closed
+
+#### Misc
+
+* [#149](https://github.com/SamR1/FitTrackee/issues/149) - improve database initialisation
+
+### Pull Requests
+
+#### Security
+
+* [#152](https://github.com/SamR1/FitTrackee/pull/152) - Fixes and improvements:
+  - set autoescape on jinja templates
+
+* [#151](https://github.com/SamR1/FitTrackee/pull/151) - fix security issues:
+  - sanitize input when serving images
+  - sanitize inputs when serving map tiles
+  - allow only alphanumeric characters and '_' in username
+
+#### Misc
+
+* [#152](https://github.com/SamR1/FitTrackee/pull/152) - Fixes and improvements:
+  - fix dramatiq warning when launching workers w/ script entrypoint
+  - check app config before dropping database, to avoid deleting data on production
+  - remove dotenv warning
+
+In this release 1 issue was closed.
+
+
 ## Version 0.5.6 (2022/02/05)
 
 ### Issues Closed
