@@ -128,9 +128,6 @@ mail:
 migrate-db:
 	$(FLASK) db migrate --directory $(MIGRATIONS)
 
-recalculate:
-	$(FLASK) recalculate
-
 revision:
 	$(FLASK) db revision --directory $(MIGRATIONS) --message $(MIGRATION_MESSAGE)
 
