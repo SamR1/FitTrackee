@@ -1,7 +1,7 @@
 from json import dumps
 from typing import Dict, List, Optional, Union
 
-from flask import Response
+from flask import Request, Response, current_app
 from flask_sqlalchemy import SQLAlchemy
 
 from fittrackee import appLog
@@ -143,3 +143,48 @@ def handle_error_and_return_response(
         db.session.rollback()
     appLog.error(error)
     return InternalServerErrorResponse(message=message, status=status)
+
+
+def get_error_response_if_file_is_invalid(
+    file_type: str, req: Request
+) -> Optional[HttpResponse]:
+    if 'file' not in req.files:
+        return InvalidPayloadErrorResponse('no file part', 'fail')
+
+    file = req.files['file']
+    if not file.filename or file.filename == '':
+        return InvalidPayloadErrorResponse('no selected file', 'fail')
+
+    allowed_extensions = (
+        'WORKOUT_ALLOWED_EXTENSIONS'
+        if file_type == 'workout'
+        else 'PICTURE_ALLOWED_EXTENSIONS'
+    )
+
+    file_extension = (
+        file.filename.rsplit('.', 1)[1].lower()
+        if '.' in file.filename
+        else None
+    )
+    max_file_size = current_app.config['max_single_file_size']
+
+    if not (
+        file_extension
+        and file_extension in current_app.config[allowed_extensions]
+    ):
+        return InvalidPayloadErrorResponse(
+            'file extension not allowed', 'fail'
+        )
+
+    if (
+        file_extension != 'zip'
+        and req.content_length is not None
+        and req.content_length > max_file_size
+    ):
+        return PayloadTooLargeErrorResponse(
+            file_type=file_type,
+            file_size=req.content_length,
+            max_size=max_file_size,
+        )
+
+    return None

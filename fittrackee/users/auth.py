@@ -18,10 +18,11 @@ from fittrackee.responses import (
     NotFoundErrorResponse,
     PayloadTooLargeErrorResponse,
     UnauthorizedErrorResponse,
+    get_error_response_if_file_is_invalid,
     handle_error_and_return_response,
 )
 from fittrackee.tasks import reset_password_email
-from fittrackee.utils import get_readable_duration, verify_extension_and_size
+from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport
 
 from .decorators import authenticate
@@ -890,7 +891,9 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
 
     """
     try:
-        response_object = verify_extension_and_size('picture', request)
+        response_object = get_error_response_if_file_is_invalid(
+            'picture', request
+        )
     except RequestEntityTooLarge as e:
         appLog.error(e)
         return PayloadTooLargeErrorResponse(

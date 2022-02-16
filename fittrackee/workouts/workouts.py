@@ -25,12 +25,12 @@ from fittrackee.responses import (
     InvalidPayloadErrorResponse,
     NotFoundErrorResponse,
     PayloadTooLargeErrorResponse,
+    get_error_response_if_file_is_invalid,
     handle_error_and_return_response,
 )
 from fittrackee.users.decorators import authenticate
 from fittrackee.users.models import User
 from fittrackee.users.utils import can_view_workout
-from fittrackee.utils import verify_extension_and_size
 
 from .models import Workout
 from .utils import (
@@ -961,7 +961,9 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     """
     try:
-        error_response = verify_extension_and_size('workout', request)
+        error_response = get_error_response_if_file_is_invalid(
+            'workout', request
+        )
     except RequestEntityTooLarge as e:
         appLog.error(e)
         return PayloadTooLargeErrorResponse(
