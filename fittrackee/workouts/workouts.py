@@ -30,7 +30,6 @@ from fittrackee.responses import (
 )
 from fittrackee.users.decorators import authenticate
 from fittrackee.users.models import User
-from fittrackee.users.utils import can_view_workout
 
 from .models import Workout
 from .utils.convert import convert_in_duration
@@ -40,6 +39,7 @@ from .utils.gpx import (
     get_chart_data,
 )
 from .utils.short_id import decode_short_id
+from .utils.visibility import can_view_workout
 from .utils.workouts import (
     WorkoutException,
     create_workout,

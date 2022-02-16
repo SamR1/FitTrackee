@@ -21,7 +21,7 @@ from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 from .decorators import authenticate, authenticate_as_admin
 from .exceptions import UserNotFoundException
 from .models import User, UserSportPreference
-from .utils import set_admin_rights
+from .utils.admin import set_admin_rights
 
 users_blueprint = Blueprint('users', __name__)
 

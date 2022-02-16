@@ -5,12 +5,12 @@ from flask import Flask
 
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.models import User
-from fittrackee.users.utils import (
+from fittrackee.users.utils.admin import set_admin_rights
+from fittrackee.users.utils.controls import (
     check_passwords,
     check_username,
     is_valid_email,
     register_controls,
-    set_admin_rights,
 )
 
 from ..utils import random_string
@@ -163,7 +163,7 @@ class TestIsUsernameValid:
 
 
 class TestRegisterControls:
-    module_path = 'fittrackee.users.utils.'
+    module_path = 'fittrackee.users.utils.controls.'
     valid_username = random_string()
     valid_email = f'{random_string()}@example.com'
     valid_password = random_string()

@@ -8,7 +8,7 @@ from flask import Flask
 from freezegun import freeze_time
 
 from fittrackee.users.models import User, UserSportPreference
-from fittrackee.users.utils_token import get_user_token
+from fittrackee.users.utils.token import get_user_token
 from fittrackee.workouts.models import Sport, Workout
 
 from ..api_test_case import ApiTestCaseMixin

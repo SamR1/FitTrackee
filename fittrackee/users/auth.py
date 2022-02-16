@@ -27,8 +27,8 @@ from fittrackee.workouts.models import Sport
 
 from .decorators import authenticate
 from .models import User, UserSportPreference
-from .utils import check_passwords, register_controls
-from .utils_token import decode_user_token
+from .utils.controls import check_passwords, register_controls
+from .utils.token import decode_user_token
 
 auth_blueprint = Blueprint('auth', __name__)
 
