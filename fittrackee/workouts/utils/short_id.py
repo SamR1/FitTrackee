@@ -5,7 +5,7 @@ import shortuuid
 
 def encode_uuid(uuid_value: UUID) -> str:
     """
-    Return short id string from an UUID
+    Return short id string from a UUID
     """
     return shortuuid.encode(uuid_value)
 

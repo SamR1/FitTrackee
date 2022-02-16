@@ -10,7 +10,7 @@ from werkzeug.datastructures import FileStorage
 
 from fittrackee import db
 from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
-from fittrackee.workouts.utils import StaticMap
+from fittrackee.workouts.utils.maps import StaticMap
 
 byte_io = BytesIO()
 Image.new('RGB', (256, 256)).save(byte_io, 'PNG')

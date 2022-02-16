@@ -33,7 +33,14 @@ from fittrackee.users.models import User
 from fittrackee.users.utils import can_view_workout
 
 from .models import Workout
-from .utils import (
+from .utils.convert import convert_in_duration
+from .utils.gpx import (
+    WorkoutGPXException,
+    extract_segment_from_gpx_file,
+    get_chart_data,
+)
+from .utils.short_id import decode_short_id
+from .utils.workouts import (
     WorkoutException,
     create_workout,
     edit_workout,
@@ -41,13 +48,6 @@ from .utils import (
     get_datetime_from_request_args,
     process_files,
 )
-from .utils_format import convert_in_duration
-from .utils_gpx import (
-    WorkoutGPXException,
-    extract_segment_from_gpx_file,
-    get_chart_data,
-)
-from .utils_id import decode_short_id
 
 workouts_blueprint = Blueprint('workouts', __name__)
 

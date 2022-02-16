@@ -3,7 +3,7 @@ from typing import List
 
 import pytest
 
-from fittrackee.workouts.utils import get_average_speed
+from fittrackee.workouts.utils.workouts import get_average_speed
 
 
 class TestWorkoutAverageSpeed:
