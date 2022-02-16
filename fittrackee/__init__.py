@@ -16,13 +16,13 @@ from flask_dramatiq import Dramatiq
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
-from fittrackee.emails.email import Email
+from fittrackee.emails.email import EmailService
 
 VERSION = __version__ = '0.5.7'
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 migrate = Migrate()
-email_service = Email()
+email_service = EmailService()
 dramatiq = Dramatiq()
 log_file = os.getenv('APP_LOG')
 logging.basicConfig(

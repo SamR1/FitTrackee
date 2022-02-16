@@ -10,6 +10,7 @@ from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, bcrypt, db
+from fittrackee.emails.tasks import reset_password_email
 from fittrackee.files import get_absolute_file_path
 from fittrackee.responses import (
     ForbiddenErrorResponse,
@@ -21,7 +22,6 @@ from fittrackee.responses import (
     get_error_response_if_file_is_invalid,
     handle_error_and_return_response,
 )
-from fittrackee.tasks import reset_password_email
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport
 
