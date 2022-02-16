@@ -7,6 +7,7 @@ from flask import Blueprint, request, send_file
 from sqlalchemy import exc
 
 from fittrackee import db
+from fittrackee.files import get_absolute_file_path
 from fittrackee.responses import (
     ForbiddenErrorResponse,
     HttpResponse,
@@ -16,7 +17,6 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
-from fittrackee.workouts.utils_files import get_absolute_file_path
 
 from .decorators import authenticate, authenticate_as_admin
 from .exceptions import UserNotFoundException

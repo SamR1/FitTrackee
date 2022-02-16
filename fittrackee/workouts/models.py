@@ -13,8 +13,8 @@ from sqlalchemy.orm.session import Session, object_session
 from sqlalchemy.types import JSON, Enum
 
 from fittrackee import db
+from fittrackee.files import get_absolute_file_path
 
-from .utils_files import get_absolute_file_path
 from .utils_format import convert_in_duration, convert_value_to_integer
 from .utils_id import encode_uuid
 

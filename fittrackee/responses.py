@@ -5,25 +5,11 @@ from flask import Response
 from flask_sqlalchemy import SQLAlchemy
 
 from fittrackee import appLog
+from fittrackee.files import display_readable_file_size
 
 
 def get_empty_data_for_datatype(data_type: str) -> Union[str, List]:
     return '' if data_type in ['gpx', 'chart_data'] else []
-
-
-def display_readable_file_size(size_in_bytes: Union[float, int]) -> str:
-    """
-    Return readable file size from size in bytes
-    """
-    if size_in_bytes == 0:
-        return '0 bytes'
-    if size_in_bytes == 1:
-        return '1 byte'
-    for unit in [' bytes', 'KB', 'MB', 'GB', 'TB']:
-        if abs(size_in_bytes) < 1024.0:
-            return f'{size_in_bytes:3.1f}{unit}'
-        size_in_bytes /= 1024.0
-    return f'{size_in_bytes} bytes'
 
 
 class HttpResponse(Response):

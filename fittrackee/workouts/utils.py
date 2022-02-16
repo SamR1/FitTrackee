@@ -15,11 +15,11 @@ from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
 from fittrackee import db
+from fittrackee.files import get_absolute_file_path
 from fittrackee.users.models import User, UserSportPreference
 
 from .exceptions import WorkoutException
 from .models import Sport, Workout, WorkoutSegment
-from .utils_files import get_absolute_file_path
 from .utils_gpx import get_gpx_info
 
 
