@@ -126,7 +126,7 @@
 
   function updateForm(appConfig: TAppConfig) {
     Object.keys(appData).map((key) => {
-      ;['max_single_file_size', 'max_zip_file_size'].includes(key)
+      ['max_single_file_size', 'max_zip_file_size'].includes(key)
         ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           (appData[key] = getFileSizeInMB(appConfig[key]))
