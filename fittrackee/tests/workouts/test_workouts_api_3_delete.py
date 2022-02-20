@@ -1,10 +1,12 @@
 import json
 import os
 
+import pytest
 from flask import Flask
 
 from fittrackee.files import get_absolute_file_path
-from fittrackee.users.models import User
+from fittrackee.privacy_levels import PrivacyLevel
+from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
 from ..test_case_mixins import ApiTestCaseMixin
@@ -30,19 +32,39 @@ class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
 
         assert response.status_code == 204
 
-    def test_it_returns_403_when_deleting_workout_from_different_user(
+    @pytest.mark.parametrize(
+        'input_desc,input_workout_visibility,expected_status_code',
+        [
+            ('workout visibility: private', PrivacyLevel.PRIVATE, 404),
+            (
+                'workout visibility: followers_only',
+                PrivacyLevel.FOLLOWERS,
+                403,
+            ),
+            ('workout visibility: public', PrivacyLevel.PUBLIC, 403),
+        ],
+    )
+    def test_it_returns_error_when_deleting_workout_from_followed_user_user(
         self,
+        input_desc: str,
+        input_workout_visibility: PrivacyLevel,
+        expected_status_code: int,
         app: Flask,
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
         gpx_file: str,
+        follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
-        _, workout_short_id = post_a_workout(app, gpx_file)
+        user_1.approves_follow_request_from(user_2)
+
+        _, workout_short_id = post_a_workout(
+            app, gpx_file, workout_visibility=input_workout_visibility
+        )
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
-            data=json.dumps(dict(email='toto@toto.com', password='87654321')),
+            data=json.dumps(dict(email=user_2.email, password='87654321')),
             content_type='application/json',
         )
 
@@ -54,10 +76,81 @@ class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
             ),
         )
 
-        assert response.status_code == 403
-        data = json.loads(response.data.decode())
-        assert 'error' in data['status']
-        assert 'you do not have permissions' in data['message']
+        assert response.status_code == expected_status_code
+
+    @pytest.mark.parametrize(
+        'input_desc,input_workout_visibility,expected_status_code',
+        [
+            ('workout visibility: private', PrivacyLevel.PRIVATE, 404),
+            (
+                'workout visibility: followers_only',
+                PrivacyLevel.FOLLOWERS,
+                404,
+            ),
+            ('workout visibility: public', PrivacyLevel.PUBLIC, 403),
+        ],
+    )
+    def test_it_returns_error_when_deleting_workout_from_different_user(
+        self,
+        input_desc: str,
+        input_workout_visibility: PrivacyLevel,
+        expected_status_code: int,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        _, workout_short_id = post_a_workout(
+            app, gpx_file, workout_visibility=input_workout_visibility
+        )
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(dict(email=user_2.email, password='87654321')),
+            content_type='application/json',
+        )
+
+        response = client.delete(
+            f'/api/workouts/{workout_short_id}',
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
+
+        assert response.status_code == expected_status_code
+
+    @pytest.mark.parametrize(
+        'input_desc,input_workout_visibility',
+        [
+            ('workout visibility: private', PrivacyLevel.PRIVATE),
+            (
+                'workout visibility: followers_only',
+                PrivacyLevel.FOLLOWERS,
+            ),
+            ('workout visibility: public', PrivacyLevel.PUBLIC),
+        ],
+    )
+    def test_it_returns_401_when_no_authenticated(
+        self,
+        input_desc: str,
+        input_workout_visibility: PrivacyLevel,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        _, workout_short_id = post_a_workout(
+            app, gpx_file, workout_visibility=input_workout_visibility
+        )
+        client = app.test_client()
+
+        response = client.delete(
+            f'/api/workouts/{workout_short_id}',
+        )
+
+        assert response.status_code == 401
 
     def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask, user_1: User
@@ -114,18 +207,36 @@ class TestDeleteWorkoutWithoutGpx(ApiTestCaseMixin):
         )
         assert response.status_code == 204
 
-    def test_it_returns_404_when_deleting_workout_from_different_user(
+    @pytest.mark.parametrize(
+        'input_desc,input_workout_visibility,expected_status_code',
+        [
+            ('workout visibility: private', PrivacyLevel.PRIVATE, 404),
+            (
+                'workout visibility: followers_only',
+                PrivacyLevel.FOLLOWERS,
+                403,
+            ),
+            ('workout visibility: public', PrivacyLevel.PUBLIC, 403),
+        ],
+    )
+    def test_it_returns_error_when_deleting_workout_from_followed_user_user(
         self,
+        input_desc: str,
+        input_workout_visibility: PrivacyLevel,
+        expected_status_code: int,
         app: Flask,
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
+        user_1.approves_follow_request_from(user_2)
+        workout_cycling_user_1.workout_visibility = input_workout_visibility
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
-            data=json.dumps(dict(email='toto@toto.com', password='87654321')),
+            data=json.dumps(dict(email=user_2.email, password='87654321')),
             content_type='application/json',
         )
         response = client.delete(
@@ -136,8 +247,72 @@ class TestDeleteWorkoutWithoutGpx(ApiTestCaseMixin):
             ),
         )
 
-        data = json.loads(response.data.decode())
+        assert response.status_code == expected_status_code
 
-        assert response.status_code == 403
-        assert 'error' in data['status']
-        assert 'you do not have permissions' in data['message']
+    @pytest.mark.parametrize(
+        'input_desc,input_workout_visibility,expected_status_code',
+        [
+            ('workout visibility: private', PrivacyLevel.PRIVATE, 404),
+            (
+                'workout visibility: followers_only',
+                PrivacyLevel.FOLLOWERS,
+                404,
+            ),
+            ('workout visibility: public', PrivacyLevel.PUBLIC, 403),
+        ],
+    )
+    def test_it_returns_error_when_deleting_workout_from_different_user(
+        self,
+        input_desc: str,
+        input_workout_visibility: PrivacyLevel,
+        expected_status_code: int,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = input_workout_visibility
+        client = app.test_client()
+        resp_login = client.post(
+            '/api/auth/login',
+            data=json.dumps(dict(email=user_2.email, password='87654321')),
+            content_type='application/json',
+        )
+        response = client.delete(
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
+            headers=dict(
+                Authorization='Bearer '
+                + json.loads(resp_login.data.decode())['auth_token']
+            ),
+        )
+
+        assert response.status_code == expected_status_code
+
+    @pytest.mark.parametrize(
+        'input_desc,input_workout_visibility',
+        [
+            ('workout visibility: private', PrivacyLevel.PRIVATE),
+            (
+                'workout visibility: followers_only',
+                PrivacyLevel.FOLLOWERS,
+            ),
+            ('workout visibility: public', PrivacyLevel.PUBLIC),
+        ],
+    )
+    def test_it_returns_401_when_no_authenticated(
+        self,
+        input_desc: str,
+        input_workout_visibility: PrivacyLevel,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        client = app.test_client()
+
+        response = client.delete(
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
+        )
+
+        assert response.status_code == 401

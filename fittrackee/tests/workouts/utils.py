@@ -5,6 +5,7 @@ from uuid import uuid4
 
 from flask import Flask
 
+from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.workouts.utils.short_id import encode_uuid
 
 
@@ -13,7 +14,10 @@ def get_random_short_id() -> str:
 
 
 def post_a_workout(
-    app: Flask, gpx_file: str, notes: Optional[str] = None
+    app: Flask,
+    gpx_file: str,
+    notes: Optional[str] = None,
+    workout_visibility: Optional[PrivacyLevel] = None,
 ) -> Tuple[str, str]:
     client = app.test_client()
     resp_login = client.post(
@@ -25,6 +29,8 @@ def post_a_workout(
     workout_data = '{"sport_id": 1'
     if notes is not None:
         workout_data += f', "notes": "{notes}"'
+    if workout_visibility is not None:
+        workout_data += f', "workout_visibility": "{workout_visibility.value}"'
     workout_data += '}'
     response = client.post(
         '/api/workouts',
