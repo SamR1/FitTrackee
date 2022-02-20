@@ -372,6 +372,12 @@ class TestGetUserFromUsername:
         with pytest.raises(UserNotFoundException):
             get_user_from_username(random_string())
 
+    def test_it_raises_exception_if_only_remote_user_exists_when_usernme_provided(  # noqa
+        self, app_with_federation: Flask, user_1: User, remote_user: User
+    ) -> None:
+        with pytest.raises(UserNotFoundException):
+            get_user_from_username(remote_user.username)
+
     def test_it_raises_exception_if_no_local_user_and_with_creation(
         self, app_with_federation: Flask, user_1: User
     ) -> None:
@@ -393,6 +399,26 @@ class TestGetUserFromUsername:
     def test_it_creates_and_returns_remote_user_if_not_existing_and_with_creation(  # noqa
         self, app_with_federation: Flask, random_actor: RandomActor
     ) -> None:
+        with patch(
+            'fittrackee.federation.utils_user.fetch_account_from_webfinger',
+            return_value=random_actor.get_webfinger(),
+        ), patch(
+            'fittrackee.federation.utils_user.get_remote_actor_url',
+            return_value=random_actor.get_remote_user_object(),
+        ):
+            user = get_user_from_username(
+                random_actor.fullname, with_creation=True
+            )
+
+        assert user.username == random_actor.name
+
+    def test_it_creates_remote_user_when_regsitreation_is_disabled(  # noqa
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        random_actor: RandomActor,
+    ) -> None:
+        app_with_federation.config['is_registration_enabled'] = False
         with patch(
             'fittrackee.federation.utils_user.fetch_account_from_webfinger',
             return_value=random_actor.get_webfinger(),

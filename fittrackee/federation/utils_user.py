@@ -150,11 +150,15 @@ def create_remote_user(username: str, domain: str) -> User:
 
 
 def get_user_from_username(
-    user_name: str, with_creation: bool = False
+    user_name: str,
+    with_creation: bool = False,  # or refresh actor if exists
 ) -> User:
     name, domain_name = get_username_and_domain(user_name)
     if domain_name is None:  # local actor
-        user = User.query.filter_by(username=user_name).first()
+        user = User.query.filter(
+            User.username == user_name,
+            User.is_remote == False,  # noqa
+        ).first()
     else:  # remote actor
         actor = None
         domain = Domain.query.filter_by(name=domain_name).first()
@@ -169,6 +173,9 @@ def get_user_from_username(
                 return create_remote_user(name, domain_name)
             else:
                 raise ActorNotFoundException()
+        if with_creation:
+            update_remote_actor_stats(actor)
+            db.session.commit()
         user = actor.user
     if not user:
         raise UserNotFoundException()

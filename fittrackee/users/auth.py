@@ -126,10 +126,11 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     try:
         # check for existing user
         user = User.query.filter(
+            User.is_remote == False,  # noqa
             or_(
                 func.lower(User.username) == func.lower(username),
                 func.lower(User.email) == func.lower(email),
-            )
+            ),
         ).first()
         if user:
             return InvalidPayloadErrorResponse(

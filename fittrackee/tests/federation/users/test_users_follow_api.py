@@ -34,6 +34,27 @@ class TestFollowWithFederation(ApiTestCaseMixin):
         assert data['status'] == 'not found'
         assert data['message'] == 'user does not exist'
 
+    def test_it_raises_error_if_username_matches_only_a_remote_user(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        response = client.post(
+            f'/api/users/{remote_user.username}/follow',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 404
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'not found'
+        assert data['message'] == 'user does not exist'
+
     def test_it_raises_error_if_target_user_has_already_rejected_request(
         self,
         app_with_federation: Flask,
@@ -61,6 +82,33 @@ class TestFollowWithFederation(ApiTestCaseMixin):
     def test_it_creates_follow_request(
         self, app_with_federation: Flask, user_1: User, user_2: User
     ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        response = client.post(
+            f'/api/users/{user_2.actor.preferred_username}/follow',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert (
+            data['message']
+            == f"Follow request to user '{user_2.actor.preferred_username}' "
+            f"is sent."
+        )
+
+    def test_it_creates_follow_request_with_local_user_when_only_username_provided(  # noqa
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        user_2: User,
+        remote_user: User,
+    ) -> None:
+        remote_user.username = user_2.username
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
         )

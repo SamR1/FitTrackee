@@ -4,7 +4,7 @@ import shutil
 from typing import Any, Dict, Optional, Tuple, Union
 
 import click
-from flask import Blueprint, current_app, request, send_file
+from flask import Blueprint, request, send_file
 from sqlalchemy import exc
 
 from fittrackee import appLog, db
@@ -62,11 +62,7 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
     params = request.args.copy()
 
     query = params.get('q')
-    if (
-        current_app.config['federation_enabled']
-        and query
-        and re.match(FULL_NAME_REGEX, query)
-    ):
+    if remote and query and re.match(FULL_NAME_REGEX, query):
         try:
             user = get_user_from_username(query, with_creation=True)
         except Exception:  # noqa
@@ -304,7 +300,9 @@ def get_remote_users(
     app_domain: Domain,
 ) -> Dict:
     """
-    Get all remote users (only if federation is enabled)
+    Get all remote existing users (only if federation is enabled).
+    If a full account is provided in query, if creates remote user if it
+    doesn't exist.
 
     **Example request**:
 
@@ -341,6 +339,7 @@ def get_remote_users(
               "followers": 0,
               "following": 0,
               "follows": "false",
+              "fullname": "@sam@example.com",
               "is_followed_by": "false",
               "is_remote": true,
               "last_name": null,
@@ -363,7 +362,7 @@ def get_remote_users(
 
     :query integer page: page if using pagination (default: 1)
     :query integer per_page: number of users per page (default: 10, max: 50)
-    :query string q: query on user name
+    :query string q: query on username or account
     :query string order_by: sorting criteria (``username``, ``created_at``,
                             ``workouts_count``, ``admin``,
                             default: ``username``)
@@ -389,6 +388,7 @@ def get_single_user(
 ) -> Union[Dict, HttpResponse]:
     """
     Get single user details.
+    If username is a remote user account, it returns remote user if exists.
     If a user is authenticated, it returns relationships.
     If authenticated user has admin rights, user email is returned.
 
@@ -526,13 +526,18 @@ def get_single_user(
         - user does not exist
     """
     try:
-        user = User.query.filter_by(username=user_name).first()
+        user = get_user_from_username(user_name)
         if user:
             return {
                 'status': 'success',
                 'data': {'users': [user.serialize(auth_user)]},
             }
-    except ValueError:
+    except (
+        ValueError,
+        ActorNotFoundException,
+        DomainNotFoundException,
+        UserNotFoundException,
+    ):
         pass
     return UserNotFoundErrorResponse()
 

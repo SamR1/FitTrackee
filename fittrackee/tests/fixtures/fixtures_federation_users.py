@@ -4,23 +4,27 @@ from fittrackee import db
 from fittrackee.federation.models import Actor, Domain
 from fittrackee.users.models import FollowRequest, User
 
-from ..utils import generate_follow_request, get_remote_user_object
+from ..utils import (
+    generate_follow_request,
+    get_remote_user_object,
+    random_string,
+)
 
 
 def generate_remote_user(
     remote_domain: Domain, without_profile_page: bool = False
 ) -> User:
     domain = f'https://{remote_domain.name}'
-    user_name = 'test'
+    user_name = random_string()[0:30]
     if without_profile_page:
         remote_user_object = get_remote_user_object(
-            username='Test',
+            username=user_name.capitalize(),
             preferred_username=user_name,
             domain=domain,
         )
     else:
         remote_user_object = get_remote_user_object(
-            username='Test',
+            username=user_name.capitalize(),
             preferred_username=user_name,
             domain=domain,
             profile_url=f'{domain}/{user_name}',
