@@ -5,7 +5,6 @@ from flask import current_app
 from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, db
-from fittrackee.users.models import User
 
 from .utils import ACTOR_TYPES, AP_CTX, generate_keys, get_ap_url
 
@@ -50,9 +49,6 @@ class Actor(BaseModel):
     __tablename__ = 'actors'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     ap_id = db.Column(db.String(255), unique=True, nullable=False)
-    user_id = db.Column(
-        db.Integer, db.ForeignKey('users.id'), unique=True, nullable=False
-    )
     domain_id = db.Column(
         db.Integer, db.ForeignKey('domains.id'), nullable=False
     )
@@ -75,27 +71,27 @@ class Actor(BaseModel):
     last_fetch_date = db.Column(db.DateTime, nullable=True)
 
     domain = db.relationship('Domain', back_populates='actors')
+    user = db.relationship('User', uselist=False, back_populates='actor')
 
     def __str__(self) -> str:
         return f'<Actor \'{self.name}\'>'
 
     def __init__(
         self,
-        user: User,
+        username: str,
         domain_id: int,
         created_at: Optional[datetime] = datetime.utcnow(),
     ) -> None:
-        self.ap_id = get_ap_url(user.username, 'user_url')
+        self.ap_id = get_ap_url(username, 'user_url')
         self.created_at = created_at
         self.domain_id = domain_id
-        self.followers_url = get_ap_url(user.username, 'followers')
-        self.following_url = get_ap_url(user.username, 'following')
-        self.inbox_url = get_ap_url(user.username, 'inbox')
-        self.name = user.username
-        self.outbox_url = get_ap_url(user.username, 'outbox')
-        self.preferred_username = user.username
-        self.shared_inbox_url = get_ap_url(user.username, 'shared_inbox')
-        self.user_id = user.id
+        self.followers_url = get_ap_url(username, 'followers')
+        self.following_url = get_ap_url(username, 'following')
+        self.inbox_url = get_ap_url(username, 'inbox')
+        self.name = username
+        self.outbox_url = get_ap_url(username, 'outbox')
+        self.preferred_username = username
+        self.shared_inbox_url = get_ap_url(username, 'shared_inbox')
 
     def generate_keys(self) -> None:
         self.public_key, self.private_key = generate_keys()

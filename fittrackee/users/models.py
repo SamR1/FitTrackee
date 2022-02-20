@@ -8,6 +8,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.sql.expression import select
 
 from fittrackee import BaseModel, bcrypt, db
+from fittrackee.federation.models import Actor
 from fittrackee.workouts.models import Workout
 
 from .utils.token import decode_user_token, get_user_token
@@ -16,6 +17,9 @@ from .utils.token import decode_user_token, get_user_token
 class User(BaseModel):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    actor_id = db.Column(
+        db.Integer, db.ForeignKey('actors.id'), unique=True, nullable=True
+    )
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
@@ -42,6 +46,7 @@ class User(BaseModel):
     )
     language = db.Column(db.String(50), nullable=True)
     imperial_units = db.Column(db.Boolean, default=False, nullable=False)
+    actor = db.relationship(Actor, back_populates='user')
 
     def __repr__(self) -> str:
         return f'<User {self.username!r}>'
