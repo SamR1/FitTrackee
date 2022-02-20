@@ -5,7 +5,7 @@ import requests
 from fittrackee.federation.exceptions import ActorNotFoundException
 
 
-def get_remote_user(actor_url: str) -> Dict:
+def get_remote_actor(actor_url: str) -> Dict:
     response = requests.get(
         actor_url,
         headers={'Accept': 'application/activity+json'},

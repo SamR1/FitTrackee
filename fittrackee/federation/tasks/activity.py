@@ -1,8 +1,21 @@
-from typing import Dict
+from importlib import import_module
+from typing import Callable, Dict
 
 from fittrackee import dramatiq
 
-from ..activities import get_activity_instance
+from ..exceptions import UnsupportedActivityException
+
+
+def get_activity_instance(activity_dict: Dict) -> Callable:
+    activity_type = activity_dict['type']
+    try:
+        Activity = getattr(
+            import_module('fittrackee.federation.activities'),
+            f'{activity_type}Activity',
+        )
+    except AttributeError:
+        raise UnsupportedActivityException(activity_type)
+    return Activity
 
 
 @dramatiq.actor(queue_name='fittrackee_activities')

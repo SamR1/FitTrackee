@@ -47,7 +47,7 @@ def get_remote_user_object(
     domain: str,
     profile_url: Optional[str] = None,
 ) -> Dict:
-    user_url = f'{domain}/users/{username}'
+    user_url = f'{domain}/users/{preferred_username}'
     user_object = {
         '@context': [
             'https://www.w3.org/ns/activitystreams',

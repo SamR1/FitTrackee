@@ -43,6 +43,16 @@ class SenderNotFoundException(GenericException):
         )
 
 
+class RemoteActorException(GenericException):
+    def __init__(self, message: Optional[str] = None) -> None:
+        super().__init__(
+            status='error',
+            message=(
+                f'Invalid remote actor{ f": {message}" if message else ""}.'
+            ),
+        )
+
+
 class UnsupportedActivityException(GenericException):
     def __init__(self, activity_type: str) -> None:
         super().__init__(

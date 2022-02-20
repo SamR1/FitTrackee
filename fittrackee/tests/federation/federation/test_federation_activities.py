@@ -1,9 +1,9 @@
 from typing import Dict, Optional, Union
+from unittest.mock import patch
 
 import pytest
 from flask import Flask
 
-from fittrackee.federation.activities import get_activity_instance
 from fittrackee.federation.constants import AP_CTX
 from fittrackee.federation.enums import ActivityType
 from fittrackee.federation.exceptions import (
@@ -11,6 +11,7 @@ from fittrackee.federation.exceptions import (
     UnsupportedActivityException,
 )
 from fittrackee.federation.models import Actor
+from fittrackee.federation.tasks.activity import get_activity_instance
 from fittrackee.users.exceptions import (
     FollowRequestAlreadyProcessedError,
     FollowRequestAlreadyRejectedError,
@@ -123,20 +124,31 @@ class TestFollowActivity(FollowRequestActivitiesTestCase):
         ):
             activity.process_activity()
 
-    def test_it_raises_error_if_remote_actor_does_not_exist(
-        self, app_with_federation: Flask, actor_1: Actor
+    def test_it_creates_actor_if_remote_actor_does_not_exist(
+        self,
+        app_with_federation: Flask,
+        actor_1: Actor,
+        random_actor: RandomActor,
     ) -> None:
-        follow_activity = self.generate_follow_activity(followed_actor=actor_1)
-
+        follow_activity = self.generate_follow_activity(
+            follower_actor_id=random_actor.activitypub_id,
+            followed_actor=actor_1,
+        )
         activity = get_activity_instance({'type': follow_activity['type']})(
             activity_dict=follow_activity
         )
-
-        with pytest.raises(
-            ActorNotFoundException,
-            match='actor not found for FollowActivity',
-        ):
+        with patch(
+            'fittrackee.federation.utils_user.get_remote_actor'
+        ) as get_remote_user_mock:
+            get_remote_user_mock.return_value = (
+                random_actor.get_remote_user_object()
+            )
             activity.process_activity()
+
+        remote_actor = Actor.query.filter_by(
+            activitypub_id=follow_activity['actor']
+        )
+        assert remote_actor is not None
 
     def test_it_raises_error_if_follow_request_already_rejected(
         self,
