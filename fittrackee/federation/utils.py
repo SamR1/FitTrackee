@@ -1,9 +1,11 @@
 import re
-from typing import Optional, Tuple
+from typing import Dict, Optional, Tuple
 from uuid import uuid4
 
 from Crypto.PublicKey import RSA
 from flask import current_app
+
+from .enums import ActivityType
 
 
 def generate_keys() -> Tuple[str, str]:
@@ -50,3 +52,11 @@ def generate_activity_id() -> str:
 def get_username_and_domain(full_name: str) -> Optional[re.Match]:
     full_name_pattern = r'([\w_\-\.]+)@([\w_\-\.]+\.[a-z]{2,})'
     return re.match(full_name_pattern, full_name)
+
+
+def is_invalid_activity_data(activity_data: Dict) -> bool:
+    return (
+        'type' not in activity_data
+        or 'object' not in activity_data
+        or activity_data['type'] not in [a.value for a in ActivityType]
+    )

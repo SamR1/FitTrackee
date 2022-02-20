@@ -7,6 +7,8 @@ from flask import Blueprint, request, send_file
 from sqlalchemy import exc
 
 from fittrackee import db
+from fittrackee.federation.decorators import federation_required
+from fittrackee.federation.inbox import inbox
 from fittrackee.federation.models import Actor, Domain
 from fittrackee.federation.utils import get_username_and_domain
 from fittrackee.files import get_absolute_file_path
@@ -639,3 +641,11 @@ def follow_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
         return successful_response_dict
 
     return UserNotFoundErrorResponse()
+
+
+@users_blueprint.route('/users/<user_name>/inbox', methods=['POST'])
+@federation_required
+def user_inbox(
+    app_domain: Domain, user_name: str
+) -> Union[Dict, HttpResponse]:
+    return inbox(request, app_domain, user_name)

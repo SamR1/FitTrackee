@@ -1,14 +1,54 @@
 from datetime import datetime
 from json import dumps
-from typing import Dict
+from typing import Dict, Optional, Union
 from urllib.parse import urlparse
 
 import requests
+from flask import Request
 
 from fittrackee import appLog
+from fittrackee.responses import (
+    HttpResponse,
+    InvalidPayloadErrorResponse,
+    UnauthorizedErrorResponse,
+    UserNotFoundErrorResponse,
+)
 
-from .models import Actor
-from .signature import VALID_DATE_FORMAT, signature_header
+from .exceptions import InvalidSignatureException
+from .models import Actor, Domain
+from .signature import (
+    VALID_DATE_FORMAT,
+    SignatureVerification,
+    signature_header,
+)
+from .utils import is_invalid_activity_data
+
+
+def inbox(
+    request: Request, app_domain: Domain, username: Optional[str]
+) -> Union[Dict, HttpResponse]:
+    # if user inbox
+    if username:
+        recipient = Actor.query.filter_by(
+            preferred_username=username,
+            domain_id=app_domain.id,
+        ).first()
+        if not recipient:
+            return UserNotFoundErrorResponse()
+
+    activity_data = request.get_json()
+    if not activity_data or is_invalid_activity_data(activity_data):
+        return InvalidPayloadErrorResponse()
+
+    try:
+        signature_verification = SignatureVerification.get_signature(request)
+        signature_verification.verify()
+    except InvalidSignatureException:
+        return UnauthorizedErrorResponse(message='Invalid signature.')
+
+    # TODO handle activity
+
+    return {'status': 'success'}
 
 
 def send_to_remote_user_inbox(
