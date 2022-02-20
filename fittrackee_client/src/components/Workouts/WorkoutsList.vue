@@ -238,7 +238,7 @@
   }
 
   function getWorkoutsQuery(newQuery: LocationQuery): TWorkoutsPayload {
-    query = getQuery(newQuery, orderByList, defaultOrder.order_by, {
+    let workoutQuery = getQuery(newQuery, orderByList, defaultOrder.order_by, {
       defaultSort: defaultOrder.order,
     })
     Object.keys(newQuery)
@@ -247,10 +247,10 @@
         if (typeof newQuery[k] === 'string') {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          query[k] = newQuery[k]
+          workoutQuery[k] = newQuery[k]
         }
       })
-    return query
+    return workoutQuery
   }
 
   function getConvertedPayload(payload: TWorkoutsPayload): TWorkoutsPayload {
