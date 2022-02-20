@@ -61,8 +61,21 @@ def upgrade():
     op.create_unique_constraint('users_actor_id_key', 'users', ['actor_id'])
     op.create_foreign_key('users_actor_id_fkey', 'users', 'actors', ['actor_id'], ['id'])
 
+    op.create_table('follow_requests',
+        sa.Column('follower_actor_id', sa.Integer(), nullable=False),
+        sa.Column('followed_actor_id', sa.Integer(), nullable=False),
+        sa.Column('is_approved', sa.Boolean(), nullable=False),
+        sa.Column('created_at', sa.DateTime(), nullable=False),
+        sa.Column('updated_at', sa.DateTime(), nullable=True),
+        sa.ForeignKeyConstraint(['followed_actor_id'], ['actors.id'], ),
+        sa.ForeignKeyConstraint(['follower_actor_id'], ['actors.id'], ),
+        sa.PrimaryKeyConstraint('follower_actor_id', 'followed_actor_id')
+    )
+
 
 def downgrade():
+    op.drop_table('follow_requests')
+
     op.drop_constraint('users_actor_id_fkey', 'users', type_='foreignkey')
     op.drop_constraint('users_actor_id_key', 'users', type_='unique')
     op.drop_column('users', 'actor_id')

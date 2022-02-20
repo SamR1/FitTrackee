@@ -6,6 +6,10 @@ from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, db
 
+from .exceptions import (
+    FollowRequestAlreadyProcessedError,
+    NotExistingFollowRequestError,
+)
 from .utils import ACTOR_TYPES, AP_CTX, generate_keys, get_ap_url
 
 
@@ -43,6 +47,27 @@ class Domain(BaseModel):
         }
 
 
+class FollowRequest(BaseModel):
+    """Follow request between two actors"""
+
+    __tablename__ = 'follow_requests'
+    follower_actor_id = db.Column(
+        db.Integer,
+        db.ForeignKey('actors.id'),
+        primary_key=True,
+    )
+    followed_actor_id = db.Column(
+        db.Integer,
+        db.ForeignKey('actors.id'),
+        primary_key=True,
+    )
+    is_approved = db.Column(db.Boolean, default=False, nullable=False)
+    created_at = db.Column(
+        db.DateTime, nullable=False, default=datetime.utcnow
+    )
+    updated_at = db.Column(db.DateTime, nullable=True)
+
+
 class Actor(BaseModel):
     """ActivityPub Actor"""
 
@@ -73,6 +98,19 @@ class Actor(BaseModel):
     domain = db.relationship('Domain', back_populates='actors')
     user = db.relationship('User', uselist=False, back_populates='actor')
 
+    received_follow_requests = db.relationship(
+        FollowRequest,
+        backref='to_actor',
+        primaryjoin=id == FollowRequest.followed_actor_id,
+        lazy='dynamic',
+    )
+    sent_follow_requests = db.relationship(
+        FollowRequest,
+        backref='from_actor',
+        primaryjoin=id == FollowRequest.follower_actor_id,
+        lazy='dynamic',
+    )
+
     def __str__(self) -> str:
         return f'<Actor \'{self.name}\'>'
 
@@ -99,6 +137,45 @@ class Actor(BaseModel):
     @property
     def is_remote(self) -> bool:
         return self.domain.is_remote
+
+    @property
+    def pending_follow_requests(self) -> FollowRequest:
+        return self.received_follow_requests.filter_by(updated_at=None).all()
+
+    def send_follow_request_to(self, target: 'Actor') -> FollowRequest:
+        follow_request = FollowRequest(
+            follower_actor_id=self.id, followed_actor_id=target.id
+        )
+        db.session.add(follow_request)
+        db.session.commit()
+        return follow_request
+
+    def _processes_follow_request_from(
+        self, actor: 'Actor', approved: bool
+    ) -> FollowRequest:
+        follow_request = FollowRequest.query.filter_by(
+            follower_actor_id=actor.id, followed_actor_id=self.id
+        ).first()
+        if not follow_request:
+            raise NotExistingFollowRequestError()
+        if follow_request.updated_at is not None:
+            raise FollowRequestAlreadyProcessedError()
+        follow_request.is_approved = approved
+        follow_request.updated_at = datetime.now()
+        db.session.commit()
+        return follow_request
+
+    def approves_follow_request_from(self, actor: 'Actor') -> FollowRequest:
+        follow_request = self._processes_follow_request_from(
+            actor=actor, approved=True
+        )
+        return follow_request
+
+    def refuses_follow_request_from(self, actor: 'Actor') -> FollowRequest:
+        follow_request = self._processes_follow_request_from(
+            actor=actor, approved=False
+        )
+        return follow_request
 
     def serialize(self) -> Dict:
         return {

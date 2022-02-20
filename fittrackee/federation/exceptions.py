@@ -1,0 +1,6 @@
+class FollowRequestAlreadyProcessedError(Exception):
+    ...
+
+
+class NotExistingFollowRequestError(Exception):
+    ...
