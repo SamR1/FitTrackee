@@ -113,6 +113,18 @@ def user_admin_sport_1_preference(
 
 
 @pytest.fixture()
+def follow_request_from_user_1_to_user_2(
+    user_1: User, user_2: User
+) -> FollowRequest:
+    follow_request = FollowRequest(
+        follower_user_id=user_1.id, followed_user_id=user_2.id
+    )
+    db.session.add(follow_request)
+    db.session.commit()
+    return follow_request
+
+
+@pytest.fixture()
 def follow_request_from_user_2_to_user_1(
     user_1: User, user_2: User
 ) -> FollowRequest:

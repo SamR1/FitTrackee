@@ -13,7 +13,7 @@ MAX_FOLLOW_REQUESTS_PER_PAGE = 50
 
 @follow_requests_blueprint.route('/follow_requests', methods=['GET'])
 @authenticate
-def get_users(auth_user: User) -> Dict:
+def get_follow_requests(auth_user: User) -> Dict:
     params = request.args.copy()
     page = int(params.get('page', 1))
     per_page = int(params.get('per_page', FOLLOW_REQUESTS_PER_PAGE))

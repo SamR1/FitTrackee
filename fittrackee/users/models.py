@@ -42,6 +42,9 @@ class FollowRequest(BaseModel):
         self.follower_user_id = follower_user_id
         self.followed_user_id = followed_user_id
 
+    def is_rejected(self) -> bool:
+        return not self.is_approved and self.updated_at is not None
+
     def serialize(self, federation_enabled: bool) -> Dict:
         return {
             'from_user': self.from_user.actor.serialize()
