@@ -3,10 +3,12 @@ from datetime import datetime
 from unittest.mock import patch
 
 from flask import Flask
+from flask.testing import FlaskClient
 
 from fittrackee.users.models import FollowRequest, User
 
 from ..test_case_mixins import ApiTestCaseMixin
+from ..utils import random_string
 
 
 class TestGetFollowRequestWithoutFederation(ApiTestCaseMixin):
@@ -214,3 +216,161 @@ class TestGetFollowRequestPagination(ApiTestCaseMixin):
             'pages': 2,
             'total': 2,
         }
+
+
+class FollowRequestTestCase(ApiTestCaseMixin):
+    def assert_it_returns_follow_request_not_found(
+        self,
+        client: FlaskClient,
+        auth_token: str,
+        user_name: str,
+        action: str,
+    ) -> None:
+        url = f'/api/follow_requests/{user_name}/{action}'
+        self.assert_return_not_found(
+            url, client, auth_token, 'Follow request does not exist.'
+        )
+
+    @staticmethod
+    def assert_it_returns_follow_request_already_processed(
+        client: FlaskClient,
+        auth_token: str,
+        user_name: str,
+        action: str,
+    ) -> None:
+        url = f'/api/follow_requests/{user_name}/{action}'
+        response = client.post(
+            url,
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'error'
+        assert data['message'] == (
+            f"Follow request from user '{user_name}' already {action}ed."
+        )
+
+    @staticmethod
+    def assert_it_returns_follow_request_processed(
+        client: FlaskClient,
+        auth_token: str,
+        user_name: str,
+        action: str,
+    ) -> None:
+        url = f'/api/follow_requests/{user_name}/{action}'
+        response = client.post(
+            url,
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == (
+            f"Follow request from user '{user_name}' is {action}ed."
+        )
+
+
+class TestAcceptFollowRequestWithoutFederation(FollowRequestTestCase):
+    def test_it_raises_error_if_target_user_does_not_exist(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        self.assert_return_user_not_found(
+            f'/api/follow_requests/{random_string()}/accept',
+            client,
+            auth_token,
+        )
+
+    def test_it_raises_error_if_follow_request_does_not_exist(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        self.assert_it_returns_follow_request_not_found(
+            client, auth_token, user_2.username, 'accept'
+        )
+
+    def test_it_raises_error_if_follow_request_already_accepted(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        follow_request_from_user_2_to_user_1.updated_at = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        self.assert_it_returns_follow_request_already_processed(
+            client, auth_token, user_2.username, 'accept'
+        )
+
+    def test_it_accepts_follow_request(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        self.assert_it_returns_follow_request_processed(
+            client, auth_token, user_2.username, 'accept'
+        )
+
+
+class TestRejectFollowRequestWithoutFederation(FollowRequestTestCase):
+    def test_it_raises_error_if_target_user_does_not_exist(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        self.assert_return_user_not_found(
+            f'/api/follow_requests/{random_string()}/reject',
+            client,
+            auth_token,
+        )
+
+    def test_it_raises_error_if_follow_request_does_not_exist(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        self.assert_it_returns_follow_request_not_found(
+            client, auth_token, user_2.username, 'reject'
+        )
+
+    def test_it_raises_error_if_follow_request_already_rejected(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        follow_request_from_user_2_to_user_1.updated_at = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        self.assert_it_returns_follow_request_already_processed(
+            client, auth_token, user_2.username, 'reject'
+        )
+
+    def test_it_rejects_follow_request(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(app)
+
+        self.assert_it_returns_follow_request_processed(
+            client, auth_token, user_2.username, 'reject'
+        )

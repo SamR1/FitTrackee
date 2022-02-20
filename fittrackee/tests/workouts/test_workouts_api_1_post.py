@@ -491,7 +491,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert data['status'] == 'error'
         assert data['message'] == 'invalid payload'
 
-    def test_it_returns_500_if_sport_id_does_not_exists(
+    def test_it_returns_500_if_sport_id_does_not_exist(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(app)

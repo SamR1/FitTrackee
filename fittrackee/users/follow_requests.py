@@ -1,8 +1,26 @@
-from typing import Dict
+from typing import Dict, Union
 
 from flask import Blueprint, request
 
+from fittrackee import appLog
+from fittrackee.federation.exceptions import (
+    ActorNotFoundException,
+    DomainNotFoundException,
+)
+from fittrackee.federation.utils_user import get_user_from_username
+from fittrackee.responses import (
+    HttpResponse,
+    InvalidPayloadErrorResponse,
+    NotFoundErrorResponse,
+    UserNotFoundErrorResponse,
+)
+
 from .decorators import authenticate
+from .exceptions import (
+    FollowRequestAlreadyProcessedError,
+    NotExistingFollowRequestError,
+    UserNotFoundException,
+)
 from .models import FollowRequest, User
 
 follow_requests_blueprint = Blueprint('follow_requests', __name__)
@@ -48,3 +66,57 @@ def get_follow_requests(auth_user: User) -> Dict:
             'total': follow_requests_pagination.total,
         },
     }
+
+
+def process_follow_request(
+    auth_user: User, user_name: str, action: str
+) -> Union[Dict, HttpResponse]:
+    try:
+        from_user = get_user_from_username(user_name)
+    except (
+        ActorNotFoundException,
+        DomainNotFoundException,
+        UserNotFoundException,
+    ) as e:
+        appLog.error(f'Error when accepting follow request: {e}')
+        return UserNotFoundErrorResponse()
+
+    current_user = User.query.filter_by(id=auth_user.id).first()
+    try:
+        if action == 'accept':
+            current_user.approves_follow_request_from(from_user)
+        else:  # action == 'reject'
+            current_user.rejects_follow_request_from(from_user)
+    except NotExistingFollowRequestError:
+        return NotFoundErrorResponse(message='Follow request does not exist.')
+    except FollowRequestAlreadyProcessedError:
+        return InvalidPayloadErrorResponse(
+            message=(
+                f"Follow request from user '{user_name}' already {action}ed."
+            )
+        )
+
+    return {
+        'status': 'success',
+        'message': f"Follow request from user '{user_name}' is {action}ed.",
+    }
+
+
+@follow_requests_blueprint.route(
+    '/follow_requests/<user_name>/accept', methods=['POST']
+)
+@authenticate
+def accept_follow_request(
+    auth_user: User, user_name: str
+) -> Union[Dict, HttpResponse]:
+    return process_follow_request(auth_user, user_name, 'accept')
+
+
+@follow_requests_blueprint.route(
+    '/follow_requests/<user_name>/reject', methods=['POST']
+)
+@authenticate
+def reject_follow_request(
+    auth_user: User, user_name: str
+) -> Union[Dict, HttpResponse]:
+    return process_follow_request(auth_user, user_name, 'reject')

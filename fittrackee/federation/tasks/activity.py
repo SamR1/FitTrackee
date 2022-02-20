@@ -1,7 +1,8 @@
 from typing import Dict
 
 from fittrackee import dramatiq
-from fittrackee.federation.utils import get_activity_instance
+
+from ..activities import get_activity_instance
 
 
 @dramatiq.actor(queue_name='fittrackee_activities')

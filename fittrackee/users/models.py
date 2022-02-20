@@ -17,6 +17,7 @@ from fittrackee.workouts.models import Workout
 
 from .exceptions import (
     FollowRequestAlreadyProcessedError,
+    FollowRequestAlreadyRejectedError,
     NotExistingFollowRequestError,
 )
 from .utils.token import decode_user_token, get_user_token
@@ -69,16 +70,34 @@ class FollowRequest(BaseModel):
     def get_activity(self) -> Dict:
         if not current_app.config['federation_enabled']:
             raise FederationDisabledException()
-        return {
-            '@context': AP_CTX,
+        follow_activity = {
             'id': (
-                f'{self.from_user.actor.activitypub_id}#follow/'
+                f'{self.from_user.actor.activitypub_id}#follows/'
                 f'{self.to_user.actor.fullname}'
             ),
             'type': ActivityType.FOLLOW.value,
             'actor': self.from_user.actor.activitypub_id,
             'object': self.to_user.actor.activitypub_id,
         }
+        if self.updated_at is None:
+            activity = follow_activity.copy()
+        else:
+            activity = {
+                'id': (
+                    f'{self.to_user.actor.activitypub_id}#'
+                    f'{"accept" if self.is_approved else "reject"}s/'
+                    f'follow/{self.from_user.actor.fullname}'
+                ),
+                'type': (
+                    ActivityType.ACCEPT.value
+                    if self.is_approved
+                    else ActivityType.REJECT.value
+                ),
+                'actor': self.to_user.actor.activitypub_id,
+                'object': follow_activity,
+            }
+        activity['@context'] = AP_CTX
+        return activity
 
 
 class User(BaseModel):
@@ -204,6 +223,14 @@ class User(BaseModel):
         return self.received_follow_requests.filter_by(updated_at=None).all()
 
     def send_follow_request_to(self, target: 'User') -> FollowRequest:
+        existing_follow_request = FollowRequest.query.filter_by(
+            follower_user_id=self.id, followed_user_id=target.id
+        ).first()
+        if existing_follow_request:
+            if existing_follow_request.is_rejected():
+                raise FollowRequestAlreadyRejectedError()
+            return existing_follow_request
+
         follow_request = FollowRequest(
             follower_user_id=self.id, followed_user_id=target.id
         )
@@ -232,6 +259,13 @@ class User(BaseModel):
         follow_request.is_approved = approved
         follow_request.updated_at = datetime.now()
         db.session.commit()
+
+        if current_app.config['federation_enabled'] and user.actor.is_remote:
+            send_to_users_inbox.send(
+                sender_id=self.actor.id,
+                activity=follow_request.get_activity(),
+                recipients=[user.actor.inbox_url],
+            )
         return follow_request
 
     def approves_follow_request_from(self, user: 'User') -> FollowRequest:
@@ -240,7 +274,7 @@ class User(BaseModel):
         )
         return follow_request
 
-    def refuses_follow_request_from(self, user: 'User') -> FollowRequest:
+    def rejects_follow_request_from(self, user: 'User') -> FollowRequest:
         follow_request = self._processes_follow_request_from(
             user=user, approved=False
         )

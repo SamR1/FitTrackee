@@ -1,12 +1,10 @@
 import re
-from importlib import import_module
-from typing import Callable, Dict, Optional, Tuple
+from typing import Dict, Tuple
 
 from Crypto.PublicKey import RSA
 from flask import current_app
 
 from .enums import ActivityType
-from .exceptions import UnsupportedActivityException
 
 
 def generate_keys() -> Tuple[str, str]:
@@ -46,26 +44,9 @@ def remove_url_scheme(url: str) -> str:
     return re.sub(r'https?://', '', url)
 
 
-def get_username_and_domain(full_name: str) -> Optional[re.Match]:
-    full_name_pattern = r'([\w_\-\.]+)@([\w_\-\.]+\.[a-z]{2,})'
-    return re.match(full_name_pattern, full_name)
-
-
 def is_invalid_activity_data(activity_data: Dict) -> bool:
     return (
         'type' not in activity_data
         or 'object' not in activity_data
         or activity_data['type'] not in [a.value for a in ActivityType]
     )
-
-
-def get_activity_instance(activity_dict: Dict) -> Callable:
-    activity_type = activity_dict["type"]
-    try:
-        Activity = getattr(
-            import_module('fittrackee.federation.activities'),
-            f'{activity_type}Activity',
-        )
-    except AttributeError:
-        raise UnsupportedActivityException(activity_type)
-    return Activity

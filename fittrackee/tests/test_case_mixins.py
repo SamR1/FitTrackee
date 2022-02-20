@@ -6,6 +6,8 @@ from unittest.mock import Mock
 from flask import Flask
 from flask.testing import FlaskClient
 
+from fittrackee.federation.models import Actor
+
 
 class BaseTestMixin:
     @staticmethod
@@ -45,6 +47,49 @@ class ApiTestCaseMixin:
         )
         auth_token = json.loads(resp_login.data.decode())['auth_token']
         return client, auth_token
+
+    @staticmethod
+    def assert_return_not_found(
+        url: str, client: FlaskClient, auth_token: str, message: str
+    ) -> None:
+        response = client.post(
+            url,
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 404
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'not found'
+        assert data['message'] == message
+
+    def assert_return_user_not_found(
+        self, url: str, client: FlaskClient, auth_token: str
+    ) -> None:
+        self.assert_return_not_found(
+            url, client, auth_token, 'user does not exist'
+        )
+
+
+class UserInboxTestMixin(BaseTestMixin):
+    def assert_send_to_users_inbox_called_once(
+        self,
+        send_to_users_inbox_mock: Mock,
+        local_actor: Actor,
+        remote_actor: Actor,
+        base_object: Any,
+    ) -> None:
+        send_to_users_inbox_mock.send.assert_called_once()
+        self.assert_call_args_keys_equal(
+            send_to_users_inbox_mock.send,
+            ['sender_id', 'activity', 'recipients'],
+        )
+        call_args = self.get_call_kwargs(send_to_users_inbox_mock.send)
+        assert call_args['sender_id'] == local_actor.id
+        assert call_args['recipients'] == [remote_actor.inbox_url]
+        activity = base_object.get_activity()
+        del activity['id']
+        self.assert_dict_contains_subset(call_args['activity'], activity)
 
 
 class CallArgsMixin:

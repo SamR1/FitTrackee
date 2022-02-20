@@ -11,6 +11,14 @@ class ActorNotFoundException(GenericException):
         )
 
 
+class DomainNotFoundException(GenericException):
+    def __init__(self, domain: str) -> None:
+        super().__init__(
+            status='error',
+            message=f"Domain '{domain}' not found.",
+        )
+
+
 class FederationDisabledException(GenericException):
     def __init__(self) -> None:
         super().__init__(

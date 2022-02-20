@@ -92,7 +92,7 @@ class TestFollowWithoutFederation(ApiTestCaseMixin):
         )
 
     @patch('fittrackee.users.models.send_to_users_inbox')
-    def test_it_does_not_call_send_to_inbox(
+    def test_it_does_not_call_send_to_user_inbox(
         self,
         send_to_users_inbox_mock: Mock,
         app: Flask,

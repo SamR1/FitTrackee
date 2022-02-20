@@ -7,7 +7,7 @@ from flask import Flask
 from fittrackee.federation.models import Actor, Domain
 from fittrackee.users.models import FollowRequest
 
-from ...test_case_mixins import ApiTestCaseMixin, BaseTestMixin
+from ...test_case_mixins import ApiTestCaseMixin, UserInboxTestMixin
 from ...utils import RandomActor, random_string
 
 
@@ -107,7 +107,7 @@ class TestFollowWithFederation(ApiTestCaseMixin):
         )
 
     @patch('fittrackee.users.models.send_to_users_inbox')
-    def test_it_does_not_call_send_to_inbox(
+    def test_it_does_not_call_send_to_user_inbox(
         self,
         send_to_users_inbox_mock: Mock,
         app_with_federation: Flask,
@@ -127,7 +127,7 @@ class TestFollowWithFederation(ApiTestCaseMixin):
         send_to_users_inbox_mock.send.assert_not_called()
 
 
-class TestRemoteFollowWithFederation(BaseTestMixin, ApiTestCaseMixin):
+class TestRemoteFollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
     """Follow user from another instance"""
 
     def test_it_raise_error_if_remote_actor_does_not_exist(
@@ -225,7 +225,7 @@ class TestRemoteFollowWithFederation(BaseTestMixin, ApiTestCaseMixin):
         )
 
     @patch('fittrackee.users.models.send_to_users_inbox')
-    def test_it_calls_send_to_inbox(
+    def test_it_calls_send_to_user_inbox(
         self,
         send_to_users_inbox_mock: Mock,
         app_with_federation: Flask,
@@ -242,17 +242,13 @@ class TestRemoteFollowWithFederation(BaseTestMixin, ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        send_to_users_inbox_mock.send.assert_called_once()
-        self.assert_call_args_keys_equal(
-            send_to_users_inbox_mock.send,
-            ['sender_id', 'activity', 'recipients'],
-        )
-        call_args = self.get_call_kwargs(send_to_users_inbox_mock.send)
-        assert call_args['sender_id'] == actor_1.id
-        assert call_args['recipients'] == [remote_actor.inbox_url]
         follow_request = FollowRequest.query.filter_by(
             follower_user_id=actor_1.user.id,
             followed_user_id=remote_actor.user.id,
         ).first()
-        activity = follow_request.get_activity()
-        assert call_args['activity'] == activity
+        self.assert_send_to_users_inbox_called_once(
+            send_to_users_inbox_mock,
+            local_actor=actor_1,
+            remote_actor=remote_actor,
+            base_object=follow_request,
+        )

@@ -24,7 +24,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert data['data']['statistics'] == {}
 
-    def test_it_returns_error_when_user_does_not_exists(
+    def test_it_returns_error_when_user_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(app)

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import Flask
 
 from fittrackee.federation.constants import AP_CTX
@@ -23,7 +25,7 @@ class TestFollowRequestModelWithFederation:
         assert serialized_follow_request['from_user'] == actor_1.serialize()
         assert serialized_follow_request['to_user'] == actor_2.serialize()
 
-    def test_it_returns_activity_object_when_federation_is_enabled(
+    def test_it_returns_follow_activity_object(
         self,
         app_with_federation: Flask,
         actor_1: Actor,
@@ -34,8 +36,60 @@ class TestFollowRequestModelWithFederation:
 
         assert activity_object == {
             '@context': AP_CTX,
-            'id': f'{actor_1.activitypub_id}#follow/{actor_2.fullname}',
+            'id': f'{actor_1.activitypub_id}#follows/{actor_2.fullname}',
             'type': 'Follow',
             'actor': actor_1.activitypub_id,
             'object': actor_2.activitypub_id,
+        }
+
+    def test_it_returns_accept_activity_object_when_follow_request_is_accepted(
+        self,
+        app_with_federation: Flask,
+        actor_1: Actor,
+        actor_2: Actor,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        follow_request_from_user_1_to_user_2.is_approved = True
+        follow_request_from_user_1_to_user_2.updated_at = datetime.utcnow()
+        activity_object = follow_request_from_user_1_to_user_2.get_activity()
+
+        assert activity_object == {
+            '@context': AP_CTX,
+            'id': (
+                f'{actor_2.activitypub_id}#accepts/follow/{actor_1.fullname}'
+            ),
+            'type': 'Accept',
+            'actor': actor_2.activitypub_id,
+            'object': {
+                'id': f'{actor_1.activitypub_id}#follows/{actor_2.fullname}',
+                'type': 'Follow',
+                'actor': actor_1.activitypub_id,
+                'object': actor_2.activitypub_id,
+            },
+        }
+
+    def test_it_returns_reject_activity_object_when_follow_request_is_rejected(
+        self,
+        app_with_federation: Flask,
+        actor_1: Actor,
+        actor_2: Actor,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        follow_request_from_user_1_to_user_2.is_approved = False
+        follow_request_from_user_1_to_user_2.updated_at = datetime.utcnow()
+        activity_object = follow_request_from_user_1_to_user_2.get_activity()
+
+        assert activity_object == {
+            '@context': AP_CTX,
+            'id': (
+                f'{actor_2.activitypub_id}#rejects/follow/{actor_1.fullname}'
+            ),
+            'type': 'Reject',
+            'actor': actor_2.activitypub_id,
+            'object': {
+                'id': f'{actor_1.activitypub_id}#follows/{actor_2.fullname}',
+                'type': 'Follow',
+                'actor': actor_1.activitypub_id,
+                'object': actor_2.activitypub_id,
+            },
         }

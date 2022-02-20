@@ -179,12 +179,12 @@ class TestUserFollowingModel:
         user_2: User,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
-        follow_request = user_1.refuses_follow_request_from(user_2)
+        follow_request = user_1.rejects_follow_request_from(user_2)
 
         assert not follow_request.is_approved
         assert user_1.pending_follow_requests == []
 
-    def test_it_raises_error_if_follow_request_does_not_exists(
+    def test_it_raises_error_if_follow_request_does_not_exist(
         self,
         app: Flask,
         user_1: User,
