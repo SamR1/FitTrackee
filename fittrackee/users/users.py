@@ -23,9 +23,13 @@ from fittrackee.responses import (
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
 from .decorators import authenticate, authenticate_as_admin
-from .exceptions import UserNotFoundException
-from .models import FollowRequest, User, UserSportPreference
+from .exceptions import (
+    FollowRequestAlreadyRejectedError,
+    UserNotFoundException,
+)
+from .models import User, UserSportPreference
 from .utils.admin import set_admin_rights
+from .utils.follow import create_follow_request
 
 users_blueprint = Blueprint('users', __name__)
 
@@ -627,17 +631,13 @@ def follow_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
         target_user = actor.user
 
     if target_user:
-        existing_follow_request = FollowRequest.query.filter_by(
-            follower_user_id=auth_user.id, followed_user_id=target_user.id
-        ).first()
-        if existing_follow_request:
-            if existing_follow_request.is_rejected():
-                return ForbiddenErrorResponse()
-            else:
-                return successful_response_dict
-
-        auth_user = User.query.filter_by(id=auth_user.id).first()
-        auth_user.send_follow_request_to(target_user)
+        try:
+            create_follow_request(
+                follower_user_id=auth_user.id,
+                followed_user=target_user,
+            )
+        except FollowRequestAlreadyRejectedError:
+            return ForbiddenErrorResponse()
         return successful_response_dict
 
     return UserNotFoundErrorResponse()

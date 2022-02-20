@@ -5,7 +5,7 @@ from flask import Flask
 
 from fittrackee.federation.exceptions import SenderNotFoundException
 from fittrackee.federation.models import Actor
-from fittrackee.federation.tasks import send_to_users_inbox
+from fittrackee.federation.tasks.user_inbox import send_to_users_inbox
 from fittrackee.users.models import FollowRequest
 
 from ...utils import random_domain_with_scheme, random_string
@@ -25,7 +25,7 @@ class TestSendToUsersInbox:
                 recipients=[remote_actor.inbox_url],
             )
 
-    @patch('fittrackee.federation.tasks.send_to_remote_user_inbox')
+    @patch('fittrackee.federation.tasks.user_inbox.send_to_remote_user_inbox')
     def test_it_calls_send_to_remote_user_inbox(
         self,
         send_to_remote_user_inbox_mock: Mock,
@@ -44,8 +44,8 @@ class TestSendToUsersInbox:
             sender=actor_1, activity=activity, recipient=remote_actor.inbox_url
         )
 
-    @patch('fittrackee.federation.tasks.send_to_remote_user_inbox')
-    def test_it_calls_send_to_remote_user_inbox_for_each_recipent(
+    @patch('fittrackee.federation.tasks.user_inbox.send_to_remote_user_inbox')
+    def test_it_calls_send_to_remote_user_inbox_for_each_recipient(
         self,
         send_to_remote_user_inbox_mock: Mock,
         app_with_federation: Flask,

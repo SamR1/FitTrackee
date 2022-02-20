@@ -1,10 +1,11 @@
 import json
-from typing import Dict
-from unittest.mock import patch
+from typing import Dict, Tuple
+from unittest.mock import Mock, patch
 
 import pytest
 import requests
 from flask import Flask
+from werkzeug.test import TestResponse
 
 from fittrackee.federation.constants import AP_CTX
 from fittrackee.federation.enums import ActivityType
@@ -19,8 +20,53 @@ from ...utils import (
     random_string,
 )
 
+# Prevent pytest from collecting TestResponse as test
+TestResponse.__test__ = False  # type: ignore
+
 
 class TestUserInbox(ApiTestCaseMixin):
+    @staticmethod
+    def post_to_user_inbox(
+        app_with_federation: Flask, actor_1: Actor, actor_2: Actor
+    ) -> Tuple[Dict, TestResponse]:
+        actor_2.generate_keys()
+        host = random_domain()
+        date_str = get_date_string()
+        client = app_with_federation.test_client()
+        inbox_path = f'/api/users/{actor_1.preferred_username}/inbox'
+        follow_activity: Dict = {
+            '@context': AP_CTX,
+            'id': random_string(),
+            'type': ActivityType.FOLLOW.value,
+            'actor': actor_2.activitypub_id,
+            'object': actor_1.activitypub_id,
+        }
+
+        with patch.object(requests, 'get') as requests_mock:
+            requests_mock.return_value = generate_response(
+                status_code=200,
+                content=actor_2.serialize(),
+            )
+            requests_mock.path = inbox_path
+            response = client.post(
+                inbox_path,
+                content_type='application/json',
+                headers={
+                    'Host': host,
+                    'Date': date_str,
+                    'Signature': signature_header(
+                        host=host,
+                        path=inbox_path,
+                        date_str=date_str,
+                        actor=actor_2,
+                    ),
+                    'Content-Type': 'application/ld+json',
+                },
+                data=json.dumps(follow_activity),
+            )
+
+        return follow_activity, response
+
     def test_it_returns_404_if_user_does_not_exist(
         self, app_with_federation: Flask, actor_1: Actor
     ) -> None:
@@ -123,45 +169,32 @@ class TestUserInbox(ApiTestCaseMixin):
         assert 'error' in data['status']
         assert 'Invalid signature.' in data['message']
 
+    @patch('fittrackee.federation.inbox.handle_activity')
     def test_it_returns_200_if_activity_and_signature_are_valid(
-        self, app_with_federation: Flask, actor_1: Actor, actor_2: Actor
+        self,
+        handle_activity: Mock,
+        app_with_federation: Flask,
+        actor_1: Actor,
+        actor_2: Actor,
     ) -> None:
-        actor_2.generate_keys()
-        host = random_domain()
-        date_str = get_date_string()
-        client = app_with_federation.test_client()
-        path = f'/api/users/{actor_1.preferred_username}/inbox'
-        follow_activity = {
-            '@context': AP_CTX,
-            'id': random_string(),
-            'type': ActivityType.FOLLOW.value,
-            'actor': actor_2.activitypub_id,
-            'object': actor_1.activitypub_id,
-        }
-
-        with patch.object(requests, 'get') as requests_mock:
-            requests_mock.return_value = generate_response(
-                status_code=200,
-                content=actor_2.serialize(),
-            )
-            requests_mock.path = path
-            response = client.post(
-                path,
-                content_type='application/json',
-                headers={
-                    'Host': host,
-                    'Date': date_str,
-                    'Signature': signature_header(
-                        host=host,
-                        path=path,
-                        date_str=date_str,
-                        actor=actor_2,
-                    ),
-                    'Content-Type': 'application/ld+json',
-                },
-                data=json.dumps(follow_activity),
-            )
+        _, response = self.post_to_user_inbox(
+            app_with_federation, actor_1, actor_2
+        )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
+
+    @patch('fittrackee.federation.inbox.handle_activity')
+    def test_it_calls_handle_activity_task(
+        self,
+        handle_activity: Mock,
+        app_with_federation: Flask,
+        actor_1: Actor,
+        actor_2: Actor,
+    ) -> None:
+        activity_dict, response = self.post_to_user_inbox(
+            app_with_federation, actor_1, actor_2
+        )
+
+        handle_activity.send.assert_called_with(activity=activity_dict)

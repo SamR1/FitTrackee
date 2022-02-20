@@ -12,7 +12,7 @@ from fittrackee.federation.constants import AP_CTX
 from fittrackee.federation.enums import ActivityType
 from fittrackee.federation.exceptions import FederationDisabledException
 from fittrackee.federation.models import Actor
-from fittrackee.federation.tasks import send_to_users_inbox
+from fittrackee.federation.tasks.user_inbox import send_to_users_inbox
 from fittrackee.federation.utils import generate_activity_id
 from fittrackee.workouts.models import Workout
 

@@ -1,11 +1,13 @@
 import re
-from typing import Dict, Optional, Tuple
+from importlib import import_module
+from typing import Callable, Dict, Optional, Tuple
 from uuid import uuid4
 
 from Crypto.PublicKey import RSA
 from flask import current_app
 
 from .enums import ActivityType
+from .exceptions import UnsupportedActivityException
 
 
 def generate_keys() -> Tuple[str, str]:
@@ -60,3 +62,15 @@ def is_invalid_activity_data(activity_data: Dict) -> bool:
         or 'object' not in activity_data
         or activity_data['type'] not in [a.value for a in ActivityType]
     )
+
+
+def get_activity_instance(activity_dict: Dict) -> Callable:
+    activity_type = activity_dict["type"]
+    try:
+        Activity = getattr(
+            import_module('fittrackee.federation.activities'),
+            f'{activity_type}Activity',
+        )
+    except AttributeError:
+        raise UnsupportedActivityException(activity_type)
+    return Activity

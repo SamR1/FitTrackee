@@ -166,7 +166,7 @@ class TestRemoteFollowWithFederation(BaseTestMixin, ApiTestCaseMixin):
         assert data['status'] == 'not found'
         assert data['message'] == 'user does not exist'
 
-    @patch('fittrackee.federation.tasks.send_to_users_inbox')
+    @patch('fittrackee.users.models.send_to_users_inbox')
     def test_it_creates_follow_request(
         self,
         send_to_users_inbox_mock: Mock,

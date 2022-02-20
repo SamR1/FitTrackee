@@ -21,6 +21,7 @@ from .signature import (
     SignatureVerification,
     signature_header,
 )
+from .tasks.activity import handle_activity
 from .utils import is_invalid_activity_data
 
 
@@ -46,7 +47,7 @@ def inbox(
     except InvalidSignatureException:
         return UnauthorizedErrorResponse(message='Invalid signature.')
 
-    # TODO handle activity
+    handle_activity.send(activity=activity_data)
 
     return {'status': 'success'}
 
