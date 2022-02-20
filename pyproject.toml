@@ -40,6 +40,7 @@ shortuuid = "^1.0.8"
 staticmap = "^0.5.4"
 SQLAlchemy = "1.4.31"
 pyOpenSSL = "^22.0"
+pycryptodome = "^3.14.1"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1"

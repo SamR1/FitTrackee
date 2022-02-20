@@ -86,6 +86,13 @@ def create_app() -> Flask:
     app.register_blueprint(users_blueprint, url_prefix='/api')
     app.register_blueprint(workouts_blueprint, url_prefix='/api')
 
+    # ActivityPub federation
+    from .federation.federation import ap_federation_blueprint  # noqa
+    from .federation.webfinger import ap_webfinger_blueprint  # noqa
+
+    app.register_blueprint(ap_federation_blueprint, url_prefix='/federation')
+    app.register_blueprint(ap_webfinger_blueprint)
+
     if app.debug:
         logging.getLogger('sqlalchemy').setLevel(logging.WARNING)
         logging.getLogger('sqlalchemy').handlers = logging.getLogger(

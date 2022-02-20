@@ -10,6 +10,7 @@ variables:
   EMAIL_URL: smtp://none:none@0.0.0.0:1025
   FLASK_APP: fittrackee/__main__.py
   SENDER_EMAIL: fittrackee@example.com
+  UI_URL: https://0.0.0.0:5000
 
 services:
   - name: postgres:latest
