@@ -1,4 +1,3 @@
-from datetime import datetime
 from uuid import uuid4
 
 import pytest
@@ -8,11 +7,7 @@ from Crypto.Signature import pkcs1_15
 from flask import Flask
 
 from fittrackee.federation.constants import AP_CTX
-from fittrackee.federation.exceptions import (
-    FollowRequestAlreadyProcessedError,
-    NotExistingFollowRequestError,
-)
-from fittrackee.federation.models import Actor, Domain, FollowRequest
+from fittrackee.federation.models import Actor, Domain
 from fittrackee.federation.utils import get_ap_url
 
 
@@ -171,96 +166,6 @@ class TestActivityPubRemotePersonActorModel:
         assert (
             serialized_actor['endpoints']['sharedInbox'] == f'{ap_url}/inbox'
         )
-
-
-class TestActivityPubActorFollowingModel:
-    def test_actor_2_sends_follow_requests_to_actor_1(
-        self,
-        app_with_federation: Flask,
-        actor_1: Actor,
-        actor_2: Actor,
-    ) -> None:
-        follow_request = actor_2.send_follow_request_to(actor_1)
-
-        assert follow_request in actor_2.sent_follow_requests.all()
-
-    def test_actor_1_receives_follow_requests_from_actor_2(
-        self,
-        app_with_federation: Flask,
-        actor_1: Actor,
-        actor_2: Actor,
-    ) -> None:
-        follow_request = actor_2.send_follow_request_to(actor_1)
-
-        assert follow_request in actor_1.received_follow_requests.all()
-
-    def test_actor_has_pending_follow_request(
-        self,
-        app_with_federation: Flask,
-        actor_1: Actor,
-        follow_request_from_actor_2_to_actor_1: FollowRequest,
-    ) -> None:
-        assert (
-            follow_request_from_actor_2_to_actor_1
-            in actor_1.pending_follow_requests
-        )
-
-    def test_actor_has_no_pending_follow_request(
-        self,
-        app_with_federation: Flask,
-        actor_1: Actor,
-        follow_request_from_actor_2_to_actor_1: FollowRequest,
-    ) -> None:
-        follow_request_from_actor_2_to_actor_1.updated_at = datetime.now()
-        assert actor_1.pending_follow_requests == []
-
-    def test_actor_approves_follow_request(
-        self,
-        app_with_federation: Flask,
-        actor_1: Actor,
-        actor_2: Actor,
-        follow_request_from_actor_2_to_actor_1: FollowRequest,
-        follow_request_from_actor_3_to_actor_1: FollowRequest,
-    ) -> None:
-        follow_request = actor_1.approves_follow_request_from(actor_2)
-
-        assert follow_request.is_approved
-        assert actor_1.pending_follow_requests == [
-            follow_request_from_actor_3_to_actor_1
-        ]
-
-    def test_actor_refuses_follow_request(
-        self,
-        app_with_federation: Flask,
-        actor_1: Actor,
-        actor_2: Actor,
-        follow_request_from_actor_2_to_actor_1: FollowRequest,
-    ) -> None:
-        follow_request = actor_1.refuses_follow_request_from(actor_2)
-
-        assert not follow_request.is_approved
-        assert actor_1.pending_follow_requests == []
-
-    def test_it_raises_error_if_follow_request_does_not_exists(
-        self,
-        app_with_federation: Flask,
-        actor_1: Actor,
-        actor_2: Actor,
-    ) -> None:
-        with pytest.raises(NotExistingFollowRequestError):
-            actor_1.approves_follow_request_from(actor_2)
-
-    def test_it_raises_error_if_actor_approves_follow_request_already_processed(  # noqa
-        self,
-        app_with_federation: Flask,
-        actor_1: Actor,
-        actor_2: Actor,
-        follow_request_from_actor_2_to_actor_1: FollowRequest,
-    ) -> None:
-        follow_request_from_actor_2_to_actor_1.updated_at = datetime.now()
-
-        with pytest.raises(FollowRequestAlreadyProcessedError):
-            actor_1.approves_follow_request_from(actor_2)
 
 
 class TestActivityPubActorModel:

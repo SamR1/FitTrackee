@@ -124,20 +124,20 @@ def upgrade():
 
     op.create_table(
         'follow_requests',
-        sa.Column('follower_actor_id', sa.Integer(), nullable=False),
-        sa.Column('followed_actor_id', sa.Integer(), nullable=False),
+        sa.Column('follower_user_id', sa.Integer(), nullable=False),
+        sa.Column('followed_user_id', sa.Integer(), nullable=False),
         sa.Column('is_approved', sa.Boolean(), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=False),
         sa.Column('updated_at', sa.DateTime(), nullable=True),
         sa.ForeignKeyConstraint(
-            ['followed_actor_id'],
-            ['actors.id'],
+            ['followed_user_id'],
+            ['users.id'],
         ),
         sa.ForeignKeyConstraint(
-            ['follower_actor_id'],
-            ['actors.id'],
+            ['follower_user_id'],
+            ['users.id'],
         ),
-        sa.PrimaryKeyConstraint('follower_actor_id', 'followed_actor_id'),
+        sa.PrimaryKeyConstraint('follower_user_id', 'followed_user_id'),
     )
 
 

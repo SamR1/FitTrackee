@@ -2,7 +2,7 @@ import pytest
 from flask import Flask
 
 from fittrackee import db
-from fittrackee.federation.models import Actor, Domain, FollowRequest
+from fittrackee.federation.models import Actor, Domain
 from fittrackee.users.models import User
 
 from ..utils import random_domain
@@ -54,30 +54,6 @@ def actor_3(user_3: User, app_with_federation: Flask) -> Actor:
     db.session.flush()
     db.session.commit()
     return actor
-
-
-@pytest.fixture()
-def follow_request_from_actor_2_to_actor_1(
-    actor_1: Actor, actor_2: Actor
-) -> FollowRequest:
-    follow_request = FollowRequest(
-        followed_actor_id=actor_1.id, follower_actor_id=actor_2.id
-    )
-    db.session.add(follow_request)
-    db.session.commit()
-    return follow_request
-
-
-@pytest.fixture()
-def follow_request_from_actor_3_to_actor_1(
-    actor_1: Actor, actor_3: Actor
-) -> FollowRequest:
-    follow_request = FollowRequest(
-        followed_actor_id=actor_1.id, follower_actor_id=actor_3.id
-    )
-    db.session.add(follow_request)
-    db.session.commit()
-    return follow_request
 
 
 @pytest.fixture()

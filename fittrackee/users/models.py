@@ -11,7 +11,36 @@ from fittrackee import BaseModel, bcrypt, db
 from fittrackee.federation.models import Actor
 from fittrackee.workouts.models import Workout
 
+from .exceptions import (
+    FollowRequestAlreadyProcessedError,
+    NotExistingFollowRequestError,
+)
 from .utils.token import decode_user_token, get_user_token
+
+
+class FollowRequest(BaseModel):
+    """Follow request between two users"""
+
+    __tablename__ = 'follow_requests'
+    follower_user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id'),
+        primary_key=True,
+    )
+    followed_user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id'),
+        primary_key=True,
+    )
+    is_approved = db.Column(db.Boolean, default=False, nullable=False)
+    created_at = db.Column(
+        db.DateTime, nullable=False, default=datetime.utcnow
+    )
+    updated_at = db.Column(db.DateTime, nullable=True)
+
+    def __init__(self, follower_user_id: int, followed_user_id: int):
+        self.follower_user_id = follower_user_id
+        self.followed_user_id = followed_user_id
 
 
 class User(BaseModel):
@@ -47,6 +76,18 @@ class User(BaseModel):
     language = db.Column(db.String(50), nullable=True)
     imperial_units = db.Column(db.Boolean, default=False, nullable=False)
     actor = db.relationship(Actor, back_populates='user')
+    received_follow_requests = db.relationship(
+        FollowRequest,
+        backref='to_user',
+        primaryjoin=id == FollowRequest.followed_user_id,
+        lazy='dynamic',
+    )
+    sent_follow_requests = db.relationship(
+        FollowRequest,
+        backref='from_user',
+        primaryjoin=id == FollowRequest.follower_user_id,
+        lazy='dynamic',
+    )
 
     def __repr__(self) -> str:
         return f'<User {self.username!r}>'
@@ -108,6 +149,45 @@ class User(BaseModel):
             .where(Workout.user_id == self.id)
             .label('workouts_count')
         )
+
+    @property
+    def pending_follow_requests(self) -> FollowRequest:
+        return self.received_follow_requests.filter_by(updated_at=None).all()
+
+    def send_follow_request_to(self, target: 'User') -> FollowRequest:
+        follow_request = FollowRequest(
+            follower_user_id=self.id, followed_user_id=target.id
+        )
+        db.session.add(follow_request)
+        db.session.commit()
+        return follow_request
+
+    def _processes_follow_request_from(
+        self, user: 'User', approved: bool
+    ) -> FollowRequest:
+        follow_request = FollowRequest.query.filter_by(
+            follower_user_id=user.id, followed_user_id=self.id
+        ).first()
+        if not follow_request:
+            raise NotExistingFollowRequestError()
+        if follow_request.updated_at is not None:
+            raise FollowRequestAlreadyProcessedError()
+        follow_request.is_approved = approved
+        follow_request.updated_at = datetime.now()
+        db.session.commit()
+        return follow_request
+
+    def approves_follow_request_from(self, user: 'User') -> FollowRequest:
+        follow_request = self._processes_follow_request_from(
+            user=user, approved=True
+        )
+        return follow_request
+
+    def refuses_follow_request_from(self, user: 'User') -> FollowRequest:
+        follow_request = self._processes_follow_request_from(
+            user=user, approved=False
+        )
+        return follow_request
 
     def serialize(self) -> Dict:
         sports = []

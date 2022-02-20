@@ -3,7 +3,7 @@ import datetime
 import pytest
 
 from fittrackee import db
-from fittrackee.users.models import User, UserSportPreference
+from fittrackee.users.models import FollowRequest, User, UserSportPreference
 from fittrackee.workouts.models import Sport
 
 
@@ -110,3 +110,27 @@ def user_admin_sport_1_preference(
     db.session.add(user_sport)
     db.session.commit()
     return user_sport
+
+
+@pytest.fixture()
+def follow_request_from_user_2_to_user_1(
+    user_1: User, user_2: User
+) -> FollowRequest:
+    follow_request = FollowRequest(
+        followed_user_id=user_1.id, follower_user_id=user_2.id
+    )
+    db.session.add(follow_request)
+    db.session.commit()
+    return follow_request
+
+
+@pytest.fixture()
+def follow_request_from_user_3_to_user_1(
+    user_1: User, user_3: User
+) -> FollowRequest:
+    follow_request = FollowRequest(
+        followed_user_id=user_1.id, follower_user_id=user_3.id
+    )
+    db.session.add(follow_request)
+    db.session.commit()
+    return follow_request
