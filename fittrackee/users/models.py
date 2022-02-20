@@ -81,13 +81,20 @@ class FollowRequest(BaseModel):
 
 class User(BaseModel):
     __tablename__ = 'users'
+    __table_args__ = (
+        db.UniqueConstraint(
+            'username', 'actor_id', name='username_actor_id_unique'
+        ),
+    )
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     actor_id = db.Column(
         db.Integer, db.ForeignKey('actors.id'), unique=True, nullable=True
     )
-    username = db.Column(db.String(20), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=False)
+    username = db.Column(db.String(50), nullable=False)
+    # Note: Null values are not considered equal
+    # source: https://www.postgresql.org/docs/current/indexes-unique.html
+    email = db.Column(db.String(120), unique=True, nullable=True)
+    password = db.Column(db.String(255), nullable=True)
     created_at = db.Column(db.DateTime, nullable=False)
     admin = db.Column(db.Boolean, default=False, nullable=False)
     first_name = db.Column(db.String(80), nullable=True)
@@ -131,15 +138,19 @@ class User(BaseModel):
     def __init__(
         self,
         username: str,
-        email: str,
-        password: str,
+        email: Optional[str],
+        password: Optional[str],
         created_at: Optional[datetime] = datetime.utcnow(),
     ) -> None:
         self.username = username
-        self.email = email
-        self.password = bcrypt.generate_password_hash(
-            password, current_app.config.get('BCRYPT_LOG_ROUNDS')
-        ).decode()
+        self.email = email  # email is None for remote actor
+        self.password = (
+            bcrypt.generate_password_hash(
+                password, current_app.config.get('BCRYPT_LOG_ROUNDS')
+            ).decode()
+            if email
+            else None
+        )  # no password for remote actor
         self.created_at = created_at
 
     @staticmethod
@@ -241,7 +252,9 @@ class User(BaseModel):
         app_domain = Domain.query.filter_by(
             name=current_app.config['AP_DOMAIN']
         ).first()
-        actor = Actor(username=self.username, domain_id=app_domain.id)
+        actor = Actor(
+            preferred_username=self.username, domain_id=app_domain.id
+        )
         db.session.add(actor)
         db.session.flush()
         self.actor_id = actor.id

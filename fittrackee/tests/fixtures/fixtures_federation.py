@@ -5,13 +5,13 @@ from fittrackee import db
 from fittrackee.federation.models import Actor, Domain
 from fittrackee.users.models import User
 
-from ..utils import random_domain
+from ..utils import get_remote_user_object, random_domain
 
 
 @pytest.fixture()
 def app_actor(app: Flask) -> Actor:
     domain = Domain.query.filter_by(name=app.config['AP_DOMAIN']).first()
-    actor = Actor(username='test', domain_id=domain.id)
+    actor = Actor(preferred_username='test', domain_id=domain.id)
     db.session.add(actor)
     db.session.commit()
     return actor
@@ -22,7 +22,7 @@ def actor_1(user_1: User, app_with_federation: Flask) -> Actor:
     domain = Domain.query.filter_by(
         name=app_with_federation.config['AP_DOMAIN']
     ).first()
-    actor = Actor(username=user_1.username, domain_id=domain.id)
+    actor = Actor(preferred_username=user_1.username, domain_id=domain.id)
     db.session.add(actor)
     db.session.flush()
     user_1.actor_id = actor.id
@@ -35,7 +35,7 @@ def actor_2(user_2: User, app_with_federation: Flask) -> Actor:
     domain = Domain.query.filter_by(
         name=app_with_federation.config['AP_DOMAIN']
     ).first()
-    actor = Actor(username=user_2.username, domain_id=domain.id)
+    actor = Actor(preferred_username=user_2.username, domain_id=domain.id)
     db.session.add(actor)
     db.session.flush()
     user_2.actor_id = actor.id
@@ -48,7 +48,7 @@ def actor_3(user_3: User, app_with_federation: Flask) -> Actor:
     domain = Domain.query.filter_by(
         name=app_with_federation.config['AP_DOMAIN']
     ).first()
-    actor = Actor(username=user_3.username, domain_id=domain.id)
+    actor = Actor(preferred_username=user_3.username, domain_id=domain.id)
     db.session.add(actor)
     db.session.flush()
     user_3.actor_id = actor.id
@@ -68,30 +68,18 @@ def remote_domain(app_with_federation: Flask) -> Domain:
 def remote_actor(
     user_2: User, app_with_federation: Flask, remote_domain: Domain
 ) -> Actor:
-    user_name = user_2.username.capitalize()
-    user_url = f'{remote_domain.name}/users/{user_2.username}'
+    domain = f'https://{remote_domain.name}'
+    remote_user_object = get_remote_user_object(
+        username=user_2.username, domain_with_scheme=domain
+    )
     actor = Actor(
-        username=user_2.username,
+        preferred_username=user_2.username,
         domain_id=remote_domain.id,
-        remote_user_data={
-            '@context': [
-                'https://www.w3.org/ns/activitystreams',
-                'https://w3id.org/security/v1',
-            ],
-            'id': user_url,
-            'type': 'Person',
-            'following': f'{user_url}/following',
-            'followers': f'{user_url}/followers',
-            'inbox': f'{user_url}/inbox',
-            'outbox': f'{user_url}/outbox',
-            'name': user_name,
-            'preferredUsername': user_2.username,
-            'endpoints': {'sharedInbox': f'{remote_domain.name}/inbox'},
-        },
+        remote_user_data=remote_user_object,
     )
     db.session.add(actor)
     db.session.flush()
-    user_2.name = user_name
+    user_2.name = user_2.username.capitalize()
     user_2.actor_id = actor.id
     db.session.commit()
     return actor

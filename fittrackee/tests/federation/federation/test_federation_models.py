@@ -10,6 +10,8 @@ from fittrackee.federation.constants import AP_CTX
 from fittrackee.federation.models import Actor, Domain
 from fittrackee.federation.utils import get_ap_url
 
+from ...utils import random_actor_url
+
 
 class TestGetApUrl:
     def test_it_raises_error_if_url_type_is_invalid(self, app: Flask) -> None:
@@ -132,9 +134,9 @@ class TestActivityPubRemotePersonActorModel:
         remote_domain: Domain,
     ) -> None:
         serialized_actor = remote_actor.serialize()
-        ap_url = remote_domain.name
-        user_url = (
-            f'{remote_domain.name}/users/{remote_actor.preferred_username}'
+        remote_domain_url = f'https://{remote_domain.name}'
+        user_url = random_actor_url(
+            remote_actor.preferred_username, remote_domain_url
         )
         assert serialized_actor['@context'] == AP_CTX
         assert serialized_actor['id'] == remote_actor.activitypub_id
@@ -159,7 +161,8 @@ class TestActivityPubRemotePersonActorModel:
         )
         assert 'publicKeyPem' in serialized_actor['publicKey']
         assert (
-            serialized_actor['endpoints']['sharedInbox'] == f'{ap_url}/inbox'
+            serialized_actor['endpoints']['sharedInbox']
+            == f'{remote_domain_url}/inbox'
         )
 
 
@@ -170,5 +173,5 @@ class TestActivityPubActorModel:
         domain = Domain.query.filter_by(
             name=app_with_federation.config['AP_DOMAIN']
         ).first()
-        actor = Actor(username=uuid4().hex, domain_id=domain.id)
+        actor = Actor(preferred_username=uuid4().hex, domain_id=domain.id)
         assert actor.name is None

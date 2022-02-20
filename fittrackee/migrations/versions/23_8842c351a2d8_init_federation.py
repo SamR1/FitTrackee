@@ -87,7 +87,19 @@ def upgrade():
     op.create_foreign_key(
         'users_actor_id_fkey', 'users', 'actors', ['actor_id'], ['id']
     )
-
+    op.drop_constraint('users_username_key', 'users', type_='unique')
+    op.alter_column(
+        'users', 'username', existing_type=sa.String(length=20),
+        type_=sa.String(length=50), existing_nullable=False
+    )
+    # user email and password are empty for remote actors
+    op.alter_column(
+        'users', 'email', existing_type=sa.VARCHAR(length=120), nullable=True
+    )
+    op.alter_column(
+        'users', 'password', existing_type=sa.VARCHAR(length=255),
+        nullable=True
+    )
     # create local actors with keys (even if federation is not enabled)
     user_helper = sa.Table(
         'users',
@@ -125,6 +137,9 @@ def upgrade():
         op.execute(
             f'UPDATE users SET actor_id = {actor.id} WHERE users.id = {user.id}'
         )
+    op.create_unique_constraint(
+        'username_actor_id_unique', 'users', ['username', 'actor_id']
+    )
 
     op.create_table(
         'follow_requests',
@@ -148,12 +163,25 @@ def upgrade():
 def downgrade():
     op.drop_table('follow_requests')
 
+    op.drop_constraint('username_actor_id_unique', 'users', type_='unique')
+    op.alter_column(
+        'users', 'username', existing_type=sa.String(length=50),
+        type_=sa.String(length=20), existing_nullable=False
+    )
+    op.alter_column(
+        'users', 'password', existing_type=sa.VARCHAR(length=255),
+        nullable=False
+    )
+    op.alter_column(
+        'users', 'email', existing_type=sa.VARCHAR(length=120), nullable=False
+    )
     op.drop_constraint('users_actor_id_fkey', 'users', type_='foreignkey')
     op.drop_constraint('users_actor_id_key', 'users', type_='unique')
     op.drop_column('users', 'actor_id')
 
     op.drop_table('actors')
     op.execute('DROP TYPE actor_types')
+    op.create_unique_constraint('users_username_key', 'users', ['username'])
 
     op.drop_table('domains')
 

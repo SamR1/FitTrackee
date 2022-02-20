@@ -31,7 +31,9 @@ class TestSendToRemoteInbox(BaseTestMixin):
 
         with freeze_time(now):
             send_to_remote_user_inbox(
-                sender=actor_1, activity={'foo': 'bar'}, recipient=remote_actor
+                sender=actor_1,
+                activity={'foo': 'bar'},
+                recipient_inbox_url=remote_actor.inbox_url,
             )
 
         signature_header_mock.assert_called_with(
@@ -60,7 +62,9 @@ class TestSendToRemoteInbox(BaseTestMixin):
 
         with freeze_time(now):
             send_to_remote_user_inbox(
-                sender=actor_1, activity=activity, recipient=remote_actor
+                sender=actor_1,
+                activity=activity,
+                recipient_inbox_url=remote_actor.inbox_url,
             )
 
         requests_mock.post.assert_called_with(
@@ -92,7 +96,9 @@ class TestSendToRemoteInbox(BaseTestMixin):
         )
 
         send_to_remote_user_inbox(
-            sender=actor_1, activity={'foo': 'bar'}, recipient=remote_actor
+            sender=actor_1,
+            activity={'foo': 'bar'},
+            recipient_inbox_url=remote_actor.inbox_url,
         )
 
         assert len(caplog.records) == 1

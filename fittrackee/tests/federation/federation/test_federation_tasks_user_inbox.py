@@ -41,7 +41,9 @@ class TestSendToUsersInbox:
         )
 
         send_to_remote_user_inbox_mock.assert_called_with(
-            sender=actor_1, activity=activity, recipient=remote_actor.inbox_url
+            sender=actor_1,
+            activity=activity,
+            recipient_inbox_url=remote_actor.inbox_url,
         )
 
     @patch('fittrackee.federation.tasks.user_inbox.send_to_remote_user_inbox')

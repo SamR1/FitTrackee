@@ -84,30 +84,25 @@ class Actor(BaseModel):
 
     def __init__(
         self,
-        username: str,
+        preferred_username: str,
         domain_id: int,
         created_at: Optional[datetime] = datetime.utcnow(),
         remote_user_data: Optional[Dict] = None,
     ) -> None:
         self.created_at = created_at
         self.domain_id = domain_id
-        self.preferred_username = username
+        self.preferred_username = preferred_username
         if remote_user_data:
-            self.activitypub_id = remote_user_data['id']
-            self.followers_url = remote_user_data['followers']
-            self.following_url = remote_user_data['following']
-            self.inbox_url = remote_user_data['inbox']
-            self.outbox_url = remote_user_data['outbox']
-            self.shared_inbox_url = remote_user_data.get('endpoints', {}).get(
-                'sharedInbox'
-            )
+            self.update_remote_data(remote_user_data)
         else:
-            self.activitypub_id = get_ap_url(username, 'user_url')
-            self.followers_url = get_ap_url(username, 'followers')
-            self.following_url = get_ap_url(username, 'following')
-            self.inbox_url = get_ap_url(username, 'inbox')
-            self.outbox_url = get_ap_url(username, 'outbox')
-            self.shared_inbox_url = get_ap_url(username, 'shared_inbox')
+            self.activitypub_id = get_ap_url(preferred_username, 'user_url')
+            self.followers_url = get_ap_url(preferred_username, 'followers')
+            self.following_url = get_ap_url(preferred_username, 'following')
+            self.inbox_url = get_ap_url(preferred_username, 'inbox')
+            self.outbox_url = get_ap_url(preferred_username, 'outbox')
+            self.shared_inbox_url = get_ap_url(
+                preferred_username, 'shared_inbox'
+            )
 
     def generate_keys(self) -> None:
         self.public_key, self.private_key = generate_keys()
@@ -121,6 +116,22 @@ class Actor(BaseModel):
         if self.type == ActorType.PERSON and self.user:
             return self.user.username
         return None
+
+    def update_remote_data(self, remote_user_data: Dict) -> None:
+        self.activitypub_id = remote_user_data['id']
+        self.type = ActorType(remote_user_data['type'])
+        self.manually_approves_followers = remote_user_data[
+            'manuallyApprovesFollowers'
+        ]
+        self.followers_url = remote_user_data['followers']
+        self.following_url = remote_user_data['following']
+        self.inbox_url = remote_user_data['inbox']
+        self.outbox_url = remote_user_data['outbox']
+        self.shared_inbox_url = remote_user_data.get('endpoints', {}).get(
+            'sharedInbox'
+        )
+        self.public_key = remote_user_data['publicKey']['publicKeyPem']
+        self.last_fetch_date = datetime.utcnow()
 
     def serialize(self) -> Dict:
         return {

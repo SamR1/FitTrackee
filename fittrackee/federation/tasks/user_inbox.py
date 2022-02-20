@@ -14,7 +14,9 @@ def send_to_users_inbox(
     if not sender:
         appLog.error('Sender not found when sending to users inbox.')
         raise SenderNotFoundException()
-    for recipient in recipients:
+    for recipient_inbox_url in recipients:
         send_to_remote_user_inbox(
-            sender=sender, activity=activity, recipient=recipient
+            sender=sender,
+            activity=activity,
+            recipient_inbox_url=recipient_inbox_url,
         )
