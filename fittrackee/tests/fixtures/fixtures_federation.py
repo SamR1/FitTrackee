@@ -5,7 +5,7 @@ from fittrackee import db
 from fittrackee.federation.models import Actor, Domain
 from fittrackee.users.models import User
 
-from ..utils import get_remote_user_object, random_domain
+from ..utils import RandomActor, get_remote_user_object, random_domain
 
 
 @pytest.fixture()
@@ -66,11 +66,15 @@ def remote_domain(app_with_federation: Flask) -> Domain:
 
 @pytest.fixture()
 def remote_actor(
-    user_2: User, app_with_federation: Flask, remote_domain: Domain
+    user_2: User,
+    app_with_federation: Flask,
+    remote_domain: Domain,
 ) -> Actor:
     domain = f'https://{remote_domain.name}'
     remote_user_object = get_remote_user_object(
-        username=user_2.username, domain_with_scheme=domain
+        username=user_2.username,
+        preferred_username=user_2.username,
+        domain=domain,
     )
     actor = Actor(
         preferred_username=user_2.username,
@@ -83,3 +87,13 @@ def remote_actor(
     user_2.actor_id = actor.id
     db.session.commit()
     return actor
+
+
+@pytest.fixture()
+def random_actor() -> RandomActor:
+    return RandomActor()
+
+
+@pytest.fixture()
+def random_actor_2() -> RandomActor:
+    return RandomActor()

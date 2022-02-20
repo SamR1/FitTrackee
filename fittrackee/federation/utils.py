@@ -1,7 +1,6 @@
 import re
 from importlib import import_module
 from typing import Callable, Dict, Optional, Tuple
-from uuid import uuid4
 
 from Crypto.PublicKey import RSA
 from flask import current_app
@@ -45,10 +44,6 @@ def get_ap_url(username: str, url_type: str) -> str:
 
 def remove_url_scheme(url: str) -> str:
     return re.sub(r'https?://', '', url)
-
-
-def generate_activity_id() -> str:
-    return f"{current_app.config['UI_URL']}/{uuid4()}"
 
 
 def get_username_and_domain(full_name: str) -> Optional[re.Match]:

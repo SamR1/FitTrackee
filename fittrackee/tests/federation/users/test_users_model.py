@@ -32,11 +32,10 @@ class TestFollowRequestModelWithFederation:
     ) -> None:
         activity_object = follow_request_from_user_1_to_user_2.get_activity()
 
-        assert app_with_federation.config['UI_URL'] in activity_object['id']
-        expected_object_subset = {
+        assert activity_object == {
             '@context': AP_CTX,
+            'id': f'{actor_1.activitypub_id}#follow/{actor_2.fullname}',
             'type': 'Follow',
             'actor': actor_1.activitypub_id,
             'object': actor_2.activitypub_id,
         }
-        assert {**activity_object, **expected_object_subset} == activity_object

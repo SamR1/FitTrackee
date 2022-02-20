@@ -13,7 +13,6 @@ from fittrackee.federation.enums import ActivityType
 from fittrackee.federation.exceptions import FederationDisabledException
 from fittrackee.federation.models import Actor, Domain
 from fittrackee.federation.tasks.user_inbox import send_to_users_inbox
-from fittrackee.federation.utils import generate_activity_id
 from fittrackee.workouts.models import Workout
 
 from .exceptions import (
@@ -72,7 +71,10 @@ class FollowRequest(BaseModel):
             raise FederationDisabledException()
         return {
             '@context': AP_CTX,
-            'id': generate_activity_id(),
+            'id': (
+                f'{self.from_user.actor.activitypub_id}#follow/'
+                f'{self.to_user.actor.fullname}'
+            ),
             'type': ActivityType.FOLLOW.value,
             'actor': self.from_user.actor.activitypub_id,
             'object': self.to_user.actor.activitypub_id,

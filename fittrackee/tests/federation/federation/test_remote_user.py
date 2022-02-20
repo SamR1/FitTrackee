@@ -6,13 +6,7 @@ import requests
 from fittrackee.federation.exceptions import ActorNotFoundException
 from fittrackee.federation.remote_user import get_remote_user
 
-from ...utils import (
-    generate_response,
-    get_remote_user_object,
-    random_actor_url,
-    random_domain_with_scheme,
-    random_string,
-)
+from ...utils import RandomActor, generate_response, random_actor_url
 
 
 class TestGetRemoteUser:
@@ -24,18 +18,14 @@ class TestGetRemoteUser:
                 get_remote_user(random_actor_url())
 
     def test_it_returns_user_object_if_remote_response_is_successful(
-        self,
+        self, random_actor: RandomActor
     ) -> None:
-        username = random_string()
-        remote_domain = random_domain_with_scheme()
-        remote_user = get_remote_user_object(username, remote_domain)
+        remote_user = random_actor.get_remote_user_object()
         with patch.object(requests, 'get') as requests_mock:
             requests_mock.return_value = generate_response(
                 status_code=200, content=remote_user
             )
 
-            expected_user = get_remote_user(
-                random_actor_url(username, remote_domain)
-            )
+            expected_user = get_remote_user(random_actor.activitypub_id)
 
             assert remote_user == expected_user

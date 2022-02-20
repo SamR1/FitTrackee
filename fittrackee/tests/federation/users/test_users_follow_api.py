@@ -8,14 +8,16 @@ from fittrackee.federation.models import Actor, Domain
 from fittrackee.users.models import FollowRequest
 
 from ...test_case_mixins import ApiTestCaseMixin, BaseTestMixin
-from ...utils import random_domain, random_string
+from ...utils import RandomActor, random_string
 
 
 class TestFollowWithFederation(ApiTestCaseMixin):
     """Follow user belonging to the same instance"""
 
     def test_it_raises_error_if_target_user_does_not_exist(
-        self, app_with_federation: Flask, actor_1: Actor
+        self,
+        app_with_federation: Flask,
+        actor_1: Actor,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation
@@ -129,15 +131,17 @@ class TestRemoteFollowWithFederation(BaseTestMixin, ApiTestCaseMixin):
     """Follow user from another instance"""
 
     def test_it_raise_error_if_remote_actor_does_not_exist(
-        self, app_with_federation: Flask, actor_1: Actor
+        self,
+        app_with_federation: Flask,
+        actor_1: Actor,
+        random_actor: RandomActor,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation
         )
-        remote_account = f'{random_string()}@{random_domain()}'
 
         response = client.post(
-            f'/api/users/{remote_account}/follow',
+            f'/api/users/{random_actor.fullname}/follow',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -148,15 +152,18 @@ class TestRemoteFollowWithFederation(BaseTestMixin, ApiTestCaseMixin):
         assert data['message'] == 'user does not exist'
 
     def test_it_raise_error_if_remote_actor_does_not_exist_for_existing_remote_domain(  # noqa
-        self, app_with_federation: Flask, actor_1: Actor, remote_domain: Domain
+        self,
+        app_with_federation: Flask,
+        actor_1: Actor,
+        remote_domain: Domain,
+        random_actor: RandomActor,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation
         )
-        remote_account = f'{random_string()}@{remote_domain.name}'
 
         response = client.post(
-            f'/api/users/{remote_account}/follow',
+            f'/api/users/{random_actor.fullname}/follow',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -177,12 +184,9 @@ class TestRemoteFollowWithFederation(BaseTestMixin, ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation
         )
-        remote_account = (
-            f'{remote_actor.preferred_username}@{remote_actor.domain.name}'
-        )
 
         response = client.post(
-            f'/api/users/{remote_account}/follow',
+            f'/api/users/{remote_actor.fullname}/follow',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -192,7 +196,7 @@ class TestRemoteFollowWithFederation(BaseTestMixin, ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert (
             data['message']
-            == f"Follow request to user '{remote_account}' is sent."
+            == f"Follow request to user '{remote_actor.fullname}' is sent."
         )
 
     def test_it_returns_success_if_follow_request_already_exists(
@@ -205,12 +209,9 @@ class TestRemoteFollowWithFederation(BaseTestMixin, ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation
         )
-        remote_account = (
-            f'{remote_actor.preferred_username}@{remote_actor.domain.name}'
-        )
 
         response = client.post(
-            f'/api/users/{remote_account}/follow',
+            f'/api/users/{remote_actor.fullname}/follow',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -220,7 +221,7 @@ class TestRemoteFollowWithFederation(BaseTestMixin, ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert (
             data['message']
-            == f"Follow request to user '{remote_account}' is sent."
+            == f"Follow request to user '{remote_actor.fullname}' is sent."
         )
 
     @patch('fittrackee.users.models.send_to_users_inbox')
@@ -234,12 +235,9 @@ class TestRemoteFollowWithFederation(BaseTestMixin, ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation
         )
-        remote_account = (
-            f'{remote_actor.preferred_username}@{remote_actor.domain.name}'
-        )
 
         client.post(
-            f'/api/users/{remote_account}/follow',
+            f'/api/users/{remote_actor.fullname}/follow',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -257,5 +255,4 @@ class TestRemoteFollowWithFederation(BaseTestMixin, ApiTestCaseMixin):
             followed_user_id=remote_actor.user.id,
         ).first()
         activity = follow_request.get_activity()
-        del activity['id']
-        self.assert_dict_contains_subset(call_args['activity'], activity)
+        assert call_args['activity'] == activity

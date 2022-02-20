@@ -9,12 +9,7 @@ from fittrackee.federation.models import Actor, Domain
 from fittrackee.users.models import User
 
 from ...test_case_mixins import ApiTestCaseMixin
-from ...utils import (
-    get_remote_user_object,
-    random_actor_url,
-    random_domain_with_scheme,
-    random_string,
-)
+from ...utils import RandomActor, random_string
 
 
 class TestFederationUser:
@@ -72,14 +67,14 @@ class TestFederationUser:
 
 class TestRemoteUser(ApiTestCaseMixin):
     def test_it_returns_error_if_federation_is_disabled(
-        self, app: Flask, user_1: User
+        self, app: Flask, user_1: User, random_actor: RandomActor
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(app)
         response = client.post(
             '/federation/remote-user',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
-            data=json.dumps({'actor_url': random_actor_url()}),
+            data=json.dumps({'actor_url': random_actor.activitypub_id}),
         )
 
         assert response.status_code == 403
@@ -91,13 +86,13 @@ class TestRemoteUser(ApiTestCaseMixin):
         )
 
     def test_it_returns_error_if_user_is_not_logged(
-        self, app_with_federation: Flask
+        self, app_with_federation: Flask, random_actor: RandomActor
     ) -> None:
         client = app_with_federation.test_client()
         response = client.post(
             '/federation/remote-user',
             content_type='application/json',
-            data=json.dumps({'actor_url': random_actor_url()}),
+            data=json.dumps({'actor_url': random_actor.activitypub_id}),
         )
 
         assert response.status_code == 401
@@ -123,7 +118,10 @@ class TestRemoteUser(ApiTestCaseMixin):
         assert 'invalid payload' in data['message']
 
     def test_it_returns_error_if_remote_instance_returns_error(
-        self, app_with_federation: Flask, actor_1: Actor
+        self,
+        app_with_federation: Flask,
+        actor_1: Actor,
+        random_actor: RandomActor,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation
@@ -136,7 +134,7 @@ class TestRemoteUser(ApiTestCaseMixin):
                 '/federation/remote-user',
                 content_type='application/json',
                 headers=dict(Authorization=f'Bearer {auth_token}'),
-                data=json.dumps({'actor_url': random_actor_url()}),
+                data=json.dumps({'actor_url': random_actor.activitypub_id}),
             )
 
             assert response.status_code == 400
@@ -145,7 +143,10 @@ class TestRemoteUser(ApiTestCaseMixin):
             assert 'Can not fetch remote actor.' in data['message']
 
     def test_it_returns_error_if_remote_actor_object_is_invalid(
-        self, app_with_federation: Flask, actor_1: Actor
+        self,
+        app_with_federation: Flask,
+        actor_1: Actor,
+        random_actor: RandomActor,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation
@@ -158,7 +159,7 @@ class TestRemoteUser(ApiTestCaseMixin):
                 '/federation/remote-user',
                 content_type='application/json',
                 headers=dict(Authorization=f'Bearer {auth_token}'),
-                data=json.dumps({'actor_url': random_actor_url()}),
+                data=json.dumps({'actor_url': random_actor.activitypub_id}),
             )
 
             assert response.status_code == 400
@@ -167,9 +168,12 @@ class TestRemoteUser(ApiTestCaseMixin):
             assert 'Invalid remote actor object.' in data['message']
 
     def test_it_returns_error_if_keys_are_missing_in_remote_actor_object(
-        self, app_with_federation: Flask, actor_1: Actor, remote_domain: Domain
+        self,
+        app_with_federation: Flask,
+        actor_1: Actor,
+        remote_domain: Domain,
+        random_actor: RandomActor,
     ) -> None:
-        remote_username = random_string()
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation
         )
@@ -177,20 +181,13 @@ class TestRemoteUser(ApiTestCaseMixin):
             'fittrackee.federation.federation.get_remote_user'
         ) as get_remote_user_mock:
             get_remote_user_mock.return_value = {
-                'preferredUsername': remote_username,
+                'preferredUsername': random_actor.preferred_username,
             }
             response = client.post(
                 '/federation/remote-user',
                 content_type='application/json',
                 headers=dict(Authorization=f'Bearer {auth_token}'),
-                data=json.dumps(
-                    {
-                        'actor_url': random_actor_url(
-                            username=remote_username,
-                            domain_with_scheme=f'https://{remote_domain.name}',
-                        )
-                    }
-                ),
+                data=json.dumps({'actor_url': random_actor.activitypub_id}),
             )
 
             assert response.status_code == 400
@@ -202,11 +199,10 @@ class TestRemoteUser(ApiTestCaseMixin):
         self,
         app_with_federation: Flask,
         actor_1: Actor,
+        random_actor: RandomActor,
     ) -> None:
-        remote_username = random_string()
-        domain = f"https://{ app_with_federation.config['AP_DOMAIN']}"
-        remote_user_object = get_remote_user_object(
-            username=remote_username, domain_with_scheme=domain
+        random_actor.domain = (
+            f"https://{ app_with_federation.config['AP_DOMAIN']}"
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation
@@ -214,18 +210,14 @@ class TestRemoteUser(ApiTestCaseMixin):
         with patch(
             'fittrackee.federation.federation.get_remote_user'
         ) as get_remote_user_mock:
-            get_remote_user_mock.return_value = remote_user_object
+            get_remote_user_mock.return_value = (
+                random_actor.get_remote_user_object()
+            )
             response = client.post(
                 '/federation/remote-user',
                 content_type='application/json',
                 headers=dict(Authorization=f'Bearer {auth_token}'),
-                data=json.dumps(
-                    {
-                        'actor_url': random_actor_url(
-                            username=remote_username, domain_with_scheme=domain
-                        )
-                    }
-                ),
+                data=json.dumps({'actor_url': random_actor.activitypub_id}),
             )
 
             assert response.status_code == 400
@@ -237,19 +229,17 @@ class TestRemoteUser(ApiTestCaseMixin):
             )
 
     def test_it_creates_remote_actor_if_actor_does_not_exist(
-        self, app_with_federation: Flask, actor_1: Actor, remote_domain: Domain
+        self,
+        app_with_federation: Flask,
+        actor_1: Actor,
+        remote_domain: Domain,
+        random_actor: RandomActor,
     ) -> None:
-        remote_username = random_string()
-        remote_preferred_username = random_string()
-        domain = f'https://{remote_domain.name}'
-        remote_user_object = get_remote_user_object(
-            username=remote_username,
-            preferred_username=remote_preferred_username,
-            domain_with_scheme=domain,
-        )
+        random_actor.domain = f'https://{remote_domain.name}'
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation
         )
+        remote_user_object = random_actor.get_remote_user_object()
         with patch(
             'fittrackee.federation.federation.get_remote_user'
         ) as get_remote_user_mock:
@@ -258,14 +248,7 @@ class TestRemoteUser(ApiTestCaseMixin):
                 '/federation/remote-user',
                 content_type='application/json',
                 headers=dict(Authorization=f'Bearer {auth_token}'),
-                data=json.dumps(
-                    {
-                        'actor_url': random_actor_url(
-                            username=remote_preferred_username,
-                            domain_with_scheme=domain,
-                        )
-                    }
-                ),
+                data=json.dumps({'actor_url': random_actor.activitypub_id}),
             )
 
             assert response.status_code == 200
@@ -273,16 +256,12 @@ class TestRemoteUser(ApiTestCaseMixin):
             assert data == remote_user_object
 
     def test_it_creates_remote_actor_if_actor_and_domain_dont_exist(
-        self, app_with_federation: Flask, actor_1: Actor
+        self,
+        app_with_federation: Flask,
+        actor_1: Actor,
+        random_actor: RandomActor,
     ) -> None:
-        remote_username = random_string()
-        remote_preferred_username = random_string()
-        domain = random_domain_with_scheme()
-        remote_user_object = get_remote_user_object(
-            username=remote_username,
-            preferred_username=remote_preferred_username,
-            domain_with_scheme=domain,
-        )
+        remote_user_object = random_actor.get_remote_user_object()
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation
         )
@@ -294,21 +273,14 @@ class TestRemoteUser(ApiTestCaseMixin):
                 '/federation/remote-user',
                 content_type='application/json',
                 headers=dict(Authorization=f'Bearer {auth_token}'),
-                data=json.dumps(
-                    {
-                        'actor_url': random_actor_url(
-                            username=remote_preferred_username,
-                            domain_with_scheme=domain,
-                        )
-                    }
-                ),
+                data=json.dumps({'actor_url': random_actor.activitypub_id}),
             )
 
             assert response.status_code == 200
             data = json.loads(response.data.decode())
             assert data == remote_user_object
 
-    def test_it_returns_updated_remote_actor_if_remote_domain_exists(
+    def test_it_returns_updated_remote_actor_if_remote_actor_exists(
         self, app_with_federation: Flask, actor_1: Actor, remote_actor: Actor
     ) -> None:
         remote_user_object = remote_actor.serialize()
@@ -336,7 +308,11 @@ class TestRemoteUser(ApiTestCaseMixin):
             assert remote_actor.last_fetch_date != last_fetched
 
     def test_it_creates_several_remote_actors(
-        self, app_with_federation: Flask, actor_1: Actor
+        self,
+        app_with_federation: Flask,
+        actor_1: Actor,
+        random_actor: RandomActor,
+        random_actor_2: RandomActor,
     ) -> None:
         """
         check constrains on User model (especially empty password and email)
@@ -347,50 +323,26 @@ class TestRemoteUser(ApiTestCaseMixin):
         with patch(
             'fittrackee.federation.federation.get_remote_user'
         ) as get_remote_user_mock:
-            remote_preferred_username = random_string()
-            domain = random_domain_with_scheme()
-            remote_user_object = get_remote_user_object(
-                preferred_username=remote_preferred_username,
-                domain_with_scheme=domain,
-            )
+            remote_user_object = random_actor.get_remote_user_object()
             get_remote_user_mock.return_value = remote_user_object
             response = client.post(
                 '/federation/remote-user',
                 content_type='application/json',
                 headers=dict(Authorization=f'Bearer {auth_token}'),
-                data=json.dumps(
-                    {
-                        'actor_url': random_actor_url(
-                            username=remote_preferred_username,
-                            domain_with_scheme=domain,
-                        )
-                    }
-                ),
+                data=json.dumps({'actor_url': random_actor.activitypub_id}),
             )
 
             assert response.status_code == 200
             data = json.loads(response.data.decode())
             assert data == remote_user_object
 
-            remote_preferred_username = random_string()
-            domain = random_domain_with_scheme()
-            remote_user_object = get_remote_user_object(
-                preferred_username=remote_preferred_username,
-                domain_with_scheme=domain,
-            )
+            remote_user_object = random_actor_2.get_remote_user_object()
             get_remote_user_mock.return_value = remote_user_object
             response = client.post(
                 '/federation/remote-user',
                 content_type='application/json',
                 headers=dict(Authorization=f'Bearer {auth_token}'),
-                data=json.dumps(
-                    {
-                        'actor_url': random_actor_url(
-                            username=remote_preferred_username,
-                            domain_with_scheme=domain,
-                        )
-                    }
-                ),
+                data=json.dumps({'actor_url': random_actor_2.activitypub_id}),
             )
 
             assert response.status_code == 200
