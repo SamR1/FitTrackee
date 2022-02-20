@@ -4,7 +4,6 @@ from typing import Dict, Tuple
 from fittrackee import appLog
 from fittrackee.federation.exceptions import ActorNotFoundException
 from fittrackee.federation.models import Actor
-from fittrackee.federation.utils_user import create_remote_user
 from fittrackee.users.exceptions import (
     FollowRequestAlreadyProcessedError,
     FollowRequestAlreadyRejectedError,
@@ -23,9 +22,7 @@ class AbstractActivity(ABC):
     def process_activity(self) -> None:
         pass
 
-    def get_actors(
-        self, create_remote_actor: bool = False
-    ) -> Tuple[Actor, Actor]:
+    def get_actors(self) -> Tuple[Actor, Actor]:
         """
         return actors from activity 'actor' and 'object'
         """
@@ -33,12 +30,9 @@ class AbstractActivity(ABC):
             activitypub_id=self.activity['actor']
         ).first()
         if not actor:
-            if create_remote_actor:
-                actor = create_remote_user(self.activity['actor'])
-            else:
-                raise ActorNotFoundException(
-                    f'actor not found for {self.activity_name()}'
-                )
+            raise ActorNotFoundException(
+                f'actor not found for {self.activity_name()}'
+            )
 
         if isinstance(self.activity['object'], str):
             object_actor_activitypub_id = self.activity['object']
@@ -66,9 +60,7 @@ class FollowBaseActivity(AbstractActivity):
 
 class FollowActivity(FollowBaseActivity):
     def process_activity(self) -> None:
-        follower_actor, followed_actor = self.get_actors(
-            create_remote_actor=True
-        )
+        follower_actor, followed_actor = self.get_actors()
         try:
             follower_actor.user.send_follow_request_to(followed_actor.user)
         except FollowRequestAlreadyRejectedError as e:

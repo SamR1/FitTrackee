@@ -114,21 +114,22 @@ class TestUserRegistration:
             content_type='application/json',
         )
 
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == "username: 3 to 12 characters required\n"
         assert response.content_type == 'application/json'
         assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'error'
+        assert data['message'] == 'username: 3 to 30 characters required\n'
 
     def test_it_returns_error_if_username_is_too_long(
         self, app: Flask
     ) -> None:
         client = app.test_client()
+
         response = client.post(
             '/api/auth/register',
             data=json.dumps(
                 dict(
-                    username='testestestestestest',
+                    username='a' * 31,
                     email='test@test.com',
                     password='12345678',
                     password_conf='12345678',
@@ -136,11 +137,42 @@ class TestUserRegistration:
             ),
             content_type='application/json',
         )
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == "username: 3 to 12 characters required\n"
+
         assert response.content_type == 'application/json'
         assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'error'
+        assert data['message'] == 'username: 3 to 30 characters required\n'
+
+    @pytest.mark.parametrize(
+        'input_description,input_username',
+        [
+            ('account_handle', '@sam@example.com'),
+            ('with special characters', 'sam*'),
+        ],
+    )
+    def test_it_returns_error_if_username_is_invalid(
+        self, app: Flask, input_description: str, input_username: str
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/register',
+            data=json.dumps(
+                dict(
+                    username=input_username,
+                    email='test@test.com',
+                    password='12345678',
+                    password_conf='12345678',
+                )
+            ),
+            content_type='application/json',
+        )
+
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert 'invalid payload', data['message']
+        assert 'error', data['status']
 
     def test_it_returns_error_if_email_is_invalid(self, app: Flask) -> None:
         client = app.test_client()
@@ -160,7 +192,7 @@ class TestUserRegistration:
 
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
-        assert data['message'] == "email: valid email must be provided\n"
+        assert data['message'] == 'email: valid email must be provided\n'
         assert response.content_type == 'application/json'
         assert response.status_code == 400
 
@@ -301,30 +333,6 @@ class TestUserRegistration:
         data = json.loads(response.data.decode())
         assert response.status_code == 400
         assert 'invalid payload' in data['message']
-        assert 'error' in data['status']
-
-    def test_it_returns_error_if_username_is_invalid(self, app: Flask) -> None:
-        client = app.test_client()
-
-        response = client.post(
-            '/api/auth/register',
-            data=json.dumps(
-                dict(
-                    username=1,
-                    email='test@test.com',
-                    password='12345678',
-                    password_conf='12345678',
-                )
-            ),
-            content_type='application/json',
-        )
-
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert (
-            'error, please try again or contact the administrator'
-            in data['message']
-        )
         assert 'error' in data['status']
 
 

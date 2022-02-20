@@ -105,7 +105,7 @@ def upgrade():
     op.drop_constraint('users_username_key', 'users', type_='unique')
     op.alter_column(
         'users', 'username', existing_type=sa.String(length=20),
-        type_=sa.String(length=50), existing_nullable=False
+        type_=sa.String(length=30), existing_nullable=False
     )
     # user email and password are empty for remote actors
     op.alter_column(
@@ -215,7 +215,7 @@ def downgrade():
     )
     op.drop_constraint('username_actor_id_unique', 'users', type_='unique')
     op.alter_column(
-        'users', 'username', existing_type=sa.String(length=50),
+        'users', 'username', existing_type=sa.String(length=30),
         type_=sa.String(length=20), existing_nullable=False
     )
     op.alter_column(

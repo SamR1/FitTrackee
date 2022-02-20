@@ -9,10 +9,53 @@ from fittrackee.federation.exceptions import (
     RemoteActorException,
 )
 from fittrackee.federation.models import Actor, Domain
-from fittrackee.federation.utils_user import create_remote_user
+from fittrackee.federation.utils_user import (
+    create_remote_user,
+    get_username_and_domain,
+)
 from fittrackee.users.models import User
 
 from ...utils import RandomActor, random_string
+
+
+class TestGetUsernameAndDomain:
+    @pytest.mark.parametrize(
+        'input_user_account, expected_username_and_domain',
+        [
+            ('@sam@example.com', ('sam', 'example.com')),
+            (
+                '@john.doe@test.example.social',
+                ('john.doe', 'test.example.social'),
+            ),
+        ],
+    )
+    def test_it_returns_user_name_and_domain(
+        self,
+        input_user_account: str,
+        expected_username_and_domain: Union[str, None],
+    ) -> None:
+        print(input_user_account)
+        assert (
+            get_username_and_domain(input_user_account)
+            == expected_username_and_domain
+        )
+
+    @pytest.mark.parametrize(
+        'input_description, input_user_account',
+        [
+            ('sam', 'sam'),
+            ('@sam', '@sam'),
+            ('sam@', 'sam@'),
+            ('example.com', 'example.com'),
+            ('@example.com', '@example.com'),
+        ],
+    )
+    def test_it_returns_none_if_it_does_not_match(
+        self,
+        input_description: str,
+        input_user_account: str,
+    ) -> None:
+        assert get_username_and_domain(input_user_account) == (None, None)
 
 
 class TestCreateRemoteUser:

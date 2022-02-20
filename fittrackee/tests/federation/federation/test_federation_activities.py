@@ -1,5 +1,4 @@
 from typing import Dict, Optional, Union
-from unittest.mock import patch
 
 import pytest
 from flask import Flask
@@ -125,10 +124,10 @@ class FollowRequestActivitiesTestCase:
 
 class TestFollowActivity(FollowRequestActivitiesTestCase):
     def test_it_raises_error_if_followed_actor_does_not_exist(
-        self, app_with_federation: Flask, remote_user: User
+        self, app_with_federation: Flask, user_1: User
     ) -> None:
         follow_activity = self.generate_follow_activity(
-            follower_actor_id=remote_user.actor.activitypub_id
+            follower_actor_id=user_1.actor.activitypub_id
         )
         activity = get_activity_instance({'type': follow_activity['type']})(
             activity_dict=follow_activity
@@ -139,32 +138,6 @@ class TestFollowActivity(FollowRequestActivitiesTestCase):
             match='object actor not found for FollowActivity',
         ):
             activity.process_activity()
-
-    def test_it_creates_actor_if_remote_actor_does_not_exist(
-        self,
-        app_with_federation: Flask,
-        user_1: User,
-        random_actor: RandomActor,
-    ) -> None:
-        follow_activity = self.generate_follow_activity(
-            follower_actor_id=random_actor.activitypub_id,
-            followed_actor=user_1.actor,
-        )
-        activity = get_activity_instance({'type': follow_activity['type']})(
-            activity_dict=follow_activity
-        )
-        with patch(
-            'fittrackee.federation.utils_user.get_remote_actor'
-        ) as get_remote_user_mock:
-            get_remote_user_mock.return_value = (
-                random_actor.get_remote_user_object()
-            )
-            activity.process_activity()
-
-        remote_actor = Actor.query.filter_by(
-            activitypub_id=follow_activity['actor']
-        )
-        assert remote_actor is not None
 
     def test_it_raises_error_if_follow_request_already_rejected(
         self,
