@@ -6,19 +6,17 @@ from uuid import UUID, uuid4
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
-from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session, object_session
 from sqlalchemy.types import JSON, Enum
 
-from fittrackee import db
+from fittrackee import BaseModel, db
 from fittrackee.files import get_absolute_file_path
 
 from .utils.convert import convert_in_duration, convert_value_to_integer
 from .utils.short_id import encode_uuid
 
-BaseModel: DeclarativeMeta = db.Model
 record_types = [
     'AS',  # 'Best Average Speed'
     'FD',  # 'Farthest Distance'
