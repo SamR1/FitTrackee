@@ -9,7 +9,7 @@ from ..test_case_mixins import ApiTestCaseMixin
 from ..utils import random_string
 
 
-class TestGetFollowRequestWithoutFederation(ApiTestCaseMixin):
+class TestFollowWithoutFederation(ApiTestCaseMixin):
     def test_it_raises_error_if_target_user_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
