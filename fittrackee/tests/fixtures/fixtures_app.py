@@ -14,9 +14,11 @@ def get_app_config(
     max_single_file_size: Optional[Union[int, float]] = None,
     max_zip_file_size: Optional[Union[int, float]] = None,
     max_users: Optional[int] = None,
+    with_federation: Optional[bool] = False,
 ) -> Optional[AppConfig]:
     if with_config:
         config = AppConfig()
+        config.federation_enabled = with_federation
         config.gpx_limit_import = 10 if max_workouts is None else max_workouts
         config.max_single_file_size = (
             (1 if max_single_file_size is None else max_single_file_size)
@@ -41,6 +43,7 @@ def get_app(
     max_single_file_size: Optional[Union[int, float]] = None,
     max_zip_file_size: Optional[Union[int, float]] = None,
     max_users: Optional[int] = None,
+    with_federation: Optional[bool] = False,
 ) -> Generator:
     app = create_app()
     with app.app_context():
@@ -52,6 +55,7 @@ def get_app(
                 max_single_file_size,
                 max_zip_file_size,
                 max_users,
+                with_federation,
             )
             if app_db_config:
                 update_app_config_from_database(app, app_db_config)
@@ -151,9 +155,15 @@ def app_wo_domain() -> Generator:
     yield from get_app(with_config=True)
 
 
+@pytest.fixture
+def app_with_federation() -> Generator:
+    yield from get_app(with_config=True, with_federation=True)
+
+
 @pytest.fixture()
 def app_config() -> AppConfig:
     config = AppConfig()
+    config.federation_enabled = False
     config.gpx_limit_import = 10
     config.max_single_file_size = 1048576
     config.max_zip_file_size = 10485760

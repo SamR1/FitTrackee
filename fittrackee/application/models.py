@@ -23,6 +23,7 @@ class AppConfig(BaseModel):
         db.Integer, default=1048576, nullable=False
     )
     max_zip_file_size = db.Column(db.Integer, default=10485760, nullable=False)
+    federation_enabled = db.Column(db.Boolean, default=False, nullable=False)
 
     @property
     def is_registration_enabled(self) -> bool:
@@ -43,6 +44,7 @@ class AppConfig(BaseModel):
 
     def serialize(self) -> Dict:
         return {
+            'federation_enabled': self.federation_enabled,
             'gpx_limit_import': self.gpx_limit_import,
             'is_registration_enabled': self.is_registration_enabled,
             'max_single_file_size': self.max_single_file_size,

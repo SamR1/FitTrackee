@@ -28,6 +28,7 @@ def get_or_init_config() -> AppConfig:
 def update_app_config_from_database(
     current_app: Flask, db_config: AppConfig
 ) -> None:
+    current_app.config['federation_enabled'] = db_config.federation_enabled
     current_app.config['gpx_limit_import'] = db_config.gpx_limit_import
     current_app.config['max_single_file_size'] = db_config.max_single_file_size
     current_app.config['MAX_CONTENT_LENGTH'] = db_config.max_zip_file_size

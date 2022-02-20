@@ -7,11 +7,13 @@ from fittrackee.responses import (
 )
 
 from .models import Actor
+from .utils import federation_required
 
 ap_webfinger_blueprint = Blueprint('ap_webfinger', __name__)
 
 
 @ap_webfinger_blueprint.route('/.well-known/webfinger', methods=['GET'])
+@federation_required
 def webfinger() -> HttpResponse:
     resource = request.args.get('resource')
     if not resource or not resource.startswith('acct:'):
