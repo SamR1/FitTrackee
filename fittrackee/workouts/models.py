@@ -13,7 +13,7 @@ from sqlalchemy.types import JSON, Enum
 
 from fittrackee import BaseModel, db
 from fittrackee.files import get_absolute_file_path
-from fittrackee.users.privacy_levels import PrivacyLevel, get_map_visibility
+from fittrackee.privacy_levels import PrivacyLevel, get_map_visibility
 
 from .exceptions import WorkoutForbiddenException
 from .utils.convert import convert_in_duration, convert_value_to_integer

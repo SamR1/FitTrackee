@@ -1,8 +1,8 @@
 import pytest
 from flask import Flask
 
+from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
-from fittrackee.users.privacy_levels import PrivacyLevel
 from fittrackee.workouts.models import Sport, Workout
 from fittrackee.workouts.utils.visibility import can_view_workout
 

@@ -5,8 +5,8 @@ from uuid import uuid4
 import pytest
 from flask import Flask
 
+from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import User
-from fittrackee.users.privacy_levels import PrivacyLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..test_case_mixins import ApiTestCaseMixin

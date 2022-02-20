@@ -7,8 +7,8 @@ import pytest
 from flask import Flask
 from freezegun import freeze_time
 
+from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import User, UserSportPreference
-from fittrackee.users.privacy_levels import PrivacyLevel
 from fittrackee.users.utils.token import get_user_token
 from fittrackee.workouts.models import Sport, Workout
 

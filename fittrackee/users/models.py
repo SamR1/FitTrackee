@@ -14,6 +14,7 @@ from fittrackee.federation.enums import ActivityType
 from fittrackee.federation.exceptions import FederationDisabledException
 from fittrackee.federation.models import Actor, Domain
 from fittrackee.federation.tasks.user_inbox import send_to_users_inbox
+from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.workouts.models import Workout
 
 from .exceptions import (
@@ -21,7 +22,6 @@ from .exceptions import (
     FollowRequestAlreadyRejectedError,
     NotExistingFollowRequestError,
 )
-from .privacy_levels import PrivacyLevel
 from .roles import UserRole
 from .utils.token import decode_user_token, get_user_token
 

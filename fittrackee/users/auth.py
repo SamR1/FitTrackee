@@ -12,6 +12,7 @@ from werkzeug.utils import secure_filename
 from fittrackee import appLog, bcrypt, db
 from fittrackee.emails.tasks import reset_password_email
 from fittrackee.files import get_absolute_file_path
+from fittrackee.privacy_levels import PrivacyLevel, get_map_visibility
 from fittrackee.responses import (
     ForbiddenErrorResponse,
     HttpResponse,
@@ -27,7 +28,6 @@ from fittrackee.workouts.models import Sport
 
 from .decorators import authenticate
 from .models import User, UserSportPreference
-from .privacy_levels import PrivacyLevel, get_map_visibility
 from .utils.controls import check_passwords, register_controls
 from .utils.token import decode_user_token
 

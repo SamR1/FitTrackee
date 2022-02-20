@@ -1,7 +1,7 @@
 from typing import Optional, Tuple
 
+from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import User
-from fittrackee.users.privacy_levels import PrivacyLevel
 from fittrackee.workouts.models import Workout
 
 

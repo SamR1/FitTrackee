@@ -14,8 +14,8 @@ from werkzeug.utils import secure_filename
 
 from fittrackee import db
 from fittrackee.files import get_absolute_file_path
+from fittrackee.privacy_levels import PrivacyLevel, get_map_visibility
 from fittrackee.users.models import User, UserSportPreference
-from fittrackee.users.privacy_levels import PrivacyLevel, get_map_visibility
 
 from ..exceptions import WorkoutException
 from ..models import Sport, Workout, WorkoutSegment

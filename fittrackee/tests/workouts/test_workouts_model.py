@@ -5,8 +5,8 @@ import pytest
 from flask import Flask
 
 from fittrackee import db
+from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import User
-from fittrackee.users.privacy_levels import PrivacyLevel
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Sport, Workout
 from fittrackee.workouts.utils.short_id import decode_short_id

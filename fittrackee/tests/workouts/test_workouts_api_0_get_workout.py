@@ -5,8 +5,8 @@ from unittest.mock import mock_open, patch
 import pytest
 from flask import Flask
 
+from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
-from fittrackee.users.privacy_levels import PrivacyLevel
 from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
 
 from ..test_case_mixins import ApiTestCaseMixin
