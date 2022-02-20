@@ -1,62 +1,58 @@
 import re
-from typing import Optional, Tuple
-from urllib.parse import urlparse
+from typing import Tuple
+
+from flask import current_app
 
 from fittrackee import db
 from fittrackee.federation.exceptions import RemoteActorException
 from fittrackee.federation.models import Actor, Domain
-from fittrackee.federation.remote_actor import get_remote_actor
+from fittrackee.federation.remote_actor import (
+    fetch_remote_actor,
+    get_remote_actor,
+)
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.models import User
 
 from .exceptions import ActorNotFoundException, DomainNotFoundException
 
+FULL_NAME_REGEX = r'^@?([\w_\-\.]+)@([\w_\-\.]+\.[a-z]{2,})$'
+
 
 def get_username_and_domain(full_name: str) -> Tuple:
-    full_name_pattern = r'@?([\w_\-\.]+)@([\w_\-\.]+\.[a-z]{2,})'
-    if re.match(full_name_pattern, full_name) is None:
+    result = re.match(FULL_NAME_REGEX, full_name)
+    if result is None:
         return None, None
-    return re.match(full_name_pattern, full_name).groups()  # type: ignore
+    return result.groups()  # type: ignore
 
 
-def get_user_from_username(user_name: str) -> User:
-    name, domain_name = get_username_and_domain(user_name)
-    if domain_name is None:  # local actor
-        user = User.query.filter_by(username=user_name).first()
-    else:  # remote actor
-        domain = Domain.query.filter_by(name=domain_name).first()
-        if not domain:
-            raise DomainNotFoundException(domain_name)
-        actor = Actor.query.filter_by(
-            preferred_username=name, domain_id=domain.id
-        ).first()
-        if not actor:
-            raise ActorNotFoundException()
-        user = actor.user
-    if not user:
-        raise UserNotFoundException()
-    return user
-
-
-def create_remote_user(remote_actor_url: Optional[str]) -> Actor:
-    if not remote_actor_url:
-        raise RemoteActorException('invalid remote actor url')
-
-    # check if domain already exists
-    remote_domain_name = urlparse(remote_actor_url).netloc
-    remote_domain = Domain.query.filter_by(name=remote_domain_name).first()
-    if not remote_domain:
-        remote_domain = Domain(name=remote_domain_name)
-        db.session.add(remote_domain)
-        db.session.flush()
-
-    if not remote_domain.is_remote:
+def create_remote_user(username: str, domain: str) -> User:
+    if domain == current_app.config['UI_URL']:
         raise RemoteActorException(
             'the provided account is not a remote account'
         )
 
+    remote_domain = Domain.query.filter_by(name=domain).first()
+    if not remote_domain:
+        remote_domain = Domain(name=domain)
+        db.session.add(remote_domain)
+        db.session.flush()
+
+    # get account links via Webfinger
     try:
-        remote_actor_object = get_remote_actor(remote_actor_url)
+        webfinger = fetch_remote_actor(username, domain)
+    except ActorNotFoundException:
+        raise RemoteActorException('can not fetch remote actor')
+    remote_actor_url = next(
+        (item for item in webfinger.get('links', []) if item['rel'] == 'self'),
+        None,
+    )
+    if not remote_actor_url:
+        raise RemoteActorException(
+            'invalid data fetched from webfinger endpoint'
+        )
+
+    try:
+        remote_actor_object = get_remote_actor(remote_actor_url['href'])
     except ActorNotFoundException:
         raise RemoteActorException('can not fetch remote actor')
 
@@ -95,4 +91,30 @@ def create_remote_user(remote_actor_url: Optional[str]) -> Actor:
         'manuallyApprovesFollowers'
     ]
     db.session.commit()
-    return actor
+    return actor.user
+
+
+def get_user_from_username(
+    user_name: str, with_creation: bool = False
+) -> User:
+    name, domain_name = get_username_and_domain(user_name)
+    if domain_name is None:  # local actor
+        user = User.query.filter_by(username=user_name).first()
+    else:  # remote actor
+        actor = None
+        domain = Domain.query.filter_by(name=domain_name).first()
+        if not domain and not with_creation:
+            raise DomainNotFoundException(domain_name)
+        if domain:
+            actor = Actor.query.filter_by(
+                preferred_username=name, domain_id=domain.id
+            ).first()
+        if not actor:
+            if with_creation:
+                return create_remote_user(name, domain_name)
+            else:
+                raise ActorNotFoundException()
+        user = actor.user
+    if not user:
+        raise UserNotFoundException()
+    return user

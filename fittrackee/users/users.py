@@ -1,9 +1,10 @@
 import os
+import re
 import shutil
 from typing import Any, Dict, Optional, Tuple, Union
 
 import click
-from flask import Blueprint, request, send_file
+from flask import Blueprint, current_app, request, send_file
 from sqlalchemy import exc
 
 from fittrackee import appLog, db
@@ -13,7 +14,10 @@ from fittrackee.federation.exceptions import (
     DomainNotFoundException,
 )
 from fittrackee.federation.models import Domain
-from fittrackee.federation.utils_user import get_user_from_username
+from fittrackee.federation.utils_user import (
+    FULL_NAME_REGEX,
+    get_user_from_username,
+)
 from fittrackee.files import get_absolute_file_path
 from fittrackee.responses import (
     ForbiddenErrorResponse,
@@ -56,13 +60,46 @@ def set_admin(username: str) -> None:
 
 def get_users_list(auth_user: User, remote: bool = False) -> Dict:
     params = request.args.copy()
+
+    query = params.get('q')
+    if (
+        current_app.config['federation_enabled']
+        and query
+        and re.match(FULL_NAME_REGEX, query)
+    ):
+        try:
+            user = get_user_from_username(query, with_creation=True)
+        except Exception:  # noqa
+            return {
+                'status': 'success',
+                'data': {'users': []},
+                'pagination': {
+                    'has_next': False,
+                    'has_prev': False,
+                    'page': 1,
+                    'pages': 0,
+                    'total': 0,
+                },
+            }
+        if user:
+            return {
+                'status': 'success',
+                'data': {'users': [user.serialize(auth_user)]},
+                'pagination': {
+                    'has_next': False,
+                    'has_prev': False,
+                    'page': 1,
+                    'pages': 1,
+                    'total': 1,
+                },
+            }
+
     page = int(params.get('page', 1))
     per_page = int(params.get('per_page', USERS_PER_PAGE))
     if per_page > 50:
         per_page = 50
     order_by = params.get('order_by', 'username')
     order = params.get('order', 'asc')
-    query = params.get('q')
     users_pagination = (
         User.query.filter(
             User.username.ilike('%' + query + '%') if query else True,

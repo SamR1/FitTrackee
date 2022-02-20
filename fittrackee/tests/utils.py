@@ -108,6 +108,18 @@ class RandomActor:
             self.manually_approves_followers,
         )
 
+    def get_webfinger(self) -> Dict:
+        return {
+            'subject': f'acct:{self.fullname}',
+            'links': [
+                {
+                    'rel': 'self',
+                    'type': 'application/activity+json',
+                    'href': self.activitypub_id,
+                }
+            ],
+        }
+
 
 def generate_response(
     content: Optional[Union[str, Dict]] = None,

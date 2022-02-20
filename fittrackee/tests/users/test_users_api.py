@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from io import BytesIO
 from unittest.mock import patch
 
+import pytest
 from flask import Flask
 
 from fittrackee.federation.models import Actor
@@ -10,7 +11,7 @@ from fittrackee.users.models import User, UserSportPreference
 from fittrackee.workouts.models import Sport, Workout
 
 from ..test_case_mixins import ApiTestCaseMixin
-from ..utils import jsonify_dict
+from ..utils import jsonify_dict, random_string
 
 
 class TestGetUserAsAdmin(ApiTestCaseMixin):
@@ -877,15 +878,28 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
         assert len(data['data']['users']) == 1
         assert 'toto' in data['data']['users'][0]['username']
 
+    @pytest.mark.parametrize(
+        'input_desc, input_username',
+        [
+            ('not existing user', random_string()),
+            ('user account format', '@sam@example.com'),
+        ],
+    )
     def test_it_returns_empty_users_list_filtering_on_username(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        input_desc: str,
+        input_username: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
 
         response = client.get(
-            '/api/users?q=not_existing',
+            f'/api/users?q={input_username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
