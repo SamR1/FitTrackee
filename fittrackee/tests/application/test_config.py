@@ -2,6 +2,8 @@ import os
 
 from flask import Flask
 
+from fittrackee import VERSION
+
 
 class TestDevelopmentConfig:
     def test_debug_is_enabled(self, app: Flask) -> None:
@@ -22,6 +24,11 @@ class TestDevelopmentConfig:
         assert app.config['SQLALCHEMY_DATABASE_URI'] == os.environ.get(
             'DATABASE_URL'
         )
+
+    def test_it_returns_application_version(self, app: Flask) -> None:
+        app.config.from_object('fittrackee.config.DevelopmentConfig')
+
+        assert app.config['VERSION'] == VERSION
 
 
 class TestTestingConfig:
@@ -51,6 +58,11 @@ class TestTestingConfig:
 
         assert not app.config['PRESERVE_CONTEXT_ON_EXCEPTION']
 
+    def test_it_returns_application_version(self, app: Flask) -> None:
+        app.config.from_object('fittrackee.config.TestingConfig')
+
+        assert app.config['VERSION'] == VERSION
+
 
 class TestProductionConfig:
     def test_debug_is_disabled(self, app: Flask) -> None:
@@ -78,3 +90,8 @@ class TestProductionConfig:
         app.config.from_object('fittrackee.config.ProductionConfig')
 
         assert not app.config['PRESERVE_CONTEXT_ON_EXCEPTION']
+
+    def test_it_returns_application_version(self, app: Flask) -> None:
+        app.config.from_object('fittrackee.config.ProductionConfig')
+
+        assert app.config['VERSION'] == VERSION
