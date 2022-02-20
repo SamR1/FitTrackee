@@ -21,7 +21,7 @@ from .models import Actor
 
 VALID_DATE_DELTA = 30  # in seconds
 VALID_DATE_FORMAT = '%a, %d %b %Y %H:%M:%S GMT'
-VALID_SIG_KEYS = ['keyId', 'algorithm', 'headers', 'signature']
+VALID_SIG_KEYS = ['keyId', 'headers', 'signature']
 SUPPORTED_ALGORITHMS = {
     'rsa-sha256': {'algorithm': 'SHA-256', 'hash_function': hashlib.sha256},
     'rsa-sha512': {'algorithm': 'SHA-512', 'hash_function': hashlib.sha512},
@@ -41,6 +41,14 @@ def generate_digest(activity: Dict, algorithm: Optional[str] = None) -> str:
     return f"{algorithm_dict['algorithm']}={digest}"
 
 
+def generate_signature(private_key: str, signed_string: str) -> bytes:
+    key = RSA.import_key(private_key)
+    key_signer = pkcs1_15.new(key)
+    encoded_string = signed_string.encode('utf-8')
+    h = SHA256.new(encoded_string)
+    return base64.b64encode(key_signer.sign(h))
+
+
 def generate_signature_header(
     host: str, path: str, date_str: str, actor: Actor, digest: str
 ) -> str:
@@ -48,11 +56,7 @@ def generate_signature_header(
         f'(request-target): post {path}\nhost: {host}\ndate: {date_str}\n'
         f'digest: {digest}'
     )
-    key = RSA.import_key(actor.private_key)
-    key_signer = pkcs1_15.new(key)
-    encoded_string = signed_string.encode('utf-8')
-    h = SHA256.new(encoded_string)
-    signature = base64.b64encode(key_signer.sign(h))
+    signature = generate_signature(actor.private_key, signed_string)
     return (
         f'keyId="{actor.activitypub_id}",'
         f'algorithm={DEFAULT_ALGORITHM},'
@@ -69,7 +73,7 @@ class SignatureVerification:
         self.key_id = signature_dict['keyId']
         self.headers = signature_dict['headers']
         self.signature = base64.b64decode(signature_dict['signature'])
-        self.algorithm = signature_dict['algorithm']
+        self.algorithm = signature_dict.get('algorithm', DEFAULT_ALGORITHM)
         self.digest = request.headers.get('Digest')
 
     @classmethod
@@ -86,9 +90,9 @@ class SignatureVerification:
             raise InvalidSignatureException()
 
         keys_list = list(signature_dict.keys())
-        if keys_list != VALID_SIG_KEYS:
+        if not all(key in keys_list for key in VALID_SIG_KEYS):
             appLog.error(
-                'Invalid signature headers: invalid keys, expected: '
+                'Invalid signature headers: missing keys, expected: '
                 f'{VALID_SIG_KEYS}, got: {keys_list} '
                 f'(host: {host}).'
             )

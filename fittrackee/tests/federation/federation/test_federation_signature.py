@@ -16,6 +16,7 @@ from fittrackee.federation.signature import (
     VALID_DATE_FORMAT,
     SignatureVerification,
     generate_digest,
+    generate_signature,
     generate_signature_header,
 )
 
@@ -57,21 +58,30 @@ class SignatureVerificationTestCase:
     ) -> Dict:
         key_id = key_id if key_id else random_string()
         signature = signature if signature else self.random_signature()
-        algorithm = algorithm if algorithm else random_string()
+        signature_headers = f'keyId="{key_id}",'
+        if algorithm is not None:
+            signature_headers += f'algorithm={algorithm},'
+            digest = digest if digest else random_string()
+        signature_headers += (
+            'headers="(request-target) host date digest",signature="'
+            + signature
+            + '"'
+        )
         signature_headers = (
             f'keyId="{key_id}",algorithm={algorithm},headers="(request-target)'
             f' host date digest",signature="' + signature + '"'
         )
-        digest = digest if digest else random_string()
         if date_str is None:
             date_str = get_date_string(date)
-        return {
+        headers = {
             'Host': host if host else random_string(),
             'Date': date_str,
-            'Digest': digest,
             'Signature': signature_headers,
             'Content-Type': 'application/ld+json',
         }
+        if digest:
+            headers['Digest'] = digest
+        return headers
 
     def generate_valid_headers(
         self,
@@ -94,6 +104,39 @@ class SignatureVerificationTestCase:
             host=host,
             algorithm='rsa-sha256',
             digest=digest,
+        )
+
+    @staticmethod
+    def _generate_signature_header_without_digest(
+        host: str, path: str, date_str: str, actor: Actor
+    ) -> str:
+        signed_string = (
+            f'(request-target): post {path}\nhost: {host}\ndate: {date_str}'
+        )
+        signature = generate_signature(actor.private_key, signed_string)
+        return (
+            f'keyId="{actor.activitypub_id}",'
+            'headers="(request-target) host date",'
+            f'signature="' + signature.decode() + '"'
+        )
+
+    def generate_valid_headers_without_digest(
+        self,
+        host: str,
+        actor: Actor,
+        date_str: Optional[str] = None,
+    ) -> Dict:
+        if date_str is None:
+            now = datetime.utcnow()
+            date_str = now.strftime(VALID_DATE_FORMAT)
+        signed_header = self._generate_signature_header_without_digest(
+            host, '/inbox', date_str, actor
+        )
+        return self.generate_headers(
+            key_id=actor.activitypub_id,
+            signature=signed_header,
+            date_str=date_str,
+            host=host,
         )
 
     @staticmethod
@@ -526,6 +569,26 @@ class TestSignatureVerify(SignatureVerificationTestCase):
                     host=app_with_federation.config['AP_DOMAIN'],
                     actor=actor_1,
                     activity=activity,
+                ),
+                data=activity,
+            )
+        )
+        with patch.object(requests, 'get') as requests_mock:
+            requests_mock.return_value = generate_response(
+                status_code=200,
+                content=actor_1.serialize(),
+            )
+
+            sig_verification.verify()
+
+    def test_verify_does_not_raise_error_if_signature_without_digest_is_valid(
+        self, app_with_federation: Flask, actor_1: Actor
+    ) -> None:
+        activity = self.get_activity(actor=actor_1)
+        sig_verification = SignatureVerification.get_signature(
+            self.get_request_mock(
+                self.generate_valid_headers_without_digest(
+                    host=app_with_federation.config['AP_DOMAIN'], actor=actor_1
                 ),
                 data=activity,
             )
