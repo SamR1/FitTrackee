@@ -4,6 +4,7 @@ from flask import Flask
 
 from fittrackee import VERSION
 from fittrackee.federation.models import Actor
+from fittrackee.workouts.models import Sport, Workout
 
 
 class TestWellKnowNodeInfo:
@@ -102,3 +103,55 @@ class TestNodeInfo:
             'usage': {'users': {'total': 1}, 'localWorkouts': 0},
             'openRegistrations': True,
         }
+
+    def test_it_displays_workouts_count(
+        self,
+        app_with_federation: Flask,
+        actor_1: Actor,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        client = app_with_federation.test_client()
+        response = client.get(
+            '/nodeinfo/2.0',
+            content_type='application/json',
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['usage']['localWorkouts'] == 1
+
+    def test_only_local_actors_are_counted(
+        self,
+        app_with_federation: Flask,
+        actor_1: Actor,
+        remote_actor: Actor,
+    ) -> None:
+        client = app_with_federation.test_client()
+        response = client.get(
+            '/nodeinfo/2.0',
+            content_type='application/json',
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+
+        assert data['usage']['users']['total'] == 1
+
+    def test_it_displays_if_registration_is_disabled(
+        self,
+        app_with_federation: Flask,
+        actor_1: Actor,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        app_with_federation.config['is_registration_enabled'] = False
+        client = app_with_federation.test_client()
+        response = client.get(
+            '/nodeinfo/2.0',
+            content_type='application/json',
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['openRegistrations'] is False

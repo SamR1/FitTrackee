@@ -1,7 +1,7 @@
 from flask import Blueprint, current_app
 
+from fittrackee.federation.models import Actor
 from fittrackee.responses import HttpResponse
-from fittrackee.users.models import User
 from fittrackee.workouts.models import Workout
 
 from .decorators import federation_required
@@ -101,7 +101,7 @@ def get_nodeinfo(app_domain: Domain) -> HttpResponse:
     """
     # TODO : add 'activeHalfyear' and 'activeMonth' for users
     workouts_count = Workout.query.filter().count()
-    users_count = User.query.filter().count()
+    actor_count = Actor.query.filter_by(domain_id=app_domain.id).count()
     response = {
         'version': '2.0',
         'software': {
@@ -110,7 +110,7 @@ def get_nodeinfo(app_domain: Domain) -> HttpResponse:
         },
         'protocols': ['activitypub'],
         'usage': {
-            'users': {'total': users_count},
+            'users': {'total': actor_count},
             'localWorkouts': workouts_count,
         },
         'openRegistrations': current_app.config['is_registration_enabled'],
