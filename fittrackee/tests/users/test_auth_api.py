@@ -475,7 +475,7 @@ class TestUserLogout(ApiTestCaseMixin):
 
 
 class TestUserProfile(ApiTestCaseMixin):
-    def test_it_returns_user_minimal_profile(
+    def test_it_returns_user_profile_when_no_workouts_and_no_preferences(
         self, app: Flask, user_1: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -506,7 +506,7 @@ class TestUserProfile(ApiTestCaseMixin):
         assert data['data']['total_duration'] == '0:00:00'
         assert response.status_code == 200
 
-    def test_it_returns_user_full_profile(
+    def test_it_returns_user_profile_with_updated_fields(
         self, app: Flask, user_1_full: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(

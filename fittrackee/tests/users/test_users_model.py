@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Dict
 from unittest.mock import Mock, patch
 
 import pytest
@@ -10,33 +11,76 @@ from fittrackee.users.exceptions import (
     NotExistingFollowRequestError,
 )
 from fittrackee.users.models import FollowRequest, User, UserSportPreference
+from fittrackee.users.roles import UserRole
 from fittrackee.workouts.models import Sport, Workout
 
 
 class TestUserModel:
-    def test_user_model(self, app: Flask, user_1: User) -> None:
-        assert '<User \'test\'>' == str(user_1)
-
-        serialized_user = user_1.serialize()
+    @staticmethod
+    def assert_serialized_used(serialized_user: Dict) -> None:
         assert 'test' == serialized_user['username']
         assert 'created_at' in serialized_user
         assert serialized_user['admin'] is False
         assert serialized_user['first_name'] is None
         assert serialized_user['last_name'] is None
-        assert serialized_user['imperial_units'] is False
         assert serialized_user['bio'] is None
         assert serialized_user['location'] is None
         assert serialized_user['birth_date'] is None
         assert serialized_user['picture'] is False
-        assert serialized_user['timezone'] is None
-        assert serialized_user['weekm'] is False
-        assert serialized_user['language'] is None
         assert serialized_user['nb_sports'] == 0
         assert serialized_user['nb_workouts'] == 0
         assert serialized_user['records'] == []
         assert serialized_user['sports_list'] == []
         assert serialized_user['total_distance'] == 0
         assert serialized_user['total_duration'] == '0:00:00'
+
+    def test_user_model_as_auth_user(self, app: Flask, user_1: User) -> None:
+        assert '<User \'test\'>' == str(user_1)
+
+        serialized_user = user_1.serialize(role=UserRole.AUTH_USER)
+        self.assert_serialized_used(serialized_user)
+        assert 'test@test.com' == serialized_user['email']
+        assert serialized_user['imperial_units'] is False
+        assert serialized_user['language'] is None
+        assert serialized_user['timezone'] is None
+        assert serialized_user['weekm'] is False
+
+    def test_user_model_as_admin(self, app: Flask, user_1: User) -> None:
+        assert '<User \'test\'>' == str(user_1)
+
+        serialized_user = user_1.serialize(role=UserRole.ADMIN)
+        self.assert_serialized_used(serialized_user)
+        assert 'test@test.com' == serialized_user['email']
+        assert 'imperial_units' not in serialized_user
+        assert 'language' not in serialized_user
+        assert 'timezone' not in serialized_user
+        assert 'weekm' not in serialized_user
+
+    def test_user_model_as_regular_user(
+        self, app: Flask, user_1: User
+    ) -> None:
+        assert '<User \'test\'>' == str(user_1)
+
+        serialized_user = user_1.serialize(role=UserRole.USER)
+        self.assert_serialized_used(serialized_user)
+        assert 'email' not in serialized_user
+        assert 'imperial_units' not in serialized_user
+        assert 'language' not in serialized_user
+        assert 'timezone' not in serialized_user
+        assert 'weekm' not in serialized_user
+
+    def test_user_model_when_no_role_provided(
+        self, app: Flask, user_1: User
+    ) -> None:
+        assert '<User \'test\'>' == str(user_1)
+
+        serialized_user = user_1.serialize()
+        self.assert_serialized_used(serialized_user)
+        assert 'email' not in serialized_user
+        assert 'imperial_units' not in serialized_user
+        assert 'language' not in serialized_user
+        assert 'timezone' not in serialized_user
+        assert 'weekm' not in serialized_user
 
     def test_encode_auth_token(self, app: Flask, user_1: User) -> None:
         auth_token = user_1.encode_auth_token(user_1.id)

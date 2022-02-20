@@ -20,6 +20,7 @@ from .exceptions import (
     FollowRequestAlreadyRejectedError,
     NotExistingFollowRequestError,
 )
+from .roles import UserRole
 from .utils.token import decode_user_token, get_user_token
 
 
@@ -340,7 +341,7 @@ class User(BaseModel):
         self.actor_id = actor.id
         db.session.commit()
 
-    def serialize(self) -> Dict:
+    def serialize(self, role: Optional[UserRole] = None) -> Dict:
         sports = []
         total = (0, '0:00:00')
         if self.workouts_count > 0:  # type: ignore
@@ -358,9 +359,8 @@ class User(BaseModel):
                 .filter(Workout.user_id == self.id)
                 .first()
             )
-        return {
+        serialized_user = {
             'username': self.username,
-            'email': self.email,
             'created_at': self.created_at,
             'admin': self.admin,
             'first_name': self.first_name,
@@ -369,9 +369,6 @@ class User(BaseModel):
             'location': self.location,
             'birth_date': self.birth_date,
             'picture': self.picture is not None,
-            'timezone': self.timezone,
-            'weekm': self.weekm,
-            'language': self.language,
             'nb_sports': len(sports),
             'nb_workouts': self.workouts_count,
             'records': [record.serialize() for record in self.records],
@@ -380,8 +377,23 @@ class User(BaseModel):
             ],
             'total_distance': float(total[0]),
             'total_duration': str(total[1]),
-            'imperial_units': self.imperial_units,
         }
+
+        if role in [UserRole.AUTH_USER, UserRole.ADMIN]:
+            serialized_user['email'] = self.email
+
+        if role == UserRole.AUTH_USER:
+            serialized_user = {
+                **serialized_user,
+                **{
+                    'timezone': self.timezone,
+                    'weekm': self.weekm,
+                    'language': self.language,
+                    'imperial_units': self.imperial_units,
+                },
+            }
+
+        return serialized_user
 
 
 class UserSportPreference(BaseModel):
