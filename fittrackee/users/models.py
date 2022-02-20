@@ -11,7 +11,7 @@ from sqlalchemy.sql.expression import select
 from fittrackee import bcrypt, db
 from fittrackee.workouts.models import Workout
 
-from .utils_token import decode_user_token, get_user_token
+from .utils.token import decode_user_token, get_user_token
 
 BaseModel: DeclarativeMeta = db.Model
 

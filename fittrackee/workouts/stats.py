@@ -16,12 +16,9 @@ from fittrackee.users.decorators import authenticate, authenticate_as_admin
 from fittrackee.users.models import User
 
 from .models import Sport, Workout
-from .utils import (
-    get_average_speed,
-    get_datetime_from_request_args,
-    get_upload_dir_size,
-)
-from .utils_format import convert_timedelta_to_integer
+from .utils.convert import convert_timedelta_to_integer
+from .utils.uploads import get_upload_dir_size
+from .utils.workouts import get_average_speed, get_datetime_from_request_args
 
 stats_blueprint = Blueprint('stats', __name__)
 

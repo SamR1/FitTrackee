@@ -3,7 +3,7 @@ from uuid import uuid4
 
 import pytest
 
-from fittrackee.responses import display_readable_file_size
+from fittrackee.files import display_readable_file_size
 from fittrackee.utils import get_readable_duration
 
 

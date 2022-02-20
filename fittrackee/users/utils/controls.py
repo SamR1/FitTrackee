@@ -3,15 +3,13 @@ from typing import Optional, Tuple
 
 from flask import Request
 
-from fittrackee import db
 from fittrackee.responses import (
     ForbiddenErrorResponse,
     HttpResponse,
     UnauthorizedErrorResponse,
 )
 
-from .exceptions import UserNotFoundException
-from .models import User
+from ..models import User
 
 
 def is_valid_email(email: str) -> bool:
@@ -88,22 +86,3 @@ def verify_user(
     if verify_admin and not user.admin:
         return ForbiddenErrorResponse(), None
     return None, user
-
-
-def can_view_workout(
-    auth_user_id: int, workout_user_id: int
-) -> Optional[HttpResponse]:
-    """
-    Return error response if user has no right to view workout
-    """
-    if auth_user_id != workout_user_id:
-        return ForbiddenErrorResponse()
-    return None
-
-
-def set_admin_rights(username: str) -> None:
-    user = User.query.filter_by(username=username).first()
-    if not user:
-        raise UserNotFoundException()
-    user.admin = True
-    db.session.commit()

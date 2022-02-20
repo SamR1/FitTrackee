@@ -5,7 +5,7 @@ from flask import Flask
 from fittrackee import db
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
-from fittrackee.workouts.utils_id import decode_short_id
+from fittrackee.workouts.utils.short_id import decode_short_id
 
 
 class TestWorkoutModel:

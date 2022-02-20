@@ -1,4 +1,3 @@
-import hashlib
 import os
 import tempfile
 import zipfile
@@ -10,17 +9,17 @@ import gpxpy.gpx
 import pytz
 from flask import current_app
 from sqlalchemy import exc
-from staticmap import Line, StaticMap
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
 from fittrackee import db
+from fittrackee.files import get_absolute_file_path
 from fittrackee.users.models import User, UserSportPreference
 
-from .exceptions import WorkoutException
-from .models import Sport, Workout, WorkoutSegment
-from .utils_files import get_absolute_file_path
-from .utils_gpx import get_gpx_info
+from ..exceptions import WorkoutException
+from ..models import Sport, Workout, WorkoutSegment
+from .gpx import get_gpx_info
+from .maps import generate_map, get_map_hash
 
 
 def get_datetime_with_tz(
@@ -258,39 +257,11 @@ def get_new_file_path(
     return file_path
 
 
-def generate_map(map_filepath: str, map_data: List) -> None:
-    """
-    Generate and save map image from map data
-    """
-    m = StaticMap(400, 225, 10)
-    if not current_app.config['TILE_SERVER']['DEFAULT_STATICMAP']:
-        m.url_template = current_app.config['TILE_SERVER']['URL'].replace(
-            '{s}.', ''
-        )
-    line = Line(map_data, '#3388FF', 4)
-    m.add_line(line)
-    image = m.render()
-    image.save(map_filepath)
-
-
-def get_map_hash(map_filepath: str) -> str:
-    """
-    Generate a md5 hash used as id instead of workout id, to retrieve map
-    image (maps are sensitive data)
-    """
-    md5 = hashlib.md5()
-    absolute_map_filepath = get_absolute_file_path(map_filepath)
-    with open(absolute_map_filepath, 'rb') as f:
-        for chunk in iter(lambda: f.read(128 * md5.block_size), b''):
-            md5.update(chunk)
-    return md5.hexdigest()
-
-
 def process_one_gpx_file(
     params: Dict, filename: str, stopped_speed_threshold: float
 ) -> Workout:
     """
-    Get all data from a gpx file to create an workout with map image
+    Get all data from a gpx file to create a workout with map image
     """
     try:
         gpx_data, map_data, weather_data = get_gpx_info(
@@ -431,19 +402,6 @@ def process_files(
             folders['extract_dir'],
             stopped_speed_threshold,
         )
-
-
-def get_upload_dir_size() -> int:
-    """
-    Return upload directory size
-    """
-    upload_path = get_absolute_file_path('')
-    total_size = 0
-    for dir_path, _, filenames in os.walk(upload_path):
-        for f in filenames:
-            fp = os.path.join(dir_path, f)
-            total_size += os.path.getsize(fp)
-    return total_size
 
 
 def get_average_speed(

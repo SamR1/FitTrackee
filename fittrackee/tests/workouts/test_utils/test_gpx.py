@@ -7,7 +7,7 @@ from werkzeug.datastructures import FileStorage
 
 from fittrackee.users.models import User, UserSportPreference
 from fittrackee.workouts.models import Sport
-from fittrackee.workouts.utils import process_files
+from fittrackee.workouts.utils.workouts import process_files
 
 folders = {
     'extract_dir': '/tmp/fitTrackee/uploads',
@@ -38,7 +38,7 @@ class TestStoppedSpeedThreshold:
         expected_threshold: float,
     ) -> None:
         with patch(
-            'fittrackee.workouts.utils.get_new_file_path',
+            'fittrackee.workouts.utils.workouts.get_new_file_path',
             return_value='/tmp/fitTrackee/uploads/test.png',
         ), patch(
             'gpxpy.gpx.GPXTrackSegment.get_moving_data',
@@ -68,7 +68,7 @@ class TestStoppedSpeedThreshold:
         expected_threshold = 0.7
         user_sport_1_preference.stopped_speed_threshold = expected_threshold
         with patch(
-            'fittrackee.workouts.utils.get_new_file_path',
+            'fittrackee.workouts.utils.workouts.get_new_file_path',
             return_value='/tmp/fitTrackee/uploads/test.png',
         ), patch(
             'gpxpy.gpx.GPXTrackSegment.get_moving_data',

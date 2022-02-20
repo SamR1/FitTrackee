@@ -5,7 +5,7 @@ from flask import request
 
 from fittrackee.responses import HttpResponse
 
-from .utils import verify_user
+from .utils.controls import verify_user
 
 
 def verify_auth_user(
