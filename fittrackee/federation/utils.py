@@ -4,7 +4,7 @@ from typing import Any, Callable, Tuple
 from Crypto.PublicKey import RSA
 from flask import current_app
 
-from fittrackee.responses import InternalServerErrorResponse
+from fittrackee.responses import DisabledFederationErrorResponse
 
 ACTOR_TYPES = ['Application', 'Group', 'Person']
 
@@ -51,7 +51,7 @@ def federation_required(f: Callable) -> Callable:
     @wraps(f)
     def decorated_function(*args: Any, **kwargs: Any) -> Callable:
         if not current_app.config['federation_enabled']:
-            return InternalServerErrorResponse()
+            return DisabledFederationErrorResponse()
         return f(*args, **kwargs)
 
     return decorated_function

@@ -124,13 +124,19 @@ class PayloadTooLargeErrorResponse(GenericErrorResponse):
 class InternalServerErrorResponse(GenericErrorResponse):
     def __init__(
         self, message: Optional[str] = None, status: Optional[str] = None
-    ):
+    ) -> None:
         message = (
             'error, please try again or contact the administrator'
             if message is None
             else message
         )
         super().__init__(status_code=500, message=message, status=status)
+
+
+class DisabledFederationErrorResponse(ForbiddenErrorResponse):
+    def __init__(self) -> None:
+        message = 'error, federation is disabled for this instance'
+        super().__init__(message=message)
 
 
 def handle_error_and_return_response(

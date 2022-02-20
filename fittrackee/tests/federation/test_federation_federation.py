@@ -50,10 +50,10 @@ class TestFederationUser:
             f'/federation/user/{actor_1.preferred_username}',
         )
 
-        assert response.status_code == 500
+        assert response.status_code == 403
         data = json.loads(response.data.decode())
         assert 'error' in data['status']
         assert (
-            'error, please try again or contact the administrator'
+            'error, federation is disabled for this instance'
             in data['message']
         )
