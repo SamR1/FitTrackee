@@ -423,7 +423,9 @@ class TestUserLogin:
 class TestUserLogout(ApiTestCaseMixin):
     def test_user_can_logout(self, app: Flask, user_1: User) -> None:
 
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/auth/logout',
@@ -439,7 +441,9 @@ class TestUserLogout(ApiTestCaseMixin):
         self, app: Flask, user_1: User
     ) -> None:
         now = datetime.utcnow()
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         with freeze_time(now + timedelta(seconds=4)):
             response = client.get(
@@ -474,7 +478,9 @@ class TestUserProfile(ApiTestCaseMixin):
     def test_it_returns_user_minimal_profile(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/auth/profile',
@@ -503,7 +509,9 @@ class TestUserProfile(ApiTestCaseMixin):
     def test_it_returns_user_full_profile(
         self, app: Flask, user_1_full: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_full.email
+        )
 
         response = client.get(
             '/api/auth/profile',
@@ -543,7 +551,9 @@ class TestUserProfile(ApiTestCaseMixin):
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/auth/profile',
@@ -580,7 +590,9 @@ class TestUserProfile(ApiTestCaseMixin):
 
 class TestUserProfileUpdate(ApiTestCaseMixin):
     def test_it_updates_user_profile(self, app: Flask, user_1: User) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/auth/profile/edit',
@@ -626,7 +638,9 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
     def test_it_updates_user_profile_without_password(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/auth/profile/edit',
@@ -670,7 +684,9 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
     def test_it_returns_error_if_fields_are_missing(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/auth/profile/edit',
@@ -687,7 +703,9 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
     def test_it_returns_error_if_payload_is_empty(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/auth/profile/edit',
@@ -704,7 +722,9 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
     def test_it_returns_error_if_passwords_mismatch(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/auth/profile/edit',
@@ -734,7 +754,9 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
     def test_it_returns_error_if_password_confirmation_is_missing(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/auth/profile/edit',
@@ -765,7 +787,9 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
     def test_it_updates_user_preferences(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/auth/profile/edit/preferences',
@@ -808,7 +832,9 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
     def test_it_returns_error_if_fields_are_missing(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/auth/profile/edit/preferences',
@@ -825,7 +851,9 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
     def test_it_returns_error_if_payload_is_empty(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/auth/profile/edit/preferences',
@@ -844,7 +872,9 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
     def test_it_returns_error_if_payload_is_empty(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/auth/profile/edit/sports',
@@ -861,7 +891,9 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
     def test_it_returns_error_if_sport_id_is_missing(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/auth/profile/edit/sports',
@@ -878,7 +910,9 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
     def test_it_returns_error_if_sport_not_found(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/auth/profile/edit/sports',
@@ -895,7 +929,9 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
     def test_it_returns_error_if_payload_contains_only_sport_id(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/auth/profile/edit/sports',
@@ -912,7 +948,9 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
     def test_it_returns_error_if_color_is_invalid(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/auth/profile/edit/sports',
@@ -942,7 +980,9 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         sport_2_running: Sport,
         input_color: str,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/auth/profile/edit/sports',
@@ -969,7 +1009,9 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
     def test_it_disables_sport_for_auth_user(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/auth/profile/edit/sports',
@@ -996,7 +1038,9 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
     def test_it_updates_stopped_speed_threshold_for_auth_user(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/auth/profile/edit/sports',
@@ -1025,7 +1069,9 @@ class TestUserSportPreferencesReset(ApiTestCaseMixin):
     def test_it_returns_error_if_sport_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.delete(
             '/api/auth/profile/reset/sports/1',
@@ -1044,7 +1090,9 @@ class TestUserSportPreferencesReset(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         user_sport_1_preference: UserSportPreference,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.delete(
             f'/api/auth/profile/reset/sports/{sport_1_cycling.id}',
@@ -1063,7 +1111,9 @@ class TestUserSportPreferencesReset(ApiTestCaseMixin):
     def test_it_does_not_raise_error_if_sport_preferences_do_not_exist(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.delete(
             f'/api/auth/profile/reset/sports/{sport_1_cycling.id}',
@@ -1075,7 +1125,9 @@ class TestUserSportPreferencesReset(ApiTestCaseMixin):
 
 class TestUserPicture(ApiTestCaseMixin):
     def test_it_updates_user_picture(self, app: Flask, user_1: User) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/auth/picture',
@@ -1111,7 +1163,9 @@ class TestUserPicture(ApiTestCaseMixin):
     def test_it_returns_error_if_file_is_missing(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/auth/picture',
@@ -1129,7 +1183,9 @@ class TestUserPicture(ApiTestCaseMixin):
     def test_it_returns_error_if_file_is_invalid(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/auth/picture',
@@ -1153,7 +1209,7 @@ class TestUserPicture(ApiTestCaseMixin):
         gpx_file: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_max_file_size
+            app_with_max_file_size, user_1.email
         )
 
         response = client.post(
@@ -1184,7 +1240,7 @@ class TestUserPicture(ApiTestCaseMixin):
         gpx_file: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_max_zip_file_size
+            app_with_max_zip_file_size, user_1.email
         )
 
         response = client.post(

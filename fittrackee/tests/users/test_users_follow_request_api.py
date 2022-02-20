@@ -15,7 +15,9 @@ class TestGetFollowRequestWithoutFederation(ApiTestCaseMixin):
     def test_it_returns_empty_list_if_no_follow_request(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/follow_requests',
@@ -37,7 +39,9 @@ class TestGetFollowRequestWithoutFederation(ApiTestCaseMixin):
         follow_request_from_user_3_to_user_2: FollowRequest,
     ) -> None:
         follow_request_from_user_2_to_user_1.updated_at = datetime.utcnow()
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/follow_requests',
@@ -61,7 +65,9 @@ class TestGetFollowRequestPagination(ApiTestCaseMixin):
         follow_request_from_user_2_to_user_1: FollowRequest,
         follow_request_from_user_3_to_user_1: FollowRequest,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/follow_requests',
@@ -89,7 +95,9 @@ class TestGetFollowRequestPagination(ApiTestCaseMixin):
         follow_request_from_user_2_to_user_1: FollowRequest,
         follow_request_from_user_3_to_user_1: FollowRequest,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/follow_requests?page=2',
@@ -118,7 +126,9 @@ class TestGetFollowRequestPagination(ApiTestCaseMixin):
         follow_request_from_user_2_to_user_1: FollowRequest,
         follow_request_from_user_3_to_user_1: FollowRequest,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/follow_requests?per_page=10',
@@ -146,7 +156,9 @@ class TestGetFollowRequestPagination(ApiTestCaseMixin):
         follow_request_from_user_2_to_user_1: FollowRequest,
         follow_request_from_user_3_to_user_1: FollowRequest,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/follow_requests?order=desc',
@@ -168,7 +180,9 @@ class TestGetFollowRequestPagination(ApiTestCaseMixin):
         follow_request_from_user_2_to_user_1: FollowRequest,
         follow_request_from_user_3_to_user_1: FollowRequest,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/follow_requests?per_page=1',
@@ -196,7 +210,9 @@ class TestGetFollowRequestPagination(ApiTestCaseMixin):
         follow_request_from_user_2_to_user_1: FollowRequest,
         follow_request_from_user_3_to_user_1: FollowRequest,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/follow_requests?page=2&per_page=1&order=desc',
@@ -280,7 +296,9 @@ class TestAcceptFollowRequestWithoutFederation(FollowRequestTestCase):
         app: Flask,
         user_1: User,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         self.assert_return_user_not_found(
             f'/api/follow_requests/{random_string()}/accept',
@@ -291,7 +309,9 @@ class TestAcceptFollowRequestWithoutFederation(FollowRequestTestCase):
     def test_it_raises_error_if_follow_request_does_not_exist(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         self.assert_it_returns_follow_request_not_found(
             client, auth_token, user_2.username, 'accept'
@@ -305,7 +325,9 @@ class TestAcceptFollowRequestWithoutFederation(FollowRequestTestCase):
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
         follow_request_from_user_2_to_user_1.updated_at = datetime.utcnow()
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         self.assert_it_returns_follow_request_already_processed(
             client, auth_token, user_2.username, 'accept'
@@ -318,7 +340,9 @@ class TestAcceptFollowRequestWithoutFederation(FollowRequestTestCase):
         user_2: User,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         self.assert_it_returns_follow_request_processed(
             client, auth_token, user_2.username, 'accept'
@@ -331,7 +355,9 @@ class TestRejectFollowRequestWithoutFederation(FollowRequestTestCase):
         app: Flask,
         user_1: User,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         self.assert_return_user_not_found(
             f'/api/follow_requests/{random_string()}/reject',
@@ -342,7 +368,9 @@ class TestRejectFollowRequestWithoutFederation(FollowRequestTestCase):
     def test_it_raises_error_if_follow_request_does_not_exist(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         self.assert_it_returns_follow_request_not_found(
             client, auth_token, user_2.username, 'reject'
@@ -356,7 +384,9 @@ class TestRejectFollowRequestWithoutFederation(FollowRequestTestCase):
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
         follow_request_from_user_2_to_user_1.updated_at = datetime.utcnow()
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         self.assert_it_returns_follow_request_already_processed(
             client, auth_token, user_2.username, 'reject'
@@ -369,7 +399,9 @@ class TestRejectFollowRequestWithoutFederation(FollowRequestTestCase):
         user_2: User,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         self.assert_it_returns_follow_request_processed(
             client, auth_token, user_2.username, 'reject'

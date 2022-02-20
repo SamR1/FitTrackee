@@ -69,7 +69,9 @@ class TestRemoteUser(ApiTestCaseMixin):
     def test_it_returns_error_if_federation_is_disabled(
         self, app: Flask, user_1: User, random_actor: RandomActor
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
         response = client.post(
             '/federation/remote-user',
             content_type='application/json',
@@ -104,7 +106,7 @@ class TestRemoteUser(ApiTestCaseMixin):
         self, app_with_federation: Flask, actor_1: Actor
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
         response = client.post(
             '/federation/remote-user',
@@ -127,7 +129,7 @@ class TestRemoteUser(ApiTestCaseMixin):
         random_actor: RandomActor,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
         with patch(
             'fittrackee.federation.utils_user.get_remote_actor'
@@ -156,7 +158,7 @@ class TestRemoteUser(ApiTestCaseMixin):
     ) -> None:
         remote_user_object = random_actor.get_remote_user_object()
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
         with patch(
             'fittrackee.federation.utils_user.get_remote_actor'

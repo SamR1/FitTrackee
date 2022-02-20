@@ -20,7 +20,7 @@ class TestFollowWithFederation(ApiTestCaseMixin):
         actor_1: Actor,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         response = client.post(
@@ -44,7 +44,7 @@ class TestFollowWithFederation(ApiTestCaseMixin):
         follow_request_from_user_1_to_user_2.is_approved = False
         follow_request_from_user_1_to_user_2.updated_at = datetime.now()
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         response = client.post(
@@ -62,7 +62,7 @@ class TestFollowWithFederation(ApiTestCaseMixin):
         self, app_with_federation: Flask, actor_1: Actor, actor_2: Actor
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         response = client.post(
@@ -88,7 +88,7 @@ class TestFollowWithFederation(ApiTestCaseMixin):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         response = client.post(
@@ -115,7 +115,7 @@ class TestFollowWithFederation(ApiTestCaseMixin):
         actor_2: Actor,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         client.post(
@@ -137,7 +137,7 @@ class TestRemoteFollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
         random_actor: RandomActor,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         response = client.post(
@@ -159,7 +159,7 @@ class TestRemoteFollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
         random_actor: RandomActor,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         response = client.post(
@@ -182,7 +182,7 @@ class TestRemoteFollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
         remote_actor: Actor,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         response = client.post(
@@ -207,7 +207,7 @@ class TestRemoteFollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         response = client.post(
@@ -233,7 +233,7 @@ class TestRemoteFollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
         remote_actor: Actor,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         client.post(

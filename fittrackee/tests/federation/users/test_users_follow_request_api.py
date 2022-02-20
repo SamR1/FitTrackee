@@ -17,7 +17,7 @@ class TestGetFollowRequestWithFederation(ApiTestCaseMixin):
         self, app_with_federation: Flask, actor_1: Actor
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         response = client.get(
@@ -43,7 +43,7 @@ class TestGetFollowRequestWithFederation(ApiTestCaseMixin):
     ) -> None:
         follow_request_from_user_3_to_user_1.updated_at = datetime.utcnow()
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         response = client.get(
@@ -67,7 +67,7 @@ class TestAcceptLocalFollowRequestWithFederation(FollowRequestTestCase):
         actor_1: Actor,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         self.assert_return_user_not_found(
@@ -80,7 +80,7 @@ class TestAcceptLocalFollowRequestWithFederation(FollowRequestTestCase):
         self, app_with_federation: Flask, actor_1: Actor, actor_2: Actor
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         self.assert_it_returns_follow_request_not_found(
@@ -99,7 +99,7 @@ class TestAcceptLocalFollowRequestWithFederation(FollowRequestTestCase):
             datetime.utcnow()
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         self.assert_it_returns_follow_request_already_processed(
@@ -114,7 +114,7 @@ class TestAcceptLocalFollowRequestWithFederation(FollowRequestTestCase):
         follow_request_from_user_2_to_user_1_with_federation: FollowRequest,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         self.assert_it_returns_follow_request_processed(
@@ -131,7 +131,7 @@ class TestAcceptLocalFollowRequestWithFederation(FollowRequestTestCase):
         follow_request_from_user_2_to_user_1_with_federation: FollowRequest,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         client.post(
@@ -156,7 +156,7 @@ class TestAcceptRemoteFollowRequestWithFederation(
         follow_request_from_remote_user_to_user_1: FollowRequest,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         self.assert_it_returns_follow_request_processed(
@@ -173,7 +173,7 @@ class TestAcceptRemoteFollowRequestWithFederation(
         follow_request_from_remote_user_to_user_1: FollowRequest,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         client.post(
@@ -201,7 +201,7 @@ class TestRejectLocalFollowRequestWithFederation(FollowRequestTestCase):
         actor_1: Actor,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         self.assert_return_user_not_found(
@@ -214,7 +214,7 @@ class TestRejectLocalFollowRequestWithFederation(FollowRequestTestCase):
         self, app_with_federation: Flask, actor_1: Actor, actor_2: Actor
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         self.assert_it_returns_follow_request_not_found(
@@ -232,7 +232,7 @@ class TestRejectLocalFollowRequestWithFederation(FollowRequestTestCase):
             datetime.utcnow()
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         self.assert_it_returns_follow_request_already_processed(
@@ -247,7 +247,7 @@ class TestRejectLocalFollowRequestWithFederation(FollowRequestTestCase):
         follow_request_from_user_2_to_user_1_with_federation: FollowRequest,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         self.assert_it_returns_follow_request_processed(
@@ -264,7 +264,7 @@ class TestRejectLocalFollowRequestWithFederation(FollowRequestTestCase):
         follow_request_from_user_2_to_user_1_with_federation: FollowRequest,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         client.post(
@@ -289,7 +289,7 @@ class TestRejectRemoteFollowRequestWithFederation(
         follow_request_from_remote_user_to_user_1: FollowRequest,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         self.assert_it_returns_follow_request_processed(
@@ -306,7 +306,7 @@ class TestRejectRemoteFollowRequestWithFederation(
         follow_request_from_remote_user_to_user_1: FollowRequest,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation
+            app_with_federation, actor_1.user.email
         )
 
         client.post(

@@ -52,7 +52,9 @@ class TestGetSports(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         sport_2_running: Sport,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/sports',
@@ -73,7 +75,9 @@ class TestGetSports(ApiTestCaseMixin):
         sport_1_cycling_inactive: Sport,
         sport_2_running: Sport,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/sports',
@@ -98,7 +102,7 @@ class TestGetSports(ApiTestCaseMixin):
         sport_2_running: Sport,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -132,7 +136,7 @@ class TestGetSports(ApiTestCaseMixin):
         db.session.commit()
 
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -156,7 +160,9 @@ class TestGetSport(ApiTestCaseMixin):
     def test_it_gets_a_sport(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/sports/1',
@@ -176,7 +182,9 @@ class TestGetSport(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         user_sport_1_preference: UserSportPreference,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/sports/1',
@@ -192,7 +200,9 @@ class TestGetSport(ApiTestCaseMixin):
     def test_it_returns_404_if_sport_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/sports/1',
@@ -207,7 +217,9 @@ class TestGetSport(ApiTestCaseMixin):
     def test_it_gets_a_inactive_sport(
         self, app: Flask, user_1: User, sport_1_cycling_inactive: Sport
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/sports/1',
@@ -227,7 +239,7 @@ class TestGetSport(ApiTestCaseMixin):
         self, app: Flask, user_1_admin: User, sport_1_cycling_inactive: Sport
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -250,7 +262,7 @@ class TestUpdateSport(ApiTestCaseMixin):
         self, app: Flask, user_1_admin: User, sport_1_cycling: Sport
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -273,7 +285,7 @@ class TestUpdateSport(ApiTestCaseMixin):
     ) -> None:
         sport_1_cycling.is_active = False
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -299,7 +311,7 @@ class TestUpdateSport(ApiTestCaseMixin):
         workout_cycling_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -326,7 +338,7 @@ class TestUpdateSport(ApiTestCaseMixin):
     ) -> None:
         sport_1_cycling.is_active = False
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -352,7 +364,7 @@ class TestUpdateSport(ApiTestCaseMixin):
         user_admin_sport_1_preference: UserSportPreference,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -380,7 +392,7 @@ class TestUpdateSport(ApiTestCaseMixin):
     ) -> None:
         sport_1_cycling.is_active = False
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -401,7 +413,9 @@ class TestUpdateSport(ApiTestCaseMixin):
     def test_returns_error_if_user_has_no_admin_rights(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.patch(
             '/api/sports/1',
@@ -420,7 +434,7 @@ class TestUpdateSport(ApiTestCaseMixin):
         self, app: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -439,7 +453,7 @@ class TestUpdateSport(ApiTestCaseMixin):
         self, app: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(

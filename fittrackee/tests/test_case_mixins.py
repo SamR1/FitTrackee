@@ -32,14 +32,15 @@ class BaseTestMixin:
 class ApiTestCaseMixin:
     @staticmethod
     def get_test_client_and_auth_token(
-        app: Flask, as_admin: bool = False
+        app: Flask, user_email: str
     ) -> Tuple[FlaskClient, str]:
+        """user_email must be user 1 email"""
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
             data=json.dumps(
                 dict(
-                    email='admin@example.com' if as_admin else 'test@test.com',
+                    email=user_email,
                     password='12345678',
                 )
             ),

@@ -14,7 +14,9 @@ class TestFollowWithoutFederation(ApiTestCaseMixin):
     def test_it_raises_error_if_target_user_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             f'/api/users/{random_string()}/follow',
@@ -36,7 +38,9 @@ class TestFollowWithoutFederation(ApiTestCaseMixin):
     ) -> None:
         follow_request_from_user_1_to_user_2.is_approved = False
         follow_request_from_user_1_to_user_2.updated_at = datetime.now()
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             f'/api/users/{user_2.username}/follow',
@@ -52,7 +56,9 @@ class TestFollowWithoutFederation(ApiTestCaseMixin):
     def test_it_creates_follow_request(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             f'/api/users/{user_2.username}/follow',
@@ -75,7 +81,9 @@ class TestFollowWithoutFederation(ApiTestCaseMixin):
         user_2: User,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             f'/api/users/{user_2.username}/follow',
@@ -99,7 +107,9 @@ class TestFollowWithoutFederation(ApiTestCaseMixin):
         user_1: User,
         user_2: User,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         client.post(
             f'/api/users/{user_2.username}/follow',

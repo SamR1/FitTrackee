@@ -12,7 +12,9 @@ class TestGetConfig(ApiTestCaseMixin):
     def test_it_gets_application_config(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/config',
@@ -38,7 +40,7 @@ class TestGetConfig(ApiTestCaseMixin):
         self, app_no_config: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_no_config, as_admin=True
+            app_no_config, user_1_admin.email
         )
 
         response = client.get(
@@ -56,7 +58,7 @@ class TestGetConfig(ApiTestCaseMixin):
         self, app: Flask, app_config: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -76,7 +78,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         self, app: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
         response = client.patch(
             '/api/config',
@@ -98,7 +100,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         self, app: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -129,7 +131,9 @@ class TestUpdateConfig(ApiTestCaseMixin):
     def test_it_returns_403_when_user_is_not_an_admin(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.patch(
             '/api/config',
@@ -148,7 +152,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         self, app: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -167,7 +171,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         self, app_no_config: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_no_config, as_admin=True
+            app_no_config, user_1_admin.email
         )
 
         response = client.patch(
@@ -186,7 +190,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         self, app: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -215,7 +219,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         self, app_with_max_file_size_equals_0: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_max_file_size_equals_0, as_admin=True
+            app_with_max_file_size_equals_0, user_1_admin.email
         )
 
         response = client.patch(
@@ -241,7 +245,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         self, app: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -267,7 +271,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         self, app: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(

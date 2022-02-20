@@ -12,7 +12,9 @@ class TestGetStatsByTime(ApiTestCaseMixin):
     def test_it_gets_no_stats_when_user_has_no_workouts(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_time',
@@ -27,7 +29,9 @@ class TestGetStatsByTime(ApiTestCaseMixin):
     def test_it_returns_error_when_user_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/stats/1000/by_time',
@@ -48,7 +52,9 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             (
@@ -75,7 +81,9 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30&time=day',  # noqa
@@ -96,7 +104,9 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_time',
@@ -146,7 +156,9 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30',  # noqa
@@ -186,7 +198,9 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_paris.email
+        )
 
         response = client.get(
             f'/api/stats/{user_1_paris.username}/by_time?'
@@ -227,7 +241,9 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_time?time=year',
@@ -277,7 +293,9 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30&time=year',  # noqa
@@ -318,7 +336,9 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         workout_running_user_1: Workout,
     ) -> None:
 
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_paris.email
+        )
 
         response = client.get(
             f'/api/stats/{user_1_paris.username}/by_time?from=2018-04-01&to=2018-04-30&time=year',  # noqa
@@ -358,7 +378,9 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_time?time=month',
@@ -448,7 +470,9 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_full.email
+        )
 
         response = client.get(
             f'/api/stats/{user_1_full.username}/by_time?time=month',
@@ -538,7 +562,9 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30&time=month',  # noqa
@@ -578,7 +604,9 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_full.email
+        )
 
         response = client.get(
             f'/api/stats/{user_1_full.username}/by_time?time=week',
@@ -668,7 +696,9 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30&time=week',  # noqa
@@ -708,7 +738,9 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_time?time=weekm',
@@ -798,7 +830,9 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30&time=weekm',  # noqa
@@ -840,7 +874,9 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_sport',
@@ -878,7 +914,9 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_sport?sport_id=1',
@@ -908,7 +946,9 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/stats/1000/by_sport?sport_id=1',
@@ -929,7 +969,9 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_sport?sport_id=999',
@@ -950,7 +992,9 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_sport?sport_id="999',
@@ -971,7 +1015,7 @@ class TestGetAllStats(ApiTestCaseMixin):
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -1000,7 +1044,7 @@ class TestGetAllStats(ApiTestCaseMixin):
         workout_running_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -1028,7 +1072,9 @@ class TestGetAllStats(ApiTestCaseMixin):
         workout_cycling_user_2: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/stats/all',
