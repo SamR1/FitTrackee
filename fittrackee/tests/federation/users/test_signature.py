@@ -18,15 +18,10 @@ from fittrackee.federation.signature import (
     SignatureVerification,
 )
 
-from ...utils import generate_response, random_string
+from ...utils import generate_response, get_date_string, random_string
 
 
 class SignatureVerificationTestCase:
-    @staticmethod
-    def get_date_string(date: Optional[datetime] = None) -> str:
-        date = date if date else datetime.utcnow()
-        return date.strftime(VALID_DATE_FORMAT)
-
     @staticmethod
     def random_signature() -> str:
         return str(base64.b64encode(random_string().encode()))
@@ -46,7 +41,7 @@ class SignatureVerificationTestCase:
             f'signature="' + signature + '"'
         )
         if date_str is None:
-            date_str = self.get_date_string(date)
+            date_str = get_date_string(date)
         return {
             'Host': host if host else random_string(),
             'Date': date_str,
@@ -116,7 +111,7 @@ class TestSignatureVerificationInstantiation(SignatureVerificationTestCase):
         request_with_empty_headers = self.get_request_mock(
             headers={
                 'Host': random_string(),
-                'Date': self.get_date_string(),
+                'Date': get_date_string(),
                 'Signature': input_signature_headers,
             }
         )
@@ -131,7 +126,7 @@ class TestSignatureVerificationInstantiation(SignatureVerificationTestCase):
             f'keyId="{key_id}",headers="(request-target) host date",'
             f'signature="' + signature + '"'
         )
-        date_str = self.get_date_string()
+        date_str = get_date_string()
         valid_request_mock = self.get_request_mock(
             headers={
                 'Host': random_string(),

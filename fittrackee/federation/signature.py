@@ -11,10 +11,27 @@ from flask import Request
 from fittrackee import appLog
 
 from .exceptions import InvalidSignatureException
+from .models import Actor
 
 VALID_DATE_DELTA = 30  # in seconds
 VALID_DATE_FORMAT = '%a, %d %b %Y %H:%M:%S GMT'
 VALID_SIG_KEYS = ['keyId', 'headers', 'signature']
+
+
+def signature_header(host: str, path: str, date_str: str, actor: Actor) -> str:
+    signed_string = (
+        f'(request-target): post {path}\nhost: {host}\ndate: {date_str}'
+    )
+    key = RSA.import_key(actor.private_key)
+    key_signer = pkcs1_15.new(key)
+    encoded_string = signed_string.encode('utf-8')
+    h = SHA256.new(encoded_string)
+    signature = base64.b64encode(key_signer.sign(h))
+    return (
+        f'keyId="{actor.activitypub_id}",'
+        'headers="(request-target) host date",'
+        f'signature="' + signature.decode() + '"'
+    )
 
 
 class SignatureVerification:

@@ -8,7 +8,12 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.sql.expression import select
 
 from fittrackee import BaseModel, bcrypt, db
+from fittrackee.federation.constants import AP_CTX
+from fittrackee.federation.enums import ActivityType
+from fittrackee.federation.exceptions import FederationDisabledException
 from fittrackee.federation.models import Actor
+from fittrackee.federation.tasks import send_to_users_inbox
+from fittrackee.federation.utils import generate_activity_id
 from fittrackee.workouts.models import Workout
 
 from .exceptions import (
@@ -60,6 +65,17 @@ class FollowRequest(BaseModel):
         return {
             'from_user': self.from_user.serialize(),
             'to_user': self.to_user.serialize(),
+        }
+
+    def get_activity(self) -> Dict:
+        if not current_app.config['federation_enabled']:
+            raise FederationDisabledException()
+        return {
+            '@context': AP_CTX,
+            'id': generate_activity_id(),
+            'type': ActivityType.FOLLOW.value,
+            'actor': self.from_user.get_user_url(),
+            'object': f'https://{self.to_user.actor.activitypub_id}',
         }
 
 
@@ -180,6 +196,14 @@ class User(BaseModel):
         )
         db.session.add(follow_request)
         db.session.commit()
+
+        if current_app.config['federation_enabled'] and target.actor.is_remote:
+            send_to_users_inbox.send(
+                sender_id=self.actor.id,
+                activity=follow_request.get_activity(),
+                recipients=[target.actor.inbox_url],
+            )
+
         return follow_request
 
     def _processes_follow_request_from(
@@ -208,6 +232,10 @@ class User(BaseModel):
             user=user, approved=False
         )
         return follow_request
+
+    def get_user_url(self) -> str:
+        """Return user url on user interface"""
+        return f"{current_app.config['UI_URL']}/users/{self.username}"
 
     def serialize(self) -> Dict:
         sports = []

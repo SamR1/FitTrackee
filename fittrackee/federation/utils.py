@@ -1,4 +1,6 @@
-from typing import Tuple
+import re
+from typing import Optional, Tuple
+from uuid import uuid4
 
 from Crypto.PublicKey import RSA
 from flask import current_app
@@ -35,3 +37,16 @@ def get_ap_url(username: str, url_type: str) -> str:
     if url_type == 'shared_inbox':
         return f'{ap_url}inbox'
     raise Exception('Invalid \'url_type\'.')
+
+
+def remove_url_scheme(url: str) -> str:
+    return re.sub(r'https?://', '', url)
+
+
+def generate_activity_id() -> str:
+    return f"{current_app.config['UI_URL']}/{uuid4()}"
+
+
+def get_username_and_domain(full_name: str) -> Optional[re.Match]:
+    full_name_pattern = r'([\w_\-\.]+)@([\w_\-\.]+\.[a-z]{2,})'
+    return re.match(full_name_pattern, full_name)

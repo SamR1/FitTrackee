@@ -1,9 +1,12 @@
 import random
 import string
+from datetime import datetime
 from json import dumps
 from typing import Dict, Optional, Union
 
 from requests import Response
+
+from fittrackee.federation.signature import VALID_DATE_FORMAT
 
 
 def random_string(
@@ -24,8 +27,17 @@ def random_string(
     )
 
 
-def random_domain() -> str:
+def random_domain_with_scheme() -> str:
     return random_string(prefix='https://', suffix='.social')
+
+
+def random_domain() -> str:
+    return random_string(suffix='.social')
+
+
+def get_date_string(date: Optional[datetime] = None) -> str:
+    date = date if date else datetime.utcnow()
+    return date.strftime(VALID_DATE_FORMAT)
 
 
 def generate_response(

@@ -3,6 +3,7 @@ from datetime import datetime
 import pytest
 from flask import Flask
 
+from fittrackee.federation.exceptions import FederationDisabledException
 from fittrackee.users.exceptions import (
     FollowRequestAlreadyProcessedError,
     NotExistingFollowRequestError,
@@ -102,6 +103,17 @@ class TestFollowRequestModel:
         )
         assert serialized_follow_request['from_user'] == user_1.serialize()
         assert serialized_follow_request['to_user'] == user_2.serialize()
+
+    def test_it_raises_error_if_getting_activity_object_when_federation_is_disabled(  # noqa
+        self,
+        app: Flask,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        with pytest.raises(
+            FederationDisabledException,
+            match='Can not create activity, federation is disabled.',
+        ):
+            follow_request_from_user_1_to_user_2.get_activity()
 
 
 class TestUserFollowingModel:

@@ -1,8 +1,30 @@
 import json
-from typing import Any, Tuple
+import sys
+from typing import Any, Dict, List, Tuple
+from unittest.mock import Mock
 
 from flask import Flask
 from flask.testing import FlaskClient
+
+
+class BaseTestMixin:
+    @staticmethod
+    def get_call_kwargs(mock: Mock) -> Dict:
+        return (
+            mock.call_args[1]
+            if sys.version_info < (3, 8, 0)
+            else mock.call_args.kwargs
+        )
+
+    def assert_call_args_keys_equal(
+        self, mock: Mock, expected_keys: List
+    ) -> None:
+        args_list = self.get_call_kwargs(mock)
+        assert list(args_list.keys()) == expected_keys
+
+    @staticmethod
+    def assert_dict_contains_subset(container: Dict, subset: Dict) -> None:
+        assert subset.items() <= container.items()
 
 
 class ApiTestCaseMixin:

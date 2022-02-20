@@ -7,6 +7,8 @@ from flask import Blueprint, request, send_file
 from sqlalchemy import exc
 
 from fittrackee import db
+from fittrackee.federation.models import Actor, Domain
+from fittrackee.federation.utils import get_username_and_domain
 from fittrackee.files import get_absolute_file_path
 from fittrackee.responses import (
     ForbiddenErrorResponse,
@@ -606,7 +608,22 @@ def follow_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
         'status': 'success',
         'message': f"Follow request to user '{user_name}' is sent.",
     }
-    target_user = User.query.filter_by(username=user_name).first()
+
+    user_name_and_domain = get_username_and_domain(user_name)
+    if user_name_and_domain is None:  # local actor
+        target_user = User.query.filter_by(username=user_name).first()
+    else:  # remote actor
+        name, domain_name = user_name_and_domain.groups()
+        domain = Domain.query.filter_by(name=domain_name).first()
+        if not domain:
+            return UserNotFoundErrorResponse()
+        actor = Actor.query.filter_by(
+            preferred_username=name, domain_id=domain.id
+        ).first()
+        if not actor:
+            return UserNotFoundErrorResponse()
+        target_user = actor.user
+
     if target_user:
         existing_follow_request = FollowRequest.query.filter_by(
             follower_user_id=auth_user.id, followed_user_id=target_user.id
