@@ -83,6 +83,7 @@ def create_remote_user(remote_actor_url: Optional[str]) -> Actor:
             username=remote_actor_object['name'],
             email=None,
             password=None,
+            is_remote=True,
         )
         db.session.add(user)
         user.actor_id = actor.id

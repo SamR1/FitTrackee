@@ -88,6 +88,11 @@ def upgrade():
         nullable=True)
     )
     op.add_column('users', sa.Column('actor_id', sa.Integer(), nullable=True))
+    op.add_column(
+        'users',
+        sa.Column('is_remote', sa.Boolean(),
+        nullable=True)
+    )
     op.create_unique_constraint('users_actor_id_key', 'users', ['actor_id'])
     op.create_foreign_key(
         'users_actor_id_fkey', 'users', 'actors', ['actor_id'], ['id']
@@ -116,7 +121,9 @@ def upgrade():
     domain = connection.execute(domain_table.select()).fetchone()
     for user in connection.execute(user_helper.select()):
         op.execute(
-            "UPDATE users SET manually_approves_followers = True "
+            "UPDATE users "
+            "SET manually_approves_followers = True, "
+            "    is_remote = False "
             f"WHERE users.id = {user.id}"
         )
         created_at = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
@@ -147,6 +154,7 @@ def upgrade():
             f'UPDATE users SET actor_id = {actor.id} WHERE users.id = {user.id}'
         )
     op.alter_column('users', 'manually_approves_followers', nullable=False)
+    op.alter_column('users', 'is_remote', nullable=False)
     op.create_unique_constraint(
         'username_actor_id_unique', 'users', ['username', 'actor_id']
     )

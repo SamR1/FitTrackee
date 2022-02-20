@@ -663,8 +663,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
-        assert 'sam' in data['data']['users'][0]['username']
-        assert 'toto' in data['data']['users'][1]['username']
+        assert 'toto' in data['data']['users'][0]['username']
+        assert 'sam' in data['data']['users'][1]['username']
         assert 'admin' in data['data']['users'][2]['username']
         assert data['pagination'] == {
             'has_next': False,
@@ -690,8 +690,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
-        assert 'sam' in data['data']['users'][0]['username']
-        assert 'toto' in data['data']['users'][1]['username']
+        assert 'toto' in data['data']['users'][0]['username']
+        assert 'sam' in data['data']['users'][1]['username']
         assert 'admin' in data['data']['users'][2]['username']
         assert data['pagination'] == {
             'has_next': False,
@@ -718,8 +718,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'admin' in data['data']['users'][0]['username']
-        assert 'sam' in data['data']['users'][1]['username']
-        assert 'toto' in data['data']['users'][2]['username']
+        assert 'toto' in data['data']['users'][1]['username']
+        assert 'sam' in data['data']['users'][2]['username']
         assert data['pagination'] == {
             'has_next': False,
             'has_prev': False,

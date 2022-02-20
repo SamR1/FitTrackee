@@ -3,7 +3,7 @@ import shutil
 from typing import Any, Dict, Tuple, Union
 
 import click
-from flask import Blueprint, current_app, request, send_file
+from flask import Blueprint, request, send_file
 from sqlalchemy import exc
 
 from fittrackee import appLog, db
@@ -12,7 +12,7 @@ from fittrackee.federation.exceptions import (
     ActorNotFoundException,
     DomainNotFoundException,
 )
-from fittrackee.federation.models import Actor, Domain
+from fittrackee.federation.models import Domain
 from fittrackee.federation.utils_user import get_user_from_username
 from fittrackee.files import get_absolute_file_path
 from fittrackee.responses import (
@@ -60,13 +60,9 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
     order = params.get('order', 'asc')
     query = params.get('q')
     users_pagination = (
-        User.query.join(Actor, Actor.id == User.actor_id)
-        .join(Domain, Domain.id == Actor.domain_id)
-        .filter(
+        User.query.filter(
             User.username.like('%' + query + '%') if query else True,
-            Domain.name != current_app.config['AP_DOMAIN']
-            if remote
-            else Domain.name == current_app.config['AP_DOMAIN'],
+            User.is_remote == remote,
         )
         .order_by(
             User.workouts_count.asc()  # type: ignore

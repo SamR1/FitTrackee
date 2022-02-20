@@ -126,8 +126,15 @@ class User(BaseModel):
     bio = db.Column(db.String(200), nullable=True)
     picture = db.Column(db.String(255), nullable=True)
     timezone = db.Column(db.String(50), nullable=True)
-    # does the week start Monday?
+    # weekm: does the week start Monday?
     weekm = db.Column(db.Boolean(50), default=False, nullable=False)
+    language = db.Column(db.String(50), nullable=True)
+    imperial_units = db.Column(db.Boolean, default=False, nullable=False)
+    manually_approves_followers = db.Column(
+        db.Boolean, default=True, nullable=False
+    )
+    is_remote = db.Column(db.Boolean, default=False, nullable=False)
+
     workouts = db.relationship(
         'Workout',
         lazy=True,
@@ -138,8 +145,6 @@ class User(BaseModel):
         lazy=True,
         backref=db.backref('user', lazy='joined', single_parent=True),
     )
-    language = db.Column(db.String(50), nullable=True)
-    imperial_units = db.Column(db.Boolean, default=False, nullable=False)
     actor = db.relationship(Actor, back_populates='user')
     received_follow_requests = db.relationship(
         FollowRequest,
@@ -152,9 +157,6 @@ class User(BaseModel):
         backref='from_user',
         primaryjoin=id == FollowRequest.follower_user_id,
         lazy='dynamic',
-    )
-    manually_approves_followers = db.Column(
-        db.Boolean, default=True, nullable=False
     )
     followers = db.relationship(
         'User',
@@ -192,6 +194,7 @@ class User(BaseModel):
         email: Optional[str],
         password: Optional[str],
         created_at: Optional[datetime] = datetime.utcnow(),
+        is_remote: bool = False,
     ) -> None:
         self.username = username
         self.email = email  # email is None for remote actor
@@ -200,9 +203,10 @@ class User(BaseModel):
                 password, current_app.config.get('BCRYPT_LOG_ROUNDS')
             ).decode()
             if email
-            else None
-        )  # no password for remote actor
+            else None  # no password for remote actor
+        )
         self.created_at = created_at
+        self.is_remote = is_remote
 
     @staticmethod
     def encode_auth_token(user_id: int) -> str:
@@ -341,10 +345,6 @@ class User(BaseModel):
         self.actor_id = actor.id
         db.session.commit()
 
-    @property
-    def is_remote(self) -> bool:
-        return self.actor.is_remote
-
     def serialize(self, role: Optional[UserRole] = None) -> Dict:
         sports = []
         total = (0, '0:00:00')
@@ -364,26 +364,26 @@ class User(BaseModel):
                 .first()
             )
         serialized_user = {
-            'username': self.username,
-            'created_at': self.created_at,
             'admin': self.admin,
-            'first_name': self.first_name,
-            'last_name': self.last_name,
             'bio': self.bio,
+            'birth_date': self.birth_date,
+            'created_at': self.created_at,
+            'first_name': self.first_name,
             'followers': self.followers.count(),
             'following': self.following.count(),
             'is_remote': self.is_remote,
+            'last_name': self.last_name,
             'location': self.location,
-            'birth_date': self.birth_date,
-            'picture': self.picture is not None,
             'nb_sports': len(sports),
             'nb_workouts': self.workouts_count,
+            'picture': self.picture is not None,
             'records': [record.serialize() for record in self.records],
             'sports_list': [
                 sport for sportslist in sports for sport in sportslist
             ],
             'total_distance': float(total[0]),
             'total_duration': str(total[1]),
+            'username': self.username,
         }
 
         if role in [UserRole.AUTH_USER, UserRole.ADMIN]:
@@ -393,10 +393,10 @@ class User(BaseModel):
             serialized_user = {
                 **serialized_user,
                 **{
+                    'imperial_units': self.imperial_units,
+                    'language': self.language,
                     'timezone': self.timezone,
                     'weekm': self.weekm,
-                    'language': self.language,
-                    'imperial_units': self.imperial_units,
                 },
             }
 
