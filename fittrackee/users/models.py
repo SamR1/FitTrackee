@@ -6,6 +6,7 @@ from flask import current_app
 from sqlalchemy import and_, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.sql.expression import select
+from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, bcrypt, db
 from fittrackee.federation.constants import AP_CTX
@@ -20,6 +21,7 @@ from .exceptions import (
     FollowRequestAlreadyRejectedError,
     NotExistingFollowRequestError,
 )
+from .privacy_levels import PrivacyLevel
 from .roles import UserRole
 from .utils.token import decode_user_token, get_user_token
 
@@ -134,6 +136,12 @@ class User(BaseModel):
         db.Boolean, default=True, nullable=False
     )
     is_remote = db.Column(db.Boolean, default=False, nullable=False)
+    workouts_visibility = db.Column(
+        Enum(PrivacyLevel, name='privacy_levels'), server_default='PRIVATE'
+    )
+    map_visibility = db.Column(
+        Enum(PrivacyLevel, name='privacy_levels'), server_default='PRIVATE'
+    )
 
     workouts = db.relationship(
         'Workout',
@@ -347,7 +355,6 @@ class User(BaseModel):
 
     def serialize(self, role: Optional[UserRole] = None) -> Dict:
         sports = []
-        total = (0, '0:00:00')
         if self.workouts_count > 0:  # type: ignore
             sports = (
                 db.session.query(Workout.sport_id)
@@ -356,13 +363,7 @@ class User(BaseModel):
                 .order_by(Workout.sport_id)
                 .all()
             )
-            total = (
-                db.session.query(
-                    func.sum(Workout.distance), func.sum(Workout.duration)
-                )
-                .filter(Workout.user_id == self.id)
-                .first()
-            )
+
         serialized_user = {
             'admin': self.admin,
             'bio': self.bio,
@@ -374,17 +375,33 @@ class User(BaseModel):
             'is_remote': self.is_remote,
             'last_name': self.last_name,
             'location': self.location,
-            'nb_sports': len(sports),
+            'map_visibility': self.map_visibility.value,
             'nb_workouts': self.workouts_count,
             'picture': self.picture is not None,
-            'records': [record.serialize() for record in self.records],
-            'sports_list': [
-                sport for sportslist in sports for sport in sportslist
-            ],
-            'total_distance': float(total[0]),
-            'total_duration': str(total[1]),
+            'workouts_visibility': self.workouts_visibility.value,
             'username': self.username,
         }
+
+        if role is not None:
+            total = (0, '0:00:00')
+            if self.workouts_count > 0:  # type: ignore
+                total = (
+                    db.session.query(
+                        func.sum(Workout.distance), func.sum(Workout.duration)
+                    )
+                    .filter(Workout.user_id == self.id)
+                    .first()
+                )
+
+            serialized_user['nb_sports'] = len(sports)
+            serialized_user['records'] = [
+                record.serialize() for record in self.records
+            ]
+            serialized_user['sports_list'] = [
+                sport for sportslist in sports for sport in sportslist
+            ]
+            serialized_user['total_distance'] = float(total[0])
+            serialized_user['total_duration'] = str(total[1])
 
         if role in [UserRole.AUTH_USER, UserRole.ADMIN]:
             serialized_user['email'] = self.email

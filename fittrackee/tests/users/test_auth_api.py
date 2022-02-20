@@ -8,11 +8,13 @@ from flask import Flask
 from freezegun import freeze_time
 
 from fittrackee.users.models import User, UserSportPreference
+from fittrackee.users.roles import UserRole
 from fittrackee.users.utils.token import get_user_token
 from fittrackee.workouts.models import Sport, Workout
 
 from ..federation.users.test_auth_api import assert_actor_is_created
 from ..test_case_mixins import ApiTestCaseMixin
+from ..utils import jsonify_dict
 
 
 class TestUserRegistration:
@@ -487,24 +489,12 @@ class TestUserProfile(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
+        assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
-        assert data['data'] is not None
-        assert data['data']['username'] == 'test'
-        assert data['data']['email'] == 'test@test.com'
-        assert data['data']['created_at']
-        assert not data['data']['admin']
-        assert data['data']['timezone'] is None
-        assert data['data']['weekm'] is False
-        assert data['data']['imperial_units'] is False
-        assert data['data']['language'] is None
-        assert data['data']['nb_sports'] == 0
-        assert data['data']['nb_workouts'] == 0
-        assert data['data']['records'] == []
-        assert data['data']['sports_list'] == []
-        assert data['data']['total_distance'] == 0
-        assert data['data']['total_duration'] == '0:00:00'
-        assert response.status_code == 200
+        assert data['data'] == jsonify_dict(
+            user_1.serialize(role=UserRole.AUTH_USER)
+        )
 
     def test_it_returns_user_profile_with_updated_fields(
         self, app: Flask, user_1_full: User
@@ -519,28 +509,11 @@ class TestUserProfile(ApiTestCaseMixin):
         )
 
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['data'] is not None
-        assert data['data']['username'] == 'test'
-        assert data['data']['email'] == 'test@test.com'
-        assert data['data']['created_at']
-        assert not data['data']['admin']
-        assert data['data']['first_name'] == 'John'
-        assert data['data']['last_name'] == 'Doe'
-        assert data['data']['birth_date']
-        assert data['data']['bio'] == 'just a random guy'
-        assert data['data']['imperial_units'] is False
-        assert data['data']['location'] == 'somewhere'
-        assert data['data']['timezone'] == 'America/New_York'
-        assert data['data']['weekm'] is False
-        assert data['data']['language'] == 'en'
-        assert data['data']['nb_sports'] == 0
-        assert data['data']['nb_workouts'] == 0
-        assert data['data']['records'] == []
-        assert data['data']['sports_list'] == []
-        assert data['data']['total_distance'] == 0
-        assert data['data']['total_duration'] == '0:00:00'
         assert response.status_code == 200
+        assert data['status'] == 'success'
+        assert data['data'] == jsonify_dict(
+            user_1_full.serialize(role=UserRole.AUTH_USER)
+        )
 
     def test_it_returns_user_profile_with_workouts(
         self,
@@ -560,22 +533,12 @@ class TestUserProfile(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
+        assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
-        assert data['data'] is not None
-        assert data['data']['username'] == 'test'
-        assert data['data']['email'] == 'test@test.com'
-        assert data['data']['created_at']
-        assert not data['data']['admin']
-        assert data['data']['timezone'] is None
-        assert data['data']['imperial_units'] is False
-        assert data['data']['nb_sports'] == 2
-        assert data['data']['nb_workouts'] == 2
-        assert len(data['data']['records']) == 8
-        assert data['data']['sports_list'] == [1, 2]
-        assert data['data']['total_distance'] == 22
-        assert data['data']['total_duration'] == '2:40:00'
-        assert response.status_code == 200
+        assert data['data'] == jsonify_dict(
+            user_1.serialize(role=UserRole.AUTH_USER)
+        )
 
     def test_it_returns_error_if_headers_are_invalid(self, app: Flask) -> None:
         client = app.test_client()
@@ -611,29 +574,15 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
+        assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['message'] == 'user profile updated'
-        assert response.status_code == 200
-        assert data['data']['username'] == 'test'
-        assert data['data']['email'] == 'test@test.com'
-        assert not data['data']['admin']
-        assert data['data']['created_at']
-        assert data['data']['first_name'] == 'John'
-        assert data['data']['last_name'] == 'Doe'
         assert data['data']['birth_date']
         assert data['data']['bio'] == 'Nothing to tell'
-        assert data['data']['imperial_units'] is False
+        assert data['data']['first_name'] == 'John'
         assert data['data']['location'] == 'Somewhere'
-        assert data['data']['timezone'] is None
-        assert data['data']['weekm'] is False
-        assert data['data']['language'] is None
-        assert data['data']['nb_sports'] == 0
-        assert data['data']['nb_workouts'] == 0
-        assert data['data']['records'] == []
-        assert data['data']['sports_list'] == []
-        assert data['data']['total_distance'] == 0
-        assert data['data']['total_duration'] == '0:00:00'
+        assert data['data']['last_name'] == 'Doe'
 
     def test_it_updates_user_profile_without_password(
         self, app: Flask, user_1: User
@@ -657,29 +606,15 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
+        assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['message'] == 'user profile updated'
-        assert response.status_code == 200
-        assert data['data']['username'] == 'test'
-        assert data['data']['email'] == 'test@test.com'
-        assert not data['data']['admin']
-        assert data['data']['created_at']
-        assert data['data']['first_name'] == 'John'
-        assert data['data']['last_name'] == 'Doe'
         assert data['data']['birth_date']
         assert data['data']['bio'] == 'Nothing to tell'
-        assert data['data']['imperial_units'] is False
+        assert data['data']['first_name'] == 'John'
         assert data['data']['location'] == 'Somewhere'
-        assert data['data']['timezone'] is None
-        assert data['data']['weekm'] is False
-        assert data['data']['language'] is None
-        assert data['data']['nb_sports'] == 0
-        assert data['data']['nb_workouts'] == 0
-        assert data['data']['records'] == []
-        assert data['data']['sports_list'] == []
-        assert data['data']['total_distance'] == 0
-        assert data['data']['total_duration'] == '0:00:00'
+        assert data['data']['last_name'] == 'Doe'
 
     def test_it_returns_error_if_fields_are_missing(
         self, app: Flask, user_1: User
@@ -800,34 +735,23 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     weekm=True,
                     language='fr',
                     imperial_units=True,
+                    map_visibility='followers_only',
+                    workouts_visibility='public',
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
+        assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['message'] == 'user preferences updated'
-        assert response.status_code == 200
-        assert data['data']['username'] == 'test'
-        assert data['data']['email'] == 'test@test.com'
-        assert not data['data']['admin']
-        assert data['data']['created_at']
-        assert data['data']['first_name'] is None
-        assert data['data']['last_name'] is None
-        assert data['data']['birth_date'] is None
-        assert data['data']['bio'] is None
         assert data['data']['imperial_units']
-        assert data['data']['location'] is None
         assert data['data']['timezone'] == 'America/New_York'
         assert data['data']['weekm'] is True
         assert data['data']['language'] == 'fr'
-        assert data['data']['nb_sports'] == 0
-        assert data['data']['nb_workouts'] == 0
-        assert data['data']['records'] == []
-        assert data['data']['sports_list'] == []
-        assert data['data']['total_distance'] == 0
-        assert data['data']['total_duration'] == '0:00:00'
+        assert data['data']['map_visibility'] == 'followers_only'
+        assert data['data']['workouts_visibility'] == 'public'
 
     def test_it_returns_error_if_fields_are_missing(
         self, app: Flask, user_1: User

@@ -1,59 +1,20 @@
 import json
 from datetime import datetime, timedelta
 from io import BytesIO
-from typing import Dict
 from unittest.mock import patch
 
 from flask import Flask
 
 from fittrackee.federation.models import Actor
 from fittrackee.users.models import User, UserSportPreference
+from fittrackee.users.roles import UserRole
 from fittrackee.workouts.models import Sport, Workout
 
 from ..test_case_mixins import ApiTestCaseMixin
+from ..utils import jsonify_dict
 
 
-class GetUserTestCase(ApiTestCaseMixin):
-    @staticmethod
-    def assert_user(user_dict: Dict, user: User) -> None:
-        assert user_dict['username'] == user.username
-        assert user_dict['created_at'] == user.created_at.strftime(
-            '%a, %d %b %Y %H:%M:%S GMT'
-        )
-        assert user_dict['admin'] == user.admin
-        assert user_dict['bio'] is None
-        assert user_dict['birth_date'] is None
-        assert user_dict['first_name'] is None
-        assert user_dict['followers'] == 0
-        assert user_dict['following'] == 0
-        assert user_dict['is_remote'] is False
-        assert user_dict['last_name'] is None
-        assert user_dict['location'] is None
-        assert 'imperial_units' not in user_dict
-        assert 'language' not in user_dict
-        assert 'timezone' not in user_dict
-        assert 'weekm' not in user_dict
-
-    @staticmethod
-    def assert_user_2_without_workouts(user_dict: Dict) -> None:
-        assert user_dict['nb_sports'] == 0
-        assert user_dict['nb_workouts'] == 0
-        assert user_dict['records'] == []
-        assert user_dict['sports_list'] == []
-        assert user_dict['total_distance'] == 0
-        assert user_dict['total_duration'] == '0:00:00'
-
-    @staticmethod
-    def assert_user_1_with_workouts(user_dict: Dict) -> None:
-        assert user_dict['nb_sports'] == 2
-        assert user_dict['nb_workouts'] == 2
-        assert len(user_dict['records']) == 8
-        assert user_dict['sports_list'] == [1, 2]
-        assert user_dict['total_distance'] == 22
-        assert user_dict['total_duration'] == '2:40:00'
-
-
-class TestGetUserAsAdmin(GetUserTestCase):
+class TestGetUserAsAdmin(ApiTestCaseMixin):
     def test_it_gets_single_user_without_workouts(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
@@ -67,16 +28,41 @@ class TestGetUserAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
-        user = data['data']['users'][0]
-        self.assert_user(user, user_2)
-        self.assert_user_2_without_workouts(user)
-        assert user['email'] == user_2.email
+        assert data['data']['users'][0] == jsonify_dict(
+            user_2.serialize(role=UserRole.ADMIN)
+        )
 
     def test_it_gets_single_user_with_workouts(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 1
+        assert data['data']['users'][0] == jsonify_dict(
+            user_2.serialize(role=UserRole.ADMIN)
+        )
+
+    def test_it_gets_authenticated_user(
         self,
         app: Flask,
         user_1_admin: User,
@@ -95,14 +81,13 @@ class TestGetUserAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
-        user = data['data']['users'][0]
-        self.assert_user(user, user_1_admin)
-        self.assert_user_1_with_workouts(user)
-        assert user['email'] == user_1_admin.email
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1_admin.serialize(role=UserRole.ADMIN)
+        )
 
     def test_it_returns_error_if_user_does_not_exist(
         self, app: Flask, user_1: User
@@ -116,14 +101,14 @@ class TestGetUserAsAdmin(GetUserTestCase):
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
-        data = json.loads(response.data.decode())
 
         assert response.status_code == 404
+        data = json.loads(response.data.decode())
         assert 'not found' in data['status']
         assert 'user does not exist' in data['message']
 
 
-class TestGetUserAsUser(GetUserTestCase):
+class TestGetUserAsUser(ApiTestCaseMixin):
     def test_it_gets_single_user_without_workouts(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
@@ -137,23 +122,44 @@ class TestGetUserAsUser(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
-        user = data['data']['users'][0]
-        self.assert_user(user, user_2)
-        self.assert_user_2_without_workouts(user)
-        assert 'email' not in user
+        assert data['data']['users'][0] == jsonify_dict(
+            user_2.serialize(role=UserRole.USER)
+        )
 
     def test_it_gets_single_user_with_workouts(
         self,
         app: Flask,
         user_1: User,
+        user_2: User,
         sport_1_cycling: Sport,
-        sport_2_running: Sport,
-        workout_cycling_user_1: Workout,
-        workout_running_user_1: Workout,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 1
+        assert data['data']['users'][0] == jsonify_dict(
+            user_2.serialize(role=UserRole.USER)
+        )
+
+    def test_it_gets_authenticated_user(
+        self,
+        app: Flask,
+        user_1: User,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -165,14 +171,13 @@ class TestGetUserAsUser(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
-        user = data['data']['users'][0]
-        self.assert_user(user, user_1)
-        self.assert_user_1_with_workouts(user)
-        assert 'email' not in user
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1.serialize(role=UserRole.USER)
+        )
 
     def test_it_returns_error_if_user_does_not_exist(
         self, app: Flask, user_1: User
@@ -186,6 +191,61 @@ class TestGetUserAsUser(GetUserTestCase):
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
+
+        assert response.status_code == 404
+        data = json.loads(response.data.decode())
+        assert 'not found' in data['status']
+        assert 'user does not exist' in data['message']
+
+
+class TestGetUserAsUnauthenticatedUser(ApiTestCaseMixin):
+    def test_it_gets_single_user_without_workouts(
+        self, app: Flask, user_2: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 1
+        assert data['data']['users'][0] == jsonify_dict(user_2.serialize())
+
+    def test_it_gets_single_user_with_workouts(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1: Workout,
+        workout_running_user_1: Workout,
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(
+            f'/api/users/{user_1.username}',
+            content_type='application/json',
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 1
+        assert data['data']['users'][0] == jsonify_dict(user_1.serialize())
+
+    def test_it_returns_error_if_user_does_not_exist(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(
+            '/api/users/not_existing',
+            content_type='application/json',
+        )
         data = json.loads(response.data.decode())
 
         assert response.status_code == 404
@@ -193,7 +253,7 @@ class TestGetUserAsUser(GetUserTestCase):
         assert 'user does not exist' in data['message']
 
 
-class TestGetUsersAsAdmin(GetUserTestCase):
+class TestGetUsersAsAdmin(ApiTestCaseMixin):
     def test_it_gets_users_list(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
@@ -206,52 +266,19 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
-        assert 'created_at' in data['data']['users'][0]
-        assert 'created_at' in data['data']['users'][1]
-        assert 'created_at' in data['data']['users'][2]
-        assert 'admin' in data['data']['users'][0]['username']
-        assert 'sam' in data['data']['users'][1]['username']
-        assert 'toto' in data['data']['users'][2]['username']
-        assert 'admin@example.com' in data['data']['users'][0]['email']
-        assert 'sam@test.com' in data['data']['users'][1]['email']
-        assert 'toto@toto.com' in data['data']['users'][2]['email']
-        assert data['data']['users'][0]['is_remote'] is False
-        assert data['data']['users'][0]['nb_sports'] == 0
-        assert data['data']['users'][0]['nb_workouts'] == 0
-        assert data['data']['users'][0]['records'] == []
-        assert data['data']['users'][0]['sports_list'] == []
-        assert data['data']['users'][0]['total_distance'] == 0
-        assert data['data']['users'][0]['total_duration'] == '0:00:00'
-        assert data['data']['users'][1]['is_remote'] is False
-        assert data['data']['users'][1]['records'] == []
-        assert data['data']['users'][1]['nb_sports'] == 0
-        assert data['data']['users'][1]['nb_workouts'] == 0
-        assert data['data']['users'][1]['sports_list'] == []
-        assert data['data']['users'][1]['total_distance'] == 0
-        assert data['data']['users'][1]['total_duration'] == '0:00:00'
-        assert data['data']['users'][2]['is_remote'] is False
-        assert data['data']['users'][2]['nb_sports'] == 0
-        assert data['data']['users'][2]['nb_workouts'] == 0
-        assert data['data']['users'][2]['records'] == []
-        assert data['data']['users'][2]['sports_list'] == []
-        assert data['data']['users'][2]['total_distance'] == 0
-        assert data['data']['users'][2]['total_duration'] == '0:00:00'
-        assert 'imperial_units' not in data['data']['users'][0]
-        assert 'imperial_units' not in data['data']['users'][1]
-        assert 'imperial_units' not in data['data']['users'][2]
-        assert 'language' not in data['data']['users'][0]
-        assert 'language' not in data['data']['users'][1]
-        assert 'language' not in data['data']['users'][2]
-        assert 'timezone' not in data['data']['users'][0]
-        assert 'timezone' not in data['data']['users'][1]
-        assert 'timezone' not in data['data']['users'][2]
-        assert 'weekm' not in data['data']['users'][0]
-        assert 'weekm' not in data['data']['users'][1]
-        assert 'weekm' not in data['data']['users'][2]
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1_admin.serialize(role=UserRole.ADMIN)
+        )
+        assert data['data']['users'][1] == jsonify_dict(
+            user_3.serialize(role=UserRole.ADMIN)
+        )
+        assert data['data']['users'][2] == jsonify_dict(
+            user_2.serialize(role=UserRole.ADMIN)
+        )
         assert data['pagination'] == {
             'has_next': False,
             'has_prev': False,
@@ -281,52 +308,20 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
-        assert 'created_at' in data['data']['users'][0]
-        assert 'created_at' in data['data']['users'][1]
-        assert 'created_at' in data['data']['users'][2]
-        assert 'admin' in data['data']['users'][0]['username']
-        assert 'sam' in data['data']['users'][1]['username']
-        assert 'toto' in data['data']['users'][2]['username']
-        assert 'admin@example.com' in data['data']['users'][0]['email']
-        assert 'sam@test.com' in data['data']['users'][1]['email']
-        assert 'toto@toto.com' in data['data']['users'][2]['email']
-        assert data['data']['users'][0]['is_remote'] is False
-        assert data['data']['users'][0]['nb_sports'] == 2
-        assert data['data']['users'][0]['nb_workouts'] == 2
-        assert len(data['data']['users'][0]['records']) == 8
-        assert data['data']['users'][0]['sports_list'] == [1, 2]
-        assert data['data']['users'][0]['total_distance'] == 22.0
-        assert data['data']['users'][0]['total_duration'] == '2:40:00'
-        assert data['data']['users'][1]['is_remote'] is False
-        assert data['data']['users'][1]['nb_sports'] == 0
-        assert data['data']['users'][1]['nb_workouts'] == 0
-        assert len(data['data']['users'][1]['records']) == 0
-        assert data['data']['users'][1]['sports_list'] == []
-        assert data['data']['users'][1]['total_distance'] == 0
-        assert data['data']['users'][1]['total_duration'] == '0:00:00'
-        assert data['data']['users'][2]['is_remote'] is False
-        assert data['data']['users'][2]['nb_sports'] == 1
-        assert data['data']['users'][2]['nb_workouts'] == 1
-        assert len(data['data']['users'][2]['records']) == 4
-        assert data['data']['users'][2]['sports_list'] == [1]
-        assert data['data']['users'][2]['total_distance'] == 15
-        assert data['data']['users'][2]['total_duration'] == '1:00:00'
-        assert 'imperial_units' not in data['data']['users'][0]
-        assert 'imperial_units' not in data['data']['users'][1]
-        assert 'imperial_units' not in data['data']['users'][2]
-        assert 'language' not in data['data']['users'][0]
-        assert 'language' not in data['data']['users'][1]
-        assert 'language' not in data['data']['users'][2]
-        assert 'timezone' not in data['data']['users'][0]
-        assert 'timezone' not in data['data']['users'][1]
-        assert 'timezone' not in data['data']['users'][2]
-        assert 'weekm' not in data['data']['users'][0]
-        assert 'weekm' not in data['data']['users'][1]
-        assert 'weekm' not in data['data']['users'][2]
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1_admin.serialize(role=UserRole.ADMIN)
+        )
+
+        assert data['data']['users'][1] == jsonify_dict(
+            user_3.serialize(role=UserRole.ADMIN)
+        )
+        assert data['data']['users'][2] == jsonify_dict(
+            user_2.serialize(role=UserRole.ADMIN)
+        )
         assert data['pagination'] == {
             'has_next': False,
             'has_prev': False,
@@ -352,8 +347,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 2
         assert data['pagination'] == {
@@ -381,8 +376,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 1
         assert data['pagination'] == {
@@ -409,8 +404,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 0
         assert data['pagination'] == {
@@ -437,8 +432,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 2
         assert data['pagination'] == {
@@ -465,8 +460,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 1
         assert data['pagination'] == {
@@ -489,8 +484,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'admin' in data['data']['users'][0]['username']
@@ -516,8 +511,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'admin' in data['data']['users'][0]['username']
@@ -543,8 +538,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'toto' in data['data']['users'][0]['username']
@@ -573,8 +568,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'toto' in data['data']['users'][0]['username']
@@ -603,8 +598,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'toto' in data['data']['users'][0]['username']
@@ -633,8 +628,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'admin' in data['data']['users'][0]['username']
@@ -660,8 +655,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'toto' in data['data']['users'][0]['username']
@@ -687,8 +682,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'toto' in data['data']['users'][0]['username']
@@ -714,8 +709,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'admin' in data['data']['users'][0]['username']
@@ -747,8 +742,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'admin' in data['data']['users'][0]['username']
@@ -783,8 +778,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'admin' in data['data']['users'][0]['username']
@@ -819,8 +814,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'toto' in data['data']['users'][0]['username']
@@ -849,8 +844,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 1
         assert 'toto' in data['data']['users'][0]['username']
@@ -874,8 +869,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 0
         assert data['pagination'] == {
@@ -898,8 +893,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 1
         assert 'admin' in data['data']['users'][0]['username']
@@ -945,8 +940,8 @@ class TestGetUserPicture:
 
         response = client.get(f'/api/users/{user_1.username}/picture')
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 404
+        data = json.loads(response.data.decode())
         assert 'not found' in data['status']
         assert 'No picture.' in data['message']
 
@@ -957,8 +952,8 @@ class TestGetUserPicture:
 
         response = client.get('/api/users/not_existing/picture')
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 404
+        data = json.loads(response.data.decode())
         assert 'not found' in data['status']
         assert 'user does not exist' in data['message']
 
@@ -978,8 +973,8 @@ class TestUpdateUser(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 1
         user = data['data']['users'][0]
@@ -1000,8 +995,8 @@ class TestUpdateUser(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 1
 
@@ -1023,8 +1018,8 @@ class TestUpdateUser(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 400
+        data = json.loads(response.data.decode())
         assert 'error' in data['status']
         assert 'invalid payload' in data['message']
 
@@ -1042,8 +1037,8 @@ class TestUpdateUser(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 500
+        data = json.loads(response.data.decode())
         assert 'error' in data['status']
         assert (
             'error, please try again or contact the administrator'
@@ -1064,8 +1059,8 @@ class TestUpdateUser(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 403
+        data = json.loads(response.data.decode())
         assert 'error' in data['status']
         assert 'you do not have permissions' in data['message']
 
@@ -1162,8 +1157,8 @@ class TestDeleteUser(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 403
+        data = json.loads(response.data.decode())
         assert 'error' in data['status']
         assert 'you do not have permissions' in data['message']
 
@@ -1179,8 +1174,8 @@ class TestDeleteUser(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 404
+        data = json.loads(response.data.decode())
         assert 'not found' in data['status']
         assert 'user does not exist' in data['message']
 
@@ -1224,8 +1219,8 @@ class TestDeleteUser(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 403
+        data = json.loads(response.data.decode())
         assert 'error' in data['status']
         assert (
             'you can not delete your account, no other user has admin rights'

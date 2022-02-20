@@ -10,6 +10,7 @@ from datetime import datetime
 
 import sqlalchemy as sa
 from alembic import op
+from sqlalchemy.dialects.postgresql import ENUM
 
 from fittrackee.federation.utils import generate_keys, get_ap_url, remove_url_scheme
 
@@ -19,6 +20,10 @@ revision = '8842c351a2d8'
 down_revision = 'e30007d681cb'
 branch_labels = None
 depends_on = None
+
+privacy_levels = ENUM(
+    'PUBLIC', 'FOLLOWERS', 'PRIVATE', name='privacy_levels'
+)
 
 
 def upgrade():
@@ -110,7 +115,28 @@ def upgrade():
         'users', 'password', existing_type=sa.VARCHAR(length=255),
         nullable=True
     )
+    # privacy levels
+    privacy_levels.create(op.get_bind())
+    op.add_column(
+        'users',
+        sa.Column(
+            'workouts_visibility',
+            privacy_levels,
+            server_default='PRIVATE',
+            nullable=True,
+        ),
+    )
+    op.add_column(
+        'users',
+        sa.Column(
+            'map_visibility',
+            privacy_levels,
+            server_default='PRIVATE',
+            nullable=True,
+        ),
+    )
     # create local actors with keys (even if federation is not enabled)
+    # and update users
     user_helper = sa.Table(
         'users',
         sa.MetaData(),
@@ -123,7 +149,9 @@ def upgrade():
         op.execute(
             "UPDATE users "
             "SET manually_approves_followers = True, "
-            "    is_remote = False "
+            "    is_remote = False, "
+            "    workouts_visibility = 'PRIVATE', "
+            "    map_visibility = 'PRIVATE' "
             f"WHERE users.id = {user.id}"
         )
         created_at = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
@@ -199,6 +227,9 @@ def downgrade():
     )
     op.drop_constraint('users_actor_id_fkey', 'users', type_='foreignkey')
     op.drop_constraint('users_actor_id_key', 'users', type_='unique')
+    op.drop_column('users', 'map_visibility')
+    op.drop_column('users', 'workouts_visibility')
+    privacy_levels.drop(op.get_bind())
     op.drop_column('users', 'is_remote')
     op.drop_column('users', 'manually_approves_followers')
     op.drop_column('users', 'actor_id')

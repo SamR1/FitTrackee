@@ -29,19 +29,22 @@ class TestUserModel:
         assert serialized_user['location'] is None
         assert serialized_user['birth_date'] is None
         assert serialized_user['picture'] is False
-        assert serialized_user['nb_sports'] == 0
+        assert serialized_user['map_visibility'] == 'private'
         assert serialized_user['nb_workouts'] == 0
-        assert serialized_user['records'] == []
-        assert serialized_user['sports_list'] == []
-        assert serialized_user['total_distance'] == 0
-        assert serialized_user['total_duration'] == '0:00:00'
+        assert serialized_user['workouts_visibility'] == 'private'
 
     def test_user_model_as_auth_user(self, app: Flask, user_1: User) -> None:
         assert '<User \'test\'>' == str(user_1)
 
         serialized_user = user_1.serialize(role=UserRole.AUTH_USER)
+
         self.assert_serialized_used(serialized_user)
         assert 'test@test.com' == serialized_user['email']
+        assert serialized_user['nb_sports'] == 0
+        assert serialized_user['records'] == []
+        assert serialized_user['sports_list'] == []
+        assert serialized_user['total_distance'] == 0
+        assert serialized_user['total_duration'] == '0:00:00'
         assert serialized_user['imperial_units'] is False
         assert serialized_user['language'] is None
         assert serialized_user['timezone'] is None
@@ -51,8 +54,14 @@ class TestUserModel:
         assert '<User \'test\'>' == str(user_1)
 
         serialized_user = user_1.serialize(role=UserRole.ADMIN)
+
         self.assert_serialized_used(serialized_user)
         assert 'test@test.com' == serialized_user['email']
+        assert serialized_user['nb_sports'] == 0
+        assert serialized_user['records'] == []
+        assert serialized_user['sports_list'] == []
+        assert serialized_user['total_distance'] == 0
+        assert serialized_user['total_duration'] == '0:00:00'
         assert 'imperial_units' not in serialized_user
         assert 'language' not in serialized_user
         assert 'timezone' not in serialized_user
@@ -64,7 +73,13 @@ class TestUserModel:
         assert '<User \'test\'>' == str(user_1)
 
         serialized_user = user_1.serialize(role=UserRole.USER)
+
         self.assert_serialized_used(serialized_user)
+        assert serialized_user['nb_sports'] == 0
+        assert serialized_user['records'] == []
+        assert serialized_user['sports_list'] == []
+        assert serialized_user['total_distance'] == 0
+        assert serialized_user['total_duration'] == '0:00:00'
         assert 'email' not in serialized_user
         assert 'imperial_units' not in serialized_user
         assert 'language' not in serialized_user
@@ -77,8 +92,14 @@ class TestUserModel:
         assert '<User \'test\'>' == str(user_1)
 
         serialized_user = user_1.serialize()
+
         self.assert_serialized_used(serialized_user)
         assert 'email' not in serialized_user
+        assert 'nb_sports' not in serialized_user
+        assert 'sports_list' not in serialized_user
+        assert 'records' not in serialized_user
+        assert 'total_distance' not in serialized_user
+        assert 'total_duration' not in serialized_user
         assert 'imperial_units' not in serialized_user
         assert 'language' not in serialized_user
         assert 'timezone' not in serialized_user
@@ -104,7 +125,7 @@ class TestUserModel:
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        serialized_user = user_1.serialize()
+        serialized_user = user_1.serialize(role=UserRole.USER)
         assert len(serialized_user['records']) == 4
         assert serialized_user['records'][0]['record_type'] == 'AS'
         assert serialized_user['records'][0]['sport_id'] == sport_1_cycling.id
