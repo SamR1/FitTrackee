@@ -202,6 +202,8 @@ def upgrade():
         )
     op.alter_column('users', 'manually_approves_followers', nullable=False)
     op.alter_column('users', 'is_remote', nullable=False)
+    op.alter_column('users', 'workouts_visibility', nullable=False)
+    op.alter_column('users', 'map_visibility', nullable=False)
     op.create_unique_constraint(
         'username_actor_id_unique', 'users', ['username', 'actor_id']
     )
@@ -224,8 +226,37 @@ def upgrade():
         sa.PrimaryKeyConstraint('follower_user_id', 'followed_user_id'),
     )
 
+    op.add_column(
+        'workouts',
+        sa.Column(
+            'workout_visibility',
+            privacy_levels,
+            server_default='PRIVATE',
+            nullable=True
+        )
+    )
+    op.add_column(
+        'workouts',
+        sa.Column(
+            'map_visibility',
+            privacy_levels,
+            server_default='PRIVATE',
+            nullable=True
+        )
+    )
+    op.execute(
+        "UPDATE workouts "
+        "SET workout_visibility = 'PRIVATE', "
+        "    map_visibility = 'PRIVATE' "
+    )
+    op.alter_column('workouts', 'workout_visibility', nullable=False)
+    op.alter_column('workouts', 'map_visibility', nullable=False)
+
 
 def downgrade():
+    op.drop_column('workouts', 'map_visibility')
+    op.drop_column('workouts', 'workout_visibility')
+
     op.drop_table('follow_requests')
 
     # remove remote users (for which password is NULL)

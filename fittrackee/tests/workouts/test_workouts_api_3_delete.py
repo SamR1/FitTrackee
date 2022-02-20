@@ -8,7 +8,7 @@ from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
 from ..test_case_mixins import ApiTestCaseMixin
-from .utils import get_random_short_id, post_an_workout
+from .utils import get_random_short_id, post_a_workout
 
 
 def get_gpx_filepath(workout_id: int) -> str:
@@ -17,10 +17,10 @@ def get_gpx_filepath(workout_id: int) -> str:
 
 
 class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
-    def test_it_deletes_an_workout_with_gpx(
+    def test_it_deletes_workout_with_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
-        token, workout_short_id = post_an_workout(app, gpx_file)
+        token, workout_short_id = post_a_workout(app, gpx_file)
         client = app.test_client()
 
         response = client.delete(
@@ -30,7 +30,7 @@ class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
 
         assert response.status_code == 204
 
-    def test_it_returns_403_when_deleting_an_workout_from_different_user(
+    def test_it_returns_403_when_deleting_workout_from_different_user(
         self,
         app: Flask,
         user_1: User,
@@ -38,7 +38,7 @@ class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         gpx_file: str,
     ) -> None:
-        _, workout_short_id = post_an_workout(app, gpx_file)
+        _, workout_short_id = post_a_workout(app, gpx_file)
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
@@ -54,9 +54,8 @@ class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
             ),
         )
 
-        data = json.loads(response.data.decode())
-
         assert response.status_code == 403
+        data = json.loads(response.data.decode())
         assert 'error' in data['status']
         assert 'you do not have permissions' in data['message']
 
@@ -74,10 +73,10 @@ class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
         assert response.status_code == 404
         assert 'not found' in data['status']
 
-    def test_it_returns_500_when_deleting_an_workout_with_gpx_invalid_file(
+    def test_it_returns_500_when_deleting_a_workout_with_gpx_invalid_file(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
-        token, workout_short_id = post_an_workout(app, gpx_file)
+        token, workout_short_id = post_a_workout(app, gpx_file)
         client = app.test_client()
         gpx_filepath = get_gpx_filepath(1)
         gpx_filepath = get_absolute_file_path(gpx_filepath)
@@ -99,7 +98,7 @@ class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
 
 
 class TestDeleteWorkoutWithoutGpx(ApiTestCaseMixin):
-    def test_it_deletes_an_workout_wo_gpx(
+    def test_it_deletes_a_workout_wo_gpx(
         self,
         app: Flask,
         user_1: User,
@@ -115,7 +114,7 @@ class TestDeleteWorkoutWithoutGpx(ApiTestCaseMixin):
         )
         assert response.status_code == 204
 
-    def test_it_returns_403_when_deleting_an_workout_from_different_user(
+    def test_it_returns_404_when_deleting_workout_from_different_user(
         self,
         app: Flask,
         user_1: User,
