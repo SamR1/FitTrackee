@@ -6,11 +6,13 @@ from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, db
 
+from .constants import AP_CTX
+from .enums import ActorType
 from .exceptions import (
     FollowRequestAlreadyProcessedError,
     NotExistingFollowRequestError,
 )
-from .utils import ACTOR_TYPES, AP_CTX, generate_keys, get_ap_url
+from .utils import generate_keys, get_ap_url
 
 
 class Domain(BaseModel):
@@ -72,15 +74,19 @@ class Actor(BaseModel):
     """ActivityPub Actor"""
 
     __tablename__ = 'actors'
+    __table_args__ = (
+        db.UniqueConstraint(
+            'domain_id', 'preferred_username', name='domain_username_unique'
+        ),
+    )
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     ap_id = db.Column(db.String(255), unique=True, nullable=False)
     domain_id = db.Column(
         db.Integer, db.ForeignKey('domains.id'), nullable=False
     )
     type = db.Column(
-        Enum(*ACTOR_TYPES, name='actor_types'), server_default='Person'
+        Enum(ActorType, name='actor_types'), server_default='PERSON'
     )
-    name = db.Column(db.String(255), nullable=False)
     preferred_username = db.Column(db.String(255), nullable=False)
     public_key = db.Column(db.String(5000), nullable=True)
     private_key = db.Column(db.String(5000), nullable=True)
@@ -126,7 +132,6 @@ class Actor(BaseModel):
         self.followers_url = get_ap_url(username, 'followers')
         self.following_url = get_ap_url(username, 'following')
         self.inbox_url = get_ap_url(username, 'inbox')
-        self.name = username
         self.outbox_url = get_ap_url(username, 'outbox')
         self.preferred_username = username
         self.shared_inbox_url = get_ap_url(username, 'shared_inbox')
@@ -137,6 +142,12 @@ class Actor(BaseModel):
     @property
     def is_remote(self) -> bool:
         return self.domain.is_remote
+
+    @property
+    def name(self) -> Optional[str]:
+        if self.type == ActorType.PERSON and self.user:
+            return self.user.username
+        return None
 
     @property
     def pending_follow_requests(self) -> FollowRequest:
@@ -181,7 +192,7 @@ class Actor(BaseModel):
         return {
             '@context': AP_CTX,
             'id': self.ap_id,
-            'type': self.type,
+            'type': self.type.value,
             'preferredUsername': self.preferred_username,
             'name': self.name,
             'inbox': self.inbox_url,

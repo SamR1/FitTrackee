@@ -39,8 +39,7 @@ def upgrade():
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
         sa.Column('ap_id', sa.String(length=255), nullable=False),
         sa.Column('domain_id', sa.Integer(), nullable=False),
-        sa.Column('type', sa.Enum('Application', 'Group', 'Person', name='actor_types'), server_default='Person', nullable=True),
-        sa.Column('name', sa.String(length=255), nullable=False),
+        sa.Column('type', sa.Enum('APPLICATION', 'GROUP', 'PERSON', name='actor_types'), server_default='PERSON', nullable=True),
         sa.Column('preferred_username', sa.String(length=255), nullable=False),
         sa.Column('public_key', sa.String(length=5000), nullable=True),
         sa.Column('private_key', sa.String(length=5000), nullable=True),
@@ -55,6 +54,7 @@ def upgrade():
         sa.ForeignKeyConstraint(['domain_id'], ['domains.id'], ),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('ap_id'),
+        sa.UniqueConstraint('domain_id', 'preferred_username', name='domain_username_unique'),
     )
 
     op.add_column('users', sa.Column('actor_id', sa.Integer(), nullable=True))

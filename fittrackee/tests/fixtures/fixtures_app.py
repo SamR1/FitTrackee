@@ -157,15 +157,15 @@ def app_wo_email_auth(monkeypatch: pytest.MonkeyPatch) -> Generator:
 
 
 @pytest.fixture
+def app_with_federation() -> Generator:
+    yield from get_app(with_config=True, with_federation=True)
+
+
+@pytest.fixture
 def app_wo_domain() -> Generator:
     yield from get_app(
         with_config=True, with_federation=True, with_domain=False
     )
-
-
-@pytest.fixture
-def app_with_federation() -> Generator:
-    yield from get_app(with_config=True, with_federation=True)
 
 
 @pytest.fixture()
