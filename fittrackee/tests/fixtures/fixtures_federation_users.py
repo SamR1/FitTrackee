@@ -32,6 +32,32 @@ def follow_request_from_user_2_to_user_1_with_federation(
 
 
 @pytest.fixture()
+def follow_request_from_user_3_to_user_1_with_federation(
+    actor_1: Actor,
+    actor_3: Actor,
+) -> FollowRequest:
+    follow_request = FollowRequest(
+        follower_user_id=actor_3.user.id, followed_user_id=actor_1.user.id
+    )
+    db.session.add(follow_request)
+    db.session.commit()
+    return follow_request
+
+
+@pytest.fixture()
+def follow_request_from_user_3_to_user_2_with_federation(
+    actor_2: Actor,
+    actor_3: Actor,
+) -> FollowRequest:
+    follow_request = FollowRequest(
+        follower_user_id=actor_3.user.id, followed_user_id=actor_2.user.id
+    )
+    db.session.add(follow_request)
+    db.session.commit()
+    return follow_request
+
+
+@pytest.fixture()
 def follow_request_from_remote_user_to_user_1(
     actor_1: Actor,
     remote_actor: Actor,
