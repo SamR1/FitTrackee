@@ -353,7 +353,17 @@ class User(BaseModel):
         self.actor_id = actor.id
         db.session.commit()
 
-    def serialize(self, role: Optional[UserRole] = None) -> Dict:
+    def serialize(self, current_user: Optional['User'] = None) -> Dict:
+        if current_user is None:
+            role = None
+        else:
+            role = (
+                UserRole.AUTH_USER
+                if current_user.id == self.id
+                else UserRole.ADMIN
+                if current_user.admin
+                else UserRole.USER
+            )
         sports = []
         if self.workouts_count > 0:  # type: ignore
             sports = (

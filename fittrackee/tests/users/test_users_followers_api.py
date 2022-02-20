@@ -327,7 +327,7 @@ class TestFollowingAsUser(FollowersAsUserTestCase):
         assert len(data['data']['following']) == 2
         assert data['data']['following'][0]['username'] == user_1.username
         assert data['data']['following'][1]['username'] == user_2.username
-        assert 'email' not in data['data']['following'][0]
+        assert 'email' in data['data']['following'][0]
         assert 'email' not in data['data']['following'][1]
 
 

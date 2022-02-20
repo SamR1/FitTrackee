@@ -11,14 +11,12 @@ from fittrackee.users.exceptions import (
     NotExistingFollowRequestError,
 )
 from fittrackee.users.models import FollowRequest, User, UserSportPreference
-from fittrackee.users.roles import UserRole
 from fittrackee.workouts.models import Sport, Workout
 
 
 class TestUserModel:
     @staticmethod
     def assert_serialized_used(serialized_user: Dict) -> None:
-        assert 'test' == serialized_user['username']
         assert 'created_at' in serialized_user
         assert serialized_user['admin'] is False
         assert serialized_user['first_name'] is None
@@ -36,9 +34,10 @@ class TestUserModel:
     def test_user_model_as_auth_user(self, app: Flask, user_1: User) -> None:
         assert '<User \'test\'>' == str(user_1)
 
-        serialized_user = user_1.serialize(role=UserRole.AUTH_USER)
+        serialized_user = user_1.serialize(user_1)
 
         self.assert_serialized_used(serialized_user)
+        assert 'test' == serialized_user['username']
         assert 'test@test.com' == serialized_user['email']
         assert serialized_user['nb_sports'] == 0
         assert serialized_user['records'] == []
@@ -50,13 +49,16 @@ class TestUserModel:
         assert serialized_user['timezone'] is None
         assert serialized_user['weekm'] is False
 
-    def test_user_model_as_admin(self, app: Flask, user_1: User) -> None:
-        assert '<User \'test\'>' == str(user_1)
+    def test_user_model_as_admin(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        assert '<User \'toto\'>' == str(user_2)
 
-        serialized_user = user_1.serialize(role=UserRole.ADMIN)
+        serialized_user = user_2.serialize(user_1_admin)
 
         self.assert_serialized_used(serialized_user)
-        assert 'test@test.com' == serialized_user['email']
+        assert 'toto' == serialized_user['username']
+        assert 'toto@toto.com' == serialized_user['email']
         assert serialized_user['nb_sports'] == 0
         assert serialized_user['records'] == []
         assert serialized_user['sports_list'] == []
@@ -68,13 +70,14 @@ class TestUserModel:
         assert 'weekm' not in serialized_user
 
     def test_user_model_as_regular_user(
-        self, app: Flask, user_1: User
+        self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        assert '<User \'test\'>' == str(user_1)
+        assert '<User \'toto\'>' == str(user_2)
 
-        serialized_user = user_1.serialize(role=UserRole.USER)
+        serialized_user = user_2.serialize(user_1)
 
         self.assert_serialized_used(serialized_user)
+        assert 'toto' == serialized_user['username']
         assert serialized_user['nb_sports'] == 0
         assert serialized_user['records'] == []
         assert serialized_user['sports_list'] == []
@@ -86,7 +89,7 @@ class TestUserModel:
         assert 'timezone' not in serialized_user
         assert 'weekm' not in serialized_user
 
-    def test_user_model_when_no_role_provided(
+    def test_user_model_when_no_user_provided(
         self, app: Flask, user_1: User
     ) -> None:
         assert '<User \'test\'>' == str(user_1)
@@ -122,10 +125,11 @@ class TestUserModel:
         self,
         app: Flask,
         user_1: User,
+        user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        serialized_user = user_1.serialize(role=UserRole.USER)
+        serialized_user = user_1.serialize(user_2)
         assert len(serialized_user['records']) == 4
         assert serialized_user['records'][0]['record_type'] == 'AS'
         assert serialized_user['records'][0]['sport_id'] == sport_1_cycling.id

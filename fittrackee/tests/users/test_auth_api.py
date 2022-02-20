@@ -8,7 +8,6 @@ from flask import Flask
 from freezegun import freeze_time
 
 from fittrackee.users.models import User, UserSportPreference
-from fittrackee.users.roles import UserRole
 from fittrackee.users.utils.token import get_user_token
 from fittrackee.workouts.models import Sport, Workout
 
@@ -492,9 +491,7 @@ class TestUserProfile(ApiTestCaseMixin):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
-        assert data['data'] == jsonify_dict(
-            user_1.serialize(role=UserRole.AUTH_USER)
-        )
+        assert data['data'] == jsonify_dict(user_1.serialize(user_1))
 
     def test_it_returns_user_profile_with_updated_fields(
         self, app: Flask, user_1_full: User
@@ -511,9 +508,7 @@ class TestUserProfile(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 200
         assert data['status'] == 'success'
-        assert data['data'] == jsonify_dict(
-            user_1_full.serialize(role=UserRole.AUTH_USER)
-        )
+        assert data['data'] == jsonify_dict(user_1_full.serialize(user_1_full))
 
     def test_it_returns_user_profile_with_workouts(
         self,
@@ -536,9 +531,7 @@ class TestUserProfile(ApiTestCaseMixin):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
-        assert data['data'] == jsonify_dict(
-            user_1.serialize(role=UserRole.AUTH_USER)
-        )
+        assert data['data'] == jsonify_dict(user_1.serialize(user_1))
 
     def test_it_returns_error_if_headers_are_invalid(self, app: Flask) -> None:
         client = app.test_client()

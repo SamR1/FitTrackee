@@ -7,7 +7,6 @@ from flask import Flask
 
 from fittrackee.federation.models import Actor
 from fittrackee.users.models import User, UserSportPreference
-from fittrackee.users.roles import UserRole
 from fittrackee.workouts.models import Sport, Workout
 
 from ..test_case_mixins import ApiTestCaseMixin
@@ -33,7 +32,7 @@ class TestGetUserAsAdmin(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         assert data['data']['users'][0] == jsonify_dict(
-            user_2.serialize(role=UserRole.ADMIN)
+            user_2.serialize(user_1_admin)
         )
 
     def test_it_gets_single_user_with_workouts(
@@ -59,7 +58,7 @@ class TestGetUserAsAdmin(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         assert data['data']['users'][0] == jsonify_dict(
-            user_2.serialize(role=UserRole.ADMIN)
+            user_2.serialize(user_1_admin)
         )
 
     def test_it_gets_authenticated_user(
@@ -86,7 +85,7 @@ class TestGetUserAsAdmin(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         assert data['data']['users'][0] == jsonify_dict(
-            user_1_admin.serialize(role=UserRole.ADMIN)
+            user_1_admin.serialize(user_1_admin)
         )
 
     def test_it_returns_error_if_user_does_not_exist(
@@ -127,7 +126,7 @@ class TestGetUserAsUser(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         assert data['data']['users'][0] == jsonify_dict(
-            user_2.serialize(role=UserRole.USER)
+            user_2.serialize(user_1)
         )
 
     def test_it_gets_single_user_with_workouts(
@@ -153,7 +152,7 @@ class TestGetUserAsUser(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         assert data['data']['users'][0] == jsonify_dict(
-            user_2.serialize(role=UserRole.USER)
+            user_2.serialize(user_1)
         )
 
     def test_it_gets_authenticated_user(
@@ -176,7 +175,7 @@ class TestGetUserAsUser(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         assert data['data']['users'][0] == jsonify_dict(
-            user_1.serialize(role=UserRole.USER)
+            user_1.serialize(user_1)
         )
 
     def test_it_returns_error_if_user_does_not_exist(
@@ -271,13 +270,13 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert data['data']['users'][0] == jsonify_dict(
-            user_1_admin.serialize(role=UserRole.ADMIN)
+            user_1_admin.serialize(user_1_admin)
         )
         assert data['data']['users'][1] == jsonify_dict(
-            user_3.serialize(role=UserRole.ADMIN)
+            user_3.serialize(user_1_admin)
         )
         assert data['data']['users'][2] == jsonify_dict(
-            user_2.serialize(role=UserRole.ADMIN)
+            user_2.serialize(user_1_admin)
         )
         assert data['pagination'] == {
             'has_next': False,
@@ -313,14 +312,14 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert data['data']['users'][0] == jsonify_dict(
-            user_1_admin.serialize(role=UserRole.ADMIN)
+            user_1_admin.serialize(user_1_admin)
         )
 
         assert data['data']['users'][1] == jsonify_dict(
-            user_3.serialize(role=UserRole.ADMIN)
+            user_3.serialize(user_1_admin)
         )
         assert data['data']['users'][2] == jsonify_dict(
-            user_2.serialize(role=UserRole.ADMIN)
+            user_2.serialize(user_1_admin)
         )
         assert data['pagination'] == {
             'has_next': False,
@@ -330,6 +329,662 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
             'total': 3,
         }
 
+    @patch('fittrackee.users.users.USERS_PER_PAGE', 2)
+    def test_it_gets_first_page_on_users_list(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?page=1',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 2
+        assert data['pagination'] == {
+            'has_next': True,
+            'has_prev': False,
+            'page': 1,
+            'pages': 2,
+            'total': 3,
+        }
+
+    @patch('fittrackee.users.users.USERS_PER_PAGE', 2)
+    def test_it_gets_next_page_on_users_list(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?page=2',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 1
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': True,
+            'page': 2,
+            'pages': 2,
+            'total': 3,
+        }
+
+    def test_it_gets_empty_next_page_on_users_list(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?page=2',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 0
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': True,
+            'page': 2,
+            'pages': 1,
+            'total': 3,
+        }
+
+    def test_it_gets_user_list_with_2_per_page(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?per_page=2',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 2
+        assert data['pagination'] == {
+            'has_next': True,
+            'has_prev': False,
+            'page': 1,
+            'pages': 2,
+            'total': 3,
+        }
+
+    def test_it_gets_next_page_on_user_list_with_2_per_page(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?page=2&per_page=2',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 1
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': True,
+            'page': 2,
+            'pages': 2,
+            'total': 3,
+        }
+
+    def test_it_gets_users_list_ordered_by_username(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?order_by=username',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert 'admin' in data['data']['users'][0]['username']
+        assert 'sam' in data['data']['users'][1]['username']
+        assert 'toto' in data['data']['users'][2]['username']
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
+    def test_it_gets_users_list_ordered_by_username_ascending(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?order_by=username&order=asc',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert 'admin' in data['data']['users'][0]['username']
+        assert 'sam' in data['data']['users'][1]['username']
+        assert 'toto' in data['data']['users'][2]['username']
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
+    def test_it_gets_users_list_ordered_by_username_descending(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?order_by=username&order=desc',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert 'toto' in data['data']['users'][0]['username']
+        assert 'sam' in data['data']['users'][1]['username']
+        assert 'admin' in data['data']['users'][2]['username']
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
+    def test_it_gets_users_list_ordered_by_creation_date(
+        self, app: Flask, user_2: User, user_3: User, user_1_admin: User
+    ) -> None:
+        user_2.created_at = datetime.utcnow() - timedelta(days=1)
+        user_3.created_at = datetime.utcnow() - timedelta(hours=1)
+        user_1_admin.created_at = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?order_by=created_at',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert 'toto' in data['data']['users'][0]['username']
+        assert 'sam' in data['data']['users'][1]['username']
+        assert 'admin' in data['data']['users'][2]['username']
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
+    def test_it_gets_users_list_ordered_by_creation_date_ascending(
+        self, app: Flask, user_2: User, user_3: User, user_1_admin: User
+    ) -> None:
+        user_2.created_at = datetime.utcnow() - timedelta(days=1)
+        user_3.created_at = datetime.utcnow() - timedelta(hours=1)
+        user_1_admin.created_at = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?order_by=created_at&order=asc',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert 'toto' in data['data']['users'][0]['username']
+        assert 'sam' in data['data']['users'][1]['username']
+        assert 'admin' in data['data']['users'][2]['username']
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
+    def test_it_gets_users_list_ordered_by_creation_date_descending(
+        self, app: Flask, user_2: User, user_3: User, user_1_admin: User
+    ) -> None:
+        user_2.created_at = datetime.utcnow() - timedelta(days=1)
+        user_3.created_at = datetime.utcnow() - timedelta(hours=1)
+        user_1_admin.created_at = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?order_by=created_at&order=desc',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert 'admin' in data['data']['users'][0]['username']
+        assert 'sam' in data['data']['users'][1]['username']
+        assert 'toto' in data['data']['users'][2]['username']
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
+    def test_it_gets_users_list_ordered_by_admin_rights(
+        self, app: Flask, user_2: User, user_1_admin: User, user_3: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?order_by=admin',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert 'toto' in data['data']['users'][0]['username']
+        assert 'sam' in data['data']['users'][1]['username']
+        assert 'admin' in data['data']['users'][2]['username']
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
+    def test_it_gets_users_list_ordered_by_admin_rights_ascending(
+        self, app: Flask, user_2: User, user_1_admin: User, user_3: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?order_by=admin&order=asc',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert 'toto' in data['data']['users'][0]['username']
+        assert 'sam' in data['data']['users'][1]['username']
+        assert 'admin' in data['data']['users'][2]['username']
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
+    def test_it_gets_users_list_ordered_by_admin_rights_descending(
+        self, app: Flask, user_2: User, user_3: User, user_1_admin: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?order_by=admin&order=desc',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert 'admin' in data['data']['users'][0]['username']
+        assert 'toto' in data['data']['users'][1]['username']
+        assert 'sam' in data['data']['users'][2]['username']
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
+    def test_it_gets_users_list_ordered_by_workouts_count(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?order_by=workouts_count',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert 'admin' in data['data']['users'][0]['username']
+        assert 0 == data['data']['users'][0]['nb_workouts']
+        assert 'sam' in data['data']['users'][1]['username']
+        assert 0 == data['data']['users'][1]['nb_workouts']
+        assert 'toto' in data['data']['users'][2]['username']
+        assert 1 == data['data']['users'][2]['nb_workouts']
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
+    def test_it_gets_users_list_ordered_by_workouts_count_ascending(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?order_by=workouts_count&order=asc',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert 'admin' in data['data']['users'][0]['username']
+        assert 0 == data['data']['users'][0]['nb_workouts']
+        assert 'sam' in data['data']['users'][1]['username']
+        assert 0 == data['data']['users'][1]['nb_workouts']
+        assert 'toto' in data['data']['users'][2]['username']
+        assert 1 == data['data']['users'][2]['nb_workouts']
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
+    def test_it_gets_users_list_ordered_by_workouts_count_descending(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?order_by=workouts_count&order=desc',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert 'toto' in data['data']['users'][0]['username']
+        assert 1 == data['data']['users'][0]['nb_workouts']
+        assert 'admin' in data['data']['users'][1]['username']
+        assert 0 == data['data']['users'][1]['nb_workouts']
+        assert 'sam' in data['data']['users'][2]['username']
+        assert 0 == data['data']['users'][2]['nb_workouts']
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
+    def test_it_gets_users_list_filtering_on_username(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?q=toto',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 1
+        assert 'toto' in data['data']['users'][0]['username']
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 1,
+        }
+
+    def test_it_returns_empty_users_list_filtering_on_username(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?q=not_existing',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 0
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 0,
+            'total': 0,
+        }
+
+    def test_it_users_list_with_complex_query(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?order_by=username&order=desc&page=2&per_page=2',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 1
+        assert 'admin' in data['data']['users'][0]['username']
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': True,
+            'page': 2,
+            'pages': 2,
+            'total': 3,
+        }
+
+
+class TestGetUsersAsUser(ApiTestCaseMixin):
+    def test_it_gets_users_list(
+        self, app: Flask, user_1: User, user_2: User, user_3: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/users',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert data['data']['users'][0] == jsonify_dict(
+            user_3.serialize(user_1)
+        )
+        assert data['data']['users'][1] == jsonify_dict(
+            user_1.serialize(user_1)
+        )
+        assert data['data']['users'][2] == jsonify_dict(
+            user_2.serialize(user_1)
+        )
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
+    def test_it_gets_users_list_with_workouts(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        sport_2_running: Sport,
+        workout_running_user_1: Workout,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/users',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert data['data']['users'][0] == jsonify_dict(
+            user_3.serialize(user_1)
+        )
+
+        assert data['data']['users'][1] == jsonify_dict(
+            user_1.serialize(user_1)
+        )
+        assert data['data']['users'][2] == jsonify_dict(
+            user_2.serialize(user_1)
+        )
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
+
+class TestGetUsersPagination(ApiTestCaseMixin):
     @patch('fittrackee.users.users.USERS_PER_PAGE', 2)
     def test_it_gets_first_page_on_users_list(
         self,
