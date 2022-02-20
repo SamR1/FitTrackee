@@ -7,7 +7,7 @@ from sqlalchemy.event import listens_for
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session
 
-from fittrackee import VERSION, BaseModel, db
+from fittrackee import BaseModel, db
 from fittrackee.users.models import User
 
 
@@ -48,7 +48,7 @@ class AppConfig(BaseModel):
             'max_zip_file_size': self.max_zip_file_size,
             'max_users': self.max_users,
             'map_attribution': self.map_attribution,
-            'version': VERSION,
+            'version': current_app.config['VERSION'],
         }
 
 

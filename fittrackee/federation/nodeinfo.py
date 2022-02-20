@@ -81,7 +81,7 @@ def get_nodeinfo(app_domain: Domain) -> HttpResponse:
         "version": "2.0",
         "software": {
           "name": "fittrackee",
-          "version": "0.4.8"
+          "version": "0.5.7"
         },
         "protocols": [
           "activitypub"
