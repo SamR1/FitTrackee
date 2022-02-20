@@ -140,6 +140,12 @@ class TestUserModel:
         serialized_user = user_1.serialize()
         assert serialized_user['following'] == 1
 
+    def test_user_is_not_remote_when_federation_is_disabled(
+        self, app: Flask, user_1: User
+    ) -> None:
+        assert user_1.is_remote is False
+        assert user_1.serialize()['is_remote'] is False
+
 
 class TestUserSportModel:
     def test_user_model(

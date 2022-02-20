@@ -3,14 +3,16 @@ import shutil
 from typing import Any, Dict, Tuple, Union
 
 import click
-from flask import Blueprint, request, send_file
+from flask import Blueprint, current_app, request, send_file
 from sqlalchemy import exc
 
 from fittrackee import appLog, db
+from fittrackee.federation.decorators import federation_required
 from fittrackee.federation.exceptions import (
     ActorNotFoundException,
     DomainNotFoundException,
 )
+from fittrackee.federation.models import Actor, Domain
 from fittrackee.federation.utils_user import get_user_from_username
 from fittrackee.files import get_absolute_file_path
 from fittrackee.responses import (
@@ -48,11 +50,73 @@ def set_admin(username: str) -> None:
         print(f"User '{username}' not found.")
 
 
+def get_users_list(auth_user: User, remote: bool = False) -> Dict:
+    params = request.args.copy()
+    page = int(params.get('page', 1))
+    per_page = int(params.get('per_page', USERS_PER_PAGE))
+    if per_page > 50:
+        per_page = 50
+    order_by = params.get('order_by', 'username')
+    order = params.get('order', 'asc')
+    query = params.get('q')
+    users_pagination = (
+        User.query.join(Actor, Actor.id == User.actor_id)
+        .join(Domain, Domain.id == Actor.domain_id)
+        .filter(
+            User.username.like('%' + query + '%') if query else True,
+            Domain.name != current_app.config['AP_DOMAIN']
+            if remote
+            else Domain.name == current_app.config['AP_DOMAIN'],
+        )
+        .order_by(
+            User.workouts_count.asc()  # type: ignore
+            if order_by == 'workouts_count' and order == 'asc'
+            else True,
+            User.workouts_count.desc()  # type: ignore
+            if order_by == 'workouts_count' and order == 'desc'
+            else True,
+            User.username.asc()
+            if order_by == 'username' and order == 'asc'
+            else True,
+            User.username.desc()
+            if order_by == 'username' and order == 'desc'
+            else True,
+            User.created_at.asc()
+            if order_by == 'created_at' and order == 'asc'
+            else True,
+            User.created_at.desc()
+            if order_by == 'created_at' and order == 'desc'
+            else True,
+            User.admin.asc()
+            if order_by == 'admin' and order == 'asc'
+            else True,
+            User.admin.desc()
+            if order_by == 'admin' and order == 'desc'
+            else True,
+        )
+        .paginate(page, per_page, False)
+    )
+    users = users_pagination.items
+    role = UserRole.ADMIN if auth_user.admin else UserRole.USER
+    return {
+        'status': 'success',
+        'data': {'users': [user.serialize(role) for user in users]},
+        'pagination': {
+            'has_next': users_pagination.has_next,
+            'has_prev': users_pagination.has_prev,
+            'page': users_pagination.page,
+            'pages': users_pagination.pages,
+            'total': users_pagination.total,
+        },
+    }
+
+
 @users_blueprint.route('/users', methods=['GET'])
 @authenticate
 def get_users(auth_user: User) -> Dict:
     """
-    Get all users
+    Get all users (it returns only local users if federation is enabled).
+    If authenticated user has admin rights, users email is returned.
 
     **Example request**:
 
@@ -87,8 +151,9 @@ def get_users(auth_user: User) -> Dict:
               "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
               "email": "admin@example.com",
               "first_name": null,
-              "imperial_units": false,
-              "language": "en",
+              "followers": 0,
+              "following": 0,
+              "is_remote": false,
               "last_name": null,
               "location": null,
               "nb_sports": 3,
@@ -137,7 +202,6 @@ def get_users(auth_user: User) -> Dict:
                   4,
                   6
               ],
-              "timezone": "Europe/Paris",
               "total_distance": 67.895,
               "total_duration": "6:50:27",
               "username": "admin"
@@ -149,7 +213,9 @@ def get_users(auth_user: User) -> Dict:
               "created_at": "Sat, 20 Jul 2019 11:27:03 GMT",
               "email": "sam@example.com",
               "first_name": null,
-              "language": "fr",
+              "followers": 0,
+              "following": 0,
+              "is_remote": false,
               "last_name": null,
               "location": null,
               "nb_sports": 0,
@@ -157,7 +223,6 @@ def get_users(auth_user: User) -> Dict:
               "picture": false,
               "records": [],
               "sports_list": [],
-              "timezone": "Europe/Paris",
               "total_distance": 0,
               "total_duration": "0:00:00",
               "username": "sam"
@@ -171,8 +236,9 @@ def get_users(auth_user: User) -> Dict:
     :query integer per_page: number of users per page (default: 10, max: 50)
     :query string q: query on user name
     :query string order_by: sorting criteria (``username``, ``created_at``,
-                            ``workouts_count``, ``admin``)
-    :query string order: sorting order (default: ``asc``)
+                            ``workouts_count``, ``admin``,
+                            default: ``username``)
+    :query string order: sorting order (``asc``, ``desc``, default: ``asc``)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -183,59 +249,89 @@ def get_users(auth_user: User) -> Dict:
         - invalid token, please log in again
 
     """
-    params = request.args.copy()
-    page = int(params.get('page', 1))
-    per_page = int(params.get('per_page', USERS_PER_PAGE))
-    if per_page > 50:
-        per_page = 50
-    order_by = params.get('order_by')
-    order = params.get('order', 'asc')
-    query = params.get('q')
-    users_pagination = (
-        User.query.filter(
-            User.username.like('%' + query + '%') if query else True,
-        )
-        .order_by(
-            User.workouts_count.asc()  # type: ignore
-            if order_by == 'workouts_count' and order == 'asc'
-            else True,
-            User.workouts_count.desc()  # type: ignore
-            if order_by == 'workouts_count' and order == 'desc'
-            else True,
-            User.username.asc()
-            if order_by == 'username' and order == 'asc'
-            else True,
-            User.username.desc()
-            if order_by == 'username' and order == 'desc'
-            else True,
-            User.created_at.asc()
-            if order_by == 'created_at' and order == 'asc'
-            else True,
-            User.created_at.desc()
-            if order_by == 'created_at' and order == 'desc'
-            else True,
-            User.admin.asc()
-            if order_by == 'admin' and order == 'asc'
-            else True,
-            User.admin.desc()
-            if order_by == 'admin' and order == 'desc'
-            else True,
-        )
-        .paginate(page, per_page, False)
-    )
-    users = users_pagination.items
-    role = UserRole.ADMIN if auth_user.admin else UserRole.USER
-    return {
-        'status': 'success',
-        'data': {'users': [user.serialize(role) for user in users]},
-        'pagination': {
-            'has_next': users_pagination.has_next,
-            'has_prev': users_pagination.has_prev,
-            'page': users_pagination.page,
-            'pages': users_pagination.pages,
-            'total': users_pagination.total,
+    return get_users_list(auth_user)
+
+
+@users_blueprint.route('/users/remote', methods=['GET'])
+@federation_required
+@authenticate
+def get_remote_users(
+    auth_user: User,
+    app_domain: Domain,
+) -> Dict:
+    """
+    Get all remote users (only if federation is enabled)
+
+    **Example request**:
+
+    - without parameters
+
+    .. sourcecode:: http
+
+      GET /api/users/remote HTTP/1.1
+      Content-Type: application/json
+
+    - with some query parameters
+
+    .. sourcecode:: http
+
+      GET /api/users/remote?order_by=username  HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "users": [
+            {
+              "admin": false,
+              "bio": null,
+              "birth_date": null,
+              "created_at": "Sat, 20 Jul 2019 11:27:03 GMT",
+              "first_name": null,
+              "followers": 0,
+              "following": 0,
+              "is_remote": true,
+              "last_name": null,
+              "location": null,
+              "nb_sports": 0,
+              "nb_workouts": 0,
+              "picture": false,
+              "records": [],
+              "sports_list": [],
+              "total_distance": 0,
+              "total_duration": "0:00:00",
+              "username": "sam"
+            }
+          ]
         },
-    }
+        "status": "success"
+      }
+
+    :query integer page: page if using pagination (default: 1)
+    :query integer per_page: number of users per page (default: 10, max: 50)
+    :query string q: query on user name
+    :query string order_by: sorting criteria (``username``, ``created_at``,
+                            ``workouts_count``, ``admin``,
+                            default: ``username``)
+    :query string order: sorting order (``asc``, ``desc``, default: ``asc``)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403: Error. Federation is disabled for this instance.
+
+    """
+    return get_users_list(auth_user, remote=True)
 
 
 @users_blueprint.route('/users/<user_name>', methods=['GET'])
@@ -244,7 +340,8 @@ def get_single_user(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get single user details
+    Get single user details.
+    If authenticated user has admin rights, user email is returned.
 
     **Example request**:
 
@@ -269,8 +366,9 @@ def get_single_user(
             "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
             "email": "admin@example.com",
             "first_name": null,
-            "imperial_units": false,
-            "language": "en",
+            "followers": 0,
+            "following": 0,
+            "is_remote": false,
             "last_name": null,
             "location": null,
             "nb_sports": 3,
@@ -319,7 +417,6 @@ def get_single_user(
                 4,
                 6
             ],
-            "timezone": "Europe/Paris",
             "total_distance": 67.895,
             "total_duration": "6:50:27",
             "username": "admin"
@@ -422,8 +519,9 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
             "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
             "email": "admin@example.com",
             "first_name": null,
-            "imperial_units": false,
-            "language": "en",
+            "followers": 0,
+            "following": 0,
+            "is_remote": false,
             "last_name": null,
             "location": null,
             "nb_workouts": 6,
@@ -472,7 +570,6 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
                 4,
                 6
             ],
-            "timezone": "Europe/Paris",
             "total_distance": 67.895,
             "total_duration": "6:50:27",
             "username": "admin"
@@ -733,7 +830,7 @@ def get_followers(
 ) -> Union[Dict, HttpResponse]:
     """
     Get user followers.
-    If the authenticate user has admin rights, it returns following users with
+    If the authenticated user has admin rights, it returns following users with
     additional field 'email'
 
     **Example request**:
@@ -770,6 +867,7 @@ def get_followers(
               "first_name": null,
               "followers": 1,
               "following": 1,
+              "is_remote": false,
               "last_name": null,
               "location": null,
               "nb_sports": 0,
@@ -857,6 +955,7 @@ def get_following(
               "first_name": null,
               "followers": 1,
               "following": 1,
+              "is_remote": false,
               "last_name": null,
               "location": null,
               "nb_sports": 0,

@@ -7,6 +7,20 @@ from fittrackee.federation.constants import AP_CTX
 from fittrackee.users.models import FollowRequest, User
 
 
+class TestUserModel:
+    def test_user_is_not_remote_when_actor_is_local(
+        self, app_with_federation: Flask, user_1: User
+    ) -> None:
+        assert user_1.is_remote is False
+        assert user_1.serialize()['is_remote'] is False
+
+    def test_user_is_remote_when_actor_is_remote(
+        self, app_with_federation: Flask, remote_user: User
+    ) -> None:
+        assert remote_user.is_remote is True
+        assert remote_user.serialize()['is_remote'] is True
+
+
 class TestFollowRequestModelWithFederation:
     def test_follow_request_model(
         self,

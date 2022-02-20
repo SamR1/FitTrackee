@@ -20,13 +20,14 @@ class GetUserTestCase(ApiTestCaseMixin):
             '%a, %d %b %Y %H:%M:%S GMT'
         )
         assert user_dict['admin'] == user.admin
-        assert user_dict['first_name'] is None
-        assert user_dict['last_name'] is None
-        assert user_dict['birth_date'] is None
         assert user_dict['bio'] is None
-        assert user_dict['location'] is None
+        assert user_dict['birth_date'] is None
+        assert user_dict['first_name'] is None
         assert user_dict['followers'] == 0
         assert user_dict['following'] == 0
+        assert user_dict['is_remote'] is False
+        assert user_dict['last_name'] is None
+        assert user_dict['location'] is None
         assert 'imperial_units' not in user_dict
         assert 'language' not in user_dict
         assert 'timezone' not in user_dict
@@ -212,26 +213,29 @@ class TestGetUsersAsAdmin(GetUserTestCase):
         assert 'created_at' in data['data']['users'][1]
         assert 'created_at' in data['data']['users'][2]
         assert 'admin' in data['data']['users'][0]['username']
-        assert 'toto' in data['data']['users'][1]['username']
-        assert 'sam' in data['data']['users'][2]['username']
+        assert 'sam' in data['data']['users'][1]['username']
+        assert 'toto' in data['data']['users'][2]['username']
         assert 'admin@example.com' in data['data']['users'][0]['email']
-        assert 'toto@toto.com' in data['data']['users'][1]['email']
-        assert 'sam@test.com' in data['data']['users'][2]['email']
+        assert 'sam@test.com' in data['data']['users'][1]['email']
+        assert 'toto@toto.com' in data['data']['users'][2]['email']
+        assert data['data']['users'][0]['is_remote'] is False
         assert data['data']['users'][0]['nb_sports'] == 0
         assert data['data']['users'][0]['nb_workouts'] == 0
         assert data['data']['users'][0]['records'] == []
         assert data['data']['users'][0]['sports_list'] == []
         assert data['data']['users'][0]['total_distance'] == 0
         assert data['data']['users'][0]['total_duration'] == '0:00:00'
+        assert data['data']['users'][1]['is_remote'] is False
+        assert data['data']['users'][1]['records'] == []
         assert data['data']['users'][1]['nb_sports'] == 0
         assert data['data']['users'][1]['nb_workouts'] == 0
-        assert data['data']['users'][1]['records'] == []
         assert data['data']['users'][1]['sports_list'] == []
         assert data['data']['users'][1]['total_distance'] == 0
         assert data['data']['users'][1]['total_duration'] == '0:00:00'
-        assert data['data']['users'][2]['records'] == []
+        assert data['data']['users'][2]['is_remote'] is False
         assert data['data']['users'][2]['nb_sports'] == 0
         assert data['data']['users'][2]['nb_workouts'] == 0
+        assert data['data']['users'][2]['records'] == []
         assert data['data']['users'][2]['sports_list'] == []
         assert data['data']['users'][2]['total_distance'] == 0
         assert data['data']['users'][2]['total_duration'] == '0:00:00'
@@ -284,29 +288,32 @@ class TestGetUsersAsAdmin(GetUserTestCase):
         assert 'created_at' in data['data']['users'][1]
         assert 'created_at' in data['data']['users'][2]
         assert 'admin' in data['data']['users'][0]['username']
-        assert 'toto' in data['data']['users'][1]['username']
-        assert 'sam' in data['data']['users'][2]['username']
+        assert 'sam' in data['data']['users'][1]['username']
+        assert 'toto' in data['data']['users'][2]['username']
         assert 'admin@example.com' in data['data']['users'][0]['email']
-        assert 'toto@toto.com' in data['data']['users'][1]['email']
-        assert 'sam@test.com' in data['data']['users'][2]['email']
+        assert 'sam@test.com' in data['data']['users'][1]['email']
+        assert 'toto@toto.com' in data['data']['users'][2]['email']
+        assert data['data']['users'][0]['is_remote'] is False
         assert data['data']['users'][0]['nb_sports'] == 2
         assert data['data']['users'][0]['nb_workouts'] == 2
         assert len(data['data']['users'][0]['records']) == 8
         assert data['data']['users'][0]['sports_list'] == [1, 2]
         assert data['data']['users'][0]['total_distance'] == 22.0
         assert data['data']['users'][0]['total_duration'] == '2:40:00'
-        assert data['data']['users'][1]['nb_sports'] == 1
-        assert data['data']['users'][1]['nb_workouts'] == 1
-        assert len(data['data']['users'][1]['records']) == 4
-        assert data['data']['users'][1]['sports_list'] == [1]
-        assert data['data']['users'][1]['total_distance'] == 15
-        assert data['data']['users'][1]['total_duration'] == '1:00:00'
-        assert data['data']['users'][2]['nb_sports'] == 0
-        assert data['data']['users'][2]['nb_workouts'] == 0
-        assert len(data['data']['users'][2]['records']) == 0
-        assert data['data']['users'][2]['sports_list'] == []
-        assert data['data']['users'][2]['total_distance'] == 0
-        assert data['data']['users'][2]['total_duration'] == '0:00:00'
+        assert data['data']['users'][1]['is_remote'] is False
+        assert data['data']['users'][1]['nb_sports'] == 0
+        assert data['data']['users'][1]['nb_workouts'] == 0
+        assert len(data['data']['users'][1]['records']) == 0
+        assert data['data']['users'][1]['sports_list'] == []
+        assert data['data']['users'][1]['total_distance'] == 0
+        assert data['data']['users'][1]['total_duration'] == '0:00:00'
+        assert data['data']['users'][2]['is_remote'] is False
+        assert data['data']['users'][2]['nb_sports'] == 1
+        assert data['data']['users'][2]['nb_workouts'] == 1
+        assert len(data['data']['users'][2]['records']) == 4
+        assert data['data']['users'][2]['sports_list'] == [1]
+        assert data['data']['users'][2]['total_distance'] == 15
+        assert data['data']['users'][2]['total_duration'] == '1:00:00'
         assert 'imperial_units' not in data['data']['users'][0]
         assert 'imperial_units' not in data['data']['users'][1]
         assert 'imperial_units' not in data['data']['users'][2]
@@ -656,8 +663,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
-        assert 'toto' in data['data']['users'][0]['username']
-        assert 'sam' in data['data']['users'][1]['username']
+        assert 'sam' in data['data']['users'][0]['username']
+        assert 'toto' in data['data']['users'][1]['username']
         assert 'admin' in data['data']['users'][2]['username']
         assert data['pagination'] == {
             'has_next': False,
@@ -683,8 +690,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
-        assert 'toto' in data['data']['users'][0]['username']
-        assert 'sam' in data['data']['users'][1]['username']
+        assert 'sam' in data['data']['users'][0]['username']
+        assert 'toto' in data['data']['users'][1]['username']
         assert 'admin' in data['data']['users'][2]['username']
         assert data['pagination'] == {
             'has_next': False,
@@ -711,8 +718,8 @@ class TestGetUsersAsAdmin(GetUserTestCase):
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'admin' in data['data']['users'][0]['username']
-        assert 'toto' in data['data']['users'][1]['username']
-        assert 'sam' in data['data']['users'][2]['username']
+        assert 'sam' in data['data']['users'][1]['username']
+        assert 'toto' in data['data']['users'][2]['username']
         assert data['pagination'] == {
             'has_next': False,
             'has_prev': False,
@@ -902,6 +909,31 @@ class TestGetUsersAsAdmin(GetUserTestCase):
             'pages': 2,
             'total': 3,
         }
+
+
+class TestGetRemoteUsers(ApiTestCaseMixin):
+    def test_it_returns_error_when_federation_is_disabled(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/users/remote',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 403
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'error'
+        assert (
+            data['message']
+            == 'error, federation is disabled for this instance'
+        )
 
 
 class TestGetUserPicture:
