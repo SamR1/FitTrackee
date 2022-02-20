@@ -1,24 +1,41 @@
 import base64
+import json
 from datetime import datetime, timedelta
 from typing import Dict, Optional
 from unittest.mock import MagicMock, patch
 
 import pytest
 import requests
-from Crypto.Hash import SHA256
-from Crypto.PublicKey import RSA
-from Crypto.Signature import pkcs1_15
 from flask import Flask
 
+from fittrackee.federation.constants import AP_CTX
 from fittrackee.federation.exceptions import InvalidSignatureException
 from fittrackee.federation.models import Actor
 from fittrackee.federation.signature import (
     VALID_DATE_DELTA,
     VALID_DATE_FORMAT,
     SignatureVerification,
+    get_digest,
+    get_signature_header,
 )
 
 from ...utils import generate_response, get_date_string, random_string
+
+TEST_ACTIVITY = {
+    '@context': AP_CTX,
+    'id': random_string(),
+    'type': random_string(),
+    'actor': random_string(),
+    'object': random_string(),
+}
+
+
+class TestGetDigest:
+    def test_it_returns_digest_with_default_algorithm(self) -> None:
+        assert get_digest(TEST_ACTIVITY).startswith('SHA-256=')
+
+    def test_it_returns_digest_with_given_algorithm(self) -> None:
+        assert get_digest(TEST_ACTIVITY, 'rsa-sha512').startswith('SHA-512=')
 
 
 class SignatureVerificationTestCase:
@@ -33,49 +50,58 @@ class SignatureVerificationTestCase:
         date_str: Optional[str] = None,  # overrides date
         date: Optional[datetime] = None,
         host: Optional[str] = None,
+        algorithm: Optional[str] = None,
+        digest: Optional[str] = None,
     ) -> Dict:
         key_id = key_id if key_id else random_string()
         signature = signature if signature else self.random_signature()
+        algorithm = algorithm if algorithm else random_string()
         signature_headers = (
-            f'keyId="{key_id}",headers="(request-target) host date",'
-            f'signature="' + signature + '"'
+            f'keyId="{key_id}",algorithm={algorithm},headers="(request-target)'
+            f' host date digest",signature="' + signature + '"'
         )
+        digest = digest if digest else random_string()
         if date_str is None:
             date_str = get_date_string(date)
         return {
             'Host': host if host else random_string(),
             'Date': date_str,
+            'Digest': digest,
             'Signature': signature_headers,
             'Content-Type': 'application/ld+json',
         }
 
     def generate_valid_headers(
-        self, host: str, actor: Actor, date_str: Optional[str] = None
+        self,
+        host: str,
+        actor: Actor,
+        activity: Dict,
+        date_str: Optional[str] = None,
     ) -> Dict:
         if date_str is None:
             now = datetime.utcnow()
             date_str = now.strftime(VALID_DATE_FORMAT)
-        signed_string = (
-            f'(request-target): post /inbox\nhost: {host}\n'
-            f'date: {date_str}'
+        digest = get_digest(activity)
+        signed_header = get_signature_header(
+            host, '/inbox', date_str, actor, digest
         )
-        key = RSA.import_key(actor.private_key)
-        key_signer = pkcs1_15.new(key)
-        encoded_string = signed_string.encode('utf-8')
-        h = SHA256.new(encoded_string)
-        signature = base64.b64encode(key_signer.sign(h))
         return self.generate_headers(
             key_id=actor.activitypub_id,
-            signature=signature.decode(),
+            signature=signed_header,
             date_str=date_str,
             host=host,
+            algorithm='rsa-sha256',
+            digest=digest,
         )
 
     @staticmethod
-    def get_request_mock(headers: Optional[Dict] = None) -> MagicMock:
+    def get_request_mock(
+        headers: Optional[Dict] = None, data: Optional[Dict] = None
+    ) -> MagicMock:
         request_mock = MagicMock()
         request_mock.headers = headers if headers else {}
         request_mock.path = '/inbox'
+        request_mock.data = json.dumps(data if data else {}).encode()
         return request_mock
 
 
@@ -91,7 +117,7 @@ class TestSignatureVerificationInstantiation(SignatureVerificationTestCase):
         [
             (
                 'missing keyId',
-                'headers="(request-target) host date",'
+                'headers="(request-target) host date digest",'
                 f'signature="{random_string()}"',
             ),
             (
@@ -101,7 +127,7 @@ class TestSignatureVerificationInstantiation(SignatureVerificationTestCase):
             (
                 'missing signature',
                 f'keyId="{random_string()}",'
-                'headers="(request-target) host date"',
+                'headers="(request-target) host date digest"',
             ),
         ],
     )
@@ -122,15 +148,20 @@ class TestSignatureVerificationInstantiation(SignatureVerificationTestCase):
     def test_it_instantiates_signature_verification(self) -> None:
         key_id = random_string()
         signature = self.random_signature()
+        algorithm = 'rsa-sha256'
         signature_headers = (
-            f'keyId="{key_id}",headers="(request-target) host date",'
+            f'keyId="{key_id}",algorithm={algorithm},'
+            'headers="(request-target) host date digest",'
             f'signature="' + signature + '"'
         )
         date_str = get_date_string()
+        activity = {'foo': 'bar'}
+        digest = get_digest(activity)
         valid_request_mock = self.get_request_mock(
             headers={
                 'Host': random_string(),
                 'Date': date_str,
+                'Digest': digest,
                 'Signature': signature_headers,
             }
         )
@@ -142,8 +173,10 @@ class TestSignatureVerificationInstantiation(SignatureVerificationTestCase):
         assert sig_verification.request == valid_request_mock
         assert sig_verification.date_str == date_str
         assert sig_verification.key_id == key_id
-        assert sig_verification.headers == '(request-target) host date'
+        assert sig_verification.headers == '(request-target) host date digest'
         assert sig_verification.signature == base64.b64decode(signature)
+        assert sig_verification.algorithm == algorithm
+        assert sig_verification.digest == digest
 
 
 class TestSignatureDateVerification(SignatureVerificationTestCase):
@@ -246,30 +279,75 @@ class TestGetActorPublicKey(SignatureVerificationTestCase):
             assert key == public_key
 
 
-class TestSignatureVerify(SignatureVerificationTestCase):
-    def test_verify_raises_error_if_signature_is_invalid_due_to_keys_update(
-        self, app_with_federation: Flask, actor_1: Actor
+class TestSignatureDigestVerification(SignatureVerificationTestCase):
+    @pytest.mark.parametrize(
+        'input_description,input_digest',
+        [
+            (
+                'invalid digest',
+                random_string(),
+            ),
+            (
+                'mismatched digest (different data)',
+                get_digest({"foo": "bar"}),
+            ),
+            (
+                'mismatched digest (different algo)',
+                get_digest(TEST_ACTIVITY, algorithm='rsa-sha512'),
+            ),
+        ],
+    )
+    def test_verify_raises_error_if_http_digest_is_invalid(
+        self,
+        input_description: str,
+        input_digest: str,
+        app_with_federation: Flask,
+        actor_1: Actor,
     ) -> None:
-        actor_1.generate_keys()
         sig_verification = SignatureVerification.get_signature(
             self.get_request_mock(
-                self.generate_valid_headers(
+                self.generate_headers(
                     host=app_with_federation.config['AP_DOMAIN'],
-                    actor=actor_1,
-                )
+                    date_str=datetime.utcnow().strftime(VALID_DATE_FORMAT),
+                    algorithm='rsa-sha256',
+                    digest=input_digest,
+                ),
+                data=TEST_ACTIVITY,
             )
         )
-        # update actor keys
-        actor_1.generate_keys()
-        with patch.object(requests, 'get') as requests_mock:
-            requests_mock.return_value = generate_response(
-                status_code=200,
-                content=actor_1.serialize(),
+
+        with pytest.raises(
+            InvalidSignatureException, match='invalid HTTP digest'
+        ):
+            sig_verification.verify_digest()
+
+    @pytest.mark.parametrize(
+        'input_description,input_algorithm',
+        [('SHA256', 'rsa-sha256'), ('SHA512', 'rsa-sha512')],
+    )
+    def test_verify_do_not_raise_error_if_http_digest_is_valid(
+        self,
+        input_description: str,
+        input_algorithm: str,
+        app_with_federation: Flask,
+        actor_1: Actor,
+    ) -> None:
+        sig_verification = SignatureVerification.get_signature(
+            self.get_request_mock(
+                self.generate_headers(
+                    host=app_with_federation.config['AP_DOMAIN'],
+                    date_str=datetime.utcnow().strftime(VALID_DATE_FORMAT),
+                    algorithm=input_algorithm,
+                    digest=get_digest(TEST_ACTIVITY, input_algorithm),
+                ),
+                data=TEST_ACTIVITY,
             )
+        )
 
-            with pytest.raises(InvalidSignatureException):
-                sig_verification.verify()
+        sig_verification.verify_digest()
 
+
+class TestSignatureVerify(SignatureVerificationTestCase):
     def test_verify_raises_error_if_header_date_is_invalid(
         self, app_with_federation: Flask, actor_1: Actor
     ) -> None:
@@ -280,6 +358,7 @@ class TestSignatureVerify(SignatureVerificationTestCase):
                     host=app_with_federation.config['AP_DOMAIN'],
                     actor=actor_1,
                     date_str='',
+                    activity=TEST_ACTIVITY,
                 )
             )
         )
@@ -289,7 +368,9 @@ class TestSignatureVerify(SignatureVerificationTestCase):
                 content=actor_1.serialize(),
             )
 
-            with pytest.raises(InvalidSignatureException):
+            with pytest.raises(
+                InvalidSignatureException, match='invalid date header'
+            ):
                 sig_verification.verify()
 
     def test_verify_raises_error_if_public_key_is_invalid(
@@ -301,13 +382,96 @@ class TestSignatureVerify(SignatureVerificationTestCase):
                 self.generate_valid_headers(
                     host=app_with_federation.config['AP_DOMAIN'],
                     actor=actor_1,
+                    activity=TEST_ACTIVITY,
                 )
             )
         )
         with patch.object(requests, 'get') as requests_mock:
             requests_mock.return_value = generate_response(status_code=404)
 
-            with pytest.raises(InvalidSignatureException):
+            with pytest.raises(
+                InvalidSignatureException, match='invalid public key'
+            ):
+                sig_verification.verify()
+
+    def test_verify_raises_error_if_algorithm_is_not_supported(
+        self, app_with_federation: Flask, actor_1: Actor
+    ) -> None:
+        actor_1.generate_keys()
+        algorithm = random_string()
+        sig_verification = SignatureVerification.get_signature(
+            self.get_request_mock(
+                self.generate_headers(
+                    host=app_with_federation.config['AP_DOMAIN'],
+                    date_str=datetime.utcnow().strftime(VALID_DATE_FORMAT),
+                    algorithm=algorithm,
+                    digest=get_digest(TEST_ACTIVITY),
+                ),
+                data=TEST_ACTIVITY,
+            )
+        )
+        with patch.object(requests, 'get') as requests_mock:
+            requests_mock.return_value = generate_response(
+                status_code=200,
+                content=actor_1.serialize(),
+            )
+
+            with pytest.raises(
+                InvalidSignatureException, match='unsupported algorithm'
+            ):
+                sig_verification.verify()
+
+    def test_verify_raises_error_if_http_digest_is_invalid(
+        self, app_with_federation: Flask, actor_1: Actor
+    ) -> None:
+        actor_1.generate_keys()
+        sig_verification = SignatureVerification.get_signature(
+            self.get_request_mock(
+                self.generate_headers(
+                    host=app_with_federation.config['AP_DOMAIN'],
+                    date_str=datetime.utcnow().strftime(VALID_DATE_FORMAT),
+                    algorithm='rsa-sha256',
+                    digest=random_string(),
+                ),
+                data=TEST_ACTIVITY,
+            )
+        )
+        with patch.object(requests, 'get') as requests_mock:
+            requests_mock.return_value = generate_response(
+                status_code=200,
+                content=actor_1.serialize(),
+            )
+
+            with pytest.raises(
+                InvalidSignatureException, match='invalid HTTP digest'
+            ):
+                sig_verification.verify()
+
+    def test_verify_raises_error_if_signature_is_invalid_due_to_keys_update(
+        self, app_with_federation: Flask, actor_1: Actor
+    ) -> None:
+        actor_1.generate_keys()
+        sig_verification = SignatureVerification.get_signature(
+            self.get_request_mock(
+                self.generate_valid_headers(
+                    host=app_with_federation.config['AP_DOMAIN'],
+                    actor=actor_1,
+                    activity=TEST_ACTIVITY,
+                ),
+                data=TEST_ACTIVITY,
+            )
+        )
+        # update actor keys
+        actor_1.generate_keys()
+        with patch.object(requests, 'get') as requests_mock:
+            requests_mock.return_value = generate_response(
+                status_code=200,
+                content=actor_1.serialize(),
+            )
+
+            with pytest.raises(
+                InvalidSignatureException, match='verification failed'
+            ):
                 sig_verification.verify()
 
     def test_verify_does_not_raise_error_if_signature_is_valid(
@@ -319,7 +483,9 @@ class TestSignatureVerify(SignatureVerificationTestCase):
                 self.generate_valid_headers(
                     host=app_with_federation.config['AP_DOMAIN'],
                     actor=actor_1,
-                )
+                    activity=TEST_ACTIVITY,
+                ),
+                data=TEST_ACTIVITY,
             )
         )
         with patch.object(requests, 'get') as requests_mock:

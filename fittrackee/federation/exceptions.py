@@ -20,10 +20,10 @@ class FederationDisabledException(GenericException):
 
 
 class InvalidSignatureException(GenericException):
-    def __init__(self) -> None:
+    def __init__(self, message: Optional[str] = None) -> None:
         super().__init__(
             status='error',
-            message='Invalid signature.',
+            message=f'Invalid signature{f": {message}" if message else ""}.',
         )
 
 

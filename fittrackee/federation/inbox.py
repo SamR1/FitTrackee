@@ -19,7 +19,8 @@ from .models import Actor, Domain
 from .signature import (
     VALID_DATE_FORMAT,
     SignatureVerification,
-    signature_header,
+    get_digest,
+    get_signature_header,
 )
 from .tasks.activity import handle_activity
 from .utils import is_invalid_activity_data
@@ -57,20 +58,23 @@ def send_to_remote_user_inbox(
 ) -> None:
     now_str = datetime.utcnow().strftime(VALID_DATE_FORMAT)
     parsed_inbox_url = urlparse(recipient_inbox_url)
-    signed_header = signature_header(
+    digest = get_digest(activity)
+    signed_header = get_signature_header(
         host=parsed_inbox_url.netloc,
         path=parsed_inbox_url.path,
         date_str=now_str,
         actor=sender,
+        digest=digest,
     )
     response = requests.post(
         recipient_inbox_url,
         data=dumps(activity),
         headers={
-            "Host": parsed_inbox_url.netloc,
-            "Date": now_str,
-            "Signature": signed_header,
-            "Content-Type": "application/ld+json",
+            'Host': parsed_inbox_url.netloc,
+            'Date': now_str,
+            'Signature': signed_header,
+            'Digest': digest,
+            'Content-Type': 'application/ld+json',
         },
     )
     if response.status_code >= 400:

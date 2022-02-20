@@ -15,12 +15,14 @@ from ...utils import generate_response, get_date_string, random_string
 
 
 class TestSendToRemoteInbox(BaseTestMixin):
-    @patch('fittrackee.federation.inbox.signature_header')
+    @patch('fittrackee.federation.inbox.get_digest')
+    @patch('fittrackee.federation.inbox.get_signature_header')
     @patch('fittrackee.federation.inbox.requests')
-    def test_it_calls_signature_header(
+    def test_it_calls_get_signature_header(
         self,
         requests_mock: Mock,
-        signature_header_mock: Mock,
+        get_signature_header_mock: Mock,
+        get_digest_mock: Mock,
         app_with_federation: Flask,
         actor_1: Actor,
         remote_actor: Actor,
@@ -28,6 +30,8 @@ class TestSendToRemoteInbox(BaseTestMixin):
         now = datetime.utcnow()
         parsed_inbox_url = urlparse(remote_actor.inbox_url)
         requests_mock.post.return_value = generate_response(status_code=200)
+        digest = random_string()
+        get_digest_mock.return_value = digest
 
         with freeze_time(now):
             send_to_remote_user_inbox(
@@ -36,19 +40,22 @@ class TestSendToRemoteInbox(BaseTestMixin):
                 recipient_inbox_url=remote_actor.inbox_url,
             )
 
-        signature_header_mock.assert_called_with(
+        get_signature_header_mock.assert_called_with(
             host=parsed_inbox_url.netloc,
             path=parsed_inbox_url.path,
             date_str=get_date_string(now),
             actor=actor_1,
+            digest=digest,
         )
 
-    @patch('fittrackee.federation.inbox.signature_header')
+    @patch('fittrackee.federation.inbox.get_digest')
+    @patch('fittrackee.federation.inbox.get_signature_header')
     @patch('fittrackee.federation.inbox.requests')
     def test_it_calls_requests_post(
         self,
         requests_mock: Mock,
-        signature_header_mock: Mock,
+        get_signature_header_mock: Mock,
+        get_digest_mock: Mock,
         app_with_federation: Flask,
         actor_1: Actor,
         remote_actor: Actor,
@@ -58,7 +65,9 @@ class TestSendToRemoteInbox(BaseTestMixin):
         parsed_inbox_url = urlparse(remote_actor.inbox_url)
         requests_mock.post.return_value = generate_response(status_code=200)
         signed_header = random_string()
-        signature_header_mock.return_value = signed_header
+        get_signature_header_mock.return_value = signed_header
+        digest = random_string()
+        get_digest_mock.return_value = digest
 
         with freeze_time(now):
             send_to_remote_user_inbox(
@@ -71,19 +80,20 @@ class TestSendToRemoteInbox(BaseTestMixin):
             remote_actor.inbox_url,
             data=dumps(activity),
             headers={
-                "Host": parsed_inbox_url.netloc,
-                "Date": get_date_string(now),
-                "Signature": signed_header,
-                "Content-Type": "application/ld+json",
+                'Host': parsed_inbox_url.netloc,
+                'Date': get_date_string(now),
+                'Digest': digest,
+                'Signature': signed_header,
+                'Content-Type': 'application/ld+json',
             },
         )
 
-    @patch('fittrackee.federation.inbox.signature_header')
+    @patch('fittrackee.federation.inbox.get_signature_header')
     @patch('fittrackee.federation.inbox.requests')
     def test_it_logs_error_if_remote_inbox_returns_error(
         self,
         requests_mock: Mock,
-        signature_header_mock: Mock,
+        get_signature_header_mock: Mock,
         app_with_federation: Flask,
         actor_1: Actor,
         remote_actor: Actor,
