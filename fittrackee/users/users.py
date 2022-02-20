@@ -625,9 +625,8 @@ def follow_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
         appLog.error(f'Error when following a user: {e}')
         return UserNotFoundErrorResponse()
 
-    follower_user = User.query.filter_by(id=auth_user.id).first()
     try:
-        follower_user.send_follow_request_to(target_user)
+        auth_user.send_follow_request_to(target_user)
     except FollowRequestAlreadyRejectedError:
         return ForbiddenErrorResponse()
     return successful_response_dict

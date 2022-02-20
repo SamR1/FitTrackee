@@ -135,8 +135,6 @@ def remote_actor(
         }
       }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
-
     :<json string actor_url: remote actor activitypub id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token

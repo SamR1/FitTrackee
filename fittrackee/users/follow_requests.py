@@ -81,12 +81,11 @@ def process_follow_request(
         appLog.error(f'Error when accepting follow request: {e}')
         return UserNotFoundErrorResponse()
 
-    current_user = User.query.filter_by(id=auth_user.id).first()
     try:
         if action == 'accept':
-            current_user.approves_follow_request_from(from_user)
+            auth_user.approves_follow_request_from(from_user)
         else:  # action == 'reject'
-            current_user.rejects_follow_request_from(from_user)
+            auth_user.rejects_follow_request_from(from_user)
     except NotExistingFollowRequestError:
         return NotFoundErrorResponse(message='Follow request does not exist.')
     except FollowRequestAlreadyProcessedError:
