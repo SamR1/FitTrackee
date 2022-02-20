@@ -15,7 +15,7 @@ from werkzeug.utils import secure_filename
 from fittrackee import db
 from fittrackee.files import get_absolute_file_path
 from fittrackee.users.models import User, UserSportPreference
-from fittrackee.users.privacy_levels import PrivacyLevel
+from fittrackee.users.privacy_levels import PrivacyLevel, get_map_visibility
 
 from ..exceptions import WorkoutException
 from ..models import Sport, Workout, WorkoutSegment
@@ -118,11 +118,14 @@ def create_workout(
         duration=duration,
     )
     new_workout.notes = workout_data.get('notes')
-    new_workout.map_visibility = PrivacyLevel(
-        workout_data.get('map_visibility', user.map_visibility.value)
-    )
     new_workout.workout_visibility = PrivacyLevel(
         workout_data.get('workout_visibility', user.workouts_visibility.value)
+    )
+    new_workout.map_visibility = get_map_visibility(
+        PrivacyLevel(
+            workout_data.get('map_visibility', user.map_visibility.value)
+        ),
+        new_workout.workout_visibility,
     )
 
     if title is not None and title != '':
@@ -207,6 +210,10 @@ def edit_workout(
         workout.title = workout_data.get('title')
     if workout_data.get('notes') is not None:
         workout.notes = workout_data.get('notes')
+    if workout_data.get('workout_visibility') is not None:
+        workout.workout_visibility = PrivacyLevel(
+            workout_data.get('workout_visibility')
+        )
     if not workout.gpx:
         if workout_data.get('workout_date'):
             workout_date = datetime.strptime(
@@ -229,6 +236,12 @@ def edit_workout(
             else float(workout.distance) / (workout.duration.seconds / 3600)
         )
         workout.max_speed = workout.ave_speed
+    else:
+        if workout_data.get('map_visibility') is not None:
+            map_visibility = PrivacyLevel(workout_data.get('map_visibility'))
+            workout.map_visibility = get_map_visibility(
+                map_visibility, workout.workout_visibility
+            )
     return workout
 
 

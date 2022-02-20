@@ -27,7 +27,7 @@ from fittrackee.workouts.models import Sport
 
 from .decorators import authenticate
 from .models import User, UserSportPreference
-from .privacy_levels import PrivacyLevel
+from .privacy_levels import PrivacyLevel, get_map_visibility
 from .utils.controls import check_passwords, register_controls
 from .utils.token import decode_user_token
 
@@ -705,8 +705,10 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.language = language
         auth_user.timezone = timezone
         auth_user.weekm = weekm
-        auth_user.map_visibility = PrivacyLevel(map_visibility)
         auth_user.workouts_visibility = PrivacyLevel(workouts_visibility)
+        auth_user.map_visibility = get_map_visibility(
+            PrivacyLevel(map_visibility), auth_user.workouts_visibility
+        )
         db.session.commit()
 
         return {

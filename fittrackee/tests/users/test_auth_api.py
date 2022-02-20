@@ -8,6 +8,7 @@ from flask import Flask
 from freezegun import freeze_time
 
 from fittrackee.users.models import User, UserSportPreference
+from fittrackee.users.privacy_levels import PrivacyLevel
 from fittrackee.users.utils.token import get_user_token
 from fittrackee.workouts.models import Sport, Workout
 
@@ -753,6 +754,48 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert data['data']['language'] == 'fr'
         assert data['data']['map_visibility'] == 'followers_only'
         assert data['data']['workouts_visibility'] == 'public'
+
+    @pytest.mark.parametrize(
+        'input_map_visibility,input_workout_visibility',
+        [
+            (PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE),
+            (PrivacyLevel.PUBLIC, PrivacyLevel.FOLLOWERS),
+        ],
+    )
+    def test_it_updates_user_preferences_with_valid_map_visibility(
+        self,
+        app: Flask,
+        user_1: User,
+        input_map_visibility: PrivacyLevel,
+        input_workout_visibility: PrivacyLevel,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/profile/edit/preferences',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    timezone='America/New_York',
+                    weekm=True,
+                    language='fr',
+                    imperial_units=True,
+                    map_visibility=input_map_visibility.value,
+                    workouts_visibility=input_workout_visibility.value,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['data']['map_visibility'] == input_workout_visibility.value
+        assert (
+            data['data']['workouts_visibility']
+            == input_workout_visibility.value
+        )
 
     def test_it_returns_error_if_fields_are_missing(
         self, app: Flask, user_1: User
