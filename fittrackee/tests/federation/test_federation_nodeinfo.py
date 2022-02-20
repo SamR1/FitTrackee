@@ -8,7 +8,7 @@ from fittrackee.federation.models import Actor
 
 class TestWellKnowNodeInfo:
     def test_it_returns_error_if_federation_is_disabled(
-        self, app: Flask, actor_1: Actor
+        self, app: Flask
     ) -> None:
         client = app.test_client()
         response = client.get(
@@ -47,10 +47,26 @@ class TestWellKnowNodeInfo:
             ]
         }
 
+    def test_it_returns_error_if_domain_does_not_exist(
+        self, app_wo_domain: Flask
+    ) -> None:
+        client = app_wo_domain.test_client()
+        response = client.get(
+            '/.well-known/nodeinfo',
+            content_type='application/json',
+        )
+        assert response.status_code == 500
+        data = json.loads(response.data.decode())
+        assert 'error' in data['status']
+        assert (
+            'error, please try again or contact the administrator'
+            in data['message']
+        )
+
 
 class TestNodeInfo:
     def test_it_returns_error_if_federation_is_disabled(
-        self, app: Flask, actor_1: Actor
+        self, app: Flask
     ) -> None:
         client = app.test_client()
         response = client.get(

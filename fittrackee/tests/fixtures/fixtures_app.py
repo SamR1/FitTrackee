@@ -6,6 +6,7 @@ import pytest
 from fittrackee import create_app, db
 from fittrackee.application.models import AppConfig
 from fittrackee.application.utils import update_app_config_from_database
+from fittrackee.federation.models import Domain
 
 
 def get_app_config(
@@ -44,6 +45,7 @@ def get_app(
     max_zip_file_size: Optional[Union[int, float]] = None,
     max_users: Optional[int] = None,
     with_federation: Optional[bool] = False,
+    with_domain: Optional[bool] = True,
 ) -> Generator:
     app = create_app()
     with app.app_context():
@@ -59,6 +61,10 @@ def get_app(
             )
             if app_db_config:
                 update_app_config_from_database(app, app_db_config)
+                if with_domain:
+                    domain = Domain(name=app.config['AP_DOMAIN'])
+                    db.session.add(domain)
+                    db.session.commit()
             yield app
         except Exception as e:
             print(f'Error with app configuration: {e}')
@@ -152,7 +158,9 @@ def app_wo_email_auth(monkeypatch: pytest.MonkeyPatch) -> Generator:
 
 @pytest.fixture
 def app_wo_domain() -> Generator:
-    yield from get_app(with_config=True)
+    yield from get_app(
+        with_config=True, with_federation=True, with_domain=False
+    )
 
 
 @pytest.fixture

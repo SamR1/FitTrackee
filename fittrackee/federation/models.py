@@ -13,6 +13,40 @@ from .utils import ACTOR_TYPES, AP_CTX, generate_keys, get_ap_url
 BaseModel: DeclarativeMeta = db.Model
 
 
+class Domain(BaseModel):
+    """ActivityPub Domain"""
+
+    __tablename__ = 'domains'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(1000), unique=True, nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False)
+    is_allowed = db.Column(db.Boolean, default=True, nullable=False)
+
+    actors = db.relationship('Actor', back_populates='domain')
+
+    def __str__(self) -> str:
+        return f'<Domain \'{self.name}\'>'
+
+    def __init__(
+        self, name: str, created_at: Optional[datetime] = datetime.utcnow()
+    ) -> None:
+        self.name = name
+        self.created_at = created_at
+
+    @property
+    def is_remote(self) -> bool:
+        return self.name != current_app.config['AP_DOMAIN']
+
+    def serialize(self) -> Dict:
+        return {
+            'id': self.id,
+            'name': self.name,
+            'created_at': self.created_at,
+            'is_remote': self.is_remote,
+            'is_allowed': self.is_allowed,
+        }
+
+
 class Actor(BaseModel):
     """ActivityPub Actor"""
 
@@ -22,10 +56,12 @@ class Actor(BaseModel):
     user_id = db.Column(
         db.Integer, db.ForeignKey('users.id'), unique=True, nullable=False
     )
+    domain_id = db.Column(
+        db.Integer, db.ForeignKey('domains.id'), nullable=False
+    )
     type = db.Column(
         Enum(*ACTOR_TYPES, name='actor_types'), server_default='Person'
     )
-    domain = db.Column(db.String(1000), nullable=False)
     name = db.Column(db.String(255), nullable=False)
     preferred_username = db.Column(db.String(255), nullable=False)
     public_key = db.Column(db.String(5000), nullable=True)
@@ -35,12 +71,13 @@ class Actor(BaseModel):
     followers_url = db.Column(db.String(255), nullable=False)
     following_url = db.Column(db.String(255), nullable=False)
     shared_inbox_url = db.Column(db.String(255), nullable=False)
-    is_remote = db.Column(db.Boolean, default=False, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
     manually_approves_followers = db.Column(
         db.Boolean, default=True, nullable=False
     )
     last_fetch_date = db.Column(db.DateTime, nullable=True)
+
+    domain = db.relationship('Domain', back_populates='actors')
 
     def __str__(self) -> str:
         return f'<Actor \'{self.name}\'>'
@@ -48,16 +85,15 @@ class Actor(BaseModel):
     def __init__(
         self,
         user: User,
+        domain_id: int,
         created_at: Optional[datetime] = datetime.utcnow(),
-        is_remote: Optional[bool] = False,
     ) -> None:
         self.ap_id = get_ap_url(user.username, 'user_url')
         self.created_at = created_at
-        self.domain = f"{current_app.config['AP_DOMAIN']}"
+        self.domain_id = domain_id
         self.followers_url = get_ap_url(user.username, 'followers')
         self.following_url = get_ap_url(user.username, 'following')
         self.inbox_url = get_ap_url(user.username, 'inbox')
-        self.is_remote = is_remote
         self.name = user.username
         self.outbox_url = get_ap_url(user.username, 'outbox')
         self.preferred_username = user.username
@@ -66,6 +102,10 @@ class Actor(BaseModel):
 
     def generate_keys(self) -> None:
         self.public_key, self.private_key = generate_keys()
+
+    @property
+    def is_remote(self) -> bool:
+        return self.domain.is_remote
 
     def serialize(self) -> Dict:
         return {

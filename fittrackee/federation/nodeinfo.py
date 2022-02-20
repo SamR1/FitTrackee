@@ -4,15 +4,16 @@ from fittrackee.responses import HttpResponse
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Workout
 
-from .utils import federation_required
+from .decorators import federation_required
+from .models import Domain
 
 ap_nodeinfo_blueprint = Blueprint('ap_nodeinfo', __name__)
 
 
 @ap_nodeinfo_blueprint.route('/.well-known/nodeinfo', methods=['GET'])
 @federation_required
-def get_nodeinfo_url() -> HttpResponse:
-    nodeinfo_url = f'https://{current_app.config["AP_DOMAIN"]}/nodeinfo/2.0'
+def get_nodeinfo_url(app_domain: Domain) -> HttpResponse:
+    nodeinfo_url = f'https://{app_domain.name}/nodeinfo/2.0'
     response = {
         'links': [
             {
@@ -28,7 +29,7 @@ def get_nodeinfo_url() -> HttpResponse:
 
 @ap_nodeinfo_blueprint.route('/nodeinfo/2.0', methods=['GET'])
 @federation_required
-def get_nodeinfo() -> HttpResponse:
+def get_nodeinfo(app_domain: Domain) -> HttpResponse:
     # TODO : add 'activeHalfyear' and 'activeMonth' for users
     workouts_count = Workout.query.filter().count()
     users_count = User.query.filter().count()

@@ -43,11 +43,11 @@ class TestFederationUser:
         assert data == actor_1.serialize()
 
     def test_it_returns_error_if_federation_is_disabled(
-        self, app: Flask, actor_1: Actor
+        self, app: Flask, app_actor: Actor
     ) -> None:
         client = app.test_client()
         response = client.get(
-            f'/federation/user/{actor_1.preferred_username}',
+            f'/federation/user/{app_actor.preferred_username}',
         )
 
         assert response.status_code == 403
