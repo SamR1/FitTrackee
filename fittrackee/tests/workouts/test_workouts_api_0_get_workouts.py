@@ -7,6 +7,7 @@ from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
 from ..test_case_mixins import ApiTestCaseMixin
+from ..utils import jsonify_dict
 
 
 class TestGetWorkouts(ApiTestCaseMixin):
@@ -39,7 +40,9 @@ class TestGetWorkouts(ApiTestCaseMixin):
             'Sun, 01 Apr 2018 00:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
-        assert 'test' == data['data']['workouts'][0]['user']
+        assert data['data']['workouts'][0]['user'] == jsonify_dict(
+            user_1.serialize()
+        )
         assert 2 == data['data']['workouts'][0]['sport_id']
         assert 12.0 == data['data']['workouts'][0]['distance']
         assert '1:40:00' == data['data']['workouts'][0]['duration']
@@ -49,7 +52,9 @@ class TestGetWorkouts(ApiTestCaseMixin):
             'Mon, 01 Jan 2018 00:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
         )
-        assert 'test' == data['data']['workouts'][1]['user']
+        assert data['data']['workouts'][1]['user'] == jsonify_dict(
+            user_1.serialize()
+        )
         assert 1 == data['data']['workouts'][1]['sport_id']
         assert 10.0 == data['data']['workouts'][1]['distance']
         assert '1:00:00' == data['data']['workouts'][1]['duration']

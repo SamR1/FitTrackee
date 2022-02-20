@@ -10,7 +10,7 @@ from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
 
 from ..test_case_mixins import ApiTestCaseMixin
-from ..utils import random_string
+from ..utils import jsonify_dict, random_string
 from .utils import get_random_short_id
 
 
@@ -66,7 +66,9 @@ class TestGetWorkoutAsWorkoutOwner(GetWorkoutTestCase):
             'Mon, 01 Jan 2018 00:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
-        assert 'test' == data['data']['workouts'][0]['user']
+        assert data['data']['workouts'][0]['user'] == jsonify_dict(
+            user_1.serialize()
+        )
         assert 1 == data['data']['workouts'][0]['sport_id']
         assert 10.0 == data['data']['workouts'][0]['distance']
         assert '1:00:00' == data['data']['workouts'][0]['duration']
@@ -132,7 +134,9 @@ class TestGetWorkoutAsFollower(GetWorkoutTestCase):
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
-        assert data['data']['workouts'][0]['user'] == user_2.username
+        assert data['data']['workouts'][0]['user'] == jsonify_dict(
+            user_2.serialize()
+        )
         assert (
             data['data']['workouts'][0]['workout_visibility']
             == input_workout_level.value
@@ -211,7 +215,9 @@ class TestGetWorkoutAsUser(GetWorkoutTestCase):
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
-        assert data['data']['workouts'][0]['user'] == user_2.username
+        assert data['data']['workouts'][0]['user'] == jsonify_dict(
+            user_2.serialize()
+        )
         assert data['data']['workouts'][0]['workout_visibility'] == 'public'
 
 
@@ -276,7 +282,9 @@ class TestGetWorkoutAsUnauthenticatedUser(GetWorkoutTestCase):
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
-        assert data['data']['workouts'][0]['user'] == user_1.username
+        assert data['data']['workouts'][0]['user'] == jsonify_dict(
+            user_1.serialize()
+        )
         assert data['data']['workouts'][0]['workout_visibility'] == 'public'
 
 

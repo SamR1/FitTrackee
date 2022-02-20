@@ -320,7 +320,7 @@ class Workout(BaseModel):
 
         return {
             'id': self.short_id,  # WARNING: client use uuid as id
-            'user': self.user.username,
+            'user': self.user.serialize(),
             'sport_id': self.sport_id,
             'title': self.title,
             'creation_date': self.creation_date,

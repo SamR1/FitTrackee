@@ -10,16 +10,21 @@ from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
 from ..test_case_mixins import ApiTestCaseMixin
+from ..utils import jsonify_dict
 from .utils import get_random_short_id, post_a_workout
 
 
-def assert_workout_data_with_gpx(data: Dict, sport_id: int) -> None:
+def assert_workout_data_with_gpx(
+    data: Dict, sport_id: int, user: User
+) -> None:
     assert 'creation_date' in data['data']['workouts'][0]
     assert (
         'Tue, 13 Mar 2018 12:44:45 GMT'
         == data['data']['workouts'][0]['workout_date']
     )
-    assert 'test' == data['data']['workouts'][0]['user']
+    assert data['data']['workouts'][0]['user'] == jsonify_dict(
+        user.serialize()
+    )
     assert '0:04:10' == data['data']['workouts'][0]['duration']
     assert data['data']['workouts'][0]['ascent'] == 0.4
     assert data['data']['workouts'][0]['ave_speed'] == 4.61
@@ -81,7 +86,7 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         assert len(data['data']['workouts']) == 1
         assert sport_2_running.id == data['data']['workouts'][0]['sport_id']
         assert data['data']['workouts'][0]['title'] == 'Workout test'
-        assert_workout_data_with_gpx(data, sport_2_running.id)
+        assert_workout_data_with_gpx(data, sport_2_running.id, user_1)
 
     @pytest.mark.parametrize(
         'input_description,input_notes',
@@ -199,7 +204,7 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         assert len(data['data']['workouts']) == 1
         assert sport_2_running.id == data['data']['workouts'][0]['sport_id']
         assert data['data']['workouts'][0]['title'] == 'just a workout'
-        assert_workout_data_with_gpx(data, sport_2_running.id)
+        assert_workout_data_with_gpx(data, sport_2_running.id, user_1)
 
     def test_it_returns_400_if_payload_is_empty(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
@@ -280,7 +285,9 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
             data['data']['workouts'][0]['workout_date']
             == 'Tue, 15 May 2018 15:05:00 GMT'
         )
-        assert data['data']['workouts'][0]['user'] == 'test'
+        assert data['data']['workouts'][0]['user'] == jsonify_dict(
+            user_1.serialize()
+        )
         assert data['data']['workouts'][0]['sport_id'] == sport_2_running.id
         assert data['data']['workouts'][0]['duration'] == '1:00:00'
         assert data['data']['workouts'][0]['title'] == 'Workout test'
@@ -452,7 +459,9 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
             data['data']['workouts'][0]['workout_date']
             == 'Tue, 15 May 2018 13:05:00 GMT'
         )
-        assert data['data']['workouts'][0]['user'] == 'test'
+        assert data['data']['workouts'][0]['user'] == jsonify_dict(
+            user_1_paris.serialize()
+        )
         assert data['data']['workouts'][0]['sport_id'] == sport_2_running.id
         assert data['data']['workouts'][0]['duration'] == '1:00:00'
         assert data['data']['workouts'][0]['title'] == 'Workout test'
@@ -519,7 +528,9 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
             data['data']['workouts'][0]['workout_date']
             == 'Mon, 01 Jan 2018 00:00:00 GMT'
         )
-        assert data['data']['workouts'][0]['user'] == 'test'
+        assert data['data']['workouts'][0]['user'] == jsonify_dict(
+            user_1.serialize()
+        )
         assert data['data']['workouts'][0]['sport_id'] == sport_2_running.id
         assert data['data']['workouts'][0]['duration'] == '1:00:00'
         assert data['data']['workouts'][0]['title'] is None

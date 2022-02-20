@@ -58,7 +58,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
 
         serialized_workout = workout_cycling_user_1.serialize(self.user_status)
         assert isinstance(decode_short_id(serialized_workout['id']), UUID)
-        assert 'test' == serialized_workout['user']
+        assert serialized_workout['user'] == user_1.serialize()
         assert 1 == serialized_workout['sport_id']
         assert serialized_workout['title'] == 'Test'
         assert 'creation_date' in serialized_workout
