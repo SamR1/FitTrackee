@@ -1,3 +1,4 @@
+import os
 from typing import Dict, Union
 from unittest.mock import patch
 
@@ -13,11 +14,13 @@ from fittrackee.federation.utils_user import (
     create_remote_user,
     get_user_from_username,
     get_username_and_domain,
+    store_or_delete_user_picture,
 )
+from fittrackee.files import get_absolute_file_path
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.models import User
 
-from ...utils import RandomActor, random_string
+from ...utils import RandomActor, generate_response, random_string
 
 
 class TestGetUsernameAndDomain:
@@ -260,6 +263,27 @@ class TestCreateRemoteUser:
 
         assert user.username == random_actor.name
 
+    def test_it_calls_store_or_delete_user_picture(
+        self,
+        app_with_federation: Flask,
+        random_actor: RandomActor,
+    ) -> None:
+        remote_actor_object = random_actor.get_remote_user_object()
+        with patch(
+            'fittrackee.federation.utils_user.fetch_remote_actor',
+            return_value=random_actor.get_webfinger(),
+        ), patch(
+            'fittrackee.federation.utils_user.get_remote_actor',
+            return_value=remote_actor_object,
+        ), patch(
+            'fittrackee.federation.utils_user.store_or_delete_user_picture'
+        ) as store_or_delete_mock:
+            user = create_remote_user(
+                random_actor.preferred_username, random_actor.domain
+            )
+
+        store_or_delete_mock.assert_called_with(remote_actor_object, user)
+
     def test_it_returns_updated_remote_actor_if_remote_actor_exists(
         self, app_with_federation: Flask, remote_user: User
     ) -> None:
@@ -357,3 +381,147 @@ class TestGetUserFromUsername:
             )
 
         assert user.username == random_actor.name
+
+
+class TestStoreOrDeleteUserPicture:
+    @pytest.mark.parametrize(
+        'input_description, input_icon',
+        [
+            (
+                'type is not an image',
+                {
+                    'type': random_string(),
+                    'mediaType': 'image/jpeg',
+                    'url': 'https://example/file.jpg',
+                },
+            ),
+            (
+                'mediatype is not supported',
+                {
+                    'type': 'Image',
+                    'mediaType': random_string(),
+                    'url': f'https://example/file.{random_string()}',
+                },
+            ),
+        ],
+    )
+    def test_it_does_not_store_picture_if_icon_is_not_supported(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+        input_description: str,
+        input_icon: Dict,
+    ) -> None:
+        with patch('builtins.open') as open_mock:
+
+            store_or_delete_user_picture(
+                remote_actor_object={
+                    'icon': input_icon,
+                },
+                user=remote_user,
+            )
+
+        assert remote_user.picture is None
+        open_mock.assert_not_called()
+
+    def test_it_does_not_raise_error_if_it_can_not_fetch_image(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+    ) -> None:
+        with patch(
+            'requests.get', return_value=generate_response(status_code=404)
+        ), patch('builtins.open') as open_mock:
+
+            store_or_delete_user_picture(
+                remote_actor_object={
+                    'icon': {
+                        'type': 'Image',
+                        'mediaType': 'image/jpeg',
+                        'url': 'https://example.com/916cac70b7c694a4.jpg',
+                    },
+                },
+                user=remote_user,
+            )
+
+        assert remote_user.picture is None
+        open_mock.assert_not_called()
+
+    def test_it_stores_user_picture(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+    ) -> None:
+        expected_relative_picture_path = os.path.join(
+            'pictures', str(remote_user.id), f'{remote_user.username}.jpg'
+        )
+        expected_absolute_picture_path = os.path.join(
+            app_with_federation.config['UPLOAD_FOLDER'],
+            expected_relative_picture_path,
+        )
+        with patch(
+            'requests.get', return_value=generate_response(status_code=200)
+        ), patch('builtins.open') as open_mock:
+
+            store_or_delete_user_picture(
+                remote_actor_object={
+                    'icon': {
+                        'type': 'Image',
+                        'mediaType': 'image/jpeg',
+                        'url': f'https://example.com/{random_string()}.jpg',
+                    },
+                },
+                user=remote_user,
+            )
+
+        assert remote_user.picture == expected_relative_picture_path
+        open_mock.assert_called_once_with(expected_absolute_picture_path, 'wb')
+
+    def test_it_updates_user_picture(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+    ) -> None:
+        remote_user.picture = random_string()
+        expected_relative_picture_path = os.path.join(
+            'pictures', str(remote_user.id), f'{remote_user.username}.jpg'
+        )
+        expected_absolute_picture_path = os.path.join(
+            app_with_federation.config['UPLOAD_FOLDER'],
+            expected_relative_picture_path,
+        )
+        with patch(
+            'requests.get', return_value=generate_response(status_code=200)
+        ), patch('builtins.open') as open_mock:
+
+            store_or_delete_user_picture(
+                remote_actor_object={
+                    'icon': {
+                        'type': 'Image',
+                        'mediaType': 'image/jpeg',
+                        'url': f'https://example.com/{random_string()}.jpg',
+                    },
+                },
+                user=remote_user,
+            )
+
+        assert remote_user.picture == expected_relative_picture_path
+        open_mock.assert_called_once_with(expected_absolute_picture_path, 'wb')
+
+    def test_it_deletes_user_image_if_no_image_in_remote_actor_object(
+        self, app_with_federation: Flask, remote_user: User
+    ) -> None:
+        user_picture_path = random_string()
+        remote_user.picture = user_picture_path
+        with patch('os.path.isfile', return_value=True), patch(
+            'os.remove'
+        ) as os_remove_mock:
+
+            store_or_delete_user_picture(
+                remote_actor_object={}, user=remote_user
+            )
+
+        assert remote_user.picture is None
+        os_remove_mock.assert_called_with(
+            get_absolute_file_path(user_picture_path)
+        )

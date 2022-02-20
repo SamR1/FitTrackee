@@ -1,21 +1,25 @@
+import os
 import re
-from typing import Tuple
+from typing import Dict, Tuple
 
+import requests
 from flask import current_app
 
 from fittrackee import db
 from fittrackee.federation.exceptions import RemoteActorException
-from fittrackee.federation.models import Actor, Domain
+from fittrackee.federation.models import MEDIA_TYPES, Actor, Domain
 from fittrackee.federation.remote_actor import (
     fetch_remote_actor,
     get_remote_actor,
 )
+from fittrackee.files import get_absolute_file_path
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.models import User
 
 from .exceptions import ActorNotFoundException, DomainNotFoundException
 
 FULL_NAME_REGEX = r'^@?([\w_\-\.]+)@([\w_\-\.]+\.[a-z]{2,})$'
+MEDIA_EXTENSIONS = {value: key for (key, value) in MEDIA_TYPES.items()}
 
 
 def get_username_and_domain(full_name: str) -> Tuple:
@@ -23,6 +27,41 @@ def get_username_and_domain(full_name: str) -> Tuple:
     if result is None:
         return None, None
     return result.groups()  # type: ignore
+
+
+def store_or_delete_user_picture(
+    remote_actor_object: Dict, user: User
+) -> None:
+    if remote_actor_object.get('icon', {}).get('type') == 'Image':
+        media_type = remote_actor_object['icon'].get('mediaType', '')
+        file_extension = MEDIA_EXTENSIONS.get(media_type)
+        if not file_extension:
+            return
+
+        picture_url = remote_actor_object['icon']['url']
+        response = requests.get(picture_url)
+        if response.status_code >= 400:
+            return
+
+        dirpath = os.path.join(
+            current_app.config['UPLOAD_FOLDER'], 'pictures', str(user.id)
+        )
+        if not os.path.exists(dirpath):
+            os.makedirs(dirpath)
+        filename = f'{user.username}.{file_extension}'
+        absolute_picture_path = os.path.join(dirpath, filename)
+        relative_picture_path = os.path.join(
+            'pictures', str(user.id), filename
+        )
+        with open(absolute_picture_path, 'wb') as file:
+            file.write(response.content)
+        user.picture = relative_picture_path
+
+    elif user.picture:
+        picture_path = get_absolute_file_path(user.picture)
+        if os.path.isfile(picture_path):
+            os.remove(picture_path)
+        user.picture = None
 
 
 def create_remote_user(username: str, domain: str) -> User:
@@ -90,6 +129,7 @@ def create_remote_user(username: str, domain: str) -> User:
     actor.user.manually_approves_followers = remote_actor_object[
         'manuallyApprovesFollowers'
     ]
+    store_or_delete_user_picture(remote_actor_object, actor.user)
     db.session.commit()
     return actor.user
 

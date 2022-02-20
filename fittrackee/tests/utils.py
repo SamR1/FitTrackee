@@ -50,6 +50,7 @@ def get_remote_user_object(
     domain: str,
     profile_url: Optional[str] = None,
     manually_approves_followers: bool = True,
+    with_icon: bool = False,
 ) -> Dict:
     user_url = f'{domain}/users/{preferred_username}'
     user_object = {
@@ -75,6 +76,12 @@ def get_remote_user_object(
     }
     if profile_url:
         user_object['url'] = profile_url
+    if with_icon:
+        user_object['icon'] = {
+            'type': 'Image',
+            'mediaType': 'image/jpeg',
+            'url': 'https://exemple.com/916cac70b7c694a4.jpg',
+        }
     return user_object
 
 
@@ -99,13 +106,14 @@ class RandomActor:
     def profile_url(self) -> str:
         return f'{self.domain}/{self.preferred_username}'
 
-    def get_remote_user_object(self) -> Dict:
+    def get_remote_user_object(self, with_icon: bool = False) -> Dict:
         return get_remote_user_object(
             self.name,
             self.preferred_username,
             self.domain,
             self.profile_url,
             self.manually_approves_followers,
+            with_icon,
         )
 
     def get_webfinger(self) -> Dict:
