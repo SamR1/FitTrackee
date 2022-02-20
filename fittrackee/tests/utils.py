@@ -7,7 +7,9 @@ from typing import Dict, Optional, Union
 
 from requests import Response
 
+from fittrackee import db
 from fittrackee.federation.signature import VALID_DATE_FORMAT
+from fittrackee.users.models import FollowRequest, User
 
 
 def random_string(
@@ -131,3 +133,12 @@ def random_actor_url(
         else random_domain_with_scheme()
     )
     return f'{remote_domain}/users/{username}'
+
+
+def generate_follow_request(follower: User, followed: User) -> FollowRequest:
+    follow_request = FollowRequest(
+        follower_user_id=follower.id, followed_user_id=followed.id
+    )
+    db.session.add(follow_request)
+    db.session.commit()
+    return follow_request

@@ -27,26 +27,26 @@ class TestFederationUser:
         assert 'user does not exist' in data['message']
 
     def test_it_returns_json_resource_descriptor_as_content_type(
-        self, app_with_federation: Flask, actor_1: Actor
+        self, app_with_federation: Flask, user_1: User
     ) -> None:
         client = app_with_federation.test_client()
         response = client.get(
-            f'/federation/user/{actor_1.preferred_username}',
+            f'/federation/user/{user_1.actor.preferred_username}',
         )
 
         assert response.status_code == 200
         assert response.content_type == 'application/jrd+json; charset=utf-8'
 
     def test_it_returns_actor(
-        self, app_with_federation: Flask, actor_1: Actor
+        self, app_with_federation: Flask, user_1: User
     ) -> None:
         client = app_with_federation.test_client()
         response = client.get(
-            f'/federation/user/{actor_1.preferred_username}',
+            f'/federation/user/{user_1.actor.preferred_username}',
         )
 
         data = json.loads(response.data.decode())
-        assert data == actor_1.serialize()
+        assert data == user_1.actor.serialize()
 
     def test_it_returns_error_if_federation_is_disabled(
         self, app: Flask, app_actor: Actor
@@ -103,10 +103,10 @@ class TestRemoteUser(ApiTestCaseMixin):
         assert 'provide a valid auth token' in data['message']
 
     def test_it_returns_400_if_remote_user_url_is_missing(
-        self, app_with_federation: Flask, actor_1: Actor
+        self, app_with_federation: Flask, user_1: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation, actor_1.user.email
+            app_with_federation, user_1.email
         )
         response = client.post(
             '/federation/remote-user',
@@ -125,11 +125,11 @@ class TestRemoteUser(ApiTestCaseMixin):
     def test_it_returns_error_if_create_remote_user_returns_error(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
+        user_1: User,
         random_actor: RandomActor,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation, actor_1.user.email
+            app_with_federation, user_1.email
         )
         with patch(
             'fittrackee.federation.utils_user.get_remote_actor'
@@ -153,12 +153,12 @@ class TestRemoteUser(ApiTestCaseMixin):
     def test_it_creates_remote_actor_if_actor_and_domain_dont_exist(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
+        user_1: User,
         random_actor: RandomActor,
     ) -> None:
         remote_user_object = random_actor.get_remote_user_object()
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation, actor_1.user.email
+            app_with_federation, user_1.email
         )
         with patch(
             'fittrackee.federation.utils_user.get_remote_actor'
@@ -209,8 +209,9 @@ class TestLocalActorFollowers(ApiTestCaseMixin):
         assert 'user does not exist' in data['message']
 
     def test_it_returns_ordered_collection_without_follower(
-        self, app_with_federation: Flask, actor_1: Actor
+        self, app_with_federation: Flask, user_1: User
     ) -> None:
+        actor_1 = user_1.actor
         client = app_with_federation.test_client()
 
         response = client.get(
@@ -228,8 +229,9 @@ class TestLocalActorFollowers(ApiTestCaseMixin):
         }
 
     def test_it_returns_first_page_without_followers(
-        self, app_with_federation: Flask, actor_1: Actor
+        self, app_with_federation: Flask, user_1: User
     ) -> None:
+        actor_1 = user_1.actor
         client = app_with_federation.test_client()
 
         response = client.get(
@@ -248,8 +250,9 @@ class TestLocalActorFollowers(ApiTestCaseMixin):
         }
 
     def test_it_returns_error_if_page_is_invalid(
-        self, app_with_federation: Flask, actor_1: Actor
+        self, app_with_federation: Flask, user_1: User
     ) -> None:
+        actor_1 = user_1.actor
         client = app_with_federation.test_client()
 
         response = client.get(
@@ -264,8 +267,9 @@ class TestLocalActorFollowers(ApiTestCaseMixin):
         }
 
     def test_it_does_not_return_error_when_page_that_does_not_return_followers(
-        self, app_with_federation: Flask, actor_1: Actor
+        self, app_with_federation: Flask, user_1: User
     ) -> None:
+        actor_1 = user_1.actor
         client = app_with_federation.test_client()
 
         response = client.get(
@@ -286,14 +290,15 @@ class TestLocalActorFollowers(ApiTestCaseMixin):
     def test_it_returns_first_page_with_followers(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
-        actor_2: Actor,
-        actor_3: Actor,
-        follow_request_from_user_2_to_user_1_with_federation: FollowRequest,
-        follow_request_from_user_3_to_user_1_with_federation: FollowRequest,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+        follow_request_from_user_3_to_user_1: FollowRequest,
     ) -> None:
-        actor_1.user.approves_follow_request_from(actor_2.user)
-        actor_1.user.approves_follow_request_from(actor_3.user)
+        actor_1 = user_1.actor
+        user_1.approves_follow_request_from(user_2)
+        user_1.approves_follow_request_from(user_3)
         client = app_with_federation.test_client()
 
         response = client.get(
@@ -308,21 +313,25 @@ class TestLocalActorFollowers(ApiTestCaseMixin):
             'type': 'OrderedCollectionPage',
             'totalItems': 2,
             'partOf': actor_1.followers_url,
-            'orderedItems': [actor_3.activitypub_id, actor_2.activitypub_id],
+            'orderedItems': [
+                user_3.actor.activitypub_id,
+                user_2.actor.activitypub_id,
+            ],
         }
 
     @patch('fittrackee.federation.federation.USERS_PER_PAGE', 1)
     def test_it_returns_first_page_with_next_page_link(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
-        actor_2: Actor,
-        actor_3: Actor,
-        follow_request_from_user_2_to_user_1_with_federation: FollowRequest,
-        follow_request_from_user_3_to_user_1_with_federation: FollowRequest,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+        follow_request_from_user_3_to_user_1: FollowRequest,
     ) -> None:
-        actor_1.user.approves_follow_request_from(actor_2.user)
-        actor_1.user.approves_follow_request_from(actor_3.user)
+        actor_1 = user_1.actor
+        user_1.approves_follow_request_from(user_2)
+        user_1.approves_follow_request_from(user_3)
         client = app_with_federation.test_client()
 
         response = client.get(
@@ -339,7 +348,7 @@ class TestLocalActorFollowers(ApiTestCaseMixin):
             'partOf': actor_1.followers_url,
             'next': f'{actor_1.followers_url}?page=2',
             'orderedItems': [
-                actor_3.activitypub_id,
+                user_3.actor.activitypub_id,
             ],
         }
 
@@ -347,14 +356,15 @@ class TestLocalActorFollowers(ApiTestCaseMixin):
     def test_it_returns_next_page(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
-        actor_2: Actor,
-        actor_3: Actor,
-        follow_request_from_user_2_to_user_1_with_federation: FollowRequest,
-        follow_request_from_user_3_to_user_1_with_federation: FollowRequest,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+        follow_request_from_user_3_to_user_1: FollowRequest,
     ) -> None:
-        actor_1.user.approves_follow_request_from(actor_2.user)
-        actor_1.user.approves_follow_request_from(actor_3.user)
+        actor_1 = user_1.actor
+        user_1.approves_follow_request_from(user_2)
+        user_1.approves_follow_request_from(user_3)
         client = app_with_federation.test_client()
 
         response = client.get(
@@ -371,7 +381,7 @@ class TestLocalActorFollowers(ApiTestCaseMixin):
             'partOf': actor_1.followers_url,
             'prev': f'{actor_1.followers_url}?page=1',
             'orderedItems': [
-                actor_2.activitypub_id,
+                user_2.actor.activitypub_id,
             ],
         }
 
@@ -409,8 +419,9 @@ class TestLocalActorFollowing(ApiTestCaseMixin):
         assert 'user does not exist' in data['message']
 
     def test_it_returns_ordered_collection_without_following(
-        self, app_with_federation: Flask, actor_1: Actor
+        self, app_with_federation: Flask, user_1: User
     ) -> None:
+        actor_1 = user_1.actor
         client = app_with_federation.test_client()
 
         response = client.get(
@@ -428,8 +439,9 @@ class TestLocalActorFollowing(ApiTestCaseMixin):
         }
 
     def test_it_returns_first_page_without_following(
-        self, app_with_federation: Flask, actor_1: Actor
+        self, app_with_federation: Flask, user_1: User
     ) -> None:
+        actor_1 = user_1.actor
         client = app_with_federation.test_client()
 
         response = client.get(
@@ -448,8 +460,9 @@ class TestLocalActorFollowing(ApiTestCaseMixin):
         }
 
     def test_it_returns_error_if_page_is_invalid(
-        self, app_with_federation: Flask, actor_1: Actor
+        self, app_with_federation: Flask, user_1: User
     ) -> None:
+        actor_1 = user_1.actor
         client = app_with_federation.test_client()
 
         response = client.get(
@@ -464,8 +477,9 @@ class TestLocalActorFollowing(ApiTestCaseMixin):
         }
 
     def test_it_does_not_return_error_when_page_that_does_not_return_following(
-        self, app_with_federation: Flask, actor_1: Actor
+        self, app_with_federation: Flask, user_1: User
     ) -> None:
+        actor_1 = user_1.actor
         client = app_with_federation.test_client()
 
         response = client.get(
@@ -486,14 +500,15 @@ class TestLocalActorFollowing(ApiTestCaseMixin):
     def test_it_returns_first_page_with_following_users(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
-        actor_2: Actor,
-        actor_3: Actor,
-        follow_request_from_user_3_to_user_2_with_federation: FollowRequest,
-        follow_request_from_user_3_to_user_1_with_federation: FollowRequest,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        follow_request_from_user_3_to_user_2: FollowRequest,
+        follow_request_from_user_3_to_user_1: FollowRequest,
     ) -> None:
-        actor_1.user.approves_follow_request_from(actor_3.user)
-        actor_2.user.approves_follow_request_from(actor_3.user)
+        actor_3 = user_3.actor
+        user_1.approves_follow_request_from(user_3)
+        user_2.approves_follow_request_from(user_3)
         client = app_with_federation.test_client()
 
         response = client.get(
@@ -508,21 +523,25 @@ class TestLocalActorFollowing(ApiTestCaseMixin):
             'type': 'OrderedCollectionPage',
             'totalItems': 2,
             'partOf': actor_3.following_url,
-            'orderedItems': [actor_2.activitypub_id, actor_1.activitypub_id],
+            'orderedItems': [
+                user_2.actor.activitypub_id,
+                user_1.actor.activitypub_id,
+            ],
         }
 
     @patch('fittrackee.federation.federation.USERS_PER_PAGE', 1)
     def test_it_returns_first_page_with_next_page_link(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
-        actor_2: Actor,
-        actor_3: Actor,
-        follow_request_from_user_3_to_user_2_with_federation: FollowRequest,
-        follow_request_from_user_3_to_user_1_with_federation: FollowRequest,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        follow_request_from_user_3_to_user_2: FollowRequest,
+        follow_request_from_user_3_to_user_1: FollowRequest,
     ) -> None:
-        actor_1.user.approves_follow_request_from(actor_3.user)
-        actor_2.user.approves_follow_request_from(actor_3.user)
+        actor_3 = user_3.actor
+        user_1.approves_follow_request_from(user_3)
+        user_2.approves_follow_request_from(user_3)
         client = app_with_federation.test_client()
 
         response = client.get(
@@ -539,7 +558,7 @@ class TestLocalActorFollowing(ApiTestCaseMixin):
             'partOf': actor_3.following_url,
             'next': f'{actor_3.following_url}?page=2',
             'orderedItems': [
-                actor_2.activitypub_id,
+                user_2.actor.activitypub_id,
             ],
         }
 
@@ -547,14 +566,15 @@ class TestLocalActorFollowing(ApiTestCaseMixin):
     def test_it_returns_next_page(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
-        actor_2: Actor,
-        actor_3: Actor,
-        follow_request_from_user_3_to_user_2_with_federation: FollowRequest,
-        follow_request_from_user_3_to_user_1_with_federation: FollowRequest,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        follow_request_from_user_3_to_user_2: FollowRequest,
+        follow_request_from_user_3_to_user_1: FollowRequest,
     ) -> None:
-        actor_1.user.approves_follow_request_from(actor_3.user)
-        actor_2.user.approves_follow_request_from(actor_3.user)
+        actor_3 = user_3.actor
+        user_1.approves_follow_request_from(user_3)
+        user_2.approves_follow_request_from(user_3)
         client = app_with_federation.test_client()
 
         response = client.get(
@@ -571,6 +591,6 @@ class TestLocalActorFollowing(ApiTestCaseMixin):
             'partOf': actor_3.following_url,
             'prev': f'{actor_3.following_url}?page=1',
             'orderedItems': [
-                actor_1.activitypub_id,
+                user_1.actor.activitypub_id,
             ],
         }

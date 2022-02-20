@@ -8,7 +8,7 @@ from flask import Flask
 from freezegun import freeze_time
 
 from fittrackee.federation.inbox import send_to_remote_user_inbox
-from fittrackee.federation.models import Actor
+from fittrackee.users.models import User
 
 from ...test_case_mixins import BaseTestMixin
 from ...utils import generate_response, get_date_string, random_string
@@ -24,9 +24,11 @@ class TestSendToRemoteInbox(BaseTestMixin):
         generate_signature_header_mock: Mock,
         generate_digest_mock: Mock,
         app_with_federation: Flask,
-        actor_1: Actor,
-        remote_actor: Actor,
+        user_1: User,
+        remote_user: User,
     ) -> None:
+        actor_1 = user_1.actor
+        remote_actor = remote_user.actor
         now = datetime.utcnow()
         parsed_inbox_url = urlparse(remote_actor.inbox_url)
         requests_mock.post.return_value = generate_response(status_code=200)
@@ -57,9 +59,11 @@ class TestSendToRemoteInbox(BaseTestMixin):
         generate_signature_header_mock: Mock,
         generate_digest_mock: Mock,
         app_with_federation: Flask,
-        actor_1: Actor,
-        remote_actor: Actor,
+        user_1: User,
+        remote_user: User,
     ) -> None:
+        actor_1 = user_1.actor
+        remote_actor = remote_user.actor
         activity = {'foo': 'bar'}
         now = datetime.utcnow()
         parsed_inbox_url = urlparse(remote_actor.inbox_url)
@@ -95,10 +99,12 @@ class TestSendToRemoteInbox(BaseTestMixin):
         requests_mock: Mock,
         generate_signature_header_mock: Mock,
         app_with_federation: Flask,
-        actor_1: Actor,
-        remote_actor: Actor,
+        user_1: User,
+        remote_user: User,
         caplog: LogCaptureFixture,
     ) -> None:
+        actor_1 = user_1.actor
+        remote_actor = remote_user.actor
         status_code = 404
         content = 'error'
         requests_mock.post.return_value = generate_response(

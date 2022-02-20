@@ -4,8 +4,8 @@ from unittest.mock import Mock, patch
 
 from flask import Flask
 
-from fittrackee.federation.models import Actor, Domain
-from fittrackee.users.models import FollowRequest
+from fittrackee.federation.models import Domain
+from fittrackee.users.models import FollowRequest, User
 
 from ...test_case_mixins import ApiTestCaseMixin, UserInboxTestMixin
 from ...utils import RandomActor, random_string
@@ -17,10 +17,10 @@ class TestFollowWithFederation(ApiTestCaseMixin):
     def test_it_raises_error_if_target_user_does_not_exist(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
+        user_1: User,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation, actor_1.user.email
+            app_with_federation, user_1.email
         )
 
         response = client.post(
@@ -37,18 +37,18 @@ class TestFollowWithFederation(ApiTestCaseMixin):
     def test_it_raises_error_if_target_user_has_already_rejected_request(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
-        actor_2: Actor,
+        user_1: User,
+        user_2: User,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         follow_request_from_user_1_to_user_2.is_approved = False
         follow_request_from_user_1_to_user_2.updated_at = datetime.now()
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation, actor_1.user.email
+            app_with_federation, user_1.email
         )
 
         response = client.post(
-            f'/api/users/{actor_2.preferred_username}/follow',
+            f'/api/users/{user_2.actor.preferred_username}/follow',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -59,14 +59,14 @@ class TestFollowWithFederation(ApiTestCaseMixin):
         assert data['message'] == 'you do not have permissions'
 
     def test_it_creates_follow_request(
-        self, app_with_federation: Flask, actor_1: Actor, actor_2: Actor
+        self, app_with_federation: Flask, user_1: User, user_2: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation, actor_1.user.email
+            app_with_federation, user_1.email
         )
 
         response = client.post(
-            f'/api/users/{actor_2.preferred_username}/follow',
+            f'/api/users/{user_2.actor.preferred_username}/follow',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -76,23 +76,23 @@ class TestFollowWithFederation(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert (
             data['message']
-            == f"Follow request to user '{actor_2.preferred_username}' "
+            == f"Follow request to user '{user_2.actor.preferred_username}' "
             f"is sent."
         )
 
     def test_it_returns_success_if_follow_request_already_exists(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
-        actor_2: Actor,
+        user_1: User,
+        user_2: User,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation, actor_1.user.email
+            app_with_federation, user_1.email
         )
 
         response = client.post(
-            f'/api/users/{actor_2.preferred_username}/follow',
+            f'/api/users/{user_2.actor.preferred_username}/follow',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -102,7 +102,7 @@ class TestFollowWithFederation(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert (
             data['message']
-            == f"Follow request to user '{actor_2.preferred_username}' "
+            == f"Follow request to user '{user_2.actor.preferred_username}' "
             f"is sent."
         )
 
@@ -111,15 +111,15 @@ class TestFollowWithFederation(ApiTestCaseMixin):
         self,
         send_to_users_inbox_mock: Mock,
         app_with_federation: Flask,
-        actor_1: Actor,
-        actor_2: Actor,
+        user_1: User,
+        user_2: User,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation, actor_1.user.email
+            app_with_federation, user_1.email
         )
 
         client.post(
-            f'/api/users/{actor_2.preferred_username}/follow',
+            f'/api/users/{user_2.actor.preferred_username}/follow',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -133,11 +133,11 @@ class TestRemoteFollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
     def test_it_raise_error_if_remote_actor_does_not_exist(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
+        user_1: User,
         random_actor: RandomActor,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation, actor_1.user.email
+            app_with_federation, user_1.email
         )
 
         response = client.post(
@@ -154,12 +154,12 @@ class TestRemoteFollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
     def test_it_raise_error_if_remote_actor_does_not_exist_for_existing_remote_domain(  # noqa
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
+        user_1: User,
         remote_domain: Domain,
         random_actor: RandomActor,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation, actor_1.user.email
+            app_with_federation, user_1.email
         )
 
         response = client.post(
@@ -178,11 +178,12 @@ class TestRemoteFollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
         self,
         send_to_users_inbox_mock: Mock,
         app_with_federation: Flask,
-        actor_1: Actor,
-        remote_actor: Actor,
+        user_1: User,
+        remote_user: User,
     ) -> None:
+        remote_actor = remote_user.actor
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation, actor_1.user.email
+            app_with_federation, user_1.email
         )
 
         response = client.post(
@@ -202,12 +203,13 @@ class TestRemoteFollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
     def test_it_returns_success_if_follow_request_already_exists(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
-        remote_actor: Actor,
+        user_1: User,
+        remote_user: User,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
+        remote_actor = remote_user.actor
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation, actor_1.user.email
+            app_with_federation, user_1.email
         )
 
         response = client.post(
@@ -229,11 +231,12 @@ class TestRemoteFollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
         self,
         send_to_users_inbox_mock: Mock,
         app_with_federation: Flask,
-        actor_1: Actor,
-        remote_actor: Actor,
+        user_1: User,
+        remote_user: User,
     ) -> None:
+        remote_actor = remote_user.actor
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_federation, actor_1.user.email
+            app_with_federation, user_1.email
         )
 
         client.post(
@@ -243,12 +246,12 @@ class TestRemoteFollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
         )
 
         follow_request = FollowRequest.query.filter_by(
-            follower_user_id=actor_1.user.id,
+            follower_user_id=user_1.id,
             followed_user_id=remote_actor.user.id,
         ).first()
         self.assert_send_to_users_inbox_called_once(
             send_to_users_inbox_mock,
-            local_actor=actor_1,
+            local_actor=user_1.actor,
             remote_actor=remote_actor,
             base_object=follow_request,
         )

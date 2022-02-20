@@ -18,45 +18,6 @@ def app_actor(app: Flask) -> Actor:
 
 
 @pytest.fixture()
-def actor_1(user_1: User, app_with_federation: Flask) -> Actor:
-    domain = Domain.query.filter_by(
-        name=app_with_federation.config['AP_DOMAIN']
-    ).first()
-    actor = Actor(preferred_username=user_1.username, domain_id=domain.id)
-    db.session.add(actor)
-    db.session.flush()
-    user_1.actor_id = actor.id
-    db.session.commit()
-    return actor
-
-
-@pytest.fixture()
-def actor_2(user_2: User, app_with_federation: Flask) -> Actor:
-    domain = Domain.query.filter_by(
-        name=app_with_federation.config['AP_DOMAIN']
-    ).first()
-    actor = Actor(preferred_username=user_2.username, domain_id=domain.id)
-    db.session.add(actor)
-    db.session.flush()
-    user_2.actor_id = actor.id
-    db.session.commit()
-    return actor
-
-
-@pytest.fixture()
-def actor_3(user_3: User, app_with_federation: Flask) -> Actor:
-    domain = Domain.query.filter_by(
-        name=app_with_federation.config['AP_DOMAIN']
-    ).first()
-    actor = Actor(preferred_username=user_3.username, domain_id=domain.id)
-    db.session.add(actor)
-    db.session.flush()
-    user_3.actor_id = actor.id
-    db.session.commit()
-    return actor
-
-
-@pytest.fixture()
 def remote_domain(app_with_federation: Flask) -> Domain:
     remote_domain = Domain(name=random_domain())
     db.session.add(remote_domain)
@@ -64,55 +25,50 @@ def remote_domain(app_with_federation: Flask) -> Domain:
     return remote_domain
 
 
-@pytest.fixture()
-def remote_actor(
-    user_2: User,
-    app_with_federation: Flask,
-    remote_domain: Domain,
-) -> Actor:
+def generate_remote_user(
+    remote_domain: Domain, without_profile_page: bool = False
+) -> User:
     domain = f'https://{remote_domain.name}'
-    remote_user_object = get_remote_user_object(
-        username=user_2.username,
-        preferred_username=user_2.username,
-        domain=domain,
-        profile_url=f'{domain}/{user_2.username}',
-    )
+    user_name = 'test'
+    if without_profile_page:
+        remote_user_object = get_remote_user_object(
+            username='Test',
+            preferred_username=user_name,
+            domain=domain,
+        )
+    else:
+        remote_user_object = get_remote_user_object(
+            username='Test',
+            preferred_username=user_name,
+            domain=domain,
+            profile_url=f'{domain}/{user_name}',
+        )
     actor = Actor(
-        preferred_username=user_2.username,
+        preferred_username=user_name,
         domain_id=remote_domain.id,
         remote_user_data=remote_user_object,
     )
     db.session.add(actor)
     db.session.flush()
-    user_2.name = user_2.username.capitalize()
-    user_2.actor_id = actor.id
+    user = User(
+        username=user_name,
+        email=None,
+        password=None,
+    )
+    db.session.add(user)
+    user.actor_id = actor.id
     db.session.commit()
-    return actor
+    return user
 
 
 @pytest.fixture()
-def remote_actor_without_profile_page(
-    user_2: User,
-    app_with_federation: Flask,
-    remote_domain: Domain,
-) -> Actor:
-    domain = f'https://{remote_domain.name}'
-    remote_user_object = get_remote_user_object(
-        username=user_2.username,
-        preferred_username=user_2.username,
-        domain=domain,
-    )
-    actor = Actor(
-        preferred_username=user_2.username,
-        domain_id=remote_domain.id,
-        remote_user_data=remote_user_object,
-    )
-    db.session.add(actor)
-    db.session.flush()
-    user_2.name = user_2.username.capitalize()
-    user_2.actor_id = actor.id
-    db.session.commit()
-    return actor
+def remote_user(remote_domain: Domain) -> User:
+    return generate_remote_user(remote_domain)
+
+
+@pytest.fixture()
+def remote_user_without_profile_page(remote_domain: Domain) -> User:
+    return generate_remote_user(remote_domain, without_profile_page=True)
 
 
 @pytest.fixture()

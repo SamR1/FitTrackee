@@ -17,7 +17,7 @@ from fittrackee.users.exceptions import (
     FollowRequestAlreadyRejectedError,
     NotExistingFollowRequestError,
 )
-from fittrackee.users.models import FollowRequest
+from fittrackee.users.models import FollowRequest, User
 
 from ...utils import RandomActor, random_string
 
@@ -109,10 +109,10 @@ class FollowRequestActivitiesTestCase:
 
 class TestFollowActivity(FollowRequestActivitiesTestCase):
     def test_it_raises_error_if_followed_actor_does_not_exist(
-        self, app_with_federation: Flask, remote_actor: Actor
+        self, app_with_federation: Flask, remote_user: User
     ) -> None:
         follow_activity = self.generate_follow_activity(
-            follower_actor_id=remote_actor.activitypub_id
+            follower_actor_id=remote_user.actor.activitypub_id
         )
         activity = get_activity_instance({'type': follow_activity['type']})(
             activity_dict=follow_activity
@@ -127,12 +127,12 @@ class TestFollowActivity(FollowRequestActivitiesTestCase):
     def test_it_creates_actor_if_remote_actor_does_not_exist(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
+        user_1: User,
         random_actor: RandomActor,
     ) -> None:
         follow_activity = self.generate_follow_activity(
             follower_actor_id=random_actor.activitypub_id,
-            followed_actor=actor_1,
+            followed_actor=user_1.actor,
         )
         activity = get_activity_instance({'type': follow_activity['type']})(
             activity_dict=follow_activity
@@ -153,14 +153,14 @@ class TestFollowActivity(FollowRequestActivitiesTestCase):
     def test_it_raises_error_if_follow_request_already_rejected(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
-        remote_actor: Actor,
+        user_1: User,
+        remote_user: User,
         follow_request_from_remote_user_to_user_1: FollowRequest,
     ) -> None:
-        actor_1.user.rejects_follow_request_from(remote_actor.user)
+        user_1.rejects_follow_request_from(remote_user)
         follow_activity = self.generate_follow_activity(
-            follower_actor_id=remote_actor.activitypub_id,
-            followed_actor=actor_1,
+            follower_actor_id=remote_user.actor.activitypub_id,
+            followed_actor=user_1.actor,
         )
         activity = get_activity_instance({'type': follow_activity['type']})(
             activity_dict=follow_activity
@@ -170,11 +170,14 @@ class TestFollowActivity(FollowRequestActivitiesTestCase):
             activity.process_activity()
 
     def test_it_creates_follow_request(
-        self, app_with_federation: Flask, actor_1: Actor, remote_actor: Actor
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user: User,
     ) -> None:
         follow_activity = self.generate_follow_activity(
-            follower_actor_id=remote_actor.activitypub_id,
-            followed_actor=actor_1,
+            follower_actor_id=remote_user.actor.activitypub_id,
+            followed_actor=user_1.actor,
         )
         activity = get_activity_instance({'type': follow_activity['type']})(
             activity_dict=follow_activity
@@ -183,21 +186,21 @@ class TestFollowActivity(FollowRequestActivitiesTestCase):
         activity.process_activity()
 
         follow_request = FollowRequest.query.filter_by(
-            follower_user_id=remote_actor.user.id,
-            followed_user_id=actor_1.user.id,
+            follower_user_id=remote_user.id,
+            followed_user_id=user_1.id,
         ).first()
         assert follow_request is not None
 
     def test_it_does_not_raise_error_if_pending_follow_request_already_exist(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
-        remote_actor: Actor,
+        user_1: User,
+        remote_user: User,
         follow_request_from_remote_user_to_user_1: FollowRequest,
     ) -> None:
         follow_activity = self.generate_follow_activity(
-            follower_actor_id=remote_actor.activitypub_id,
-            followed_actor=actor_1,
+            follower_actor_id=remote_user.actor.activitypub_id,
+            followed_actor=remote_user.actor,
         )
         activity = get_activity_instance({'type': follow_activity['type']})(
             activity_dict=follow_activity
@@ -206,18 +209,18 @@ class TestFollowActivity(FollowRequestActivitiesTestCase):
         activity.process_activity()
 
         follow_request = FollowRequest.query.filter_by(
-            follower_user_id=remote_actor.user.id,
-            followed_user_id=actor_1.user.id,
+            follower_user_id=remote_user.id,
+            followed_user_id=user_1.id,
         ).first()
         assert follow_request.updated_at is None
 
 
 class TestAcceptActivity(FollowRequestActivitiesTestCase):
     def test_it_raises_error_if_follower_actor_does_not_exist(
-        self, app_with_federation: Flask, remote_actor: Actor
+        self, app_with_federation: Flask, remote_user: User
     ) -> None:
         accept_activity = self.generate_accept_activity(
-            followed_actor=remote_actor
+            followed_actor=remote_user.actor
         )
         activity = get_activity_instance({'type': accept_activity['type']})(
             activity_dict=accept_activity
@@ -230,9 +233,11 @@ class TestAcceptActivity(FollowRequestActivitiesTestCase):
             activity.process_activity()
 
     def test_it_raises_error_if_followed_actor_does_not_exist(
-        self, app_with_federation: Flask, actor_1: Actor
+        self, app_with_federation: Flask, user_1: User
     ) -> None:
-        accept_activity = self.generate_accept_activity(follower_actor=actor_1)
+        accept_activity = self.generate_accept_activity(
+            follower_actor=user_1.actor
+        )
         activity = get_activity_instance({'type': accept_activity['type']})(
             activity_dict=accept_activity
         )
@@ -246,11 +251,11 @@ class TestAcceptActivity(FollowRequestActivitiesTestCase):
     def test_it_raises_error_if_follow_request_does_not_exist(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
-        remote_actor: Actor,
+        user_1: User,
+        remote_user: User,
     ) -> None:
         accept_activity = self.generate_accept_activity(
-            follower_actor=actor_1, followed_actor=remote_actor
+            follower_actor=user_1.actor, followed_actor=remote_user.actor
         )
         activity = get_activity_instance({'type': accept_activity['type']})(
             activity_dict=accept_activity
@@ -262,13 +267,13 @@ class TestAcceptActivity(FollowRequestActivitiesTestCase):
     def test_it_raises_error_if_follow_request_already_rejected(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
-        remote_actor: Actor,
-        follow_request_from_user_1_to_remote_actor: FollowRequest,
+        user_1: User,
+        remote_user: User,
+        follow_request_from_user_1_to_remote_user: FollowRequest,
     ) -> None:
-        remote_actor.user.rejects_follow_request_from(actor_1.user)
+        remote_user.rejects_follow_request_from(user_1)
         accept_activity = self.generate_accept_activity(
-            follower_actor=actor_1, followed_actor=remote_actor
+            followed_actor=remote_user.actor, follower_actor=user_1.actor
         )
         activity = get_activity_instance({'type': accept_activity['type']})(
             activity_dict=accept_activity
@@ -280,12 +285,12 @@ class TestAcceptActivity(FollowRequestActivitiesTestCase):
     def test_it_accepts_follow_request(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
-        remote_actor: Actor,
-        follow_request_from_user_1_to_remote_actor: FollowRequest,
+        user_1: User,
+        remote_user: User,
+        follow_request_from_user_1_to_remote_user: FollowRequest,
     ) -> None:
         accept_activity = self.generate_accept_activity(
-            follower_actor=actor_1, followed_actor=remote_actor
+            follower_actor=user_1.actor, followed_actor=remote_user.actor
         )
         activity = get_activity_instance({'type': accept_activity['type']})(
             activity_dict=accept_activity
@@ -294,8 +299,8 @@ class TestAcceptActivity(FollowRequestActivitiesTestCase):
         activity.process_activity()
 
         follow_request = FollowRequest.query.filter_by(
-            follower_user_id=actor_1.user.id,
-            followed_user_id=remote_actor.user.id,
+            follower_user_id=user_1.id,
+            followed_user_id=remote_user.id,
         ).first()
 
         assert follow_request.is_approved
@@ -304,10 +309,10 @@ class TestAcceptActivity(FollowRequestActivitiesTestCase):
 
 class TestRejectActivity(FollowRequestActivitiesTestCase):
     def test_it_raises_error_if_follower_actor_does_not_exist(
-        self, app_with_federation: Flask, remote_actor: Actor
+        self, app_with_federation: Flask, remote_user: User
     ) -> None:
         accept_activity = self.generate_reject_activity(
-            followed_actor=remote_actor
+            followed_actor=remote_user.actor
         )
         activity = get_activity_instance({'type': accept_activity['type']})(
             activity_dict=accept_activity
@@ -320,9 +325,11 @@ class TestRejectActivity(FollowRequestActivitiesTestCase):
             activity.process_activity()
 
     def test_it_raises_error_if_followed_actor_does_not_exist(
-        self, app_with_federation: Flask, actor_1: Actor
+        self, app_with_federation: Flask, user_1: User
     ) -> None:
-        accept_activity = self.generate_reject_activity(follower_actor=actor_1)
+        accept_activity = self.generate_reject_activity(
+            follower_actor=user_1.actor
+        )
         activity = get_activity_instance({'type': accept_activity['type']})(
             activity_dict=accept_activity
         )
@@ -336,11 +343,11 @@ class TestRejectActivity(FollowRequestActivitiesTestCase):
     def test_it_raises_error_if_follow_request_does_not_exist(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
-        remote_actor: Actor,
+        user_1: User,
+        remote_user: User,
     ) -> None:
         accept_activity = self.generate_reject_activity(
-            follower_actor=actor_1, followed_actor=remote_actor
+            follower_actor=user_1.actor, followed_actor=remote_user.actor
         )
         activity = get_activity_instance({'type': accept_activity['type']})(
             activity_dict=accept_activity
@@ -352,13 +359,13 @@ class TestRejectActivity(FollowRequestActivitiesTestCase):
     def test_it_raises_error_if_follow_request_already_rejected(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
-        remote_actor: Actor,
-        follow_request_from_user_1_to_remote_actor: FollowRequest,
+        user_1: User,
+        remote_user: User,
+        follow_request_from_user_1_to_remote_user: FollowRequest,
     ) -> None:
-        remote_actor.user.rejects_follow_request_from(actor_1.user)
-        accept_activity = self.generate_reject_activity(
-            follower_actor=actor_1, followed_actor=remote_actor
+        remote_user.rejects_follow_request_from(user_1)
+        accept_activity = self.generate_accept_activity(
+            followed_actor=remote_user.actor, follower_actor=user_1.actor
         )
         activity = get_activity_instance({'type': accept_activity['type']})(
             activity_dict=accept_activity
@@ -370,12 +377,12 @@ class TestRejectActivity(FollowRequestActivitiesTestCase):
     def test_it_rejects_follow_request(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
-        remote_actor: Actor,
-        follow_request_from_user_1_to_remote_actor: FollowRequest,
+        user_1: User,
+        remote_user: User,
+        follow_request_from_user_1_to_remote_user: FollowRequest,
     ) -> None:
         accept_activity = self.generate_reject_activity(
-            follower_actor=actor_1, followed_actor=remote_actor
+            follower_actor=user_1.actor, followed_actor=remote_user.actor
         )
         activity = get_activity_instance({'type': accept_activity['type']})(
             activity_dict=accept_activity
@@ -384,8 +391,8 @@ class TestRejectActivity(FollowRequestActivitiesTestCase):
         activity.process_activity()
 
         follow_request = FollowRequest.query.filter_by(
-            follower_user_id=actor_1.user.id,
-            followed_user_id=remote_actor.user.id,
+            follower_user_id=user_1.id,
+            followed_user_id=remote_user.id,
         ).first()
 
         assert follow_request.is_approved is False

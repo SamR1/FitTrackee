@@ -9,6 +9,7 @@ from flask import Flask
 from fittrackee.federation.constants import AP_CTX
 from fittrackee.federation.models import Actor, Domain
 from fittrackee.federation.utils import get_ap_url
+from fittrackee.users.models import User
 
 from ...utils import random_actor_url
 
@@ -61,26 +62,28 @@ class TestActivityPubDomainModel:
 
 class TestActivityPubLocalPersonActorModel:
     def test_it_returns_string_representation(
-        self, app_with_federation: Flask, actor_1: Actor
+        self, app_with_federation: Flask, user_1: User
     ) -> None:
-        assert '<Actor \'test\'>' == str(actor_1)
+        assert '<Actor \'test\'>' == str(user_1.actor)
 
     def test_actor_is_local(
-        self, app_with_federation: Flask, actor_1: Actor
+        self, app_with_federation: Flask, user_1: User
     ) -> None:
-        assert not actor_1.is_remote
+        assert not user_1.actor.is_remote
 
     def test_it_returns_fullname(
-        self, app_with_federation: Flask, actor_1: Actor
+        self, app_with_federation: Flask, user_1: User
     ) -> None:
+        actor_1 = user_1.actor
         assert (
             actor_1.fullname
             == f'{actor_1.preferred_username}@{actor_1.domain.name}'
         )
 
     def test_it_returns_serialized_object(
-        self, app_with_federation: Flask, actor_1: Actor
+        self, app_with_federation: Flask, user_1: User
     ) -> None:
+        actor_1 = user_1.actor
         serialized_actor = actor_1.serialize()
         ap_url = app_with_federation.config['AP_DOMAIN']
         assert serialized_actor['@context'] == AP_CTX
@@ -120,8 +123,9 @@ class TestActivityPubLocalPersonActorModel:
         )
 
     def test_generated_key_is_valid(
-        self, app_with_federation: Flask, actor_1: Actor
+        self, app_with_federation: Flask, user_1: User
     ) -> None:
+        actor_1 = user_1.actor
         actor_1.generate_keys()
 
         signer = pkcs1_15.new(RSA.import_key(actor_1.private_key))
@@ -132,13 +136,14 @@ class TestActivityPubLocalPersonActorModel:
 
 class TestActivityPubRemotePersonActorModel:
     def test_actor_is_remote(
-        self, app_with_federation: Flask, remote_actor: Actor
+        self, app_with_federation: Flask, remote_user: User
     ) -> None:
-        assert remote_actor.is_remote
+        assert remote_user.actor.is_remote
 
     def test_it_returns_fullname(
-        self, app_with_federation: Flask, remote_actor: Actor
+        self, app_with_federation: Flask, remote_user: User
     ) -> None:
+        remote_actor = remote_user.actor
         assert (
             remote_actor.fullname
             == f'{remote_actor.preferred_username}@{remote_actor.domain.name}'
@@ -147,19 +152,18 @@ class TestActivityPubRemotePersonActorModel:
     def test_it_returns_ap_id_if_no_profile_url_provided(
         self,
         app_with_federation: Flask,
-        remote_actor_without_profile_page: Actor,
+        remote_user_without_profile_page: User,
     ) -> None:
-        assert (
-            remote_actor_without_profile_page.profile_url
-            == remote_actor_without_profile_page.activitypub_id
-        )
+        remote_actor = remote_user_without_profile_page.actor
+        assert remote_actor.profile_url == remote_actor.activitypub_id
 
     def test_it_returns_serialized_object(
         self,
         app_with_federation: Flask,
-        remote_actor: Actor,
+        remote_user: User,
         remote_domain: Domain,
     ) -> None:
+        remote_actor = remote_user.actor
         serialized_actor = remote_actor.serialize()
         remote_domain_url = f'https://{remote_domain.name}'
         user_url = random_actor_url(

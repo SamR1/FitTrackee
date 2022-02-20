@@ -10,6 +10,7 @@ from fittrackee.federation.exceptions import (
 )
 from fittrackee.federation.models import Actor, Domain
 from fittrackee.federation.utils_user import create_remote_user
+from fittrackee.users.models import User
 
 from ...utils import RandomActor, random_string
 
@@ -122,7 +123,6 @@ class TestCreateRemoteUser:
     def test_it_creates_remote_actor_if_actor_and_domain_dont_exist(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
         random_actor: RandomActor,
     ) -> None:
         remote_user_object = random_actor.get_remote_user_object()
@@ -139,8 +139,9 @@ class TestCreateRemoteUser:
             assert actor == expected_actor
 
     def test_it_returns_updated_remote_actor_if_remote_actor_exists(
-        self, app_with_federation: Flask, actor_1: Actor, remote_actor: Actor
+        self, app_with_federation: Flask, remote_user: User
     ) -> None:
+        remote_actor = remote_user.actor
         remote_user_object = remote_actor.serialize()
         updated_name = random_string()
         remote_user_object['name'] = updated_name
@@ -161,7 +162,6 @@ class TestCreateRemoteUser:
     def test_it_creates_several_remote_actors(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
         random_actor: RandomActor,
         random_actor_2: RandomActor,
     ) -> None:

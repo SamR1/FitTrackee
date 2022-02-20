@@ -4,9 +4,8 @@ import pytest
 from flask import Flask
 
 from fittrackee.federation.exceptions import SenderNotFoundException
-from fittrackee.federation.models import Actor
 from fittrackee.federation.tasks.user_inbox import send_to_users_inbox
-from fittrackee.users.models import FollowRequest
+from fittrackee.users.models import FollowRequest, User
 
 from ...utils import random_domain_with_scheme, random_string
 
@@ -15,19 +14,14 @@ class TestSendToUsersInbox:
     def test_it_raises_error_if_sender_does_not_exist(
         self,
         app_with_federation: Flask,
-        follow_request_from_user_1_to_user_2_with_federation: FollowRequest,
-        remote_actor: Actor,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+        remote_user: User,
     ) -> None:
         with pytest.raises(SenderNotFoundException):
             send_to_users_inbox(
                 sender_id=0,
-                activity=(
-                    # fmt: off
-                    follow_request_from_user_1_to_user_2_with_federation.
-                    get_activity()
-                    # fmt: on
-                ),
-                recipients=[remote_actor.inbox_url],
+                activity=follow_request_from_user_1_to_user_2.get_activity(),
+                recipients=[remote_user.actor.inbox_url],
             )
 
     @patch('fittrackee.federation.tasks.user_inbox.send_to_remote_user_inbox')
@@ -35,20 +29,20 @@ class TestSendToUsersInbox:
         self,
         send_to_remote_user_inbox_mock: Mock,
         app_with_federation: Flask,
-        actor_1: Actor,
-        remote_actor: Actor,
+        user_1: User,
+        remote_user: User,
     ) -> None:
         activity = {'foo': 'bar'}
         send_to_users_inbox(
-            sender_id=actor_1.id,
+            sender_id=user_1.actor.id,
             activity=activity,
-            recipients=[remote_actor.inbox_url],
+            recipients=[remote_user.actor.inbox_url],
         )
 
         send_to_remote_user_inbox_mock.assert_called_with(
-            sender=actor_1,
+            sender=user_1.actor,
             activity=activity,
-            recipient_inbox_url=remote_actor.inbox_url,
+            recipient_inbox_url=remote_user.actor.inbox_url,
         )
 
     @patch('fittrackee.federation.tasks.user_inbox.send_to_remote_user_inbox')
@@ -56,7 +50,7 @@ class TestSendToUsersInbox:
         self,
         send_to_remote_user_inbox_mock: Mock,
         app_with_federation: Flask,
-        actor_1: Actor,
+        user_1: User,
     ) -> None:
         nb_recipients = 3
         recipients = [
@@ -65,7 +59,7 @@ class TestSendToUsersInbox:
         ]
 
         send_to_users_inbox(
-            sender_id=actor_1.id,
+            sender_id=user_1.actor.id,
             activity={},
             recipients=recipients,
         )

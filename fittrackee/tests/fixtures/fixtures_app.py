@@ -61,10 +61,10 @@ def get_app(
             )
             if app_db_config:
                 update_app_config_from_database(app, app_db_config)
-                if with_domain:
-                    domain = Domain(name=app.config['AP_DOMAIN'])
-                    db.session.add(domain)
-                    db.session.commit()
+            if with_domain:
+                domain = Domain(name=app.config['AP_DOMAIN'])
+                db.session.add(domain)
+                db.session.commit()
             yield app
         except Exception as e:
             print(f'Error with app configuration: {e}')

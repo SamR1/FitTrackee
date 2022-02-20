@@ -14,6 +14,7 @@ from fittrackee.federation.signature import (
     generate_digest,
     generate_signature_header,
 )
+from fittrackee.users.models import User
 
 from ...test_case_mixins import ApiTestCaseMixin
 from ...utils import (
@@ -73,7 +74,7 @@ class TestUserInbox(ApiTestCaseMixin):
         return follow_activity, response
 
     def test_it_returns_404_if_user_does_not_exist(
-        self, app_with_federation: Flask, actor_1: Actor
+        self, app_with_federation: Flask, user_1: User
     ) -> None:
         client = app_with_federation.test_client()
 
@@ -106,14 +107,14 @@ class TestUserInbox(ApiTestCaseMixin):
     def test_it_returns_400_if_activity_is_invalid(
         self,
         app_with_federation: Flask,
-        actor_1: Actor,
+        user_1: User,
         input_description: str,
         input_activity: Dict,
     ) -> None:
         client = app_with_federation.test_client()
 
         response = client.post(
-            f'/federation/user/{actor_1.preferred_username}/inbox',
+            f'/federation/user/{user_1.actor.preferred_username}/inbox',
             content_type='application/json',
             data=json.dumps(input_activity),
         )
@@ -124,7 +125,7 @@ class TestUserInbox(ApiTestCaseMixin):
         assert 'invalid payload' in data['message']
 
     def test_it_returns_401_if_headers_are_missing(
-        self, app_with_federation: Flask, actor_1: Actor
+        self, app_with_federation: Flask, user_1: User
     ) -> None:
         client = app_with_federation.test_client()
         follow_activity = {
@@ -136,7 +137,7 @@ class TestUserInbox(ApiTestCaseMixin):
         }
 
         response = client.post(
-            f'/federation/user/{actor_1.preferred_username}/inbox',
+            f'/federation/user/{user_1.actor.preferred_username}/inbox',
             content_type='application/json',
             data=json.dumps(follow_activity),
         )
@@ -147,7 +148,7 @@ class TestUserInbox(ApiTestCaseMixin):
         assert 'Invalid signature.' in data['message']
 
     def test_it_returns_401_if_signature_is_invalid(
-        self, app_with_federation: Flask, actor_1: Actor
+        self, app_with_federation: Flask, user_1: User
     ) -> None:
         client = app_with_federation.test_client()
         follow_activity = {
@@ -159,7 +160,7 @@ class TestUserInbox(ApiTestCaseMixin):
         }
 
         response = client.post(
-            f'/federation/user/{actor_1.preferred_username}/inbox',
+            f'/federation/user/{user_1.actor.preferred_username}/inbox',
             content_type='application/json',
             headers={
                 'Host': random_string(),
@@ -179,11 +180,11 @@ class TestUserInbox(ApiTestCaseMixin):
         self,
         handle_activity: Mock,
         app_with_federation: Flask,
-        actor_1: Actor,
-        actor_2: Actor,
+        user_1: User,
+        user_2: User,
     ) -> None:
         _, response = self.post_to_user_inbox(
-            app_with_federation, actor_1, actor_2
+            app_with_federation, user_1.actor, user_2.actor
         )
 
         assert response.status_code == 200
@@ -195,11 +196,11 @@ class TestUserInbox(ApiTestCaseMixin):
         self,
         handle_activity: Mock,
         app_with_federation: Flask,
-        actor_1: Actor,
-        actor_2: Actor,
+        user_1: User,
+        user_2: User,
     ) -> None:
         activity_dict, response = self.post_to_user_inbox(
-            app_with_federation, actor_1, actor_2
+            app_with_federation, user_1.actor, user_2.actor
         )
 
         handle_activity.send.assert_called_with(activity=activity_dict)
