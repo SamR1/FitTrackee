@@ -39,6 +39,11 @@ class TestActivityPubDomainModel:
         ).first()
         assert not local_domain.is_remote
 
+    def test_domain_is_remote(
+        self, app_with_federation: Flask, remote_domain: Domain
+    ) -> None:
+        assert remote_domain.is_remote
+
     def test_it_returns_serialized_object(
         self, app_with_federation: Flask
     ) -> None:
@@ -57,13 +62,13 @@ class TestActivityPubDomainModel:
         assert not serialized_domain['is_remote']
 
 
-class TestActivityPubPersonActorModel:
+class TestActivityPubLocalPersonActorModel:
     def test_it_returns_string_representation(
         self, app_with_federation: Flask, actor_1: Actor
     ) -> None:
         assert '<Actor \'test\'>' == str(actor_1)
 
-    def test_actor_is_local_is_local(
+    def test_actor_is_local(
         self, app_with_federation: Flask, actor_1: Actor
     ) -> None:
         assert not actor_1.is_remote
@@ -121,6 +126,51 @@ class TestActivityPubPersonActorModel:
         hashed_message = SHA256.new('test message'.encode())
         # it raises ValueError if signature is invalid
         signer.verify(hashed_message, signer.sign(hashed_message))
+
+
+class TestActivityPubRemotePersonActorModel:
+    def test_actor_is_remote(
+        self, app_with_federation: Flask, remote_actor: Actor
+    ) -> None:
+        assert remote_actor.is_remote
+
+    def test_it_returns_serialized_object(
+        self,
+        app_with_federation: Flask,
+        remote_actor: Actor,
+        remote_domain: Domain,
+    ) -> None:
+        serialized_actor = remote_actor.serialize()
+        ap_url = remote_domain.name
+        user_url = (
+            f'{remote_domain.name}/users/{remote_actor.preferred_username}'
+        )
+        assert serialized_actor['@context'] == AP_CTX
+        assert serialized_actor['id'] == remote_actor.activitypub_id
+        assert serialized_actor['type'] == 'Person'
+        assert (
+            serialized_actor['preferredUsername']
+            == remote_actor.preferred_username
+        )
+        assert serialized_actor['name'] == remote_actor.user.username
+        assert serialized_actor['inbox'] == f'{user_url}/inbox'
+        assert serialized_actor['inbox'] == f'{user_url}/inbox'
+        assert serialized_actor['outbox'] == f'{user_url}/outbox'
+        assert serialized_actor['followers'] == f'{user_url}/followers'
+        assert serialized_actor['following'] == f'{user_url}/following'
+        assert serialized_actor['manuallyApprovesFollowers'] is True
+        assert (
+            serialized_actor['publicKey']['id']
+            == f'{remote_actor.activitypub_id}#main-key'
+        )
+        assert (
+            serialized_actor['publicKey']['owner']
+            == remote_actor.activitypub_id
+        )
+        assert 'publicKeyPem' in serialized_actor['publicKey']
+        assert (
+            serialized_actor['endpoints']['sharedInbox'] == f'{ap_url}/inbox'
+        )
 
 
 class TestActivityPubActorFollowingModel:

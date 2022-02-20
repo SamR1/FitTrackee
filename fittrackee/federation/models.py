@@ -125,16 +125,27 @@ class Actor(BaseModel):
         username: str,
         domain_id: int,
         created_at: Optional[datetime] = datetime.utcnow(),
+        remote_user_data: Optional[Dict] = None,
     ) -> None:
-        self.activitypub_id = get_ap_url(username, 'user_url')
         self.created_at = created_at
         self.domain_id = domain_id
-        self.followers_url = get_ap_url(username, 'followers')
-        self.following_url = get_ap_url(username, 'following')
-        self.inbox_url = get_ap_url(username, 'inbox')
-        self.outbox_url = get_ap_url(username, 'outbox')
         self.preferred_username = username
-        self.shared_inbox_url = get_ap_url(username, 'shared_inbox')
+        if remote_user_data:
+            self.activitypub_id = remote_user_data['id']
+            self.followers_url = remote_user_data['followers']
+            self.following_url = remote_user_data['following']
+            self.inbox_url = remote_user_data['inbox']
+            self.outbox_url = remote_user_data['outbox']
+            self.shared_inbox_url = remote_user_data.get('endpoints', {}).get(
+                'sharedInbox'
+            )
+        else:
+            self.activitypub_id = get_ap_url(username, 'user_url')
+            self.followers_url = get_ap_url(username, 'followers')
+            self.following_url = get_ap_url(username, 'following')
+            self.inbox_url = get_ap_url(username, 'inbox')
+            self.outbox_url = get_ap_url(username, 'outbox')
+            self.shared_inbox_url = get_ap_url(username, 'shared_inbox')
 
     def generate_keys(self) -> None:
         self.public_key, self.private_key = generate_keys()

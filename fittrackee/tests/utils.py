@@ -10,3 +10,7 @@ def random_string(length: Optional[int] = None) -> str:
         random.choice(string.ascii_letters + string.digits)
         for _ in range(length)
     )
+
+
+def random_domain() -> str:
+    return f'https://{random_string()}.social'
