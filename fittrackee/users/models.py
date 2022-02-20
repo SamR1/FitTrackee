@@ -42,6 +42,16 @@ class FollowRequest(BaseModel):
         self.follower_user_id = follower_user_id
         self.followed_user_id = followed_user_id
 
+    def serialize(self, federation_enabled: bool) -> Dict:
+        return {
+            'from_user': self.from_user.actor.serialize()
+            if federation_enabled
+            else self.from_user.serialize(),
+            'to_user': self.to_user.actor.serialize()
+            if federation_enabled
+            else self.to_user.serialize(),
+        }
+
 
 class User(BaseModel):
     __tablename__ = 'users'

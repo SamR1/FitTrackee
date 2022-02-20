@@ -83,6 +83,7 @@ def create_app() -> Flask:
 
     from .application.app_config import config_blueprint  # noqa
     from .users.auth import auth_blueprint  # noqa
+    from .users.follow_requests import follow_requests_blueprint  # noqa
     from .users.users import users_blueprint  # noqa
     from .workouts.records import records_blueprint  # noqa
     from .workouts.sports import sports_blueprint  # noqa
@@ -96,6 +97,7 @@ def create_app() -> Flask:
     app.register_blueprint(stats_blueprint, url_prefix='/api')
     app.register_blueprint(users_blueprint, url_prefix='/api')
     app.register_blueprint(workouts_blueprint, url_prefix='/api')
+    app.register_blueprint(follow_requests_blueprint, url_prefix='/api')
 
     # ActivityPub federation
     from .federation.federation import ap_federation_blueprint  # noqa

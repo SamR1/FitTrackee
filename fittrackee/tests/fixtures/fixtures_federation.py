@@ -50,8 +50,8 @@ def actor_3(user_3: User, app_with_federation: Flask) -> Actor:
     ).first()
     actor = Actor(username=user_3.username, domain_id=domain.id)
     db.session.add(actor)
-    user_3.actor_id = actor.id
     db.session.flush()
+    user_3.actor_id = actor.id
     db.session.commit()
     return actor
 
