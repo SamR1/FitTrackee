@@ -5,6 +5,7 @@
   "EMAIL": "Email",
   "ENTER_EMAIL": "Enter an email address",
   "ENTER_PASSWORD": "Enter a password",
+  "HIDE_PASSWORD": "hide password",
   "INVALID_TOKEN": "Invalid token, please request a new password reset.",
   "LANGUAGE": "Language",
   "LOGIN": "Login",
@@ -60,6 +61,7 @@
   "REGISTER": "Register",
   "REGISTER_DISABLED": "Sorry, registration is disabled.",
   "RESET_PASSWORD": "Reset your password",
+  "SHOW_PASSWORD": "show password",
   "USER_PICTURE": "user picture",
   "USERNAME": "Username"
 }

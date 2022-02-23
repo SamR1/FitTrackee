@@ -20,11 +20,10 @@
         </label>
         <label class="form-items" for="password">
           {{ $t('user.PASSWORD') }}
-          <input
+          <PasswordInput
             id="password"
-            type="password"
-            v-model="userForm.password"
             :disabled="loading"
+            @updatePassword="updatePassword"
           />
         </label>
         <hr />
@@ -96,6 +95,7 @@
     onMounted,
   } from 'vue'
 
+  import PasswordInput from '@/components/Common/PasswordInput.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import { IUserProfile, IUserPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -147,6 +147,9 @@
   function updateBio(value: string) {
     userForm.bio = value
   }
+  function updatePassword(password: string) {
+    userForm.password = password
+  }
   function updateProfile() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PROFILE, userForm)
   }
@@ -158,8 +161,19 @@
   }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   @import '~@/scss/vars.scss';
+
+  .form-items {
+    .password-input {
+      ::v-deep(.show-password) {
+        font-weight: normal;
+        font-size: 0.8em;
+        margin-top: -4px;
+        padding-left: 0;
+      }
+    }
+  }
 
   .form-buttons {
     flex-direction: row;

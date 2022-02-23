@@ -5,6 +5,7 @@
   "EMAIL": "Email",
   "ENTER_EMAIL": "Saisir une adresse email",
   "ENTER_PASSWORD": "Saisir un mot de passe",
+  "HIDE_PASSWORD": "masquer le mot de passe",
   "INVALID_TOKEN": "Jeton invalide, veullez demander une nouvelle réinitialisation de mot de passe.",
   "LANGUAGE": "Langue",
   "LOGIN": "Se connecter",
@@ -60,6 +61,7 @@
   "REGISTER": "S'inscrire",
   "REGISTER_DISABLED": "Désolé, les inscriptions sont désactivées.",
   "RESET_PASSWORD": "Réinitialiser votre mot de passe",
+  "SHOW_PASSWORD": "afficher le mot de passe",
   "USER_PICTURE": "photo de l'utilisateur",
   "USERNAME": "Nom d'utilisateur"
 }
