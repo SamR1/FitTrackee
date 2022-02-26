@@ -20,6 +20,7 @@ import { IRootState } from '@/store/modules/root/types'
 import { deleteUserAccount } from '@/store/modules/users/actions'
 import {
   ILoginOrRegisterData,
+  IUserAccountPayload,
   IUserDeletionPayload,
   IUserPasswordPayload,
   IUserPasswordResetPayload,
@@ -136,6 +137,31 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
             res.data.data
           )
           router.push('/profile')
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      )
+  },
+  [AUTH_USER_STORE.ACTIONS.UPDATE_USER_ACCOUNT](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IUserAccountPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+    authApi
+      .patch('auth/profile/edit/account', payload)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE,
+            res.data.data
+          )
+          context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, true)
         } else {
           handleError(context, null)
         }

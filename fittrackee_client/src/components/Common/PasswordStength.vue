@@ -38,20 +38,22 @@
     watch,
   } from 'vue'
 
-  import { ROOT_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import { useStore } from '@/use/useStore'
   import { getPasswordStrength, setZxcvbnOptions } from '@/utils/password'
 
   interface Props {
     password: string
   }
-
   const props = defineProps<Props>()
   const { password } = toRefs(props)
 
   const store = useStore()
   const language: ComputedRef<string> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
+  )
+  const isSuccess: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUCCESS]
   )
   const passwordScore: Ref<number> = ref(0)
   const passwordStrength: Ref<string> = ref('')
@@ -77,7 +79,11 @@
   watch(
     () => password.value,
     async (newPassword) => {
-      calculatePasswordStrength(newPassword)
+      if (isSuccess.value) {
+        passwordStrength.value = ''
+      } else {
+        calculatePasswordStrength(newPassword)
+      }
     }
   )
 </script>

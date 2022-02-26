@@ -1,32 +1,12 @@
 <template>
   <div id="user-infos-edition">
-    <Modal
-      v-if="displayModal"
-      :title="$t('common.CONFIRMATION')"
-      :message="$t('user.CONFIRM_ACCOUNT_DELETION')"
-      @confirmAction="deleteAccount(user.username)"
-      @cancelAction="updateDisplayModal(false)"
-    />
     <div class="profile-form form-box">
       <ErrorMessage :message="errorMessages" v-if="errorMessages" />
       <form @submit.prevent="updateProfile">
-        <label class="form-items" for="email">
-          {{ $t('user.EMAIL') }}
-          <input id="email" :value="user.email" disabled />
-        </label>
         <label class="form-items" for="registrationDate">
           {{ $t('user.PROFILE.REGISTRATION_DATE') }}
           <input id="registrationDate" :value="registrationDate" disabled />
         </label>
-        <label class="form-items" for="password">
-          {{ $t('user.PASSWORD') }}
-          <PasswordInput
-            id="password"
-            :disabled="loading"
-            @updatePassword="updatePassword"
-          />
-        </label>
-        <hr />
         <label class="form-items" for="first_name">
           {{ $t('user.PROFILE.FIRST_NAME') }}
           <input
@@ -74,9 +54,6 @@
           <button class="cancel" @click.prevent="$router.push('/profile')">
             {{ $t('buttons.CANCEL') }}
           </button>
-          <button class="danger" @click.prevent="updateDisplayModal(true)">
-            {{ $t('buttons.DELETE_MY_ACCOUNT') }}
-          </button>
         </div>
       </form>
     </div>
@@ -85,17 +62,8 @@
 
 <script setup lang="ts">
   import { format } from 'date-fns'
-  import {
-    ComputedRef,
-    Ref,
-    computed,
-    reactive,
-    ref,
-    toRefs,
-    onMounted,
-  } from 'vue'
+  import { ComputedRef, computed, reactive, onMounted } from 'vue'
 
-  import PasswordInput from '@/components/Common/PasswordInput.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import { IUserProfile, IUserPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -107,9 +75,7 @@
 
   const store = useStore()
 
-  const { user } = toRefs(props)
   const userForm: IUserPayload = reactive({
-    password: '',
     first_name: '',
     last_name: '',
     birth_date: '',
@@ -127,7 +93,6 @@
   const errorMessages: ComputedRef<string | string[] | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
   )
-  let displayModal: Ref<boolean> = ref(false)
 
   onMounted(() => {
     if (props.user) {
@@ -147,17 +112,8 @@
   function updateBio(value: string) {
     userForm.bio = value
   }
-  function updatePassword(password: string) {
-    userForm.password = password
-  }
   function updateProfile() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PROFILE, userForm)
-  }
-  function updateDisplayModal(value: boolean) {
-    displayModal.value = value
-  }
-  function deleteAccount(username: string) {
-    store.dispatch(AUTH_USER_STORE.ACTIONS.DELETE_ACCOUNT, { username })
   }
 </script>
 

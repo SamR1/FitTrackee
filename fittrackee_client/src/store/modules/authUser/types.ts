@@ -17,11 +17,13 @@ import {
   IUserPicturePayload,
   IUserPreferencesPayload,
   IUserSportPreferencesPayload,
+  IUserAccountPayload,
 } from '@/types/user'
 
 export interface IAuthUserState {
   authToken: string | null
   authUserProfile: IUserProfile
+  isSuccess: boolean
   loading: boolean
 }
 
@@ -46,6 +48,11 @@ export interface IAuthUserActions {
   [AUTH_USER_STORE.ACTIONS.UPDATE_USER_PROFILE](
     context: ActionContext<IAuthUserState, IRootState>,
     payload: IUserPayload
+  ): void
+
+  [AUTH_USER_STORE.ACTIONS.UPDATE_USER_ACCOUNT](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IUserAccountPayload
   ): void
 
   [AUTH_USER_STORE.ACTIONS.UPDATE_USER_PREFERENCES](
@@ -99,6 +106,8 @@ export interface IAuthUserGetters {
 
   [AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED](state: IAuthUserState): boolean
 
+  [AUTH_USER_STORE.GETTERS.IS_SUCCESS](state: IAuthUserState): boolean
+
   [AUTH_USER_STORE.GETTERS.USER_LOADING](state: IAuthUserState): boolean
 }
 
@@ -111,6 +120,10 @@ export type TAuthUserMutations<S = IAuthUserState> = {
   [AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE](
     state: S,
     authUserProfile: IUserProfile
+  ): void
+  [AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS](
+    state: S,
+    isSuccess: boolean
   ): void
   [AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING](
     state: S,

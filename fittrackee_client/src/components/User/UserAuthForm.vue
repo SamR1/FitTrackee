@@ -64,20 +64,9 @@
                   : $t('user.PASSWORD')
               "
               :password="formData.password"
+              :checkStrength="['reset', 'register'].includes(action)"
               @updatePassword="updatePassword"
               @passwordError="invalidateForm"
-            />
-
-            <div
-              v-if="['reset', 'register'].includes(action)"
-              class="form-info"
-            >
-              <i class="fa fa-info-circle" aria-hidden="true" />
-              {{ $t('user.PASSWORD_INFO') }}
-            </div>
-            <PasswordStrength
-              v-if="['reset', 'register'].includes(action)"
-              :password="formData.password"
             />
           </div>
           <button type="submit" :disabled="registration_disabled">
@@ -118,7 +107,6 @@
   import { useRoute } from 'vue-router'
 
   import PasswordInput from '@/components/Common/PasswordInput.vue'
-  import PasswordStrength from '@/components/Common/PasswordStength.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import { TAppConfig } from '@/types/application'
   import { ILoginRegisterFormData } from '@/types/user'
@@ -234,13 +222,6 @@
         font-style: italic;
         padding: 0 $default-padding;
       }
-      .form-info {
-        color: var(--alert-color);
-        font-size: 0.8em;
-        margin-top: -0.2 * $default-margin;
-        padding: 0 $default-padding * 1.5;
-      }
-
       button {
         margin: $default-margin;
         border: solid 1px var(--app-color);

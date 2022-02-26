@@ -31,6 +31,10 @@ export interface IUserPayload {
   first_name: string
   last_name: string
   location: string
+}
+
+export interface IUserAccountPayload {
+  email?: string
   password: string
 }
 

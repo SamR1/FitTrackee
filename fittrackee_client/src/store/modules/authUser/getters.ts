@@ -21,6 +21,9 @@ export const getters: GetterTree<IAuthUserState, IRootState> &
   [AUTH_USER_STORE.GETTERS.IS_ADMIN]: (state: IAuthUserState) => {
     return state.authUserProfile && state.authUserProfile.admin
   },
+  [AUTH_USER_STORE.GETTERS.IS_SUCCESS]: (state: IAuthUserState) => {
+    return state.isSuccess
+  },
   [AUTH_USER_STORE.GETTERS.USER_LOADING]: (state: IAuthUserState) => {
     return state.loading
   },

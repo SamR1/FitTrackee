@@ -24,6 +24,12 @@ export const mutations: MutationTree<IAuthUserState> & TAuthUserMutations = {
   ) {
     state.authUserProfile = authUserProfile
   },
+  [AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS](
+    state: IAuthUserState,
+    isSuccess: boolean
+  ) {
+    state.isSuccess = isSuccess
+  },
   [AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING](
     state: IAuthUserState,
     loading: boolean

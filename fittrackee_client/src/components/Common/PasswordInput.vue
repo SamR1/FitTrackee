@@ -1,6 +1,7 @@
 <template>
   <div class="password-input">
     <input
+      id="password"
       :disabled="disabled"
       :placeholder="placeholder"
       :required="required"
@@ -18,13 +19,21 @@
         aria-hidden="true"
       />
     </div>
+    <div v-if="checkStrength" class="form-info">
+      <i class="fa fa-info-circle" aria-hidden="true" />
+      {{ $t('user.PASSWORD_INFO') }}
+    </div>
+    <PasswordStrength v-if="checkStrength" :password="passwordValue" />
   </div>
 </template>
 
 <script setup lang="ts">
   import { Ref, ref, toRefs, watch, withDefaults } from 'vue'
 
+  import PasswordStrength from '@/components/Common/PasswordStength.vue'
+
   interface Props {
+    checkStrength?: boolean
     disabled?: boolean
     password?: string
     placeholder?: string
@@ -32,10 +41,13 @@
   }
 
   const props = withDefaults(defineProps<Props>(), {
+    checkStrength: false,
     disabled: false,
+    password: '',
     required: false,
   })
-  const { disabled, password, placeholder, required } = toRefs(props)
+  const { checkStrength, disabled, password, placeholder, required } =
+    toRefs(props)
 
   const showPassword: Ref<boolean> = ref(false)
   const passwordValue: Ref<string> = ref('')

@@ -142,6 +142,14 @@ button {
     }
 }
 
+
+.form-info {
+  color: var(--alert-color);
+  font-size: 0.8em;
+  margin-top: -0.2 * $default-margin;
+  padding: 0 $default-padding * 1.5;
+}
+
 .upper {
   text-transform: uppercase;
 }

@@ -4,5 +4,6 @@ import { IUserProfile } from '@/types/user'
 export const authUserState: IAuthUserState = {
   authToken: null,
   authUserProfile: <IUserProfile>{},
+  isSuccess: false,
   loading: false,
 }
