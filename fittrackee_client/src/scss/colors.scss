@@ -66,6 +66,12 @@
   --cell-heading-bg-color: #eeeeee;
   --cell-heading-color: #696969;
 
-  --svg-filter: drop-shadow(10px 10px 10px var(--app-shadow-color))
+  --svg-filter: drop-shadow(10px 10px 10px var(--app-shadow-color));
+
+  --password-bg-color: #d7dadf;
+  --password-color-weak: #e46d6e;
+  --password-color-medium: #f8bc4a;
+  --password-color-good: #acc578;
+  --password-color-strong: #57c255;
 
 }

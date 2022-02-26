@@ -51,8 +51,13 @@
                   ? $t('user.ENTER_PASSWORD')
                   : $t('user.PASSWORD')
               "
+              :password="formData.password"
               @updatePassword="updatePassword"
               @passwordError="invalidateForm"
+            />
+            <PasswordStrength
+              v-if="['reset', 'register'].includes(action)"
+              :password="formData.password"
             />
           </div>
           <button type="submit" :disabled="registration_disabled">
@@ -93,6 +98,7 @@
   import { useRoute } from 'vue-router'
 
   import PasswordInput from '@/components/Common/PasswordInput.vue'
+  import PasswordStrength from '@/components/Common/PasswordStength.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import { TAppConfig } from '@/types/application'
   import { ILoginRegisterFormData } from '@/types/user'
