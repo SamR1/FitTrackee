@@ -3,7 +3,7 @@
   "ALREADY_HAVE_ACCOUNT": "Vous avez déjà un compte ?",
   "CONFIRM_ACCOUNT_DELETION": "Etes-vous sûr de vouloir supprimer votre compte ? Toutes les données seront définitivement effacés.",
   "EMAIL": "Email",
-  "ENTER_EMAIL": "Saisir une adresse email",
+  "EMAIL_INFO": "Saisir une adresse email valide.",
   "ENTER_PASSWORD": "Saisir un mot de passe",
   "HIDE_PASSWORD": "masquer le mot de passe",
   "INVALID_TOKEN": "Jeton invalide, veullez demander une nouvelle réinitialisation de mot de passe.",
@@ -11,6 +11,7 @@
   "LOGIN": "Se connecter",
   "LOGOUT": "Se déconnecter",
   "PASSWORD": "Mot de passe",
+  "PASSWORD_INFO": "8 caractères minimum.",
   "PASSWORD_FORGOTTEN": "Mot de passe oublié ?",
   "PASSWORD_RESET": "Réinitialisation du mot de passe",
   "PASSWORD_SENT_EMAIL_TEXT": "Vérifiez votre boite mail. Si vote adresse est dans notre base de données, vous recevrez un email avec un lien pour réinitialiser votre mot de passe.",
@@ -85,5 +86,6 @@
   "RESET_PASSWORD": "Réinitialiser votre mot de passe",
   "SHOW_PASSWORD": "afficher le mot de passe",
   "USER_PICTURE": "photo de l'utilisateur",
-  "USERNAME": "Nom d'utilisateur"
+  "USERNAME": "Nom d'utilisateur",
+  "USERNAME_INFO": "3 à 30 caractères requis, seuls les caractères alphanumériques et le caractère \"_\" sont autorisés."
 }

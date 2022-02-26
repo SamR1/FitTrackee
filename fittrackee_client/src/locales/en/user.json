@@ -3,7 +3,7 @@
   "ALREADY_HAVE_ACCOUNT": "Already have an account?",
   "CONFIRM_ACCOUNT_DELETION": "Are you sure you want to delete your account? All data will be deleted, this cannot be undone",
   "EMAIL": "Email",
-  "ENTER_EMAIL": "Enter an email address",
+  "EMAIL_INFO": "Enter a valid email address.",
   "ENTER_PASSWORD": "Enter a password",
   "HIDE_PASSWORD": "hide password",
   "INVALID_TOKEN": "Invalid token, please request a new password reset.",
@@ -11,6 +11,7 @@
   "LOGIN": "Login",
   "LOGOUT": "Logout",
   "PASSWORD": "Password",
+  "PASSWORD_INFO": "At least 8 characters required.",
   "PASSWORD_FORGOTTEN": "Forgot password?",
   "PASSWORD_RESET": "Password reset",
   "PASSWORD_SENT_EMAIL_TEXT": "Check your email. If your address is in our database, you'll received an email with a link to reset your password.",
@@ -86,5 +87,6 @@
   "RESET_PASSWORD": "Reset your password",
   "SHOW_PASSWORD": "show password",
   "USER_PICTURE": "user picture",
-  "USERNAME": "Username"
+  "USERNAME": "Username",
+  "USERNAME_INFO": "3 to 30 characters required, only alphanumeric characters and the underscore character \"_\" allowed."
 }

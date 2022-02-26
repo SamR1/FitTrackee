@@ -12,6 +12,11 @@
     />
     <div class="show-password" @click="togglePassword">
       {{ $t(`user.${showPassword ? 'HIDE' : 'SHOW'}_PASSWORD`) }}
+      <i
+        class="fa"
+        :class="`fa-eye${showPassword ? '-slash' : ''}`"
+        aria-hidden="true"
+      />
     </div>
   </div>
 </template>
@@ -67,8 +72,9 @@
     .show-password {
       font-style: italic;
       font-size: 0.85em;
+      text-align: right;
       margin-top: -0.75 * $default-margin;
-      padding-left: $default-padding;
+      padding-right: $default-padding;
       cursor: pointer;
     }
   }

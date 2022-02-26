@@ -33,6 +33,10 @@
               v-model="formData.username"
               :placeholder="$t('user.USERNAME')"
             />
+            <div v-if="action === 'register'" class="form-info">
+              <i class="fa fa-info-circle" aria-hidden="true" />
+              {{ $t('user.USERNAME_INFO') }}
+            </div>
             <input
               v-if="action !== 'reset'"
               id="email"
@@ -41,12 +45,15 @@
               @invalid="invalidateForm"
               type="email"
               v-model="formData.email"
-              :placeholder="
-                action === 'reset-request'
-                  ? $t('user.ENTER_EMAIL')
-                  : $t('user.EMAIL')
-              "
+              :placeholder="$t('user.EMAIL')"
             />
+            <div
+              v-if="['reset-request', 'register'].includes(action)"
+              class="form-info"
+            >
+              <i class="fa fa-info-circle" aria-hidden="true" />
+              {{ $t('user.EMAIL_INFO') }}
+            </div>
             <PasswordInput
               v-if="action !== 'reset-request'"
               :disabled="registration_disabled"
@@ -60,6 +67,14 @@
               @updatePassword="updatePassword"
               @passwordError="invalidateForm"
             />
+
+            <div
+              v-if="['reset', 'register'].includes(action)"
+              class="form-info"
+            >
+              <i class="fa fa-info-circle" aria-hidden="true" />
+              {{ $t('user.PASSWORD_INFO') }}
+            </div>
             <PasswordStrength
               v-if="['reset', 'register'].includes(action)"
               :password="formData.password"
@@ -218,6 +233,12 @@
         font-size: 0.9em;
         font-style: italic;
         padding: 0 $default-padding;
+      }
+      .form-info {
+        color: var(--alert-color);
+        font-size: 0.8em;
+        margin-top: -0.2 * $default-margin;
+        padding: 0 $default-padding * 1.5;
       }
 
       button {
