@@ -24,8 +24,6 @@ def register(selenium, user):
     email.send_keys(user.get('email'))
     password = selenium.find_element_by_id('password')
     password.send_keys(user.get('password'))
-    password_conf = selenium.find_element_by_id('confirm-password')
-    password_conf.send_keys(user.get('password_conf'))
     submit_button = selenium.find_element_by_tag_name('button')
     submit_button.click()
 
@@ -47,7 +45,6 @@ def register_valid_user(selenium):
         'username': user_name,
         'email': f'{user_name}@example.com',
         'password': 'p@ssw0rd',
-        'password_conf': 'p@ssw0rd',
     }
     register(selenium, user)
     WebDriverWait(selenium, 15).until(EC.url_changes(f"{TEST_URL}/register"))
@@ -60,7 +57,6 @@ def register_valid_user_and_logout(selenium):
         'username': user_name,
         'email': f'{user_name}@example.com',
         'password': 'p@ssw0rd',
-        'password_conf': 'p@ssw0rd',
     }
     register(selenium, user)
     WebDriverWait(selenium, 15).until(EC.url_changes(f"{TEST_URL}/register"))
