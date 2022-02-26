@@ -247,10 +247,6 @@ button {
   @media screen and (max-width: $medium-limit) {
     width: 100%;
     margin: 0 auto 50px auto;
-
-    &.with-margin {
-      margin-top: 0;
-    }
   }
 }
 

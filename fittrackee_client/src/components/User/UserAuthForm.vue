@@ -1,5 +1,10 @@
 <template>
-  <div id="user-auth-form">
+  <div
+    id="user-auth-form"
+    :class="`${
+      ['reset', 'reset-request'].includes(action) ? action : 'user-form'
+    }`"
+  >
     <div id="user-form">
       <div
         class="form-box"
@@ -201,10 +206,6 @@
 
   #user-auth-form {
     display: flex;
-    align-items: center;
-
-    margin: $default-margin 0;
-    height: 100%;
 
     #user-form {
       width: 60%;
@@ -230,13 +231,17 @@
     }
 
     @media screen and (max-width: $medium-limit) {
-      height: auto;
       margin-bottom: 50px;
-
       #user-form {
-        margin-top: $default-margin;
         width: 100%;
       }
+    }
+  }
+
+  .user-form {
+    margin-top: 200px;
+    @media screen and (max-width: $small-limit) {
+      margin-top: $default-margin;
     }
   }
 </style>
