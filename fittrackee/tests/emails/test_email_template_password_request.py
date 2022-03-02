@@ -44,6 +44,7 @@ class TestEmailTemplateForPasswordRequest:
             'password_reset_url': 'http://localhost/password-reset?token=xxx',
             'operating_system': 'Linux',
             'browser_name': 'Firefox',
+            'fittrackee_url': 'http://localhost',
         }
 
         text_body = email_template.get_content(
@@ -60,6 +61,7 @@ class TestEmailTemplateForPasswordRequest:
             'password_reset_url': 'http://localhost/password-reset?token=xxx',
             'operating_system': 'Linux',
             'browser_name': 'Firefox',
+            'fittrackee_url': 'http://localhost',
         }
 
         text_body = email_template.get_content(
@@ -76,6 +78,7 @@ class TestEmailTemplateForPasswordRequest:
             'password_reset_url': 'http://localhost/password-reset?token=xxx',
             'operating_system': 'Linux',
             'browser_name': 'Firefox',
+            'fittrackee_url': 'http://localhost',
         }
 
         text_body = email_template.get_content(

@@ -1156,6 +1156,7 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
             'password_reset_url': (
                 f'{ui_url}/password-reset?token={password_reset_token}'  # noqa
             ),
+            'fittrackee_url': ui_url,
             'operating_system': request.user_agent.platform,  # type: ignore
             'browser_name': request.user_agent.browser,  # type: ignore
         }
@@ -1173,7 +1174,7 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
 @auth_blueprint.route('/auth/password/update', methods=['POST'])
 def update_password() -> Union[Dict, HttpResponse]:
     """
-    update user password
+    update user password after password reset request
 
     **Example request**:
 

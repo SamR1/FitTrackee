@@ -97,6 +97,7 @@ class TestEmailServiceSend(CallArgsMixin):
         'password_reset_url': 'http://localhost/password-reset?token=xxx',
         'operating_system': 'Linux',
         'browser_name': 'Firefox',
+        'fittrackee_url': 'http://localhost',
     }
 
     def assert_smtp(self, smtp: Mock) -> None:

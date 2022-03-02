@@ -2,27 +2,30 @@
 
 expected_en_text_body = """Hi test,
 
-You recently requested to reset your password for your FitTrackee account. Use the button below to reset it. This password reset link is only valid for 3 seconds.
+You recently requested to reset your password for your FitTrackee account. Use the link below to reset it. This password reset link is only valid for 3 seconds.
 
-Reset your password ( http://localhost/password-reset?token=xxx )
+Reset your password: http://localhost/password-reset?token=xxx
 
-For security, this request was received from a Linux device using Firefox. If you did not request a password reset, please ignore this email.
+For security, this request was received from a Linux device using Firefox.
+If you did not request a password reset, please ignore this email.
 
 Thanks,
-The FitTrackee Team"""
+The FitTrackee Team
+http://localhost"""
 
 expected_fr_text_body = """Bonjour test,
 
-Vous avez récemment demander la réinitilisation du mot de passe de votre compte sur FitTrackee.
+Vous avez récemment demandé la réinitialisation du mot de passe de votre compte sur FitTrackee.
 Cliquez sur le lien ci-dessous pour le réinitialiser. Ce lien n'est valide que pendant 3 secondes.
 
-Réinitialiser le mot de passe: ( http://localhost/password-reset?token=xxx )
+Réinitialiser le mot de passe : http://localhost/password-reset?token=xxx
 
 Pour vérification, cette demande a été reçue à partir d'un appareil sous Linux, utilisant le navigateur Firefox.
-Si vous n'avez pas demandé de réinitalisation, vous pouvez ignorer cet e-mail.
+Si vous n'avez pas demandé de réinitialisation, vous pouvez ignorer cet e-mail.
 
 Merci,
-L'équipe FitTrackee"""
+L'équipe FitTrackee
+http://localhost"""
 
 expected_en_html_body = """  <body>
     <span class="preheader">Use this link to reset your password. The link is only valid for 3 seconds.</span>
@@ -32,7 +35,7 @@ expected_en_html_body = """  <body>
           <table class="email-content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
             <tr>
               <td class="email-masthead">
-                <a href="https://example.com" class="f-fallback email-masthead-name">
+                <a href="http://localhost" class="f-fallback email-masthead-name">
                 FitTrackee
               </a>
               </td>
@@ -106,7 +109,7 @@ expected_fr_html_body = """  <body>
           <table class="email-content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
             <tr>
               <td class="email-masthead">
-                <a href="https://example.com" class="f-fallback email-masthead-name">
+                <a href="http://localhost" class="f-fallback email-masthead-name">
                 FitTrackee
               </a>
               </td>
@@ -118,7 +121,7 @@ expected_fr_html_body = """  <body>
                     <td class="content-cell">
                       <div class="f-fallback">
                         <h1>Bonjour  test,</h1>
-                        <p>Vous avez récemment demander la réinitilisation du mot de passe de votre compte sur FitTrackee.
+                        <p>Vous avez récemment demandé la réinitialisation du mot de passe de votre compte sur FitTrackee.
                           Cliquez sur le bouton ci-dessous pour le réinitialiser.
                           <strong>Cette réinitialisation n'est valide que pendant 3 secondes.</strong>
                         </p>
@@ -137,7 +140,7 @@ expected_fr_html_body = """  <body>
                         </table>
                         <p>
                           Pour vérification, cette demande a été reçue à partir d'un appareil sous Linux, utilisant le navigateur Firefox.
-                          Si vous n'avez pas demandé de réinitalisation, vous pouvez ignorer cet e-mail.
+                          Si vous n'avez pas demandé de réinitialisation, vous pouvez ignorer cet e-mail.
                         </p>
                         <p>Merci,
                           <br>L'équipe FitTrackee</p>
