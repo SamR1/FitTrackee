@@ -9,6 +9,7 @@
   "HIDE_PASSWORD": "hide password",
   "INVALID_TOKEN": "Invalid token, please request a new password reset.",
   "LANGUAGE": "Language",
+  "LOG_IN": "log in",
   "LOGIN": "Login",
   "LOGOUT": "Logout",
   "NEW_PASSWORD": "New password",
@@ -49,6 +50,7 @@
     "EDIT": "Edit profile",
     "EDIT_PREFERENCES": "Edit preferences",
     "EDIT_SPORTS_PREFERENCES": "Edit sports preferences",
+    "ERRORED_EMAIL_UPDATE": "Please {0} to change your email address again or contact the administrator",
     "FIRST_NAME": "First name",
     "FIRST_DAY_OF_WEEK": "First day of week",
     "LANGUAGE": "Language",
@@ -79,7 +81,8 @@
       "LABEL": "label",
       "STOPPED_SPEED_THRESHOLD": "stopped speed threshold"
     },
-    "SUCCESSFUL_UPDATE": "Your account has been updated successfully",
+    "SUCCESSFUL_EMAIL_UPDATE": "Your account has been updated successfully. Please check your email to confirm your new email address.",
+    "SUCCESSFUL_UPDATE": "Your account has been updated successfully.",
     "UNITS": {
       "LABEL": "Units for distance",
       "IMPERIAL": "Imperial system (ft, mi)",

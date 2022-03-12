@@ -22,6 +22,7 @@ import {
   ILoginOrRegisterData,
   IUserAccountPayload,
   IUserDeletionPayload,
+  IUserEmailUpdatePayload,
   IUserPasswordPayload,
   IUserPasswordResetPayload,
   IUserPayload,
@@ -61,6 +62,33 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
       )
       context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
     }
+  },
+  [AUTH_USER_STORE.ACTIONS.CONFIRM_EMAIL](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IUserEmailUpdatePayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+    api
+      .post('/auth/email/update', { token: payload.token })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, true)
+          if (payload.refreshUser) {
+            context
+              .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+              .then(() => {
+                return router.push('/profile/edit/account')
+              })
+          }
+          router.push('/profile/edit/account')
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
   },
   [AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE](
     context: ActionContext<IAuthUserState, IRootState>

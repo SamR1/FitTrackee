@@ -150,6 +150,12 @@ button {
   padding: 0 $default-padding * 1.5;
 }
 
+.success-message {
+  margin: $default-margin * 2 0;
+  background-color: var(--success-background-color);
+  color: var(--success-color);
+}
+
 .upper {
   text-transform: uppercase;
 }

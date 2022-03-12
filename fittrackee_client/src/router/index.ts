@@ -80,6 +80,14 @@ const routes: Array<RouteRecordRaw> = [
     props: { action: 'reset' },
   },
   {
+    path: '/email-update',
+    name: 'EmailUpdate',
+    component: () =>
+      import(
+        /* webpackChunkName: 'profile' */ '@/views/user/EmailUpdateView.vue'
+      ),
+  },
+  {
     path: '/profile',
     name: 'Profile',
     component: () =>
@@ -254,16 +262,22 @@ const pathsWithoutAuthentication = [
   '/register',
 ]
 
+const paths = ['/email-update']
+
 router.beforeEach((to, from, next) => {
   store
     .dispatch(AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER)
     .then(() => {
+      if (paths.includes(to.path)) {
+        return next()
+      }
       if (
         store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED] &&
         pathsWithoutAuthentication.includes(to.path)
       ) {
         return next('/')
-      } else if (
+      }
+      if (
         !store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED] &&
         !pathsWithoutAuthentication.includes(to.path)
       ) {

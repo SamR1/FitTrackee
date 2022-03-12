@@ -10,12 +10,18 @@
     <div class="profile-form form-box">
       <ErrorMessage :message="errorMessages" v-if="errorMessages" />
       <div class="info-box success-message" v-if="isSuccess">
-        {{ $t('user.PROFILE.SUCCESSFUL_UPDATE') }}
+        {{ $t(`user.PROFILE.SUCCESSFUL_${emailUpdate ? 'EMAIL_' : ''}UPDATE`) }}
       </div>
       <form :class="{ errors: formErrors }" @submit.prevent="updateProfile">
         <label class="form-items" for="email">
-          {{ $t('user.EMAIL') }}
-          <input id="email" :value="user.email" disabled />
+          {{ $t('user.EMAIL') }}*
+          <input
+            id="email"
+            v-model="userForm.email"
+            :disabled="loading"
+            :required="true"
+            @invalid="invalidateForm"
+          />
         </label>
         <label class="form-items" for="password-field">
           {{ $t('user.CURRENT_PASSWORD') }}*
@@ -29,14 +35,13 @@
           />
         </label>
         <label class="form-items" for="new-password-field">
-          {{ $t('user.NEW_PASSWORD') }}*
+          {{ $t('user.NEW_PASSWORD') }}
           <PasswordInput
             id="new-password-field"
             :disabled="loading"
             :checkStrength="true"
             :password="userForm.new_password"
             :isSuccess="false"
-            :required="true"
             @updatePassword="updateNewPassword"
             @passwordError="invalidateForm"
           />
@@ -93,6 +98,7 @@
   const isSuccess: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUCCESS]
   )
+  const emailUpdate = ref(false)
   const errorMessages: ComputedRef<string | string[] | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
   )
@@ -118,10 +124,15 @@
     userForm.new_password = new_password
   }
   function updateProfile() {
-    store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_ACCOUNT, {
+    const payload: IUserAccountPayload = {
+      email: userForm.email,
       password: userForm.password,
-      new_password: userForm.new_password,
-    })
+    }
+    if (userForm.new_password) {
+      payload.new_password = userForm.new_password
+    }
+    emailUpdate.value = userForm.email !== user.value.email
+    store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_ACCOUNT, payload)
   }
   function updateDisplayModal(value: boolean) {
     displayModal.value = value
@@ -141,8 +152,15 @@
       if (isSuccessValue) {
         updatePassword('')
         updateNewPassword('')
+        updateUserForm(user.value)
         formErrors.value = false
       }
+    }
+  )
+  watch(
+    () => user.value.email,
+    async () => {
+      updateUserForm(user.value)
     }
   )
 </script>
@@ -174,11 +192,5 @@
     @media screen and (max-width: $x-small-limit) {
       flex-direction: column;
     }
-  }
-
-  .success-message {
-    margin: $default-margin * 2 0;
-    background-color: var(--success-background-color);
-    color: var(--success-color);
   }
 </style>

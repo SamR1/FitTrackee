@@ -16,6 +16,9 @@
           message="user.REGISTER_DISABLED"
           v-if="registration_disabled"
         />
+        <div class="info-box success-message" v-if="isSuccess">
+          {{ $t('user.PROFILE.SUCCESSFUL_UPDATE') }}
+        </div>
         <form
           :class="{ errors: formErrors }"
           @submit.prevent="onSubmit(action)"
@@ -135,6 +138,9 @@
   const errorMessages: ComputedRef<string | string[] | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
   )
+  const isSuccess: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUCCESS]
+  )
   const appConfig: ComputedRef<TAppConfig> = computed(
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
   )
@@ -197,6 +203,7 @@
     () => route.path,
     async () => {
       store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+      store.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
       formErrors.value = false
       resetFormData()
     }
@@ -229,6 +236,9 @@
         &:disabled {
           border-color: var(--disabled-color);
         }
+      }
+      .success-message {
+        margin: $default-margin;
       }
     }
 

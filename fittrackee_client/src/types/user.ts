@@ -34,9 +34,14 @@ export interface IUserPayload {
 }
 
 export interface IUserAccountPayload {
-  email?: string
+  email: string
   password: string
-  new_password: string
+  new_password?: string
+}
+
+export interface IUserEmailUpdatePayload {
+  token: LocationQueryValue | LocationQueryValue[]
+  refreshUser: boolean
 }
 
 export interface IAdminUserPayload {

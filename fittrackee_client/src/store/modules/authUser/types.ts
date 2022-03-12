@@ -18,6 +18,7 @@ import {
   IUserPreferencesPayload,
   IUserSportPreferencesPayload,
   IUserAccountPayload,
+  IUserEmailUpdatePayload,
 } from '@/types/user'
 
 export interface IAuthUserState {
@@ -30,6 +31,11 @@ export interface IAuthUserState {
 export interface IAuthUserActions {
   [AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER](
     context: ActionContext<IAuthUserState, IRootState>
+  ): void
+
+  [AUTH_USER_STORE.ACTIONS.CONFIRM_EMAIL](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IUserEmailUpdatePayload
   ): void
 
   [AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE](
