@@ -231,8 +231,8 @@
                           </tr>
                         </table>
                         <p>
-                          Pour vérification, cette demande a été reçue à partir d'un appareil sous {{operating_system}}, utilisant le navigateur {{browser_name}}.
-                          Si vous n'avez pas demandé de réinitialisation, vous pouvez ignorer cet e-mail.
+                          {% if operating_system and browser_name %}Pour vérification, cette demande a été reçue à partir d'un appareil sous {{operating_system}}, utilisant le navigateur {{browser_name}}.
+                          {% endif %}Si vous n'avez pas demandé de réinitialisation, vous pouvez ignorer cet e-mail.
                         </p>
                         <p>Merci,
                           <br>L'équipe FitTrackee</p>

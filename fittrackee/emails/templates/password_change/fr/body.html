@@ -215,8 +215,8 @@
                         <h1>Bonjour {{username}},</h1>
                         <p>Le mot de passe de votre compte FitTrackee a été modifié.</p>
                         <p>
-                          Pour vérification, cette demande a été reçue à partir d'un appareil sous {{operating_system}}, utilisant le navigateur {{browser_name}}.
-                          Si vous n'êtes pas à l'origine de cette modification, veuillez changer votre mot de passe immédiatement ou contacter l'administrateur si votre compte est bloqué.
+                          {% if operating_system and browser_name %}Pour vérification, cette demande a été reçue à partir d'un appareil sous {{operating_system}}, utilisant le navigateur {{browser_name}}.
+                          {% endif %}Si vous n'êtes pas à l'origine de cette modification, veuillez changer votre mot de passe immédiatement ou contacter l'administrateur si votre compte est bloqué.
                         </p>
                         <p>Merci,
                           <br>

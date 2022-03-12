@@ -215,8 +215,8 @@
                         <h1>Hi {{username}},</h1>
                         <p>The password for your FitTrackee account has been changed.</p>
                         <p>
-                          For security, this request was received from a {{operating_system}} device using {{browser_name}}.
-                          If this password change wasn't initiated by you, please change your password immediately or contact your administrator if your account is locked.
+                          {% if operating_system and browser_name %}For security, this request was received from a {{operating_system}} device using {{browser_name}}.
+                          {% endif %}If this password change wasn't initiated by you, please change your password immediately or contact your administrator if your account is locked.
                         </p>
                         <p>Thanks,
                           <br>

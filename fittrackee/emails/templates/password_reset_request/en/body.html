@@ -230,8 +230,8 @@
                           </tr>
                         </table>
                         <p>
-                          For security, this request was received from a {{operating_system}} device using {{browser_name}}.
-                          If you did not request a password reset, please ignore this email.
+                          {% if operating_system and browser_name %}For security, this request was received from a {{operating_system}} device using {{browser_name}}.
+                          {% endif %}If you did not request a password reset, please ignore this email.
                         </p>
                         <p>Thanks,
                           <br>The FitTrackee Team</p>
