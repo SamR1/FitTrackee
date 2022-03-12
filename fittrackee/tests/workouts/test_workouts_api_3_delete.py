@@ -63,7 +63,9 @@ class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
     def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
         response = client.delete(
             f'/api/workouts/{get_random_short_id()}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -104,7 +106,9 @@ class TestDeleteWorkoutWithoutGpx(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
         response = client.delete(
             f'/api/workouts/{workout_cycling_user_1.short_id}',
             headers=dict(Authorization=f'Bearer {auth_token}'),

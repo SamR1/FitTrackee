@@ -210,7 +210,9 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
     def test_it_adds_an_workout_with_gpx_file(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/workouts',
@@ -238,7 +240,9 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         sport_1_cycling: Sport,
         gpx_file_wo_name: str,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/workouts',
@@ -270,7 +274,9 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         gpx_file_wo_name: str,
     ) -> None:
         user_1.timezone = 'Europe/Paris'
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/workouts',
@@ -311,7 +317,9 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         sport_1_cycling: Sport,
         gpx_file: str,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/workouts',
@@ -339,7 +347,9 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         gpx_file: str,
         static_map_get_mock: Mock,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
         client.post(
             '/api/workouts',
             data=dict(
@@ -369,7 +379,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         static_map_get_mock: Mock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_default_static_map
+            app_default_static_map, user_1.email
         )
         client.post(
             '/api/workouts',
@@ -398,7 +408,9 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         sport_1_cycling: Sport,
         gpx_file_wo_track: str,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/workouts',
@@ -425,7 +437,9 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         sport_1_cycling: Sport,
         gpx_file_invalid_xml: str,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/workouts',
@@ -451,7 +465,9 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
     def test_it_returns_400_if_workout_gpx_has_invalid_extension(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/workouts',
@@ -473,7 +489,9 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
     def test_it_returns_400_if_sport_id_is_not_provided(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/workouts',
@@ -494,7 +512,9 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
     def test_it_returns_500_if_sport_id_does_not_exists(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/workouts',
@@ -516,7 +536,9 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
     def test_returns_400_if_no_gpx_file_is_provided(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/workouts',
@@ -540,7 +562,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         gpx_file: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_max_file_size
+            app_with_max_file_size, user_1.email
         )
 
         response = client.post(
@@ -568,7 +590,9 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
     def test_it_adds_an_workout_without_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/workouts/no_gpx',
@@ -593,7 +617,9 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
     def test_it_returns_400_if_workout_date_is_missing(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/workouts/no_gpx',
@@ -610,7 +636,9 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
     def test_it_returns_500_if_workout_format_is_invalid(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/workouts/no_gpx',
@@ -638,7 +666,9 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         sport_2_running: Sport,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/workouts/no_gpx',
@@ -690,7 +720,9 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
         file_path = os.path.join(app.root_path, 'tests/files/gpx_test.zip')
         # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
         with open(file_path, 'rb') as zip_file:
-            client, auth_token = self.get_test_client_and_auth_token(app)
+            client, auth_token = self.get_test_client_and_auth_token(
+                app, user_1.email
+            )
 
             response = client.post(
                 '/api/workouts',
@@ -719,7 +751,9 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
         # 'gpx_test_folder.zip' contains 3 gpx files (same data) and 1 non-gpx
         # file in a folder
         with open(file_path, 'rb') as zip_file:
-            client, auth_token = self.get_test_client_and_auth_token(app)
+            client, auth_token = self.get_test_client_and_auth_token(
+                app, user_1.email
+            )
 
             response = client.post(
                 '/api/workouts',
@@ -746,7 +780,9 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
         )
         # 'gpx_test_incorrect.zip' contains 2 gpx files, one is incorrect
         with open(file_path, 'rb') as zip_file:
-            client, auth_token = self.get_test_client_and_auth_token(app)
+            client, auth_token = self.get_test_client_and_auth_token(
+                app, user_1.email
+            )
 
             response = client.post(
                 '/api/workouts',
@@ -778,7 +814,7 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
         # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
         with open(file_path, 'rb') as zip_file:
             client, auth_token = self.get_test_client_and_auth_token(
-                app_with_max_workouts
+                app_with_max_workouts, user_1.email
             )
 
             client.post(
@@ -811,7 +847,7 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
         # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
         with open(file_path, 'rb') as zip_file:
             client, auth_token = self.get_test_client_and_auth_token(
-                app_with_max_zip_file_size
+                app_with_max_zip_file_size, user_1.email
             )
 
             response = client.post(
@@ -836,9 +872,11 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
 
 class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
     def workout_assertion(
-        self, app: Flask, gpx_file: str, with_segments: bool
+        self, app: Flask, user_1: User, gpx_file: str, with_segments: bool
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
         response = client.post(
             '/api/workouts',
             data=dict(
@@ -917,7 +955,7 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
     def test_it_gets_an_workout_created_with_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
-        return self.workout_assertion(app, gpx_file, False)
+        return self.workout_assertion(app, user_1, gpx_file, False)
 
     def test_it_gets_an_workout_created_with_gpx_with_segments(
         self,
@@ -926,12 +964,16 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         gpx_file_with_segments: str,
     ) -> None:
-        return self.workout_assertion(app, gpx_file_with_segments, True)
+        return self.workout_assertion(
+            app, user_1, gpx_file_with_segments, True
+        )
 
     def test_it_gets_chart_data_for_an_workout_created_with_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/workouts',
@@ -960,7 +1002,9 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
     def test_it_gets_segment_chart_data_for_an_workout_created_with_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/workouts',
@@ -994,7 +1038,9 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         gpx_file: str,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
         response = client.post(
             '/api/workouts',
             data=dict(
@@ -1030,7 +1076,9 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
     def test_it_returns_500_on_invalid_segment_id(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/workouts',
@@ -1059,7 +1107,9 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
     def test_it_returns_404_if_segment_id_does_not_exist(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/workouts',
@@ -1090,7 +1140,9 @@ class TestPostAndGetWorkoutWithoutGpx(ApiTestCaseMixin):
     def test_it_add_and_gets_an_workout_wo_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/workouts/no_gpx',
@@ -1121,7 +1173,9 @@ class TestPostAndGetWorkoutWithoutGpx(ApiTestCaseMixin):
     def test_it_adds_and_gets_an_workout_wo_gpx_notes(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/workouts/no_gpx',
@@ -1156,7 +1210,9 @@ class TestPostAndGetWorkoutUsingTimezones(ApiTestCaseMixin):
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
         user_1.timezone = 'Europe/Paris'
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/workouts/no_gpx',
@@ -1194,7 +1250,9 @@ class TestPostAndGetWorkoutUsingTimezones(ApiTestCaseMixin):
     def test_it_adds_and_gets_workouts_date_filter_with_timezone_new_york(
         self, app: Flask, user_1_full: User, sport_1_cycling: Sport
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_full.email
+        )
 
         client.post(
             '/api/workouts/no_gpx',
@@ -1234,7 +1292,9 @@ class TestPostAndGetWorkoutUsingTimezones(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_paris.email
+        )
 
         client.post(
             '/api/workouts/no_gpx',
