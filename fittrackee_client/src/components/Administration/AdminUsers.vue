@@ -46,7 +46,7 @@
                   <span class="cell-heading">
                     {{ $t('user.USERNAME') }}
                   </span>
-                  <router-link :to="`/users/${user.username}`">
+                  <router-link :to="`/admin/users/${user.username}`">
                     {{ user.username }}
                   </router-link>
                 </td>
