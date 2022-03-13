@@ -194,7 +194,7 @@ def get_users(auth_user: User) -> Dict:
     query = params.get('q')
     users_pagination = (
         User.query.filter(
-            User.username.like('%' + query + '%') if query else True,
+            User.username.ilike('%' + query + '%') if query else True,
         )
         .order_by(
             User.workouts_count.asc()  # type: ignore
