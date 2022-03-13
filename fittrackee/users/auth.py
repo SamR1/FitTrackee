@@ -74,7 +74,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
         "status": "error"
       }
 
-    :<json string username: user name (3 to 12 characters required)
+    :<json string username: user name (3 to 30 characters required)
     :<json string email: user email
     :<json string password: password (8 characters required)
     :<json string password_conf: password confirmation
@@ -84,7 +84,9 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
         - invalid payload
         - sorry, that user already exists
         - Errors:
-            - username: 3 to 12 characters required
+            - username: 3 to 30 characters required
+            - username: only alphanumeric characters and the underscore
+                        character "_" allowed
             - email: valid email must be provided
             - password: password and password confirmation don't match
             - password: 8 characters required

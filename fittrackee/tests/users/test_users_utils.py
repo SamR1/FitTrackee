@@ -120,7 +120,7 @@ class TestIsUsernameValid:
         ('input_username_length',),
         [
             (2,),
-            (13,),
+            (31,),
         ],
     )
     def test_it_returns_error_message_when_username_length_is_invalid(
@@ -128,9 +128,9 @@ class TestIsUsernameValid:
     ) -> None:
         assert (
             check_username(
-                username=random_string(input_username_length),
+                username=random_string(31),
             )
-            == 'username: 3 to 12 characters required\n'
+            == 'username: 3 to 30 characters required\n'
         )
 
     @pytest.mark.parametrize(
@@ -154,9 +154,9 @@ class TestIsUsernameValid:
         assert check_username(username=random_string()) == ''
 
     def test_it_returns_multiple_errors(self) -> None:
-        username = random_string(1) + '.'
+        username = random_string(31) + '.'
         assert check_username(username=username) == (
-            'username: 3 to 12 characters required\n'
+            'username: 3 to 30 characters required\n'
             'username: only alphanumeric characters and the underscore '
             'character "_" allowed\n'
         )
@@ -201,14 +201,14 @@ class TestRegisterControls:
         )
 
     def test_it_returns_multiple_errors_when_inputs_are_invalid(self) -> None:
-        invalid_username = random_string(2)
+        invalid_username = random_string(31)
         assert register_controls(
             username=invalid_username,
             email=invalid_username,
             password=random_string(8),
             password_conf=random_string(8),
         ) == (
-            'username: 3 to 12 characters required\n'
+            'username: 3 to 30 characters required\n'
             'email: valid email must be provided\n'
             'password: password and password confirmation do not match\n'
         )

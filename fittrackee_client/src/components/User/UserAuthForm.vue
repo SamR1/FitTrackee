@@ -23,7 +23,7 @@
               required
               pattern="[a-zA-Z0-9_]+"
               minlength="3"
-              maxlength="12"
+              maxlength="30"
               @invalid="invalidateForm"
               v-model="formData.username"
               :placeholder="$t('user.USERNAME')"

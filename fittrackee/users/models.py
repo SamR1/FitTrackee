@@ -19,7 +19,7 @@ BaseModel: DeclarativeMeta = db.Model
 class User(BaseModel):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    username = db.Column(db.String(20), unique=True, nullable=False)
+    username = db.Column(db.String(255), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
@@ -32,7 +32,7 @@ class User(BaseModel):
     picture = db.Column(db.String(255), nullable=True)
     timezone = db.Column(db.String(50), nullable=True)
     # does the week start Monday?
-    weekm = db.Column(db.Boolean(50), default=False, nullable=False)
+    weekm = db.Column(db.Boolean, default=False, nullable=False)
     workouts = db.relationship(
         'Workout',
         lazy=True,

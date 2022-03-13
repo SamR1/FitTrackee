@@ -93,7 +93,7 @@ class TestUserRegistration(ApiTestCaseMixin):
             '/api/auth/register',
             data=json.dumps(
                 dict(
-                    username='t',
+                    username='',
                     email='test@test.com',
                     password='12345678',
                     password_conf='12345678',
@@ -102,17 +102,25 @@ class TestUserRegistration(ApiTestCaseMixin):
             content_type='application/json',
         )
 
-        self.assert_400(response, "username: 3 to 12 characters required\n")
+        self.assert_400(
+            response,
+            (
+                'username: 3 to 30 characters required\n'
+                'username: only alphanumeric characters and '
+                'the underscore character "_" allowed\n'
+            ),
+        )
 
     def test_it_returns_error_if_username_is_too_long(
         self, app: Flask
     ) -> None:
         client = app.test_client()
+
         response = client.post(
             '/api/auth/register',
             data=json.dumps(
                 dict(
-                    username='testestestestestest',
+                    username='a' * 31,
                     email='test@test.com',
                     password='12345678',
                     password_conf='12345678',
@@ -121,7 +129,38 @@ class TestUserRegistration(ApiTestCaseMixin):
             content_type='application/json',
         )
 
-        self.assert_400(response, "username: 3 to 12 characters required\n")
+        self.assert_400(response, "username: 3 to 30 characters required\n")
+
+    @pytest.mark.parametrize(
+        'input_description,input_username',
+        [
+            ('account_handle', '@sam@example.com'),
+            ('with special characters', 'sam*'),
+        ],
+    )
+    def test_it_returns_error_if_username_is_invalid(
+        self, app: Flask, input_description: str, input_username: str
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/register',
+            data=json.dumps(
+                dict(
+                    username=input_username,
+                    email='test@test.com',
+                    password='12345678',
+                    password_conf='12345678',
+                )
+            ),
+            content_type='application/json',
+        )
+
+        self.assert_400(
+            response,
+            'username: only alphanumeric characters and '
+            'the underscore character "_" allowed\n',
+        )
 
     def test_it_returns_error_if_email_is_invalid(self, app: Flask) -> None:
         client = app.test_client()
@@ -260,24 +299,6 @@ class TestUserRegistration(ApiTestCaseMixin):
         )
 
         self.assert_400(response)
-
-    def test_it_returns_error_if_username_is_invalid(self, app: Flask) -> None:
-        client = app.test_client()
-
-        response = client.post(
-            '/api/auth/register',
-            data=json.dumps(
-                dict(
-                    username=1,
-                    email='test@test.com',
-                    password='12345678',
-                    password_conf='12345678',
-                )
-            ),
-            content_type='application/json',
-        )
-
-        self.assert_500(response)
 
 
 class TestUserLogin(ApiTestCaseMixin):
