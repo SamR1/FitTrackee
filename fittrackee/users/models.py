@@ -20,7 +20,7 @@ class User(BaseModel):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(255), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
+    email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
     admin = db.Column(db.Boolean, default=False, nullable=False)
@@ -45,6 +45,8 @@ class User(BaseModel):
     )
     language = db.Column(db.String(50), nullable=True)
     imperial_units = db.Column(db.Boolean, default=False, nullable=False)
+    email_to_confirm = db.Column(db.String(255), nullable=True)
+    confirmation_token = db.Column(db.String(255), nullable=True)
 
     def __repr__(self) -> str:
         return f'<User {self.username!r}>'

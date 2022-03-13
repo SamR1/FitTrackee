@@ -593,7 +593,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_400(response, error_message='current password is missing')
+        self.assert_400(response)
 
     def test_it_returns_error_if_current_password_is_missing(
         self, app: Flask, user_1: User
@@ -605,11 +605,37 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
         response = client.patch(
             '/api/auth/profile/edit/account',
             content_type='application/json',
-            data=json.dumps(dict(new_password=random_string())),
+            data=json.dumps(
+                dict(
+                    email=user_1.email,
+                    new_password=random_string(),
+                )
+            ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         self.assert_400(response, error_message='current password is missing')
+
+    def test_it_returns_error_if_email_is_missing(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            '/api/auth/profile/edit/account',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    password='12345678',
+                    new_password=random_string(),
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, 'email is missing')
 
     def test_it_returns_error_if_current_password_is_invalid(
         self, app: Flask, user_1: User
@@ -623,6 +649,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             content_type='application/json',
             data=json.dumps(
                 dict(
+                    email=user_1.email,
                     password=random_string(),
                     new_password=random_string(),
                 )
@@ -631,6 +658,129 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
         )
 
         self.assert_401(response, error_message='invalid credentials')
+
+    def test_it_does_not_returns_error_if_no_new_password_provided(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            '/api/auth/profile/edit/account',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    email=user_1.email,
+                    password='12345678',
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'user account updated'
+
+    def test_it_does_not_update_user_account_if_no_new_password_provided(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        current_hashed_password = user_1.password
+        current_email = user_1.email
+
+        response = client.patch(
+            '/api/auth/profile/edit/account',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    email=user_1.email,
+                    password='12345678',
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        assert current_email == user_1.email
+        assert current_hashed_password == user_1.password
+
+    def test_it_returns_error_if_new_email_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            '/api/auth/profile/edit/account',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    email=random_string(),
+                    password='12345678',
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, 'email: valid email must be provided\n')
+
+    def test_it_does_not_update_email_if_new_email_provided(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        current_email = user_1.email
+        new_email = 'new.email@example.com'
+
+        response = client.patch(
+            '/api/auth/profile/edit/account',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    email=new_email,
+                    password='12345678',
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        assert current_email == user_1.email
+        assert new_email == user_1.email_to_confirm
+        assert user_1.confirmation_token is not None
+
+    def test_it_updates_email_to_confirm_when_new_email_provided(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        previous_confirmation_token = random_string()
+        user_1.email_to_confirm = 'new.email@example.com'
+        user_1.confirmation_token = previous_confirmation_token
+        new_email = 'another.email@example.com'
+
+        response = client.patch(
+            '/api/auth/profile/edit/account',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    email=new_email,
+                    password='12345678',
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        assert new_email == user_1.email_to_confirm
+        assert user_1.confirmation_token != previous_confirmation_token
 
     def test_it_returns_error_if_controls_fail_on_new_password(
         self, app: Flask, user_1: User
@@ -644,6 +794,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             content_type='application/json',
             data=json.dumps(
                 dict(
+                    email=user_1.email,
                     password='12345678',
                     new_password=random_string(length=3),
                 )
@@ -666,6 +817,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             content_type='application/json',
             data=json.dumps(
                 dict(
+                    email=user_1.email,
                     password='12345678',
                     new_password=random_string(),
                 )
@@ -689,6 +841,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             content_type='application/json',
             data=json.dumps(
                 dict(
+                    email=user_1.email,
                     password='12345678',
                     new_password=new_password,
                 )

@@ -1,6 +1,7 @@
 import datetime
 import os
 import re
+import secrets
 from typing import Dict, Tuple, Union
 
 import jwt
@@ -27,7 +28,7 @@ from fittrackee.workouts.models import Sport
 
 from .decorators import authenticate
 from .models import User, UserSportPreference
-from .utils.controls import check_password, register_controls
+from .utils.controls import check_password, is_valid_email, register_controls
 from .utils.token import decode_user_token
 
 auth_blueprint = Blueprint('auth', __name__)
@@ -546,7 +547,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
 @authenticate
 def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
     """
-    update authenticated user password
+    update authenticated user email and password
 
     **Example request**:
 
@@ -630,48 +631,67 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
         "status": "success"
       }
 
-    :<json string password: user password
+    :<json string email: user email
+    :<json string password: user current password
+    :<json string new_password: user new password
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: user account updated
     :statuscode 400:
         - invalid payload
+        - email is missing
+        - current password is missing
+        - email: valid email must be provided
         - password: 8 characters required
     :statuscode 401:
         - provide a valid auth token
         - signature expired, please log in again
         - invalid token, please log in again
+        - invalid credentials
     :statuscode 500: error, please try again or contact the administrator
 
     """
     data = request.get_json()
-    if not data or not data.get('password'):
-        return InvalidPayloadErrorResponse('current password is missing')
-
+    if not data:
+        return InvalidPayloadErrorResponse()
+    email_to_confirm = data.get('email')
+    if not email_to_confirm:
+        return InvalidPayloadErrorResponse('email is missing')
     current_password = data.get('password')
+    if not current_password:
+        return InvalidPayloadErrorResponse('current password is missing')
     if not bcrypt.check_password_hash(auth_user.password, current_password):
         return UnauthorizedErrorResponse('invalid credentials')
 
     new_password = data.get('new_password')
-    message = check_password(new_password)
-    if message != '':
-        return InvalidPayloadErrorResponse(message)
-    hashed_password = bcrypt.generate_password_hash(
-        new_password, current_app.config.get('BCRYPT_LOG_ROUNDS')
-    ).decode()
-
+    error_messages = ''
     try:
-        auth_user.password = hashed_password
-        db.session.commit()
+        if email_to_confirm != auth_user.email:
+            if is_valid_email(email_to_confirm):
+                auth_user.email_to_confirm = email_to_confirm
+                auth_user.confirmation_token = secrets.token_urlsafe(16)
+            else:
+                error_messages = 'email: valid email must be provided\n'
 
+        if new_password is not None:
+            error_messages += check_password(new_password)
+            if error_messages == '':
+                hashed_password = bcrypt.generate_password_hash(
+                    new_password, current_app.config.get('BCRYPT_LOG_ROUNDS')
+                ).decode()
+                auth_user.password = hashed_password
+
+        if error_messages != '':
+            return InvalidPayloadErrorResponse(error_messages)
+
+        db.session.commit()
         return {
             'status': 'success',
             'message': 'user account updated',
             'data': auth_user.serialize(),
         }
 
-    # handler errors
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)
 
