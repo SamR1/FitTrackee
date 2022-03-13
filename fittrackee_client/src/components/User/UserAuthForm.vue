@@ -57,21 +57,6 @@
                   : $t('user.PASSWORD')
               "
             />
-            <input
-              v-if="['register', 'reset'].includes(action)"
-              id="confirm-password"
-              :disabled="registration_disabled"
-              type="password"
-              minlength="8"
-              required
-              @invalid="invalidateForm"
-              v-model="formData.password_conf"
-              :placeholder="
-                action === 'reset'
-                  ? $t('user.ENTER_PASSWORD_CONFIRMATION')
-                  : $t('user.PASSWORD_CONFIRM')
-              "
-            />
           </div>
           <button type="submit" :disabled="registration_disabled">
             {{ $t(buttonText) }}
@@ -131,7 +116,6 @@
     username: '',
     email: '',
     password: '',
-    password_conf: '',
   })
   const buttonText: ComputedRef<string> = computed(() =>
     getButtonText(props.action)
@@ -171,7 +155,6 @@
         }
         return store.dispatch(AUTH_USER_STORE.ACTIONS.RESET_USER_PASSWORD, {
           password: formData.password,
-          password_conf: formData.password_conf,
           token: props.token,
         })
       case 'reset-request':
@@ -193,7 +176,6 @@
     formData.username = ''
     formData.email = ''
     formData.password = ''
-    formData.password_conf = ''
   }
 
   watch(

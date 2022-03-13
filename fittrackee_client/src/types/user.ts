@@ -32,7 +32,6 @@ export interface IUserPayload {
   last_name: string
   location: string
   password: string
-  password_conf: string
 }
 
 export interface IAdminUserPayload {
@@ -64,7 +63,6 @@ export interface IUserPasswordPayload {
 
 export interface IUserPasswordResetPayload {
   password: string
-  password_conf: string
   token: string
 }
 
@@ -77,7 +75,6 @@ export interface ILoginRegisterFormData {
   username: string
   email: string
   password: string
-  password_conf: string
 }
 
 export interface ILoginOrRegisterData {

@@ -7,7 +7,7 @@ from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.models import User
 from fittrackee.users.utils.admin import set_admin_rights
 from fittrackee.users.utils.controls import (
-    check_passwords,
+    check_password,
     check_username,
     is_valid_email,
     register_controls,
@@ -70,13 +70,6 @@ class TestIsValidEmail:
 
 
 class TestCheckPasswords:
-    def test_it_returns_error_message_string_if_passwords_do_not_match(
-        self,
-    ) -> None:
-        assert check_passwords('password', 'pasword') == (
-            'password: password and password confirmation do not match\n'
-        )
-
     @pytest.mark.parametrize(
         ('input_password_length',),
         [
@@ -89,7 +82,7 @@ class TestCheckPasswords:
         self, input_password_length: int
     ) -> None:
         password = random_string(input_password_length)
-        assert check_passwords(password, password) == (
+        assert check_password(password) == (
             'password: 8 characters required\n'
         )
 
@@ -104,15 +97,7 @@ class TestCheckPasswords:
         self, input_password_length: int
     ) -> None:
         password = random_string(input_password_length)
-        assert check_passwords(password, password) == ''
-
-    def test_it_returns_multiple_errors(self) -> None:
-        password = random_string(3)
-        password_conf = random_string(8)
-        assert check_passwords(password, password_conf) == (
-            'password: password and password confirmation do not match\n'
-            'password: 8 characters required\n'
-        )
+        assert check_password(password) == ''
 
 
 class TestIsUsernameValid:
@@ -170,7 +155,7 @@ class TestRegisterControls:
 
     def test_it_calls_all_validators(self) -> None:
         with patch(
-            self.module_path + 'check_passwords'
+            self.module_path + 'check_password'
         ) as check_passwords_mock, patch(
             self.module_path + 'check_username'
         ) as check_username_mock, patch(
@@ -180,12 +165,9 @@ class TestRegisterControls:
                 self.valid_username,
                 self.valid_email,
                 self.valid_password,
-                self.valid_password,
             )
 
-        check_passwords_mock.assert_called_once_with(
-            self.valid_password, self.valid_password
-        )
+        check_passwords_mock.assert_called_once_with(self.valid_password)
         check_username_mock.assert_called_once_with(self.valid_username)
         is_valid_email_mock.assert_called_once_with(self.valid_email)
 
@@ -194,7 +176,6 @@ class TestRegisterControls:
             register_controls(
                 self.valid_username,
                 self.valid_email,
-                self.valid_password,
                 self.valid_password,
             )
             == ''
@@ -206,9 +187,7 @@ class TestRegisterControls:
             username=invalid_username,
             email=invalid_username,
             password=random_string(8),
-            password_conf=random_string(8),
         ) == (
             'username: 3 to 30 characters required\n'
             'email: valid email must be provided\n'
-            'password: password and password confirmation do not match\n'
         )

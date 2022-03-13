@@ -27,15 +27,6 @@
             :disabled="loading"
           />
         </label>
-        <label class="form-items" for="passwordConfirmation">
-          {{ $t('user.PASSWORD_CONFIRMATION') }}
-          <input
-            id="passwordConfirmation"
-            type="password"
-            v-model="userForm.password_conf"
-            :disabled="loading"
-          />
-        </label>
         <hr />
         <label class="form-items" for="first_name">
           {{ $t('user.PROFILE.FIRST_NAME') }}
@@ -119,7 +110,6 @@
   const { user } = toRefs(props)
   const userForm: IUserPayload = reactive({
     password: '',
-    password_conf: '',
     first_name: '',
     last_name: '',
     birth_date: '',

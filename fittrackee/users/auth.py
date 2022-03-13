@@ -27,7 +27,7 @@ from fittrackee.workouts.models import Sport
 
 from .decorators import authenticate
 from .models import User, UserSportPreference
-from .utils.controls import check_passwords, register_controls
+from .utils.controls import check_password, register_controls
 from .utils.token import decode_user_token
 
 auth_blueprint = Blueprint('auth', __name__)
@@ -77,7 +77,6 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     :<json string username: user name (3 to 30 characters required)
     :<json string email: user email
     :<json string password: password (8 characters required)
-    :<json string password_conf: password confirmation
 
     :statuscode 201: successfully registered
     :statuscode 400:
@@ -88,7 +87,6 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
             - username: only alphanumeric characters and the underscore
                         character "_" allowed
             - email: valid email must be provided
-            - password: password and password confirmation don't match
             - password: 8 characters required
     :statuscode 403:
         error, registration is disabled
@@ -106,16 +104,14 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
         or post_data.get('username') is None
         or post_data.get('email') is None
         or post_data.get('password') is None
-        or post_data.get('password_conf') is None
     ):
         return InvalidPayloadErrorResponse()
     username = post_data.get('username')
     email = post_data.get('email')
     password = post_data.get('password')
-    password_conf = post_data.get('password_conf')
 
     try:
-        ret = register_controls(username, email, password, password_conf)
+        ret = register_controls(username, email, password)
     except TypeError as e:
         return handle_error_and_return_response(e, db=db)
 
@@ -192,7 +188,7 @@ def login_user() -> Union[Dict, HttpResponse]:
       }
 
     :<json string email: user email
-    :<json string password_conf: password confirmation
+    :<json string password: password
 
     :statuscode 200: successfully logged in
     :statuscode 400: invalid payload
@@ -481,14 +477,12 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
     :<json string bio: user biography
     :<json string birth_date: user birth date (format: ``%Y-%m-%d``)
     :<json string password: user password
-    :<json string password_conf: user password confirmation
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: user profile updated
     :statuscode 400:
         - invalid payload
-        - password: password and password confirmation don't match
     :statuscode 401:
         - provide a valid auth token
         - signature expired, please log in again
@@ -514,10 +508,9 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
     birth_date = post_data.get('birth_date')
     location = post_data.get('location')
     password = post_data.get('password')
-    password_conf = post_data.get('password_conf')
 
     if password is not None and password != '':
-        message = check_passwords(password, password_conf)
+        message = check_password(password)
         if message != '':
             return InvalidPayloadErrorResponse(message)
         password = bcrypt.generate_password_hash(
@@ -1068,7 +1061,6 @@ def update_password() -> Union[Dict, HttpResponse]:
       }
 
     :<json string password: password (8 characters required)
-    :<json string password_conf: password confirmation
     :<json string token: password reset token
 
     :statuscode 200: password updated
@@ -1081,12 +1073,10 @@ def update_password() -> Union[Dict, HttpResponse]:
     if (
         not post_data
         or post_data.get('password') is None
-        or post_data.get('password_conf') is None
         or post_data.get('token') is None
     ):
         return InvalidPayloadErrorResponse()
     password = post_data.get('password')
-    password_conf = post_data.get('password_conf')
     token = post_data.get('token')
 
     try:
@@ -1094,7 +1084,7 @@ def update_password() -> Union[Dict, HttpResponse]:
     except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
         return UnauthorizedErrorResponse()
 
-    message = check_passwords(password, password_conf)
+    message = check_password(password)
     if message != '':
         return InvalidPayloadErrorResponse(message)
 

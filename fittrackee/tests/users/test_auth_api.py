@@ -25,7 +25,6 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username='justatest',
                     email='test@test.com',
                     password='12345678',
-                    password_conf='12345678',
                 )
             ),
             content_type='application/json',
@@ -53,7 +52,6 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username=input_username,
                     email='another_email@test.com',
                     password='12345678',
-                    password_conf='12345678',
                 )
             ),
             content_type='application/json',
@@ -76,7 +74,6 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username='test',
                     email='test@test.com',
                     password='12345678',
-                    password_conf='12345678',
                 )
             ),
             content_type='application/json',
@@ -96,7 +93,6 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username='',
                     email='test@test.com',
                     password='12345678',
-                    password_conf='12345678',
                 )
             ),
             content_type='application/json',
@@ -123,7 +119,6 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username='a' * 31,
                     email='test@test.com',
                     password='12345678',
-                    password_conf='12345678',
                 )
             ),
             content_type='application/json',
@@ -150,7 +145,6 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username=input_username,
                     email='test@test.com',
                     password='12345678',
-                    password_conf='12345678',
                 )
             ),
             content_type='application/json',
@@ -172,7 +166,6 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username='test',
                     email='test@test',
                     password='12345678',
-                    password_conf='12345678',
                 )
             ),
             content_type='application/json',
@@ -192,34 +185,12 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username='test',
                     email='test@test.com',
                     password='1234567',
-                    password_conf='1234567',
                 )
             ),
             content_type='application/json',
         )
 
         self.assert_400(response, "password: 8 characters required\n")
-
-    def test_it_returns_error_if_passwords_mismatch(self, app: Flask) -> None:
-        client = app.test_client()
-
-        response = client.post(
-            '/api/auth/register',
-            data=json.dumps(
-                dict(
-                    username='test',
-                    email='test@test.com',
-                    password='12345678',
-                    password_conf='87654321',
-                )
-            ),
-            content_type='application/json',
-        )
-
-        self.assert_400(
-            response,
-            "password: password and password confirmation do not match\n",
-        )
 
     def test_it_returns_error_if_payload_is_invalid(self, app: Flask) -> None:
         client = app.test_client()
@@ -242,7 +213,6 @@ class TestUserRegistration(ApiTestCaseMixin):
                 dict(
                     email='test@test.com',
                     password='12345678',
-                    password_conf='12345678',
                 )
             ),
             content_type='application/json',
@@ -259,7 +229,6 @@ class TestUserRegistration(ApiTestCaseMixin):
                 dict(
                     username='test',
                     password='12345678',
-                    password_conf='12345678',
                 )
             ),
             content_type='application/json',
@@ -276,23 +245,6 @@ class TestUserRegistration(ApiTestCaseMixin):
                 dict(
                     username='test',
                     email='test@test.com',
-                    password_conf='12345678',
-                )
-            ),
-            content_type='application/json',
-        )
-
-        self.assert_400(response)
-
-    def test_it_returns_error_if_password_confirmation_is_missing(
-        self, app: Flask
-    ) -> None:
-        client = app.test_client()
-        response = client.post(
-            '/api/auth/register',
-            data=json.dumps(
-                dict(
-                    username='test', email='test@test.com', password='12345678'
                 )
             ),
             content_type='application/json',
@@ -564,7 +516,6 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
                     bio='Nothing to tell',
                     birth_date='1980-01-01',
                     password='87654321',
-                    password_conf='87654321',
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -671,63 +622,6 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
         )
 
         self.assert_400(response)
-
-    def test_it_returns_error_if_passwords_mismatch(
-        self, app: Flask, user_1: User
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.post(
-            '/api/auth/profile/edit',
-            content_type='application/json',
-            data=json.dumps(
-                dict(
-                    first_name='John',
-                    last_name='Doe',
-                    location='Somewhere',
-                    bio='just a random guy',
-                    birth_date='1980-01-01',
-                    password='87654321',
-                    password_conf='876543210',
-                )
-            ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_400(
-            response,
-            'password: password and password confirmation do not match\n',
-        )
-
-    def test_it_returns_error_if_password_confirmation_is_missing(
-        self, app: Flask, user_1: User
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.post(
-            '/api/auth/profile/edit',
-            content_type='application/json',
-            data=json.dumps(
-                dict(
-                    first_name='John',
-                    last_name='Doe',
-                    location='Somewhere',
-                    bio='just a random guy',
-                    birth_date='1980-01-01',
-                    password='87654321',
-                )
-            ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_400(
-            response,
-            'password: password and password confirmation do not match\n',
-        )
 
 
 class TestUserPreferencesUpdate(ApiTestCaseMixin):
@@ -1192,7 +1086,6 @@ class TestRegistrationConfiguration(ApiTestCaseMixin):
                     username='user4',
                     email='user4@test.com',
                     password='12345678',
-                    password_conf='12345678',
                 )
             ),
             content_type='application/json',
@@ -1214,7 +1107,6 @@ class TestRegistrationConfiguration(ApiTestCaseMixin):
                     username='sam',
                     email='sam@test.com',
                     password='12345678',
-                    password_conf='12345678',
                 )
             ),
             content_type='application/json',
@@ -1227,7 +1119,6 @@ class TestRegistrationConfiguration(ApiTestCaseMixin):
                     username='new',
                     email='new@test.com',
                     password='12345678',
-                    password_conf='12345678',
                 )
             ),
             content_type='application/json',
@@ -1248,7 +1139,6 @@ class TestRegistrationConfiguration(ApiTestCaseMixin):
                     username='sam',
                     email='sam@test.com',
                     password='12345678',
-                    password_conf='12345678',
                 )
             ),
             content_type='application/json',
@@ -1260,7 +1150,6 @@ class TestRegistrationConfiguration(ApiTestCaseMixin):
                     username='new',
                     email='new@test.com',
                     password='12345678',
-                    password_conf='12345678',
                 )
             ),
             content_type='application/json',
@@ -1331,12 +1220,7 @@ class TestPasswordUpdate(ApiTestCaseMixin):
 
         response = client.post(
             '/api/auth/password/update',
-            data=json.dumps(
-                dict(
-                    token='xxx',
-                    password='1234567',
-                )
-            ),
+            data=json.dumps(dict()),
             content_type='application/json',
         )
 
@@ -1350,7 +1234,6 @@ class TestPasswordUpdate(ApiTestCaseMixin):
             data=json.dumps(
                 dict(
                     password='12345678',
-                    password_conf='12345678',
                 )
             ),
             content_type='application/json',
@@ -1366,25 +1249,6 @@ class TestPasswordUpdate(ApiTestCaseMixin):
             data=json.dumps(
                 dict(
                     token='xxx',
-                    password_conf='12345678',
-                )
-            ),
-            content_type='application/json',
-        )
-
-        self.assert_400(response)
-
-    def test_it_returns_error_if_password_confirmation_is_missing(
-        self, app: Flask
-    ) -> None:
-        client = app.test_client()
-
-        response = client.post(
-            '/api/auth/password/update',
-            data=json.dumps(
-                dict(
-                    token='xxx',
-                    password='12345678',
                 )
             ),
             content_type='application/json',
@@ -1424,7 +1288,6 @@ class TestPasswordUpdate(ApiTestCaseMixin):
                     dict(
                         token=token,
                         password='12345678',
-                        password_conf='12345678',
                     )
                 ),
                 content_type='application/json',
@@ -1446,7 +1309,6 @@ class TestPasswordUpdate(ApiTestCaseMixin):
                 dict(
                     token=token,
                     password='1234567',
-                    password_conf='1234567',
                 )
             ),
             content_type='application/json',
@@ -1454,7 +1316,7 @@ class TestPasswordUpdate(ApiTestCaseMixin):
 
         self.assert_400(response, 'password: 8 characters required\n')
 
-    def test_it_update_password(self, app: Flask, user_1: User) -> None:
+    def test_it_updates_password(self, app: Flask, user_1: User) -> None:
         token = get_user_token(user_1.id, password_reset=True)
         client = app.test_client()
 
@@ -1464,7 +1326,6 @@ class TestPasswordUpdate(ApiTestCaseMixin):
                 dict(
                     token=token,
                     password='12345678',
-                    password_conf='12345678',
                 )
             ),
             content_type='application/json',
