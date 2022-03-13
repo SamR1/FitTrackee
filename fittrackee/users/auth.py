@@ -1302,3 +1302,60 @@ def update_password() -> Union[Dict, HttpResponse]:
         }
     except (exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)
+
+
+@auth_blueprint.route('/auth/email/update', methods=['POST'])
+def update_email() -> Union[Dict, HttpResponse]:
+    """
+    update user email after confirmation
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/auth/email/update HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "message": "email updated",
+        "status": "success"
+      }
+
+    :<json string token: password reset token
+
+    :statuscode 200: email updated
+    :statuscode 400: invalid payload
+    :statuscode 500: error, please try again or contact the administrator
+
+    """
+    post_data = request.get_json()
+    if not post_data or post_data.get('token') is None:
+        return InvalidPayloadErrorResponse()
+    token = post_data.get('token')
+
+    try:
+        user = User.query.filter_by(confirmation_token=token).first()
+
+        if not user:
+            return InvalidPayloadErrorResponse()
+
+        user.email = user.email_to_confirm
+        user.email_to_confirm = None
+        user.confirmation_token = None
+
+        db.session.commit()
+
+        response = {
+            'status': 'success',
+            'message': 'email updated',
+        }
+
+        return response
+
+    except (exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(e, db=db)

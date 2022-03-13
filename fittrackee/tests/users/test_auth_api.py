@@ -1866,3 +1866,64 @@ class TestPasswordUpdate(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['message'] == 'password updated'
+
+
+class TestEmailUpdateWitUnauthenticatedUser(ApiTestCaseMixin):
+    def test_it_returns_error_if_token_is_missing(self, app: Flask) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/email/update',
+            data=json.dumps(dict()),
+            content_type='application/json',
+        )
+
+        self.assert_400(response)
+
+    def test_it_returns_error_if_token_is_invalid(self, app: Flask) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/email/update',
+            data=json.dumps(dict(token=random_string())),
+            content_type='application/json',
+        )
+
+        self.assert_400(response)
+
+    def test_it_does_not_update_email_if_token_mismatches(
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_1.confirmation_token = random_string()
+        new_email = 'new.email@example.com'
+        user_1.email_to_confirm = new_email
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/email/update',
+            data=json.dumps(dict(token=random_string())),
+            content_type='application/json',
+        )
+
+        self.assert_400(response)
+
+    def test_it_updates_email(self, app: Flask, user_1: User) -> None:
+        token = random_string()
+        user_1.confirmation_token = token
+        new_email = 'new.email@example.com'
+        user_1.email_to_confirm = new_email
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/email/update',
+            data=json.dumps(dict(token=token)),
+            content_type='application/json',
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'email updated'
+        assert user_1.email == new_email
+        assert user_1.email_to_confirm is None
+        assert user_1.confirmation_token is None
