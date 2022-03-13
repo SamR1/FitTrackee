@@ -1,9 +1,9 @@
 import { IAuthUserState } from '@/store/modules/authUser/types'
-import { IUserProfile } from '@/types/user'
+import { IAuthUserProfile } from '@/types/user'
 
 export const authUserState: IAuthUserState = {
   authToken: null,
-  authUserProfile: <IUserProfile>{},
+  authUserProfile: <IAuthUserProfile>{},
   isSuccess: false,
   loading: false,
 }

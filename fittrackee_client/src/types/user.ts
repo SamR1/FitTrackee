@@ -8,9 +8,8 @@ export interface IUserProfile {
   birth_date: string | null
   created_at: string
   email: string
+  email_to_confirm?: string
   first_name: string | null
-  imperial_units: boolean
-  language: string | null
   last_name: string | null
   location: string | null
   nb_sports: number
@@ -18,10 +17,15 @@ export interface IUserProfile {
   picture: string | boolean
   records: IRecord[]
   sports_list: number[]
-  timezone: string
   total_distance: number
   total_duration: string
   username: string
+}
+
+export interface IAuthUserProfile extends IUserProfile {
+  imperial_units: boolean
+  language: string | null
+  timezone: string
   weekm: boolean
 }
 

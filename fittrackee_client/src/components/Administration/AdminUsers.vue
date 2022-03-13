@@ -133,7 +133,7 @@
   import UserPicture from '@/components/User/UserPicture.vue'
   import { AUTH_USER_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
   import { IPagination, TPaginationPayload } from '@/types/api'
-  import { IUserProfile } from '@/types/user'
+  import { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList } from '@/utils/api'
   import { getDateWithTZ } from '@/utils/dates'
@@ -152,7 +152,7 @@
   let query: TPaginationPayload = reactive(
     getQuery(route.query, orderByList, defaultOrderBy)
   )
-  const authUser: ComputedRef<IUserProfile> = computed(
+  const authUser: ComputedRef<IAuthUserProfile> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
   )
   const users: ComputedRef<IUserProfile[]> = computed(

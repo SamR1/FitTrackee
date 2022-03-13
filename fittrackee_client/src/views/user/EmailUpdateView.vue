@@ -23,14 +23,14 @@
 
   import ErrorImg from '@/components/Common/Images/ErrorImg.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import { IUserProfile } from '@/types/user'
+  import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   const route = useRoute()
   const router = useRouter()
   const store = useStore()
 
-  const authUser: ComputedRef<IUserProfile> = computed(
+  const authUser: ComputedRef<IAuthUserProfile> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
   )
   const isAuthenticated: ComputedRef<boolean> = computed(
