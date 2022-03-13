@@ -3,11 +3,22 @@
     <Modal
       v-if="displayModal"
       :title="$t('common.CONFIRMATION')"
-      message="admin.CONFIRM_USER_ACCOUNT_DELETION"
+      :message="
+        displayModal === 'delete'
+          ? 'admin.CONFIRM_USER_ACCOUNT_DELETION'
+          : 'admin.CONFIRM_USER_PASSWORD_RESET'
+      "
       :strongMessage="user.username"
-      @confirmAction="deleteUserAccount(user.username)"
-      @cancelAction="updateDisplayModal(false)"
+      @confirmAction="
+        displayModal === 'delete'
+          ? deleteUserAccount(user.username)
+          : resetUserPassword(user.username)
+      "
+      @cancelAction="updateDisplayModal('')"
     />
+    <div class="info-box success-message" v-if="isSuccess">
+      {{ $t('admin.PASSWORD_RESET_SUCCESSFUL') }}
+    </div>
     <dl>
       <dt>{{ $t('user.PROFILE.REGISTRATION_DATE') }}:</dt>
       <dd>{{ registrationDate }}</dd>
@@ -28,9 +39,15 @@
       <button
         class="danger"
         v-if="authUser.username !== user.username"
-        @click.prevent="updateDisplayModal(true)"
+        @click.prevent="updateDisplayModal('delete')"
       >
         {{ $t('admin.DELETE_USER') }}
+      </button>
+      <button
+        v-if="authUser.username !== user.username"
+        @click.prevent="updateDisplayModal('reset')"
+      >
+        {{ $t('admin.RESET_USER_PASSWORD') }}
       </button>
       <button @click="$router.go(-1)">{{ $t('buttons.BACK') }}</button>
     </div>
@@ -45,9 +62,18 @@
 
 <script setup lang="ts">
   import { format } from 'date-fns'
-  import { ComputedRef, Ref, computed, ref, toRefs, withDefaults } from 'vue'
+  import {
+    ComputedRef,
+    Ref,
+    computed,
+    ref,
+    toRefs,
+    withDefaults,
+    watch,
+    onUnmounted,
+  } from 'vue'
 
-  import { AUTH_USER_STORE, USERS_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
   import { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
@@ -75,14 +101,40 @@
       ? format(new Date(props.user.birth_date), 'dd/MM/yyyy')
       : ''
   )
-  let displayModal: Ref<boolean> = ref(false)
+  const isSuccess = computed(
+    () => store.getters[USERS_STORE.GETTERS.USERS_IS_SUCCESS]
+  )
+  let displayModal: Ref<string> = ref('')
 
-  function updateDisplayModal(value: boolean) {
+  function updateDisplayModal(value: string) {
     displayModal.value = value
+    if (value !== '') {
+      store.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+    }
   }
   function deleteUserAccount(username: string) {
     store.dispatch(USERS_STORE.ACTIONS.DELETE_USER_ACCOUNT, { username })
   }
+  function resetUserPassword(username: string) {
+    store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, {
+      username,
+      resetPassword: true,
+    })
+  }
+
+  onUnmounted(() => {
+    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    store.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+  })
+
+  watch(
+    () => isSuccess.value,
+    (newIsSuccess) => {
+      if (newIsSuccess) {
+        updateDisplayModal('')
+      }
+    }
+  )
 </script>
 
 <style lang="scss" scoped>

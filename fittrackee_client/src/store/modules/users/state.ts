@@ -6,5 +6,6 @@ export const usersState: IUsersState = {
   user: <IUserProfile>{},
   users: [],
   loading: false,
+  isSuccess: false,
   pagination: <IPagination>{},
 }

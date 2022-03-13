@@ -14,10 +14,13 @@
   },
   "BACK_TO_ADMIN": "Back to admin",
   "CONFIRM_USER_ACCOUNT_DELETION": "Are you sure you want to delete {0} account? All data will be deleted, this cannot be undone.",
+  "CONFIRM_USER_PASSWORD_RESET": "Are you sure you want to reset {0} password?",
   "DELETE_USER": "Delete user",
   "ENABLE_DISABLE_SPORTS": "Enable/disable sports.",
+  "PASSWORD_RESET_SUCCESSFUL": "The password has been reset.",
   "REGISTRATION_DISABLED": "Registration is currently disabled.",
   "REGISTRATION_ENABLED": "Registration is currently enabled.",
+  "RESET_USER_PASSWORD": "Reset password",
   "SPORTS": {
     "TABLE": {
       "ACTIVE": "Active",

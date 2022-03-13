@@ -2,13 +2,19 @@
   <div id="user" class="view" v-if="user.username">
     <UserHeader :user="user" />
     <div class="box">
-      <UserInfos :user="user" :from-admin="true" />
+      <UserInfos :user="user" :from-admin="fromAdmin" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, onBeforeMount, onBeforeUnmount } from 'vue'
+  import {
+    ComputedRef,
+    computed,
+    onBeforeMount,
+    onBeforeUnmount,
+    toRefs,
+  } from 'vue'
   import { useRoute } from 'vue-router'
 
   import UserHeader from '@/components/User/ProfileDisplay/UserHeader.vue'
@@ -16,6 +22,12 @@
   import { USERS_STORE } from '@/store/constants'
   import { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
+
+  interface Props {
+    fromAdmin: boolean
+  }
+  const props = defineProps<Props>()
+  const { fromAdmin } = toRefs(props)
 
   const route = useRoute()
   const store = useStore()

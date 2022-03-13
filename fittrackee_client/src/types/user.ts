@@ -50,7 +50,8 @@ export interface IUserEmailUpdatePayload {
 
 export interface IAdminUserPayload {
   username: string
-  admin: boolean
+  admin?: boolean
+  resetPassword?: boolean
 }
 
 export interface IUserPreferencesPayload {

@@ -13,11 +13,14 @@
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Nombre max. de fichiers dans une archive zip "
   },
   "BACK_TO_ADMIN": "Revenir à l'admin",
-  "CONFIRM_USER_ACCOUNT_DELETION": "Etes-vous sûr de vouloir supprimer le compte de {0} ? Toutes les données seront définitivement.",
+  "CONFIRM_USER_ACCOUNT_DELETION": "Êtes-vous sûr de vouloir supprimer le compte de l'utilisateur {0} ? Toutes les données seront définitivement.",
+  "CONFIRM_USER_PASSWORD_RESET": "Êtes-vous sûr de vouloir réinitialiser le mot de passe de l'utilisateur {0} ?",
   "DELETE_USER": "Supprimer l'utilisateur",
   "ENABLE_DISABLE_SPORTS": "Activer/désactiver des sports.",
+  "PASSWORD_RESET_SUCCESSFUL": "Le mot de passe a été réinitialisé.",
   "REGISTRATION_DISABLED": "Les inscriptions sont actuellement désactivées.",
   "REGISTRATION_ENABLED": "Les inscriptions sont actuellement activées.",
+  "RESET_USER_PASSWORD": "Réinit. le mot de passe",
   "SPORTS": {
     "TABLE": {
       "ACTIVE": "Actif",
