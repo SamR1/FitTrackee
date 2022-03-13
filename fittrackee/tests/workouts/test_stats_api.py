@@ -38,10 +38,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert 'user does not exist' in data['message']
+        self.assert_404_with_entity(response, 'user')
 
     def test_it_returns_error_if_date_format_is_invalid(
         self,
@@ -64,13 +61,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert 'error' in data['status']
-        assert (
-            'error, please try again or contact the administrator'
-            in data['message']
-        )
+        self.assert_500(response)
 
     def test_it_returns_error_if_period_is_invalid(
         self,
@@ -90,10 +81,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert 'fail' in data['status']
-        assert 'Invalid time period.' in data['message']
+        self.assert_400(response, 'Invalid time period.', 'fail')
 
     def test_it_gets_stats_by_time_all_workouts(
         self,
@@ -955,10 +943,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert 'user does not exist' in data['message']
+        self.assert_404_with_entity(response, 'user')
 
     def test_it_returns_error_if_sport_does_not_exist(
         self,
@@ -978,10 +963,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert 'sport does not exist' in data['message']
+        self.assert_404_with_entity(response, 'sport')
 
     def test_it_returns_error_if_sport_id_is_invalid(
         self,
@@ -1001,13 +983,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert 'error' in data['status']
-        assert (
-            'error, please try again or contact the administrator'
-            in data['message']
-        )
+        self.assert_500(response)
 
 
 class TestGetAllStats(ApiTestCaseMixin):
@@ -1081,8 +1057,4 @@ class TestGetAllStats(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 403
-        assert 'success' not in data['status']
-        assert 'error' in data['status']
-        assert 'you do not have permissions' in data['message']
+        self.assert_403(response)

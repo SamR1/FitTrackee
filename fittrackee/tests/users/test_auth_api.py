@@ -14,7 +14,7 @@ from fittrackee.workouts.models import Sport, Workout
 from ..api_test_case import ApiTestCaseMixin
 
 
-class TestUserRegistration:
+class TestUserRegistration(ApiTestCaseMixin):
     def test_user_can_register(self, app: Flask) -> None:
         client = app.test_client()
 
@@ -58,11 +58,8 @@ class TestUserRegistration:
             ),
             content_type='application/json',
         )
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'sorry, that user already exists'
-        assert response.content_type == 'application/json'
-        assert response.status_code == 400
+
+        self.assert_400(response, 'sorry, that user already exists')
 
     @pytest.mark.parametrize(
         'input_email',
@@ -84,11 +81,8 @@ class TestUserRegistration:
             ),
             content_type='application/json',
         )
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'sorry, that user already exists'
-        assert response.content_type == 'application/json'
-        assert response.status_code == 400
+
+        self.assert_400(response, 'sorry, that user already exists')
 
     def test_it_returns_error_if_username_is_too_short(
         self, app: Flask
@@ -108,11 +102,7 @@ class TestUserRegistration:
             content_type='application/json',
         )
 
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == "username: 3 to 12 characters required\n"
-        assert response.content_type == 'application/json'
-        assert response.status_code == 400
+        self.assert_400(response, "username: 3 to 12 characters required\n")
 
     def test_it_returns_error_if_username_is_too_long(
         self, app: Flask
@@ -130,11 +120,8 @@ class TestUserRegistration:
             ),
             content_type='application/json',
         )
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == "username: 3 to 12 characters required\n"
-        assert response.content_type == 'application/json'
-        assert response.status_code == 400
+
+        self.assert_400(response, "username: 3 to 12 characters required\n")
 
     def test_it_returns_error_if_email_is_invalid(self, app: Flask) -> None:
         client = app.test_client()
@@ -152,11 +139,7 @@ class TestUserRegistration:
             content_type='application/json',
         )
 
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == "email: valid email must be provided\n"
-        assert response.content_type == 'application/json'
-        assert response.status_code == 400
+        self.assert_400(response, "email: valid email must be provided\n")
 
     def test_it_returns_error_if_password_is_too_short(
         self, app: Flask
@@ -176,11 +159,7 @@ class TestUserRegistration:
             content_type='application/json',
         )
 
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == "password: 8 characters required\n"
-        assert response.content_type == 'application/json'
-        assert response.status_code == 400
+        self.assert_400(response, "password: 8 characters required\n")
 
     def test_it_returns_error_if_passwords_mismatch(self, app: Flask) -> None:
         client = app.test_client()
@@ -198,14 +177,10 @@ class TestUserRegistration:
             content_type='application/json',
         )
 
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert (
-            data['message']
-            == "password: password and password confirmation do not match\n"
+        self.assert_400(
+            response,
+            "password: password and password confirmation do not match\n",
         )
-        assert response.content_type == 'application/json'
-        assert response.status_code == 400
 
     def test_it_returns_error_if_payload_is_invalid(self, app: Flask) -> None:
         client = app.test_client()
@@ -234,10 +209,7 @@ class TestUserRegistration:
             content_type='application/json',
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert 'invalid payload' in data['message']
-        assert 'error' in data['status']
+        self.assert_400(response)
 
     def test_it_returns_error_if_email_is_missing(self, app: Flask) -> None:
         client = app.test_client()
@@ -254,10 +226,7 @@ class TestUserRegistration:
             content_type='application/json',
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert 'invalid payload' in data['message']
-        assert 'error' in data['status']
+        self.assert_400(response)
 
     def test_it_returns_error_if_password_is_missing(self, app: Flask) -> None:
         client = app.test_client()
@@ -274,10 +243,7 @@ class TestUserRegistration:
             content_type='application/json',
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert 'invalid payload', data['message']
-        assert 'error', data['status']
+        self.assert_400(response)
 
     def test_it_returns_error_if_password_confirmation_is_missing(
         self, app: Flask
@@ -292,10 +258,8 @@ class TestUserRegistration:
             ),
             content_type='application/json',
         )
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert 'invalid payload' in data['message']
-        assert 'error' in data['status']
+
+        self.assert_400(response)
 
     def test_it_returns_error_if_username_is_invalid(self, app: Flask) -> None:
         client = app.test_client()
@@ -313,16 +277,10 @@ class TestUserRegistration:
             content_type='application/json',
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert (
-            'error, please try again or contact the administrator'
-            in data['message']
-        )
-        assert 'error' in data['status']
+        self.assert_500(response)
 
 
-class TestUserLogin:
+class TestUserLogin(ApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_email',
         ['test@test.com', 'TEST@TEST.COM'],
@@ -378,11 +336,7 @@ class TestUserLogin:
             content_type='application/json',
         )
 
-        assert response.content_type == 'application/json'
-        assert response.status_code == 401
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'invalid credentials'
+        self.assert_401(response, 'invalid credentials')
 
     def test_it_returns_error_on_invalid_payload(self, app: Flask) -> None:
         client = app.test_client()
@@ -393,11 +347,7 @@ class TestUserLogin:
             content_type='application/json',
         )
 
-        assert response.content_type == 'application/json'
-        assert response.status_code == 400
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'invalid payload'
+        self.assert_400(response)
 
     def test_it_returns_error_if_password_is_invalid(
         self, app: Flask, user_1: User
@@ -410,11 +360,7 @@ class TestUserLogin:
             content_type='application/json',
         )
 
-        assert response.content_type == 'application/json'
-        assert response.status_code == 401
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'invalid credentials'
+        self.assert_401(response, 'invalid credentials')
 
 
 class TestUserLogout(ApiTestCaseMixin):
@@ -441,34 +387,30 @@ class TestUserLogout(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-
         with freeze_time(now + timedelta(seconds=4)):
+
             response = client.get(
                 '/api/auth/logout',
                 headers=dict(Authorization=f'Bearer {auth_token}'),
             )
-            data = json.loads(response.data.decode())
-            assert data['status'] == 'error'
-            assert data['message'] == 'signature expired, please log in again'
-            assert response.status_code == 401
+
+            self.assert_401(response, 'signature expired, please log in again')
 
     def test_it_returns_error_with_invalid_token(self, app: Flask) -> None:
         client = app.test_client()
+
         response = client.get(
             '/api/auth/logout', headers=dict(Authorization='Bearer invalid')
         )
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'invalid token, please log in again'
-        assert response.status_code == 401
+
+        self.assert_401(response, 'invalid token, please log in again')
 
     def test_it_returns_error_with_invalid_headers(self, app: Flask) -> None:
         client = app.test_client()
+
         response = client.get('/api/auth/logout', headers=dict())
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'provide a valid auth token'
-        assert response.status_code == 401
+
+        self.assert_401(response, 'provide a valid auth token')
 
 
 class TestUserProfile(ApiTestCaseMixin):
@@ -576,13 +518,12 @@ class TestUserProfile(ApiTestCaseMixin):
 
     def test_it_returns_error_if_headers_are_invalid(self, app: Flask) -> None:
         client = app.test_client()
+
         response = client.get(
             '/api/auth/profile', headers=dict(Authorization='Bearer invalid')
         )
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'invalid token, please log in again'
-        assert response.status_code == 401
+
+        self.assert_401(response, 'invalid token, please log in again')
 
 
 class TestUserProfileUpdate(ApiTestCaseMixin):
@@ -692,10 +633,7 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'invalid payload'
-        assert response.status_code == 400
+        self.assert_400(response)
 
     def test_it_returns_error_if_payload_is_empty(
         self, app: Flask, user_1: User
@@ -711,10 +649,7 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert 'invalid payload' in data['message']
-        assert 'error' in data['status']
+        self.assert_400(response)
 
     def test_it_returns_error_if_passwords_mismatch(
         self, app: Flask, user_1: User
@@ -740,13 +675,10 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert (
-            data['message']
-            == 'password: password and password confirmation do not match\n'
+        self.assert_400(
+            response,
+            'password: password and password confirmation do not match\n',
         )
-        assert response.status_code == 400
 
     def test_it_returns_error_if_password_confirmation_is_missing(
         self, app: Flask, user_1: User
@@ -771,13 +703,10 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert (
-            data['message']
-            == 'password: password and password confirmation do not match\n'
+        self.assert_400(
+            response,
+            'password: password and password confirmation do not match\n',
         )
-        assert response.status_code == 400
 
 
 class TestUserPreferencesUpdate(ApiTestCaseMixin):
@@ -840,10 +769,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'invalid payload'
-        assert response.status_code == 400
+        self.assert_400(response)
 
     def test_it_returns_error_if_payload_is_empty(
         self, app: Flask, user_1: User
@@ -859,10 +785,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert 'invalid payload' in data['message']
-        assert 'error' in data['status']
+        self.assert_400(response)
 
 
 class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
@@ -880,10 +803,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert 'invalid payload' in data['message']
-        assert 'error' in data['status']
+        self.assert_400(response)
 
     def test_it_returns_error_if_sport_id_is_missing(
         self, app: Flask, user_1: User
@@ -899,10 +819,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'invalid payload'
-        assert response.status_code == 400
+        self.assert_400(response)
 
     def test_it_returns_error_if_sport_not_found(
         self, app: Flask, user_1: User
@@ -918,10 +835,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert 'sport does not exist' in data['message']
+        self.assert_404_with_entity(response, 'sport')
 
     def test_it_returns_error_if_payload_contains_only_sport_id(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
@@ -937,10 +851,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'invalid payload'
-        assert response.status_code == 400
+        self.assert_400(response)
 
     def test_it_returns_error_if_color_is_invalid(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
@@ -961,10 +872,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'invalid hexadecimal color'
-        assert response.status_code == 400
+        self.assert_400(response, 'invalid hexadecimal color')
 
     @pytest.mark.parametrize(
         'input_color',
@@ -1075,10 +983,7 @@ class TestUserSportPreferencesReset(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        assert response.status_code == 404
-        data = json.loads(response.data.decode())
-        assert 'not found' in data['status']
-        assert 'sport does not exist' in data['message']
+        self.assert_404_with_entity(response, 'sport')
 
     def test_it_resets_sport_preferences(
         self,
@@ -1172,10 +1077,7 @@ class TestUserPicture(ApiTestCaseMixin):
             ),
         )
 
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'fail'
-        assert data['message'] == 'no file part'
-        assert response.status_code == 400
+        self.assert_400(response, 'no file part', 'fail')
 
     def test_it_returns_error_if_file_is_invalid(
         self, app: Flask, user_1: User
@@ -1193,10 +1095,7 @@ class TestUserPicture(ApiTestCaseMixin):
             ),
         )
 
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'fail'
-        assert data['message'] == 'file extension not allowed'
-        assert response.status_code == 400
+        self.assert_400(response, 'file extension not allowed', 'fail')
 
     def test_it_returns_error_if_image_size_exceeds_file_limit(
         self,
@@ -1220,12 +1119,9 @@ class TestUserPicture(ApiTestCaseMixin):
             ),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 413
-        assert 'fail' in data['status']
-        assert (
-            'Error during picture upload, file size (1.2KB) exceeds 1.0KB.'
-            in data['message']
+        data = self.assert_413(
+            response,
+            'Error during picture upload, file size (1.2KB) exceeds 1.0KB.',
         )
         assert 'data' not in data
 
@@ -1251,17 +1147,14 @@ class TestUserPicture(ApiTestCaseMixin):
             ),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 413
-        assert 'fail' in data['status']
-        assert (
-            'Error during picture upload, file size (1.2KB) exceeds 1.0KB.'
-            in data['message']
+        data = self.assert_413(
+            response,
+            'Error during picture upload, file size (1.2KB) exceeds 1.0KB.',
         )
         assert 'data' not in data
 
 
-class TestRegistrationConfiguration:
+class TestRegistrationConfiguration(ApiTestCaseMixin):
     def test_it_returns_error_if_it_exceeds_max_users(
         self,
         app_with_3_users_max: Flask,
@@ -1284,11 +1177,7 @@ class TestRegistrationConfiguration:
             content_type='application/json',
         )
 
-        assert response.content_type == 'application/json'
-        assert response.status_code == 403
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'error, registration is disabled'
+        self.assert_403(response, 'error, registration is disabled')
 
     def test_it_disables_registration_on_user_registration(
         self,
@@ -1323,10 +1212,7 @@ class TestRegistrationConfiguration:
             content_type='application/json',
         )
 
-        assert response.status_code == 403
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'error, registration is disabled'
+        self.assert_403(response, 'error, registration is disabled')
 
     def test_it_does_not_disable_registration_on_user_registration(
         self,
@@ -1361,7 +1247,7 @@ class TestRegistrationConfiguration:
         assert response.status_code == 201
 
 
-class TestPasswordResetRequest:
+class TestPasswordResetRequest(ApiTestCaseMixin):
     @patch('smtplib.SMTP_SSL')
     @patch('smtplib.SMTP')
     def test_it_requests_password_reset_when_user_exists(
@@ -1404,10 +1290,7 @@ class TestPasswordResetRequest:
             content_type='application/json',
         )
 
-        assert response.status_code == 400
-        data = json.loads(response.data.decode())
-        assert data['message'] == 'invalid payload'
-        assert data['status'] == 'error'
+        self.assert_400(response)
 
     def test_it_returns_error_on_empty_payload(self, app: Flask) -> None:
         client = app.test_client()
@@ -1418,13 +1301,10 @@ class TestPasswordResetRequest:
             content_type='application/json',
         )
 
-        assert response.status_code == 400
-        data = json.loads(response.data.decode())
-        assert data['message'] == 'invalid payload'
-        assert data['status'] == 'error'
+        self.assert_400(response)
 
 
-class TestPasswordUpdate:
+class TestPasswordUpdate(ApiTestCaseMixin):
     def test_it_returns_error_if_payload_is_empty(self, app: Flask) -> None:
         client = app.test_client()
 
@@ -1439,10 +1319,7 @@ class TestPasswordUpdate:
             content_type='application/json',
         )
 
-        assert response.status_code == 400
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'invalid payload'
+        self.assert_400(response)
 
     def test_it_returns_error_if_token_is_missing(self, app: Flask) -> None:
         client = app.test_client()
@@ -1458,10 +1335,7 @@ class TestPasswordUpdate:
             content_type='application/json',
         )
 
-        assert response.status_code == 400
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'invalid payload'
+        self.assert_400(response)
 
     def test_it_returns_error_if_password_is_missing(self, app: Flask) -> None:
         client = app.test_client()
@@ -1477,10 +1351,7 @@ class TestPasswordUpdate:
             content_type='application/json',
         )
 
-        assert response.status_code == 400
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'invalid payload'
+        self.assert_400(response)
 
     def test_it_returns_error_if_password_confirmation_is_missing(
         self, app: Flask
@@ -1498,10 +1369,7 @@ class TestPasswordUpdate:
             content_type='application/json',
         )
 
-        assert response.status_code == 400
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'invalid payload'
+        self.assert_400(response)
 
     def test_it_returns_error_if_token_is_invalid(self, app: Flask) -> None:
         token = get_user_token(1)
@@ -1519,10 +1387,7 @@ class TestPasswordUpdate:
             content_type='application/json',
         )
 
-        assert response.status_code == 401
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'invalid token, please request a new token'
+        self.assert_401(response, 'invalid token, please request a new token')
 
     def test_it_returns_error_if_token_is_expired(
         self, app: Flask, user_1: User
@@ -1544,11 +1409,8 @@ class TestPasswordUpdate:
                 content_type='application/json',
             )
 
-            assert response.status_code == 401
-            data = json.loads(response.data.decode())
-            assert data['status'] == 'error'
-            assert (
-                data['message'] == 'invalid token, please request a new token'
+            self.assert_401(
+                response, 'invalid token, please request a new token'
             )
 
     def test_it_returns_error_if_password_is_invalid(
@@ -1569,10 +1431,7 @@ class TestPasswordUpdate:
             content_type='application/json',
         )
 
-        assert response.status_code == 400
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'password: 8 characters required\n'
+        self.assert_400(response, 'password: 8 characters required\n')
 
     def test_it_update_password(self, app: Flask, user_1: User) -> None:
         token = get_user_token(user_1.id, password_reset=True)

@@ -1,6 +1,5 @@
 import json
 import os
-import re
 from datetime import datetime
 from io import BytesIO
 from typing import Dict
@@ -424,10 +423,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             ),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert 'error' in data['status']
-        assert 'Error during gpx processing.' in data['message']
+        data = self.assert_500(response, 'Error during gpx processing.')
         assert 'data' not in data
 
     def test_it_returns_500_if_gpx_has_invalid_xml(
@@ -456,10 +452,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             ),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert 'error' in data['status']
-        assert 'Error during gpx file parsing.' in data['message']
+        data = self.assert_500(response, 'Error during gpx file parsing.')
         assert 'data' not in data
 
     def test_it_returns_400_if_workout_gpx_has_invalid_extension(
@@ -481,10 +474,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             ),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert data['status'] == 'fail'
-        assert data['message'] == 'file extension not allowed'
+        self.assert_400(response, 'file extension not allowed', 'fail')
 
     def test_it_returns_400_if_sport_id_is_not_provided(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
@@ -504,10 +494,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             ),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert data['status'] == 'error'
-        assert data['message'] == 'invalid payload'
+        self.assert_400(response)
 
     def test_it_returns_500_if_sport_id_does_not_exists(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
@@ -528,10 +515,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             ),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert data['status'] == 'error'
-        assert data['message'] == 'Sport id: 2 does not exist'
+        self.assert_500(response, 'Sport id: 2 does not exist')
 
     def test_returns_400_if_no_gpx_file_is_provided(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
@@ -549,10 +533,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             ),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert data['status'] == 'fail'
-        assert data['message'] == 'no file part'
+        self.assert_400(response, 'no file part', 'fail')
 
     def test_it_returns_error_if_file_size_exceeds_limit(
         self,
@@ -576,12 +557,13 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
                 Authorization=f'Bearer {auth_token}',
             ),
         )
-        data = json.loads(response.data.decode())
-        assert response.status_code == 413
-        assert 'fail' in data['status']
-        assert re.match(
-            r'Error during workout upload, file size \((.*)\) exceeds 1.0KB.',
-            data['message'],
+
+        data = self.assert_413(
+            response,
+            match=(
+                r'Error during workout upload, '
+                r'file size \((.*)\) exceeds 1.0KB.'
+            ),
         )
         assert 'data' not in data
 
@@ -628,10 +610,7 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert 'error' in data['status']
-        assert 'invalid payload' in data['message']
+        self.assert_400(response)
 
     def test_it_returns_500_if_workout_format_is_invalid(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
@@ -654,10 +633,7 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert 'fail' in data['status']
-        assert 'Error during workout save.' in data['message']
+        self.assert_500(response, 'Error during workout save.', status='fail')
 
     def test_it_adds_workout_with_zero_value(
         self,
@@ -767,9 +743,7 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
                 ),
             )
 
-            data = json.loads(response.data.decode())
-            assert response.status_code == 400
-            assert 'fail' in data['status']
+            data = self.assert_400(response, error_message=None, status='fail')
             assert len(data['data']['workouts']) == 0
 
     def test_it_returns_500_if_one_file_in_zip_archive_is_invalid(
@@ -796,10 +770,7 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
                 ),
             )
 
-            data = json.loads(response.data.decode())
-            assert response.status_code == 500
-            assert 'error' in data['status']
-            assert 'Error during gpx processing.' in data['message']
+            data = self.assert_500(response, 'Error during gpx processing.')
             assert 'data' not in data
 
     def test_it_imports_only_max_number_of_files(
@@ -860,12 +831,11 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
                     Authorization=f'Bearer {auth_token}',
                 ),
             )
-            data = json.loads(response.data.decode())
-            assert response.status_code == 413
-            assert 'fail' in data['status']
-            assert (
-                'Error during workout upload, file size (2.5KB) exceeds 1.0KB.'
-                in data['message']
+
+            data = self.assert_413(
+                response,
+                'Error during workout upload, '
+                'file size (2.5KB) exceeds 1.0KB.',
             )
             assert 'data' not in data
 
@@ -943,14 +913,8 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
             f'/api/workouts/map/{map_id}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
-        data = json.loads(response.data.decode())
 
-        assert response.status_code == 500
-        assert data['status'] == 'error'
-        assert (
-            data['message']
-            == 'error, please try again or contact the administrator'
-        )
+        self.assert_500(response)
 
     def test_it_gets_an_workout_created_with_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
@@ -1068,10 +1032,7 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
             ),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 403
-        assert 'error' in data['status']
-        assert data['message'] == 'you do not have permissions'
+        self.assert_403(response)
 
     def test_it_returns_500_on_invalid_segment_id(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
@@ -1098,11 +1059,7 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert 'error' in data['status']
-        assert data['message'] == 'Incorrect segment id'
-        assert 'data' not in data
+        self.assert_500(response, 'Incorrect segment id')
 
     def test_it_returns_404_if_segment_id_does_not_exist(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
@@ -1129,10 +1086,9 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert data['message'] == 'No segment with id \'999999\''
+        data = self.assert_404_with_message(
+            response, 'No segment with id \'999999\''
+        )
         assert 'data' not in data
 
 

@@ -209,9 +209,7 @@ class TestGetSport(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
+        data = self.assert_404(response)
         assert len(data['data']['sports']) == 0
 
     def test_it_gets_a_inactive_sport(
@@ -424,11 +422,7 @@ class TestUpdateSport(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 403
-        assert 'success' not in data['status']
-        assert 'error' in data['status']
-        assert 'you do not have permissions' in data['message']
+        self.assert_403(response)
 
     def test_returns_error_if_payload_is_invalid(
         self, app: Flask, user_1_admin: User
@@ -444,10 +438,7 @@ class TestUpdateSport(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert 'error' in data['status']
-        assert 'invalid payload' in data['message']
+        self.assert_400(response)
 
     def test_it_returns_error_if_sport_does_not_exist(
         self, app: Flask, user_1_admin: User
@@ -463,7 +454,5 @@ class TestUpdateSport(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
+        data = self.assert_404(response)
         assert len(data['data']['sports']) == 0

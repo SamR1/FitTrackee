@@ -106,11 +106,8 @@ class TestGetUser(ApiTestCaseMixin):
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
-        data = json.loads(response.data.decode())
 
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert 'user does not exist' in data['message']
+        self.assert_404_with_entity(response, 'user')
 
 
 class TestGetUsers(ApiTestCaseMixin):
@@ -823,7 +820,7 @@ class TestGetUsers(ApiTestCaseMixin):
         }
 
 
-class TestGetUserPicture:
+class TestGetUserPicture(ApiTestCaseMixin):
     def test_it_return_error_if_user_has_no_picture(
         self, app: Flask, user_1: User
     ) -> None:
@@ -831,10 +828,7 @@ class TestGetUserPicture:
 
         response = client.get(f'/api/users/{user_1.username}/picture')
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert 'No picture.' in data['message']
+        self.assert_404_with_message(response, 'No picture.')
 
     def test_it_returns_error_if_user_does_not_exist(
         self, app: Flask, user_1: User
@@ -843,10 +837,7 @@ class TestGetUserPicture:
 
         response = client.get('/api/users/not_existing/picture')
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert 'user does not exist' in data['message']
+        self.assert_404_with_entity(response, 'user')
 
 
 class TestUpdateUser(ApiTestCaseMixin):
@@ -909,10 +900,7 @@ class TestUpdateUser(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert 'error' in data['status']
-        assert 'invalid payload' in data['message']
+        self.assert_400(response)
 
     def test_it_returns_error_if_payload_for_admin_rights_is_invalid(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -928,13 +916,7 @@ class TestUpdateUser(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert 'error' in data['status']
-        assert (
-            'error, please try again or contact the administrator'
-            in data['message']
-        )
+        self.assert_500(response)
 
     def test_it_returns_error_if_user_can_not_change_admin_rights(
         self, app: Flask, user_1: User, user_2: User
@@ -950,10 +932,7 @@ class TestUpdateUser(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 403
-        assert 'error' in data['status']
-        assert 'you do not have permissions' in data['message']
+        self.assert_403(response)
 
 
 class TestDeleteUser(ApiTestCaseMixin):
@@ -1048,10 +1027,7 @@ class TestDeleteUser(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 403
-        assert 'error' in data['status']
-        assert 'you do not have permissions' in data['message']
+        self.assert_403(response)
 
     def test_it_returns_error_when_deleting_non_existing_user(
         self, app: Flask, user_1: User
@@ -1065,10 +1041,7 @@ class TestDeleteUser(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert 'user does not exist' in data['message']
+        self.assert_404_with_entity(response, 'user')
 
     def test_admin_can_delete_another_user_account(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -1110,12 +1083,9 @@ class TestDeleteUser(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 403
-        assert 'error' in data['status']
-        assert (
-            'you can not delete your account, no other user has admin rights'
-            in data['message']
+        self.assert_403(
+            response,
+            'you can not delete your account, no other user has admin rights',
         )
 
     def test_it_enables_registration_on_user_delete(
@@ -1176,7 +1146,4 @@ class TestDeleteUser(ApiTestCaseMixin):
             content_type='application/json',
         )
 
-        assert response.status_code == 403
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'error, registration is disabled'
+        self.assert_403(response, 'error, registration is disabled')

@@ -169,10 +169,7 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
             ),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 403
-        assert 'error' in data['status']
-        assert 'you do not have permissions' in data['message']
+        self.assert_403(response)
 
     def test_it_updates_sport(
         self,
@@ -213,10 +210,7 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert 'error' in data['status']
-        assert 'invalid payload' in data['message']
+        self.assert_400(response)
 
     def test_it_raises_500_if_sport_does_not_exists(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
@@ -231,13 +225,7 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert 'error' in data['status']
-        assert (
-            'error, please try again or contact the administrator'
-            in data['message']
-        )
+        self.assert_500(response)
 
 
 class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
@@ -409,10 +397,7 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 403
-        assert 'error' in data['status']
-        assert 'you do not have permissions' in data['message']
+        self.assert_403(response)
 
     def test_it_updates_an_workout_wo_gpx_with_timezone(
         self,
@@ -574,10 +559,7 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert 'error' in data['status']
-        assert 'invalid payload' in data['message']
+        self.assert_400(response)
 
     def test_it_returns_500_if_date_format_is_invalid(
         self,
@@ -603,14 +585,7 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-
-        assert response.status_code == 500
-        assert 'error' in data['status']
-        assert (
-            'error, please try again or contact the administrator'
-            in data['message']
-        )
+        self.assert_500(response)
 
     def test_it_returns_404_if_edited_workout_does_not_exists(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
@@ -632,7 +607,5 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
+        data = self.assert_404(response)
         assert len(data['data']['workouts']) == 0

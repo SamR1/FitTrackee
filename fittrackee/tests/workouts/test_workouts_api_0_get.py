@@ -107,10 +107,7 @@ class TestGetWorkouts(ApiTestCaseMixin):
 
         response = client.get('/api/workouts')
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 401
-        assert 'error' in data['status']
-        assert 'provide a valid auth token' in data['message']
+        self.assert_401(response, 'provide a valid auth token')
 
 
 class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
@@ -278,13 +275,7 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert 'error' in data['status']
-        assert (
-            'error, please try again or contact the administrator'
-            in data['message']
-        )
+        self.assert_500(response)
 
     @patch('fittrackee.workouts.workouts.MAX_WORKOUTS_PER_PAGE', 6)
     def test_it_gets_max_workouts_per_page_if_per_page_exceeds_max(
@@ -1034,10 +1025,7 @@ class TestGetWorkout(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 403
-        assert 'error' in data['status']
-        assert 'you do not have permissions' in data['message']
+        self.assert_403(response)
 
     def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask, user_1: User
@@ -1051,9 +1039,7 @@ class TestGetWorkout(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
+        data = self.assert_404(response)
         assert len(data['data']['workouts']) == 0
 
     def test_it_returns_404_on_getting_gpx_if_workout_does_not_exist(
@@ -1069,10 +1055,9 @@ class TestGetWorkout(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert f'workout not found (id: {random_short_id})' in data['message']
+        data = self.assert_404_with_message(
+            response, f'workout not found (id: {random_short_id})'
+        )
         assert data['data']['gpx'] == ''
 
     def test_it_returns_404_on_getting_chart_data_if_workout_does_not_exist(
@@ -1088,10 +1073,9 @@ class TestGetWorkout(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert f'workout not found (id: {random_short_id})' in data['message']
+        data = self.assert_404_with_message(
+            response, f'workout not found (id: {random_short_id})'
+        )
         assert data['data']['chart_data'] == ''
 
     def test_it_returns_404_on_getting_gpx_if_workout_have_no_gpx(
@@ -1111,12 +1095,8 @@ class TestGetWorkout(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert (
-            f'no gpx file for this workout (id: {workout_short_id})'
-            in data['message']
+        self.assert_404_with_message(
+            response, f'no gpx file for this workout (id: {workout_short_id})'
         )
 
     def test_it_returns_404_if_workout_have_no_chart_data(
@@ -1136,12 +1116,8 @@ class TestGetWorkout(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert (
-            f'no gpx file for this workout (id: {workout_short_id})'
-            in data['message']
+        self.assert_404_with_message(
+            response, f'no gpx file for this workout (id: {workout_short_id})'
         )
 
     def test_it_returns_500_on_getting_gpx_if_an_workout_has_invalid_gpx_pathname(  # noqa
@@ -1161,13 +1137,7 @@ class TestGetWorkout(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert 'error' in data['status']
-        assert (
-            'error, please try again or contact the administrator'
-            in data['message']
-        )
+        data = self.assert_500(response)
         assert 'data' not in data
 
     def test_it_returns_500_on_getting_chart_data_if_an_workout_has_invalid_gpx_pathname(  # noqa
@@ -1187,13 +1157,7 @@ class TestGetWorkout(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert 'error' in data['status']
-        assert (
-            'error, please try again or contact the administrator'
-            in data['message']
-        )
+        data = self.assert_500(response)
         assert 'data' not in data
 
     def test_it_returns_404_if_workout_has_no_map(
@@ -1206,11 +1170,8 @@ class TestGetWorkout(ApiTestCaseMixin):
             f'/api/workouts/map/{uuid4().hex}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
-        data = json.loads(response.data.decode())
 
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert 'Map does not exist' in data['message']
+        self.assert_404_with_message(response, 'Map does not exist')
 
 
 class TestDownloadWorkoutGpx(ApiTestCaseMixin):
@@ -1228,10 +1189,7 @@ class TestDownloadWorkoutGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert 'workout not found' in data['message']
+        self.assert_404_with_message(response, 'workout not found')
 
     def test_it_returns_404_if_workout_does_not_have_gpx(
         self,
@@ -1249,10 +1207,7 @@ class TestDownloadWorkoutGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert 'no gpx file for workout' in data['message']
+        self.assert_404_with_message(response, 'no gpx file for workout')
 
     def test_it_returns_404_if_workout_belongs_to_a_different_user(
         self,
@@ -1271,10 +1226,7 @@ class TestDownloadWorkoutGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert 'workout not found' in data['message']
+        self.assert_404_with_message(response, 'workout not found')
 
     def test_it_calls_send_from_directory_if_workout_has_gpx(
         self,

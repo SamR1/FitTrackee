@@ -54,11 +54,7 @@ class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
             ),
         )
 
-        data = json.loads(response.data.decode())
-
-        assert response.status_code == 403
-        assert 'error' in data['status']
-        assert 'you do not have permissions' in data['message']
+        self.assert_403(response)
 
     def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask, user_1: User
@@ -66,12 +62,13 @@ class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
+
         response = client.delete(
             f'/api/workouts/{get_random_short_id()}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
+
+        data = self.assert_404(response)
         assert 'not found' in data['status']
 
     def test_it_returns_500_when_deleting_an_workout_with_gpx_invalid_file(
@@ -88,14 +85,7 @@ class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {token}'),
         )
 
-        data = json.loads(response.data.decode())
-
-        assert response.status_code == 500
-        assert 'error' in data['status']
-        assert (
-            'error, please try again or contact the administrator'
-            in data['message']
-        )
+        self.assert_500(response)
 
 
 class TestDeleteWorkoutWithoutGpx(ApiTestCaseMixin):
@@ -137,8 +127,4 @@ class TestDeleteWorkoutWithoutGpx(ApiTestCaseMixin):
             ),
         )
 
-        data = json.loads(response.data.decode())
-
-        assert response.status_code == 403
-        assert 'error' in data['status']
-        assert 'you do not have permissions' in data['message']
+        self.assert_403(response)
