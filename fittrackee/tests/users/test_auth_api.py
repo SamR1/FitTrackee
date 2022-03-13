@@ -12,6 +12,7 @@ from fittrackee.users.utils.token import get_user_token
 from fittrackee.workouts.models import Sport, Workout
 
 from ..api_test_case import ApiTestCaseMixin
+from ..utils import random_string
 
 
 class TestUserRegistration(ApiTestCaseMixin):
@@ -515,53 +516,6 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
                     location='Somewhere',
                     bio='Nothing to tell',
                     birth_date='1980-01-01',
-                    password='87654321',
-                )
-            ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['message'] == 'user profile updated'
-        assert response.status_code == 200
-        assert data['data']['username'] == 'test'
-        assert data['data']['email'] == 'test@test.com'
-        assert not data['data']['admin']
-        assert data['data']['created_at']
-        assert data['data']['first_name'] == 'John'
-        assert data['data']['last_name'] == 'Doe'
-        assert data['data']['birth_date']
-        assert data['data']['bio'] == 'Nothing to tell'
-        assert data['data']['imperial_units'] is False
-        assert data['data']['location'] == 'Somewhere'
-        assert data['data']['timezone'] is None
-        assert data['data']['weekm'] is False
-        assert data['data']['language'] is None
-        assert data['data']['nb_sports'] == 0
-        assert data['data']['nb_workouts'] == 0
-        assert data['data']['records'] == []
-        assert data['data']['sports_list'] == []
-        assert data['data']['total_distance'] == 0
-        assert data['data']['total_duration'] == '0:00:00'
-
-    def test_it_updates_user_profile_without_password(
-        self, app: Flask, user_1: User
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.post(
-            '/api/auth/profile/edit',
-            content_type='application/json',
-            data=json.dumps(
-                dict(
-                    first_name='John',
-                    last_name='Doe',
-                    location='Somewhere',
-                    bio='Nothing to tell',
-                    birth_date='1980-01-01',
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -622,6 +576,58 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
         )
 
         self.assert_400(response)
+
+
+class TestUserAccountUpdate(ApiTestCaseMixin):
+    def test_it_returns_error_if_payload_is_empty(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            '/api/auth/profile/edit/account',
+            content_type='application/json',
+            data=json.dumps(dict()),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response)
+
+    def test_it_updates_user_profile(self, app: Flask, user_1: User) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            '/api/auth/profile/edit/account',
+            content_type='application/json',
+            data=json.dumps(dict(password=random_string())),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'user account updated'
+
+    def test_it_returns_error_if_controls_fail(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            '/api/auth/profile/edit/account',
+            content_type='application/json',
+            data=json.dumps(dict(password=random_string(length=5))),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(
+            response, error_message='password: 8 characters required'
+        )
 
 
 class TestUserPreferencesUpdate(ApiTestCaseMixin):

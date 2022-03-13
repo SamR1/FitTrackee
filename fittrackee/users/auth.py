@@ -542,6 +542,136 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
         return handle_error_and_return_response(e, db=db)
 
 
+@auth_blueprint.route('/auth/profile/edit/account', methods=['PATCH'])
+@authenticate
+def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
+    """
+    update authenticated user password
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      PATCH /api/auth/profile/edit/account HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "admin": false,
+          "bio": null,
+          "birth_date": null,
+          "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+          "email": "sam@example.com",
+          "first_name": null,
+          "imperial_units": false,
+          "language": "en",
+          "last_name": null,
+          "location": null,
+          "nb_sports": 3,
+          "nb_workouts": 6,
+          "picture": false,
+          "records": [
+            {
+              "id": 9,
+              "record_type": "AS",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 10,
+              "record_type": "FD",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 11,
+              "record_type": "LD",
+              "sport_id": 1,
+              "user": "sam",
+              "value": "1:01:00",
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 12,
+              "record_type": "MS",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            }
+          ],
+          "sports_list": [
+              1,
+              4,
+              6
+          ],
+          "timezone": "Europe/Paris",
+          "total_distance": 67.895,
+          "total_duration": "6:50:27",
+          "username": "sam"
+          "weekm": true,
+        },
+        "message": "user profile updated",
+        "status": "success"
+      }
+
+    :<json string password: user password
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: user account updated
+    :statuscode 400:
+        - invalid payload
+        - password: 8 characters required
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 500: error, please try again or contact the administrator
+
+    """
+    data = request.get_json()
+    if not data:
+        return InvalidPayloadErrorResponse()
+
+    password_data = data.get('password')
+    message = check_password(password_data)
+    if message != '':
+        return InvalidPayloadErrorResponse(message)
+    password = bcrypt.generate_password_hash(
+        password_data, current_app.config.get('BCRYPT_LOG_ROUNDS')
+    ).decode()
+
+    try:
+        auth_user.password = password
+        db.session.commit()
+
+        return {
+            'status': 'success',
+            'message': 'user account updated',
+            'data': auth_user.serialize(),
+        }
+
+    # handler errors
+    except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(e, db=db)
+
+
 @auth_blueprint.route('/auth/profile/edit/preferences', methods=['POST'])
 @authenticate
 def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
