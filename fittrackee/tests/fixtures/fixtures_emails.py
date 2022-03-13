@@ -34,3 +34,9 @@ def user_password_change_email_mock() -> Iterator[MagicMock]:
 def user_reset_password_email() -> Iterator[MagicMock]:
     with patch('fittrackee.users.users.reset_password_email') as mock:
         yield mock
+
+
+@pytest.fixture()
+def user_email_updated_to_new_address_mock() -> Iterator[MagicMock]:
+    with patch('fittrackee.users.users.email_updated_to_new_address') as mock:
+        yield mock

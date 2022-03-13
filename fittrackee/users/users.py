@@ -1,5 +1,6 @@
 import os
 import random
+import secrets
 import shutil
 from typing import Any, Dict, Tuple, Union
 
@@ -8,7 +9,11 @@ from flask import Blueprint, current_app, request, send_file
 from sqlalchemy import exc
 
 from fittrackee import bcrypt, db
-from fittrackee.emails.tasks import password_change_email, reset_password_email
+from fittrackee.emails.tasks import (
+    email_updated_to_new_address,
+    password_change_email,
+    reset_password_email,
+)
 from fittrackee.files import get_absolute_file_path
 from fittrackee.responses import (
     ForbiddenErrorResponse,
@@ -18,6 +23,7 @@ from fittrackee.responses import (
     UserNotFoundErrorResponse,
     handle_error_and_return_response,
 )
+from fittrackee.users.utils.controls import is_valid_email
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
@@ -494,7 +500,8 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     if not user_data:
         return InvalidPayloadErrorResponse()
 
-    send_emails = False
+    send_password_emails = False
+    send_new_address_email = False
     try:
         user = User.query.filter_by(username=user_name).first()
         if not user:
@@ -511,13 +518,23 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
             user.password = bcrypt.generate_password_hash(
                 new_password, current_app.config.get('BCRYPT_LOG_ROUNDS')
             ).decode()
-            send_emails = True
+            send_password_emails = True
+
+        if 'new_email' in user_data:
+            if is_valid_email(user_data['new_email']):
+                user.email_to_confirm = user_data['new_email']
+                user.confirmation_token = secrets.token_urlsafe(16)
+                send_new_address_email = True
+            else:
+                return InvalidPayloadErrorResponse(
+                    'valid email must be provided'
+                )
 
         db.session.commit()
 
-        if send_emails:
-            user_language = 'en' if user.language is None else user.language
-            ui_url = current_app.config['UI_URL']
+        user_language = 'en' if user.language is None else user.language
+        ui_url = current_app.config['UI_URL']
+        if send_password_emails:
             user_data = {
                 'language': user_language,
                 'email': user.email,
@@ -546,6 +563,21 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
                     'fittrackee_url': ui_url,
                 },
             )
+
+        if send_new_address_email:
+            user_data = {
+                'language': user_language,
+                'email': user.email_to_confirm,
+            }
+            email_data = {
+                'username': user.username,
+                'fittrackee_url': ui_url,
+                'email_confirmation_url': (
+                    f'{ui_url}/email-update'
+                    f'?token={user.confirmation_token}'
+                ),
+            }
+            email_updated_to_new_address.send(user_data, email_data)
 
         return {
             'status': 'success',

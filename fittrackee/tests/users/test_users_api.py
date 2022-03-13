@@ -6,6 +6,7 @@ from unittest.mock import MagicMock, patch
 from flask import Flask
 
 from fittrackee.users.models import User, UserSportPreference
+from fittrackee.users.utils.random import random_string
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport, Workout
 
@@ -1050,6 +1051,99 @@ class TestUpdateUser(ApiTestCaseMixin):
                     'http://0.0.0.0:5000/password-reset?token=xxx'
                 ),
                 'fittrackee_url': 'http://0.0.0.0:5000',
+            },
+        )
+
+    def test_it_returns_error_when_updating_email_with_invalid_address(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            data=json.dumps(dict(new_email=random_string())),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, 'valid email must be provided')
+
+    def test_it_does_not_send_email_when_error_on_updating_email(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_email_updated_to_new_address_mock: MagicMock,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        client.patch(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            data=json.dumps(dict(new_email=random_string())),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        user_email_updated_to_new_address_mock.send.assert_not_called()
+
+    def test_it_updates_user_email(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        user_2_email = user_2.email
+        user_2_confirmation_token = user_2.confirmation_token
+
+        response = client.patch(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            data=json.dumps(dict(new_email='new.' + user_2.email)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        assert user_2.email == user_2_email
+        assert user_2.email_to_confirm == 'new.' + user_2.email
+        assert user_2.confirmation_token != user_2_confirmation_token
+
+    def test_it_calls_email_updated_to_new_address_when_password_reset_is_successful(  # noqa
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_email_updated_to_new_address_mock: MagicMock,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        new_email = 'new.' + user_2.email
+        expected_token = random_string()
+
+        with patch('secrets.token_urlsafe', return_value=expected_token):
+            response = client.patch(
+                f'/api/users/{user_2.username}',
+                content_type='application/json',
+                data=json.dumps(dict(new_email=new_email)),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        assert response.status_code == 200
+        user_email_updated_to_new_address_mock.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': new_email,
+            },
+            {
+                'username': user_2.username,
+                'fittrackee_url': 'http://0.0.0.0:5000',
+                'email_confirmation_url': (
+                    f'http://0.0.0.0:5000/email-update?token={expected_token}'
+                ),
             },
         )
 
