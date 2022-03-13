@@ -15,7 +15,9 @@ class TestGetUser(ApiTestCaseMixin):
     def test_it_gets_single_user_without_workouts(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/users/{user_2.username}',
@@ -57,7 +59,9 @@ class TestGetUser(ApiTestCaseMixin):
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/users/{user_1.username}',
@@ -93,25 +97,26 @@ class TestGetUser(ApiTestCaseMixin):
     def test_it_returns_error_if_user_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/users/not_existing',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
-        data = json.loads(response.data.decode())
 
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert 'user does not exist' in data['message']
+        self.assert_404_with_entity(response, 'user')
 
 
 class TestGetUsers(ApiTestCaseMixin):
     def test_it_get_users_list(
         self, app: Flask, user_1: User, user_2: User, user_3: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/users',
@@ -181,7 +186,9 @@ class TestGetUsers(ApiTestCaseMixin):
         workout_running_user_1: Workout,
         workout_cycling_user_2: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/users',
@@ -244,7 +251,9 @@ class TestGetUsers(ApiTestCaseMixin):
         user_2: User,
         user_3: User,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/users?page=1',
@@ -271,7 +280,9 @@ class TestGetUsers(ApiTestCaseMixin):
         user_2: User,
         user_3: User,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/users?page=2',
@@ -297,7 +308,9 @@ class TestGetUsers(ApiTestCaseMixin):
         user_2: User,
         user_3: User,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/users?page=2',
@@ -323,7 +336,9 @@ class TestGetUsers(ApiTestCaseMixin):
         user_2: User,
         user_3: User,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/users?per_page=2',
@@ -349,7 +364,9 @@ class TestGetUsers(ApiTestCaseMixin):
         user_2: User,
         user_3: User,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/users?page=2&per_page=2',
@@ -371,7 +388,9 @@ class TestGetUsers(ApiTestCaseMixin):
     def test_it_gets_users_list_ordered_by_username(
         self, app: Flask, user_1: User, user_2: User, user_3: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/users?order_by=username',
@@ -396,7 +415,9 @@ class TestGetUsers(ApiTestCaseMixin):
     def test_it_gets_users_list_ordered_by_username_ascending(
         self, app: Flask, user_1: User, user_2: User, user_3: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/users?order_by=username&order=asc',
@@ -421,7 +442,9 @@ class TestGetUsers(ApiTestCaseMixin):
     def test_it_gets_users_list_ordered_by_username_descending(
         self, app: Flask, user_1: User, user_2: User, user_3: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/users?order_by=username&order=desc',
@@ -450,7 +473,7 @@ class TestGetUsers(ApiTestCaseMixin):
         user_3.created_at = datetime.utcnow() - timedelta(hours=1)
         user_1_admin.created_at = datetime.utcnow()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -480,7 +503,7 @@ class TestGetUsers(ApiTestCaseMixin):
         user_3.created_at = datetime.utcnow() - timedelta(hours=1)
         user_1_admin.created_at = datetime.utcnow()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -510,7 +533,7 @@ class TestGetUsers(ApiTestCaseMixin):
         user_3.created_at = datetime.utcnow() - timedelta(hours=1)
         user_1_admin.created_at = datetime.utcnow()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -537,7 +560,7 @@ class TestGetUsers(ApiTestCaseMixin):
         self, app: Flask, user_2: User, user_1_admin: User, user_3: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -564,7 +587,7 @@ class TestGetUsers(ApiTestCaseMixin):
         self, app: Flask, user_2: User, user_1_admin: User, user_3: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -591,7 +614,7 @@ class TestGetUsers(ApiTestCaseMixin):
         self, app: Flask, user_2: User, user_3: User, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -623,7 +646,9 @@ class TestGetUsers(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/users?order_by=workouts_count',
@@ -657,7 +682,9 @@ class TestGetUsers(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/users?order_by=workouts_count&order=asc',
@@ -691,7 +718,9 @@ class TestGetUsers(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/users?order_by=workouts_count&order=desc',
@@ -719,7 +748,9 @@ class TestGetUsers(ApiTestCaseMixin):
     def test_it_gets_users_list_filtering_on_username(
         self, app: Flask, user_1: User, user_2: User, user_3: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/users?q=toto',
@@ -742,7 +773,9 @@ class TestGetUsers(ApiTestCaseMixin):
     def test_it_returns_empty_users_list_filtering_on_username(
         self, app: Flask, user_1: User, user_2: User, user_3: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/users?q=not_existing',
@@ -764,7 +797,9 @@ class TestGetUsers(ApiTestCaseMixin):
     def test_it_users_list_with_complex_query(
         self, app: Flask, user_1: User, user_2: User, user_3: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/users?order_by=username&order=desc&page=2&per_page=2',
@@ -785,7 +820,7 @@ class TestGetUsers(ApiTestCaseMixin):
         }
 
 
-class TestGetUserPicture:
+class TestGetUserPicture(ApiTestCaseMixin):
     def test_it_return_error_if_user_has_no_picture(
         self, app: Flask, user_1: User
     ) -> None:
@@ -793,10 +828,7 @@ class TestGetUserPicture:
 
         response = client.get(f'/api/users/{user_1.username}/picture')
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert 'No picture.' in data['message']
+        self.assert_404_with_message(response, 'No picture.')
 
     def test_it_returns_error_if_user_does_not_exist(
         self, app: Flask, user_1: User
@@ -805,10 +837,7 @@ class TestGetUserPicture:
 
         response = client.get('/api/users/not_existing/picture')
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert 'user does not exist' in data['message']
+        self.assert_404_with_entity(response, 'user')
 
 
 class TestUpdateUser(ApiTestCaseMixin):
@@ -816,7 +845,7 @@ class TestUpdateUser(ApiTestCaseMixin):
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -838,7 +867,7 @@ class TestUpdateUser(ApiTestCaseMixin):
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -861,7 +890,7 @@ class TestUpdateUser(ApiTestCaseMixin):
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -871,16 +900,13 @@ class TestUpdateUser(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert 'error' in data['status']
-        assert 'invalid payload' in data['message']
+        self.assert_400(response)
 
     def test_it_returns_error_if_payload_for_admin_rights_is_invalid(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -890,18 +916,14 @@ class TestUpdateUser(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert 'error' in data['status']
-        assert (
-            'error, please try again or contact the administrator'
-            in data['message']
-        )
+        self.assert_500(response)
 
     def test_it_returns_error_if_user_can_not_change_admin_rights(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.patch(
             '/api/users/toto',
@@ -910,17 +932,16 @@ class TestUpdateUser(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 403
-        assert 'error' in data['status']
-        assert 'you do not have permissions' in data['message']
+        self.assert_403(response)
 
 
 class TestDeleteUser(ApiTestCaseMixin):
     def test_user_can_delete_its_own_account(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.delete(
             '/api/users/test',
@@ -932,7 +953,9 @@ class TestDeleteUser(ApiTestCaseMixin):
     def test_user_with_workout_can_delete_its_own_account(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
         client.post(
             '/api/workouts',
             data=dict(
@@ -959,7 +982,9 @@ class TestDeleteUser(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         user_sport_1_preference: UserSportPreference,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.delete(
             '/api/users/test',
@@ -971,7 +996,9 @@ class TestDeleteUser(ApiTestCaseMixin):
     def test_user_with_picture_can_delete_its_own_account(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
         client.post(
             '/api/auth/picture',
             data=dict(file=(BytesIO(b'avatar'), 'avatar.png')),
@@ -991,38 +1018,36 @@ class TestDeleteUser(ApiTestCaseMixin):
     def test_user_can_not_delete_another_user_account(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.delete(
             '/api/users/toto',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 403
-        assert 'error' in data['status']
-        assert 'you do not have permissions' in data['message']
+        self.assert_403(response)
 
     def test_it_returns_error_when_deleting_non_existing_user(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.delete(
             '/api/users/not_existing',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert 'user does not exist' in data['message']
+        self.assert_404_with_entity(response, 'user')
 
     def test_admin_can_delete_another_user_account(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.delete(
@@ -1036,7 +1061,7 @@ class TestDeleteUser(ApiTestCaseMixin):
         self, app: Flask, user_1_admin: User, user_2_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.delete(
@@ -1050,7 +1075,7 @@ class TestDeleteUser(ApiTestCaseMixin):
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.delete(
@@ -1058,12 +1083,9 @@ class TestDeleteUser(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 403
-        assert 'error' in data['status']
-        assert (
-            'you can not delete your account, no other user has admin rights'
-            in data['message']
+        self.assert_403(
+            response,
+            'you can not delete your account, no other user has admin rights',
         )
 
     def test_it_enables_registration_on_user_delete(
@@ -1074,7 +1096,7 @@ class TestDeleteUser(ApiTestCaseMixin):
         user_3: User,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_3_users_max, as_admin=True
+            app_with_3_users_max, user_1_admin.email
         )
         client.delete(
             '/api/users/toto',
@@ -1104,7 +1126,7 @@ class TestDeleteUser(ApiTestCaseMixin):
         user_1_paris: User,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_3_users_max, as_admin=True
+            app_with_3_users_max, user_1_admin.email
         )
 
         client.delete(
@@ -1124,7 +1146,4 @@ class TestDeleteUser(ApiTestCaseMixin):
             content_type='application/json',
         )
 
-        assert response.status_code == 403
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'error, registration is disabled'
+        self.assert_403(response, 'error, registration is disabled')

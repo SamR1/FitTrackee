@@ -12,7 +12,9 @@ class TestGetConfig(ApiTestCaseMixin):
     def test_it_gets_application_config(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/config',
@@ -38,7 +40,7 @@ class TestGetConfig(ApiTestCaseMixin):
         self, app_no_config: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_no_config, as_admin=True
+            app_no_config, user_1_admin.email
         )
 
         response = client.get(
@@ -47,16 +49,13 @@ class TestGetConfig(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert 'error' in data['status']
-        assert 'error on getting configuration' in data['message']
+        self.assert_500(response, 'error on getting configuration')
 
     def test_it_returns_error_if_application_has_several_config(
         self, app: Flask, app_config: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -65,10 +64,7 @@ class TestGetConfig(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert 'error' in data['status']
-        assert 'error on getting configuration' in data['message']
+        self.assert_500(response, 'error on getting configuration')
 
 
 class TestUpdateConfig(ApiTestCaseMixin):
@@ -76,7 +72,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         self, app: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
         response = client.patch(
             '/api/config',
@@ -98,7 +94,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         self, app: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -127,7 +123,9 @@ class TestUpdateConfig(ApiTestCaseMixin):
     def test_it_returns_403_when_user_is_not_an_admin(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.patch(
             '/api/config',
@@ -136,17 +134,13 @@ class TestUpdateConfig(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 403
-        assert 'success' not in data['status']
-        assert 'error' in data['status']
-        assert 'you do not have permissions' in data['message']
+        self.assert_403(response)
 
     def test_it_returns_400_if_invalid_is_payload(
         self, app: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -156,16 +150,13 @@ class TestUpdateConfig(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert 'error' in data['status']
-        assert 'invalid payload' in data['message']
+        self.assert_400(response)
 
     def test_it_returns_error_on_update_if_application_has_no_config(
         self, app_no_config: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_no_config, as_admin=True
+            app_no_config, user_1_admin.email
         )
 
         response = client.patch(
@@ -175,16 +166,13 @@ class TestUpdateConfig(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert 'error' in data['status']
-        assert 'error when updating configuration' in data['message']
+        self.assert_500(response, 'error when updating configuration')
 
     def test_it_raises_error_if_archive_max_size_is_below_files_max_size(
         self, app: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -201,19 +189,19 @@ class TestUpdateConfig(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert 'error' in data['status']
-        assert (
-            'Max. size of zip archive must be equal or greater than max. size '
-            'of uploaded files'
-        ) in data['message']
+        self.assert_400(
+            response,
+            (
+                'Max. size of zip archive must be equal or greater than max.'
+                ' size of uploaded files'
+            ),
+        )
 
     def test_it_raises_error_if_archive_max_size_equals_0(
         self, app_with_max_file_size_equals_0: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_max_file_size_equals_0, as_admin=True
+            app_with_max_file_size_equals_0, user_1_admin.email
         )
 
         response = client.patch(
@@ -227,19 +215,15 @@ class TestUpdateConfig(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert 'error' in data['status']
-        assert (
-            'Max. size of zip archive must be greater than 0'
-            in data['message']
+        self.assert_400(
+            response, 'Max. size of zip archive must be greater than 0'
         )
 
     def test_it_raises_error_if_files_max_size_equals_0(
         self, app: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -253,19 +237,15 @@ class TestUpdateConfig(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert 'error' in data['status']
-        assert (
-            'Max. size of uploaded files must be greater than 0'
-            in data['message']
+        self.assert_400(
+            response, 'Max. size of uploaded files must be greater than 0'
         )
 
     def test_it_raises_error_if_gpx_limit_import_equals_0(
         self, app: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -279,10 +259,6 @@ class TestUpdateConfig(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert 'error' in data['status']
-        assert (
-            'Max. files in a zip archive must be greater than 0'
-            in data['message']
+        self.assert_400(
+            response, 'Max. files in a zip archive must be greater than 0'
         )
