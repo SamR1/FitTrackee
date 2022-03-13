@@ -1,7 +1,7 @@
 <template>
   <div class="password-input">
     <input
-      id="password"
+      :id="id"
       :disabled="disabled"
       :placeholder="placeholder"
       :required="required"
@@ -35,6 +35,7 @@
   interface Props {
     checkStrength?: boolean
     disabled?: boolean
+    id?: string
     password?: string
     placeholder?: string
     required?: boolean
@@ -43,10 +44,11 @@
   const props = withDefaults(defineProps<Props>(), {
     checkStrength: false,
     disabled: false,
+    id: 'password',
     password: '',
     required: false,
   })
-  const { checkStrength, disabled, password, placeholder, required } =
+  const { checkStrength, disabled, id, password, placeholder, required } =
     toRefs(props)
 
   const showPassword: Ref<boolean> = ref(false)

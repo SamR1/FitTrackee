@@ -136,9 +136,13 @@
 
     .password-slider::-webkit-slider-thumb,
     .password-slider::-moz-range-thumb {
-      -webkit-appearance: none;
-      appearance: none;
       opacity: 0;
+    }
+    .password-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+    }
+    .password-slider::-moz-range-thumb {
+      appearance: none;
     }
 
     .password-strength-details {
