@@ -1,7 +1,7 @@
 import json
 from datetime import datetime, timedelta
 from io import BytesIO
-from unittest.mock import Mock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 from flask import Flask
@@ -13,6 +13,10 @@ from fittrackee.workouts.models import Sport, Workout
 
 from ..api_test_case import ApiTestCaseMixin
 from ..utils import random_string
+
+USER_AGENT = (
+    'Mozilla/5.0 (X11; Linux x86_64; rv:98.0) Gecko/20100101 Firefox/98.0'
+)
 
 
 class TestUserRegistration(ApiTestCaseMixin):
@@ -579,6 +583,16 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
 
 
 class TestUserAccountUpdate(ApiTestCaseMixin):
+    @staticmethod
+    def assert_no_emails_sent(
+        email_updated_to_current_address_mock: MagicMock,
+        email_updated_to_new_address_mock: MagicMock,
+        password_change_email_mock: MagicMock,
+    ) -> None:
+        email_updated_to_current_address_mock.send.assert_not_called()
+        email_updated_to_new_address_mock.send.assert_not_called()
+        password_change_email_mock.send.assert_not_called()
+
     def test_it_returns_error_if_payload_is_empty(
         self, app: Flask, user_1: User
     ) -> None:
@@ -659,8 +673,44 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
 
         self.assert_401(response, error_message='invalid credentials')
 
+    def test_it_does_not_send_emails_when_error_occurs(
+        self,
+        app: Flask,
+        user_1: User,
+        email_updated_to_current_address_mock: MagicMock,
+        email_updated_to_new_address_mock: MagicMock,
+        password_change_email_mock: MagicMock,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        client.patch(
+            '/api/auth/profile/edit/account',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    email=user_1.email,
+                    password=random_string(),
+                    new_password=random_string(),
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_no_emails_sent(
+            email_updated_to_current_address_mock,
+            email_updated_to_new_address_mock,
+            password_change_email_mock,
+        )
+
     def test_it_does_not_returns_error_if_no_new_password_provided(
-        self, app: Flask, user_1: User
+        self,
+        app: Flask,
+        user_1: User,
+        email_updated_to_current_address_mock: MagicMock,
+        email_updated_to_new_address_mock: MagicMock,
+        password_change_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -683,16 +733,19 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert data['message'] == 'user account updated'
 
-    def test_it_does_not_update_user_account_if_no_new_password_provided(
-        self, app: Flask, user_1: User
+    def test_it_does_not_send_emails_if_no_change(
+        self,
+        app: Flask,
+        user_1: User,
+        email_updated_to_current_address_mock: MagicMock,
+        email_updated_to_new_address_mock: MagicMock,
+        password_change_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        current_hashed_password = user_1.password
-        current_email = user_1.email
 
-        response = client.patch(
+        client.patch(
             '/api/auth/profile/edit/account',
             content_type='application/json',
             data=json.dumps(
@@ -704,12 +757,19 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        assert response.status_code == 200
-        assert current_email == user_1.email
-        assert current_hashed_password == user_1.password
+        self.assert_no_emails_sent(
+            email_updated_to_current_address_mock,
+            email_updated_to_new_address_mock,
+            password_change_email_mock,
+        )
 
     def test_it_returns_error_if_new_email_is_invalid(
-        self, app: Flask, user_1: User
+        self,
+        app: Flask,
+        user_1: User,
+        email_updated_to_current_address_mock: MagicMock,
+        email_updated_to_new_address_mock: MagicMock,
+        password_change_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -729,8 +789,13 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
 
         self.assert_400(response, 'email: valid email must be provided\n')
 
-    def test_it_does_not_update_email_if_new_email_provided(
-        self, app: Flask, user_1: User
+    def test_it_only_updates_email_to_confirm_if_new_email_provided(
+        self,
+        app: Flask,
+        user_1: User,
+        email_updated_to_current_address_mock: MagicMock,
+        email_updated_to_new_address_mock: MagicMock,
+        password_change_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -755,18 +820,20 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
         assert new_email == user_1.email_to_confirm
         assert user_1.confirmation_token is not None
 
-    def test_it_updates_email_to_confirm_when_new_email_provided(
-        self, app: Flask, user_1: User
+    def test_it_calls_email_updated_to_current_email_send_when_new_email_provided(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        email_updated_to_current_address_mock: MagicMock,
+        email_updated_to_new_address_mock: MagicMock,
+        password_change_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        previous_confirmation_token = random_string()
-        user_1.email_to_confirm = 'new.email@example.com'
-        user_1.confirmation_token = previous_confirmation_token
-        new_email = 'another.email@example.com'
+        new_email = 'new.email@example.com'
 
-        response = client.patch(
+        client.patch(
             '/api/auth/profile/edit/account',
             content_type='application/json',
             data=json.dumps(
@@ -776,14 +843,104 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
+            environ_base={'HTTP_USER_AGENT': USER_AGENT},
         )
 
-        assert response.status_code == 200
-        assert new_email == user_1.email_to_confirm
-        assert user_1.confirmation_token != previous_confirmation_token
+        email_updated_to_current_address_mock.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': user_1.email,
+            },
+            {
+                'username': user_1.username,
+                'fittrackee_url': 'http://0.0.0.0:5000',
+                'operating_system': 'linux',
+                'browser_name': 'firefox',
+                'new_email_address': new_email,
+            },
+        )
+
+    def test_it_calls_email_updated_to_new_email_send_when_new_email_provided(
+        self,
+        app: Flask,
+        user_1: User,
+        email_updated_to_current_address_mock: MagicMock,
+        email_updated_to_new_address_mock: MagicMock,
+        password_change_email_mock: MagicMock,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        new_email = 'new.email@example.com'
+        expected_token = random_string()
+
+        with patch('secrets.token_urlsafe', return_value=expected_token):
+            client.patch(
+                '/api/auth/profile/edit/account',
+                content_type='application/json',
+                data=json.dumps(
+                    dict(
+                        email=new_email,
+                        password='12345678',
+                    )
+                ),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+                environ_base={'HTTP_USER_AGENT': USER_AGENT},
+            )
+
+        email_updated_to_new_address_mock.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': user_1.email_to_confirm,
+            },
+            {
+                'username': user_1.username,
+                'fittrackee_url': 'http://0.0.0.0:5000',
+                'operating_system': 'linux',
+                'browser_name': 'firefox',
+                'email_confirmation_url': (
+                    f'http://0.0.0.0:5000/email-update?token={expected_token}'
+                ),
+            },
+        )
+
+    def test_it_does_not_calls_password_change_email_send_when_new_email_provided(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        email_updated_to_current_address_mock: MagicMock,
+        email_updated_to_new_address_mock: MagicMock,
+        password_change_email_mock: MagicMock,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        new_email = 'new.email@example.com'
+        expected_token = random_string()
+
+        with patch('secrets.token_urlsafe', return_value=expected_token):
+            client.patch(
+                '/api/auth/profile/edit/account',
+                content_type='application/json',
+                data=json.dumps(
+                    dict(
+                        email=new_email,
+                        password='12345678',
+                    )
+                ),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+                environ_base={'HTTP_USER_AGENT': USER_AGENT},
+            )
+
+        password_change_email_mock.send.assert_not_called()
 
     def test_it_returns_error_if_controls_fail_on_new_password(
-        self, app: Flask, user_1: User
+        self,
+        app: Flask,
+        user_1: User,
+        email_updated_to_current_address_mock: MagicMock,
+        email_updated_to_new_address_mock: MagicMock,
+        password_change_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -804,8 +961,13 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
 
         self.assert_400(response, 'password: 8 characters required')
 
-    def test_it_updates_auth_user_password(
-        self, app: Flask, user_1: User
+    def test_it_updates_auth_user_password_when_new_password_provided(
+        self,
+        app: Flask,
+        user_1: User,
+        email_updated_to_current_address_mock: MagicMock,
+        email_updated_to_new_address_mock: MagicMock,
+        password_change_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -824,13 +986,21 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
+
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['message'] == 'user account updated'
         assert current_hashed_password != user_1.password
 
-    def test_new_password_is_hashed(self, app: Flask, user_1: User) -> None:
+    def test_new_password_is_hashed(
+        self,
+        app: Flask,
+        user_1: User,
+        email_updated_to_current_address_mock: MagicMock,
+        email_updated_to_new_address_mock: MagicMock,
+        password_change_email_mock: MagicMock,
+    ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -848,8 +1018,141 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
+
         assert response.status_code == 200
         assert new_password != user_1.password
+
+    def test_it_calls_password_change_email_when_new_password_provided(
+        self,
+        app: Flask,
+        user_1: User,
+        email_updated_to_current_address_mock: MagicMock,
+        email_updated_to_new_address_mock: MagicMock,
+        password_change_email_mock: MagicMock,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        client.patch(
+            '/api/auth/profile/edit/account',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    email=user_1.email,
+                    password='12345678',
+                    new_password=random_string(),
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+            environ_base={'HTTP_USER_AGENT': USER_AGENT},
+        )
+
+        password_change_email_mock.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': user_1.email,
+            },
+            {
+                'username': user_1.username,
+                'fittrackee_url': 'http://0.0.0.0:5000',
+                'operating_system': 'linux',
+                'browser_name': 'firefox',
+            },
+        )
+
+    def test_it_does_not_call_email_updated_emails_send_when_new_password_provided(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        email_updated_to_current_address_mock: MagicMock,
+        email_updated_to_new_address_mock: MagicMock,
+        password_change_email_mock: MagicMock,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        client.patch(
+            '/api/auth/profile/edit/account',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    email=user_1.email,
+                    password='12345678',
+                    new_password=random_string(),
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        email_updated_to_current_address_mock.send.assert_not_called()
+        email_updated_to_new_address_mock.send.assert_not_called()
+
+    def test_it_updates_email_to_confirm_and_password_when_new_email_and_password_provided(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        email_updated_to_current_address_mock: MagicMock,
+        email_updated_to_new_address_mock: MagicMock,
+        password_change_email_mock: MagicMock,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        current_email = user_1.email
+        current_hashed_password = user_1.password
+        new_email = 'new.email@example.com'
+
+        response = client.patch(
+            '/api/auth/profile/edit/account',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    email=new_email,
+                    password='12345678',
+                    new_password=random_string(),
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'user account updated'
+        assert user_1.email == current_email
+        assert user_1.email_to_confirm == new_email
+        assert user_1.password != current_hashed_password
+
+    def test_it_calls_all_email_send_when_new_email_and_password_provided(
+        self,
+        app: Flask,
+        user_1: User,
+        email_updated_to_current_address_mock: MagicMock,
+        email_updated_to_new_address_mock: MagicMock,
+        password_change_email_mock: MagicMock,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        client.patch(
+            '/api/auth/profile/edit/account',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    email='new.email@example.com',
+                    password='12345678',
+                    new_password=random_string(),
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        email_updated_to_current_address_mock.send.assert_called_once()
+        email_updated_to_new_address_mock.send.assert_called_once()
+        password_change_email_mock.send.assert_called_once()
 
 
 class TestUserPreferencesUpdate(ApiTestCaseMixin):

@@ -11,7 +11,12 @@ from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, bcrypt, db
-from fittrackee.emails.tasks import reset_password_email
+from fittrackee.emails.tasks import (
+    email_updated_to_current_address,
+    email_updated_to_new_address,
+    password_change_email,
+    reset_password_email,
+)
 from fittrackee.files import get_absolute_file_path
 from fittrackee.responses import (
     ForbiddenErrorResponse,
@@ -686,6 +691,46 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
             return InvalidPayloadErrorResponse(error_messages)
 
         db.session.commit()
+
+        ui_url = current_app.config['UI_URL']
+        user_data = {
+            'language': (
+                'en' if auth_user.language is None else auth_user.language
+            ),
+            'email': auth_user.email,
+        }
+        data = {
+            'username': auth_user.username,
+            'fittrackee_url': ui_url,
+            'operating_system': request.user_agent.platform,
+            'browser_name': request.user_agent.browser,
+        }
+
+        if new_password is not None:
+            password_change_email.send(user_data, data)
+
+        if (
+            auth_user.email_to_confirm is not None
+            and auth_user.email_to_confirm != auth_user.email
+        ):
+            email_data = {
+                **data,
+                **{'new_email_address': email_to_confirm},
+            }
+            email_updated_to_current_address.send(user_data, email_data)
+
+            email_data = {
+                **data,
+                **{
+                    'email_confirmation_url': (
+                        f'{ui_url}/email-update'
+                        f'?token={auth_user.confirmation_token}'
+                    )
+                },
+            }
+            user_data = {**user_data, **{'email': auth_user.email_to_confirm}}
+            email_updated_to_new_address.send(user_data, email_data)
+
         return {
             'status': 'success',
             'message': 'user account updated',
