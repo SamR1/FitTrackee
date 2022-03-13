@@ -3,13 +3,15 @@
     <ul class="pagination">
       <li class="page-prev" :class="{ disabled: !pagination.has_prev }">
         <router-link
+          v-slot="{ navigate }"
           class="page-link"
           :to="{ path, query: getQuery(pagination.page, -1) }"
-          :event="pagination.has_prev ? 'click' : ''"
           :disabled="!pagination.has_prev"
         >
-          <i class="fa fa-chevron-left" aria-hidden="true" />
-          {{ $t('api.PAGINATION.PREVIOUS') }}
+          <slot @click="pagination.has_next ? navigate : null">
+            {{ $t('api.PAGINATION.PREVIOUS') }}
+            <i class="fa fa-chevron-left" aria-hidden="true" />
+          </slot>
         </router-link>
       </li>
       <li
@@ -29,13 +31,15 @@
       </li>
       <li class="page-next" :class="{ disabled: !pagination.has_next }">
         <router-link
+          v-slot="{ navigate }"
           class="page-link"
           :to="{ path, query: getQuery(pagination.page, 1) }"
-          :event="pagination.has_next ? 'click' : ''"
           :disabled="!pagination.has_next"
         >
-          {{ $t('api.PAGINATION.NEXT') }}
-          <i class="fa fa-chevron-right" aria-hidden="true" />
+          <slot @click="pagination.has_next ? navigate : null">
+            {{ $t('api.PAGINATION.NEXT') }}
+            <i class="fa fa-chevron-right" aria-hidden="true" />
+          </slot>
         </router-link>
       </li>
     </ul>
@@ -95,6 +99,8 @@
         &.disabled {
           cursor: default;
           a {
+            cursor: default;
+            pointer-events: none;
             color: var(--disabled-color);
           }
         }
