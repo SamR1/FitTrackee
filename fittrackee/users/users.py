@@ -1,12 +1,14 @@
 import os
+import random
 import shutil
 from typing import Any, Dict, Tuple, Union
 
 import click
-from flask import Blueprint, request, send_file
+from flask import Blueprint, current_app, request, send_file
 from sqlalchemy import exc
 
-from fittrackee import db
+from fittrackee import bcrypt, db
+from fittrackee.emails.tasks import password_change_email, reset_password_email
 from fittrackee.files import get_absolute_file_path
 from fittrackee.responses import (
     ForbiddenErrorResponse,
@@ -16,12 +18,14 @@ from fittrackee.responses import (
     UserNotFoundErrorResponse,
     handle_error_and_return_response,
 )
+from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
 from .decorators import authenticate, authenticate_as_admin
 from .exceptions import UserNotFoundException
 from .models import User, UserSportPreference
 from .utils.admin import set_admin_rights
+from .utils.random import random_string
 
 users_blueprint = Blueprint('users', __name__)
 
@@ -487,16 +491,62 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     :statuscode 500:
     """
     user_data = request.get_json()
-    if not user_data or user_data.get('admin') is None:
+    if not user_data:
         return InvalidPayloadErrorResponse()
 
+    send_emails = False
     try:
         user = User.query.filter_by(username=user_name).first()
         if not user:
             return UserNotFoundErrorResponse()
 
-        user.admin = user_data['admin']
+        if 'admin' in user_data:
+            user.admin = user_data['admin']
+
+        if (
+            'reset_password' in user_data
+            and user_data['reset_password'] is True
+        ):
+            new_password = random_string(length=random.randint(10, 20))
+            user.password = bcrypt.generate_password_hash(
+                new_password, current_app.config.get('BCRYPT_LOG_ROUNDS')
+            ).decode()
+            send_emails = True
+
         db.session.commit()
+
+        if send_emails:
+            user_language = 'en' if user.language is None else user.language
+            ui_url = current_app.config['UI_URL']
+            user_data = {
+                'language': user_language,
+                'email': user.email,
+            }
+            password_change_email.send(
+                user_data,
+                {
+                    'username': user.username,
+                    'fittrackee_url': ui_url,
+                },
+            )
+            password_reset_token = user.encode_password_reset_token(user.id)
+            reset_password_email.send(
+                user_data,
+                {
+                    'expiration_delay': get_readable_duration(
+                        current_app.config[
+                            'PASSWORD_TOKEN_EXPIRATION_SECONDS'
+                        ],
+                        user_language,
+                    ),
+                    'username': user.username,
+                    'password_reset_url': (
+                        f'{ui_url}/password-reset?token={password_reset_token}'
+                    ),
+                    'fittrackee_url': ui_url,
+                },
+            )
+
         return {
             'status': 'success',
             'data': {'users': [user.serialize()]},

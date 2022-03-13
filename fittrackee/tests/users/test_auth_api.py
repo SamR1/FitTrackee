@@ -8,11 +8,11 @@ from flask import Flask
 from freezegun import freeze_time
 
 from fittrackee.users.models import User, UserSportPreference
+from fittrackee.users.utils.random import random_string
 from fittrackee.users.utils.token import get_user_token
 from fittrackee.workouts.models import Sport, Workout
 
 from ..api_test_case import ApiTestCaseMixin
-from ..utils import random_string
 
 USER_AGENT = (
     'Mozilla/5.0 (X11; Linux x86_64; rv:98.0) Gecko/20100101 Firefox/98.0'

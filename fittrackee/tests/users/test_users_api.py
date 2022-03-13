@@ -1,11 +1,12 @@
 import json
 from datetime import datetime, timedelta
 from io import BytesIO
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from flask import Flask
 
 from fittrackee.users.models import User, UserSportPreference
+from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport, Workout
 
 from ..api_test_case import ApiTestCaseMixin
@@ -841,7 +842,7 @@ class TestGetUserPicture(ApiTestCaseMixin):
 
 
 class TestUpdateUser(ApiTestCaseMixin):
-    def test_it_adds_admin_rights_to_a_user(
+    def test_it_returns_error_if_payload_is_empty(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -849,52 +850,7 @@ class TestUpdateUser(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            '/api/users/toto',
-            content_type='application/json',
-            data=json.dumps(dict(admin=True)),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        data = json.loads(response.data.decode())
-        assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['users']) == 1
-        user = data['data']['users'][0]
-        assert user['email'] == 'toto@toto.com'
-        assert user['admin'] is True
-
-    def test_it_removes_admin_rights_to_a_user(
-        self, app: Flask, user_1_admin: User, user_2: User
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-
-        response = client.patch(
-            '/api/users/toto',
-            content_type='application/json',
-            data=json.dumps(dict(admin=False)),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        data = json.loads(response.data.decode())
-        assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['users']) == 1
-
-        user = data['data']['users'][0]
-        assert user['email'] == 'toto@toto.com'
-        assert user['admin'] is False
-
-    def test_it_returns_error_if_payload_for_admin_rights_is_empty(
-        self, app: Flask, user_1_admin: User, user_2: User
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-
-        response = client.patch(
-            '/api/users/toto',
+            f'/api/users/{user_2.username}',
             content_type='application/json',
             data=json.dumps(dict()),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -910,13 +866,19 @@ class TestUpdateUser(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            '/api/users/toto',
+            f'/api/users/{user_2.username}',
             content_type='application/json',
             data=json.dumps(dict(admin="")),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_500(response)
+        assert response.status_code == 500
+        data = json.loads(response.data.decode())
+        assert 'error' in data['status']
+        assert (
+            'error, please try again or contact the administrator'
+            in data['message']
+        )
 
     def test_it_returns_error_if_user_can_not_change_admin_rights(
         self, app: Flask, user_1: User, user_2: User
@@ -926,13 +888,170 @@ class TestUpdateUser(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            '/api/users/toto',
+            f'/api/users/{user_2.username}',
             content_type='application/json',
             data=json.dumps(dict(admin=True)),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         self.assert_403(response)
+
+    def test_it_adds_admin_rights_to_a_user(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            data=json.dumps(dict(admin=True)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 1
+        user = data['data']['users'][0]
+        assert user['email'] == 'toto@toto.com'
+        assert user['admin'] is True
+
+    def test_it_removes_admin_rights_to_a_user(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            data=json.dumps(dict(admin=False)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 1
+
+        user = data['data']['users'][0]
+        assert user['email'] == 'toto@toto.com'
+        assert user['admin'] is False
+
+    def test_it_does_not_send_email_when_only_admin_rights_update(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_password_change_email_mock: MagicMock,
+        user_reset_password_email: MagicMock,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            data=json.dumps(dict(admin=True)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        user_password_change_email_mock.send.assert_not_called()
+        user_reset_password_email.send.assert_not_called()
+
+    def test_it_resets_user_password(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        user_2_password = user_2.password
+
+        response = client.patch(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            data=json.dumps(dict(reset_password=True)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        assert user_2.password != user_2_password
+
+    def test_it_calls_password_change_email_when_password_reset_is_successful(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_password_change_email_mock: MagicMock,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            data=json.dumps(dict(reset_password=True)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        user_password_change_email_mock.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': user_2.email,
+            },
+            {
+                'username': user_2.username,
+                'fittrackee_url': 'http://0.0.0.0:5000',
+            },
+        )
+
+    def test_it_calls_reset_password_email_when_password_reset_is_successful(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_reset_password_email: MagicMock,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        with patch(
+            'fittrackee.users.users.User.encode_password_reset_token',
+            return_value='xxx',
+        ):
+            response = client.patch(
+                f'/api/users/{user_2.username}',
+                content_type='application/json',
+                data=json.dumps(dict(reset_password=True)),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        assert response.status_code == 200
+        user_reset_password_email.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': user_2.email,
+            },
+            {
+                'expiration_delay': get_readable_duration(
+                    app.config['PASSWORD_TOKEN_EXPIRATION_SECONDS'],
+                    'en',
+                ),
+                'username': user_2.username,
+                'password_reset_url': (
+                    'http://0.0.0.0:5000/password-reset?token=xxx'
+                ),
+                'fittrackee_url': 'http://0.0.0.0:5000',
+            },
+        )
 
 
 class TestDeleteUser(ApiTestCaseMixin):

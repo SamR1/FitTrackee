@@ -12,8 +12,7 @@ from fittrackee.users.utils.controls import (
     is_valid_email,
     register_controls,
 )
-
-from ..utils import random_string
+from fittrackee.users.utils.random import random_string
 
 
 class TestSetAdminRights:
