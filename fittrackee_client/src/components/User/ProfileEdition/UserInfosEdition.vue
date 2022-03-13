@@ -62,7 +62,7 @@
 
 <script setup lang="ts">
   import { format } from 'date-fns'
-  import { ComputedRef, computed, reactive, onMounted } from 'vue'
+  import { ComputedRef, computed, reactive, onMounted, onUnmounted } from 'vue'
 
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import { IUserProfile, IUserPayload } from '@/types/user'
@@ -115,6 +115,10 @@
   function updateProfile() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PROFILE, userForm)
   }
+
+  onUnmounted(() => {
+    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+  })
 </script>
 
 <style lang="scss" scoped>

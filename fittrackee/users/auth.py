@@ -626,7 +626,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "username": "sam"
           "weekm": true,
         },
-        "message": "user profile updated",
+        "message": "user account updated",
         "status": "success"
       }
 
@@ -646,19 +646,23 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
 
     """
     data = request.get_json()
-    if not data:
-        return InvalidPayloadErrorResponse()
+    if not data or not data.get('password'):
+        return InvalidPayloadErrorResponse('current password is missing')
 
-    password_data = data.get('password')
-    message = check_password(password_data)
+    current_password = data.get('password')
+    if not bcrypt.check_password_hash(auth_user.password, current_password):
+        return UnauthorizedErrorResponse('invalid credentials')
+
+    new_password = data.get('new_password')
+    message = check_password(new_password)
     if message != '':
         return InvalidPayloadErrorResponse(message)
-    password = bcrypt.generate_password_hash(
-        password_data, current_app.config.get('BCRYPT_LOG_ROUNDS')
+    hashed_password = bcrypt.generate_password_hash(
+        new_password, current_app.config.get('BCRYPT_LOG_ROUNDS')
     ).decode()
 
     try:
-        auth_user.password = password
+        auth_user.password = hashed_password
         db.session.commit()
 
         return {

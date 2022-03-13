@@ -593,25 +593,9 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_400(response)
+        self.assert_400(response, error_message='current password is missing')
 
-    def test_it_updates_user_profile(self, app: Flask, user_1: User) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.patch(
-            '/api/auth/profile/edit/account',
-            content_type='application/json',
-            data=json.dumps(dict(password=random_string())),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-        assert response.status_code == 200
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['message'] == 'user account updated'
-
-    def test_it_returns_error_if_controls_fail(
+    def test_it_returns_error_if_current_password_is_missing(
         self, app: Flask, user_1: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -621,13 +605,98 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
         response = client.patch(
             '/api/auth/profile/edit/account',
             content_type='application/json',
-            data=json.dumps(dict(password=random_string(length=5))),
+            data=json.dumps(dict(new_password=random_string())),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_400(
-            response, error_message='password: 8 characters required'
+        self.assert_400(response, error_message='current password is missing')
+
+    def test_it_returns_error_if_current_password_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
         )
+
+        response = client.patch(
+            '/api/auth/profile/edit/account',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    password=random_string(),
+                    new_password=random_string(),
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_401(response, error_message='invalid credentials')
+
+    def test_it_returns_error_if_controls_fail_on_new_password(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            '/api/auth/profile/edit/account',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    password='12345678',
+                    new_password=random_string(length=3),
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, 'password: 8 characters required')
+
+    def test_it_updates_auth_user_password(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        current_hashed_password = user_1.password
+
+        response = client.patch(
+            '/api/auth/profile/edit/account',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    password='12345678',
+                    new_password=random_string(),
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'user account updated'
+        assert current_hashed_password != user_1.password
+
+    def test_new_password_is_hashed(self, app: Flask, user_1: User) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        new_password = random_string()
+
+        response = client.patch(
+            '/api/auth/profile/edit/account',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    password='12345678',
+                    new_password=new_password,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+        assert response.status_code == 200
+        assert new_password != user_1.password
 
 
 class TestUserPreferencesUpdate(ApiTestCaseMixin):

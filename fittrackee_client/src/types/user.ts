@@ -36,6 +36,7 @@ export interface IUserPayload {
 export interface IUserAccountPayload {
   email?: string
   password: string
+  new_password: string
 }
 
 export interface IAdminUserPayload {

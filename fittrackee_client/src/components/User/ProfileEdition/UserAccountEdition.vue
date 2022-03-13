@@ -18,15 +18,26 @@
           <input id="email" :value="user.email" disabled />
         </label>
         <label class="form-items" for="password-field">
-          {{ $t('user.PASSWORD') }}
+          {{ $t('user.CURRENT_PASSWORD') }}*
           <PasswordInput
             id="password-field"
             :disabled="loading"
-            :checkStrength="true"
             :password="userForm.password"
-            :isSuccess="false"
             :required="true"
             @updatePassword="updatePassword"
+            @passwordError="invalidateForm"
+          />
+        </label>
+        <label class="form-items" for="new-password-field">
+          {{ $t('user.NEW_PASSWORD') }}*
+          <PasswordInput
+            id="new-password-field"
+            :disabled="loading"
+            :checkStrength="true"
+            :password="userForm.new_password"
+            :isSuccess="false"
+            :required="true"
+            @updatePassword="updateNewPassword"
             @passwordError="invalidateForm"
           />
         </label>
@@ -74,6 +85,7 @@
   const userForm: IUserAccountPayload = reactive({
     email: '',
     password: '',
+    new_password: '',
   })
   const loading = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
@@ -102,9 +114,13 @@
   function updatePassword(password: string) {
     userForm.password = password
   }
+  function updateNewPassword(new_password: string) {
+    userForm.new_password = new_password
+  }
   function updateProfile() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_ACCOUNT, {
       password: userForm.password,
+      new_password: userForm.new_password,
     })
   }
   function updateDisplayModal(value: boolean) {
@@ -114,15 +130,17 @@
     store.dispatch(AUTH_USER_STORE.ACTIONS.DELETE_ACCOUNT, { username })
   }
 
-  onUnmounted(() =>
+  onUnmounted(() => {
     store.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
-  )
+    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+  })
 
   watch(
     () => isSuccess.value,
     async (isSuccessValue) => {
       if (isSuccessValue) {
         updatePassword('')
+        updateNewPassword('')
         formErrors.value = false
       }
     }
