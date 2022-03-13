@@ -1296,6 +1296,20 @@ def update_password() -> Union[Dict, HttpResponse]:
             password, current_app.config.get('BCRYPT_LOG_ROUNDS')
         ).decode()
         db.session.commit()
+
+        password_change_email.send(
+            {
+                'language': ('en' if user.language is None else user.language),
+                'email': user.email,
+            },
+            {
+                'username': user.username,
+                'fittrackee_url': current_app.config['UI_URL'],
+                'operating_system': request.user_agent.platform,
+                'browser_name': request.user_agent.browser,
+            },
+        )
+
         return {
             'status': 'success',
             'message': 'password updated',

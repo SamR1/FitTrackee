@@ -1847,7 +1847,34 @@ class TestPasswordUpdate(ApiTestCaseMixin):
 
         self.assert_400(response, 'password: 8 characters required\n')
 
-    def test_it_updates_password(self, app: Flask, user_1: User) -> None:
+    def test_it_does_not_send_email_after_error(
+        self,
+        app: Flask,
+        user_1: User,
+        password_change_email_mock: MagicMock,
+    ) -> None:
+        token = get_user_token(user_1.id, password_reset=True)
+        client = app.test_client()
+
+        client.post(
+            '/api/auth/password/update',
+            data=json.dumps(
+                dict(
+                    token=token,
+                    password='1234567',
+                )
+            ),
+            content_type='application/json',
+        )
+
+        password_change_email_mock.assert_not_called()
+
+    def test_it_updates_password(
+        self,
+        app: Flask,
+        user_1: User,
+        password_change_email_mock: MagicMock,
+    ) -> None:
         token = get_user_token(user_1.id, password_reset=True)
         client = app.test_client()
 
@@ -1866,6 +1893,41 @@ class TestPasswordUpdate(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['message'] == 'password updated'
+
+    def test_it_send_email_after_successful_update(
+        self,
+        app: Flask,
+        user_1: User,
+        password_change_email_mock: MagicMock,
+    ) -> None:
+        token = get_user_token(user_1.id, password_reset=True)
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/password/update',
+            data=json.dumps(
+                dict(
+                    token=token,
+                    password='12345678',
+                )
+            ),
+            content_type='application/json',
+            environ_base={'HTTP_USER_AGENT': USER_AGENT},
+        )
+
+        assert response.status_code == 200
+        password_change_email_mock.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': user_1.email,
+            },
+            {
+                'username': user_1.username,
+                'fittrackee_url': 'http://0.0.0.0:5000',
+                'operating_system': 'linux',
+                'browser_name': 'firefox',
+            },
+        )
 
 
 class TestEmailUpdateWitUnauthenticatedUser(ApiTestCaseMixin):
