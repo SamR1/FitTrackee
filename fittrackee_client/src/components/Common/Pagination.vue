@@ -45,20 +45,23 @@
 <script setup lang="ts">
   import { toRefs } from 'vue'
 
-  import { IPagination } from '@/types/api'
+  import { IPagination, TPaginationPayload } from '@/types/api'
   import { TWorkoutsPayload } from '@/types/workouts'
   import { rangePagination } from '@/utils/api'
 
   interface Props {
     pagination: IPagination
     path: string
-    query: TWorkoutsPayload
+    query: TWorkoutsPayload | TPaginationPayload
   }
   const props = defineProps<Props>()
 
   const { pagination, path, query } = toRefs(props)
 
-  function getQuery(page: number, cursor?: number): TWorkoutsPayload {
+  function getQuery(
+    page: number,
+    cursor?: number
+  ): TWorkoutsPayload | TPaginationPayload {
     const newQuery = Object.assign({}, query.value)
     newQuery.page = cursor ? page + cursor : page
     return newQuery
