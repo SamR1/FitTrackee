@@ -50,7 +50,7 @@ def set_admin(username: str) -> None:
 
 
 @users_blueprint.route('/users', methods=['GET'])
-@authenticate
+@authenticate_as_admin
 def get_users(auth_user: User) -> Dict:
     """
     Get all users
@@ -227,7 +227,7 @@ def get_users(auth_user: User) -> Dict:
     users = users_pagination.items
     return {
         'status': 'success',
-        'data': {'users': [user.serialize() for user in users]},
+        'data': {'users': [user.serialize(auth_user) for user in users]},
         'pagination': {
             'has_next': users_pagination.has_next,
             'has_prev': users_pagination.has_prev,
@@ -239,7 +239,7 @@ def get_users(auth_user: User) -> Dict:
 
 
 @users_blueprint.route('/users/<user_name>', methods=['GET'])
-@authenticate
+@authenticate_as_admin
 def get_single_user(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -345,7 +345,7 @@ def get_single_user(
         if user:
             return {
                 'status': 'success',
-                'data': {'users': [user.serialize()]},
+                'data': {'users': [user.serialize(auth_user)]},
             }
     except ValueError:
         pass
@@ -581,7 +581,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
         return {
             'status': 'success',
-            'data': {'users': [user.serialize()]},
+            'data': {'users': [user.serialize(auth_user)]},
         }
     except exc.StatementError as e:
         return handle_error_and_return_response(e, db=db)

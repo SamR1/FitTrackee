@@ -11,6 +11,8 @@ from sqlalchemy.sql.expression import select
 from fittrackee import bcrypt, db
 from fittrackee.workouts.models import Workout
 
+from .exceptions import UserNotFoundException
+from .roles import UserRole
 from .utils.token import decode_user_token, get_user_token
 
 BaseModel: DeclarativeMeta = db.Model
@@ -109,7 +111,18 @@ class User(BaseModel):
             .label('workouts_count')
         )
 
-    def serialize(self) -> Dict:
+    def serialize(self, current_user: 'User') -> Dict:
+        role = (
+            UserRole.AUTH_USER
+            if current_user.id == self.id
+            else UserRole.ADMIN
+            if current_user.admin
+            else UserRole.USER
+        )
+
+        if role == UserRole.USER:
+            raise UserNotFoundException()
+
         sports = []
         total = (0, '0:00:00')
         if self.workouts_count > 0:  # type: ignore
@@ -127,30 +140,40 @@ class User(BaseModel):
                 .filter(Workout.user_id == self.id)
                 .first()
             )
-        return {
-            'username': self.username,
-            'email': self.email,
-            'created_at': self.created_at,
+
+        serialized_user = {
             'admin': self.admin,
+            'bio': self.bio,
+            'birth_date': self.birth_date,
+            'created_at': self.created_at,
+            'email': self.email,
+            'email_to_confirm': self.email_to_confirm,
             'first_name': self.first_name,
             'last_name': self.last_name,
-            'bio': self.bio,
             'location': self.location,
-            'birth_date': self.birth_date,
-            'picture': self.picture is not None,
-            'timezone': self.timezone,
-            'weekm': self.weekm,
-            'language': self.language,
             'nb_sports': len(sports),
             'nb_workouts': self.workouts_count,
+            'picture': self.picture is not None,
             'records': [record.serialize() for record in self.records],
             'sports_list': [
                 sport for sportslist in sports for sport in sportslist
             ],
             'total_distance': float(total[0]),
             'total_duration': str(total[1]),
-            'imperial_units': self.imperial_units,
+            'username': self.username,
         }
+        if role == UserRole.AUTH_USER:
+            serialized_user = {
+                **serialized_user,
+                **{
+                    'imperial_units': self.imperial_units,
+                    'language': self.language,
+                    'timezone': self.timezone,
+                    'weekm': self.weekm,
+                },
+            }
+
+        return serialized_user
 
 
 class UserSportPreference(BaseModel):

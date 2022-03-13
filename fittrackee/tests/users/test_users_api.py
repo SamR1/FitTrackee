@@ -14,11 +14,26 @@ from ..api_test_case import ApiTestCaseMixin
 
 
 class TestGetUser(ApiTestCaseMixin):
-    def test_it_gets_single_user_without_workouts(
+    def test_it_returns_error_if_user_has_no_admin_rights(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
+    def test_it_gets_single_user_without_workouts(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -40,11 +55,7 @@ class TestGetUser(ApiTestCaseMixin):
         assert user['last_name'] is None
         assert user['birth_date'] is None
         assert user['bio'] is None
-        assert user['imperial_units'] is False
         assert user['location'] is None
-        assert user['timezone'] is None
-        assert user['weekm'] is False
-        assert user['language'] is None
         assert user['nb_sports'] == 0
         assert user['nb_workouts'] == 0
         assert user['records'] == []
@@ -56,13 +67,14 @@ class TestGetUser(ApiTestCaseMixin):
         self,
         app: Flask,
         user_1: User,
+        user_2_admin: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app, user_2_admin.email
         )
 
         response = client.get(
@@ -84,11 +96,7 @@ class TestGetUser(ApiTestCaseMixin):
         assert user['last_name'] is None
         assert user['birth_date'] is None
         assert user['bio'] is None
-        assert user['imperial_units'] is False
         assert user['location'] is None
-        assert user['timezone'] is None
-        assert user['weekm'] is False
-        assert user['language'] is None
         assert len(user['records']) == 8
         assert user['nb_sports'] == 2
         assert user['nb_workouts'] == 2
@@ -97,10 +105,10 @@ class TestGetUser(ApiTestCaseMixin):
         assert user['total_duration'] == '2:40:00'
 
     def test_it_returns_error_if_user_does_not_exist(
-        self, app: Flask, user_1: User
+        self, app: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -113,11 +121,25 @@ class TestGetUser(ApiTestCaseMixin):
 
 
 class TestGetUsers(ApiTestCaseMixin):
-    def test_it_get_users_list(
-        self, app: Flask, user_1: User, user_2: User, user_3: User
+    def test_it_returns_error_if_user_has_no_admin_rights(
+        self, app: Flask, user_1: User, user_2: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
+        )
+
+        response = client.get(
+            '/api/users',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
+    def test_it_get_users_list(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -132,10 +154,10 @@ class TestGetUsers(ApiTestCaseMixin):
         assert 'created_at' in data['data']['users'][0]
         assert 'created_at' in data['data']['users'][1]
         assert 'created_at' in data['data']['users'][2]
-        assert 'test' in data['data']['users'][0]['username']
+        assert 'admin' in data['data']['users'][0]['username']
         assert 'toto' in data['data']['users'][1]['username']
         assert 'sam' in data['data']['users'][2]['username']
-        assert 'test@test.com' in data['data']['users'][0]['email']
+        assert 'admin@example.com' in data['data']['users'][0]['email']
         assert 'toto@toto.com' in data['data']['users'][1]['email']
         assert 'sam@test.com' in data['data']['users'][2]['email']
         assert data['data']['users'][0]['imperial_units'] is False
@@ -148,20 +170,12 @@ class TestGetUsers(ApiTestCaseMixin):
         assert data['data']['users'][0]['sports_list'] == []
         assert data['data']['users'][0]['total_distance'] == 0
         assert data['data']['users'][0]['total_duration'] == '0:00:00'
-        assert data['data']['users'][1]['imperial_units'] is False
-        assert data['data']['users'][1]['timezone'] is None
-        assert data['data']['users'][1]['weekm'] is False
-        assert data['data']['users'][1]['language'] is None
         assert data['data']['users'][1]['nb_sports'] == 0
         assert data['data']['users'][1]['nb_workouts'] == 0
         assert data['data']['users'][1]['records'] == []
         assert data['data']['users'][1]['sports_list'] == []
         assert data['data']['users'][1]['total_distance'] == 0
         assert data['data']['users'][1]['total_duration'] == '0:00:00'
-        assert data['data']['users'][2]['imperial_units'] is False
-        assert data['data']['users'][2]['timezone'] is None
-        assert data['data']['users'][2]['weekm'] is True
-        assert data['data']['users'][2]['language'] is None
         assert data['data']['users'][2]['records'] == []
         assert data['data']['users'][2]['nb_sports'] == 0
         assert data['data']['users'][2]['nb_workouts'] == 0
@@ -179,7 +193,7 @@ class TestGetUsers(ApiTestCaseMixin):
     def test_it_gets_users_list_with_workouts(
         self,
         app: Flask,
-        user_1: User,
+        user_1_admin: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -189,7 +203,7 @@ class TestGetUsers(ApiTestCaseMixin):
         workout_cycling_user_2: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -204,10 +218,10 @@ class TestGetUsers(ApiTestCaseMixin):
         assert 'created_at' in data['data']['users'][0]
         assert 'created_at' in data['data']['users'][1]
         assert 'created_at' in data['data']['users'][2]
-        assert 'test' in data['data']['users'][0]['username']
+        assert 'admin' in data['data']['users'][0]['username']
         assert 'toto' in data['data']['users'][1]['username']
         assert 'sam' in data['data']['users'][2]['username']
-        assert 'test@test.com' in data['data']['users'][0]['email']
+        assert 'admin@example.com' in data['data']['users'][0]['email']
         assert 'toto@toto.com' in data['data']['users'][1]['email']
         assert 'sam@test.com' in data['data']['users'][2]['email']
         assert data['data']['users'][0]['imperial_units'] is False
@@ -219,18 +233,12 @@ class TestGetUsers(ApiTestCaseMixin):
         assert data['data']['users'][0]['sports_list'] == [1, 2]
         assert data['data']['users'][0]['total_distance'] == 22.0
         assert data['data']['users'][0]['total_duration'] == '2:40:00'
-        assert data['data']['users'][1]['imperial_units'] is False
-        assert data['data']['users'][1]['timezone'] is None
-        assert data['data']['users'][1]['weekm'] is False
         assert data['data']['users'][1]['nb_sports'] == 1
         assert data['data']['users'][1]['nb_workouts'] == 1
         assert len(data['data']['users'][1]['records']) == 4
         assert data['data']['users'][1]['sports_list'] == [1]
         assert data['data']['users'][1]['total_distance'] == 15
         assert data['data']['users'][1]['total_duration'] == '1:00:00'
-        assert data['data']['users'][2]['imperial_units'] is False
-        assert data['data']['users'][2]['timezone'] is None
-        assert data['data']['users'][2]['weekm'] is True
         assert data['data']['users'][2]['nb_sports'] == 0
         assert data['data']['users'][2]['nb_workouts'] == 0
         assert len(data['data']['users'][2]['records']) == 0
@@ -249,12 +257,12 @@ class TestGetUsers(ApiTestCaseMixin):
     def test_it_gets_first_page_on_users_list(
         self,
         app: Flask,
-        user_1: User,
+        user_1_admin: User,
         user_2: User,
         user_3: User,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -278,12 +286,12 @@ class TestGetUsers(ApiTestCaseMixin):
     def test_it_gets_next_page_on_users_list(
         self,
         app: Flask,
-        user_1: User,
+        user_1_admin: User,
         user_2: User,
         user_3: User,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -306,12 +314,12 @@ class TestGetUsers(ApiTestCaseMixin):
     def test_it_gets_empty_next_page_on_users_list(
         self,
         app: Flask,
-        user_1: User,
+        user_1_admin: User,
         user_2: User,
         user_3: User,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -334,12 +342,12 @@ class TestGetUsers(ApiTestCaseMixin):
     def test_it_gets_user_list_with_2_per_page(
         self,
         app: Flask,
-        user_1: User,
+        user_1_admin: User,
         user_2: User,
         user_3: User,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -362,12 +370,12 @@ class TestGetUsers(ApiTestCaseMixin):
     def test_it_gets_next_page_on_user_list_with_2_per_page(
         self,
         app: Flask,
-        user_1: User,
+        user_1_admin: User,
         user_2: User,
         user_3: User,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -388,10 +396,10 @@ class TestGetUsers(ApiTestCaseMixin):
         }
 
     def test_it_gets_users_list_ordered_by_username(
-        self, app: Flask, user_1: User, user_2: User, user_3: User
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -403,8 +411,8 @@ class TestGetUsers(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
-        assert 'sam' in data['data']['users'][0]['username']
-        assert 'test' in data['data']['users'][1]['username']
+        assert 'admin' in data['data']['users'][0]['username']
+        assert 'sam' in data['data']['users'][1]['username']
         assert 'toto' in data['data']['users'][2]['username']
         assert data['pagination'] == {
             'has_next': False,
@@ -415,10 +423,10 @@ class TestGetUsers(ApiTestCaseMixin):
         }
 
     def test_it_gets_users_list_ordered_by_username_ascending(
-        self, app: Flask, user_1: User, user_2: User, user_3: User
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -430,8 +438,8 @@ class TestGetUsers(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
-        assert 'sam' in data['data']['users'][0]['username']
-        assert 'test' in data['data']['users'][1]['username']
+        assert 'admin' in data['data']['users'][0]['username']
+        assert 'sam' in data['data']['users'][1]['username']
         assert 'toto' in data['data']['users'][2]['username']
         assert data['pagination'] == {
             'has_next': False,
@@ -442,10 +450,10 @@ class TestGetUsers(ApiTestCaseMixin):
         }
 
     def test_it_gets_users_list_ordered_by_username_descending(
-        self, app: Flask, user_1: User, user_2: User, user_3: User
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -458,8 +466,8 @@ class TestGetUsers(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'toto' in data['data']['users'][0]['username']
-        assert 'test' in data['data']['users'][1]['username']
-        assert 'sam' in data['data']['users'][2]['username']
+        assert 'sam' in data['data']['users'][1]['username']
+        assert 'admin' in data['data']['users'][2]['username']
         assert data['pagination'] == {
             'has_next': False,
             'has_prev': False,
@@ -642,14 +650,14 @@ class TestGetUsers(ApiTestCaseMixin):
     def test_it_gets_users_list_ordered_by_workouts_count(
         self,
         app: Flask,
-        user_1: User,
+        user_1_admin: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -661,7 +669,7 @@ class TestGetUsers(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
-        assert 'test' in data['data']['users'][0]['username']
+        assert 'admin' in data['data']['users'][0]['username']
         assert 0 == data['data']['users'][0]['nb_workouts']
         assert 'sam' in data['data']['users'][1]['username']
         assert 0 == data['data']['users'][1]['nb_workouts']
@@ -678,14 +686,14 @@ class TestGetUsers(ApiTestCaseMixin):
     def test_it_gets_users_list_ordered_by_workouts_count_ascending(
         self,
         app: Flask,
-        user_1: User,
+        user_1_admin: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -697,7 +705,7 @@ class TestGetUsers(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
-        assert 'test' in data['data']['users'][0]['username']
+        assert 'admin' in data['data']['users'][0]['username']
         assert 0 == data['data']['users'][0]['nb_workouts']
         assert 'sam' in data['data']['users'][1]['username']
         assert 0 == data['data']['users'][1]['nb_workouts']
@@ -714,14 +722,14 @@ class TestGetUsers(ApiTestCaseMixin):
     def test_it_gets_users_list_ordered_by_workouts_count_descending(
         self,
         app: Flask,
-        user_1: User,
+        user_1_admin: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -735,7 +743,7 @@ class TestGetUsers(ApiTestCaseMixin):
         assert len(data['data']['users']) == 3
         assert 'toto' in data['data']['users'][0]['username']
         assert 1 == data['data']['users'][0]['nb_workouts']
-        assert 'test' in data['data']['users'][1]['username']
+        assert 'admin' in data['data']['users'][1]['username']
         assert 0 == data['data']['users'][1]['nb_workouts']
         assert 'sam' in data['data']['users'][2]['username']
         assert 0 == data['data']['users'][2]['nb_workouts']
@@ -748,10 +756,10 @@ class TestGetUsers(ApiTestCaseMixin):
         }
 
     def test_it_gets_users_list_filtering_on_username(
-        self, app: Flask, user_1: User, user_2: User, user_3: User
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -773,10 +781,10 @@ class TestGetUsers(ApiTestCaseMixin):
         }
 
     def test_it_returns_empty_users_list_filtering_on_username(
-        self, app: Flask, user_1: User, user_2: User, user_3: User
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -797,10 +805,10 @@ class TestGetUsers(ApiTestCaseMixin):
         }
 
     def test_it_users_list_with_complex_query(
-        self, app: Flask, user_1: User, user_2: User, user_3: User
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -812,7 +820,7 @@ class TestGetUsers(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['users']) == 1
-        assert 'sam' in data['data']['users'][0]['username']
+        assert 'admin' in data['data']['users'][0]['username']
         assert data['pagination'] == {
             'has_next': False,
             'has_prev': True,
