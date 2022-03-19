@@ -5,7 +5,7 @@ from flask import Flask
 import fittrackee
 from fittrackee.users.models import User
 
-from ..api_test_case import ApiTestCaseMixin
+from ..mixins import ApiTestCaseMixin
 
 
 class TestGetConfig(ApiTestCaseMixin):

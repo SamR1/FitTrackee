@@ -60,7 +60,7 @@ def user_1_paris() -> User:
 
 @pytest.fixture()
 def user_2() -> User:
-    user = User(username='toto', email='toto@toto.com', password='87654321')
+    user = User(username='toto', email='toto@toto.com', password='12345678')
     db.session.add(user)
     db.session.commit()
     return user
@@ -68,7 +68,7 @@ def user_2() -> User:
 
 @pytest.fixture()
 def user_2_admin() -> User:
-    user = User(username='toto', email='toto@toto.com', password='87654321')
+    user = User(username='toto', email='toto@toto.com', password='12345678')
     user.admin = True
     db.session.add(user)
     db.session.commit()

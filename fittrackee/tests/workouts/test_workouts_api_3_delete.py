@@ -1,4 +1,3 @@
-import json
 import os
 
 from flask import Flask
@@ -7,7 +6,7 @@ from fittrackee.files import get_absolute_file_path
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
-from ..api_test_case import ApiTestCaseMixin
+from ..mixins import ApiTestCaseMixin
 from .utils import get_random_short_id, post_an_workout
 
 
@@ -39,19 +38,13 @@ class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
         gpx_file: str,
     ) -> None:
         _, workout_short_id = post_an_workout(app, gpx_file)
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='toto@toto.com', password='87654321')),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
         )
 
         response = client.delete(
             f'/api/workouts/{workout_short_id}',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         self.assert_403(response)
@@ -113,18 +106,13 @@ class TestDeleteWorkoutWithoutGpx(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='toto@toto.com', password='87654321')),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
         )
+
         response = client.delete(
             f'/api/workouts/{workout_cycling_user_1.short_id}',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         self.assert_403(response)

@@ -227,67 +227,6 @@ def login_user() -> Union[Dict, HttpResponse]:
         return handle_error_and_return_response(e, db=db)
 
 
-@auth_blueprint.route('/auth/logout', methods=['GET'])
-@authenticate
-def logout_user(auth_user: User) -> Union[Dict, HttpResponse]:
-    """
-    user logout
-
-    **Example request**:
-
-    .. sourcecode:: http
-
-      GET /api/auth/logout HTTP/1.1
-      Content-Type: application/json
-
-    **Example responses**:
-
-    - successful logout
-
-    .. sourcecode:: http
-
-      HTTP/1.1 200 OK
-      Content-Type: application/json
-
-      {
-        "message": "successfully logged out",
-        "status": "success"
-      }
-
-    - error on login
-
-    .. sourcecode:: http
-
-      HTTP/1.1 401 UNAUTHORIZED
-      Content-Type: application/json
-
-      {
-        "message": "provide a valid auth token",
-        "status": "error"
-      }
-
-    :reqheader Authorization: OAuth 2.0 Bearer Token
-
-    :statuscode 200: successfully logged out
-    :statuscode 401: provide a valid auth token
-
-    """
-    # get auth token
-    auth_header = request.headers.get('Authorization')
-    if not auth_header:
-        return UnauthorizedErrorResponse('provide a valid auth token')
-
-    auth_token = auth_header.split(' ')[1]
-    resp = User.decode_auth_token(auth_token)
-    if isinstance(resp, str):
-        return UnauthorizedErrorResponse(resp)
-
-    return {
-        'status': 'success',
-        'message': 'successfully logged out',
-    }
-
-
 @auth_blueprint.route('/auth/profile', methods=['GET'])
 @authenticate
 def get_authenticated_user_profile(

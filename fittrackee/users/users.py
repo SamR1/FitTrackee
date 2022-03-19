@@ -31,7 +31,6 @@ from .decorators import authenticate, authenticate_as_admin
 from .exceptions import UserNotFoundException
 from .models import User, UserSportPreference
 from .utils.admin import set_admin_rights
-from .utils.random import random_string
 
 users_blueprint = Blueprint('users', __name__)
 
@@ -514,7 +513,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
             'reset_password' in user_data
             and user_data['reset_password'] is True
         ):
-            new_password = random_string(length=random.randint(10, 20))
+            new_password = secrets.token_urlsafe(random.randint(16, 20))
             user.password = bcrypt.generate_password_hash(
                 new_password, current_app.config.get('BCRYPT_LOG_ROUNDS')
             ).decode()

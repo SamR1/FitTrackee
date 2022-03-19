@@ -3,6 +3,7 @@ from unittest.mock import patch
 import pytest
 from flask import Flask
 
+from fittrackee.tests.utils import random_string
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.models import User
 from fittrackee.users.utils.admin import set_admin_rights
@@ -12,7 +13,6 @@ from fittrackee.users.utils.controls import (
     is_valid_email,
     register_controls,
 )
-from fittrackee.users.utils.random import random_string
 
 
 class TestSetAdminRights:

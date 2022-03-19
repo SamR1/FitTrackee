@@ -12,7 +12,7 @@ from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 from fittrackee.workouts.utils.short_id import decode_short_id
 
-from ..api_test_case import ApiTestCaseMixin, CallArgsMixin
+from ..mixins import ApiTestCaseMixin, CallArgsMixin
 
 
 def assert_workout_data_with_gpx(data: Dict) -> None:
@@ -1018,18 +1018,13 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
         )
         data = json.loads(response.data.decode())
         workout_short_id = data['data']['workouts'][0]['id']
-
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='toto@toto.com', password='87654321')),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
         )
+
         response = client.get(
             f'/api/workouts/{workout_short_id}/chart_data',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         self.assert_403(response)

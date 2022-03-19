@@ -6,11 +6,10 @@ from unittest.mock import MagicMock, patch
 from flask import Flask
 
 from fittrackee.users.models import User, UserSportPreference
-from fittrackee.users.utils.random import random_string
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport, Workout
 
-from ..api_test_case import ApiTestCaseMixin
+from ..mixins import ApiTestCaseMixin
 
 
 class TestGetUser(ApiTestCaseMixin):
@@ -1108,7 +1107,7 @@ class TestUpdateUser(ApiTestCaseMixin):
         response = client.patch(
             f'/api/users/{user_2.username}',
             content_type='application/json',
-            data=json.dumps(dict(new_email=random_string())),
+            data=json.dumps(dict(new_email=self.random_string())),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1128,7 +1127,7 @@ class TestUpdateUser(ApiTestCaseMixin):
         client.patch(
             f'/api/users/{user_2.username}',
             content_type='application/json',
-            data=json.dumps(dict(new_email=random_string())),
+            data=json.dumps(dict(new_email=self.random_string())),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1166,7 +1165,7 @@ class TestUpdateUser(ApiTestCaseMixin):
             app, user_1_admin.email
         )
         new_email = 'new.' + user_2.email
-        expected_token = random_string()
+        expected_token = self.random_string()
 
         with patch('secrets.token_urlsafe', return_value=expected_token):
             response = client.patch(

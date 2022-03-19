@@ -6,25 +6,35 @@ from flask.testing import FlaskClient
 from werkzeug.test import TestResponse
 
 from .custom_asserts import assert_errored_response
+from .utils import random_email, random_string
 
 
-class ApiTestCaseMixin:
+class RandomMixin:
+    @staticmethod
+    def random_string(
+        length: Optional[int] = None,
+        prefix: Optional[str] = None,
+        suffix: Optional[str] = None,
+    ) -> str:
+        return random_string(length, prefix, suffix)
+
+    @staticmethod
+    def random_email() -> str:
+        return random_email()
+
+
+class ApiTestCaseMixin(RandomMixin):
     @staticmethod
     def get_test_client_and_auth_token(
         app: Flask, user_email: str
     ) -> Tuple[FlaskClient, str]:
-        """user_email must be user_1 or user_2 email"""
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',
             data=json.dumps(
                 dict(
                     email=user_email,
-                    password=(
-                        '87654321'
-                        if user_email == 'toto@toto.com'
-                        else '12345678'
-                    ),
+                    password='12345678',
                 )
             ),
             content_type='application/json',
