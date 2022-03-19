@@ -53,7 +53,10 @@ class ApiTestCaseMixin(RandomMixin):
         )
 
     @staticmethod
-    def assert_401(response: TestResponse, error_message: str) -> Dict:
+    def assert_401(
+        response: TestResponse,
+        error_message: Optional[str] = 'provide a valid auth token',
+    ) -> Dict:
         return assert_errored_response(
             response, 401, error_message=error_message
         )

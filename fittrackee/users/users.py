@@ -52,7 +52,7 @@ def set_admin(username: str) -> None:
 @authenticate_as_admin
 def get_users(auth_user: User) -> Dict:
     """
-    Get all users
+    Get all users (regardless their account status)
 
     **Example request**:
 
@@ -87,6 +87,7 @@ def get_users(auth_user: User) -> Dict:
               "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
               "email": "admin@example.com",
               "first_name": null,
+              "is_admin": true,
               "imperial_units": false,
               "language": "en",
               "last_name": null,
@@ -149,6 +150,7 @@ def get_users(auth_user: User) -> Dict:
               "created_at": "Sat, 20 Jul 2019 11:27:03 GMT",
               "email": "sam@example.com",
               "first_name": null,
+              "is_admin": false,
               "language": "fr",
               "last_name": null,
               "location": null,
@@ -269,6 +271,7 @@ def get_single_user(
             "email": "admin@example.com",
             "first_name": null,
             "imperial_units": false,
+            "is_admin": true,
             "language": "en",
             "last_name": null,
             "location": null,
@@ -421,6 +424,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
             "email": "admin@example.com",
             "first_name": null,
             "imperial_units": false,
+            "is_active": true,
             "language": "en",
             "last_name": null,
             "location": null,

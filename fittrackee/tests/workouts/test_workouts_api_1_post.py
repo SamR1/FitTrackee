@@ -206,6 +206,22 @@ def assert_workout_data_wo_gpx(data: Dict) -> None:
 
 
 class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(content_type='multipart/form-data'),
+        )
+
+        self.assert_401(response)
+
     def test_it_adds_an_workout_with_gpx_file(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
@@ -569,6 +585,27 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
 
 
 class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=3600,
+                    workout_date='2018-05-15 14:05',
+                    distance=10,
+                )
+            ),
+            headers=dict(content_type='multipart/form-data'),
+        )
+
+        self.assert_401(response)
+
     def test_it_adds_an_workout_without_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:

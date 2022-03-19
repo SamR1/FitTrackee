@@ -62,8 +62,12 @@ def verify_user(
     current_request: Request, verify_admin: bool
 ) -> Tuple[Optional[HttpResponse], Optional[User]]:
     """
-    Return authenticated user, if the provided token is valid and user has
-    admin rights if 'verify_admin' is True
+    Return authenticated user if
+    - the provided token is valid
+    - the user account is active
+    - the user has admin rights if 'verify_admin' is True
+
+    If not, it returns Error Response
     """
     default_message = 'provide a valid auth token'
     auth_header = current_request.headers.get('Authorization')
@@ -74,7 +78,7 @@ def verify_user(
     if isinstance(resp, str):
         return UnauthorizedErrorResponse(resp), None
     user = User.query.filter_by(id=resp).first()
-    if not user:
+    if not user or not user.is_active:
         return UnauthorizedErrorResponse(default_message), None
     if verify_admin and not user.admin:
         return ForbiddenErrorResponse(), None

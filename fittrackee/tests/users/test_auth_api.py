@@ -123,7 +123,7 @@ class TestUserRegistration(ApiTestCaseMixin):
             content_type='application/json',
         )
 
-        self.assert_400(response, 'sorry, that user already exists')
+        self.assert_400(response, 'sorry, that username is already taken')
 
     def test_it_returns_error_if_password_is_missing(self, app: Flask) -> None:
         client = app.test_client()
@@ -193,11 +193,111 @@ class TestUserRegistration(ApiTestCaseMixin):
 
         self.assert_400(response, 'email: valid email must be provided\n')
 
+    def test_it_does_not_send_email_after_error(
+        self, app: Flask, account_confirmation_email_mock: Mock
+    ) -> None:
+        client = app.test_client()
+
+        client.post(
+            '/api/auth/register',
+            data=json.dumps(
+                dict(
+                    username=self.random_string(),
+                    email=self.random_string(),
+                )
+            ),
+            content_type='application/json',
+        )
+
+        account_confirmation_email_mock.send.assert_not_called()
+
+    def test_it_returns_success_if_payload_is_valid(self, app: Flask) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/register',
+            data=json.dumps(
+                dict(
+                    username=self.random_string(),
+                    email=self.random_email(),
+                    password=self.random_string(),
+                )
+            ),
+            content_type='application/json',
+        )
+
+        assert response.status_code == 200
+        assert response.content_type == 'application/json'
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert 'auth_token' not in data
+
+    def test_it_creates_user_with_inactive_account(self, app: Flask) -> None:
+        client = app.test_client()
+        username = self.random_string()
+        email = self.random_email()
+
+        client.post(
+            '/api/auth/register',
+            data=json.dumps(
+                dict(
+                    username=username,
+                    email=email,
+                    password=self.random_string(),
+                )
+            ),
+            content_type='application/json',
+        )
+
+        new_user = User.query.filter_by(username=username).first()
+        assert new_user.email == email
+        assert new_user.password is not None
+        assert new_user.is_active is False
+
+    def test_it_calls_account_confirmation_email_if_payload_is_valid(
+        self, app: Flask, account_confirmation_email_mock: Mock
+    ) -> None:
+        client = app.test_client()
+        email = self.random_email()
+        username = self.random_string()
+        expected_token = self.random_string()
+
+        with patch('secrets.token_urlsafe', return_value=expected_token):
+            client.post(
+                '/api/auth/register',
+                data=json.dumps(
+                    dict(
+                        username=username,
+                        email=email,
+                        password='12345678',
+                    )
+                ),
+                content_type='application/json',
+                environ_base={'HTTP_USER_AGENT': USER_AGENT},
+            )
+
+        account_confirmation_email_mock.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': email,
+            },
+            {
+                'username': username,
+                'fittrackee_url': 'http://0.0.0.0:5000',
+                'operating_system': 'linux',
+                'browser_name': 'firefox',
+                'account_confirmation_url': (
+                    'http://0.0.0.0:5000/account-confirmation'
+                    f'?token={expected_token}'
+                ),
+            },
+        )
+
     @pytest.mark.parametrize(
         'text_transformation',
         ['upper', 'lower'],
     )
-    def test_it_returns_error_if_user_already_exists_with_same_email(
+    def test_it_does_not_return_error_if_a_user_already_exists_with_same_email(
         self, app: Flask, user_1: User, text_transformation: str
     ) -> None:
         client = app.test_client()
@@ -217,29 +317,30 @@ class TestUserRegistration(ApiTestCaseMixin):
             content_type='application/json',
         )
 
-        self.assert_400(response, 'sorry, that user already exists')
+        assert response.status_code == 200
+        assert response.content_type == 'application/json'
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert 'auth_token' not in data
 
-    def test_user_can_register(self, app: Flask) -> None:
+    def test_it_does_not_call_account_confirmation_email_if_user_already_exists(  # noqa
+        self, app: Flask, user_1: User, account_confirmation_email_mock: Mock
+    ) -> None:
         client = app.test_client()
 
-        response = client.post(
+        client.post(
             '/api/auth/register',
             data=json.dumps(
                 dict(
                     username=self.random_string(),
-                    email=self.random_email(),
+                    email=user_1.email,
                     password=self.random_string(),
                 )
             ),
             content_type='application/json',
         )
 
-        assert response.status_code == 201
-        assert response.content_type == 'application/json'
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['message'] == 'successfully registered'
-        assert data['auth_token']
+        account_confirmation_email_mock.send.assert_not_called()
 
 
 class TestUserLogin(ApiTestCaseMixin):
@@ -263,6 +364,21 @@ class TestUserLogin(ApiTestCaseMixin):
             '/api/auth/login',
             data=json.dumps(
                 dict(email=self.random_email(), password=self.random_string())
+            ),
+            content_type='application/json',
+        )
+
+        self.assert_401(response, 'invalid credentials')
+
+    def test_it_returns_error_if_user_account_is_inactive(
+        self, app: Flask, inactive_user: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/login',
+            data=json.dumps(
+                dict(email=inactive_user.email, password='12345678')
             ),
             content_type='application/json',
         )
@@ -1628,7 +1744,7 @@ class TestRegistrationConfiguration(ApiTestCaseMixin):
             content_type='application/json',
         )
 
-        assert response.status_code == 201
+        assert response.status_code == 200
 
 
 class TestPasswordResetRequest(ApiTestCaseMixin):
@@ -1974,3 +2090,47 @@ class TestEmailUpdateWitUnauthenticatedUser(ApiTestCaseMixin):
         assert user_1.email == new_email
         assert user_1.email_to_confirm is None
         assert user_1.confirmation_token is None
+
+
+class TestConfirmationAccount(ApiTestCaseMixin):
+    def test_it_returns_error_if_token_is_missing(self, app: Flask) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/account/confirm',
+            data=json.dumps(dict()),
+            content_type='application/json',
+        )
+
+        self.assert_400(response)
+
+    def test_it_returns_error_if_token_is_invalid(self, app: Flask) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/account/confirm',
+            data=json.dumps(dict(token=self.random_string())),
+            content_type='application/json',
+        )
+
+        self.assert_400(response)
+
+    def test_it_activates_user_account(
+        self, app: Flask, inactive_user: User
+    ) -> None:
+        token = self.random_string()
+        inactive_user.confirmation_token = token
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/account/confirm',
+            data=json.dumps(dict(token=token)),
+            content_type='application/json',
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'account confirmation successful'
+        assert inactive_user.is_active is True
+        assert inactive_user.confirmation_token is None

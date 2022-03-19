@@ -27,6 +27,11 @@ def upgrade():
     )
     op.add_column(
         'users',
+        sa.Column('is_active', sa.Boolean(), default=False, nullable=True))
+    op.execute("UPDATE users SET is_active = true")
+    op.alter_column('users', 'is_active', nullable=False)
+    op.add_column(
+        'users',
         sa.Column('email_to_confirm', sa.String(length=255), nullable=True))
     op.add_column(
         'users',
@@ -36,6 +41,7 @@ def upgrade():
 def downgrade():
     op.drop_column('users', 'confirmation_token')
     op.drop_column('users', 'email_to_confirm')
+    op.drop_column('users', 'is_active')
     op.alter_column(
         'users', 'email', existing_type=sa.String(length=255),
         type_=sa.String(length=120), existing_nullable=False

@@ -28,6 +28,41 @@ class TestGetUser(ApiTestCaseMixin):
 
         self.assert_403(response)
 
+    def test_it_gets_inactive_user(
+        self, app: Flask, user_1_admin: User, inactive_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            f'/api/users/{inactive_user.username}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 1
+        user = data['data']['users'][0]
+        assert user['username'] == inactive_user.username
+        assert user['email'] == inactive_user.email
+        assert user['created_at']
+        assert not user['admin']
+        assert not user['is_active']
+        assert user['first_name'] is None
+        assert user['last_name'] is None
+        assert user['birth_date'] is None
+        assert user['bio'] is None
+        assert user['location'] is None
+        assert user['nb_sports'] == 0
+        assert user['nb_workouts'] == 0
+        assert user['records'] == []
+        assert user['sports_list'] == []
+        assert user['total_distance'] == 0
+        assert user['total_duration'] == '0:00:00'
+
     def test_it_gets_single_user_without_workouts(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
@@ -46,10 +81,11 @@ class TestGetUser(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         user = data['data']['users'][0]
-        assert user['username'] == 'toto'
-        assert user['email'] == 'toto@toto.com'
+        assert user['username'] == user_2.username
+        assert user['email'] == user_2.email
         assert user['created_at']
         assert not user['admin']
+        assert user['is_active']
         assert user['first_name'] is None
         assert user['last_name'] is None
         assert user['birth_date'] is None
@@ -87,10 +123,11 @@ class TestGetUser(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         user = data['data']['users'][0]
-        assert user['username'] == 'test'
-        assert user['email'] == 'test@test.com'
+        assert user['username'] == user_1.username
+        assert user['email'] == user_1.email
         assert user['created_at']
         assert not user['admin']
+        assert user['is_active']
         assert user['first_name'] is None
         assert user['last_name'] is None
         assert user['birth_date'] is None
@@ -134,8 +171,8 @@ class TestGetUsers(ApiTestCaseMixin):
 
         self.assert_403(response)
 
-    def test_it_get_users_list(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    def test_it_get_users_list_regardless_their_account_status(
+        self, app: Flask, user_1_admin: User, inactive_user: User, user_3: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -154,11 +191,14 @@ class TestGetUsers(ApiTestCaseMixin):
         assert 'created_at' in data['data']['users'][1]
         assert 'created_at' in data['data']['users'][2]
         assert 'admin' in data['data']['users'][0]['username']
-        assert 'toto' in data['data']['users'][1]['username']
+        assert 'inactive' in data['data']['users'][1]['username']
         assert 'sam' in data['data']['users'][2]['username']
         assert 'admin@example.com' in data['data']['users'][0]['email']
-        assert 'toto@toto.com' in data['data']['users'][1]['email']
+        assert 'inactive@example.com' in data['data']['users'][1]['email']
         assert 'sam@test.com' in data['data']['users'][2]['email']
+        assert data['data']['users'][0]['is_active']
+        assert not data['data']['users'][1]['is_active']
+        assert data['data']['users'][2]['is_active']
         assert data['data']['users'][0]['imperial_units'] is False
         assert data['data']['users'][0]['timezone'] is None
         assert data['data']['users'][0]['weekm'] is False
@@ -223,6 +263,9 @@ class TestGetUsers(ApiTestCaseMixin):
         assert 'admin@example.com' in data['data']['users'][0]['email']
         assert 'toto@toto.com' in data['data']['users'][1]['email']
         assert 'sam@test.com' in data['data']['users'][2]['email']
+        assert data['data']['users'][0]['is_active']
+        assert data['data']['users'][1]['is_active']
+        assert data['data']['users'][2]['is_active']
         assert data['data']['users'][0]['imperial_units'] is False
         assert data['data']['users'][0]['timezone'] is None
         assert data['data']['users'][0]['weekm'] is False
@@ -1344,7 +1387,7 @@ class TestDeleteUser(ApiTestCaseMixin):
             'you can not delete your account, no other user has admin rights',
         )
 
-    def test_it_enables_registration_on_user_delete(
+    def test_it_enables_registration_after_user_delete(
         self,
         app_with_3_users_max: Flask,
         user_1_admin: User,
@@ -1363,15 +1406,15 @@ class TestDeleteUser(ApiTestCaseMixin):
             '/api/auth/register',
             data=json.dumps(
                 dict(
-                    username='justatest',
-                    email='test@test.com',
-                    password='12345678',
-                    password_conf='12345678',
+                    username=self.random_string(),
+                    email=self.random_email(),
+                    password=self.random_string(),
                 )
             ),
             content_type='application/json',
         )
-        assert response.status_code == 201
+
+        assert response.status_code == 200
 
     def test_it_does_not_enable_registration_on_user_delete(
         self,

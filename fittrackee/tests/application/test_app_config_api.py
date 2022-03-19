@@ -9,17 +9,12 @@ from ..mixins import ApiTestCaseMixin
 
 
 class TestGetConfig(ApiTestCaseMixin):
-    def test_it_gets_application_config(
-        self, app: Flask, user_1: User
+    def test_it_gets_application_config_for_unauthenticated_user(
+        self, app: Flask
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
+        client = app.test_client()
 
-        response = client.get(
-            '/api/config',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
+        response = client.get('/api/config')
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
@@ -35,6 +30,22 @@ class TestGetConfig(ApiTestCaseMixin):
             'contributors'
         )
         assert data['data']['version'] == fittrackee.__version__
+
+    def test_it_gets_application_config(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/config',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
 
     def test_it_returns_error_if_application_has_no_config(
         self, app_no_config: Flask, user_1_admin: User

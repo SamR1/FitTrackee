@@ -47,6 +47,7 @@ class User(BaseModel):
     )
     language = db.Column(db.String(50), nullable=True)
     imperial_units = db.Column(db.Boolean, default=False, nullable=False)
+    is_active = db.Column(db.Boolean, default=False, nullable=False)
     email_to_confirm = db.Column(db.String(255), nullable=True)
     confirmation_token = db.Column(db.String(255), nullable=True)
 
@@ -149,6 +150,7 @@ class User(BaseModel):
             'email': self.email,
             'email_to_confirm': self.email_to_confirm,
             'first_name': self.first_name,
+            'is_active': self.is_active,
             'last_name': self.last_name,
             'location': self.location,
             'nb_sports': len(sports),

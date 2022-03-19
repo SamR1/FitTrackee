@@ -10,6 +10,7 @@ from fittrackee.workouts.models import Sport
 @pytest.fixture()
 def user_1() -> User:
     user = User(username='test', email='test@test.com', password='12345678')
+    user.is_active = True
     db.session.add(user)
     db.session.commit()
     return user
@@ -18,6 +19,7 @@ def user_1() -> User:
 @pytest.fixture()
 def user_1_upper() -> User:
     user = User(username='TEST', email='TEST@TEST.COM', password='12345678')
+    user.is_active = True
     db.session.add(user)
     db.session.commit()
     return user
@@ -29,6 +31,7 @@ def user_1_admin() -> User:
         username='admin', email='admin@example.com', password='12345678'
     )
     admin.admin = True
+    admin.is_active = True
     db.session.add(admin)
     db.session.commit()
     return admin
@@ -44,6 +47,7 @@ def user_1_full() -> User:
     user.language = 'en'
     user.timezone = 'America/New_York'
     user.birth_date = datetime.datetime.strptime('01/01/1980', '%d/%m/%Y')
+    user.is_active = True
     db.session.add(user)
     db.session.commit()
     return user
@@ -53,6 +57,7 @@ def user_1_full() -> User:
 def user_1_paris() -> User:
     user = User(username='test', email='test@test.com', password='12345678')
     user.timezone = 'Europe/Paris'
+    user.is_active = True
     db.session.add(user)
     db.session.commit()
     return user
@@ -61,6 +66,7 @@ def user_1_paris() -> User:
 @pytest.fixture()
 def user_2() -> User:
     user = User(username='toto', email='toto@toto.com', password='12345678')
+    user.is_active = True
     db.session.add(user)
     db.session.commit()
     return user
@@ -69,6 +75,7 @@ def user_2() -> User:
 @pytest.fixture()
 def user_2_admin() -> User:
     user = User(username='toto', email='toto@toto.com', password='12345678')
+    user.is_active = True
     user.admin = True
     db.session.add(user)
     db.session.commit()
@@ -78,7 +85,18 @@ def user_2_admin() -> User:
 @pytest.fixture()
 def user_3() -> User:
     user = User(username='sam', email='sam@test.com', password='12345678')
+    user.is_active = True
     user.weekm = True
+    db.session.add(user)
+    db.session.commit()
+    return user
+
+
+@pytest.fixture()
+def inactive_user() -> User:
+    user = User(
+        username='inactive', email='inactive@example.com', password='12345678'
+    )
     db.session.add(user)
     db.session.commit()
     return user
