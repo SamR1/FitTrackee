@@ -1,5 +1,4 @@
 import os
-import random
 import secrets
 import shutil
 from typing import Any, Dict, Tuple, Union
@@ -517,7 +516,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
             'reset_password' in user_data
             and user_data['reset_password'] is True
         ):
-            new_password = secrets.token_urlsafe(random.randint(16, 20))
+            new_password = secrets.token_urlsafe(30)
             user.password = bcrypt.generate_password_hash(
                 new_password, current_app.config.get('BCRYPT_LOG_ROUNDS')
             ).decode()
@@ -526,7 +525,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
         if 'new_email' in user_data:
             if is_valid_email(user_data['new_email']):
                 user.email_to_confirm = user_data['new_email']
-                user.confirmation_token = secrets.token_urlsafe(16)
+                user.confirmation_token = secrets.token_urlsafe(30)
                 send_new_address_email = True
             else:
                 return InvalidPayloadErrorResponse(

@@ -1,4 +1,6 @@
 {
+  "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Didn't received instructions?",
+  "ACCOUNT_CONFIRMATION_SENT": "Check your email. A new confirmation email has been sent to the address provided.",
   "ADMIN": "Admin",
   "ALREADY_HAVE_ACCOUNT": "Already have an account?",
   "CONFIRM_ACCOUNT_DELETION": "Are you sure you want to delete your account? All data will be deleted, this cannot be undone",
@@ -94,6 +96,7 @@
     "TIMEZONE": "Timezone"
   },
   "REGISTER": "Register",
+  "RESENT_ACCOUNT_CONFIRMATION": "Resend account confirmation email",
   "REGISTER_DISABLED": "Sorry, registration is disabled.",
   "RESET_PASSWORD": "Reset your password",
   "SHOW_PASSWORD": "show password",

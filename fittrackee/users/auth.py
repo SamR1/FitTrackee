@@ -42,6 +42,25 @@ auth_blueprint = Blueprint('auth', __name__)
 HEX_COLOR_REGEX = regex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
 
 
+def send_account_confirmation_email(user: User) -> None:
+    ui_url = current_app.config['UI_URL']
+    email_data = {
+        'username': user.username,
+        'fittrackee_url': ui_url,
+        'operating_system': request.user_agent.platform,  # type: ignore  # noqa
+        'browser_name': request.user_agent.browser,  # type: ignore
+        'account_confirmation_url': (
+            f'{ui_url}/account-confirmation'
+            f'?token={user.confirmation_token}'
+        ),
+    }
+    user_data = {
+        'language': 'en',
+        'email': user.email,
+    }
+    account_confirmation_email.send(user_data, email_data)
+
+
 @auth_blueprint.route('/auth/register', methods=['POST'])
 def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     """
@@ -59,11 +78,11 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
 
     **Example responses**:
 
-    - successful registration
+    - success
 
     .. sourcecode:: http
 
-      HTTP/1.1 201 CREATED
+      HTTP/1.1 200 SUCCESS
       Content-Type: application/json
 
       {
@@ -86,7 +105,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     :<json string email: user email
     :<json string password: password (8 characters required)
 
-    :statuscode 201: successfully registered
+    :statuscode 200: success
     :statuscode 400:
         - invalid payload
         - sorry, that username is already taken
@@ -105,7 +124,6 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     if not current_app.config.get('is_registration_enabled'):
         return ForbiddenErrorResponse('error, registration is disabled')
 
-    # get post data
     post_data = request.get_json()
     if (
         not post_data
@@ -143,26 +161,11 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
         if not user:
             new_user = User(username=username, email=email, password=password)
             new_user.timezone = 'Europe/Paris'
-            new_user.confirmation_token = secrets.token_urlsafe(16)
+            new_user.confirmation_token = secrets.token_urlsafe(30)
             db.session.add(new_user)
             db.session.commit()
 
-            ui_url = current_app.config['UI_URL']
-            email_data = {
-                'username': new_user.username,
-                'fittrackee_url': ui_url,
-                'operating_system': request.user_agent.platform,  # type: ignore  # noqa
-                'browser_name': request.user_agent.browser,  # type: ignore
-                'account_confirmation_url': (
-                    f'{ui_url}/account-confirmation'
-                    f'?token={new_user.confirmation_token}'
-                ),
-            }
-            user_data = {
-                'language': 'en',
-                'email': new_user.email,
-            }
-            account_confirmation_email.send(user_data, email_data)
+            send_account_confirmation_email(new_user)
 
         return {'status': 'success'}, 200
     # handler errors
@@ -634,7 +637,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
         if email_to_confirm != auth_user.email:
             if is_valid_email(email_to_confirm):
                 auth_user.email_to_confirm = email_to_confirm
-                auth_user.confirmation_token = secrets.token_urlsafe(16)
+                auth_user.confirmation_token = secrets.token_urlsafe(30)
             else:
                 error_messages = 'email: valid email must be provided\n'
 
@@ -1391,5 +1394,56 @@ def confirm_account() -> Union[Dict, HttpResponse]:
         }
         return response
 
+    except (exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(e, db=db)
+
+
+@auth_blueprint.route('/auth/account/resend-confirmation', methods=['POST'])
+def resend_account_confirmation_email() -> Union[Dict, HttpResponse]:
+    """
+    resend email with instructions to confirm account
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/auth/account/resend-confirmation HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "message": "confirmation email resent",
+        "status": "success"
+      }
+
+    :<json string email: user email
+
+    :statuscode 200: confirmation email resent
+    :statuscode 400: invalid payload
+    :statuscode 500: error, please try again or contact the administrator
+
+    """
+    post_data = request.get_json()
+    if not post_data or post_data.get('email') is None:
+        return InvalidPayloadErrorResponse()
+    email = post_data.get('email')
+
+    try:
+        user = User.query.filter_by(email=email, is_active=False).first()
+        if user:
+            user.confirmation_token = secrets.token_urlsafe(30)
+            db.session.commit()
+
+            send_account_confirmation_email(user)
+
+        response = {
+            'status': 'success',
+            'message': 'confirmation email resent',
+        }
+        return response
     except (exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)

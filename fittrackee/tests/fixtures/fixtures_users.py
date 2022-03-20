@@ -6,6 +6,8 @@ from fittrackee import db
 from fittrackee.users.models import User, UserSportPreference
 from fittrackee.workouts.models import Sport
 
+from ..utils import random_string
+
 
 @pytest.fixture()
 def user_1() -> User:
@@ -97,6 +99,7 @@ def inactive_user() -> User:
     user = User(
         username='inactive', email='inactive@example.com', password='12345678'
     )
+    user.confirmation_token = random_string()
     db.session.add(user)
     db.session.commit()
     return user

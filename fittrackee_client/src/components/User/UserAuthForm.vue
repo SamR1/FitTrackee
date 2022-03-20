@@ -60,14 +60,24 @@
               :placeholder="$t('user.EMAIL')"
             />
             <div
-              v-if="['reset-request', 'register'].includes(action)"
+              v-if="
+                [
+                  'reset-request',
+                  'register',
+                  'account-confirmation-resend',
+                ].includes(action)
+              "
               class="form-info"
             >
               <i class="fa fa-info-circle" aria-hidden="true" />
               {{ $t('user.EMAIL_INFO') }}
             </div>
             <PasswordInput
-              v-if="action !== 'reset-request'"
+              v-if="
+                !['account-confirmation-resend', 'reset-request'].includes(
+                  action
+                )
+              "
               :disabled="registration_disabled"
               :required="true"
               :placeholder="
@@ -98,6 +108,11 @@
           <span class="account">{{ $t('user.ALREADY_HAVE_ACCOUNT') }}</span>
           <router-link class="links" to="/login">
             {{ $t('user.LOGIN') }}
+          </router-link>
+        </div>
+        <div v-if="['login', 'register'].includes(action)">
+          <router-link class="links" to="/account-confirmation/resend">
+            {{ $t('user.ACCOUNT_CONFIRMATION_NOT_RECEIVED') }}
           </router-link>
         </div>
         <ErrorMessage :message="errorMessages" v-if="errorMessages" />
@@ -193,6 +208,13 @@
       case 'reset-request':
         return store.dispatch(
           AUTH_USER_STORE.ACTIONS.SEND_PASSWORD_RESET_REQUEST,
+          {
+            email: formData.email,
+          }
+        )
+      case 'account-confirmation-resend':
+        return store.dispatch(
+          AUTH_USER_STORE.ACTIONS.RESEND_ACCOUNT_CONFIRMATION_EMAIL,
           {
             email: formData.email,
           }

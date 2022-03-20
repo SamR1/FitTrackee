@@ -72,7 +72,7 @@ export interface IUserPicturePayload {
   picture: File
 }
 
-export interface IUserPasswordPayload {
+export interface IUserEmailPayload {
   email: string
 }
 

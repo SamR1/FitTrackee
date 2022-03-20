@@ -2134,3 +2134,129 @@ class TestConfirmationAccount(ApiTestCaseMixin):
         assert data['message'] == 'account confirmation successful'
         assert inactive_user.is_active is True
         assert inactive_user.confirmation_token is None
+
+
+class TestResendAccountConfirmationEmail(ApiTestCaseMixin):
+    def test_it_returns_error_if_email_is_missing(self, app: Flask) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/account/resend-confirmation',
+            data=json.dumps(dict()),
+            content_type='application/json',
+        )
+
+        self.assert_400(response)
+
+    def test_it_does_not_return_error_if_account_does_not_exist(
+        self, app: Flask
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/account/resend-confirmation',
+            data=json.dumps(dict(email=self.random_email())),
+            content_type='application/json',
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'confirmation email resent'
+
+    def test_it_does_not_return_error_if_account_already_active(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/account/resend-confirmation',
+            data=json.dumps(dict(email=user_1.email)),
+            content_type='application/json',
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'confirmation email resent'
+
+    def test_it_does_not_call_account_confirmation_email_if_user_is_active(
+        self,
+        app: Flask,
+        user_1: User,
+        account_confirmation_email_mock: Mock,
+    ) -> None:
+        client = app.test_client()
+
+        client.post(
+            '/api/auth/account/resend-confirmation',
+            data=json.dumps(dict(email=user_1.email)),
+            content_type='application/json',
+            environ_base={'HTTP_USER_AGENT': USER_AGENT},
+        )
+
+        account_confirmation_email_mock.send.assert_not_called()
+
+    def test_it_returns_success_if_user_is_inactive(
+        self, app: Flask, inactive_user: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/account/resend-confirmation',
+            data=json.dumps(dict(email=inactive_user.email)),
+            content_type='application/json',
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'confirmation email resent'
+
+    def test_it_updates_token_if_user_is_inactive(
+        self, app: Flask, inactive_user: User
+    ) -> None:
+        client = app.test_client()
+        previous_token = inactive_user.confirmation_token
+
+        client.post(
+            '/api/auth/account/resend-confirmation',
+            data=json.dumps(dict(email=inactive_user.email)),
+            content_type='application/json',
+        )
+
+        assert inactive_user.confirmation_token != previous_token
+
+    def test_it_calls_account_confirmation_email_if_user_is_inactive(
+        self,
+        app: Flask,
+        inactive_user: User,
+        account_confirmation_email_mock: Mock,
+    ) -> None:
+        client = app.test_client()
+        expected_token = self.random_string()
+
+        with patch('secrets.token_urlsafe', return_value=expected_token):
+            client.post(
+                '/api/auth/account/resend-confirmation',
+                data=json.dumps(dict(email=inactive_user.email)),
+                content_type='application/json',
+                environ_base={'HTTP_USER_AGENT': USER_AGENT},
+            )
+
+        account_confirmation_email_mock.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': inactive_user.email,
+            },
+            {
+                'username': inactive_user.username,
+                'fittrackee_url': 'http://0.0.0.0:5000',
+                'operating_system': 'linux',
+                'browser_name': 'firefox',
+                'account_confirmation_url': (
+                    'http://0.0.0.0:5000/account-confirmation'
+                    f'?token={expected_token}'
+                ),
+            },
+        )

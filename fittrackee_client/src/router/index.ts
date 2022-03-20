@@ -44,6 +44,32 @@ const routes: Array<RouteRecordRaw> = [
     props: { action: 'register' },
   },
   {
+    path: '/account-confirmation',
+    name: 'AccountConfirmation',
+    component: () =>
+      import(
+        /* webpackChunkName: 'profile' */ '@/views/user/AccountConfirmation.vue'
+      ),
+  },
+  {
+    path: '/account-confirmation/resend',
+    name: 'AccountConfirmationResend',
+    component: () =>
+      import(
+        /* webpackChunkName: 'reset' */ '@/views/user/AccountConfirmationResendView.vue'
+      ),
+    props: { action: 'account-confirmation-resend' },
+  },
+  {
+    path: '/account-confirmation/email-sent',
+    name: 'AccountConfirmationEmailSend',
+    component: () =>
+      import(
+        /* webpackChunkName: 'reset' */ '@/views/user/AccountConfirmationResendView.vue'
+      ),
+    props: { action: 'email-sent' },
+  },
+  {
     path: '/password-reset/sent',
     name: 'PasswordEmailSent',
     component: () =>
@@ -78,14 +104,6 @@ const routes: Array<RouteRecordRaw> = [
         /* webpackChunkName: 'reset' */ '@/views/user/PasswordResetView.vue'
       ),
     props: { action: 'reset' },
-  },
-  {
-    path: '/account-confirmation',
-    name: 'AccountConfirmation',
-    component: () =>
-      import(
-        /* webpackChunkName: 'profile' */ '@/views/user/AccountConfirmation.vue'
-      ),
   },
   {
     path: '/email-update',
@@ -276,6 +294,8 @@ const pathsWithoutAuthentication = [
   '/password-reset/sent',
   '/register',
   '/account-confirmation',
+  '/account-confirmation/resend',
+  '/account-confirmation/email-sent',
 ]
 
 const pathsWithoutChecks = ['/email-update']

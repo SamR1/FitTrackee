@@ -23,7 +23,7 @@ import {
   IUserAccountPayload,
   IUserDeletionPayload,
   IUserAccountUpdatePayload,
-  IUserPasswordPayload,
+  IUserEmailPayload,
   IUserPasswordResetPayload,
   IUserPayload,
   IUserPicturePayload,
@@ -366,7 +366,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
   },
   [AUTH_USER_STORE.ACTIONS.SEND_PASSWORD_RESET_REQUEST](
     context: ActionContext<IAuthUserState, IRootState>,
-    payload: IUserPasswordPayload
+    payload: IUserEmailPayload
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     api
@@ -374,6 +374,22 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
       .then((res) => {
         if (res.data.status === 'success') {
           router.push('/password-reset/sent')
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+  },
+  [AUTH_USER_STORE.ACTIONS.RESEND_ACCOUNT_CONFIRMATION_EMAIL](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IUserEmailPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    api
+      .post('auth/account/resend-confirmation', payload)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          router.push('/account-confirmation/email-sent')
         } else {
           handleError(context, null)
         }

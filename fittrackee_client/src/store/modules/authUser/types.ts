@@ -11,7 +11,7 @@ import {
   IAuthUserProfile,
   ILoginOrRegisterData,
   IUserDeletionPayload,
-  IUserPasswordPayload,
+  IUserEmailPayload,
   IUserPasswordResetPayload,
   IUserPayload,
   IUserPicturePayload,
@@ -84,7 +84,12 @@ export interface IAuthUserActions {
 
   [AUTH_USER_STORE.ACTIONS.SEND_PASSWORD_RESET_REQUEST](
     context: ActionContext<IAuthUserState, IRootState>,
-    payload: IUserPasswordPayload
+    payload: IUserEmailPayload
+  ): void
+
+  [AUTH_USER_STORE.ACTIONS.RESEND_ACCOUNT_CONFIRMATION_EMAIL](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IUserEmailPayload
   ): void
 
   [AUTH_USER_STORE.ACTIONS.RESET_USER_PASSWORD](

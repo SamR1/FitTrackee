@@ -1,4 +1,6 @@
 {
+  "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Vous n'avez pas reçu les instructions ?",
+  "ACCOUNT_CONFIRMATION_SENT": "Vérifiez votre boite mail. Un nouvel email de confirmation a été envoyé à l'adresse email fournie.",
   "ADMIN": "Admin",
   "ALREADY_HAVE_ACCOUNT": "Vous avez déjà un compte ?",
   "CONFIRM_ACCOUNT_DELETION": "Êtes-vous sûr de vouloir supprimer votre compte ? Toutes les données seront définitivement effacés.",
@@ -94,6 +96,7 @@
   },
   "REGISTER": "S'inscrire",
   "REGISTER_DISABLED": "Désolé, les inscriptions sont désactivées.",
+  "RESENT_ACCOUNT_CONFIRMATION": "Envoyer à nouveau l'email de confirmation de compte",
   "RESET_PASSWORD": "Réinitialiser votre mot de passe",
   "SHOW_PASSWORD": "afficher le mot de passe",
   "USER_PICTURE": "photo de l'utilisateur",
