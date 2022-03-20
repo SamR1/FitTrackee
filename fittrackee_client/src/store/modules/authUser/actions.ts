@@ -22,7 +22,7 @@ import {
   ILoginOrRegisterData,
   IUserAccountPayload,
   IUserDeletionPayload,
-  IUserEmailUpdatePayload,
+  IUserAccountUpdatePayload,
   IUserPasswordPayload,
   IUserPasswordResetPayload,
   IUserPayload,
@@ -63,9 +63,32 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
       context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
     }
   },
+  [AUTH_USER_STORE.ACTIONS.CONFIRM_ACCOUNT](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IUserAccountUpdatePayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    api
+      .post('auth/account/confirm', { token: payload.token })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          const token = res.data.auth_token
+          window.localStorage.setItem('authToken', token)
+          context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_TOKEN, token)
+          context
+            .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+            .then(() => router.push('/'))
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+  },
   [AUTH_USER_STORE.ACTIONS.CONFIRM_EMAIL](
     context: ActionContext<IAuthUserState, IRootState>,
-    payload: IUserEmailUpdatePayload
+    payload: IUserAccountUpdatePayload
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
@@ -125,20 +148,35 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
     data: ILoginOrRegisterData
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(
+      AUTH_USER_STORE.MUTATIONS.UPDATE_IS_REGISTRATION_SUCCESS,
+      false
+    )
     api
       .post(`/auth/${data.actionType}`, data.formData)
       .then((res) => {
         if (res.data.status === 'success') {
-          const token = res.data.auth_token
-          window.localStorage.setItem('authToken', token)
-          context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_TOKEN, token)
-          context
-            .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
-            .then(() =>
-              router.push(
-                typeof data.redirectUrl === 'string' ? data.redirectUrl : '/'
+          if (data.actionType === 'login') {
+            const token = res.data.auth_token
+            window.localStorage.setItem('authToken', token)
+            context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_TOKEN, token)
+            context
+              .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+              .then(() =>
+                router.push(
+                  typeof data.redirectUrl === 'string' ? data.redirectUrl : '/'
+                )
               )
-            )
+          } else {
+            router
+              .push('/login')
+              .then(() =>
+                context.commit(
+                  AUTH_USER_STORE.MUTATIONS.UPDATE_IS_REGISTRATION_SUCCESS,
+                  true
+                )
+              )
+          }
         } else {
           handleError(context, null)
         }

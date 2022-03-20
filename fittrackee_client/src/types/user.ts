@@ -43,9 +43,9 @@ export interface IUserAccountPayload {
   new_password?: string
 }
 
-export interface IUserEmailUpdatePayload {
+export interface IUserAccountUpdatePayload {
   token: LocationQueryValue | LocationQueryValue[]
-  refreshUser: boolean
+  refreshUser?: boolean
 }
 
 export interface IAdminUserPayload {

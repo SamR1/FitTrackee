@@ -17,7 +17,7 @@
     "no selected file": "No selected file.",
     "password: password and password confirmation do not match": "Password: password and password confirmation don't match.",
     "provide a valid auth token": "Provide a valid auth token.",
-    "sorry, that user already exists": "Sorry, that user already exists.",
+    "sorry, that username is already taken": "Sorry, that username is already taken.",
     "sport does not exist": "Sport does not exist.",
     "signature expired, please log in again": "Signature expired. Please log in again.",
     "successfully registered": "Successfully registered.",

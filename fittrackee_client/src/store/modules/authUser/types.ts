@@ -18,12 +18,13 @@ import {
   IUserPreferencesPayload,
   IUserSportPreferencesPayload,
   IUserAccountPayload,
-  IUserEmailUpdatePayload,
+  IUserAccountUpdatePayload,
 } from '@/types/user'
 
 export interface IAuthUserState {
   authToken: string | null
   authUserProfile: IAuthUserProfile
+  isRegistrationSuccess: boolean
   isSuccess: boolean
   loading: boolean
 }
@@ -33,9 +34,14 @@ export interface IAuthUserActions {
     context: ActionContext<IAuthUserState, IRootState>
   ): void
 
+  [AUTH_USER_STORE.ACTIONS.CONFIRM_ACCOUNT](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IUserAccountUpdatePayload
+  ): void
+
   [AUTH_USER_STORE.ACTIONS.CONFIRM_EMAIL](
     context: ActionContext<IAuthUserState, IRootState>,
-    payload: IUserEmailUpdatePayload
+    payload: IUserAccountUpdatePayload
   ): void
 
   [AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE](
@@ -112,6 +118,10 @@ export interface IAuthUserGetters {
 
   [AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED](state: IAuthUserState): boolean
 
+  [AUTH_USER_STORE.GETTERS.IS_REGISTRATION_SUCCESS](
+    state: IAuthUserState
+  ): boolean
+
   [AUTH_USER_STORE.GETTERS.IS_SUCCESS](state: IAuthUserState): boolean
 
   [AUTH_USER_STORE.GETTERS.USER_LOADING](state: IAuthUserState): boolean
@@ -132,6 +142,10 @@ export type TAuthUserMutations<S = IAuthUserState> = {
     isSuccess: boolean
   ): void
   [AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING](
+    state: S,
+    loading: boolean
+  ): void
+  [AUTH_USER_STORE.MUTATIONS.UPDATE_IS_REGISTRATION_SUCCESS](
     state: S,
     loading: boolean
   ): void

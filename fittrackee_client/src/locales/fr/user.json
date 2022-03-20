@@ -88,6 +88,7 @@
       "STOPPED_SPEED_THRESHOLD": "seuil de vitesse arrêtée"
     },
     "SUCCESSFUL_EMAIL_UPDATE": "Votre compte a été modifié avec succès. Veuillez vérifier votre boite email pour valider votre nouvelle adresse email.",
+    "SUCCESSFUL_REGISTRATION": "Un lien pour activer votre compte a été envoyé à l'adresse email fournie.",
     "SUCCESSFUL_UPDATE": "Votre compte a été modifié avec succès.",
     "TIMEZONE": "Fuseau horaire"
   },

@@ -16,8 +16,17 @@
           message="user.REGISTER_DISABLED"
           v-if="registration_disabled"
         />
-        <div class="info-box success-message" v-if="isSuccess">
-          {{ $t('user.PROFILE.SUCCESSFUL_UPDATE') }}
+        <div
+          class="info-box success-message"
+          v-if="isSuccess || isRegistrationSuccess"
+        >
+          {{
+            $t(
+              `user.PROFILE.SUCCESSFUL_${
+                isRegistrationSuccess ? 'REGISTRATION' : 'UPDATE'
+              }`
+            )
+          }}
         </div>
         <form
           :class="{ errors: formErrors }"
@@ -138,6 +147,9 @@
   const errorMessages: ComputedRef<string | string[] | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
   )
+  const isRegistrationSuccess: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.IS_REGISTRATION_SUCCESS]
+  )
   const isSuccess: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUCCESS]
   )
@@ -204,6 +216,10 @@
     async () => {
       store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
       store.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+      store.commit(
+        AUTH_USER_STORE.MUTATIONS.UPDATE_IS_REGISTRATION_SUCCESS,
+        false
+      )
       formErrors.value = false
       resetFormData()
     }

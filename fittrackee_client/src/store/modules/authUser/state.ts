@@ -5,5 +5,6 @@ export const authUserState: IAuthUserState = {
   authToken: null,
   authUserProfile: <IAuthUserProfile>{},
   isSuccess: false,
+  isRegistrationSuccess: false,
   loading: false,
 }
