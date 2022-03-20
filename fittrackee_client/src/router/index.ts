@@ -48,7 +48,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'AccountConfirmation',
     component: () =>
       import(
-        /* webpackChunkName: 'profile' */ '@/views/user/AccountConfirmation.vue'
+        /* webpackChunkName: 'profile' */ '@/views/user/AccountConfirmationView.vue'
       ),
   },
   {

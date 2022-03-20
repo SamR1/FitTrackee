@@ -7,6 +7,9 @@
     <ErrorImg />
     <p class="error-message">
       <span>{{ $t('error.SOMETHING_WRONG') }}.</span>
+      <router-link class="links" to="/account-confirmation/resend">
+        {{ $t('buttons.ACCOUNT-CONFIRMATION-RESEND') }}?
+      </router-link>
     </p>
   </div>
 </template>
