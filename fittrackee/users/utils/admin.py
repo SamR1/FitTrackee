@@ -9,4 +9,6 @@ def set_admin_rights(username: str) -> None:
     if not user:
         raise UserNotFoundException()
     user.admin = True
+    user.is_active = True
+    user.confirmation_token = None
     db.session.commit()

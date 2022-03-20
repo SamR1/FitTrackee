@@ -36,6 +36,15 @@ class TestSetAdminRights:
 
         assert user_1_admin.admin is True
 
+    def test_it_activates_account_if_user_is_inactive(
+        self, app: Flask, inactive_user: User
+    ) -> None:
+        set_admin_rights(inactive_user.username)
+
+        assert inactive_user.admin is True
+        assert inactive_user.is_active is True
+        assert inactive_user.confirmation_token is None
+
 
 class TestIsValidEmail:
     @pytest.mark.parametrize(
