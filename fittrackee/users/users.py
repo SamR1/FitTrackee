@@ -395,7 +395,11 @@ def get_picture(user_name: str) -> Any:
 @authenticate_as_admin
 def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     """
-    Update user to add admin rights
+    Update user account
+    - add/remove admin rights
+    - reset password and send email to update user password
+    - update user email
+    - activate account for an inactive user
 
     Only user with admin rights can modify another user
 
@@ -484,11 +488,18 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
     :param string user_name: user name
 
+    :<json boolean activate: activate user account
     :<json boolean admin: does the user have administrator rights
+    :<json boolean new_email: new user email
+    :<json boolean reset_password: reset user password
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: success
+    :statuscode 400:
+        - invalid payload
+        - valid email must be provided
+        - new email must be different than curent email
     :statuscode 401:
         - provide a valid auth token
         - signature expired, please log in again
@@ -512,10 +523,11 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
         if 'admin' in user_data:
             user.admin = user_data['admin']
 
-        if (
-            'reset_password' in user_data
-            and user_data['reset_password'] is True
-        ):
+        if user_data.get('activate', False):
+            user.is_active = True
+            user.confirmation_token = None
+
+        if user_data.get('reset_password', False):
             new_password = secrets.token_urlsafe(30)
             user.password = bcrypt.generate_password_hash(
                 new_password, current_app.config.get('BCRYPT_LOG_ROUNDS')
@@ -524,6 +536,10 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
         if 'new_email' in user_data:
             if is_valid_email(user_data['new_email']):
+                if user_data['new_email'] == user.email:
+                    return InvalidPayloadErrorResponse(
+                        'new email must be different than curent email'
+                    )
                 user.email_to_confirm = user_data['new_email']
                 user.confirmation_token = secrets.token_urlsafe(30)
                 send_new_address_email = True

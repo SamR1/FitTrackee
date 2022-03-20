@@ -52,6 +52,8 @@ export interface IAdminUserPayload {
   username: string
   admin?: boolean
   resetPassword?: boolean
+  activate?: boolean
+  new_email?: string
 }
 
 export interface IUserPreferencesPayload {

@@ -17,45 +17,95 @@
       @cancelAction="updateDisplayModal('')"
     />
     <div class="info-box success-message" v-if="isSuccess">
-      {{ $t('admin.PASSWORD_RESET_SUCCESSFUL') }}
+      {{
+        $t(
+          `admin.${
+            currentAction === 'password-reset'
+              ? 'PASSWORD_RESET'
+              : 'USER_EMAIL_UPDATE'
+          }_SUCCESSFUL`
+        )
+      }}
     </div>
-    <dl>
-      <dt>{{ $t('user.PROFILE.REGISTRATION_DATE') }}:</dt>
-      <dd>{{ registrationDate }}</dd>
-      <dt>{{ $t('user.PROFILE.FIRST_NAME') }}:</dt>
-      <dd>{{ user.first_name }}</dd>
-      <dt>{{ $t('user.PROFILE.LAST_NAME') }}:</dt>
-      <dd>{{ user.last_name }}</dd>
-      <dt>{{ $t('user.PROFILE.BIRTH_DATE') }}:</dt>
-      <dd>{{ birthDate }}</dd>
-      <dt>{{ $t('user.PROFILE.LOCATION') }}:</dt>
-      <dd>{{ user.location }}</dd>
-      <dt>{{ $t('user.PROFILE.BIO') }}:</dt>
-      <dd class="user-bio">
-        {{ user.bio }}
-      </dd>
-    </dl>
-    <div class="profile-buttons" v-if="fromAdmin">
-      <button
-        class="danger"
-        v-if="authUser.username !== user.username"
-        @click.prevent="updateDisplayModal('delete')"
+    <AlertMessage
+      message="user.THIS_USER_ACCOUNT_IS_INACTIVE"
+      v-if="!user.is_active"
+    />
+    <ErrorMessage :message="errorMessages" v-if="errorMessages" />
+    <div class="email-form form-box" v-if="displayUserEmailForm">
+      <form
+        :class="{ errors: formErrors }"
+        @submit.prevent="updateUserEmail(user.username)"
       >
-        {{ $t('admin.DELETE_USER') }}
-      </button>
-      <button
-        v-if="authUser.username !== user.username"
-        @click.prevent="updateDisplayModal('reset')"
-      >
-        {{ $t('admin.RESET_USER_PASSWORD') }}
-      </button>
-      <button @click="$router.go(-1)">{{ $t('buttons.BACK') }}</button>
+        <label class="form-items" for="email">
+          {{ $t('admin.CURRENT_EMAIL') }}
+          <input id="email" type="email" v-model="user.email" disabled />
+        </label>
+        <label class="form-items" for="email">
+          {{ $t('admin.NEW_EMAIL') }}*
+          <input id="new-email" type="email" required v-model="newUserEmail" />
+        </label>
+        <div class="form-buttons">
+          <button class="confirm" type="submit">
+            {{ $t('buttons.SUBMIT') }}
+          </button>
+          <button class="cancel" @click.prevent="hideEmailForm">
+            {{ $t('buttons.CANCEL') }}
+          </button>
+        </div>
+      </form>
     </div>
-    <div class="profile-buttons" v-else>
-      <button @click="$router.push('/profile/edit')">
-        {{ $t('user.PROFILE.EDIT') }}
-      </button>
-      <button @click="$router.push('/')">{{ $t('common.HOME') }}</button>
+    <div v-else>
+      <dl>
+        <dt>{{ $t('user.PROFILE.REGISTRATION_DATE') }}:</dt>
+        <dd>{{ registrationDate }}</dd>
+        <dt>{{ $t('user.PROFILE.FIRST_NAME') }}:</dt>
+        <dd>{{ user.first_name }}</dd>
+        <dt>{{ $t('user.PROFILE.LAST_NAME') }}:</dt>
+        <dd>{{ user.last_name }}</dd>
+        <dt>{{ $t('user.PROFILE.BIRTH_DATE') }}:</dt>
+        <dd>{{ birthDate }}</dd>
+        <dt>{{ $t('user.PROFILE.LOCATION') }}:</dt>
+        <dd>{{ user.location }}</dd>
+        <dt>{{ $t('user.PROFILE.BIO') }}:</dt>
+        <dd class="user-bio">
+          {{ user.bio }}
+        </dd>
+      </dl>
+      <div class="profile-buttons" v-if="fromAdmin">
+        <button
+          class="danger"
+          v-if="authUser.username !== user.username"
+          @click.prevent="updateDisplayModal('delete')"
+        >
+          {{ $t('admin.DELETE_USER') }}
+        </button>
+        <button
+          v-if="!user.is_active"
+          @click.prevent="confirmUserAccount(user.username)"
+        >
+          {{ $t('admin.ACTIVATE_USER_ACCOUNT') }}
+        </button>
+        <button
+          v-if="authUser.username !== user.username"
+          @click.prevent="displayEmailForm"
+        >
+          {{ $t('admin.UPDATE_USER_EMAIL') }}
+        </button>
+        <button
+          v-if="authUser.username !== user.username"
+          @click.prevent="updateDisplayModal('reset')"
+        >
+          {{ $t('admin.RESET_USER_PASSWORD') }}
+        </button>
+        <button @click="$router.go(-1)">{{ $t('buttons.BACK') }}</button>
+      </div>
+      <div class="profile-buttons" v-else>
+        <button @click="$router.push('/profile/edit')">
+          {{ $t('user.PROFILE.EDIT') }}
+        </button>
+        <button @click="$router.push('/')">{{ $t('common.HOME') }}</button>
+      </div>
     </div>
   </div>
 </template>
@@ -104,7 +154,14 @@
   const isSuccess = computed(
     () => store.getters[USERS_STORE.GETTERS.USERS_IS_SUCCESS]
   )
+  const errorMessages: ComputedRef<string | string[] | null> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
+  )
   let displayModal: Ref<string> = ref('')
+  const formErrors = ref(false)
+  const displayUserEmailForm: Ref<boolean> = ref(false)
+  const newUserEmail: Ref<string> = ref('')
+  const currentAction: Ref<string> = ref('')
 
   function updateDisplayModal(value: string) {
     displayModal.value = value
@@ -116,31 +173,82 @@
     store.dispatch(USERS_STORE.ACTIONS.DELETE_USER_ACCOUNT, { username })
   }
   function resetUserPassword(username: string) {
+    currentAction.value = 'password-reset'
     store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, {
       username,
       resetPassword: true,
     })
   }
-
-  onUnmounted(() => {
+  function confirmUserAccount(username: string) {
+    store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, {
+      username,
+      activate: true,
+    })
+  }
+  function displayEmailForm() {
+    resetErrorsAndSuccess()
+    console.log('user.value.email_to_confirm', user.value.email_to_confirm)
+    newUserEmail.value = user.value.email_to_confirm
+      ? user.value.email_to_confirm
+      : ''
+    displayUserEmailForm.value = true
+    currentAction.value = 'email-update'
+  }
+  function hideEmailForm() {
+    newUserEmail.value = ''
+    displayUserEmailForm.value = false
+  }
+  function updateUserEmail(username: string) {
+    store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, {
+      username,
+      new_email: newUserEmail.value,
+    })
+  }
+  function resetErrorsAndSuccess() {
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     store.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
-  })
+    currentAction.value = ''
+  }
+
+  onUnmounted(() => resetErrorsAndSuccess())
 
   watch(
     () => isSuccess.value,
     (newIsSuccess) => {
       if (newIsSuccess) {
         updateDisplayModal('')
+        hideEmailForm()
       }
     }
   )
 </script>
 
 <style lang="scss" scoped>
+  @import '~@/scss/vars.scss';
   #user-infos {
     .user-bio {
       white-space: pre-wrap;
+    }
+
+    .alert-message {
+      margin: 0;
+    }
+
+    .profile-buttons {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .email-form {
+      display: flex;
+      form {
+        width: 100%;
+      }
+      .form-buttons {
+        display: flex;
+        gap: $default-padding;
+        margin-top: $default-margin;
+      }
     }
   }
 </style>

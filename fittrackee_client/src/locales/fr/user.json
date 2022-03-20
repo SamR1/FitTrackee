@@ -99,6 +99,7 @@
   "RESENT_ACCOUNT_CONFIRMATION": "Envoyer à nouveau l'email de confirmation de compte",
   "RESET_PASSWORD": "Réinitialiser votre mot de passe",
   "SHOW_PASSWORD": "afficher le mot de passe",
+  "THIS_USER_ACCOUNT_IS_INACTIVE": "Le compte de cet utilisateur est inactif.",
   "USER_PICTURE": "photo de l'utilisateur",
   "USERNAME": "Nom d'utilisateur",
   "USERNAME_INFO": "3 à 30 caractères requis, seuls les caractères alphanumériques et le caractère \"_\" sont autorisés."

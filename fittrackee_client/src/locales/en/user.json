@@ -100,6 +100,7 @@
   "REGISTER_DISABLED": "Sorry, registration is disabled.",
   "RESET_PASSWORD": "Reset your password",
   "SHOW_PASSWORD": "show password",
+  "THIS_USER_ACCOUNT_IS_INACTIVE": "This user account is inactive.",
   "USER_PICTURE": "user picture",
   "USERNAME": "Username",
   "USERNAME_INFO": "3 to 30 characters required, only alphanumeric characters and the underscore character \"_\" allowed."

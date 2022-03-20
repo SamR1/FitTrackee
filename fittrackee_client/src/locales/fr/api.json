@@ -15,6 +15,7 @@
     "no file part": "Pas de fichier fourni.",
     "no selected file": "Pas de fichier sélectionné.",
     "Network Error": "Erreur Réseau.",
+    "new email must be different than curent email": "La nouvelle addresse email doit être differente de l'adresse actuelle",
     "password: password and password confirmation do not match": "Mot de passe : les mots de passe saisis sont différents.",
     "provide a valid auth token": "Merci de fournir un jeton de connexion valide.",
     "sport does not exist": "Ce sport n'existe pas.",

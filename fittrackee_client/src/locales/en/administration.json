@@ -1,5 +1,7 @@
 {
   "ACTION": "Action",
+  "ACTIVATE_USER_ACCOUNT": "Activate account",
+  "ACTIVE": "Active",
   "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Add/remove admin rights, delete user account.",
   "ADMIN": "Admin",
   "ADMINISTRATION": "Administration",
@@ -15,8 +17,10 @@
   "BACK_TO_ADMIN": "Back to admin",
   "CONFIRM_USER_ACCOUNT_DELETION": "Are you sure you want to delete {0} account? All data will be deleted, this cannot be undone.",
   "CONFIRM_USER_PASSWORD_RESET": "Are you sure you want to reset {0} password?",
+  "CURRENT_EMAIL": "Current email",
   "DELETE_USER": "Delete user",
   "ENABLE_DISABLE_SPORTS": "Enable/disable sports.",
+  "NEW_EMAIL": "New email",
   "PASSWORD_RESET_SUCCESSFUL": "The password has been reset.",
   "REGISTRATION_DISABLED": "Registration is currently disabled.",
   "REGISTRATION_ENABLED": "Registration is currently enabled.",
@@ -31,7 +35,9 @@
     "TITLE": "Sports administration"
   },
   "UPDATE_APPLICATION_DESCRIPTION": "Update application configuration (maximum number of registered users, maximum files size).",
+  "UPDATE_USER_EMAIL": "Update email",
   "USER": "user | users",
+  "USER_EMAIL_UPDATE_SUCCESSFUL": "The email address has been updated.",
   "USERS": {
     "TABLE": {
       "ADD_ADMIN_RIGHTS": "Add admin rights",

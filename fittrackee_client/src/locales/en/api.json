@@ -13,6 +13,7 @@
     "invalid token, please log in again": "Invalid token, please log in again.",
     "invalid token, please request a new token": "Invalid token, please log in again.",
     "Network Error": "Network Error.",
+    "new email must be different than curent email": "The new email must be different than curent email",
     "no file part": "No file provided.",
     "no selected file": "No selected file.",
     "password: password and password confirmation do not match": "Password: password and password confirmation don't match.",

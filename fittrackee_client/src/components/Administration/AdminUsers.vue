@@ -31,6 +31,7 @@
                   {{ capitalize($t('workouts.WORKOUT', 0)) }}
                 </th>
                 <th>{{ $t('user.ADMIN') }}</th>
+                <th>{{ $t('admin.ACTIVE') }}</th>
                 <th>{{ $t('admin.ACTION') }}</th>
               </tr>
             </thead>
@@ -79,6 +80,15 @@
                   </span>
                   <i
                     :class="`fa fa${user.admin ? '-check' : ''}-square-o`"
+                    aria-hidden="true"
+                  />
+                </td>
+                <td class="text-center">
+                  <span class="cell-heading">
+                    {{ $t('admin.ACTIVE') }}
+                  </span>
+                  <i
+                    :class="`fa fa${user.is_active ? '-check' : ''}-square-o`"
                     aria-hidden="true"
                   />
                 </td>

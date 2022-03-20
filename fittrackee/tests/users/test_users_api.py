@@ -1156,6 +1156,24 @@ class TestUpdateUser(ApiTestCaseMixin):
 
         self.assert_400(response, 'valid email must be provided')
 
+    def test_it_returns_error_when_new_email_is_same_as_current_email(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            data=json.dumps(dict(new_email=user_2.email)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(
+            response, 'new email must be different than curent email'
+        )
+
     def test_it_does_not_send_email_when_error_on_updating_email(
         self,
         app: Flask,
@@ -1232,6 +1250,52 @@ class TestUpdateUser(ApiTestCaseMixin):
                 ),
             },
         )
+
+    def test_it_activates_user_account(
+        self, app: Flask, user_1_admin: User, inactive_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            f'/api/users/{inactive_user.username}',
+            content_type='application/json',
+            data=json.dumps(dict(activate=True)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 1
+        user = data['data']['users'][0]
+        assert user['email'] == inactive_user.email
+        assert user['is_active'] is True
+        assert inactive_user.confirmation_token is None
+
+    def test_it_can_only_activate_user_account(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            data=json.dumps(dict(activate=False)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 1
+        user = data['data']['users'][0]
+        assert user['email'] == user_2.email
+        assert user['is_active'] is True
+        assert user_2.confirmation_token is None
 
 
 class TestDeleteUser(ApiTestCaseMixin):
