@@ -11,7 +11,7 @@
       :text="distanceUnitTo === 'mi' ? 'miles' : distanceUnitTo"
     />
     <StatCard
-      icon="arrow-circle-up"
+      icon="location-arrow"
       :value="totalAscent"
       :text="ascentUnitTo === 'ft' ? 'feet' : ascentUnitTo"
     />
