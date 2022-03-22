@@ -4,12 +4,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HTTP Routing Table &#8212; FitTrackee 0.4.9
+    <title>HTTP Routing Table &#8212; FitTrackee 0.5.7
  documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -20,10 +20,10 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+<script type="text/javascript" src="_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
 
 
     <script>
@@ -44,7 +44,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4.9
+        <span class="navbar-text navbar-version pull-left"><b>0.5.7
 </b></span>
       </div>
 
@@ -63,8 +63,8 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/index.html">API documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting/index.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Change log</a></li>
@@ -218,6 +218,11 @@
      <tr>
        <td></td>
        <td>
+       <a href="api/workouts.html#get--api-workouts-(string-workout_short_id)-gpx-download"><code class="xref">GET /api/workouts/(string:workout_short_id)/gpx/download</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
        <a href="api/workouts.html#get--api-workouts-(string-workout_short_id)-gpx-segment-(int-segment_id)"><code class="xref">GET /api/workouts/(string:workout_short_id)/gpx/segment/(int:segment_id)</code></a></td><td>
        <em></em></td></tr>
      <tr>
@@ -258,6 +263,16 @@
      <tr>
        <td></td>
        <td>
+       <a href="api/auth.html#post--api-auth-profile-edit-preferences"><code class="xref">POST /api/auth/profile/edit/preferences</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/auth.html#post--api-auth-profile-edit-sports"><code class="xref">POST /api/auth/profile/edit/sports</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
        <a href="api/auth.html#post--api-auth-register"><code class="xref">POST /api/auth/register</code></a></td><td>
        <em></em></td></tr>
      <tr>
@@ -274,6 +289,11 @@
        <td></td>
        <td>
        <a href="api/auth.html#delete--api-auth-picture"><code class="xref">DELETE /api/auth/picture</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/auth.html#delete--api-auth-profile-reset-sports-(sport_id)"><code class="xref">DELETE /api/auth/profile/reset/sports/(sport_id)</code></a></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
@@ -319,8 +339,8 @@
       
     </p>
     <p>
-        &copy; Copyright 2018 - 2021, SamR1.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3.<br/>
+        &copy; Copyright 2018 - 2022, SamR1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br/>
     </p>
   </div>
 </footer>

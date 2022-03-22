@@ -2,6 +2,7 @@ import os
 import shutil
 from typing import Any, Dict, Tuple, Union
 
+import click
 from flask import Blueprint, request, send_file
 from sqlalchemy import exc
 
@@ -14,19 +15,33 @@ from fittrackee.responses import (
     UserNotFoundErrorResponse,
     handle_error_and_return_response,
 )
+from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 from fittrackee.workouts.utils_files import get_absolute_file_path
 
 from .decorators import authenticate, authenticate_as_admin
-from .models import User, Workout
+from .exceptions import UserNotFoundException
+from .models import User, UserSportPreference
+from .utils import set_admin_rights
 
 users_blueprint = Blueprint('users', __name__)
 
 USER_PER_PAGE = 10
 
 
+@users_blueprint.cli.command('set-admin')
+@click.argument('username')
+def set_admin(username: str) -> None:
+    """Set admin rights for given user"""
+    try:
+        set_admin_rights(username)
+        print(f"User '{username}' updated.")
+    except UserNotFoundException:
+        print(f"User '{username}' not found.")
+
+
 @users_blueprint.route('/users', methods=['GET'])
 @authenticate
-def get_users(auth_user_id: int) -> Dict:
+def get_users(auth_user: User) -> Dict:
     """
     Get all users
 
@@ -63,12 +78,51 @@ def get_users(auth_user_id: int) -> Dict:
               "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
               "email": "admin@example.com",
               "first_name": null,
+              "imperial_units": false,
               "language": "en",
               "last_name": null,
               "location": null,
               "nb_sports": 3,
               "nb_workouts": 6,
               "picture": false,
+              "records": [
+                {
+                  "id": 9,
+                  "record_type": "AS",
+                  "sport_id": 1,
+                  "user": "admin",
+                  "value": 18,
+                  "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                  "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+                },
+                {
+                  "id": 10,
+                  "record_type": "FD",
+                  "sport_id": 1,
+                  "user": "admin",
+                  "value": 18,
+                  "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                  "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+                },
+                {
+                  "id": 11,
+                  "record_type": "LD",
+                  "sport_id": 1,
+                  "user": "admin",
+                  "value": "1:01:00",
+                  "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                  "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+                },
+                {
+                  "id": 12,
+                  "record_type": "MS",
+                  "sport_id": 1,
+                  "user": "admin",
+                  "value": 18,
+                  "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                  "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+                }
+              ],
               "sports_list": [
                   1,
                   4,
@@ -92,6 +146,7 @@ def get_users(auth_user_id: int) -> Dict:
               "nb_sports": 0,
               "nb_workouts": 0,
               "picture": false,
+              "records": [],
               "sports_list": [],
               "timezone": "Europe/Paris",
               "total_distance": 0,
@@ -102,8 +157,6 @@ def get_users(auth_user_id: int) -> Dict:
         },
         "status": "success"
       }
-
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
 
     :query integer page: page if using pagination (default: 1)
     :query integer per_page: number of users per page (default: 10, max: 50)
@@ -116,9 +169,9 @@ def get_users(auth_user_id: int) -> Dict:
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
 
     """
     params = request.args.copy()
@@ -178,7 +231,7 @@ def get_users(auth_user_id: int) -> Dict:
 @users_blueprint.route('/users/<user_name>', methods=['GET'])
 @authenticate
 def get_single_user(
-    auth_user_id: int, user_name: str
+    auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
     """
     Get single user details
@@ -206,12 +259,51 @@ def get_single_user(
             "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
             "email": "admin@example.com",
             "first_name": null,
+            "imperial_units": false,
             "language": "en",
             "last_name": null,
             "location": null,
             "nb_sports": 3,
             "nb_workouts": 6,
             "picture": false,
+            "records": [
+              {
+                "id": 9,
+                "record_type": "AS",
+                "sport_id": 1,
+                "user": "admin",
+                "value": 18,
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              },
+              {
+                "id": 10,
+                "record_type": "FD",
+                "sport_id": 1,
+                "user": "admin",
+                "value": 18,
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              },
+              {
+                "id": 11,
+                "record_type": "LD",
+                "sport_id": 1,
+                "user": "admin",
+                "value": "1:01:00",
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              },
+              {
+                "id": 12,
+                "record_type": "MS",
+                "sport_id": 1,
+                "user": "admin",
+                "value": 18,
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              }
+            ],
             "sports_list": [
                 1,
                 4,
@@ -226,18 +318,17 @@ def get_single_user(
         "status": "success"
       }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param integer user_name: user name
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404:
-        - User does not exist.
+        - user does not exist
     """
     try:
         user = User.query.filter_by(username=user_name).first()
@@ -273,7 +364,7 @@ def get_picture(user_name: str) -> Any:
 
     :statuscode 200: success
     :statuscode 404:
-        - User does not exist.
+        - user does not exist
         - No picture.
 
     """
@@ -291,9 +382,7 @@ def get_picture(user_name: str) -> Any:
 
 @users_blueprint.route('/users/<user_name>', methods=['PATCH'])
 @authenticate_as_admin
-def update_user(
-    auth_user_id: int, user_name: str
-) -> Union[Dict, HttpResponse]:
+def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     """
     Update user to add admin rights
 
@@ -322,12 +411,51 @@ def update_user(
             "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
             "email": "admin@example.com",
             "first_name": null,
+            "imperial_units": false,
             "language": "en",
             "last_name": null,
             "location": null,
             "nb_workouts": 6,
             "nb_sports": 3,
             "picture": false,
+            "records": [
+              {
+                "id": 9,
+                "record_type": "AS",
+                "sport_id": 1,
+                "user": "admin",
+                "value": 18,
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              },
+              {
+                "id": 10,
+                "record_type": "FD",
+                "sport_id": 1,
+                "user": "admin",
+                "value": 18,
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              },
+              {
+                "id": 11,
+                "record_type": "LD",
+                "sport_id": 1,
+                "user": "admin",
+                "value": "1:01:00",
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              },
+              {
+                "id": 12,
+                "record_type": "MS",
+                "sport_id": 1,
+                "user": "admin",
+                "value": 18,
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              }
+            ],
             "sports_list": [
                 1,
                 4,
@@ -342,7 +470,6 @@ def update_user(
         "status": "success"
       }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param string user_name: user name
 
     :<json boolean admin: does the user have administrator rights
@@ -351,12 +478,12 @@ def update_user(
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
-    :statuscode 403: You do not have permissions.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403: you do not have permissions
     :statuscode 404:
-        - User does not exist.
+        - user does not exist
     :statuscode 500:
     """
     user_data = request.get_json()
@@ -381,7 +508,7 @@ def update_user(
 @users_blueprint.route('/users/<user_name>', methods=['DELETE'])
 @authenticate
 def delete_user(
-    auth_user_id: int, user_name: str
+    auth_user: User, user_name: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Delete a user account
@@ -405,44 +532,48 @@ def delete_user(
       HTTP/1.1 204 NO CONTENT
       Content-Type: application/json
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param string user_name: user name
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 204: user account deleted
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 403:
-        - You do not have permissions.
-        - You can not delete your account, no other user has admin rights.
+        - you do not have permissions
+        - you can not delete your account, no other user has admin rights
     :statuscode 404:
-        - User does not exist.
-    :statuscode 500: Error. Please try again or contact the administrator.
+        - user does not exist
+    :statuscode 500: error, please try again or contact the administrator
 
     """
     try:
-        auth_user = User.query.filter_by(id=auth_user_id).first()
         user = User.query.filter_by(username=user_name).first()
         if not user:
             return UserNotFoundErrorResponse()
 
-        if user.id != auth_user_id and not auth_user.admin:
+        if user.id != auth_user.id and not auth_user.admin:
             return ForbiddenErrorResponse()
         if (
             user.admin is True
             and User.query.filter_by(admin=True).count() == 1
         ):
             return ForbiddenErrorResponse(
-                'You can not delete your account, '
-                'no other user has admin rights.'
+                'you can not delete your account, '
+                'no other user has admin rights'
             )
 
-        for workout in Workout.query.filter_by(user_id=user.id).all():
-            db.session.delete(workout)
-            db.session.flush()
+        db.session.query(UserSportPreference).filter(
+            UserSportPreference.user_id == user.id
+        ).delete()
+        db.session.query(Record).filter(Record.user_id == user.id).delete()
+        db.session.query(WorkoutSegment).filter(
+            WorkoutSegment.workout_id == Workout.id, Workout.user_id == user.id
+        ).delete(synchronize_session=False)
+        db.session.query(Workout).filter(Workout.user_id == user.id).delete()
+        db.session.flush()
         user_picture = user.picture
         db.session.delete(user)
         db.session.commit()

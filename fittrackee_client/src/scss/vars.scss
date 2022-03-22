@@ -1,0 +1,21 @@
+/*
+* === MEDIA QUERIES ===
+*/
+$container-width: 1140px;
+$medium-limit: 1000px;
+$small-limit: 700px;
+$x-small-limit: 500px;
+$xx-small-limit: 300px;
+
+/*
+* === HEIGHT ===
+*/
+$app-height: calc(100vh - 130px);
+
+/*
+* === PADDING / MARGIN ===
+*/
+$default-padding: 10px;
+$default-margin: $default-padding;
+
+$border-radius: 4px;

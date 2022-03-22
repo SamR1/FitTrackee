@@ -16,7 +16,11 @@ from fittrackee.users.decorators import authenticate, authenticate_as_admin
 from fittrackee.users.models import User
 
 from .models import Sport, Workout
-from .utils import get_datetime_from_request_args, get_upload_dir_size
+from .utils import (
+    get_average_speed,
+    get_datetime_from_request_args,
+    get_upload_dir_size,
+)
 from .utils_format import convert_timedelta_to_integer
 
 stats_blueprint = Blueprint('stats', __name__)
@@ -42,7 +46,7 @@ def get_workouts(
             if sport_id:
                 sport = Sport.query.filter_by(id=sport_id).first()
                 if not sport:
-                    return NotFoundErrorResponse('Sport does not exist.')
+                    return NotFoundErrorResponse('sport does not exist')
 
         workouts = (
             Workout.query.filter(
@@ -64,17 +68,35 @@ def get_workouts(
                 sport_id = workout.sport_id
                 if sport_id not in workouts_list_by_sport:
                     workouts_list_by_sport[sport_id] = {
+                        'average_speed': 0.0,
                         'nb_workouts': 0,
                         'total_distance': 0.0,
                         'total_duration': 0,
+                        'total_ascent': 0.0,
+                        'total_descent': 0.0,
                     }
                 workouts_list_by_sport[sport_id]['nb_workouts'] += 1
+                workouts_list_by_sport[sport_id][
+                    'average_speed'
+                ] = get_average_speed(
+                    workouts_list_by_sport[sport_id]['nb_workouts'],  # type: ignore  # noqa
+                    workouts_list_by_sport[sport_id]['average_speed'],
+                    workout.ave_speed,
+                )
                 workouts_list_by_sport[sport_id]['total_distance'] += float(
                     workout.distance
                 )
                 workouts_list_by_sport[sport_id][
                     'total_duration'
                 ] += convert_timedelta_to_integer(workout.moving)
+                if workout.ascent:
+                    workouts_list_by_sport[sport_id]['total_ascent'] += float(
+                        workout.ascent
+                    )
+                if workout.descent:
+                    workouts_list_by_sport[sport_id]['total_descent'] += float(
+                        workout.descent
+                    )
 
             # filter_type == 'by_time'
             else:
@@ -107,20 +129,41 @@ def get_workouts(
                     workouts_list_by_time[time_period] = {}
                 if sport_id not in workouts_list_by_time[time_period]:
                     workouts_list_by_time[time_period][sport_id] = {
+                        'average_speed': 0.0,
                         'nb_workouts': 0,
                         'total_distance': 0.0,
                         'total_duration': 0,
+                        'total_ascent': 0.0,
+                        'total_descent': 0.0,
                     }
                 workouts_list_by_time[time_period][sport_id][
                     'nb_workouts'
                 ] += 1
+                workouts_list_by_time[time_period][sport_id][
+                    'average_speed'
+                ] = get_average_speed(
+                    workouts_list_by_time[time_period][sport_id][
+                        'nb_workouts'
+                    ],
+                    workouts_list_by_time[time_period][sport_id][
+                        'average_speed'
+                    ],
+                    workout.ave_speed,
+                )
                 workouts_list_by_time[time_period][sport_id][
                     'total_distance'
                 ] += float(workout.distance)
                 workouts_list_by_time[time_period][sport_id][
                     'total_duration'
                 ] += convert_timedelta_to_integer(workout.moving)
-
+                if workout.ascent:
+                    workouts_list_by_time[time_period][sport_id][
+                        'total_ascent'
+                    ] += float(workout.ascent)
+                if workout.descent:
+                    workouts_list_by_time[time_period][sport_id][
+                        'total_descent'
+                    ] += float(workout.descent)
         return {
             'status': 'success',
             'data': {
@@ -136,7 +179,7 @@ def get_workouts(
 @stats_blueprint.route('/stats/<user_name>/by_time', methods=['GET'])
 @authenticate
 def get_workouts_by_time(
-    auth_user_id: int, user_name: str
+    auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
     """
     Get workouts statistics for a user by time
@@ -170,19 +213,28 @@ def get_workouts_by_time(
           "statistics": {
             "2017": {
               "3": {
+                "average_speed": 4.48,
                 "nb_workouts": 2,
+                "total_ascent": 203.0,
+                "total_ascent": 156.0,
                 "total_distance": 15.282,
                 "total_duration": 12341
               }
             },
             "2019": {
               "1": {
+                "average_speed": 16.99,
                 "nb_workouts": 3,
+                "total_ascent": 150.0,
+                "total_ascent": 178.0,
                 "total_distance": 47,
                 "total_duration": 9960
               },
               "2": {
+                "average_speed": 15.95,
                 "nb_workouts": 1,
+                "total_ascent": 46.0,
+                "total_ascent": 78.0,
                 "total_distance": 5.613,
                 "total_duration": 1267
               }
@@ -206,7 +258,6 @@ def get_workouts_by_time(
         "status": "success"
       }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param integer user_name: user name
 
     :query string from: start date (format: ``%Y-%m-%d``)
@@ -222,11 +273,11 @@ def get_workouts_by_time(
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404:
-        - User does not exist.
+        - user does not exist
 
     """
     return get_workouts(user_name, 'by_time')
@@ -235,7 +286,7 @@ def get_workouts_by_time(
 @stats_blueprint.route('/stats/<user_name>/by_sport', methods=['GET'])
 @authenticate
 def get_workouts_by_sport(
-    auth_user_id: int, user_name: str
+    auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
     """
     Get workouts statistics for a user by sport
@@ -267,17 +318,26 @@ def get_workouts_by_sport(
         "data": {
           "statistics": {
             "1": {
+              "average_speed": 16.99,
               "nb_workouts": 3,
+              "total_ascent": 150.0,
+              "total_ascent": 178.0,
               "total_distance": 47,
               "total_duration": 9960
             },
             "2": {
+              "average_speed": 15.95,
               "nb_workouts": 1,
+              "total_ascent": 46.0,
+              "total_ascent": 78.0,
               "total_distance": 5.613,
               "total_duration": 1267
             },
             "3": {
+              "average_speed": 4.46,
               "nb_workouts": 2,
+              "total_ascent": 203.0,
+              "total_ascent": 156.0,
               "total_distance": 15.282,
               "total_duration": 12341
             }
@@ -300,7 +360,6 @@ def get_workouts_by_sport(
         "status": "success"
       }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param integer user_name: user name
 
     :query integer sport_id: sport id
@@ -309,12 +368,12 @@ def get_workouts_by_sport(
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404:
-        - User does not exist.
-        - Sport does not exist.
+        - user does not exist
+        - sport does not exist
 
     """
     return get_workouts(user_name, 'by_sport')
@@ -322,7 +381,7 @@ def get_workouts_by_sport(
 
 @stats_blueprint.route('/stats/all', methods=['GET'])
 @authenticate_as_admin
-def get_application_stats(auth_user_id: int) -> Dict:
+def get_application_stats(auth_user: User) -> Dict:
     """
     Get all application statistics
 
@@ -350,16 +409,14 @@ def get_application_stats(auth_user_id: int) -> Dict:
         "status": "success"
       }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
-
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
-    :statuscode 403: You do not have permissions.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403: you do not have permissions
     """
 
     nb_workouts = Workout.query.filter().count()

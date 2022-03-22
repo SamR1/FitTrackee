@@ -68,7 +68,7 @@ class InvalidPayloadErrorResponse(GenericErrorResponse):
         message: Optional[Union[str, List]] = None,
         status: Optional[str] = None,
     ) -> None:
-        message = 'Invalid payload.' if message is None else message
+        message = 'invalid payload' if message is None else message
         super().__init__(status_code=400, message=message, status=status)
 
 
@@ -84,7 +84,7 @@ class DataInvalidPayloadErrorResponse(HttpResponse):
 class UnauthorizedErrorResponse(GenericErrorResponse):
     def __init__(self, message: Optional[str] = None) -> None:
         message = (
-            'Invalid token. Please request a new token.'
+            'invalid token, please request a new token'
             if message is None
             else message
         )
@@ -93,9 +93,7 @@ class UnauthorizedErrorResponse(GenericErrorResponse):
 
 class ForbiddenErrorResponse(GenericErrorResponse):
     def __init__(self, message: Optional[str] = None) -> None:
-        message = (
-            'You do not have permissions.' if message is None else message
-        )
+        message = 'you do not have permissions' if message is None else message
         super().__init__(status_code=403, message=message)
 
 
@@ -106,7 +104,7 @@ class NotFoundErrorResponse(GenericErrorResponse):
 
 class UserNotFoundErrorResponse(NotFoundErrorResponse):
     def __init__(self) -> None:
-        super().__init__(message='User does not exist.')
+        super().__init__(message='user does not exist')
 
 
 class DataNotFoundErrorResponse(HttpResponse):
@@ -142,7 +140,7 @@ class InternalServerErrorResponse(GenericErrorResponse):
         self, message: Optional[str] = None, status: Optional[str] = None
     ):
         message = (
-            'Error. Please try again or contact the administrator.'
+            'error, please try again or contact the administrator'
             if message is None
             else message
         )

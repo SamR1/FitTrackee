@@ -1,6 +1,163 @@
 # Change log
 
+## Version 0.5.7 (2022/02/13)
+
+This release contains several fixes including security fixes.  
+Thanks to @DanielSiersleben for the report.
+
+And from now on, admin account is not created on application initialization.  
+A new command is added to set administration rights on the account created after registration 
+(see [documentation](https://samr1.github.io/FitTrackee/installation.html#upgrade))
+
+### Issues Closed
+
+#### Misc
+
+* [#149](https://github.com/SamR1/FitTrackee/issues/149) - improve database initialisation
+
+### Pull Requests
+
+#### Security
+
+* [#152](https://github.com/SamR1/FitTrackee/pull/152) - Fixes and improvements:
+  - set autoescape on jinja templates
+
+* [#151](https://github.com/SamR1/FitTrackee/pull/151) - fix security issues:
+  - sanitize input when serving images
+  - sanitize inputs when serving map tiles
+  - allow only alphanumeric characters and '_' in username
+
+#### Misc
+
+* [#152](https://github.com/SamR1/FitTrackee/pull/152) - Fixes and improvements:
+  - fix dramatiq warning when launching workers w/ script entrypoint
+  - check app config before dropping database, to avoid deleting data on production
+  - remove dotenv warning
+
+In this release 1 issue was closed.
+
+
+## Version 0.5.6 (2022/02/05)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#146](https://github.com/SamR1/FitTrackee/issues/146) - incorrect label on workouts filters
+
+### Pull Requests
+
+* [#145](https://github.com/SamR1/FitTrackee/pull/145) - fix on database models 
+
+
+In this release 1 issue was closed.  
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/installation.html#upgrade))
+
+
+## Version 0.5.5 (2022/01/19)
+
+### Issues Closed
+
+#### New Features
+
+* [#140](https://github.com/SamR1/FitTrackee/issues/140) - Add a fullscreen control to workout map
+* [#138](https://github.com/SamR1/FitTrackee/issues/138) - Add control to reset map to initial position
+* [#135](https://github.com/SamR1/FitTrackee/issues/135) - Start and finish markers
+* [#134](https://github.com/SamR1/FitTrackee/issues/134) - Wind direction
+
+#### Bugs Fixed
+
+* [877fa0f](https://github.com/SamR1/FitTrackee/commit/877fa0faaabc0130402638905fe04f84563eb278) - fix sport icon color (when changed) on calendar on small resolutions
+
+In this release 4 issues were closed.
+
+
+## Version 0.5.4 (2022/01/01)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#131](https://github.com/SamR1/FitTrackee/issues/131) - No workouts displayed on calendar
+
+In this release 1 issue was closed.
+
+
+## Version 0.5.3 (2022/01/01)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#129](https://github.com/SamR1/FitTrackee/issues/129) - Display only active sports when editing a workout
+* [#127](https://github.com/SamR1/FitTrackee/issues/127) - parse_email_url() can't validate a legitimate EMAIL_URI such as "smtp://localhost:25"
+
+In this release 2 issues were closed.
+
+
+## Version 0.5.2 (2021/12/19)
+
+### Issues Closed
+
+#### New Features
+
+* [#123](https://github.com/SamR1/FitTrackee/issues/123) - Allow user to reset preferences for a sport
+* [#121](https://github.com/SamR1/FitTrackee/issues/121) - Add activity : snowshoes
+
+In this release 2 issues were closed.  
+**Note:** This release contains database migration.
+
+
+## Version 0.5.1 (2021/11/30)
+
+### Issues Closed
+
+#### New Features
+
+* [#116](https://github.com/SamR1/FitTrackee/issues/116) - Better UI for Speed and Elevation buttons in the graph of the Workout screen
+* [#115](https://github.com/SamR1/FitTrackee/issues/115) - Add option to download the GPX file of a Workout
+* [#5](https://github.com/SamR1/FitTrackee/issues/5) - Display a chart with average speed
+
+In this release 3 issues were closed.  
+
+
+## Version 0.5.0 (2021/11/14)
+
+### Issues Closed
+
+#### New Features
+
+* [#99](https://github.com/SamR1/FitTrackee/issues/99) - Display workout with imperial units 
+* [#91](https://github.com/SamR1/FitTrackee/issues/91) - Display elevation chart with min and max altitude of workout
+* [#90](https://github.com/SamR1/FitTrackee/issues/90) - Add user sports preferences
+* [#18](https://github.com/SamR1/FitTrackee/issues/18) - Better UI
+
+#### Bugs Fixed
+
+* [#95](https://github.com/SamR1/FitTrackee/issues/95) - Some workouts seem to be missing on statistics chart
+
+#### Misc
+
+* [#104](https://github.com/SamR1/FitTrackee/issues/104) - Switch to AGPLv3 license
+
+### Pull Requests
+
+* [#101](https://github.com/SamR1/FitTrackee/pull/101) - Docker updates for full files 
+* [#100](https://github.com/SamR1/FitTrackee/pull/100) - Add client application in docker for development
+* [#98/#109](https://github.com/SamR1/FitTrackee/pull/109) - Added stopped_speed_threshold to support slow movement
+* [#84/#93](https://github.com/SamR1/FitTrackee/pull/93) - Add elevation data and new sports
+
+In this release 6 issues were closed.  
+**Note:** This release contains database migrations.
+
+Thanks to the contributors:
+- @Fmstrat
+- @paf38
+
+
 ## Version 0.4.9 (2021/07/16)
+
+### Issues Closed
 
 #### New Features
 
@@ -8,14 +165,13 @@
   **Note**: to keep using the default tile server, set environment variable `DEFAULT_STATICMAP` to `True`
 * [#81](https://github.com/SamR1/Fittrackee/issues/81) - display remaining characters in textarea
 
-### Issues Closed
-
 #### Bugs Fixed
 
 * [#82](https://github.com/SamR1/Fittrackee/issues/82) - a user can not modify his birth day
 * [#80](https://github.com/SamR1/Fittrackee/issues/80) - can not save notes with control characters
 
-In this release 4 issue were closed.
+In this release 4 issues were closed.
+
 
 ## Version 0.4.8 (2021/07/03)
 

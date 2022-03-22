@@ -2,12 +2,19 @@ import json
 import os
 import shutil
 from datetime import timedelta
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 import requests
-from flask import Blueprint, Response, current_app, request, send_file
+from flask import (
+    Blueprint,
+    Response,
+    current_app,
+    request,
+    send_from_directory,
+)
 from sqlalchemy import exc
 from werkzeug.exceptions import RequestEntityTooLarge
+from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db
 from fittrackee.responses import (
@@ -50,7 +57,7 @@ MAX_WORKOUTS_PER_PAGE = 100
 
 @workouts_blueprint.route('/workouts', methods=['GET'])
 @authenticate
-def get_workouts(auth_user_id: int) -> Union[Dict, HttpResponse]:
+def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Get workouts for the authenticated user.
 
@@ -165,8 +172,6 @@ def get_workouts(auth_user_id: int) -> Union[Dict, HttpResponse]:
             "status": "success"
         }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
-
     :query integer page: page if using pagination (default: 1)
     :query integer per_page: number of workouts per page
                              (default: 5, max: 100)
@@ -187,17 +192,16 @@ def get_workouts(auth_user_id: int) -> Union[Dict, HttpResponse]:
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 500:
 
     """
     try:
-        user = User.query.filter_by(id=auth_user_id).first()
         params = request.args.copy()
         page = int(params.get('page', 1))
-        date_from, date_to = get_datetime_from_request_args(params, user)
+        date_from, date_to = get_datetime_from_request_args(params, auth_user)
         distance_from = params.get('distance_from')
         distance_to = params.get('distance_to')
         duration_from = params.get('duration_from')
@@ -206,23 +210,26 @@ def get_workouts(auth_user_id: int) -> Union[Dict, HttpResponse]:
         ave_speed_to = params.get('ave_speed_to')
         max_speed_from = params.get('max_speed_from')
         max_speed_to = params.get('max_speed_to')
-        order = params.get('order')
+        order_by = params.get('order_by', 'workout_date')
+        order = params.get('order', 'desc')
         sport_id = params.get('sport_id')
         per_page = int(params.get('per_page', DEFAULT_WORKOUTS_PER_PAGE))
         if per_page > MAX_WORKOUTS_PER_PAGE:
             per_page = MAX_WORKOUTS_PER_PAGE
-        workouts = (
+        workouts_pagination = (
             Workout.query.filter(
-                Workout.user_id == auth_user_id,
+                Workout.user_id == auth_user.id,
                 Workout.sport_id == sport_id if sport_id else True,
                 Workout.workout_date >= date_from if date_from else True,
                 Workout.workout_date < date_to + timedelta(seconds=1)
                 if date_to
                 else True,
-                Workout.distance >= int(distance_from)
+                Workout.distance >= float(distance_from)
                 if distance_from
                 else True,
-                Workout.distance <= int(distance_to) if distance_to else True,
+                Workout.distance <= float(distance_to)
+                if distance_to
+                else True,
                 Workout.moving >= convert_in_duration(duration_from)
                 if duration_from
                 else True,
@@ -243,17 +250,45 @@ def get_workouts(auth_user_id: int) -> Union[Dict, HttpResponse]:
                 else True,
             )
             .order_by(
+                Workout.ave_speed.asc()
+                if order_by == 'ave_speed' and order == 'asc'
+                else True,
+                Workout.ave_speed.desc()
+                if order_by == 'ave_speed' and order == 'desc'
+                else True,
+                Workout.distance.asc()
+                if order_by == 'distance' and order == 'asc'
+                else True,
+                Workout.distance.desc()
+                if order_by == 'distance' and order == 'desc'
+                else True,
+                Workout.moving.asc()
+                if order_by == 'duration' and order == 'asc'
+                else True,
+                Workout.moving.desc()
+                if order_by == 'duration' and order == 'desc'
+                else True,
                 Workout.workout_date.asc()
-                if order == 'asc'
-                else Workout.workout_date.desc()
+                if order_by == 'workout_date' and order == 'asc'
+                else True,
+                Workout.workout_date.desc()
+                if order_by == 'workout_date' and order == 'desc'
+                else True,
             )
             .paginate(page, per_page, False)
-            .items
         )
+        workouts = workouts_pagination.items
         return {
             'status': 'success',
             'data': {
                 'workouts': [workout.serialize(params) for workout in workouts]
+            },
+            'pagination': {
+                'has_next': workouts_pagination.has_next,
+                'has_prev': workouts_pagination.has_prev,
+                'page': workouts_pagination.page,
+                'pages': workouts_pagination.pages,
+                'total': workouts_pagination.total,
             },
         }
     except Exception as e:
@@ -265,7 +300,7 @@ def get_workouts(auth_user_id: int) -> Union[Dict, HttpResponse]:
 )
 @authenticate
 def get_workout(
-    auth_user_id: int, workout_short_id: str
+    auth_user: User, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
     Get an workout
@@ -336,17 +371,16 @@ def get_workout(
           "status": "not found"
         }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param string workout_short_id: workout short id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
-    :statuscode 403: You do not have permissions.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403: you do not have permissions
     :statuscode 404: workout not found
 
     """
@@ -355,7 +389,7 @@ def get_workout(
     if not workout:
         return DataNotFoundErrorResponse('workouts')
 
-    error_response = can_view_workout(auth_user_id, workout.user_id)
+    error_response = can_view_workout(auth_user.id, workout.user_id)
     if error_response:
         return error_response
 
@@ -366,7 +400,7 @@ def get_workout(
 
 
 def get_workout_data(
-    auth_user_id: int,
+    auth_user: User,
     workout_short_id: str,
     data_type: str,
     segment_id: Optional[int] = None,
@@ -377,15 +411,15 @@ def get_workout_data(
     if not workout:
         return DataNotFoundErrorResponse(
             data_type=data_type,
-            message=f'Workout not found (id: {workout_short_id})',
+            message=f'workout not found (id: {workout_short_id})',
         )
 
-    error_response = can_view_workout(auth_user_id, workout.user_id)
+    error_response = can_view_workout(auth_user.id, workout.user_id)
     if error_response:
         return error_response
     if not workout.gpx or workout.gpx == '':
         return NotFoundErrorResponse(
-            f'No gpx file for this workout (id: {workout_short_id})'
+            f'no gpx file for this workout (id: {workout_short_id})'
         )
 
     try:
@@ -430,7 +464,7 @@ def get_workout_data(
 )
 @authenticate
 def get_workout_gpx(
-    auth_user_id: int, workout_short_id: str
+    auth_user: User, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
     Get gpx file for an workout displayed on map with Leaflet
@@ -457,23 +491,22 @@ def get_workout_gpx(
         "status": "success"
       }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param string workout_short_id: workout short id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404:
         - workout not found
         - no gpx file for this workout
     :statuscode 500:
 
     """
-    return get_workout_data(auth_user_id, workout_short_id, 'gpx')
+    return get_workout_data(auth_user, workout_short_id, 'gpx')
 
 
 @workouts_blueprint.route(
@@ -481,7 +514,7 @@ def get_workout_gpx(
 )
 @authenticate
 def get_workout_chart_data(
-    auth_user_id: int, workout_short_id: str
+    auth_user: User, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
     Get chart data from an workout gpx file, to display it with Recharts
@@ -527,23 +560,22 @@ def get_workout_chart_data(
         "status": "success"
       }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param string workout_short_id: workout short id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404:
         - workout not found
         - no gpx file for this workout
     :statuscode 500:
 
     """
-    return get_workout_data(auth_user_id, workout_short_id, 'chart_data')
+    return get_workout_data(auth_user, workout_short_id, 'chart_data')
 
 
 @workouts_blueprint.route(
@@ -552,7 +584,7 @@ def get_workout_chart_data(
 )
 @authenticate
 def get_segment_gpx(
-    auth_user_id: int, workout_short_id: str, segment_id: int
+    auth_user: User, workout_short_id: str, segment_id: int
 ) -> Union[Dict, HttpResponse]:
     """
     Get gpx file for an workout segment displayed on map with Leaflet
@@ -579,7 +611,6 @@ def get_segment_gpx(
         "status": "success"
       }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param string workout_short_id: workout short id
     :param integer segment_id: segment id
 
@@ -588,14 +619,14 @@ def get_segment_gpx(
     :statuscode 200: success
     :statuscode 400: no gpx file for this workout
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404: workout not found
     :statuscode 500:
 
     """
-    return get_workout_data(auth_user_id, workout_short_id, 'gpx', segment_id)
+    return get_workout_data(auth_user, workout_short_id, 'gpx', segment_id)
 
 
 @workouts_blueprint.route(
@@ -605,7 +636,7 @@ def get_segment_gpx(
 )
 @authenticate
 def get_segment_chart_data(
-    auth_user_id: int, workout_short_id: str, segment_id: int
+    auth_user: User, workout_short_id: str, segment_id: int
 ) -> Union[Dict, HttpResponse]:
     """
     Get chart data from an workout gpx file, to display it with Recharts
@@ -651,7 +682,6 @@ def get_segment_chart_data(
         "status": "success"
       }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param string workout_short_id: workout short id
     :param integer segment_id: segment id
 
@@ -660,20 +690,78 @@ def get_segment_chart_data(
     :statuscode 200: success
     :statuscode 400: no gpx file for this workout
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404: workout not found
     :statuscode 500:
 
     """
     return get_workout_data(
-        auth_user_id, workout_short_id, 'chart_data', segment_id
+        auth_user, workout_short_id, 'chart_data', segment_id
+    )
+
+
+@workouts_blueprint.route(
+    '/workouts/<string:workout_short_id>/gpx/download', methods=['GET']
+)
+@authenticate
+def download_workout_gpx(
+    auth_user: User, workout_short_id: str
+) -> Union[HttpResponse, Response]:
+    """
+    Download gpx file
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/gpx/download HTTP/1.1
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/gpx+xml
+
+    :param string workout_short_id: workout short id
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 404:
+        - workout not found
+        - no gpx file for workout
+    """
+    workout_uuid = decode_short_id(workout_short_id)
+    workout = Workout.query.filter_by(
+        uuid=workout_uuid, user_id=auth_user.id
+    ).first()
+    if not workout:
+        return DataNotFoundErrorResponse(
+            data_type='workout',
+            message=f'workout not found (id: {workout_short_id})',
+        )
+
+    if workout.gpx is None:
+        return DataNotFoundErrorResponse(
+            data_type='gpx',
+            message=f'no gpx file for workout (id: {workout_short_id})',
+        )
+
+    return send_from_directory(
+        current_app.config['UPLOAD_FOLDER'],
+        workout.gpx,
+        mimetype='application/gpx+xml',
+        as_attachment=True,
     )
 
 
 @workouts_blueprint.route('/workouts/map/<map_id>', methods=['GET'])
-def get_map(map_id: int) -> Any:
+def get_map(map_id: int) -> Union[HttpResponse, Response]:
     """
     Get map image for workouts with gpx
 
@@ -695,9 +783,9 @@ def get_map(map_id: int) -> Any:
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404: map does not exist
     :statuscode 500:
 
@@ -706,8 +794,10 @@ def get_map(map_id: int) -> Any:
         workout = Workout.query.filter_by(map_id=map_id).first()
         if not workout:
             return NotFoundErrorResponse('Map does not exist.')
-        absolute_map_filepath = get_absolute_file_path(workout.map)
-        return send_file(absolute_map_filepath)
+        return send_from_directory(
+            current_app.config['UPLOAD_FOLDER'],
+            workout.map,
+        )
     except Exception as e:
         return handle_error_and_return_response(e)
 
@@ -740,7 +830,12 @@ def get_map_tile(s: str, z: str, x: str, y: str) -> Tuple[Response, int]:
     Status codes are status codes returned by tile server
 
     """
-    url = current_app.config['TILE_SERVER']['URL'].format(s=s, z=z, x=x, y=y)
+    url = current_app.config['TILE_SERVER']['URL'].format(
+        s=secure_filename(s),
+        z=secure_filename(z),
+        x=secure_filename(x),
+        y=secure_filename(y),
+    )
     headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:88.0)'}
     response = requests.get(url, headers=headers)
     return (
@@ -754,7 +849,7 @@ def get_map_tile(s: str, z: str, x: str, y: str) -> Tuple[Response, int]:
 
 @workouts_blueprint.route('/workouts', methods=['POST'])
 @authenticate
-def post_workout(auth_user_id: int) -> Union[Tuple[Dict, int], HttpResponse]:
+def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Post an workout with a gpx file
 
@@ -846,8 +941,6 @@ def post_workout(auth_user_id: int) -> Union[Tuple[Dict, int], HttpResponse]:
           "status": "success"
         }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
-
     :form file: gpx file (allowed extensions: .gpx, .zip)
     :form data: sport id and notes (example: ``{"sport_id": 1, "notes": ""}``)
 
@@ -855,15 +948,15 @@ def post_workout(auth_user_id: int) -> Union[Tuple[Dict, int], HttpResponse]:
 
     :statuscode 201: workout created
     :statuscode 400:
-        - Invalid payload.
-        - No file part.
-        - No selected file.
-        - File extension not allowed.
+        - invalid payload
+        - no file part
+        - no selected file
+        - file extension not allowed
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
-    :statuscode 413: Error during picture update: file size exceeds 1.0MB.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 413: error during picture update: file size exceeds 1.0MB
     :statuscode 500:
 
     """
@@ -885,7 +978,7 @@ def post_workout(auth_user_id: int) -> Union[Tuple[Dict, int], HttpResponse]:
 
     workout_file = request.files['file']
     upload_dir = os.path.join(
-        current_app.config['UPLOAD_FOLDER'], 'workouts', str(auth_user_id)
+        current_app.config['UPLOAD_FOLDER'], 'workouts', str(auth_user.id)
     )
     folders = {
         'extract_dir': os.path.join(upload_dir, 'extract'),
@@ -894,7 +987,7 @@ def post_workout(auth_user_id: int) -> Union[Tuple[Dict, int], HttpResponse]:
 
     try:
         new_workouts = process_files(
-            auth_user_id, workout_data, workout_file, folders
+            auth_user, workout_data, workout_file, folders
         )
         if len(new_workouts) > 0:
             response_object = {
@@ -923,7 +1016,7 @@ def post_workout(auth_user_id: int) -> Union[Tuple[Dict, int], HttpResponse]:
 @workouts_blueprint.route('/workouts/no_gpx', methods=['POST'])
 @authenticate
 def post_workout_no_gpx(
-    auth_user_id: int,
+    auth_user: User,
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Post an workout without gpx file
@@ -1016,8 +1109,6 @@ def post_workout_no_gpx(
           "status": "success"
         }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
-
     :<json string workout_date: workout date  (format: ``%Y-%m-%d %H:%M``)
     :<json float distance: workout distance in km
     :<json integer duration: workout duration in seconds
@@ -1030,9 +1121,9 @@ def post_workout_no_gpx(
     :statuscode 201: workout created
     :statuscode 400: invalid payload
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 500:
 
     """
@@ -1047,8 +1138,7 @@ def post_workout_no_gpx(
         return InvalidPayloadErrorResponse()
 
     try:
-        user = User.query.filter_by(id=auth_user_id).first()
-        new_workout = create_workout(user, workout_data)
+        new_workout = create_workout(auth_user, workout_data)
         db.session.add(new_workout)
         db.session.commit()
 
@@ -1074,7 +1164,7 @@ def post_workout_no_gpx(
 )
 @authenticate
 def update_workout(
-    auth_user_id: int, workout_short_id: str
+    auth_user: User, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
     Update an workout
@@ -1167,7 +1257,6 @@ def update_workout(
           "status": "success"
         }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param string workout_short_id: workout short id
 
     :<json string workout_date: workout date  (format: ``%Y-%m-%d %H:%M``)
@@ -1185,9 +1274,9 @@ def update_workout(
     :statuscode 200: workout updated
     :statuscode 400: invalid payload
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404: workout not found
     :statuscode 500:
 
@@ -1202,11 +1291,11 @@ def update_workout(
         if not workout:
             return DataNotFoundErrorResponse('workouts')
 
-        response_object = can_view_workout(auth_user_id, workout.user_id)
+        response_object = can_view_workout(auth_user.id, workout.user_id)
         if response_object:
             return response_object
 
-        workout = edit_workout(workout, workout_data, auth_user_id)
+        workout = edit_workout(workout, workout_data, auth_user)
         db.session.commit()
         return {
             'status': 'success',
@@ -1222,7 +1311,7 @@ def update_workout(
 )
 @authenticate
 def delete_workout(
-    auth_user_id: int, workout_short_id: str
+    auth_user: User, workout_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Delete an workout
@@ -1241,18 +1330,17 @@ def delete_workout(
       HTTP/1.1 204 NO CONTENT
       Content-Type: application/json
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param string workout_short_id: workout short id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 204: workout deleted
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404: workout not found
-    :statuscode 500: Error. Please try again or contact the administrator.
+    :statuscode 500: error, please try again or contact the administrator
 
     """
 
@@ -1261,7 +1349,7 @@ def delete_workout(
         workout = Workout.query.filter_by(uuid=workout_uuid).first()
         if not workout:
             return DataNotFoundErrorResponse('workouts')
-        error_response = can_view_workout(auth_user_id, workout.user_id)
+        error_response = can_view_workout(auth_user.id, workout.user_id)
         if error_response:
             return error_response
 

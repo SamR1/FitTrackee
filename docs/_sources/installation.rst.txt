@@ -1,7 +1,7 @@
 Installation
 ############
 
-This application is written in Python (API) and Javascript (client):
+This application is written in Python (API) and Typescript (client):
 
 - API:
     - Flask
@@ -10,11 +10,11 @@ This application is written in Python (API) and Javascript (client):
     - `python-forecast.io <https://github.com/ZeevG/python-forecast.io>`_ to fetch weather data from `Dark Sky <https://darksky.net>`__ (former forecast.io)
     - `dramatiq <https://flask-dramatiq.readthedocs.io/en/latest/>`_ for task queue
 - Client:
-    - React/Redux
+    - Vue3/Vuex
     - `Leaflet <https://leafletjs.com/>`__ to display map
-    - `Recharts <https://github.com/recharts/recharts>`__ to display charts with elevation and speed
+    - `Chart.js <https://www.chartjs.org/>`__ to display charts with elevation and speed
 
-Sports and weather icons are made by `Freepik <https://www.freepik.com/>`__ from `www.flaticon.com <https://www.flaticon.com/>`__.
+Logo, sports and weather icons are made by `Freepik <https://www.freepik.com/>`__ from `www.flaticon.com <https://www.flaticon.com/>`__.
 
 Prerequisites
 ~~~~~~~~~~~~~
@@ -26,7 +26,7 @@ Prerequisites
 -  API key from `Dark Sky <https://darksky.net/dev>`__ [not mandatory]
 -  SMTP provider
 -  `Yarn <https://yarnpkg.com>`__ (for development only)
--  Docker (for development only, to start `MailHog <https://github.com/mailhog/MailHog>`__ or for evaluation purposes)
+-  Docker and Docker Compose (for development or evaluation purposes)
 
 .. note::
     | The following steps describe an installation on Linux systems (tested
@@ -132,6 +132,8 @@ deployment method.
 
     Email URL with credentials, see `Emails <installation.html#emails>`__.
 
+    .. warning::
+        If the email URL is invalid, the application may not start.
 
 .. envvar:: SENDER_EMAIL
 
@@ -191,60 +193,10 @@ deployment method.
     **Dark Sky** API key for weather data (not mandatory).
 
 
-.. envvar:: REACT_APP_API_URL
+.. envvar:: VUE_APP_API_URL
 
     **FitTrackee** API URL, only needed in dev environment.
 
-
-
-Deprecated variables
-^^^^^^^^^^^^^^^^^^^^
-
-.. envvar:: REACT_APP_GPX_LIMIT_IMPORT
-
-    .. deprecated:: 0.3.0 now stored in database
-
-    Maximum number of gpx file in zip archive.
-
-    :default: 10
-
-
-.. envvar:: REACT_APP_MAX_SINGLE_FILE_SIZE
-
-    .. deprecated:: 0.3.0 now stored in database
-
-    Maximum size of a gpx or picture file.
-
-    :default: 1MB
-
-
-.. envvar:: REACT_APP_MAX_ZIP_FILE_SIZE
-
-    .. deprecated:: 0.3.0 now stored in database
-
-    Maximum size of a zip archive.
-
-    :default: 10MB
-
-
-.. envvar:: REACT_APP_ALLOW_REGISTRATION
-
-    .. deprecated:: 0.3.0 now stored in database
-
-    Allows users to register.
-
-    :default: true
-
-
-.. envvar:: REACT_APP_THUNDERFOREST_API_KEY
-
-    .. deprecated:: 0.4.0 see `TILE_SERVER_URL <installation.html#envvar-TILE_SERVER_URL>`__
-
-    ThunderForest API key.
-
-.. warning::
-    | Since FitTrackee 0.3.0, some applications parameters are now stored in database.
-    | Related environment variables are needed to initialize database when upgrading from version prior 0.3.0.
 
 
 Emails
@@ -257,6 +209,11 @@ To send emails, a valid ``EMAIL_URL`` must be provided:
 - with SSL: ``smtp://username:password@smtp.example.com:465/?ssl=True``
 - with STARTTLS: ``smtp://username:password@smtp.example.com:587/?tls=True``
 
+
+.. versionadded:: 0.5.3
+
+| Credentials can be omitted: ``smtp://smtp.example.com:25``.
+| If ``:<port>`` is omitted, the port defaults to 25.
 
 Map tile server
 ^^^^^^^^^^^^^^^
@@ -273,17 +230,17 @@ To keep using **ThunderForest Outdoors**, the configuration is:
 .. note::
     | Check the terms of service of tile provider for map attribution
 
-From PyPI
-~~~~~~~~~
-
-.. note::
-    | Recommended way on production.
+Installation
+~~~~~~~~~~~~
 
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
-Installation
-^^^^^^^^^^^^
+From PyPI
+^^^^^^^^^
+
+.. note::
+    | Recommended way on production.
 
 - Create and activate a virtualenv
 
@@ -312,18 +269,11 @@ For instance, copy and update ``.env`` file from ``.env.example`` and source the
     $ nano .env
     $ source .env
 
-
-- Upgrade database schema
+- Initialize database schema
 
 .. code-block:: bash
 
     $ fittrackee_upgrade_db
-
-- Initialize database
-
-.. code-block:: bash
-
-    $ fittrackee_init_data
 
 - Start the application
 
@@ -340,42 +290,17 @@ For instance, copy and update ``.env`` file from ``.env.example`` and source the
 .. note::
     | To start application and workers with **systemd** service, see `Deployment <installation.html#deployment>`__
 
+- Open http://localhost:3000 and register
 
-Upgrade
-^^^^^^^
+- To set admin rights to the newly created account, use the following command:
 
-.. warning::
-    | Before upgrading, make a backup of all data:
-    | - database (with `pg_dump <https://www.postgresql.org/docs/11/app-pgdump.html>`__ for instance)
-    | - upload directory (see `Environment variables <installation.html#environment-variables>`__)
+.. code:: bash
 
-- Activate the virtualenv
-
-- Upgrade with pip
-
-.. code-block:: bash
-
-    $ pip install -U fittrackee
-
-- Update environment variables if needed and source environment variables file
-
-.. code-block:: bash
-
-    $ nano .env
-    $ source .env
-
-- Upgrade database if needed
-
-.. code-block:: bash
-
-    $ fittrackee_upgrade_db
-
-
-- Restart the application and task queue workers.
+   $ fittrackee_set_admin <username>
 
 
 From sources
-~~~~~~~~~~~~~
+^^^^^^^^^^^^
 
 .. warning::
     | Since FitTrackee 0.2.1, Python packages installation needs Poetry.
@@ -392,10 +317,6 @@ From sources
 
     For other OS, see `Poetry Documentation <https://python-poetry.org/docs/#installation>`__
 
-
-Installation
-^^^^^^^^^^^^
-
 Dev environment
 """""""""""""""
 
@@ -409,7 +330,7 @@ Dev environment
 -  Create **.env** from example and update it
    (see `Environment variables <installation.html#environment-variables>`__).
 
--  Install Python virtualenv, React and all related packages and
+-  Install Python virtualenv, Vue and all related packages and
    initialize the database:
 
 .. code:: bash
@@ -429,8 +350,13 @@ Dev environment
 
    $ make run-workers
 
-Open http://localhost:3000 and log in (the email is ``admin@example.com``
-and the password ``mpwoadmin``) or register
+- Open http://localhost:3000 and register
+
+- To set admin rights to the newly created account, use the following command:
+
+.. code:: bash
+
+   $ make set-admin USERNAME=<username>
 
 
 Production environment
@@ -439,13 +365,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.4.9):
+-  Download the last release (for now, it is the release v0.5.7):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.4.9.tar.gz
-   $ tar -xzf v0.4.9.tar.gz
-   $ mv FitTrackee-0.4.9 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.5.7.tar.gz
+   $ tar -xzf v0.5.7.tar.gz
+   $ mv FitTrackee-0.5.7 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -470,18 +396,54 @@ Production environment
 
    $ make run
 
-Open http://localhost:5000, log in as admin (the email is
-``admin@example.com`` and the password ``mpwoadmin``) and change the
-password
+- Open http://localhost:5000 and register
+
+- To set admin rights to the newly created account, use the following command:
+
+.. code:: bash
+
+   $ make set-admin USERNAME=<username>
+
 
 Upgrade
-^^^^^^^
+~~~~~~~
 
 .. warning::
     | Before upgrading, make a backup of all data:
     | - database (with `pg_dump <https://www.postgresql.org/docs/11/app-pgdump.html>`__ for instance)
     | - upload directory (see `Environment variables <installation.html#environment-variables>`__)
 
+
+From PyPI
+^^^^^^^^^
+
+- Activate the virtualenv
+
+- Upgrade with pip
+
+.. code-block:: bash
+
+    $ pip install -U fittrackee
+
+- Update environment variables if needed and source environment variables file
+
+.. code-block:: bash
+
+    $ nano .env
+    $ source .env
+
+- Upgrade database if needed (see changelog for migrations):
+
+.. code-block:: bash
+
+    $ fittrackee_upgrade_db
+
+
+- Restart the application and task queue workers.
+
+
+From sources
+^^^^^^^^^^^^
 
 Dev environment
 """""""""""""""
@@ -494,11 +456,16 @@ Dev environment
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
 
-- Upgrade packages and database:
+- Upgrade packages:
 
 .. code:: bash
 
    $ make install-dev
+
+- Upgrade database if needed (see changelog for migrations):
+
+.. code:: bash
+
    $ make upgrade-db
 
 - Restart the server:
@@ -520,22 +487,27 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.4.9) and overwrite existing files:
+- Download the last release (for now, it is the release v0.5.7) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.4.9.tar.gz
-   $ tar -xzf v0.4.9.tar.gz
-   $ cp -R FitTrackee-0.4.9/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.5.7.tar.gz
+   $ tar -xzf v0.5.7.tar.gz
+   $ cp -R FitTrackee-0.5.7/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
 
-- Upgrade packages and database:
+- Upgrade packages:
 
 .. code:: bash
 
-   $ make install-python
+   $ make install-dev
+
+- Upgrade database if needed (see changelog for migrations):
+
+.. code:: bash
+
    $ make upgrade-db
 
 - Restart the server and dramatiq workers:
@@ -546,7 +518,7 @@ Prod environment
 
 
 Deployment
-~~~~~~~~~~~~~
+~~~~~~~~~~
 
 There are several ways to start **FitTrackee** web application and task queue
 library.
@@ -634,7 +606,7 @@ Examples (to update depending on your application configuration and given distri
 .. code-block::
 
     server {
-        listen 443 ssl;
+        listen 443 ssl http2;
         server_name example.com;
         ssl_certificate fullchain.pem;
         ssl_certificate_key privkey.pem;
@@ -664,9 +636,12 @@ Examples (to update depending on your application configuration and given distri
 Docker
 ~~~~~~
 
+Installation
+^^^^^^^^^^^^
+
 .. versionadded:: 0.4.4
 
-For evaluation purposes (at least for now), docker files are available,
+For evaluation purposes , docker files are available,
 installing **FitTrackee** from **sources**.
 
 - To install **FitTrackee** with database initialisation and run the application and dramatiq workers:
@@ -677,9 +652,15 @@ installing **FitTrackee** from **sources**.
     $ cd FitTrackee
     $ make docker-build docker-run docker-init
 
-Open http://localhost:5000, log in as admin (the email is `admin@example.com` and the password `mpwoadmin`) or register.
+Open http://localhost:5000 and register.
 
 Open http://localhost:8025 to access `MailHog interface <https://github.com/mailhog/MailHog>`_ (email testing tool)
+
+- To set admin rights to the newly created account, use the following command:
+
+.. code:: bash
+
+   $ make docker-set-admin USERNAME=<username>
 
 - To stop **Fittrackee**:
 
@@ -699,3 +680,26 @@ Open http://localhost:8025 to access `MailHog interface <https://github.com/mail
 .. code-block:: bash
 
     $ make docker-shell
+
+
+Development
+^^^^^^^^^^^
+
+.. versionadded:: 0.5.0
+
+- an additional step is needed to install `fittrackee_client`
+
+.. code-block:: bash
+
+    $ make docker-build-client
+
+- to start **FitTrackee** with client dev tools:
+
+.. code-block:: bash
+
+    $ make docker-serve-client
+
+Open http://localhost:3000
+
+.. note::
+    Some environment variables need to be updated like `UI_URL`

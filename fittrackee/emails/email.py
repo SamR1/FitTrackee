@@ -6,7 +6,7 @@ from email.mime.text import MIMEText
 from typing import Dict, Optional, Type, Union
 
 from flask import Flask
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from .utils_email import parse_email_url
 
@@ -38,7 +38,10 @@ class EmailMessage:
 
 class EmailTemplate:
     def __init__(self, template_directory: str) -> None:
-        self._env = Environment(loader=FileSystemLoader(template_directory))
+        self._env = Environment(
+            autoescape=select_autoescape(['html', 'htm', 'xml']),
+            loader=FileSystemLoader(template_directory),
+        )
 
     def get_content(
         self, template_name: str, lang: str, part: str, data: Dict
@@ -69,7 +72,7 @@ class EmailTemplate:
 class Email:
     def __init__(self, app: Optional[Flask] = None) -> None:
         self.host = 'localhost'
-        self.port = 1025
+        self.port = 25
         self.use_tls = False
         self.use_ssl = False
         self.username = None
@@ -110,7 +113,8 @@ class Email:
         with self.smtp(
             self.host, self.port, **connection_params  # type: ignore
         ) as smtp:
-            smtp.login(self.username, self.password)  # type: ignore
+            if self.username and self.password:
+                smtp.login(self.username, self.password)  # type: ignore
             if self.use_tls:
                 smtp.starttls(context=context)
             smtp.sendmail(self.sender_email, recipient, message.as_string())

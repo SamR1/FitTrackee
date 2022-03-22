@@ -1,9 +1,16 @@
 import logging
 import os
+import shutil
 from importlib import import_module, reload
 from typing import Any
 
-from flask import Flask, Response, render_template, send_file
+from flask import (
+    Flask,
+    Response,
+    render_template,
+    send_file,
+    send_from_directory,
+)
 from flask_bcrypt import Bcrypt
 from flask_dramatiq import Dramatiq
 from flask_migrate import Migrate
@@ -11,6 +18,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from fittrackee.emails.email import Email
 
+VERSION = __version__ = '0.5.7'
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 migrate = Migrate()
@@ -50,16 +58,16 @@ def create_app() -> Flask:
     email_service.init_email(app)
 
     # get configuration from database
-    from .application.models import AppConfig
-    from .application.utils import init_config, update_app_config_from_database
+    from .application.utils import (
+        get_or_init_config,
+        update_app_config_from_database,
+    )
 
     with app.app_context():
         # Note: check if "app_config" table exist to avoid errors when
         # dropping tables on dev environments
         if db.engine.dialect.has_table(db.engine.connect(), 'app_config'):
-            db_app_config = AppConfig.query.one_or_none()
-            if not db_app_config:
-                _, db_app_config = init_config()
+            db_app_config = get_or_init_config()
             update_app_config_from_database(app, db_app_config)
 
     from .application.app_config import config_blueprint  # noqa
@@ -111,14 +119,27 @@ def create_app() -> Flask:
     def catch_all(path: str) -> Any:
         # workaround to serve images (not in static directory)
         if path.startswith('img/'):
-            return send_file(
-                os.path.join(
+            return send_from_directory(
+                directory=os.path.join(
                     app.root_path,  # type: ignore
                     'dist',
-                    path,
-                )
+                ),
+                path=path,
             )
         else:
             return render_template('index.html')
+
+    @app.cli.command('drop-db')
+    def drop_db() -> None:
+        """Empty database and delete uploaded files for dev environments."""
+        if app_settings == 'fittrackee.config.ProductionConfig':
+            print('This is a production server, aborting!')
+            return
+        db.engine.execute("DROP TABLE IF EXISTS alembic_version;")
+        db.drop_all()
+        db.session.commit()
+        print('Database dropped.')
+        shutil.rmtree(app.config['UPLOAD_FOLDER'], ignore_errors=True)
+        print('Uploaded files deleted.')
 
     return app

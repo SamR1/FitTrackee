@@ -1,0 +1,8 @@
+{
+  "UNKNOWN": "Error. Please try again or contact the administrator.",
+  "APP_ERROR": "The application seems encounter some issues.<br />Please try later or contact the administrator.",
+  "NOT_FOUND": {
+    "PAGE": "Page not found",
+    "WORKOUT": "Workout not found"
+  }
+}

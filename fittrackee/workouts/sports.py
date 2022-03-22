@@ -11,7 +11,7 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.users.decorators import authenticate, authenticate_as_admin
-from fittrackee.users.models import User
+from fittrackee.users.models import User, UserSportPreference
 
 from .models import Sport
 
@@ -20,7 +20,7 @@ sports_blueprint = Blueprint('sports', __name__)
 
 @sports_blueprint.route('/sports', methods=['GET'])
 @authenticate
-def get_sports(auth_user_id: int) -> Dict:
+def get_sports(auth_user: User) -> Dict:
     """
     Get all sports
 
@@ -44,40 +44,52 @@ def get_sports(auth_user_id: int) -> Dict:
         "data": {
           "sports": [
             {
+              "color": null,
               "id": 1,
-              "img": "/img/sports/cycling-sport.png",
               "is_active": true,
-              "label": "Cycling (Sport)"
+              "is_active_for_user": true,
+              "label": "Cycling (Sport)",
+              "stopped_speed_threshold": 1
             },
             {
+              "color": null,
               "id": 2,
-              "img": "/img/sports/cycling-transport.png",
               "is_active": true,
-              "label": "Cycling (Transport)"
+              "is_active_for_user": true,
+              "label": "Cycling (Transport)",
+              "stopped_speed_threshold": 1
             },
             {
+              "color": null,
               "id": 3,
-              "img": "/img/sports/hiking.png",
               "is_active": true,
-              "label": "Hiking"
+              "is_active_for_user": true,
+              "label": "Hiking",
+              "stopped_speed_threshold": 0.1
             },
             {
+              "color": null,
               "id": 4,
-              "img": "/img/sports/mountain-biking.png",
               "is_active": true,
-              "label": "Mountain Biking"
+              "is_active_for_user": true,
+              "label": "Mountain Biking",
+              "stopped_speed_threshold": 1
             },
             {
+              "color": null,
               "id": 5,
-              "img": "/img/sports/running.png",
               "is_active": true,
-              "label": "Running"
+              "is_active_for_user": true,
+              "label": "Running",
+              "stopped_speed_threshold": 0.1
             },
             {
+              "color": null,
               "id": 6,
-              "img": "/img/sports/walking.png",
               "is_active": true,
-              "label": "Walking"
+              "is_active_for_user": true,
+              "label": "Walking",
+              "stopped_speed_threshold": 0.1
             }
           ]
         },
@@ -95,74 +107,96 @@ def get_sports(auth_user_id: int) -> Dict:
         "data": {
           "sports": [
             {
+              "color": null,
               "has_workouts": true,
               "id": 1,
-              "img": "/img/sports/cycling-sport.png",
               "is_active": true,
-              "label": "Cycling (Sport)"
+              "is_active_for_user": true,
+              "label": "Cycling (Sport)",
+              "stopped_speed_threshold": 1
             },
             {
+              "color": null,
               "has_workouts": false,
               "id": 2,
-              "img": "/img/sports/cycling-transport.png",
               "is_active": true,
-              "label": "Cycling (Transport)"
+              "is_active_for_user": true,
+              "label": "Cycling (Transport)",
+              "stopped_speed_threshold": 1
             },
             {
+              "color": null,
               "has_workouts": false,
               "id": 3,
-              "img": "/img/sports/hiking.png",
               "is_active": true,
-              "label": "Hiking"
+              "is_active_for_user": true,
+              "label": "Hiking",
+              "stopped_speed_threshold": 0.1
             },
             {
+              "color": null,
               "has_workouts": false,
               "id": 4,
-              "img": "/img/sports/mountain-biking.png",
               "is_active": true,
-              "label": "Mountain Biking"
+              "is_active_for_user": true,
+              "label": "Mountain Biking",
+              "stopped_speed_threshold": 1
             },
             {
+              "color": null,
               "has_workouts": false,
               "id": 5,
-              "img": "/img/sports/running.png",
               "is_active": true,
-              "label": "Running"
+              "is_active_for_user": true,
+              "label": "Running",
+              "stopped_speed_threshold": 0.1
             },
             {
+              "color": null,
               "has_workouts": false,
               "id": 6,
-              "img": "/img/sports/walking.png",
               "is_active": true,
-              "label": "Walking"
+              "is_active_for_user": true,
+              "label": "Walking",
+              "stopped_speed_threshold": 0.1
             }
           ]
         },
         "status": "success"
       }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
-
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
 
     """
-    user = User.query.filter_by(id=int(auth_user_id)).first()
     sports = Sport.query.order_by(Sport.id).all()
+    sports_data = []
+    for sport in sports:
+        sport_preferences = UserSportPreference.query.filter_by(
+            user_id=auth_user.id, sport_id=sport.id
+        ).first()
+        sports_data.append(
+            sport.serialize(
+                is_admin=auth_user.admin,
+                sport_preferences=sport_preferences.serialize()
+                if sport_preferences
+                else None,
+            )
+        )
     return {
         'status': 'success',
-        'data': {'sports': [sport.serialize(user.admin) for sport in sports]},
+        'data': {'sports': sports_data},
     }
 
 
 @sports_blueprint.route('/sports/<int:sport_id>', methods=['GET'])
 @authenticate
-def get_sport(auth_user_id: int, sport_id: int) -> Union[Dict, HttpResponse]:
+def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
     """
     Get a sport
 
@@ -186,10 +220,12 @@ def get_sport(auth_user_id: int, sport_id: int) -> Union[Dict, HttpResponse]:
         "data": {
           "sports": [
             {
+              "color": null,
               "id": 1,
-              "img": "/img/sports/cycling-sport.png",
               "is_active": true,
-              "label": "Cycling (Sport)"
+              "is_active_for_user": true,
+              "label": "Cycling (Sport)",
+              "stopped_speed_threshold": 1
             }
           ]
         },
@@ -207,11 +243,13 @@ def get_sport(auth_user_id: int, sport_id: int) -> Union[Dict, HttpResponse]:
         "data": {
           "sports": [
             {
+              "color": null,
               "has_workouts": false,
               "id": 1,
-              "img": "/img/sports/cycling-sport.png",
               "is_active": true,
-              "label": "Cycling (Sport)"
+              "is_active_for_user": true,
+              "label": "Cycling (Sport)",
+              "stopped_speed_threshold": 1
             }
           ]
         },
@@ -232,34 +270,42 @@ def get_sport(auth_user_id: int, sport_id: int) -> Union[Dict, HttpResponse]:
         "status": "not found"
       }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param integer sport_id: sport id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: success
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
     :statuscode 404: sport not found
 
     """
-    user = User.query.filter_by(id=int(auth_user_id)).first()
     sport = Sport.query.filter_by(id=sport_id).first()
     if sport:
+        sport_preferences = UserSportPreference.query.filter_by(
+            user_id=auth_user.id, sport_id=sport.id
+        ).first()
         return {
             'status': 'success',
-            'data': {'sports': [sport.serialize(user.admin)]},
+            'data': {
+                'sports': [
+                    sport.serialize(
+                        is_admin=auth_user.admin,
+                        sport_preferences=sport_preferences.serialize()
+                        if sport_preferences
+                        else None,
+                    )
+                ]
+            },
         }
     return DataNotFoundErrorResponse('sports')
 
 
 @sports_blueprint.route('/sports/<int:sport_id>', methods=['PATCH'])
 @authenticate_as_admin
-def update_sport(
-    auth_user_id: int, sport_id: int
-) -> Union[Dict, HttpResponse]:
+def update_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
     """
     Update a sport
     Authenticated user must be an admin
@@ -284,11 +330,13 @@ def update_sport(
         "data": {
           "sports": [
             {
+              "color": null,
               "has_workouts": false,
               "id": 1,
-              "img": "/img/sports/cycling-sport.png",
               "is_active": false,
-              "label": "Cycling (Sport)"
+              "is_active_for_user": false,
+              "label": "Cycling (Sport)",
+              "stopped_speed_threshold": 1
             }
           ]
         },
@@ -309,7 +357,6 @@ def update_sport(
         "status": "not found"
       }
 
-    :param integer auth_user_id: authenticate user id (from JSON Web Token)
     :param integer sport_id: sport id
 
     :<json string is_active: sport active status
@@ -319,10 +366,10 @@ def update_sport(
     :statuscode 200: sport updated
     :statuscode 400: invalid payload
     :statuscode 401:
-        - Provide a valid auth token.
-        - Signature expired. Please log in again.
-        - Invalid token. Please log in again.
-    :statuscode 403: You do not have permissions.
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403: you do not have permissions
     :statuscode 404: sport not found
     :statuscode 500:
 
@@ -338,9 +385,21 @@ def update_sport(
 
         sport.is_active = sport_data.get('is_active')
         db.session.commit()
+        sport_preferences = UserSportPreference.query.filter_by(
+            user_id=auth_user.id, sport_id=sport.id
+        ).first()
         return {
             'status': 'success',
-            'data': {'sports': [sport.serialize(True)]},
+            'data': {
+                'sports': [
+                    sport.serialize(
+                        is_admin=auth_user.admin,
+                        sport_preferences=sport_preferences.serialize()
+                        if sport_preferences
+                        else None,
+                    )
+                ]
+            },
         }
 
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:

@@ -92,3 +92,9 @@ dl.field-list > dt {
   height: 65px;
   position: absolute;
 }
+
+
+img {
+  border: 1px solid #cecdcd;
+  margin: 5px 0;
+}

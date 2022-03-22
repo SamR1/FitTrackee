@@ -70,13 +70,17 @@ class Sport(BaseModel):
     __tablename__ = 'sports'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     label = db.Column(db.String(50), unique=True, nullable=False)
-    img = db.Column(db.String(255), unique=True, nullable=True)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
+    stopped_speed_threshold = db.Column(db.Float, default=1.0, nullable=False)
     workouts = db.relationship(
-        'Workout', lazy=True, backref=db.backref('sports', lazy='joined')
+        'Workout',
+        lazy=True,
+        backref=db.backref('sport', lazy='joined', single_parent=True),
     )
     records = db.relationship(
-        'Record', lazy=True, backref=db.backref('sports', lazy='joined')
+        'Record',
+        lazy=True,
+        backref=db.backref('sport', lazy='joined', single_parent=True),
     )
 
     def __repr__(self) -> str:
@@ -85,12 +89,30 @@ class Sport(BaseModel):
     def __init__(self, label: str) -> None:
         self.label = label
 
-    def serialize(self, is_admin: Optional[bool] = False) -> Dict:
+    def serialize(
+        self,
+        is_admin: Optional[bool] = False,
+        sport_preferences: Optional[Dict] = None,
+    ) -> Dict:
         serialized_sport = {
             'id': self.id,
             'label': self.label,
-            'img': self.img,
             'is_active': self.is_active,
+            'is_active_for_user': (
+                self.is_active
+                if sport_preferences is None
+                else (sport_preferences['is_active'] and self.is_active)
+            ),
+            'color': (
+                None
+                if sport_preferences is None
+                else sport_preferences['color']
+            ),
+            'stopped_speed_threshold': (
+                self.stopped_speed_threshold
+                if sport_preferences is None
+                else sport_preferences['stopped_speed_threshold']
+            ),
         }
         if is_admin:
             serialized_sport['has_workouts'] = len(self.workouts) > 0
@@ -106,9 +128,11 @@ class Workout(BaseModel):
         unique=True,
         nullable=False,
     )
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(
+        db.Integer, db.ForeignKey('users.id'), index=True, nullable=False
+    )
     sport_id = db.Column(
-        db.Integer, db.ForeignKey('sports.id'), nullable=False
+        db.Integer, db.ForeignKey('sports.id'), index=True, nullable=False
     )
     title = db.Column(db.String(255), nullable=True)
     gpx = db.Column(db.String(255), nullable=True)
@@ -116,7 +140,7 @@ class Workout(BaseModel):
     modification_date = db.Column(
         db.DateTime, onupdate=datetime.datetime.utcnow
     )
-    workout_date = db.Column(db.DateTime, nullable=False)
+    workout_date = db.Column(db.DateTime, index=True, nullable=False)
     duration = db.Column(db.Interval, nullable=False)
     pauses = db.Column(db.Interval, nullable=True)
     moving = db.Column(db.Interval, nullable=True)
@@ -129,7 +153,7 @@ class Workout(BaseModel):
     ave_speed = db.Column(db.Numeric(6, 2), nullable=True)  # km/h
     bounds = db.Column(postgresql.ARRAY(db.Float), nullable=True)
     map = db.Column(db.String(255), nullable=True)
-    map_id = db.Column(db.String(50), nullable=True)
+    map_id = db.Column(db.String(50), index=True, nullable=True)
     weather_start = db.Column(JSON, nullable=True)
     weather_end = db.Column(JSON, nullable=True)
     notes = db.Column(db.String(500), nullable=True)
@@ -137,17 +161,17 @@ class Workout(BaseModel):
         'WorkoutSegment',
         lazy=True,
         cascade='all, delete',
-        backref=db.backref('workouts', lazy='joined', single_parent=True),
+        backref=db.backref('workout', lazy='joined', single_parent=True),
     )
     records = db.relationship(
         'Record',
         lazy=True,
         cascade='all, delete',
-        backref=db.backref('workouts', lazy='joined', single_parent=True),
+        backref=db.backref('workout', lazy='joined', single_parent=True),
     )
 
     def __str__(self) -> str:
-        return f'<Workout \'{self.sports.label}\' - {self.workout_date}>'
+        return f'<Workout \'{self.sport.label}\' - {self.workout_date}>'
 
     def __init__(
         self,
@@ -193,10 +217,12 @@ class Workout(BaseModel):
                 <= datetime.datetime.strptime(date_to, '%Y-%m-%d')
                 if date_to
                 else True,
-                Workout.distance >= int(distance_from)
+                Workout.distance >= float(distance_from)
                 if distance_from
                 else True,
-                Workout.distance <= int(distance_to) if distance_to else True,
+                Workout.distance <= float(distance_to)
+                if distance_to
+                else True,
                 Workout.duration >= convert_in_duration(duration_from)
                 if duration_from
                 else True,
@@ -233,10 +259,12 @@ class Workout(BaseModel):
                 <= datetime.datetime.strptime(date_to, '%Y-%m-%d')
                 if date_to
                 else True,
-                Workout.distance >= int(distance_from)
+                Workout.distance >= float(distance_from)
                 if distance_from
                 else True,
-                Workout.distance <= int(distance_to) if distance_to else True,
+                Workout.distance <= float(distance_to)
+                if distance_to
+                else True,
                 Workout.duration >= convert_in_duration(duration_from)
                 if duration_from
                 else True,
@@ -426,7 +454,7 @@ class Record(BaseModel):
 
     def __str__(self) -> str:
         return (
-            f'<Record {self.sports.label} - '
+            f'<Record {self.sport.label} - '
             f'{self.record_type} - '
             f"{self.workout_date.strftime('%Y-%m-%d')}>"
         )
@@ -479,7 +507,7 @@ def on_record_delete(
 ) -> None:
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session: Session, context: Any) -> None:
-        workout = old_record.workouts
+        workout = old_record.workout
         new_records = Workout.get_user_workout_records(
             workout.user_id, workout.sport_id
         )

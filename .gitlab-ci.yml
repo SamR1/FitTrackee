@@ -16,6 +16,7 @@ services:
     alias: postgres
 
 stages:
+  - lint
   - tests
   - selenium
 
@@ -28,15 +29,32 @@ stages:
   script:
     - pytest fittrackee -p no:warnings --cov fittrackee --cov-report term-missing
 
-lint:
+
+.javascript:
+  stage: tests
+  before_script:
+    - apt-get update && apt-get install -y nodejs npm
+    - npm install --global yarn
+    - cd fittrackee_client
+    - yarn install
+
+python-lint:
+  stage: lint
   extends: .python
   script:
     - pytest --flake8 --isort --black -m "flake8 or isort or black" fittrackee e2e --ignore=fittrackee/migrations
 
-type-check:
+python-type-check:
+  stage: lint
   extends: .python
   script:
     - mypy fittrackee
+
+eslint:
+  stage: lint
+  extends: .javascript
+  script:
+    - yarn lint
 
 python-3.7:
   extends: .python
@@ -48,6 +66,20 @@ python-3.8:
 
 python-3.9:
   extends: .python
+
+python-3.10:
+  extends: .python
+  image: python:3.10
+
+typescript:
+  stage: tests
+  before_script:
+    - apt-get update && apt-get install -y nodejs npm
+    - npm install --global yarn
+    - cd fittrackee_client
+    - yarn install
+  script:
+    - yarn test:unit
 
 firefox:
   stage: selenium
@@ -61,7 +93,6 @@ firefox:
     - poetry config virtualenvs.create false
     - poetry install --no-interaction --quiet
     - flask db upgrade --directory fittrackee/migrations
-    - flask init-data
     - setsid nohup flask run --with-threads -h 0.0.0.0 -p 5000 >> nohup.out 2>&1 &
     - export TEST_APP_URL=http://$(hostname --ip-address):5000
     - sleep 5

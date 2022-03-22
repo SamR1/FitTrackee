@@ -1,42 +1,28 @@
-import os
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 from flask import Flask
 
 from fittrackee import db
-from fittrackee.users.models import User
 
 from .models import AppConfig
 
 MAX_FILE_SIZE = 1 * 1024 * 1024  # 1MB
 
 
-def init_config() -> Tuple[bool, AppConfig]:
+def get_or_init_config() -> AppConfig:
     """
-    init application configuration if not existing in database
-
-    Note: get some configuration values from env variables
-    (for FitTrackee versions prior to v0.3.0)
+    Init application configuration.
     """
     existing_config = AppConfig.query.one_or_none()
-    nb_users = User.query.count()
-    if not existing_config:
-        config = AppConfig()
-        config.max_users = (
-            nb_users
-            if os.getenv('REACT_APP_ALLOW_REGISTRATION') == "false"
-            else 0
-        )
-        config.max_single_file_size = os.environ.get(
-            'REACT_APP_MAX_SINGLE_FILE_SIZE', MAX_FILE_SIZE
-        )
-        config.max_zip_file_size = os.environ.get(
-            'REACT_APP_MAX_ZIP_FILE_SIZE', MAX_FILE_SIZE * 10
-        )
-        db.session.add(config)
-        db.session.commit()
-        return True, config
-    return False, existing_config
+    if existing_config:
+        return existing_config
+    config = AppConfig()
+    config.max_users = 0  # no limitation
+    config.max_single_file_size = MAX_FILE_SIZE
+    config.max_zip_file_size = MAX_FILE_SIZE * 10
+    db.session.add(config)
+    db.session.commit()
+    return config
 
 
 def update_app_config_from_database(
