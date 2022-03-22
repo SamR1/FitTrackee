@@ -120,7 +120,7 @@ class User(BaseModel):
             )
             total = (
                 db.session.query(
-                    func.sum(Workout.distance), func.sum(Workout.duration)
+                    func.sum(Workout.distance), func.sum(Workout.duration), func.sum(Workout.ascent)
                 )
                 .filter(Workout.user_id == self.id)
                 .first()
@@ -147,6 +147,7 @@ class User(BaseModel):
             ],
             'total_distance': float(total[0]),
             'total_duration': str(total[1]),
+            'total_ascent': str(total[2]),
             'imperial_units': self.imperial_units,
         }
 
