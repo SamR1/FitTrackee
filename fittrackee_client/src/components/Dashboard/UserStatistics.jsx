@@ -20,21 +20,12 @@ export default function UserStatistics(props) {
               <i className="fa fa-calendar fa-3x fa-color" />
             </div>
             <div className="col-9 text-right">
-              <div className="huge">
-                {user.nb_workouts} ({user.nb_sports})
-              </div>
-              <div>
-                {`${
-                  user.nb_workouts === 1
-                    ? t('common:workout')
-                    : t('common:workouts')
-                }`}{' '}
-                (
-                {`${
-                  user.nb_sports === 1 ? t('common:sport') : t('common:sports')
-                }`}
-                )
-              </div>
+              <div className="huge">{user.nb_workouts}</div>
+              <div>{`${
+                user.nb_workouts === 1
+                  ? t('common:workout')
+                  : t('common:workouts')
+              }`}</div>
             </div>
           </div>
         </div>
@@ -58,13 +49,11 @@ export default function UserStatistics(props) {
         <div className="card workout-card">
           <div className="card-body row">
             <div className="col-3">
-              <i className="fa fa-arrow-circle-up fa-3x fa-color" />
+              <i className="fa fa-clock-o fa-3x fa-color" />
             </div>
             <div className="col-9 text-right">
-              <div className="huge">
-                {convert(user.total_ascent, t('common:m'))}
-              </div>
-              <div>{t('common:m')}</div>
+              <div className="huge">{days}</div>
+              <div>{duration}</div>
             </div>
           </div>
         </div>
@@ -73,11 +62,13 @@ export default function UserStatistics(props) {
         <div className="card workout-card">
           <div className="card-body row">
             <div className="col-3">
-              <i className="fa fa-clock-o fa-3x fa-color" />
+              <i className="fa fa-tags fa-3x fa-color" />
             </div>
             <div className="col-9 text-right">
-              <div className="huge">{days}</div>
-              <div>{duration}</div>
+              <div className="huge">{user.nb_sports}</div>
+              <div>{`${
+                user.nb_sports === 1 ? t('common:sport') : t('common:sports')
+              }`}</div>
             </div>
           </div>
         </div>
