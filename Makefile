@@ -164,10 +164,10 @@ serve-python-dev:
 set-admin:
 	$(FLASK) users set-admin $(USERNAME)
 
-test-e2e: init-db
+test-e2e:
 	$(PYTEST) e2e --driver firefox $(PYTEST_ARGS)
 
-test-e2e-client: init-db
+test-e2e-client:
 	E2E_ARGS=client $(PYTEST) e2e --driver firefox $(PYTEST_ARGS)
 
 test-python:
