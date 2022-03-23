@@ -16,6 +16,8 @@ def is_valid_email(email: str) -> bool:
     """
     Return if email format is valid
     """
+    if not email:
+        return False
     mail_pattern = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
     return re.match(mail_pattern, email) is not None
 

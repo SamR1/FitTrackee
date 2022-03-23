@@ -1,8 +1,11 @@
 import json
+from typing import Optional
 
+import pytest
 from flask import Flask
 
 import fittrackee
+from fittrackee.application.models import AppConfig
 from fittrackee.users.models import User
 
 from ..mixins import ApiTestCaseMixin
@@ -19,6 +22,7 @@ class TestGetConfig(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 200
         assert 'success' in data['status']
+        assert data['data']['admin_contact'] is None
         assert data['data']['gpx_limit_import'] == 10
         assert data['data']['is_registration_enabled'] is True
         assert data['data']['max_single_file_size'] == 1048576
@@ -107,12 +111,14 @@ class TestUpdateConfig(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
+        admin_email = self.random_email()
 
         response = client.patch(
             '/api/config',
             content_type='application/json',
             data=json.dumps(
                 dict(
+                    admin_contact=admin_email,
                     gpx_limit_import=20,
                     max_single_file_size=10000,
                     max_zip_file_size=25000,
@@ -122,9 +128,10 @@ class TestUpdateConfig(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
+        assert data['data']['admin_contact'] == admin_email
         assert data['data']['gpx_limit_import'] == 20
         assert data['data']['is_registration_enabled'] is True
         assert data['data']['max_single_file_size'] == 10000
@@ -273,3 +280,57 @@ class TestUpdateConfig(ApiTestCaseMixin):
         self.assert_400(
             response, 'Max. files in a zip archive must be greater than 0'
         )
+
+    def test_it_raises_error_if_admin_contact_is_invalid(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            '/api/config',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    admin_contact=self.random_string(),
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(
+            response, 'valid email must be provided for admin contact'
+        )
+
+    @pytest.mark.parametrize(
+        'input_description,input_email', [('input string', ''), ('None', None)]
+    )
+    def test_it_empties_error_if_admin_contact_is_an_empty(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        input_description: str,
+        input_email: Optional[str],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        app_config = AppConfig.query.first()
+        app_config.admin_contact = self.random_email()
+
+        response = client.patch(
+            '/api/config',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    admin_contact=input_email,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert data['data']['admin_contact'] is None

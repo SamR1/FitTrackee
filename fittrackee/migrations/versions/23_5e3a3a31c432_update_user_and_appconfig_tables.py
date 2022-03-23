@@ -1,4 +1,4 @@
-"""update User table
+"""update User and AppConfig tables
 
 Revision ID: 5e3a3a31c432
 Revises: e30007d681cb
@@ -37,8 +37,15 @@ def upgrade():
         'users',
         sa.Column('confirmation_token', sa.String(length=255), nullable=True))
 
+    op.add_column(
+        'app_config',
+        sa.Column('admin_contact', sa.String(length=255), nullable=True)
+    )
+
 
 def downgrade():
+    op.drop_column('app_config', 'admin_contact')
+
     op.drop_column('users', 'confirmation_token')
     op.drop_column('users', 'email_to_confirm')
     op.drop_column('users', 'is_active')

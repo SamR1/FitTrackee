@@ -50,6 +50,7 @@ class TestIsValidEmail:
     @pytest.mark.parametrize(
         ('input_email',),
         [
+            (None,),
             ('',),
             ('foo',),
             ('foo@',),
