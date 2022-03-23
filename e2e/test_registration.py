@@ -1,9 +1,7 @@
 from .utils import (
     TEST_URL,
-    assert_navbar,
     random_string,
     register,
-    register_valid_user,
     register_valid_user_and_logout,
 )
 
@@ -24,18 +22,39 @@ class TestRegistration:
         assert inputs[2].get_attribute('id') == 'password'
         assert inputs[2].get_attribute('type') == 'password'
 
+        form_infos = selenium.find_elements_by_class_name('form-info')
+        assert len(form_infos) == 3
+        assert form_infos[0].text == (
+            '3 to 30 characters required, only alphanumeric characters and '
+            'the underscore character "_" allowed.'
+        )
+        assert form_infos[1].text == 'Enter a valid email address.'
+        assert form_infos[2].text == 'At least 8 characters required.'
+
         button = selenium.find_element_by_tag_name('button')
         assert button.get_attribute('type') == 'submit'
         assert 'Register' in button.text
 
-        link = selenium.find_element_by_class_name('links')
-        assert link.tag_name == 'a'
-        assert 'Login' in link.text
+        links = selenium.find_elements_by_class_name('links')
+        assert links[0].tag_name == 'a'
+        assert 'Login' in links[0].text
+        assert links[1].tag_name == 'a'
+        assert "Didn't received instructions?" in links[1].text
 
     def test_user_can_register(self, selenium):
-        user = register_valid_user(selenium)
+        user = {
+            'username': random_string(),
+            'email': f'{random_string()}@example.com',
+            'password': 'p@ssw0rd',
+        }
 
-        assert_navbar(selenium, user)
+        register(selenium, user)
+
+        message = selenium.find_element_by_class_name('success-message').text
+        assert (
+            'A link to activate your account has been '
+            'emailed to the address provided.'
+        ) in message
 
     def test_user_can_not_register_with_invalid_email(self, selenium):
         user_name = random_string()
@@ -62,14 +81,19 @@ class TestRegistration:
 
         assert selenium.current_url == URL
         errors = selenium.find_element_by_class_name('error-message').text
-        assert 'Sorry, that user already exists.' in errors
+        assert 'Sorry, that username is already taken.' in errors
 
-    def test_user_can_not_register_if_email_is_already_taken(self, selenium):
+    def test_user_does_not_return_error_if_email_is_already_taken(
+        self, selenium
+    ):
         user = register_valid_user_and_logout(selenium)
         user['username'] = random_string()
 
         register(selenium, user)
 
-        assert selenium.current_url == URL
-        errors = selenium.find_element_by_class_name('error-message').text
-        assert 'Sorry, that user already exists.' in errors
+        assert selenium.current_url == f'{TEST_URL}/login'
+        message = selenium.find_element_by_class_name('success-message').text
+        assert (
+            'A link to activate your account has been '
+            'emailed to the address provided.'
+        ) in message
