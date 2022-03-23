@@ -15,7 +15,7 @@ http://localhost"""
 
 expected_fr_text_body = """Bonjour test,
 
-Vous avez créé un sur FitTrackee.
+Vous avez créé un compte sur FitTrackee.
 Cliquez sur le lien ci-dessous pour confirmer votre adresse email.
 
 Vérifier l'adresse email : http://localhost/account-confirmation?token=xxx
@@ -119,7 +119,7 @@ expected_fr_html_body = """  <body>
                     <td class="content-cell">
                       <div class="f-fallback">
                         <h1>Bonjour test,</h1>
-                        <p>Vous avez créé un sur FitTrackee.
+                        <p>Vous avez créé un compte sur FitTrackee.
                           Cliquez sur le lien ci-dessous pour confirmer votre adresse email.
                         </p>
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">

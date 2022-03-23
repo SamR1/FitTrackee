@@ -1,6 +1,6 @@
 Bonjour {{username}},
 
-Vous avez créé un sur FitTrackee.
+Vous avez créé un compte sur FitTrackee.
 Cliquez sur le lien ci-dessous pour confirmer votre adresse email.
 
 Vérifier l'adresse email : {{ account_confirmation_url }}
