@@ -22,6 +22,7 @@ BaseModel: DeclarativeMeta = db.Model
 record_types = [
     'AS',  # 'Best Average Speed'
     'FD',  # 'Farthest Distance'
+    'HA',  # 'Highest Ascent'
     'LD',  # 'Longest Duration'
     'MS',  # 'Max speed'
 ]
@@ -322,6 +323,7 @@ class Workout(BaseModel):
         record_types_columns = {
             'AS': 'ave_speed',  # 'Average speed'
             'FD': 'distance',  # 'Farthest Distance'
+            'HA': 'ascent',  # 'Highest Ascent'
             'LD': 'moving',  # 'Longest Duration'
             'MS': 'max_speed',  # 'Max speed'
         }
@@ -475,7 +477,7 @@ class Record(BaseModel):
             return datetime.timedelta(seconds=self._value)
         elif self.record_type in ['AS', 'MS']:
             return float(self._value / 100)
-        else:  # 'FD'
+        else:  # 'FD' or 'HA'
             return float(self._value / 1000)
 
     @value.setter  # type: ignore
@@ -485,7 +487,7 @@ class Record(BaseModel):
     def serialize(self) -> Dict:
         if self.value is None:
             value = None
-        elif self.record_type in ['AS', 'FD', 'MS']:
+        elif self.record_type in ['AS', 'FD', 'HA', 'MS']:
             value = float(self.value)  # type: ignore
         else:  # 'LD'
             value = str(self.value)  # type: ignore
