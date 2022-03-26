@@ -1,0 +1,34 @@
+name: Javascript CI
+
+on:
+  push:
+    paths: ['fittrackee_client']
+  pull_request:
+    paths: ['fittrackee_client']
+
+env:
+  working-directory: fittrackee_client
+
+jobs:
+  javascript:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 17.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: "17.x"
+      - name: Install yarn and dependencies
+        working-directory: ${{env.working-directory}}
+        run: |
+          npm install --global yarn
+          yarn install
+      - name: Lint
+        working-directory: ${{env.working-directory}}
+        run: yarn lint
+      - name: Tests
+        working-directory: ${{env.working-directory}}
+        run: yarn test:unit
+      - name: Build
+        working-directory: ${{env.working-directory}}
+        run: yarn build

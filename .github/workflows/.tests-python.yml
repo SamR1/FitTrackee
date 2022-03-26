@@ -1,6 +1,10 @@
-name: FitTrackee tests
+name: Python CI
 
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore: ['docs/**', 'docsrc/**', 'fittrackee_client', '*.md']
+  pull_request:
+    paths-ignore: ['docs/**', 'docsrc/**', 'fittrackee_client', '*.md']
 
 env:
   APP_SETTINGS: fittrackee.config.TestingConfig
@@ -46,31 +50,9 @@ jobs:
       - name: Pytest
         run: pytest fittrackee -p no:warnings --cov fittrackee --cov-report term-missing
 
-  javascript:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 17.x
-        uses: actions/setup-node@v2
-        with:
-          node-version: "17.x"
-      - name: Install yarn and dependencies
-        run: |
-          npm install --global yarn
-          cd fittrackee_client
-          yarn install
-      - name: Lint
-        run: |
-          cd fittrackee_client
-          yarn lint
-      - name: Tests
-        run: |
-          cd fittrackee_client
-          yarn test:unit
-
   end2end:
     runs-on: ubuntu-latest
-    needs: ["python", "javascript"]
+    needs: ["python"]
     container: python:3.10
     services:
       postgres:
