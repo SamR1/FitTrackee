@@ -23,6 +23,7 @@
     "sorry, that username is already taken": "Désolé, ce nom d'utilisateur est déjà utilisé.",
     "successfully registered": "Inscription validée.",
     "user does not exist": "L'utilisateur n'existe pas",
+    "valid email must be provided for admin contact": "Une adresse email doit être fournie pour le contact de l'administrateur.",
     "you can not delete your account, no other user has admin rights": "Vous ne pouvez pas supprimer votre compte, aucun autre utilisateur n'a des droits d'administration.",
     "you do not have permissions": "Vous n'avez pas les permissions nécessaires."
   },

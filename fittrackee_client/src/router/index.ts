@@ -15,6 +15,7 @@ import UserPreferencesEdition from '@/components/User/ProfileEdition/UserPrefere
 import UserSportPreferences from '@/components/User/UserSportPreferences.vue'
 import store from '@/store'
 import { AUTH_USER_STORE } from '@/store/constants'
+import AboutView from '@/views/AboutView.vue'
 import Dashboard from '@/views/Dashboard.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import LoginOrRegister from '@/views/user/LoginOrRegister.vue'
@@ -275,6 +276,11 @@ const routes: Array<RouteRecordRaw> = [
     ],
   },
   {
+    path: '/about',
+    name: 'About',
+    component: AboutView,
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: NotFoundView,
@@ -298,7 +304,7 @@ const pathsWithoutAuthentication = [
   '/account-confirmation/email-sent',
 ]
 
-const pathsWithoutChecks = ['/email-update']
+const pathsWithoutChecks = ['/email-update', '/about']
 
 router.beforeEach((to, from, next) => {
   store

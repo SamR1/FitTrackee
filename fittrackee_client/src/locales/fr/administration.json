@@ -7,9 +7,11 @@
   "ADMINISTRATION": "Administration",
   "APPLICATION": "Application",
   "APP_CONFIG": {
+    "ADMIN_CONTACT": "Email de l'administrateur pour contact ",
     "MAX_USERS_LABEL": "Nombre maximum d'utilisateurs actifs ",
     "MAX_USERS_HELP": "Si égal à 0, pas limite d'inscription",
     "MAX_FILES_IN_ZIP_LABEL": "Taille max. des archives zip (en Mo) ",
+    "NO_CONTACT_EMAIL": "non renseigné",
     "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Taille max. des fichiers (en Mo) ",
     "TITLE": "Configuration de l'application",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Nombre max. de fichiers dans une archive zip "
