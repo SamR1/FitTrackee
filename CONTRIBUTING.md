@@ -20,8 +20,6 @@ The **GitHub** repository contains:
 - tests,
 - documentation (source and build).
 
-Continuous integration pipeline runs on **Gitlab CI**.
-
 ### How to install FitTrackee
 
 see [Installations instructions](https://samr1.github.io/FitTrackee/installation.html)
@@ -54,12 +52,10 @@ Please make your changes from the development branch (`dev`).
   ```shell
   $ make check-all
   ```
-  There are some end-to-end tests, to run them:
+  There are some end-to-end tests, to run them (needs a running application):
   ```shell
   $ make test-e2e
   ```
-  Note: For now, pull requests from forks don't trigger pipelines on GitLab CI (see [current issue](https://gitlab.com/gitlab-org/gitlab/-/issues/5667)).  
-  So make sure that checks don't return errors locally. 
 
 * If needed, add or update tests.
 
@@ -73,6 +69,8 @@ Please make your changes from the development branch (`dev`).
 * Create your pull request to merge on `dev` branch.
 
 * Ensure the pull requests description clearly describes the problem and solution. Include the relevant issue number if applicable.
+
+* If needed, [update your branch](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/keeping-your-pull-request-in-sync-with-the-base-branch). 
 
 
 Thanks.
