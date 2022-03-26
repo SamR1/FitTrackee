@@ -443,7 +443,6 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
     :<json string location: user location
     :<json string bio: user biography
     :<json string birth_date: user birth date (format: ``%Y-%m-%d``)
-    :<json string password: user password
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -474,15 +473,6 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
     bio = post_data.get('bio')
     birth_date = post_data.get('birth_date')
     location = post_data.get('location')
-    password = post_data.get('password')
-
-    if password is not None and password != '':
-        message = check_password(password)
-        if message != '':
-            return InvalidPayloadErrorResponse(message)
-        password = bcrypt.generate_password_hash(
-            password, current_app.config.get('BCRYPT_LOG_ROUNDS')
-        ).decode()
 
     try:
         auth_user.first_name = first_name
@@ -494,8 +484,6 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
             if birth_date
             else None
         )
-        if password is not None and password != '':
-            auth_user.password = password
         db.session.commit()
 
         return {
