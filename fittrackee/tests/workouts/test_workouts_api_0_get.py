@@ -7,11 +7,20 @@ from flask import Flask
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
-from ..api_test_case import ApiTestCaseMixin
+from ..mixins import ApiTestCaseMixin
 from .utils import get_random_short_id
 
 
 class TestGetWorkouts(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get('/api/workouts')
+
+        self.assert_401(response)
+
     def test_it_gets_all_workouts_for_authenticated_user(
         self,
         app: Flask,
@@ -73,19 +82,13 @@ class TestGetWorkouts(ApiTestCaseMixin):
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='toto@toto.com', password='87654321')),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
         )
 
         response = client.get(
             '/api/workouts',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())

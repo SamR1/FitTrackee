@@ -5,10 +5,21 @@ from flask import Flask
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
-from ..api_test_case import ApiTestCaseMixin
+from ..mixins import ApiTestCaseMixin
 
 
 class TestGetStatsByTime(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(
+            f'/api/stats/{user_1.username}/by_time',
+        )
+
+        self.assert_401(response)
+
     def test_it_gets_no_stats_when_user_has_no_workouts(
         self, app: Flask, user_1: User
     ) -> None:
@@ -853,6 +864,17 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
 
 class TestGetStatsBySport(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(
+            f'/api/stats/{user_1.username}/by_sport',
+        )
+
+        self.assert_401(response)
+
     def test_it_gets_stats_by_sport(
         self,
         app: Flask,
@@ -987,6 +1009,15 @@ class TestGetStatsBySport(ApiTestCaseMixin):
 
 
 class TestGetAllStats(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get('/api/stats/all')
+
+        self.assert_401(response)
+
     def test_it_returns_all_stats_when_users_have_no_workouts(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:

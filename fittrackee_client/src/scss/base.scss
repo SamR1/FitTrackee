@@ -142,6 +142,20 @@ button {
     }
 }
 
+
+.form-info {
+  color: var(--alert-color);
+  font-size: 0.8em;
+  margin-top: -0.2 * $default-margin;
+  padding: 0 $default-padding * 1.5;
+}
+
+.success-message {
+  margin: $default-margin * 2 0;
+  background-color: var(--success-background-color);
+  color: var(--success-color);
+}
+
 .upper {
   text-transform: uppercase;
 }
@@ -247,10 +261,6 @@ button {
   @media screen and (max-width: $medium-limit) {
     width: 100%;
     margin: 0 auto 50px auto;
-
-    &.with-margin {
-      margin-top: 0;
-    }
   }
 }
 

@@ -4,5 +4,6 @@
   "NOT_FOUND": {
     "PAGE": "Page not found",
     "WORKOUT": "Workout not found"
-  }
+  },
+  "SOMETHING_WRONG": "Something went wrong"
 }

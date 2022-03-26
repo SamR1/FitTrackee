@@ -1,6 +1,9 @@
 {
+  "ABOUT": "about",
   "CONFIRMATION": "Confirmation",
+  "CONTACT": "contact",
   "DAY": "day | days",
+  "DOCUMENTATION": "documentation",
   "HOME": "Home",
   "HERE": "here",
   "SELECTS": {

@@ -1,7 +1,7 @@
 <template>
   <div
     id="workout-edition"
-    class="center-card center-card with-margin"
+    class="center-card with-margin"
     :class="{ 'center-form': workout && workout.with_gpx }"
   >
     <Card>

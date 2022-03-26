@@ -2080,6 +2080,28 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
+"@zxcvbn-ts/core@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@zxcvbn-ts/core/-/core-2.0.0.tgz#4b6969cd98c6b56ee75bce11c2c9d7ed1168c1db"
+  integrity sha512-j9XY5TQq6fldHQ5BC/3kVNcw9zIg91i7ddeIZzwL8xAq3nqi7gw/YZxPY8Ry4KE4xmcYCiB+6AG6/jHO9uylPg==
+  dependencies:
+    fastest-levenshtein "1.0.12"
+
+"@zxcvbn-ts/language-common@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@zxcvbn-ts/language-common/-/language-common-2.0.0.tgz#77ee6c1107e116cb74e0e8c80147bc967dd2140c"
+  integrity sha512-RM4PmOev2pRQ1gMf5rjFKvsEb+qYTy+5YZY/g+vy7QibR66TiyD91VoOVaHArcj07wXj0J3eDpsiU+mpB1Oijg==
+
+"@zxcvbn-ts/language-en@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@zxcvbn-ts/language-en/-/language-en-2.0.0.tgz#454b09578f8713bd204465354565972d8512de85"
+  integrity sha512-ijDtOYeJxBpuoXdTtyXpoOcMRTDjRiABIWX3X7T7XquZ2c6IfrKwXVrvwzVSlRhhPqaCI0tienDeQYG7631eHA==
+
+"@zxcvbn-ts/language-fr@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@zxcvbn-ts/language-fr/-/language-fr-1.2.0.tgz#fb1d5f06d3bdf0b18bab75625a22153fe1dc4347"
+  integrity sha512-+iymwuu+GTlCyJTEhStxqcJfnYvhwIoo6dbXpRq4wzs0mk3uxy79UA6k9lEVy3RXu5VOq2cIpyeLtwqBR4+C7w==
+
 abab@^2.0.3, abab@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.5.tgz#c0b678fb32d60fc1219c784d6a826fe385aeb79a"
@@ -3970,6 +3992,11 @@ fast-levenshtein@^2.0.6, fast-levenshtein@~2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
   integrity sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc=
+
+fastest-levenshtein@1.0.12:
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/fastest-levenshtein/-/fastest-levenshtein-1.0.12.tgz#9990f7d3a88cc5a9ffd1f1745745251700d497e2"
+  integrity sha512-On2N+BpYJ15xIC974QNVuYGMOlEVt4s0EOI3wwMqOmK1fdDY+FN/zltPV8vosq4ad4c/gJ1KHScUn/6AWIgiow==
 
 fastq@^1.6.0:
   version "1.13.0"

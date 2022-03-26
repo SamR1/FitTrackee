@@ -180,6 +180,7 @@
 
 <span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;admin_contact&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;admin@example.com&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;gpx_limit_import&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;is_registration_enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;max_single_file_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1048576</span><span class="p">,</span><span class="w"></span>
@@ -193,6 +194,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Request JSON Object</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>admin_contact</strong> (<em>string</em>) – email to contact the administrator</p></li>
 <li><p><strong>gpx_limit_import</strong> (<em>integer</em>) – max number of files in zip archive</p></li>
 <li><p><strong>is_registration_enabled</strong> (<em>boolean</em>) – is registration enabled ?</p></li>
 <li><p><strong>max_single_file_size</strong> (<em>integer</em>) – max size of a single file</p></li>
@@ -213,6 +215,7 @@
 <li><p>provide a valid auth token</p></li>
 <li><p>signature expired, please log in again</p></li>
 <li><p>invalid token, please log in again</p></li>
+<li><p>valid email must be provided for admin contact</p></li>
 </ul>
 </p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – you do not have permissions</p></li>

@@ -7,7 +7,7 @@ from fittrackee import email_service
 from fittrackee.emails.email import EmailMessage
 from fittrackee.emails.exceptions import InvalidEmailUrlScheme
 
-from ..api_test_case import CallArgsMixin
+from ..mixins import CallArgsMixin
 from .template_results.password_reset_request import expected_en_text_body
 
 
@@ -97,6 +97,7 @@ class TestEmailServiceSend(CallArgsMixin):
         'password_reset_url': 'http://localhost/password-reset?token=xxx',
         'operating_system': 'Linux',
         'browser_name': 'Firefox',
+        'fittrackee_url': 'http://localhost',
     }
 
     def assert_smtp(self, smtp: Mock) -> None:

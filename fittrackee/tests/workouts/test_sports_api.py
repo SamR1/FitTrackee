@@ -6,7 +6,7 @@ from fittrackee import db
 from fittrackee.users.models import User, UserSportPreference
 from fittrackee.workouts.models import Sport, Workout
 
-from ..api_test_case import ApiTestCaseMixin
+from ..mixins import ApiTestCaseMixin
 
 expected_sport_1_cycling_result = {
     'id': 1,
@@ -45,6 +45,16 @@ expected_sport_1_cycling_inactive_admin_result['has_workouts'] = False
 
 
 class TestGetSports(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self,
+        app: Flask,
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get('/api/sports')
+
+        self.assert_401(response)
+
     def test_it_gets_all_sports(
         self,
         app: Flask,

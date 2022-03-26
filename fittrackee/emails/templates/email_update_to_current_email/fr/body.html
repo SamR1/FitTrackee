@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block title %}Adresse email modifiée{% endblock %}
+{% block preheader %}Votre adresse email est en cours de mise à jour.{% endblock %}
+{% block content %}<h1>Bonjour {{username}},</h1>
+                        <p>Vous avez récemment demandé la modification de l'adresse email associée à votre compte sur FitTrackee vers :</p>
+                        <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                          <tr>
+                            <td align="center">
+                              <table width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation">
+                                <tr>
+                                  <td align="center">
+                                    {{ new_email_address }}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+                        <p>
+                          Pour vérification, cette demande a été reçue à partir d'un appareil sous {{operating_system}}, utilisant le navigateur {{browser_name}}.
+                          Si vous n'êtes pas à l'origine de cette modification, veuillez changer votre mot de passe immédiatement ou contacter l'administrateur si votre compte est bloqué.
+                        </p>
+                        <p>Merci,
+                          <br>
+                          L'équipe FitTrackee
+                        </p>{% endblock %}

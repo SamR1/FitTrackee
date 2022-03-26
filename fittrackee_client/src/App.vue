@@ -19,7 +19,11 @@
       <i class="fa fa-chevron-up" aria-hidden="true"></i>
     </div>
   </div>
-  <Footer v-if="appConfig" :version="appConfig ? appConfig.version : ''" />
+  <Footer
+    v-if="appConfig"
+    :version="appConfig ? appConfig.version : ''"
+    :adminContact="appConfig.admin_contact"
+  />
 </template>
 
 <script setup lang="ts">

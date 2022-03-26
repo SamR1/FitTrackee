@@ -13,6 +13,10 @@
   "dependencies": {
     "@tmcw/togeojson": "^4.5.0",
     "@vue-leaflet/vue-leaflet": "^0.6.1",
+    "@zxcvbn-ts/core": "^2.0.0",
+    "@zxcvbn-ts/language-common": "^2.0.0",
+    "@zxcvbn-ts/language-en": "^2.0.0",
+    "@zxcvbn-ts/language-fr": "^1.2.0",
     "axios": "^0.26.0",
     "chart.js": "^3.7.0",
     "chartjs-plugin-datalabels": "^2.0.0",

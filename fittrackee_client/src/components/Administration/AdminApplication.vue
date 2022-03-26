@@ -4,6 +4,23 @@
       <template #title>{{ $t('admin.APP_CONFIG.TITLE') }}</template>
       <template #content>
         <form class="admin-form" @submit.prevent="onSubmit">
+          <label for="admin_contact">
+            {{ $t('admin.APP_CONFIG.ADMIN_CONTACT') }}:
+            <input
+              class="no-contact"
+              v-if="!edition && !appData.admin_contact"
+              :value="$t('admin.APP_CONFIG.NO_CONTACT_EMAIL')"
+              disabled
+            />
+            <input
+              v-else
+              id="admin_contact"
+              name="admin_contact"
+              type="email"
+              v-model="appData.admin_contact"
+              :disabled="!edition"
+            />
+          </label>
           <label for="max_users">
             {{ $t('admin.APP_CONFIG.MAX_USERS_LABEL') }}:
             <input
@@ -89,6 +106,7 @@
     reactive,
     withDefaults,
     onBeforeMount,
+    toRefs,
   } from 'vue'
   import { useRouter } from 'vue-router'
 
@@ -104,11 +122,13 @@
   const props = withDefaults(defineProps<Props>(), {
     edition: false,
   })
+  const { edition } = toRefs(props)
 
   const store = useStore()
   const router = useRouter()
 
   const appData: TAppConfigForm = reactive({
+    admin_contact: '',
     max_users: 0,
     max_single_file_size: 0,
     max_zip_file_size: 0,
@@ -127,12 +147,12 @@
   function updateForm(appConfig: TAppConfig) {
     Object.keys(appData).map((key) => {
       ['max_single_file_size', 'max_zip_file_size'].includes(key)
-        ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          (appData[key] = getFileSizeInMB(appConfig[key]))
-        : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          (appData[key] = appConfig[key])
+      ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        (appData[key] = getFileSizeInMB(appConfig[key]))
+      : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        (appData[key] = appConfig[key])
     })
   }
   function onCancel() {
@@ -159,5 +179,8 @@
     .fa-info-circle {
       margin-right: $default-margin;
     }
+  }
+  .no-contact {
+    font-style: italic;
   }
 </style>

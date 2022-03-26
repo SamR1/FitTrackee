@@ -12,7 +12,7 @@ from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 from fittrackee.workouts.utils.short_id import decode_short_id
 
-from ..api_test_case import ApiTestCaseMixin, CallArgsMixin
+from ..mixins import ApiTestCaseMixin, CallArgsMixin
 
 
 def assert_workout_data_with_gpx(data: Dict) -> None:
@@ -206,6 +206,22 @@ def assert_workout_data_wo_gpx(data: Dict) -> None:
 
 
 class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(content_type='multipart/form-data'),
+        )
+
+        self.assert_401(response)
+
     def test_it_adds_an_workout_with_gpx_file(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
@@ -569,6 +585,27 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
 
 
 class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=3600,
+                    workout_date='2018-05-15 14:05',
+                    distance=10,
+                )
+            ),
+            headers=dict(content_type='multipart/form-data'),
+        )
+
+        self.assert_401(response)
+
     def test_it_adds_an_workout_without_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
@@ -1018,18 +1055,13 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
         )
         data = json.loads(response.data.decode())
         workout_short_id = data['data']['workouts'][0]['id']
-
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='toto@toto.com', password='87654321')),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
         )
+
         response = client.get(
             f'/api/workouts/{workout_short_id}/chart_data',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         self.assert_403(response)

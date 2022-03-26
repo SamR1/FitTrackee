@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block title %}Password changed{% endblock %}
+{% block preheader %}Your password has been changed.{% endblock %}
+{% block content %}<h1>Hi {{username}},</h1>
+                        <p>The password for your FitTrackee account has been changed.</p>
+                        <p>
+                          {% if operating_system and browser_name %}For security, this request was received from a {{operating_system}} device using {{browser_name}}.
+                          {% endif %}If this password change wasn't initiated by you, please change your password immediately or contact your administrator if your account is locked.
+                        </p>
+                        <p>Thanks,
+                          <br>
+                          The FitTrackee Team
+                        </p>{% endblock %}
