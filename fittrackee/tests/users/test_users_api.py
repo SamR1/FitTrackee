@@ -761,6 +761,99 @@ class TestGetUsers(ApiTestCaseMixin):
             'total': 3,
         }
 
+    def test_it_gets_users_list_ordered_by_account_status(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        inactive_user: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?order_by=is_active',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 2
+        assert data['data']['users'][0]['username'] == inactive_user.username
+        assert not data['data']['users'][0]['is_active']
+        assert data['data']['users'][1]['username'] == user_1_admin.username
+        assert data['data']['users'][1]['is_active']
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 2,
+        }
+
+    def test_it_gets_users_list_ordered_by_account_status_ascending(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        inactive_user: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?order_by=is_active&order=asc',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 2
+        assert data['data']['users'][0]['username'] == inactive_user.username
+        assert not data['data']['users'][0]['is_active']
+        assert data['data']['users'][1]['username'] == user_1_admin.username
+        assert data['data']['users'][1]['is_active']
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 2,
+        }
+
+    def test_it_gets_users_list_ordered_by_account_status_descending(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        inactive_user: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?order_by=is_active&order=desc',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 2
+        assert data['data']['users'][0]['username'] == user_1_admin.username
+        assert data['data']['users'][0]['is_active']
+        assert data['data']['users'][1]['username'] == inactive_user.username
+        assert not data['data']['users'][1]['is_active']
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 2,
+        }
+
     def test_it_gets_users_list_ordered_by_workouts_count_descending(
         self,
         app: Flask,

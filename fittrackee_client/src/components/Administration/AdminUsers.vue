@@ -30,8 +30,8 @@
                 <th>
                   {{ capitalize($t('workouts.WORKOUT', 0)) }}
                 </th>
-                <th>{{ $t('user.ADMIN') }}</th>
                 <th>{{ $t('admin.ACTIVE') }}</th>
+                <th>{{ $t('user.ADMIN') }}</th>
                 <th>{{ $t('admin.ACTION') }}</th>
               </tr>
             </thead>
@@ -76,19 +76,19 @@
                 </td>
                 <td class="text-center">
                   <span class="cell-heading">
-                    {{ $t('user.ADMIN') }}
+                    {{ $t('admin.ACTIVE') }}
                   </span>
                   <i
-                    :class="`fa fa${user.admin ? '-check' : ''}-square-o`"
+                    :class="`fa fa${user.is_active ? '-check' : ''}-square-o`"
                     aria-hidden="true"
                   />
                 </td>
                 <td class="text-center">
                   <span class="cell-heading">
-                    {{ $t('admin.ACTIVE') }}
+                    {{ $t('user.ADMIN') }}
                   </span>
                   <i
-                    :class="`fa fa${user.is_active ? '-check' : ''}-square-o`"
+                    :class="`fa fa${user.admin ? '-check' : ''}-square-o`"
                     aria-hidden="true"
                   />
                 </td>
@@ -159,6 +159,7 @@
   const router = useRouter()
 
   const orderByList: string[] = [
+    'is_active',
     'admin',
     'created_at',
     'username',

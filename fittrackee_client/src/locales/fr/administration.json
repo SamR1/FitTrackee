@@ -42,13 +42,14 @@
   "USER_EMAIL_UPDATE_SUCCESSFUL": "L'adresse email a été mise à jour.",
   "USERS": {
     "TABLE": {
-      "ADD_ADMIN_RIGHTS": "Ajouter les drois d'admin",
-      "REMOVE_ADMIN_RIGHTS": "Retirer les drois d'admin"
+      "ADD_ADMIN_RIGHTS": "Ajouter les droits d'admin",
+      "REMOVE_ADMIN_RIGHTS": "Retirer les droits d'admin"
     },
     "SELECTS": {
       "ORDER_BY": {
         "ADMIN": "status administrateur",
         "CREATED_AT": "date d'inscription",
+        "IS_ACTIVE": "statut du compte",
         "USERNAME": "nom d'utilisateur",
         "WORKOUTS_COUNT": "nombre de séances"
       }

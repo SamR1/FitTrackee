@@ -172,7 +172,7 @@ def get_users(auth_user: User) -> Dict:
     :query integer per_page: number of users per page (default: 10, max: 50)
     :query string q: query on user name
     :query string order_by: sorting criteria (``username``, ``created_at``,
-                            ``workouts_count``, ``admin``)
+                            ``workouts_count``, ``admin``, ``is_active``)
     :query string order: sorting order (default: ``asc``)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
@@ -220,6 +220,12 @@ def get_users(auth_user: User) -> Dict:
             else True,
             User.admin.desc()
             if order_by == 'admin' and order == 'desc'
+            else True,
+            User.is_active.asc()
+            if order_by == 'is_active' and order == 'asc'
+            else True,
+            User.is_active.desc()
+            if order_by == 'is_active' and order == 'desc'
             else True,
         )
         .paginate(page, per_page, False)

@@ -9,6 +9,7 @@ export interface IUserProfile {
   created_at: string
   email: string
   email_to_confirm?: string
+  is_active: boolean
   first_name: string | null
   last_name: string | null
   location: string | null

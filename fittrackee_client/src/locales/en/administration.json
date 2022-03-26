@@ -49,6 +49,7 @@
       "ORDER_BY": {
         "ADMIN": "admin status",
         "CREATED_AT": "registration date",
+        "IS_ACTIVE": "account status",
         "USERNAME": "username",
         "WORKOUTS_COUNT": "workout count"
       }

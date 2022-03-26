@@ -187,7 +187,6 @@
   }
   function displayEmailForm() {
     resetErrorsAndSuccess()
-    console.log('user.value.email_to_confirm', user.value.email_to_confirm)
     newUserEmail.value = user.value.email_to_confirm
       ? user.value.email_to_confirm
       : ''
