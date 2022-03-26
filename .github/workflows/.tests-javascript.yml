@@ -2,9 +2,9 @@ name: Javascript CI
 
 on:
   push:
-    paths: ['fittrackee_client']
+    paths: ['fittrackee_client/**']
   pull_request:
-    paths: ['fittrackee_client']
+    paths: ['fittrackee_client/**']
 
 env:
   working-directory: fittrackee_client

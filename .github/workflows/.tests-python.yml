@@ -2,9 +2,9 @@ name: Python CI
 
 on:
   push:
-    paths-ignore: ['docs/**', 'docsrc/**', 'fittrackee_client', '*.md']
+    paths-ignore: ['docs/**', 'docsrc/**', 'fittrackee_client/**', '*.md']
   pull_request:
-    paths-ignore: ['docs/**', 'docsrc/**', 'fittrackee_client', '*.md']
+    paths-ignore: ['docs/**', 'docsrc/**', 'fittrackee_client/**', '*.md']
 
 env:
   APP_SETTINGS: fittrackee.config.TestingConfig
