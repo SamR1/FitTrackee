@@ -9,9 +9,9 @@
 [![Vue Version](https://img.shields.io/badge/vue-3.2-brightgreen.svg)](https://v3.vuejs.org/) 
 [![Typescript Version](https://img.shields.io/npm/types/typescript)](https://www.typescriptlang.org/) 
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)  
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/290a285f22e94132904dc13b4dd19d1d)](https://www.codacy.com/app/SamR1/FitTrackee)
-[![pipeline status](https://gitlab.com/SamR1/FitTrackee/badges/master/pipeline.svg)](https://gitlab.com/SamR1/FitTrackee/-/commits/master)
-[![coverage report](https://gitlab.com/SamR1/FitTrackee/badges/master/coverage.svg)](https://gitlab.com/SamR1/FitTrackee/-/commits/master) <sup><sup>1</sup></sup>
+![pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-python.yml/badge.svg?branch=master)
+![pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-javascript.yml/badge.svg?branch=master)
+
 
 ---
 
@@ -30,8 +30,3 @@ It is also possible to add a workout without a gpx file.
 (see [issues](https://github.com/SamR1/FitTrackee/issues) and [documentation](https://samr1.github.io/FitTrackee) for more information)  
 
 ![FitTrackee Dashboard Screenshot](https://samr1.github.io/FitTrackee/_images/fittrackee_screenshot-01.png)
-
----
-
-Notes:  
-_1. Test coverage: only for Python API_
