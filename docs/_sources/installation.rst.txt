@@ -298,6 +298,8 @@ For instance, copy and update ``.env`` file from ``.env.example`` and source the
 
    $ fittrackee_set_admin <username>
 
+.. note::
+    If the user account is inactive, it activates it.
 
 From sources
 ^^^^^^^^^^^^

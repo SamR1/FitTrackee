@@ -64,7 +64,7 @@ def send_account_confirmation_email(user: User) -> None:
 @auth_blueprint.route('/auth/register', methods=['POST'])
 def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    register a user
+    register a user and send confirmation email.
 
     The newly created account is inactive. The user must confirm his email
     to activate it.
@@ -97,7 +97,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
       Content-Type: application/json
 
       {
-        "message": "Errors: email: valid email must be provided\n",
+        "message": "Errors: email: valid email must be provided\\n",
         "status": "error"
       }
 
@@ -111,8 +111,9 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
         - sorry, that username is already taken
         - Errors:
             - username: 3 to 30 characters required
-            - username: only alphanumeric characters and the underscore
-                        character "_" allowed
+            - username:
+              only alphanumeric characters and the underscore
+              character "_" allowed
             - email: valid email must be provided
             - password: 8 characters required
     :statuscode 403:
@@ -177,7 +178,8 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
 def login_user() -> Union[Dict, HttpResponse]:
     """
     user login
-    Only user with active account can log in
+
+    Only user with an active account can log in.
 
     **Example request**:
 
@@ -205,7 +207,7 @@ def login_user() -> Union[Dict, HttpResponse]:
 
     .. sourcecode:: http
 
-      HTTP/1.1 404 NOT FOUND
+      HTTP/1.1 401 UNAUTHORIZED
       Content-Type: application/json
 
       {
@@ -253,7 +255,7 @@ def get_authenticated_user_profile(
     auth_user: User,
 ) -> Union[Dict, HttpResponse]:
     """
-    get authenticated user info
+    get authenticated user info (profile, account, preferences)
 
     **Example request**:
 
@@ -353,7 +355,7 @@ def get_authenticated_user_profile(
 @authenticate
 def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
     """
-    edit authenticated user
+    edit authenticated user profile
 
     **Example request**:
 
@@ -502,6 +504,14 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
 def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     update authenticated user email and password
+
+    It sends emails:
+
+    - Password change
+    - Email change:
+
+      - one to the current address to inform user
+      - another one to the new address to confirm it.
 
     **Example request**:
 
@@ -1283,6 +1293,8 @@ def update_email() -> Union[Dict, HttpResponse]:
 
     **Example response**:
 
+    .. sourcecode:: http
+
       HTTP/1.1 200 OK
       Content-Type: application/json
 
@@ -1339,6 +1351,8 @@ def confirm_account() -> Union[Dict, HttpResponse]:
       Content-Type: application/json
 
     **Example response**:
+
+    .. sourcecode:: http
 
       HTTP/1.1 200 OK
       Content-Type: application/json
@@ -1399,6 +1413,8 @@ def resend_account_confirmation_email() -> Union[Dict, HttpResponse]:
       Content-Type: application/json
 
     **Example response**:
+
+    .. sourcecode:: http
 
       HTTP/1.1 200 OK
       Content-Type: application/json

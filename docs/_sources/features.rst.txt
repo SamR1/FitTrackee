@@ -44,9 +44,13 @@ Workouts
     - average speed  (**new in 0.5.1**)
 - User records by sports:
     - average speed
-    - farest distance
+    - farthest distance
     - longest duration
     - maximum speed
+
+.. note::
+  Records may differ from records displayed by the application that originally generated the gpx files.
+
 - Workouts list and filter. Only sports with workouts are displayed in sport dropdown.
 
 .. note::
@@ -58,6 +62,7 @@ Account & preferences
 - A user can create, update and deleted his account
 - A user can set language, timezone and first day of week.
 - A user can reset his password (*new in 0.3.0*)
+- A user can change his email address (*new in 0.6.0*)
 - A user can choose between metric system and imperial system for distance, elevation and speed display (*new in 0.5.0*)
 - A user can set sport preferences (*new in 0.5.0*):
      - change sport color (used for sport image and charts)
@@ -82,6 +87,7 @@ Administration
   - maximum size of uploaded files
   - maximum size of zip archive
   - maximum number of files in the zip archive. If an archive contains more files, only the configured number of files is processed, without raising errors.
+  - administrator email for contact (*new in 0.6.0*)
 
   .. warning::
       Updating server configuration may be necessary to handle large files (like `nginx <https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size>`_ for instance).
@@ -89,8 +95,12 @@ Administration
 
 - **Users**
 
-  - display users list and details
-  - edit a user to add/remove administration rights
+  - display and filter users list
+  - edit a user to:
+      - add/remove administration rights
+      - activate his account (*new in 0.6.0*)
+      - update his email (in case his account is locked) (*new in 0.6.0*)
+      - reset his password (in case his account is locked) (*new in 0.6.0*)
   - delete a user
 
 - **Sports**

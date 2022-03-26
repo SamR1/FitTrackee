@@ -51,7 +51,10 @@ def set_admin(username: str) -> None:
 @authenticate_as_admin
 def get_users(auth_user: User) -> Dict:
     """
-    Get all users (regardless their account status)
+    Get all users (regardless their account status), if authenticated user
+    has admin rights
+
+    It returns user preferences only for authenticated user.
 
     **Example request**:
 
@@ -140,7 +143,8 @@ def get_users(auth_user: User) -> Dict:
               "timezone": "Europe/Paris",
               "total_distance": 67.895,
               "total_duration": "6:50:27",
-              "username": "admin"
+              "username": "admin",
+              "weekm": false
             },
             {
               "admin": false,
@@ -250,7 +254,9 @@ def get_single_user(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get single user details
+    Get single user details. Only user with admin rights can get user details.
+
+    It returns user preferences only for authenticated user.
 
     **Example request**:
 
@@ -402,9 +408,10 @@ def get_picture(user_name: str) -> Any:
 def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     """
     Update user account
-    - add/remove admin rights
-    - reset password and send email to update user password
-    - update user email
+
+    - add/remove admin rights (regardless user account status)
+    - reset password (and send email to update user password)
+    - update user email (and send email to update user password)
     - activate account for an inactive user
 
     Only user with admin rights can modify another user
@@ -413,7 +420,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
     .. sourcecode:: http
 
-      PATCH api/users/<user_name> HTTP/1.1
+      PATCH /api/users/<user_name> HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
