@@ -59,7 +59,12 @@ Workouts
 
 Account & preferences
 ^^^^^^^^^^^^^^^^^^^^^
-- A user can create, update and deleted his account
+- A user can create, update and deleted his account.
+- After registration, the user account is inactive and an email with confirmation instructions is sent to activate it. A user with an inactive account cannot log in. (*new in 0.6.0*)
+
+.. note::
+  The command line to add admin rights activates the account if it is inactive.
+
 - A user can set language, timezone and first day of week.
 - A user can reset his password (*new in 0.3.0*)
 - A user can change his email address (*new in 0.6.0*)

@@ -292,7 +292,7 @@ For instance, copy and update ``.env`` file from ``.env.example`` and source the
 
 - Open http://localhost:3000 and register
 
-- To set admin rights to the newly created account, use the following command:
+- To set admin rights to the newly created account, use the following command line:
 
 .. code:: bash
 
@@ -354,12 +354,14 @@ Dev environment
 
 - Open http://localhost:3000 and register
 
-- To set admin rights to the newly created account, use the following command:
+- To set admin rights to the newly created account, use the following command line:
 
 .. code:: bash
 
    $ make set-admin USERNAME=<username>
 
+.. note::
+    If the user account is inactive, it activates it.
 
 Production environment
 """"""""""""""""""""""
@@ -367,13 +369,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.5.7):
+-  Download the last release (for now, it is the release v0.6.0):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.5.7.tar.gz
-   $ tar -xzf v0.5.7.tar.gz
-   $ mv FitTrackee-0.5.7 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.0.tar.gz
+   $ tar -xzf v0.6.0.tar.gz
+   $ mv FitTrackee-0.6.0 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -400,12 +402,14 @@ Production environment
 
 - Open http://localhost:5000 and register
 
-- To set admin rights to the newly created account, use the following command:
+- To set admin rights to the newly created account, use the following command line:
 
 .. code:: bash
 
    $ make set-admin USERNAME=<username>
 
+.. note::
+    If the user account is inactive, it activates it.
 
 Upgrade
 ~~~~~~~
@@ -489,13 +493,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.5.7) and overwrite existing files:
+- Download the last release (for now, it is the release v0.6.0) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.5.7.tar.gz
-   $ tar -xzf v0.5.7.tar.gz
-   $ cp -R FitTrackee-0.5.7/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.0.tar.gz
+   $ tar -xzf v0.6.0.tar.gz
+   $ cp -R FitTrackee-0.6.0/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -658,11 +662,14 @@ Open http://localhost:5000 and register.
 
 Open http://localhost:8025 to access `MailHog interface <https://github.com/mailhog/MailHog>`_ (email testing tool)
 
-- To set admin rights to the newly created account, use the following command:
+- To set admin rights to the newly created account, use the following command line:
 
 .. code:: bash
 
    $ make docker-set-admin USERNAME=<username>
+
+.. note::
+    If the user account is inactive, it activates it.
 
 - To stop **Fittrackee**:
 
