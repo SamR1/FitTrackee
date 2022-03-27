@@ -1,5 +1,16 @@
 # Change log
 
+## Version 0.6.1 (2022/03/27)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#171](https://github.com/SamR1/FitTrackee/issues/171) - Stats chart is not updated correctly 
+
+In this release 1 issue was closed.  
+
+
 ## Version 0.6.0 (2022/03/27)
 
 This version introduces some changes on [user registration](https://samr1.github.io/FitTrackee/features.html#account-preferences).  

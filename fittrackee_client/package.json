@@ -1,6 +1,6 @@
 {
   "name": "fittrackee_client",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -26,7 +26,7 @@
     "leaflet": "^1.7.1",
     "register-service-worker": "^1.7.1",
     "vue": "^3.0.0",
-    "vue-chart-3": "^3.1.8",
+    "vue-chart-3": "3.1.1",
     "vue-fullscreen": "^3.1.1",
     "vue-i18n": "^9.1.9",
     "vue-router": "^4.0.14",
