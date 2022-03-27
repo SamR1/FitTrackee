@@ -19,3 +19,4 @@ class TestConfigModel:
             'target="_blank" rel="noopener noreferrer">OpenStreetMap</a> '
             'contributors'
         )
+        assert 'admin_contact' in serialized_app_config

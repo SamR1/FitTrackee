@@ -104,14 +104,37 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
     payload: IAdminUserPayload
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+    const data: Record<string, boolean | string> = {}
+    if (payload.admin !== undefined) {
+      data.admin = payload.admin
+    }
+    if (payload.resetPassword) {
+      data.reset_password = payload.resetPassword
+    }
+    if (payload.activate) {
+      data.activate = payload.activate
+    }
+    if (payload.new_email !== undefined) {
+      data.new_email = payload.new_email
+    }
     authApi
-      .patch(`users/${payload.username}`, { admin: payload.admin })
+      .patch(`users/${payload.username}`, data)
       .then((res) => {
         if (res.data.status === 'success') {
           context.commit(
             USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS,
             res.data.data.users[0]
           )
+          if (payload.resetPassword || payload.new_email) {
+            context.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, true)
+          }
+          if (payload.activate || payload.new_email) {
+            context.commit(
+              USERS_STORE.MUTATIONS.UPDATE_USER,
+              res.data.data.users[0]
+            )
+          }
         } else {
           handleError(context, null)
         }

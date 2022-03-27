@@ -7,11 +7,20 @@ from flask import Flask
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
-from ..api_test_case import ApiTestCaseMixin
+from ..mixins import ApiTestCaseMixin
 from .utils import get_random_short_id
 
 
 class TestGetWorkouts(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get('/api/workouts')
+
+        self.assert_401(response)
+
     def test_it_gets_all_workouts_for_authenticated_user(
         self,
         app: Flask,
@@ -23,7 +32,9 @@ class TestGetWorkouts(ApiTestCaseMixin):
         workout_cycling_user_2: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts',
@@ -71,19 +82,13 @@ class TestGetWorkouts(ApiTestCaseMixin):
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email='toto@toto.com', password='87654321')),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
         )
 
         response = client.get(
             '/api/workouts',
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         data = json.loads(response.data.decode())
@@ -105,10 +110,7 @@ class TestGetWorkouts(ApiTestCaseMixin):
 
         response = client.get('/api/workouts')
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 401
-        assert 'error' in data['status']
-        assert 'provide a valid auth token' in data['message']
+        self.assert_401(response, 'provide a valid auth token')
 
 
 class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
@@ -119,7 +121,9 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts',
@@ -157,7 +161,9 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts?page=1',
@@ -195,7 +201,9 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts?page=2',
@@ -233,7 +241,9 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts?page=3',
@@ -259,20 +269,16 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts?page=A',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert 'error' in data['status']
-        assert (
-            'error, please try again or contact the administrator'
-            in data['message']
-        )
+        self.assert_500(response)
 
     @patch('fittrackee.workouts.workouts.MAX_WORKOUTS_PER_PAGE', 6)
     def test_it_gets_max_workouts_per_page_if_per_page_exceeds_max(
@@ -282,7 +288,9 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts?per_page=10',
@@ -317,7 +325,9 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts?per_page=3',
@@ -353,7 +363,9 @@ class TestGetWorkoutsWithOrder(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts',
@@ -387,7 +399,9 @@ class TestGetWorkoutsWithOrder(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts?order=asc',
@@ -421,7 +435,9 @@ class TestGetWorkoutsWithOrder(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts?order=desc',
@@ -457,7 +473,9 @@ class TestGetWorkoutsWithOrderBy(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts?order_by=workout_date',
@@ -491,7 +509,9 @@ class TestGetWorkoutsWithOrderBy(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts?order_by=distance',
@@ -519,7 +539,9 @@ class TestGetWorkoutsWithOrderBy(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts?order_by=duration',
@@ -547,7 +569,9 @@ class TestGetWorkoutsWithOrderBy(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts?order_by=ave_speed',
@@ -577,7 +601,9 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts?from=2018-02-01&to=2018-02-28',
@@ -615,7 +641,9 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts?from=2018-03-01&to=2018-03-30',
@@ -641,7 +669,9 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts?from=2018-04-01',
@@ -676,7 +706,9 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts?to=2017-12-31',
@@ -710,7 +742,9 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts?distance_from=5&distance_to=8.1',
@@ -744,7 +778,9 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts?duration_from=00:52&duration_to=01:20',
@@ -774,7 +810,9 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts?ave_speed_from=5&ave_speed_to=10',
@@ -808,7 +846,9 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
     ) -> None:
         workout_cycling_user_1.max_speed = 25
         workout_running_user_1.max_speed = 11
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts?max_speed_from=10&max_speed_to=20',
@@ -840,7 +880,9 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         sport_2_running: Sport,
         workout_running_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts?sport_id=2',
@@ -872,7 +914,9 @@ class TestGetWorkoutsWithFiltersAndPagination(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts?from=2017-01-01&page=2',
@@ -906,7 +950,9 @@ class TestGetWorkoutsWithFiltersAndPagination(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         seven_workouts_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/workouts?from=2017-01-01&page=2&order=asc',
@@ -942,7 +988,9 @@ class TestGetWorkout(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/workouts/{workout_cycling_user_1.short_id}',
@@ -971,65 +1019,66 @@ class TestGetWorkout(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/workouts/{workout_cycling_user_2.short_id}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 403
-        assert 'error' in data['status']
-        assert 'you do not have permissions' in data['message']
+        self.assert_403(response)
 
     def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/workouts/{get_random_short_id()}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
+        data = self.assert_404(response)
         assert len(data['data']['workouts']) == 0
 
     def test_it_returns_404_on_getting_gpx_if_workout_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
         random_short_id = get_random_short_id()
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/workouts/{random_short_id}/gpx',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert f'workout not found (id: {random_short_id})' in data['message']
+        data = self.assert_404_with_message(
+            response, f'workout not found (id: {random_short_id})'
+        )
         assert data['data']['gpx'] == ''
 
     def test_it_returns_404_on_getting_chart_data_if_workout_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
         random_short_id = get_random_short_id()
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/workouts/{random_short_id}/chart_data',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert f'workout not found (id: {random_short_id})' in data['message']
+        data = self.assert_404_with_message(
+            response, f'workout not found (id: {random_short_id})'
+        )
         assert data['data']['chart_data'] == ''
 
     def test_it_returns_404_on_getting_gpx_if_workout_have_no_gpx(
@@ -1040,19 +1089,17 @@ class TestGetWorkout(ApiTestCaseMixin):
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_short_id = workout_cycling_user_1.short_id
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/workouts/{workout_short_id}/gpx',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert (
-            f'no gpx file for this workout (id: {workout_short_id})'
-            in data['message']
+        self.assert_404_with_message(
+            response, f'no gpx file for this workout (id: {workout_short_id})'
         )
 
     def test_it_returns_404_if_workout_have_no_chart_data(
@@ -1063,19 +1110,17 @@ class TestGetWorkout(ApiTestCaseMixin):
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_short_id = workout_cycling_user_1.short_id
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/workouts/{workout_short_id}/chart_data',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert (
-            f'no gpx file for this workout (id: {workout_short_id})'
-            in data['message']
+        self.assert_404_with_message(
+            response, f'no gpx file for this workout (id: {workout_short_id})'
         )
 
     def test_it_returns_500_on_getting_gpx_if_an_workout_has_invalid_gpx_pathname(  # noqa
@@ -1086,20 +1131,16 @@ class TestGetWorkout(ApiTestCaseMixin):
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.gpx = "some path"
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/workouts/{workout_cycling_user_1.short_id}/gpx',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert 'error' in data['status']
-        assert (
-            'error, please try again or contact the administrator'
-            in data['message']
-        )
+        data = self.assert_500(response)
         assert 'data' not in data
 
     def test_it_returns_500_on_getting_chart_data_if_an_workout_has_invalid_gpx_pathname(  # noqa
@@ -1110,35 +1151,30 @@ class TestGetWorkout(ApiTestCaseMixin):
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.gpx = 'some path'
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/workouts/{workout_cycling_user_1.short_id}/chart_data',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert 'error' in data['status']
-        assert (
-            'error, please try again or contact the administrator'
-            in data['message']
-        )
+        data = self.assert_500(response)
         assert 'data' not in data
 
     def test_it_returns_404_if_workout_has_no_map(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
         response = client.get(
             f'/api/workouts/map/{uuid4().hex}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
-        data = json.loads(response.data.decode())
 
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert 'Map does not exist' in data['message']
+        self.assert_404_with_message(response, 'Map does not exist')
 
 
 class TestDownloadWorkoutGpx(ApiTestCaseMixin):
@@ -1147,17 +1183,16 @@ class TestDownloadWorkoutGpx(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/workouts/{get_random_short_id()}/gpx/download',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert 'workout not found' in data['message']
+        self.assert_404_with_message(response, 'workout not found')
 
     def test_it_returns_404_if_workout_does_not_have_gpx(
         self,
@@ -1166,17 +1201,16 @@ class TestDownloadWorkoutGpx(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/workouts/{workout_cycling_user_1.short_id}/gpx/download',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert 'no gpx file for workout' in data['message']
+        self.assert_404_with_message(response, 'no gpx file for workout')
 
     def test_it_returns_404_if_workout_belongs_to_a_different_user(
         self,
@@ -1186,17 +1220,16 @@ class TestDownloadWorkoutGpx(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             f'/api/workouts/{workout_cycling_user_2.short_id}/gpx/download',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert 'workout not found' in data['message']
+        self.assert_404_with_message(response, 'workout not found')
 
     def test_it_calls_send_from_directory_if_workout_has_gpx(
         self,
@@ -1209,7 +1242,9 @@ class TestDownloadWorkoutGpx(ApiTestCaseMixin):
         workout_cycling_user_1.gpx = gpx_file_path
         with patch('fittrackee.workouts.workouts.send_from_directory') as mock:
             mock.return_value = 'file'
-            client, auth_token = self.get_test_client_and_auth_token(app)
+            client, auth_token = self.get_test_client_and_auth_token(
+                app, user_1.email
+            )
 
             client.get(
                 (

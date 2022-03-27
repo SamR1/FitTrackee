@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, Ref, computed, ref, toRefs } from 'vue'
+  import { ComputedRef, Ref, computed, ref, toRefs, onUnmounted } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
@@ -76,6 +76,10 @@
       })
     }
   }
+
+  onUnmounted(() => {
+    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+  })
 </script>
 
 <style lang="scss" scoped>
@@ -85,6 +89,7 @@
     .user-picture-form {
       display: flex;
       flex-direction: column;
+      margin-top: $default-margin;
 
       form {
         display: flex;

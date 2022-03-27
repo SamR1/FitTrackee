@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 import shutil
 from importlib import import_module, reload
 from typing import Any
@@ -15,14 +16,15 @@ from flask_bcrypt import Bcrypt
 from flask_dramatiq import Dramatiq
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import ProgrammingError
 
-from fittrackee.emails.email import Email
+from fittrackee.emails.email import EmailService
 
-VERSION = __version__ = '0.5.7'
+VERSION = __version__ = '0.6.0'
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 migrate = Migrate()
-email_service = Email()
+email_service = EmailService()
 dramatiq = Dramatiq()
 log_file = os.getenv('APP_LOG')
 logging.basicConfig(
@@ -66,9 +68,16 @@ def create_app() -> Flask:
     with app.app_context():
         # Note: check if "app_config" table exist to avoid errors when
         # dropping tables on dev environments
-        if db.engine.dialect.has_table(db.engine.connect(), 'app_config'):
-            db_app_config = get_or_init_config()
-            update_app_config_from_database(app, db_app_config)
+        try:
+            if db.engine.dialect.has_table(db.engine.connect(), 'app_config'):
+                db_app_config = get_or_init_config()
+                update_app_config_from_database(app, db_app_config)
+        except ProgrammingError as e:
+            # avoid error on AppConfig migration
+            if re.match(
+                r'psycopg2.errors.UndefinedColumn(.*)app_config.', str(e)
+            ):
+                pass
 
     from .application.app_config import config_blueprint  # noqa
     from .users.auth import auth_blueprint  # noqa

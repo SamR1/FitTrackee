@@ -25,15 +25,22 @@ from fittrackee.responses import (
     InvalidPayloadErrorResponse,
     NotFoundErrorResponse,
     PayloadTooLargeErrorResponse,
+    get_error_response_if_file_is_invalid,
     handle_error_and_return_response,
 )
 from fittrackee.users.decorators import authenticate
 from fittrackee.users.models import User
-from fittrackee.users.utils import can_view_workout
-from fittrackee.utils import verify_extension_and_size
 
 from .models import Workout
-from .utils import (
+from .utils.convert import convert_in_duration
+from .utils.gpx import (
+    WorkoutGPXException,
+    extract_segment_from_gpx_file,
+    get_chart_data,
+)
+from .utils.short_id import decode_short_id
+from .utils.visibility import can_view_workout
+from .utils.workouts import (
     WorkoutException,
     create_workout,
     edit_workout,
@@ -41,13 +48,6 @@ from .utils import (
     get_datetime_from_request_args,
     process_files,
 )
-from .utils_format import convert_in_duration
-from .utils_gpx import (
-    WorkoutGPXException,
-    extract_segment_from_gpx_file,
-    get_chart_data,
-)
-from .utils_id import decode_short_id
 
 workouts_blueprint = Blueprint('workouts', __name__)
 
@@ -961,7 +961,9 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     """
     try:
-        error_response = verify_extension_and_size('workout', request)
+        error_response = get_error_response_if_file_is_invalid(
+            'workout', request
+        )
     except RequestEntityTooLarge as e:
         appLog.error(e)
         return PayloadTooLargeErrorResponse(

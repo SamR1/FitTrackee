@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Features &#8212; FitTrackee 0.5.7
+    <title>Features &#8212; FitTrackee 0.6.0
  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css" />
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.5.7
+        <span class="navbar-text navbar-version pull-left"><b>0.6.0
 </b></span>
       </div>
 
@@ -209,13 +209,19 @@
 <li><dl class="simple">
 <dt>User records by sports:</dt><dd><ul class="simple">
 <li><p>average speed</p></li>
-<li><p>farest distance</p></li>
+<li><p>farthest distance</p></li>
 <li><p>longest duration</p></li>
 <li><p>maximum speed</p></li>
 </ul>
 </dd>
 </dl>
 </li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Records may differ from records displayed by the application that originally generated the gpx files.</p>
+</div>
+<ul class="simple">
 <li><p>Workouts list and filter. Only sports with workouts are displayed in sport dropdown.</p></li>
 </ul>
 <div class="admonition note">
@@ -226,9 +232,17 @@
 <section id="account-preferences">
 <h2>Account &amp; preferences<a class="headerlink" href="#account-preferences" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>A user can create, update and deleted his account</p></li>
+<li><p>A user can create, update and deleted his account.</p></li>
+<li><p>After registration, the user account is inactive and an email with confirmation instructions is sent to activate it. A user with an inactive account cannot log in. (<em>new in 0.6.0</em>)</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The command line to add admin rights activates the account if it is inactive.</p>
+</div>
+<ul class="simple">
 <li><p>A user can set language, timezone and first day of week.</p></li>
 <li><p>A user can reset his password (<em>new in 0.3.0</em>)</p></li>
+<li><p>A user can change his email address (<em>new in 0.6.0</em>)</p></li>
 <li><p>A user can choose between metric system and imperial system for distance, elevation and speed display (<em>new in 0.5.0</em>)</p></li>
 <li><dl class="simple">
 <dt>A user can set sport preferences (<em>new in 0.5.0</em>):</dt><dd><ul>
@@ -260,6 +274,7 @@
 <li><p>maximum size of uploaded files</p></li>
 <li><p>maximum size of zip archive</p></li>
 <li><p>maximum number of files in the zip archive. If an archive contains more files, only the configured number of files is processed, without raising errors.</p></li>
+<li><p>administrator email for contact (<em>new in 0.6.0</em>)</p></li>
 </ul>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -268,8 +283,17 @@
 </li>
 <li><p><strong>Users</strong></p>
 <ul class="simple">
-<li><p>display users list and details</p></li>
-<li><p>edit a user to add/remove administration rights</p></li>
+<li><p>display and filter users list</p></li>
+<li><dl class="simple">
+<dt>edit a user to:</dt><dd><ul>
+<li><p>add/remove administration rights</p></li>
+<li><p>activate his account (<em>new in 0.6.0</em>)</p></li>
+<li><p>update his email (in case his account is locked) (<em>new in 0.6.0</em>)</p></li>
+<li><p>reset his password (in case his account is locked) (<em>new in 0.6.0</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
 <li><p>delete a user</p></li>
 </ul>
 </li>

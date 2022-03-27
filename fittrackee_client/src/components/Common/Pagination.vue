@@ -3,13 +3,15 @@
     <ul class="pagination">
       <li class="page-prev" :class="{ disabled: !pagination.has_prev }">
         <router-link
+          v-slot="{ navigate }"
           class="page-link"
           :to="{ path, query: getQuery(pagination.page, -1) }"
-          :event="pagination.has_prev ? 'click' : ''"
           :disabled="!pagination.has_prev"
         >
-          <i class="fa fa-chevron-left" aria-hidden="true" />
-          {{ $t('api.PAGINATION.PREVIOUS') }}
+          <slot @click="pagination.has_next ? navigate : null">
+            {{ $t('api.PAGINATION.PREVIOUS') }}
+            <i class="fa fa-chevron-left" aria-hidden="true" />
+          </slot>
         </router-link>
       </li>
       <li
@@ -29,13 +31,15 @@
       </li>
       <li class="page-next" :class="{ disabled: !pagination.has_next }">
         <router-link
+          v-slot="{ navigate }"
           class="page-link"
           :to="{ path, query: getQuery(pagination.page, 1) }"
-          :event="pagination.has_next ? 'click' : ''"
           :disabled="!pagination.has_next"
         >
-          {{ $t('api.PAGINATION.NEXT') }}
-          <i class="fa fa-chevron-right" aria-hidden="true" />
+          <slot @click="pagination.has_next ? navigate : null">
+            {{ $t('api.PAGINATION.NEXT') }}
+            <i class="fa fa-chevron-right" aria-hidden="true" />
+          </slot>
         </router-link>
       </li>
     </ul>
@@ -45,20 +49,23 @@
 <script setup lang="ts">
   import { toRefs } from 'vue'
 
-  import { IPagination } from '@/types/api'
+  import { IPagination, TPaginationPayload } from '@/types/api'
   import { TWorkoutsPayload } from '@/types/workouts'
   import { rangePagination } from '@/utils/api'
 
   interface Props {
     pagination: IPagination
     path: string
-    query: TWorkoutsPayload
+    query: TWorkoutsPayload | TPaginationPayload
   }
   const props = defineProps<Props>()
 
   const { pagination, path, query } = toRefs(props)
 
-  function getQuery(page: number, cursor?: number): TWorkoutsPayload {
+  function getQuery(
+    page: number,
+    cursor?: number
+  ): TWorkoutsPayload | TPaginationPayload {
     const newQuery = Object.assign({}, query.value)
     newQuery.page = cursor ? page + cursor : page
     return newQuery
@@ -92,6 +99,8 @@
         &.disabled {
           cursor: default;
           a {
+            cursor: default;
+            pointer-events: none;
             color: var(--disabled-color);
           }
         }

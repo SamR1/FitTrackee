@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path')
 
-module.exports = {
+const { defineConfig } = require('@vue/cli-service')
+
+module.exports = defineConfig({
   configureWebpack: {
     performance: {
       maxEntrypointSize: 400000,
@@ -28,4 +30,9 @@ module.exports = {
       fullInstall: true,
     },
   },
-}
+  pwa: {
+    iconPaths: {
+      faviconSVG: null,
+    },
+  },
+})

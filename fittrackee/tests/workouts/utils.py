@@ -5,7 +5,7 @@ from uuid import uuid4
 
 from flask import Flask
 
-from fittrackee.workouts.utils_id import encode_uuid
+from fittrackee.workouts.utils.short_id import encode_uuid
 
 
 def get_random_short_id() -> str:

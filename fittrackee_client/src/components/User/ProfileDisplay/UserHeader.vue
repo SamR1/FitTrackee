@@ -16,10 +16,10 @@
             unitFrom="km"
             :digits="0"
             :displayUnit="false"
-            :useImperialUnits="user.imperial_units"
+            :useImperialUnits="authUser.imperial_units"
           />
           <span class="stat-label">
-            {{ user.imperial_units ? 'miles' : 'km' }}
+            {{ authUser.imperial_units ? 'miles' : 'km' }}
           </span>
         </div>
         <div class="user-stat hide-small">
@@ -34,10 +34,12 @@
 </template>
 
 <script setup lang="ts">
-  import { toRefs } from 'vue'
+  import { computed, ComputedRef, toRefs } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
-  import { IUserProfile } from '@/types/user'
+  import { AUTH_USER_STORE } from '@/store/constants'
+  import { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import { useStore } from '@/use/useStore'
 
   interface Props {
     user: IUserProfile
@@ -45,6 +47,12 @@
   const props = defineProps<Props>()
 
   const { user } = toRefs(props)
+
+  const store = useStore()
+
+  const authUser: ComputedRef<IAuthUserProfile> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
+  )
 </script>
 
 <style lang="scss" scoped>

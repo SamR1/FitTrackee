@@ -1,9 +1,4 @@
-from .utils import (
-    TEST_URL,
-    assert_navbar,
-    login_valid_user,
-    register_valid_user_and_logout,
-)
+from .utils import TEST_URL, login_valid_user, register_valid_user_and_logout
 
 URL = f'{TEST_URL}/login'
 
@@ -34,10 +29,20 @@ class TestLogin:
         assert 'Register' in links[0].text
         assert links[1].tag_name == 'a'
         assert 'Forgot password?' in links[1].text
+        assert links[2].tag_name == 'a'
+        assert "Didn't received instructions?" in links[2].text
 
     def test_user_can_log_in(self, selenium):
         user = register_valid_user_and_logout(selenium)
 
         login_valid_user(selenium, user)
 
-        assert_navbar(selenium, user)
+        nav = selenium.find_element_by_id('nav').text
+        assert 'Register' not in nav
+        assert 'Login' not in nav
+        assert 'Dashboard' in nav
+        assert 'Workouts' in nav
+        assert 'Statistics' in nav
+        assert 'Add a workout' in nav
+        assert user['username'] in nav
+        assert 'Logout' in nav

@@ -34,14 +34,14 @@
   import WorkoutsList from '@/components/Workouts/WorkoutsList.vue'
   import { AUTH_USER_STORE, SPORTS_STORE } from '@/store/constants'
   import { ISport, ITranslatedSport } from '@/types/sports'
-  import { IUserProfile } from '@/types/user'
+  import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { translateSports } from '@/utils/sports'
 
   const { t } = useI18n()
   const store = useStore()
 
-  const authUser: ComputedRef<IUserProfile> = computed(
+  const authUser: ComputedRef<IAuthUserProfile> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
   )
   const sports: ComputedRef<ISport[]> = computed(

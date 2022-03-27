@@ -8,9 +8,9 @@ export interface IUserProfile {
   birth_date: string | null
   created_at: string
   email: string
+  email_to_confirm?: string
+  is_active: boolean
   first_name: string | null
-  imperial_units: boolean
-  language: string | null
   last_name: string | null
   location: string | null
   nb_sports: number
@@ -18,10 +18,15 @@ export interface IUserProfile {
   picture: string | boolean
   records: IRecord[]
   sports_list: number[]
-  timezone: string
   total_distance: number
   total_duration: string
   username: string
+}
+
+export interface IAuthUserProfile extends IUserProfile {
+  imperial_units: boolean
+  language: string | null
+  timezone: string
   weekm: boolean
 }
 
@@ -31,13 +36,25 @@ export interface IUserPayload {
   first_name: string
   last_name: string
   location: string
+}
+
+export interface IUserAccountPayload {
+  email: string
   password: string
-  password_conf: string
+  new_password?: string
+}
+
+export interface IUserAccountUpdatePayload {
+  token: LocationQueryValue | LocationQueryValue[]
+  refreshUser?: boolean
 }
 
 export interface IAdminUserPayload {
   username: string
-  admin: boolean
+  admin?: boolean
+  resetPassword?: boolean
+  activate?: boolean
+  new_email?: string
 }
 
 export interface IUserPreferencesPayload {
@@ -58,13 +75,12 @@ export interface IUserPicturePayload {
   picture: File
 }
 
-export interface IUserPasswordPayload {
+export interface IUserEmailPayload {
   email: string
 }
 
 export interface IUserPasswordResetPayload {
   password: string
-  password_conf: string
   token: string
 }
 
@@ -77,7 +93,6 @@ export interface ILoginRegisterFormData {
   username: string
   email: string
   password: string
-  password_conf: string
 }
 
 export interface ILoginOrRegisterData {

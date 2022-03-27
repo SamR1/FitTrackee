@@ -1,6 +1,6 @@
 {
   "name": "fittrackee_client",
-  "version": "0.5.7",
+  "version": "0.6.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -11,50 +11,54 @@
     "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\""
   },
   "dependencies": {
-    "@tmcw/togeojson": "^4.5.0",
+    "@tmcw/togeojson": "^4.7.0",
     "@vue-leaflet/vue-leaflet": "^0.6.1",
-    "axios": "^0.25.0",
+    "@zxcvbn-ts/core": "^2.0.1",
+    "@zxcvbn-ts/language-common": "^2.0.1",
+    "@zxcvbn-ts/language-en": "^2.0.1",
+    "@zxcvbn-ts/language-fr": "^2.0.1",
+    "axios": "^0.26.1",
     "chart.js": "^3.7.0",
     "chartjs-plugin-datalabels": "^2.0.0",
-    "core-js": "^3.21.0",
+    "core-js": "^3.21.1",
     "date-fns": "^2.28.0",
-    "date-fns-tz": "^1.2.2",
+    "date-fns-tz": "^1.3.1",
     "leaflet": "^1.7.1",
     "register-service-worker": "^1.7.1",
     "vue": "^3.0.0",
-    "vue-chart-3": "^3.0.9",
+    "vue-chart-3": "^3.1.8",
     "vue-fullscreen": "^3.1.1",
     "vue-i18n": "^9.1.9",
-    "vue-router": "^4.0.0-0",
+    "vue-router": "^4.0.14",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
     "@intlify/vue-i18n-loader": "^4.0.1",
     "@types/chai": "^4.2.11",
     "@types/mocha": "^9.1.0",
-    "@typescript-eslint/eslint-plugin": "^4.18.0",
-    "@typescript-eslint/parser": "^4.18.0",
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-eslint": "~4.5.0",
-    "@vue/cli-plugin-pwa": "~4.5.0",
-    "@vue/cli-plugin-router": "~4.5.0",
-    "@vue/cli-plugin-typescript": "~4.5.0",
-    "@vue/cli-plugin-unit-mocha": "~4.5.0",
-    "@vue/cli-plugin-vuex": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
-    "@vue/eslint-config-prettier": "^6.0.0",
-    "@vue/eslint-config-typescript": "^7.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
+    "@vue/cli-plugin-babel": "~5.0.1",
+    "@vue/cli-plugin-eslint": "~5.0.1",
+    "@vue/cli-plugin-pwa": "~5.0.1",
+    "@vue/cli-plugin-router": "~5.0.1",
+    "@vue/cli-plugin-typescript": "~5.0.1",
+    "@vue/cli-plugin-unit-mocha": "~5.0.1",
+    "@vue/cli-plugin-vuex": "~5.0.1",
+    "@vue/cli-service": "~5.0.1",
+    "@vue/eslint-config-typescript": "^10.0.0",
     "@vue/test-utils": "^2.0.0-0",
     "chai": "^4.3.6",
-    "eslint": "^6.7.2",
-    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-typescript": "^2.7.0",
     "eslint-plugin-import": "^2.24.1",
-    "eslint-plugin-prettier": "^3.3.1",
-    "eslint-plugin-vue": "^7.0.0",
-    "prettier": "^2.2.1",
-    "sass": "^1.26.5",
-    "sass-loader": "^10.2.0",
-    "typescript": "~4.4.4",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-vue": "^8.5.0",
+    "prettier": "^2.6.1",
+    "sass": "^1.49.9",
+    "sass-loader": "^12.6.0",
+    "typescript": "~4.5.5",
     "vue-cli-plugin-i18n": "~2.3.1"
   },
   "eslintConfig": {
@@ -66,8 +70,6 @@
       "plugin:vue/vue3-essential",
       "eslint:recommended",
       "@vue/typescript/recommended",
-      "@vue/prettier",
-      "@vue/prettier/@typescript-eslint",
       "plugin:import/recommended",
       "plugin:import/typescript"
     ],
@@ -81,7 +83,8 @@
       "import/resolver": "typescript"
     },
     "parserOptions": {
-      "ecmaVersion": 2020
+      "ecmaVersion": 2020,
+      "parser": "@typescript-eslint/parser"
     },
     "rules": {
       "import/order": [
@@ -93,7 +96,8 @@
             "caseInsensitive": true
           }
         }
-      ]
+      ],
+      "vue/multi-word-component-names": "off"
     },
     "overrides": [
       {
@@ -110,6 +114,7 @@
   "browserslist": [
     "> 1%",
     "last 2 versions",
-    "not dead"
+    "not dead",
+    "not ie 11"
   ]
 }

@@ -48,7 +48,6 @@
 
       @media screen and (max-width: $small-limit) {
         width: 100%;
-        margin: 0 auto 50px auto;
       }
     }
   }

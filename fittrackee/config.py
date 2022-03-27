@@ -12,7 +12,6 @@ else:
 
 
 class BaseConfig:
-    """Base configuration"""
 
     DEBUG = False
     TESTING = False
@@ -49,8 +48,6 @@ class BaseConfig:
 
 
 class DevelopmentConfig(BaseConfig):
-    """Development configuration"""
-
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
     SECRET_KEY = 'development key'
@@ -59,8 +56,6 @@ class DevelopmentConfig(BaseConfig):
 
 
 class TestingConfig(BaseConfig):
-    """Testing configuration"""
-
     DEBUG = True
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_TEST_URL')
@@ -74,9 +69,11 @@ class TestingConfig(BaseConfig):
     SENDER_EMAIL = 'fittrackee@example.com'
 
 
-class ProductionConfig(BaseConfig):
-    """Production configuration"""
+class End2EndTestingConfig(TestingConfig):
+    DRAMATIQ_BROKER_URL = os.getenv('REDIS_URL', 'redis://')
 
+
+class ProductionConfig(BaseConfig):
     DEBUG = False
     # https://docs.sqlalchemy.org/en/13/core/pooling.html#using-connection-pools-with-multiprocessing-or-os-fork  # noqa
     SQLALCHEMY_ENGINE_OPTIONS = (

@@ -1,7 +1,7 @@
 <template>
   <div
     id="workout-edition"
-    class="center-card center-card with-margin"
+    class="center-card with-margin"
     :class="{ 'center-form': workout && workout.with_gpx }"
   >
     <Card>
@@ -137,6 +137,8 @@
                         class="workout-duration"
                         type="text"
                         placeholder="HH"
+                        minlength="1"
+                        maxlength="2"
                         pattern="^([0-1]?[0-9]|2[0-3])$"
                         required
                         @invalid="invalidateForm"
@@ -150,6 +152,8 @@
                         class="workout-duration"
                         type="text"
                         pattern="^([0-5][0-9])$"
+                        minlength="2"
+                        maxlength="2"
                         placeholder="MM"
                         required
                         @invalid="invalidateForm"
@@ -163,6 +167,8 @@
                         class="workout-duration"
                         type="text"
                         pattern="^([0-5][0-9])$"
+                        minlength="2"
+                        maxlength="2"
                         placeholder="SS"
                         required
                         @invalid="invalidateForm"
