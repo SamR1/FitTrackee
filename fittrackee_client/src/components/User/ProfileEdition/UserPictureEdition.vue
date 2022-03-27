@@ -89,6 +89,7 @@
     .user-picture-form {
       display: flex;
       flex-direction: column;
+      margin-top: $default-margin;
 
       form {
         display: flex;
