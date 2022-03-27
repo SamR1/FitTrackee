@@ -25,7 +25,7 @@
 
   const authUserPictureUrl = computed(() =>
     props.user.picture
-      ? `${getApiUrl()}users/${props.user.username}/picture`
+      ? `${getApiUrl()}users/${props.user.username}/picture?${Date.now()}`
       : ''
   )
 </script>

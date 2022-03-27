@@ -1,7 +1,6 @@
 import { ISport, ITranslatedSport, TActiveStatus } from '@/types/sports'
 import { IWorkout } from '@/types/workouts'
 
-// TODO: allow user to change colors
 export const sportColors: Record<string, string> = {
   'Cycling (Sport)': '#4c9792',
   'Cycling (Transport)': '#88af98',

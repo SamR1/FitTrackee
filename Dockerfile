@@ -1,7 +1,5 @@
 FROM python:3.9
 
-MAINTAINER SamR1@users.noreply.github.com
-
 # set working directory
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
