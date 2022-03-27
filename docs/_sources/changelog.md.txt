@@ -1,5 +1,35 @@
 # Change log
 
+## Version 0.6.0 (2022/03/27)
+
+This version introduces some changes on [user registration](https://samr1.github.io/FitTrackee/features.html#account-preferences).  
+From now on, a user needs to confirm his account after registration (an email with confirmation instructions is sent after registration).
+
+
+### Issues Closed
+
+#### Features
+
+* [#155](https://github.com/SamR1/FitTrackee/issues/155) -  Improve user registration
+* [#106](https://github.com/SamR1/FitTrackee/issues/106) -  Allow user to update email
+
+#### Bugs Fixed
+
+* [#169](https://github.com/SamR1/FitTrackee/issues/169) -  user picture is not refreshed after update
+
+### Pull Requests
+
+#### Bugs Fixed
+
+* [#161](https://github.com/SamR1/FitTrackee/pull/161) - Minor translation issue on 'Farthest'
+* [#160](https://github.com/SamR1/FitTrackee/pull/160) - Minor translation issue on APP_ERROR
+
+Thanks to @Fmstrat
+
+In this release 3 issues were closed.  
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/installation.html#upgrade))
+
+
 ## Version 0.5.7 (2022/02/13)
 
 This release contains several fixes including security fixes.  
