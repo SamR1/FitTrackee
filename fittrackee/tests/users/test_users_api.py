@@ -10,6 +10,7 @@ from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin
+from ..utils import jsonify_dict
 
 
 class TestGetUser(ApiTestCaseMixin):
@@ -66,22 +67,7 @@ class TestGetUser(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         user = data['data']['users'][0]
-        assert user['username'] == inactive_user.username
-        assert user['email'] == inactive_user.email
-        assert user['created_at']
-        assert not user['admin']
-        assert not user['is_active']
-        assert user['first_name'] is None
-        assert user['last_name'] is None
-        assert user['birth_date'] is None
-        assert user['bio'] is None
-        assert user['location'] is None
-        assert user['nb_sports'] == 0
-        assert user['nb_workouts'] == 0
-        assert user['records'] == []
-        assert user['sports_list'] == []
-        assert user['total_distance'] == 0
-        assert user['total_duration'] == '0:00:00'
+        assert user == jsonify_dict(inactive_user.serialize(user_1_admin))
 
     def test_it_gets_single_user_without_workouts(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -101,22 +87,7 @@ class TestGetUser(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         user = data['data']['users'][0]
-        assert user['username'] == user_2.username
-        assert user['email'] == user_2.email
-        assert user['created_at']
-        assert not user['admin']
-        assert user['is_active']
-        assert user['first_name'] is None
-        assert user['last_name'] is None
-        assert user['birth_date'] is None
-        assert user['bio'] is None
-        assert user['location'] is None
-        assert user['nb_sports'] == 0
-        assert user['nb_workouts'] == 0
-        assert user['records'] == []
-        assert user['sports_list'] == []
-        assert user['total_distance'] == 0
-        assert user['total_duration'] == '0:00:00'
+        assert user == jsonify_dict(user_2.serialize(user_1_admin))
 
     def test_it_gets_single_user_with_workouts(
         self,
@@ -143,22 +114,7 @@ class TestGetUser(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         user = data['data']['users'][0]
-        assert user['username'] == user_1.username
-        assert user['email'] == user_1.email
-        assert user['created_at']
-        assert not user['admin']
-        assert user['is_active']
-        assert user['first_name'] is None
-        assert user['last_name'] is None
-        assert user['birth_date'] is None
-        assert user['bio'] is None
-        assert user['location'] is None
-        assert len(user['records']) == 8
-        assert user['nb_sports'] == 2
-        assert user['nb_workouts'] == 2
-        assert user['sports_list'] == [1, 2]
-        assert user['total_distance'] == 22
-        assert user['total_duration'] == '2:40:00'
+        assert user == jsonify_dict(user_1.serialize(user_2_admin))
 
     def test_it_returns_error_if_user_does_not_exist(
         self, app: Flask, user_1_admin: User
@@ -207,106 +163,15 @@ class TestGetUsers(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
-        assert 'created_at' in data['data']['users'][0]
-        assert 'created_at' in data['data']['users'][1]
-        assert 'created_at' in data['data']['users'][2]
-        assert 'admin' in data['data']['users'][0]['username']
-        assert 'inactive' in data['data']['users'][1]['username']
-        assert 'sam' in data['data']['users'][2]['username']
-        assert 'admin@example.com' in data['data']['users'][0]['email']
-        assert 'inactive@example.com' in data['data']['users'][1]['email']
-        assert 'sam@test.com' in data['data']['users'][2]['email']
-        assert data['data']['users'][0]['is_active']
-        assert not data['data']['users'][1]['is_active']
-        assert data['data']['users'][2]['is_active']
-        assert data['data']['users'][0]['imperial_units'] is False
-        assert data['data']['users'][0]['timezone'] is None
-        assert data['data']['users'][0]['weekm'] is False
-        assert data['data']['users'][0]['language'] is None
-        assert data['data']['users'][0]['nb_sports'] == 0
-        assert data['data']['users'][0]['nb_workouts'] == 0
-        assert data['data']['users'][0]['records'] == []
-        assert data['data']['users'][0]['sports_list'] == []
-        assert data['data']['users'][0]['total_distance'] == 0
-        assert data['data']['users'][0]['total_duration'] == '0:00:00'
-        assert data['data']['users'][1]['nb_sports'] == 0
-        assert data['data']['users'][1]['nb_workouts'] == 0
-        assert data['data']['users'][1]['records'] == []
-        assert data['data']['users'][1]['sports_list'] == []
-        assert data['data']['users'][1]['total_distance'] == 0
-        assert data['data']['users'][1]['total_duration'] == '0:00:00'
-        assert data['data']['users'][2]['records'] == []
-        assert data['data']['users'][2]['nb_sports'] == 0
-        assert data['data']['users'][2]['nb_workouts'] == 0
-        assert data['data']['users'][2]['sports_list'] == []
-        assert data['data']['users'][2]['total_distance'] == 0
-        assert data['data']['users'][2]['total_duration'] == '0:00:00'
-        assert data['pagination'] == {
-            'has_next': False,
-            'has_prev': False,
-            'page': 1,
-            'pages': 1,
-            'total': 3,
-        }
-
-    def test_it_gets_users_list_with_workouts(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        user_2: User,
-        user_3: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        sport_2_running: Sport,
-        workout_running_user_1: Workout,
-        workout_cycling_user_2: Workout,
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1_admin.serialize(user_1_admin)
         )
-
-        response = client.get(
-            '/api/users',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+        assert data['data']['users'][1] == jsonify_dict(
+            inactive_user.serialize(user_1_admin)
         )
-
-        data = json.loads(response.data.decode())
-        assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['users']) == 3
-        assert 'created_at' in data['data']['users'][0]
-        assert 'created_at' in data['data']['users'][1]
-        assert 'created_at' in data['data']['users'][2]
-        assert 'admin' in data['data']['users'][0]['username']
-        assert 'toto' in data['data']['users'][1]['username']
-        assert 'sam' in data['data']['users'][2]['username']
-        assert 'admin@example.com' in data['data']['users'][0]['email']
-        assert 'toto@toto.com' in data['data']['users'][1]['email']
-        assert 'sam@test.com' in data['data']['users'][2]['email']
-        assert data['data']['users'][0]['is_active']
-        assert data['data']['users'][1]['is_active']
-        assert data['data']['users'][2]['is_active']
-        assert data['data']['users'][0]['imperial_units'] is False
-        assert data['data']['users'][0]['timezone'] is None
-        assert data['data']['users'][0]['weekm'] is False
-        assert data['data']['users'][0]['nb_sports'] == 2
-        assert data['data']['users'][0]['nb_workouts'] == 2
-        assert len(data['data']['users'][0]['records']) == 8
-        assert data['data']['users'][0]['sports_list'] == [1, 2]
-        assert data['data']['users'][0]['total_distance'] == 22.0
-        assert data['data']['users'][0]['total_duration'] == '2:40:00'
-        assert data['data']['users'][1]['nb_sports'] == 1
-        assert data['data']['users'][1]['nb_workouts'] == 1
-        assert len(data['data']['users'][1]['records']) == 4
-        assert data['data']['users'][1]['sports_list'] == [1]
-        assert data['data']['users'][1]['total_distance'] == 15
-        assert data['data']['users'][1]['total_duration'] == '1:00:00'
-        assert data['data']['users'][2]['nb_sports'] == 0
-        assert data['data']['users'][2]['nb_workouts'] == 0
-        assert len(data['data']['users'][2]['records']) == 0
-        assert data['data']['users'][2]['sports_list'] == []
-        assert data['data']['users'][2]['total_distance'] == 0
-        assert data['data']['users'][2]['total_duration'] == '0:00:00'
+        assert data['data']['users'][2] == jsonify_dict(
+            user_3.serialize(user_1_admin)
+        )
         assert data['pagination'] == {
             'has_next': False,
             'has_prev': False,
