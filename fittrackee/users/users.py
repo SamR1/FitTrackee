@@ -249,12 +249,13 @@ def get_users(auth_user: User) -> Dict:
 
 
 @users_blueprint.route('/users/<user_name>', methods=['GET'])
-@authenticate_as_admin
+@authenticate
 def get_single_user(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get single user details. Only user with admin rights can get user details.
+    Get single user details. Only user with admin rights can get other users
+    details.
 
     It returns user preferences only for authenticated user.
 
@@ -353,6 +354,9 @@ def get_single_user(
     :statuscode 404:
         - user does not exist
     """
+    if user_name != auth_user.username and not auth_user.admin:
+        return ForbiddenErrorResponse()
+
     try:
         user = User.query.filter_by(username=user_name).first()
         if user:

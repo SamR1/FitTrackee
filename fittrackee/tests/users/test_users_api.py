@@ -28,6 +28,26 @@ class TestGetUser(ApiTestCaseMixin):
 
         self.assert_403(response)
 
+    def test_user_can_access_his_profile(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/users/{user_1.username}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 1
+        user = data['data']['users'][0]
+        assert user['username'] == user_1.username
+
     def test_it_gets_inactive_user(
         self, app: Flask, user_1_admin: User, inactive_user: User
     ) -> None:
