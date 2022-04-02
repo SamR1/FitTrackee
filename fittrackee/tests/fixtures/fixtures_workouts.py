@@ -1,6 +1,6 @@
 import datetime
 from io import BytesIO
-from typing import Generator
+from typing import Generator, List
 from unittest.mock import Mock, patch
 from uuid import uuid4
 
@@ -107,96 +107,105 @@ def workout_running_user_1() -> Workout:
 
 
 @pytest.fixture()
-def seven_workouts_user_1() -> Workout:
-    workout = Workout(
+def seven_workouts_user_1() -> List[Workout]:
+    workouts = []
+    workout_1 = Workout(
         user_id=1,
         sport_id=1,
         workout_date=datetime.datetime.strptime('20/03/2017', '%d/%m/%Y'),
         distance=5,
         duration=datetime.timedelta(seconds=1024),
     )
-    update_workout(workout)
-    workout.ascent = 120
-    workout.descent = 200
-    db.session.add(workout)
+    update_workout(workout_1)
+    workout_1.ascent = 120
+    workout_1.descent = 200
+    db.session.add(workout_1)
     db.session.flush()
+    workouts.append(workout_1)
 
-    workout = Workout(
+    workout_2 = Workout(
         user_id=1,
         sport_id=1,
         workout_date=datetime.datetime.strptime('01/06/2017', '%d/%m/%Y'),
         distance=10,
         duration=datetime.timedelta(seconds=3456),
     )
-    update_workout(workout)
-    workout.ascent = 100
-    workout.descent = 80
-    db.session.add(workout)
+    update_workout(workout_2)
+    workout_2.ascent = 100
+    workout_2.descent = 80
+    db.session.add(workout_2)
     db.session.flush()
+    workouts.append(workout_2)
 
-    workout = Workout(
+    workout_3 = Workout(
         user_id=1,
         sport_id=1,
         workout_date=datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
         distance=10,
         duration=datetime.timedelta(seconds=1024),
     )
-    update_workout(workout)
-    workout.ascent = 80
-    workout.descent = 100
-    db.session.add(workout)
+    update_workout(workout_3)
+    workout_3.ascent = 80
+    workout_3.descent = 100
+    db.session.add(workout_3)
     db.session.flush()
+    workouts.append(workout_3)
 
-    workout = Workout(
+    workout_4 = Workout(
         user_id=1,
         sport_id=1,
         workout_date=datetime.datetime.strptime('23/02/2018', '%d/%m/%Y'),
         distance=1,
         duration=datetime.timedelta(seconds=600),
     )
-    update_workout(workout)
-    workout.ascent = 120
-    workout.descent = 180
-    db.session.add(workout)
+    update_workout(workout_4)
+    workout_4.ascent = 120
+    workout_4.descent = 180
+    db.session.add(workout_4)
     db.session.flush()
+    workouts.append(workout_4)
 
-    workout = Workout(
+    workout_5 = Workout(
         user_id=1,
         sport_id=1,
         workout_date=datetime.datetime.strptime('23/02/2018', '%d/%m/%Y'),
         distance=10,
         duration=datetime.timedelta(seconds=1000),
     )
-    update_workout(workout)
-    workout.ascent = 100
-    workout.descent = 200
-    db.session.add(workout)
+    update_workout(workout_5)
+    workout_5.ascent = 100
+    workout_5.descent = 200
+    db.session.add(workout_5)
     db.session.flush()
+    workouts.append(workout_5)
 
-    workout = Workout(
+    workout_6 = Workout(
         user_id=1,
         sport_id=1,
         workout_date=datetime.datetime.strptime('01/04/2018', '%d/%m/%Y'),
         distance=8,
         duration=datetime.timedelta(seconds=6000),
     )
-    update_workout(workout)
-    workout.ascent = 40
-    workout.descent = 20
-    db.session.add(workout)
+    update_workout(workout_6)
+    workout_6.ascent = 40
+    workout_6.descent = 20
+    db.session.add(workout_6)
     db.session.flush()
+    workouts.append(workout_6)
 
-    workout = Workout(
+    workout_7 = Workout(
         user_id=1,
         sport_id=1,
         workout_date=datetime.datetime.strptime('09/05/2018', '%d/%m/%Y'),
         distance=10,
         duration=datetime.timedelta(seconds=3000),
     )
-    update_workout(workout)
-    db.session.add(workout)
+    update_workout(workout_7)
+    db.session.add(workout_7)
     db.session.commit()
-    return workout
+    workouts.append(workout_7)
+
+    return workouts
 
 
 @pytest.fixture()

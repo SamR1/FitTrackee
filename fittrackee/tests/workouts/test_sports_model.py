@@ -17,15 +17,17 @@ class TestSportModel:
         assert '<Sport \'Cycling\'>' == str(sport)
 
         serialized_sport = sport.serialize(is_admin=is_admin)
-        assert 1 == serialized_sport['id']
-        assert 'Cycling' == serialized_sport['label']
+        assert serialized_sport['label'] == sport.label
+        assert serialized_sport['id'] == sport.id
         assert serialized_sport['is_active'] is True
         assert serialized_sport['is_active_for_user'] is True
         assert serialized_sport['color'] is None
         assert serialized_sport['stopped_speed_threshold'] == 1
         return serialized_sport
 
-    def test_sport_model(self, app: Flask, sport_1_cycling: Sport) -> None:
+    def test_sport_model_without_workout(
+        self, app: Flask, sport_1_cycling: Sport
+    ) -> None:
         serialized_sport = self.assert_sport_model(sport_1_cycling)
         assert 'has_workouts' not in serialized_sport
 

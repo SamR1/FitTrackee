@@ -1,6 +1,9 @@
 import random
 import string
-from typing import Optional
+from json import loads
+from typing import Dict, Optional
+
+from flask import json as flask_json
 
 
 def random_string(
@@ -23,3 +26,7 @@ def random_string(
 
 def random_email() -> str:
     return random_string(suffix='@example.com')
+
+
+def jsonify_dict(data: Dict) -> Dict:
+    return loads(flask_json.dumps(data))

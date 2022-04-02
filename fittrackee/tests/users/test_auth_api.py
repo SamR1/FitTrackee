@@ -9,9 +9,10 @@ from freezegun import freeze_time
 
 from fittrackee.users.models import User, UserSportPreference
 from fittrackee.users.utils.token import get_user_token
-from fittrackee.workouts.models import Sport, Workout
+from fittrackee.workouts.models import Sport
 
 from ..mixins import ApiTestCaseMixin
+from ..utils import jsonify_dict
 
 USER_AGENT = (
     'Mozilla/5.0 (X11; Linux x86_64; rv:98.0) Gecko/20100101 Firefox/98.0'
@@ -453,9 +454,7 @@ class TestUserProfile(ApiTestCaseMixin):
 
         self.assert_401(response, 'invalid token, please log in again')
 
-    def test_it_returns_user_minimal_profile(
-        self, app: Flask, user_1: User
-    ) -> None:
+    def test_it_returns_user(self, app: Flask, user_1: User) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -468,92 +467,7 @@ class TestUserProfile(ApiTestCaseMixin):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
-        assert data['data'] is not None
-        assert data['data']['username'] == 'test'
-        assert data['data']['email'] == 'test@test.com'
-        assert data['data']['created_at']
-        assert not data['data']['admin']
-        assert data['data']['timezone'] is None
-        assert data['data']['weekm'] is False
-        assert data['data']['imperial_units'] is False
-        assert data['data']['language'] is None
-        assert data['data']['nb_sports'] == 0
-        assert data['data']['nb_workouts'] == 0
-        assert data['data']['records'] == []
-        assert data['data']['sports_list'] == []
-        assert data['data']['total_distance'] == 0
-        assert data['data']['total_duration'] == '0:00:00'
-
-    def test_it_returns_user_full_profile(
-        self, app: Flask, user_1_full: User
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_full.email
-        )
-
-        response = client.get(
-            '/api/auth/profile',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        assert response.status_code == 200
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['data'] is not None
-        assert data['data']['username'] == 'test'
-        assert data['data']['email'] == 'test@test.com'
-        assert data['data']['created_at']
-        assert not data['data']['admin']
-        assert data['data']['first_name'] == 'John'
-        assert data['data']['last_name'] == 'Doe'
-        assert data['data']['birth_date']
-        assert data['data']['bio'] == 'just a random guy'
-        assert data['data']['imperial_units'] is False
-        assert data['data']['location'] == 'somewhere'
-        assert data['data']['timezone'] == 'America/New_York'
-        assert data['data']['weekm'] is False
-        assert data['data']['language'] == 'en'
-        assert data['data']['nb_sports'] == 0
-        assert data['data']['nb_workouts'] == 0
-        assert data['data']['records'] == []
-        assert data['data']['sports_list'] == []
-        assert data['data']['total_distance'] == 0
-        assert data['data']['total_duration'] == '0:00:00'
-
-    def test_it_returns_user_profile_with_workouts(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        sport_2_running: Sport,
-        workout_cycling_user_1: Workout,
-        workout_running_user_1: Workout,
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            '/api/auth/profile',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        assert response.status_code == 200
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['data'] is not None
-        assert data['data']['username'] == 'test'
-        assert data['data']['email'] == 'test@test.com'
-        assert data['data']['created_at']
-        assert not data['data']['admin']
-        assert data['data']['timezone'] is None
-        assert data['data']['imperial_units'] is False
-        assert data['data']['nb_sports'] == 2
-        assert data['data']['nb_workouts'] == 2
-        assert len(data['data']['records']) == 8
-        assert data['data']['sports_list'] == [1, 2]
-        assert data['data']['total_distance'] == 22
-        assert data['data']['total_duration'] == '2:40:00'
+        assert data['data'] == jsonify_dict(user_1.serialize(user_1))
 
 
 class TestUserProfileUpdate(ApiTestCaseMixin):
@@ -618,25 +532,7 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['message'] == 'user profile updated'
-        assert data['data']['username'] == user_1.username
-        assert data['data']['email'] == user_1.email
-        assert not data['data']['admin']
-        assert data['data']['created_at']
-        assert data['data']['first_name'] == first_name
-        assert data['data']['last_name'] == last_name
-        assert data['data']['birth_date'] == 'Tue, 01 Jan 1980 00:00:00 GMT'
-        assert data['data']['bio'] == bio
-        assert data['data']['imperial_units'] is False
-        assert data['data']['location'] == location
-        assert data['data']['timezone'] is None
-        assert data['data']['weekm'] is False
-        assert data['data']['language'] is None
-        assert data['data']['nb_sports'] == 0
-        assert data['data']['nb_workouts'] == 0
-        assert data['data']['records'] == []
-        assert data['data']['sports_list'] == []
-        assert data['data']['total_distance'] == 0
-        assert data['data']['total_duration'] == '0:00:00'
+        assert data['data'] == jsonify_dict(user_1.serialize(user_1))
 
 
 class TestUserAccountUpdate(ApiTestCaseMixin):
@@ -1270,25 +1166,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['message'] == 'user preferences updated'
-        assert data['data']['username'] == user_1.username
-        assert data['data']['email'] == user_1.email
-        assert not data['data']['admin']
-        assert data['data']['created_at']
-        assert data['data']['first_name'] is None
-        assert data['data']['last_name'] is None
-        assert data['data']['birth_date'] is None
-        assert data['data']['bio'] is None
-        assert data['data']['imperial_units']
-        assert data['data']['location'] is None
-        assert data['data']['timezone'] == 'America/New_York'
-        assert data['data']['weekm'] is True
-        assert data['data']['language'] == 'fr'
-        assert data['data']['nb_sports'] == 0
-        assert data['data']['nb_workouts'] == 0
-        assert data['data']['records'] == []
-        assert data['data']['sports_list'] == []
-        assert data['data']['total_distance'] == 0
-        assert data['data']['total_duration'] == '0:00:00'
+        assert data['data'] == jsonify_dict(user_1.serialize(user_1))
 
 
 class TestUserSportPreferencesUpdate(ApiTestCaseMixin):

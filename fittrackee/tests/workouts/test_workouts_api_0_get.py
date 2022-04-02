@@ -1,4 +1,5 @@
 import json
+from typing import List
 from unittest.mock import patch
 from uuid import uuid4
 
@@ -8,6 +9,7 @@ from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin
+from ..utils import jsonify_dict
 from .utils import get_random_short_id
 
 
@@ -45,25 +47,12 @@ class TestGetWorkouts(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 2
-        assert 'creation_date' in data['data']['workouts'][0]
-        assert (
-            'Sun, 01 Apr 2018 00:00:00 GMT'
-            == data['data']['workouts'][0]['workout_date']
+        assert data['data']['workouts'][0] == jsonify_dict(
+            workout_running_user_1.serialize()
         )
-        assert 'test' == data['data']['workouts'][0]['user']
-        assert 2 == data['data']['workouts'][0]['sport_id']
-        assert 12.0 == data['data']['workouts'][0]['distance']
-        assert '1:40:00' == data['data']['workouts'][0]['duration']
-
-        assert 'creation_date' in data['data']['workouts'][1]
-        assert (
-            'Mon, 01 Jan 2018 00:00:00 GMT'
-            == data['data']['workouts'][1]['workout_date']
+        assert data['data']['workouts'][1] == jsonify_dict(
+            workout_cycling_user_1.serialize()
         )
-        assert 'test' == data['data']['workouts'][1]['user']
-        assert 1 == data['data']['workouts'][1]['sport_id']
-        assert 10.0 == data['data']['workouts'][1]['distance']
-        assert '1:00:00' == data['data']['workouts'][1]['duration']
         assert data['pagination'] == {
             'has_next': False,
             'has_prev': False,
@@ -119,7 +108,7 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -134,18 +123,22 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 5
-        assert 'creation_date' in data['data']['workouts'][0]
-        assert (
-            'Wed, 09 May 2018 00:00:00 GMT'
-            == data['data']['workouts'][0]['workout_date']
+        assert data['data']['workouts'][0] == jsonify_dict(
+            seven_workouts_user_1[6].serialize()
         )
-        assert '0:50:00' == data['data']['workouts'][0]['duration']
-        assert 'creation_date' in data['data']['workouts'][4]
-        assert (
-            'Mon, 01 Jan 2018 00:00:00 GMT'
-            == data['data']['workouts'][4]['workout_date']
+        assert data['data']['workouts'][1] == jsonify_dict(
+            seven_workouts_user_1[5].serialize()
         )
-        assert '0:17:04' == data['data']['workouts'][4]['duration']
+        assert data['data']['workouts'][2] == jsonify_dict(
+            seven_workouts_user_1[3].serialize()
+        )
+        assert data['data']['workouts'][3] == jsonify_dict(
+            seven_workouts_user_1[4].serialize()
+        )
+        assert data['data']['workouts'][4] == jsonify_dict(
+            seven_workouts_user_1[2].serialize()
+        )
+
         assert data['pagination'] == {
             'has_next': True,
             'has_prev': False,
@@ -159,7 +152,7 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -174,18 +167,21 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 5
-        assert 'creation_date' in data['data']['workouts'][0]
-        assert (
-            'Wed, 09 May 2018 00:00:00 GMT'
-            == data['data']['workouts'][0]['workout_date']
+        assert data['data']['workouts'][0] == jsonify_dict(
+            seven_workouts_user_1[6].serialize()
         )
-        assert '0:50:00' == data['data']['workouts'][0]['duration']
-        assert 'creation_date' in data['data']['workouts'][4]
-        assert (
-            'Mon, 01 Jan 2018 00:00:00 GMT'
-            == data['data']['workouts'][4]['workout_date']
+        assert data['data']['workouts'][1] == jsonify_dict(
+            seven_workouts_user_1[5].serialize()
         )
-        assert '0:17:04' == data['data']['workouts'][4]['duration']
+        assert data['data']['workouts'][2] == jsonify_dict(
+            seven_workouts_user_1[3].serialize()
+        )
+        assert data['data']['workouts'][3] == jsonify_dict(
+            seven_workouts_user_1[4].serialize()
+        )
+        assert data['data']['workouts'][4] == jsonify_dict(
+            seven_workouts_user_1[2].serialize()
+        )
         assert data['pagination'] == {
             'has_next': True,
             'has_prev': False,
@@ -199,7 +195,7 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -214,18 +210,12 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 2
-        assert 'creation_date' in data['data']['workouts'][0]
-        assert (
-            'Thu, 01 Jun 2017 00:00:00 GMT'
-            == data['data']['workouts'][0]['workout_date']
+        assert data['data']['workouts'][0] == jsonify_dict(
+            seven_workouts_user_1[1].serialize()
         )
-        assert '0:57:36' == data['data']['workouts'][0]['duration']
-        assert 'creation_date' in data['data']['workouts'][1]
-        assert (
-            'Mon, 20 Mar 2017 00:00:00 GMT'
-            == data['data']['workouts'][1]['workout_date']
+        assert data['data']['workouts'][1] == jsonify_dict(
+            seven_workouts_user_1[0].serialize()
         )
-        assert '0:17:04' == data['data']['workouts'][1]['duration']
         assert data['pagination'] == {
             'has_next': False,
             'has_prev': True,
@@ -239,7 +229,7 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -267,7 +257,7 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -286,7 +276,7 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -301,13 +291,11 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 6
-        assert (
-            'Wed, 09 May 2018 00:00:00 GMT'
-            == data['data']['workouts'][0]['workout_date']
+        assert data['data']['workouts'][0] == jsonify_dict(
+            seven_workouts_user_1[6].serialize()
         )
-        assert (
-            'Thu, 01 Jun 2017 00:00:00 GMT'
-            == data['data']['workouts'][5]['workout_date']
+        assert data['data']['workouts'][5] == jsonify_dict(
+            seven_workouts_user_1[1].serialize()
         )
         assert data['pagination'] == {
             'has_next': True,
@@ -323,7 +311,7 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -338,13 +326,14 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 3
-        assert (
-            'Wed, 09 May 2018 00:00:00 GMT'
-            == data['data']['workouts'][0]['workout_date']
+        assert data['data']['workouts'][0] == jsonify_dict(
+            seven_workouts_user_1[6].serialize()
         )
-        assert (
-            'Fri, 23 Feb 2018 00:00:00 GMT'
-            == data['data']['workouts'][2]['workout_date']
+        assert data['data']['workouts'][1] == jsonify_dict(
+            seven_workouts_user_1[5].serialize()
+        )
+        assert data['data']['workouts'][2] == jsonify_dict(
+            seven_workouts_user_1[4].serialize()
         )
         assert data['pagination'] == {
             'has_next': True,
@@ -361,7 +350,7 @@ class TestGetWorkoutsWithOrder(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -397,7 +386,7 @@ class TestGetWorkoutsWithOrder(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -433,7 +422,7 @@ class TestGetWorkoutsWithOrder(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -471,7 +460,7 @@ class TestGetWorkoutsWithOrderBy(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -507,7 +496,7 @@ class TestGetWorkoutsWithOrderBy(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -537,7 +526,7 @@ class TestGetWorkoutsWithOrderBy(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -567,7 +556,7 @@ class TestGetWorkoutsWithOrderBy(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -599,7 +588,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -625,7 +614,6 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
             'Fri, 23 Feb 2018 00:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
         )
-        assert '0:10:00' == data['data']['workouts'][1]['duration']
         assert data['pagination'] == {
             'has_next': False,
             'has_prev': False,
@@ -639,7 +627,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -667,7 +655,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -704,7 +692,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -740,7 +728,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -776,7 +764,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -808,7 +796,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -876,7 +864,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         sport_2_running: Sport,
         workout_running_user_1: Workout,
     ) -> None:
@@ -912,7 +900,7 @@ class TestGetWorkoutsWithFiltersAndPagination(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -948,7 +936,7 @@ class TestGetWorkoutsWithFiltersAndPagination(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1001,15 +989,9 @@ class TestGetWorkout(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
-        assert 'creation_date' in data['data']['workouts'][0]
-        assert (
-            'Mon, 01 Jan 2018 00:00:00 GMT'
-            == data['data']['workouts'][0]['workout_date']
+        assert data['data']['workouts'][0] == jsonify_dict(
+            workout_cycling_user_1.serialize()
         )
-        assert 'test' == data['data']['workouts'][0]['user']
-        assert 1 == data['data']['workouts'][0]['sport_id']
-        assert 10.0 == data['data']['workouts'][0]['distance']
-        assert '1:00:00' == data['data']['workouts'][0]['duration']
 
     def test_it_returns_403_if_workout_belongs_to_a_different_user(
         self,
