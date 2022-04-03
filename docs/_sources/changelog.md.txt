@@ -1,5 +1,17 @@
 # Change log
 
+## Version 0.6.2 (2022/04/03)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#175](https://github.com/SamR1/FitTrackee/issues/175) - Distance card on dashboard is not refreshed
+* [#173](https://github.com/SamR1/FitTrackee/issues/173) - link to user profile in workout card is incorrect
+
+In this release 2 issues were closed.  
+
+
 ## Version 0.6.1 (2022/03/27)
 
 ### Issues Closed
