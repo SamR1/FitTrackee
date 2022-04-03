@@ -40,13 +40,14 @@ def get_application_config() -> Union[Dict, HttpResponse]:
 
       {
         "data": {
+          "admin_contact": "admin@example.com",
           "gpx_limit_import": 10,
           "is_registration_enabled": false,
           "max_single_file_size": 1048576,
-          "max_zip_file_size": 10485760,
           "max_users": 0,
+          "max_zip_file_size": 10485760,
           "map_attribution": "&copy; <a href=http://www.openstreetmap.org/copyright>OpenStreetMap</a> contributors"
-          "version": "0.6.1"
+          "version": "0.6.2"
         },
         "status": "success"
       }
@@ -90,10 +91,12 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
         "data": {
           "admin_contact": "admin@example.com",
           "gpx_limit_import": 10,
-          "is_registration_enabled": true,
+          "is_registration_enabled": false,
           "max_single_file_size": 1048576,
+          "max_users": 10,
           "max_zip_file_size": 10485760,
-          "max_users": 10
+          "map_attribution": "&copy; <a href=http://www.openstreetmap.org/copyright>OpenStreetMap</a> contributors"
+          "version": "0.6.2"
         },
         "status": "success"
       }
@@ -102,8 +105,8 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
     :<json integer gpx_limit_import: max number of files in zip archive
     :<json boolean is_registration_enabled: is registration enabled ?
     :<json integer max_single_file_size: max size of a single file
-    :<json integer max_zip_file_size: max size of a zip archive
     :<json integer max_users: max users allowed to register on instance
+    :<json integer max_zip_file_size: max size of a zip archive
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
