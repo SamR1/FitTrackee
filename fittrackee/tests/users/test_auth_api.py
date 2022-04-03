@@ -285,8 +285,8 @@ class TestUserRegistration(ApiTestCaseMixin):
             {
                 'username': username,
                 'fittrackee_url': 'http://0.0.0.0:5000',
-                'operating_system': 'linux',
-                'browser_name': 'firefox',
+                'operating_system': 'Linux',
+                'browser_name': 'Firefox',
                 'account_confirmation_url': (
                     'http://0.0.0.0:5000/account-confirmation'
                     f'?token={expected_token}'
@@ -807,8 +807,8 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             {
                 'username': user_1.username,
                 'fittrackee_url': 'http://0.0.0.0:5000',
-                'operating_system': 'linux',
-                'browser_name': 'firefox',
+                'operating_system': 'Linux',
+                'browser_name': 'Firefox',
                 'new_email_address': new_email,
             },
         )
@@ -849,8 +849,8 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             {
                 'username': user_1.username,
                 'fittrackee_url': 'http://0.0.0.0:5000',
-                'operating_system': 'linux',
-                'browser_name': 'firefox',
+                'operating_system': 'Linux',
+                'browser_name': 'Firefox',
                 'email_confirmation_url': (
                     f'http://0.0.0.0:5000/email-update?token={expected_token}'
                 ),
@@ -1009,8 +1009,8 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             {
                 'username': user_1.username,
                 'fittrackee_url': 'http://0.0.0.0:5000',
-                'operating_system': 'linux',
-                'browser_name': 'firefox',
+                'operating_system': 'Linux',
+                'browser_name': 'Firefox',
             },
         )
 
@@ -1690,8 +1690,8 @@ class TestPasswordResetRequest(ApiTestCaseMixin):
                     f'http://0.0.0.0:5000/password-reset?token={token}'
                 ),
                 'fittrackee_url': 'http://0.0.0.0:5000',
-                'operating_system': 'linux',
-                'browser_name': 'firefox',
+                'operating_system': 'Linux',
+                'browser_name': 'Firefox',
             },
         )
 
@@ -1903,8 +1903,8 @@ class TestPasswordUpdate(ApiTestCaseMixin):
             {
                 'username': user_1.username,
                 'fittrackee_url': 'http://0.0.0.0:5000',
-                'operating_system': 'linux',
-                'browser_name': 'firefox',
+                'operating_system': 'Linux',
+                'browser_name': 'Firefox',
             },
         )
 
@@ -2130,8 +2130,8 @@ class TestResendAccountConfirmationEmail(ApiTestCaseMixin):
             {
                 'username': inactive_user.username,
                 'fittrackee_url': 'http://0.0.0.0:5000',
-                'operating_system': 'linux',
-                'browser_name': 'firefox',
+                'operating_system': 'Linux',
+                'browser_name': 'Firefox',
                 'account_confirmation_url': (
                     'http://0.0.0.0:5000/account-confirmation'
                     f'?token={expected_token}'

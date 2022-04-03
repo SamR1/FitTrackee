@@ -3,14 +3,14 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/fittrackee.svg)](https://pypi.org/project/fittrackee/) 
 [![Python Version](https://img.shields.io/badge/python-3.7+-brightgreen.svg)](https://python.org)
-[![Flask Version](https://img.shields.io/badge/flask-2.0-brightgreen.svg)](http://flask.pocoo.org/) 
+[![Flask Version](https://img.shields.io/badge/flask-2.1-brightgreen.svg)](http://flask.pocoo.org/) 
 [![code style: black](https://img.shields.io/badge/code%20style-black-black)](https://github.com/psf/black) 
 [![type check: mypy](https://img.shields.io/badge/type%20check-mypy-blue)](http://mypy-lang.org/)  
 [![Vue Version](https://img.shields.io/badge/vue-3.2-brightgreen.svg)](https://v3.vuejs.org/) 
 [![Typescript Version](https://img.shields.io/npm/types/typescript)](https://www.typescriptlang.org/) 
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)  
-![pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-python.yml/badge.svg?branch=master)
-![pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-javascript.yml/badge.svg?branch=master)
+[![pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-python.yml/badge.svg?branch=master)](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-python.yml)
+[![pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-javascript.yml/badge.svg?branch=master)](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-javascript.yml)
 
 
 ---
