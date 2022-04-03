@@ -4,6 +4,7 @@ from uuid import uuid4
 import pytest
 
 from fittrackee.files import display_readable_file_size
+from fittrackee.request import UserAgent
 from fittrackee.utils import get_readable_duration
 
 
@@ -42,3 +43,28 @@ class TestReadableDuration:
         readable_duration = get_readable_duration(30, locale)
 
         assert readable_duration == expected_duration
+
+
+class TestParseUserAgent:
+    string = (
+        'Mozilla/5.0 (X11; Linux x86_64; rv:98.0) '
+        'Gecko/20100101 Firefox/98.0'
+    )
+
+    def test_it_returns_browser_name(self) -> None:
+        user_agent = UserAgent(self.string)
+        assert user_agent.browser == 'Firefox'
+
+    def test_it_returns_other_as_brother_name_when_empty_string_provided(
+        self,
+    ) -> None:
+        user_agent = UserAgent('')
+        assert user_agent.browser == 'Other'
+
+    def test_it_returns_operating_system(self) -> None:
+        user_agent = UserAgent(self.string)
+        assert user_agent.platform == 'Linux'
+
+    def test_it_returns_other_as_os_when_empty_string_provided(self) -> None:
+        user_agent = UserAgent('')
+        assert user_agent.platform == 'Other'

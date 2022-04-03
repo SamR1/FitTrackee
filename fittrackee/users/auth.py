@@ -791,8 +791,9 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
       }
 
     :<json string timezone: user time zone
-    :<json string weekm: does week start on Monday?
+    :<json boolean weekm: does week start on Monday?
     :<json string language: language preferences
+    :<json boolean imperial_units: display distance in imperial units
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 

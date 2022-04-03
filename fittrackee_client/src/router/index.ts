@@ -263,7 +263,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'users/:username',
-        name: 'User',
+        name: 'UserFromAdmin',
         component: () =>
           import(/* webpackChunkName: 'profile' */ '@/views/user/UserView.vue'),
         props: { fromAdmin: true },

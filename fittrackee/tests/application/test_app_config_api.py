@@ -4,17 +4,18 @@ from typing import Optional
 import pytest
 from flask import Flask
 
-import fittrackee
 from fittrackee.application.models import AppConfig
 from fittrackee.users.models import User
 
 from ..mixins import ApiTestCaseMixin
+from ..utils import jsonify_dict
 
 
 class TestGetConfig(ApiTestCaseMixin):
     def test_it_gets_application_config_for_unauthenticated_user(
         self, app: Flask
     ) -> None:
+        app_config = AppConfig.query.first()
         client = app.test_client()
 
         response = client.get('/api/config')
@@ -22,18 +23,7 @@ class TestGetConfig(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 200
         assert 'success' in data['status']
-        assert data['data']['admin_contact'] is None
-        assert data['data']['gpx_limit_import'] == 10
-        assert data['data']['is_registration_enabled'] is True
-        assert data['data']['max_single_file_size'] == 1048576
-        assert data['data']['max_zip_file_size'] == 10485760
-        assert data['data']['max_users'] == 100
-        assert data['data']['map_attribution'] == (
-            '&copy; <a href="http://www.openstreetmap.org/copyright" '
-            'target="_blank" rel="noopener noreferrer">OpenStreetMap</a> '
-            'contributors'
-        )
-        assert data['data']['version'] == fittrackee.__version__
+        assert data['data'] == jsonify_dict(app_config.serialize())
 
     def test_it_gets_application_config(
         self, app: Flask, user_1: User
