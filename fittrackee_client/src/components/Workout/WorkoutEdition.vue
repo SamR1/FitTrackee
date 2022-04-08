@@ -421,12 +421,6 @@
   @import '~@/scss/vars.scss';
 
   #workout-edition {
-    @media screen and (max-width: $small-limit) {
-      &.center-form {
-        margin: 50px auto;
-      }
-    }
-
     ::v-deep(.card) {
       .card-title {
         text-align: center;
@@ -514,6 +508,17 @@
             }
           }
         }
+      }
+    }
+
+    @media screen and (max-width: $small-limit) {
+      margin-bottom: 0;
+      &.center-form {
+        margin: 50px auto;
+      }
+
+      &.with-margin {
+        margin-top: 0;
       }
     }
   }
