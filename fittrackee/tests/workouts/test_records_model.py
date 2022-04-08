@@ -14,26 +14,34 @@ class TestRecordModel:
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
+        record_type = 'LD'
+
         record_ld = Record.query.filter_by(
             user_id=workout_cycling_user_1.user_id,
             sport_id=workout_cycling_user_1.sport_id,
-            record_type='LD',
+            record_type=record_type,
         ).first()
-        assert 'test' == record_ld.user.username
-        assert 1 == record_ld.sport_id
-        assert 1 == record_ld.workout_id
-        assert 'LD' == record_ld.record_type
-        assert '2018-01-01 00:00:00' == str(record_ld.workout_date)
+
+        assert record_ld.user.username == user_1.username
+        assert record_ld.sport_id == sport_1_cycling.id
+        assert record_ld.workout_id == workout_cycling_user_1.sport_id
+        assert record_ld.record_type == record_type
+        assert str(record_ld.workout_date) == str(
+            workout_cycling_user_1.workout_date
+        )
+        assert record_ld.value == workout_cycling_user_1.duration
+
         assert '<Record Cycling - LD - 2018-01-01>' == str(record_ld)
 
         record_serialize = record_ld.serialize()
-        assert 'id' in record_serialize
-        assert 'user' in record_serialize
-        assert 'sport_id' in record_serialize
-        assert 'workout_id' in record_serialize
-        assert 'record_type' in record_serialize
-        assert 'workout_date' in record_serialize
-        assert 'value' in record_serialize
+
+        record_serialize['id'] = record_ld.id
+        record_serialize['record_type'] = record_ld.record_type
+        record_serialize['sport_id'] = record_ld.sport_id
+        record_serialize['user'] = record_ld.user.username
+        record_serialize['value'] = record_ld.value
+        record_serialize['workout_id'] = record_ld.workout_id
+        record_serialize['workout_date'] = record_ld.workout_date
 
     def test_record_model_with_none_value(
         self,
@@ -48,12 +56,7 @@ class TestRecordModel:
             record_type='LD',
         ).first()
         record_ld.value = None
-        assert 'test' == record_ld.user.username
-        assert 1 == record_ld.sport_id
-        assert 1 == record_ld.workout_id
-        assert 'LD' == record_ld.record_type
-        assert '2018-01-01 00:00:00' == str(record_ld.workout_date)
-        assert '<Record Cycling - LD - 2018-01-01>' == str(record_ld)
+
         assert record_ld.value is None
 
         record_serialize = record_ld.serialize()
@@ -80,7 +83,7 @@ class TestRecordModel:
         assert record_serialize.get('value') == 10.0
         assert isinstance(record_serialize.get('value'), float)
 
-    def test_add_farest_distance_records(
+    def test_add_farthest_distance_records(
         self,
         app: Flask,
         user_1: User,

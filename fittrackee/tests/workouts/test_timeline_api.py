@@ -8,7 +8,7 @@ from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
-from ..test_case_mixins import ApiTestCaseMixin
+from ..mixins import ApiTestCaseMixin
 
 
 class TestGetUserTimeline(ApiTestCaseMixin):

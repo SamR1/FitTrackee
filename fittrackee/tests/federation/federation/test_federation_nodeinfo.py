@@ -6,8 +6,10 @@ from fittrackee import VERSION
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
+from ...mixins import ApiTestCaseMixin
 
-class TestWellKnowNodeInfo:
+
+class TestWellKnowNodeInfo(ApiTestCaseMixin):
     def test_it_returns_error_if_federation_is_disabled(
         self, app: Flask
     ) -> None:
@@ -17,12 +19,9 @@ class TestWellKnowNodeInfo:
             content_type='application/json',
         )
 
-        assert response.status_code == 403
-        data = json.loads(response.data.decode())
-        assert 'error' in data['status']
-        assert (
-            'error, federation is disabled for this instance'
-            in data['message']
+        self.assert_403(
+            response,
+            'error, federation is disabled for this instance',
         )
 
     def test_it_returns_instance_nodeinfo_url_if_federation_is_enabled(
@@ -52,20 +51,16 @@ class TestWellKnowNodeInfo:
         self, app_wo_domain: Flask
     ) -> None:
         client = app_wo_domain.test_client()
+
         response = client.get(
             '/.well-known/nodeinfo',
             content_type='application/json',
         )
-        assert response.status_code == 500
-        data = json.loads(response.data.decode())
-        assert 'error' in data['status']
-        assert (
-            'error, please try again or contact the administrator'
-            in data['message']
-        )
+
+        self.assert_500(response)
 
 
-class TestNodeInfo:
+class TestNodeInfo(ApiTestCaseMixin):
     def test_it_returns_error_if_federation_is_disabled(
         self, app: Flask
     ) -> None:
@@ -75,12 +70,9 @@ class TestNodeInfo:
             content_type='application/json',
         )
 
-        assert response.status_code == 403
-        data = json.loads(response.data.decode())
-        assert 'error' in data['status']
-        assert (
-            'error, federation is disabled for this instance'
-            in data['message']
+        self.assert_403(
+            response,
+            'error, federation is disabled for this instance',
         )
 
     def test_it_returns_instance_nodeinfo_if_federation_is_enabled(

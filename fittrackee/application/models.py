@@ -20,6 +20,7 @@ class AppConfig(BaseModel):
         db.Integer, default=1048576, nullable=False
     )
     max_zip_file_size = db.Column(db.Integer, default=10485760, nullable=False)
+    admin_contact = db.Column(db.String(255), nullable=True)
     federation_enabled = db.Column(db.Boolean, default=False, nullable=False)
 
     @property
@@ -43,6 +44,7 @@ class AppConfig(BaseModel):
 
     def serialize(self) -> Dict:
         return {
+            'admin_contact': self.admin_contact,
             'federation_enabled': self.federation_enabled,
             'gpx_limit_import': self.gpx_limit_import,
             'is_registration_enabled': self.is_registration_enabled,

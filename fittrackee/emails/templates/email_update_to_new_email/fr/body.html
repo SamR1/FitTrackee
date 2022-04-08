@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+{% block title %}Confirmer le changement d'adresse email{% endblock %}
+{% block preheader %}Utiliser ce lien pour confirmer cette adresse email.{% endblock %}
+{% block content %}<h1>Bonjour {{username}},</h1>
+                        <p>Vous avez récemment demandé la modification de l'adresse email associée à votre compte sur FitTrackee.
+                          Cliquez sur le bouton ci-dessous pour confirmer cette adresse email.
+                        </p>
+                        <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                          <tr>
+                            <td align="center">
+                              <table width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation">
+                                <tr>
+                                  <td align="center">
+                                    <a href="{{email_confirmation_url}}" class="f-fallback button button--green" target="_blank">Vérifier l'adresse email</a>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+                        <p>
+                          {% if operating_system and browser_name %}Pour vérification, cette demande a été reçue à partir d'un appareil sous {{operating_system}}, utilisant le navigateur {{browser_name}}.
+                          {% endif %}Si vous n'êtes pas à l'origine de cette modification, vous pouvez ignorer cet e-mail.
+                        </p>
+                        <p>Merci,
+                          <br>L'équipe FitTrackee</p>
+                        <table class="body-sub" role="presentation">
+                          <tr>
+                            <td>
+                              <p class="f-fallback sub">Si vous avez des problèmes avec le bouton, vous pouvez copier et coller le lien suivant dans votre navigateur</p>
+                              <p class="f-fallback sub">{{email_confirmation_url}}</p>
+                            </td>
+                          </tr>
+                        </table>{% endblock %}

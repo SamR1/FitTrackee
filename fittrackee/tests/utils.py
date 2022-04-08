@@ -44,6 +44,10 @@ def get_date_string(date: Optional[datetime] = None) -> str:
     return date.strftime(VALID_DATE_FORMAT)
 
 
+def random_email() -> str:
+    return random_string(suffix='@example.com')
+
+
 def get_remote_user_object(
     username: str,
     preferred_username: str,

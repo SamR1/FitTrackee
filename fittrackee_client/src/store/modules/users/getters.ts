@@ -14,6 +14,9 @@ export const getters: GetterTree<IUsersState, IRootState> & IUsersGetters = {
   [USERS_STORE.GETTERS.USERS]: (state: IUsersState) => {
     return state.users
   },
+  [USERS_STORE.GETTERS.USERS_IS_SUCCESS]: (state: IUsersState) => {
+    return state.isSuccess
+  },
   [USERS_STORE.GETTERS.USERS_LOADING]: (state: IUsersState) => {
     return state.loading
   },

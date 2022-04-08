@@ -1,0 +1,10 @@
+Bonjour {{username}},
+
+Vous avez récemment demandé la modification de l'adresse email associée à votre compte sur FitTrackee vers : {{ new_email_address }}
+
+Pour vérification, cette demande a été reçue à partir d'un appareil sous {{operating_system}}, utilisant le navigateur {{browser_name}}.
+Si vous n'êtes pas à l'origine de cette modification, veuillez changer votre mot de passe immédiatement ou contacter l'administrateur si votre compte est bloqué.
+
+Merci,
+L'équipe FitTrackee
+{{fittrackee_url}}

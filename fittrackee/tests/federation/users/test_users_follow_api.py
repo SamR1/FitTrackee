@@ -7,7 +7,7 @@ from flask import Flask
 from fittrackee.federation.models import Domain
 from fittrackee.users.models import FollowRequest, User
 
-from ...test_case_mixins import ApiTestCaseMixin, UserInboxTestMixin
+from ...mixins import ApiTestCaseMixin, UserInboxTestMixin
 from ...utils import RandomActor, random_string
 
 
@@ -29,10 +29,7 @@ class TestFollowWithFederation(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        assert response.status_code == 404
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'not found'
-        assert data['message'] == 'user does not exist'
+        self.assert_404_with_entity(response, 'user')
 
     def test_it_raises_error_if_username_matches_only_a_remote_user(
         self,
@@ -50,10 +47,7 @@ class TestFollowWithFederation(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        assert response.status_code == 404
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'not found'
-        assert data['message'] == 'user does not exist'
+        self.assert_404_with_entity(response, 'user')
 
     def test_it_raises_error_if_target_user_has_already_rejected_request(
         self,
@@ -74,10 +68,7 @@ class TestFollowWithFederation(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        assert response.status_code == 403
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'you do not have permissions'
+        self.assert_403(response)
 
     def test_it_creates_follow_request(
         self, app_with_federation: Flask, user_1: User, user_2: User
@@ -194,10 +185,7 @@ class TestRemoteFollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        assert response.status_code == 404
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'not found'
-        assert data['message'] == 'user does not exist'
+        self.assert_404_with_entity(response, 'user')
 
     def test_it_raise_error_if_remote_actor_does_not_exist_for_existing_remote_domain(  # noqa
         self,
@@ -216,10 +204,7 @@ class TestRemoteFollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        assert response.status_code == 404
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'not found'
-        assert data['message'] == 'user does not exist'
+        self.assert_404_with_entity(response, 'user')
 
     @patch('fittrackee.users.models.send_to_users_inbox')
     def test_it_creates_follow_request(
@@ -323,10 +308,7 @@ class TestUnfollowWithFederation(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        assert response.status_code == 404
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'not found'
-        assert data['message'] == 'user does not exist'
+        self.assert_404_with_entity(response, 'user')
 
     def test_it_raises_error_if_follow_request_does_not_exist(
         self, app_with_federation: Flask, user_1: User, user_2: User
@@ -341,10 +323,7 @@ class TestUnfollowWithFederation(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        assert response.status_code == 404
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'not found'
-        assert data['message'] == 'relationship does not exist'
+        self.assert_404_with_message(response, 'relationship does not exist')
 
     def test_it_removes_follow_request(
         self,
@@ -413,10 +392,7 @@ class TestRemoteUnfollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        assert response.status_code == 404
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'not found'
-        assert data['message'] == 'user does not exist'
+        self.assert_404_with_entity(response, 'user')
 
     def test_it_raise_error_if_remote_actor_does_not_exist_for_existing_remote_domain(  # noqa
         self,
@@ -435,10 +411,7 @@ class TestRemoteUnfollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        assert response.status_code == 404
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'not found'
-        assert data['message'] == 'user does not exist'
+        self.assert_404_with_entity(response, 'user')
 
     @patch('fittrackee.users.models.send_to_users_inbox')
     def test_it_removes_follow_request(

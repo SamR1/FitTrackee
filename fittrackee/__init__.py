@@ -20,8 +20,9 @@ from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.ext.declarative import DeclarativeMeta
 
 from fittrackee.emails.email import EmailService
+from fittrackee.request import CustomRequest
 
-VERSION = __version__ = '0.5.7'
+VERSION = __version__ = '0.6.2'
 db = SQLAlchemy()
 BaseModel: DeclarativeMeta = db.Model
 bcrypt = Bcrypt()
@@ -37,9 +38,17 @@ logging.basicConfig(
 appLog = logging.getLogger('fittrackee')
 
 
+class CustomFlask(Flask):
+    # add custom Request to handle user-agent parsing
+    # (removed in Werkzeug 2.1)
+    request_class = CustomRequest
+
+
 def create_app() -> Flask:
     # instantiate the app
-    app = Flask(__name__, static_folder='dist/static', template_folder='dist')
+    app = CustomFlask(
+        __name__, static_folder='dist/static', template_folder='dist'
+    )
 
     # set config
     with app.app_context():
@@ -120,7 +129,7 @@ def create_app() -> Flask:
         appLog.setLevel(logging.DEBUG)
 
         # Enable CORS
-        @app.after_request
+        @app.after_request  # type: ignore
         def after_request(response: Response) -> Response:
             response.headers.add('Access-Control-Allow-Origin', '*')
             response.headers.add(

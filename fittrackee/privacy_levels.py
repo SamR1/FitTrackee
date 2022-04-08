@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class PrivacyLevel(Enum):
+class PrivacyLevel(str, Enum):  # to make enum serializable
     PUBLIC = 'public'
     FOLLOWERS = 'followers_only'
     PRIVATE = 'private'

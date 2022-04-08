@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Installation &#8212; FitTrackee 0.5.7
+    <title>Installation &#8212; FitTrackee 0.6.2
  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css" />
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.5.7
+        <span class="navbar-text navbar-version pull-left"><b>0.6.2
 </b></span>
       </div>
 
@@ -552,10 +552,14 @@ $ <span class="nb">source</span> .env
 </div>
 <ul class="simple">
 <li><p>Open <a class="reference external" href="http://localhost:3000">http://localhost:3000</a> and register</p></li>
-<li><p>To set admin rights to the newly created account, use the following command:</p></li>
+<li><p>To set admin rights to the newly created account, use the following command line:</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ fittrackee_set_admin &lt;username&gt;
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the user account is inactive, it activates it.</p>
 </div>
 </section>
 <section id="from-sources">
@@ -609,10 +613,14 @@ $ make install-db
 </div>
 <ul class="simple">
 <li><p>Open <a class="reference external" href="http://localhost:3000">http://localhost:3000</a> and register</p></li>
-<li><p>To set admin rights to the newly created account, use the following command:</p></li>
+<li><p>To set admin rights to the newly created account, use the following command line:</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make set-admin <span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the user account is inactive, it activates it.</p>
 </div>
 </section>
 <section id="production-environment">
@@ -624,11 +632,11 @@ $ make install-db
 </div>
 </div>
 <ul class="simple">
-<li><p>Download the last release (for now, it is the release v0.5.7):</p></li>
+<li><p>Download the last release (for now, it is the release v0.6.2):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.5.7.tar.gz
-$ tar -xzf v0.5.7.tar.gz
-$ mv FitTrackee-0.5.7 FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.6.2.tar.gz
+$ tar -xzf v0.6.2.tar.gz
+$ mv FitTrackee-0.6.2 FitTrackee
 $ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
@@ -655,10 +663,14 @@ database credentials</strong>):</p></li>
 </div>
 <ul class="simple">
 <li><p>Open <a class="reference external" href="http://localhost:5000">http://localhost:5000</a> and register</p></li>
-<li><p>To set admin rights to the newly created account, use the following command:</p></li>
+<li><p>To set admin rights to the newly created account, use the following command line:</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make set-admin <span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the user account is inactive, it activates it.</p>
 </div>
 </section>
 </section>
@@ -740,11 +752,11 @@ $ <span class="nb">source</span> .env
 <ul class="simple">
 <li><p>Stop the application</p></li>
 <li><p>Change to the directory where FitTrackee directory is located</p></li>
-<li><p>Download the last release (for now, it is the release v0.5.7) and overwrite existing files:</p></li>
+<li><p>Download the last release (for now, it is the release v0.6.2) and overwrite existing files:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.5.7.tar.gz
-$ tar -xzf v0.5.7.tar.gz
-$ cp -R FitTrackee-0.5.7/* FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.6.2.tar.gz
+$ tar -xzf v0.6.2.tar.gz
+$ cp -R FitTrackee-0.6.2/* FitTrackee/
 $ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
@@ -905,10 +917,14 @@ $ make docker-build docker-run docker-init
 <p>Open <a class="reference external" href="http://localhost:5000">http://localhost:5000</a> and register.</p>
 <p>Open <a class="reference external" href="http://localhost:8025">http://localhost:8025</a> to access <a class="reference external" href="https://github.com/mailhog/MailHog">MailHog interface</a> (email testing tool)</p>
 <ul class="simple">
-<li><p>To set admin rights to the newly created account, use the following command:</p></li>
+<li><p>To set admin rights to the newly created account, use the following command line:</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make docker-set-admin <span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the user account is inactive, it activates it.</p>
 </div>
 <ul class="simple">
 <li><p>To stop <strong>Fittrackee</strong>:</p></li>
@@ -968,7 +984,7 @@ $ make docker-build docker-run docker-init
     </p>
     <p>
         &copy; Copyright 2018 - 2022, SamR1.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br/>
     </p>
   </div>
 </footer>

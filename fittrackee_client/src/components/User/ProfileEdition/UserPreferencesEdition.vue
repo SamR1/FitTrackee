@@ -97,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, reactive, onMounted } from 'vue'
+  import { ComputedRef, computed, reactive, onMounted, onUnmounted } from 'vue'
 
   import TimezoneDropdown from '@/components/User/ProfileEdition/TimezoneDropdown.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
@@ -185,4 +185,8 @@
       userForm.workouts_visibility
     )
   }
+
+  onUnmounted(() => {
+    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+  })
 </script>

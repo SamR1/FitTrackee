@@ -57,8 +57,7 @@
             margin: $default-margin 0;
             flex-wrap: wrap;
 
-            input[type='text'],
-            input[type='number'] {
+            input {
               width: 50%;
               font-size: 0.9em;
               margin-right: $default-margin * 5;

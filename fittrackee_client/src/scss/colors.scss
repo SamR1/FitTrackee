@@ -44,12 +44,14 @@
   --footer-border-color: #ebeef3;
   --footer-color: #8b8c8c;
 
-  --alert-background-color: #c8cdd3;
+  --alert-background-color: #d6dde3;
   --alert-color: #3f3f3f;
   --info-background-color: #e5e7ea;
   --info-color: var(--app-color);
   --error-background-color: #ffd2d2;
   --error-color: #db1924;
+  --success-background-color: #d9ecd9;
+  --success-color: #306430;
 
   --disabled-background-color: #e0e0e0;
   --disabled-color: #a3a3a3;
@@ -67,6 +69,12 @@
   --cell-heading-color: #696969;
 
   --svg-filter: drop-shadow(10px 10px 10px var(--app-shadow-color));
+
+  --password-bg-color: #d7dadf;
+  --password-color-weak: #e46d6e;
+  --password-color-medium: #f8bc4a;
+  --password-color-good: #acc578;
+  --password-color-strong: #57c255;
 
   --text-background-color: rgb(114, 114, 114, 0.1);
   --text-visibilty: rgba(37, 37, 37, 0.65);

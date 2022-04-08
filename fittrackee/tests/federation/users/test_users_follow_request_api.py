@@ -6,7 +6,7 @@ from flask import Flask
 
 from fittrackee.users.models import FollowRequest, User
 
-from ...test_case_mixins import ApiTestCaseMixin, UserInboxTestMixin
+from ...mixins import ApiTestCaseMixin, UserInboxTestMixin
 from ...users.test_users_follow_request_api import FollowRequestTestCase
 from ...utils import random_string
 

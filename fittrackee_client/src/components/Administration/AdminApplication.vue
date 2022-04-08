@@ -25,6 +25,23 @@
               />
             </div>
           </div>
+          <label for="admin_contact">
+            {{ $t('admin.APP_CONFIG.ADMIN_CONTACT') }}:
+            <input
+              class="no-contact"
+              v-if="!edition && !appData.admin_contact"
+              :value="$t('admin.APP_CONFIG.NO_CONTACT_EMAIL')"
+              disabled
+            />
+            <input
+              v-else
+              id="admin_contact"
+              name="admin_contact"
+              type="email"
+              v-model="appData.admin_contact"
+              :disabled="!edition"
+            />
+          </label>
           <label for="max_users">
             {{ $t('admin.APP_CONFIG.MAX_USERS_LABEL') }}:
             <input
@@ -110,6 +127,7 @@
     reactive,
     withDefaults,
     onBeforeMount,
+    toRefs,
   } from 'vue'
   import { useRouter } from 'vue-router'
 
@@ -125,11 +143,13 @@
   const props = withDefaults(defineProps<Props>(), {
     edition: false,
   })
+  const { edition } = toRefs(props)
 
   const store = useStore()
   const router = useRouter()
 
   const appData: TAppConfigForm = reactive({
+    admin_contact: '',
     federation_enabled: false,
     max_users: 0,
     max_single_file_size: 0,
@@ -204,5 +224,9 @@
         }
       }
     }
+  }
+
+  .no-contact {
+    font-style: italic;
   }
 </style>

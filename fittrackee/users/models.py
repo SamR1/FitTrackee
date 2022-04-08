@@ -118,14 +118,14 @@ class User(BaseModel):
             'username', 'actor_id', name='username_actor_id_unique'
         ),
     )
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     actor_id = db.Column(
         db.Integer, db.ForeignKey('actors.id'), unique=True, nullable=True
     )
-    username = db.Column(db.String(50), nullable=False)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    username = db.Column(db.String(255), nullable=False)
     # Note: Null values are not considered equal
     # source: https://www.postgresql.org/docs/current/indexes-unique.html
-    email = db.Column(db.String(120), unique=True, nullable=True)
+    email = db.Column(db.String(255), unique=True, nullable=True)
     password = db.Column(db.String(255), nullable=True)
     created_at = db.Column(db.DateTime, nullable=False)
     admin = db.Column(db.Boolean, default=False, nullable=False)
@@ -140,6 +140,9 @@ class User(BaseModel):
     weekm = db.Column(db.Boolean(50), default=False, nullable=False)
     language = db.Column(db.String(50), nullable=True)
     imperial_units = db.Column(db.Boolean, default=False, nullable=False)
+    is_active = db.Column(db.Boolean, default=False, nullable=False)
+    email_to_confirm = db.Column(db.String(255), nullable=True)
+    confirmation_token = db.Column(db.String(255), nullable=True)
     manually_approves_followers = db.Column(
         db.Boolean, default=True, nullable=False
     )
@@ -209,7 +212,7 @@ class User(BaseModel):
         username: str,
         email: Optional[str],
         password: Optional[str],
-        created_at: Optional[datetime] = datetime.utcnow(),
+        created_at: Optional[datetime] = None,
         is_remote: bool = False,
     ) -> None:
         self.username = username
@@ -221,7 +224,9 @@ class User(BaseModel):
             if email
             else None  # no password for remote actor
         )
-        self.created_at = created_at
+        self.created_at = (
+            datetime.utcnow() if created_at is None else created_at
+        )
         self.is_remote = is_remote
 
     @staticmethod
@@ -444,6 +449,7 @@ class User(BaseModel):
             'first_name': self.first_name,
             'followers': self.followers.count(),
             'following': self.following.count(),
+            'is_active': self.is_active,
             'is_remote': self.is_remote,
             'last_name': self.last_name,
             'location': self.location,
@@ -483,6 +489,7 @@ class User(BaseModel):
 
         if role in [UserRole.AUTH_USER, UserRole.ADMIN]:
             serialized_user['email'] = self.email
+            serialized_user['email_to_confirm'] = self.email_to_confirm
 
         if role == UserRole.AUTH_USER:
             serialized_user = {

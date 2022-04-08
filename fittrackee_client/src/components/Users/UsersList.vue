@@ -30,6 +30,7 @@
     computed,
     onBeforeMount,
     onUnmounted,
+    reactive,
     ref,
     toRefs,
     watch,
@@ -40,7 +41,7 @@
   import UserCard from '@/components/User/UserCard.vue'
   import UsersFilters from '@/components/Users/UsersFilters.vue'
   import { USERS_STORE } from '@/store/constants'
-  import { IPagination } from '@/types/api'
+  import { IPagination, TPaginationPayload } from '@/types/api'
   import { IAuthUserProfile, IUserProfile, TUsersPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getQuery } from '@/utils/api'
@@ -57,7 +58,7 @@
   const { authUser } = toRefs(props)
   const orderByList: string[] = ['created_at', 'username', 'workouts_count']
   const defaultOrderBy = 'created_at'
-  let query: TUsersPayload = getUsersQuery(route.query)
+  let query: TPaginationPayload = reactive(getUsersQuery(route.query))
   const users: ComputedRef<IUserProfile[]> = computed(
     () => store.getters[USERS_STORE.GETTERS.USERS]
   )
@@ -77,7 +78,7 @@
   }
   function searchUsers(username: Ref<string>) {
     if (username.value !== '') {
-      query = { q: username.value }
+      query = getUsersQuery({ q: username.value })
     } else {
       const newQuery: LocationQuery = Object.assign({}, route.query)
       query = getUsersQuery(newQuery)
@@ -86,13 +87,13 @@
   }
 
   function getUsersQuery(newQuery: LocationQuery): TUsersPayload {
-    query = getQuery(newQuery, orderByList, defaultOrderBy)
+    const updateQuery = getQuery(newQuery, orderByList, defaultOrderBy)
     if (newQuery.q) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      query.q = newQuery.q
+      updateQuery.q = newQuery.q
     }
-    return query
+    return updateQuery
   }
 
   onUnmounted(() => {

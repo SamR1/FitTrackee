@@ -16,28 +16,26 @@ def is_valid_email(email: str) -> bool:
     """
     Return if email format is valid
     """
+    if not email:
+        return False
     mail_pattern = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
     return re.match(mail_pattern, email) is not None
 
 
-def check_passwords(password: str, password_conf: str) -> str:
+def check_password(password: str) -> str:
     """
-    Verify if password and password confirmation are the same and have
-    more than 8 characters
-
-    If not, it returns not empty string
+    Verify if password have more than 8 characters
+    If not, it returns error message
     """
-    ret = ''
-    if password_conf != password:
-        ret = 'password: password and password confirmation do not match\n'
     if len(password) < 8:
-        ret += 'password: 8 characters required\n'
-    return ret
+        return 'password: 8 characters required\n'
+    return ''
 
 
 def check_username(username: str) -> str:
     """
     Return if username is valid
+    If not, it returns error messages
     """
     ret = ''
     if not 2 < len(username) < 31:
@@ -50,18 +48,15 @@ def check_username(username: str) -> str:
     return ret
 
 
-def register_controls(
-    username: str, email: str, password: str, password_conf: str
-) -> str:
+def register_controls(username: str, email: str, password: str) -> str:
     """
     Verify if username, email and passwords are valid
-
-    If not, it returns not empty string
+    If not, it returns error messages
     """
     ret = check_username(username)
     if not is_valid_email(email):
         ret += 'email: valid email must be provided\n'
-    ret += check_passwords(password, password_conf)
+    ret += check_password(password)
     return ret
 
 
@@ -69,8 +64,12 @@ def verify_user(
     current_request: Request, verify_admin: bool
 ) -> Tuple[Optional[HttpResponse], Optional[User]]:
     """
-    Return authenticated user, if the provided token is valid and user has
-    admin rights if 'verify_admin' is True
+    Return authenticated user if
+    - the provided token is valid
+    - the user account is active
+    - the user has admin rights if 'verify_admin' is True
+
+    If not, it returns Error Response
     """
     default_message = 'provide a valid auth token'
     auth_header = current_request.headers.get('Authorization')
@@ -81,7 +80,7 @@ def verify_user(
     if isinstance(resp, str):
         return UnauthorizedErrorResponse(resp), None
     user = User.query.filter_by(id=resp).first()
-    if not user:
+    if not user or not user.is_active:
         return UnauthorizedErrorResponse(default_message), None
     if verify_admin and not user.admin:
         return ForbiddenErrorResponse(), None

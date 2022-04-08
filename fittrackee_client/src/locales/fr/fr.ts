@@ -1,3 +1,4 @@
+import AboutTranslations from './about.json'
 import AdministrationTranslations from './administration.json'
 import ApiTranslations from './api.json'
 import ButtonsTranslations from './buttons.json'
@@ -11,6 +12,7 @@ import UserTranslations from './user.json'
 import WorkoutsTranslations from './workouts.json'
 
 export default {
+  about: AboutTranslations,
   admin: AdministrationTranslations,
   api: ApiTranslations,
   buttons: ButtonsTranslations,

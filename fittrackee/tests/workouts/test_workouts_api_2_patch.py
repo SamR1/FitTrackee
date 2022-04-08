@@ -9,7 +9,7 @@ from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
-from ..test_case_mixins import ApiTestCaseMixin
+from ..mixins import ApiTestCaseMixin
 from ..utils import jsonify_dict
 from .utils import get_random_short_id, post_a_workout
 
@@ -176,21 +176,15 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         _, workout_short_id = post_a_workout(
             app, gpx_file, workout_visibility=input_workout_visibility
         )
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email=user_2.email, password='87654321')),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
         )
 
         response = client.patch(
             f'/api/workouts/{workout_short_id}',
             content_type='application/json',
-            data=json.dumps(dict(sport_id=2, title="Workout test")),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            data=json.dumps(dict(sport_id=2, title='Workout test')),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         assert response.status_code == expected_status_code
@@ -221,21 +215,15 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         _, workout_short_id = post_a_workout(
             app, gpx_file, workout_visibility=input_workout_visibility
         )
-        client = app.test_client()
-        resp_login = client.post(
-            '/api/auth/login',
-            data=json.dumps(dict(email=user_2.email, password='87654321')),
-            content_type='application/json',
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
         )
 
         response = client.patch(
             f'/api/workouts/{workout_short_id}',
             content_type='application/json',
             data=json.dumps(dict(sport_id=2, title="Workout test")),
-            headers=dict(
-                Authorization='Bearer '
-                + json.loads(resp_login.data.decode())['auth_token']
-            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         assert response.status_code == expected_status_code
@@ -312,10 +300,7 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert 'error' in data['status']
-        assert 'invalid payload' in data['message']
+        self.assert_400(response)
 
     def test_it_raises_500_if_sport_does_not_exist(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
@@ -330,13 +315,7 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert 'error' in data['status']
-        assert (
-            'error, please try again or contact the administrator'
-            in data['message']
-        )
+        self.assert_500(response)
 
 
 class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
@@ -777,10 +756,7 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert 'error' in data['status']
-        assert 'invalid payload' in data['message']
+        self.assert_400(response)
 
     def test_it_returns_500_if_date_format_is_invalid(
         self,
@@ -806,16 +782,9 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
+        self.assert_500(response)
 
-        assert response.status_code == 500
-        assert 'error' in data['status']
-        assert (
-            'error, please try again or contact the administrator'
-            in data['message']
-        )
-
-    def test_it_returns_404_if_edited_workout_does_not_exist(
+    def test_it_returns_404_if_edited_workout_does_not_exists(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -835,9 +804,7 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
+        data = self.assert_404(response)
         assert len(data['data']['workouts']) == 0
 
 

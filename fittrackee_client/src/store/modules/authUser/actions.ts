@@ -22,8 +22,10 @@ import {
   IFollowRequestsActionPayload,
   IFollowRequestsPayload,
   ILoginOrRegisterData,
+  IUserAccountPayload,
   IUserDeletionPayload,
-  IUserPasswordPayload,
+  IUserAccountUpdatePayload,
+  IUserEmailPayload,
   IUserPasswordResetPayload,
   IUserPayload,
   IUserPicturePayload,
@@ -63,6 +65,56 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
       )
       context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
     }
+  },
+  [AUTH_USER_STORE.ACTIONS.CONFIRM_ACCOUNT](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IUserAccountUpdatePayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    api
+      .post('auth/account/confirm', { token: payload.token })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          const token = res.data.auth_token
+          window.localStorage.setItem('authToken', token)
+          context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_TOKEN, token)
+          context
+            .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+            .then(() => router.push('/'))
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+  },
+  [AUTH_USER_STORE.ACTIONS.CONFIRM_EMAIL](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IUserAccountUpdatePayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+    api
+      .post('/auth/email/update', { token: payload.token })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, true)
+          if (payload.refreshUser) {
+            context
+              .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+              .then(() => {
+                return router.push('/profile/edit/account')
+              })
+          }
+          router.push('/profile/edit/account')
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
   },
   [AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE](
     context: ActionContext<IAuthUserState, IRootState>
@@ -132,20 +184,35 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
     data: ILoginOrRegisterData
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(
+      AUTH_USER_STORE.MUTATIONS.UPDATE_IS_REGISTRATION_SUCCESS,
+      false
+    )
     api
       .post(`/auth/${data.actionType}`, data.formData)
       .then((res) => {
         if (res.data.status === 'success') {
-          const token = res.data.auth_token
-          window.localStorage.setItem('authToken', token)
-          context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_TOKEN, token)
-          context
-            .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
-            .then(() =>
-              router.push(
-                typeof data.redirectUrl === 'string' ? data.redirectUrl : '/'
+          if (data.actionType === 'login') {
+            const token = res.data.auth_token
+            window.localStorage.setItem('authToken', token)
+            context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_TOKEN, token)
+            context
+              .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+              .then(() =>
+                router.push(
+                  typeof data.redirectUrl === 'string' ? data.redirectUrl : '/'
+                )
               )
-            )
+          } else {
+            router
+              .push('/login')
+              .then(() =>
+                context.commit(
+                  AUTH_USER_STORE.MUTATIONS.UPDATE_IS_REGISTRATION_SUCCESS,
+                  true
+                )
+              )
+          }
         } else {
           handleError(context, null)
         }
@@ -195,6 +262,31 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
             res.data.data
           )
           router.push('/profile')
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      )
+  },
+  [AUTH_USER_STORE.ACTIONS.UPDATE_USER_ACCOUNT](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IUserAccountPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+    authApi
+      .patch('auth/profile/edit/account', payload)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE,
+            res.data.data
+          )
+          context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, true)
         } else {
           handleError(context, null)
         }
@@ -333,7 +425,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
   },
   [AUTH_USER_STORE.ACTIONS.SEND_PASSWORD_RESET_REQUEST](
     context: ActionContext<IAuthUserState, IRootState>,
-    payload: IUserPasswordPayload
+    payload: IUserEmailPayload
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     api
@@ -341,6 +433,22 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
       .then((res) => {
         if (res.data.status === 'success') {
           router.push('/password-reset/sent')
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+  },
+  [AUTH_USER_STORE.ACTIONS.RESEND_ACCOUNT_CONFIRMATION_EMAIL](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IUserEmailPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    api
+      .post('auth/account/resend-confirmation', payload)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          router.push('/account-confirmation/email-sent')
         } else {
           handleError(context, null)
         }

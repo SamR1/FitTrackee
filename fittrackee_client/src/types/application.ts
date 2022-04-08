@@ -7,7 +7,7 @@ export interface IAppStatistics {
 
 export type TAppConfig = {
   [key: string]: number | boolean | string
-  federation_enabled: boolean
+  admin_contact: string
   gpx_limit_import: number
   is_registration_enabled: boolean
   map_attribution: string
@@ -23,7 +23,8 @@ export interface IApplication {
 }
 
 export type TAppConfigForm = {
-  [key: string]: number | boolean
+  [key: string]: number | string | boolean
+  admin_contact: string
   federation_enabled: boolean
   gpx_limit_import: number
   max_single_file_size: number

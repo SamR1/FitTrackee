@@ -15,125 +15,229 @@ from fittrackee.workouts.models import Sport, Workout
 
 
 class TestUserModel:
-    @staticmethod
-    def assert_serialized_used(serialized_user: Dict) -> None:
-        assert 'created_at' in serialized_user
-        assert serialized_user['admin'] is False
-        assert serialized_user['first_name'] is None
-        assert serialized_user['followers'] == 0
-        assert serialized_user['following'] == 0
-        assert serialized_user['last_name'] is None
-        assert serialized_user['bio'] is None
-        assert serialized_user['location'] is None
-        assert serialized_user['birth_date'] is None
-        assert serialized_user['picture'] is False
-        assert serialized_user['nb_workouts'] == 0
-
-    def test_user_model_as_auth_user(self, app: Flask, user_1: User) -> None:
-        assert '<User \'test\'>' == str(user_1)
-
-        serialized_user = user_1.serialize(user_1)
-
-        self.assert_serialized_used(serialized_user)
-        assert 'test' == serialized_user['username']
-        assert 'test@test.com' == serialized_user['email']
-        assert serialized_user['nb_sports'] == 0
-        assert serialized_user['records'] == []
-        assert serialized_user['sports_list'] == []
-        assert serialized_user['total_distance'] == 0
-        assert serialized_user['total_duration'] == '0:00:00'
-        assert serialized_user['imperial_units'] is False
-        assert serialized_user['language'] is None
-        assert serialized_user['timezone'] is None
-        assert serialized_user['weekm'] is False
-        assert serialized_user['map_visibility'] == 'private'
-        assert serialized_user['workouts_visibility'] == 'private'
-        assert 'follows' not in serialized_user
-        assert 'is_followed_by' not in serialized_user
-
-    def test_user_model_as_admin(
-        self, app: Flask, user_1_admin: User, user_2: User
-    ) -> None:
-        assert '<User \'toto\'>' == str(user_2)
-
-        serialized_user = user_2.serialize(user_1_admin)
-
-        self.assert_serialized_used(serialized_user)
-        assert 'toto' == serialized_user['username']
-        assert 'toto@toto.com' == serialized_user['email']
-        assert serialized_user['nb_sports'] == 0
-        assert serialized_user['records'] == []
-        assert serialized_user['sports_list'] == []
-        assert serialized_user['total_distance'] == 0
-        assert serialized_user['total_duration'] == '0:00:00'
-        assert 'imperial_units' not in serialized_user
-        assert 'language' not in serialized_user
-        assert 'timezone' not in serialized_user
-        assert 'weekm' not in serialized_user
-        assert serialized_user['follows'] == 'false'
-        assert serialized_user['is_followed_by'] == 'false'
-        assert 'map_visibility' not in serialized_user
-        assert 'workouts_visibility' not in serialized_user
-
-    def test_user_model_as_regular_user(
-        self, app: Flask, user_1: User, user_2: User
-    ) -> None:
-        assert '<User \'toto\'>' == str(user_2)
-
-        serialized_user = user_2.serialize(user_1)
-
-        self.assert_serialized_used(serialized_user)
-        assert 'toto' == serialized_user['username']
-        assert serialized_user['nb_sports'] == 0
-        assert serialized_user['records'] == []
-        assert serialized_user['sports_list'] == []
-        assert serialized_user['total_distance'] == 0
-        assert serialized_user['total_duration'] == '0:00:00'
-        assert 'email' not in serialized_user
-        assert 'imperial_units' not in serialized_user
-        assert 'language' not in serialized_user
-        assert 'timezone' not in serialized_user
-        assert 'weekm' not in serialized_user
-        assert serialized_user['follows'] == 'false'
-        assert serialized_user['is_followed_by'] == 'false'
-        assert 'map_visibility' not in serialized_user
-        assert 'workouts_visibility' not in serialized_user
-
-    def test_user_model_when_no_user_provided(
+    def test_it_returns_username_in_string_value(
         self, app: Flask, user_1: User
     ) -> None:
         assert '<User \'test\'>' == str(user_1)
 
-        serialized_user = user_1.serialize()
 
-        self.assert_serialized_used(serialized_user)
-        assert 'email' not in serialized_user
-        assert 'nb_sports' not in serialized_user
-        assert 'sports_list' not in serialized_user
-        assert 'records' not in serialized_user
-        assert 'total_distance' not in serialized_user
-        assert 'total_duration' not in serialized_user
+class UserModelAssertMixin:
+    @staticmethod
+    def assert_user_account(serialized_user: Dict, user: User) -> None:
+        assert serialized_user['admin'] == user.admin
+        assert serialized_user['is_active'] == user.is_active
+        assert serialized_user['username'] == user.username
+
+    @staticmethod
+    def assert_user_follow_infos(
+        serialized_user: Dict, user: User, follows: bool, is_followed_by: bool
+    ) -> None:
+        assert serialized_user['followers'] == user.followers
+        assert serialized_user['following'] == user.following
+        assert serialized_user['follows'] == follows
+        assert serialized_user['is_followed_by'] == is_followed_by
+
+    @staticmethod
+    def assert_user_profile(serialized_user: Dict, user: User) -> None:
+        assert serialized_user['bio'] == user.bio
+        assert serialized_user['birth_date'] == user.birth_date
+        assert serialized_user['first_name'] == user.first_name
+        assert serialized_user['last_name'] == user.last_name
+        assert serialized_user['location'] == user.location
+        assert serialized_user['picture'] is False
+
+    @staticmethod
+    def assert_workouts_keys_are_present(serialized_user: Dict) -> None:
+        assert 'nb_sports' in serialized_user
+        assert 'nb_workouts' in serialized_user
+        assert 'records' in serialized_user
+        assert 'sports_list' in serialized_user
+        assert 'total_distance' in serialized_user
+        assert 'total_duration' in serialized_user
+
+
+class TestUserSerializeAsAuthUser(UserModelAssertMixin):
+    def test_it_returns_user_account_infos(
+        self, app: Flask, user_1: User
+    ) -> None:
+        serialized_user = user_1.serialize(user_1)
+
+        self.assert_user_account(serialized_user, user_1)
+        assert serialized_user['email_to_confirm'] == user_1.email_to_confirm
+
+    def test_it_returns_user_profile_infos(
+        self, app: Flask, user_1: User
+    ) -> None:
+        serialized_user = user_1.serialize(user_1)
+
+        self.assert_user_profile(serialized_user, user_1)
+
+    def test_it_returns_user_preferences(
+        self, app: Flask, user_1: User
+    ) -> None:
+        serialized_user = user_1.serialize(user_1)
+
+        assert serialized_user['imperial_units'] == user_1.imperial_units
+        assert serialized_user['language'] == user_1.language
+        assert serialized_user['timezone'] == user_1.timezone
+        assert serialized_user['weekm'] == user_1.weekm
+
+    def test_it_returns_workouts_infos(self, app: Flask, user_1: User) -> None:
+        serialized_user = user_1.serialize(user_1)
+
+        self.assert_workouts_keys_are_present(serialized_user)
+
+    def test_it_does_not_return_confirmation_token(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1_admin)
+
+        assert 'confirmation_token' not in serialized_user
+
+
+class TestUserSerializeAsAdmin(UserModelAssertMixin):
+    def test_it_returns_user_account_infos(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1_admin)
+
+        self.assert_user_account(serialized_user, user_2)
+        assert serialized_user['email_to_confirm'] == user_2.email_to_confirm
+
+    def test_it_returns_user_profile_infos(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1_admin)
+
+        self.assert_user_profile(serialized_user, user_1_admin)
+
+    def test_it_does_return_user_preferences(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1_admin)
+
         assert 'imperial_units' not in serialized_user
         assert 'language' not in serialized_user
         assert 'timezone' not in serialized_user
         assert 'weekm' not in serialized_user
-        assert 'follows' not in serialized_user
-        assert 'is_followed_by' not in serialized_user
-        assert 'map_visibility' not in serialized_user
-        assert 'workouts_visibility' not in serialized_user
 
-    def test_encode_auth_token(self, app: Flask, user_1: User) -> None:
-        auth_token = user_1.encode_auth_token(user_1.id)
-        assert isinstance(auth_token, str)
+    def test_it_returns_workouts_infos(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1_admin)
 
-    def test_encode_password_token(self, app: Flask, user_1: User) -> None:
-        password_token = user_1.encode_password_reset_token(user_1.id)
-        assert isinstance(password_token, str)
+        self.assert_workouts_keys_are_present(serialized_user)
 
-    def test_decode_auth_token(self, app: Flask, user_1: User) -> None:
-        auth_token = user_1.encode_auth_token(user_1.id)
-        assert isinstance(auth_token, str)
-        assert User.decode_auth_token(auth_token) == user_1.id
+    def test_it_does_not_return_confirmation_token(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1_admin)
+
+        assert 'confirmation_token' not in serialized_user
+
+
+class TestUserSerializeAsUser(UserModelAssertMixin):
+    def test_it_returns_user_account_infos(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1)
+
+        self.assert_user_account(serialized_user, user_2)
+        assert 'email_to_confirm' not in serialized_user
+
+    def test_it_returns_user_profile_infos(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1)
+
+        self.assert_user_profile(serialized_user, user_1)
+
+    def test_it_does_return_user_preferences(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1)
+
+        assert 'imperial_units' not in serialized_user
+        assert 'language' not in serialized_user
+        assert 'timezone' not in serialized_user
+        assert 'weekm' not in serialized_user
+
+    def test_it_returns_workouts_infos(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1_admin)
+
+        self.assert_workouts_keys_are_present(serialized_user)
+
+    def test_it_does_not_return_confirmation_token(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1_admin)
+
+        assert 'confirmation_token' not in serialized_user
+
+
+class TestUserSerializeAsUnauthenticatedUser(UserModelAssertMixin):
+    def test_it_returns_user_account_infos(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1)
+
+        self.assert_user_account(serialized_user, user_2)
+        assert 'email_to_confirm' not in serialized_user
+
+    def test_it_returns_user_profile_infos(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1)
+
+        self.assert_user_profile(serialized_user, user_1)
+
+    def test_it_does_return_user_preferences(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1)
+
+        assert 'imperial_units' not in serialized_user
+        assert 'language' not in serialized_user
+        assert 'timezone' not in serialized_user
+        assert 'weekm' not in serialized_user
+
+    def test_it_returns_workouts_infos(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1_admin)
+
+        self.assert_workouts_keys_are_present(serialized_user)
+
+    def test_it_does_not_return_confirmation_token(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1_admin)
+
+        assert 'confirmation_token' not in serialized_user
+
+
+class TestInactiveUserSerialize(UserModelAssertMixin):
+    def test_it_returns_is_active_to_false_for_inactive_user(
+        self,
+        app: Flask,
+        inactive_user: User,
+    ) -> None:
+        serialized_user = inactive_user.serialize(inactive_user)
+
+        assert serialized_user['is_active'] is False
+
+
+class TestUserRecords(UserModelAssertMixin):
+    def test_it_returns_empty_list_when_no_workouts(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        serialized_user = user_1.serialize(user_1)
+
+        assert serialized_user['records'] == []
 
     def test_it_returns_user_records(
         self,
@@ -143,7 +247,7 @@ class TestUserModel:
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        serialized_user = user_1.serialize(user_2)
+        serialized_user = user_1.serialize(user_1)
         assert len(serialized_user['records']) == 4
         assert serialized_user['records'][0]['record_type'] == 'AS'
         assert serialized_user['records'][0]['sport_id'] == sport_1_cycling.id
@@ -167,107 +271,79 @@ class TestUserModel:
         assert serialized_user['follows'] == 'false'
         assert serialized_user['is_followed_by'] == 'false'
 
-        serialized_user = user_1.serialize(user_2)
-        assert serialized_user['followers'] == 0
-        assert serialized_user['following'] == 0
-        assert serialized_user['follows'] == 'false'
-        assert serialized_user['is_followed_by'] == 'false'
 
-    def test_it_returns_pending_follow_request(
+class TestUserWorkouts(UserModelAssertMixin):
+    def test_it_returns_infos_when_no_workouts(
         self,
         app: Flask,
         user_1: User,
-        user_2: User,
-        follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
+        serialized_user = user_1.serialize(user_1)
 
-        serialized_user = user_2.serialize(user_1)
-        assert serialized_user['followers'] == 0
-        assert serialized_user['following'] == 0
-        assert serialized_user['follows'] == 'pending'
-        assert serialized_user['is_followed_by'] == 'false'
+        assert serialized_user['nb_sports'] == 0
+        assert serialized_user['nb_workouts'] == 0
+        assert serialized_user['sports_list'] == []
+        assert serialized_user['total_distance'] == 0
+        assert serialized_user['total_duration'] == '0:00:00'
 
-        serialized_user = user_1.serialize(user_2)
-        assert serialized_user['followers'] == 0
-        assert serialized_user['following'] == 0
-        assert serialized_user['follows'] == 'false'
-        assert serialized_user['is_followed_by'] == 'pending'
-
-    def test_it_returns_user_1_is_followed_by_user_2(
+    def test_it_returns_infos_when_only_one_workout_exists(
         self,
         app: Flask,
         user_1: User,
-        user_2: User,
-        follow_request_from_user_2_to_user_1: FollowRequest,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
     ) -> None:
-        follow_request_from_user_2_to_user_1.is_approved = True
-        follow_request_from_user_2_to_user_1.updated_at = datetime.utcnow()
+        serialized_user = user_1.serialize(user_1)
 
-        serialized_user = user_2.serialize(user_1)
-        assert serialized_user['followers'] == 0
-        assert serialized_user['following'] == 1
-        assert serialized_user['follows'] == 'true'
-        assert serialized_user['is_followed_by'] == 'false'
+        assert serialized_user['nb_sports'] == 1
+        assert serialized_user['nb_workouts'] == 1
+        assert serialized_user['sports_list'] == [sport_1_cycling.id]
+        assert (
+            serialized_user['total_distance']
+            == workout_cycling_user_1.distance
+        )
+        assert serialized_user['total_duration'] == str(
+            workout_cycling_user_1.duration
+        )
 
-        serialized_user = user_1.serialize(user_2)
-        assert serialized_user['followers'] == 1
-        assert serialized_user['following'] == 0
-        assert serialized_user['follows'] == 'false'
-        assert serialized_user['is_followed_by'] == 'true'
-
-    def test_it_returns_user_1_is_not_followed_by_user_2_when_followed_request_is_rejected(  # noqa
+    def test_it_returns_infos_when_several_sports(
         self,
         app: Flask,
         user_1: User,
-        user_2: User,
-        follow_request_from_user_2_to_user_1: FollowRequest,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1: Workout,
+        workout_running_user_1: Workout,
     ) -> None:
-        follow_request_from_user_2_to_user_1.is_approved = False
-        follow_request_from_user_2_to_user_1.updated_at = datetime.utcnow()
+        serialized_user = user_1.serialize(user_1)
 
-        serialized_user = user_2.serialize(user_1)
-        assert serialized_user['followers'] == 0
-        assert serialized_user['following'] == 0
-        assert serialized_user['follows'] == 'false'
-        assert serialized_user['is_followed_by'] == 'false'
+        assert serialized_user['nb_sports'] == 2
+        assert serialized_user['nb_workouts'] == 2
+        assert serialized_user['sports_list'] == [
+            sport_1_cycling.id,
+            sport_2_running.id,
+        ]
+        assert serialized_user['total_distance'] == (
+            workout_cycling_user_1.distance + workout_running_user_1.distance
+        )
+        assert serialized_user['total_duration'] == str(
+            workout_cycling_user_1.duration + workout_running_user_1.duration
+        )
 
-        serialized_user = user_1.serialize(user_2)
-        assert serialized_user['followers'] == 0
-        assert serialized_user['following'] == 0
-        assert serialized_user['follows'] == 'false'
-        assert serialized_user['is_followed_by'] == 'false'
 
-    def test_it_returns_user_1_and_user_2_follow_each_other(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        follow_request_from_user_2_to_user_1: FollowRequest,
-        follow_request_from_user_1_to_user_2: FollowRequest,
-    ) -> None:
-        follow_request_from_user_2_to_user_1.is_approved = True
-        follow_request_from_user_2_to_user_1.updated_at = datetime.utcnow()
-        follow_request_from_user_1_to_user_2.is_approved = True
-        follow_request_from_user_1_to_user_2.updated_at = datetime.utcnow()
+class TestUserModelToken:
+    def test_encode_auth_token(self, app: Flask, user_1: User) -> None:
+        auth_token = user_1.encode_auth_token(user_1.id)
+        assert isinstance(auth_token, str)
 
-        serialized_user = user_2.serialize(user_1)
-        assert serialized_user['followers'] == 1
-        assert serialized_user['following'] == 1
-        assert serialized_user['follows'] == 'true'
-        assert serialized_user['is_followed_by'] == 'true'
+    def test_encode_password_token(self, app: Flask, user_1: User) -> None:
+        password_token = user_1.encode_password_reset_token(user_1.id)
+        assert isinstance(password_token, str)
 
-        serialized_user = user_1.serialize(user_2)
-        assert serialized_user['followers'] == 1
-        assert serialized_user['following'] == 1
-        assert serialized_user['follows'] == 'true'
-        assert serialized_user['is_followed_by'] == 'true'
-
-    def test_user_is_not_remote_when_federation_is_disabled(
-        self, app: Flask, user_1: User
-    ) -> None:
-        assert user_1.is_remote is False
-        assert user_1.serialize()['is_remote'] is False
-        assert 'fullname' not in user_1.serialize()
+    def test_decode_auth_token(self, app: Flask, user_1: User) -> None:
+        auth_token = user_1.encode_auth_token(user_1.id)
+        assert isinstance(auth_token, str)
+        assert User.decode_auth_token(auth_token) == user_1.id
 
 
 class TestUserSportModel:

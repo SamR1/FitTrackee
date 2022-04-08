@@ -4,7 +4,7 @@ from flask import Flask
 
 from fittrackee.users.models import User
 
-from ...test_case_mixins import ApiTestCaseMixin
+from ...mixins import ApiTestCaseMixin
 
 
 class TestGetAllStats(ApiTestCaseMixin):

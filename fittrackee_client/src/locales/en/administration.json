@@ -1,26 +1,35 @@
 {
   "ACTION": "Action",
+  "ACTIVATE_USER_ACCOUNT": "Activate account",
+  "ACTIVE": "Active",
   "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Add/remove admin rights, delete user account.",
   "ADMIN": "Admin",
   "ADMINISTRATION": "Administration",
   "APPLICATION": "Application",
   "APP_CONFIG": {
+    "ADMIN_CONTACT": "Administrator email for contact",
     "FEDERATION_ENABLED": "Federation enabled",
     "MAX_USERS_LABEL": "Max. number of active users",
     "MAX_USERS_HELP": "If 0, no limitation on registration.",
     "MAX_FILES_IN_ZIP_LABEL": "Max. files of zip archive",
+    "NO_CONTACT_EMAIL": "no contact email",
     "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Max. size of uploaded files (in Mb)",
     "TITLE": "Application configuration",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. size of zip archive (in Mb)"
   },
   "BACK_TO_ADMIN": "Back to admin",
   "CONFIRM_USER_ACCOUNT_DELETION": "Are you sure you want to delete {0} account? All data will be deleted, this cannot be undone.",
+  "CONFIRM_USER_PASSWORD_RESET": "Are you sure you want to reset {0} password?",
+  "CURRENT_EMAIL": "Current email",
   "DELETE_USER": "Delete user",
   "ENABLE_DISABLE_SPORTS": "Enable/disable sports.",
   "FEDERATION_DISABLED": "Federation is currently disabled.",
   "FEDERATION_ENABLED": "Federation is currently enabled.",
+  "NEW_EMAIL": "New email",
+  "PASSWORD_RESET_SUCCESSFUL": "The password has been reset.",
   "REGISTRATION_DISABLED": "Registration is currently disabled.",
   "REGISTRATION_ENABLED": "Registration is currently enabled.",
+  "RESET_USER_PASSWORD": "Reset password",
   "SPORTS": {
     "TABLE": {
       "ACTIVE": "Active",
@@ -31,6 +40,9 @@
     "TITLE": "Sports administration"
   },
   "UPDATE_APPLICATION_DESCRIPTION": "Update application configuration (maximum number of registered users, maximum files size).",
+  "UPDATE_USER_EMAIL": "Update email",
+  "USER": "user | users",
+  "USER_EMAIL_UPDATE_SUCCESSFUL": "The email address has been updated.",
   "USERS": {
     "TABLE": {
       "ADD_ADMIN_RIGHTS": "Add admin rights",
@@ -40,6 +52,7 @@
       "ORDER_BY": {
         "ADMIN": "admin status",
         "CREATED_AT": "registration date",
+        "IS_ACTIVE": "account status",
         "USERNAME": "username",
         "WORKOUTS_COUNT": "workout count"
       }

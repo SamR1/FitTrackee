@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block title %}Confirm email change{% endblock %}
+{% block preheader %}Use this link to confirm email change.{% endblock %}
+{% block content %}<h1>Hi {{username}},</h1>
+                        <p>You recently requested to change your email address for your FitTrackee account. Use the button below to confirm this address.</p>
+                        <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                          <tr>
+                            <td align="center">
+                              <table width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation">
+                                <tr>
+                                  <td align="center">
+                                    <a href="{{email_confirmation_url}}" class="f-fallback button button--green" target="_blank">Verify your email</a>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+                        <p>
+                          {% if operating_system and browser_name %}For security, this request was received from a {{operating_system}} device using {{browser_name}}.
+                          {% endif %}If this email change wasn't initiated by you, please ignore this email.
+                        </p>
+                        <p>Thanks,
+                          <br>The FitTrackee Team</p>
+                        <table class="body-sub" role="presentation">
+                          <tr>
+                            <td>
+                              <p class="f-fallback sub">If you’re having trouble with the button above, copy and paste the URL below into your web browser.</p>
+                              <p class="f-fallback sub">{{email_confirmation_url}}</p>
+                            </td>
+                          </tr>
+                        </table>{% endblock %}

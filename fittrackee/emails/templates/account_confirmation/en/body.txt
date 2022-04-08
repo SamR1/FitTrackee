@@ -1,0 +1,12 @@
+Hi {{username}},
+
+You have created an account on FitTrackee account. Use the link below to confirm your address email.
+
+Verify your email: {{ account_confirmation_url }}
+
+{% if operating_system and browser_name %}For security, this request was received from a {{operating_system}} device using {{browser_name}}.
+{% endif %}If this account creation wasn't initiated by you, please ignore this email.
+
+Thanks,
+The FitTrackee Team
+{{fittrackee_url}}

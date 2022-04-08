@@ -1,42 +1,12 @@
 <template>
   <div id="user-infos-edition">
-    <Modal
-      v-if="displayModal"
-      :title="$t('common.CONFIRMATION')"
-      :message="$t('user.CONFIRM_ACCOUNT_DELETION')"
-      @confirmAction="deleteAccount(user.username)"
-      @cancelAction="updateDisplayModal(false)"
-    />
     <div class="profile-form form-box">
       <ErrorMessage :message="errorMessages" v-if="errorMessages" />
       <form @submit.prevent="updateProfile">
-        <label class="form-items" for="email">
-          {{ $t('user.EMAIL') }}
-          <input id="email" :value="user.email" disabled />
-        </label>
         <label class="form-items" for="registrationDate">
           {{ $t('user.PROFILE.REGISTRATION_DATE') }}
           <input id="registrationDate" :value="registrationDate" disabled />
         </label>
-        <label class="form-items" for="password">
-          {{ $t('user.PASSWORD') }}
-          <input
-            id="password"
-            type="password"
-            v-model="userForm.password"
-            :disabled="loading"
-          />
-        </label>
-        <label class="form-items" for="passwordConfirmation">
-          {{ $t('user.PASSWORD_CONFIRMATION') }}
-          <input
-            id="passwordConfirmation"
-            type="password"
-            v-model="userForm.password_conf"
-            :disabled="loading"
-          />
-        </label>
-        <hr />
         <label class="form-items" for="first_name">
           {{ $t('user.PROFILE.FIRST_NAME') }}
           <input
@@ -84,9 +54,6 @@
           <button class="cancel" @click.prevent="$router.push('/profile')">
             {{ $t('buttons.CANCEL') }}
           </button>
-          <button class="danger" @click.prevent="updateDisplayModal(true)">
-            {{ $t('buttons.DELETE_MY_ACCOUNT') }}
-          </button>
         </div>
       </form>
     </div>
@@ -95,15 +62,7 @@
 
 <script setup lang="ts">
   import { format } from 'date-fns'
-  import {
-    ComputedRef,
-    Ref,
-    computed,
-    reactive,
-    ref,
-    toRefs,
-    onMounted,
-  } from 'vue'
+  import { ComputedRef, computed, reactive, onMounted, onUnmounted } from 'vue'
 
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import { IUserProfile, IUserPayload } from '@/types/user'
@@ -116,10 +75,7 @@
 
   const store = useStore()
 
-  const { user } = toRefs(props)
   const userForm: IUserPayload = reactive({
-    password: '',
-    password_conf: '',
     first_name: '',
     last_name: '',
     birth_date: '',
@@ -137,7 +93,6 @@
   const errorMessages: ComputedRef<string | string[] | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
   )
-  let displayModal: Ref<boolean> = ref(false)
 
   onMounted(() => {
     if (props.user) {
@@ -160,16 +115,25 @@
   function updateProfile() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PROFILE, userForm)
   }
-  function updateDisplayModal(value: boolean) {
-    displayModal.value = value
-  }
-  function deleteAccount(username: string) {
-    store.dispatch(AUTH_USER_STORE.ACTIONS.DELETE_ACCOUNT, { username })
-  }
+
+  onUnmounted(() => {
+    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+  })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   @import '~@/scss/vars.scss';
+
+  .form-items {
+    .password-input {
+      ::v-deep(.show-password) {
+        font-weight: normal;
+        font-size: 0.8em;
+        margin-top: -4px;
+        padding-left: 0;
+      }
+    }
+  }
 
   .form-buttons {
     flex-direction: row;

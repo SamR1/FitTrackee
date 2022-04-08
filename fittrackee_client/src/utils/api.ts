@@ -45,6 +45,11 @@ export const getQuery = (
     orderByList,
     defaultOrderBy
   )
+  if (typeof locationQuery.q === 'string') {
+    query.q = locationQuery.q
+  } else {
+    delete query.q
+  }
 
   return query
 }

@@ -7,7 +7,7 @@ from flask import Flask
 from fittrackee.federation.models import Actor
 from fittrackee.users.models import User
 
-from ...test_case_mixins import ApiTestCaseMixin
+from ...mixins import ApiTestCaseMixin
 from ...utils import (
     RandomActor,
     generate_response,
@@ -279,10 +279,7 @@ class TestGetRemoteUser(ApiTestCaseMixin):
                 headers=dict(Authorization=f'Bearer {auth_token}'),
             )
 
-        assert response.status_code == 404
-        data = json.loads(response.data.decode())
-        assert 'not found' in data['status']
-        assert 'user does not exist' in data['message']
+        self.assert_404_with_entity(response, 'user')
 
     def test_it_returns_remote_user_if_exists(
         self, app_with_federation: Flask, user_1: User, remote_user: User
@@ -333,10 +330,7 @@ class TestGetUserPicture(ApiTestCaseMixin):
 
         response = client.get(f'/api/users/{remote_user.username}/picture')
 
-        assert response.status_code == 404
-        data = json.loads(response.data.decode())
-        assert 'not found' in data['status']
-        assert 'user does not exist' in data['message']
+        self.assert_404_with_entity(response, 'user')
 
 
 class TestUpdateUser(ApiTestCaseMixin):
@@ -384,7 +378,4 @@ class TestUpdateUser(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        assert response.status_code == 400
-        data = json.loads(response.data.decode())
-        assert 'error' in data['status']
-        assert 'invalid payload' in data['message']
+        self.assert_400(response)

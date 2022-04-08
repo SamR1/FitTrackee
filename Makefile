@@ -9,7 +9,9 @@ make-p:
 build-client: lint-client
 	cd fittrackee_client && $(NPM) build
 
-check-all: lint-all type-check test-python test-client
+check-all: lint-all type-check test-all
+
+check-client: lint-client test-client
 
 check-python: lint-python type-check test-python
 
@@ -164,10 +166,12 @@ serve-python-dev:
 set-admin:
 	$(FLASK) users set-admin $(USERNAME)
 
-test-e2e: init-db
+test-e2e:
 	$(PYTEST) e2e --driver firefox $(PYTEST_ARGS)
 
-test-e2e-client: init-db
+test-all: test-client test-python
+
+test-e2e-client:
 	E2E_ARGS=client $(PYTEST) e2e --driver firefox $(PYTEST_ARGS)
 
 test-python:

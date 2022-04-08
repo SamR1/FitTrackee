@@ -52,7 +52,7 @@ class TestUserRegistration:
             content_type='application/json',
         )
 
-        assert response.status_code == 201
+        assert response.status_code == 200
         created_user = User.query.filter(
             User.username == remote_user.username,
             User.is_remote == False,  # noqa

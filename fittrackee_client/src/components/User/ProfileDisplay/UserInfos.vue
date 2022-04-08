@@ -3,70 +3,117 @@
     <Modal
       v-if="displayModal"
       :title="$t('common.CONFIRMATION')"
-      message="admin.CONFIRM_USER_ACCOUNT_DELETION"
+      :message="
+        displayModal === 'delete'
+          ? 'admin.CONFIRM_USER_ACCOUNT_DELETION'
+          : 'admin.CONFIRM_USER_PASSWORD_RESET'
+      "
       :strongMessage="user.username"
-      @confirmAction="deleteUserAccount(user.username)"
-      @cancelAction="updateDisplayModal(false)"
+      @confirmAction="
+        displayModal === 'delete'
+          ? deleteUserAccount(user.username)
+          : resetUserPassword(user.username)
+      "
+      @cancelAction="updateDisplayModal('')"
     />
-    <dl v-if="!user.is_remote">
-      <dt>{{ $t('user.PROFILE.REGISTRATION_DATE') }}:</dt>
-      <dd>{{ registrationDate }}</dd>
-      <dt>{{ $t('user.PROFILE.FIRST_NAME') }}:</dt>
-      <dd>{{ user.first_name }}</dd>
-      <dt>{{ $t('user.PROFILE.LAST_NAME') }}:</dt>
-      <dd>{{ user.last_name }}</dd>
-      <dt>{{ $t('user.PROFILE.BIRTH_DATE') }}:</dt>
-      <dd>{{ birthDate }}</dd>
-      <dt>{{ $t('user.PROFILE.LOCATION') }}:</dt>
-      <dd>{{ user.location }}</dd>
-      <dt>{{ $t('user.PROFILE.BIO') }}:</dt>
-      <dd class="user-bio">
-        {{ user.bio }}
-      </dd>
-    </dl>
-    <div v-else class="remote-user-account">
-      <i18n-t keypath="user.USER_FROM_REMOTE_INSTANCE_ORIGINAL_LINK">
-        <a :href="user.profile_link" target="_blank">
-          {{ $t('common.HERE') }}
-        </a>
-      </i18n-t>
+    <div class="info-box success-message" v-if="isSuccess">
+      {{
+        $t(
+          `admin.${
+            currentAction === 'password-reset'
+              ? 'PASSWORD_RESET'
+              : 'USER_EMAIL_UPDATE'
+          }_SUCCESSFUL`
+        )
+      }}
     </div>
-    <div
-      class="profile-buttons"
-      v-if="authUser && authUser.admin && $route.query.from === 'admin'"
-    >
-      <button
-        class="danger"
-        v-if="authUser.username !== user.username"
-        @click.prevent="updateDisplayModal(true)"
+    <AlertMessage
+      message="user.THIS_USER_ACCOUNT_IS_INACTIVE"
+      v-if="!user.is_remote && !user.is_active"
+    />
+    <ErrorMessage :message="errorMessages" v-if="errorMessages" />
+    <div class="email-form form-box" v-if="displayUserEmailForm">
+      <form
+        :class="{ errors: formErrors }"
+        @submit.prevent="updateUserEmail(user.username)"
       >
-        {{ $t('admin.DELETE_USER') }}
-      </button>
-      <button @click="$router.go(-1)">{{ $t('buttons.BACK') }}</button>
+        <label class="form-items" for="email">
+          {{ $t('admin.CURRENT_EMAIL') }}
+          <input id="email" type="email" v-model="user.email" disabled />
+        </label>
+        <label class="form-items" for="email">
+          {{ $t('admin.NEW_EMAIL') }}*
+          <input id="new-email" type="email" required v-model="newUserEmail" />
+        </label>
+        <div class="form-buttons">
+          <button class="confirm" type="submit">
+            {{ $t('buttons.SUBMIT') }}
+          </button>
+          <button class="cancel" @click.prevent="hideEmailForm">
+            {{ $t('buttons.CANCEL') }}
+          </button>
+        </div>
+      </form>
     </div>
-    <div class="profile-buttons" v-else>
-      <button
-        v-if="$route.path === '/profile' || isAuthUser(user, authUser)"
-        @click="$router.push('/profile/edit')"
-      >
-        {{ $t('user.PROFILE.EDIT') }}
-      </button>
-      <UserRelationshipActions
-        v-if="authUser?.username"
-        :authUser="authUser"
-        :user="user"
-        from="userInfos"
-      />
-      <div>
+    <div v-else>
+      <dl>
+        <dt>{{ $t('user.PROFILE.REGISTRATION_DATE') }}:</dt>
+        <dd>{{ registrationDate }}</dd>
+        <dt>{{ $t('user.PROFILE.FIRST_NAME') }}:</dt>
+        <dd>{{ user.first_name }}</dd>
+        <dt>{{ $t('user.PROFILE.LAST_NAME') }}:</dt>
+        <dd>{{ user.last_name }}</dd>
+        <dt>{{ $t('user.PROFILE.BIRTH_DATE') }}:</dt>
+        <dd>{{ birthDate }}</dd>
+        <dt>{{ $t('user.PROFILE.LOCATION') }}:</dt>
+        <dd>{{ user.location }}</dd>
+        <dt>{{ $t('user.PROFILE.BIO') }}:</dt>
+        <dd class="user-bio">
+          {{ user.bio }}
+        </dd>
+      </dl>
+      <div class="profile-buttons" v-if="fromAdmin">
         <button
-          @click="
-            $route.query.from === 'users' ? $router.go(-1) : $router.push('/')
-          "
+          class="danger"
+          v-if="authUser.username !== user.username"
+          @click.prevent="updateDisplayModal('delete')"
         >
-          {{
-            $t($route.query.from === 'users' ? 'buttons.BACK' : 'common.HOME')
-          }}
+          {{ $t('admin.DELETE_USER') }}
         </button>
+        <button
+          v-if="!user.is_active"
+          @click.prevent="confirmUserAccount(user.username)"
+        >
+          {{ $t('admin.ACTIVATE_USER_ACCOUNT') }}
+        </button>
+        <button
+          v-if="authUser.username !== user.username"
+          @click.prevent="displayEmailForm"
+        >
+          {{ $t('admin.UPDATE_USER_EMAIL') }}
+        </button>
+        <button
+          v-if="authUser.username !== user.username"
+          @click.prevent="updateDisplayModal('reset')"
+        >
+          {{ $t('admin.RESET_USER_PASSWORD') }}
+        </button>
+        <UserRelationshipActions
+          v-if="authUser?.username"
+          :authUser="authUser"
+          :user="user"
+          from="userInfos"
+        />
+        <button @click="$router.go(-1)">{{ $t('buttons.BACK') }}</button>
+      </div>
+      <div class="profile-buttons" v-else>
+        <button
+          v-if="$route.path === '/profile' || isAuthUser(user, authUser)"
+          @click="$router.push('/profile/edit')"
+        >
+          {{ $t('user.PROFILE.EDIT') }}
+        </button>
+        <button @click="$router.push('/')">{{ $t('common.HOME') }}</button>
       </div>
     </div>
 
@@ -76,7 +123,16 @@
 
 <script setup lang="ts">
   import { format } from 'date-fns'
-  import { Ref, computed, ref, toRefs, ComputedRef } from 'vue'
+  import {
+    ComputedRef,
+    Ref,
+    computed,
+    ref,
+    toRefs,
+    withDefaults,
+    watch,
+    onUnmounted,
+  } from 'vue'
 
   import UserRelationshipActions from '@/components/User/UserRelationshipActions.vue'
   import { ROOT_STORE, USERS_STORE } from '@/store/constants'
@@ -87,15 +143,15 @@
   interface Props {
     user: IUserProfile
     authUser?: IAuthUserProfile
+    fromAdmin?: false
   }
-  const props = defineProps<Props>()
+  const props = withDefaults(defineProps<Props>(), {
+    fromAdmin: false,
+  })
 
   const store = useStore()
 
-  const { authUser, user } = toRefs(props)
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const { authUser, user, fromAdmin } = toRefs(props)
   const registrationDate = computed(() =>
     props.user.created_at
       ? format(new Date(props.user.created_at), 'dd/MM/yyyy HH:mm')
@@ -106,14 +162,75 @@
       ? format(new Date(props.user.birth_date), 'dd/MM/yyyy')
       : ''
   )
-  let displayModal: Ref<boolean> = ref(false)
+  const isSuccess = computed(
+    () => store.getters[USERS_STORE.GETTERS.USERS_IS_SUCCESS]
+  )
+  const errorMessages: ComputedRef<string | string[] | null> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
+  )
+  let displayModal: Ref<string> = ref('')
+  const formErrors = ref(false)
+  const displayUserEmailForm: Ref<boolean> = ref(false)
+  const newUserEmail: Ref<string> = ref('')
+  const currentAction: Ref<string> = ref('')
 
-  function updateDisplayModal(value: boolean) {
+  function updateDisplayModal(value: string) {
     displayModal.value = value
+    if (value !== '') {
+      store.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+    }
   }
   function deleteUserAccount(username: string) {
     store.dispatch(USERS_STORE.ACTIONS.DELETE_USER_ACCOUNT, { username })
   }
+  function resetUserPassword(username: string) {
+    currentAction.value = 'password-reset'
+    store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, {
+      username,
+      resetPassword: true,
+    })
+  }
+  function confirmUserAccount(username: string) {
+    store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, {
+      username,
+      activate: true,
+    })
+  }
+  function displayEmailForm() {
+    resetErrorsAndSuccess()
+    newUserEmail.value = user.value.email_to_confirm
+      ? user.value.email_to_confirm
+      : ''
+    displayUserEmailForm.value = true
+    currentAction.value = 'email-update'
+  }
+  function hideEmailForm() {
+    newUserEmail.value = ''
+    displayUserEmailForm.value = false
+  }
+  function updateUserEmail(username: string) {
+    store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, {
+      username,
+      new_email: newUserEmail.value,
+    })
+  }
+  function resetErrorsAndSuccess() {
+    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    store.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+    currentAction.value = ''
+  }
+
+  onUnmounted(() => resetErrorsAndSuccess())
+
+  watch(
+    () => isSuccess.value,
+    (newIsSuccess) => {
+      if (newIsSuccess) {
+        updateDisplayModal('')
+        hideEmailForm()
+      }
+    }
+  )
 </script>
 
 <style lang="scss" scoped>
@@ -122,6 +239,27 @@
   #user-infos {
     .user-bio {
       white-space: pre-wrap;
+    }
+
+    .alert-message {
+      margin: 0;
+    }
+
+    .profile-buttons {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .email-form {
+      display: flex;
+      form {
+        width: 100%;
+      }
+      .form-buttons {
+        display: flex;
+        gap: $default-padding;
+        margin-top: $default-margin;
+      }
     }
 
     .remote-user-account {

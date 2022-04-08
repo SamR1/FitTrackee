@@ -7,7 +7,12 @@
         :authUser="authUser"
         :user="user"
       />
-      <UserInfos v-else :authUser="authUser" :user="user" />
+      <UserInfos
+        v-else
+        :authUser="authUser"
+        :user="user"
+        :from-admin="fromAdmin"
+      />
     </div>
   </div>
 </template>
@@ -18,6 +23,7 @@
     computed,
     onBeforeMount,
     onBeforeUnmount,
+    toRefs,
     watch,
   } from 'vue'
   import { LocationQuery, useRoute } from 'vue-router'
@@ -27,6 +33,12 @@
   import { AUTH_USER_STORE, USERS_STORE } from '@/store/constants'
   import { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
+
+  interface Props {
+    fromAdmin: boolean
+  }
+  const props = defineProps<Props>()
+  const { fromAdmin } = toRefs(props)
 
   const route = useRoute()
   const store = useStore()

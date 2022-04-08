@@ -10,7 +10,7 @@ from freezegun import freeze_time
 from fittrackee.federation.inbox import send_to_remote_user_inbox
 from fittrackee.users.models import User
 
-from ...test_case_mixins import BaseTestMixin
+from ...mixins import BaseTestMixin
 from ...utils import generate_response, get_date_string, random_string
 
 

@@ -16,16 +16,13 @@ from fittrackee.federation.signature import (
 )
 from fittrackee.users.models import User
 
-from ...test_case_mixins import ApiTestCaseMixin
+from ...mixins import ApiTestCaseMixin
 from ...utils import (
     generate_response,
     get_date_string,
     random_domain,
     random_string,
 )
-
-# Prevent pytest from collecting TestResponse as test
-TestResponse.__test__ = False  # type: ignore
 
 
 class TestUserInbox(ApiTestCaseMixin):

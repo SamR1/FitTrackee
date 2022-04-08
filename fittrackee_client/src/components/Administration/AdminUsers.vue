@@ -6,6 +6,7 @@
         <button class="top-button" @click.prevent="$router.push('/admin')">
           {{ $t('admin.BACK_TO_ADMIN') }}
         </button>
+        <UsersNameFilter @filterOnUsername="searchUsers" />
         <FilterSelects
           :sort="sortList"
           :order_by="orderByList"
@@ -13,7 +14,10 @@
           message="admin.USERS.SELECTS.ORDER_BY"
           @updateSelect="reloadUsers"
         />
-        <div class="responsive-table">
+        <div class="no-users" v-if="users.length === 0">
+          {{ $t('user.NO_USERS_FOUND') }}
+        </div>
+        <div class="responsive-table" v-else>
           <table>
             <thead>
               <tr>
@@ -26,6 +30,7 @@
                 <th>
                   {{ capitalize($t('workouts.WORKOUT', 0)) }}
                 </th>
+                <th>{{ $t('admin.ACTIVE') }}</th>
                 <th>{{ $t('user.ADMIN') }}</th>
                 <th>{{ $t('admin.ACTION') }}</th>
               </tr>
@@ -42,7 +47,7 @@
                   <span class="cell-heading">
                     {{ $t('user.USERNAME') }}
                   </span>
-                  <router-link :to="`/users/${user.username}?from=admin`">
+                  <router-link :to="`/admin/users/${user.username}`">
                     {{ user.username }}
                   </router-link>
                 </td>
@@ -68,6 +73,15 @@
                     {{ capitalize($t('workouts.WORKOUT', 0)) }}
                   </span>
                   {{ user.nb_workouts }}
+                </td>
+                <td class="text-center">
+                  <span class="cell-heading">
+                    {{ $t('admin.ACTIVE') }}
+                  </span>
+                  <i
+                    :class="`fa fa${user.is_active ? '-check' : ''}-square-o`"
+                    aria-hidden="true"
+                  />
                 </td>
                 <td class="text-center">
                   <span class="cell-heading">
@@ -119,6 +133,7 @@
   import { format } from 'date-fns'
   import {
     ComputedRef,
+    Ref,
     computed,
     reactive,
     watch,
@@ -131,6 +146,7 @@
   import FilterSelects from '@/components/Common/FilterSelects.vue'
   import Pagination from '@/components/Common/Pagination.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
+  import UsersNameFilter from '@/components/Users/UsersNameFilter.vue'
   import { AUTH_USER_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
   import { IPagination, TPaginationPayload } from '@/types/api'
   import { IAuthUserProfile, IUserProfile, TUsersPayload } from '@/types/user'
@@ -144,6 +160,7 @@
   const router = useRouter()
 
   const orderByList: string[] = [
+    'is_active',
     'admin',
     'created_at',
     'username',
@@ -171,6 +188,10 @@
   function loadUsers(queryParams: TUsersPayload) {
     store.dispatch(USERS_STORE.ACTIONS.GET_USERS, queryParams)
   }
+  function searchUsers(username: Ref<string>) {
+    reloadUsers('q', username.value)
+  }
+
   function updateUser(username: string, admin: boolean) {
     store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, {
       username,
@@ -204,6 +225,14 @@
     .top-button {
       display: none;
     }
+
+    .no-users {
+      display: flex;
+      justify-content: center;
+      padding: $default-padding * 2 0;
+      font-weight: bold;
+    }
+
     table {
       td {
         font-size: 1.1em;

@@ -7,5 +7,6 @@ export const usersState: IUsersState = {
   user_relationships: [],
   users: [],
   loading: false,
+  isSuccess: false,
   pagination: <IPagination>{},
 }

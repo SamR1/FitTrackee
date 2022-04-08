@@ -3,17 +3,16 @@ from unittest.mock import patch
 import pytest
 from flask import Flask
 
+from fittrackee.tests.utils import random_string
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.models import User
 from fittrackee.users.utils.admin import set_admin_rights
 from fittrackee.users.utils.controls import (
-    check_passwords,
+    check_password,
     check_username,
     is_valid_email,
     register_controls,
 )
-
-from ..utils import random_string
 
 
 class TestSetAdminRights:
@@ -37,11 +36,21 @@ class TestSetAdminRights:
 
         assert user_1_admin.admin is True
 
+    def test_it_activates_account_if_user_is_inactive(
+        self, app: Flask, inactive_user: User
+    ) -> None:
+        set_admin_rights(inactive_user.username)
+
+        assert inactive_user.admin is True
+        assert inactive_user.is_active is True
+        assert inactive_user.confirmation_token is None
+
 
 class TestIsValidEmail:
     @pytest.mark.parametrize(
         ('input_email',),
         [
+            (None,),
             ('',),
             ('foo',),
             ('foo@',),
@@ -70,13 +79,6 @@ class TestIsValidEmail:
 
 
 class TestCheckPasswords:
-    def test_it_returns_error_message_string_if_passwords_do_not_match(
-        self,
-    ) -> None:
-        assert check_passwords('password', 'pasword') == (
-            'password: password and password confirmation do not match\n'
-        )
-
     @pytest.mark.parametrize(
         ('input_password_length',),
         [
@@ -89,7 +91,7 @@ class TestCheckPasswords:
         self, input_password_length: int
     ) -> None:
         password = random_string(input_password_length)
-        assert check_passwords(password, password) == (
+        assert check_password(password) == (
             'password: 8 characters required\n'
         )
 
@@ -104,15 +106,7 @@ class TestCheckPasswords:
         self, input_password_length: int
     ) -> None:
         password = random_string(input_password_length)
-        assert check_passwords(password, password) == ''
-
-    def test_it_returns_multiple_errors(self) -> None:
-        password = random_string(3)
-        password_conf = random_string(8)
-        assert check_passwords(password, password_conf) == (
-            'password: password and password confirmation do not match\n'
-            'password: 8 characters required\n'
-        )
+        assert check_password(password) == ''
 
 
 class TestIsUsernameValid:
@@ -128,7 +122,7 @@ class TestIsUsernameValid:
     ) -> None:
         assert (
             check_username(
-                username=random_string(input_username_length),
+                username=random_string(31),
             )
             == 'username: 3 to 30 characters required\n'
         )
@@ -154,7 +148,7 @@ class TestIsUsernameValid:
         assert check_username(username=random_string()) == ''
 
     def test_it_returns_multiple_errors(self) -> None:
-        username = random_string(1) + '.'
+        username = random_string(31) + '.'
         assert check_username(username=username) == (
             'username: 3 to 30 characters required\n'
             'username: only alphanumeric characters and the underscore '
@@ -170,7 +164,7 @@ class TestRegisterControls:
 
     def test_it_calls_all_validators(self) -> None:
         with patch(
-            self.module_path + 'check_passwords'
+            self.module_path + 'check_password'
         ) as check_passwords_mock, patch(
             self.module_path + 'check_username'
         ) as check_username_mock, patch(
@@ -180,12 +174,9 @@ class TestRegisterControls:
                 self.valid_username,
                 self.valid_email,
                 self.valid_password,
-                self.valid_password,
             )
 
-        check_passwords_mock.assert_called_once_with(
-            self.valid_password, self.valid_password
-        )
+        check_passwords_mock.assert_called_once_with(self.valid_password)
         check_username_mock.assert_called_once_with(self.valid_username)
         is_valid_email_mock.assert_called_once_with(self.valid_email)
 
@@ -195,20 +186,17 @@ class TestRegisterControls:
                 self.valid_username,
                 self.valid_email,
                 self.valid_password,
-                self.valid_password,
             )
             == ''
         )
 
     def test_it_returns_multiple_errors_when_inputs_are_invalid(self) -> None:
-        invalid_username = random_string(2)
+        invalid_username = random_string(31)
         assert register_controls(
             username=invalid_username,
             email=invalid_username,
             password=random_string(8),
-            password_conf=random_string(8),
         ) == (
             'username: 3 to 30 characters required\n'
             'email: valid email must be provided\n'
-            'password: password and password confirmation do not match\n'
         )

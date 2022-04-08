@@ -13,18 +13,22 @@ import {
   IFollowRequestsPayload,
   ILoginOrRegisterData,
   IUserDeletionPayload,
-  IUserPasswordPayload,
+  IUserEmailPayload,
   IUserPasswordResetPayload,
   IUserPayload,
   IUserPicturePayload,
   IUserPreferencesPayload,
   IUserProfile,
   IUserSportPreferencesPayload,
+  IUserAccountPayload,
+  IUserAccountUpdatePayload,
 } from '@/types/user'
 
 export interface IAuthUserState {
   authToken: string | null
   authUserProfile: IAuthUserProfile
+  isRegistrationSuccess: boolean
+  isSuccess: boolean
   loading: boolean
   followRequests: IUserProfile[]
 }
@@ -32,6 +36,16 @@ export interface IAuthUserState {
 export interface IAuthUserActions {
   [AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER](
     context: ActionContext<IAuthUserState, IRootState>
+  ): void
+
+  [AUTH_USER_STORE.ACTIONS.CONFIRM_ACCOUNT](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IUserAccountUpdatePayload
+  ): void
+
+  [AUTH_USER_STORE.ACTIONS.CONFIRM_EMAIL](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IUserAccountUpdatePayload
   ): void
 
   [AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE](
@@ -62,6 +76,11 @@ export interface IAuthUserActions {
     payload: IFollowRequestsActionPayload
   ): void
 
+  [AUTH_USER_STORE.ACTIONS.UPDATE_USER_ACCOUNT](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IUserAccountPayload
+  ): void
+
   [AUTH_USER_STORE.ACTIONS.UPDATE_USER_PREFERENCES](
     context: ActionContext<IAuthUserState, IRootState>,
     payload: IUserPreferencesPayload
@@ -79,7 +98,12 @@ export interface IAuthUserActions {
 
   [AUTH_USER_STORE.ACTIONS.SEND_PASSWORD_RESET_REQUEST](
     context: ActionContext<IAuthUserState, IRootState>,
-    payload: IUserPasswordPayload
+    payload: IUserEmailPayload
+  ): void
+
+  [AUTH_USER_STORE.ACTIONS.RESEND_ACCOUNT_CONFIRMATION_EMAIL](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IUserEmailPayload
   ): void
 
   [AUTH_USER_STORE.ACTIONS.RESET_USER_PASSWORD](
@@ -117,6 +141,12 @@ export interface IAuthUserGetters {
 
   [AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED](state: IAuthUserState): boolean
 
+  [AUTH_USER_STORE.GETTERS.IS_REGISTRATION_SUCCESS](
+    state: IAuthUserState
+  ): boolean
+
+  [AUTH_USER_STORE.GETTERS.IS_SUCCESS](state: IAuthUserState): boolean
+
   [AUTH_USER_STORE.GETTERS.USER_LOADING](state: IAuthUserState): boolean
 }
 
@@ -134,7 +164,15 @@ export type TAuthUserMutations<S = IAuthUserState> = {
     state: S,
     followRequests: IUserProfile[]
   ): void
+  [AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS](
+    state: S,
+    isSuccess: boolean
+  ): void
   [AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING](
+    state: S,
+    loading: boolean
+  ): void
+  [AUTH_USER_STORE.MUTATIONS.UPDATE_IS_REGISTRATION_SUCCESS](
     state: S,
     loading: boolean
   ): void

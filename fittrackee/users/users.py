@@ -1,13 +1,19 @@
 import os
 import re
+import secrets
 import shutil
 from typing import Any, Dict, Optional, Tuple, Union
 
 import click
-from flask import Blueprint, request, send_file
+from flask import Blueprint, current_app, request, send_file
 from sqlalchemy import exc
 
-from fittrackee import appLog, db
+from fittrackee import appLog, bcrypt, db
+from fittrackee.emails.tasks import (
+    email_updated_to_new_address,
+    password_change_email,
+    reset_password_email,
+)
 from fittrackee.federation.decorators import federation_required
 from fittrackee.federation.models import Domain
 from fittrackee.federation.utils_user import (
@@ -23,6 +29,8 @@ from fittrackee.responses import (
     UserNotFoundErrorResponse,
     handle_error_and_return_response,
 )
+from fittrackee.users.utils.controls import is_valid_email
+from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
 from .decorators import (
@@ -123,6 +131,12 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
             User.admin.desc()
             if order_by == 'admin' and order == 'desc'
             else True,
+            User.is_active.asc()
+            if order_by == 'is_active' and order == 'asc'
+            else True,
+            User.is_active.desc()
+            if order_by == 'is_active' and order == 'desc'
+            else True,
         )
         .paginate(page, per_page, False)
     )
@@ -146,6 +160,8 @@ def get_users(auth_user: User) -> Dict:
     """
     Get all users (it returns only local users if federation is enabled).
     If authenticated user has admin rights, users email is returned.
+
+    It returns user preferences only for authenticated user.
 
     **Example request**:
 
@@ -390,6 +406,8 @@ def get_single_user(
     If a user is authenticated, it returns relationships.
     If authenticated user has admin rights, user email is returned.
 
+    It returns user preferences only for authenticated user.
+
     **Example request**:
 
     .. sourcecode:: http
@@ -577,7 +595,12 @@ def get_picture(user_name: str) -> Any:
 @authenticate_as_admin
 def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     """
-    Update user to add admin rights
+    Update user account
+
+    - add/remove admin rights (regardless user account status)
+    - reset password (and send email to update user password)
+    - update user email (and send email to update user password)
+    - activate account for an inactive user
 
     Only user with admin rights can modify another user
 
@@ -585,7 +608,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
     .. sourcecode:: http
 
-      PATCH api/users/<user_name> HTTP/1.1
+      PATCH /api/users/<user_name> HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -669,11 +692,18 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
     :param string user_name: user name
 
+    :<json boolean activate: activate user account
     :<json boolean admin: does the user have administrator rights
+    :<json boolean new_email: new user email
+    :<json boolean reset_password: reset user password
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: success
+    :statuscode 400:
+        - invalid payload
+        - valid email must be provided
+        - new email must be different than curent email
     :statuscode 401:
         - provide a valid auth token
         - signature expired, please log in again
@@ -684,16 +714,93 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     :statuscode 500:
     """
     user_data = request.get_json()
-    if not user_data or user_data.get('admin') is None:
+    if not user_data:
         return InvalidPayloadErrorResponse()
 
+    send_password_emails = False
+    send_new_address_email = False
     try:
         user = get_user_from_username(user_name)
         if user.is_remote:
             return InvalidPayloadErrorResponse()
 
-        user.admin = user_data['admin']
+        if 'admin' in user_data:
+            user.admin = user_data['admin']
+
+        if user_data.get('activate', False):
+            user.is_active = True
+            user.confirmation_token = None
+
+        if user_data.get('reset_password', False):
+            new_password = secrets.token_urlsafe(30)
+            user.password = bcrypt.generate_password_hash(
+                new_password, current_app.config.get('BCRYPT_LOG_ROUNDS')
+            ).decode()
+            send_password_emails = True
+
+        if 'new_email' in user_data:
+            if is_valid_email(user_data['new_email']):
+                if user_data['new_email'] == user.email:
+                    return InvalidPayloadErrorResponse(
+                        'new email must be different than curent email'
+                    )
+                user.email_to_confirm = user_data['new_email']
+                user.confirmation_token = secrets.token_urlsafe(30)
+                send_new_address_email = True
+            else:
+                return InvalidPayloadErrorResponse(
+                    'valid email must be provided'
+                )
+
         db.session.commit()
+
+        user_language = 'en' if user.language is None else user.language
+        ui_url = current_app.config['UI_URL']
+        if send_password_emails:
+            user_data = {
+                'language': user_language,
+                'email': user.email,
+            }
+            password_change_email.send(
+                user_data,
+                {
+                    'username': user.username,
+                    'fittrackee_url': ui_url,
+                },
+            )
+            password_reset_token = user.encode_password_reset_token(user.id)
+            reset_password_email.send(
+                user_data,
+                {
+                    'expiration_delay': get_readable_duration(
+                        current_app.config[
+                            'PASSWORD_TOKEN_EXPIRATION_SECONDS'
+                        ],
+                        user_language,
+                    ),
+                    'username': user.username,
+                    'password_reset_url': (
+                        f'{ui_url}/password-reset?token={password_reset_token}'
+                    ),
+                    'fittrackee_url': ui_url,
+                },
+            )
+
+        if send_new_address_email:
+            user_data = {
+                'language': user_language,
+                'email': user.email_to_confirm,
+            }
+            email_data = {
+                'username': user.username,
+                'fittrackee_url': ui_url,
+                'email_confirmation_url': (
+                    f'{ui_url}/email-update'
+                    f'?token={user.confirmation_token}'
+                ),
+            }
+            email_updated_to_new_address.send(user_data, email_data)
+
         return {
             'status': 'success',
             'data': {'users': [user.serialize(auth_user)]},

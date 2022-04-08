@@ -5,10 +5,21 @@ from flask import Flask
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
-from ..test_case_mixins import ApiTestCaseMixin
+from ..mixins import ApiTestCaseMixin
 
 
 class TestGetStatsByTime(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(
+            f'/api/stats/{user_1.username}/by_time',
+        )
+
+        self.assert_401(response)
+
     def test_it_gets_no_stats_when_user_has_no_workouts(
         self, app: Flask, user_1: User
     ) -> None:
@@ -38,10 +49,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert 'user does not exist' in data['message']
+        self.assert_404_with_entity(response, 'user')
 
     def test_it_returns_error_if_date_format_is_invalid(
         self,
@@ -64,13 +72,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert 'error' in data['status']
-        assert (
-            'error, please try again or contact the administrator'
-            in data['message']
-        )
+        self.assert_500(response)
 
     def test_it_returns_error_if_period_is_invalid(
         self,
@@ -90,10 +92,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert 'fail' in data['status']
-        assert 'Invalid time period.' in data['message']
+        self.assert_400(response, 'Invalid time period.', 'fail')
 
     def test_it_gets_stats_by_time_all_workouts(
         self,
@@ -865,6 +864,17 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
 
 class TestGetStatsBySport(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(
+            f'/api/stats/{user_1.username}/by_sport',
+        )
+
+        self.assert_401(response)
+
     def test_it_gets_stats_by_sport(
         self,
         app: Flask,
@@ -955,10 +965,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert 'user does not exist' in data['message']
+        self.assert_404_with_entity(response, 'user')
 
     def test_it_returns_error_if_sport_does_not_exist(
         self,
@@ -978,10 +985,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
-        assert 'sport does not exist' in data['message']
+        self.assert_404_with_entity(response, 'sport')
 
     def test_it_returns_error_if_sport_id_is_invalid(
         self,
@@ -1001,16 +1005,19 @@ class TestGetStatsBySport(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 500
-        assert 'error' in data['status']
-        assert (
-            'error, please try again or contact the administrator'
-            in data['message']
-        )
+        self.assert_500(response)
 
 
 class TestGetAllStats(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get('/api/stats/all')
+
+        self.assert_401(response)
+
     def test_it_returns_all_stats_when_users_have_no_workouts(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
@@ -1081,8 +1088,4 @@ class TestGetAllStats(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 403
-        assert 'success' not in data['status']
-        assert 'error' in data['status']
-        assert 'you do not have permissions' in data['message']
+        self.assert_403(response)

@@ -7,10 +7,10 @@ from flask import Flask
 from fittrackee.federation.models import Actor
 from fittrackee.users.models import FollowRequest, User
 
-from ...test_case_mixins import ApiTestCaseMixin
+from ...mixins import ApiTestCaseMixin
 
 
-class TestFederationUser:
+class TestFederationUser(ApiTestCaseMixin):
     def test_it_returns_404_if_user_does_not_exist(
         self, app_with_federation: Flask
     ) -> None:
@@ -19,10 +19,7 @@ class TestFederationUser:
             f'/federation/user/{uuid4().hex}',
         )
 
-        assert response.status_code == 404
-        data = json.loads(response.data.decode())
-        assert 'not found' in data['status']
-        assert 'user does not exist' in data['message']
+        self.assert_404_with_entity(response, 'user')
 
     def test_it_returns_json_resource_descriptor_as_content_type(
         self, app_with_federation: Flask, user_1: User
@@ -54,12 +51,9 @@ class TestFederationUser:
             f'/federation/user/{app_actor.preferred_username}',
         )
 
-        assert response.status_code == 403
-        data = json.loads(response.data.decode())
-        assert 'error' in data['status']
-        assert (
-            'error, federation is disabled for this instance'
-            in data['message']
+        self.assert_403(
+            response,
+            'error, federation is disabled for this instance',
         )
 
 
@@ -73,12 +67,9 @@ class TestLocalActorFollowers(ApiTestCaseMixin):
             f'/federation/user/{uuid4().hex}/followers',
         )
 
-        assert response.status_code == 403
-        data = json.loads(response.data.decode())
-        assert 'error' in data['status']
-        assert (
-            'error, federation is disabled for this instance'
-            in data['message']
+        self.assert_403(
+            response,
+            'error, federation is disabled for this instance',
         )
 
     def test_it_returns_404_if_actor_does_not_exist(
@@ -90,10 +81,7 @@ class TestLocalActorFollowers(ApiTestCaseMixin):
             f'/federation/user/{uuid4().hex}/followers',
         )
 
-        assert response.status_code == 404
-        data = json.loads(response.data.decode())
-        assert 'not found' in data['status']
-        assert 'user does not exist' in data['message']
+        self.assert_404_with_entity(response, 'user')
 
     def test_it_returns_ordered_collection_without_follower(
         self, app_with_federation: Flask, user_1: User
@@ -146,12 +134,7 @@ class TestLocalActorFollowers(ApiTestCaseMixin):
             f'/federation/user/{actor_1.preferred_username}/followers?page=un',
         )
 
-        assert response.status_code == 500
-        data = json.loads(response.data.decode())
-        assert data == {
-            'message': 'error, please try again or contact the administrator',
-            'status': 'error',
-        }
+        self.assert_500(response)
 
     def test_it_does_not_return_error_when_page_that_does_not_return_followers(
         self, app_with_federation: Flask, user_1: User
@@ -283,12 +266,9 @@ class TestLocalActorFollowing(ApiTestCaseMixin):
             f'/federation/user/{uuid4().hex}/following',
         )
 
-        assert response.status_code == 403
-        data = json.loads(response.data.decode())
-        assert 'error' in data['status']
-        assert (
-            'error, federation is disabled for this instance'
-            in data['message']
+        self.assert_403(
+            response,
+            'error, federation is disabled for this instance',
         )
 
     def test_it_returns_404_if_actor_does_not_exist(
@@ -300,10 +280,7 @@ class TestLocalActorFollowing(ApiTestCaseMixin):
             f'/federation/user/{uuid4().hex}/following',
         )
 
-        assert response.status_code == 404
-        data = json.loads(response.data.decode())
-        assert 'not found' in data['status']
-        assert 'user does not exist' in data['message']
+        self.assert_404_with_entity(response, 'user')
 
     def test_it_returns_ordered_collection_without_following(
         self, app_with_federation: Flask, user_1: User
@@ -356,12 +333,7 @@ class TestLocalActorFollowing(ApiTestCaseMixin):
             f'/federation/user/{actor_1.preferred_username}/following?page=un',
         )
 
-        assert response.status_code == 500
-        data = json.loads(response.data.decode())
-        assert data == {
-            'message': 'error, please try again or contact the administrator',
-            'status': 'error',
-        }
+        self.assert_500(response)
 
     def test_it_does_not_return_error_when_page_that_does_not_return_following(
         self, app_with_federation: Flask, user_1: User

@@ -56,4 +56,10 @@ export const mutations: MutationTree<IUsersState> & TUsersMutations = {
   ) {
     state.pagination = pagination
   },
+  [USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS](
+    state: IUsersState,
+    isSuccess: boolean
+  ) {
+    state.isSuccess = isSuccess
+  },
 }
