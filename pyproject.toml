@@ -38,7 +38,7 @@ python-forecastio = "^1.4"
 pytz = "^2022.1"
 shortuuid = "^1.0.8"
 staticmap = "^0.5.4"
-SQLAlchemy = "1.4.32"
+SQLAlchemy = "1.4.35"
 pyOpenSSL = "^22.0"
 ua-parser = "^0.10.0"
 
