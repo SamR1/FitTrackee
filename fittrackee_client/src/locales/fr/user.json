@@ -41,7 +41,8 @@
       "longerKeyboardPattern": "Utilisez des motifs de clavier plus longs et changez de sens de frappe plusieurs fois.",
       "anotherWord": "Ajoutez des mots moins courants.",
       "useWords": "Utilisez plusieurs mots, mais évitez les phrases courantes.",
-      "noNeed": "Vous pouvez créer des mots de passe forts sans utiliser de symboles, de chiffres ou de lettres majuscules."
+      "noNeed": "Vous pouvez créer des mots de passe forts sans utiliser de symboles, de chiffres ou de lettres majuscules.",
+      "pwned": "Si vous utilisez ce mot de passe ailleurs, vous devriez le modifier."
     }
   },
   "PASSWORD_UPDATED": "Votre mot de passe a été mis à jour. Cliquez {0} pour vous connecter.",
