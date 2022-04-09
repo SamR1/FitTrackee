@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Installation &#8212; FitTrackee 0.6.2
+    <title>Installation &#8212; FitTrackee 0.6.3
  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css" />
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.2
+        <span class="navbar-text navbar-version pull-left"><b>0.6.3
 </b></span>
       </div>
 
@@ -182,16 +182,19 @@
 </dl>
 </li>
 </ul>
-<p>Logo, sports and weather icons are made by <a class="reference external" href="https://www.freepik.com/">Freepik</a> from <a class="reference external" href="https://www.flaticon.com/">www.flaticon.com</a>.</p>
+<div class="line-block">
+<div class="line">Logo, some sports and weather icons are made by <a class="reference external" href="https://www.freepik.com/">Freepik</a> from <a class="reference external" href="https://www.flaticon.com/">www.flaticon.com</a>.</div>
+<div class="line">FitTrackee also uses icons from <a class="reference external" href="https://forkaweso.me">Fork Awesome</a>.</div>
+</div>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>PostgreSQL database (10+)</p></li>
-<li><p>Redis for task queue</p></li>
 <li><p>Python 3.7+</p></li>
-<li><p><a class="reference external" href="https://poetry.eustace.io">Poetry</a> (for installation from sources only)</p></li>
-<li><p>API key from <a class="reference external" href="https://darksky.net/dev">Dark Sky</a> [not mandatory]</p></li>
+<li><p>PostgreSQL database (10+)</p></li>
 <li><p>SMTP provider</p></li>
+<li><p>Redis for task queue (to send emails)</p></li>
+<li><p>API key from <a class="reference external" href="https://darksky.net/dev">Dark Sky</a> [not mandatory]</p></li>
+<li><p><a class="reference external" href="https://poetry.eustace.io">Poetry</a> (for installation from sources only)</p></li>
 <li><p><a class="reference external" href="https://yarnpkg.com">Yarn</a> (for development only)</p></li>
 <li><p>Docker and Docker Compose (for development or evaluation purposes)</p></li>
 </ul>
@@ -312,8 +315,8 @@ deployment method.</p>
 <div class="line">Database URL with username and password, must be initialized in production environment.</div>
 <div class="line">For example in dev environment : <code class="docutils literal notranslate"><span class="pre">postgresql://fittrackee:fittrackee&#64;localhost:5432/fittrackee</span></code></div>
 </div>
-<div class="admonition danger">
-<p class="admonition-title">Danger</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
 <div class="line-block">
 <div class="line">Since <a class="reference external" href="https://docs.sqlalchemy.org/en/14/changelog/changelog_14.html#change-3687655465c25a39b968b4f5f6e9170b">SQLAlchemy update (1.4+)</a>,
 engine URL should begin with <cite>postgresql://</cite>.</div>
@@ -458,6 +461,12 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 <li><p>with SSL: <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:465/?ssl=True</span></code></p></li>
 <li><p>with STARTTLS: <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:587/?tls=True</span></code></p></li>
 </ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<div class="line-block">
+<div class="line">If the email URL is invalid, the application may not start.</div>
+</div>
+</div>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.5.3.</span></p>
 </div>
@@ -465,6 +474,19 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 <div class="line">Credentials can be omitted: <code class="docutils literal notranslate"><span class="pre">smtp://smtp.example.com:25</span></code>.</div>
 <div class="line">If <code class="docutils literal notranslate"><span class="pre">:&lt;port&gt;</span></code> is omitted, the port defaults to 25.</div>
 </div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<div class="line-block">
+<div class="line">Since 0.6.0, newly created accounts must be confirmed (an email with confirmation instructions is sent after registration).</div>
+</div>
+</div>
+<p>Emails sent by FitTrackee are:</p>
+<ul class="simple">
+<li><p>account confirmation instructions</p></li>
+<li><p>password reset request</p></li>
+<li><p>email change (to old and new email adresses)</p></li>
+<li><p>password change</p></li>
+</ul>
 </section>
 <section id="map-tile-server">
 <h3>Map tile server<a class="headerlink" href="#map-tile-server" title="Permalink to this headline">¶</a></h3>
@@ -632,11 +654,11 @@ $ make install-db
 </div>
 </div>
 <ul class="simple">
-<li><p>Download the last release (for now, it is the release v0.6.2):</p></li>
+<li><p>Download the last release (for now, it is the release v0.6.3):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.6.2.tar.gz
-$ tar -xzf v0.6.2.tar.gz
-$ mv FitTrackee-0.6.2 FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.6.3.tar.gz
+$ tar -xzf v0.6.3.tar.gz
+$ mv FitTrackee-0.6.3 FitTrackee
 $ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
@@ -688,7 +710,7 @@ database credentials</strong>):</p></li>
 <section id="id2">
 <h3>From PyPI<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>Activate the virtualenv</p></li>
+<li><p>Stop the application and activate the virtualenv</p></li>
 <li><p>Upgrade with pip</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pip install -U fittrackee
@@ -752,11 +774,11 @@ $ <span class="nb">source</span> .env
 <ul class="simple">
 <li><p>Stop the application</p></li>
 <li><p>Change to the directory where FitTrackee directory is located</p></li>
-<li><p>Download the last release (for now, it is the release v0.6.2) and overwrite existing files:</p></li>
+<li><p>Download the last release (for now, it is the release v0.6.3) and overwrite existing files:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.6.2.tar.gz
-$ tar -xzf v0.6.2.tar.gz
-$ cp -R FitTrackee-0.6.2/* FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.6.3.tar.gz
+$ tar -xzf v0.6.3.tar.gz
+$ cp -R FitTrackee-0.6.3/* FitTrackee/
 $ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
@@ -904,8 +926,7 @@ server {
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.4.4.</span></p>
 </div>
-<p>For evaluation purposes , docker files are available,
-installing <strong>FitTrackee</strong> from <strong>sources</strong>.</p>
+<p>For evaluation purposes, docker files are available, installing <strong>FitTrackee</strong> from <strong>sources</strong>.</p>
 <ul class="simple">
 <li><p>To install <strong>FitTrackee</strong> with database initialisation and run the application and dramatiq workers:</p></li>
 </ul>

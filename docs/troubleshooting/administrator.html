@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Administrator &#8212; FitTrackee 0.6.2
+    <title>Administrator &#8212; FitTrackee 0.6.3
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.2
+        <span class="navbar-text navbar-version pull-left"><b>0.6.3
 </b></span>
       </div>
 
@@ -132,13 +132,20 @@
 <h1>Administrator<a class="headerlink" href="#administrator" title="Permalink to this headline">¶</a></h1>
 <section id="fittrackee-fails-to-start">
 <h2><cite>FitTrackee fails to start</cite><a class="headerlink" href="#fittrackee-fails-to-start" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p>Check the database URL in <a class="reference external" href="../installation.html#envvar-DATABASE_URL">Environment variables</a> if the following error is displayed in <strong>gunicorn</strong> logs:</p></li>
-</ul>
+<ul>
+<li><p>Check the database URL in <a class="reference external" href="../installation.html#envvar-DATABASE_URL">environment variables</a> if the following error is displayed in <strong>gunicorn</strong> logs:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sqlalchemy</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">NoSuchModuleError</span><span class="p">:</span> <span class="n">Can</span><span class="s1">&#39;t load plugin: sqlalchemy.dialects:postgres</span>
 </pre></div>
 </div>
 <p>It must start with <cite>postgresql://</cite> (engine URLs starting with <cite>postgres://</cite> are no longer supported).</p>
+</li>
+<li><p>Check the email URL in <a class="reference external" href="../installation.html#envvar-EMAIL_URL">environment variables</a> if the following error is displayed in <strong>gunicorn</strong> logs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fittrackee</span><span class="o">.</span><span class="n">emails</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidEmailUrlScheme</span>
+</pre></div>
+</div>
+<p>A valid <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> must be provided (see <a class="reference external" href="../installation.html#emails">emails</a>).</p>
+</li>
+</ul>
 </section>
 </section>
 

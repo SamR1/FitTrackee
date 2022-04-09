@@ -1,5 +1,16 @@
 # Change log
 
+## Version 0.6.3 (2022/04/09)
+
+### Pull Requests
+
+#### Bugs Fixed
+
+* [#177](https://github.com/SamR1/FitTrackee/pull/177) - Minor fixes 
+  * add missing translation 
+  * fix 'Add Workout' card position on small screens
+
+
 ## Version 0.6.2 (2022/04/03)
 
 ### Issues Closed
