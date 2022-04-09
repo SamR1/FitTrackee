@@ -14,17 +14,18 @@ This application is written in Python (API) and Typescript (client):
     - `Leaflet <https://leafletjs.com/>`__ to display map
     - `Chart.js <https://www.chartjs.org/>`__ to display charts with elevation and speed
 
-Logo, sports and weather icons are made by `Freepik <https://www.freepik.com/>`__ from `www.flaticon.com <https://www.flaticon.com/>`__.
+| Logo, some sports and weather icons are made by `Freepik <https://www.freepik.com/>`__ from `www.flaticon.com <https://www.flaticon.com/>`__.
+| FitTrackee also uses icons from `Fork Awesome <https://forkaweso.me>`__.
 
 Prerequisites
 ~~~~~~~~~~~~~
 
--  PostgreSQL database (10+)
--  Redis for task queue
 -  Python 3.7+
--  `Poetry <https://poetry.eustace.io>`__ (for installation from sources only)
--  API key from `Dark Sky <https://darksky.net/dev>`__ [not mandatory]
+-  PostgreSQL database (10+)
 -  SMTP provider
+-  Redis for task queue (to send emails)
+-  API key from `Dark Sky <https://darksky.net/dev>`__ [not mandatory]
+-  `Poetry <https://poetry.eustace.io>`__ (for installation from sources only)
 -  `Yarn <https://yarnpkg.com>`__ (for development only)
 -  Docker and Docker Compose (for development or evaluation purposes)
 
@@ -108,7 +109,7 @@ deployment method.
     | Database URL with username and password, must be initialized in production environment.
     | For example in dev environment : ``postgresql://fittrackee:fittrackee@localhost:5432/fittrackee``
 
-    .. danger::
+    .. warning::
         | Since `SQLAlchemy update (1.4+) <https://docs.sqlalchemy.org/en/14/changelog/changelog_14.html#change-3687655465c25a39b968b4f5f6e9170b>`__,
           engine URL should begin with `postgresql://`.
 
@@ -209,11 +210,24 @@ To send emails, a valid ``EMAIL_URL`` must be provided:
 - with SSL: ``smtp://username:password@smtp.example.com:465/?ssl=True``
 - with STARTTLS: ``smtp://username:password@smtp.example.com:587/?tls=True``
 
+.. warning::
+    | If the email URL is invalid, the application may not start.
 
 .. versionadded:: 0.5.3
 
 | Credentials can be omitted: ``smtp://smtp.example.com:25``.
 | If ``:<port>`` is omitted, the port defaults to 25.
+
+.. warning::
+     | Since 0.6.0, newly created accounts must be confirmed (an email with confirmation instructions is sent after registration).
+
+Emails sent by FitTrackee are:
+
+- account confirmation instructions
+- password reset request
+- email change (to old and new email adresses)
+- password change
+
 
 Map tile server
 ^^^^^^^^^^^^^^^
@@ -369,13 +383,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.6.2):
+-  Download the last release (for now, it is the release v0.6.3):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.2.tar.gz
-   $ tar -xzf v0.6.2.tar.gz
-   $ mv FitTrackee-0.6.2 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.3.tar.gz
+   $ tar -xzf v0.6.3.tar.gz
+   $ mv FitTrackee-0.6.3 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -423,7 +437,7 @@ Upgrade
 From PyPI
 ^^^^^^^^^
 
-- Activate the virtualenv
+- Stop the application and activate the virtualenv
 
 - Upgrade with pip
 
@@ -443,7 +457,6 @@ From PyPI
 .. code-block:: bash
 
     $ fittrackee_upgrade_db
-
 
 - Restart the application and task queue workers.
 
@@ -493,13 +506,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.6.2) and overwrite existing files:
+- Download the last release (for now, it is the release v0.6.3) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.2.tar.gz
-   $ tar -xzf v0.6.2.tar.gz
-   $ cp -R FitTrackee-0.6.2/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.3.tar.gz
+   $ tar -xzf v0.6.3.tar.gz
+   $ cp -R FitTrackee-0.6.3/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -647,8 +660,7 @@ Installation
 
 .. versionadded:: 0.4.4
 
-For evaluation purposes , docker files are available,
-installing **FitTrackee** from **sources**.
+For evaluation purposes, docker files are available, installing **FitTrackee** from **sources**.
 
 - To install **FitTrackee** with database initialisation and run the application and dramatiq workers:
 

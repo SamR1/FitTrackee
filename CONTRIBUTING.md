@@ -20,6 +20,9 @@ The **GitHub** repository contains:
 - tests,
 - documentation (source and build).
 
+Continuous integration workflows run on **Github Actions** platform (on **push** and **pull requests**).
+
+
 ### How to install FitTrackee
 
 see [Installations instructions](https://samr1.github.io/FitTrackee/installation.html)
@@ -48,7 +51,7 @@ Please make your changes from the development branch (`dev`).
     ```
   * Check the downgrade migration.
   
-* Run checks (lint, typecheck and tests).
+* Run checks (lint, type check and unit tests).
   ```shell
   $ make check-all
   ```
@@ -59,9 +62,9 @@ Please make your changes from the development branch (`dev`).
 
 * If needed, add or update tests.
 
-* If needed, update documentation.
+* If needed, update documentation (no need to build documentation, it will be done when releasing).
 
-* If code contains client changes, you can generate a build, in a **separate commit** to ease code review.
+* If updated code contains client-side changes, you can generate a build, in a **separate commit** to ease code review (or to easily drop it in case of conflicts when updating your branch).
   ```shell
   $ make build-client
   ```
