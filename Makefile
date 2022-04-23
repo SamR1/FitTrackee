@@ -89,11 +89,11 @@ html:
 
 install-db:
 	psql -U postgres -f db/create.sql
-	$(FLASK) db upgrade --directory $(MIGRATIONS)
+	$(FTCLI) db upgrade
 
 init-db:
-	$(FLASK) drop-db
-	$(FLASK) db upgrade --directory $(MIGRATIONS)
+	$(FTCLI) db drop
+	$(FTCLI) db upgrade
 
 install: install-client install-python
 
@@ -164,7 +164,7 @@ serve-python-dev:
 	$(FLASK) run --with-threads -h $(HOST) -p $(PORT) --cert=adhoc
 
 set-admin:
-	$(FLASK) users set-admin $(USERNAME)
+	$(FTCLI) users set-admin $(USERNAME)
 
 test-e2e:
 	$(PYTEST) e2e --driver firefox $(PYTEST_ARGS)
@@ -185,4 +185,4 @@ type-check:
 	$(MYPY) fittrackee
 
 upgrade-db:
-	$(FLASK) db upgrade --directory $(MIGRATIONS)
+	$(FTCLI) db upgrade
