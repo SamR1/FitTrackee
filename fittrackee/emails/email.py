@@ -131,9 +131,11 @@ class EmailService:
         with self.smtp(
             self.host, self.port, **connection_params  # type: ignore
         ) as smtp:
+            if self.use_tls:
+                smtp.ehlo()
+                smtp.starttls(context=context)
+                smtp.ehlo()
             if self.username and self.password:
                 smtp.login(self.username, self.password)  # type: ignore
-            if self.use_tls:
-                smtp.starttls(context=context)
             smtp.sendmail(self.sender_email, recipient, message.as_string())
             smtp.quit()
