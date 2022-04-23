@@ -24,6 +24,7 @@ class TestConfigModel:
             serialized_app_config['gpx_limit_import']
             == app_config.gpx_limit_import
         )
+        assert serialized_app_config['is_email_sending_enabled'] is True
         assert serialized_app_config['is_registration_enabled'] is True
         assert (
             serialized_app_config['max_single_file_size']
@@ -49,3 +50,11 @@ class TestConfigModel:
 
         assert app_config.is_registration_enabled is False
         assert serialized_app_config['is_registration_enabled'] is False
+
+    def test_it_returns_email_sending_disabled_when_no_email_url_provided(
+        self, app_wo_email_activation: Flask, user_1: User, user_2: User
+    ) -> None:
+        app_config = AppConfig.query.first()
+        serialized_app_config = app_config.serialize()
+
+        assert serialized_app_config['is_email_sending_enabled'] is False

@@ -400,8 +400,9 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     Update user account
 
     - add/remove admin rights (regardless user account status)
-    - reset password (and send email to update user password)
-    - update user email (and send email to update user password)
+    - reset password (and send email to update user password,
+      if sending enabled)
+    - update user email (and send email to new user email, if sending enabled)
     - activate account for an inactive user
 
     Only user with admin rights can modify another user
@@ -527,52 +528,56 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
             new_email=new_email,
         )
 
-        user_language = 'en' if user.language is None else user.language
-        ui_url = current_app.config['UI_URL']
-        if reset_password:
-            user_data = {
-                'language': user_language,
-                'email': user.email,
-            }
-            password_change_email.send(
-                user_data,
-                {
-                    'username': user.username,
-                    'fittrackee_url': ui_url,
-                },
-            )
-            password_reset_token = user.encode_password_reset_token(user.id)
-            reset_password_email.send(
-                user_data,
-                {
-                    'expiration_delay': get_readable_duration(
-                        current_app.config[
-                            'PASSWORD_TOKEN_EXPIRATION_SECONDS'
-                        ],
-                        user_language,
-                    ),
-                    'username': user.username,
-                    'password_reset_url': (
-                        f'{ui_url}/password-reset?token={password_reset_token}'
-                    ),
-                    'fittrackee_url': ui_url,
-                },
-            )
+        if current_app.config['CAN_SEND_EMAILS']:
+            user_language = 'en' if user.language is None else user.language
+            ui_url = current_app.config['UI_URL']
+            if reset_password:
+                user_data = {
+                    'language': user_language,
+                    'email': user.email,
+                }
+                password_change_email.send(
+                    user_data,
+                    {
+                        'username': user.username,
+                        'fittrackee_url': ui_url,
+                    },
+                )
+                password_reset_token = user.encode_password_reset_token(
+                    user.id
+                )
+                reset_password_email.send(
+                    user_data,
+                    {
+                        'expiration_delay': get_readable_duration(
+                            current_app.config[
+                                'PASSWORD_TOKEN_EXPIRATION_SECONDS'
+                            ],
+                            user_language,
+                        ),
+                        'username': user.username,
+                        'password_reset_url': (
+                            f'{ui_url}/password-reset?'
+                            f'token={password_reset_token}'
+                        ),
+                        'fittrackee_url': ui_url,
+                    },
+                )
 
-        if new_email:
-            user_data = {
-                'language': user_language,
-                'email': user.email_to_confirm,
-            }
-            email_data = {
-                'username': user.username,
-                'fittrackee_url': ui_url,
-                'email_confirmation_url': (
-                    f'{ui_url}/email-update'
-                    f'?token={user.confirmation_token}'
-                ),
-            }
-            email_updated_to_new_address.send(user_data, email_data)
+            if new_email:
+                user_data = {
+                    'language': user_language,
+                    'email': user.email_to_confirm,
+                }
+                email_data = {
+                    'username': user.username,
+                    'fittrackee_url': ui_url,
+                    'email_confirmation_url': (
+                        f'{ui_url}/email-update'
+                        f'?token={user.confirmation_token}'
+                    ),
+                }
+                email_updated_to_new_address.send(user_data, email_data)
 
         return {
             'status': 'success',

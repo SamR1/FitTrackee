@@ -41,7 +41,7 @@ class CustomFlask(Flask):
     request_class = CustomRequest
 
 
-def create_app() -> Flask:
+def create_app(init_email: bool = True) -> Flask:
     # instantiate the app
     app = CustomFlask(
         __name__, static_folder='dist/static', template_folder='dist'
@@ -64,8 +64,15 @@ def create_app() -> Flask:
     migrate.init_app(app, db)
     dramatiq.init_app(app)
 
-    # set up email
-    email_service.init_email(app)
+    # set up email if 'EMAIL_URL' is initialized
+    if init_email:
+        if app.config['EMAIL_URL']:
+            email_service.init_email(app)
+            app.config['CAN_SEND_EMAILS'] = True
+        else:
+            appLog.warning(
+                'EMAIL_URL is not provided, email sending is deactivated.'
+            )
 
     # get configuration from database
     from .application.utils import (
