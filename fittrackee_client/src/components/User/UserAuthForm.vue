@@ -16,6 +16,10 @@
           message="user.REGISTER_DISABLED"
           v-if="registration_disabled"
         />
+        <AlertMessage
+          message="admin.EMAIL_SENDING_DISABLED"
+          v-if="sendingEmailDisabled"
+        />
         <div
           class="info-box success-message"
           v-if="isSuccess || isRegistrationSuccess"
@@ -23,7 +27,11 @@
           {{
             $t(
               `user.PROFILE.SUCCESSFUL_${
-                isRegistrationSuccess ? 'REGISTRATION' : 'UPDATE'
+                isRegistrationSuccess
+                  ? `REGISTRATION${
+                      appConfig.is_email_sending_enabled ? '_WITH_EMAIL' : ''
+                    }`
+                  : 'UPDATE'
               }`
             )
           }}
@@ -52,7 +60,7 @@
             <input
               v-if="action !== 'reset'"
               id="email"
-              :disabled="registration_disabled"
+              :disabled="registration_disabled || sendingEmailDisabled"
               required
               @invalid="invalidateForm"
               type="email"
@@ -91,7 +99,10 @@
               @passwordError="invalidateForm"
             />
           </div>
-          <button type="submit" :disabled="registration_disabled">
+          <button
+            type="submit"
+            :disabled="registration_disabled || sendingEmailDisabled"
+          >
             {{ $t(buttonText) }}
           </button>
         </form>
@@ -99,8 +110,12 @@
           <router-link class="links" to="/register">
             {{ $t('user.REGISTER') }}
           </router-link>
-          -
-          <router-link class="links" to="/password-reset/request">
+          <span v-if="appConfig.is_email_sending_enabled">-</span>
+          <router-link
+            v-if="appConfig.is_email_sending_enabled"
+            class="links"
+            to="/password-reset/request"
+          >
             {{ $t('user.PASSWORD_FORGOTTEN') }}
           </router-link>
         </div>
@@ -110,7 +125,12 @@
             {{ $t('user.LOGIN') }}
           </router-link>
         </div>
-        <div v-if="['login', 'register'].includes(action)">
+        <div
+          v-if="
+            ['login', 'register'].includes(action) &&
+            appConfig.is_email_sending_enabled
+          "
+        >
           <router-link class="links" to="/account-confirmation/resend">
             {{ $t('user.ACCOUNT_CONFIRMATION_NOT_RECEIVED') }}
           </router-link>
@@ -174,6 +194,11 @@
   const registration_disabled: ComputedRef<boolean> = computed(
     () =>
       props.action === 'register' && !appConfig.value.is_registration_enabled
+  )
+  const sendingEmailDisabled: ComputedRef<boolean> = computed(
+    () =>
+      ['reset-request', 'account-confirmation-resend'].includes(props.action) &&
+      !appConfig.value.is_email_sending_enabled
   )
   const formErrors = ref(false)
 

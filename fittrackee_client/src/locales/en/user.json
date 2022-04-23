@@ -86,7 +86,8 @@
       "STOPPED_SPEED_THRESHOLD": "stopped speed threshold"
     },
     "SUCCESSFUL_EMAIL_UPDATE": "Your account has been updated successfully. Please check your email to confirm your new email address.",
-    "SUCCESSFUL_REGISTRATION": "A link to activate your account has been emailed to the address provided.",
+    "SUCCESSFUL_REGISTRATION": "Your account has been created successfully.",
+    "SUCCESSFUL_REGISTRATION_WITH_EMAIL": "A link to activate your account has been emailed to the address provided.",
     "SUCCESSFUL_UPDATE": "Your account has been updated successfully.",
     "UNITS": {
       "LABEL": "Units for distance",
