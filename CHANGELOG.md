@@ -1,5 +1,16 @@
 # Change log
 
+## Version 0.6.4 (2022/04/23)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#178](https://github.com/SamR1/FitTrackee/issues/178) - cannot send email with TLS
+
+In this release 1 issue was closed.  
+
+
 ## Version 0.6.3 (2022/04/09)
 
 ### Pull Requests
