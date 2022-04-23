@@ -1,12 +1,11 @@
 import os
-import secrets
 import shutil
 from typing import Any, Dict, Tuple, Union
 
 from flask import Blueprint, current_app, request, send_file
 from sqlalchemy import exc
 
-from fittrackee import bcrypt, db
+from fittrackee import db
 from fittrackee.emails.tasks import (
     email_updated_to_new_address,
     password_change_email,
@@ -21,12 +20,13 @@ from fittrackee.responses import (
     UserNotFoundErrorResponse,
     handle_error_and_return_response,
 )
-from fittrackee.users.utils.controls import is_valid_email
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
 from .decorators import authenticate, authenticate_as_admin
+from .exceptions import InvalidEmailException, UserNotFoundException
 from .models import User, UserSportPreference
+from .utils.admin import UserManagerService
 
 users_blueprint = Blueprint('users', __name__)
 
@@ -516,46 +516,20 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     if not user_data:
         return InvalidPayloadErrorResponse()
 
-    send_password_emails = False
-    send_new_address_email = False
     try:
-        user = User.query.filter_by(username=user_name).first()
-        if not user:
-            return UserNotFoundErrorResponse()
-
-        if 'admin' in user_data:
-            user.admin = user_data['admin']
-
-        if user_data.get('activate', False):
-            user.is_active = True
-            user.confirmation_token = None
-
-        if user_data.get('reset_password', False):
-            new_password = secrets.token_urlsafe(30)
-            user.password = bcrypt.generate_password_hash(
-                new_password, current_app.config.get('BCRYPT_LOG_ROUNDS')
-            ).decode()
-            send_password_emails = True
-
-        if 'new_email' in user_data:
-            if is_valid_email(user_data['new_email']):
-                if user_data['new_email'] == user.email:
-                    return InvalidPayloadErrorResponse(
-                        'new email must be different than curent email'
-                    )
-                user.email_to_confirm = user_data['new_email']
-                user.confirmation_token = secrets.token_urlsafe(30)
-                send_new_address_email = True
-            else:
-                return InvalidPayloadErrorResponse(
-                    'valid email must be provided'
-                )
-
-        db.session.commit()
+        reset_password = user_data.get('reset_password', False)
+        new_email = user_data.get('new_email')
+        user_manager_service = UserManagerService(username=user_name)
+        user, _, _ = user_manager_service.update(
+            is_admin=user_data.get('admin'),
+            activate=user_data.get('activate', False),
+            reset_password=reset_password,
+            new_email=new_email,
+        )
 
         user_language = 'en' if user.language is None else user.language
         ui_url = current_app.config['UI_URL']
-        if send_password_emails:
+        if reset_password:
             user_data = {
                 'language': user_language,
                 'email': user.email,
@@ -585,7 +559,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
                 },
             )
 
-        if send_new_address_email:
+        if new_email:
             user_data = {
                 'language': user_language,
                 'email': user.email_to_confirm,
@@ -604,6 +578,10 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
             'status': 'success',
             'data': {'users': [user.serialize(auth_user)]},
         }
+    except UserNotFoundException:
+        return UserNotFoundErrorResponse()
+    except InvalidEmailException as e:
+        return InvalidPayloadErrorResponse(str(e))
     except exc.StatementError as e:
         return handle_error_and_return_response(e, db=db)
 
