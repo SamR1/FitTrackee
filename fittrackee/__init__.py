@@ -1,7 +1,6 @@
 import logging
 import os
 import re
-import shutil
 from importlib import import_module, reload
 from typing import Any
 
@@ -146,18 +145,5 @@ def create_app() -> Flask:
             )
         else:
             return render_template('index.html')
-
-    @app.cli.command('drop-db')
-    def drop_db() -> None:
-        """Empty database and delete uploaded files for dev environments."""
-        if app_settings == 'fittrackee.config.ProductionConfig':
-            print('This is a production server, aborting!')
-            return
-        db.engine.execute("DROP TABLE IF EXISTS alembic_version;")
-        db.drop_all()
-        db.session.commit()
-        print('Database dropped.')
-        shutil.rmtree(app.config['UPLOAD_FOLDER'], ignore_errors=True)
-        print('Uploaded files deleted.')
 
     return app

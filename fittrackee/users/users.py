@@ -3,7 +3,6 @@ import secrets
 import shutil
 from typing import Any, Dict, Tuple, Union
 
-import click
 from flask import Blueprint, current_app, request, send_file
 from sqlalchemy import exc
 
@@ -27,24 +26,11 @@ from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
 from .decorators import authenticate, authenticate_as_admin
-from .exceptions import UserNotFoundException
 from .models import User, UserSportPreference
-from .utils.admin import set_admin_rights
 
 users_blueprint = Blueprint('users', __name__)
 
 USER_PER_PAGE = 10
-
-
-@users_blueprint.cli.command('set-admin')
-@click.argument('username')
-def set_admin(username: str) -> None:
-    """Set admin rights for given user"""
-    try:
-        set_admin_rights(username)
-        print(f"User '{username}' updated.")
-    except UserNotFoundException:
-        print(f"User '{username}' not found.")
 
 
 @users_blueprint.route('/users', methods=['GET'])

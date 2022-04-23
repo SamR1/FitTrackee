@@ -5,14 +5,12 @@ from typing import Dict, Optional
 
 import gunicorn.app.base
 from flask import Flask
-from flask_migrate import upgrade
 
 from fittrackee import create_app
 
 HOST = os.getenv('HOST', '0.0.0.0')
 PORT = os.getenv('PORT', '5000')
 WORKERS = os.getenv('APP_WORKERS', 1)
-BASEDIR = os.path.abspath(os.path.dirname(__file__))
 app = create_app()
 
 
@@ -35,11 +33,6 @@ class StandaloneApplication(gunicorn.app.base.BaseApplication):
 
     def load(self) -> Flask:
         return self.application
-
-
-def upgrade_db() -> None:
-    with app.app_context():
-        upgrade(directory=BASEDIR + '/migrations')
 
 
 def main() -> None:
