@@ -1,7 +1,6 @@
 import logging
 import os
 import re
-import shutil
 from importlib import import_module, reload
 from typing import Any
 
@@ -42,7 +41,7 @@ class CustomFlask(Flask):
     request_class = CustomRequest
 
 
-def create_app() -> Flask:
+def create_app(init_email: bool = True) -> Flask:
     # instantiate the app
     app = CustomFlask(
         __name__, static_folder='dist/static', template_folder='dist'
@@ -65,8 +64,15 @@ def create_app() -> Flask:
     migrate.init_app(app, db)
     dramatiq.init_app(app)
 
-    # set up email
-    email_service.init_email(app)
+    # set up email if 'EMAIL_URL' is initialized
+    if init_email:
+        if app.config['EMAIL_URL']:
+            email_service.init_email(app)
+            app.config['CAN_SEND_EMAILS'] = True
+        else:
+            appLog.warning(
+                'EMAIL_URL is not provided, email sending is deactivated.'
+            )
 
     # get configuration from database
     from .application.utils import (
@@ -146,18 +152,5 @@ def create_app() -> Flask:
             )
         else:
             return render_template('index.html')
-
-    @app.cli.command('drop-db')
-    def drop_db() -> None:
-        """Empty database and delete uploaded files for dev environments."""
-        if app_settings == 'fittrackee.config.ProductionConfig':
-            print('This is a production server, aborting!')
-            return
-        db.engine.execute("DROP TABLE IF EXISTS alembic_version;")
-        db.drop_all()
-        db.session.commit()
-        print('Database dropped.')
-        shutil.rmtree(app.config['UPLOAD_FOLDER'], ignore_errors=True)
-        print('Uploaded files deleted.')
 
     return app

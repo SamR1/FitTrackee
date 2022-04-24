@@ -10,7 +10,13 @@
     <div class="profile-form form-box">
       <ErrorMessage :message="errorMessages" v-if="errorMessages" />
       <div class="info-box success-message" v-if="isSuccess">
-        {{ $t(`user.PROFILE.SUCCESSFUL_${emailUpdate ? 'EMAIL_' : ''}UPDATE`) }}
+        {{
+          $t(
+            `user.PROFILE.SUCCESSFUL_${
+              emailUpdate && appConfig.is_email_sending_enabled ? 'EMAIL_' : ''
+            }UPDATE`
+          )
+        }}
       </div>
       <form :class="{ errors: formErrors }" @submit.prevent="updateProfile">
         <label class="form-items" for="email">
@@ -77,6 +83,7 @@
 
   import PasswordInput from '@/components/Common/PasswordInput.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import { TAppConfig } from '@/types/application'
   import { IUserProfile, IUserAccountPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
@@ -94,6 +101,9 @@
   })
   const loading = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
+  )
+  const appConfig: ComputedRef<TAppConfig> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
   )
   const isSuccess: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUCCESS]

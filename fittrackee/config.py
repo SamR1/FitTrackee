@@ -29,6 +29,7 @@ class BaseConfig:
     UI_URL = os.environ.get('UI_URL')
     EMAIL_URL = os.environ.get('EMAIL_URL')
     SENDER_EMAIL = os.environ.get('SENDER_EMAIL')
+    CAN_SEND_EMAILS = False
     DRAMATIQ_BROKER = broker
     TILE_SERVER = {
         'URL': os.environ.get(

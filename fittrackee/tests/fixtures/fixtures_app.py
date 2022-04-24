@@ -147,6 +147,12 @@ def app_wo_email_auth(monkeypatch: pytest.MonkeyPatch) -> Generator:
 
 
 @pytest.fixture
+def app_wo_email_activation(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv('EMAIL_URL', '')
+    yield from get_app(with_config=True)
+
+
+@pytest.fixture
 def app_wo_domain() -> Generator:
     yield from get_app(with_config=True)
 
