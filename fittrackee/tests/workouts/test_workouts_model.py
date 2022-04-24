@@ -22,8 +22,8 @@ class WorkoutModelTestCase:
         gpx_path: Optional[str] = None,
         bounds: Optional[List[float]] = None,
     ) -> Workout:
-        workout.map_id = random_string() if map_id is None else map_id
-        workout.map = None if map_id is None else random_string()
+        workout.map_id = map_id
+        workout.map = random_string() if map_id is None else map_id
         workout.gpx = random_string() if gpx_path is None else gpx_path
         workout.bounds = [1.0, 2.0, 3.0, 4.0] if bounds is None else bounds
         workout.pauses = timedelta(minutes=15)
@@ -149,7 +149,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         user_1: User,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout = self.update_workout(workout_cycling_user_1)
+        workout = self.update_workout(
+            workout_cycling_user_1, map_id=random_string()
+        )
 
         serialized_workout = workout.serialize(user_status=self.user_status)
 
@@ -338,7 +340,9 @@ class TestWorkoutModelAsFollower(WorkoutModelTestCase):
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_workout_visibility
         workout_cycling_user_1.map_visibility = input_map_visibility
-        workout = self.update_workout(workout_cycling_user_1)
+        workout = self.update_workout(
+            workout_cycling_user_1, map_id=random_string()
+        )
 
         serialized_workout = workout.serialize(user_status=self.user_status)
 
@@ -463,7 +467,9 @@ class TestWorkoutModelAsOther(WorkoutModelTestCase):
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
         workout_cycling_user_1.map_visibility = PrivacyLevel.PUBLIC
-        workout = self.update_workout(workout_cycling_user_1)
+        workout = self.update_workout(
+            workout_cycling_user_1, map_id=random_string()
+        )
 
         serialized_workout = workout.serialize(user_status=self.user_status)
 

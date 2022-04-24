@@ -176,18 +176,18 @@ class TestCanViewWorkout:
 
 class TestCanViewWorkoutMap:
     @pytest.mark.parametrize(
-        'input_description,input_workout_visibility',
+        'input_description,input_map_visibility',
         [
             (
-                f'workout visibility: {PrivacyLevel.PRIVATE.value}',
+                f'map visibility: {PrivacyLevel.PRIVATE.value}',
                 PrivacyLevel.PRIVATE,
             ),
             (
-                f'workout visibility: {PrivacyLevel.FOLLOWERS.value}',
+                f'map visibility: {PrivacyLevel.FOLLOWERS.value}',
                 PrivacyLevel.FOLLOWERS,
             ),
             (
-                f'workout visibility: {PrivacyLevel.PUBLIC.value}',
+                f'map visibility: {PrivacyLevel.PUBLIC.value}',
                 PrivacyLevel.PUBLIC,
             ),
         ],
@@ -195,13 +195,13 @@ class TestCanViewWorkoutMap:
     def test_workout_owner_can_view_his_workout_map(
         self,
         input_description: str,
-        input_workout_visibility: PrivacyLevel,
+        input_map_visibility: PrivacyLevel,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.map_visibility = input_workout_visibility
+        workout_cycling_user_1.map_visibility = input_map_visibility
 
         assert can_view_workout(
             workout_cycling_user_1, 'map_visibility', user_1
@@ -224,14 +224,14 @@ class TestCanViewWorkoutMap:
         ) == (False, 'follower')
 
     @pytest.mark.parametrize(
-        'input_description,input_workout_visibility',
+        'input_description,input_map_visibility',
         [
             (
-                f'workout visibility: {PrivacyLevel.FOLLOWERS.value}',
+                f'map visibility: {PrivacyLevel.FOLLOWERS.value}',
                 PrivacyLevel.FOLLOWERS,
             ),
             (
-                f'workout visibility: {PrivacyLevel.PUBLIC.value}',
+                f'map visibility: {PrivacyLevel.PUBLIC.value}',
                 PrivacyLevel.PUBLIC,
             ),
         ],
@@ -239,7 +239,7 @@ class TestCanViewWorkoutMap:
     def test_follower_can_view_workout_map_when_public_or_follower_only(
         self,
         input_description: str,
-        input_workout_visibility: PrivacyLevel,
+        input_map_visibility: PrivacyLevel,
         app: Flask,
         user_1: User,
         user_2: User,
@@ -248,21 +248,21 @@ class TestCanViewWorkoutMap:
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.map_visibility = input_workout_visibility
+        workout_cycling_user_2.map_visibility = input_map_visibility
 
         assert can_view_workout(
             workout_cycling_user_2, 'map_visibility', user_1
         ) == (True, 'follower')
 
     @pytest.mark.parametrize(
-        'input_description,input_workout_visibility',
+        'input_description,input_map_visibility',
         [
             (
-                f'workout visibility: {PrivacyLevel.PRIVATE.value}',
+                f'map visibility: {PrivacyLevel.PRIVATE.value}',
                 PrivacyLevel.PRIVATE,
             ),
             (
-                f'workout visibility: {PrivacyLevel.FOLLOWERS.value}',
+                f'map visibility: {PrivacyLevel.FOLLOWERS.value}',
                 PrivacyLevel.FOLLOWERS,
             ),
         ],
@@ -270,14 +270,14 @@ class TestCanViewWorkoutMap:
     def test_another_user_can_not_view_workout_map_when_private_or_follower_only(  # noqa
         self,
         input_description: str,
-        input_workout_visibility: PrivacyLevel,
+        input_map_visibility: PrivacyLevel,
         app: Flask,
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.map_visibility = input_workout_visibility
+        workout_cycling_user_2.map_visibility = input_map_visibility
 
         assert can_view_workout(
             workout_cycling_user_2, 'map_visibility', user_1
@@ -298,14 +298,14 @@ class TestCanViewWorkoutMap:
         ) == (True, 'other')
 
     @pytest.mark.parametrize(
-        'input_description,input_workout_visibility',
+        'input_description,input_map_visibility',
         [
             (
-                f'workout visibility: {PrivacyLevel.PRIVATE.value}',
+                f'map visibility: {PrivacyLevel.PRIVATE.value}',
                 PrivacyLevel.PRIVATE,
             ),
             (
-                f'workout visibility: {PrivacyLevel.FOLLOWERS.value}',
+                f'map visibility: {PrivacyLevel.FOLLOWERS.value}',
                 PrivacyLevel.FOLLOWERS,
             ),
         ],
@@ -313,14 +313,14 @@ class TestCanViewWorkoutMap:
     def test_map_can_not_viewed_when_no_user_and_private_or_follower_only_visibility(  # noqa
         self,
         input_description: str,
-        input_workout_visibility: PrivacyLevel,
+        input_map_visibility: PrivacyLevel,
         app: Flask,
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.map_visibility = input_workout_visibility
+        workout_cycling_user_2.map_visibility = input_map_visibility
 
         assert can_view_workout(workout_cycling_user_2, 'map_visibility') == (
             False,
