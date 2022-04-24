@@ -21,6 +21,7 @@
   "CONFIRM_USER_PASSWORD_RESET": "Êtes-vous sûr de vouloir réinitialiser le mot de passe de l'utilisateur {0} ?",
   "CURRENT_EMAIL": "Adresse email actuelle",
   "DELETE_USER": "Supprimer l'utilisateur",
+  "EMAIL_SENDING_DISABLED": "L'envoi d'emails est désactivé.",
   "ENABLE_DISABLE_SPORTS": "Activer/désactiver des sports.",
   "NEW_EMAIL": "Nouvelle adresse email",
   "PASSWORD_RESET_SUCCESSFUL": "Le mot de passe a été réinitialisé.",

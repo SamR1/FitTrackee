@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Configuration &#8212; FitTrackee 0.6.4
+    <title>Configuration &#8212; FitTrackee 0.6.5
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.4
+        <span class="navbar-text navbar-version pull-left"><b>0.6.5
 </b></span>
       </div>
 
@@ -61,6 +61,7 @@
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../features.html">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">Command line interface</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">API documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../troubleshooting/index.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change log</a></li>
@@ -144,12 +145,13 @@
 <span class="w">  </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;admin_contact&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;admin@example.com&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;gpx_limit_import&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;is_email_sending_enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;is_registration_enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;max_single_file_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1048576</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;max_users&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;max_zip_file_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10485760</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;map_attribution&quot;</span><span class="p">:</span><span class="w"> </span><span class="nt">&quot;&amp;copy; &lt;a href=http://www.openstreetmap.org/copyright&gt;OpenStreetMap&lt;/a&gt; contributors&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.6.4&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.6.5&quot;</span><span class="w"></span>
 <span class="w">  </span><span class="p">},</span><span class="w"></span>
 <span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;success&quot;</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
@@ -183,12 +185,13 @@
 <span class="w">  </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;admin_contact&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;admin@example.com&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;gpx_limit_import&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;is_email_sending_enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;is_registration_enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;max_single_file_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1048576</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;max_users&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;max_zip_file_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10485760</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;map_attribution&quot;</span><span class="p">:</span><span class="w"> </span><span class="nt">&quot;&amp;copy; &lt;a href=http://www.openstreetmap.org/copyright&gt;OpenStreetMap&lt;/a&gt; contributors&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.6.4&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.6.5&quot;</span><span class="w"></span>
 <span class="w">  </span><span class="p">},</span><span class="w"></span>
 <span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;success&quot;</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>

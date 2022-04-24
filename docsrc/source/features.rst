@@ -60,10 +60,11 @@ Workouts
 Account & preferences
 ^^^^^^^^^^^^^^^^^^^^^
 - A user can create, update and deleted his account.
-- After registration, the user account is inactive and an email with confirmation instructions is sent to activate it. A user with an inactive account cannot log in. (*new in 0.6.0*)
+- After registration, the user account is inactive and an email with confirmation instructions is sent to activate it.
+  A user with an inactive account cannot log in. (*new in 0.6.0*)
 
 .. note::
-  The command line to add admin rights activates the account if it is inactive.
+  In case email sending is not configured, a `command line <cli.html#ftcli-users-update>`__ allows to activate users account.
 
 - A user can set language, timezone and first day of week.
 - A user can reset his password (*new in 0.3.0*)
@@ -97,6 +98,9 @@ Administration
   .. warning::
       Updating server configuration may be necessary to handle large files (like `nginx <https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size>`_ for instance).
 
+  .. note::
+      If email sending is disabled, a warning is displayed.
+
 
 - **Users**
 
@@ -105,7 +109,7 @@ Administration
       - add/remove administration rights
       - activate his account (*new in 0.6.0*)
       - update his email (in case his account is locked) (*new in 0.6.0*)
-      - reset his password (in case his account is locked) (*new in 0.6.0*)
+      - reset his password (in case his account is locked) (*new in 0.6.0*). If email sending is disabled, it is only possible via CLI.
   - delete a user
 
 - **Sports**

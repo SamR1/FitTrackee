@@ -11,7 +11,7 @@
                 {{ $t('admin.APPLICATION') }}
               </router-link>
             </dt>
-            <dd>
+            <dd class="application-config-details">
               {{ $t('admin.UPDATE_APPLICATION_DESCRIPTION') }}<br />
               <span class="registration-status">
                 {{
@@ -21,6 +21,13 @@
                     }`
                   )
                 }}
+              </span>
+              <span
+                class="email-sending-status"
+                v-if="!appConfig.is_email_sending_enabled"
+              >
+                <i class="fa fa-exclamation-triangle" aria-hidden="true" />
+                {{ $t('admin.EMAIL_SENDING_DISABLED') }}
               </span>
             </dd>
             <dt>
@@ -82,8 +89,13 @@
         dd {
           margin-bottom: $default-margin * 3;
         }
-        .registration-status {
-          font-weight: bold;
+        .application-config-details {
+          display: flex;
+          flex-direction: column;
+          .email-sending-status,
+          .registration-status {
+            font-weight: bold;
+          }
         }
       }
     }

@@ -4,4 +4,4 @@ cd /usr/src/app
 
 source .env.docker
 
-flask users set-admin $1
+ftcli users update $1 --set-admin true

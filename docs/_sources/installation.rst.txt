@@ -22,9 +22,8 @@ Prerequisites
 
 -  Python 3.7+
 -  PostgreSQL database (10+)
--  SMTP provider
--  Redis for task queue (to send emails)
--  API key from `Dark Sky <https://darksky.net/dev>`__ [not mandatory]
+-  SMTP provider and Redis for task queue (if email sending is enabled)
+-  API key from `Dark Sky <https://darksky.net/dev>`__ (not mandatory)
 -  `Poetry <https://poetry.eustace.io>`__ (for installation from sources only)
 -  `Yarn <https://yarnpkg.com>`__ (for development only)
 -  Docker and Docker Compose (for development or evaluation purposes)
@@ -133,6 +132,13 @@ deployment method.
 
     Email URL with credentials, see `Emails <installation.html#emails>`__.
 
+    .. versionchanged:: 0.6.5
+
+    :default: empty string
+
+    .. danger::
+        If the email URL is empty, email sending will be disabled.
+
     .. warning::
         If the email URL is invalid, the application may not start.
 
@@ -214,7 +220,7 @@ To send emails, a valid ``EMAIL_URL`` must be provided:
     | - If the email URL is invalid, the application may not start.
     | - Sending emails with Office365 may not work if SMTP auth is disabled.
 
-.. versionadded:: 0.5.3
+.. versionchanged:: 0.5.3
 
 | Credentials can be omitted: ``smtp://smtp.example.com:25``.
 | If ``:<port>`` is omitted, the port defaults to 25.
@@ -228,6 +234,11 @@ Emails sent by FitTrackee are:
 - password reset request
 - email change (to old and new email adresses)
 - password change
+
+.. versionchanged:: 0.6.5
+
+| For single-user instance, it is possible to disable email sending with an empty ``EMAIL_URL`` (in this case, no need to start dramatiq workers).
+| A `CLI <cli.html#ftcli-users-update>`__ is available to activate account and modify email and password.
 
 
 Map tile server
@@ -288,7 +299,7 @@ For instance, copy and update ``.env`` file from ``.env.example`` and source the
 
 .. code-block:: bash
 
-    $ fittrackee_upgrade_db
+    $ ftcli db upgrade
 
 - Start the application
 
@@ -296,7 +307,7 @@ For instance, copy and update ``.env`` file from ``.env.example`` and source the
 
     $ fittrackee
 
-- Start task queue workers
+- Start task queue workers if email sending is enabled.
 
 .. code-block:: bash
 
@@ -311,7 +322,7 @@ For instance, copy and update ``.env`` file from ``.env.example`` and source the
 
 .. code:: bash
 
-   $ fittrackee_set_admin <username>
+   $ ftcli users update <username> --set-admin true
 
 .. note::
     If the user account is inactive, it activates it.
@@ -373,7 +384,7 @@ Dev environment
 
 .. code:: bash
 
-   $ make set-admin USERNAME=<username>
+   $ make user-set-admin USERNAME=<username>
 
 .. note::
     If the user account is inactive, it activates it.
@@ -384,13 +395,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.6.4):
+-  Download the last release (for now, it is the release v0.6.5):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.4.tar.gz
-   $ tar -xzf v0.6.4.tar.gz
-   $ mv FitTrackee-0.6.4 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.5.tar.gz
+   $ tar -xzf v0.6.5.tar.gz
+   $ mv FitTrackee-0.6.5 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -415,13 +426,16 @@ Production environment
 
    $ make run
 
+.. note::
+    If email sending is disabled: ``$ make run-server``
+
 - Open http://localhost:5000 and register
 
 - To set admin rights to the newly created account, use the following command line:
 
 .. code:: bash
 
-   $ make set-admin USERNAME=<username>
+   $ make user-set-admin USERNAME=<username>
 
 .. note::
     If the user account is inactive, it activates it.
@@ -457,9 +471,9 @@ From PyPI
 
 .. code-block:: bash
 
-    $ fittrackee_upgrade_db
+    $ ftcli db upgrade
 
-- Restart the application and task queue workers.
+- Restart the application and task queue workers (if email sending is enabled).
 
 
 From sources
@@ -507,13 +521,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.6.4) and overwrite existing files:
+- Download the last release (for now, it is the release v0.6.5) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.4.tar.gz
-   $ tar -xzf v0.6.4.tar.gz
-   $ cp -R FitTrackee-0.6.4/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.5.tar.gz
+   $ tar -xzf v0.6.5.tar.gz
+   $ cp -R FitTrackee-0.6.5/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -536,6 +550,8 @@ Prod environment
 
    $ make run
 
+.. note::
+    If email sending is disabled: ``$ make run-server``
 
 Deployment
 ~~~~~~~~~~
