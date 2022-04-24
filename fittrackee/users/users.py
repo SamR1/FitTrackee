@@ -526,6 +526,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
             activate=user_data.get('activate', False),
             reset_password=reset_password,
             new_email=new_email,
+            with_confirmation=current_app.config['CAN_SEND_EMAILS'],
         )
 
         if current_app.config['CAN_SEND_EMAILS']:
