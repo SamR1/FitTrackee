@@ -42,6 +42,8 @@ def upgrade():
         sa.Column('name', sa.String(length=1000), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=False),
         sa.Column('is_allowed', sa.Boolean(), nullable=False),
+        sa.Column('software_name', sa.String(length=255), nullable=True),
+        sa.Column('software_version', sa.String(length=255), nullable=True),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('name'),
     )
@@ -50,8 +52,8 @@ def upgrade():
     domain = remove_url_scheme(os.environ['UI_URL'])
     created_at = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
     op.execute(
-        "INSERT INTO domains (name, created_at, is_allowed)"
-        f"VALUES ('{domain}', '{created_at}'::timestamp, True)"
+        "INSERT INTO domains (name, created_at, is_allowed, software_name)"
+        f"VALUES ('{domain}', '{created_at}'::timestamp, True, 'fittrackee')"
     )
 
     actors_table = op.create_table(

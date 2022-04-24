@@ -8,7 +8,7 @@ from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session
 from sqlalchemy.types import Enum
 
-from fittrackee import BaseModel, db
+from fittrackee import VERSION, BaseModel, db
 
 from .constants import AP_CTX
 from .enums import ActorType
@@ -29,6 +29,8 @@ class Domain(BaseModel):
     name = db.Column(db.String(1000), unique=True, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
     is_allowed = db.Column(db.Boolean, default=True, nullable=False)
+    software_name = db.Column(db.String(255), nullable=True)
+    software_version = db.Column(db.String(255), nullable=True)
 
     actors = db.relationship('Actor', back_populates='domain')
 
@@ -36,14 +38,26 @@ class Domain(BaseModel):
         return f'<Domain \'{self.name}\'>'
 
     def __init__(
-        self, name: str, created_at: Optional[datetime] = datetime.utcnow()
+        self,
+        name: str,
+        created_at: Optional[datetime] = None,
+        software_name: Optional[str] = None,
+        software_version: Optional[str] = None,
     ) -> None:
         self.name = name
-        self.created_at = created_at
+        self.created_at = (
+            datetime.utcnow() if created_at is None else created_at
+        )
+        self.software_name = software_name
+        self.software_version = software_version
 
     @property
     def is_remote(self) -> bool:
         return self.name != current_app.config['AP_DOMAIN']
+
+    @property
+    def software_current_version(self) -> bool:
+        return self.software_version if self.is_remote else VERSION
 
     def serialize(self) -> Dict:
         return {
@@ -52,6 +66,8 @@ class Domain(BaseModel):
             'created_at': self.created_at,
             'is_remote': self.is_remote,
             'is_allowed': self.is_allowed,
+            'software_name': self.software_name,
+            'software_version': self.software_current_version,
         }
 
 
@@ -97,10 +113,12 @@ class Actor(BaseModel):
         self,
         preferred_username: str,
         domain_id: int,
-        created_at: Optional[datetime] = datetime.utcnow(),
+        created_at: Optional[datetime] = None,
         remote_user_data: Optional[Dict] = None,
     ) -> None:
-        self.created_at = created_at
+        self.created_at = (
+            datetime.utcnow() if created_at is None else created_at
+        )
         self.domain_id = domain_id
         self.preferred_username = preferred_username
         if remote_user_data:

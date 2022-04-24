@@ -62,7 +62,9 @@ def get_app(
             if app_db_config:
                 update_app_config_from_database(app, app_db_config)
             if with_domain:
-                domain = Domain(name=app.config['AP_DOMAIN'])
+                domain = Domain(
+                    name=app.config['AP_DOMAIN'], software_name='fittrackee'
+                )
                 db.session.add(domain)
                 db.session.commit()
             yield app

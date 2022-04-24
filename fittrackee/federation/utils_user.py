@@ -13,6 +13,7 @@ from fittrackee.federation.remote_actor import (
     fetch_account_from_webfinger,
     get_remote_actor_url,
 )
+from fittrackee.federation.tasks.remote_server import update_remote_server
 from fittrackee.files import get_absolute_file_path
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.models import User
@@ -98,6 +99,7 @@ def get_or_create_remote_domain(domain_name: str) -> Domain:
         remote_domain = Domain(name=domain_name)
         db.session.add(remote_domain)
         db.session.commit()
+    update_remote_server.send(domain_name=domain_name)
     return remote_domain
 
 

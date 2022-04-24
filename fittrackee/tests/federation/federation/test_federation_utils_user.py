@@ -101,6 +101,20 @@ class TestGetOrCreateDomainFromActorUrl:
         assert isinstance(domain, Domain)
         assert domain.name == urlparse(random_actor.activitypub_id).netloc
 
+    def test_it_calls_update_remote_server_when_creating_domain(
+        self, app_with_federation: Flask, random_actor: RandomActor
+    ) -> None:
+        with patch(
+            'fittrackee.federation.utils_user.update_remote_server'
+        ) as update_remote_server_mock:
+            domain = get_or_create_remote_domain_from_url(
+                random_actor.activitypub_id
+            )
+
+        update_remote_server_mock.send.assert_called_with(
+            domain_name=domain.name
+        )
+
     def test_it_returns_existing_remote_domain(
         self, app_with_federation: Flask, remote_domain: Domain
     ) -> None:
@@ -109,6 +123,20 @@ class TestGetOrCreateDomainFromActorUrl:
         )
 
         assert domain == remote_domain
+
+    def test_it_calls_update_remote_server_when_domain_exists(
+        self, app_with_federation: Flask, remote_domain: Domain
+    ) -> None:
+        with patch(
+            'fittrackee.federation.utils_user.update_remote_server'
+        ) as update_remote_server_mock:
+            get_or_create_remote_domain_from_url(
+                f'https://{remote_domain.name}/users/random'
+            )
+
+        update_remote_server_mock.send.assert_called_with(
+            domain_name=remote_domain.name
+        )
 
 
 class TestCreateRemoteUser:

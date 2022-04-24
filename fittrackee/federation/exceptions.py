@@ -53,6 +53,14 @@ class RemoteActorException(GenericException):
         )
 
 
+class RemoteServerException(GenericException):
+    def __init__(self, message: Optional[str] = None) -> None:
+        super().__init__(
+            status='error',
+            message=(message if message else 'Invalid remote server'),
+        )
+
+
 class UnsupportedActivityException(GenericException):
     def __init__(self, activity_type: str) -> None:
         super().__init__(

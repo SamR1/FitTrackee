@@ -1,3 +1,4 @@
+from typing import Optional
 from uuid import uuid4
 
 import pytest
@@ -6,6 +7,7 @@ from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
 from flask import Flask
 
+from fittrackee import VERSION
 from fittrackee.federation.constants import AP_CTX
 from fittrackee.federation.models import Actor, Domain, RemoteActorStats
 from fittrackee.federation.utils import get_ap_url
@@ -27,6 +29,7 @@ class TestActivityPubDomainModel:
         local_domain = Domain.query.filter_by(
             name=app_with_federation.config['AP_DOMAIN']
         ).first()
+
         assert f"<Domain '{app_with_federation.config['AP_DOMAIN']}'>" == str(
             local_domain
         )
@@ -35,6 +38,7 @@ class TestActivityPubDomainModel:
         local_domain = Domain.query.filter_by(
             name=app_with_federation.config['AP_DOMAIN']
         ).first()
+
         assert not local_domain.is_remote
 
     def test_domain_is_remote(
@@ -42,12 +46,40 @@ class TestActivityPubDomainModel:
     ) -> None:
         assert remote_domain.is_remote
 
+    def test_it_returns_current_version_when_local(
+        self, app_with_federation: Flask
+    ) -> None:
+        local_domain = Domain.query.filter_by(
+            name=app_with_federation.config['AP_DOMAIN']
+        ).first()
+
+        assert local_domain.software_version is None
+        assert local_domain.software_current_version == VERSION
+
+    @pytest.mark.parametrize(
+        'input_software_version,',
+        [
+            (None,),
+            (uuid4().hex,),
+        ],
+    )
+    def test_it_returns_current_version_when_remote(
+        self,
+        app_with_federation: Flask,
+        remote_domain: Domain,
+        input_software_version: Optional[str],
+    ) -> None:
+        remote_domain.software_version = input_software_version
+
+        assert remote_domain.software_current_version == input_software_version
+
     def test_it_returns_serialized_object(
         self, app_with_federation: Flask
     ) -> None:
         local_domain = Domain.query.filter_by(
             name=app_with_federation.config['AP_DOMAIN']
         ).first()
+
         serialized_domain = local_domain.serialize()
 
         assert serialized_domain['id']
@@ -58,6 +90,11 @@ class TestActivityPubDomainModel:
         )
         assert serialized_domain['is_allowed']
         assert not serialized_domain['is_remote']
+        assert serialized_domain['software_name'] == local_domain.software_name
+        assert (
+            serialized_domain['software_version']
+            == local_domain.software_current_version
+        )
 
 
 class TestActivityPubLocalPersonActorModel:
