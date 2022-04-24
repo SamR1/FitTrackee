@@ -35,7 +35,7 @@ def manage_user(
     reset_password: bool,
     update_email: Optional[str],
 ) -> None:
-    """Manage giver user account."""
+    """Manage given user account."""
     with app.app_context():
         try:
             user_manager_service = UserManagerService(username)
