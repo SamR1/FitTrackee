@@ -148,10 +148,14 @@ class User(BaseModel):
     )
     is_remote = db.Column(db.Boolean, default=False, nullable=False)
     workouts_visibility = db.Column(
-        Enum(PrivacyLevel, name='privacy_levels'), server_default='PRIVATE'
+        Enum(PrivacyLevel, name='privacy_levels'),
+        server_default='PRIVATE',
+        nullable=False,
     )
     map_visibility = db.Column(
-        Enum(PrivacyLevel, name='privacy_levels'), server_default='PRIVATE'
+        Enum(PrivacyLevel, name='privacy_levels'),
+        server_default='PRIVATE',
+        nullable=False,
     )
 
     workouts = db.relationship(

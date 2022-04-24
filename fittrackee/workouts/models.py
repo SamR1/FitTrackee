@@ -158,10 +158,14 @@ class Workout(BaseModel):
     weather_end = db.Column(JSON, nullable=True)
     notes = db.Column(db.String(500), nullable=True)
     workout_visibility = db.Column(
-        Enum(PrivacyLevel, name='privacy_levels'), server_default='PRIVATE'
+        Enum(PrivacyLevel, name='privacy_levels'),
+        server_default='PRIVATE',
+        nullable=False,
     )
     map_visibility = db.Column(
-        Enum(PrivacyLevel, name='privacy_levels'), server_default='PRIVATE'
+        Enum(PrivacyLevel, name='privacy_levels'),
+        server_default='PRIVATE',
+        nullable=False,
     )
     segments = db.relationship(
         'WorkoutSegment',
