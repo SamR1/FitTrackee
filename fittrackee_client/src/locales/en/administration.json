@@ -22,6 +22,7 @@
   "CONFIRM_USER_PASSWORD_RESET": "Are you sure you want to reset {0} password?",
   "CURRENT_EMAIL": "Current email",
   "DELETE_USER": "Delete user",
+  "EMAIL_SENDING_DISABLED": "Email sending is disabled.",
   "ENABLE_DISABLE_SPORTS": "Enable/disable sports.",
   "FEDERATION_DISABLED": "Federation is currently disabled.",
   "FEDERATION_ENABLED": "Federation is currently enabled.",

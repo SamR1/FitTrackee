@@ -41,25 +41,27 @@ from .utils.token import decode_user_token
 auth_blueprint = Blueprint('auth', __name__)
 
 HEX_COLOR_REGEX = regex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+NOT_FOUND_MESSAGE = 'the requested URL was not found on the server'
 
 
 def send_account_confirmation_email(user: User) -> None:
-    ui_url = current_app.config['UI_URL']
-    email_data = {
-        'username': user.username,
-        'fittrackee_url': ui_url,
-        'operating_system': request.user_agent.platform,  # type: ignore  # noqa
-        'browser_name': request.user_agent.browser,  # type: ignore
-        'account_confirmation_url': (
-            f'{ui_url}/account-confirmation'
-            f'?token={user.confirmation_token}'
-        ),
-    }
-    user_data = {
-        'language': 'en',
-        'email': user.email,
-    }
-    account_confirmation_email.send(user_data, email_data)
+    if current_app.config['CAN_SEND_EMAILS']:
+        ui_url = current_app.config['UI_URL']
+        email_data = {
+            'username': user.username,
+            'fittrackee_url': ui_url,
+            'operating_system': request.user_agent.platform,  # type: ignore  # noqa
+            'browser_name': request.user_agent.browser,  # type: ignore
+            'account_confirmation_url': (
+                f'{ui_url}/account-confirmation'
+                f'?token={user.confirmation_token}'
+            ),
+        }
+        user_data = {
+            'language': 'en',
+            'email': user.email,
+        }
+        account_confirmation_email.send(user_data, email_data)
 
 
 @auth_blueprint.route('/auth/register', methods=['POST'])
@@ -522,7 +524,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     update authenticated user email and password
 
-    It sends emails:
+    It sends emails if sending is enabled:
 
     - Password change
     - Email change:
@@ -651,8 +653,12 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
     try:
         if email_to_confirm != auth_user.email:
             if is_valid_email(email_to_confirm):
-                auth_user.email_to_confirm = email_to_confirm
-                auth_user.confirmation_token = secrets.token_urlsafe(30)
+                if current_app.config['CAN_SEND_EMAILS']:
+                    auth_user.email_to_confirm = email_to_confirm
+                    auth_user.confirmation_token = secrets.token_urlsafe(30)
+                else:
+                    auth_user.email = email_to_confirm
+                    auth_user.confirmation_token = None
             else:
                 error_messages = 'email: valid email must be provided\n'
 
@@ -669,44 +675,48 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
 
         db.session.commit()
 
-        ui_url = current_app.config['UI_URL']
-        user_data = {
-            'language': (
-                'en' if auth_user.language is None else auth_user.language
-            ),
-            'email': auth_user.email,
-        }
-        data = {
-            'username': auth_user.username,
-            'fittrackee_url': ui_url,
-            'operating_system': request.user_agent.platform,
-            'browser_name': request.user_agent.browser,
-        }
-
-        if new_password is not None:
-            password_change_email.send(user_data, data)
-
-        if (
-            auth_user.email_to_confirm is not None
-            and auth_user.email_to_confirm != auth_user.email
-        ):
-            email_data = {
-                **data,
-                **{'new_email_address': email_to_confirm},
+        if current_app.config['CAN_SEND_EMAILS']:
+            ui_url = current_app.config['UI_URL']
+            user_data = {
+                'language': (
+                    'en' if auth_user.language is None else auth_user.language
+                ),
+                'email': auth_user.email,
             }
-            email_updated_to_current_address.send(user_data, email_data)
-
-            email_data = {
-                **data,
-                **{
-                    'email_confirmation_url': (
-                        f'{ui_url}/email-update'
-                        f'?token={auth_user.confirmation_token}'
-                    )
-                },
+            data = {
+                'username': auth_user.username,
+                'fittrackee_url': ui_url,
+                'operating_system': request.user_agent.platform,
+                'browser_name': request.user_agent.browser,
             }
-            user_data = {**user_data, **{'email': auth_user.email_to_confirm}}
-            email_updated_to_new_address.send(user_data, email_data)
+
+            if new_password is not None:
+                password_change_email.send(user_data, data)
+
+            if (
+                auth_user.email_to_confirm is not None
+                and auth_user.email_to_confirm != auth_user.email
+            ):
+                email_data = {
+                    **data,
+                    **{'new_email_address': email_to_confirm},
+                }
+                email_updated_to_current_address.send(user_data, email_data)
+
+                email_data = {
+                    **data,
+                    **{
+                        'email_confirmation_url': (
+                            f'{ui_url}/email-update'
+                            f'?token={auth_user.confirmation_token}'
+                        )
+                    },
+                }
+                user_data = {
+                    **user_data,
+                    **{'email': auth_user.email_to_confirm},
+                }
+                email_updated_to_new_address.send(user_data, email_data)
 
         return {
             'status': 'success',
@@ -1173,6 +1183,8 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
     """
     handle password reset request
 
+    If email sending is disabled, this endpoint is not available
+
     **Example request**:
 
     .. sourcecode:: http
@@ -1196,8 +1208,12 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
 
     :statuscode 200: password reset request processed
     :statuscode 400: invalid payload
+    :statuscode 404: the requested URL was not found on the server
 
     """
+    if not current_app.config['CAN_SEND_EMAILS']:
+        return NotFoundErrorResponse(NOT_FOUND_MESSAGE)
+
     post_data = request.get_json()
     if not post_data or post_data.get('email') is None:
         return InvalidPayloadErrorResponse()
@@ -1236,6 +1252,8 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
 def update_password() -> Union[Dict, HttpResponse]:
     """
     update user password after password reset request
+
+    It sends emails if sending is enabled
 
     **Example request**:
 
@@ -1293,18 +1311,21 @@ def update_password() -> Union[Dict, HttpResponse]:
         ).decode()
         db.session.commit()
 
-        password_change_email.send(
-            {
-                'language': ('en' if user.language is None else user.language),
-                'email': user.email,
-            },
-            {
-                'username': user.username,
-                'fittrackee_url': current_app.config['UI_URL'],
-                'operating_system': request.user_agent.platform,
-                'browser_name': request.user_agent.browser,
-            },
-        )
+        if current_app.config['CAN_SEND_EMAILS']:
+            password_change_email.send(
+                {
+                    'language': (
+                        'en' if user.language is None else user.language
+                    ),
+                    'email': user.email,
+                },
+                {
+                    'username': user.username,
+                    'fittrackee_url': current_app.config['UI_URL'],
+                    'operating_system': request.user_agent.platform,
+                    'browser_name': request.user_agent.browser,
+                },
+            )
 
         return {
             'status': 'success',
@@ -1440,6 +1461,8 @@ def resend_account_confirmation_email() -> Union[Dict, HttpResponse]:
     """
     resend email with instructions to confirm account
 
+    If email sending is disabled, this endpoint is not available
+
     **Example request**:
 
     .. sourcecode:: http
@@ -1463,9 +1486,13 @@ def resend_account_confirmation_email() -> Union[Dict, HttpResponse]:
 
     :statuscode 200: confirmation email resent
     :statuscode 400: invalid payload
+    :statuscode 404: the requested URL was not found on the server
     :statuscode 500: error, please try again or contact the administrator
 
     """
+    if not current_app.config['CAN_SEND_EMAILS']:
+        return NotFoundErrorResponse(NOT_FOUND_MESSAGE)
+
     post_data = request.get_json()
     if not post_data or post_data.get('email') is None:
         return InvalidPayloadErrorResponse()

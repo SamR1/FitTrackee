@@ -1350,6 +1350,27 @@ class TestUpdateUser(ApiTestCaseMixin):
             },
         )
 
+    def test_it_does_not_call_password_change_email_when_email_sending_is_disabled(  # noqa
+        self,
+        app_wo_email_activation: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_password_change_email_mock: MagicMock,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_wo_email_activation, user_1_admin.email
+        )
+
+        response = client.patch(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            data=json.dumps(dict(reset_password=True)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        user_password_change_email_mock.send.assert_not_called()
+
     def test_it_calls_reset_password_email_when_password_reset_is_successful(
         self,
         app: Flask,
@@ -1390,6 +1411,27 @@ class TestUpdateUser(ApiTestCaseMixin):
                 'fittrackee_url': 'http://0.0.0.0:5000',
             },
         )
+
+    def test_it_does_not_call_reset_password_email_when_email_sending_is_disabled(  # noqa
+        self,
+        app_wo_email_activation: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_reset_password_email: MagicMock,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_wo_email_activation, user_1_admin.email
+        )
+
+        response = client.patch(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            data=json.dumps(dict(reset_password=True)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        user_reset_password_email.send.assert_not_called()
 
     def test_it_returns_error_when_updating_email_with_invalid_address(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -1445,26 +1487,47 @@ class TestUpdateUser(ApiTestCaseMixin):
 
         user_email_updated_to_new_address_mock.send.assert_not_called()
 
-    def test_it_updates_user_email(
+    def test_it_updates_user_email_to_confirm_when_email_sending_is_enabled(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
+        new_email = 'new.' + user_2.email
         user_2_email = user_2.email
         user_2_confirmation_token = user_2.confirmation_token
 
         response = client.patch(
             f'/api/users/{user_2.username}',
             content_type='application/json',
-            data=json.dumps(dict(new_email='new.' + user_2.email)),
+            data=json.dumps(dict(new_email=new_email)),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         assert response.status_code == 200
         assert user_2.email == user_2_email
-        assert user_2.email_to_confirm == 'new.' + user_2.email
+        assert user_2.email_to_confirm == new_email
         assert user_2.confirmation_token != user_2_confirmation_token
+
+    def test_it_updates_user_email_when_email_sending_is_disabled(
+        self, app_wo_email_activation: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_wo_email_activation, user_1_admin.email
+        )
+        new_email = 'new.' + user_2.email
+
+        response = client.patch(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            data=json.dumps(dict(new_email=new_email)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        assert user_2.email == new_email
+        assert user_2.email_to_confirm is None
+        assert user_2.confirmation_token is None
 
     def test_it_calls_email_updated_to_new_address_when_password_reset_is_successful(  # noqa
         self,
@@ -1501,6 +1564,28 @@ class TestUpdateUser(ApiTestCaseMixin):
                 ),
             },
         )
+
+    def test_it_does_not_call_email_updated_to_new_address_when_email_sending_is_disabled(  # noqa
+        self,
+        app_wo_email_activation: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_email_updated_to_new_address_mock: MagicMock,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_wo_email_activation, user_1_admin.email
+        )
+        new_email = 'new.' + user_2.email
+
+        response = client.patch(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            data=json.dumps(dict(new_email=new_email)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        user_email_updated_to_new_address_mock.send.assert_not_called()
 
     def test_it_activates_user_account(
         self, app: Flask, user_1_admin: User, inactive_user: User

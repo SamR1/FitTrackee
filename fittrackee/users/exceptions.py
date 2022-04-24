@@ -6,6 +6,14 @@ class FollowRequestAlreadyRejectedError(Exception):
     ...
 
 
+class InvalidEmailException(Exception):
+    ...
+
+
+class InvalidUserException(Exception):
+    ...
+
+
 class NotExistingFollowRequestError(Exception):
     ...
 

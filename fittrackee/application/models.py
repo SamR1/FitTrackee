@@ -47,6 +47,7 @@ class AppConfig(BaseModel):
             'admin_contact': self.admin_contact,
             'federation_enabled': self.federation_enabled,
             'gpx_limit_import': self.gpx_limit_import,
+            'is_email_sending_enabled': current_app.config['CAN_SEND_EMAILS'],
             'is_registration_enabled': self.is_registration_enabled,
             'max_single_file_size': self.max_single_file_size,
             'max_zip_file_size': self.max_zip_file_size,

@@ -89,11 +89,11 @@ html:
 
 install-db:
 	psql -U postgres -f db/create.sql
-	$(FLASK) db upgrade --directory $(MIGRATIONS)
+	$(FTCLI) db upgrade
 
 init-db:
-	$(FLASK) drop-db
-	$(FLASK) db upgrade --directory $(MIGRATIONS)
+	$(FTCLI) db drop
+	$(FTCLI) db upgrade
 
 install: install-client install-python
 
@@ -164,7 +164,8 @@ serve-python-dev:
 	$(FLASK) run --with-threads -h $(HOST) -p $(PORT) --cert=adhoc
 
 set-admin:
-	$(FLASK) users set-admin $(USERNAME)
+	echo "Deprecated command, will be removed in a next version. Use 'user-set-admin' instead."
+	$(FTCLI) users update $(USERNAME) --set-admin true
 
 test-e2e:
 	$(PYTEST) e2e --driver firefox $(PYTEST_ARGS)
@@ -185,4 +186,17 @@ type-check:
 	$(MYPY) fittrackee
 
 upgrade-db:
-	$(FLASK) db upgrade --directory $(MIGRATIONS)
+	$(FTCLI) db upgrade
+
+user-activate:
+	$(FTCLI) users update $(USERNAME) --activate
+
+user-reset-password:
+	$(FTCLI) users update $(USERNAME) --reset-password
+
+ADMIN := true
+user-set-admin:
+	$(FTCLI) users update $(USERNAME) --set-admin $(ADMIN)
+
+user-update-email:
+	$(FTCLI) users update $(USERNAME) --update-email $(EMAIL)

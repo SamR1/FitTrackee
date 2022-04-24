@@ -301,6 +301,31 @@ class TestUserRegistration(ApiTestCaseMixin):
             },
         )
 
+    def test_it_does_not_call_account_confirmation_email_when_email_sending_is_disabled(  # noqa
+        self,
+        app_wo_email_activation: Flask,
+        account_confirmation_email_mock: Mock,
+    ) -> None:
+        client = app_wo_email_activation.test_client()
+        email = self.random_email()
+        username = self.random_string()
+
+        response = client.post(
+            '/api/auth/register',
+            data=json.dumps(
+                dict(
+                    username=username,
+                    email=email,
+                    password='12345678',
+                )
+            ),
+            content_type='application/json',
+            environ_base={'HTTP_USER_AGENT': USER_AGENT},
+        )
+
+        assert response.status_code == 200
+        account_confirmation_email_mock.send.assert_not_called()
+
     @pytest.mark.parametrize(
         'text_transformation',
         ['upper', 'lower'],
@@ -780,6 +805,36 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
         assert new_email == user_1.email_to_confirm
         assert user_1.confirmation_token is not None
 
+    def test_it_updates_email_when_email_sending_is_disabled(
+        self,
+        app_wo_email_activation: Flask,
+        user_1: User,
+        email_updated_to_current_address_mock: MagicMock,
+        email_updated_to_new_address_mock: MagicMock,
+        password_change_email_mock: MagicMock,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_wo_email_activation, user_1.email
+        )
+        new_email = 'new.email@example.com'
+
+        response = client.patch(
+            '/api/auth/profile/edit/account',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    email=new_email,
+                    password='12345678',
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        assert user_1.email == new_email
+        assert user_1.email_to_confirm is None
+        assert user_1.confirmation_token is None
+
     def test_it_calls_email_updated_to_current_email_send_when_new_email_provided(  # noqa
         self,
         app: Flask,
@@ -1113,6 +1168,37 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
         email_updated_to_current_address_mock.send.assert_called_once()
         email_updated_to_new_address_mock.send.assert_called_once()
         password_change_email_mock.send.assert_called_once()
+
+    def test_it_does_not_calls_all_email_send_when_email_sending_is_disabled(
+        self,
+        app_wo_email_activation: Flask,
+        user_1: User,
+        email_updated_to_current_address_mock: MagicMock,
+        email_updated_to_new_address_mock: MagicMock,
+        password_change_email_mock: MagicMock,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_wo_email_activation, user_1.email
+        )
+
+        client.patch(
+            '/api/auth/profile/edit/account',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    email='new.email@example.com',
+                    password='12345678',
+                    new_password=self.random_string(),
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_no_emails_sent(
+            email_updated_to_current_address_mock,
+            email_updated_to_new_address_mock,
+            password_change_email_mock,
+        )
 
 
 class TestUserPreferencesUpdate(ApiTestCaseMixin):
@@ -1699,6 +1785,21 @@ class TestPasswordResetRequest(ApiTestCaseMixin):
 
         self.assert_400(response)
 
+    def test_it_returns_error_when_email_sending_is_disabled(
+        self, app_wo_email_activation: Flask
+    ) -> None:
+        client = app_wo_email_activation.test_client()
+
+        response = client.post(
+            '/api/auth/password/reset-request',
+            data=json.dumps(dict(email='test@test.com')),
+            content_type='application/json',
+        )
+
+        self.assert_404_with_message(
+            response, 'the requested URL was not found on the server'
+        )
+
     def test_it_requests_password_reset_when_user_exists(
         self, app: Flask, user_1: User, user_reset_password_email: Mock
     ) -> None:
@@ -1924,7 +2025,7 @@ class TestPasswordUpdate(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert data['message'] == 'password updated'
 
-    def test_it_send_email_after_successful_update(
+    def test_it_sends_email_after_successful_update(
         self,
         app: Flask,
         user_1: User,
@@ -1958,6 +2059,29 @@ class TestPasswordUpdate(ApiTestCaseMixin):
                 'browser_name': 'Firefox',
             },
         )
+
+    def test_it_does_not_send_email_when_email_sending_is_disabled(
+        self,
+        app_wo_email_activation: Flask,
+        user_1: User,
+        password_change_email_mock: MagicMock,
+    ) -> None:
+        token = get_user_token(user_1.id, password_reset=True)
+        client = app_wo_email_activation.test_client()
+
+        client.post(
+            '/api/auth/password/update',
+            data=json.dumps(
+                dict(
+                    token=token,
+                    password=self.random_string(),
+                )
+            ),
+            content_type='application/json',
+            environ_base={'HTTP_USER_AGENT': USER_AGENT},
+        )
+
+        password_change_email_mock.send.assert_not_called()
 
 
 class TestEmailUpdateWitUnauthenticatedUser(ApiTestCaseMixin):
@@ -2188,4 +2312,19 @@ class TestResendAccountConfirmationEmail(ApiTestCaseMixin):
                     f'?token={expected_token}'
                 ),
             },
+        )
+
+    def test_it_returns_error_if_email_sending_is_disabled(
+        self, app_wo_email_activation: Flask, inactive_user: User
+    ) -> None:
+        client = app_wo_email_activation.test_client()
+
+        response = client.post(
+            '/api/auth/account/resend-confirmation',
+            data=json.dumps(dict(email=inactive_user.email)),
+            content_type='application/json',
+        )
+
+        self.assert_404_with_message(
+            response, 'the requested URL was not found on the server'
         )

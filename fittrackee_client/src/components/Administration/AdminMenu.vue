@@ -31,6 +31,13 @@
                   )
                 }}
               </span>
+              <span
+                class="email-sending-status"
+                v-if="!appConfig.is_email_sending_enabled"
+              >
+                <i class="fa fa-exclamation-triangle" aria-hidden="true" />
+                {{ $t('admin.EMAIL_SENDING_DISABLED') }}
+              </span>
             </dd>
             <dt>
               <router-link to="/admin/sports">
@@ -94,6 +101,7 @@
         .application-config-details {
           display: flex;
           flex-direction: column;
+          .email-sending-status,
           .federation-status,
           .registration-status {
             font-weight: bold;
