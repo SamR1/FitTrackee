@@ -109,7 +109,7 @@ Administration
       - add/remove administration rights
       - activate his account (*new in 0.6.0*)
       - update his email (in case his account is locked) (*new in 0.6.0*)
-      - reset his password (in case his account is locked) (*new in 0.6.0*)
+      - reset his password (in case his account is locked) (*new in 0.6.0*). If email sending is disabled, it is only possible via CLI.
   - delete a user
 
 - **Sports**
