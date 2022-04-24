@@ -1,10 +1,15 @@
+from unittest.mock import patch
+
 import pytest
 from flask import Flask
 
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
-from fittrackee.workouts.utils.visibility import can_view_workout
+from fittrackee.workouts.utils.visibility import (
+    can_view_workout,
+    get_workout_user_status,
+)
 
 
 class TestCanViewWorkout:
@@ -340,4 +345,36 @@ class TestCanViewWorkoutMap:
         assert can_view_workout(workout_cycling_user_2, 'map_visibility') == (
             True,
             'other',
+        )
+
+
+class TestGetUserStatus:
+    def test_it_calls_can_view_workout_to_get_user_status(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        with patch(
+            'fittrackee.workouts.utils.visibility.can_view_workout',
+            return_value=(False, 'other'),
+        ) as can_view_workout_mock:
+            get_workout_user_status(workout_cycling_user_2, user_1)
+
+        can_view_workout_mock.assert_called_once_with(
+            workout_cycling_user_2, 'workout_visibility', user_1
+        )
+
+    def test_it_returns_user_status(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        assert (
+            get_workout_user_status(workout_cycling_user_2, user_1) == 'other'
         )

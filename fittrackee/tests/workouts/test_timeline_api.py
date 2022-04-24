@@ -190,6 +190,85 @@ class TestGetUserTimeline(ApiTestCaseMixin):
 
         self.assert_no_workout_returned(response)
 
+    @pytest.mark.parametrize(
+        'input_desc,input_workout_visibility',
+        [
+            (
+                'workout visibility: followers_only',
+                PrivacyLevel.FOLLOWERS,
+            ),
+            ('workout visibility: public', PrivacyLevel.PUBLIC),
+        ],
+    )
+    def test_it_does_not_return_followed_user_workout_map_when_private(
+        self,
+        input_desc: str,
+        input_workout_visibility: PrivacyLevel,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        if input_workout_visibility == PrivacyLevel.FOLLOWERS:
+            user_2.approves_follow_request_from(user_1)
+        workout_cycling_user_2.workout_visibility = input_workout_visibility
+        workout_cycling_user_2.map_visibility = PrivacyLevel.PRIVATE
+        workout_cycling_user_2.map_id = self.random_string()
+        workout_cycling_user_2.map = self.random_string()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/timeline',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['data']['workouts'][0]['map'] is None
+
+    @pytest.mark.parametrize(
+        'input_desc,input_visibility',
+        [
+            (
+                'workout and map visibility: followers_only',
+                PrivacyLevel.FOLLOWERS,
+            ),
+            ('workout and map visibility: public', PrivacyLevel.PUBLIC),
+        ],
+    )
+    def test_it_returns_followed_user_workout_map_when_visibility_allows_it(
+        self,
+        input_desc: str,
+        input_visibility: PrivacyLevel,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        if input_visibility == PrivacyLevel.FOLLOWERS:
+            user_2.approves_follow_request_from(user_1)
+        workout_cycling_user_2.workout_visibility = input_visibility
+        workout_cycling_user_2.map_visibility = input_visibility
+        map_id = self.random_string()
+        workout_cycling_user_2.map_id = map_id
+        workout_cycling_user_2.map = self.random_string()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/timeline',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['data']['workouts'][0]['map'] == map_id
+
 
 class TestGetUserTimelinePagination(ApiTestCaseMixin):
     def test_it_returns_pagination_when_no_workouts(

@@ -17,7 +17,7 @@ def can_view_workout(
     - owner: provided user is workout owner
     - follower: provided user follows workout owner
     - other: other cases (user does not follow workout owner,
-      unauthenticated user (no user provided)
+      unauthenticated user (no user provided))
     """
     status = 'other'
     if user is not None:
@@ -42,3 +42,20 @@ def can_view_workout(
     ):
         return True, status
     return False, status
+
+
+def get_workout_user_status(
+    workout: Workout,
+    user: Optional[User] = None,
+) -> str:
+    """
+    returns user status depending on workout visibility and relationship
+
+    status:
+    - owner: provided user is workout owner
+    - follower: provided user follows workout owner
+    - other: other cases (user does not follow workout owner,
+      unauthenticated user (no user provided))
+    """
+    _, user_status = can_view_workout(workout, 'workout_visibility', user)
+    return user_status
