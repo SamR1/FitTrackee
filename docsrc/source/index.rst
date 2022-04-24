@@ -34,6 +34,7 @@ Table of contents
 
    features
    installation
+   cli
    api/index
    troubleshooting/index
    changelog
