@@ -10,7 +10,7 @@ def get_activity_instance(activity_dict: Dict) -> Callable:
     activity_type = activity_dict['type']
     try:
         Activity = getattr(
-            import_module('fittrackee.federation.activities'),
+            import_module('fittrackee.federation.activities.actions'),
             f'{activity_type}Activity',
         )
     except AttributeError:

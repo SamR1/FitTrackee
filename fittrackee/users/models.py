@@ -9,7 +9,7 @@ from sqlalchemy.sql.expression import select
 from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, bcrypt, db
-from fittrackee.federation.constants import AP_CTX
+from fittrackee.federation.activities.follow_request import FollowRequestObject
 from fittrackee.federation.enums import ActivityType
 from fittrackee.federation.exceptions import FederationDisabledException
 from fittrackee.federation.models import Actor, Domain
@@ -65,50 +65,24 @@ class FollowRequest(BaseModel):
             'to_user': self.to_user.serialize(),
         }
 
+    def _get_activity_type(self, undo: bool) -> ActivityType:
+        if self.updated_at is None:
+            return ActivityType.FOLLOW
+        if undo:
+            return ActivityType.UNDO
+        if self.is_approved:
+            return ActivityType.ACCEPT
+        return ActivityType.REJECT
+
     def get_activity(self, undo: bool = False) -> Dict:
         if not current_app.config['federation_enabled']:
             raise FederationDisabledException()
-        follow_activity = {
-            'id': (
-                f'{self.from_user.actor.activitypub_id}#follows/'
-                f'{self.to_user.actor.fullname}'
-            ),
-            'type': ActivityType.FOLLOW.value,
-            'actor': self.from_user.actor.activitypub_id,
-            'object': self.to_user.actor.activitypub_id,
-        }
-        if self.updated_at is None:
-            activity = follow_activity.copy()
-        else:
-            if undo:
-                activity = {
-                    'id': (
-                        f'{self.from_user.actor.activitypub_id}#'
-                        f'undoes/'
-                        f'follow/{self.from_user.actor.fullname}'
-                    ),
-                    'type': ActivityType.UNDO.value,
-                    'actor': self.from_user.actor.activitypub_id,
-                    'object': follow_activity,
-                }
-            else:
-                activity_type = (
-                    ActivityType.ACCEPT.value
-                    if self.is_approved
-                    else ActivityType.REJECT.value
-                )
-                activity = {
-                    'id': (
-                        f'{self.to_user.actor.activitypub_id}#'
-                        f'{"accept" if self.is_approved else "reject"}s/'
-                        f'follow/{self.from_user.actor.fullname}'
-                    ),
-                    'type': activity_type,
-                    'actor': self.to_user.actor.activitypub_id,
-                    'object': follow_activity,
-                }
-        activity['@context'] = AP_CTX
-        return activity
+        follow_request_object = FollowRequestObject(
+            from_actor=self.from_user.actor,
+            to_actor=self.to_user.actor,
+            activity_type=self._get_activity_type(undo),
+        )
+        return follow_request_object.serialize()
 
 
 class User(BaseModel):
