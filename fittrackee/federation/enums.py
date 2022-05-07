@@ -3,6 +3,7 @@ from enum import Enum
 
 class ActivityType(Enum):
     ACCEPT = 'Accept'
+    CREATE = 'Create'
     FOLLOW = 'Follow'
     REJECT = 'Reject'
     UNDO = 'Undo'

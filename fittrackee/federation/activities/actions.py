@@ -137,3 +137,8 @@ class UndoActivity(AbstractActivity):
                 f'{self.activity_name()}: follow request does not exist.'
             )
             raise e
+
+
+class CreateActivity(AbstractActivity):
+    def process_activity(self) -> None:
+        pass

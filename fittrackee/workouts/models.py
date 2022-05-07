@@ -1,8 +1,9 @@
 import datetime
 import os
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional, Tuple, Union
 from uuid import UUID, uuid4
 
+from flask import current_app
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
@@ -12,10 +13,12 @@ from sqlalchemy.orm.session import Session, object_session
 from sqlalchemy.types import JSON, Enum
 
 from fittrackee import BaseModel, db
+from fittrackee.federation.activities.workout import WorkoutObject
+from fittrackee.federation.exceptions import FederationDisabledException
 from fittrackee.files import get_absolute_file_path
 from fittrackee.privacy_levels import PrivacyLevel, get_map_visibility
 
-from .exceptions import WorkoutForbiddenException
+from .exceptions import PrivateWorkoutException, WorkoutForbiddenException
 from .utils.convert import convert_in_duration, convert_value_to_integer
 from .utils.short_id import encode_uuid
 
@@ -387,6 +390,17 @@ class Workout(BaseModel):
                 workout=record_workout,
             )
         return records
+
+    def get_activities(self) -> Tuple[Dict, Dict]:
+        if not current_app.config['federation_enabled']:
+            raise FederationDisabledException()
+        if self.workout_visibility == PrivacyLevel.PRIVATE:
+            raise PrivateWorkoutException()
+
+        workout_object = WorkoutObject(self)
+        return workout_object.serialize(), workout_object.serialize(
+            is_note=True
+        )
 
 
 @listens_for(Workout, 'after_insert')

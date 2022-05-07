@@ -5,6 +5,7 @@ import pytest
 from flask import Flask
 
 from fittrackee import db
+from fittrackee.federation.exceptions import FederationDisabledException
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import User
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
@@ -546,3 +547,15 @@ class TestWorkoutModelAsOther(WorkoutModelTestCase):
         assert serialized_workout['previous_workout'] is None
         assert 'map_visibility' not in serialized_workout
         assert 'workout_visibility' not in serialized_workout
+
+
+class TestWorkoutModelGetActivity:
+    def test_it_raises_error_if_federation_is_disabled(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        with pytest.raises(FederationDisabledException):
+            workout_cycling_user_1.get_activities()
