@@ -7,7 +7,7 @@ from fittrackee.federation.exceptions import (
     ActorNotFoundException,
     DomainNotFoundException,
 )
-from fittrackee.federation.utils_user import get_user_from_username
+from fittrackee.federation.utils.user import get_user_from_username
 from fittrackee.responses import (
     HttpResponse,
     InvalidPayloadErrorResponse,

@@ -4,7 +4,7 @@ from typing import Optional, Tuple
 from flask import current_app
 
 from fittrackee import bcrypt, db
-from fittrackee.federation.utils_user import get_user_from_username
+from fittrackee.federation.utils.user import get_user_from_username
 
 from ..exceptions import InvalidEmailException, InvalidUserException
 from ..models import User

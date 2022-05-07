@@ -4,7 +4,7 @@ import pytest
 import requests
 
 from fittrackee.federation.exceptions import ActorNotFoundException
-from fittrackee.federation.remote_actor import get_remote_actor_url
+from fittrackee.federation.utils.remote_actor import get_remote_actor_url
 
 from ...utils import RandomActor, generate_response, random_actor_url
 

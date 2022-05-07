@@ -114,7 +114,7 @@ class TestGetRemoteUsers(ApiTestCaseMixin):
         )
 
         with patch(
-            'fittrackee.federation.utils_user.update_remote_user',
+            'fittrackee.federation.utils.user.update_remote_user',
         ):
             response = client.get(
                 f'/api/users/remote?q=@{remote_user.actor.fullname}',
@@ -145,7 +145,7 @@ class TestGetRemoteUsers(ApiTestCaseMixin):
         )
 
         with patch(
-            'fittrackee.federation.utils_user.update_remote_user',
+            'fittrackee.federation.utils.user.update_remote_user',
         ) as update_remote_user_mock:
             client.get(
                 f'/api/users/remote?q=@{remote_user.actor.fullname}',
@@ -163,7 +163,7 @@ class TestGetRemoteUsers(ApiTestCaseMixin):
         )
 
         with patch(
-            'fittrackee.federation.utils_user.update_remote_user',
+            'fittrackee.federation.utils.user.update_remote_user',
         ) as update_remote_user_mock:
             client.get(
                 f'/api/users/remote?q={user_2.username}',
@@ -184,10 +184,10 @@ class TestGetRemoteUsers(ApiTestCaseMixin):
         )
 
         with patch(
-            'fittrackee.federation.utils_user.fetch_account_from_webfinger',
+            'fittrackee.federation.utils.user.fetch_account_from_webfinger',
             return_value=random_actor.get_webfinger(),
         ), patch(
-            'fittrackee.federation.utils_user.get_remote_actor_url',
+            'fittrackee.federation.utils.user.get_remote_actor_url',
             return_value=random_actor.get_remote_user_object(),
         ):
             response = client.get(
@@ -220,7 +220,7 @@ class TestGetRemoteUsers(ApiTestCaseMixin):
         )
 
         with patch(
-            'fittrackee.federation.utils_user.fetch_account_from_webfinger',
+            'fittrackee.federation.utils.user.fetch_account_from_webfinger',
             side_effect={},
         ):
             response = client.get(
@@ -288,7 +288,7 @@ class TestGetRemoteUser(ApiTestCaseMixin):
             app_with_federation, user_1.email
         )
         with patch(
-            'fittrackee.federation.utils_user.update_remote_user',
+            'fittrackee.federation.utils.user.update_remote_user',
         ):
 
             response = client.get(
@@ -310,7 +310,7 @@ class TestGetRemoteUser(ApiTestCaseMixin):
             app_with_federation, user_1.email
         )
         with patch(
-            'fittrackee.federation.utils_user.update_remote_user',
+            'fittrackee.federation.utils.user.update_remote_user',
         ) as update_remote_user_mock:
 
             client.get(

@@ -12,7 +12,9 @@ import sqlalchemy as sa
 from alembic import op
 from sqlalchemy.dialects.postgresql import ENUM
 
-from fittrackee.federation.utils import generate_keys, get_ap_url, remove_url_scheme
+from fittrackee.federation.utils import (
+    generate_keys, get_ap_url, remove_url_scheme
+)
 
 
 # revision identifiers, used by Alembic.

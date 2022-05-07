@@ -9,16 +9,16 @@ from flask import current_app
 from fittrackee import appLog, db
 from fittrackee.federation.exceptions import RemoteActorException
 from fittrackee.federation.models import MEDIA_TYPES, Actor, Domain
-from fittrackee.federation.remote_actor import (
+from fittrackee.federation.tasks.remote_server import update_remote_server
+from fittrackee.federation.utils.remote_actor import (
     fetch_account_from_webfinger,
     get_remote_actor_url,
 )
-from fittrackee.federation.tasks.remote_server import update_remote_server
 from fittrackee.files import get_absolute_file_path
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.models import User
 
-from .exceptions import ActorNotFoundException
+from ..exceptions import ActorNotFoundException
 
 FULL_NAME_REGEX = r'^@?([\w_\-\.]+)@([\w_\-\.]+\.[a-z]{2,})$'
 MEDIA_EXTENSIONS = {value: key for (key, value) in MEDIA_TYPES.items()}

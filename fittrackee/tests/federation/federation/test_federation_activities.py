@@ -195,12 +195,12 @@ class TestFollowActivity(FollowRequestActivitiesTestCase):
             activity_dict=follow_activity
         )
         with patch(
-            'fittrackee.federation.utils_user.get_remote_actor_url',
+            'fittrackee.federation.utils.user.get_remote_actor_url',
             return_value=random_actor.get_remote_user_object(),
         ), patch(
-            'fittrackee.federation.utils_user.store_or_delete_user_picture'
+            'fittrackee.federation.utils.user.store_or_delete_user_picture'
         ), patch(
-            'fittrackee.federation.utils_user.update_remote_actor_stats'
+            'fittrackee.federation.utils.user.update_remote_actor_stats'
         ):
             activity.process_activity()
 

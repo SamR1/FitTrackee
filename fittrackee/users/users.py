@@ -14,7 +14,7 @@ from fittrackee.emails.tasks import (
 )
 from fittrackee.federation.decorators import federation_required
 from fittrackee.federation.models import Domain
-from fittrackee.federation.utils_user import (
+from fittrackee.federation.utils.user import (
     FULL_NAME_REGEX,
     get_user_from_username,
 )

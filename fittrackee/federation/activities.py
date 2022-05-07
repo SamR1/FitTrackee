@@ -4,7 +4,7 @@ from typing import Dict, Tuple
 from fittrackee import appLog
 from fittrackee.federation.exceptions import ActorNotFoundException
 from fittrackee.federation.models import Actor
-from fittrackee.federation.utils_user import (
+from fittrackee.federation.utils.user import (
     create_remote_user,
     get_or_create_remote_domain_from_url,
 )

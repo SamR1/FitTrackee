@@ -2,7 +2,7 @@ from typing import Dict
 
 from flask_sqlalchemy import BaseQuery, Pagination
 
-CONTEXT = 'https://www.w3.org/ns/activitystreams'
+from fittrackee.federation.constants import CONTEXT
 
 
 class OrderedCollection:

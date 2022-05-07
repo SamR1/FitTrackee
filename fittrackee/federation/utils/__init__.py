@@ -4,7 +4,7 @@ from typing import Dict, Tuple
 from Crypto.PublicKey import RSA
 from flask import current_app
 
-from .enums import ActivityType
+from ..enums import ActivityType
 
 
 def generate_keys() -> Tuple[str, str]:
