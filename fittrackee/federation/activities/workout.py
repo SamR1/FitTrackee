@@ -6,6 +6,7 @@ from fittrackee.workouts.exceptions import PrivateWorkoutException
 from ..constants import AP_CTX, DATE_FORMAT, PUBLIC_STREAM
 from ..enums import ActivityType
 from .base_object import ActivityObject
+from .templates.workout_note import WORKOUT_NOTE
 
 if TYPE_CHECKING:
     from fittrackee.workouts.models import Workout
@@ -21,8 +22,7 @@ class WorkoutObject(ActivityObject):
         self.type = ActivityType.CREATE
         self.actor = self.workout.user.actor
         self.activity_id = (
-            f'https://{self.actor.activitypub_id}/'
-            f'workouts/{self.workout.short_id}'
+            f'{self.actor.activitypub_id}/workouts/{self.workout.short_id}'
         )
         self.published = self.workout.creation_date.strftime(DATE_FORMAT)
         self.workout_url = (
@@ -46,17 +46,15 @@ class WorkoutObject(ActivityObject):
         }
 
     def _get_note_content(self) -> str:
-        # TODO: handle translation and imperial units depending on user
-        # preferences
-        return f"""New workout "{self.workout.title}"'
-
-Distance: {self.workout.distance}km
-Duration: {self.workout.duration}
-
-#fittrackee
-
-link: {self.workout_url}
-"""
+        # TODO:
+        # handle translation and imperial units depending on user preferences
+        return WORKOUT_NOTE.format(
+            sport_label=self.workout.sport.label,
+            workout_title=self.workout.title,
+            workout_distance=self.workout.distance,
+            workout_duration=self.workout.duration,
+            workout_url=self.workout_url,
+        )
 
     def _update_activity_recipients(self, activity: Dict) -> Dict:
         if self.workout.workout_visibility == PrivacyLevel.PUBLIC:
@@ -73,10 +71,12 @@ link: {self.workout_url}
 
     def serialize(self, is_note: bool = False) -> Dict:
         activity = self.activity_dict.copy()
+        # for non-FitTrackee instances (like Mastodon)
         if is_note:
             activity['id'] = f'{self.activity_id}/note/activity'
             activity['object']['type'] = 'Note'
             activity['object']['content'] = self._get_note_content()
+        # for FitTrackee instances
         else:
             activity['id'] = f'{self.activity_id}/activity'
             activity['object'] = {

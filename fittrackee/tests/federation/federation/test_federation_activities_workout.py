@@ -4,12 +4,21 @@ from flask import Flask
 from fittrackee.federation.activities.workout import WorkoutObject
 from fittrackee.federation.constants import AP_CTX, DATE_FORMAT
 from fittrackee.privacy_levels import PrivacyLevel
+from fittrackee.tests.mixins import RandomMixin
 from fittrackee.users.models import User
 from fittrackee.workouts.exceptions import PrivateWorkoutException
 from fittrackee.workouts.models import Sport, Workout
 
 
-class TestWorkoutObject:
+class WorkoutObjectTestCase(RandomMixin):
+    @staticmethod
+    def expected_url(user: User, workout: Workout) -> str:
+        return (
+            f'https://{user.actor.domain.name}/workouts/' f'{workout.short_id}'
+        )
+
+
+class TestWorkoutObject(WorkoutObjectTestCase):
     def test_it_raises_error_when_visibility_is_private(
         self,
         app_with_federation: Flask,
@@ -27,6 +36,7 @@ class TestWorkoutObject:
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
+        workout_cycling_user_1.title = self.random_string()
         workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
         workout = WorkoutObject(workout_cycling_user_1)
@@ -36,7 +46,7 @@ class TestWorkoutObject:
         assert serialized_workout == {
             '@context': AP_CTX,
             'id': (
-                f'https://{user_1.actor.activitypub_id}/workouts/'
+                f'{user_1.actor.activitypub_id}/workouts/'
                 f'{workout_cycling_user_1.short_id}/activity'
             ),
             'type': 'Create',
@@ -46,15 +56,12 @@ class TestWorkoutObject:
             'cc': [],
             'object': {
                 'id': (
-                    f'https://{user_1.actor.activitypub_id}/workouts/'
+                    f'{user_1.actor.activitypub_id}/workouts/'
                     f'{workout_cycling_user_1.short_id}'
                 ),
                 'type': 'Workout',
                 'published': published,
-                'url': (
-                    f'https://{user_1.actor.domain.name}/workouts/'
-                    f'{workout_cycling_user_1.short_id}'
-                ),
+                'url': self.expected_url(user_1, workout_cycling_user_1),
                 'attributedTo': user_1.actor.activitypub_id,
                 'to': [user_1.actor.followers_url],
                 'cc': [],
@@ -80,6 +87,7 @@ class TestWorkoutObject:
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
+        workout_cycling_user_1.title = self.random_string()
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
         workout = WorkoutObject(workout_cycling_user_1)
@@ -89,7 +97,7 @@ class TestWorkoutObject:
         assert serialized_workout == {
             '@context': AP_CTX,
             'id': (
-                f'https://{user_1.actor.activitypub_id}/workouts/'
+                f'{user_1.actor.activitypub_id}/workouts/'
                 f'{workout_cycling_user_1.short_id}/activity'
             ),
             'type': 'Create',
@@ -99,15 +107,12 @@ class TestWorkoutObject:
             'cc': [user_1.actor.followers_url],
             'object': {
                 'id': (
-                    f'https://{user_1.actor.activitypub_id}/workouts/'
+                    f'{user_1.actor.activitypub_id}/workouts/'
                     f'{workout_cycling_user_1.short_id}'
                 ),
                 'type': 'Workout',
                 'published': published,
-                'url': (
-                    f'https://{user_1.actor.domain.name}/workouts/'
-                    f'{workout_cycling_user_1.short_id}'
-                ),
+                'url': self.expected_url(user_1, workout_cycling_user_1),
                 'attributedTo': user_1.actor.activitypub_id,
                 'to': ['https://www.w3.org/ns/activitystreams#Public'],
                 'cc': [user_1.actor.followers_url],
@@ -127,7 +132,15 @@ class TestWorkoutObject:
         }
 
 
-class TestWorkoutNoteObject:
+class TestWorkoutNoteObject(WorkoutObjectTestCase):
+    @staticmethod
+    def expected_workout_note(workout: Workout, expected_url: str) -> str:
+        return f"""<p>New workout: <a href="{expected_url}" target="_blank" rel="noopener noreferrer">{workout.title}</a> ({workout.sport.label})
+
+Distance: {workout.distance:.2f}km
+Duration: {workout.duration}</p>
+"""
+
     def test_it_raises_error_if_visibility_is_private(
         self,
         app_with_federation: Flask,
@@ -145,29 +158,18 @@ class TestWorkoutNoteObject:
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
+        workout_cycling_user_1.title = self.random_string()
         workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
         workout = WorkoutObject(workout_cycling_user_1)
-        expected_url = (
-            f'https://{user_1.actor.domain.name}/workouts/'
-            f'{workout_cycling_user_1.short_id}'
-        )
-        expected_content = f"""New workout "{workout_cycling_user_1.title}"'
-
-Distance: {workout_cycling_user_1.distance}km
-Duration: {workout_cycling_user_1.duration}
-
-#fittrackee
-
-link: {expected_url}
-"""
+        expected_url = self.expected_url(user_1, workout_cycling_user_1)
 
         serialized_workout_note = workout.serialize(is_note=True)
 
         assert serialized_workout_note == {
             '@context': AP_CTX,
             'id': (
-                f'https://{user_1.actor.activitypub_id}/workouts/'
+                f'{user_1.actor.activitypub_id}/workouts/'
                 f'{workout_cycling_user_1.short_id}/note/activity'
             ),
             'type': 'Create',
@@ -177,14 +179,16 @@ link: {expected_url}
             'cc': [],
             'object': {
                 'id': (
-                    f'https://{user_1.actor.activitypub_id}/workouts/'
+                    f'{user_1.actor.activitypub_id}/workouts/'
                     f'{workout_cycling_user_1.short_id}'
                 ),
                 'type': 'Note',
                 'published': published,
                 'url': expected_url,
                 'attributedTo': user_1.actor.activitypub_id,
-                'content': expected_content,
+                'content': self.expected_workout_note(
+                    workout_cycling_user_1, expected_url
+                ),
                 'to': [user_1.actor.followers_url],
                 'cc': [],
             },
@@ -197,29 +201,18 @@ link: {expected_url}
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
+        workout_cycling_user_1.title = self.random_string()
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
         workout = WorkoutObject(workout_cycling_user_1)
-        expected_url = (
-            f'https://{user_1.actor.domain.name}/workouts/'
-            f'{workout_cycling_user_1.short_id}'
-        )
-        expected_content = f"""New workout "{workout_cycling_user_1.title}"'
-
-Distance: {workout_cycling_user_1.distance}km
-Duration: {workout_cycling_user_1.duration}
-
-#fittrackee
-
-link: {expected_url}
-"""
+        expected_url = self.expected_url(user_1, workout_cycling_user_1)
 
         serialized_workout_note = workout.serialize(is_note=True)
 
         assert serialized_workout_note == {
             '@context': AP_CTX,
             'id': (
-                f'https://{user_1.actor.activitypub_id}/workouts/'
+                f'{user_1.actor.activitypub_id}/workouts/'
                 f'{workout_cycling_user_1.short_id}/note/activity'
             ),
             'type': 'Create',
@@ -229,14 +222,16 @@ link: {expected_url}
             'cc': [user_1.actor.followers_url],
             'object': {
                 'id': (
-                    f'https://{user_1.actor.activitypub_id}/workouts/'
+                    f'{user_1.actor.activitypub_id}/workouts/'
                     f'{workout_cycling_user_1.short_id}'
                 ),
                 'type': 'Note',
                 'published': published,
                 'url': expected_url,
                 'attributedTo': user_1.actor.activitypub_id,
-                'content': expected_content,
+                'content': self.expected_workout_note(
+                    workout_cycling_user_1, expected_url
+                ),
                 'to': ['https://www.w3.org/ns/activitystreams#Public'],
                 'cc': [user_1.actor.followers_url],
             },
