@@ -381,6 +381,23 @@ class User(BaseModel):
         ).first()
         return self.follow_request_status(follow_request)
 
+    @federation_required
+    def get_followers_shared_inboxes(self) -> Dict:
+        fittrackee_shared_inboxes = set()
+        other_shared_inboxes = set()
+        for follower in self.followers.all():
+            if follower.actor.is_remote:
+                if follower.actor.domain.software_name == 'fittrackee':
+                    fittrackee_shared_inboxes.add(
+                        follower.actor.shared_inbox_url
+                    )
+                else:
+                    other_shared_inboxes.add(follower.actor.shared_inbox_url)
+        return {
+            'fittrackee': fittrackee_shared_inboxes,
+            'others': other_shared_inboxes,
+        }
+
     def get_user_url(self) -> str:
         """Return user url on user interface"""
         return f"{current_app.config['UI_URL']}/users/{self.username}"

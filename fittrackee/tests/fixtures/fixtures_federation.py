@@ -18,7 +18,15 @@ def app_actor(app: Flask) -> Actor:
 
 @pytest.fixture()
 def remote_domain(app_with_federation: Flask) -> Domain:
-    remote_domain = Domain(name=random_domain())
+    remote_domain = Domain(name=random_domain(), software_name='fittrackee')
+    db.session.add(remote_domain)
+    db.session.commit()
+    return remote_domain
+
+
+@pytest.fixture()
+def another_remote_domain(app_with_federation: Flask) -> Domain:
+    remote_domain = Domain(name=random_domain(), software_name='mastodon')
     db.session.add(remote_domain)
     db.session.commit()
     return remote_domain

@@ -617,3 +617,11 @@ class TestUserFollowing:
         follow_request_from_user_1_to_user_2.updated_at = datetime.now()
 
         assert user_1.following.all() == [user_2]
+
+
+class TestUserGetRecipientsSharedInbox:
+    def test_it_raises_exception_if_federation_disabled(
+        self, app: Flask, user_1: User
+    ) -> None:
+        with pytest.raises(FederationDisabledException):
+            user_1.get_followers_shared_inboxes()

@@ -49,6 +49,11 @@ def remote_user(remote_domain: Domain) -> User:
 
 
 @pytest.fixture()
+def remote_user_2(another_remote_domain: Domain) -> User:
+    return generate_remote_user(another_remote_domain)
+
+
+@pytest.fixture()
 def remote_user_without_profile_page(remote_domain: Domain) -> User:
     return generate_remote_user(remote_domain, without_profile_page=True)
 
