@@ -403,17 +403,17 @@ class TestUserFollowingModel:
 
         assert follow_request in user_2.sent_follow_requests.all()
 
-    @patch('fittrackee.users.models.send_to_users_inbox')
+    @patch('fittrackee.users.models.send_to_remote_inbox')
     def test_it_does_not_call_send_to_user_inbox_when_federation_is_disabled(
         self,
-        send_to_users_inbox_mock: Mock,
+        send_to_remote_inbox_mock: Mock,
         app: Flask,
         user_1: User,
         user_2: User,
     ) -> None:
         user_2.send_follow_request_to(user_1)
 
-        send_to_users_inbox_mock.send.assert_not_called()
+        send_to_remote_inbox_mock.send.assert_not_called()
 
     def test_user_1_receives_follow_requests_from_user_2(
         self,
@@ -544,10 +544,10 @@ class TestUserUnfollowModel:
 
         assert user_1.sent_follow_requests.all() == []
 
-    @patch('fittrackee.users.models.send_to_users_inbox')
+    @patch('fittrackee.users.models.send_to_remote_inbox')
     def test_it_does_not_call_send_to_user_inbox_when_federation_is_disabled(
         self,
-        send_to_users_inbox_mock: Mock,
+        send_to_remote_inbox_mock: Mock,
         app: Flask,
         user_1: User,
         user_2: User,
@@ -558,7 +558,7 @@ class TestUserUnfollowModel:
 
         user_1.unfollows(user_2)
 
-        send_to_users_inbox_mock.send.assert_not_called()
+        send_to_remote_inbox_mock.send.assert_not_called()
 
 
 class TestUserFollowers:

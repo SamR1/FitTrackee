@@ -99,10 +99,10 @@ class TestFollowWithoutFederation(ApiTestCaseMixin):
             == f"Follow request to user '{user_2.username}' is sent."
         )
 
-    @patch('fittrackee.users.models.send_to_users_inbox')
+    @patch('fittrackee.users.models.send_to_remote_inbox')
     def test_it_does_not_call_send_to_user_inbox(
         self,
-        send_to_users_inbox_mock: Mock,
+        send_to_remote_inbox_mock: Mock,
         app: Flask,
         user_1: User,
         user_2: User,
@@ -117,7 +117,7 @@ class TestFollowWithoutFederation(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        send_to_users_inbox_mock.send.assert_not_called()
+        send_to_remote_inbox_mock.send.assert_not_called()
 
 
 class TestUnfollowWithoutFederation(ApiTestCaseMixin):
@@ -183,10 +183,10 @@ class TestUnfollowWithoutFederation(ApiTestCaseMixin):
         )
         assert user_1.following.count() == 0
 
-    @patch('fittrackee.users.models.send_to_users_inbox')
+    @patch('fittrackee.users.models.send_to_remote_inbox')
     def test_it_does_not_call_send_to_user_inbox(
         self,
-        send_to_users_inbox_mock: Mock,
+        send_to_remote_inbox_mock: Mock,
         app: Flask,
         user_1: User,
         user_2: User,
@@ -202,4 +202,4 @@ class TestUnfollowWithoutFederation(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        send_to_users_inbox_mock.send.assert_not_called()
+        send_to_remote_inbox_mock.send.assert_not_called()

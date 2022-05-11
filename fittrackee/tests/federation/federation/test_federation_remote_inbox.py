@@ -7,7 +7,7 @@ from _pytest.logging import LogCaptureFixture
 from flask import Flask
 from freezegun import freeze_time
 
-from fittrackee.federation.inbox import send_to_remote_user_inbox
+from fittrackee.federation.inbox import send_to_inbox
 from fittrackee.users.models import User
 
 from ...mixins import BaseTestMixin
@@ -36,10 +36,10 @@ class TestSendToRemoteInbox(BaseTestMixin):
         generate_digest_mock.return_value = digest
 
         with freeze_time(now):
-            send_to_remote_user_inbox(
+            send_to_inbox(
                 sender=actor_1,
                 activity={'foo': 'bar'},
-                recipient_inbox_url=remote_actor.inbox_url,
+                inbox_url=remote_actor.inbox_url,
             )
 
         generate_signature_header_mock.assert_called_with(
@@ -74,10 +74,10 @@ class TestSendToRemoteInbox(BaseTestMixin):
         generate_digest_mock.return_value = digest
 
         with freeze_time(now):
-            send_to_remote_user_inbox(
+            send_to_inbox(
                 sender=actor_1,
                 activity=activity,
-                recipient_inbox_url=remote_actor.inbox_url,
+                inbox_url=remote_actor.inbox_url,
             )
 
         requests_mock.post.assert_called_with(
@@ -111,16 +111,16 @@ class TestSendToRemoteInbox(BaseTestMixin):
             status_code=status_code, content=content
         )
 
-        send_to_remote_user_inbox(
+        send_to_inbox(
             sender=actor_1,
             activity={'foo': 'bar'},
-            recipient_inbox_url=remote_actor.inbox_url,
+            inbox_url=remote_actor.inbox_url,
         )
 
         assert len(caplog.records) == 1
         assert caplog.records[0].levelname == 'ERROR'
         assert caplog.records[0].message == (
-            f"Error when send to user inbox '{remote_actor.inbox_url}', "
+            f"Error when send to inbox '{remote_actor.inbox_url}', "
             f"status code: {status_code}, "
             f"content: {content}"
         )

@@ -138,10 +138,10 @@ class TestFollowRequestModelWithFederation:
 
 
 class TestUserFollowingModelWithFederation:
-    @patch('fittrackee.users.models.send_to_users_inbox')
+    @patch('fittrackee.users.models.send_to_remote_inbox')
     def test_local_actor_sends_follow_requests_to_remote_actor(
         self,
-        send_to_users_inbox_mock: Mock,
+        send_to_remote_inbox_mock: Mock,
         app_with_federation: Flask,
         user_1: User,
         remote_user: User,
@@ -153,16 +153,16 @@ class TestUserFollowingModelWithFederation:
         assert follow_request in actor_1.user.sent_follow_requests.all()
         assert follow_request.is_approved is False
         assert follow_request.updated_at is None
-        send_to_users_inbox_mock.send.assert_called_with(
+        send_to_remote_inbox_mock.send.assert_called_with(
             sender_id=actor_1.id,
             activity=follow_request.get_activity(),
             recipients=[remote_actor.inbox_url],
         )
 
-    @patch('fittrackee.users.models.send_to_users_inbox')
+    @patch('fittrackee.users.models.send_to_remote_inbox')
     def test_follow_request_is_automatically_accepted_if_manually_approved_if_false(  # noqa
         self,
-        send_to_users_inbox_mock: Mock,
+        send_to_remote_inbox_mock: Mock,
         app_with_federation: Flask,
         user_1: User,
         remote_user: User,
@@ -175,7 +175,7 @@ class TestUserFollowingModelWithFederation:
         assert follow_request in remote_actor.user.sent_follow_requests.all()
         assert follow_request.is_approved is True
         assert follow_request.updated_at is not None
-        send_to_users_inbox_mock.send.assert_called_with(
+        send_to_remote_inbox_mock.send.assert_called_with(
             sender_id=actor_1.id,
             activity=follow_request.get_activity(),
             recipients=[remote_actor.inbox_url],
@@ -183,10 +183,10 @@ class TestUserFollowingModelWithFederation:
 
 
 class TestUserUnfollowModelWithFederation:
-    @patch('fittrackee.users.models.send_to_users_inbox')
+    @patch('fittrackee.users.models.send_to_remote_inbox')
     def test_local_actor_sends_undo_activity_to_remote_actor(
         self,
-        send_to_users_inbox_mock: Mock,
+        send_to_remote_inbox_mock: Mock,
         app_with_federation: Flask,
         user_1: User,
         remote_user: User,
@@ -202,7 +202,7 @@ class TestUserUnfollowModelWithFederation:
 
         user_1.unfollows(remote_user)
 
-        send_to_users_inbox_mock.send.assert_called_with(
+        send_to_remote_inbox_mock.send.assert_called_with(
             sender_id=user_1.actor.id,
             activity=expected_activity,
             recipients=[remote_user.actor.inbox_url],

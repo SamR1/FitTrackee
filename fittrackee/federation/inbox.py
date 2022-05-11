@@ -41,11 +41,9 @@ def inbox(request: Request) -> Union[Dict, HttpResponse]:
     return {'status': 'success'}
 
 
-def send_to_remote_user_inbox(
-    sender: Actor, activity: Dict, recipient_inbox_url: str
-) -> None:
+def send_to_inbox(sender: Actor, activity: Dict, inbox_url: str) -> None:
     now_str = datetime.utcnow().strftime(VALID_DATE_FORMAT)
-    parsed_inbox_url = urlparse(recipient_inbox_url)
+    parsed_inbox_url = urlparse(inbox_url)
     digest = generate_digest(activity)
     signed_header = generate_signature_header(
         host=parsed_inbox_url.netloc,
@@ -55,7 +53,7 @@ def send_to_remote_user_inbox(
         digest=digest,
     )
     response = requests.post(
-        recipient_inbox_url,
+        inbox_url,
         data=dumps(activity),
         headers={
             'Host': parsed_inbox_url.netloc,
@@ -67,7 +65,7 @@ def send_to_remote_user_inbox(
     )
     if response.status_code >= 400:
         appLog.error(
-            f"Error when send to user inbox '{recipient_inbox_url}', "
+            f"Error when send to inbox '{inbox_url}', "
             f"status code: {response.status_code}, "
             f"content: {response.content.decode()}"
         )

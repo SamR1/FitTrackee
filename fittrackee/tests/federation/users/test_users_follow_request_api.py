@@ -118,10 +118,10 @@ class TestAcceptLocalFollowRequestWithFederation(FollowRequestTestCase):
             client, auth_token, user_2.username, 'accept'
         )
 
-    @patch('fittrackee.users.models.send_to_users_inbox')
+    @patch('fittrackee.users.models.send_to_remote_inbox')
     def test_it_does_not_call_send_to_user_inbox(
         self,
-        send_to_users_inbox_mock: Mock,
+        send_to_remote_inbox_mock: Mock,
         app_with_federation: Flask,
         user_1: User,
         user_2: User,
@@ -137,16 +137,16 @@ class TestAcceptLocalFollowRequestWithFederation(FollowRequestTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        send_to_users_inbox_mock.send.assert_not_called()
+        send_to_remote_inbox_mock.send.assert_not_called()
 
 
 class TestAcceptRemoteFollowRequestWithFederation(
     FollowRequestTestCase, UserInboxTestMixin
 ):
-    @patch('fittrackee.users.models.send_to_users_inbox')
+    @patch('fittrackee.users.models.send_to_remote_inbox')
     def test_it_accepts_follow_request(
         self,
-        send_to_users_inbox_mock: Mock,
+        send_to_remote_inbox_mock: Mock,
         app_with_federation: Flask,
         user_1: User,
         remote_user: User,
@@ -163,10 +163,10 @@ class TestAcceptRemoteFollowRequestWithFederation(
             'accept',
         )
 
-    @patch('fittrackee.users.models.send_to_users_inbox')
+    @patch('fittrackee.users.models.send_to_remote_inbox')
     def test_it_calls_send_to_user_inbox(
         self,
-        send_to_users_inbox_mock: Mock,
+        send_to_remote_inbox_mock: Mock,
         app_with_federation: Flask,
         user_1: User,
         remote_user: User,
@@ -187,8 +187,8 @@ class TestAcceptRemoteFollowRequestWithFederation(
             follower_user_id=remote_actor.user.id,
             followed_user_id=user_1.id,
         ).first()
-        self.assert_send_to_users_inbox_called_once(
-            send_to_users_inbox_mock,
+        self.assert_send_to_remote_inbox_called_once(
+            send_to_remote_inbox_mock,
             local_actor=user_1.actor,
             remote_actor=remote_actor,
             base_object=follow_request,
@@ -253,10 +253,10 @@ class TestRejectLocalFollowRequestWithFederation(FollowRequestTestCase):
             client, auth_token, user_2.username, 'reject'
         )
 
-    @patch('fittrackee.users.models.send_to_users_inbox')
+    @patch('fittrackee.users.models.send_to_remote_inbox')
     def test_it_does_not_call_send_to_user_inbox(
         self,
-        send_to_users_inbox_mock: Mock,
+        send_to_remote_inbox_mock: Mock,
         app_with_federation: Flask,
         user_1: User,
         user_2: User,
@@ -272,16 +272,16 @@ class TestRejectLocalFollowRequestWithFederation(FollowRequestTestCase):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        send_to_users_inbox_mock.send.assert_not_called()
+        send_to_remote_inbox_mock.send.assert_not_called()
 
 
 class TestRejectRemoteFollowRequestWithFederation(
     FollowRequestTestCase, UserInboxTestMixin
 ):
-    @patch('fittrackee.users.models.send_to_users_inbox')
+    @patch('fittrackee.users.models.send_to_remote_inbox')
     def test_it_accepts_follow_request(
         self,
-        send_to_users_inbox_mock: Mock,
+        send_to_remote_inbox_mock: Mock,
         app_with_federation: Flask,
         user_1: User,
         remote_user: User,
@@ -298,10 +298,10 @@ class TestRejectRemoteFollowRequestWithFederation(
             'reject',
         )
 
-    @patch('fittrackee.users.models.send_to_users_inbox')
+    @patch('fittrackee.users.models.send_to_remote_inbox')
     def test_it_calls_send_to_user_inbox(
         self,
-        send_to_users_inbox_mock: Mock,
+        send_to_remote_inbox_mock: Mock,
         app_with_federation: Flask,
         user_1: User,
         remote_user: User,
@@ -322,8 +322,8 @@ class TestRejectRemoteFollowRequestWithFederation(
             follower_user_id=remote_actor.user.id,
             followed_user_id=user_1.id,
         ).first()
-        self.assert_send_to_users_inbox_called_once(
-            send_to_users_inbox_mock,
+        self.assert_send_to_remote_inbox_called_once(
+            send_to_remote_inbox_mock,
             local_actor=user_1.actor,
             remote_actor=remote_actor,
             base_object=follow_request,

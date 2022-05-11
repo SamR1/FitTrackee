@@ -169,20 +169,20 @@ class ApiTestCaseMixin(RandomMixin):
 
 
 class UserInboxTestMixin(BaseTestMixin):
-    def assert_send_to_users_inbox_called_once(
+    def assert_send_to_remote_inbox_called_once(
         self,
-        send_to_users_inbox_mock: Mock,
+        send_to_remote_inbox_mock: Mock,
         local_actor: Actor,
         remote_actor: Actor,
         base_object: Any,
         activity_args: Optional[Dict] = None,
     ) -> None:
-        send_to_users_inbox_mock.send.assert_called_once()
+        send_to_remote_inbox_mock.send.assert_called_once()
         self.assert_call_args_keys_equal(
-            send_to_users_inbox_mock.send,
+            send_to_remote_inbox_mock.send,
             ['sender_id', 'activity', 'recipients'],
         )
-        call_args = self.get_call_kwargs(send_to_users_inbox_mock.send)
+        call_args = self.get_call_kwargs(send_to_remote_inbox_mock.send)
         assert call_args['sender_id'] == local_actor.id
         assert call_args['recipients'] == [remote_actor.inbox_url]
         activity = base_object.get_activity(

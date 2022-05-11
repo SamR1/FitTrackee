@@ -13,7 +13,7 @@ from fittrackee.federation.activities.follow_request import FollowRequestObject
 from fittrackee.federation.decorators import federation_required
 from fittrackee.federation.enums import ActivityType
 from fittrackee.federation.models import Actor, Domain
-from fittrackee.federation.tasks.user_inbox import send_to_users_inbox
+from fittrackee.federation.tasks.inbox import send_to_remote_inbox
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.workouts.models import Workout
 
@@ -275,7 +275,7 @@ class User(BaseModel):
         if current_app.config['federation_enabled']:
             # send Follow activity to remote followed user
             if target.actor.is_remote:
-                send_to_users_inbox.send(
+                send_to_remote_inbox.send(
                     sender_id=self.actor.id,
                     activity=follow_request.get_activity(),
                     recipients=[target.actor.inbox_url],
@@ -284,7 +284,7 @@ class User(BaseModel):
             # send Accept activity to remote follower user if local followed
             # user accepts follow requests automatically
             if self.actor.is_remote and not target.manually_approves_followers:
-                send_to_users_inbox.send(
+                send_to_remote_inbox.send(
                     sender_id=target.actor.id,
                     activity=follow_request.get_activity(),
                     recipients=[self.actor.inbox_url],
@@ -304,7 +304,7 @@ class User(BaseModel):
 
             # send Undo activity to remote followed user
             if target.actor.is_remote:
-                send_to_users_inbox.send(
+                send_to_remote_inbox.send(
                     sender_id=self.actor.id,
                     activity=undo_activity,
                     recipients=[target.actor.inbox_url],
@@ -339,7 +339,7 @@ class User(BaseModel):
         db.session.commit()
 
         if current_app.config['federation_enabled'] and user.actor.is_remote:
-            send_to_users_inbox.send(
+            send_to_remote_inbox.send(
                 sender_id=self.actor.id,
                 activity=follow_request.get_activity(),
                 recipients=[user.actor.inbox_url],
