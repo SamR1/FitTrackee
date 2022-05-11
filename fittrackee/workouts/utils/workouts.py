@@ -17,6 +17,7 @@ from fittrackee.files import get_absolute_file_path
 from fittrackee.privacy_levels import PrivacyLevel, get_map_visibility
 from fittrackee.users.models import User, UserSportPreference
 
+from ..constants import WORKOUT_DATE_FORMAT
 from ..exceptions import WorkoutException
 from ..models import Sport, Workout, WorkoutSegment
 from .gpx import get_gpx_info
@@ -96,7 +97,9 @@ def create_workout(
     workout_date = (
         gpx_data['start']
         if gpx_data
-        else datetime.strptime(workout_data['workout_date'], '%Y-%m-%d %H:%M')
+        else datetime.strptime(
+            workout_data['workout_date'], WORKOUT_DATE_FORMAT
+        )
     )
     workout_date_tz, workout_date = get_datetime_with_tz(
         user.timezone, workout_date, gpx_data
@@ -217,7 +220,7 @@ def edit_workout(
     if not workout.gpx:
         if workout_data.get('workout_date'):
             workout_date = datetime.strptime(
-                workout_data['workout_date'], '%Y-%m-%d %H:%M'
+                workout_data['workout_date'], WORKOUT_DATE_FORMAT
             )
             _, workout.workout_date = get_datetime_with_tz(
                 auth_user.timezone, workout_date

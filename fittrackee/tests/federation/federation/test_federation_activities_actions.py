@@ -1,10 +1,11 @@
+from datetime import datetime
 from typing import Dict, Optional, Union
 from unittest.mock import patch
 
 import pytest
 from flask import Flask
 
-from fittrackee.federation.constants import AP_CTX
+from fittrackee.federation.constants import AP_CTX, DATE_FORMAT
 from fittrackee.federation.enums import ActivityType
 from fittrackee.federation.exceptions import (
     ActorNotFoundException,
@@ -12,19 +13,24 @@ from fittrackee.federation.exceptions import (
 )
 from fittrackee.federation.models import Actor
 from fittrackee.federation.tasks.activity import get_activity_instance
+from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.exceptions import (
     FollowRequestAlreadyProcessedError,
     FollowRequestAlreadyRejectedError,
     NotExistingFollowRequestError,
 )
 from fittrackee.users.models import FollowRequest, User
+from fittrackee.workouts.constants import WORKOUT_DATE_FORMAT
+from fittrackee.workouts.exceptions import SportNotFoundException
+from fittrackee.workouts.models import Sport, Workout
 
-from ...utils import RandomActor, random_string
+from ...mixins import RandomMixin
+from ...utils import RandomActor
 
 SUPPORTED_ACTIVITIES = [(f'{a.value} activity', a.value) for a in ActivityType]
 
 
-class TestActivityInstantiation:
+class TestActivityInstantiation(RandomMixin):
     @pytest.mark.parametrize(
         'input_description,input_type', SUPPORTED_ACTIVITIES
     )
@@ -37,7 +43,7 @@ class TestActivityInstantiation:
 
     def test_it_raises_exception_if_activity_type_is_invalid(self) -> None:
         with pytest.raises(UnsupportedActivityException):
-            get_activity_instance({'type': random_string()})
+            get_activity_instance({'type': self.random_string()})
 
 
 class FollowRequestActivitiesTestCase:
@@ -489,3 +495,112 @@ class TestUndoActivityForFollowRequest(FollowRequestActivitiesTestCase):
         ).first()
 
         assert follow_request is None
+
+
+class WorkoutActivitiesTestCase(RandomMixin):
+    def generate_workout_create_activity(
+        self, remote_actor: RandomActor, sport_id: int
+    ) -> Dict:
+        workout_date = datetime.utcnow().strftime(WORKOUT_DATE_FORMAT)
+        workout_distance = self.random_int(max_value=999)
+        workout_short_id = self.random_short_id()
+        workout_url = (
+            f'https://{remote_actor.domain}/workouts/{workout_short_id}'
+        )
+        published = datetime.utcnow().strftime(DATE_FORMAT)
+        return {
+            '@context': AP_CTX,
+            'id': (
+                f'{remote_actor.activitypub_id}/workouts/'
+                f'{workout_short_id}/activity'
+            ),
+            'type': 'Create',
+            'actor': remote_actor.activitypub_id,
+            'published': published,
+            'to': [remote_actor.followers_url],
+            'cc': [],
+            'object': {
+                'id': (
+                    f'{remote_actor.activitypub_id}/workouts/'
+                    f'{workout_short_id}'
+                ),
+                'type': 'Workout',
+                'published': published,
+                'url': workout_url,
+                'attributedTo': remote_actor.activitypub_id,
+                'to': [remote_actor.followers_url],
+                'cc': [],
+                'ave_speed': workout_distance,
+                'distance': workout_distance,
+                'duration': 3600,
+                'max_speed': workout_distance,
+                'moving': workout_distance,
+                'sport_id': sport_id,
+                'title': self.random_string(),
+                'workout_date': workout_date,
+                'workout_visibility': PrivacyLevel.FOLLOWERS.value,
+            },
+        }
+
+
+class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
+    def test_it_raises_error_if_workout_actor_does_not_exist(
+        self,
+        app_with_federation: Flask,
+        random_actor: RandomActor,
+        sport_1_cycling: Sport,
+    ) -> None:
+
+        workout_activity = self.generate_workout_create_activity(
+            remote_actor=random_actor, sport_id=sport_1_cycling.id
+        )
+        activity = get_activity_instance({'type': workout_activity['type']})(
+            activity_dict=workout_activity
+        )
+
+        with pytest.raises(
+            ActorNotFoundException,
+            match='actor not found for CreateActivity',
+        ):
+            activity.process_activity()
+
+    def test_it_raises_error_if_sport_does_not_exist(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+    ) -> None:
+        workout_activity = self.generate_workout_create_activity(
+            remote_actor=remote_user.actor, sport_id=self.random_int()
+        )
+        activity = get_activity_instance({'type': workout_activity['type']})(
+            activity_dict=workout_activity
+        )
+
+        with pytest.raises(SportNotFoundException):
+            activity.process_activity()
+
+    def test_it_creates_remote_workout_without_gpx(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+        sport_1_cycling: Sport,
+    ) -> None:
+        workout_activity = self.generate_workout_create_activity(
+            remote_actor=remote_user.actor, sport_id=sport_1_cycling.id
+        )
+        activity = get_activity_instance({'type': workout_activity['type']})(
+            activity_dict=workout_activity
+        )
+
+        activity.process_activity()
+
+        remote_workout = Workout.query.filter_by(
+            user_id=remote_user.id, sport_id=sport_1_cycling.id
+        ).first()
+        assert (
+            remote_workout.distance == workout_activity['object']['distance']
+        )
+        assert (
+            remote_workout.workout_visibility
+            == workout_activity['object']['workout_visibility']
+        )

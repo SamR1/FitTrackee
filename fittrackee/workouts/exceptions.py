@@ -5,6 +5,10 @@ class PrivateWorkoutException(Exception):
     ...
 
 
+class SportNotFoundException(Exception):
+    ...
+
+
 class WorkoutException(GenericException):
     ...
 

@@ -6,6 +6,7 @@ from fittrackee.federation.constants import AP_CTX, DATE_FORMAT
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.tests.mixins import RandomMixin
 from fittrackee.users.models import User
+from fittrackee.workouts.constants import WORKOUT_DATE_FORMAT
 from fittrackee.workouts.exceptions import PrivateWorkoutException
 from fittrackee.workouts.models import Sport, Workout
 
@@ -63,17 +64,18 @@ class TestWorkoutObject(WorkoutObjectTestCase):
                 'attributedTo': user_1.actor.activitypub_id,
                 'to': [user_1.actor.followers_url],
                 'cc': [],
-                'ascent': workout_cycling_user_1.ascent,
-                'descent': workout_cycling_user_1.descent,
+                'ave_speed': workout_cycling_user_1.ave_speed,
                 'distance': workout_cycling_user_1.distance,
                 'duration': workout_cycling_user_1.duration,
-                'max_alt': workout_cycling_user_1.max_alt,
-                'min_alt': workout_cycling_user_1.min_alt,
+                'max_speed': workout_cycling_user_1.max_speed,
                 'moving': workout_cycling_user_1.moving,
                 'sport_id': workout_cycling_user_1.sport_id,
                 'title': workout_cycling_user_1.title,
                 'workout_date': workout_cycling_user_1.workout_date.strftime(
-                    DATE_FORMAT
+                    WORKOUT_DATE_FORMAT
+                ),
+                'workout_visibility': (
+                    workout_cycling_user_1.workout_visibility
                 ),
             },
         }
@@ -114,17 +116,18 @@ class TestWorkoutObject(WorkoutObjectTestCase):
                 'attributedTo': user_1.actor.activitypub_id,
                 'to': ['https://www.w3.org/ns/activitystreams#Public'],
                 'cc': [user_1.actor.followers_url],
-                'ascent': workout_cycling_user_1.ascent,
-                'descent': workout_cycling_user_1.descent,
+                'ave_speed': float(workout_cycling_user_1.ave_speed),
                 'distance': workout_cycling_user_1.distance,
                 'duration': workout_cycling_user_1.duration,
-                'max_alt': workout_cycling_user_1.max_alt,
-                'min_alt': workout_cycling_user_1.min_alt,
+                'max_speed': float(workout_cycling_user_1.max_speed),
                 'moving': workout_cycling_user_1.moving,
                 'sport_id': workout_cycling_user_1.sport_id,
                 'title': workout_cycling_user_1.title,
                 'workout_date': workout_cycling_user_1.workout_date.strftime(
-                    DATE_FORMAT
+                    WORKOUT_DATE_FORMAT
+                ),
+                'workout_visibility': (
+                    workout_cycling_user_1.workout_visibility
                 ),
             },
         }

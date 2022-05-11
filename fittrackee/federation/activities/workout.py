@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Dict
 
 from fittrackee.privacy_levels import PrivacyLevel
+from fittrackee.workouts.constants import WORKOUT_DATE_FORMAT
 from fittrackee.workouts.exceptions import PrivateWorkoutException
 
 from ..constants import AP_CTX, DATE_FORMAT, PUBLIC_STREAM
@@ -83,18 +84,17 @@ class WorkoutObject(ActivityObject):
                 **activity['object'],
                 **{
                     'type': 'Workout',
-                    'ascent': self.workout.ascent,
-                    'descent': self.workout.descent,
+                    'ave_speed': self.workout.ave_speed,
                     'distance': self.workout.distance,
                     'duration': self.workout.duration,
-                    'max_alt': self.workout.max_alt,
-                    'min_alt': self.workout.min_alt,
+                    'max_speed': self.workout.max_speed,
                     'moving': self.workout.moving,
                     'sport_id': self.workout.sport_id,
                     'title': self.workout.title,
                     'workout_date': self.workout.workout_date.strftime(
-                        DATE_FORMAT
+                        WORKOUT_DATE_FORMAT
                     ),
+                    'workout_visibility': self.workout.workout_visibility,
                 },
             }
         return self._update_activity_recipients(activity)

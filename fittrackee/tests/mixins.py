@@ -14,6 +14,7 @@ from .custom_asserts import assert_errored_response
 from .utils import (
     get_date_string,
     random_email,
+    random_int,
     random_short_id,
     random_string,
 )
@@ -59,6 +60,10 @@ class RandomMixin:
     @staticmethod
     def random_email() -> str:
         return random_email()
+
+    @staticmethod
+    def random_int(min_value: int = 0, max_value: int = 999999) -> int:
+        return random_int(min_value, max_value)
 
     @staticmethod
     def random_short_id() -> str:

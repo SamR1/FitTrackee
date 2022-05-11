@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Tuple
 
-from fittrackee import appLog
+from fittrackee import appLog, db
 from fittrackee.federation.exceptions import ActorNotFoundException
 from fittrackee.federation.models import Actor
 from fittrackee.federation.utils.user import (
@@ -13,6 +13,9 @@ from fittrackee.users.exceptions import (
     FollowRequestAlreadyRejectedError,
     NotExistingFollowRequestError,
 )
+from fittrackee.workouts.exceptions import SportNotFoundException
+from fittrackee.workouts.models import Sport
+from fittrackee.workouts.utils.workouts import create_workout
 
 
 class AbstractActivity(ABC):
@@ -26,11 +29,9 @@ class AbstractActivity(ABC):
     def process_activity(self) -> None:
         pass
 
-    def get_actors(
-        self, create_remote_actor: bool = False
-    ) -> Tuple[Actor, Actor]:
+    def get_actor(self, create_remote_actor: bool = False) -> Actor:
         """
-        return actors from activity 'actor' and 'object'
+        return actor from activity
         """
         actor = Actor.query.filter_by(
             activitypub_id=self.activity['actor']
@@ -48,6 +49,15 @@ class AbstractActivity(ABC):
                 raise ActorNotFoundException(
                     f'actor not found for {self.activity_name()}'
                 )
+        return actor
+
+    def get_actors(
+        self, create_remote_actor: bool = False
+    ) -> Tuple[Actor, Actor]:
+        """
+        return actors from activity 'actor' and 'object'
+        """
+        actor = self.get_actor(create_remote_actor)
 
         if isinstance(self.activity['object'], str):
             object_actor_activitypub_id = self.activity['object']
@@ -140,5 +150,19 @@ class UndoActivity(AbstractActivity):
 
 
 class CreateActivity(AbstractActivity):
+    def create_remote_workout(self, actor: Actor) -> None:
+        workout_data = self.activity['object']
+        sport_id = workout_data['sport_id']
+        if not sport_id:
+            raise SportNotFoundException()
+        sport = Sport.query.filter_by(id=sport_id).first()
+        if not sport:
+            raise SportNotFoundException()
+        new_workout = create_workout(actor.user, workout_data)
+        db.session.add(new_workout)
+        db.session.commit()
+
     def process_activity(self) -> None:
-        pass
+        actor = self.get_actor()
+        if self.activity['object']['type'] == 'Workout':
+            self.create_remote_workout(actor=actor)
