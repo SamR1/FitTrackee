@@ -17,6 +17,8 @@ from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db
+from fittrackee.federation.tasks.inbox import send_to_remote_inbox
+from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.responses import (
     DataInvalidPayloadErrorResponse,
     DataNotFoundErrorResponse,
@@ -1156,6 +1158,27 @@ def post_workout_no_gpx(
         new_workout = create_workout(auth_user, workout_data)
         db.session.add(new_workout)
         db.session.commit()
+
+        if (
+            current_app.config['federation_enabled']
+            and new_workout.workout_visibility != PrivacyLevel.PRIVATE
+        ):
+            sender_id = new_workout.user.actor.id
+            workout_activity, note_activity = new_workout.get_activities()
+            recipients = new_workout.user.get_followers_shared_inboxes()
+
+            if recipients['fittrackee']:
+                send_to_remote_inbox.send(
+                    sender_id=sender_id,
+                    activity=workout_activity,
+                    recipients=list(recipients['fittrackee']),
+                )
+            if recipients['others']:
+                send_to_remote_inbox.send(
+                    sender_id=sender_id,
+                    activity=note_activity,
+                    recipients=list(recipients['others']),
+                )
 
         return (
             {
