@@ -1,5 +1,6 @@
 import json
 import sys
+from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 from unittest.mock import Mock
 
@@ -10,7 +11,12 @@ from werkzeug.test import TestResponse
 from fittrackee.federation.models import Actor
 
 from .custom_asserts import assert_errored_response
-from .utils import random_email, random_string
+from .utils import (
+    get_date_string,
+    random_email,
+    random_short_id,
+    random_string,
+)
 
 
 class BaseTestMixin:
@@ -53,6 +59,17 @@ class RandomMixin:
     @staticmethod
     def random_email() -> str:
         return random_email()
+
+    @staticmethod
+    def random_short_id() -> str:
+        return random_short_id()
+
+    @staticmethod
+    def get_date_string(
+        date_format: str,
+        date: Optional[datetime] = None,
+    ) -> str:
+        return get_date_string(date_format, date)
 
 
 class ApiTestCaseMixin(RandomMixin):

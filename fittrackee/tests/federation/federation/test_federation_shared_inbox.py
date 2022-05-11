@@ -11,27 +11,28 @@ from fittrackee.federation.constants import AP_CTX
 from fittrackee.federation.enums import ActivityType
 from fittrackee.federation.models import Actor
 from fittrackee.federation.signature import (
+    VALID_SIG_DATE_FORMAT,
     generate_digest,
     generate_signature_header,
 )
 from fittrackee.users.models import User
 
-from ...mixins import ApiTestCaseMixin
-from ...utils import generate_response, get_date_string, random_string
+from ...mixins import ApiTestCaseMixin, RandomMixin
+from ...utils import generate_response
 
 
-class TestSharedInbox(ApiTestCaseMixin):
+class TestSharedInbox(ApiTestCaseMixin, RandomMixin):
     route = '/federation/inbox'
 
     def post_to_shared_inbox(
         self, app_with_federation: Flask, actor: Actor
     ) -> Tuple[Dict, TestResponse]:
         actor.generate_keys()
-        date_str = get_date_string()
+        date_str = self.get_date_string(date_format=VALID_SIG_DATE_FORMAT)
         client = app_with_federation.test_client()
         note_activity: Dict = {
             '@context': AP_CTX,
-            'id': random_string(),
+            'id': self.random_string(),
             'type': ActivityType.CREATE.value,
             'actor': actor.activitypub_id,
             'object': {
@@ -89,9 +90,9 @@ class TestSharedInbox(ApiTestCaseMixin):
         client = app_with_federation.test_client()
         note_activity = {
             '@context': AP_CTX,
-            'id': random_string(),
+            'id': self.random_string(),
             'type': ActivityType.CREATE.value,
-            'actor': random_string(),
+            'actor': self.random_string(),
             'object': {
                 'type': 'Note',
                 'content': self.random_string(),
@@ -116,9 +117,9 @@ class TestSharedInbox(ApiTestCaseMixin):
         client = app_with_federation.test_client()
         note_activity = {
             '@context': AP_CTX,
-            'id': random_string(),
+            'id': self.random_string(),
             'type': ActivityType.CREATE.value,
-            'actor': random_string(),
+            'actor': self.random_string(),
             'object': {
                 'type': 'Note',
                 'content': self.random_string(),
@@ -129,9 +130,9 @@ class TestSharedInbox(ApiTestCaseMixin):
             self.route,
             content_type='application/json',
             headers={
-                'Host': random_string(),
-                'Date': random_string(),
-                'Signature': random_string(),
+                'Host': self.random_string(),
+                'Date': self.random_string(),
+                'Signature': self.random_string(),
             },
             data=json.dumps(note_activity),
         )

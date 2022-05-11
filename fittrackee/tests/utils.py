@@ -4,13 +4,14 @@ from dataclasses import dataclass
 from datetime import datetime
 from json import dumps, loads
 from typing import Dict, Optional, Union
+from uuid import uuid4
 
 from flask import json as flask_json
 from requests import Response
 
 from fittrackee import db
-from fittrackee.federation.signature import VALID_DATE_FORMAT
 from fittrackee.users.models import FollowRequest, User
+from fittrackee.workouts.utils.short_id import encode_uuid
 
 
 def random_string(
@@ -39,13 +40,20 @@ def random_domain() -> str:
     return random_string(suffix='.social')
 
 
-def get_date_string(date: Optional[datetime] = None) -> str:
+def get_date_string(
+    date_format: str,
+    date: Optional[datetime] = None,
+) -> str:
     date = date if date else datetime.utcnow()
-    return date.strftime(VALID_DATE_FORMAT)
+    return date.strftime(date_format)
 
 
 def random_email() -> str:
     return random_string(suffix='@example.com')
+
+
+def random_short_id() -> str:
+    return encode_uuid(uuid4())
 
 
 def get_remote_user_object(

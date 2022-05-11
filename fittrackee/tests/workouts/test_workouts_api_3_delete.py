@@ -9,7 +9,7 @@ from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin
-from .utils import get_random_short_id, post_a_workout
+from .utils import post_a_workout
 
 
 def get_gpx_filepath(workout_id: int) -> str:
@@ -146,7 +146,7 @@ class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            f'/api/workouts/{get_random_short_id()}',
+            f'/api/workouts/{self.random_short_id()}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 

@@ -16,7 +16,7 @@ from fittrackee.responses import (
 from .exceptions import InvalidSignatureException
 from .models import Actor
 from .signature import (
-    VALID_DATE_FORMAT,
+    VALID_SIG_DATE_FORMAT,
     SignatureVerification,
     generate_digest,
     generate_signature_header,
@@ -42,7 +42,7 @@ def inbox(request: Request) -> Union[Dict, HttpResponse]:
 
 
 def send_to_inbox(sender: Actor, activity: Dict, inbox_url: str) -> None:
-    now_str = datetime.utcnow().strftime(VALID_DATE_FORMAT)
+    now_str = datetime.utcnow().strftime(VALID_SIG_DATE_FORMAT)
     parsed_inbox_url = urlparse(inbox_url)
     digest = generate_digest(activity)
     signed_header = generate_signature_header(

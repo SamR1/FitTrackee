@@ -13,9 +13,7 @@ from fittrackee.workouts.models import Sport, Workout
 class WorkoutObjectTestCase(RandomMixin):
     @staticmethod
     def expected_url(user: User, workout: Workout) -> str:
-        return (
-            f'https://{user.actor.domain.name}/workouts/' f'{workout.short_id}'
-        )
+        return f'https://{user.actor.domain.name}/workouts/{workout.short_id}'
 
 
 class TestWorkoutObject(WorkoutObjectTestCase):

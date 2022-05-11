@@ -10,8 +10,7 @@ from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
 
 from ..mixins import ApiTestCaseMixin
-from ..utils import jsonify_dict, random_string
-from .utils import get_random_short_id
+from ..utils import jsonify_dict
 
 
 class GetWorkoutGpxAsFollowerMixin:
@@ -133,7 +132,7 @@ class TestGetWorkoutAsUser(GetWorkoutTestCase):
     def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
-        short_id = get_random_short_id()
+        short_id = self.random_short_id()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -209,7 +208,7 @@ class TestGetWorkoutAsUnauthenticatedUser(GetWorkoutTestCase):
     def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask
     ) -> None:
-        short_id = get_random_short_id()
+        short_id = self.random_short_id()
         client = app.test_client()
 
         response = client.get(
@@ -306,7 +305,7 @@ class TestGetWorkoutGpxAsWorkoutOwner(GetWorkoutGpxTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        gpx_content = random_string()
+        gpx_content = self.random_string()
         workout_cycling_user_1.gpx = 'file.gpx'
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -347,7 +346,9 @@ class TestGetWorkoutGpxAsFollower(
             app, user_1.email
         )
         with patch(
-            'builtins.open', new_callable=mock_open, read_data=random_string()
+            'builtins.open',
+            new_callable=mock_open,
+            read_data=self.random_string(),
         ):
 
             response = client.get(
@@ -383,7 +384,7 @@ class TestGetWorkoutGpxAsFollower(
         self.init_test_data(
             workout_cycling_user_2, input_map_visibility, user_1, user_2
         )
-        gpx_content = random_string()
+        gpx_content = self.random_string()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -409,7 +410,7 @@ class TestGetWorkoutGpxAsUser(
     def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
-        random_short_id = get_random_short_id()
+        random_short_id = self.random_short_id()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -447,7 +448,9 @@ class TestGetWorkoutGpxAsUser(
             app, user_1.email
         )
         with patch(
-            'builtins.open', new_callable=mock_open, read_data=random_string()
+            'builtins.open',
+            new_callable=mock_open,
+            read_data=self.random_string(),
         ):
 
             response = client.get(
@@ -471,7 +474,7 @@ class TestGetWorkoutGpxAsUser(
         workout_cycling_user_2: Workout,
     ) -> None:
         self.init_test_data(workout_cycling_user_2, PrivacyLevel.PUBLIC)
-        gpx_content = random_string()
+        gpx_content = self.random_string()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -497,7 +500,7 @@ class TestGetWorkoutGpxAsUnauthenticatedUser(
     def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask
     ) -> None:
-        random_short_id = get_random_short_id()
+        random_short_id = self.random_short_id()
         client = app.test_client()
 
         response = client.get(
@@ -528,7 +531,9 @@ class TestGetWorkoutGpxAsUnauthenticatedUser(
         self.init_test_data(workout_cycling_user_1, input_map_visibility)
         client = app.test_client()
         with patch(
-            'builtins.open', new_callable=mock_open, read_data=random_string()
+            'builtins.open',
+            new_callable=mock_open,
+            read_data=self.random_string(),
         ):
             response = client.get(
                 self.route.format(
@@ -548,7 +553,7 @@ class TestGetWorkoutGpxAsUnauthenticatedUser(
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        gpx_content = random_string()
+        gpx_content = self.random_string()
         self.init_test_data(workout_cycling_user_1, PrivacyLevel.PUBLIC)
         client = app.test_client()
         with patch(
@@ -722,7 +727,7 @@ class TestGetWorkoutChartDataAsUser(
     def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
-        random_short_id = get_random_short_id()
+        random_short_id = self.random_short_id()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -807,7 +812,7 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
     def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask
     ) -> None:
-        random_short_id = get_random_short_id()
+        random_short_id = self.random_short_id()
         client = app.test_client()
 
         response = client.get(
@@ -1052,7 +1057,7 @@ class TestGetWorkoutSegmentGpxAsUser(
     def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
-        random_short_id = get_random_short_id()
+        random_short_id = self.random_short_id()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1147,7 +1152,7 @@ class TestGetWorkoutSegmentGpxAsUnauthenticatedUser(
     def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask
     ) -> None:
-        random_short_id = get_random_short_id()
+        random_short_id = self.random_short_id()
         client = app.test_client()
 
         response = client.get(
@@ -1387,7 +1392,7 @@ class TestGetWorkoutSegmentChartDataAsUser(
     def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
-        random_short_id = get_random_short_id()
+        random_short_id = self.random_short_id()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1475,7 +1480,7 @@ class TestGetWorkoutSegmentChartDataAsUnauthenticatedUser(
     def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask
     ) -> None:
-        random_short_id = get_random_short_id()
+        random_short_id = self.random_short_id()
         client = app.test_client()
 
         response = client.get(
@@ -1550,7 +1555,7 @@ class TestGetWorkoutMap(ApiTestCaseMixin):
     def test_it_returns_404_if_workout_has_no_map(self, app: Flask) -> None:
         client = app.test_client()
         response = client.get(
-            f'/api/workouts/map/{random_string()}',
+            f'/api/workouts/map/{self.random_string()}',
         )
 
         self.assert_404_with_message(response, 'Map does not exist')
@@ -1562,8 +1567,8 @@ class TestGetWorkoutMap(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        map_id = random_string()
-        map_file_path = random_string()
+        map_id = self.random_string()
+        map_file_path = self.random_string()
         workout_cycling_user_1.map_id = map_id
         workout_cycling_user_1.map = map_file_path
         client = app.test_client()
@@ -1674,7 +1679,7 @@ class TestDownloadWorkoutGpxAsUser(
         app: Flask,
         user_1: User,
     ) -> None:
-        random_short_id = get_random_short_id()
+        random_short_id = self.random_short_id()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )

@@ -13,7 +13,7 @@ from fittrackee.federation.exceptions import InvalidSignatureException
 from fittrackee.federation.models import Actor
 from fittrackee.federation.signature import (
     VALID_DATE_DELTA,
-    VALID_DATE_FORMAT,
+    VALID_SIG_DATE_FORMAT,
     SignatureVerification,
     generate_digest,
     generate_signature,
@@ -73,7 +73,9 @@ class SignatureVerificationTestCase:
             f' host date digest",signature="' + signature + '"'
         )
         if date_str is None:
-            date_str = get_date_string(date)
+            date_str = get_date_string(
+                date_format=VALID_SIG_DATE_FORMAT, date=date
+            )
         headers = {
             'Host': host if host else random_string(),
             'Date': date_str,
@@ -93,7 +95,7 @@ class SignatureVerificationTestCase:
     ) -> Dict:
         if date_str is None:
             now = datetime.utcnow()
-            date_str = now.strftime(VALID_DATE_FORMAT)
+            date_str = now.strftime(VALID_SIG_DATE_FORMAT)
         digest = generate_digest(activity)
         signed_header = generate_signature_header(
             host, '/inbox', date_str, actor, digest
@@ -129,7 +131,7 @@ class SignatureVerificationTestCase:
     ) -> Dict:
         if date_str is None:
             now = datetime.utcnow()
-            date_str = now.strftime(VALID_DATE_FORMAT)
+            date_str = now.strftime(VALID_SIG_DATE_FORMAT)
         signed_header = self._generate_signature_header_without_digest(
             host, '/inbox', date_str, actor
         )
@@ -195,7 +197,7 @@ class TestSignatureVerificationInstantiation(SignatureVerificationTestCase):
         request_with_empty_headers = self.get_request_mock(
             headers={
                 'Host': random_string(),
-                'Date': get_date_string(),
+                'Date': get_date_string(date_format=VALID_SIG_DATE_FORMAT),
                 'Signature': input_signature_headers,
             }
         )
@@ -212,7 +214,7 @@ class TestSignatureVerificationInstantiation(SignatureVerificationTestCase):
             'headers="(request-target) host date digest",'
             f'signature="' + signature + '"'
         )
-        date_str = get_date_string()
+        date_str = get_date_string(date_format=VALID_SIG_DATE_FORMAT)
         activity = {'foo': 'bar'}
         digest = generate_digest(activity)
         valid_request_mock = self.get_request_mock(
@@ -366,7 +368,7 @@ class TestSignatureDigestVerification(SignatureVerificationTestCase):
             self.get_request_mock(
                 self.generate_headers(
                     host=app_with_federation.config['AP_DOMAIN'],
-                    date_str=datetime.utcnow().strftime(VALID_DATE_FORMAT),
+                    date_str=datetime.utcnow().strftime(VALID_SIG_DATE_FORMAT),
                     algorithm='rsa-sha256',
                     digest=input_digest,
                 ),
@@ -395,7 +397,7 @@ class TestSignatureDigestVerification(SignatureVerificationTestCase):
             self.get_request_mock(
                 self.generate_headers(
                     host=app_with_federation.config['AP_DOMAIN'],
-                    date_str=datetime.utcnow().strftime(VALID_DATE_FORMAT),
+                    date_str=datetime.utcnow().strftime(VALID_SIG_DATE_FORMAT),
                     algorithm=input_algorithm,
                     digest=generate_digest(activity, input_algorithm),
                 ),
@@ -416,7 +418,7 @@ class TestSignatureVerify(SignatureVerificationTestCase):
                 self.generate_valid_headers(
                     host=app_with_federation.config['AP_DOMAIN'],
                     actor=user_1.actor,
-                    date_str=datetime.utcnow().strftime(VALID_DATE_FORMAT),
+                    date_str=datetime.utcnow().strftime(VALID_SIG_DATE_FORMAT),
                     activity=self.get_activity(actor=user_2.actor),
                 )
             )
@@ -496,7 +498,7 @@ class TestSignatureVerify(SignatureVerificationTestCase):
                 self.generate_headers(
                     host=app_with_federation.config['AP_DOMAIN'],
                     key_id=actor_1.activitypub_id,
-                    date_str=datetime.utcnow().strftime(VALID_DATE_FORMAT),
+                    date_str=datetime.utcnow().strftime(VALID_SIG_DATE_FORMAT),
                     algorithm=algorithm,
                     digest=generate_digest(activity),
                 ),
@@ -524,7 +526,7 @@ class TestSignatureVerify(SignatureVerificationTestCase):
                 self.generate_headers(
                     host=app_with_federation.config['AP_DOMAIN'],
                     key_id=actor_1.activitypub_id,
-                    date_str=datetime.utcnow().strftime(VALID_DATE_FORMAT),
+                    date_str=datetime.utcnow().strftime(VALID_SIG_DATE_FORMAT),
                     algorithm='rsa-sha256',
                     digest=random_string(),
                 ),

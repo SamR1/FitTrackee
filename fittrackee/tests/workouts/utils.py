@@ -1,16 +1,10 @@
 import json
 from io import BytesIO
 from typing import Optional, Tuple
-from uuid import uuid4
 
 from flask import Flask
 
 from fittrackee.privacy_levels import PrivacyLevel
-from fittrackee.workouts.utils.short_id import encode_uuid
-
-
-def get_random_short_id() -> str:
-    return encode_uuid(uuid4())
 
 
 def post_a_workout(

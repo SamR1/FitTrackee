@@ -20,7 +20,7 @@ from .exceptions import InvalidSignatureException
 from .models import Actor
 
 VALID_DATE_DELTA = 30  # in seconds
-VALID_DATE_FORMAT = '%a, %d %b %Y %H:%M:%S GMT'
+VALID_SIG_DATE_FORMAT = '%a, %d %b %Y %H:%M:%S GMT'
 VALID_SIG_KEYS = ['keyId', 'headers', 'signature']
 SUPPORTED_ALGORITHMS = {
     'rsa-sha256': {'algorithm': 'SHA-256', 'hash_function': hashlib.sha256},
@@ -117,7 +117,7 @@ class SignatureVerification:
         if not self.date_str:
             return True
         try:
-            date = datetime.strptime(self.date_str, VALID_DATE_FORMAT)
+            date = datetime.strptime(self.date_str, VALID_SIG_DATE_FORMAT)
         except ValueError:
             return True
         delta = datetime.utcnow() - date

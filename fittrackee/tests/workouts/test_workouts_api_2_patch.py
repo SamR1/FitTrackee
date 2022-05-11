@@ -11,7 +11,7 @@ from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin
 from ..utils import jsonify_dict
-from .utils import get_random_short_id, post_a_workout
+from .utils import post_a_workout
 
 
 def assert_workout_data_with_gpx(
@@ -791,7 +791,7 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
             app, user_1.email
         )
         response = client.patch(
-            f'/api/workouts/{get_random_short_id()}',
+            f'/api/workouts/{self.random_short_id()}',
             content_type='application/json',
             data=json.dumps(
                 dict(

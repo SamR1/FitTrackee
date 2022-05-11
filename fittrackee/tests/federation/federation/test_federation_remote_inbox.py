@@ -8,13 +8,14 @@ from flask import Flask
 from freezegun import freeze_time
 
 from fittrackee.federation.inbox import send_to_inbox
+from fittrackee.federation.signature import VALID_SIG_DATE_FORMAT
 from fittrackee.users.models import User
 
-from ...mixins import BaseTestMixin
-from ...utils import generate_response, get_date_string, random_string
+from ...mixins import BaseTestMixin, RandomMixin
+from ...utils import generate_response
 
 
-class TestSendToRemoteInbox(BaseTestMixin):
+class TestSendToRemoteInbox(BaseTestMixin, RandomMixin):
     @patch('fittrackee.federation.inbox.generate_digest')
     @patch('fittrackee.federation.inbox.generate_signature_header')
     @patch('fittrackee.federation.inbox.requests')
@@ -32,7 +33,7 @@ class TestSendToRemoteInbox(BaseTestMixin):
         now = datetime.utcnow()
         parsed_inbox_url = urlparse(remote_actor.inbox_url)
         requests_mock.post.return_value = generate_response(status_code=200)
-        digest = random_string()
+        digest = self.random_string()
         generate_digest_mock.return_value = digest
 
         with freeze_time(now):
@@ -45,7 +46,9 @@ class TestSendToRemoteInbox(BaseTestMixin):
         generate_signature_header_mock.assert_called_with(
             host=parsed_inbox_url.netloc,
             path=parsed_inbox_url.path,
-            date_str=get_date_string(now),
+            date_str=self.get_date_string(
+                date_format=VALID_SIG_DATE_FORMAT, date=now
+            ),
             actor=actor_1,
             digest=digest,
         )
@@ -68,9 +71,9 @@ class TestSendToRemoteInbox(BaseTestMixin):
         now = datetime.utcnow()
         parsed_inbox_url = urlparse(remote_actor.inbox_url)
         requests_mock.post.return_value = generate_response(status_code=200)
-        signed_header = random_string()
+        signed_header = self.random_string()
         generate_signature_header_mock.return_value = signed_header
-        digest = random_string()
+        digest = self.random_string()
         generate_digest_mock.return_value = digest
 
         with freeze_time(now):
@@ -85,7 +88,9 @@ class TestSendToRemoteInbox(BaseTestMixin):
             data=dumps(activity),
             headers={
                 'Host': parsed_inbox_url.netloc,
-                'Date': get_date_string(now),
+                'Date': self.get_date_string(
+                    date_format=VALID_SIG_DATE_FORMAT, date=now
+                ),
                 'Digest': digest,
                 'Signature': signed_header,
                 'Content-Type': 'application/ld+json',

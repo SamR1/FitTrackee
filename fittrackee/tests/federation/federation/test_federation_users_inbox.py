@@ -11,6 +11,7 @@ from fittrackee.federation.constants import AP_CTX
 from fittrackee.federation.enums import ActivityType
 from fittrackee.federation.models import Actor
 from fittrackee.federation.signature import (
+    VALID_SIG_DATE_FORMAT,
     generate_digest,
     generate_signature_header,
 )
@@ -26,7 +27,7 @@ class TestUserInbox(ApiTestCaseMixin):
         app_with_federation: Flask, remote_actor: Actor, local_actor: Actor
     ) -> Tuple[Dict, TestResponse]:
         remote_actor.generate_keys()
-        date_str = get_date_string()
+        date_str = get_date_string(date_format=VALID_SIG_DATE_FORMAT)
         client = app_with_federation.test_client()
         inbox_path = f'/federation/user/{local_actor.preferred_username}/inbox'
         follow_activity: Dict = {
