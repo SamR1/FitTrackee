@@ -6,14 +6,14 @@ from fittrackee.responses import (
     UserNotFoundErrorResponse,
 )
 
-from .decorators import federation_required
+from .decorators import federation_required_for_route
 from .models import Actor, Domain
 
 ap_webfinger_blueprint = Blueprint('ap_webfinger', __name__)
 
 
 @ap_webfinger_blueprint.route('/webfinger', methods=['GET'])
-@federation_required
+@federation_required_for_route
 def webfinger(app_domain: Domain) -> HttpResponse:
     """
     Get account links

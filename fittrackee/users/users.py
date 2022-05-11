@@ -12,7 +12,7 @@ from fittrackee.emails.tasks import (
     password_change_email,
     reset_password_email,
 )
-from fittrackee.federation.decorators import federation_required
+from fittrackee.federation.decorators import federation_required_for_route
 from fittrackee.federation.models import Domain
 from fittrackee.federation.utils.user import (
     FULL_NAME_REGEX,
@@ -294,7 +294,7 @@ def get_users(auth_user: User) -> Dict:
 
 
 @users_blueprint.route('/users/remote', methods=['GET'])
-@federation_required
+@federation_required_for_route
 @authenticate
 def get_remote_users(
     auth_user: User,

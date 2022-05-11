@@ -3,7 +3,6 @@ import os
 from typing import Any, Dict, Optional, Tuple, Union
 from uuid import UUID, uuid4
 
-from flask import current_app
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
@@ -14,7 +13,7 @@ from sqlalchemy.types import JSON, Enum
 
 from fittrackee import BaseModel, db
 from fittrackee.federation.activities.workout import WorkoutObject
-from fittrackee.federation.exceptions import FederationDisabledException
+from fittrackee.federation.decorators import federation_required
 from fittrackee.files import get_absolute_file_path
 from fittrackee.privacy_levels import PrivacyLevel, get_map_visibility
 
@@ -391,9 +390,8 @@ class Workout(BaseModel):
             )
         return records
 
+    @federation_required
     def get_activities(self) -> Tuple[Dict, Dict]:
-        if not current_app.config['federation_enabled']:
-            raise FederationDisabledException()
         if self.workout_visibility == PrivacyLevel.PRIVATE:
             raise PrivateWorkoutException()
 

@@ -387,7 +387,7 @@ class TestFollowRequestModel:
     ) -> None:
         with pytest.raises(
             FederationDisabledException,
-            match='Can not create activity, federation is disabled.',
+            match='Federation is disabled.',
         ):
             follow_request_from_user_1_to_user_2.get_activity()
 

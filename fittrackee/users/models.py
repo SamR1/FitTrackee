@@ -10,8 +10,8 @@ from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, bcrypt, db
 from fittrackee.federation.activities.follow_request import FollowRequestObject
+from fittrackee.federation.decorators import federation_required
 from fittrackee.federation.enums import ActivityType
-from fittrackee.federation.exceptions import FederationDisabledException
 from fittrackee.federation.models import Actor, Domain
 from fittrackee.federation.tasks.user_inbox import send_to_users_inbox
 from fittrackee.privacy_levels import PrivacyLevel
@@ -74,9 +74,8 @@ class FollowRequest(BaseModel):
             return ActivityType.ACCEPT
         return ActivityType.REJECT
 
+    @federation_required
     def get_activity(self, undo: bool = False) -> Dict:
-        if not current_app.config['federation_enabled']:
-            raise FederationDisabledException()
         follow_request_object = FollowRequestObject(
             from_actor=self.from_user.actor,
             to_actor=self.to_user.actor,

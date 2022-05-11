@@ -6,7 +6,10 @@ from fittrackee.responses import HttpResponse, handle_error_and_return_response
 from fittrackee.users.models import FollowRequest
 
 from .collections import OrderedCollection, OrderedCollectionPage
-from .decorators import federation_required, get_local_actor_from_username
+from .decorators import (
+    federation_required_for_route,
+    get_local_actor_from_username,
+)
 from .inbox import inbox
 from .models import Actor, Domain
 
@@ -19,7 +22,7 @@ USERS_PER_PAGE = 10
 @ap_federation_blueprint.route(
     '/user/<string:preferred_username>', methods=['GET']
 )
-@federation_required
+@federation_required_for_route
 @get_local_actor_from_username
 def get_actor(
     local_actor: Actor, app_domain: Domain, preferred_username: str
@@ -82,7 +85,7 @@ def get_actor(
 @ap_federation_blueprint.route(
     '/user/<string:preferred_username>/inbox', methods=['POST']
 )
-@federation_required
+@federation_required_for_route
 @get_local_actor_from_username
 def user_inbox(
     local_actor: Actor, app_domain: Domain, preferred_username: str
@@ -151,7 +154,7 @@ def get_relationships(
 @ap_federation_blueprint.route(
     '/user/<string:preferred_username>/followers', methods=['GET']
 )
-@federation_required
+@federation_required_for_route
 @get_local_actor_from_username
 def user_followers(
     local_actor: Actor, app_domain: Domain, preferred_username: str
@@ -226,7 +229,7 @@ def user_followers(
 @ap_federation_blueprint.route(
     '/user/<string:preferred_username>/following', methods=['GET']
 )
-@federation_required
+@federation_required_for_route
 @get_local_actor_from_username
 def user_following(
     local_actor: Actor, app_domain: Domain, preferred_username: str

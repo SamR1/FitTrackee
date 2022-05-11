@@ -4,6 +4,7 @@ from typing import Any, Callable
 from flask import current_app
 
 from fittrackee import appLog
+from fittrackee.federation.exceptions import FederationDisabledException
 from fittrackee.responses import (
     DisabledFederationErrorResponse,
     InternalServerErrorResponse,
@@ -14,6 +15,16 @@ from .models import Actor, Domain
 
 
 def federation_required(f: Callable) -> Callable:
+    @wraps(f)
+    def decorated_function(*args: Any, **kwargs: Any) -> Callable:
+        if not current_app.config['federation_enabled']:
+            raise FederationDisabledException()
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
+def federation_required_for_route(f: Callable) -> Callable:
     @wraps(f)
     def decorated_function(*args: Any, **kwargs: Any) -> Callable:
         if not current_app.config['federation_enabled']:

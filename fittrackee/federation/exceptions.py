@@ -21,10 +21,7 @@ class DomainNotFoundException(GenericException):
 
 class FederationDisabledException(GenericException):
     def __init__(self) -> None:
-        super().__init__(
-            status='error',
-            message='Can not create activity, federation is disabled.',
-        )
+        super().__init__(status='error', message='Federation is disabled.')
 
 
 class InvalidSignatureException(GenericException):

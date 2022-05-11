@@ -4,14 +4,14 @@ from fittrackee.federation.models import Actor
 from fittrackee.responses import HttpResponse
 from fittrackee.workouts.models import Workout
 
-from .decorators import federation_required
+from .decorators import federation_required_for_route
 from .models import Domain
 
 ap_nodeinfo_blueprint = Blueprint('ap_nodeinfo', __name__)
 
 
 @ap_nodeinfo_blueprint.route('/.well-known/nodeinfo', methods=['GET'])
-@federation_required
+@federation_required_for_route
 def get_nodeinfo_url(app_domain: Domain) -> HttpResponse:
     """
     Get node info links
@@ -58,7 +58,7 @@ def get_nodeinfo_url(app_domain: Domain) -> HttpResponse:
 
 
 @ap_nodeinfo_blueprint.route('/nodeinfo/2.0', methods=['GET'])
-@federation_required
+@federation_required_for_route
 def get_nodeinfo(app_domain: Domain) -> HttpResponse:
     """
     Get node infos
