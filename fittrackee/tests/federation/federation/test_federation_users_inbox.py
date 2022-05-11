@@ -17,50 +17,45 @@ from fittrackee.federation.signature import (
 from fittrackee.users.models import User
 
 from ...mixins import ApiTestCaseMixin
-from ...utils import (
-    generate_response,
-    get_date_string,
-    random_domain,
-    random_string,
-)
+from ...utils import generate_response, get_date_string, random_string
 
 
 class TestUserInbox(ApiTestCaseMixin):
     @staticmethod
     def post_to_user_inbox(
-        app_with_federation: Flask, actor_1: Actor, actor_2: Actor
+        app_with_federation: Flask, remote_actor: Actor, local_actor: Actor
     ) -> Tuple[Dict, TestResponse]:
-        host = random_domain()
+        remote_actor.generate_keys()
         date_str = get_date_string()
         client = app_with_federation.test_client()
-        inbox_path = f'/federation/user/{actor_1.preferred_username}/inbox'
+        inbox_path = f'/federation/user/{local_actor.preferred_username}/inbox'
         follow_activity: Dict = {
             '@context': AP_CTX,
             'id': random_string(),
             'type': ActivityType.FOLLOW.value,
-            'actor': actor_2.activitypub_id,
-            'object': actor_1.activitypub_id,
+            'actor': remote_actor.activitypub_id,
+            'object': local_actor.activitypub_id,
         }
         digest = generate_digest(follow_activity)
 
         with patch.object(requests, 'get') as requests_mock:
             requests_mock.return_value = generate_response(
                 status_code=200,
-                content=actor_2.serialize(),
+                content=remote_actor.serialize(),
             )
             requests_mock.path = inbox_path
             response = client.post(
                 inbox_path,
                 content_type='application/json',
                 headers={
-                    'Host': host,
+                    'Host': remote_actor.domain.name,
                     'Date': date_str,
                     'Digest': digest,
                     'Signature': generate_signature_header(
-                        host=host,
+                        host=remote_actor.domain.name,
                         path=inbox_path,
                         date_str=date_str,
-                        actor=actor_2,
+                        actor=remote_actor,
                         digest=digest,
                     ),
                     'Content-Type': 'application/ld+json',
@@ -179,11 +174,11 @@ class TestUserInbox(ApiTestCaseMixin):
         self,
         handle_activity: Mock,
         app_with_federation: Flask,
+        remote_user: User,
         user_1: User,
-        user_2: User,
     ) -> None:
         _, response = self.post_to_user_inbox(
-            app_with_federation, user_1.actor, user_2.actor
+            app_with_federation, remote_user.actor, user_1.actor
         )
 
         assert response.status_code == 200
@@ -196,11 +191,11 @@ class TestUserInbox(ApiTestCaseMixin):
         self,
         handle_activity: Mock,
         app_with_federation: Flask,
+        remote_user: User,
         user_1: User,
-        user_2: User,
     ) -> None:
-        activity_dict, response = self.post_to_user_inbox(
-            app_with_federation, user_1.actor, user_2.actor
+        activity_dict, _ = self.post_to_user_inbox(
+            app_with_federation, remote_user.actor, user_1.actor
         )
 
         handle_activity.send.assert_called_with(activity=activity_dict)

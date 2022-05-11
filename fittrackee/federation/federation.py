@@ -124,6 +124,39 @@ def user_inbox(
     return inbox(request)
 
 
+@ap_federation_blueprint.route('/inbox', methods=['GET', 'POST'])
+@federation_required_for_route
+def shared_inbox(app_domain: Domain) -> Union[Dict, HttpResponse]:
+    """
+    Post an activity to shared inbox
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /federation/inbox HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "status": "success"
+      }
+
+    :<json json activity: activity
+
+    :statuscode 200: success
+    :statuscode 400: invalid payload
+    :statuscode 403: error, federation is disabled for this instance
+    """
+    return inbox(request)
+
+
 def get_relationships(
     local_actor: Actor, relation: str
 ) -> Union[Dict, HttpResponse]:
