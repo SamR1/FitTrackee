@@ -10,7 +10,7 @@ from sqlalchemy import exc, func
 from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
-from fittrackee import appLog, bcrypt, db
+from fittrackee import appLog, db
 from fittrackee.emails.tasks import (
     account_confirmation_email,
     email_updated_to_current_address,
@@ -237,7 +237,7 @@ def login_user() -> Union[Dict, HttpResponse]:
             func.lower(User.email) == func.lower(email),
             User.is_active == True,  # noqa
         ).first()
-        if user and bcrypt.check_password_hash(user.password, password):
+        if user and user.check_password(password):
             # generate auth token
             auth_token = user.encode_auth_token(user.id)
             return {
@@ -628,7 +628,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
     current_password = data.get('password')
     if not current_password:
         return InvalidPayloadErrorResponse('current password is missing')
-    if not bcrypt.check_password_hash(auth_user.password, current_password):
+    if not auth_user.check_password(current_password):
         return UnauthorizedErrorResponse('invalid credentials')
 
     new_password = data.get('new_password')
@@ -648,9 +648,9 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
         if new_password is not None:
             error_messages += check_password(new_password)
             if error_messages == '':
-                hashed_password = bcrypt.generate_password_hash(
-                    new_password, current_app.config.get('BCRYPT_LOG_ROUNDS')
-                ).decode()
+                hashed_password = auth_user.generate_password_hash(
+                    new_password
+                )
                 auth_user.password = hashed_password
 
         if error_messages != '':
@@ -1272,9 +1272,7 @@ def update_password() -> Union[Dict, HttpResponse]:
     if not user:
         return UnauthorizedErrorResponse()
     try:
-        user.password = bcrypt.generate_password_hash(
-            password, current_app.config.get('BCRYPT_LOG_ROUNDS')
-        ).decode()
+        user.password = user.generate_password_hash(password)
         db.session.commit()
 
         if current_app.config['CAN_SEND_EMAILS']:

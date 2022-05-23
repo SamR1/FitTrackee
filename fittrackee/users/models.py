@@ -102,6 +102,15 @@ class User(BaseModel):
         except jwt.InvalidTokenError:
             return 'invalid token, please log in again'
 
+    def check_password(self, password: str) -> bool:
+        return bcrypt.check_password_hash(self.password, password)
+
+    @staticmethod
+    def generate_password_hash(new_password: str) -> str:
+        return bcrypt.generate_password_hash(
+            new_password, current_app.config.get('BCRYPT_LOG_ROUNDS')
+        ).decode()
+
     @hybrid_property
     def workouts_count(self) -> int:
         return Workout.query.filter(Workout.user_id == self.id).count()
