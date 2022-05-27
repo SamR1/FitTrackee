@@ -1,10 +1,14 @@
 import json
-from typing import List, Union
+from typing import Dict, List, Optional, Union
 from unittest.mock import patch
+from urllib.parse import parse_qs
 
 import pytest
 from flask import Flask
+from urllib3.util import parse_url
 
+from fittrackee import db
+from fittrackee.oauth2.client import create_oauth_client
 from fittrackee.oauth2.models import OAuth2Client
 from fittrackee.users.models import User
 
@@ -19,7 +23,20 @@ TEST_METADATA = {
 }
 
 
-class TestOAuthClientCreation(ApiTestCaseMixin):
+class OAuth2TestCase(ApiTestCaseMixin):
+    @staticmethod
+    def create_oauth_client(
+        user: User, metadata: Optional[Dict] = None
+    ) -> OAuth2Client:
+        oauth_client = create_oauth_client(
+            TEST_METADATA if metadata is None else metadata, user
+        )
+        db.session.add(oauth_client)
+        db.session.commit()
+        return oauth_client
+
+
+class TestOAuthClientCreation(OAuth2TestCase):
     route = '/api/oauth/apps'
 
     def test_it_returns_error_when_no_user_authenticated(
@@ -161,3 +178,83 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
 
         oauth_client = OAuth2Client.query.first()
         assert getattr(oauth_client, input_key) == expected_value
+
+
+class TestOAuthClientAuthorization(OAuth2TestCase):
+    route = '/api/oauth/authorize'
+
+    def test_it_returns_error_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        oauth_client = self.create_oauth_client(user_1)
+        client = app.test_client()
+
+        response = client.post(
+            self.route,
+            data={
+                'client_id': oauth_client.client_id,
+                'response_type': 'code',
+            },
+            headers=dict(content_type='multipart/form-data'),
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_error_when_client_id_is_missing(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            data={'response_type': 'code'},
+            headers=dict(
+                Authorization=f'Bearer {auth_token}',
+                content_type='multipart/form-data',
+            ),
+        )
+
+        self.assert_400(response, error_message='invalid payload')
+
+    def test_it_returns_error_when_response_type_is_missing(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        oauth_client = self.create_oauth_client(user_1)
+
+        response = client.post(
+            self.route,
+            data={'client_id': oauth_client.client_id},
+            headers=dict(
+                Authorization=f'Bearer {auth_token}',
+                content_type='multipart/form-data',
+            ),
+        )
+
+        self.assert_400(response, error_message='invalid payload')
+
+    def test_it_returns_code_in_url(self, app: Flask, user_1: User) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        oauth_client = self.create_oauth_client(user_1)
+
+        response = client.post(
+            self.route,
+            data={
+                'client_id': oauth_client.client_id,
+                'response_type': 'code',
+            },
+            headers=dict(
+                Authorization=f'Bearer {auth_token}',
+                content_type='multipart/form-data',
+            ),
+        )
+
+        assert response.status_code == 302
+        parsed_url = parse_url(response.location)
+        assert parse_qs(parsed_url.query).get('code') is not None
