@@ -1,10 +1,11 @@
 from time import time
-from typing import Dict
+from typing import Any, Dict
 from unittest.mock import patch
 
+import pytest
 from flask import Flask
 
-from fittrackee.oauth2.client import create_oauth_client
+from fittrackee.oauth2.client import check_scope, create_oauth_client
 from fittrackee.oauth2.models import OAuth2Client
 from fittrackee.users.models import User
 
@@ -106,7 +107,7 @@ class TestCreateOAuth2Client:
     def test_oauth_client_has_expected_scope(
         self, app: Flask, user_1: User
     ) -> None:
-        scope = 'profile'
+        scope = 'write'
         client_metadata: Dict = {**TEST_METADATA, 'scope': scope}
 
         oauth_client = create_oauth_client(client_metadata, user_1)
@@ -138,3 +139,28 @@ class TestCreateOAuth2Client:
         oauth_client = create_oauth_client(TEST_METADATA, user_1)
 
         assert oauth_client.user_id == user_1.id
+
+
+class TestOAuthCheckScopes:
+    @pytest.mark.parametrize(
+        'input_scope', ['', 1, random_string(), [random_string(), 'readwrite']]
+    )
+    def test_it_returns_read_if_scope_is_invalid(
+        self, input_scope: Any
+    ) -> None:
+        assert check_scope(input_scope) == 'read'
+
+    @pytest.mark.parametrize(
+        'input_scope,expected_scope',
+        [
+            ('read', 'read'),
+            ('read ' + random_string(), 'read'),
+            ('write', 'write'),
+            ('write read', 'write read'),
+            ('write read ' + random_string(), 'write read'),
+        ],
+    )
+    def test_it_return_only_valid_scopes(
+        self, input_scope: str, expected_scope: str
+    ) -> None:
+        assert check_scope(input_scope) == expected_scope

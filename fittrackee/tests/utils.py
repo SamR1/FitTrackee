@@ -2,8 +2,11 @@ import random
 import string
 from json import loads
 from typing import Dict, Optional
+from uuid import uuid4
 
 from flask import json as flask_json
+
+from fittrackee.workouts.utils.short_id import encode_uuid
 
 
 def random_string(
@@ -30,6 +33,10 @@ def random_domain() -> str:
 
 def random_email() -> str:
     return random_string(suffix='@example.com')
+
+
+def random_short_id() -> str:
+    return encode_uuid(uuid4())
 
 
 def jsonify_dict(data: Dict) -> Dict:

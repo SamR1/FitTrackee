@@ -63,24 +63,33 @@ class ApiTestCaseMixin(RandomMixin):
 
     @staticmethod
     def create_oauth_client(
-        user: User, metadata: Optional[Dict] = None
+        user: User,
+        metadata: Optional[Dict] = None,
+        scope: Optional[str] = None,
     ) -> OAuth2Client:
-        oauth_client = create_oauth_client(
-            TEST_OAUTH_CLIENT_METADATA if metadata is None else metadata, user
+        client_metadata = (
+            TEST_OAUTH_CLIENT_METADATA if metadata is None else metadata
         )
+        if scope is not None:
+            client_metadata['scope'] = scope
+        oauth_client = create_oauth_client(client_metadata, user)
         db.session.add(oauth_client)
         db.session.commit()
         return oauth_client
 
     @staticmethod
     def authorize_client(
-        client: FlaskClient, oauth_client: OAuth2Client, auth_token: str
+        client: FlaskClient,
+        oauth_client: OAuth2Client,
+        auth_token: str,
+        scope: Optional[str] = None,
     ) -> Union[List[str], str]:
         response = client.post(
             '/api/oauth/authorize',
             data={
                 'client_id': oauth_client.client_id,
                 'response_type': 'code',
+                'scope': 'read' if not scope else scope,
             },
             headers=dict(
                 Authorization=f'Bearer {auth_token}',
@@ -92,13 +101,15 @@ class ApiTestCaseMixin(RandomMixin):
         return code
 
     def create_oauth_client_and_issue_token(
-        self, app: Flask, user: User
+        self, app: Flask, user: User, scope: Optional[str] = None
     ) -> Tuple[FlaskClient, OAuth2Client, str]:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user.email
         )
-        oauth_client = self.create_oauth_client(user)
-        code = self.authorize_client(client, oauth_client, auth_token)
+        oauth_client = self.create_oauth_client(user, scope=scope)
+        code = self.authorize_client(
+            client, oauth_client, auth_token, scope=scope
+        )
         response = client.post(
             '/api/oauth/token',
             data={
@@ -216,6 +227,31 @@ class ApiTestCaseMixin(RandomMixin):
                 'or invalid for other reasons.'
             ),
         )
+
+    @staticmethod
+    def assert_insufficient_scope(response: TestResponse) -> Dict:
+        return assert_oauth_errored_response(
+            response,
+            403,
+            error='insufficient_scope',
+            error_description=(
+                'The request requires higher privileges than provided by '
+                'the access token.'
+            ),
+        )
+
+    @staticmethod
+    def assert_not_insufficient_scope_error(response: TestResponse) -> None:
+        assert response.status_code != 403
+        if response.status_code != 204:
+            data = json.loads(response.data.decode())
+            if 'error' in data:
+                assert 'insufficient_scope' not in data['error']
+            if 'error_description' in data:
+                assert (
+                    'The request requires higher privileges than provided by '
+                    'the access token.'
+                ) != data['error_description']
 
 
 class CallArgsMixin:

@@ -11,7 +11,7 @@ records_blueprint = Blueprint('records', __name__)
 
 
 @records_blueprint.route('/records', methods=['GET'])
-@require_auth()
+@require_auth(scopes='read')
 def get_records(auth_user: User) -> Dict:
     """
     Get all records for authenticated user.

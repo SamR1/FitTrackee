@@ -56,7 +56,7 @@ MAX_WORKOUTS_PER_PAGE = 100
 
 
 @workouts_blueprint.route('/workouts', methods=['GET'])
-@require_auth()
+@require_auth(scopes='read')
 def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Get workouts for the authenticated user.
@@ -298,7 +298,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
 @workouts_blueprint.route(
     '/workouts/<string:workout_short_id>', methods=['GET']
 )
-@require_auth()
+@require_auth(scopes='read')
 def get_workout(
     auth_user: User, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
@@ -462,7 +462,7 @@ def get_workout_data(
 @workouts_blueprint.route(
     '/workouts/<string:workout_short_id>/gpx', methods=['GET']
 )
-@require_auth()
+@require_auth(scopes='read')
 def get_workout_gpx(
     auth_user: User, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
@@ -512,7 +512,7 @@ def get_workout_gpx(
 @workouts_blueprint.route(
     '/workouts/<string:workout_short_id>/chart_data', methods=['GET']
 )
-@require_auth()
+@require_auth(scopes='read')
 def get_workout_chart_data(
     auth_user: User, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
@@ -582,7 +582,7 @@ def get_workout_chart_data(
     '/workouts/<string:workout_short_id>/gpx/segment/<int:segment_id>',
     methods=['GET'],
 )
-@require_auth()
+@require_auth(scopes='read')
 def get_segment_gpx(
     auth_user: User, workout_short_id: str, segment_id: int
 ) -> Union[Dict, HttpResponse]:
@@ -634,7 +634,7 @@ def get_segment_gpx(
     '<int:segment_id>',
     methods=['GET'],
 )
-@require_auth()
+@require_auth(scopes='read')
 def get_segment_chart_data(
     auth_user: User, workout_short_id: str, segment_id: int
 ) -> Union[Dict, HttpResponse]:
@@ -705,7 +705,7 @@ def get_segment_chart_data(
 @workouts_blueprint.route(
     '/workouts/<string:workout_short_id>/gpx/download', methods=['GET']
 )
-@require_auth()
+@require_auth(scopes='read')
 def download_workout_gpx(
     auth_user: User, workout_short_id: str
 ) -> Union[HttpResponse, Response]:
@@ -848,7 +848,7 @@ def get_map_tile(s: str, z: str, x: str, y: str) -> Tuple[Response, int]:
 
 
 @workouts_blueprint.route('/workouts', methods=['POST'])
-@require_auth()
+@require_auth(scopes='write')
 def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Post an workout with a gpx file
@@ -1016,7 +1016,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
 
 @workouts_blueprint.route('/workouts/no_gpx', methods=['POST'])
-@require_auth()
+@require_auth(scopes='write')
 def post_workout_no_gpx(
     auth_user: User,
 ) -> Union[Tuple[Dict, int], HttpResponse]:
@@ -1164,7 +1164,7 @@ def post_workout_no_gpx(
 @workouts_blueprint.route(
     '/workouts/<string:workout_short_id>', methods=['PATCH']
 )
-@require_auth()
+@require_auth(scopes='write')
 def update_workout(
     auth_user: User, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
@@ -1311,7 +1311,7 @@ def update_workout(
 @workouts_blueprint.route(
     '/workouts/<string:workout_short_id>', methods=['DELETE']
 )
-@require_auth()
+@require_auth(scopes='write')
 def delete_workout(
     auth_user: User, workout_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:

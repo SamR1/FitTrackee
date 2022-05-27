@@ -174,7 +174,7 @@ def get_workouts(
 
 
 @stats_blueprint.route('/stats/<user_name>/by_time', methods=['GET'])
-@require_auth()
+@require_auth(scopes='read')
 def get_workouts_by_time(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -281,7 +281,7 @@ def get_workouts_by_time(
 
 
 @stats_blueprint.route('/stats/<user_name>/by_sport', methods=['GET'])
-@require_auth()
+@require_auth(scopes='read')
 def get_workouts_by_sport(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:

@@ -34,7 +34,7 @@ USER_PER_PAGE = 10
 
 
 @users_blueprint.route('/users', methods=['GET'])
-@require_auth(as_admin=True)
+@require_auth(scopes='read', as_admin=True)
 def get_users(auth_user: User) -> Dict:
     """
     Get all users (regardless their account status), if authenticated user
@@ -235,7 +235,7 @@ def get_users(auth_user: User) -> Dict:
 
 
 @users_blueprint.route('/users/<user_name>', methods=['GET'])
-@require_auth()
+@require_auth(scopes='read')
 def get_single_user(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -394,7 +394,7 @@ def get_picture(user_name: str) -> Any:
 
 
 @users_blueprint.route('/users/<user_name>', methods=['PATCH'])
-@require_auth(as_admin=True)
+@require_auth(scopes='write', as_admin=True)
 def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     """
     Update user account
@@ -593,7 +593,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
 
 @users_blueprint.route('/users/<user_name>', methods=['DELETE'])
-@require_auth()
+@require_auth(scopes='write')
 def delete_user(
     auth_user: User, user_name: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:

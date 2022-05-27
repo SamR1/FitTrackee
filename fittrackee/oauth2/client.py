@@ -6,6 +6,28 @@ from werkzeug.security import gen_salt
 from fittrackee.oauth2.models import OAuth2Client
 from fittrackee.users.models import User
 
+DEFAULT_SCOPE = 'read'
+VALID_SCOPES = ['read', 'write']
+
+
+def check_scope(scope: str) -> str:
+    """
+    Verify if provided scope is valid.
+    If not, it returns the default scope ('read').
+    """
+    valid_scopes = []
+    if not isinstance(scope, str) or not scope:
+        return DEFAULT_SCOPE
+
+    scopes = scope.split()
+    for value in scopes:
+        if value in VALID_SCOPES:
+            valid_scopes.append(value)
+    if len(valid_scopes) == 0:
+        valid_scopes.append(DEFAULT_SCOPE)
+
+    return ' '.join(valid_scopes)
+
 
 def create_oauth_client(metadata: Dict, user: User) -> OAuth2Client:
     """
@@ -18,7 +40,7 @@ def create_oauth_client(metadata: Dict, user: User) -> OAuth2Client:
         'client_name': metadata['client_name'],
         'client_uri': metadata['client_uri'],
         'redirect_uris': metadata['redirect_uris'],
-        'scope': metadata['scope'],
+        'scope': check_scope(metadata['scope']),
         'grant_types': ['authorization_code', 'refresh_token'],
         'response_types': ['code'],
         'token_endpoint_auth_method': 'client_secret_post',
