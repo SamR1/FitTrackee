@@ -1,63 +1,21 @@
 import json
-from typing import Dict, List, Optional, Tuple, Union
+from typing import List, Union
 from unittest.mock import patch
 from urllib.parse import parse_qs
 
 import pytest
 from flask import Flask
-from flask.testing import FlaskClient
 from urllib3.util import parse_url
 from werkzeug.test import TestResponse
 
-from fittrackee import db
-from fittrackee.oauth2.client import create_oauth_client
 from fittrackee.oauth2.models import OAuth2Client, OAuth2Token
 from fittrackee.users.models import User
 
 from ..mixins import ApiTestCaseMixin
-from ..utils import random_domain, random_string
-
-TEST_METADATA = {
-    'client_name': random_string(),
-    'client_uri': random_domain(),
-    'redirect_uris': [random_domain()],
-    'scope': 'read write',
-}
+from ..utils import TEST_OAUTH_CLIENT_METADATA
 
 
-class OAuth2TestCase(ApiTestCaseMixin):
-    @staticmethod
-    def create_oauth_client(
-        user: User, metadata: Optional[Dict] = None
-    ) -> OAuth2Client:
-        oauth_client = create_oauth_client(
-            TEST_METADATA if metadata is None else metadata, user
-        )
-        db.session.add(oauth_client)
-        db.session.commit()
-        return oauth_client
-
-    @staticmethod
-    def authorize_client(
-        client: FlaskClient, oauth_client: OAuth2Client, auth_token: str
-    ) -> Union[List[str], str]:
-        response = client.post(
-            '/api/oauth/authorize',
-            data={
-                'client_id': oauth_client.client_id,
-                'response_type': 'code',
-            },
-            headers=dict(
-                Authorization=f'Bearer {auth_token}',
-                content_type='multipart/form-data',
-            ),
-        )
-        parsed_url = parse_url(response.location)
-        code = parse_qs(parsed_url.query).get('code', '')
-        return code
-
-
-class TestOAuthClientCreation(OAuth2TestCase):
+class TestOAuthClientCreation(ApiTestCaseMixin):
     route = '/api/oauth/apps'
 
     def test_it_returns_error_when_no_user_authenticated(
@@ -69,7 +27,7 @@ class TestOAuthClientCreation(OAuth2TestCase):
 
         response = client.post(
             self.route,
-            data=json.dumps(TEST_METADATA),
+            data=json.dumps(TEST_OAUTH_CLIENT_METADATA),
             content_type='application/json',
         )
 
@@ -105,7 +63,7 @@ class TestOAuthClientCreation(OAuth2TestCase):
     def test_it_returns_error_when_metadata_key_is_missing(
         self, app: Flask, user_1: User, missing_key: str
     ) -> None:
-        metadata = TEST_METADATA.copy()
+        metadata = TEST_OAUTH_CLIENT_METADATA.copy()
         del metadata[missing_key]
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -130,7 +88,7 @@ class TestOAuthClientCreation(OAuth2TestCase):
 
         response = client.post(
             self.route,
-            data=json.dumps(TEST_METADATA),
+            data=json.dumps(TEST_OAUTH_CLIENT_METADATA),
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -154,7 +112,7 @@ class TestOAuthClientCreation(OAuth2TestCase):
 
             response = client.post(
                 self.route,
-                data=json.dumps(TEST_METADATA),
+                data=json.dumps(TEST_OAUTH_CLIENT_METADATA),
                 content_type='application/json',
                 headers=dict(Authorization=f'Bearer {auth_token}'),
             )
@@ -162,12 +120,18 @@ class TestOAuthClientCreation(OAuth2TestCase):
         data = json.loads(response.data.decode())
         assert data['data']['client']['client_id'] == client_id
         assert data['data']['client']['client_secret'] == client_secret
-        assert data['data']['client']['name'] == TEST_METADATA['client_name']
+        assert (
+            data['data']['client']['name']
+            == TEST_OAUTH_CLIENT_METADATA['client_name']
+        )
         assert (
             data['data']['client']['redirect_uris']
-            == TEST_METADATA['redirect_uris']
+            == TEST_OAUTH_CLIENT_METADATA['redirect_uris']
         )
-        assert data['data']['client']['website'] == TEST_METADATA['client_uri']
+        assert (
+            data['data']['client']['website']
+            == TEST_OAUTH_CLIENT_METADATA['client_uri']
+        )
 
     @pytest.mark.parametrize(
         'input_key,expected_value',
@@ -191,7 +155,7 @@ class TestOAuthClientCreation(OAuth2TestCase):
         client.post(
             self.route,
             data=json.dumps(
-                {**TEST_METADATA, input_key: self.random_string()}
+                {**TEST_OAUTH_CLIENT_METADATA, input_key: self.random_string()}
             ),
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -201,7 +165,7 @@ class TestOAuthClientCreation(OAuth2TestCase):
         assert getattr(oauth_client, input_key) == expected_value
 
 
-class TestOAuthClientAuthorization(OAuth2TestCase):
+class TestOAuthClientAuthorization(ApiTestCaseMixin):
     route = '/api/oauth/authorize'
 
     def test_it_returns_error_not_authenticated(
@@ -281,7 +245,7 @@ class TestOAuthClientAuthorization(OAuth2TestCase):
         assert parse_qs(parsed_url.query).get('code') is not None
 
 
-class TestOAuthIssueToken(OAuth2TestCase):
+class TestOAuthIssueToken(ApiTestCaseMixin):
     route = '/api/oauth/token'
 
     @staticmethod
@@ -412,34 +376,15 @@ class TestOAuthIssueToken(OAuth2TestCase):
         self.assert_token_is_returned(response)
 
 
-class TestOAuthTokenRevocation(OAuth2TestCase):
+class TestOAuthTokenRevocation(ApiTestCaseMixin):
     route = '/api/oauth/revoke'
 
-    def create_oauth_client_and_issue_token(
-        self, client: FlaskClient, user: User, auth_token: str
-    ) -> Tuple[OAuth2Client, Dict]:
-        oauth_client = self.create_oauth_client(user)
-        code = self.authorize_client(client, oauth_client, auth_token)
-        response = client.post(
-            '/api/oauth/token',
-            data={
-                'client_id': oauth_client.client_id,
-                'client_secret': oauth_client.client_secret,
-                'grant_type': 'authorization_code',
-                'code': code,
-            },
-            headers=dict(content_type='multipart/form-data'),
-        )
-        data = json.loads(response.data.decode())
-        return oauth_client, data.get('access_token')
-
     def test_it_revokes_user_token(self, app: Flask, user_1: User) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-        oauth_client, access_token = self.create_oauth_client_and_issue_token(
-            client, user_1, auth_token
-        )
+        (
+            client,
+            oauth_client,
+            access_token,
+        ) = self.create_oauth_client_and_issue_token(app, user_1)
 
         response = client.post(
             self.route,

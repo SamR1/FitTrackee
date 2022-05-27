@@ -1,16 +1,23 @@
 import json
 from random import randint
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
+from urllib.parse import parse_qs
 
 from flask import Flask
 from flask.testing import FlaskClient
+from urllib3.util import parse_url
 from werkzeug.test import TestResponse
+
+from fittrackee import db
+from fittrackee.oauth2.client import create_oauth_client
+from fittrackee.oauth2.models import OAuth2Client
+from fittrackee.users.models import User
 
 from .custom_asserts import (
     assert_errored_response,
     assert_oauth_errored_response,
 )
-from .utils import random_email, random_string
+from .utils import TEST_OAUTH_CLIENT_METADATA, random_email, random_string
 
 
 class RandomMixin:
@@ -53,6 +60,57 @@ class ApiTestCaseMixin(RandomMixin):
         )
         auth_token = json.loads(resp_login.data.decode())['auth_token']
         return client, auth_token
+
+    @staticmethod
+    def create_oauth_client(
+        user: User, metadata: Optional[Dict] = None
+    ) -> OAuth2Client:
+        oauth_client = create_oauth_client(
+            TEST_OAUTH_CLIENT_METADATA if metadata is None else metadata, user
+        )
+        db.session.add(oauth_client)
+        db.session.commit()
+        return oauth_client
+
+    @staticmethod
+    def authorize_client(
+        client: FlaskClient, oauth_client: OAuth2Client, auth_token: str
+    ) -> Union[List[str], str]:
+        response = client.post(
+            '/api/oauth/authorize',
+            data={
+                'client_id': oauth_client.client_id,
+                'response_type': 'code',
+            },
+            headers=dict(
+                Authorization=f'Bearer {auth_token}',
+                content_type='multipart/form-data',
+            ),
+        )
+        parsed_url = parse_url(response.location)
+        code = parse_qs(parsed_url.query).get('code', '')
+        return code
+
+    def create_oauth_client_and_issue_token(
+        self, app: Flask, user: User
+    ) -> Tuple[FlaskClient, OAuth2Client, str]:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user.email
+        )
+        oauth_client = self.create_oauth_client(user)
+        code = self.authorize_client(client, oauth_client, auth_token)
+        response = client.post(
+            '/api/oauth/token',
+            data={
+                'client_id': oauth_client.client_id,
+                'client_secret': oauth_client.client_secret,
+                'grant_type': 'authorization_code',
+                'code': code,
+            },
+            headers=dict(content_type='multipart/form-data'),
+        )
+        data = json.loads(response.data.decode())
+        return client, oauth_client, data.get('access_token')
 
     @staticmethod
     def assert_400(

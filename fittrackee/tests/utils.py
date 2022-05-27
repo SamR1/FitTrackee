@@ -34,3 +34,11 @@ def random_email() -> str:
 
 def jsonify_dict(data: Dict) -> Dict:
     return loads(flask_json.dumps(data))
+
+
+TEST_OAUTH_CLIENT_METADATA = {
+    'client_name': random_string(),
+    'client_uri': random_domain(),
+    'redirect_uris': [random_domain()],
+    'scope': 'read write',
+}
