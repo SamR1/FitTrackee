@@ -6,7 +6,10 @@ from flask import Flask
 from flask.testing import FlaskClient
 from werkzeug.test import TestResponse
 
-from .custom_asserts import assert_errored_response
+from .custom_asserts import (
+    assert_errored_response,
+    assert_oauth_errored_response,
+)
 from .utils import random_email, random_string
 
 
@@ -120,6 +123,28 @@ class ApiTestCaseMixin(RandomMixin):
     ) -> Dict:
         return assert_errored_response(
             response, 500, error_message=error_message, status=status
+        )
+
+    @staticmethod
+    def assert_unsupported_grant_type(response: TestResponse) -> Dict:
+        return assert_oauth_errored_response(
+            response, 400, error='unsupported_grant_type'
+        )
+
+    @staticmethod
+    def assert_invalid_client(response: TestResponse) -> Dict:
+        return assert_oauth_errored_response(
+            response,
+            400,
+            error='invalid_client',
+        )
+
+    @staticmethod
+    def assert_invalid_request(response: TestResponse) -> Dict:
+        return assert_oauth_errored_response(
+            response,
+            400,
+            error='invalid_request',
         )
 
 

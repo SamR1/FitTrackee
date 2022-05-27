@@ -65,3 +65,8 @@ def authorize(auth_user: User) -> Response:
     return authorization_server.create_authorization_response(
         grant_user=auth_user
     )
+
+
+@oauth_blueprint.route('/oauth/token', methods=['POST'])
+def issue_token() -> Response:
+    return authorization_server.create_token_response()
