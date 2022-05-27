@@ -19,7 +19,7 @@ def create_oauth_client(metadata: Dict, user: User) -> OAuth2Client:
         'client_uri': metadata['client_uri'],
         'redirect_uris': metadata['redirect_uris'],
         'scope': metadata['scope'],
-        'grant_types': ['authorization_code'],
+        'grant_types': ['authorization_code', 'refresh_token'],
         'response_types': ['code'],
         'token_endpoint_auth_method': 'client_secret_post',
     }

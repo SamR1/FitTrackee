@@ -65,6 +65,7 @@ class TestingConfig(BaseConfig):
     TOKEN_EXPIRATION_DAYS = 0
     TOKEN_EXPIRATION_SECONDS = 3
     PASSWORD_TOKEN_EXPIRATION_SECONDS = 3
+    OAUTH2_REFRESH_TOKEN_GENERATOR = True
     UI_URL = 'http://0.0.0.0:5000'
     SENDER_EMAIL = 'fittrackee@example.com'
 

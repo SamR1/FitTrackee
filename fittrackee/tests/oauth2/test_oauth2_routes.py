@@ -153,7 +153,7 @@ class TestOAuthClientCreation(OAuth2TestCase):
     @pytest.mark.parametrize(
         'input_key,expected_value',
         [
-            ('grant_types', ['authorization_code']),
+            ('grant_types', ['authorization_code', 'refresh_token']),
             ('response_types', ['code']),
             ('token_endpoint_auth_method', 'client_secret_post'),
         ],
@@ -271,6 +271,7 @@ class TestOAuthIssueToken(OAuth2TestCase):
         data = json.loads(response.data.decode())
         assert data.get('access_token') is not None
         assert data.get('expires_in') is not None
+        assert data.get('refresh_token') is not None
         assert data.get('token_type') == 'Bearer'
 
     @staticmethod

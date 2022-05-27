@@ -72,7 +72,10 @@ class TestCreateOAuth2Client:
     ) -> None:
         oauth_client = create_oauth_client(TEST_METADATA, user_1)
 
-        assert oauth_client.grant_types == ['authorization_code']
+        assert oauth_client.grant_types == [
+            'authorization_code',
+            'refresh_token',
+        ]
 
     def test_oauth_client_has_expected_redirect_uris(
         self, app: Flask, user_1: User
