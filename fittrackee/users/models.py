@@ -111,6 +111,9 @@ class User(BaseModel):
             new_password, current_app.config.get('BCRYPT_LOG_ROUNDS')
         ).decode()
 
+    def get_user_id(self) -> int:
+        return self.id
+
     @hybrid_property
     def workouts_count(self) -> int:
         return Workout.query.filter(Workout.user_id == self.id).count()

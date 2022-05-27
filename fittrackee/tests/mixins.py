@@ -1,4 +1,5 @@
 import json
+from random import randint
 from typing import Any, Dict, Optional, Tuple
 
 from flask import Flask
@@ -19,8 +20,16 @@ class RandomMixin:
         return random_string(length, prefix, suffix)
 
     @staticmethod
+    def random_domain() -> str:
+        return random_string(prefix='https://', suffix='com')
+
+    @staticmethod
     def random_email() -> str:
         return random_email()
+
+    @staticmethod
+    def random_int(min_val: int = 0, max_val: int = 999999) -> int:
+        return randint(min_val, max_val)
 
 
 class ApiTestCaseMixin(RandomMixin):

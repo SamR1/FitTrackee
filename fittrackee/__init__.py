@@ -16,6 +16,7 @@ from flask_dramatiq import Dramatiq
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import ProgrammingError
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from fittrackee.emails.email import EmailService
 from fittrackee.request import CustomRequest
@@ -64,6 +65,11 @@ def create_app(init_email: bool = True) -> Flask:
     migrate.init_app(app, db)
     dramatiq.init_app(app)
 
+    # set oauth2
+    from fittrackee.oauth2.config import config_oauth
+
+    config_oauth(app)
+
     # set up email if 'EMAIL_URL' is initialized
     if init_email:
         if app.config['EMAIL_URL']:
@@ -95,6 +101,7 @@ def create_app(init_email: bool = True) -> Flask:
                 pass
 
     from .application.app_config import config_blueprint  # noqa
+    from .oauth2.routes import oauth_blueprint  # noqa
     from .users.auth import auth_blueprint  # noqa
     from .users.users import users_blueprint  # noqa
     from .workouts.records import records_blueprint  # noqa
@@ -103,6 +110,7 @@ def create_app(init_email: bool = True) -> Flask:
     from .workouts.workouts import workouts_blueprint  # noqa
 
     app.register_blueprint(auth_blueprint, url_prefix='/api')
+    app.register_blueprint(oauth_blueprint, url_prefix='/api')
     app.register_blueprint(config_blueprint, url_prefix='/api')
     app.register_blueprint(records_blueprint, url_prefix='/api')
     app.register_blueprint(sports_blueprint, url_prefix='/api')
@@ -152,5 +160,9 @@ def create_app(init_email: bool = True) -> Flask:
             )
         else:
             return render_template('index.html')
+
+    # to get headers, especially 'X-Forwarded-Proto' for scheme needed by
+    # Authlib, when the application is running behind a proxy server
+    app.wsgi_app = ProxyFix(app.wsgi_app)  # type: ignore
 
     return app

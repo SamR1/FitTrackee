@@ -24,6 +24,10 @@ def random_string(
     )
 
 
+def random_domain() -> str:
+    return random_string(prefix='https://', suffix='.com')
+
+
 def random_email() -> str:
     return random_string(suffix='@example.com')
 
