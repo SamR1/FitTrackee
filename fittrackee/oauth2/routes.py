@@ -70,3 +70,8 @@ def authorize(auth_user: User) -> Response:
 @oauth_blueprint.route('/oauth/token', methods=['POST'])
 def issue_token() -> Response:
     return authorization_server.create_token_response()
+
+
+@oauth_blueprint.route('/oauth/revoke', methods=['POST'])
+def revoke_token() -> Response:
+    return authorization_server.create_endpoint_response('revocation')
