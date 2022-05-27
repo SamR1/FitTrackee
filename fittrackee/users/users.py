@@ -12,6 +12,7 @@ from fittrackee.emails.tasks import (
     reset_password_email,
 )
 from fittrackee.files import get_absolute_file_path
+from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     ForbiddenErrorResponse,
     HttpResponse,
@@ -23,7 +24,6 @@ from fittrackee.responses import (
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
-from .decorators import authenticate, authenticate_as_admin
 from .exceptions import InvalidEmailException, UserNotFoundException
 from .models import User, UserSportPreference
 from .utils.admin import UserManagerService
@@ -34,7 +34,7 @@ USER_PER_PAGE = 10
 
 
 @users_blueprint.route('/users', methods=['GET'])
-@authenticate_as_admin
+@require_auth(as_admin=True)
 def get_users(auth_user: User) -> Dict:
     """
     Get all users (regardless their account status), if authenticated user
@@ -235,7 +235,7 @@ def get_users(auth_user: User) -> Dict:
 
 
 @users_blueprint.route('/users/<user_name>', methods=['GET'])
-@authenticate
+@require_auth()
 def get_single_user(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -394,7 +394,7 @@ def get_picture(user_name: str) -> Any:
 
 
 @users_blueprint.route('/users/<user_name>', methods=['PATCH'])
-@authenticate_as_admin
+@require_auth(as_admin=True)
 def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     """
     Update user account
@@ -593,7 +593,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
 
 @users_blueprint.route('/users/<user_name>', methods=['DELETE'])
-@authenticate
+@require_auth()
 def delete_user(
     auth_user: User, user_name: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:

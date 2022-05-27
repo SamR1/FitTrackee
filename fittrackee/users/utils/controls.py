@@ -1,15 +1,4 @@
 import re
-from typing import Optional, Tuple
-
-from flask import Request
-
-from fittrackee.responses import (
-    ForbiddenErrorResponse,
-    HttpResponse,
-    UnauthorizedErrorResponse,
-)
-
-from ..models import User
 
 
 def is_valid_email(email: str) -> bool:
@@ -58,30 +47,3 @@ def register_controls(username: str, email: str, password: str) -> str:
         ret += 'email: valid email must be provided\n'
     ret += check_password(password)
     return ret
-
-
-def verify_user(
-    current_request: Request, verify_admin: bool
-) -> Tuple[Optional[HttpResponse], Optional[User]]:
-    """
-    Return authenticated user if
-    - the provided token is valid
-    - the user account is active
-    - the user has admin rights if 'verify_admin' is True
-
-    If not, it returns Error Response
-    """
-    default_message = 'provide a valid auth token'
-    auth_header = current_request.headers.get('Authorization')
-    if not auth_header:
-        return UnauthorizedErrorResponse(default_message), None
-    auth_token = auth_header.split(' ')[1]
-    resp = User.decode_auth_token(auth_token)
-    if isinstance(resp, str):
-        return UnauthorizedErrorResponse(resp), None
-    user = User.query.filter_by(id=resp).first()
-    if not user or not user.is_active:
-        return UnauthorizedErrorResponse(default_message), None
-    if verify_admin and not user.admin:
-        return ForbiddenErrorResponse(), None
-    return None, user

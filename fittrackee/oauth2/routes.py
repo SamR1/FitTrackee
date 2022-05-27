@@ -3,8 +3,8 @@ from typing import Dict, Tuple, Union
 from flask import Blueprint, Response, request
 
 from fittrackee import db
+from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import HttpResponse, InvalidPayloadErrorResponse
-from fittrackee.users.decorators import authenticate
 from fittrackee.users.models import User
 
 from .client import create_oauth_client
@@ -21,7 +21,7 @@ EXPECTED_METADATA_KEYS = [
 
 
 @oauth_blueprint.route('/oauth/apps', methods=['POST'])
-@authenticate
+@require_auth()
 def create_client(auth_user: User) -> Union[HttpResponse, Tuple[Dict, int]]:
     client_metadata = request.get_json()
     if not client_metadata:
@@ -55,7 +55,7 @@ def create_client(auth_user: User) -> Union[HttpResponse, Tuple[Dict, int]]:
 
 
 @oauth_blueprint.route('/oauth/authorize', methods=['POST'])
-@authenticate
+@require_auth()
 def authorize(auth_user: User) -> Response:
     data = request.form
     if not data or 'client_id' not in data or 'response_type' not in data:

@@ -19,6 +19,7 @@ from fittrackee.emails.tasks import (
     reset_password_email,
 )
 from fittrackee.files import get_absolute_file_path
+from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     ForbiddenErrorResponse,
     HttpResponse,
@@ -32,7 +33,6 @@ from fittrackee.responses import (
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport
 
-from .decorators import authenticate
 from .models import User, UserSportPreference
 from .utils.controls import check_password, is_valid_email, register_controls
 from .utils.token import decode_user_token
@@ -252,7 +252,7 @@ def login_user() -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile', methods=['GET'])
-@authenticate
+@require_auth()
 def get_authenticated_user_profile(
     auth_user: User,
 ) -> Union[Dict, HttpResponse]:
@@ -354,7 +354,7 @@ def get_authenticated_user_profile(
 
 
 @auth_blueprint.route('/auth/profile/edit', methods=['POST'])
-@authenticate
+@require_auth()
 def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     edit authenticated user profile
@@ -502,7 +502,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile/edit/account', methods=['PATCH'])
-@authenticate
+@require_auth()
 def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     update authenticated user email and password
@@ -712,7 +712,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile/edit/preferences', methods=['POST'])
-@authenticate
+@require_auth()
 def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     edit authenticated user preferences
@@ -853,7 +853,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile/edit/sports', methods=['POST'])
-@authenticate
+@require_auth()
 def edit_user_sport_preferences(
     auth_user: User,
 ) -> Union[Dict, HttpResponse]:
@@ -959,7 +959,7 @@ def edit_user_sport_preferences(
 @auth_blueprint.route(
     '/auth/profile/reset/sports/<sport_id>', methods=['DELETE']
 )
-@authenticate
+@require_auth()
 def reset_user_sport_preferences(
     auth_user: User, sport_id: int
 ) -> Union[Tuple[Dict, int], HttpResponse]:
@@ -1014,7 +1014,7 @@ def reset_user_sport_preferences(
 
 
 @auth_blueprint.route('/auth/picture', methods=['POST'])
-@authenticate
+@require_auth()
 def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     update authenticated user picture
@@ -1102,7 +1102,7 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/picture', methods=['DELETE'])
-@authenticate
+@require_auth()
 def del_picture(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     delete authenticated user picture

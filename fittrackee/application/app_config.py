@@ -4,12 +4,12 @@ from flask import Blueprint, current_app, request
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 
 from fittrackee import db
+from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     HttpResponse,
     InvalidPayloadErrorResponse,
     handle_error_and_return_response,
 )
-from fittrackee.users.decorators import authenticate_as_admin
 from fittrackee.users.models import User
 from fittrackee.users.utils.controls import is_valid_email
 
@@ -67,7 +67,7 @@ def get_application_config() -> Union[Dict, HttpResponse]:
 
 
 @config_blueprint.route('/config', methods=['PATCH'])
-@authenticate_as_admin
+@require_auth(as_admin=True)
 def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Update Application config

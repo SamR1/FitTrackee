@@ -5,6 +5,7 @@ from flask import Blueprint, request
 from sqlalchemy import func
 
 from fittrackee import db
+from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     HttpResponse,
     InvalidPayloadErrorResponse,
@@ -12,7 +13,6 @@ from fittrackee.responses import (
     UserNotFoundErrorResponse,
     handle_error_and_return_response,
 )
-from fittrackee.users.decorators import authenticate, authenticate_as_admin
 from fittrackee.users.models import User
 
 from .models import Sport, Workout
@@ -174,7 +174,7 @@ def get_workouts(
 
 
 @stats_blueprint.route('/stats/<user_name>/by_time', methods=['GET'])
-@authenticate
+@require_auth()
 def get_workouts_by_time(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -281,7 +281,7 @@ def get_workouts_by_time(
 
 
 @stats_blueprint.route('/stats/<user_name>/by_sport', methods=['GET'])
-@authenticate
+@require_auth()
 def get_workouts_by_sport(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -377,7 +377,7 @@ def get_workouts_by_sport(
 
 
 @stats_blueprint.route('/stats/all', methods=['GET'])
-@authenticate_as_admin
+@require_auth(as_admin=True)
 def get_application_stats(auth_user: User) -> Dict:
     """
     Get all application statistics

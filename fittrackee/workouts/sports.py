@@ -4,13 +4,13 @@ from flask import Blueprint, request
 from sqlalchemy import exc
 
 from fittrackee import db
+from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     DataNotFoundErrorResponse,
     HttpResponse,
     InvalidPayloadErrorResponse,
     handle_error_and_return_response,
 )
-from fittrackee.users.decorators import authenticate, authenticate_as_admin
 from fittrackee.users.models import User, UserSportPreference
 
 from .models import Sport
@@ -19,7 +19,7 @@ sports_blueprint = Blueprint('sports', __name__)
 
 
 @sports_blueprint.route('/sports', methods=['GET'])
-@authenticate
+@require_auth()
 def get_sports(auth_user: User) -> Dict:
     """
     Get all sports
@@ -195,7 +195,7 @@ def get_sports(auth_user: User) -> Dict:
 
 
 @sports_blueprint.route('/sports/<int:sport_id>', methods=['GET'])
-@authenticate
+@require_auth()
 def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
     """
     Get a sport
@@ -304,7 +304,7 @@ def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
 
 
 @sports_blueprint.route('/sports/<int:sport_id>', methods=['PATCH'])
-@authenticate_as_admin
+@require_auth(as_admin=True)
 def update_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
     """
     Update a sport

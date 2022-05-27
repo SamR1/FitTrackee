@@ -147,6 +147,18 @@ class ApiTestCaseMixin(RandomMixin):
             error='invalid_request',
         )
 
+    @staticmethod
+    def assert_invalid_token(response: TestResponse) -> Dict:
+        return assert_oauth_errored_response(
+            response,
+            401,
+            error='invalid_token',
+            error_description=(
+                'The access token provided is expired, revoked, malformed, '
+                'or invalid for other reasons.'
+            ),
+        )
+
 
 class CallArgsMixin:
     @staticmethod

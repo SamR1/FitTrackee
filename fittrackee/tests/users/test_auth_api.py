@@ -477,7 +477,7 @@ class TestUserProfile(ApiTestCaseMixin):
             '/api/auth/profile', headers=dict(Authorization='Bearer invalid')
         )
 
-        self.assert_401(response, 'invalid token, please log in again')
+        self.assert_invalid_token(response)
 
     def test_it_returns_user(self, app: Flask, user_1: User) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
