@@ -50,13 +50,14 @@
   import { toRefs } from 'vue'
 
   import { IPagination, TPaginationPayload } from '@/types/api'
+  import { IOauth2ClientsPayload } from '@/types/oauth'
   import { TWorkoutsPayload } from '@/types/workouts'
   import { rangePagination } from '@/utils/api'
 
   interface Props {
     pagination: IPagination
     path: string
-    query: TWorkoutsPayload | TPaginationPayload
+    query: TWorkoutsPayload | TPaginationPayload | IOauth2ClientsPayload
   }
   const props = defineProps<Props>()
 

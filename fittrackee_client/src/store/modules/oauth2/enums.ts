@@ -1,0 +1,13 @@
+export enum OAuth2Actions {
+  GET_CLIENTS = 'GET_CLIENTS',
+}
+
+export enum OAuth2Getters {
+  CLIENTS = 'CLIENTS',
+  CLIENTS_PAGINATION = 'CLIENTS_PAGINATION',
+}
+
+export enum OAuth2Mutations {
+  SET_CLIENTS = 'SET_CLIENTS',
+  SET_CLIENTS_PAGINATION = 'SET_CLIENTS_PAGINATION',
+}

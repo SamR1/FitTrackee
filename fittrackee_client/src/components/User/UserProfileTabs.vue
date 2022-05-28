@@ -38,6 +38,7 @@
       case 'ACCOUNT':
       case 'PICTURE':
         return `/profile/edit/${tab.toLocaleLowerCase()}`
+      case 'APPS':
       case 'PREFERENCES':
       case 'SPORTS':
         return `/profile${

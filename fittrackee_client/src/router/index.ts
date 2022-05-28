@@ -12,6 +12,8 @@ import UserAccountEdition from '@/components/User/ProfileEdition/UserAccountEdit
 import UserInfosEdition from '@/components/User/ProfileEdition/UserInfosEdition.vue'
 import UserPictureEdition from '@/components/User/ProfileEdition/UserPictureEdition.vue'
 import UserPreferencesEdition from '@/components/User/ProfileEdition/UserPreferencesEdition.vue'
+import UserApps from '@/components/User/UserApps/index.vue'
+import UserAppsList from '@/components/User/UserApps/UserAppsList.vue'
 import UserSportPreferences from '@/components/User/UserSportPreferences.vue'
 import store from '@/store'
 import { AUTH_USER_STORE } from '@/store/constants'
@@ -143,6 +145,18 @@ const routes: Array<RouteRecordRaw> = [
             name: 'UserSportPreferences',
             component: UserSportPreferences,
             props: { isEdition: false },
+          },
+          {
+            path: 'apps',
+            name: 'UserApps',
+            component: UserApps,
+            children: [
+              {
+                path: '',
+                name: 'UserAppsList',
+                component: UserAppsList,
+              },
+            ],
           },
         ],
       },
