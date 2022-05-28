@@ -102,7 +102,7 @@ class ApiTestCaseMixin(RandomMixin):
 
     def create_oauth_client_and_issue_token(
         self, app: Flask, user: User, scope: Optional[str] = None
-    ) -> Tuple[FlaskClient, OAuth2Client, str]:
+    ) -> Tuple[FlaskClient, OAuth2Client, str, str]:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user.email
         )
@@ -121,7 +121,7 @@ class ApiTestCaseMixin(RandomMixin):
             headers=dict(content_type='multipart/form-data'),
         )
         data = json.loads(response.data.decode())
-        return client, oauth_client, data.get('access_token')
+        return client, oauth_client, data.get('access_token'), auth_token
 
     @staticmethod
     def assert_400(

@@ -3,8 +3,13 @@ from typing import Dict, Tuple, Union
 from flask import Blueprint, Response, request
 
 from fittrackee import db
+from fittrackee.oauth2.models import OAuth2Client
 from fittrackee.oauth2.server import require_auth
-from fittrackee.responses import HttpResponse, InvalidPayloadErrorResponse
+from fittrackee.responses import (
+    HttpResponse,
+    InvalidPayloadErrorResponse,
+    NotFoundErrorResponse,
+)
 from fittrackee.users.models import User
 
 from .client import create_oauth_client
@@ -18,6 +23,36 @@ EXPECTED_METADATA_KEYS = [
     'redirect_uris',
     'scope',
 ]
+DEFAULT_PER_PAGE = 5
+
+
+@oauth_blueprint.route('/oauth/apps', methods=['GET'])
+@require_auth()
+def get_clients(auth_user: User) -> Dict:
+    params = request.args.copy()
+    page = int(params.get('page', 1))
+    per_page = DEFAULT_PER_PAGE
+    clients_pagination = (
+        OAuth2Client.query.filter_by(user_id=auth_user.id)
+        .order_by(OAuth2Client.id.desc())
+        .paginate(page, per_page, False)
+    )
+    clients = clients_pagination.items
+    return {
+        'status': 'success',
+        'data': {
+            'clients': [
+                client.serialize(with_secret=False) for client in clients
+            ]
+        },
+        'pagination': {
+            'has_next': clients_pagination.has_next,
+            'has_prev': clients_pagination.has_prev,
+            'page': clients_pagination.page,
+            'pages': clients_pagination.pages,
+            'total': clients_pagination.total,
+        },
+    }
 
 
 @oauth_blueprint.route('/oauth/apps', methods=['POST'])
@@ -48,10 +83,45 @@ def create_client(auth_user: User) -> Union[HttpResponse, Tuple[Dict, int]]:
     return (
         {
             'status': 'created',
-            'data': {'client': new_client.serialize()},
+            'data': {'client': new_client.serialize(with_secret=True)},
         },
         201,
     )
+
+
+@oauth_blueprint.route('/oauth/apps/<string:client_id>', methods=['GET'])
+@require_auth()
+def get_client(auth_user: User, client_id: str) -> Union[Dict, HttpResponse]:
+    client = OAuth2Client.query.filter_by(
+        id=client_id,
+        user_id=auth_user.id,
+    ).first()
+
+    if not client:
+        return NotFoundErrorResponse('OAuth client not found')
+
+    return {
+        'status': 'success',
+        'data': {'client': client.serialize(with_secret=False)},
+    }
+
+
+@oauth_blueprint.route('/oauth/apps/<string:client_id>', methods=['DELETE'])
+@require_auth()
+def delete_client(
+    auth_user: User, client_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    client = OAuth2Client.query.filter_by(
+        id=client_id,
+        user_id=auth_user.id,
+    ).first()
+
+    if not client:
+        return NotFoundErrorResponse('OAuth client not found')
+
+    db.session.delete(client)
+    db.session.commit()
+    return {'status': 'no content'}, 204
 
 
 @oauth_blueprint.route('/oauth/authorize', methods=['POST'])

@@ -49,6 +49,7 @@ class TestOAuth2ScopesWithReadAccess(OAuth2ScopesTestCase):
             client,
             oauth_client,
             access_token,
+            _,
         ) = self.create_oauth_client_and_issue_token(
             app, user_1, scope=self.scope
         )
@@ -74,6 +75,7 @@ class TestOAuth2ScopesWithReadAccess(OAuth2ScopesTestCase):
             client,
             oauth_client,
             access_token,
+            _,
         ) = self.create_oauth_client_and_issue_token(
             app, user_1_admin, scope=self.scope
         )
@@ -106,6 +108,7 @@ class TestOAuth2ScopesWithReadAccess(OAuth2ScopesTestCase):
             client,
             oauth_client,
             access_token,
+            _,
         ) = self.create_oauth_client_and_issue_token(
             app, user_1, scope=self.scope
         )
@@ -135,6 +138,7 @@ class TestOAuth2ScopesWithReadAccess(OAuth2ScopesTestCase):
             client,
             oauth_client,
             access_token,
+            _,
         ) = self.create_oauth_client_and_issue_token(
             app, user_1, scope=self.scope
         )
@@ -165,6 +169,7 @@ class TestOAuth2ScopesWithReadAccess(OAuth2ScopesTestCase):
             client,
             oauth_client,
             access_token,
+            _,
         ) = self.create_oauth_client_and_issue_token(
             app, user_1_admin, scope=self.scope
         )
@@ -196,6 +201,7 @@ class TestOAuth2ScopesWithReadAccess(OAuth2ScopesTestCase):
             client,
             oauth_client,
             access_token,
+            _,
         ) = self.create_oauth_client_and_issue_token(
             app, user_1, scope=self.scope
         )
@@ -226,6 +232,7 @@ class TestOAuth2ScopesWithReadAndWriteAccess(ApiTestCaseMixin):
             client,
             oauth_client,
             access_token,
+            _,
         ) = self.create_oauth_client_and_issue_token(
             app, user_1, scope=self.scope
         )
@@ -245,6 +252,7 @@ class TestOAuth2ScopesWithReadAndWriteAccess(ApiTestCaseMixin):
             client,
             oauth_client,
             access_token,
+            _,
         ) = self.create_oauth_client_and_issue_token(
             app, user_1, scope=self.scope
         )

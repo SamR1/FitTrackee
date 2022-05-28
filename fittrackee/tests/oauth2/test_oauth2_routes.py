@@ -8,7 +8,11 @@ from flask import Flask
 from urllib3.util import parse_url
 from werkzeug.test import TestResponse
 
-from fittrackee.oauth2.models import OAuth2Client, OAuth2Token
+from fittrackee.oauth2.models import (
+    OAuth2AuthorizationCode,
+    OAuth2Client,
+    OAuth2Token,
+)
 from fittrackee.users.models import User
 
 from ..mixins import ApiTestCaseMixin
@@ -120,6 +124,7 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data['data']['client']['client_id'] == client_id
         assert data['data']['client']['client_secret'] == client_secret
+        assert data['data']['client']['id'] is not None
         assert (
             data['data']['client']['name']
             == TEST_OAUTH_CLIENT_METADATA['client_name']
@@ -221,6 +226,31 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
         )
 
         self.assert_400(response, error_message='invalid payload')
+
+    def test_it_creates_authorization_code(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        oauth_client = self.create_oauth_client(user_1)
+
+        client.post(
+            self.route,
+            data={
+                'client_id': oauth_client.client_id,
+                'response_type': 'code',
+            },
+            headers=dict(
+                Authorization=f'Bearer {auth_token}',
+                content_type='multipart/form-data',
+            ),
+        )
+
+        code = OAuth2AuthorizationCode.query.filter_by(
+            client_id=oauth_client.client_id
+        ).first()
+        assert code is not None
 
     def test_it_returns_code_in_url(self, app: Flask, user_1: User) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -384,6 +414,7 @@ class TestOAuthTokenRevocation(ApiTestCaseMixin):
             client,
             oauth_client,
             access_token,
+            _,
         ) = self.create_oauth_client_and_issue_token(app, user_1)
 
         response = client.post(
@@ -401,3 +432,342 @@ class TestOAuthTokenRevocation(ApiTestCaseMixin):
             client_id=oauth_client.client_id
         ).first()
         assert token.access_token_revoked_at is not None
+
+
+class TestOAuthGetClients(ApiTestCaseMixin):
+    route = '/api/oauth/apps'
+
+    def test_it_returns_error_if_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(self.route, content_type='application/json')
+
+        self.assert_401(response)
+
+    def test_it_returns_empty_list_when_no_clients(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['data']['clients'] == []
+
+    def test_it_returns_pagination(self, app: Flask, user_1: User) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        [self.create_oauth_client(user_1) for _ in range(7)]
+
+        response = client.get(
+            self.route,
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert len(data['data']['clients']) == 5
+        assert data['pagination'] == {
+            'has_next': True,
+            'has_prev': False,
+            'page': 1,
+            'pages': 2,
+            'total': 7,
+        }
+
+    def test_it_returns_page_2(self, app: Flask, user_1: User) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        [self.create_oauth_client(user_1) for _ in range(6)]
+
+        response = client.get(
+            f'{self.route}?page=2',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert len(data['data']['clients']) == 1
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': True,
+            'page': 2,
+            'pages': 2,
+            'total': 6,
+        }
+
+    def test_it_returns_clients_order_by_id_descending(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        clients = [self.create_oauth_client(user_1) for _ in range(7)]
+
+        response = client.get(
+            self.route,
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['data']['clients'][0]['client_id'] == clients[6].client_id
+        assert data['data']['clients'][4]['client_id'] == clients[2].client_id
+
+    def test_it_does_not_returns_clients_from_another_user(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        self.create_oauth_client(user_2)
+
+        response = client.get(
+            self.route,
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['data']['clients'] == []
+
+
+class TestOAuthGetClient(ApiTestCaseMixin):
+    route = '/api/oauth/apps/{client_id}'
+
+    def test_it_returns_error_when_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(
+            self.route.format(client_id=self.random_int()),
+            content_type='application/json',
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_error_when_client_not_found(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(client_id=self.random_int()),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_message(response, 'OAuth client not found')
+
+    def test_it_returns_user_oauth_client(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        client_description = self.random_string()
+        oauth_client = self.create_oauth_client(
+            user_1,
+            metadata={
+                **TEST_OAUTH_CLIENT_METADATA,
+                'client_description': client_description,
+            },
+        )
+        client_id = oauth_client.id
+        client_client_id = oauth_client.client_id
+
+        response = client.get(
+            self.route.format(client_id=client_id),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['data']['client']['client_id'] == client_client_id
+        assert 'client_secret' not in data['data']['client']
+        assert (
+            data['data']['client']['client_description'] == client_description
+        )
+        assert data['data']['client']['id'] == client_id
+        assert (
+            data['data']['client']['name']
+            == TEST_OAUTH_CLIENT_METADATA['client_name']
+        )
+        assert (
+            data['data']['client']['redirect_uris']
+            == TEST_OAUTH_CLIENT_METADATA['redirect_uris']
+        )
+        assert (
+            data['data']['client']['website']
+            == TEST_OAUTH_CLIENT_METADATA['client_uri']
+        )
+
+    def test_it_does_not_return_oauth_client_from_another_user(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        oauth_client = self.create_oauth_client(user_2)
+        client_id = oauth_client.id
+
+        response = client.delete(
+            self.route.format(client_id=client_id),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_message(response, 'OAuth client not found')
+
+
+class TestOAuthDeleteClient(ApiTestCaseMixin):
+    route = '/api/oauth/apps/{client_id}'
+
+    def test_it_returns_error_when_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.delete(
+            self.route.format(client_id=self.random_int()),
+            content_type='application/json',
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_error_when_client_not_found(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.delete(
+            self.route.format(client_id=self.random_int()),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_message(response, 'OAuth client not found')
+
+    def test_it_deletes_user_oauth_client(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        oauth_client = self.create_oauth_client(user_1)
+        client_id = oauth_client.id
+
+        response = client.delete(
+            self.route.format(client_id=client_id),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+        deleted_client = OAuth2Client.query.filter_by(id=client_id).first()
+        assert deleted_client is None
+
+    def test_it_deletes_user_authorized_oauth_client(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        oauth_client = self.create_oauth_client(user_1)
+        self.authorize_client(client, oauth_client, auth_token)
+        client_id = oauth_client.id
+
+        response = client.delete(
+            self.route.format(client_id=client_id),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+        deleted_client = OAuth2Client.query.filter_by(id=client_id).first()
+        assert deleted_client is None
+
+    def test_it_deletes_existing_code_associated_to_client(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        oauth_client = self.create_oauth_client(user_1)
+        code = self.authorize_client(client, oauth_client, auth_token)
+        client_id = oauth_client.id
+
+        response = client.delete(
+            self.route.format(client_id=client_id),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+        deleted_code = OAuth2AuthorizationCode.query.filter_by(
+            code=code[0]
+        ).first()
+        assert deleted_code is None
+
+    def test_it_deletes_existing_token_associated_to_client(
+        self, app: Flask, user_1: User
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            auth_token,
+        ) = self.create_oauth_client_and_issue_token(app, user_1)
+        client_id = oauth_client.id
+
+        response = client.delete(
+            self.route.format(client_id=client_id),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+        token = OAuth2Token.query.filter_by(access_token=access_token).first()
+        assert token is None
+
+    def test_it_can_not_delete_oauth_client_from_another_user(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        oauth_client = self.create_oauth_client(user_2)
+        client_id = oauth_client.id
+
+        response = client.delete(
+            self.route.format(client_id=client_id),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_message(response, 'OAuth client not found')
+        client = OAuth2Client.query.filter_by(id=client_id).first()
+        assert client is not None

@@ -58,6 +58,26 @@ class TestCreateOAuth2Client:
 
         assert oauth_client.client_name == client_name
 
+    def test_oauth_client_has_no_description_when_not_provided_in_metadata(
+        self, app: Flask, user_1: User
+    ) -> None:
+        oauth_client = create_oauth_client(TEST_METADATA, user_1)
+
+        assert oauth_client.client_description is None
+
+    def test_oauth_client_has_expected_description(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client_description = random_string()
+        client_metadata: Dict = {
+            **TEST_METADATA,
+            'client_description': client_description,
+        }
+
+        oauth_client = create_oauth_client(client_metadata, user_1)
+
+        assert oauth_client.client_description == client_description
+
     def test_oauth_client_has_expected_client_uri(
         self, app: Flask, user_1: User
     ) -> None:

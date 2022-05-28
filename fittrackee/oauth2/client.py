@@ -38,6 +38,7 @@ def create_oauth_client(metadata: Dict, user: User) -> OAuth2Client:
     """
     client_metadata = {
         'client_name': metadata['client_name'],
+        'client_description': metadata.get('client_description'),
         'client_uri': metadata['client_uri'],
         'redirect_uris': metadata['redirect_uris'],
         'scope': check_scope(metadata['scope']),
