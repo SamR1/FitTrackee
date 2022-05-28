@@ -7,7 +7,7 @@
             type="radio"
             :id="tab"
             :name="tab"
-            :checked="selectedTab === tab"
+            :checked="selectedTab.split('/')[0] === tab"
             :disabled="disabled"
             @input="$router.push(getPath(tab))"
           />

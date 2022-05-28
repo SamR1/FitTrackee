@@ -1,7 +1,23 @@
 {
-  "APP":{
-    "ISSUE_AT": "créée le"
+  "ADD_A_NEW_APP": "Ajouter une nouvelle application OAuth2",
+  "APP": {
+    "CLIENT_ID": "Identifiant client",
+    "DESCRIPTION": "Application description",
+    "ISSUE_AT": "créée le",
+    "NAME": "Nom de l'application",
+    "REDIRECT_URL": "URL de redirection",
+    "SCOPE": {
+      "LABEL": "Scope",
+      "READ": "lecture",
+      "WRITE": "écriture"
+    },
+    "URL": "URL de l'application"
   },
+  "APP_DELETION_CONFIRMATION": "Êtes-vous sûr de vouloir supprimer cette application ?",
   "APPS_LIST": "Applications OAuth2",
+  "DELETE_APP": "Supprimer l'application",
+  "NEW_APP": "Ajouter une App OAuth",
+  "NO_DESCRIPTION": "pas de description",
+  "NO_APP": "Application introuvable !",
   "NO_APPS": "pas de applications"
 }

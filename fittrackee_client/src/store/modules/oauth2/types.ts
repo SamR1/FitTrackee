@@ -8,14 +8,31 @@ import {
 import { OAUTH2_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
 import { IPagination } from '@/types/api'
-import { IOAuth2Client, IOauth2ClientsPayload } from '@/types/oauth'
+import {
+  IOAuth2Client,
+  IOAuth2ClientPayload,
+  IOauth2ClientsPayload,
+} from '@/types/oauth'
 
 export interface IOAuth2State {
+  client: IOAuth2Client
   clients: IOAuth2Client[]
   pagination: IPagination
 }
 
 export interface IOAuth2Actions {
+  [OAUTH2_STORE.ACTIONS.CREATE_CLIENT](
+    context: ActionContext<IOAuth2State, IRootState>,
+    payload: IOAuth2ClientPayload
+  ): void
+  [OAUTH2_STORE.ACTIONS.DELETE_CLIENT](
+    context: ActionContext<IOAuth2State, IRootState>,
+    id: number
+  ): void
+  [OAUTH2_STORE.ACTIONS.GET_CLIENT](
+    context: ActionContext<IOAuth2State, IRootState>,
+    id: string
+  ): void
   [OAUTH2_STORE.ACTIONS.GET_CLIENTS](
     context: ActionContext<IOAuth2State, IRootState>,
     payload: IOauth2ClientsPayload
@@ -23,11 +40,14 @@ export interface IOAuth2Actions {
 }
 
 export interface IOAuth2Getters {
+  [OAUTH2_STORE.GETTERS.CLIENT](state: IOAuth2State): IOAuth2Client
   [OAUTH2_STORE.GETTERS.CLIENTS](state: IOAuth2State): IOAuth2Client[]
   [OAUTH2_STORE.GETTERS.CLIENTS_PAGINATION](state: IOAuth2State): IPagination
 }
 
 export type TOAuth2Mutations<S = IOAuth2State> = {
+  [OAUTH2_STORE.MUTATIONS.EMPTY_CLIENT](state: S): void
+  [OAUTH2_STORE.MUTATIONS.SET_CLIENT](state: S, client: IOAuth2Client): void
   [OAUTH2_STORE.MUTATIONS.SET_CLIENTS](state: S, clients: IOAuth2Client[]): void
   [OAUTH2_STORE.MUTATIONS.SET_CLIENTS_PAGINATION](
     state: S,

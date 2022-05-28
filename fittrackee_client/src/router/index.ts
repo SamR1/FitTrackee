@@ -12,7 +12,9 @@ import UserAccountEdition from '@/components/User/ProfileEdition/UserAccountEdit
 import UserInfosEdition from '@/components/User/ProfileEdition/UserInfosEdition.vue'
 import UserPictureEdition from '@/components/User/ProfileEdition/UserPictureEdition.vue'
 import UserPreferencesEdition from '@/components/User/ProfileEdition/UserPreferencesEdition.vue'
+import AddUserApp from '@/components/User/UserApps/AddUserApp.vue'
 import UserApps from '@/components/User/UserApps/index.vue'
+import UserApp from '@/components/User/UserApps/UserApp.vue'
 import UserAppsList from '@/components/User/UserApps/UserAppsList.vue'
 import UserSportPreferences from '@/components/User/UserSportPreferences.vue'
 import store from '@/store'
@@ -155,6 +157,16 @@ const routes: Array<RouteRecordRaw> = [
                 path: '',
                 name: 'UserAppsList',
                 component: UserAppsList,
+              },
+              {
+                path: ':clientId',
+                name: 'UserApp',
+                component: UserApp,
+              },
+              {
+                path: 'new',
+                name: 'AddUserApp',
+                component: AddUserApp,
               },
             ],
           },

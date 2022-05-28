@@ -3,7 +3,9 @@
     <p class="apps-list">{{ $t('oauth2.APPS_LIST') }}</p>
     <ul v-if="clients.length > 0">
       <li v-for="client in clients" :key="client.client_id">
-        {{ client.name }}
+        <router-link :to="{ name: 'UserApp', params: { clientId: client.id } }">
+          {{ client.name }}
+        </router-link>
         <span class="app-issued-at">
           {{ $t('oauth2.APP.ISSUE_AT') }}
           {{
@@ -17,7 +19,12 @@
     </ul>
     <div class="no-apps" v-else>{{ $t('oauth2.NO_APPS') }}</div>
     <Pagination :pagination="pagination" path="/profile/apps" :query="query" />
-    <button @click="$router.push('/')">{{ $t('common.HOME') }}</button>
+    <div class="app-list-buttons">
+      <button @click="$router.push('/profile/apps/new')">
+        {{ $t('oauth2.NEW_APP') }}
+      </button>
+      <button @click="$router.push('/')">{{ $t('common.HOME') }}</button>
+    </div>
   </div>
 </template>
 
@@ -92,10 +99,15 @@
     .app-issued-at {
       font-size: 0.85em;
       font-style: italic;
+      padding-left: $default-padding;
     }
     .apps-list {
       font-size: 1.05em;
       font-weight: bold;
+    }
+    .app-list-buttons {
+      display: flex;
+      gap: $default-padding;
     }
     .no-apps {
       font-style: italic;

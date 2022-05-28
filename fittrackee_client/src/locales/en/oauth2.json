@@ -1,7 +1,23 @@
 {
-  "APP":{
-    "ISSUE_AT": "issued at"
+  "ADD_A_NEW_APP": "Add a new OAuth2 application",
+  "APP": {
+    "CLIENT_ID": "Client ID",
+    "DESCRIPTION": "Application description",
+    "ISSUE_AT": "issue at",
+    "NAME": "Application name",
+    "REDIRECT_URL": "Redirect URI",
+    "SCOPE": {
+      "LABEL": "Scope",
+      "READ": "read",
+      "WRITE": "write"
+    },
+    "URL": "Application URI"
   },
+  "APP_DELETION_CONFIRMATION": "Are you sure you want to delete this app?",
   "APPS_LIST": "OAuth2 applications",
-  "NO_APPS": "No applications"
+  "DELETE_APP": "Delete application",
+  "NEW_APP": "New OAuth App",
+  "NO_DESCRIPTION": "no description",
+  "NO_APP": "Application not found!",
+  "NO_APPS": "no applications"
 }
