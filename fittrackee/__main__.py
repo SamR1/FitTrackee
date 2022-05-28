@@ -12,7 +12,7 @@ from fittrackee import create_app
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.utils.admin import UserManagerService
 
-HOST = os.getenv('HOST', '0.0.0.0')
+HOST = os.getenv('HOST', '127.0.0.1')
 PORT = os.getenv('PORT', '5000')
 WORKERS = os.getenv('APP_WORKERS', 1)
 BASEDIR = os.path.abspath(os.path.dirname(__file__))

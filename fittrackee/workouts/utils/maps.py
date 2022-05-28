@@ -27,7 +27,7 @@ def get_map_hash(map_filepath: str) -> str:
     Generate a md5 hash used as id instead of workout id, to retrieve map
     image (maps are sensitive data)
     """
-    md5 = hashlib.md5()
+    md5 = hashlib.md5()  # nosec  # need 3.9+ to use 'usedforsecurity' flag
     absolute_map_filepath = get_absolute_file_path(map_filepath)
     with open(absolute_map_filepath, 'rb') as f:
         for chunk in iter(lambda: f.read(128 * md5.block_size), b''):
