@@ -58,7 +58,7 @@
 
   import { htmlLegendPlugin } from '@/components/Workout/WorkoutDetail/WorkoutChart/legend'
   import { TUnit } from '@/types/units'
-  import { IUserProfile } from '@/types/user'
+  import { IAuthUserProfile } from '@/types/user'
   import {
     IWorkoutChartData,
     IWorkoutData,
@@ -68,7 +68,7 @@
   import { getDatasets } from '@/utils/workouts'
 
   interface Props {
-    authUser: IUserProfile
+    authUser: IAuthUserProfile
     workoutData: IWorkoutData
   }
   const props = defineProps<Props>()
