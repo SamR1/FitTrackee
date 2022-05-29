@@ -1,7 +1,9 @@
 import os
+import shutil
 from typing import Generator, Optional, Union
 
 import pytest
+from flask import current_app
 
 from fittrackee import create_app, db
 from fittrackee.application.models import AppConfig
@@ -65,6 +67,11 @@ def get_app(
             # FATAL: remaining connection slots are reserved for
             # non-replication superuser connections
             db.engine.dispose()
+            # remove all temp files like gpx files
+            shutil.rmtree(
+                current_app.config['UPLOAD_FOLDER'],
+                ignore_errors=True,
+            )
             return app
 
 
