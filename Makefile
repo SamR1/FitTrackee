@@ -12,7 +12,7 @@ bandit:
 build-client: lint-client
 	cd fittrackee_client && $(NPM) build
 
-check-all: lint-all type-check test-all
+check-all: bandit lint-all type-check test-all
 
 check-client: lint-client test-client
 
