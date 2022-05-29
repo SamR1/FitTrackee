@@ -574,7 +574,7 @@ def get_picture(user_name: str) -> Any:
             return send_file(picture_path)
     except UserNotFoundException:
         return UserNotFoundErrorResponse()
-    except Exception:
+    except Exception:  # nosec
         pass
     return NotFoundErrorResponse('No picture.')
 

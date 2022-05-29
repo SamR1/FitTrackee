@@ -42,6 +42,9 @@ jobs:
           pip install --quiet poetry
           poetry config virtualenvs.create false
           poetry install --no-interaction --quiet
+      - name: Bandit
+        if: matrix.python-version == '3.10'
+        run: bandit -r fittrackee -c pyproject.toml
       - name: Lint
         if: matrix.python-version == '3.10'
         run: pytest --flake8 --isort --black -m "flake8 or isort or black" fittrackee e2e --ignore=fittrackee/migrations -p no:warnings

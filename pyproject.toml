@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "0.6.5"
+version = "0.6.6"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0"
@@ -31,14 +31,14 @@ flask-dramatiq = "^0.6.0"
 flask-migrate = "^3.1"
 gpxpy = "=1.3.4"
 gunicorn = "^20.1"
-humanize = "^4.0"
+humanize = "^4.1"
 psycopg2-binary = "^2.9"
-pyjwt = "^2.3"
+pyjwt = "^2.4"
 python-forecastio = "^1.4"
 pytz = "^2022.1"
-shortuuid = "^1.0.8"
+shortuuid = "^1.0.9"
 staticmap = "^0.5.4"
-SQLAlchemy = "1.4.35"
+SQLAlchemy = "1.4.36"
 pyOpenSSL = "^22.0"
 pycryptodome = "^3.14.1"
 ua-parser = "^0.10.0"
@@ -46,7 +46,7 @@ ua-parser = "^0.10.0"
 [tool.poetry.dev-dependencies]
 black = "^22.3"
 freezegun = "^1.2"
-mypy = "^0.942"
+mypy = "^0.960"
 pytest = "^7.1"
 pytest-black = "^0.3.12"
 pytest-cov = "^3.0"
@@ -61,6 +61,7 @@ types-pytz = "^2021.3"
 types-requests = "^2.27"
 types-freezegun = "^1.1"
 Sphinx = "^4.5"
+bandit = "^1.7.4"
 
 [tool.poetry.scripts]
 fittrackee = 'fittrackee.__main__:main'
@@ -86,6 +87,9 @@ combine_as_imports = true
 markers = [
     "disable_autouse_generate_keys: disable patch for keys generation",
 ]
+
+[tool.bandit]
+exclude_dirs = ["fittrackee/tests/*", "fittrackee/migrations/*"]
 
 [build-system]
 requires = ["poetry>=0.12"]

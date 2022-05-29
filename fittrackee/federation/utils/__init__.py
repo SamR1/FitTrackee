@@ -1,7 +1,11 @@
 import re
 from typing import Dict, Tuple
 
-from Crypto.PublicKey import RSA
+# B413:blacklist error on bandit scan
+# related pyCrypto and not pycryptodome
+# https://bandit.readthedocs.io/en/1.7.4/blacklists/blacklist_imports.html#b413-import-pycrypto  # noqa
+# see issue https://github.com/PyCQA/bandit/issues/614
+from Crypto.PublicKey import RSA  # nosec B413
 from flask import current_app
 
 from ..enums import ActivityType

@@ -9,9 +9,9 @@ from datetime import datetime
 from typing import Dict, Optional
 
 import requests
-from Crypto.Hash import SHA256
-from Crypto.PublicKey import RSA
-from Crypto.Signature import pkcs1_15
+from Crypto.Hash import SHA256  # nosec B413
+from Crypto.PublicKey import RSA  # nosec B413
+from Crypto.Signature import pkcs1_15  # nosec B413
 from flask import Request
 
 from fittrackee import appLog

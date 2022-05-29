@@ -6,14 +6,17 @@ make-p:
 	# Launch all P targets in parallel and exit as soon as one exits.
 	set -m; (for p in $(P); do ($(MAKE) $$p || kill 0)& done; wait)
 
+bandit:
+	$(BANDIT) -r fittrackee -c pyproject.toml
+
 build-client: lint-client
 	cd fittrackee_client && $(NPM) build
 
-check-all: lint-all type-check test-all
+check-all: bandit lint-all type-check test-all
 
 check-client: lint-client test-client
 
-check-python: lint-python type-check test-python
+check-python: bandit lint-python type-check test-python
 
 clean:
 	rm -rf .mypy_cache
@@ -98,10 +101,12 @@ init-db:
 install: install-client install-python
 
 install-client:
-	cd fittrackee_client && $(NPM) install --prod
+	# NPM_ARGS="--ignore-engines", if errors with Node latest version
+	cd fittrackee_client && $(NPM) install --prod $(NPM_ARGS)
 
 install-client-dev:
-	cd fittrackee_client && $(NPM) install
+	# NPM_ARGS="--ignore-engines", if errors with Node latest version
+	cd fittrackee_client && $(NPM) install $(NPM_ARGS)
 
 install-dev: install-client-dev install-python-dev
 

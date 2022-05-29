@@ -10,6 +10,9 @@ os.environ['FLASK_ENV'] = 'testing'
 os.environ['APP_SETTINGS'] = 'fittrackee.config.TestingConfig'
 # to avoid resetting dev database during tests
 os.environ['DATABASE_URL'] = os.environ['DATABASE_TEST_URL']
+TEMP_FOLDER = '/tmp/FitTrackee'
+os.environ['UPLOAD_FOLDER'] = TEMP_FOLDER
+os.environ['APP_LOG'] = TEMP_FOLDER + '/fittrackee.log'
 
 pytest_plugins = [
     'fittrackee.tests.fixtures.fixtures_app',
