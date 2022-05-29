@@ -243,7 +243,7 @@
   import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import { TAppConfig } from '@/types/application'
   import { ISport } from '@/types/sports'
-  import { IUserProfile } from '@/types/user'
+  import { IAuthUserProfile } from '@/types/user'
   import { IWorkout, IWorkoutForm } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
@@ -252,7 +252,7 @@
   import { convertDistance } from '@/utils/units'
 
   interface Props {
-    authUser: IUserProfile
+    authUser: IAuthUserProfile
     sports: ISport[]
     isCreation?: boolean
     loading?: boolean

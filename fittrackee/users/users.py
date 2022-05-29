@@ -388,7 +388,7 @@ def get_picture(user_name: str) -> Any:
         if user.picture is not None:
             picture_path = get_absolute_file_path(user.picture)
             return send_file(picture_path)
-    except Exception:
+    except Exception:  # nosec
         pass
     return NotFoundErrorResponse('No picture.')
 
