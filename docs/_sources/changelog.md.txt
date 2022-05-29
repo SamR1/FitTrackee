@@ -1,5 +1,12 @@
 # Change log
 
+## Version 0.6.6 (2022/05/29)
+
+### Misc
+
+No new features in this release, only dependencies update and code refacto before introducing new features.
+
+
 ## Version 0.6.5 (2022/04/24)
 
 It is now possible to start FitTrackee without a configured SMTP provider (see [documentation](https://samr1.github.io/FitTrackee/installation.html#emails)).
