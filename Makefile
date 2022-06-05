@@ -74,7 +74,7 @@ docker-stop:
 	docker-compose -f docker-compose-dev.yml stop
 
 docker-up:
-	docker-compose -f docker-compose-dev.yml up fittrackeee
+	docker-compose -f docker-compose-dev.yml up fittrackee
 
 downgrade-db:
 	$(FLASK) db downgrade --directory $(MIGRATIONS)
