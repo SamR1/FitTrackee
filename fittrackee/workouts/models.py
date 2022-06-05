@@ -159,6 +159,7 @@ class Workout(BaseModel):
     weather_start = db.Column(JSON, nullable=True)
     weather_end = db.Column(JSON, nullable=True)
     notes = db.Column(db.String(500), nullable=True)
+    remote_url = db.Column(db.String(255), nullable=True)
     workout_visibility = db.Column(
         Enum(PrivacyLevel, name='privacy_levels'),
         server_default='PRIVATE',
@@ -362,6 +363,8 @@ class Workout(BaseModel):
         if user_status == 'owner':
             workout['workout_visibility'] = self.workout_visibility.value
             workout['map_visibility'] = self.calculated_map_visibility.value
+        if self.user.is_remote:
+            workout['remote_url'] = self.remote_url
         return workout
 
     @classmethod

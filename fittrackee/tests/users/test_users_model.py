@@ -249,15 +249,15 @@ class TestUserRecords(UserModelAssertMixin):
     ) -> None:
         serialized_user = user_1.serialize(user_1)
         assert len(serialized_user['records']) == 4
-        assert serialized_user['records'][0]['record_type'] == 'AS'
-        assert serialized_user['records'][0]['sport_id'] == sport_1_cycling.id
-        assert serialized_user['records'][0]['user'] == user_1.username
-        assert serialized_user['records'][0]['value'] > 0
-        assert (
-            serialized_user['records'][0]['workout_id']
-            == workout_cycling_user_1.short_id
+        records = sorted(
+            serialized_user['records'], key=lambda r: r['record_type']
         )
-        assert serialized_user['records'][0]['workout_date']
+        assert records[0]['record_type'] == 'AS'
+        assert records[0]['sport_id'] == sport_1_cycling.id
+        assert records[0]['user'] == user_1.username
+        assert records[0]['value'] > 0
+        assert records[0]['workout_id'] == workout_cycling_user_1.short_id
+        assert records[0]['workout_date']
 
     def test_it_returns_user_1_and_user_2_dont_not_follow_each_other(
         self,

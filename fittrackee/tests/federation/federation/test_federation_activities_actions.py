@@ -499,14 +499,17 @@ class TestUndoActivityForFollowRequest(FollowRequestActivitiesTestCase):
 
 class WorkoutActivitiesTestCase(RandomMixin):
     def generate_workout_create_activity(
-        self, remote_actor: RandomActor, sport_id: int
+        self, remote_actor: Union[RandomActor, Actor], sport_id: int
     ) -> Dict:
+        remote_domain = (
+            remote_actor.domain
+            if isinstance(remote_actor, RandomActor)
+            else f'https://{remote_actor.domain.name}'
+        )
         workout_date = datetime.utcnow().strftime(WORKOUT_DATE_FORMAT)
         workout_distance = self.random_int(max_value=999)
         workout_short_id = self.random_short_id()
-        workout_url = (
-            f'https://{remote_actor.domain}/workouts/{workout_short_id}'
-        )
+        workout_url = f'{remote_domain}/workouts/{workout_short_id}'
         published = datetime.utcnow().strftime(DATE_FORMAT)
         return {
             '@context': AP_CTX,
@@ -597,10 +600,34 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
         remote_workout = Workout.query.filter_by(
             user_id=remote_user.id, sport_id=sport_1_cycling.id
         ).first()
+        assert remote_workout.remote_url == workout_activity['object']['url']
         assert (
             remote_workout.distance == workout_activity['object']['distance']
         )
         assert (
             remote_workout.workout_visibility
             == workout_activity['object']['workout_visibility']
+        )
+
+    def test_serializer_returns_remote_url(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+    ) -> None:
+        workout_activity = self.generate_workout_create_activity(
+            remote_actor=remote_user.actor, sport_id=sport_1_cycling.id
+        )
+        activity = get_activity_instance({'type': workout_activity['type']})(
+            activity_dict=workout_activity
+        )
+        activity.process_activity()
+
+        remote_workout = Workout.query.filter_by(
+            user_id=remote_user.id, sport_id=sport_1_cycling.id
+        ).first()
+        assert (
+            remote_workout.serialize(user_1)['remote_url']
+            == remote_workout.remote_url
         )

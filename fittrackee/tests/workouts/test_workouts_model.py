@@ -97,6 +97,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         assert serialized_workout['weather_start'] is None
         assert serialized_workout['with_gpx'] is False
         assert str(serialized_workout['workout_date']) == '2018-01-01 00:00:00'
+        assert 'remote_url' not in serialized_workout
 
     def test_serialize_for_workout_with_gpx(
         self,
@@ -142,6 +143,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         assert serialized_workout['weather_start'] is None
         assert serialized_workout['with_gpx'] is True
         assert str(serialized_workout['workout_date']) == '2018-01-01 00:00:00'
+        assert 'remote_url' not in serialized_workout
 
     def test_serializer_returns_map_related_data(
         self,
