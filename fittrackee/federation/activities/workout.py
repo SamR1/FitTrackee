@@ -6,6 +6,7 @@ from fittrackee.workouts.exceptions import PrivateWorkoutException
 
 from ..constants import AP_CTX, DATE_FORMAT, PUBLIC_STREAM
 from ..enums import ActivityType
+from ..exceptions import InvalidWorkoutException
 from .base_object import ActivityObject
 from .templates.workout_note import WORKOUT_NOTE
 
@@ -84,11 +85,11 @@ class WorkoutObject(ActivityObject):
                 **activity['object'],
                 **{
                     'type': 'Workout',
-                    'ave_speed': self.workout.ave_speed,
-                    'distance': self.workout.distance,
-                    'duration': self.workout.duration,
-                    'max_speed': self.workout.max_speed,
-                    'moving': self.workout.moving,
+                    'ave_speed': float(self.workout.ave_speed),
+                    'distance': float(self.workout.distance),
+                    'duration': str(self.workout.duration),
+                    'max_speed': float(self.workout.max_speed),
+                    'moving': str(self.workout.moving),
                     'sport_id': self.workout.sport_id,
                     'title': self.workout.title,
                     'workout_date': self.workout.workout_date.strftime(
@@ -98,3 +99,24 @@ class WorkoutObject(ActivityObject):
                 },
             }
         return self._update_activity_recipients(activity)
+
+
+def convert_duration_string_to_seconds(duration_str: str) -> int:
+    try:
+        hour, minutes, seconds = duration_str.split(':')
+        duration = int(hour) * 3600 + int(minutes) * 60 + int(seconds)
+    except Exception as e:
+        raise InvalidWorkoutException(
+            f'duration or moving format is invalid ({e})'
+        )
+    return duration
+
+
+def convert_workout_activity(workout_data: Dict) -> Dict:
+    return {
+        **workout_data,
+        'duration': convert_duration_string_to_seconds(
+            workout_data['duration']
+        ),
+        'moving': convert_duration_string_to_seconds(workout_data['moving']),
+    }

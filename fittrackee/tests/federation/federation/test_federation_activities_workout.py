@@ -1,8 +1,15 @@
+from typing import Any
+
 import pytest
 from flask import Flask
 
-from fittrackee.federation.activities.workout import WorkoutObject
+from fittrackee.federation.activities.workout import (
+    WorkoutObject,
+    convert_duration_string_to_seconds,
+    convert_workout_activity,
+)
 from fittrackee.federation.constants import AP_CTX, DATE_FORMAT
+from fittrackee.federation.exceptions import InvalidWorkoutException
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.tests.mixins import RandomMixin
 from fittrackee.users.models import User
@@ -64,11 +71,11 @@ class TestWorkoutObject(WorkoutObjectTestCase):
                 'attributedTo': user_1.actor.activitypub_id,
                 'to': [user_1.actor.followers_url],
                 'cc': [],
-                'ave_speed': workout_cycling_user_1.ave_speed,
-                'distance': workout_cycling_user_1.distance,
-                'duration': workout_cycling_user_1.duration,
-                'max_speed': workout_cycling_user_1.max_speed,
-                'moving': workout_cycling_user_1.moving,
+                'ave_speed': float(workout_cycling_user_1.ave_speed),
+                'distance': float(workout_cycling_user_1.distance),
+                'duration': str(workout_cycling_user_1.duration),
+                'max_speed': float(workout_cycling_user_1.max_speed),
+                'moving': str(workout_cycling_user_1.moving),
                 'sport_id': workout_cycling_user_1.sport_id,
                 'title': workout_cycling_user_1.title,
                 'workout_date': workout_cycling_user_1.workout_date.strftime(
@@ -117,10 +124,10 @@ class TestWorkoutObject(WorkoutObjectTestCase):
                 'to': ['https://www.w3.org/ns/activitystreams#Public'],
                 'cc': [user_1.actor.followers_url],
                 'ave_speed': float(workout_cycling_user_1.ave_speed),
-                'distance': workout_cycling_user_1.distance,
-                'duration': workout_cycling_user_1.duration,
+                'distance': float(workout_cycling_user_1.distance),
+                'duration': str(workout_cycling_user_1.duration),
                 'max_speed': float(workout_cycling_user_1.max_speed),
-                'moving': workout_cycling_user_1.moving,
+                'moving': str(workout_cycling_user_1.moving),
                 'sport_id': workout_cycling_user_1.sport_id,
                 'title': workout_cycling_user_1.title,
                 'workout_date': workout_cycling_user_1.workout_date.strftime(
@@ -236,4 +243,76 @@ Duration: {workout.duration}</p>
                 'to': ['https://www.w3.org/ns/activitystreams#Public'],
                 'cc': [user_1.actor.followers_url],
             },
+        }
+
+
+class TestWorkoutConvertDurationStringToSeconds:
+    @pytest.mark.parametrize(
+        'input_duration,expected_seconds',
+        [
+            ('0:00:00', 0),
+            ('1:00:00', 3600),
+            ('01:00:00', 3600),
+            ('00:30:00', 1800),
+            ('00:00:10', 10),
+            ('01:20:30', 4830),
+        ],
+    )
+    def test_it_converts_duration_string_into_seconds(
+        self, input_duration: str, expected_seconds: int
+    ) -> None:
+        assert (
+            convert_duration_string_to_seconds(duration_str=input_duration)
+            == expected_seconds
+        )
+
+    @pytest.mark.parametrize(
+        'input_duration',
+        ['', '1:00', 3600, None],
+    )
+    def test_it_raises_exception_if_duration_is_invalid(
+        self, input_duration: Any
+    ) -> None:
+        with pytest.raises(
+            InvalidWorkoutException,
+            match='Invalid workout data: duration or moving format is invalid',
+        ):
+            convert_duration_string_to_seconds(duration_str=input_duration)
+
+
+class TestWorkoutConvertWorkoutActivity(RandomMixin):
+    def test_it_convert_workout_data_from_activity(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_activity_object = {
+            'id': self.random_string(),
+            'type': 'Workout',
+            'published': workout_cycling_user_1.creation_date.strftime(
+                DATE_FORMAT
+            ),
+            'url': self.random_string(),
+            'attributedTo': user_1.actor.activitypub_id,
+            'to': [user_1.actor.followers_url],
+            'cc': [],
+            'ave_speed': float(workout_cycling_user_1.ave_speed),
+            'distance': float(workout_cycling_user_1.distance),
+            'duration': str(workout_cycling_user_1.duration),
+            'max_speed': float(workout_cycling_user_1.max_speed),
+            'moving': str(workout_cycling_user_1.moving),
+            'sport_id': workout_cycling_user_1.sport_id,
+            'title': workout_cycling_user_1.title,
+            'workout_date': workout_cycling_user_1.workout_date.strftime(
+                WORKOUT_DATE_FORMAT
+            ),
+            'workout_visibility': workout_cycling_user_1.workout_visibility,
+        }
+
+        assert convert_workout_activity(workout_activity_object) == {
+            **workout_activity_object,
+            'duration': workout_cycling_user_1.duration.seconds,
+            'moving': workout_cycling_user_1.moving.seconds,
         }

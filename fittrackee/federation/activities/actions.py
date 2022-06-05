@@ -17,6 +17,8 @@ from fittrackee.workouts.exceptions import SportNotFoundException
 from fittrackee.workouts.models import Sport
 from fittrackee.workouts.utils.workouts import create_workout
 
+from .workout import convert_workout_activity
+
 
 class AbstractActivity(ABC):
     def __init__(self, activity_dict: Dict) -> None:
@@ -158,7 +160,9 @@ class CreateActivity(AbstractActivity):
         sport = Sport.query.filter_by(id=sport_id).first()
         if not sport:
             raise SportNotFoundException()
-        new_workout = create_workout(actor.user, workout_data)
+        new_workout = create_workout(
+            actor.user, convert_workout_activity(workout_data)
+        )
         db.session.add(new_workout)
         db.session.commit()
 

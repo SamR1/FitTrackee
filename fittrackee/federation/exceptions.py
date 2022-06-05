@@ -32,6 +32,16 @@ class InvalidSignatureException(GenericException):
         )
 
 
+class InvalidWorkoutException(GenericException):
+    def __init__(self, message: Optional[str] = None) -> None:
+        super().__init__(
+            status='error',
+            message=(
+                f'Invalid workout data{f": {message}" if message else ""}.'
+            ),
+        )
+
+
 class SenderNotFoundException(GenericException):
     def __init__(self) -> None:
         super().__init__(
