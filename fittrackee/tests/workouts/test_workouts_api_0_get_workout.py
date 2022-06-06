@@ -124,8 +124,14 @@ class TestGetWorkoutAsFollower(GetWorkoutTestCase):
         assert data['data']['workouts'][0]['user'] == jsonify_dict(
             user_2.serialize()
         )
-        assert 'map_visibility' not in data['data']['workouts'][0]
-        assert 'workout_visibility' not in data['data']['workouts'][0]
+        assert (
+            data['data']['workouts'][0]['map_visibility']
+            == PrivacyLevel.PRIVATE.value
+        )
+        assert (
+            data['data']['workouts'][0]['workout_visibility']
+            == input_workout_level
+        )
 
 
 class TestGetWorkoutAsUser(GetWorkoutTestCase):
@@ -200,8 +206,14 @@ class TestGetWorkoutAsUser(GetWorkoutTestCase):
         assert data['data']['workouts'][0]['user'] == jsonify_dict(
             user_2.serialize()
         )
-        assert 'map_visibility' not in data['data']['workouts'][0]
-        assert 'workout_visibility' not in data['data']['workouts'][0]
+        assert (
+            data['data']['workouts'][0]['map_visibility']
+            == PrivacyLevel.PRIVATE.value
+        )
+        assert (
+            data['data']['workouts'][0]['workout_visibility']
+            == PrivacyLevel.PUBLIC.value
+        )
 
 
 class TestGetWorkoutAsUnauthenticatedUser(GetWorkoutTestCase):
@@ -265,8 +277,14 @@ class TestGetWorkoutAsUnauthenticatedUser(GetWorkoutTestCase):
         assert data['data']['workouts'][0]['user'] == jsonify_dict(
             user_1.serialize()
         )
-        assert 'map_visibility' not in data['data']['workouts'][0]
-        assert 'workout_visibility' not in data['data']['workouts'][0]
+        assert (
+            data['data']['workouts'][0]['map_visibility']
+            == PrivacyLevel.PRIVATE.value
+        )
+        assert (
+            data['data']['workouts'][0]['workout_visibility']
+            == PrivacyLevel.PUBLIC.value
+        )
 
 
 class GetWorkoutGpxTestCase(ApiTestCaseMixin):

@@ -356,13 +356,12 @@ class Workout(BaseModel):
             'segments': [segment.serialize() for segment in self.segments],
             'records': [record.serialize() for record in self.records],
             'map': self.map_id if self.map and can_see_map_data else None,
+            'map_visibility': self.calculated_map_visibility.value,
             'weather_start': self.weather_start,
             'weather_end': self.weather_end,
             'notes': self.notes if user_status == 'owner' else None,
+            'workout_visibility': self.workout_visibility.value,
         }
-        if user_status == 'owner':
-            workout['workout_visibility'] = self.workout_visibility.value
-            workout['map_visibility'] = self.calculated_map_visibility.value
         if self.user.is_remote:
             workout['remote_url'] = self.remote_url
         return workout
