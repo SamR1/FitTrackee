@@ -18,7 +18,12 @@
       </li>
     </ul>
     <div class="no-apps" v-else>{{ $t('oauth2.NO_APPS') }}</div>
-    <Pagination :pagination="pagination" path="/profile/apps" :query="query" />
+    <Pagination
+      v-if="clients.length > 0"
+      :pagination="pagination"
+      path="/profile/apps"
+      :query="query"
+    />
     <div class="app-list-buttons">
       <button @click="$router.push('/profile/apps/new')">
         {{ $t('oauth2.NEW_APP') }}
@@ -111,6 +116,7 @@
     }
     .no-apps {
       font-style: italic;
+      padding-bottom: $default-padding * 2;
     }
   }
 </style>
