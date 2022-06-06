@@ -631,3 +631,23 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
             remote_workout.serialize(user_1)['remote_url']
             == remote_workout.remote_url
         )
+
+    def test_it_does_not_create_records_for_remote_workout(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+    ) -> None:
+        workout_activity = self.generate_workout_create_activity(
+            remote_actor=remote_user.actor, sport_id=sport_1_cycling.id
+        )
+        activity = get_activity_instance({'type': workout_activity['type']})(
+            activity_dict=workout_activity
+        )
+        activity.process_activity()
+
+        remote_workout = Workout.query.filter_by(
+            user_id=remote_user.id, sport_id=sport_1_cycling.id
+        ).first()
+        assert remote_workout.records == []

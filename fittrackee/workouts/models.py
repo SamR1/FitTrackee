@@ -409,9 +409,11 @@ def on_workout_insert(
 ) -> None:
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session: Session, context: Any) -> None:
-        update_records(
-            workout.user_id, workout.sport_id, connection, session
-        )  # noqa
+        # For now only create records for local workouts
+        if not workout.remote_url:
+            update_records(
+                workout.user_id, workout.sport_id, connection, session
+            )
 
 
 @listens_for(Workout, 'after_update')
