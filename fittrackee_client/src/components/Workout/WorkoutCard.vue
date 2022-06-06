@@ -1,47 +1,52 @@
 <template>
   <div class="timeline-workout">
     <div class="box">
-      <div class="workout-user-date">
-        <div class="workout-user">
-          <UserPicture :user="user" />
+      <div class="workout-card-title">
+        <div class="workout-user-date">
+          <div class="workout-user">
+            <UserPicture :user="user" />
+            <router-link
+              v-if="user.username"
+              class="workout-user-name"
+              :to="{
+                name: 'User',
+                params: { username: getUserName(user) },
+              }"
+              :title="user.username"
+            >
+              {{ user.username }}
+            </router-link>
+          </div>
           <router-link
-            v-if="user.username"
-            class="workout-user-name"
+            class="workout-title"
+            v-if="workout.id"
             :to="{
-              name: 'User',
-              params: { username: user.username },
+              name: 'Workout',
+              params: { workoutId: workout.id },
             }"
-            :title="user.username"
           >
-            {{ user.username }}
+            {{ workout.title }}
           </router-link>
+          <div
+            class="workout-date"
+            v-if="workout.workout_date && user"
+            :title="
+              format(
+                getDateWithTZ(workout.workout_date, user.timezone),
+                'dd/MM/yyyy HH:mm'
+              )
+            "
+          >
+            {{
+              formatDistance(new Date(workout.workout_date), new Date(), {
+                addSuffix: true,
+                locale,
+              })
+            }}
+          </div>
         </div>
-        <router-link
-          class="workout-title"
-          v-if="workout.id"
-          :to="{
-            name: 'Workout',
-            params: { workoutId: workout.id },
-          }"
-        >
-          {{ workout.title }}
-        </router-link>
-        <div
-          class="workout-date"
-          v-if="workout.workout_date && user"
-          :title="
-            format(
-              getDateWithTZ(workout.workout_date, user.timezone),
-              'dd/MM/yyyy HH:mm'
-            )
-          "
-        >
-          {{
-            formatDistance(new Date(workout.workout_date), new Date(), {
-              addSuffix: true,
-              locale,
-            })
-          }}
+        <div v-if="user.is_remote" class="user-remote-fullname">
+          {{ user.fullname }}
         </div>
       </div>
       <div
@@ -153,6 +158,7 @@
   import { IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getDateWithTZ } from '@/utils/dates'
+  import { getUserName } from '@/utils/user'
 
   interface Props {
     user: IUserProfile
@@ -230,6 +236,13 @@
             display: none;
           }
         }
+      }
+
+      .user-remote-fullname {
+        font-size: 0.8em;
+        font-style: italic;
+        margin-top: -0.5 * $default-padding;
+        padding-left: $default-padding;
       }
 
       .workout-map {

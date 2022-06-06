@@ -7,6 +7,9 @@
         :to="`/users/${getUserName(user)}?from=users`"
       >
         {{ user.username }}
+        <div v-if="user.is_remote" class="user-remote-fullname">
+          {{ user.fullname }}
+        </div>
       </router-link>
     </div>
     <UserStats :user="user" />
@@ -57,6 +60,10 @@
 
       .user-name {
         font-size: 1.3em;
+        .user-remote-fullname {
+          font-size: 0.65em;
+          font-style: italic;
+        }
       }
     }
 
@@ -83,6 +90,9 @@
         .user-name {
           font-size: 1em;
           padding-left: $default-padding * 0.5;
+          .user-remote-fullname {
+            font-size: 0.8em;
+          }
         }
       }
       ::v-deep(.user-stats) {

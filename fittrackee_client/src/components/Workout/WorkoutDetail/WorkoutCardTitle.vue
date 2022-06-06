@@ -1,6 +1,7 @@
 <template>
   <div id="workout-card-title">
     <div
+      v-if="isWorkoutOwner"
       class="workout-previous workout-arrow"
       :class="{ inactive: !workoutObject.previousUrl }"
       :title="
@@ -21,6 +22,16 @@
       <div class="workout-title-date">
         <div class="workout-title" v-if="workoutObject.type === 'WORKOUT'">
           <span>{{ workoutObject.title }}</span>
+          <a
+            class="remote-link"
+            v-if="workoutObject.remoteUrl"
+            :href="workoutObject.remoteUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{ $t('workouts.VIEW_ON_REMOTE_INSTANCE') }}
+            <i class="fa fa-external-link-square" aria-hidden="true"></i>
+          </a>
           <i
             class="fa fa-edit"
             aria-hidden="true"
@@ -72,6 +83,7 @@
       </div>
     </div>
     <div
+      v-if="isWorkoutOwner"
       class="workout-next workout-arrow"
       :class="{ inactive: !workoutObject.nextUrl }"
       :title="
@@ -152,8 +164,21 @@
         }
       }
       .workout-title {
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
         span {
           margin-right: $default-margin * 0.5;
+        }
+        .remote-link {
+          font-size: 0.85em;
+          font-style: italic;
+          font-weight: normal;
+
+          .fa-external-link-square {
+            font-size: 0.85em;
+            padding: 0;
+          }
         }
       }
       .workout-date {
@@ -177,6 +202,11 @@
         .fa-trash,
         .fa-edit {
           padding: 0 $default-padding * 0.7;
+        }
+
+        .workout-title {
+          display: flex;
+          flex-direction: column;
         }
       }
     }

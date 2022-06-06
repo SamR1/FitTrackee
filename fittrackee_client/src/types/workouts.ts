@@ -68,6 +68,7 @@ export interface IWorkout {
   pauses: string | null
   previous_workout: string | null
   records: IRecord[]
+  remote_url?: string
   segments: IWorkoutSegment[]
   sport_id: number
   title: string

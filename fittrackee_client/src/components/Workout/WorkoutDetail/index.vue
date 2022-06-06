@@ -157,6 +157,7 @@
       pauses: segment ? segment.pauses : workout.pauses,
       previousUrl: urls.previousUrl,
       records: segment ? [] : workout.records,
+      remoteUrl: workout.remote_url,
       segmentId: segment ? segment.segment_id : null,
       title: workout.title,
       type: props.displaySegment ? 'SEGMENT' : 'WORKOUT',
