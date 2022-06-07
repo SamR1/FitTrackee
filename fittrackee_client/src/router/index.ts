@@ -13,6 +13,7 @@ import UserInfosEdition from '@/components/User/ProfileEdition/UserInfosEdition.
 import UserPictureEdition from '@/components/User/ProfileEdition/UserPictureEdition.vue'
 import UserPreferencesEdition from '@/components/User/ProfileEdition/UserPreferencesEdition.vue'
 import AddUserApp from '@/components/User/UserApps/AddUserApp.vue'
+import AuthorizeUserApp from '@/components/User/UserApps/AuthorizeUserApp.vue'
 import UserApps from '@/components/User/UserApps/index.vue'
 import UserApp from '@/components/User/UserApps/UserApp.vue'
 import UserAppsList from '@/components/User/UserApps/UserAppsList.vue'
@@ -173,6 +174,11 @@ const routes: Array<RouteRecordRaw> = [
                 path: 'new',
                 name: 'AddUserApp',
                 component: AddUserApp,
+              },
+              {
+                path: 'authorize',
+                name: 'AuthorizeUserApp',
+                component: AuthorizeUserApp,
               },
             ],
           },

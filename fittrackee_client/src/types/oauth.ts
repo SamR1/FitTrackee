@@ -21,3 +21,11 @@ export interface IOAuth2ClientPayload {
 export interface IOauth2ClientsPayload {
   page?: number
 }
+
+export interface IOAuth2ClientAuthorizePayload {
+  client_id: string
+  redirect_uri: string
+  response_type: string
+  scope: string
+  state?: string
+}

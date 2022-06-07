@@ -10,6 +10,7 @@ import { IRootState } from '@/store/modules/root/types'
 import { IPagination } from '@/types/api'
 import {
   IOAuth2Client,
+  IOAuth2ClientAuthorizePayload,
   IOAuth2ClientPayload,
   IOauth2ClientsPayload,
 } from '@/types/oauth'
@@ -21,6 +22,10 @@ export interface IOAuth2State {
 }
 
 export interface IOAuth2Actions {
+  [OAUTH2_STORE.ACTIONS.AUTHORIZE_CLIENT](
+    context: ActionContext<IOAuth2State, IRootState>,
+    payload: IOAuth2ClientAuthorizePayload
+  ): void
   [OAUTH2_STORE.ACTIONS.CREATE_CLIENT](
     context: ActionContext<IOAuth2State, IRootState>,
     payload: IOAuth2ClientPayload
@@ -28,6 +33,10 @@ export interface IOAuth2Actions {
   [OAUTH2_STORE.ACTIONS.DELETE_CLIENT](
     context: ActionContext<IOAuth2State, IRootState>,
     id: number
+  ): void
+  [OAUTH2_STORE.ACTIONS.GET_CLIENT_BY_CLIENT_ID](
+    context: ActionContext<IOAuth2State, IRootState>,
+    client_id: string
   ): void
   [OAUTH2_STORE.ACTIONS.GET_CLIENT_BY_ID](
     context: ActionContext<IOAuth2State, IRootState>,

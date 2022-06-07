@@ -1,6 +1,6 @@
 <template>
   <div id="new-oauth2-app">
-    <p id="new-oauth2-title">{{ $t('oauth2.ADD_A_NEW_APP') }}</p>
+    <h1 id="new-oauth2-title">{{ $t('oauth2.ADD_A_NEW_APP') }}</h1>
     <div id="apps-form">
       <form @submit.prevent="createApp">
         <div class="form-items">
