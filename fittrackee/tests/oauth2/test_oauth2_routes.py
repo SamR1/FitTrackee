@@ -549,8 +549,8 @@ class TestOAuthGetClients(ApiTestCaseMixin):
         assert data['data']['clients'] == []
 
 
-class TestOAuthGetClient(ApiTestCaseMixin):
-    route = '/api/oauth/apps/{client_id}'
+class TestOAuthGetClientById(ApiTestCaseMixin):
+    route = '/api/oauth/apps/{client_id}/by_id'
 
     def test_it_returns_error_when_not_authenticated(
         self, app: Flask, user_1: User
@@ -630,10 +630,100 @@ class TestOAuthGetClient(ApiTestCaseMixin):
             app, user_1.email
         )
         oauth_client = self.create_oauth_client(user_2)
-        client_id = oauth_client.id
 
-        response = client.delete(
-            self.route.format(client_id=client_id),
+        response = client.get(
+            self.route.format(client_id=oauth_client.id),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_message(response, 'OAuth client not found')
+
+
+class TestOAuthGetClientByClientId(ApiTestCaseMixin):
+    route = '/api/oauth/apps/{client_id}'
+
+    def test_it_returns_error_when_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(
+            self.route.format(client_id=self.random_string()),
+            content_type='application/json',
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_error_when_client_not_found(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(client_id=self.random_string()),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_message(response, 'OAuth client not found')
+
+    def test_it_returns_user_oauth_client(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        client_description = self.random_string()
+        oauth_client = self.create_oauth_client(
+            user_1,
+            metadata={
+                **TEST_OAUTH_CLIENT_METADATA,
+                'client_description': client_description,
+            },
+        )
+        client_id = oauth_client.id
+        client_client_id = oauth_client.client_id
+
+        response = client.get(
+            self.route.format(client_id=client_client_id),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['data']['client']['client_id'] == client_client_id
+        assert 'client_secret' not in data['data']['client']
+        assert (
+            data['data']['client']['client_description'] == client_description
+        )
+        assert data['data']['client']['id'] == client_id
+        assert (
+            data['data']['client']['name']
+            == TEST_OAUTH_CLIENT_METADATA['client_name']
+        )
+        assert (
+            data['data']['client']['redirect_uris']
+            == TEST_OAUTH_CLIENT_METADATA['redirect_uris']
+        )
+        assert (
+            data['data']['client']['website']
+            == TEST_OAUTH_CLIENT_METADATA['client_uri']
+        )
+
+    def test_it_does_not_return_oauth_client_from_another_user(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        oauth_client = self.create_oauth_client(user_2)
+
+        response = client.get(
+            self.route.format(client_id=oauth_client.client_id),
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )

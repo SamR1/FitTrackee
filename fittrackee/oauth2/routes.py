@@ -1,4 +1,4 @@
-from typing import Dict, Tuple, Union
+from typing import Dict, Optional, Tuple, Union
 
 from flask import Blueprint, Response, request
 
@@ -89,12 +89,15 @@ def create_client(auth_user: User) -> Union[HttpResponse, Tuple[Dict, int]]:
     )
 
 
-@oauth_blueprint.route('/oauth/apps/<string:client_id>', methods=['GET'])
-@require_auth()
-def get_client(auth_user: User, client_id: str) -> Union[Dict, HttpResponse]:
+def get_client(
+    auth_user: User,
+    client_id: Optional[int],
+    client_client_id: Optional[str],
+) -> Union[Dict, HttpResponse]:
+    key = 'id' if client_id else 'client_id'
+    value = client_id if client_id else client_client_id
     client = OAuth2Client.query.filter_by(
-        id=client_id,
-        user_id=auth_user.id,
+        **{key: value, 'user_id': auth_user.id}
     ).first()
 
     if not client:
@@ -104,6 +107,22 @@ def get_client(auth_user: User, client_id: str) -> Union[Dict, HttpResponse]:
         'status': 'success',
         'data': {'client': client.serialize(with_secret=False)},
     }
+
+
+@oauth_blueprint.route('/oauth/apps/<string:client_id>', methods=['GET'])
+@require_auth()
+def get_client_by_client_id(
+    auth_user: User, client_id: str
+) -> Union[Dict, HttpResponse]:
+    return get_client(auth_user, client_id=None, client_client_id=client_id)
+
+
+@oauth_blueprint.route('/oauth/apps/<int:client_id>/by_id', methods=['GET'])
+@require_auth()
+def get_client_by_id(
+    auth_user: User, client_id: int
+) -> Union[Dict, HttpResponse]:
+    return get_client(auth_user, client_id=client_id, client_client_id=None)
 
 
 @oauth_blueprint.route('/oauth/apps/<string:client_id>', methods=['DELETE'])
