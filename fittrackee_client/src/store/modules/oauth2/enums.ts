@@ -2,7 +2,7 @@ export enum OAuth2Actions {
   CREATE_CLIENT = 'CREATE_CLIENT',
   DELETE_CLIENT = 'DELETE_CLIENT',
   GET_CLIENTS = 'GET_CLIENTS',
-  GET_CLIENT = 'GET_CLIENT',
+  GET_CLIENT_BY_ID = 'GET_CLIENT_BY_ID',
 }
 
 export enum OAuth2Getters {

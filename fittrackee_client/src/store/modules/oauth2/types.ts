@@ -29,9 +29,9 @@ export interface IOAuth2Actions {
     context: ActionContext<IOAuth2State, IRootState>,
     id: number
   ): void
-  [OAUTH2_STORE.ACTIONS.GET_CLIENT](
+  [OAUTH2_STORE.ACTIONS.GET_CLIENT_BY_ID](
     context: ActionContext<IOAuth2State, IRootState>,
-    id: string
+    id: number
   ): void
   [OAUTH2_STORE.ACTIONS.GET_CLIENTS](
     context: ActionContext<IOAuth2State, IRootState>,

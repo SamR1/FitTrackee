@@ -97,7 +97,10 @@
 
   function loadClient() {
     if (route.params.clientId && typeof route.params.clientId === 'string') {
-      store.dispatch(OAUTH2_STORE.ACTIONS.GET_CLIENT, route.params.clientId)
+      store.dispatch(
+        OAUTH2_STORE.ACTIONS.GET_CLIENT_BY_ID,
+        +route.params.clientId
+      )
     }
   }
   function deleteClient(clientId: number) {

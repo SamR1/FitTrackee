@@ -45,13 +45,13 @@ export const actions: ActionTree<IOAuth2State, IRootState> & IOAuth2Actions = {
       })
       .catch((error) => handleError(context, error))
   },
-  [OAUTH2_STORE.ACTIONS.GET_CLIENT](
+  [OAUTH2_STORE.ACTIONS.GET_CLIENT_BY_ID](
     context: ActionContext<IOAuth2State, IRootState>,
-    id: string
+    id: number
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     authApi
-      .get(`oauth/apps/${id}`)
+      .get(`oauth/apps/${id}/by_id`)
       .then((res) => {
         if (res.data.status === 'success') {
           context.commit(
