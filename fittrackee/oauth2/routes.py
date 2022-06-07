@@ -1,6 +1,8 @@
 from typing import Dict, Optional, Tuple, Union
+from urllib.parse import parse_qsl
 
 from flask import Blueprint, Response, request
+from urllib3.util import parse_url
 
 from fittrackee import db
 from fittrackee.oauth2.models import OAuth2Client
@@ -24,6 +26,13 @@ EXPECTED_METADATA_KEYS = [
     'scope',
 ]
 DEFAULT_PER_PAGE = 5
+
+
+def is_errored(url: str) -> Optional[str]:
+    query = dict(parse_qsl(parse_url(url).query))
+    if query.get('error'):
+        return query.get('error_description', 'invalid payload')
+    return None
 
 
 @oauth_blueprint.route('/oauth/apps', methods=['GET'])
@@ -145,15 +154,20 @@ def delete_client(
 
 @oauth_blueprint.route('/oauth/authorize', methods=['POST'])
 @require_auth()
-def authorize(auth_user: User) -> Response:
+def authorize(auth_user: User) -> Union[HttpResponse, Dict]:
     data = request.form
     if not data or 'client_id' not in data or 'response_type' not in data:
         return InvalidPayloadErrorResponse()
 
-    authorization_server.get_consent_grant(end_user=auth_user)
-    return authorization_server.create_authorization_response(
-        grant_user=auth_user
+    confirm = data.get('confirm', 'false')
+    grant_user = auth_user if confirm.lower() == 'true' else None
+    response = authorization_server.create_authorization_response(
+        grant_user=grant_user
     )
+    error_message = is_errored(url=response.location)
+    if error_message:
+        return InvalidPayloadErrorResponse(error_message)
+    return {'redirect_url': response.location}
 
 
 @oauth_blueprint.route('/oauth/token', methods=['POST'])

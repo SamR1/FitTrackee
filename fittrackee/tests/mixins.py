@@ -88,6 +88,7 @@ class ApiTestCaseMixin(RandomMixin):
             '/api/oauth/authorize',
             data={
                 'client_id': oauth_client.client_id,
+                'confirm': True,
                 'response_type': 'code',
                 'scope': 'read' if not scope else scope,
             },
@@ -96,7 +97,8 @@ class ApiTestCaseMixin(RandomMixin):
                 content_type='multipart/form-data',
             ),
         )
-        parsed_url = parse_url(response.location)
+        data = json.loads(response.data.decode())
+        parsed_url = parse_url(data['redirect_url'])
         code = parse_qs(parsed_url.query).get('code', '')
         return code
 

@@ -1,11 +1,9 @@
 import json
-from typing import List, Union
+from typing import Dict, List, Union
 from unittest.mock import patch
-from urllib.parse import parse_qs
 
 import pytest
 from flask import Flask
-from urllib3.util import parse_url
 from werkzeug.test import TestResponse
 
 from fittrackee.oauth2.models import (
@@ -184,6 +182,7 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
             data={
                 'client_id': oauth_client.client_id,
                 'response_type': 'code',
+                'confirm': True,
             },
             headers=dict(content_type='multipart/form-data'),
         )
@@ -227,8 +226,11 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
 
         self.assert_400(response, error_message='invalid payload')
 
+    @pytest.mark.parametrize(
+        'input_confirmation', [{'confirm': True}, {'confirm': 'true'}]
+    )
     def test_it_creates_authorization_code(
-        self, app: Flask, user_1: User
+        self, app: Flask, user_1: User, input_confirmation: Dict
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -240,6 +242,7 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
             data={
                 'client_id': oauth_client.client_id,
                 'response_type': 'code',
+                **input_confirmation,
             },
             headers=dict(
                 Authorization=f'Bearer {auth_token}',
@@ -252,7 +255,36 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
         ).first()
         assert code is not None
 
-    def test_it_returns_code_in_url(self, app: Flask, user_1: User) -> None:
+    @pytest.mark.parametrize('input_confirmation', [{}, {'confirm': False}])
+    def test_it_does_not_create_authorization_code_when_no_confirmation(
+        self, app: Flask, user_1: User, input_confirmation: Dict
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        oauth_client = self.create_oauth_client(user_1)
+
+        client.post(
+            self.route,
+            data={
+                'client_id': oauth_client.client_id,
+                'response_type': 'code',
+                **input_confirmation,
+            },
+            headers=dict(
+                Authorization=f'Bearer {auth_token}',
+                content_type='multipart/form-data',
+            ),
+        )
+
+        code = OAuth2AuthorizationCode.query.filter_by(
+            client_id=oauth_client.client_id
+        ).first()
+        assert code is None
+
+    def test_it_returns_redirect_url_with_code(
+        self, app: Flask, user_1: User
+    ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -263,6 +295,7 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
             data={
                 'client_id': oauth_client.client_id,
                 'response_type': 'code',
+                'confirm': True,
             },
             headers=dict(
                 Authorization=f'Bearer {auth_token}',
@@ -270,9 +303,44 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
             ),
         )
 
-        assert response.status_code == 302
-        parsed_url = parse_url(response.location)
-        assert parse_qs(parsed_url.query).get('code') is not None
+        code = OAuth2AuthorizationCode.query.filter_by(
+            client_id=oauth_client.client_id
+        ).first()
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['redirect_url'] == (
+            f'{oauth_client.get_default_redirect_uri()}?code={code.code}'
+        )
+
+    @pytest.mark.parametrize('input_confirmation', [{}, {'confirm': False}])
+    def test_it_returns_error_when_no_confirmation(
+        self, app: Flask, user_1: User, input_confirmation: Dict
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        oauth_client = self.create_oauth_client(user_1)
+
+        response = client.post(
+            self.route,
+            data={
+                'client_id': oauth_client.client_id,
+                'response_type': 'code',
+                **input_confirmation,
+            },
+            headers=dict(
+                Authorization=f'Bearer {auth_token}',
+                content_type='multipart/form-data',
+            ),
+        )
+
+        self.assert_400(
+            response,
+            error_message=(
+                'The resource owner or authorization server denied the request'
+            ),
+        )
 
 
 class TestOAuthIssueToken(ApiTestCaseMixin):
