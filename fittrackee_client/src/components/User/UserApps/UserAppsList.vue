@@ -3,7 +3,7 @@
     <p class="apps-list">{{ $t('oauth2.APPS_LIST') }}</p>
     <ul v-if="clients.length > 0">
       <li v-for="client in clients" :key="client.client_id">
-        <router-link :to="{ name: 'UserApp', params: { clientId: client.id } }">
+        <router-link :to="{ name: 'UserApp', params: { id: client.id } }">
           {{ client.name }}
         </router-link>
         <span class="app-issued-at">

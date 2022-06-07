@@ -18,9 +18,11 @@ export const actions: ActionTree<IOAuth2State, IRootState> & IOAuth2Actions = {
       .post('oauth/apps', payload)
       .then((res) => {
         if (res.data.status === 'created') {
-          context
-            .dispatch(OAUTH2_STORE.ACTIONS.GET_CLIENTS)
-            .then(() => router.push('/profile/apps'))
+          context.commit(
+            OAUTH2_STORE.MUTATIONS.SET_CLIENT,
+            res.data.data.client
+          )
+          router.push(`/profile/apps/${res.data.data.client.id}/created`)
         } else {
           handleError(context, null)
         }

@@ -159,9 +159,15 @@ const routes: Array<RouteRecordRaw> = [
                 component: UserAppsList,
               },
               {
-                path: ':clientId',
+                path: ':id',
                 name: 'UserApp',
                 component: UserApp,
+              },
+              {
+                path: ':id/created',
+                name: 'CreatedUserApp',
+                component: UserApp,
+                props: { afterCreation: true },
               },
               {
                 path: 'new',

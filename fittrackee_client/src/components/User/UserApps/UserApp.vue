@@ -8,9 +8,16 @@
       @cancelAction="updateDisplayModal(false)"
     />
     <div v-if="client && client.client_id">
+      <div class="info-box success-message" v-if="afterCreation">
+        {{ $t('oauth2.APP_CREATED_SUCCESSFULLY') }}
+      </div>
       <dl>
         <dt>{{ $t('oauth2.APP.CLIENT_ID') }}:</dt>
         <dd>{{ client.client_id }}</dd>
+        <dt v-if="afterCreation && client.client_secret">
+          {{ $t('oauth2.APP.CLIENT_SECRET') }}:
+        </dt>
+        <dd>{{ client.client_secret }}</dd>
         <dt>{{ capitalize($t('oauth2.APP.ISSUE_AT')) }}:</dt>
         <dd>
           {{
@@ -68,6 +75,7 @@
     toRefs,
     ref,
     onUnmounted,
+    withDefaults,
   } from 'vue'
   import { useRoute } from 'vue-router'
 
@@ -79,13 +87,15 @@
 
   interface Props {
     authUser: IAuthUserProfile
+    afterCreation?: boolean
   }
-  const props = defineProps<Props>()
-
+  const props = withDefaults(defineProps<Props>(), {
+    afterCreation: false,
+  })
   const route = useRoute()
   const store = useStore()
 
-  const { authUser } = toRefs(props)
+  const { afterCreation, authUser } = toRefs(props)
   const client: ComputedRef<IOAuth2Client> = computed(
     () => store.getters[OAUTH2_STORE.GETTERS.CLIENT]
   )
@@ -96,11 +106,13 @@
   })
 
   function loadClient() {
-    if (route.params.clientId && typeof route.params.clientId === 'string') {
-      store.dispatch(
-        OAUTH2_STORE.ACTIONS.GET_CLIENT_BY_ID,
-        +route.params.clientId
-      )
+    // after creation, client is already in store
+    if (
+      !afterCreation.value &&
+      route.params.id &&
+      typeof route.params.id === 'string'
+    ) {
+      store.dispatch(OAUTH2_STORE.ACTIONS.GET_CLIENT_BY_ID, +route.params.id)
     }
   }
   function deleteClient(clientId: number) {
