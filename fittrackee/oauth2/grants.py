@@ -1,3 +1,4 @@
+import time
 from typing import Optional
 
 from authlib.oauth2 import OAuth2Request
@@ -53,6 +54,9 @@ class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
 
 
 class RefreshTokenGrant(grants.RefreshTokenGrant):
+    TOKEN_ENDPOINT_AUTH_METHODS = ['client_secret_post']
+    INCLUDE_NEW_REFRESH_TOKEN = True
+
     def authenticate_refresh_token(self, refresh_token: str) -> Optional[str]:
         token = OAuth2Token.query.filter_by(
             refresh_token=refresh_token
@@ -63,3 +67,7 @@ class RefreshTokenGrant(grants.RefreshTokenGrant):
 
     def authenticate_user(self, credential: OAuth2Token) -> User:
         return User.query.get(credential.user_id)
+
+    def revoke_old_credential(self, credential: OAuth2Token) -> None:
+        credential.access_token_revoked_at = time.time()
+        db.session.commit()
