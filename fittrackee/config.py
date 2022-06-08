@@ -46,6 +46,10 @@ class BaseConfig:
             os.environ.get('DEFAULT_STATICMAP', 'False') == 'True'
         ),
     }
+    OAUTH2_TOKEN_EXPIRES_IN = {
+        'authorization_code': 864000,  # 10 days
+    }
+    OAUTH2_REFRESH_TOKEN_GENERATOR = True
 
 
 class DevelopmentConfig(BaseConfig):
@@ -65,9 +69,11 @@ class TestingConfig(BaseConfig):
     TOKEN_EXPIRATION_DAYS = 0
     TOKEN_EXPIRATION_SECONDS = 3
     PASSWORD_TOKEN_EXPIRATION_SECONDS = 3
-    OAUTH2_REFRESH_TOKEN_GENERATOR = True
     UI_URL = 'http://0.0.0.0:5000'
     SENDER_EMAIL = 'fittrackee@example.com'
+    OAUTH2_TOKEN_EXPIRES_IN = {
+        'authorization_code': 60,
+    }
 
 
 class End2EndTestingConfig(TestingConfig):

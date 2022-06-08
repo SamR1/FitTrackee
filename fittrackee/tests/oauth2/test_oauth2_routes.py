@@ -351,7 +351,7 @@ class TestOAuthIssueToken(ApiTestCaseMixin):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data.get('access_token') is not None
-        assert data.get('expires_in') is not None
+        assert data.get('expires_in') == 60  # test config
         assert data.get('refresh_token') is not None
         assert data.get('token_type') == 'Bearer'
 

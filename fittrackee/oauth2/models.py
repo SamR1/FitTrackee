@@ -89,7 +89,7 @@ class OAuth2Token(BaseModel, OAuth2TokenMixin):
     user = db.relationship('User')
 
     def is_refresh_token_active(self) -> bool:
-        if self.revoked:
+        if self.is_revoked():
             return False
         expires_at = self.issued_at + self.expires_in * 2
         return expires_at >= time.time()
