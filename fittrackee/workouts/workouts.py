@@ -1111,7 +1111,8 @@ def post_workout_no_gpx(
           "status": "success"
         }
 
-    :<json string workout_date: workout date  (format: ``%Y-%m-%d %H:%M``)
+    :<json string workout_date: workout date, in user timezone
+        (format: ``%Y-%m-%d %H:%M``)
     :<json float distance: workout distance in km
     :<json integer duration: workout duration in seconds
     :<json string notes: notes (not mandatory)
@@ -1261,7 +1262,8 @@ def update_workout(
 
     :param string workout_short_id: workout short id
 
-    :<json string workout_date: workout date  (format: ``%Y-%m-%d %H:%M``)
+    :<json string workout_date: workout date in user timezone
+        (format: ``%Y-%m-%d %H:%M``)
         (only for workout without gpx)
     :<json float distance: workout distance in km
         (only for workout without gpx)
