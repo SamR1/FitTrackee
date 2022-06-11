@@ -2,7 +2,7 @@ from unittest.mock import call, patch
 
 import pytest
 from flask import Flask
-from gpxpy.gpx import MovingData
+from gpxpy.gpx import IGNORE_TOP_SPEED_PERCENTILES, MovingData
 from werkzeug.datastructures import FileStorage
 
 from fittrackee.users.models import User, UserSportPreference
@@ -55,7 +55,12 @@ class TestStoppedSpeedThreshold:
         assert gpx_track_segment_mock.call_args_list[0] == call(
             stopped_speed_threshold=expected_threshold
         )
-        gpx_track_segment_mock.assert_called_with(expected_threshold)
+        gpx_track_segment_mock.assert_called_with(
+            expected_threshold,  # stopped_speed_threshold
+            False,  # raw
+            IGNORE_TOP_SPEED_PERCENTILES,  # speed_extreemes_percentiles
+            True,  # ignore_nonstandard_distances
+        )
 
     def test_it_calls_get_moving_data_with_threshold_depending_from_user_preference(  # noqa
         self,
@@ -85,4 +90,9 @@ class TestStoppedSpeedThreshold:
         assert gpx_track_segment_mock.call_args_list[0] == call(
             stopped_speed_threshold=expected_threshold
         )
-        gpx_track_segment_mock.assert_called_with(expected_threshold)
+        gpx_track_segment_mock.assert_called_with(
+            expected_threshold,  # stopped_speed_threshold
+            False,  # raw
+            IGNORE_TOP_SPEED_PERCENTILES,  # speed_extreemes_percentiles
+            True,  # ignore_nonstandard_distances
+        )

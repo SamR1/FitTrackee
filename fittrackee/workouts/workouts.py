@@ -303,7 +303,7 @@ def get_workout(
     auth_user: User, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get an workout
+    Get a workout
 
     **Example request**:
 
@@ -405,7 +405,7 @@ def get_workout_data(
     data_type: str,
     segment_id: Optional[int] = None,
 ) -> Union[Dict, HttpResponse]:
-    """Get data from an workout gpx file"""
+    """Get data from a workout gpx file"""
     workout_uuid = decode_short_id(workout_short_id)
     workout = Workout.query.filter_by(uuid=workout_uuid).first()
     if not workout:
@@ -467,7 +467,7 @@ def get_workout_gpx(
     auth_user: User, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get gpx file for an workout displayed on map with Leaflet
+    Get gpx file for a workout displayed on map with Leaflet
 
     **Example request**:
 
@@ -517,7 +517,7 @@ def get_workout_chart_data(
     auth_user: User, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get chart data from an workout gpx file, to display it with Recharts
+    Get chart data from a workout gpx file, to display it with Recharts
 
     **Example request**:
 
@@ -587,7 +587,7 @@ def get_segment_gpx(
     auth_user: User, workout_short_id: str, segment_id: int
 ) -> Union[Dict, HttpResponse]:
     """
-    Get gpx file for an workout segment displayed on map with Leaflet
+    Get gpx file for a workout segment displayed on map with Leaflet
 
     **Example request**:
 
@@ -639,7 +639,7 @@ def get_segment_chart_data(
     auth_user: User, workout_short_id: str, segment_id: int
 ) -> Union[Dict, HttpResponse]:
     """
-    Get chart data from an workout gpx file, to display it with Recharts
+    Get chart data from a workout gpx file, to display it with Recharts
 
     **Example request**:
 
@@ -851,7 +851,7 @@ def get_map_tile(s: str, z: str, x: str, y: str) -> Tuple[Response, int]:
 @authenticate
 def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    Post an workout with a gpx file
+    Post a workout with a gpx file
 
     **Example request**:
 
@@ -1021,7 +1021,7 @@ def post_workout_no_gpx(
     auth_user: User,
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    Post an workout without gpx file
+    Post a workout without gpx file
 
     **Example request**:
 
@@ -1111,7 +1111,8 @@ def post_workout_no_gpx(
           "status": "success"
         }
 
-    :<json string workout_date: workout date  (format: ``%Y-%m-%d %H:%M``)
+    :<json string workout_date: workout date, in user timezone
+        (format: ``%Y-%m-%d %H:%M``)
     :<json float distance: workout distance in km
     :<json integer duration: workout duration in seconds
     :<json string notes: notes (not mandatory)
@@ -1169,7 +1170,7 @@ def update_workout(
     auth_user: User, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Update an workout
+    Update a workout
 
     **Example request**:
 
@@ -1261,7 +1262,8 @@ def update_workout(
 
     :param string workout_short_id: workout short id
 
-    :<json string workout_date: workout date  (format: ``%Y-%m-%d %H:%M``)
+    :<json string workout_date: workout date in user timezone
+        (format: ``%Y-%m-%d %H:%M``)
         (only for workout without gpx)
     :<json float distance: workout distance in km
         (only for workout without gpx)
@@ -1316,7 +1318,7 @@ def delete_workout(
     auth_user: User, workout_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    Delete an workout
+    Delete a workout
 
     **Example request**:
 
