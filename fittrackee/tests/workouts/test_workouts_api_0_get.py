@@ -969,7 +969,7 @@ class TestGetWorkoutsWithFiltersAndPagination(ApiTestCaseMixin):
 
 
 class TestGetWorkout(ApiTestCaseMixin):
-    def test_it_gets_an_workout(
+    def test_it_gets_a_workout(
         self,
         app: Flask,
         user_1: User,
@@ -1105,7 +1105,7 @@ class TestGetWorkout(ApiTestCaseMixin):
             response, f'no gpx file for this workout (id: {workout_short_id})'
         )
 
-    def test_it_returns_500_on_getting_gpx_if_an_workout_has_invalid_gpx_pathname(  # noqa
+    def test_it_returns_500_on_getting_gpx_if_a_workout_has_invalid_gpx_pathname(  # noqa
         self,
         app: Flask,
         user_1: User,
@@ -1125,7 +1125,7 @@ class TestGetWorkout(ApiTestCaseMixin):
         data = self.assert_500(response)
         assert 'data' not in data
 
-    def test_it_returns_500_on_getting_chart_data_if_an_workout_has_invalid_gpx_pathname(  # noqa
+    def test_it_returns_500_on_getting_chart_data_if_a_workout_has_invalid_gpx_pathname(  # noqa
         self,
         app: Flask,
         user_1: User,

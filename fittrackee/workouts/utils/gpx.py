@@ -1,5 +1,5 @@
-from datetime import timedelta
-from typing import Any, Dict, List, Optional, Tuple
+from datetime import datetime, timedelta, timezone
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import gpxpy.gpx
 
@@ -16,9 +16,9 @@ def open_gpx_file(gpx_file: str) -> Optional[gpxpy.gpx.GPX]:
 
 
 def get_gpx_data(
-    parsed_gpx: gpxpy.gpx,
+    parsed_gpx: Union[gpxpy.gpx.GPX, gpxpy.gpx.GPXTrackSegment],
     max_speed: float,
-    start: int,
+    start: Union[datetime, None],
     stopped_time_between_seg: timedelta,
     stopped_speed_threshold: float,
 ) -> Dict:
@@ -32,7 +32,8 @@ def get_gpx_data(
 
     duration = parsed_gpx.get_duration()
     gpx_data['duration'] = (
-        timedelta(seconds=duration) + stopped_time_between_seg
+        timedelta(seconds=duration if duration else 0)
+        + stopped_time_between_seg
     )
 
     ele = parsed_gpx.get_elevation_extremes()
@@ -43,18 +44,24 @@ def get_gpx_data(
     gpx_data['uphill'] = hill.uphill
     gpx_data['downhill'] = hill.downhill
 
-    mv = parsed_gpx.get_moving_data(
+    moving_data = parsed_gpx.get_moving_data(
         stopped_speed_threshold=stopped_speed_threshold
     )
-    gpx_data['moving_time'] = timedelta(seconds=mv.moving_time)
-    gpx_data['stop_time'] = (
-        timedelta(seconds=mv.stopped_time) + stopped_time_between_seg
-    )
-    distance = mv.moving_distance + mv.stopped_distance
-    gpx_data['distance'] = distance / 1000
+    if moving_data:
+        gpx_data['moving_time'] = timedelta(seconds=moving_data.moving_time)
+        gpx_data['stop_time'] = (
+            timedelta(seconds=moving_data.stopped_time)
+            + stopped_time_between_seg
+        )
+        distance = moving_data.moving_distance + moving_data.stopped_distance
+        gpx_data['distance'] = distance / 1000
 
-    average_speed = distance / mv.moving_time if mv.moving_time > 0 else 0
-    gpx_data['average_speed'] = (average_speed / 1000) * 3600
+        average_speed = (
+            distance / moving_data.moving_time
+            if moving_data.moving_time > 0
+            else 0
+        )
+        gpx_data['average_speed'] = (average_speed / 1000) * 3600
 
     return gpx_data
 
@@ -72,9 +79,9 @@ def get_gpx_info(
     if gpx is None:
         raise WorkoutGPXException('not found', 'No gpx file')
 
-    gpx_data = {'name': gpx.tracks[0].name, 'segments': []}
-    max_speed = 0
-    start = 0
+    gpx_data: Dict = {'name': gpx.tracks[0].name, 'segments': []}
+    max_speed = 0.0
+    start: Optional[datetime] = None
     map_data = []
     weather_data = []
     segments_nb = len(gpx.tracks[0].segments)
@@ -83,14 +90,15 @@ def get_gpx_info(
     stopped_time_between_seg = no_stopped_time
 
     for segment_idx, segment in enumerate(gpx.tracks[0].segments):
-        segment_start = 0
+        segment_start: Optional[datetime] = None
         segment_points_nb = len(segment.points)
         for point_idx, point in enumerate(segment.points):
             if point_idx == 0:
+                segment_start = point.time
                 # first gpx point => get weather
-                if start == 0:
+                if start is None:
                     start = point.time
-                    if update_weather_data:
+                    if point.time and update_weather_data:
                         weather_data.append(get_weather(point))
 
                 # if a previous segment exists, calculate stopped time between
@@ -108,13 +116,19 @@ def get_gpx_info(
 
             if update_map_data:
                 map_data.append([point.longitude, point.latitude])
-        calculated_max_speed = segment.get_moving_data(
+        moving_data = segment.get_moving_data(
             stopped_speed_threshold=stopped_speed_threshold
-        ).max_speed
-        segment_max_speed = calculated_max_speed if calculated_max_speed else 0
+        )
+        if moving_data:
+            calculated_max_speed = moving_data.max_speed
+            segment_max_speed = (
+                calculated_max_speed if calculated_max_speed else 0
+            )
 
-        if segment_max_speed > max_speed:
-            max_speed = segment_max_speed
+            if segment_max_speed > max_speed:
+                max_speed = segment_max_speed
+        else:
+            segment_max_speed = 0.0
 
         segment_data = get_gpx_data(
             segment,
@@ -137,12 +151,16 @@ def get_gpx_info(
 
     if update_map_data:
         bounds = gpx.get_bounds()
-        gpx_data['bounds'] = [
-            bounds.min_latitude,
-            bounds.min_longitude,
-            bounds.max_latitude,
-            bounds.max_longitude,
-        ]
+        gpx_data['bounds'] = (
+            [
+                bounds.min_latitude,
+                bounds.min_longitude,
+                bounds.max_latitude,
+                bounds.max_longitude,
+            ]
+            if bounds
+            else []
+        )
 
     return gpx_data, map_data, weather_data
 
@@ -222,7 +240,11 @@ def get_chart_data(
                     'latitude': point.latitude,
                     'longitude': point.longitude,
                     'speed': speed,
-                    'time': point.time,
+                    # workaround
+                    # https://github.com/tkrajina/gpxpy/issues/209
+                    'time': point.time.replace(
+                        tzinfo=timezone(point.time.utcoffset())
+                    ),
                 }
             )
             previous_point = point

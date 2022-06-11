@@ -12,7 +12,7 @@ def get_random_short_id() -> str:
     return encode_uuid(uuid4())
 
 
-def post_an_workout(
+def post_a_workout(
     app: Flask, gpx_file: str, notes: Optional[str] = None
 ) -> Tuple[str, str]:
     client = app.test_client()
