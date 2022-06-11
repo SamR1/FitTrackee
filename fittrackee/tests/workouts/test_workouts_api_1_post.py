@@ -222,7 +222,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
 
         self.assert_401(response)
 
-    def test_it_adds_an_workout_with_gpx_file(
+    def test_it_adds_a_workout_with_gpx_file(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -248,7 +248,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert 'just a workout' == data['data']['workouts'][0]['title']
         assert_workout_data_with_gpx(data)
 
-    def test_it_adds_an_workout_with_gpx_without_name(
+    def test_it_adds_a_workout_with_gpx_without_name(
         self,
         app: Flask,
         user_1: User,
@@ -281,7 +281,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         )
         assert_workout_data_with_gpx(data)
 
-    def test_it_adds_an_workout_with_gpx_without_name_timezone(
+    def test_it_adds_a_workout_with_gpx_without_name_timezone(
         self,
         app: Flask,
         user_1: User,
@@ -606,7 +606,7 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
 
         self.assert_401(response)
 
-    def test_it_adds_an_workout_without_gpx(
+    def test_it_adds_a_workout_without_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -953,12 +953,12 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
 
         self.assert_500(response)
 
-    def test_it_gets_an_workout_created_with_gpx(
+    def test_it_gets_a_workout_created_with_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
         return self.workout_assertion(app, user_1, gpx_file, False)
 
-    def test_it_gets_an_workout_created_with_gpx_with_segments(
+    def test_it_gets_a_workout_created_with_gpx_with_segments(
         self,
         app: Flask,
         user_1: User,
@@ -969,7 +969,7 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
             app, user_1, gpx_file_with_segments, True
         )
 
-    def test_it_gets_chart_data_for_an_workout_created_with_gpx(
+    def test_it_gets_chart_data_for_a_workout_created_with_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1000,7 +1000,7 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
         assert data['message'] == ''
         assert data['data']['chart_data'] != ''
 
-    def test_it_gets_segment_chart_data_for_an_workout_created_with_gpx(
+    def test_it_gets_segment_chart_data_for_a_workout_created_with_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1125,7 +1125,7 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
 
 
 class TestPostAndGetWorkoutWithoutGpx(ApiTestCaseMixin):
-    def test_it_add_and_gets_an_workout_wo_gpx(
+    def test_it_add_and_gets_a_workout_wo_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1158,7 +1158,7 @@ class TestPostAndGetWorkoutWithoutGpx(ApiTestCaseMixin):
         assert len(data['data']['workouts']) == 1
         assert_workout_data_wo_gpx(data)
 
-    def test_it_adds_and_gets_an_workout_wo_gpx_notes(
+    def test_it_adds_and_gets_a_workout_wo_gpx_notes(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1194,7 +1194,7 @@ class TestPostAndGetWorkoutWithoutGpx(ApiTestCaseMixin):
 
 
 class TestPostAndGetWorkoutUsingTimezones(ApiTestCaseMixin):
-    def test_it_add_and_gets_an_workout_wo_gpx_with_timezone(
+    def test_it_add_and_gets_a_workout_wo_gpx_with_timezone(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
         user_1.timezone = 'Europe/Paris'
