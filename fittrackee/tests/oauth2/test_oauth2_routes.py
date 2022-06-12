@@ -992,3 +992,75 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
         self.assert_404_with_message(response, 'OAuth client not found')
         client = OAuth2Client.query.filter_by(id=client_id).first()
         assert client is not None
+
+
+class TestOAuthRevokeClientToken(ApiTestCaseMixin):
+    route = '/api/oauth/apps/{client_id}/revoke'
+
+    def test_it_returns_error_when_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            self.route.format(client_id=self.random_int()),
+            content_type='application/json',
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_error_when_client_not_found(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route.format(client_id=self.random_int()),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_message(response, 'OAuth client not found')
+
+    def test_it_revokes_all_client_tokens(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        oauth_client = self.create_oauth_client(user_1)
+        tokens = [self.create_oauth2_token(oauth_client) for _ in range(3)]
+
+        response = client.post(
+            self.route.format(client_id=oauth_client.id),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        for token in tokens:
+            assert token.is_revoked()
+
+    def test_it_does_not_revoke_another_client_token(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        oauth_client = self.create_oauth_client(user_1)
+        client_id = oauth_client.id
+        another_client = self.create_oauth_client(user_1)
+        another_client_token = self.create_oauth2_token(another_client)
+
+        response = client.post(
+            self.route.format(client_id=client_id),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        assert not another_client_token.is_revoked()

@@ -1,4 +1,5 @@
 import json
+import time
 from random import randint
 from typing import Any, Dict, List, Optional, Tuple, Union
 from urllib.parse import parse_qs
@@ -10,7 +11,7 @@ from werkzeug.test import TestResponse
 
 from fittrackee import db
 from fittrackee.oauth2.client import create_oauth_client
-from fittrackee.oauth2.models import OAuth2Client
+from fittrackee.oauth2.models import OAuth2Client, OAuth2Token
 from fittrackee.users.models import User
 
 from .custom_asserts import (
@@ -42,7 +43,45 @@ class RandomMixin:
         return randint(min_val, max_val)
 
 
-class ApiTestCaseMixin(RandomMixin):
+class OAuth2Mixin(RandomMixin):
+    @staticmethod
+    def create_oauth_client(
+        user: User,
+        metadata: Optional[Dict] = None,
+        scope: Optional[str] = None,
+    ) -> OAuth2Client:
+        client_metadata = (
+            TEST_OAUTH_CLIENT_METADATA if metadata is None else metadata
+        )
+        if scope is not None:
+            client_metadata['scope'] = scope
+        oauth_client = create_oauth_client(client_metadata, user)
+        db.session.add(oauth_client)
+        db.session.commit()
+        return oauth_client
+
+    def create_oauth2_token(
+        self,
+        oauth_client: OAuth2Client,
+        issued_at: Optional[int] = None,
+        access_token_revoked_at: Optional[int] = 0,
+        expires_in: Optional[int] = 1000,
+    ) -> OAuth2Token:
+        issued_at = issued_at if issued_at else int(time.time())
+        token = OAuth2Token(
+            client_id=oauth_client.client_id,
+            access_token=self.random_string(),
+            refresh_token=self.random_string(),
+            issued_at=issued_at,
+            access_token_revoked_at=access_token_revoked_at,
+            expires_in=expires_in,
+        )
+        db.session.add(token)
+        db.session.commit()
+        return token
+
+
+class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
     @staticmethod
     def get_test_client_and_auth_token(
         app: Flask, user_email: str
@@ -60,22 +99,6 @@ class ApiTestCaseMixin(RandomMixin):
         )
         auth_token = json.loads(resp_login.data.decode())['auth_token']
         return client, auth_token
-
-    @staticmethod
-    def create_oauth_client(
-        user: User,
-        metadata: Optional[Dict] = None,
-        scope: Optional[str] = None,
-    ) -> OAuth2Client:
-        client_metadata = (
-            TEST_OAUTH_CLIENT_METADATA if metadata is None else metadata
-        )
-        if scope is not None:
-            client_metadata['scope'] = scope
-        oauth_client = create_oauth_client(client_metadata, user)
-        db.session.add(oauth_client)
-        db.session.commit()
-        return oauth_client
 
     @staticmethod
     def authorize_client(

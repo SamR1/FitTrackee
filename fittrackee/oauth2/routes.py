@@ -5,7 +5,7 @@ from flask import Blueprint, Response, request
 from urllib3.util import parse_url
 
 from fittrackee import db
-from fittrackee.oauth2.models import OAuth2Client
+from fittrackee.oauth2.models import OAuth2Client, OAuth2Token
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     HttpResponse,
@@ -150,6 +150,20 @@ def delete_client(
     db.session.delete(client)
     db.session.commit()
     return {'status': 'no content'}, 204
+
+
+@oauth_blueprint.route('/oauth/apps/<int:client_id>/revoke', methods=['POST'])
+@require_auth()
+def revoke_client_tokens(
+    auth_user: User, client_id: int
+) -> Union[Dict, HttpResponse]:
+    client = OAuth2Client.query.filter_by(id=client_id).first()
+
+    if not client:
+        return NotFoundErrorResponse('OAuth client not found')
+
+    OAuth2Token.revoke_client_tokens(client.client_id)
+    return {'status': 'success'}
 
 
 @oauth_blueprint.route('/oauth/authorize', methods=['POST'])

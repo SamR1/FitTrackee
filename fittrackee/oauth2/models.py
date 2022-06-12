@@ -93,3 +93,15 @@ class OAuth2Token(BaseModel, OAuth2TokenMixin):
             return False
         expires_at = self.issued_at + self.expires_in * 2
         return expires_at >= time.time()
+
+    @classmethod
+    def revoke_client_tokens(cls, client_id: str) -> None:
+        sql = """
+            UPDATE oauth2_token
+            SET access_token_revoked_at = %(revoked_at)s
+            WHERE client_id = %(client_id)s;
+        """
+        db.engine.execute(
+            sql, {'client_id': client_id, 'revoked_at': int(time.time())}
+        )
+        db.session.commit()
