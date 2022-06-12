@@ -134,4 +134,21 @@ export const actions: ActionTree<IOAuth2State, IRootState> & IOAuth2Actions = {
       })
       .catch((error) => handleError(context, error))
   },
+  [OAUTH2_STORE.ACTIONS.REVOKE_ALL_TOKENS](
+    context: ActionContext<IOAuth2State, IRootState>,
+    id: number
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(OAUTH2_STORE.MUTATIONS.SET_REVOCATION_SUCCESSFUL, false)
+    authApi
+      .post(`oauth/apps/${id}/revoke`)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(OAUTH2_STORE.MUTATIONS.SET_REVOCATION_SUCCESSFUL, true)
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+  },
 }

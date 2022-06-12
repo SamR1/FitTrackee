@@ -27,4 +27,10 @@ export const mutations: MutationTree<IOAuth2State> & TOAuth2Mutations = {
   ) {
     state.pagination = pagination
   },
+  [OAUTH2_STORE.MUTATIONS.SET_REVOCATION_SUCCESSFUL](
+    state: IOAuth2State,
+    revocationSuccessful: boolean
+  ) {
+    state.revocationSuccessful = revocationSuccessful
+  },
 }

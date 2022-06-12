@@ -23,5 +23,8 @@
   "NEW_APP": "New OAuth App",
   "NO_DESCRIPTION": "no description",
   "NO_APP": "Application not found!",
-  "NO_APPS": "no applications"
+  "NO_APPS": "no applications",
+  "REVOKE_ALL_TOKENS": "Revoke all tokens",
+  "TOKENS_REVOCATION_CONFIRMATION": "Are you sure you want to revoke all tokens?",
+  "TOKENS_REVOKED": "All existing associated tokens have been revoked."
 }

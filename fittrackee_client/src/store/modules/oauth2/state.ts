@@ -6,4 +6,5 @@ export const oAuth2State: IOAuth2State = {
   client: <IOAuth2Client>{},
   clients: [],
   pagination: <IPagination>{},
+  revocationSuccessful: false,
 }

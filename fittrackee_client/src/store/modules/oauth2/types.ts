@@ -19,6 +19,7 @@ export interface IOAuth2State {
   client: IOAuth2Client
   clients: IOAuth2Client[]
   pagination: IPagination
+  revocationSuccessful: boolean
 }
 
 export interface IOAuth2Actions {
@@ -46,12 +47,17 @@ export interface IOAuth2Actions {
     context: ActionContext<IOAuth2State, IRootState>,
     payload: IOauth2ClientsPayload
   ): void
+  [OAUTH2_STORE.ACTIONS.REVOKE_ALL_TOKENS](
+    context: ActionContext<IOAuth2State, IRootState>,
+    id: number
+  ): void
 }
 
 export interface IOAuth2Getters {
   [OAUTH2_STORE.GETTERS.CLIENT](state: IOAuth2State): IOAuth2Client
   [OAUTH2_STORE.GETTERS.CLIENTS](state: IOAuth2State): IOAuth2Client[]
   [OAUTH2_STORE.GETTERS.CLIENTS_PAGINATION](state: IOAuth2State): IPagination
+  [OAUTH2_STORE.GETTERS.REVOCATION_SUCCESSFUL](state: IOAuth2State): boolean
 }
 
 export type TOAuth2Mutations<S = IOAuth2State> = {
@@ -61,6 +67,10 @@ export type TOAuth2Mutations<S = IOAuth2State> = {
   [OAUTH2_STORE.MUTATIONS.SET_CLIENTS_PAGINATION](
     state: S,
     pagination: IPagination
+  ): void
+  [OAUTH2_STORE.MUTATIONS.SET_REVOCATION_SUCCESSFUL](
+    state: S,
+    revocationSuccessful: boolean
   ): void
 }
 

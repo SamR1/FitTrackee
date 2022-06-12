@@ -23,5 +23,8 @@
   "NEW_APP": "Ajouter une App OAuth",
   "NO_DESCRIPTION": "pas de description",
   "NO_APP": "Application introuvable !",
-  "NO_APPS": "pas de applications"
+  "NO_APPS": "pas de applications",
+  "REVOKE_ALL_TOKENS": "Révoquer tous les jetons",
+  "TOKENS_REVOCATION_CONFIRMATION": "Êtes-vous sûr de vouloir révoquer tous les jetons ?",
+  "TOKENS_REVOKED": "Tous les jetons associés existants ont été révoqués."
 }

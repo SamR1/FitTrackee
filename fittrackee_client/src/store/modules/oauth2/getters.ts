@@ -9,4 +9,6 @@ export const getters: GetterTree<IOAuth2State, IRootState> & IOAuth2Getters = {
   [OAUTH2_STORE.GETTERS.CLIENTS]: (state: IOAuth2State) => state.clients,
   [OAUTH2_STORE.GETTERS.CLIENTS_PAGINATION]: (state: IOAuth2State) =>
     state.pagination,
+  [OAUTH2_STORE.GETTERS.REVOCATION_SUCCESSFUL]: (state: IOAuth2State) =>
+    state.revocationSuccessful,
 }
