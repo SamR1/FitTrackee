@@ -18,7 +18,7 @@ def get_gpx_filepath(workout_id: int) -> str:
 
 
 class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
-    def test_it_deletes_workout_with_gpx(
+    def test_it_deletes_a_workout_with_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
         token, workout_short_id = post_a_workout(app, gpx_file)

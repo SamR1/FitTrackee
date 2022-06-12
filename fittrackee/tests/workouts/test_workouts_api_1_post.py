@@ -2,7 +2,7 @@ import json
 import os
 from datetime import datetime
 from io import BytesIO
-from typing import Dict
+from typing import Dict, Optional
 from unittest.mock import Mock
 
 import pytest
@@ -98,9 +98,7 @@ def assert_workout_data_with_gpx_segments(data: Dict, user: User) -> None:
     assert data['data']['workouts'][0]['descent'] == 23.4
     assert data['data']['workouts'][0]['distance'] == 0.3
     assert data['data']['workouts'][0]['max_alt'] == 998.0
-    assert (
-        data['data']['workouts'][0]['max_speed'] is None
-    )  # not enough points
+    assert data['data']['workouts'][0]['max_speed'] == 5.25
     assert data['data']['workouts'][0]['min_alt'] == 975.0
     assert data['data']['workouts'][0]['moving'] == '0:03:55'
     assert data['data']['workouts'][0]['pauses'] == '0:00:15'
@@ -120,7 +118,7 @@ def assert_workout_data_with_gpx_segments(data: Dict, user: User) -> None:
     assert segment['descent'] == 11.0
     assert segment['distance'] == 0.113
     assert segment['max_alt'] == 998.0
-    assert segment['max_speed'] is None
+    assert segment['max_speed'] == 5.25
     assert segment['min_alt'] == 987.0
     assert segment['moving'] == '0:01:30'
     assert segment['pauses'] is None
@@ -134,28 +132,33 @@ def assert_workout_data_with_gpx_segments(data: Dict, user: User) -> None:
     assert segment['descent'] == 12.4
     assert segment['distance'] == 0.186
     assert segment['max_alt'] == 987.0
-    assert segment['max_speed'] is None
+    assert segment['max_speed'] == 5.12
     assert segment['min_alt'] == 975.0
     assert segment['moving'] == '0:02:25'
     assert segment['pauses'] is None
 
     records = data['data']['workouts'][0]['records']
-    assert len(records) == 3
+    assert len(records) == 4
     assert records[0]['sport_id'] == 1
     assert records[0]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[0]['record_type'] == 'LD'
+    assert records[0]['record_type'] == 'MS'
     assert records[0]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
-    assert records[0]['value'] == '0:03:55'
+    assert records[0]['value'] == 5.25
     assert records[1]['sport_id'] == 1
     assert records[1]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[1]['record_type'] == 'FD'
+    assert records[1]['record_type'] == 'LD'
     assert records[1]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
-    assert records[1]['value'] == 0.3
+    assert records[1]['value'] == '0:03:55'
     assert records[2]['sport_id'] == 1
     assert records[2]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[2]['record_type'] == 'AS'
+    assert records[2]['record_type'] == 'FD'
     assert records[2]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
-    assert records[2]['value'] == 4.59
+    assert records[2]['value'] == 0.3
+    assert records[3]['sport_id'] == 1
+    assert records[3]['workout_id'] == data['data']['workouts'][0]['id']
+    assert records[3]['record_type'] == 'AS'
+    assert records[3]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
+    assert records[3]['value'] == 4.59
 
 
 def assert_workout_data_wo_gpx(data: Dict, user: User) -> None:
@@ -230,7 +233,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, BaseTestMixin):
 
         self.assert_401(response)
 
-    def test_it_adds_an_workout_with_gpx_file(
+    def test_it_adds_a_workout_with_gpx_file(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -321,6 +324,41 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, BaseTestMixin):
             'Cycling - 2018-03-13 13:44:45'
             == data['data']['workouts'][0]['title']
         )
+        assert_workout_data_with_gpx(data, user_1)
+
+    @pytest.mark.parametrize('input_user_timezone', [None, 'Europe/Paris'])
+    def test_it_adds_a_workout_with_gpx_with_offset(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file_with_offset: str,
+        input_user_timezone: Optional[str],
+    ) -> None:
+        user_1.timezone = input_user_timezone
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(
+                    BytesIO(str.encode(gpx_file_with_offset)),
+                    'example.gpx',
+                ),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
         assert_workout_data_with_gpx(data, user_1)
 
     @pytest.mark.parametrize(
@@ -767,7 +805,7 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
 
         self.assert_401(response)
 
-    def test_it_adds_an_workout_without_gpx(
+    def test_it_adds_a_workout_without_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(

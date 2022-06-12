@@ -1,5 +1,16 @@
 # Change log
 
+## Version 0.6.7 (2022/06/11)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#156](https://github.com/SamR1/FitTrackee/issues/156) - Process gpx file with offset
+
+In this release 1 issue was closed.  
+
+
 ## Version 0.6.6 (2022/05/29)
 
 ### Misc
