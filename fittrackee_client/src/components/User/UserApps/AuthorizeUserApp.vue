@@ -1,32 +1,40 @@
 <template>
-  <div id="authorize-oauth2-app" v-if="client.client_id">
-    <h1 id="authorize-oauth2-title">
-      <i18n-t keypath="oauth2.AUTHORIZE_APP">
-        <router-link :to="{ name: 'UserApp', params: { id: client.id } }">
-          {{ client.name }}
-        </router-link>
-      </i18n-t>
-    </h1>
-    <ErrorMessage :message="errorMessages" v-if="errorMessages" />
-    <div class="oauth2-access">
-      <p>{{ $t('oauth2.APP_REQUESTING_ACCESS') }}</p>
-      <ul>
-        <li
-          class="client-scope"
-          v-for="scope in client.scope.split(' ')"
-          :key="scope"
-        >
-          {{ $t(`oauth2.APP.SCOPE.${scope.toUpperCase()}`) }}
-        </li>
-      </ul>
-      <div class="authorize-oauth2-buttons">
-        <button class="danger" @click="authorizeApp">
-          {{ $t('buttons.AUTHORIZE') }}
-        </button>
-        <button class="cancel" @click="$router.push('/profile/apps')">
-          {{ $t('buttons.CANCEL') }}
-        </button>
+  <div id="authorize-oauth2-app">
+    <div v-if="client.client_id">
+      <h1 id="authorize-oauth2-title">
+        <i18n-t keypath="oauth2.AUTHORIZE_APP">
+          <router-link :to="{ name: 'UserApp', params: { id: client.id } }">
+            {{ client.name }}
+          </router-link>
+        </i18n-t>
+      </h1>
+      <ErrorMessage :message="errorMessages" v-if="errorMessages" />
+      <div class="oauth2-access">
+        <p>{{ $t('oauth2.APP_REQUESTING_ACCESS') }}</p>
+        <ul>
+          <li
+            class="client-scope"
+            v-for="scope in client.scope.split(' ')"
+            :key="scope"
+          >
+            {{ $t(`oauth2.APP.SCOPE.${scope.toUpperCase()}`) }}
+          </li>
+        </ul>
+        <div class="authorize-oauth2-buttons">
+          <button class="danger" @click="authorizeApp">
+            {{ $t('buttons.AUTHORIZE') }}
+          </button>
+          <button class="cancel" @click="$router.push('/profile/apps')">
+            {{ $t('buttons.CANCEL') }}
+          </button>
+        </div>
       </div>
+    </div>
+    <div v-else>
+      <p class="no-app">{{ $t('oauth2.NO_APP') }}</p>
+      <button @click="$router.push('/profile/apps')">
+        {{ $t('buttons.BACK') }}
+      </button>
     </div>
   </div>
 </template>
