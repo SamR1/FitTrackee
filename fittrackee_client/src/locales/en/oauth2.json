@@ -4,15 +4,15 @@
     "CLIENT_ID": "Id",
     "CLIENT_SECRET": "Secret",
     "DESCRIPTION": "Application description",
-    "ISSUE_AT": "issue at",
+    "ISSUE_AT": "Issue at",
     "NAME": "Application name",
-    "REDIRECT_URL": "Redirect URI",
+    "REDIRECT_URL": "Redirect URL",
     "SCOPE": {
       "LABEL": "Scope",
       "READ": "read",
       "WRITE": "write"
     },
-    "URL": "Application URI"
+    "URL": "Application URL"
   },
   "APP_DELETION_CONFIRMATION": "Are you sure you want to delete this app?",
   "APP_CREATED_SUCCESSFULLY": "Application created successfully. Make sure to copy the secret now, it won't show up again.",

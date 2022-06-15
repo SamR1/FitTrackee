@@ -14,9 +14,9 @@
             />
           </div>
           <div class="form-item">
-            <label for="app-description">{{
-              $t('oauth2.APP.DESCRIPTION')
-            }}</label>
+            <label for="app-description">
+              {{ $t('oauth2.APP.DESCRIPTION') }}
+            </label>
             <CustomTextArea
               name="app-description"
               :charLimit="200"
@@ -34,9 +34,9 @@
             />
           </div>
           <div class="form-item">
-            <label for="app-redirect-uri"
-              >{{ $t('oauth2.APP.REDIRECT_URL') }}*</label
-            >
+            <label for="app-redirect-uri">
+              {{ $t('oauth2.APP.REDIRECT_URL') }}*
+            </label>
             <input
               id="app-redirect-uri"
               type="text"

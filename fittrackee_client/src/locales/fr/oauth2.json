@@ -4,7 +4,7 @@
     "CLIENT_ID": "Identifiant",
     "CLIENT_SECRET": "Secret",
     "DESCRIPTION": "Application description",
-    "ISSUE_AT": "créée le",
+    "ISSUE_AT": "Créée le",
     "NAME": "Nom de l'application",
     "REDIRECT_URL": "URL de redirection",
     "SCOPE": {
