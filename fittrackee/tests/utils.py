@@ -47,5 +47,5 @@ TEST_OAUTH_CLIENT_METADATA = {
     'client_name': random_string(),
     'client_uri': random_domain(),
     'redirect_uris': [random_domain()],
-    'scope': 'read write',
+    'scope': 'profile:read workouts:read',
 }

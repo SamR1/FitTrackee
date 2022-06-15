@@ -83,6 +83,30 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
             error_message=f'OAuth client metadata missing keys: {missing_key}',
         )
 
+    def test_it_returns_error_when_scope_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        invalid_scope = self.random_string()
+        metadata: Dict = {
+            **TEST_OAUTH_CLIENT_METADATA,
+            'scope': invalid_scope,
+        }
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            data=json.dumps(metadata),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(
+            response,
+            error_message=('OAuth client invalid scopes'),
+        )
+
     def test_it_creates_oauth_client(self, app: Flask, user_1: User) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email

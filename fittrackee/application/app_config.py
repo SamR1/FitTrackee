@@ -67,7 +67,7 @@ def get_application_config() -> Union[Dict, HttpResponse]:
 
 
 @config_blueprint.route('/config', methods=['PATCH'])
-@require_auth(scopes='write', as_admin=True)
+@require_auth(scopes=['application:write'], as_admin=True)
 def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Update Application config

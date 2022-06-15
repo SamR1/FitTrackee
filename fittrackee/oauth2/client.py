@@ -3,28 +3,37 @@ from typing import Dict
 
 from werkzeug.security import gen_salt
 
-from fittrackee.oauth2.models import OAuth2Client
 from fittrackee.users.models import User
 
-DEFAULT_SCOPE = 'read'
-VALID_SCOPES = ['read', 'write']
+from .exceptions import InvalidOAuth2Scopes
+from .models import OAuth2Client
+
+VALID_SCOPES = [
+    'application:write',
+    'profile:read',
+    'profile:write',
+    'users:read',
+    'users:write',
+    'workouts:read',
+    'workouts:write',
+]
 
 
 def check_scope(scope: str) -> str:
     """
     Verify if provided scope is valid.
-    If not, it returns the default scope ('read').
     """
-    valid_scopes = []
     if not isinstance(scope, str) or not scope:
-        return DEFAULT_SCOPE
+        raise InvalidOAuth2Scopes()
 
+    valid_scopes = []
     scopes = scope.split()
     for value in scopes:
         if value in VALID_SCOPES:
             valid_scopes.append(value)
-    if len(valid_scopes) == 0:
-        valid_scopes.append(DEFAULT_SCOPE)
+
+    if not valid_scopes:
+        raise InvalidOAuth2Scopes()
 
     return ' '.join(valid_scopes)
 

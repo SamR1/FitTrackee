@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from io import BytesIO
 from unittest.mock import MagicMock, patch
 
+import pytest
 from flask import Flask
 
 from fittrackee.users.models import User, UserSportPreference
@@ -130,6 +131,42 @@ class TestGetUser(ApiTestCaseMixin):
         )
 
         self.assert_404_with_entity(response, 'user')
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', True),
+            ('users:write', False),
+            ('workouts:read', False),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth_client_and_issue_token(
+            app, user_1_admin, scope=client_scope
+        )
+
+        response = client.get(
+            '/api/users/not_existing',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
 
 
 class TestGetUsers(ApiTestCaseMixin):
@@ -885,6 +922,42 @@ class TestGetUsers(ApiTestCaseMixin):
             'total': 3,
         }
 
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', True),
+            ('users:write', False),
+            ('workouts:read', False),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth_client_and_issue_token(
+            app, user_1_admin, scope=client_scope
+        )
+
+        response = client.get(
+            '/api/users',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
+
 
 class TestGetUserPicture(ApiTestCaseMixin):
     def test_it_return_error_if_user_has_no_picture(
@@ -1360,6 +1433,43 @@ class TestUpdateUser(ApiTestCaseMixin):
         assert user['is_active'] is True
         assert user_2.confirmation_token is None
 
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', False),
+            ('users:write', True),
+            ('workouts:read', False),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth_client_and_issue_token(
+            app, user_1_admin, scope=client_scope
+        )
+
+        response = client.patch(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
+
 
 class TestDeleteUser(ApiTestCaseMixin):
     def test_user_can_delete_its_own_account(
@@ -1573,3 +1683,40 @@ class TestDeleteUser(ApiTestCaseMixin):
         )
 
         self.assert_403(response, 'error, registration is disabled')
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', False),
+            ('users:write', True),
+            ('workouts:read', False),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth_client_and_issue_token(
+            app, user_1_admin, scope=client_scope
+        )
+
+        response = client.delete(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)

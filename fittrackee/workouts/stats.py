@@ -174,7 +174,7 @@ def get_workouts(
 
 
 @stats_blueprint.route('/stats/<user_name>/by_time', methods=['GET'])
-@require_auth(scopes='read')
+@require_auth(scopes=['workouts:read'])
 def get_workouts_by_time(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -281,7 +281,7 @@ def get_workouts_by_time(
 
 
 @stats_blueprint.route('/stats/<user_name>/by_sport', methods=['GET'])
-@require_auth(scopes='read')
+@require_auth(scopes=['workouts:read'])
 def get_workouts_by_sport(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -377,7 +377,7 @@ def get_workouts_by_sport(
 
 
 @stats_blueprint.route('/stats/all', methods=['GET'])
-@require_auth(as_admin=True)
+@require_auth(scopes=['workouts:read'], as_admin=True)
 def get_application_stats(auth_user: User) -> Dict:
     """
     Get all application statistics

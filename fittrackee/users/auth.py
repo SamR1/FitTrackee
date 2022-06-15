@@ -252,7 +252,7 @@ def login_user() -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile', methods=['GET'])
-@require_auth(scopes='read')
+@require_auth(scopes=['profile:read'])
 def get_authenticated_user_profile(
     auth_user: User,
 ) -> Union[Dict, HttpResponse]:
@@ -354,7 +354,7 @@ def get_authenticated_user_profile(
 
 
 @auth_blueprint.route('/auth/profile/edit', methods=['POST'])
-@require_auth(scopes='write')
+@require_auth(scopes=['profile:write'])
 def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     edit authenticated user profile
@@ -502,7 +502,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile/edit/account', methods=['PATCH'])
-@require_auth(scopes='write')
+@require_auth(scopes=['profile:write'])
 def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     update authenticated user email and password
@@ -712,7 +712,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile/edit/preferences', methods=['POST'])
-@require_auth(scopes='write')
+@require_auth(scopes=['profile:write'])
 def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     edit authenticated user preferences
@@ -853,7 +853,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile/edit/sports', methods=['POST'])
-@require_auth(scopes='write')
+@require_auth(scopes=['profile:write'])
 def edit_user_sport_preferences(
     auth_user: User,
 ) -> Union[Dict, HttpResponse]:
@@ -959,7 +959,7 @@ def edit_user_sport_preferences(
 @auth_blueprint.route(
     '/auth/profile/reset/sports/<sport_id>', methods=['DELETE']
 )
-@require_auth(scopes='write')
+@require_auth(scopes=['profile:write'])
 def reset_user_sport_preferences(
     auth_user: User, sport_id: int
 ) -> Union[Tuple[Dict, int], HttpResponse]:
@@ -1014,7 +1014,7 @@ def reset_user_sport_preferences(
 
 
 @auth_blueprint.route('/auth/picture', methods=['POST'])
-@require_auth(scopes='write')
+@require_auth(scopes=['profile:write'])
 def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     update authenticated user picture
@@ -1102,7 +1102,7 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/picture', methods=['DELETE'])
-@require_auth(scopes='write')
+@require_auth(scopes=['profile:write'])
 def del_picture(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     delete authenticated user picture

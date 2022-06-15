@@ -1,5 +1,6 @@
 import json
 
+import pytest
 from flask import Flask
 
 from fittrackee.users.models import User
@@ -862,6 +863,42 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             }
         }
 
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', True),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.get(
+            f'/api/stats/{user_1.username}/by_time',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
+
 
 class TestGetStatsBySport(ApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
@@ -1007,6 +1044,42 @@ class TestGetStatsBySport(ApiTestCaseMixin):
 
         self.assert_500(response)
 
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', True),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.get(
+            f'/api/stats/{user_1.username}/by_sport',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
+
 
 class TestGetAllStats(ApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
@@ -1089,3 +1162,39 @@ class TestGetAllStats(ApiTestCaseMixin):
         )
 
         self.assert_403(response)
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', True),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth_client_and_issue_token(
+            app, user_1_admin, scope=client_scope
+        )
+
+        response = client.get(
+            '/api/stats/all',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)

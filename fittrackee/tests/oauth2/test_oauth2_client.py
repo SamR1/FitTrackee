@@ -6,6 +6,7 @@ import pytest
 from flask import Flask
 
 from fittrackee.oauth2.client import check_scope, create_oauth_client
+from fittrackee.oauth2.exceptions import InvalidOAuth2Scopes
 from fittrackee.oauth2.models import OAuth2Client
 from fittrackee.users.models import User
 
@@ -15,7 +16,7 @@ TEST_METADATA = {
     'client_name': random_string(),
     'client_uri': random_string(),
     'redirect_uris': [random_domain()],
-    'scope': 'read write',
+    'scope': 'profile:read',
 }
 
 
@@ -127,12 +128,20 @@ class TestCreateOAuth2Client:
     def test_oauth_client_has_expected_scope(
         self, app: Flask, user_1: User
     ) -> None:
-        scope = 'write'
+        scope = 'workouts:write'
         client_metadata: Dict = {**TEST_METADATA, 'scope': scope}
 
         oauth_client = create_oauth_client(client_metadata, user_1)
 
         assert oauth_client.scope == scope
+
+    def test_it_raises_error_when_scope_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client_metadata: Dict = {**TEST_METADATA, 'scope': random_string()}
+
+        with pytest.raises(InvalidOAuth2Scopes):
+            create_oauth_client(client_metadata, user_1)
 
     def test_oauth_client_has_expected_token_endpoint_auth_method(
         self, app: Flask, user_1: User
@@ -165,19 +174,23 @@ class TestOAuthCheckScopes:
     @pytest.mark.parametrize(
         'input_scope', ['', 1, random_string(), [random_string(), 'readwrite']]
     )
-    def test_it_returns_read_if_scope_is_invalid(
+    def test_it_raises_error_when_scope_is_invalid(
         self, input_scope: Any
     ) -> None:
-        assert check_scope(input_scope) == 'read'
+        with pytest.raises(InvalidOAuth2Scopes):
+            check_scope(input_scope)
 
     @pytest.mark.parametrize(
         'input_scope,expected_scope',
         [
-            ('read', 'read'),
-            ('read ' + random_string(), 'read'),
-            ('write', 'write'),
-            ('write read', 'write read'),
-            ('write read ' + random_string(), 'write read'),
+            ('profile:read', 'profile:read'),
+            ('profile:read ' + random_string(), 'profile:read'),
+            ('profile:write', 'profile:write'),
+            ('profile:read profile:write', 'profile:read profile:write'),
+            (
+                'profile:write profile:read ' + random_string(),
+                'profile:write profile:read',
+            ),
         ],
     )
     def test_it_return_only_valid_scopes(

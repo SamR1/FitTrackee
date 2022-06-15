@@ -268,15 +268,14 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
     @staticmethod
     def assert_not_insufficient_scope_error(response: TestResponse) -> None:
         assert response.status_code != 403
-        if response.status_code != 204:
-            data = json.loads(response.data.decode())
-            if 'error' in data:
-                assert 'insufficient_scope' not in data['error']
-            if 'error_description' in data:
-                assert (
-                    'The request requires higher privileges than provided by '
-                    'the access token.'
-                ) != data['error_description']
+
+    def assert_response_scope(
+        self, response: TestResponse, can_access: bool
+    ) -> None:
+        if can_access:
+            self.assert_not_insufficient_scope_error(response)
+        else:
+            self.assert_insufficient_scope(response)
 
 
 class CallArgsMixin:

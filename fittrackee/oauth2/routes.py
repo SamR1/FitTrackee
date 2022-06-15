@@ -5,8 +5,6 @@ from flask import Blueprint, Response, request
 from urllib3.util import parse_url
 
 from fittrackee import db
-from fittrackee.oauth2.models import OAuth2Client, OAuth2Token
-from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     HttpResponse,
     InvalidPayloadErrorResponse,
@@ -15,7 +13,9 @@ from fittrackee.responses import (
 from fittrackee.users.models import User
 
 from .client import create_oauth_client
-from .server import authorization_server
+from .exceptions import InvalidOAuth2Scopes
+from .models import OAuth2Client, OAuth2Token
+from .server import authorization_server, require_auth
 
 oauth_blueprint = Blueprint('oauth', __name__)
 
@@ -86,7 +86,13 @@ def create_client(auth_user: User) -> Union[HttpResponse, Tuple[Dict, int]]:
             )
         )
 
-    new_client = create_oauth_client(client_metadata, auth_user)
+    try:
+        new_client = create_oauth_client(client_metadata, auth_user)
+    except InvalidOAuth2Scopes:
+        return InvalidPayloadErrorResponse(
+            message=('OAuth client invalid scopes')
+        )
+
     db.session.add(new_client)
     db.session.commit()
     return (
@@ -134,10 +140,10 @@ def get_client_by_id(
     return get_client(auth_user, client_id=client_id, client_client_id=None)
 
 
-@oauth_blueprint.route('/oauth/apps/<string:client_id>', methods=['DELETE'])
+@oauth_blueprint.route('/oauth/apps/<int:client_id>', methods=['DELETE'])
 @require_auth()
 def delete_client(
-    auth_user: User, client_id: str
+    auth_user: User, client_id: int
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     client = OAuth2Client.query.filter_by(
         id=client_id,

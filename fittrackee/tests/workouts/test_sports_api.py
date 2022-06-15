@@ -1,5 +1,6 @@
 import json
 
+import pytest
 from flask import Flask
 
 from fittrackee import db
@@ -138,6 +139,43 @@ class TestGetSports(ApiTestCaseMixin):
             sport_2_running.serialize(is_admin=True)
         )
 
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', True),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.get(
+            '/api/sports',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
+
 
 class TestGetSport(ApiTestCaseMixin):
     def test_it_gets_a_sport(
@@ -240,6 +278,43 @@ class TestGetSport(ApiTestCaseMixin):
         assert data['data']['sports'][0] == jsonify_dict(
             sport_1_cycling_inactive.serialize(is_admin=True)
         )
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', True),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.get(
+            f'/api/sports/{sport_1_cycling.id}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
 
 
 class TestUpdateSport(ApiTestCaseMixin):
@@ -442,3 +517,41 @@ class TestUpdateSport(ApiTestCaseMixin):
 
         data = self.assert_404(response)
         assert len(data['data']['sports']) == 0
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', False),
+            ('workouts:write', True),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth_client_and_issue_token(
+            app, user_1_admin, scope=client_scope
+        )
+
+        response = client.patch(
+            f'/api/sports/{sport_1_cycling.id}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)

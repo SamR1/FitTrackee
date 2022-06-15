@@ -19,7 +19,7 @@ sports_blueprint = Blueprint('sports', __name__)
 
 
 @sports_blueprint.route('/sports', methods=['GET'])
-@require_auth(scopes='read')
+@require_auth(scopes=['workouts:read'])
 def get_sports(auth_user: User) -> Dict:
     """
     Get all sports
@@ -195,7 +195,7 @@ def get_sports(auth_user: User) -> Dict:
 
 
 @sports_blueprint.route('/sports/<int:sport_id>', methods=['GET'])
-@require_auth(scopes='read')
+@require_auth(scopes=['workouts:read'])
 def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
     """
     Get a sport
@@ -304,7 +304,7 @@ def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
 
 
 @sports_blueprint.route('/sports/<int:sport_id>', methods=['PATCH'])
-@require_auth(scopes='write', as_admin=True)
+@require_auth(scopes=['workouts:write'], as_admin=True)
 def update_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
     """
     Update a sport
