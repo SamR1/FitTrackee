@@ -9,8 +9,13 @@
     "REDIRECT_URL": "URL de redirection",
     "SCOPE": {
       "LABEL": "Scope",
-      "READ": "lecture",
-      "WRITE": "écriture"
+      "application:write_DESCRIPTION": "donne les droits en écriture à la configuration de l'application.",
+      "profile:read_DESCRIPTION": "donne les droits en lecture aux routes <code>auth</code>.",
+      "profile:write_DESCRIPTION": "donne les droits en écriture aux routes <code>auth</code>.",
+      "users:read_DESCRIPTION": "donne les droits en lecture aux routes <code>users</code>.",
+      "users:write_DESCRIPTION": "donne les droits en écriture aux routes <code>users</code>.",
+      "workouts:read_DESCRIPTION": "donne les droits en lecture aux routes <code>workouts</code>.",
+      "workouts:write_DESCRIPTION": "donne les droits en écriture aux routes <code>workouts</code>."
     },
     "URL": "URL de l'application"
   },

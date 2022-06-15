@@ -53,13 +53,13 @@
           {{ client.redirect_uris.length > 0 ? client.redirect_uris[0] : '' }}
         </dd>
         <dt>{{ $t('oauth2.APP.SCOPE.LABEL') }}:</dt>
-        <dd>
+        <dd class="client-scopes">
           <span
             class="client-scope"
             v-for="scope in client.scope.split(' ')"
             :key="scope"
           >
-            {{ $t(`oauth2.APP.SCOPE.${scope.toUpperCase()}`) }}
+            <code>{{ scope }}</code>
           </span>
         </dd>
       </dl>
@@ -183,8 +183,12 @@
       flex-wrap: wrap;
       gap: $default-padding;
     }
-    .client-scope {
-      padding-right: $default-padding * 0.5;
+    .client-scopes {
+      display: flex;
+      flex-wrap: wrap;
+      .client-scope {
+        padding-right: $default-padding * 1.5;
+      }
     }
     .no-description {
       font-style: italic;

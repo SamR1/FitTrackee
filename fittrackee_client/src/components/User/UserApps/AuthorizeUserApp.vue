@@ -9,17 +9,16 @@
         </i18n-t>
       </h1>
       <ErrorMessage :message="errorMessages" v-if="errorMessages" />
-      <div class="oauth2-access">
+      <div class="oauth2-access description-list">
         <p>{{ $t('oauth2.APP_REQUESTING_ACCESS') }}</p>
-        <ul>
-          <li
-            class="client-scope"
-            v-for="scope in client.scope.split(' ')"
-            :key="scope"
-          >
-            {{ $t(`oauth2.APP.SCOPE.${scope.toUpperCase()}`) }}
-          </li>
-        </ul>
+        <dl>
+          <template v-for="scope in client.scope.split(' ')" :key="scope">
+            <dt class="client-scope">
+              <code>{{ scope }}</code>
+            </dt>
+            <dd v-html="$t(`oauth2.APP.SCOPE.${scope}_DESCRIPTION`)"></dd>
+          </template>
+        </dl>
         <div class="authorize-oauth2-buttons">
           <button class="danger" @click="authorizeApp">
             {{ $t('buttons.AUTHORIZE') }}

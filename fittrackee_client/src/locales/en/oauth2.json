@@ -9,8 +9,13 @@
     "REDIRECT_URL": "Redirect URL",
     "SCOPE": {
       "LABEL": "Scope",
-      "READ": "read",
-      "WRITE": "write"
+      "application:write_DESCRIPTION": "grants write access to application configuration.",
+      "profile:read_DESCRIPTION": "grants read access to <code>auth</code> endpoints.",
+      "profile:write_DESCRIPTION": "grants write access to <code>auth</code> endpoints.",
+      "users:read_DESCRIPTION": "grants read access to <code>users</code>  endpoints.",
+      "users:write_DESCRIPTION": "grants write access to <code>users</code> endpoints.",
+      "workouts:read_DESCRIPTION": "grants read access to <code>workouts</code> endpoints.",
+      "workouts:write_DESCRIPTION": "grants write access to <code>workouts</code> endpoints."
     },
     "URL": "Application URL"
   },

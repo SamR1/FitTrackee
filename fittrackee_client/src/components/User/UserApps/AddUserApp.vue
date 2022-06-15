@@ -48,32 +48,29 @@
             <div class="form-item-scope-label">
               {{ $t('oauth2.APP.SCOPE.LABEL') }}*
             </div>
-            <div class="form-item-scope-checkboxes">
-              <label>
+            <div
+              v-for="scope in oauth2_scopes"
+              class="form-item-scope-checkboxes"
+              :key="scope"
+            >
+              <label class="scope-label">
                 <input
                   type="checkbox"
-                  :checked="appForm.read"
-                  @change="appForm.read = !appForm.read"
+                  :name="scope"
+                  :checked="scopes.includes(scope)"
+                  @change="updateScopes(scope)"
                 />
-                {{ $t('oauth2.APP.SCOPE.READ') }}
+                <code>{{ scope }}</code>
               </label>
-              <label>
-                <input
-                  type="checkbox"
-                  :checked="appForm.write"
-                  @change="appForm.write = !appForm.write"
-                />
-                {{ $t('oauth2.APP.SCOPE.WRITE') }}
-              </label>
+              <p
+                class="scope-description"
+                v-html="$t(`oauth2.APP.SCOPE.${scope}_DESCRIPTION`)"
+              ></p>
             </div>
           </div>
         </div>
         <div class="form-buttons">
-          <button
-            class="confirm"
-            type="submit"
-            :disabled="!appForm.read && !appForm.write"
-          >
+          <button class="confirm" type="submit" :disabled="scopes.length === 0">
             {{ $t('buttons.SUBMIT') }}
           </button>
           <button
@@ -94,6 +91,7 @@
   import { OAUTH2_STORE } from '@/store/constants'
   import { IOAuth2ClientPayload } from '@/types/oauth'
   import { useStore } from '@/use/useStore'
+  import { oauth2_scopes } from '@/utils/oauth'
 
   const store = useStore()
   const appForm = reactive({
@@ -101,9 +99,8 @@
     client_uri: '',
     client_description: '',
     redirect_uri: '',
-    read: true,
-    write: false,
   })
+  const scopes: string[] = reactive([])
 
   function createApp() {
     const payload: IOAuth2ClientPayload = {
@@ -111,12 +108,20 @@
       client_description: appForm.client_description,
       client_uri: appForm.client_uri,
       redirect_uris: [appForm.redirect_uri],
-      scope: `${appForm.read ? 'read' : ''} ${appForm.write ? 'write' : ''}`,
+      scope: scopes.join(' '),
     }
     store.dispatch(OAUTH2_STORE.ACTIONS.CREATE_CLIENT, payload)
   }
   function updateDescription(value: string) {
     appForm.client_description = value
+  }
+  function updateScopes(scope: string) {
+    const index = scopes.indexOf(scope)
+    if (index > -1) {
+      scopes.splice(index, 1)
+    } else {
+      scopes.push(scope)
+    }
   }
 </script>
 
@@ -135,7 +140,7 @@
         display: flex;
         flex-direction: column;
 
-        input {
+        input[type='text'] {
           height: 20px;
         }
         .form-item-scope {
@@ -146,8 +151,15 @@
           }
 
           .form-item-scope-checkboxes {
-            display: flex;
-            gap: $default-padding;
+            padding-bottom: $default-padding;
+
+            .scope-label {
+              height: inherit;
+            }
+            .scope-description {
+              font-style: italic;
+              margin: 0 $default-margin * 0.5;
+            }
           }
         }
 
