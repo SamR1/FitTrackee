@@ -685,6 +685,7 @@ For evaluation purposes, docker files are available, installing **FitTrackee** f
 
     $ git clone https://github.com/SamR1/FitTrackee.git
     $ cd FitTrackee
+    $ cp .env.docker .env
     $ make docker-build docker-run docker-init
 
 Open http://localhost:5000 and register.
