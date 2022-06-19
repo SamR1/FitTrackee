@@ -106,7 +106,10 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
         oauth_client: OAuth2Client,
         auth_token: str,
         scope: Optional[str] = None,
+        code_challenge: Optional[Dict] = None,
     ) -> Union[List[str], str]:
+        if code_challenge is None:
+            code_challenge = {}
         response = client.post(
             '/api/oauth/authorize',
             data={
@@ -114,6 +117,7 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
                 'confirm': True,
                 'response_type': 'code',
                 'scope': 'read' if not scope else scope,
+                **code_challenge,
             },
             headers=dict(
                 Authorization=f'Bearer {auth_token}',
@@ -234,11 +238,14 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
         )
 
     @staticmethod
-    def assert_invalid_request(response: TestResponse) -> Dict:
+    def assert_invalid_request(
+        response: TestResponse, error_description: Optional[str] = None
+    ) -> Dict:
         return assert_oauth_errored_response(
             response,
             400,
             error='invalid_request',
+            error_description=error_description,
         )
 
     @staticmethod

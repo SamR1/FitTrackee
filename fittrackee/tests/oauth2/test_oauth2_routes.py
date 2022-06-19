@@ -1,8 +1,10 @@
 import json
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 from unittest.mock import patch
 
 import pytest
+from authlib.common.security import generate_token
+from authlib.oauth2.rfc7636 import create_s256_code_challenge
 from flask import Flask
 from werkzeug.test import TestResponse
 
@@ -367,15 +369,82 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
         )
 
 
+class TestOAuthClientAuthorizationWithCodeChallenge(ApiTestCaseMixin):
+    route = '/api/oauth/authorize'
+
+    def test_it_returns_error_when_code_challenge_method_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        oauth_client = self.create_oauth_client(user_1)
+        code_verifier = generate_token(48)
+        code_challenge = create_s256_code_challenge(code_verifier)
+
+        response = client.post(
+            self.route,
+            data={
+                'client_id': oauth_client.client_id,
+                'response_type': 'code',
+                'confirm': 'true',
+                'code_challenge': code_challenge,
+                'code_challenge_method': self.random_string(),
+            },
+            headers=dict(
+                Authorization=f'Bearer {auth_token}',
+                content_type='multipart/form-data',
+            ),
+        )
+
+        self.assert_400(response, 'Unsupported "code_challenge_method"')
+
+    def test_it_creates_authorization_code(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        oauth_client = self.create_oauth_client(user_1)
+        code_verifier = generate_token(48)
+        code_challenge = create_s256_code_challenge(code_verifier)
+
+        response = client.post(
+            self.route,
+            data={
+                'client_id': oauth_client.client_id,
+                'response_type': 'code',
+                'confirm': 'true',
+                'code_challenge': code_challenge,
+                'code_challenge_method': 'S256',
+            },
+            headers=dict(
+                Authorization=f'Bearer {auth_token}',
+                content_type='multipart/form-data',
+            ),
+        )
+
+        code = OAuth2AuthorizationCode.query.filter_by(
+            client_id=oauth_client.client_id
+        ).first()
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['redirect_url'] == (
+            f'{oauth_client.get_default_redirect_uri()}?code={code.code}'
+        )
+
+
 class OAuthIssueTokenTestCase(ApiTestCaseMixin):
     def create_authorized_oauth_client(
-        self, app: Flask, user_1: User
+        self, app: Flask, user_1: User, code_challenge: Optional[Dict] = None
     ) -> Tuple[OAuth2Client, Union[List[str], str]]:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
         oauth_client = self.create_oauth_client(user_1)
-        code = self.authorize_client(client, oauth_client, auth_token)
+        code = self.authorize_client(
+            client, oauth_client, auth_token, code_challenge=code_challenge
+        )
         return oauth_client, code
 
     @staticmethod
@@ -490,6 +559,64 @@ class TestOAuthIssueAccessToken(OAuthIssueTokenTestCase):
                 'client_secret': oauth_client.client_secret,
                 'grant_type': 'authorization_code',
                 'code': code,
+            },
+            headers=dict(content_type='multipart/form-data'),
+        )
+
+        self.assert_token_is_returned(response)
+
+
+class TestOAuthIssueAccessTokenWithCodeChallenge(OAuthIssueTokenTestCase):
+    route = '/api/oauth/token'
+
+    def test_it_raises_error_when_code_verifier_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        code_verifier = generate_token(48)
+        code_challenge = create_s256_code_challenge(code_verifier)
+        oauth_client, code = self.create_authorized_oauth_client(
+            app,
+            user_1,
+            {
+                'code_challenge': code_challenge,
+                'code_challenge_method': 'S256',
+            },
+        )
+        client = app.test_client()
+
+        response = client.post(
+            self.route,
+            data={
+                'client_id': oauth_client.client_id,
+                'client_secret': oauth_client.client_secret,
+                'grant_type': 'authorization_code',
+                'code': code,
+                'code_verifier': self.random_string(),
+            },
+            headers=dict(content_type='multipart/form-data'),
+        )
+        self.assert_invalid_request(response, 'Invalid "code_verifier"')
+
+    def test_it_returns_access_token(self, app: Flask, user_1: User) -> None:
+        code_verifier = generate_token(48)
+        oauth_client, code = self.create_authorized_oauth_client(
+            app,
+            user_1,
+            code_challenge={
+                'code_challenge': create_s256_code_challenge(code_verifier),
+                'code_challenge_method': 'S256',
+            },
+        )
+        client = app.test_client()
+
+        response = client.post(
+            self.route,
+            data={
+                'client_id': oauth_client.client_id,
+                'client_secret': oauth_client.client_secret,
+                'grant_type': 'authorization_code',
+                'code': code,
+                'code_verifier': code_verifier,
             },
             headers=dict(content_type='multipart/form-data'),
         )
