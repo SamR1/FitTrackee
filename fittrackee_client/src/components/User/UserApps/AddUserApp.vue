@@ -49,7 +49,7 @@
               {{ $t('oauth2.APP.SCOPE.LABEL') }}*
             </div>
             <div
-              v-for="scope in oauth2_scopes"
+              v-for="scope in filtered_scopes"
               class="form-item-scope-checkboxes"
               :key="scope"
             >
@@ -86,12 +86,18 @@
 </template>
 
 <script setup lang="ts">
-  import { reactive } from 'vue'
+  import { computed, reactive } from 'vue'
 
   import { OAUTH2_STORE } from '@/store/constants'
   import { IOAuth2ClientPayload } from '@/types/oauth'
+  import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
-  import { oauth2_scopes } from '@/utils/oauth'
+  import { admin_oauth2_scopes, oauth2_scopes } from '@/utils/oauth'
+
+  interface Props {
+    authUser: IAuthUserProfile
+  }
+  const props = defineProps<Props>()
 
   const store = useStore()
   const appForm = reactive({
@@ -101,6 +107,9 @@
     redirect_uri: '',
   })
   const scopes: string[] = reactive([])
+  const filtered_scopes = computed(() =>
+    getScopes(props.authUser, admin_oauth2_scopes, oauth2_scopes)
+  )
 
   function createApp() {
     const payload: IOAuth2ClientPayload = {
@@ -108,7 +117,7 @@
       client_description: appForm.client_description,
       client_uri: appForm.client_uri,
       redirect_uris: [appForm.redirect_uri],
-      scope: scopes.join(' '),
+      scope: scopes.sort().join(' '),
     }
     store.dispatch(OAUTH2_STORE.ACTIONS.CREATE_CLIENT, payload)
   }
@@ -122,6 +131,17 @@
     } else {
       scopes.push(scope)
     }
+  }
+  function getScopes(
+    authUser: IAuthUserProfile,
+    admin_scopes: string[],
+    scopes: string[]
+  ) {
+    const filtered_scopes = [...scopes]
+    if (authUser.admin) {
+      filtered_scopes.push(...admin_scopes)
+    }
+    return filtered_scopes.sort()
   }
 </script>
 

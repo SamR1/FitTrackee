@@ -1,5 +1,4 @@
 export const oauth2_scopes = [
-  'application:write',
   'profile:read',
   'profile:write',
   'users:read',
@@ -7,3 +6,5 @@ export const oauth2_scopes = [
   'workouts:read',
   'workouts:write',
 ]
+
+export const admin_oauth2_scopes = ['application:write']
