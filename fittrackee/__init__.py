@@ -21,7 +21,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from fittrackee.emails.email import EmailService
 from fittrackee.request import CustomRequest
 
-VERSION = __version__ = '0.6.7'
+VERSION = __version__ = '0.7.0'
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 migrate = Migrate()
@@ -101,7 +101,7 @@ def create_app(init_email: bool = True) -> Flask:
                 pass
 
     from .application.app_config import config_blueprint  # noqa
-    from .oauth2.routes import oauth_blueprint  # noqa
+    from .oauth2.routes import oauth2_blueprint  # noqa
     from .users.auth import auth_blueprint  # noqa
     from .users.users import users_blueprint  # noqa
     from .workouts.records import records_blueprint  # noqa
@@ -110,7 +110,7 @@ def create_app(init_email: bool = True) -> Flask:
     from .workouts.workouts import workouts_blueprint  # noqa
 
     app.register_blueprint(auth_blueprint, url_prefix='/api')
-    app.register_blueprint(oauth_blueprint, url_prefix='/api')
+    app.register_blueprint(oauth2_blueprint, url_prefix='/api')
     app.register_blueprint(config_blueprint, url_prefix='/api')
     app.register_blueprint(records_blueprint, url_prefix='/api')
     app.register_blueprint(sports_blueprint, url_prefix='/api')

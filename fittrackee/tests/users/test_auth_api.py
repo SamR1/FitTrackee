@@ -514,7 +514,7 @@ class TestUserProfile(ApiTestCaseMixin):
             oauth_client,
             access_token,
             _,
-        ) = self.create_oauth_client_and_issue_token(
+        ) = self.create_oauth2_client_and_issue_token(
             app, user_1, scope=client_scope
         )
 
@@ -615,7 +615,7 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
             oauth_client,
             access_token,
             _,
-        ) = self.create_oauth_client_and_issue_token(
+        ) = self.create_oauth2_client_and_issue_token(
             app, user_1, scope=client_scope
         )
 
@@ -1285,7 +1285,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             oauth_client,
             access_token,
             _,
-        ) = self.create_oauth_client_and_issue_token(
+        ) = self.create_oauth2_client_and_issue_token(
             app, user_1, scope=client_scope
         )
 
@@ -1382,7 +1382,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
             oauth_client,
             access_token,
             _,
-        ) = self.create_oauth_client_and_issue_token(
+        ) = self.create_oauth2_client_and_issue_token(
             app, user_1, scope=client_scope
         )
 
@@ -1600,7 +1600,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             oauth_client,
             access_token,
             _,
-        ) = self.create_oauth_client_and_issue_token(
+        ) = self.create_oauth2_client_and_issue_token(
             app, user_1, scope=client_scope
         )
 
@@ -1693,7 +1693,7 @@ class TestUserSportPreferencesReset(ApiTestCaseMixin):
             oauth_client,
             access_token,
             _,
-        ) = self.create_oauth_client_and_issue_token(
+        ) = self.create_oauth2_client_and_issue_token(
             app, user_1, scope=client_scope
         )
 
@@ -1858,7 +1858,7 @@ class TestUserPicture(ApiTestCaseMixin):
             oauth_client,
             access_token,
             _,
-        ) = self.create_oauth_client_and_issue_token(
+        ) = self.create_oauth2_client_and_issue_token(
             app, user_1, scope=client_scope
         )
 

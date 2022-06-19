@@ -22,7 +22,7 @@ class TestOAuth2Scopes(ApiTestCaseMixin):
             oauth_client,
             access_token,
             _,
-        ) = self.create_oauth_client_and_issue_token(app, user_1, scope=scope)
+        ) = self.create_oauth2_client_and_issue_token(app, user_1, scope=scope)
 
         response = client.get(
             endpoint_url,
@@ -47,7 +47,7 @@ class TestOAuth2Scopes(ApiTestCaseMixin):
             oauth_client,
             access_token,
             _,
-        ) = self.create_oauth_client_and_issue_token(app, user_1, scope=scope)
+        ) = self.create_oauth2_client_and_issue_token(app, user_1, scope=scope)
 
         response = client.get(
             endpoint_url,

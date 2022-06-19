@@ -52,7 +52,7 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
         )
 
         self.assert_400(
-            response, error_message='OAuth client metadata missing'
+            response, error_message='OAuth2 client metadata missing'
         )
 
     @pytest.mark.parametrize(
@@ -82,7 +82,9 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
 
         self.assert_400(
             response,
-            error_message=f'OAuth client metadata missing keys: {missing_key}',
+            error_message=(
+                f'OAuth2 client metadata missing keys: {missing_key}'
+            ),
         )
 
     def test_it_returns_error_when_scope_is_invalid(
@@ -106,7 +108,7 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
 
         self.assert_400(
             response,
-            error_message=('OAuth client invalid scopes'),
+            error_message=('OAuth2 client invalid scopes'),
         )
 
     def test_it_creates_oauth_client(self, app: Flask, user_1: User) -> None:
@@ -200,7 +202,7 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
     def test_it_returns_error_not_authenticated(
         self, app: Flask, user_1: User
     ) -> None:
-        oauth_client = self.create_oauth_client(user_1)
+        oauth_client = self.create_oauth2_client(user_1)
         client = app.test_client()
 
         response = client.post(
@@ -239,7 +241,7 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        oauth_client = self.create_oauth_client(user_1)
+        oauth_client = self.create_oauth2_client(user_1)
 
         response = client.post(
             self.route,
@@ -261,7 +263,7 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        oauth_client = self.create_oauth_client(user_1)
+        oauth_client = self.create_oauth2_client(user_1)
 
         client.post(
             self.route,
@@ -288,7 +290,7 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        oauth_client = self.create_oauth_client(user_1)
+        oauth_client = self.create_oauth2_client(user_1)
 
         client.post(
             self.route,
@@ -314,7 +316,7 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        oauth_client = self.create_oauth_client(user_1)
+        oauth_client = self.create_oauth2_client(user_1)
 
         response = client.post(
             self.route,
@@ -346,7 +348,7 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        oauth_client = self.create_oauth_client(user_1)
+        oauth_client = self.create_oauth2_client(user_1)
 
         response = client.post(
             self.route,
@@ -378,7 +380,7 @@ class TestOAuthClientAuthorizationWithCodeChallenge(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        oauth_client = self.create_oauth_client(user_1)
+        oauth_client = self.create_oauth2_client(user_1)
         code_verifier = generate_token(48)
         code_challenge = create_s256_code_challenge(code_verifier)
 
@@ -405,7 +407,7 @@ class TestOAuthClientAuthorizationWithCodeChallenge(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        oauth_client = self.create_oauth_client(user_1)
+        oauth_client = self.create_oauth2_client(user_1)
         code_verifier = generate_token(48)
         code_challenge = create_s256_code_challenge(code_verifier)
 
@@ -441,7 +443,7 @@ class OAuthIssueTokenTestCase(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        oauth_client = self.create_oauth_client(user_1)
+        oauth_client = self.create_oauth2_client(user_1)
         code = self.authorize_client(
             client, oauth_client, auth_token, code_challenge=code_challenge
         )
@@ -513,7 +515,7 @@ class TestOAuthIssueAccessToken(OAuthIssueTokenTestCase):
     def test_it_returns_error_when_client_not_authorized(
         self, app: Flask, user_1: User
     ) -> None:
-        oauth_client = self.create_oauth_client(user_1)
+        oauth_client = self.create_oauth2_client(user_1)
         client = app.test_client()
 
         response = client.post(
@@ -697,7 +699,7 @@ class TestOAuthTokenRevocation(ApiTestCaseMixin):
             oauth_client,
             access_token,
             _,
-        ) = self.create_oauth_client_and_issue_token(app, user_1)
+        ) = self.create_oauth2_client_and_issue_token(app, user_1)
 
         response = client.post(
             self.route,
@@ -750,7 +752,7 @@ class TestOAuthGetClients(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        [self.create_oauth_client(user_1) for _ in range(7)]
+        [self.create_oauth2_client(user_1) for _ in range(7)]
 
         response = client.get(
             self.route,
@@ -773,7 +775,7 @@ class TestOAuthGetClients(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        [self.create_oauth_client(user_1) for _ in range(6)]
+        [self.create_oauth2_client(user_1) for _ in range(6)]
 
         response = client.get(
             f'{self.route}?page=2',
@@ -798,7 +800,7 @@ class TestOAuthGetClients(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        clients = [self.create_oauth_client(user_1) for _ in range(7)]
+        clients = [self.create_oauth2_client(user_1) for _ in range(7)]
 
         response = client.get(
             self.route,
@@ -817,7 +819,7 @@ class TestOAuthGetClients(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        self.create_oauth_client(user_2)
+        self.create_oauth2_client(user_2)
 
         response = client.get(
             self.route,
@@ -859,7 +861,7 @@ class TestOAuthGetClientById(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_404_with_message(response, 'OAuth client not found')
+        self.assert_404_with_message(response, 'OAuth2 client not found')
 
     def test_it_returns_user_oauth_client(
         self, app: Flask, user_1: User
@@ -868,7 +870,7 @@ class TestOAuthGetClientById(ApiTestCaseMixin):
             app, user_1.email
         )
         client_description = self.random_string()
-        oauth_client = self.create_oauth_client(
+        oauth_client = self.create_oauth2_client(
             user_1,
             metadata={
                 **TEST_OAUTH_CLIENT_METADATA,
@@ -911,7 +913,7 @@ class TestOAuthGetClientById(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        oauth_client = self.create_oauth_client(user_2)
+        oauth_client = self.create_oauth2_client(user_2)
 
         response = client.get(
             self.route.format(client_id=oauth_client.id),
@@ -919,7 +921,7 @@ class TestOAuthGetClientById(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_404_with_message(response, 'OAuth client not found')
+        self.assert_404_with_message(response, 'OAuth2 client not found')
 
 
 class TestOAuthGetClientByClientId(ApiTestCaseMixin):
@@ -950,7 +952,7 @@ class TestOAuthGetClientByClientId(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_404_with_message(response, 'OAuth client not found')
+        self.assert_404_with_message(response, 'OAuth2 client not found')
 
     def test_it_returns_user_oauth_client(
         self, app: Flask, user_1: User
@@ -959,7 +961,7 @@ class TestOAuthGetClientByClientId(ApiTestCaseMixin):
             app, user_1.email
         )
         client_description = self.random_string()
-        oauth_client = self.create_oauth_client(
+        oauth_client = self.create_oauth2_client(
             user_1,
             metadata={
                 **TEST_OAUTH_CLIENT_METADATA,
@@ -1002,7 +1004,7 @@ class TestOAuthGetClientByClientId(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        oauth_client = self.create_oauth_client(user_2)
+        oauth_client = self.create_oauth2_client(user_2)
 
         response = client.get(
             self.route.format(client_id=oauth_client.client_id),
@@ -1010,7 +1012,7 @@ class TestOAuthGetClientByClientId(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_404_with_message(response, 'OAuth client not found')
+        self.assert_404_with_message(response, 'OAuth2 client not found')
 
 
 class TestOAuthDeleteClient(ApiTestCaseMixin):
@@ -1041,7 +1043,7 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_404_with_message(response, 'OAuth client not found')
+        self.assert_404_with_message(response, 'OAuth2 client not found')
 
     def test_it_deletes_user_oauth_client(
         self, app: Flask, user_1: User
@@ -1049,7 +1051,7 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        oauth_client = self.create_oauth_client(user_1)
+        oauth_client = self.create_oauth2_client(user_1)
         client_id = oauth_client.id
 
         response = client.delete(
@@ -1068,7 +1070,7 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        oauth_client = self.create_oauth_client(user_1)
+        oauth_client = self.create_oauth2_client(user_1)
         self.authorize_client(client, oauth_client, auth_token)
         client_id = oauth_client.id
 
@@ -1088,7 +1090,7 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        oauth_client = self.create_oauth_client(user_1)
+        oauth_client = self.create_oauth2_client(user_1)
         code = self.authorize_client(client, oauth_client, auth_token)
         client_id = oauth_client.id
 
@@ -1112,7 +1114,7 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
             oauth_client,
             access_token,
             auth_token,
-        ) = self.create_oauth_client_and_issue_token(app, user_1)
+        ) = self.create_oauth2_client_and_issue_token(app, user_1)
         client_id = oauth_client.id
 
         response = client.delete(
@@ -1131,7 +1133,7 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        oauth_client = self.create_oauth_client(user_2)
+        oauth_client = self.create_oauth2_client(user_2)
         client_id = oauth_client.id
 
         response = client.delete(
@@ -1140,7 +1142,7 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_404_with_message(response, 'OAuth client not found')
+        self.assert_404_with_message(response, 'OAuth2 client not found')
         client = OAuth2Client.query.filter_by(id=client_id).first()
         assert client is not None
 
@@ -1173,7 +1175,7 @@ class TestOAuthRevokeClientToken(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_404_with_message(response, 'OAuth client not found')
+        self.assert_404_with_message(response, 'OAuth2 client not found')
 
     def test_it_revokes_all_client_tokens(
         self, app: Flask, user_1: User
@@ -1181,7 +1183,7 @@ class TestOAuthRevokeClientToken(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        oauth_client = self.create_oauth_client(user_1)
+        oauth_client = self.create_oauth2_client(user_1)
         tokens = [self.create_oauth2_token(oauth_client) for _ in range(3)]
 
         response = client.post(
@@ -1202,9 +1204,9 @@ class TestOAuthRevokeClientToken(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        oauth_client = self.create_oauth_client(user_1)
+        oauth_client = self.create_oauth2_client(user_1)
         client_id = oauth_client.id
-        another_client = self.create_oauth_client(user_1)
+        another_client = self.create_oauth2_client(user_1)
         another_client_token = self.create_oauth2_token(another_client)
 
         response = client.post(

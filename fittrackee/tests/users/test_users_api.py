@@ -156,7 +156,7 @@ class TestGetUser(ApiTestCaseMixin):
             oauth_client,
             access_token,
             _,
-        ) = self.create_oauth_client_and_issue_token(
+        ) = self.create_oauth2_client_and_issue_token(
             app, user_1_admin, scope=client_scope
         )
 
@@ -946,7 +946,7 @@ class TestGetUsers(ApiTestCaseMixin):
             oauth_client,
             access_token,
             _,
-        ) = self.create_oauth_client_and_issue_token(
+        ) = self.create_oauth2_client_and_issue_token(
             app, user_1_admin, scope=client_scope
         )
 
@@ -1458,7 +1458,7 @@ class TestUpdateUser(ApiTestCaseMixin):
             oauth_client,
             access_token,
             _,
-        ) = self.create_oauth_client_and_issue_token(
+        ) = self.create_oauth2_client_and_issue_token(
             app, user_1_admin, scope=client_scope
         )
 
@@ -1709,7 +1709,7 @@ class TestDeleteUser(ApiTestCaseMixin):
             oauth_client,
             access_token,
             _,
-        ) = self.create_oauth_client_and_issue_token(
+        ) = self.create_oauth2_client_and_issue_token(
             app, user_1_admin, scope=client_scope
         )
 

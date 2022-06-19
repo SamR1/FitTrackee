@@ -5,7 +5,7 @@ from unittest.mock import patch
 import pytest
 from flask import Flask
 
-from fittrackee.oauth2.client import check_scope, create_oauth_client
+from fittrackee.oauth2.client import check_scope, create_oauth2_client
 from fittrackee.oauth2.exceptions import InvalidOAuth2Scopes
 from fittrackee.oauth2.models import OAuth2Client
 from fittrackee.users.models import User
@@ -22,7 +22,7 @@ TEST_METADATA = {
 
 class TestCreateOAuth2Client:
     def test_it_creates_oauth_client(self, app: Flask, user_1: User) -> None:
-        oauth_client = create_oauth_client(TEST_METADATA, user_1)
+        oauth_client = create_oauth2_client(TEST_METADATA, user_1)
 
         assert isinstance(oauth_client, OAuth2Client)
 
@@ -34,7 +34,7 @@ class TestCreateOAuth2Client:
             'fittrackee.oauth2.client.gen_salt', return_value=client_id
         ):
 
-            oauth_client = create_oauth_client(TEST_METADATA, user_1)
+            oauth_client = create_oauth2_client(TEST_METADATA, user_1)
 
         assert oauth_client.client_id == client_id
 
@@ -45,7 +45,7 @@ class TestCreateOAuth2Client:
         with patch(
             'fittrackee.oauth2.client.time', return_value=client_id_issued_at
         ):
-            oauth_client = create_oauth_client(TEST_METADATA, user_1)
+            oauth_client = create_oauth2_client(TEST_METADATA, user_1)
 
         assert oauth_client.client_id_issued_at == client_id_issued_at
 
@@ -55,14 +55,14 @@ class TestCreateOAuth2Client:
         client_name = random_string()
         client_metadata: Dict = {**TEST_METADATA, 'client_name': client_name}
 
-        oauth_client = create_oauth_client(client_metadata, user_1)
+        oauth_client = create_oauth2_client(client_metadata, user_1)
 
         assert oauth_client.client_name == client_name
 
     def test_oauth_client_has_no_description_when_not_provided_in_metadata(
         self, app: Flask, user_1: User
     ) -> None:
-        oauth_client = create_oauth_client(TEST_METADATA, user_1)
+        oauth_client = create_oauth2_client(TEST_METADATA, user_1)
 
         assert oauth_client.client_description is None
 
@@ -75,7 +75,7 @@ class TestCreateOAuth2Client:
             'client_description': client_description,
         }
 
-        oauth_client = create_oauth_client(client_metadata, user_1)
+        oauth_client = create_oauth2_client(client_metadata, user_1)
 
         assert oauth_client.client_description == client_description
 
@@ -85,14 +85,14 @@ class TestCreateOAuth2Client:
         client_uri = random_domain()
         client_metadata: Dict = {**TEST_METADATA, 'client_uri': client_uri}
 
-        oauth_client = create_oauth_client(client_metadata, user_1)
+        oauth_client = create_oauth2_client(client_metadata, user_1)
 
         assert oauth_client.client_uri == client_uri
 
     def test_oauth_client_has_expected_grant_types(
         self, app: Flask, user_1: User
     ) -> None:
-        oauth_client = create_oauth_client(TEST_METADATA, user_1)
+        oauth_client = create_oauth2_client(TEST_METADATA, user_1)
 
         assert oauth_client.grant_types == [
             'authorization_code',
@@ -108,7 +108,7 @@ class TestCreateOAuth2Client:
             'redirect_uris': redirect_uris,
         }
 
-        oauth_client = create_oauth_client(client_metadata, user_1)
+        oauth_client = create_oauth2_client(client_metadata, user_1)
 
         assert oauth_client.redirect_uris == redirect_uris
 
@@ -121,7 +121,7 @@ class TestCreateOAuth2Client:
             'response_types': response_types,
         }
 
-        oauth_client = create_oauth_client(client_metadata, user_1)
+        oauth_client = create_oauth2_client(client_metadata, user_1)
 
         assert oauth_client.response_types == ['code']
 
@@ -131,7 +131,7 @@ class TestCreateOAuth2Client:
         scope = 'workouts:write'
         client_metadata: Dict = {**TEST_METADATA, 'scope': scope}
 
-        oauth_client = create_oauth_client(client_metadata, user_1)
+        oauth_client = create_oauth2_client(client_metadata, user_1)
 
         assert oauth_client.scope == scope
 
@@ -141,12 +141,12 @@ class TestCreateOAuth2Client:
         client_metadata: Dict = {**TEST_METADATA, 'scope': random_string()}
 
         with pytest.raises(InvalidOAuth2Scopes):
-            create_oauth_client(client_metadata, user_1)
+            create_oauth2_client(client_metadata, user_1)
 
     def test_oauth_client_has_expected_token_endpoint_auth_method(
         self, app: Flask, user_1: User
     ) -> None:
-        oauth_client = create_oauth_client(TEST_METADATA, user_1)
+        oauth_client = create_oauth2_client(TEST_METADATA, user_1)
 
         assert oauth_client.token_endpoint_auth_method == 'client_secret_post'
 
@@ -158,14 +158,14 @@ class TestCreateOAuth2Client:
             'fittrackee.oauth2.client.gen_salt', return_value=client_secret
         ):
 
-            oauth_client = create_oauth_client(TEST_METADATA, user_1)
+            oauth_client = create_oauth2_client(TEST_METADATA, user_1)
 
         assert oauth_client.client_secret == client_secret
 
     def test_it_creates_oauth_client_for_given_user(
         self, app: Flask, user_1: User
     ) -> None:
-        oauth_client = create_oauth_client(TEST_METADATA, user_1)
+        oauth_client = create_oauth2_client(TEST_METADATA, user_1)
 
         assert oauth_client.user_id == user_1.id
 

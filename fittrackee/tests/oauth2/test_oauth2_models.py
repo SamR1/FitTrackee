@@ -12,7 +12,7 @@ from ..mixins import OAuth2Mixin
 
 class TestOAuth2ClientSerialize(OAuth2Mixin):
     def test_it_returns_oauth_client(self, app: Flask, user_1: User) -> None:
-        oauth_client = self.create_oauth_client(user_1)
+        oauth_client = self.create_oauth2_client(user_1)
         oauth_client.client_id_issued_at = 1653738796
 
         serialized_oauth_client = oauth_client.serialize()
@@ -71,7 +71,7 @@ class TestOAuth2Token(OAuth2Mixin):
         input_expiration: int,
         expected_status: bool,
     ) -> None:
-        oauth_client = self.create_oauth_client(user_1)
+        oauth_client = self.create_oauth2_client(user_1)
         token = OAuth2Token(
             client_id=oauth_client.client_id,
             access_token=self.random_string(),
@@ -85,7 +85,7 @@ class TestOAuth2Token(OAuth2Mixin):
     def test_it_returns_refresh_token_active_when_below_twice_expiration(
         self, app: Flask, user_1: User
     ) -> None:
-        oauth_client = self.create_oauth_client(user_1)
+        oauth_client = self.create_oauth2_client(user_1)
         issued_at = int(time.time())
         expires_in = self.random_int()
         token = OAuth2Token(
@@ -105,7 +105,7 @@ class TestOAuth2Token(OAuth2Mixin):
     def test_it_returns_refresh_token_inactive_when_token_revoked(
         self, app: Flask, user_1: User
     ) -> None:
-        oauth_client = self.create_oauth_client(user_1)
+        oauth_client = self.create_oauth2_client(user_1)
         token = OAuth2Token(
             client_id=oauth_client.client_id,
             access_token=self.random_string(),

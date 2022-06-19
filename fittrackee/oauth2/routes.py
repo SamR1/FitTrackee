@@ -12,12 +12,12 @@ from fittrackee.responses import (
 )
 from fittrackee.users.models import User
 
-from .client import create_oauth_client
+from .client import create_oauth2_client
 from .exceptions import InvalidOAuth2Scopes
 from .models import OAuth2Client, OAuth2Token
 from .server import authorization_server, require_auth
 
-oauth_blueprint = Blueprint('oauth', __name__)
+oauth2_blueprint = Blueprint('oauth2', __name__)
 
 EXPECTED_METADATA_KEYS = [
     'client_name',
@@ -35,7 +35,7 @@ def is_errored(url: str) -> Optional[str]:
     return None
 
 
-@oauth_blueprint.route('/oauth/apps', methods=['GET'])
+@oauth2_blueprint.route('/oauth/apps', methods=['GET'])
 @require_auth()
 def get_clients(auth_user: User) -> Dict:
     params = request.args.copy()
@@ -64,13 +64,13 @@ def get_clients(auth_user: User) -> Dict:
     }
 
 
-@oauth_blueprint.route('/oauth/apps', methods=['POST'])
+@oauth2_blueprint.route('/oauth/apps', methods=['POST'])
 @require_auth()
 def create_client(auth_user: User) -> Union[HttpResponse, Tuple[Dict, int]]:
     client_metadata = request.get_json()
     if not client_metadata:
         return InvalidPayloadErrorResponse(
-            message='OAuth client metadata missing'
+            message='OAuth2 client metadata missing'
         )
 
     missing_keys = [
@@ -81,16 +81,16 @@ def create_client(auth_user: User) -> Union[HttpResponse, Tuple[Dict, int]]:
     if missing_keys:
         return InvalidPayloadErrorResponse(
             message=(
-                'OAuth client metadata missing keys: '
+                'OAuth2 client metadata missing keys: '
                 f'{", ".join(missing_keys)}'
             )
         )
 
     try:
-        new_client = create_oauth_client(client_metadata, auth_user)
+        new_client = create_oauth2_client(client_metadata, auth_user)
     except InvalidOAuth2Scopes:
         return InvalidPayloadErrorResponse(
-            message=('OAuth client invalid scopes')
+            message='OAuth2 client invalid scopes'
         )
 
     db.session.add(new_client)
@@ -116,7 +116,7 @@ def get_client(
     ).first()
 
     if not client:
-        return NotFoundErrorResponse('OAuth client not found')
+        return NotFoundErrorResponse('OAuth2 client not found')
 
     return {
         'status': 'success',
@@ -124,7 +124,7 @@ def get_client(
     }
 
 
-@oauth_blueprint.route('/oauth/apps/<string:client_id>', methods=['GET'])
+@oauth2_blueprint.route('/oauth/apps/<string:client_id>', methods=['GET'])
 @require_auth()
 def get_client_by_client_id(
     auth_user: User, client_id: str
@@ -132,7 +132,7 @@ def get_client_by_client_id(
     return get_client(auth_user, client_id=None, client_client_id=client_id)
 
 
-@oauth_blueprint.route('/oauth/apps/<int:client_id>/by_id', methods=['GET'])
+@oauth2_blueprint.route('/oauth/apps/<int:client_id>/by_id', methods=['GET'])
 @require_auth()
 def get_client_by_id(
     auth_user: User, client_id: int
@@ -140,7 +140,7 @@ def get_client_by_id(
     return get_client(auth_user, client_id=client_id, client_client_id=None)
 
 
-@oauth_blueprint.route('/oauth/apps/<int:client_id>', methods=['DELETE'])
+@oauth2_blueprint.route('/oauth/apps/<int:client_id>', methods=['DELETE'])
 @require_auth()
 def delete_client(
     auth_user: User, client_id: int
@@ -151,14 +151,14 @@ def delete_client(
     ).first()
 
     if not client:
-        return NotFoundErrorResponse('OAuth client not found')
+        return NotFoundErrorResponse('OAuth2 client not found')
 
     db.session.delete(client)
     db.session.commit()
     return {'status': 'no content'}, 204
 
 
-@oauth_blueprint.route('/oauth/apps/<int:client_id>/revoke', methods=['POST'])
+@oauth2_blueprint.route('/oauth/apps/<int:client_id>/revoke', methods=['POST'])
 @require_auth()
 def revoke_client_tokens(
     auth_user: User, client_id: int
@@ -166,13 +166,13 @@ def revoke_client_tokens(
     client = OAuth2Client.query.filter_by(id=client_id).first()
 
     if not client:
-        return NotFoundErrorResponse('OAuth client not found')
+        return NotFoundErrorResponse('OAuth2 client not found')
 
     OAuth2Token.revoke_client_tokens(client.client_id)
     return {'status': 'success'}
 
 
-@oauth_blueprint.route('/oauth/authorize', methods=['POST'])
+@oauth2_blueprint.route('/oauth/authorize', methods=['POST'])
 @require_auth()
 def authorize(auth_user: User) -> Union[HttpResponse, Dict]:
     data = request.form
@@ -190,11 +190,11 @@ def authorize(auth_user: User) -> Union[HttpResponse, Dict]:
     return {'redirect_url': response.location}
 
 
-@oauth_blueprint.route('/oauth/token', methods=['POST'])
+@oauth2_blueprint.route('/oauth/token', methods=['POST'])
 def issue_token() -> Response:
     return authorization_server.create_token_response()
 
 
-@oauth_blueprint.route('/oauth/revoke', methods=['POST'])
+@oauth2_blueprint.route('/oauth/revoke', methods=['POST'])
 def revoke_token() -> Response:
     return authorization_server.create_endpoint_response('revocation')

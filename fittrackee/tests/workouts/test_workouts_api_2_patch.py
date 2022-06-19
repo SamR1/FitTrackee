@@ -247,7 +247,7 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
             oauth_client,
             access_token,
             _,
-        ) = self.create_oauth_client_and_issue_token(
+        ) = self.create_oauth2_client_and_issue_token(
             app, user_1, scope=client_scope
         )
 

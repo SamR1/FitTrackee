@@ -38,12 +38,13 @@ def check_scope(scope: str) -> str:
     return ' '.join(valid_scopes)
 
 
-def create_oauth_client(metadata: Dict, user: User) -> OAuth2Client:
+def create_oauth2_client(metadata: Dict, user: User) -> OAuth2Client:
     """
-    Create oauth client for 3rd-party applications.
+    Create OAuth2 client for 3rd-party applications.
 
     Only Authorization Code Grant with 'client_secret_post' as method
     is supported.
+    Code challenge can be used if provided on authorization.
     """
     client_metadata = {
         'client_name': metadata['client_name'],

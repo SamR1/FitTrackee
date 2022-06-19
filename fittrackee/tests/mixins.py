@@ -10,7 +10,7 @@ from urllib3.util import parse_url
 from werkzeug.test import TestResponse
 
 from fittrackee import db
-from fittrackee.oauth2.client import create_oauth_client
+from fittrackee.oauth2.client import create_oauth2_client
 from fittrackee.oauth2.models import OAuth2Client, OAuth2Token
 from fittrackee.users.models import User
 
@@ -45,7 +45,7 @@ class RandomMixin:
 
 class OAuth2Mixin(RandomMixin):
     @staticmethod
-    def create_oauth_client(
+    def create_oauth2_client(
         user: User,
         metadata: Optional[Dict] = None,
         scope: Optional[str] = None,
@@ -55,7 +55,7 @@ class OAuth2Mixin(RandomMixin):
         )
         if scope is not None:
             client_metadata['scope'] = scope
-        oauth_client = create_oauth_client(client_metadata, user)
+        oauth_client = create_oauth2_client(client_metadata, user)
         db.session.add(oauth_client)
         db.session.commit()
         return oauth_client
@@ -129,13 +129,13 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
         code = parse_qs(parsed_url.query).get('code', '')
         return code
 
-    def create_oauth_client_and_issue_token(
+    def create_oauth2_client_and_issue_token(
         self, app: Flask, user: User, scope: Optional[str] = None
     ) -> Tuple[FlaskClient, OAuth2Client, str, str]:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user.email
         )
-        oauth_client = self.create_oauth_client(user, scope=scope)
+        oauth_client = self.create_oauth2_client(user, scope=scope)
         code = self.authorize_client(
             client, oauth_client, auth_token, scope=scope
         )
