@@ -71,7 +71,7 @@
                     class="fa fa-map-o"
                     aria-hidden="true"
                   />
-                  {{ workout.title }}
+                  <span class="title">{{ workout.title }}</span>
                 </router-link>
                 <StaticMap
                   v-if="workout.with_gpx && hoverWorkoutId === workout.id"
@@ -326,6 +326,14 @@
           position: relative;
           .fa-map-o {
             font-size: 0.75em;
+            padding-right: $default-padding * 0.5;
+          }
+          .nav-item {
+            white-space: nowrap;
+            .title {
+              word-break: break-word;
+              white-space: normal;
+            }
           }
           .static-map {
             display: none;
