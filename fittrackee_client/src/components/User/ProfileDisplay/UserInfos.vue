@@ -175,7 +175,7 @@
   const appConfig: ComputedRef<TAppConfig> = computed(
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
   )
-  let displayModal: Ref<string> = ref('')
+  const displayModal: Ref<string> = ref('')
   const formErrors = ref(false)
   const displayUserEmailForm: Ref<boolean> = ref(false)
   const newUserEmail: Ref<string> = ref('')

@@ -59,7 +59,7 @@
   const fileSizeLimit = appConfig.value.max_single_file_size
     ? getReadableFileSize(appConfig.value.max_single_file_size)
     : ''
-  let pictureFile: Ref<File | null> = ref(null)
+  const pictureFile: Ref<File | null> = ref(null)
 
   function deleteUserPicture() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.DELETE_PICTURE)

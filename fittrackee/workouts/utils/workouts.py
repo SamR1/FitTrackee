@@ -277,7 +277,7 @@ def get_file_path(dir_path: str, filename: str) -> str:
 def get_new_file_path(
     auth_user_id: int,
     workout_date: str,
-    sport: str,
+    sport_id: int,
     old_filename: Optional[str] = None,
     extension: Optional[str] = None,
 ) -> str:
@@ -287,11 +287,9 @@ def get_new_file_path(
     if not extension and old_filename:
         extension = f".{old_filename.rsplit('.', 1)[1].lower()}"
     _, new_filename = tempfile.mkstemp(
-        prefix=f'{workout_date}_{sport}_', suffix=extension
+        prefix=f'{workout_date}_{sport_id}_', suffix=extension
     )
     dir_path = os.path.join('workouts', str(auth_user_id))
-    if not os.path.exists(dir_path):
-        os.makedirs(dir_path)
     file_path = os.path.join(dir_path, new_filename.split('/')[-1])
     return file_path
 
@@ -307,11 +305,16 @@ def process_one_gpx_file(
             params['file_path'], stopped_speed_threshold
         )
         auth_user = params['auth_user']
+        workout_date, _ = get_workout_datetime(
+            workout_date=gpx_data['start'],
+            date_str_format=None if gpx_data else '%Y-%m-%d %H:%M',
+            user_timezone=None,
+        )
         new_filepath = get_new_file_path(
             auth_user_id=auth_user.id,
-            workout_date=gpx_data['start'],
+            workout_date=workout_date.strftime('%Y-%m-%d_%H-%M-%S'),
             old_filename=filename,
-            sport=params['sport_label'],
+            sport_id=params['sport_id'],
         )
         absolute_gpx_filepath = get_absolute_file_path(new_filepath)
         os.rename(params['file_path'], absolute_gpx_filepath)
@@ -319,9 +322,9 @@ def process_one_gpx_file(
 
         map_filepath = get_new_file_path(
             auth_user_id=auth_user.id,
-            workout_date=gpx_data['start'],
+            workout_date=workout_date.strftime('%Y-%m-%d_%H-%M-%S'),
             extension='.png',
-            sport=params['sport_label'],
+            sport_id=params['sport_id'],
         )
         absolute_map_filepath = get_absolute_file_path(map_filepath)
         generate_map(absolute_map_filepath, map_data)
@@ -419,7 +422,7 @@ def process_files(
         'auth_user': auth_user,
         'workout_data': workout_data,
         'file_path': file_path,
-        'sport_label': sport.label,
+        'sport_id': sport.id,
     }
 
     try:

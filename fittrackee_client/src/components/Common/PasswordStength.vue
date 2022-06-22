@@ -63,7 +63,7 @@
   onBeforeMount(async () => await setZxcvbnOptions(language.value))
 
   function calculatePasswordStrength(password: string) {
-    let zxcvbnResult = zxcvbn(password)
+    const zxcvbnResult = zxcvbn(password)
     passwordScore.value = zxcvbnResult.score
     passwordStrength.value = getPasswordStrength(passwordScore.value)
     passwordSuggestions.value = zxcvbnResult.feedback.suggestions

@@ -1,9 +1,6 @@
-import os
-
 import pytest
 from flask import Flask
 
-from fittrackee.files import get_absolute_file_path
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
@@ -153,21 +150,45 @@ class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
         data = self.assert_404(response)
         assert 'not found' in data['status']
 
-    def test_it_returns_500_when_deleting_a_workout_with_gpx_invalid_file(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    def test_a_workout_with_gpx_can_be_deleted_if_gpx_file_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
     ) -> None:
-        token, workout_short_id = post_a_workout(app, gpx_file)
-        client = app.test_client()
-        gpx_filepath = get_gpx_filepath(1)
-        gpx_filepath = get_absolute_file_path(gpx_filepath)
-        os.remove(gpx_filepath)
-
-        response = client.delete(
-            f'/api/workouts/{workout_short_id}',
-            headers=dict(Authorization=f'Bearer {token}'),
+        workout_cycling_user_1.gpx = self.random_string()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
         )
 
-        self.assert_500(response)
+        response = client.delete(
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+
+    def test_a_workout_with_gpx_can_be_deleted_if_map_file_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        map_ip = self.random_string()
+        workout_cycling_user_1.map = self.random_string()
+        workout_cycling_user_1.map_id = map_ip
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.delete(
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
 
 
 class TestDeleteWorkoutWithoutGpx(ApiTestCaseMixin):

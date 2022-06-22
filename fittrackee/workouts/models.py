@@ -11,7 +11,7 @@ from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session, object_session
 from sqlalchemy.types import JSON, Enum
 
-from fittrackee import BaseModel, db
+from fittrackee import BaseModel, appLog, db
 from fittrackee.federation.activities.workout import WorkoutObject
 from fittrackee.federation.decorators import federation_required
 from fittrackee.files import get_absolute_file_path
@@ -442,9 +442,15 @@ def on_workout_delete(
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session: Session, context: Any) -> None:
         if old_record.map:
-            os.remove(get_absolute_file_path(old_record.map))
+            try:
+                os.remove(get_absolute_file_path(old_record.map))
+            except OSError:
+                appLog.error('map file not found when deleting workout')
         if old_record.gpx:
-            os.remove(get_absolute_file_path(old_record.gpx))
+            try:
+                os.remove(get_absolute_file_path(old_record.gpx))
+            except OSError:
+                appLog.error('gpx file not found when deleting workout')
 
 
 class WorkoutSegment(BaseModel):

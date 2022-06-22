@@ -13,7 +13,7 @@ from flask import (
     send_from_directory,
 )
 from sqlalchemy import exc
-from werkzeug.exceptions import RequestEntityTooLarge
+from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db
@@ -812,6 +812,8 @@ def get_map(map_id: int) -> Union[HttpResponse, Response]:
             current_app.config['UPLOAD_FOLDER'],
             workout.map,
         )
+    except NotFound:
+        return NotFoundErrorResponse('Map file does not exist.')
     except Exception as e:
         return handle_error_and_return_response(e)
 

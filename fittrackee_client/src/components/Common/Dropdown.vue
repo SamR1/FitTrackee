@@ -33,8 +33,8 @@
   })
 
   const route = useRoute()
-  let isOpen = ref(false)
-  let dropdownOptions = props.options.map((option) => option)
+  const isOpen = ref(false)
+  const dropdownOptions = props.options.map((option) => option)
 
   function toggleDropdown() {
     isOpen.value = !isOpen.value

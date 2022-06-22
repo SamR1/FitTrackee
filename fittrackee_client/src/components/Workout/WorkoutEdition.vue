@@ -341,7 +341,7 @@
     mapVisibility: authUser.value.map_visibility,
     workoutVisibility: authUser.value.workouts_visibility,
   })
-  let withGpx = ref(
+  const withGpx = ref(
     props.workout.id ? props.workout.with_gpx : props.isCreation
   )
   let gpxFile: File | null = null

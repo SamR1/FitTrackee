@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Installation &#8212; FitTrackee 0.6.7
+    <title>Installation &#8212; FitTrackee 0.6.8
  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css" />
@@ -13,6 +13,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -40,7 +41,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.7
+        <span class="navbar-text navbar-version pull-left"><b>0.6.8
 </b></span>
       </div>
 
@@ -159,7 +160,7 @@
     <div class="body col-md-12 content" role="main">
       
   <section id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h1>
 <p>This application is written in Python (API) and Typescript (client):</p>
 <ul class="simple">
 <li><dl class="simple">
@@ -188,7 +189,7 @@
 <div class="line">FitTrackee also uses icons from <a class="reference external" href="https://forkaweso.me">Fork Awesome</a>.</div>
 </div>
 <section id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Python 3.7+</p></li>
 <li><p>PostgreSQL database (10+)</p></li>
@@ -209,7 +210,7 @@ necessary.</div>
 </div>
 </section>
 <section id="environment-variables">
-<h2>Environment variables<a class="headerlink" href="#environment-variables" title="Permalink to this headline">¶</a></h2>
+<h2>Environment variables<a class="headerlink" href="#environment-variables" title="Permalink to this heading">¶</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <div class="line-block">
@@ -233,7 +234,7 @@ deployment method.</p>
 <span class="sig-name descname"><span class="pre">HOST</span></span><a class="headerlink" href="#envvar-HOST" title="Permalink to this definition">¶</a></dt>
 <dd><p><strong>FitTrackee</strong> host.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p>0.0.0.0</p>
 </dd>
 </dl>
@@ -244,7 +245,7 @@ deployment method.</p>
 <span class="sig-name descname"><span class="pre">PORT</span></span><a class="headerlink" href="#envvar-PORT" title="Permalink to this definition">¶</a></dt>
 <dd><p><strong>FitTrackee</strong> port.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p>5000</p>
 </dd>
 </dl>
@@ -255,7 +256,7 @@ deployment method.</p>
 <span class="sig-name descname"><span class="pre">APP_SETTINGS</span></span><a class="headerlink" href="#envvar-APP_SETTINGS" title="Permalink to this definition">¶</a></dt>
 <dd><p><strong>FitTrackee</strong> configuration.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p>fittrackee.config.ProductionConfig</p>
 </dd>
 </dl>
@@ -272,7 +273,7 @@ deployment method.</p>
 <span class="sig-name descname"><span class="pre">APP_WORKERS</span></span><a class="headerlink" href="#envvar-APP_WORKERS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of workers spawned by <strong>Gunicorn</strong>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p>1</p>
 </dd>
 </dl>
@@ -295,7 +296,7 @@ deployment method.</p>
 </div>
 <p>Directory containing uploaded files.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p><cite>fittrackee/uploads/</cite></p>
 </dd>
 </dl>
@@ -333,7 +334,7 @@ engine URL should begin with <cite>postgresql://</cite>.</div>
 <p>Disable pooling if needed (when starting application with <strong>FitTrackee</strong> entry point and not directly with <strong>Gunicorn</strong>),
 see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/pooling.html#using-connection-pools-with-multiprocessing-or-os-fork">SqlAlchemy documentation</a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p>false</p>
 </dd>
 </dl>
@@ -356,7 +357,7 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 <p><span class="versionmodified changed">Changed in version 0.6.5.</span></p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p>empty string</p>
 </dd>
 </dl>
@@ -387,7 +388,7 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 </div>
 <p>Redis instance used by <strong>Dramatiq</strong>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p>local Redis instance (<code class="docutils literal notranslate"><span class="pre">redis://</span></code>)</p>
 </dd>
 </dl>
@@ -413,7 +414,7 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 <div class="line">Since <strong>0.4.9</strong>, it’s also used to generate static maps (to keep default server, see <a class="reference external" href="installation.html#envvar-DEFAULT_STATICMAP">DEFAULT_STATICMAP</a>)</div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p><cite>https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png</cite></p>
 </dd>
 </dl>
@@ -427,7 +428,7 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 </div>
 <p>Map attribution (if using another tile server), see <a class="reference external" href="installation.html#map-tile-server">Map tile server</a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p><cite>&amp;copy; &lt;a href=”http://www.openstreetmap.org/copyright” target=”_blank” rel=”noopener noreferrer”&gt;OpenStreetMap&lt;/a&gt; contributors</cite></p>
 </dd>
 </dl>
@@ -435,13 +436,13 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-DEFAULT_STATICMAP">
-<span id="envvar-DEFAULT_STATICMAP 🆕"></span><span class="sig-name descname"><span class="pre">DEFAULT_STATICMAP</span> <span class="pre">🆕</span></span><a class="headerlink" href="#envvar-DEFAULT_STATICMAP" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">DEFAULT_STATICMAP</span> <span class="pre">🆕</span></span><a class="headerlink" href="#envvar-DEFAULT_STATICMAP" title="Permalink to this definition">¶</a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.4.9.</span></p>
 </div>
 <p>If <cite>True</cite>, it keeps using default tile server to generate static maps.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p>False</p>
 </dd>
 </dl>
@@ -463,7 +464,7 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 </dd></dl>
 
 <section id="emails">
-<h3>Emails<a class="headerlink" href="#emails" title="Permalink to this headline">¶</a></h3>
+<h3>Emails<a class="headerlink" href="#emails" title="Permalink to this heading">¶</a></h3>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.3.0.</span></p>
 </div>
@@ -509,7 +510,7 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 </div>
 </section>
 <section id="map-tile-server">
-<h3>Map tile server<a class="headerlink" href="#map-tile-server" title="Permalink to this headline">¶</a></h3>
+<h3>Map tile server<a class="headerlink" href="#map-tile-server" title="Permalink to this heading">¶</a></h3>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.4.0.</span></p>
 </div>
@@ -529,7 +530,7 @@ The tile server can be changed by updating <code class="docutils literal notrans
 </section>
 </section>
 <section id="id1">
-<h2>Installation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<h2>Installation<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <div class="line-block">
@@ -537,7 +538,7 @@ The tile server can be changed by updating <code class="docutils literal notrans
 </div>
 </div>
 <section id="from-pypi">
-<h3>From PyPI<a class="headerlink" href="#from-pypi" title="Permalink to this headline">¶</a></h3>
+<h3>From PyPI<a class="headerlink" href="#from-pypi" title="Permalink to this heading">¶</a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
@@ -605,7 +606,7 @@ $ <span class="nb">source</span> .env
 </div>
 </section>
 <section id="from-sources">
-<h3>From sources<a class="headerlink" href="#from-sources" title="Permalink to this headline">¶</a></h3>
+<h3>From sources<a class="headerlink" href="#from-sources" title="Permalink to this heading">¶</a></h3>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <div class="line-block">
@@ -623,7 +624,7 @@ $ poetry config virtualenvs.in-project <span class="nb">true</span>
 <p>For other OS, see <a class="reference external" href="https://python-poetry.org/docs/#installation">Poetry Documentation</a></p>
 </div>
 <section id="dev-environment">
-<h4>Dev environment<a class="headerlink" href="#dev-environment" title="Permalink to this headline">¶</a></h4>
+<h4>Dev environment<a class="headerlink" href="#dev-environment" title="Permalink to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Clone this repo:</p></li>
 </ul>
@@ -666,7 +667,7 @@ $ make install-db
 </div>
 </section>
 <section id="production-environment">
-<h4>Production environment<a class="headerlink" href="#production-environment" title="Permalink to this headline">¶</a></h4>
+<h4>Production environment<a class="headerlink" href="#production-environment" title="Permalink to this heading">¶</a></h4>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <div class="line-block">
@@ -674,11 +675,11 @@ $ make install-db
 </div>
 </div>
 <ul class="simple">
-<li><p>Download the last release (for now, it is the release v0.6.7):</p></li>
+<li><p>Download the last release (for now, it is the release v0.6.8):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.6.7.tar.gz
-$ tar -xzf v0.6.7.tar.gz
-$ mv FitTrackee-0.6.7 FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.6.8.tar.gz
+$ tar -xzf v0.6.8.tar.gz
+$ mv FitTrackee-0.6.8 FitTrackee
 $ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
@@ -722,7 +723,7 @@ database credentials</strong>):</p></li>
 </section>
 </section>
 <section id="upgrade">
-<h2>Upgrade<a class="headerlink" href="#upgrade" title="Permalink to this headline">¶</a></h2>
+<h2>Upgrade<a class="headerlink" href="#upgrade" title="Permalink to this heading">¶</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <div class="line-block">
@@ -732,7 +733,7 @@ database credentials</strong>):</p></li>
 </div>
 </div>
 <section id="id2">
-<h3>From PyPI<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<h3>From PyPI<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Stop the application and activate the virtualenv</p></li>
 <li><p>Upgrade with pip</p></li>
@@ -758,9 +759,9 @@ $ <span class="nb">source</span> .env
 </ul>
 </section>
 <section id="id3">
-<h3>From sources<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<h3>From sources<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
 <section id="id4">
-<h4>Dev environment<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
+<h4>Dev environment<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Stop the application and pull the repository:</p></li>
 </ul>
@@ -794,15 +795,15 @@ $ <span class="nb">source</span> .env
 </div>
 </section>
 <section id="prod-environment">
-<h4>Prod environment<a class="headerlink" href="#prod-environment" title="Permalink to this headline">¶</a></h4>
+<h4>Prod environment<a class="headerlink" href="#prod-environment" title="Permalink to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Stop the application</p></li>
 <li><p>Change to the directory where FitTrackee directory is located</p></li>
-<li><p>Download the last release (for now, it is the release v0.6.7) and overwrite existing files:</p></li>
+<li><p>Download the last release (for now, it is the release v0.6.8) and overwrite existing files:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.6.7.tar.gz
-$ tar -xzf v0.6.7.tar.gz
-$ cp -R FitTrackee-0.6.7/* FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.6.8.tar.gz
+$ tar -xzf v0.6.8.tar.gz
+$ cp -R FitTrackee-0.6.8/* FitTrackee/
 $ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
@@ -833,7 +834,7 @@ $ <span class="nb">cd</span> FitTrackee
 </section>
 </section>
 <section id="deployment">
-<h2>Deployment<a class="headerlink" href="#deployment" title="Permalink to this headline">¶</a></h2>
+<h2>Deployment<a class="headerlink" href="#deployment" title="Permalink to this heading">¶</a></h2>
 <p>There are several ways to start <strong>FitTrackee</strong> web application and task queue
 library.
 One way is to use a <strong>systemd</strong> services and <strong>Nginx</strong> to proxy pass to <strong>Gunicorn</strong>.</p>
@@ -948,9 +949,9 @@ server {
 </div>
 </section>
 <section id="docker">
-<h2>Docker<a class="headerlink" href="#docker" title="Permalink to this headline">¶</a></h2>
+<h2>Docker<a class="headerlink" href="#docker" title="Permalink to this heading">¶</a></h2>
 <section id="id5">
-<h3>Installation<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<h3>Installation<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h3>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.4.4.</span></p>
 </div>
@@ -960,6 +961,7 @@ server {
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/SamR1/FitTrackee.git
 $ <span class="nb">cd</span> FitTrackee
+$ cp .env.docker .env
 $ make docker-build docker-run docker-init
 </pre></div>
 </div>
@@ -995,7 +997,7 @@ $ make docker-build docker-run docker-init
 </div>
 </section>
 <section id="development">
-<h3>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h3>
+<h3>Development<a class="headerlink" href="#development" title="Permalink to this heading">¶</a></h3>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.5.0.</span></p>
 </div>
@@ -1033,7 +1035,7 @@ $ make docker-build docker-run docker-init
     </p>
     <p>
         &copy; Copyright 2018 - 2022, SamR1.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.2.<br/>
     </p>
   </div>
 </footer>

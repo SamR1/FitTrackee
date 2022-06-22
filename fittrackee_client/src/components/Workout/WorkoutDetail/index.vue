@@ -85,7 +85,7 @@
   const workout: ComputedRef<IWorkout> = computed(
     () => props.workoutData.workout
   )
-  let segmentId: Ref<number | null> = ref(
+  const segmentId: Ref<number | null> = ref(
     route.params.workoutId ? +route.params.segmentId : null
   )
   const segment: ComputedRef<IWorkoutSegment | null> = computed(() =>
@@ -93,7 +93,7 @@
       ? workout.value.segments[+segmentId.value - 1]
       : null
   )
-  let displayModal: Ref<boolean> = ref(false)
+  const displayModal: Ref<boolean> = ref(false)
   const sport = computed(() =>
     props.sports
       ? props.sports.find(

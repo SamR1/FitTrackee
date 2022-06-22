@@ -116,7 +116,7 @@
   const { locale } = useI18n()
   const store = useStore()
 
-  let displayModal: Ref<boolean> = ref(false)
+  const displayModal: Ref<boolean> = ref(false)
   const authUser: ComputedRef<IAuthUserProfile> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
   )
@@ -126,7 +126,7 @@
   const language: ComputedRef<string> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
-  let isMenuOpen = ref(false)
+  const isMenuOpen = ref(false)
 
   function openMenu() {
     isMenuOpen.value = true
