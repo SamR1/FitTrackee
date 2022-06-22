@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Users &#8212; FitTrackee 0.6.7
+    <title>Users &#8212; FitTrackee 0.6.8
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
@@ -13,6 +13,7 @@
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -40,7 +41,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.7
+        <span class="navbar-text navbar-version pull-left"><b>0.6.8
 </b></span>
       </div>
 
@@ -127,7 +128,7 @@
     <div class="body col-md-12 content" role="main">
       
   <section id="users">
-<h1>Users<a class="headerlink" href="#users" title="Permalink to this headline">¶</a></h1>
+<h1>Users<a class="headerlink" href="#users" title="Permalink to this heading">¶</a></h1>
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-users">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/users</span></span><a class="headerlink" href="#get--api-users" title="Permalink to this definition">¶</a></dt>
@@ -248,7 +249,7 @@ has admin rights</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Query Parameters</dt>
+<dt class="field-odd">Query Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>page</strong> (<em>integer</em>) – page if using pagination (default: 1)</p></li>
 <li><p><strong>per_page</strong> (<em>integer</em>) – number of users per page (default: 10, max: 50)</p></li>
@@ -258,12 +259,12 @@ has admin rights</p>
 <li><p><strong>order</strong> (<em>string</em>) – sorting order (default: <code class="docutils literal notranslate"><span class="pre">asc</span></code>)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Request Headers</dt>
+<dt class="field-even">Request Headers<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes</dt>
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
@@ -363,17 +364,17 @@ details.</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>user_name</strong> (<em>integer</em>) – user name</p></li>
 </ul>
 </dd>
-<dt class="field-even">Request Headers</dt>
+<dt class="field-even">Request Headers<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes</dt>
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
@@ -406,12 +407,12 @@ details.</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>user_name</strong> (<em>integer</em>) – user name</p></li>
 </ul>
 </dd>
-<dt class="field-even">Status Codes</dt>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
@@ -516,12 +517,12 @@ if sending enabled)</p></li>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>user_name</strong> (<em>string</em>) – user name</p></li>
 </ul>
 </dd>
-<dt class="field-even">Request JSON Object</dt>
+<dt class="field-even">Request JSON Object<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>activate</strong> (<em>boolean</em>) – activate user account</p></li>
 <li><p><strong>admin</strong> (<em>boolean</em>) – does the user have administrator rights</p></li>
@@ -529,12 +530,12 @@ if sending enabled)</p></li>
 <li><p><strong>reset_password</strong> (<em>boolean</em>) – reset user password</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Request Headers</dt>
+<dt class="field-odd">Request Headers<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
 </ul>
 </dd>
-<dt class="field-even">Status Codes</dt>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
@@ -578,17 +579,17 @@ one admin</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>user_name</strong> (<em>string</em>) – user name</p></li>
 </ul>
 </dd>
-<dt class="field-even">Request Headers</dt>
+<dt class="field-even">Request Headers<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes</dt>
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.5">204 No Content</a></span> – user account deleted</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
@@ -627,7 +628,7 @@ one admin</p>
     </p>
     <p>
         &copy; Copyright 2018 - 2022, SamR1.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.2.<br/>
     </p>
   </div>
 </footer>

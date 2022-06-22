@@ -1,5 +1,23 @@
 # Change log
 
+## Version 0.6.8 (2022/06/22)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#193](https://github.com/SamR1/FitTrackee/issues/193) - Allow deleting a workout when files are missing
+* [#192](https://github.com/SamR1/FitTrackee/issues/192) - Returns 404 instead of 500 when map file not found
+* [#191](https://github.com/SamR1/FitTrackee/issues/191) - Layout issue on Workouts page
+
+### Misc
+
+* change gpx and map file naming (included in [PR#195](https://github.com/SamR1/FitTrackee/pull/195))  
+  Note: it does not affect previously imported files
+* [cc4287e](https://github.com/SamR1/FitTrackee/commit/cc4287ed327faaba268a0c689841d16a7aecc3fb) - Fix docker env file
+
+In this release 3 issues was closed.  
+
 ## Version 0.6.7 (2022/06/11)
 
 ### Issues Closed
