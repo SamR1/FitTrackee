@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Authentication &#8212; FitTrackee 0.6.7
+    <title>Authentication &#8212; FitTrackee 0.6.8
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
@@ -13,6 +13,7 @@
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -40,7 +41,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.7
+        <span class="navbar-text navbar-version pull-left"><b>0.6.8
 </b></span>
       </div>
 
@@ -127,7 +128,7 @@
     <div class="body col-md-12 content" role="main">
       
   <section id="authentication">
-<h1>Authentication<a class="headerlink" href="#authentication" title="Permalink to this headline">¶</a></h1>
+<h1>Authentication<a class="headerlink" href="#authentication" title="Permalink to this heading">¶</a></h1>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-register">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/register</span></span><a class="headerlink" href="#post--api-auth-register" title="Permalink to this definition">¶</a></dt>
@@ -164,14 +165,14 @@ to activate it.</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Request JSON Object</dt>
+<dt class="field-odd">Request JSON Object<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>username</strong> (<em>string</em>) – username (3 to 30 characters required)</p></li>
 <li><p><strong>email</strong> (<em>string</em>) – user email</p></li>
 <li><p><strong>password</strong> (<em>string</em>) – password (8 characters required)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Status Codes</dt>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
@@ -219,12 +220,12 @@ character “_” allowed</p></li>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Request JSON Object</dt>
+<dt class="field-odd">Request JSON Object<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>token</strong> (<em>string</em>) – confirmation token</p></li>
 </ul>
 </dd>
-<dt class="field-even">Status Codes</dt>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – account confirmation successful</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – invalid payload</p></li>
@@ -255,12 +256,12 @@ character “_” allowed</p></li>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Request JSON Object</dt>
+<dt class="field-odd">Request JSON Object<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>email</strong> (<em>string</em>) – user email</p></li>
 </ul>
 </dd>
-<dt class="field-even">Status Codes</dt>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – confirmation email resent</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – invalid payload</p></li>
@@ -308,13 +309,13 @@ character “_” allowed</p></li>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Request JSON Object</dt>
+<dt class="field-odd">Request JSON Object<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>email</strong> (<em>string</em>) – user email</p></li>
 <li><p><strong>password</strong> (<em>string</em>) – password</p></li>
 </ul>
 </dd>
-<dt class="field-even">Status Codes</dt>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – successfully logged in</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – invalid payload</p></li>
@@ -408,12 +409,12 @@ character “_” allowed</p></li>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Request Headers</dt>
+<dt class="field-odd">Request Headers<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
 </ul>
 </dd>
-<dt class="field-even">Status Codes</dt>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success.</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
@@ -511,7 +512,7 @@ character “_” allowed</p></li>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Request JSON Object</dt>
+<dt class="field-odd">Request JSON Object<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>first_name</strong> (<em>string</em>) – user first name</p></li>
 <li><p><strong>last_name</strong> (<em>string</em>) – user last name</p></li>
@@ -520,12 +521,12 @@ character “_” allowed</p></li>
 <li><p><strong>birth_date</strong> (<em>string</em>) – user birth date (format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span></code>)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Request Headers</dt>
+<dt class="field-even">Request Headers<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes</dt>
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – user profile updated</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
@@ -628,7 +629,7 @@ character “_” allowed</p></li>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Request JSON Object</dt>
+<dt class="field-odd">Request JSON Object<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>timezone</strong> (<em>string</em>) – user time zone</p></li>
 <li><p><strong>weekm</strong> (<em>boolean</em>) – does week start on Monday?</p></li>
@@ -636,12 +637,12 @@ character “_” allowed</p></li>
 <li><p><strong>imperial_units</strong> (<em>boolean</em>) – display distance in imperial units</p></li>
 </ul>
 </dd>
-<dt class="field-even">Request Headers</dt>
+<dt class="field-even">Request Headers<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes</dt>
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – user preferences updated</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
@@ -688,19 +689,19 @@ character “_” allowed</p></li>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Request JSON Object</dt>
+<dt class="field-odd">Request JSON Object<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>color</strong> (<em>string</em>) – valid hexadecimal color</p></li>
 <li><p><strong>is_active</strong> (<em>boolean</em>) – is sport available when adding a workout</p></li>
 <li><p><strong>stopped_speed_threshold</strong> (<em>float</em>) – stopped speed threshold used by gpxpy</p></li>
 </ul>
 </dd>
-<dt class="field-even">Request Headers</dt>
+<dt class="field-even">Request Headers<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes</dt>
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – user preferences updated</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
@@ -739,17 +740,17 @@ character “_” allowed</p></li>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sport_id</strong> (<em>string</em>) – sport id</p></li>
 </ul>
 </dd>
-<dt class="field-even">Request Headers</dt>
+<dt class="field-even">Request Headers<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes</dt>
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.5">204 No Content</a></span> – user preferences deleted</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
@@ -788,17 +789,17 @@ character “_” allowed</p></li>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Form Parameters</dt>
+<dt class="field-odd">Form Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>file</strong> – image file (allowed extensions: .jpg, .png, .gif)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Request Headers</dt>
+<dt class="field-even">Request Headers<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes</dt>
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – user picture updated</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
@@ -836,12 +837,12 @@ character “_” allowed</p></li>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Request Headers</dt>
+<dt class="field-odd">Request Headers<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
 </ul>
 </dd>
-<dt class="field-even">Status Codes</dt>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.5">204 No Content</a></span> – picture deleted</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
@@ -877,12 +878,12 @@ character “_” allowed</p></li>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Request JSON Object</dt>
+<dt class="field-odd">Request JSON Object<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>email</strong> (<em>string</em>) – user email</p></li>
 </ul>
 </dd>
-<dt class="field-even">Status Codes</dt>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – password reset request processed</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – invalid payload</p></li>
@@ -986,19 +987,19 @@ character “_” allowed</p></li>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Request JSON Object</dt>
+<dt class="field-odd">Request JSON Object<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>email</strong> (<em>string</em>) – user email</p></li>
 <li><p><strong>password</strong> (<em>string</em>) – user current password</p></li>
 <li><p><strong>new_password</strong> (<em>string</em>) – user new password</p></li>
 </ul>
 </dd>
-<dt class="field-even">Request Headers</dt>
+<dt class="field-even">Request Headers<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://tools.ietf.org/html/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes</dt>
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – user account updated</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
@@ -1043,13 +1044,13 @@ character “_” allowed</p></li>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Request JSON Object</dt>
+<dt class="field-odd">Request JSON Object<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>password</strong> (<em>string</em>) – password (8 characters required)</p></li>
 <li><p><strong>token</strong> (<em>string</em>) – password reset token</p></li>
 </ul>
 </dd>
-<dt class="field-even">Status Codes</dt>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – password updated</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – invalid payload</p></li>
@@ -1080,12 +1081,12 @@ character “_” allowed</p></li>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Request JSON Object</dt>
+<dt class="field-odd">Request JSON Object<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>token</strong> (<em>string</em>) – password reset token</p></li>
 </ul>
 </dd>
-<dt class="field-even">Status Codes</dt>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – email updated</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – invalid payload</p></li>
@@ -1110,7 +1111,7 @@ character “_” allowed</p></li>
     </p>
     <p>
         &copy; Copyright 2018 - 2022, SamR1.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.2.<br/>
     </p>
   </div>
 </footer>

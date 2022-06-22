@@ -1158,6 +1158,27 @@ class TestGetWorkout(ApiTestCaseMixin):
 
         self.assert_404_with_message(response, 'Map does not exist')
 
+    def test_it_returns_404_if_map_file_not_found(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        map_ip = self.random_string()
+        workout_cycling_user_1.map = self.random_string()
+        workout_cycling_user_1.map_id = map_ip
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/workouts/map/{map_ip}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_message(response, 'Map file does not exist')
+
 
 class TestDownloadWorkoutGpx(ApiTestCaseMixin):
     def test_it_returns_404_if_workout_does_not_exist(
