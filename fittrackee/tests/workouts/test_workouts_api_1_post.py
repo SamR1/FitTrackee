@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from datetime import datetime
 from io import BytesIO
 from typing import Dict, Optional
@@ -249,6 +250,56 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert len(data['data']['workouts']) == 1
         assert 'just a workout' == data['data']['workouts'][0]['title']
         assert_workout_data_with_gpx(data)
+
+    def test_it_creates_workout_with_expecting_gpx_path(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        workout = Workout.query.first()
+        assert re.match(
+            r'^workouts/1/2018-03-13_12-44-45_1_([\w\d_-]*).gpx$',
+            workout.gpx,
+        )
+
+    def test_it_creates_workout_with_expecting_map_path(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        workout = Workout.query.first()
+        assert re.match(
+            r'^workouts/1/2018-03-13_12-44-45_1_([\w\d_-]*).png$',
+            workout.map,
+        )
 
     def test_it_adds_a_workout_with_gpx_without_name(
         self,
