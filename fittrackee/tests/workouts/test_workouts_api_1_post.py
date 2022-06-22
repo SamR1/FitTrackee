@@ -10,7 +10,6 @@ from flask import Flask
 
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
-from fittrackee.workouts.utils.short_id import decode_short_id
 
 from ..mixins import ApiTestCaseMixin, CallArgsMixin
 
@@ -973,23 +972,6 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         assert response.status_code == 200
-
-        # error case in the same test to avoid generate a new map file
-        workout_uuid = decode_short_id(workout_short_id)
-        workout = Workout.query.filter_by(uuid=workout_uuid).first()
-        workout.map = 'incorrect path'
-
-        assert response.status_code == 200
-        assert 'success' in data['status']
-        assert '' in data['message']
-        assert len(data['data']['gpx']) != ''
-
-        response = client.get(
-            f'/api/workouts/map/{map_id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_500(response)
 
     def test_it_gets_a_workout_created_with_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
