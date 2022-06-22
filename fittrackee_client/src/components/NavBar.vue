@@ -102,7 +102,7 @@
   const language: ComputedRef<string> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
-  let isMenuOpen = ref(false)
+  const isMenuOpen = ref(false)
 
   function openMenu() {
     isMenuOpen.value = true
