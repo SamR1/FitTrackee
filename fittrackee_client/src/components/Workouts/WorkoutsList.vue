@@ -238,7 +238,7 @@
   }
 
   function getWorkoutsQuery(newQuery: LocationQuery): TWorkoutsPayload {
-    let workoutQuery = getQuery(newQuery, orderByList, defaultOrder.order_by, {
+    const workoutQuery = getQuery(newQuery, orderByList, defaultOrder.order_by, {
       defaultSort: defaultOrder.order,
     })
     Object.keys(newQuery)
