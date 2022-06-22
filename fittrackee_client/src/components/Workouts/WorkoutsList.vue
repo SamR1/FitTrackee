@@ -182,7 +182,7 @@
   import { WORKOUTS_STORE } from '@/store/constants'
   import { IPagination } from '@/types/api'
   import { ITranslatedSport } from '@/types/sports'
-  import { IUserProfile } from '@/types/user'
+  import { IAuthUserProfile } from '@/types/user'
   import { IWorkout, TWorkoutsPayload } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList, workoutsPayloadKeys } from '@/utils/api'
@@ -192,7 +192,7 @@
   import { defaultOrder } from '@/utils/workouts'
 
   interface Props {
-    user: IUserProfile
+    user: IAuthUserProfile
     sports: ITranslatedSport[]
   }
   const props = defineProps<Props>()
@@ -258,7 +258,7 @@
       ...payload,
     }
     Object.entries(convertedPayload).map((entry) => {
-      if (entry[0].match('speed|distance')) {
+      if (entry[0].match('speed|distance') && entry[1]) {
         convertedPayload[entry[0]] = convertDistance(+entry[1], 'mi', 'km')
       }
     })
