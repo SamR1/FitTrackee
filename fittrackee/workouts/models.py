@@ -382,12 +382,12 @@ def on_workout_delete(
             try:
                 os.remove(get_absolute_file_path(old_record.map))
             except OSError:
-                appLog.error('map file not find when deleting workout')
+                appLog.error('map file not found when deleting workout')
         if old_record.gpx:
             try:
                 os.remove(get_absolute_file_path(old_record.gpx))
             except OSError:
-                appLog.error('gpx file not find when deleting workout')
+                appLog.error('gpx file not found when deleting workout')
 
 
 class WorkoutSegment(BaseModel):
