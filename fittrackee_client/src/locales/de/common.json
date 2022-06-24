@@ -1,0 +1,23 @@
+{
+  "ABOUT": "about",
+  "CONFIRMATION": "Confirmation",
+  "CONTACT": "contact",
+  "DAY": "day | days",
+  "DOCUMENTATION": "documentation",
+  "HOME": "Home",
+  "HERE": "here",
+  "SELECTS": {
+    "ORDER_BY": {
+      "LABEL": "order by"
+    },
+    "ORDER": {
+      "LABEL": "sort",
+      "ASC": "ascending",
+      "DESC": "descending"
+    },
+    "PER_PAGE": {
+      "LABEL": "par page"
+    }
+  },
+  "TOTAL": "Total"
+}

@@ -1,0 +1,34 @@
+{
+  "ERROR": {
+    "UNKNOWN": "Error. Please try again or contact the administrator.",
+    "email: valid email must be provided": "Email: valid email must be provided.",
+    "error on getting configuration": "Error on getting configuration.",
+    "error when updating configuration": "Error when updating configuration",
+    "error, please try again or contact the administrator": "Error, please try again or contact the administrator.",
+    "error, registration is disabled": "Error, registration is disabled.",
+    "file extension not allowed": "File extension not allowed.",
+    "file size is greater than the allowed size": "File size is greater than the allowed size.",
+    "invalid credentials": "Invalid credentials.",
+    "invalid payload": "Provided data are invalid.",
+    "invalid token, please log in again": "Invalid token, please log in again.",
+    "invalid token, please request a new token": "Invalid token, please log in again.",
+    "Network Error": "Network Error.",
+    "new email must be different than curent email": "The new email must be different than curent email",
+    "no file part": "No file provided.",
+    "no selected file": "No selected file.",
+    "password: password and password confirmation do not match": "Password: password and password confirmation don't match.",
+    "provide a valid auth token": "Provide a valid auth token.",
+    "sorry, that username is already taken": "Sorry, that username is already taken.",
+    "sport does not exist": "Sport does not exist.",
+    "signature expired, please log in again": "Signature expired. Please log in again.",
+    "successfully registered": "Successfully registered.",
+    "user does not exist": "User does not exist.",
+    "valid email must be provided for admin contact": "A valid email must be provided for administrator contact",
+    "you can not delete your account, no other user has admin rights": "You can not delete your account, no other user has admin rights.",
+    "you do not have permissions": "You do not have permissions."
+  },
+  "PAGINATION": {
+    "PREVIOUS": "previous",
+    "NEXT": "next"
+  }
+}
