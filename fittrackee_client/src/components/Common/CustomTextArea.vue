@@ -31,7 +31,7 @@
 
   const emit = defineEmits(['updateValue'])
 
-  let text = ref('')
+  const text = ref('')
 
   function updateText(event: Event & { target: HTMLInputElement }) {
     emit('updateValue', event.target.value)

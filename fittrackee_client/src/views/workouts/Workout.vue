@@ -84,7 +84,7 @@
   const sports: ComputedRef<ISport[]> = computed(
     () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
   )
-  let markerCoordinates: Ref<TCoordinates> = ref({
+  const markerCoordinates: Ref<TCoordinates> = ref({
     latitude: null,
     longitude: null,
   })

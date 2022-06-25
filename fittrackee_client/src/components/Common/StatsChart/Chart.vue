@@ -55,7 +55,7 @@
       function getSum(total: any, value: any): number {
         return getNumber(total) + getNumber(value)
       }
-      let chartData: ComputedRef<ChartData<'bar'>> = computed(() => ({
+      const chartData: ComputedRef<ChartData<'bar'>> = computed(() => ({
         labels: props.labels,
         // workaround to avoid dataset modification
         datasets: JSON.parse(JSON.stringify(props.datasets)),

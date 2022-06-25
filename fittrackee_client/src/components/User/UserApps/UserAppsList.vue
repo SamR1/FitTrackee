@@ -70,7 +70,7 @@
   })
 
   function getClientsQuery(newQuery: LocationQuery): IOauth2ClientsPayload {
-    let clientsQuery: IOauth2ClientsPayload = {}
+    const clientsQuery: IOauth2ClientsPayload = {}
     if (newQuery.page) {
       clientsQuery.page = getNumberQueryValue(newQuery.page, defaultPage)
     }

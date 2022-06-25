@@ -1,3 +1,5 @@
+from selenium.webdriver.common.by import By
+
 from .utils import TEST_URL, login_valid_user, register_valid_user_and_logout
 
 URL = f'{TEST_URL}/login'
@@ -7,24 +9,24 @@ class TestLogin:
     def test_navbar_contains_login(self, selenium):
         selenium.get(URL)
 
-        nav = selenium.find_element_by_id('nav').text
+        nav = selenium.find_element(By.ID, 'nav').text
         assert 'Login' in nav
 
     def test_it_displays_login_form(self, selenium):
         selenium.get(URL)
 
-        inputs = selenium.find_elements_by_tag_name('input')
+        inputs = selenium.find_elements(By.TAG_NAME, 'input')
         assert len(inputs) == 2
         assert inputs[0].get_attribute('id') == 'email'
         assert inputs[0].get_attribute('type') == 'email'
         assert inputs[1].get_attribute('id') == 'password'
         assert inputs[1].get_attribute('type') == 'password'
 
-        button = selenium.find_element_by_tag_name('button')
+        button = selenium.find_element(By.TAG_NAME, 'button')
         assert button.get_attribute('type') == 'submit'
         assert 'Log in' in button.text
 
-        links = selenium.find_elements_by_class_name('links')
+        links = selenium.find_elements(By.CLASS_NAME, 'links')
         assert links[0].tag_name == 'a'
         assert 'Register' in links[0].text
         assert links[1].tag_name == 'a'
@@ -37,7 +39,7 @@ class TestLogin:
 
         login_valid_user(selenium, user)
 
-        nav = selenium.find_element_by_id('nav').text
+        nav = selenium.find_element(By.ID, 'nav').text
         assert 'Register' not in nav
         assert 'Login' not in nav
         assert 'Dashboard' in nav

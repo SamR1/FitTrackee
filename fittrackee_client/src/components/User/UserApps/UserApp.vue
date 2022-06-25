@@ -123,8 +123,8 @@
   const revocationSuccessful: ComputedRef<boolean> = computed(
     () => store.getters[OAUTH2_STORE.GETTERS.REVOCATION_SUCCESSFUL]
   )
-  let displayModal: Ref<boolean> = ref(false)
-  let messageToDisplay: Ref<string | null> = ref(null)
+  const displayModal: Ref<boolean> = ref(false)
+  const messageToDisplay: Ref<string | null> = ref(null)
 
   onBeforeMount(() => {
     loadClient()

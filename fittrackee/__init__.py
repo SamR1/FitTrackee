@@ -21,7 +21,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from fittrackee.emails.email import EmailService
 from fittrackee.request import CustomRequest
 
-VERSION = __version__ = '0.7.0'
+VERSION = __version__ = '0.6.8'
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 migrate = Migrate()
