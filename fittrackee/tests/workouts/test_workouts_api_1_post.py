@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from datetime import datetime
 from io import BytesIO
 from typing import Dict, Optional
@@ -10,7 +11,6 @@ from flask import Flask
 
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
-from fittrackee.workouts.utils.short_id import decode_short_id
 
 from ..mixins import ApiTestCaseMixin, CallArgsMixin
 
@@ -250,6 +250,56 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert len(data['data']['workouts']) == 1
         assert 'just a workout' == data['data']['workouts'][0]['title']
         assert_workout_data_with_gpx(data)
+
+    def test_it_creates_workout_with_expecting_gpx_path(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        workout = Workout.query.first()
+        assert re.match(
+            r'^workouts/1/2018-03-13_12-44-45_1_([\w\d_-]*).gpx$',
+            workout.gpx,
+        )
+
+    def test_it_creates_workout_with_expecting_map_path(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        workout = Workout.query.first()
+        assert re.match(
+            r'^workouts/1/2018-03-13_12-44-45_1_([\w\d_-]*).png$',
+            workout.map,
+        )
 
     def test_it_adds_a_workout_with_gpx_without_name(
         self,
@@ -973,23 +1023,6 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         assert response.status_code == 200
-
-        # error case in the same test to avoid generate a new map file
-        workout_uuid = decode_short_id(workout_short_id)
-        workout = Workout.query.filter_by(uuid=workout_uuid).first()
-        workout.map = 'incorrect path'
-
-        assert response.status_code == 200
-        assert 'success' in data['status']
-        assert '' in data['message']
-        assert len(data['data']['gpx']) != ''
-
-        response = client.get(
-            f'/api/workouts/map/{map_id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_500(response)
 
     def test_it_gets_a_workout_created_with_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str

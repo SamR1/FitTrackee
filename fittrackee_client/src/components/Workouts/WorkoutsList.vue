@@ -71,7 +71,7 @@
                     class="fa fa-map-o"
                     aria-hidden="true"
                   />
-                  {{ workout.title }}
+                  <span class="title">{{ workout.title }}</span>
                 </router-link>
                 <StaticMap
                   v-if="workout.with_gpx && hoverWorkoutId === workout.id"
@@ -182,7 +182,7 @@
   import { WORKOUTS_STORE } from '@/store/constants'
   import { IPagination } from '@/types/api'
   import { ITranslatedSport } from '@/types/sports'
-  import { IUserProfile } from '@/types/user'
+  import { IAuthUserProfile } from '@/types/user'
   import { IWorkout, TWorkoutsPayload } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList, workoutsPayloadKeys } from '@/utils/api'
@@ -192,7 +192,7 @@
   import { defaultOrder } from '@/utils/workouts'
 
   interface Props {
-    user: IUserProfile
+    user: IAuthUserProfile
     sports: ITranslatedSport[]
   }
   const props = defineProps<Props>()
@@ -238,7 +238,7 @@
   }
 
   function getWorkoutsQuery(newQuery: LocationQuery): TWorkoutsPayload {
-    let workoutQuery = getQuery(newQuery, orderByList, defaultOrder.order_by, {
+    const workoutQuery = getQuery(newQuery, orderByList, defaultOrder.order_by, {
       defaultSort: defaultOrder.order,
     })
     Object.keys(newQuery)
@@ -258,7 +258,7 @@
       ...payload,
     }
     Object.entries(convertedPayload).map((entry) => {
-      if (entry[0].match('speed|distance')) {
+      if (entry[0].match('speed|distance') && entry[1]) {
         convertedPayload[entry[0]] = convertDistance(+entry[1], 'mi', 'km')
       }
     })
@@ -326,6 +326,14 @@
           position: relative;
           .fa-map-o {
             font-size: 0.75em;
+            padding-right: $default-padding * 0.5;
+          }
+          .nav-item {
+            white-space: nowrap;
+            .title {
+              word-break: break-word;
+              white-space: normal;
+            }
           }
           .static-map {
             display: none;

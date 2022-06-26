@@ -26,6 +26,10 @@ Examples for Android (non-exhaustive list):
 Maps are displayed using [Open Street Map](https://www.openstreetmap.org).  
 It is also possible to add a workout without a gpx file.
 
+Translations can be updated through [Weblate](https://hosted.weblate.org/engage/fittrackee/).  
+Available languages:  
+[![Translation status](https://hosted.weblate.org/widgets/fittrackee/-/multi-auto.svg)](https://hosted.weblate.org/engage/fittrackee/)
+
 **Still under heavy development (some features may be unstable).**  
 (see [issues](https://github.com/SamR1/FitTrackee/issues) and [documentation](https://samr1.github.io/FitTrackee) for more information)  
 

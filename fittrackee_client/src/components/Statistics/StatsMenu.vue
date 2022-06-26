@@ -42,7 +42,7 @@
 
   const emit = defineEmits(['arrowClick', 'timeFrameUpdate'])
 
-  let selectedTimeFrame = ref('month')
+  const selectedTimeFrame = ref('month')
   const timeFrames = ['week', 'month', 'year']
 
   function onUpdateTimeFrame(timeFrame: string) {

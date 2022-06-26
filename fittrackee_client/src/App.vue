@@ -61,7 +61,7 @@
   }
   function scroll() {
     window.onscroll = () => {
-      let bottom = document.querySelector('#bottom')
+      const bottom = document.querySelector('#bottom')
       displayScrollButton.value = bottom !== null && isScrolledToBottom(bottom)
     }
   }

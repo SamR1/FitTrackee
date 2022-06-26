@@ -134,7 +134,7 @@
     setup(props) {
       const store = useStore()
 
-      let displayedData: Ref<TStatisticsDatasetKeys> = ref('total_distance')
+      const displayedData: Ref<TStatisticsDatasetKeys> = ref('total_distance')
       const statistics: ComputedRef<TStatisticsFromApi> = computed(
         () => store.getters[STATS_STORE.GETTERS.USER_STATS]
       )

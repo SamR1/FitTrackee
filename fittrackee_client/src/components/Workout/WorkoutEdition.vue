@@ -301,7 +301,7 @@
     workoutDurationSeconds: '',
     workoutDistance: '',
   })
-  let withGpx = ref(
+  const withGpx = ref(
     props.workout.id ? props.workout.with_gpx : props.isCreation
   )
   let gpxFile: File | null = null
