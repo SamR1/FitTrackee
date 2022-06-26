@@ -24,6 +24,7 @@
    "APP_REQUESTING_ACCESS": "L'application {0} demande les accès suivants :",
   "APPS_LIST": "Applications OAuth2",
   "AUTHORIZE_APP": "Autoriser {0} à utiliser votre compte ?",
+  "COPY_TO_CLIPBOARD": "copier dans le presse papier",
   "DELETE_APP": "Supprimer l'application",
   "NEW_APP": "Ajouter une App OAuth",
   "NO_DESCRIPTION": "pas de description",

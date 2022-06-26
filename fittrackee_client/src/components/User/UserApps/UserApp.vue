@@ -22,11 +22,30 @@
       </div>
       <dl>
         <dt>{{ $t('oauth2.APP.CLIENT_ID') }}:</dt>
-        <dd>{{ client.client_id }}</dd>
+        <dd>
+          {{ client.client_id }}
+          <i
+            v-if="afterCreation"
+            :class="`fa fa-${idCopied ? 'check' : 'copy'}`"
+            aria-hidden="true"
+            :title="$t('oauth2.COPY_TO_CLIPBOARD')"
+            @click="copyIdToClipboard"
+          >
+          </i>
+        </dd>
         <dt v-if="afterCreation && client.client_secret">
           {{ $t('oauth2.APP.CLIENT_SECRET') }}:
         </dt>
-        <dd>{{ client.client_secret }}</dd>
+        <dd v-if="afterCreation && client.client_secret" class="app-secret">
+          {{ client.client_secret }}
+          <i
+            :class="`fa fa-${secretCopied ? 'check' : 'copy'}`"
+            aria-hidden="true"
+            :title="$t('oauth2.COPY_TO_CLIPBOARD')"
+            @click="copySecretToClipboard"
+          >
+          </i>
+        </dd>
         <dt>{{ capitalize($t('oauth2.APP.ISSUE_AT')) }}:</dt>
         <dd>
           {{
@@ -125,6 +144,8 @@
   )
   const displayModal: Ref<boolean> = ref(false)
   const messageToDisplay: Ref<string | null> = ref(null)
+  const idCopied: Ref<boolean> = ref(false)
+  const secretCopied: Ref<boolean> = ref(false)
 
   onBeforeMount(() => {
     loadClient()
@@ -159,6 +180,24 @@
       store.dispatch(OAUTH2_STORE.ACTIONS.REVOKE_ALL_TOKENS, clientId)
     }
   }
+  function copyIdToClipboard() {
+    navigator.clipboard.writeText(client.value.client_id)
+    idCopied.value = true
+    secretCopied.value = false
+    setTimeout(() => {
+      idCopied.value = false
+    }, 3000)
+  }
+  function copySecretToClipboard() {
+    if (client.value.client_secret) {
+      navigator.clipboard.writeText(client.value.client_secret)
+      secretCopied.value = true
+      idCopied.value = false
+      setTimeout(() => {
+        secretCopied.value = false
+      }, 3000)
+    }
+  }
   onUnmounted(() => {
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     store.commit(OAUTH2_STORE.MUTATIONS.EMPTY_CLIENT)
@@ -183,12 +222,18 @@
       flex-wrap: wrap;
       gap: $default-padding;
     }
+    .app-secret {
+      word-break: break-word;
+    }
     .client-scopes {
       display: flex;
       flex-wrap: wrap;
       .client-scope {
         padding-right: $default-padding * 1.5;
       }
+    }
+    .fa-copy {
+      font-size: 0.9em;
     }
     .no-description {
       font-style: italic;
