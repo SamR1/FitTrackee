@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
-{% block title %}Email changed{% endblock %}
-{% block preheader %}Your email is being updated.{% endblock %}
-{% block content %}<h1>Hi {{username}},</h1>
-                        <p>You recently requested to change your email address for your FitTrackee account to: </p>
+{% block title %}E-Mail Adresse geändert{% endblock %}
+{% block preheader %}Deine E-Mail Adresse wure aktualisiert.{% endblock %}
+{% block content %}<h1>Hallo {{username}},</h1>
+                        <p>Du hast kürzlich beantragt, die E-Mail Adresse Deines FitTrackee Kontos zu ändern. Neue Adresse:</p>
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                           <tr>
                             <td align="center">
@@ -17,10 +17,10 @@
                           </tr>
                         </table>
                         <p>
-                          For security, this request was received from a {{operating_system}} device using {{browser_name}}.
-                          If this email change wasn't initiated by you, please change your password immediately or contact your administrator if your account is locked.
+                          Zur Sicherheit: Diese Anfrage wurde von einem {{operating_system}} Gerät mit {{browser_name}} ausgelöst.
+                          Falls die Änderung der E-Mail Adresse nicht von Dir initiiert wurde, ändere bitte sofort Dein Passwort oder kontaktiere den Administrator, falls Dein Konto gesperrt ist.
                         </p>
-                        <p>Thanks,
+                        <p>Danke
                           <br>
-                          The FitTrackee Team
+                          Dein FitTrackee Team
                         </p>{% endblock %}

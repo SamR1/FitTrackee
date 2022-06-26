@@ -1,15 +1,15 @@
 {% extends "layout.html" %}
-{% block title %}Confirm email change{% endblock %}
-{% block preheader %}Use this link to confirm email change.{% endblock %}
-{% block content %}<h1>Hi {{username}},</h1>
-                        <p>You recently requested to change your email address for your FitTrackee account. Use the button below to confirm this address.</p>
+{% block title %}Bestätige E-Mail Änderung{% endblock %}
+{% block preheader %}Verwende den Link um die Änderung Deiner E-Mail Adresse zu bestätigen.{% endblock %}
+{% block content %}<h1>Hallo {{username}},</h1>
+                        <p>Du hast kürzlich beantragt, die E-Mail Adresse Deines FitTrackee Kontos zu ändern. Verwende den unteren Button um Deine Adresse zu bestätigen.</p>
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                           <tr>
                             <td align="center">
                               <table width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation">
                                 <tr>
                                   <td align="center">
-                                    <a href="{{email_confirmation_url}}" class="f-fallback button button--green" target="_blank">Verify your email</a>
+                                    <a href="{{email_confirmation_url}}" class="f-fallback button button--green" target="_blank">Bestätige Deine E-Mail</a>
                                   </td>
                                 </tr>
                               </table>
@@ -17,15 +17,15 @@
                           </tr>
                         </table>
                         <p>
-                          {% if operating_system and browser_name %}For security, this request was received from a {{operating_system}} device using {{browser_name}}.
-                          {% endif %}If this email change wasn't initiated by you, please ignore this email.
+                          {% if operating_system and browser_name %}Zur Sicherheit: Diese Anfrage wurde von einem {{operating_system}} Gerät mit {{browser_name}} ausgelöst.
+                          {% endif %}Falls die Änderung der E-Mail Adresse nicht von Dir initiiert wurde, ignoriere diese E-Mail bitte.
                         </p>
-                        <p>Thanks,
-                          <br>The FitTrackee Team</p>
+                        <p>Danke
+                          <br>Dein FitTrackee Team</p>
                         <table class="body-sub" role="presentation">
                           <tr>
                             <td>
-                              <p class="f-fallback sub">If you’re having trouble with the button above, copy and paste the URL below into your web browser.</p>
+                              <p class="f-fallback sub">Falls Du Probleme mit dem oberen Button hast, kopiere diese URL und gebe sie in Deinen Webbrowser ein.</p>
                               <p class="f-fallback sub">{{email_confirmation_url}}</p>
                             </td>
                           </tr>

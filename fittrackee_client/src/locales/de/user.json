@@ -1,9 +1,9 @@
 {
   "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Hast du keine Anweisungen erhalten?",
-  "ACCOUNT_CONFIRMATION_SENT": "Prüfe deine E-Mail. Eine neue Bestätigungsemail wurde an die angegebene Adresse geschickt.",
+  "ACCOUNT_CONFIRMATION_SENT": "Prüfe Deine E-Mail. Eine neue Bestätigungsemail wurde an die angegebene Adresse geschickt.",
   "ADMIN": "Admin",
   "ALREADY_HAVE_ACCOUNT": "Hast du bereits ein Konto?",
-  "CONFIRM_ACCOUNT_DELETION": "Möchtest du dein Konto wirklich löschen? Alle Daten werden gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.",
+  "CONFIRM_ACCOUNT_DELETION": "Möchtest Du Dein Konto wirklich löschen? Alle Daten werden gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.",
   "CURRENT_PASSWORD": "Aktuelles Passwort",
   "EMAIL": "E-Mail",
   "EMAIL_INFO": "Gebe eine gültige E-Mail-Adresse an.",
@@ -21,7 +21,7 @@
   "PASSWORD_INFO": "Mindestens 8 Zeichen sind erforderlich.",
   "PASSWORD_FORGOTTEN": "Passwort vergessen?",
   "PASSWORD_RESET": "Passwort zurücksetzen",
-  "PASSWORD_SENT_EMAIL_TEXT": "Prüfe deine E-Mail. Wenn deine Adresse in der Datenbank enthalten ist, wirst du eine E-Mail mit einem Link erhalten um dein Passwort zurückzusetzen.",
+  "PASSWORD_SENT_EMAIL_TEXT": "Prüfe Deine E-Mail. Wenn Deine Adresse in der Datenbank enthalten ist, wirst du eine E-Mail mit einem Link erhalten um Dein Passwort zurückzusetzen.",
   "PASSWORD_STRENGTH": {
     "WEAK": "schwach",
     "AVERAGE": "mittel",
@@ -54,7 +54,7 @@
     "EDIT": "Profil bearbeiten",
     "EDIT_PREFERENCES": "Einstellungen ändern",
     "EDIT_SPORTS_PREFERENCES": "Einstellungen für Sportarten ändern",
-    "ERRORED_EMAIL_UPDATE": "Bitte {0} um deine E-Mail Adresse nochmals zu ändern oder kontaktiere den Administrator",
+    "ERRORED_EMAIL_UPDATE": "Bitte {0} um Deine E-Mail Adresse nochmals zu ändern oder kontaktiere den Administrator",
     "FIRST_NAME": "Vorname",
     "FIRST_DAY_OF_WEEK": "Erster Tag der Woche",
     "LANGUAGE": "Sprache",
@@ -85,9 +85,9 @@
       "LABEL": "Titel",
       "STOPPED_SPEED_THRESHOLD": "Geschwindigkeitsschwellenwert für Stopp"
     },
-    "SUCCESSFUL_EMAIL_UPDATE": "Dein Konto wurde erfolgreich aktualisiert. Bitte prüfe deine E-Mail um deine neue E-Mail Adresse zu bestätigen.",
+    "SUCCESSFUL_EMAIL_UPDATE": "Dein Konto wurde erfolgreich aktualisiert. Bitte prüfe Deine E-Mail um die neue E-Mail Adresse zu bestätigen.",
     "SUCCESSFUL_REGISTRATION": "Dein Konto wurde erfolgreich erstellt.",
-    "SUCCESSFUL_REGISTRATION_WITH_EMAIL": "Ein Aktivierungslink für dein Konto wurde an die angegebene E-Mail Adresse geschickt.",
+    "SUCCESSFUL_REGISTRATION_WITH_EMAIL": "Ein Aktivierungslink für Dein Konto wurde an die angegebene E-Mail Adresse geschickt.",
     "SUCCESSFUL_UPDATE": "Dein Konto wurde erfolgreich aktualisiert.",
     "UNITS": {
       "LABEL": "Einheiten für die Distanz",

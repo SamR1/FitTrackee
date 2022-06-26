@@ -1,10 +1,10 @@
-Hi {{username}},
+Hallo {{username}},
 
-You recently requested to change your email address for your FitTrackee account to: {{ new_email_address }}
+Du hast kürzlich beantragt, die E-Mail Adresse Deines FitTrackee Kontos nach {{ new_email_address }} zu ändern.
 
-For security, this request was received from a {{operating_system}} device using {{browser_name}}.
-If this email change wasn't initiated by you, please change your password immediately or contact your administrator if your account is locked.
+Zur Sicherheit: Diese Anfrage wurde von einem {{operating_system}} Gerät mit {{browser_name}} ausgelöst.
+Falls die Änderung der E-Mail Adresse nicht von Dir initiiert wurde, ändere bitte sofort Dein Passwort oder kontaktiere den Administrator, falls Dein Konto gesperrt ist.
 
-Thanks,
-The FitTrackee Team
+Danke
+Dein FitTrackee Team
 {{fittrackee_url}}
