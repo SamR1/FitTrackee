@@ -1,58 +1,58 @@
 {
-  "ACTION": "Action",
-  "ACTIVATE_USER_ACCOUNT": "Activate account",
-  "ACTIVE": "Active",
-  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Add/remove admin rights, delete user account.",
+  "ACTION": "Aktion",
+  "ACTIVATE_USER_ACCOUNT": "Aktiviere Konto",
+  "ACTIVE": "Aktiv",
+  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Hinzufügen/Entfernen von Administratorrechten, Lösche Nutzerkonto.",
   "ADMIN": "Admin",
   "ADMINISTRATION": "Administration",
-  "APPLICATION": "Application",
+  "APPLICATION": "Anwendung",
   "APP_CONFIG": {
-    "ADMIN_CONTACT": "Administrator email for contact",
-    "MAX_USERS_LABEL": "Max. number of active users",
-    "MAX_USERS_HELP": "If 0, no limitation on registration.",
-    "MAX_FILES_IN_ZIP_LABEL": "Max. files of zip archive",
-    "NO_CONTACT_EMAIL": "no contact email",
-    "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Max. size of uploaded files (in Mb)",
-    "TITLE": "Application configuration",
-    "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. size of zip archive (in Mb)"
+    "ADMIN_CONTACT": "Kontakt-E-Mail des Administrators",
+    "MAX_USERS_LABEL": "Max. Anzahl aktiver Nutzer",
+    "MAX_USERS_HELP": "Wenn 0, gibt es keine Registrierungslimitierung..",
+    "MAX_FILES_IN_ZIP_LABEL": "Max. Dateianzahl im zip Archiv",
+    "NO_CONTACT_EMAIL": "keine Kontakt-E-Mail",
+    "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Max. Größe der hochgeladenen Dateien (in Mb)",
+    "TITLE": "Anwendungskonfiguration",
+    "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. Größe des zip Archives (in Mb)"
   },
-  "BACK_TO_ADMIN": "Back to admin",
-  "CONFIRM_USER_ACCOUNT_DELETION": "Are you sure you want to delete {0} account? All data will be deleted, this cannot be undone.",
-  "CONFIRM_USER_PASSWORD_RESET": "Are you sure you want to reset {0} password?",
-  "CURRENT_EMAIL": "Current email",
-  "DELETE_USER": "Delete user",
-  "EMAIL_SENDING_DISABLED": "Email sending is disabled.",
-  "ENABLE_DISABLE_SPORTS": "Enable/disable sports.",
-  "NEW_EMAIL": "New email",
-  "PASSWORD_RESET_SUCCESSFUL": "The password has been reset.",
-  "REGISTRATION_DISABLED": "Registration is currently disabled.",
-  "REGISTRATION_ENABLED": "Registration is currently enabled.",
-  "RESET_USER_PASSWORD": "Reset password",
+  "BACK_TO_ADMIN": "Zurück zu Admin",
+  "CONFIRM_USER_ACCOUNT_DELETION": "Möchtest du wirklich das {0} Konto löschen? Alle Daten werden gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.",
+  "CONFIRM_USER_PASSWORD_RESET": "Möchtest du wirklich das {0} Passwort zurücksetzen?",
+  "CURRENT_EMAIL": "Aktuelle E-Mail",
+  "DELETE_USER": "Lösche Nutzer",
+  "EMAIL_SENDING_DISABLED": "E-Mail-Versand ist deaktiviert.",
+  "ENABLE_DISABLE_SPORTS": "Aktivieren/Deaktivieren von Sportarten.",
+  "NEW_EMAIL": "Neue E-Mail",
+  "PASSWORD_RESET_SUCCESSFUL": "Das wasswort wurde zurückgesetzt.",
+  "REGISTRATION_DISABLED": "Registrierung ist derzeit deaktiviert.",
+  "REGISTRATION_ENABLED": "Registrierung ist derzeit aktiviert.",
+  "RESET_USER_PASSWORD": "Passwort zurücksetzen",
   "SPORTS": {
     "TABLE": {
-      "ACTIVE": "Active",
-      "HAS_WORKOUTS": "workouts exist",
-      "IMAGE": "Image",
-      "LABEL": "Label"
+      "ACTIVE": "Aktiv",
+      "HAS_WORKOUTS": "Trainings existieren",
+      "IMAGE": "Bild",
+      "LABEL": "Titel"
     },
-    "TITLE": "Sports administration"
+    "TITLE": "Sportarten Administration"
   },
-  "UPDATE_APPLICATION_DESCRIPTION": "Update application configuration (maximum number of registered users, maximum files size).",
-  "UPDATE_USER_EMAIL": "Update email",
-  "USER": "user | users",
-  "USER_EMAIL_UPDATE_SUCCESSFUL": "The email address has been updated.",
+  "UPDATE_APPLICATION_DESCRIPTION": "Aktualisiere Anwemdungskonfiguration (maximale Anzahl an registrierten Nutzern, maximale Dateigröße).",
+  "UPDATE_USER_EMAIL": "Aktualisiere E-Mail",
+  "USER": "Nutzer",
+  "USER_EMAIL_UPDATE_SUCCESSFUL": "Die E-Mail Adresse wurde aktualisiert.",
   "USERS": {
     "TABLE": {
-      "ADD_ADMIN_RIGHTS": "Add admin rights",
-      "REMOVE_ADMIN_RIGHTS": "Remove admin rights"
+      "ADD_ADMIN_RIGHTS": "Administratorrechte hinzufügen",
+      "REMOVE_ADMIN_RIGHTS": "Administratorrechte entfernen"
     },
     "SELECTS": {
       "ORDER_BY": {
-        "ADMIN": "admin status",
-        "CREATED_AT": "registration date",
-        "IS_ACTIVE": "account status",
-        "USERNAME": "username",
-        "WORKOUTS_COUNT": "workout count"
+        "ADMIN": "Adminstatus",
+        "CREATED_AT": "Registrierungsdatum",
+        "IS_ACTIVE": "Accountstatus",
+        "USERNAME": "Nutzername",
+        "WORKOUTS_COUNT": "Trainingsanzahl"
       }
     }
   }

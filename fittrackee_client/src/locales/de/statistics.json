@@ -1,8 +1,8 @@
 {
-  "STATISTICS": "Statistics",
+  "STATISTICS": "Statistik",
   "TIME_FRAMES": {
-    "week": "week",
-    "month": "month",
-    "year": "year"
+    "week": "Woche",
+    "month": "Monat",
+    "year": "Jahr"
   }
 }

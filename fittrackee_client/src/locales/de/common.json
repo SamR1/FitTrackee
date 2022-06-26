@@ -1,23 +1,23 @@
 {
-  "ABOUT": "about",
-  "CONFIRMATION": "Confirmation",
-  "CONTACT": "contact",
-  "DAY": "day | days",
-  "DOCUMENTATION": "documentation",
-  "HOME": "Home",
-  "HERE": "here",
+  "ABOUT": "Über",
+  "CONFIRMATION": "Bestätigung",
+  "CONTACT": "Kontakt",
+  "DAY": "Tag | Tage",
+  "DOCUMENTATION": "Dokumentation",
+  "HOME": "Startseite",
+  "HERE": "hier",
   "SELECTS": {
     "ORDER_BY": {
-      "LABEL": "order by"
+      "LABEL": "sortiert nach"
     },
     "ORDER": {
-      "LABEL": "sort",
-      "ASC": "ascending",
-      "DESC": "descending"
+      "LABEL": "sortieren",
+      "ASC": "aufsteigend",
+      "DESC": "absteigend"
     },
     "PER_PAGE": {
-      "LABEL": "par page"
+      "LABEL": "pro Seite"
     }
   },
-  "TOTAL": "Total"
+  "TOTAL": "Insgesamt"
 }

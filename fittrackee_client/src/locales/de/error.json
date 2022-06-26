@@ -1,9 +1,9 @@
 {
-  "UNKNOWN": "Error. Please try again or contact the administrator.",
-  "APP_ERROR": "The application seems to have encountered some issues.<br />Please try again later or contact the administrator.",
+  "UNKNOWN": "Fehler. Bitte versuche es erneut oder kontaktiere den Administrator.",
+  "APP_ERROR": "Bei der Anwendung scheinen einige Probleme aufgetreten zu sein.<br />Bitte versuche es später noch einmal oder kontaktiere den Administrator.",
   "NOT_FOUND": {
-    "PAGE": "Page not found",
-    "WORKOUT": "Workout not found"
+    "PAGE": "Seite nicht gefunden",
+    "WORKOUT": "Training nicht gefunden"
   },
-  "SOMETHING_WRONG": "Something went wrong"
+  "SOMETHING_WRONG": "Etwas lief schief"
 }
