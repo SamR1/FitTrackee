@@ -20,6 +20,8 @@ The **GitHub** repository contains:
 - tests,
 - documentation (source and build).
 
+Translations can be updated through [Weblate](https://hosted.weblate.org/engage/fittrackee/).  
+
 Continuous integration workflows run on **Github Actions** platform (on **push** and **pull requests**).
 
 
