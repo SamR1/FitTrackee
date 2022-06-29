@@ -114,6 +114,7 @@
   }
   function updateLanguage(option: IDropdownOption) {
     locale.value = option.value.toString()
+    document.querySelector('html')?.setAttribute('lang', locale.value)
     store.commit(ROOT_STORE.MUTATIONS.UPDATE_LANG, option.value)
   }
   function logout() {
