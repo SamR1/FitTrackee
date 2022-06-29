@@ -2,7 +2,6 @@ import { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
 import api from '@/api/defaultApi'
-import createI18n from '@/i18n'
 import router from '@/router'
 import {
   AUTH_USER_STORE,
@@ -31,8 +30,6 @@ import {
   IUserSportPreferencesPayload,
 } from '@/types/user'
 import { handleError } from '@/utils'
-
-const { locale } = createI18n.global
 
 const removeAuthUserData = (
   context: ActionContext<IAuthUserState, IRootState>
@@ -126,11 +123,10 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
             res.data.data
           )
           if (res.data.data.language) {
-            context.commit(
-              ROOT_STORE.MUTATIONS.UPDATE_LANG,
+            context.dispatch(
+              ROOT_STORE.ACTIONS.UPDATE_APPLICATION_LANGUAGE,
               res.data.data.language
             )
-            locale.value = res.data.data.language
           }
           context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
         } else {
@@ -251,12 +247,12 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
             AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE,
             res.data.data
           )
-          context.commit(
-            ROOT_STORE.MUTATIONS.UPDATE_LANG,
-            res.data.data.language
-          )
-          locale.value = res.data.data.language
-          router.push('/profile/preferences')
+          context
+            .dispatch(
+              ROOT_STORE.ACTIONS.UPDATE_APPLICATION_LANGUAGE,
+              res.data.data.language
+            )
+            .then(() => router.push('/profile/preferences'))
         } else {
           handleError(context, null)
         }
