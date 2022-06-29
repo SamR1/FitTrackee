@@ -34,6 +34,10 @@ export interface IRootActions {
     context: ActionContext<IRootState, IRootState>,
     payload: TAppConfigForm
   ): void
+  [ROOT_STORE.ACTIONS.UPDATE_APPLICATION_LANGUAGE](
+    context: ActionContext<IRootState, IRootState>,
+    langauge: string
+  ): void
 }
 
 export interface IRootGetters {
