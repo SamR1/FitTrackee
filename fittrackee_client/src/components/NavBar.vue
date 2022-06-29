@@ -79,7 +79,6 @@
 
 <script setup lang="ts">
   import { ComputedRef, computed, ref, capitalize } from 'vue'
-  import { useI18n } from 'vue-i18n'
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
@@ -90,7 +89,6 @@
 
   const emit = defineEmits(['menuInteraction'])
 
-  const { locale } = useI18n()
   const store = useStore()
 
   const authUser: ComputedRef<IAuthUserProfile> = computed(
@@ -113,8 +111,10 @@
     emit('menuInteraction', false)
   }
   function updateLanguage(option: IDropdownOption) {
-    locale.value = option.value.toString()
-    store.commit(ROOT_STORE.MUTATIONS.UPDATE_LANG, option.value)
+    store.dispatch(
+      ROOT_STORE.ACTIONS.UPDATE_APPLICATION_LANGUAGE,
+      option.value.toString()
+    )
   }
   function logout() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.LOGOUT)
