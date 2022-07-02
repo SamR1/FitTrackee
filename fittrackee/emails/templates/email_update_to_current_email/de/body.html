@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block title %}E-Mail Adresse geändert{% endblock %}
+{% block preheader %}Deine E-Mail Adresse wure aktualisiert.{% endblock %}
+{% block content %}<h1>Hallo {{username}},</h1>
+                        <p>Du hast kürzlich beantragt, die E-Mail Adresse Deines FitTrackee Kontos zu ändern. Neue Adresse:</p>
+                        <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                          <tr>
+                            <td align="center">
+                              <table width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation">
+                                <tr>
+                                  <td align="center">
+                                    {{new_email_address}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+                        <p>
+                          Zur Sicherheit: Diese Anfrage wurde von einem {{operating_system}} Gerät mit {{browser_name}} ausgelöst.
+                          Falls die Änderung der E-Mail Adresse nicht von Dir initiiert wurde, ändere bitte sofort Dein Passwort oder kontaktiere den Administrator, falls Dein Konto gesperrt ist.
+                        </p>
+                        <p>Danke
+                          <br>
+                          Dein FitTrackee Team
+                        </p>{% endblock %}

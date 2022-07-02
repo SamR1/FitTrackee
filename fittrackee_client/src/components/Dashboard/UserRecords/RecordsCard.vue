@@ -64,6 +64,7 @@
         padding: $default-padding;
         .record {
           display: flex;
+          align-items: center;
           justify-content: space-between;
           span {
             padding: 2px 5px;
@@ -73,6 +74,7 @@
           }
           .record-value {
             font-weight: bold;
+            white-space: nowrap;
             padding-right: $default-padding * 2;
           }
         }

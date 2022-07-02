@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+{% block title %}Anfrage zum Zurücksetzen des Passworts{% endblock %}
+{% block preheader %}Verwende den unteren Link um Dein Passwort zurückzusetzen. Der Link ist nur für {{ expiration_delay }} gültig.{% endblock %}
+{% block content %}<h1>Hallo {{username}},</h1>
+                        <p>Du hast kürzlich beantragt, das Passwort Deines FitTrackee Kontos zurückzusetzen. Verwende den unteren Button um es zurückzusetzen.
+                          <strong>Der Link ist nur für {{ expiration_delay }} gültig.</strong>
+                        </p>
+                        <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                          <tr>
+                            <td align="center">
+                              <table width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation">
+                                <tr>
+                                  <td align="center">
+                                    <a href="{{password_reset_url}}" class="f-fallback button button--green" target="_blank">Setze Dein Passwort zurück</a>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+                        <p>
+                          {% if operating_system and browser_name %}Zur Sicherheit: Diese Anfrage wurde von einem {{operating_system}} Gerät mit {{browser_name}} ausgelöst.
+                          {% endif %}Falls Du das Zurücksetzen des Passworts nicht angefordert hast, igoniere diese E-Mail bitte.
+                        </p>
+                        <p>Danke
+                          <br>Dein FitTrackee Team</p>
+                        <table class="body-sub" role="presentation">
+                          <tr>
+                            <td>
+                              <p class="f-fallback sub">Falls Du Probleme mit dem oberen Button hast, kopiere diese URL und gebe sie in Deinen Webbrowser ein.</p>
+                              <p class="f-fallback sub">{{password_reset_url}}</p>
+                            </td>
+                          </tr>
+                        </table>{% endblock %}
