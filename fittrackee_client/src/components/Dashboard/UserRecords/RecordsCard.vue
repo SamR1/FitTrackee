@@ -64,7 +64,7 @@
         padding: $default-padding;
         .record {
           display: flex;
-          align-items: flex-end;
+          align-items: center;
           justify-content: space-between;
           span {
             padding: 2px 5px;
