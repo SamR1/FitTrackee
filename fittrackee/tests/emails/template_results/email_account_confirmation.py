@@ -2,7 +2,7 @@
 
 expected_en_text_body = """Hi test,
 
-You have created an account on FitTrackee account. Use the link below to confirm your address email.
+You have created an account on FitTrackee. Use the link below to confirm your address email.
 
 Verify your email: http://localhost/account-confirmation?token=xxx
 
@@ -47,7 +47,7 @@ expected_en_html_body = """  <body>
                     <td class="content-cell">
                       <div class="f-fallback">
                         <h1>Hi test,</h1>
-                        <p>You have created an account on FitTrackee account. Use the link below to confirm your address email.</p>
+                        <p>You have created an account on FitTrackee. Use the button below to confirm your address email.</p>
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                           <tr>
                             <td align="center">
