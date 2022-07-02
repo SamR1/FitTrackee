@@ -68,7 +68,7 @@ tests_no_zope = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>
 name = "babel"
 version = "2.10.3"
 description = "Internationalization utilities"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -1466,7 +1466,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "327d5c6a151cd6c0130a2e1f980fd5e8259ea59a9972407947c9a64124033c0a"
+content-hash = "fabbeac65ba304e8051b1453c13f872ef5fc8ed1a6ea7cc236a6d8ede34d9600"
 
 [metadata.files]
 alabaster = [

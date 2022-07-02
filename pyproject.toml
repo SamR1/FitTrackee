@@ -41,6 +41,7 @@ staticmap = "^0.5.4"
 SQLAlchemy = "1.4.37"
 pyOpenSSL = "^22.0"
 ua-parser = "^0.10.0"
+Babel = "^2.10.3"
 
 [tool.poetry.dev-dependencies]
 black = "^22.3"

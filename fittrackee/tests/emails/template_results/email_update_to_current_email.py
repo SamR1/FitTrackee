@@ -42,7 +42,7 @@ expected_en_html_body = """  <body>
                     <td class="content-cell">
                       <div class="f-fallback">
                         <h1>Hi test,</h1>
-                        <p>You recently requested to change your email address for your FitTrackee account to: </p>
+                        <p>You recently requested to change your email address for your FitTrackee account to:</p>
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                           <tr>
                             <td align="center">
@@ -61,9 +61,8 @@ expected_en_html_body = """  <body>
                           If this email change wasn't initiated by you, please change your password immediately or contact your administrator if your account is locked.
                         </p>
                         <p>Thanks,
-                          <br>
-                          The FitTrackee Team
-                        </p>
+                          <br>The FitTrackee Team</p>
+                        
                       </div>
                     </td>
                   </tr>
@@ -127,9 +126,8 @@ expected_fr_html_body = """  <body>
                           Si vous n'êtes pas à l'origine de cette modification, veuillez changer votre mot de passe immédiatement ou contacter l'administrateur si votre compte est bloqué.
                         </p>
                         <p>Merci,
-                          <br>
-                          L'équipe FitTrackee
-                        </p>
+                          <br>L'équipe FitTrackee</p>
+                        
                       </div>
                     </td>
                   </tr>

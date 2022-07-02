@@ -1,0 +1,1 @@
+FitTrackee - {{ _('Confirm your account') }}

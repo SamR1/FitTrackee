@@ -1,0 +1,7 @@
+{% extends "layout.txt" %}{% block content %}{{ _('You recently requested to reset your password for your FitTrackee account.') }} {{ _('Use the link below to reset it.') }}
+{{ _('This password reset link is only valid for %(expiration_delay)s.', expiration_delay=expiration_delay) }}
+
+{{ _('Reset your password') }}: {{ password_reset_url }}
+
+{% if operating_system and browser_name %}{{ _('For security, this request was received from a %(operating_system)s device using %(browser_name)s.', operating_system=operating_system, browser_name=browser_name) }}
+{% endif %}{{ _('If you did not request a password reset, please ignore this email.') }}{% endblock %}
