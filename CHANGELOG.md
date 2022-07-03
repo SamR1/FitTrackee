@@ -1,5 +1,34 @@
 # Change log
 
+## Version 0.6.9 (2022/07/03)
+
+FitTrackee is now available in German (thanks to @gorgobacka).  
+And translations can be updated on Weblate.
+
+### Issues Closed
+
+#### Features
+
+* [#200](https://github.com/SamR1/FitTrackee/issues/200) - Detect browser language to use matching translation if available
+
+#### Bugs Fixed
+
+* [PR#208](https://github.com/SamR1/FitTrackee/pull/208) - fix order on records cards
+* [#201](https://github.com/SamR1/FitTrackee/issues/201) - html lang attribute is not updated when changing language
+
+#### Translations
+
+* [PR#197](https://github.com/SamR1/FitTrackee/pull/197) - Translations update from Weblate (French)
+* [#196](https://github.com/SamR1/FitTrackee/issues/196) - Use translation management tool
+* [#190](https://github.com/SamR1/FitTrackee/issues/190) - Add German translation
+
+In this release 4 issues were closed.  
+
+Thanks to the contributors:
+- @gorgobacka
+- J. Lavoie (from Weblate)
+
+
 ## Version 0.6.8 (2022/06/22)
 
 ### Issues Closed
@@ -16,7 +45,7 @@
   Note: it does not affect previously imported files
 * [cc4287e](https://github.com/SamR1/FitTrackee/commit/cc4287ed327faaba268a0c689841d16a7aecc3fb) - Fix docker env file
 
-In this release 3 issues was closed.  
+In this release 3 issues were closed.  
 
 ## Version 0.6.7 (2022/06/11)
 

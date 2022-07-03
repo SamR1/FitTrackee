@@ -20,7 +20,7 @@ from sqlalchemy.exc import ProgrammingError
 from fittrackee.emails.email import EmailService
 from fittrackee.request import CustomRequest
 
-VERSION = __version__ = '0.6.8'
+VERSION = __version__ = '0.6.9'
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 migrate = Migrate()
