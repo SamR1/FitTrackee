@@ -1,6 +1,7 @@
 import json
 from datetime import datetime, timedelta
 from io import BytesIO
+from typing import Optional
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
@@ -236,7 +237,16 @@ class TestUserRegistration(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert 'auth_token' not in data
 
-    def test_it_creates_user_with_inactive_account(self, app: Flask) -> None:
+    @pytest.mark.parametrize(
+        'input_language,expected_language',
+        [('en', 'en'), ('fr', 'fr'), ('invalid', 'en'), (None, 'en')],
+    )
+    def test_it_creates_user_with_inactive_account(
+        self,
+        app: Flask,
+        input_language: Optional[str],
+        expected_language: str,
+    ) -> None:
         client = app.test_client()
         username = self.random_string()
         email = self.random_email()
@@ -248,6 +258,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username=username,
                     email=email,
                     password=self.random_string(),
+                    language=input_language,
                 )
             ),
             content_type='application/json',
@@ -257,13 +268,22 @@ class TestUserRegistration(ApiTestCaseMixin):
         assert new_user.email == email
         assert new_user.password is not None
         assert new_user.is_active is False
+        assert new_user.language == expected_language
 
     def test_it_creates_actor_on_user_registration(self, app: Flask) -> None:
         """it must create actor even if federation is disabled"""
         assert_actor_is_created(app=app)
 
-    def test_it_calls_account_confirmation_email_if_payload_is_valid(
-        self, app: Flask, account_confirmation_email_mock: Mock
+    @pytest.mark.parametrize(
+        'input_language,expected_language',
+        [('en', 'en'), ('fr', 'fr'), ('invalid', 'en'), (None, 'en')],
+    )
+    def test_it_calls_account_confirmation_email_when_payload_is_valid(
+        self,
+        app: Flask,
+        account_confirmation_email_mock: Mock,
+        input_language: Optional[str],
+        expected_language: str,
     ) -> None:
         client = app.test_client()
         email = self.random_email()
@@ -278,6 +298,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                         username=username,
                         email=email,
                         password='12345678',
+                        language=input_language,
                     )
                 ),
                 content_type='application/json',
@@ -286,7 +307,7 @@ class TestUserRegistration(ApiTestCaseMixin):
 
         account_confirmation_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
+                'language': expected_language,
                 'email': email,
             },
             {
@@ -1234,8 +1255,16 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
 
         self.assert_400(response)
 
+    @pytest.mark.parametrize(
+        'input_language,expected_language',
+        [('en', 'en'), ('fr', 'fr'), ('invalid', 'en'), (None, 'en')],
+    )
     def test_it_updates_user_preferences(
-        self, app: Flask, user_1: User
+        self,
+        app: Flask,
+        user_1: User,
+        input_language: Optional[str],
+        expected_language: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1248,7 +1277,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                 dict(
                     timezone='America/New_York',
                     weekm=True,
-                    language='fr',
+                    language=input_language,
                     imperial_units=True,
                     map_visibility='followers_only',
                     workouts_visibility='public',
@@ -1261,6 +1290,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['message'] == 'user preferences updated'
+        assert data['data']['language'] == expected_language
         assert data['data'] == jsonify_dict(user_1.serialize(user_1))
 
     @pytest.mark.parametrize(
@@ -2288,6 +2318,7 @@ class TestResendAccountConfirmationEmail(ApiTestCaseMixin):
     ) -> None:
         client = app.test_client()
         expected_token = self.random_string()
+        inactive_user.language = 'fr'
 
         with patch('secrets.token_urlsafe', return_value=expected_token):
             client.post(
@@ -2299,7 +2330,7 @@ class TestResendAccountConfirmationEmail(ApiTestCaseMixin):
 
         account_confirmation_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
+                'language': inactive_user.language,
                 'email': inactive_user.email,
             },
             {

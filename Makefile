@@ -6,6 +6,18 @@ make-p:
 	# Launch all P targets in parallel and exit as soon as one exits.
 	set -m; (for p in $(P); do ($(MAKE) $$p || kill 0)& done; wait)
 
+babel-extract:
+	$(PYBABEL) extract -F babel.cfg -k lazy_gettext -o messages.pot .
+
+babel-init:
+	$(PYBABEL) init -i messages.pot -d fittrackee/emails/translations -l $(LANG)
+
+babel-compile:
+	$(PYBABEL) compile -d fittrackee/emails/translations
+
+babel-update:
+	$(PYBABEL) update -i messages.pot -d fittrackee/emails/translations
+
 bandit:
 	$(BANDIT) -r fittrackee -c pyproject.toml
 

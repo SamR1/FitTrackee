@@ -17,6 +17,13 @@ export interface IWorkoutSegment {
   workout_id: string
 }
 
+export interface ICardRecord {
+  id: number
+  value: number | string
+  workout_date: string
+  workout_id: string
+  label: string
+}
 export interface IRecord {
   id: number
   record_type: string

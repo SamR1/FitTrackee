@@ -2,7 +2,7 @@ import datetime
 import os
 import re
 import secrets
-from typing import Dict, Tuple, Union
+from typing import Dict, Optional, Tuple, Union
 
 import jwt
 from flask import Blueprint, current_app, request
@@ -44,6 +44,13 @@ HEX_COLOR_REGEX = regex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
 NOT_FOUND_MESSAGE = 'the requested URL was not found on the server'
 
 
+def get_language(language: Optional[str]) -> str:
+    # Note: some users may not have language preferences set
+    if not language or language not in current_app.config['LANGUAGES']:
+        language = 'en'
+    return language
+
+
 def send_account_confirmation_email(user: User) -> None:
     if current_app.config['CAN_SEND_EMAILS']:
         ui_url = current_app.config['UI_URL']
@@ -58,7 +65,7 @@ def send_account_confirmation_email(user: User) -> None:
             ),
         }
         user_data = {
-            'language': 'en',
+            'language': get_language(user.language),
             'email': user.email,
         }
         account_confirmation_email.send(user_data, email_data)
@@ -107,6 +114,8 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     :<json string username: username (3 to 30 characters required)
     :<json string email: user email
     :<json string password: password (8 characters required)
+    :<json string lang: user language preferences (if not provided or invalid,
+                        fallback to 'en' (english))
 
     :statuscode 200: success
     :statuscode 400:
@@ -139,6 +148,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     username = post_data.get('username')
     email = post_data.get('email')
     password = post_data.get('password')
+    language = get_language(post_data.get('language'))
 
     try:
         ret = register_controls(username, email, password)
@@ -170,6 +180,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
             new_user = User(username=username, email=email, password=password)
             new_user.timezone = 'Europe/Paris'
             new_user.confirmation_token = secrets.token_urlsafe(30)
+            new_user.language = language
             db.session.add(new_user)
             db.session.commit()
             # create actor even if federation is disabled
@@ -678,9 +689,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
         if current_app.config['CAN_SEND_EMAILS']:
             ui_url = current_app.config['UI_URL']
             user_data = {
-                'language': (
-                    'en' if auth_user.language is None else auth_user.language
-                ),
+                'language': get_language(auth_user.language),
                 'email': auth_user.email,
             }
             data = {
@@ -858,7 +867,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         return InvalidPayloadErrorResponse()
 
     imperial_units = post_data.get('imperial_units')
-    language = post_data.get('language')
+    language = get_language(post_data.get('language'))
     timezone = post_data.get('timezone')
     weekm = post_data.get('weekm')
     map_visibility = post_data.get('map_visibility')
@@ -1223,7 +1232,7 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
     if user:
         password_reset_token = user.encode_password_reset_token(user.id)
         ui_url = current_app.config['UI_URL']
-        user_language = 'en' if user.language is None else user.language
+        user_language = get_language(user.language)
         email_data = {
             'expiration_delay': get_readable_duration(
                 current_app.config['PASSWORD_TOKEN_EXPIRATION_SECONDS'],
@@ -1314,9 +1323,7 @@ def update_password() -> Union[Dict, HttpResponse]:
         if current_app.config['CAN_SEND_EMAILS']:
             password_change_email.send(
                 {
-                    'language': (
-                        'en' if user.language is None else user.language
-                    ),
+                    'language': get_language(user.language),
                     'email': user.email,
                 },
                 {

@@ -25,7 +25,7 @@
           :query="query"
         />
         <table>
-          <thead>
+          <thead :class="{ smaller: 'de' === currentLanguage }">
             <tr>
               <th class="sport-col" />
               <th>{{ capitalize($t('workouts.WORKOUT', 1)) }}</th>
@@ -79,7 +79,7 @@
                   :display-hover="true"
                 />
               </td>
-              <td>
+              <td class="workout-date">
                 <span class="cell-heading">
                   {{ $t('workouts.DATE') }}
                 </span>
@@ -179,7 +179,7 @@
   import Pagination from '@/components/Common/Pagination.vue'
   import StaticMap from '@/components/Common/StaticMap.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
-  import { WORKOUTS_STORE } from '@/store/constants'
+  import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import { IPagination } from '@/types/api'
   import { ITranslatedSport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'
@@ -214,6 +214,9 @@
   const pagination: ComputedRef<IPagination> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUTS_PAGINATION]
   )
+  const currentLanguage: ComputedRef<string> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
+  )
   let query: TWorkoutsPayload = getWorkoutsQuery(route.query)
   const hoverWorkoutId: Ref<string | null> = ref(null)
 
@@ -238,9 +241,14 @@
   }
 
   function getWorkoutsQuery(newQuery: LocationQuery): TWorkoutsPayload {
-    const workoutQuery = getQuery(newQuery, orderByList, defaultOrder.order_by, {
-      defaultSort: defaultOrder.order,
-    })
+    const workoutQuery = getQuery(
+      newQuery,
+      orderByList,
+      defaultOrder.order_by,
+      {
+        defaultSort: defaultOrder.order,
+      }
+    )
     Object.keys(newQuery)
       .filter((k) => workoutsPayloadKeys.includes(k))
       .map((k) => {
@@ -287,7 +295,7 @@
     width: 100%;
 
     .box {
-      padding: $default-padding $default-padding * 2;
+      padding: $default-padding $default-padding * 1.5;
       @media screen and (max-width: $small-limit) {
         &.empty-table {
           display: none;
@@ -318,11 +326,22 @@
       }
 
       .workouts-table {
+        .smaller {
+          th {
+            font-size: 0.95em;
+            padding: $default-padding 0;
+            max-width: 100px;
+          }
+        }
+        td {
+          text-align: right;
+        }
         .sport-col {
-          padding-right: 0;
+          padding: 0;
         }
         .workout-title {
-          max-width: 90px;
+          text-align: left;
+          width: 100px;
           position: relative;
           .fa-map-o {
             font-size: 0.75em;
@@ -347,14 +366,27 @@
           height: 20px;
           width: 20px;
         }
+        .workout-date {
+          max-width: 60px;
+          text-align: left;
+        }
         @media screen and (max-width: $small-limit) {
+          td,
+          .workout-date,
+          .workout-title {
+            text-align: center;
+          }
           .sport-col {
             display: flex;
             justify-content: center;
             padding: $default-padding;
           }
+          .workout-date {
+            max-width: initial;
+          }
           .workout-title {
             max-width: initial;
+            width: 100%;
           }
           .workout-title:hover .static-map {
             display: none;

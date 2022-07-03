@@ -1,6 +1,6 @@
 import { ITranslatedSport } from '@/types/sports'
 import { TUnit } from '@/types/units'
-import { IRecord, IRecordsBySports } from '@/types/workouts'
+import { ICardRecord, IRecord, IRecordsBySports } from '@/types/workouts'
 import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
 import { convertDistance, units } from '@/utils/units'
 
@@ -43,6 +43,12 @@ export const formatRecord = (
     record_type: record.record_type,
     value: value,
   }
+}
+
+export const sortRecords = (a: ICardRecord, b: ICardRecord): number => {
+  const recordALabel = a.label.toLowerCase()
+  const recordBLabel = b.label.toLowerCase()
+  return recordALabel > recordBLabel ? 1 : recordALabel < recordBLabel ? -1 : 0
 }
 
 export const getRecordsBySports = (

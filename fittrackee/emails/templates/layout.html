@@ -212,7 +212,15 @@
                   <tr>
                     <td class="content-cell">
                       <div class="f-fallback">
+                        <h1>{{ _('Hi %(username)s,', username=username) }}</h1>
                         {% block content %}{% endblock %}
+                        <p>
+                          {% if operating_system and browser_name %}{{ _('For security, this request was received from a %(operating_system)s device using %(browser_name)s.', operating_system=operating_system, browser_name=browser_name) }}
+                          {% endif %}{% block not_initiated %}{% endblock %}
+                        </p>
+                        <p>{{ _('Thanks,') }}
+                          <br>{{ _('The FitTrackee Team') }}</p>
+                        {% block url_to_paste %}{% endblock %}
                       </div>
                     </td>
                   </tr>

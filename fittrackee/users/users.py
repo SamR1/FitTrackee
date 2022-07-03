@@ -30,6 +30,7 @@ from fittrackee.responses import (
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
+from .auth import get_language
 from .decorators import (
     authenticate,
     authenticate_as_admin,
@@ -719,7 +720,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
         )
 
         if current_app.config['CAN_SEND_EMAILS']:
-            user_language = 'en' if user.language is None else user.language
+            user_language = get_language(user.language)
             ui_url = current_app.config['UI_URL']
             if reset_password:
                 user_data = {

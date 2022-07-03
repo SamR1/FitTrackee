@@ -191,6 +191,9 @@
   const appConfig: ComputedRef<TAppConfig> = computed(
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
   )
+  const language: ComputedRef<string> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
+  )
   const registration_disabled: ComputedRef<boolean> = computed(
     () =>
       props.action === 'register' && !appConfig.value.is_registration_enabled
@@ -245,6 +248,7 @@
           }
         )
       default:
+        formData['language'] = language.value
         store.dispatch(AUTH_USER_STORE.ACTIONS.LOGIN_OR_REGISTER, {
           actionType,
           formData,

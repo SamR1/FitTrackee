@@ -121,6 +121,7 @@ export interface ILoginRegisterFormData {
   username: string
   email: string
   password: string
+  language?: string
 }
 
 export interface ILoginOrRegisterData {

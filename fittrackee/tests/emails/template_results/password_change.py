@@ -68,9 +68,8 @@ expected_en_html_body = """  <body>
                           If this password change wasn't initiated by you, please change your password immediately or contact your administrator if your account is locked.
                         </p>
                         <p>Thanks,
-                          <br>
-                          The FitTrackee Team
-                        </p>
+                          <br>The FitTrackee Team</p>
+                        
                       </div>
                     </td>
                   </tr>
@@ -120,9 +119,8 @@ expected_en_html_body_without_security = """  <body>
                           If this password change wasn't initiated by you, please change your password immediately or contact your administrator if your account is locked.
                         </p>
                         <p>Thanks,
-                          <br>
-                          The FitTrackee Team
-                        </p>
+                          <br>The FitTrackee Team</p>
+                        
                       </div>
                     </td>
                   </tr>
@@ -173,9 +171,8 @@ expected_fr_html_body = """  <body>
                           Si vous n'êtes pas à l'origine de cette modification, veuillez changer votre mot de passe immédiatement ou contacter l'administrateur si votre compte est bloqué.
                         </p>
                         <p>Merci,
-                          <br>
-                          L'équipe FitTrackee
-                        </p>
+                          <br>L'équipe FitTrackee</p>
+                        
                       </div>
                     </td>
                   </tr>
@@ -225,9 +222,8 @@ expected_fr_html_body_without_security = """  <body>
                           Si vous n'êtes pas à l'origine de cette modification, veuillez changer votre mot de passe immédiatement ou contacter l'administrateur si votre compte est bloqué.
                         </p>
                         <p>Merci,
-                          <br>
-                          L'équipe FitTrackee
-                        </p>
+                          <br>L'équipe FitTrackee</p>
+                        
                       </div>
                     </td>
                   </tr>
