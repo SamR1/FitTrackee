@@ -2,7 +2,8 @@
 
 expected_en_text_body = """Hi test,
 
-You have created an account on FitTrackee account. Use the link below to confirm your address email.
+You have created an account on FitTrackee.
+Use the link below to confirm your address email.
 
 Verify your email: http://localhost/account-confirmation?token=xxx
 
@@ -18,7 +19,7 @@ expected_fr_text_body = """Bonjour test,
 Vous avez créé un compte sur FitTrackee.
 Cliquez sur le lien ci-dessous pour confirmer votre adresse email.
 
-Vérifier l'adresse email : http://localhost/account-confirmation?token=xxx
+Vérifier l'adresse email: http://localhost/account-confirmation?token=xxx
 
 Pour vérification, cette demande a été reçue à partir d'un appareil sous Linux, utilisant le navigateur Firefox.
 Si vous n'êtes pas à l'origine de la création de ce compte, vous pouvez ignorer cet e-mail.
@@ -47,7 +48,7 @@ expected_en_html_body = """  <body>
                     <td class="content-cell">
                       <div class="f-fallback">
                         <h1>Hi test,</h1>
-                        <p>You have created an account on FitTrackee account. Use the link below to confirm your address email.</p>
+                        <p>You have created an account on FitTrackee. Use the button below to confirm your address email.</p>
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                           <tr>
                             <td align="center">
@@ -70,7 +71,7 @@ expected_en_html_body = """  <body>
                         <table class="body-sub" role="presentation">
                           <tr>
                             <td>
-                              <p class="f-fallback sub">If you’re having trouble with the button above, copy and paste the URL below into your web browser.</p>
+                              <p class="f-fallback sub">If you're having trouble with the button above, copy and paste the URL below into your web browser.</p>
                               <p class="f-fallback sub">http://localhost/account-confirmation?token=xxx</p>
                             </td>
                           </tr>
@@ -119,9 +120,7 @@ expected_fr_html_body = """  <body>
                     <td class="content-cell">
                       <div class="f-fallback">
                         <h1>Bonjour test,</h1>
-                        <p>Vous avez créé un compte sur FitTrackee.
-                          Cliquez sur le lien ci-dessous pour confirmer votre adresse email.
-                        </p>
+                        <p>Vous avez créé un compte sur FitTrackee. Cliquez sur le bouton pour confirmer votre adresse email.</p>
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                           <tr>
                             <td align="center">
@@ -144,7 +143,7 @@ expected_fr_html_body = """  <body>
                         <table class="body-sub" role="presentation">
                           <tr>
                             <td>
-                              <p class="f-fallback sub">Si vous avez des problèmes avec le bouton, vous pouvez copier et coller le lien suivant dans votre navigateur</p>
+                              <p class="f-fallback sub">Si vous avez des problèmes avec le bouton, vous pouvez copier et coller le lien suivant dans votre navigateur.</p>
                               <p class="f-fallback sub">http://localhost/account-confirmation?token=xxx</p>
                             </td>
                           </tr>

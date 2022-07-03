@@ -20,3 +20,9 @@ Administrator
      fittrackee.emails.exceptions.InvalidEmailUrlScheme
 
   A valid ``EMAIL_URL`` must be provided (see `emails <../installation.html#emails>`__).
+
+
+`Map images are not displayed but map is shown in Workout detail`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Check the path in `environment variables <../installation.html#envvar-UPLOAD_FOLDER>`__. ``UPLOAD_FOLDER`` must be set with an absolute path.

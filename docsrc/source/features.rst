@@ -60,6 +60,7 @@ Workouts
 Account & preferences
 ^^^^^^^^^^^^^^^^^^^^^
 - A user can create, update and deleted his account.
+- On registration, the user account is created with selected language in dropdown as user preference (*new in 0.6.9*).
 - After registration, the user account is inactive and an email with confirmation instructions is sent to activate it.
   A user with an inactive account cannot log in. (*new in 0.6.0*)
 
@@ -119,7 +120,9 @@ Administration
 
 Translations
 ^^^^^^^^^^^^
-FitTrackee is available in English and French (which can be saved in the user preferences).
+FitTrackee is available in the following languages (which can be saved in the user preferences):
+
+.. figure:: https://hosted.weblate.org/widgets/fittrackee/-/multi-auto.svg
 
 
 Screenshots

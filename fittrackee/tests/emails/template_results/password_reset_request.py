@@ -2,7 +2,8 @@
 
 expected_en_text_body = """Hi test,
 
-You recently requested to reset your password for your FitTrackee account. Use the link below to reset it. This password reset link is only valid for 3 seconds.
+You recently requested to reset your password for your FitTrackee account. Use the link below to reset it.
+This password reset link is only valid for 3 seconds.
 
 Reset your password: http://localhost/password-reset?token=xxx
 
@@ -15,7 +16,8 @@ http://localhost"""
 
 expected_en_text_body_without_security = """Hi test,
 
-You recently requested to reset your password for your FitTrackee account. Use the link below to reset it. This password reset link is only valid for 3 seconds.
+You recently requested to reset your password for your FitTrackee account. Use the link below to reset it.
+This password reset link is only valid for 3 seconds.
 
 Reset your password: http://localhost/password-reset?token=xxx
 
@@ -27,10 +29,10 @@ http://localhost"""
 
 expected_fr_text_body = """Bonjour test,
 
-Vous avez récemment demandé la réinitialisation du mot de passe de votre compte sur FitTrackee.
-Cliquez sur le lien ci-dessous pour le réinitialiser. Ce lien n'est valide que pendant 3 secondes.
+Vous avez récemment demandé la réinitialisation du mot de passe de votre compte sur FitTrackee. Cliquez sur le lien ci-dessous pour le réinitialiser.
+Ce lien n'est valide que pendant 3 secondes.
 
-Réinitialiser le mot de passe : http://localhost/password-reset?token=xxx
+Réinitialiser le mot de passe: http://localhost/password-reset?token=xxx
 
 Pour vérification, cette demande a été reçue à partir d'un appareil sous Linux, utilisant le navigateur Firefox.
 Si vous n'avez pas demandé de réinitialisation, vous pouvez ignorer cet e-mail.
@@ -41,10 +43,10 @@ http://localhost"""
 
 expected_fr_text_body_without_security = """Bonjour test,
 
-Vous avez récemment demandé la réinitialisation du mot de passe de votre compte sur FitTrackee.
-Cliquez sur le lien ci-dessous pour le réinitialiser. Ce lien n'est valide que pendant 3 secondes.
+Vous avez récemment demandé la réinitialisation du mot de passe de votre compte sur FitTrackee. Cliquez sur le lien ci-dessous pour le réinitialiser.
+Ce lien n'est valide que pendant 3 secondes.
 
-Réinitialiser le mot de passe : http://localhost/password-reset?token=xxx
+Réinitialiser le mot de passe: http://localhost/password-reset?token=xxx
 
 Si vous n'avez pas demandé de réinitialisation, vous pouvez ignorer cet e-mail.
 
@@ -72,7 +74,7 @@ expected_en_html_body = """  <body>
                     <td class="content-cell">
                       <div class="f-fallback">
                         <h1>Hi test,</h1>
-                        <p>You recently requested to reset your password for your account. Use the button below to reset it.
+                        <p>You recently requested to reset your password for your FitTrackee account. Use the button below to reset it.
                           <strong>This password reset link is only valid for 3 seconds.</strong>
                         </p>
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
@@ -97,7 +99,7 @@ expected_en_html_body = """  <body>
                         <table class="body-sub" role="presentation">
                           <tr>
                             <td>
-                              <p class="f-fallback sub">If you’re having trouble with the button above, copy and paste the URL below into your web browser.</p>
+                              <p class="f-fallback sub">If you're having trouble with the button above, copy and paste the URL below into your web browser.</p>
                               <p class="f-fallback sub">http://localhost/password-reset?token=xxx</p>
                             </td>
                           </tr>
@@ -146,7 +148,7 @@ expected_en_html_body_without_security = """  <body>
                     <td class="content-cell">
                       <div class="f-fallback">
                         <h1>Hi test,</h1>
-                        <p>You recently requested to reset your password for your account. Use the button below to reset it.
+                        <p>You recently requested to reset your password for your FitTrackee account. Use the button below to reset it.
                           <strong>This password reset link is only valid for 3 seconds.</strong>
                         </p>
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
@@ -170,7 +172,7 @@ expected_en_html_body_without_security = """  <body>
                         <table class="body-sub" role="presentation">
                           <tr>
                             <td>
-                              <p class="f-fallback sub">If you’re having trouble with the button above, copy and paste the URL below into your web browser.</p>
+                              <p class="f-fallback sub">If you're having trouble with the button above, copy and paste the URL below into your web browser.</p>
                               <p class="f-fallback sub">http://localhost/password-reset?token=xxx</p>
                             </td>
                           </tr>
@@ -218,10 +220,9 @@ expected_fr_html_body = """  <body>
                   <tr>
                     <td class="content-cell">
                       <div class="f-fallback">
-                        <h1>Bonjour  test,</h1>
-                        <p>Vous avez récemment demandé la réinitialisation du mot de passe de votre compte sur FitTrackee.
-                          Cliquez sur le bouton ci-dessous pour le réinitialiser.
-                          <strong>Cette réinitialisation n'est valide que pendant 3 secondes.</strong>
+                        <h1>Bonjour test,</h1>
+                        <p>Vous avez récemment demandé la réinitialisation du mot de passe de votre compte sur FitTrackee. Cliquez sur le bouton pour le réinitialiser.
+                          <strong>Ce lien n'est valide que pendant 3 secondes.</strong>
                         </p>
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                           <tr>
@@ -245,7 +246,7 @@ expected_fr_html_body = """  <body>
                         <table class="body-sub" role="presentation">
                           <tr>
                             <td>
-                              <p class="f-fallback sub">Si vous avez des problèmes avec le bouton, vous pouvez copier et coller le lien suivant dans votre navigateur</p>
+                              <p class="f-fallback sub">Si vous avez des problèmes avec le bouton, vous pouvez copier et coller le lien suivant dans votre navigateur.</p>
                               <p class="f-fallback sub">http://localhost/password-reset?token=xxx</p>
                             </td>
                           </tr>
@@ -294,10 +295,9 @@ expected_fr_html_body_without_security = """  <body>
                   <tr>
                     <td class="content-cell">
                       <div class="f-fallback">
-                        <h1>Bonjour  test,</h1>
-                        <p>Vous avez récemment demandé la réinitialisation du mot de passe de votre compte sur FitTrackee.
-                          Cliquez sur le bouton ci-dessous pour le réinitialiser.
-                          <strong>Cette réinitialisation n'est valide que pendant 3 secondes.</strong>
+                        <h1>Bonjour test,</h1>
+                        <p>Vous avez récemment demandé la réinitialisation du mot de passe de votre compte sur FitTrackee. Cliquez sur le bouton pour le réinitialiser.
+                          <strong>Ce lien n'est valide que pendant 3 secondes.</strong>
                         </p>
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                           <tr>
@@ -320,7 +320,7 @@ expected_fr_html_body_without_security = """  <body>
                         <table class="body-sub" role="presentation">
                           <tr>
                             <td>
-                              <p class="f-fallback sub">Si vous avez des problèmes avec le bouton, vous pouvez copier et coller le lien suivant dans votre navigateur</p>
+                              <p class="f-fallback sub">Si vous avez des problèmes avec le bouton, vous pouvez copier et coller le lien suivant dans votre navigateur.</p>
                               <p class="f-fallback sub">http://localhost/password-reset?token=xxx</p>
                             </td>
                           </tr>

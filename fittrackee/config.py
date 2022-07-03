@@ -46,6 +46,10 @@ class BaseConfig:
             os.environ.get('DEFAULT_STATICMAP', 'False') == 'True'
         ),
     }
+    TRANSLATIONS_FOLDER = os.path.join(
+        current_app.root_path, 'emails/translations'
+    )
+    LANGUAGES = ['en', 'fr', 'de']
 
 
 class DevelopmentConfig(BaseConfig):

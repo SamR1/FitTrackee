@@ -1,38 +1,38 @@
 {
-  "Cycling (Sport)": {
-    "LABEL": "Vélo (Sport)"
-  },
-  "Cycling (Transport)": {
-    "LABEL": "Vélo (Transport)"
-  },
-  "Hiking": {
-    "LABEL": "Randonnée"
-  },
-  "Mountain Biking": {
-    "LABEL": "VTT"
-  },
-  "Mountain Biking (Electric)": {
-    "LABEL": "VTT (Electrique)"
-  },
-  "Rowing": {
-    "LABEL": "Aviron"
-  },
-  "Running": {
-    "LABEL": "Course"
-  },
-  "Skiing (Alpine)": {
-    "LABEL": "Ski (Alpin)"
-  },
-  "Skiing (Cross Country)": {
-    "LABEL": "Ski (Randonnée)"
-  },
-  "Snowshoes": {
-    "LABEL": "Raquettes"
-  },
-  "Trail": {
-    "LABEL": "Trail"
-  },
-  "Walking": {
-    "LABEL": "Marche"
-  }
+    "Cycling (Sport)": {
+        "LABEL": "Vélo (Sport)"
+    },
+    "Cycling (Transport)": {
+        "LABEL": "Vélo (Transport)"
+    },
+    "Hiking": {
+        "LABEL": "Randonnée"
+    },
+    "Mountain Biking": {
+        "LABEL": "VTT"
+    },
+    "Mountain Biking (Electric)": {
+        "LABEL": "VTT (Électrique)"
+    },
+    "Rowing": {
+        "LABEL": "Aviron"
+    },
+    "Running": {
+        "LABEL": "Course"
+    },
+    "Skiing (Alpine)": {
+        "LABEL": "Ski (Alpin)"
+    },
+    "Skiing (Cross Country)": {
+        "LABEL": "Ski (Randonnée)"
+    },
+    "Snowshoes": {
+        "LABEL": "Raquettes"
+    },
+    "Trail": {
+        "LABEL": "Trail"
+    },
+    "Walking": {
+        "LABEL": "Marche"
+    }
 }

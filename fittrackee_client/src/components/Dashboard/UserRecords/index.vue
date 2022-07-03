@@ -25,13 +25,13 @@
 
   import RecordsCard from '@/components/Dashboard/UserRecords/RecordsCard.vue'
   import { ISport } from '@/types/sports'
-  import { IUserProfile } from '@/types/user'
+  import { IAuthUserProfile } from '@/types/user'
   import { getRecordsBySports } from '@/utils/records'
   import { translateSports } from '@/utils/sports'
 
   interface Props {
     sports: ISport[]
-    user: IUserProfile
+    user: IAuthUserProfile
   }
   const props = defineProps<Props>()
 
