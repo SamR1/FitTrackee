@@ -26,7 +26,11 @@ class TestEmailTemplateForPasswordRequest:
     def test_it_gets_subject(
         self, app: Flask, lang: str, expected_subject: str
     ) -> None:
-        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
+        email_template = EmailTemplate(
+            app.config['TEMPLATES_FOLDER'],
+            app.config['TRANSLATIONS_FOLDER'],
+            app.config['LANGUAGES'],
+        )
 
         subject = email_template.get_content(
             'password_reset_request', lang, 'subject.txt', {}
@@ -41,7 +45,11 @@ class TestEmailTemplateForPasswordRequest:
     def test_it_gets_text_body(
         self, app: Flask, lang: str, expected_text_body: str
     ) -> None:
-        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
+        email_template = EmailTemplate(
+            app.config['TEMPLATES_FOLDER'],
+            app.config['TRANSLATIONS_FOLDER'],
+            app.config['LANGUAGES'],
+        )
         email_data = {
             'expiration_delay': '3 seconds' if lang == 'en' else '3 secondes',
             'username': 'test',
@@ -58,7 +66,11 @@ class TestEmailTemplateForPasswordRequest:
         assert text_body == expected_text_body
 
     def test_it_gets_en_html_body(self, app: Flask) -> None:
-        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
+        email_template = EmailTemplate(
+            app.config['TEMPLATES_FOLDER'],
+            app.config['TRANSLATIONS_FOLDER'],
+            app.config['LANGUAGES'],
+        )
         email_data = {
             'expiration_delay': '3 seconds',
             'username': 'test',
@@ -75,7 +87,11 @@ class TestEmailTemplateForPasswordRequest:
         assert expected_en_html_body in text_body
 
     def test_it_gets_fr_html_body(self, app: Flask) -> None:
-        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
+        email_template = EmailTemplate(
+            app.config['TEMPLATES_FOLDER'],
+            app.config['TRANSLATIONS_FOLDER'],
+            app.config['LANGUAGES'],
+        )
         email_data = {
             'expiration_delay': '3 secondes',
             'username': 'test',
@@ -103,7 +119,11 @@ class TestEmailTemplateForPasswordRequestWithoutSecurityInfos:
     def test_it_gets_subject(
         self, app: Flask, lang: str, expected_subject: str
     ) -> None:
-        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
+        email_template = EmailTemplate(
+            app.config['TEMPLATES_FOLDER'],
+            app.config['TRANSLATIONS_FOLDER'],
+            app.config['LANGUAGES'],
+        )
 
         subject = email_template.get_content(
             'password_reset_request', lang, 'subject.txt', {}
@@ -121,7 +141,11 @@ class TestEmailTemplateForPasswordRequestWithoutSecurityInfos:
     def test_it_gets_text_body(
         self, app: Flask, lang: str, expected_text_body: str
     ) -> None:
-        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
+        email_template = EmailTemplate(
+            app.config['TEMPLATES_FOLDER'],
+            app.config['TRANSLATIONS_FOLDER'],
+            app.config['LANGUAGES'],
+        )
         email_data = {
             'expiration_delay': '3 seconds' if lang == 'en' else '3 secondes',
             'username': 'test',
@@ -136,7 +160,11 @@ class TestEmailTemplateForPasswordRequestWithoutSecurityInfos:
         assert text_body == expected_text_body
 
     def test_it_gets_en_html_body(self, app: Flask) -> None:
-        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
+        email_template = EmailTemplate(
+            app.config['TEMPLATES_FOLDER'],
+            app.config['TRANSLATIONS_FOLDER'],
+            app.config['LANGUAGES'],
+        )
         email_data = {
             'expiration_delay': '3 seconds',
             'username': 'test',
@@ -151,7 +179,11 @@ class TestEmailTemplateForPasswordRequestWithoutSecurityInfos:
         assert expected_en_html_body_without_security in text_body
 
     def test_it_gets_fr_html_body(self, app: Flask) -> None:
-        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
+        email_template = EmailTemplate(
+            app.config['TEMPLATES_FOLDER'],
+            app.config['TRANSLATIONS_FOLDER'],
+            app.config['LANGUAGES'],
+        )
         email_data = {
             'expiration_delay': '3 secondes',
             'username': 'test',

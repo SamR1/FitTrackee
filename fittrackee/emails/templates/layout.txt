@@ -1,0 +1,7 @@
+{{ _('Hi %(username)s,', username=username) }}
+
+{% block content %}{% endblock %}
+
+{{ _('Thanks,') }}
+{{ _('The FitTrackee Team') }}
+{{fittrackee_url}}

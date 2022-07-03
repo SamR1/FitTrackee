@@ -119,7 +119,9 @@ Administration
 
 Translations
 ^^^^^^^^^^^^
-FitTrackee is available in English and French (which can be saved in the user preferences).
+FitTrackee is available in the following languages (which can be saved in the user preferences):
+
+.. figure:: https://hosted.weblate.org/widgets/fittrackee/-/multi-auto.svg
 
 
 Screenshots
