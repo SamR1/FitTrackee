@@ -6,9 +6,13 @@
         {{ sportTranslatedLabel }}
       </template>
       <template #content>
-        <div class="record" v-for="record in records.records" :key="record.id">
+        <div
+          class="record"
+          v-for="record in getTranslatedRecords(records.records)"
+          :key="record.id"
+        >
           <span class="record-type">
-            {{ $t(`workouts.RECORD_${record.record_type}`) }}
+            {{ record.label }}
           </span>
           <span class="record-value">{{ record.value }}</span>
           <span class="record-date">
@@ -29,8 +33,10 @@
 
 <script setup lang="ts">
   import { toRefs } from 'vue'
+  import { useI18n } from 'vue-i18n'
 
-  import { IRecordsBySports } from '@/types/workouts'
+  import { ICardRecord, IRecord, IRecordsBySports } from '@/types/workouts'
+  import { sortRecords } from '@/utils/records'
 
   interface Props {
     records: IRecordsBySports
@@ -39,6 +45,19 @@
   const props = defineProps<Props>()
 
   const { records, sportTranslatedLabel } = toRefs(props)
+
+  const { t } = useI18n()
+
+  function getTranslatedRecords(records: IRecord[]): ICardRecord[] {
+    const translatedRecords: ICardRecord[] = []
+    records.map((record) => {
+      translatedRecords.push({
+        ...record,
+        label: t(`workouts.RECORD_${record.record_type}`),
+      })
+    })
+    return translatedRecords.sort(sortRecords)
+  }
 </script>
 
 <style lang="scss" scoped>
