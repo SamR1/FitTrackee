@@ -1,0 +1,7 @@
+{% extends "layout.txt" %}{% block content %}{{ _('You have created an account on FitTrackee.') }}
+{{ _('Use the link below to confirm your address email.') }}
+
+{{ _('Verify your email') }}: {{ account_confirmation_url }}
+
+{% if operating_system and browser_name %}{{ _('For security, this request was received from a %(operating_system)s device using %(browser_name)s.', operating_system=operating_system, browser_name=browser_name) }}
+{% endif %}{{ _("If this account creation wasn't initiated by you, please ignore this email.") }}{% endblock %}

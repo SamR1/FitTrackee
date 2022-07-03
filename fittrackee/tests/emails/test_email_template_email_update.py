@@ -47,7 +47,11 @@ class TestEmailTemplateForEmailUpdateToCurrentEmail:
     def test_it_gets_subject(
         self, app: Flask, lang: str, expected_subject: str
     ) -> None:
-        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
+        email_template = EmailTemplate(
+            app.config['TEMPLATES_FOLDER'],
+            app.config['TRANSLATIONS_FOLDER'],
+            app.config['LANGUAGES']
+        )
 
         subject = email_template.get_content(
             'email_update_to_current_email', lang, 'subject.txt', {}
@@ -65,7 +69,11 @@ class TestEmailTemplateForEmailUpdateToCurrentEmail:
     def test_it_gets_text_body(
         self, app: Flask, lang: str, expected_text_body: str
     ) -> None:
-        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
+        email_template = EmailTemplate(
+            app.config['TEMPLATES_FOLDER'],
+            app.config['TRANSLATIONS_FOLDER'],
+            app.config['LANGUAGES']
+        )
 
         text_body = email_template.get_content(
             'email_update_to_current_email', lang, 'body.txt', self.EMAIL_DATA
@@ -74,7 +82,11 @@ class TestEmailTemplateForEmailUpdateToCurrentEmail:
         assert text_body == expected_text_body
 
     def test_it_gets_en_html_body(self, app: Flask) -> None:
-        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
+        email_template = EmailTemplate(
+            app.config['TEMPLATES_FOLDER'],
+            app.config['TRANSLATIONS_FOLDER'],
+            app.config['LANGUAGES']
+        )
 
         text_body = email_template.get_content(
             'email_update_to_current_email', 'en', 'body.html', self.EMAIL_DATA
@@ -83,7 +95,11 @@ class TestEmailTemplateForEmailUpdateToCurrentEmail:
         assert expected_en_current_email_html_body in text_body
 
     def test_it_gets_fr_html_body(self, app: Flask) -> None:
-        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
+        email_template = EmailTemplate(
+            app.config['TEMPLATES_FOLDER'],
+            app.config['TRANSLATIONS_FOLDER'],
+            app.config['LANGUAGES']
+        )
 
         text_body = email_template.get_content(
             'email_update_to_current_email', 'fr', 'body.html', self.EMAIL_DATA
@@ -111,7 +127,11 @@ class TestEmailTemplateForEmailUpdateToNewEmail:
     def test_it_gets_subject(
         self, app: Flask, lang: str, expected_subject: str
     ) -> None:
-        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
+        email_template = EmailTemplate(
+            app.config['TEMPLATES_FOLDER'],
+            app.config['TRANSLATIONS_FOLDER'],
+            app.config['LANGUAGES']
+        )
 
         subject = email_template.get_content(
             'email_update_to_new_email', lang, 'subject.txt', {}
@@ -129,7 +149,11 @@ class TestEmailTemplateForEmailUpdateToNewEmail:
     def test_it_gets_text_body(
         self, app: Flask, lang: str, expected_text_body: str
     ) -> None:
-        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
+        email_template = EmailTemplate(
+            app.config['TEMPLATES_FOLDER'],
+            app.config['TRANSLATIONS_FOLDER'],
+            app.config['LANGUAGES']
+        )
 
         text_body = email_template.get_content(
             'email_update_to_new_email', lang, 'body.txt', self.EMAIL_DATA
@@ -138,7 +162,11 @@ class TestEmailTemplateForEmailUpdateToNewEmail:
         assert text_body == expected_text_body
 
     def test_it_gets_en_html_body(self, app: Flask) -> None:
-        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
+        email_template = EmailTemplate(
+            app.config['TEMPLATES_FOLDER'],
+            app.config['TRANSLATIONS_FOLDER'],
+            app.config['LANGUAGES']
+        )
 
         text_body = email_template.get_content(
             'email_update_to_new_email', 'en', 'body.html', self.EMAIL_DATA
@@ -147,7 +175,11 @@ class TestEmailTemplateForEmailUpdateToNewEmail:
         assert expected_en_new_email_html_body in text_body
 
     def test_it_gets_fr_html_body(self, app: Flask) -> None:
-        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
+        email_template = EmailTemplate(
+            app.config['TEMPLATES_FOLDER'],
+            app.config['TRANSLATIONS_FOLDER'],
+            app.config['LANGUAGES']
+        )
 
         text_body = email_template.get_content(
             'email_update_to_new_email', 'fr', 'body.html', self.EMAIL_DATA
@@ -173,7 +205,11 @@ class TestEmailTemplateForEmailUpdateToNewEmailWithoutSecurityInfos:
     def test_it_gets_subject(
         self, app: Flask, lang: str, expected_subject: str
     ) -> None:
-        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
+        email_template = EmailTemplate(
+            app.config['TEMPLATES_FOLDER'],
+            app.config['TRANSLATIONS_FOLDER'],
+            app.config['LANGUAGES']
+        )
 
         subject = email_template.get_content(
             'email_update_to_new_email', lang, 'subject.txt', {}
@@ -191,7 +227,11 @@ class TestEmailTemplateForEmailUpdateToNewEmailWithoutSecurityInfos:
     def test_it_gets_text_body(
         self, app: Flask, lang: str, expected_text_body: str
     ) -> None:
-        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
+        email_template = EmailTemplate(
+            app.config['TEMPLATES_FOLDER'],
+            app.config['TRANSLATIONS_FOLDER'],
+            app.config['LANGUAGES']
+        )
 
         text_body = email_template.get_content(
             'email_update_to_new_email', lang, 'body.txt', self.EMAIL_DATA
@@ -200,7 +240,11 @@ class TestEmailTemplateForEmailUpdateToNewEmailWithoutSecurityInfos:
         assert text_body == expected_text_body
 
     def test_it_gets_en_html_body(self, app: Flask) -> None:
-        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
+        email_template = EmailTemplate(
+            app.config['TEMPLATES_FOLDER'],
+            app.config['TRANSLATIONS_FOLDER'],
+            app.config['LANGUAGES']
+        )
 
         text_body = email_template.get_content(
             'email_update_to_new_email', 'en', 'body.html', self.EMAIL_DATA
@@ -209,7 +253,11 @@ class TestEmailTemplateForEmailUpdateToNewEmailWithoutSecurityInfos:
         assert expected_en_new_email_html_body_without_security in text_body
 
     def test_it_gets_fr_html_body(self, app: Flask) -> None:
-        email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
+        email_template = EmailTemplate(
+            app.config['TEMPLATES_FOLDER'],
+            app.config['TRANSLATIONS_FOLDER'],
+            app.config['LANGUAGES']
+        )
 
         text_body = email_template.get_content(
             'email_update_to_new_email', 'fr', 'body.html', self.EMAIL_DATA
