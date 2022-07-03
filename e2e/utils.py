@@ -5,6 +5,7 @@ import string
 import time
 
 import requests
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from urllib3.util import parse_url
@@ -25,24 +26,24 @@ def random_string(length=8):
 def register(selenium, user):
     selenium.get(f'{TEST_URL}/register')
     selenium.implicitly_wait(1)
-    username = selenium.find_element_by_id('username')
+    username = selenium.find_element(By.ID, 'username')
     username.send_keys(user.get('username'))
-    email = selenium.find_element_by_id('email')
+    email = selenium.find_element(By.ID, 'email')
     email.send_keys(user.get('email'))
-    password = selenium.find_element_by_id('password')
+    password = selenium.find_element(By.ID, 'password')
     password.send_keys(user.get('password'))
-    submit_button = selenium.find_element_by_tag_name('button')
+    submit_button = selenium.find_element(By.TAG_NAME, 'button')
     submit_button.click()
 
 
 def login(selenium, user):
     selenium.get(f'{TEST_URL}/login')
     selenium.implicitly_wait(1)
-    email = selenium.find_element_by_id('email')
+    email = selenium.find_element(By.ID, 'email')
     email.send_keys(user.get('email'))
-    password = selenium.find_element_by_id('password')
+    password = selenium.find_element(By.ID, 'password')
     password.send_keys(user.get('password'))
-    submit_button = selenium.find_element_by_tag_name('button')
+    submit_button = selenium.find_element(By.TAG_NAME, 'button')
     submit_button.click()
 
 
@@ -61,8 +62,8 @@ def register_valid_user(selenium):
 
 def register_valid_user_and_logout(selenium):
     user = register_valid_user(selenium)
-    user_menu = selenium.find_element_by_class_name('nav-items-user-menu')
-    logout_link = user_menu.find_elements_by_class_name('nav-item')[2]
+    user_menu = selenium.find_element(By.CLASS_NAME, 'nav-items-user-menu')
+    logout_link = user_menu.find_elements(By.CLASS_NAME, 'nav-item')[2]
     logout_link.click()
     return user
 
