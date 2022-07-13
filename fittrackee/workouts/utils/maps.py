@@ -1,10 +1,21 @@
 import hashlib
-from typing import List
+import random
+from typing import Dict, List
 
 from flask import current_app
 from staticmap import Line, StaticMap
 
+from fittrackee import VERSION
 from fittrackee.files import get_absolute_file_path
+
+
+def get_static_map_tile_server_url(tile_server_config: Dict) -> str:
+    if tile_server_config['STATICMAP_SUBDOMAINS']:
+        subdomains = tile_server_config['STATICMAP_SUBDOMAINS'].split(',')
+        subdomain = f'{random.choice(subdomains)}.'  # nosec
+    else:
+        subdomain = ''
+    return tile_server_config['URL'].replace('{s}.', subdomain)
 
 
 def generate_map(map_filepath: str, map_data: List) -> None:
@@ -12,9 +23,10 @@ def generate_map(map_filepath: str, map_data: List) -> None:
     Generate and save map image from map data
     """
     m = StaticMap(400, 225, 10)
+    m.headers = {'User-Agent': f'FitTrackee v{VERSION}'}
     if not current_app.config['TILE_SERVER']['DEFAULT_STATICMAP']:
-        m.url_template = current_app.config['TILE_SERVER']['URL'].replace(
-            '{s}.', ''
+        m.url_template = get_static_map_tile_server_url(
+            current_app.config['TILE_SERVER']
         )
     line = Line(map_data, '#3388FF', 4)
     m.add_line(line)

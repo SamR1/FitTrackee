@@ -1,5 +1,5 @@
 import json
-from typing import Any, Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple
 
 from flask import Flask
 from flask.testing import FlaskClient
@@ -115,10 +115,20 @@ class ApiTestCaseMixin(RandomMixin):
 
 
 class CallArgsMixin:
+    """call args are returned differently between Python 3.7 and 3.7+"""
+
     @staticmethod
-    def get_args(call_args: Any) -> Any:
+    def get_args(call_args: Tuple) -> Tuple:
         if len(call_args) == 2:
             args, _ = call_args
         else:
             _, args, _ = call_args
         return args
+
+    @staticmethod
+    def get_kwargs(call_args: Tuple) -> Dict:
+        if len(call_args) == 2:
+            _, kwargs = call_args
+        else:
+            _, _, kwargs = call_args
+        return kwargs
