@@ -4,6 +4,7 @@ from typing import List
 from flask import current_app
 from staticmap import Line, StaticMap
 
+from fittrackee import VERSION
 from fittrackee.files import get_absolute_file_path
 
 
@@ -12,6 +13,7 @@ def generate_map(map_filepath: str, map_data: List) -> None:
     Generate and save map image from map data
     """
     m = StaticMap(400, 225, 10)
+    m.headers = {'User-Agent': f'FitTrackee v{VERSION}'}
     if not current_app.config['TILE_SERVER']['DEFAULT_STATICMAP']:
         m.url_template = current_app.config['TILE_SERVER']['URL'].replace(
             '{s}.', ''
