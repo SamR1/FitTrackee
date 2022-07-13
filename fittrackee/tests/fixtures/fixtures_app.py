@@ -93,6 +93,8 @@ def app(monkeypatch: pytest.MonkeyPatch) -> Generator:
     monkeypatch.setenv('WEATHER_API_KEY', '')
     if os.getenv('TILE_SERVER_URL'):
         monkeypatch.delenv('TILE_SERVER_URL')
+    if os.getenv('STATICMAP_SUBDOMAINS'):
+        monkeypatch.delenv('STATICMAP_SUBDOMAINS')
     if os.getenv('MAP_ATTRIBUTION'):
         monkeypatch.delenv('MAP_ATTRIBUTION')
     if os.getenv('DEFAULT_STATICMAP'):

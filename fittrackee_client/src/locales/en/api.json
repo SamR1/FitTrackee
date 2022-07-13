@@ -2,6 +2,8 @@
   "ERROR": {
     "UNKNOWN": "Error. Please try again or contact the administrator.",
     "email: valid email must be provided": "Email: valid email must be provided.",
+    "error during gpx processing": "Error during gpx processing.",
+    "error during gpx file parsing": "Error during gpx file parsing.",
     "error on getting configuration": "Error on getting configuration.",
     "error when updating configuration": "Error when updating configuration",
     "error, please try again or contact the administrator": "Error, please try again or contact the administrator.",

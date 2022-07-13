@@ -1,5 +1,4 @@
 import json
-import sys
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 from unittest.mock import Mock
@@ -21,8 +20,10 @@ from .utils import (
 
 
 class BaseTestMixin:
+    """call args are returned differently between Python 3.7 and 3.7+"""
+
     @staticmethod
-    def get_args(call_args: Any) -> Any:
+    def get_args(call_args: Tuple) -> Tuple:
         if len(call_args) == 2:
             args, _ = call_args
         else:
@@ -30,17 +31,17 @@ class BaseTestMixin:
         return args
 
     @staticmethod
-    def get_call_kwargs(mock: Mock) -> Dict:
-        return (
-            mock.call_args[1]
-            if sys.version_info < (3, 8, 0)
-            else mock.call_args.kwargs
-        )
+    def get_kwargs(call_args: Tuple) -> Dict:
+        if len(call_args) == 2:
+            _, kwargs = call_args
+        else:
+            _, _, kwargs = call_args
+        return kwargs
 
     def assert_call_args_keys_equal(
         self, mock: Mock, expected_keys: List
     ) -> None:
-        args_list = self.get_call_kwargs(mock)
+        args_list = self.get_kwargs(mock.call_args)
         assert list(args_list.keys()) == expected_keys
 
     @staticmethod
@@ -204,7 +205,7 @@ class UserInboxTestMixin(BaseTestMixin):
             send_to_remote_inbox_mock.send,
             ['sender_id', 'activity', 'recipients'],
         )
-        call_args = self.get_call_kwargs(send_to_remote_inbox_mock.send)
+        call_args = self.get_kwargs(send_to_remote_inbox_mock.send.call_args)
         assert call_args['sender_id'] == local_actor.id
         assert call_args['recipients'] == [remote_actor.inbox_url]
         activity = base_object.get_activity(

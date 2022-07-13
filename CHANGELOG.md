@@ -1,5 +1,25 @@
 # Change log
 
+## Version 0.6.10 (2022/07/13)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#210](https://github.com/SamR1/FitTrackee/issues/210) - ERROR - could not download 6 tiles  
+  **Note**: for tile server requiring subdomains, see the new environment variable [`STATICMAP_SUBDOMAINS`](https://samr1.github.io/FitTrackee/installation.html#envvar-STATICMAP_SUBDOMAINS)
+
+### Pull Requests
+
+#### Bugs Fixed
+
+* [#209](https://github.com/SamR1/FitTrackee/pull/209) - Incorrect duration with track containing multiple segments
+
+Thanks to @gorgobacka
+
+In this release 1 issue was closed.  
+
+
 ## Version 0.6.9 (2022/07/03)
 
 FitTrackee is now available in German (thanks to @gorgobacka).  

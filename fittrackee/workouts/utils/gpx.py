@@ -104,7 +104,9 @@ def get_gpx_info(
                 # if a previous segment exists, calculate stopped time between
                 # the two segments
                 if prev_seg_last_point:
-                    stopped_time_between_seg = point.time - prev_seg_last_point
+                    stopped_time_between_seg += (
+                        point.time - prev_seg_last_point
+                    )
 
             # last segment point
             if point_idx == (segment_points_nb - 1):

@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Installation &#8212; FitTrackee 0.6.9
+    <title>Installation &#8212; FitTrackee 0.6.10
  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css" />
@@ -41,7 +41,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.9
+        <span class="navbar-text navbar-version pull-left"><b>0.6.10
 </b></span>
       </div>
 
@@ -421,6 +421,23 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 </dd></dl>
 
 <dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-STATICMAP_SUBDOMAINS">
+<span class="sig-name descname"><span class="pre">STATICMAP_SUBDOMAINS</span> <span class="pre">🆕</span></span><a class="headerlink" href="#envvar-STATICMAP_SUBDOMAINS" title="Permalink to this definition">¶</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.6.10.</span></p>
+</div>
+<div class="line-block">
+<div class="line">Some tile servers require a subdomain, see <a class="reference external" href="installation.html#map-tile-server">Map tile server</a>.</div>
+<div class="line">For instance: “a,b,c” for OSM France.</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p>empty string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-MAP_ATTRIBUTION">
 <span class="sig-name descname"><span class="pre">MAP_ATTRIBUTION</span></span><a class="headerlink" href="#envvar-MAP_ATTRIBUTION" title="Permalink to this definition">¶</a></dt>
 <dd><div class="versionadded">
@@ -436,11 +453,21 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-DEFAULT_STATICMAP">
-<span class="sig-name descname"><span class="pre">DEFAULT_STATICMAP</span> <span class="pre">🆕</span></span><a class="headerlink" href="#envvar-DEFAULT_STATICMAP" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">DEFAULT_STATICMAP</span></span><a class="headerlink" href="#envvar-DEFAULT_STATICMAP" title="Permalink to this definition">¶</a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.4.9.</span></p>
 </div>
-<p>If <cite>True</cite>, it keeps using default tile server to generate static maps.</p>
+<div class="line-block">
+<div class="line">If <cite>True</cite>, it keeps using default tile server to generate static maps (Komoot.de tile server).</div>
+<div class="line">Otherwise, it uses the tile server set in <a class="reference external" href="installation.html#envvar-TILE_SERVER_URL">TILE_SERVER_URL</a>.</div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.6.10.</span></p>
+</div>
+<div class="line-block">
+<div class="line">This variable is now case-insensitive.</div>
+<div class="line">If <cite>False</cite>, depending on tile server, <a class="reference external" href="installation.html#envvar-STATICMAP_SUBDOMAINS">subdomains</a> may be mandatory.</div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p>False</p>
@@ -527,6 +554,17 @@ The tile server can be changed by updating <code class="docutils literal notrans
 <div class="line">Check the terms of service of tile provider for map attribution</div>
 </div>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.6.10.</span></p>
+</div>
+<p>Since the tile server can be used for static map generation, some servers require a subdomain.</p>
+<p>For instance, to set OSM France tile server, the expected values are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">TILE_SERVER_URL=https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MAP_ATTRIBUTION='fond</span> <span class="pre">de</span> <span class="pre">carte</span> <span class="pre">par</span> <span class="pre">&lt;a</span> <span class="pre">href=&quot;http://www.openstreetmap.fr/mentions-legales/&quot;</span> <span class="pre">target=&quot;_blank&quot;</span> <span class="pre">rel=&quot;nofollow</span> <span class="pre">noopener&quot;&gt;OpenStreetMap</span> <span class="pre">France&lt;/a&gt;,</span> <span class="pre">sous&amp;nbsp;&lt;a</span> <span class="pre">href=&quot;http://creativecommons.org/licenses/by-sa/2.0/fr/&quot;</span> <span class="pre">target=&quot;_blank&quot;</span> <span class="pre">rel=&quot;nofollow</span> <span class="pre">noopener&quot;&gt;licence</span> <span class="pre">CC</span> <span class="pre">BY-SA&lt;/a&gt;'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">STATICMAP_SUBDOMAINS=a,b,c</span></code></p></li>
+</ul>
+<p>The subdomain will be chosen randomly.</p>
 </section>
 </section>
 <section id="id1">
@@ -675,11 +713,11 @@ $ make install-db
 </div>
 </div>
 <ul class="simple">
-<li><p>Download the last release (for now, it is the release v0.6.9):</p></li>
+<li><p>Download the last release (for now, it is the release v0.6.10):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.6.9.tar.gz
-$ tar -xzf v0.6.9.tar.gz
-$ mv FitTrackee-0.6.9 FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.6.10.tar.gz
+$ tar -xzf v0.6.10.tar.gz
+$ mv FitTrackee-0.6.10 FitTrackee
 $ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
@@ -799,11 +837,11 @@ $ <span class="nb">source</span> .env
 <ul class="simple">
 <li><p>Stop the application</p></li>
 <li><p>Change to the directory where FitTrackee directory is located</p></li>
-<li><p>Download the last release (for now, it is the release v0.6.9) and overwrite existing files:</p></li>
+<li><p>Download the last release (for now, it is the release v0.6.10) and overwrite existing files:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.6.9.tar.gz
-$ tar -xzf v0.6.9.tar.gz
-$ cp -R FitTrackee-0.6.9/* FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.6.10.tar.gz
+$ tar -xzf v0.6.10.tar.gz
+$ cp -R FitTrackee-0.6.10/* FitTrackee/
 $ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
@@ -866,6 +904,7 @@ One way is to use a <strong>systemd</strong> services and <strong>Nginx</strong>
 <span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;SENDER_EMAIL=&quot;</span>
 <span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;REDIS_URL=&quot;</span>
 <span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;TILE_SERVER_URL=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;STATICMAP_SUBDOMAINS=&quot;</span>
 <span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;MAP_ATTRIBUTION=&quot;</span>
 <span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;WEATHER_API_KEY=&quot;</span>
 <span class="n">WorkingDirectory</span><span class="o">=/</span><span class="n">home</span><span class="o">/&lt;</span><span class="n">USER</span><span class="o">&gt;/&lt;</span><span class="n">FITTRACKEE</span> <span class="n">DIRECTORY</span><span class="o">&gt;</span>
