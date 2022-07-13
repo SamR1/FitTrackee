@@ -43,7 +43,7 @@ class BaseConfig:
             ' contributors',
         ),
         'DEFAULT_STATICMAP': (
-            os.environ.get('DEFAULT_STATICMAP', 'False') == 'True'
+            os.environ.get('DEFAULT_STATICMAP', 'false').lower() == 'true'
         ),
     }
     TRANSLATIONS_FOLDER = os.path.join(
