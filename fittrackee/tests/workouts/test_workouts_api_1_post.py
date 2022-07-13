@@ -586,7 +586,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             ),
         )
 
-        data = self.assert_500(response, 'Error during gpx processing.')
+        data = self.assert_500(response, 'error during gpx processing')
         assert 'data' not in data
 
     def test_it_returns_500_if_gpx_has_invalid_xml(
@@ -615,7 +615,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             ),
         )
 
-        data = self.assert_500(response, 'Error during gpx file parsing.')
+        data = self.assert_500(response, 'error during gpx file parsing')
         assert 'data' not in data
 
     def test_it_returns_400_if_workout_gpx_has_invalid_extension(
@@ -954,7 +954,7 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
                 ),
             )
 
-            data = self.assert_500(response, 'Error during gpx processing.')
+            data = self.assert_500(response, 'error during gpx processing')
             assert 'data' not in data
 
     def test_it_imports_only_max_number_of_files(
