@@ -1,3 +1,4 @@
+from datetime import timedelta
 from unittest.mock import call, patch
 
 import pytest
@@ -5,9 +6,10 @@ from flask import Flask
 from gpxpy.gpx import IGNORE_TOP_SPEED_PERCENTILES, MovingData
 from werkzeug.datastructures import FileStorage
 
+from fittrackee.tests.utils import random_string
 from fittrackee.users.models import User, UserSportPreference
 from fittrackee.workouts.models import Sport
-from fittrackee.workouts.utils.workouts import process_files
+from fittrackee.workouts.utils.workouts import get_gpx_info, process_files
 
 folders = {
     'extract_dir': '/tmp/fitTrackee/uploads',
@@ -96,3 +98,35 @@ class TestStoppedSpeedThreshold:
             IGNORE_TOP_SPEED_PERCENTILES,  # speed_extreemes_percentiles
             True,  # ignore_nonstandard_distances
         )
+
+
+class TestGetGpxInfoStopTime:
+    def test_stop_time_equals_to_0_when_gpx_file_contains_one_segment(
+        self, gpx_file: str
+    ) -> None:
+        """
+        stopped_speed_threshold to 0 to avoid calculated stopped time
+        in segments
+        """
+        with patch('builtins.open', return_value=gpx_file):
+
+            gpx_data, _, _ = get_gpx_info(
+                gpx_file=random_string(), stopped_speed_threshold=0.0
+            )
+
+        assert gpx_data['stop_time'] == timedelta(seconds=0)
+
+    def test_stop_time_equals_to_stopped_time_sum_between_all_segments(
+        self, gpx_file_with_3_segments: str
+    ) -> None:
+        """
+        stopped_speed_threshold to 0 to avoid calculated stopped time
+        in segments
+        """
+        with patch('builtins.open', return_value=gpx_file_with_3_segments):
+
+            gpx_data, _, _ = get_gpx_info(
+                gpx_file=random_string(), stopped_speed_threshold=0.0
+            )
+
+        assert gpx_data['stop_time'] == timedelta(seconds=120)
