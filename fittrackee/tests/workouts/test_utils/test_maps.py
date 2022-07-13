@@ -7,12 +7,13 @@ from fittrackee.workouts.utils.maps import get_static_map_tile_server_url
 
 class TestGetStaticMapTileServerUrl:
     @pytest.mark.parametrize(
-        'input_tile_server_url,input_tile_server_subdomains,'
+        'input_tile_server_url,'
+        'input_tile_server_subdomains,'
         'expected_tile_server_url',
         [
             (
                 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                None,
+                '',
                 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             ),
             (
@@ -22,7 +23,7 @@ class TestGetStaticMapTileServerUrl:
             ),
             (
                 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                None,
+                '',
                 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             ),
             (
@@ -48,9 +49,8 @@ class TestGetStaticMapTileServerUrl:
             == expected_tile_server_url
         )
 
-    def test_it_returns_tile_server_url_with_random_submain_when_multiple_provided(  # noqa
-        self,
-    ) -> None:
+    def test_it_returns_tile_server_url_with_random_subdomain(self) -> None:
+        """in case multiple subdomains are provided"""
         tile_config = {
             'URL': 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             'STATICMAP_SUBDOMAINS': 'a,b,c',
