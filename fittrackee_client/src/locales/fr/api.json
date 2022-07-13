@@ -2,6 +2,8 @@
     "ERROR": {
         "UNKNOWN": "Erreur. Veuillez réessayer ou contacter l'administrateur.",
         "email: valid email must be provided": "Courriel : une adresse électronique valide doit être fournie.",
+        "error during gpx processing": "Erreur lors du traitement du fichier gpx.",
+        "error during gpx file parsing": "Erreur lors de l'analyse du fichier.",
         "error on getting configuration": "Erreur lors de la récupération de la configuration.",
         "error when updating configuration": "Erreur lors de la mise à jour de la configuration",
         "error, please try again or contact the administrator": "Erreur, veuillez réessayer ou contacter l'administrateur.",
