@@ -280,7 +280,7 @@ Since the tile server can be used for static map generation, some servers requir
 For instance, to set OSM France tile server, the expected values are:
 
 - ``TILE_SERVER_URL=https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png``
-- ``MAP_ATTRIBUTION=fond de carte par <a href="http://www.openstreetmap.fr/mentions-legales/" target="_blank" rel="nofollow noopener">OpenStreetMap France</a>, sous&nbsp;<a href="http://creativecommons.org/licenses/by-sa/2.0/fr/" target="_blank" rel="nofollow noopener">licence CC BY-SA</a>``
+- ``MAP_ATTRIBUTION='fond de carte par <a href="http://www.openstreetmap.fr/mentions-legales/" target="_blank" rel="nofollow noopener">OpenStreetMap France</a>, sous&nbsp;<a href="http://creativecommons.org/licenses/by-sa/2.0/fr/" target="_blank" rel="nofollow noopener">licence CC BY-SA</a>'``
 - ``STATICMAP_SUBDOMAINS=a,b,c``
 
 The subdomain will be chosen randomly.
@@ -425,13 +425,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.6.9):
+-  Download the last release (for now, it is the release v0.6.10):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.9.tar.gz
-   $ tar -xzf v0.6.9.tar.gz
-   $ mv FitTrackee-0.6.9 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.10.tar.gz
+   $ tar -xzf v0.6.10.tar.gz
+   $ mv FitTrackee-0.6.10 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -551,13 +551,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.6.9) and overwrite existing files:
+- Download the last release (for now, it is the release v0.6.10) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.9.tar.gz
-   $ tar -xzf v0.6.9.tar.gz
-   $ cp -R FitTrackee-0.6.9/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.10.tar.gz
+   $ tar -xzf v0.6.10.tar.gz
+   $ cp -R FitTrackee-0.6.10/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -620,6 +620,7 @@ Examples (to update depending on your application configuration and given distri
     Environment="SENDER_EMAIL="
     Environment="REDIS_URL="
     Environment="TILE_SERVER_URL="
+    Environment="STATICMAP_SUBDOMAINS="
     Environment="MAP_ATTRIBUTION="
     Environment="WEATHER_API_KEY="
     WorkingDirectory=/home/<USER>/<FITTRACKEE DIRECTORY>
