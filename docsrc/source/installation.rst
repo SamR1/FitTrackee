@@ -175,6 +175,16 @@ deployment method.
     :default: `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`
 
 
+.. envvar:: STATICMAP_SUBDOMAINS 🆕
+
+    .. versionadded:: 0.6.10
+
+    | Some tile servers require a subdomain, see `Map tile server <installation.html#map-tile-server>`__.
+    | For instance: "a,b,c" for OSM France.
+
+    :default: empty string
+
+
 .. envvar:: MAP_ATTRIBUTION
 
     .. versionadded:: 0.4.0
@@ -184,11 +194,17 @@ deployment method.
     :default: `&copy; <a href="http://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors`
 
 
-.. envvar:: DEFAULT_STATICMAP 🆕
+.. envvar:: DEFAULT_STATICMAP
 
     .. versionadded:: 0.4.9
 
-    If `True`, it keeps using default tile server to generate static maps.
+    | If `True`, it keeps using default tile server to generate static maps (Komoot.de tile server).
+    | Otherwise, it uses the tile server set in `TILE_SERVER_URL <installation.html#envvar-TILE_SERVER_URL>`__.
+
+    .. versionchanged:: 0.6.10
+
+    | This variable is now case-insensitive.
+    | If `False`, depending on tile server, `subdomains <installation.html#envvar-STATICMAP_SUBDOMAINS>`__ may be mandatory.
 
     :default: False
 
@@ -255,6 +271,20 @@ To keep using **ThunderForest Outdoors**, the configuration is:
 
 .. note::
     | Check the terms of service of tile provider for map attribution
+
+
+.. versionchanged:: 0.6.10
+
+Since the tile server can be used for static map generation, some servers require a subdomain.
+
+For instance, to set OSM France tile server, the expected values are:
+
+- ``TILE_SERVER_URL=https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png``
+- ``MAP_ATTRIBUTION='fond de carte par <a href="http://www.openstreetmap.fr/mentions-legales/" target="_blank" rel="nofollow noopener">OpenStreetMap France</a>, sous&nbsp;<a href="http://creativecommons.org/licenses/by-sa/2.0/fr/" target="_blank" rel="nofollow noopener">licence CC BY-SA</a>'``
+- ``STATICMAP_SUBDOMAINS=a,b,c``
+
+The subdomain will be chosen randomly.
+
 
 Installation
 ~~~~~~~~~~~~
@@ -395,13 +425,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.6.9):
+-  Download the last release (for now, it is the release v0.6.10):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.9.tar.gz
-   $ tar -xzf v0.6.9.tar.gz
-   $ mv FitTrackee-0.6.9 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.10.tar.gz
+   $ tar -xzf v0.6.10.tar.gz
+   $ mv FitTrackee-0.6.10 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -521,13 +551,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.6.9) and overwrite existing files:
+- Download the last release (for now, it is the release v0.6.10) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.9.tar.gz
-   $ tar -xzf v0.6.9.tar.gz
-   $ cp -R FitTrackee-0.6.9/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.10.tar.gz
+   $ tar -xzf v0.6.10.tar.gz
+   $ cp -R FitTrackee-0.6.10/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -590,6 +620,7 @@ Examples (to update depending on your application configuration and given distri
     Environment="SENDER_EMAIL="
     Environment="REDIS_URL="
     Environment="TILE_SERVER_URL="
+    Environment="STATICMAP_SUBDOMAINS="
     Environment="MAP_ATTRIBUTION="
     Environment="WEATHER_API_KEY="
     WorkingDirectory=/home/<USER>/<FITTRACKEE DIRECTORY>

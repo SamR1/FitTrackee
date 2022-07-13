@@ -1,7 +1,7 @@
 import json
 import time
 from random import randint
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 from urllib.parse import parse_qs
 
 from flask import Flask
@@ -286,10 +286,20 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
 
 
 class CallArgsMixin:
+    """call args are returned differently between Python 3.7 and 3.7+"""
+
     @staticmethod
-    def get_args(call_args: Any) -> Any:
+    def get_args(call_args: Tuple) -> Tuple:
         if len(call_args) == 2:
             args, _ = call_args
         else:
             _, args, _ = call_args
         return args
+
+    @staticmethod
+    def get_kwargs(call_args: Tuple) -> Dict:
+        if len(call_args) == 2:
+            _, kwargs = call_args
+        else:
+            _, _, kwargs = call_args
+        return kwargs

@@ -9,6 +9,7 @@ from unittest.mock import Mock
 import pytest
 from flask import Flask
 
+from fittrackee import VERSION
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
@@ -442,7 +443,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0]['notes'] == input_notes
 
-    def test_it_calls_configured_tile_server_for_static_map(
+    def test_it_calls_configured_tile_server_for_static_map_when_default_static_map_to_false(  # noqa
         self,
         app: Flask,
         user_1: User,
@@ -473,7 +474,36 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             in call_args[0]
         )
 
-    def test_it_calls_default_tile_server_for_static_map(
+    def test_it_calls_static_map_with_fittrackee_user_agent_when_default_static_map_to_false(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        static_map_get_mock: Mock,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        call_kwargs = self.get_kwargs(static_map_get_mock.call_args)
+
+        assert call_kwargs['headers'] == {
+            'User-Agent': f'FitTrackee v{VERSION}'
+        }
+
+    def test_it_calls_default_tile_server_for_static_map_when_default_static_map_to_true(  # noqa
         self,
         app_default_static_map: Flask,
         user_1: User,
@@ -504,6 +534,35 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             not in call_args[0]
         )
 
+    def test_it_calls_static_map_with_fittrackee_user_agent_when_default_static_map_to_true(  # noqa
+        self,
+        app_default_static_map: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        static_map_get_mock: Mock,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_default_static_map, user_1.email
+        )
+        client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        call_kwargs = self.get_kwargs(static_map_get_mock.call_args)
+
+        assert call_kwargs['headers'] == {
+            'User-Agent': f'FitTrackee v{VERSION}'
+        }
+
     def test_it_returns_500_if_gpx_file_has_not_tracks(
         self,
         app: Flask,
@@ -527,7 +586,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             ),
         )
 
-        data = self.assert_500(response, 'Error during gpx processing.')
+        data = self.assert_500(response, 'error during gpx processing')
         assert 'data' not in data
 
     def test_it_returns_500_if_gpx_has_invalid_xml(
@@ -556,7 +615,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             ),
         )
 
-        data = self.assert_500(response, 'Error during gpx file parsing.')
+        data = self.assert_500(response, 'error during gpx file parsing')
         assert 'data' not in data
 
     def test_it_returns_400_if_workout_gpx_has_invalid_extension(
@@ -973,7 +1032,7 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
                 ),
             )
 
-            data = self.assert_500(response, 'Error during gpx processing.')
+            data = self.assert_500(response, 'error during gpx processing')
             assert 'data' not in data
 
     def test_it_imports_only_max_number_of_files(

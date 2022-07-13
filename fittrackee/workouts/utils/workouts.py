@@ -307,9 +307,9 @@ def process_one_gpx_file(
         absolute_map_filepath = get_absolute_file_path(map_filepath)
         generate_map(absolute_map_filepath, map_data)
     except (gpxpy.gpx.GPXXMLSyntaxException, TypeError) as e:
-        raise WorkoutException('error', 'Error during gpx file parsing.', e)
+        raise WorkoutException('error', 'error during gpx file parsing', e)
     except Exception as e:
-        raise WorkoutException('error', 'Error during gpx processing.', e)
+        raise WorkoutException('error', 'error during gpx processing', e)
 
     try:
         new_workout = create_workout(
