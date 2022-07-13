@@ -45,6 +45,7 @@ class BaseConfig:
         'DEFAULT_STATICMAP': (
             os.environ.get('DEFAULT_STATICMAP', 'false').lower() == 'true'
         ),
+        'STATICMAP_SUBDOMAINS': os.environ.get('STATICMAP_SUBDOMAINS', ''),
     }
     TRANSLATIONS_FOLDER = os.path.join(
         current_app.root_path, 'emails/translations'
