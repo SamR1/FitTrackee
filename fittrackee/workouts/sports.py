@@ -24,6 +24,8 @@ def get_sports(auth_user: User) -> Dict:
     """
     Get all sports
 
+    **Scope**: ``workouts:read``
+
     **Example request**:
 
     .. sourcecode:: http
@@ -200,6 +202,8 @@ def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
     """
     Get a sport
 
+    **Scope**: ``workouts:read``
+
     **Example request**:
 
     .. sourcecode:: http
@@ -307,8 +311,11 @@ def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
 @require_auth(scopes=['workouts:write'], as_admin=True)
 def update_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
     """
-    Update a sport
-    Authenticated user must be an admin
+    Update a sport.
+
+    Authenticated user must be an admin.
+
+    **Scope**: ``workouts:write``
 
     **Example request**:
 
@@ -317,7 +324,7 @@ def update_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
       PATCH /api/sports/1 HTTP/1.1
       Content-Type: application/json
 
-    **Example response**:
+    **Example responses**:
 
     - success
 

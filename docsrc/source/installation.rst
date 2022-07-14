@@ -9,6 +9,7 @@ This application is written in Python (API) and Typescript (client):
     - `staticmap <https://github.com/komoot/staticmap>`_ to generate a static map image from gpx coordinates
     - `python-forecast.io <https://github.com/ZeevG/python-forecast.io>`_ to fetch weather data from `Dark Sky <https://darksky.net>`__ (former forecast.io)
     - `dramatiq <https://flask-dramatiq.readthedocs.io/en/latest/>`_ for task queue
+    - `Authlib <https://docs.authlib.org/en/latest/>`_ for OAuth 2.0 Authorization support
 - Client:
     - Vue3/Vuex
     - `Leaflet <https://leafletjs.com/>`__ to display map

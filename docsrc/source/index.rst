@@ -33,6 +33,7 @@ Table of contents
    :maxdepth: 1
 
    features
+   apps
    installation
    cli
    api/index

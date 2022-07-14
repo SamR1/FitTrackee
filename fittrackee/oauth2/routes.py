@@ -38,6 +38,73 @@ def is_errored(url: str) -> Optional[str]:
 @oauth2_blueprint.route('/oauth/apps', methods=['GET'])
 @require_auth()
 def get_clients(auth_user: User) -> Dict:
+    """
+    Get OAuth2 clients (apps) for authenticated user with pagination
+    (5 clients/page).
+
+    This endpoint is only accessible by FitTrackee client (first-party
+    application).
+
+    **Example request**:
+
+    - without parameters
+
+    .. sourcecode:: http
+
+      GET /api/oauth/apps HTTP/1.1
+      Content-Type: application/json
+
+    - with 'page' parameter
+
+    .. sourcecode:: http
+
+      GET /api/oauth/apps?page=2 HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 SUCCESS
+      Content-Type: application/json
+
+      {
+        "data": {
+          "clients": [
+            {
+              "client_description": "",
+              "client_id": "o22a27s2aBPUoxJbxV3UjDOx",
+              "id": 1,
+              "issued_at": "Thu, 14 July 2022 06:27:53 GMT",
+              "name": "GPX Importer",
+              "redirect_uris": [
+                " https://example.com/callback"
+              ],
+              "scope": "profile:read workouts:write",
+              "website": "https://example.com"
+            }
+          ]
+        },
+        "pagination": {
+          "has_next": false,
+          "has_prev": false,
+          "page": 1,
+          "pages": 1,
+          "total": 1
+        },
+        "status": "success"
+      }
+
+    :query integer page: page for pagination (default: 1)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    """
     params = request.args.copy()
     page = int(params.get('page', 1))
     per_page = DEFAULT_PER_PAGE
@@ -67,6 +134,61 @@ def get_clients(auth_user: User) -> Dict:
 @oauth2_blueprint.route('/oauth/apps', methods=['POST'])
 @require_auth()
 def create_client(auth_user: User) -> Union[HttpResponse, Tuple[Dict, int]]:
+    """
+    Create an OAuth2 client (app) for the authenticated user.
+
+    This endpoint is only accessible by FitTrackee client (first-party
+    application).
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/oauth/apps HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 SUCCESS
+      Content-Type: application/json
+
+      {
+        "data": {
+          "client": {
+            "client_description": "",
+            "client_id": "o22a27s2aBPUoxJbxV3UjDOx",
+            "client_secret": "<CLIENT SECRET>",
+            "id": 1,
+            "issued_at": "Thu, 14 July 2022 06:27:53 GMT",
+            "name": "GPX Importer",
+            "redirect_uris": [
+              "https://example.com/callback"
+            ],
+            "scope": "profile:read workouts:write",
+            "website": "https://example.com"
+          }
+        },
+        "status": "created"
+      }
+
+    :json string client_name: client name
+    :json string client_uri: client URL
+    :json array  redirect_uri: list of client redirect URLs (string)
+    :json string scope: client scopes
+    :json string client_description: client description (`OPTIONAL`)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 400:
+        - invalid payload
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    """
     client_metadata = request.get_json()
     if not client_metadata:
         return InvalidPayloadErrorResponse(
@@ -124,12 +246,79 @@ def get_client(
     }
 
 
-@oauth2_blueprint.route('/oauth/apps/<string:client_id>', methods=['GET'])
+@oauth2_blueprint.route(
+    '/oauth/apps/<string:client_client_id>', methods=['GET']
+)
 @require_auth()
 def get_client_by_client_id(
-    auth_user: User, client_id: str
+    auth_user: User, client_client_id: str
 ) -> Union[Dict, HttpResponse]:
-    return get_client(auth_user, client_id=None, client_client_id=client_id)
+    """
+    Get an OAuth2 client (app) by 'client_id'.
+
+    This endpoint is only accessible by FitTrackee client (first-party
+    application).
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/oauth/apps/o22a27s2aBPUoxJbxV3UjDOx HTTP/1.1
+      Content-Type: application/json
+
+    **Example responses**:
+
+    - success
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 SUCCESS
+      Content-Type: application/json
+
+      {
+        "data": {
+          "client": {
+            "client_description": "",
+            "client_id": "o22a27s2aBPUoxJbxV3UjDOx",
+            "id": 1,
+            "issued_at": "Thu, 14 July 2022 06:27:53 GMT",
+            "name": "GPX Importer",
+            "redirect_uris": [
+              "https://example.com/callback"
+            ],
+            "scope": "profile:read workouts:write",
+            "website": "https://example.com"
+          }
+        },
+        "status": "success"
+      }
+
+    - not found
+
+    .. sourcecode:: http
+
+      HTTP/1.1 404 NOT FOUND
+      Content-Type: application/json
+
+      {
+        "status": "not found",
+        "message": "OAuth2 client not found"
+      }
+
+    :param string client_client_id: OAuth2 client client_id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 404: OAuth2 client not found
+    """
+    return get_client(
+        auth_user, client_id=None, client_client_id=client_client_id
+    )
 
 
 @oauth2_blueprint.route('/oauth/apps/<int:client_id>/by_id', methods=['GET'])
@@ -137,6 +326,69 @@ def get_client_by_client_id(
 def get_client_by_id(
     auth_user: User, client_id: int
 ) -> Union[Dict, HttpResponse]:
+    """
+    Get an OAuth2 client (app) by id (integer value).
+
+    This endpoint is only accessible by FitTrackee client (first-party
+    application).
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/oauth/apps/1/by_id HTTP/1.1
+      Content-Type: application/json
+
+    **Example responses**:
+
+    - success
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 SUCCESS
+      Content-Type: application/json
+
+      {
+        "data": {
+          "client": {
+            "client_description": "",
+            "client_id": "o22a27s2aBPUoxJbxV3UjDOx",
+            "id": 1,
+            "issued_at": "Thu, 14 July 2022 06:27:53 GMT",
+            "name": "GPX Importer",
+            "redirect_uris": [
+              "https://example.com/callback"
+            ],
+            "scope": "profile:read workouts:write",
+            "website": "https://example.com"
+          }
+        },
+        "status": "success"
+      }
+
+    - not found
+
+    .. sourcecode:: http
+
+      HTTP/1.1 404 NOT FOUND
+      Content-Type: application/json
+
+      {
+        "status": "not found",
+        "message": "OAuth2 client not found"
+      }
+
+    :param integer client_id: OAuth2 client id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 404: OAuth2 client not found
+    """
     return get_client(auth_user, client_id=client_id, client_client_id=None)
 
 
@@ -145,6 +397,37 @@ def get_client_by_id(
 def delete_client(
     auth_user: User, client_id: int
 ) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Delete an OAuth2 client (app).
+
+    This endpoint is only accessible by FitTrackee client (first-party
+    application).
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      DELETE /api/oauth/apps/1 HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 204 NO CONTENT
+      Content-Type: application/json
+
+    :param integer client_id: OAuth2 client id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 204: OAuth2 client deleted
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 404: OAuth2 client not found
+    """
     client = OAuth2Client.query.filter_by(
         id=client_id,
         user_id=auth_user.id,
@@ -163,6 +446,41 @@ def delete_client(
 def revoke_client_tokens(
     auth_user: User, client_id: int
 ) -> Union[Dict, HttpResponse]:
+    """
+    Revoke all tokens associated to an OAuth2 client (app).
+
+    This endpoint is only accessible by FitTrackee client (first-party
+    application).
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/oauth/apps/1/revoke HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 SUCCESS
+      Content-Type: application/json
+
+      {
+        "status": "success"
+      }
+
+    :param integer client_id: OAuth2 client id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 404: OAuth2 client not found
+    """
     client = OAuth2Client.query.filter_by(id=client_id).first()
 
     if not client:
@@ -175,6 +493,55 @@ def revoke_client_tokens(
 @oauth2_blueprint.route('/oauth/authorize', methods=['POST'])
 @require_auth()
 def authorize(auth_user: User) -> Union[HttpResponse, Dict]:
+    """
+    Authorize an OAuth2 client (app).
+    If successful, it redirects to the client callback URL with the code to
+    issue a token.
+
+    This endpoint is only accessible by FitTrackee client (first-party
+    application).
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/oauth/authorize HTTP/1.1
+      Content-Type: multipart/form-data
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 SUCCESS
+      Content-Type: application/json
+
+      {
+        "status": "success"
+      }
+
+    :form string  client_id: OAuth2 client 'client_id'
+    :form string  response_type: client response type (only 'code' is supported
+                                by FitTrackee)
+    :form string  scopes: OAuth2 client scopes
+    :form boolean confirm: confirmation
+    :form string  state: unique value to prevent cross-site request forgery
+                         (not mandatory)
+    :form string  code_challenge: string generated from a code verifier
+                         (for PKCE, not mandatory)
+    :form string  code_challenge_method: method used to create challenge,
+                         for instance "S256" (for PKCE, not mandatory)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 400:
+        - invalid payload
+        - errors returned by Authlib library
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    """
     data = request.form
     if not data or 'client_id' not in data or 'response_type' not in data:
         return InvalidPayloadErrorResponse()
@@ -192,9 +559,86 @@ def authorize(auth_user: User) -> Union[HttpResponse, Dict]:
 
 @oauth2_blueprint.route('/oauth/token', methods=['POST'])
 def issue_token() -> Response:
+    """
+    Issue or refresh token for a given OAuth2 client (app).
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/oauth/token HTTP/1.1
+      Content-Type: multipart/form-data
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 SUCCESS
+      Content-Type: application/json
+
+      {
+        "access_token": "rOEHv64THCG28WcewZHRnVLUsOdUvw8NVnHKCmL57e",
+        "expires_in": 864000,
+        "refresh_token": "NuV9cY8VQOnrQKHTZ5pQAq2Zw7mSH0MorNPJr14AmSwD6f6I",
+        "scope": ["profile:read", "workouts:write"],
+        "token_type": "Bearer",
+        "expires_at": 1658660147.0667062
+      }
+
+    :form string  client_id: OAuth2 client 'client_id'
+    :form string  client_secret: OAuth2 client secret
+    :form string  grant_type: OAuth2 client grant type
+                         (only 'authorization_code' (for token issue)
+                         and 'refresh_token' (for token refresh)
+                         are supported by FitTrackee)
+    :form string  code: code generated after authorizing the client
+                         (for token issue)
+    :form string  code_verifier: code verifier
+                         (for PKCE and token issue, not mandatory)
+    :form string  refresh_token: refresh token (for token refresh)
+
+    :statuscode 200: success
+    :statuscode 400:
+        - errors returned by Authlib library
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    """
     return authorization_server.create_token_response()
 
 
 @oauth2_blueprint.route('/oauth/revoke', methods=['POST'])
 def revoke_token() -> Response:
+    """
+    Revoke a token for a given OAuth2 client (app).
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/oauth/revoke HTTP/1.1
+      Content-Type: multipart/form-data
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 SUCCESS
+      Content-Type: application/json
+
+      {}
+
+    :form string client_id: OAuth2 client 'client_id'
+    :form string client_secret: OAuth2 client secret
+    :form string token: access token to revoke
+
+    :statuscode 200: success
+    :statuscode 400:
+        - errors returned by Authlib library
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    """
     return authorization_server.create_endpoint_response('revocation')

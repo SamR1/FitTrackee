@@ -7,6 +7,7 @@ API documentation
 
    auth
    configuration
+   oauth2
    records
    sports
    stats

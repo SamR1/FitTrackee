@@ -22,6 +22,8 @@ def get_records(auth_user: User) -> Dict:
         - longest duration (record_type: 'LD')
         - maximum speed (record_type: 'MS')
 
+    **Scope**: ``workouts:read``
+
     **Example request**:
 
     .. sourcecode:: http

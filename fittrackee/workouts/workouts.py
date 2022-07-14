@@ -61,6 +61,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Get workouts for the authenticated user.
 
+    **Scope**: ``workouts:read``
+
     **Example requests**:
 
     - without parameters
@@ -303,7 +305,9 @@ def get_workout(
     auth_user: User, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get a workout
+    Get a workout.
+
+    **Scope**: ``workouts:read``
 
     **Example request**:
 
@@ -357,7 +361,7 @@ def get_workout(
           "status": "success"
         }
 
-    - acitivity not found:
+    - workout not found:
 
     .. sourcecode:: http
 
@@ -467,7 +471,9 @@ def get_workout_gpx(
     auth_user: User, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get gpx file for a workout displayed on map with Leaflet
+    Get gpx file for a workout displayed on map with Leaflet.
+
+    **Scope**: ``workouts:read``
 
     **Example request**:
 
@@ -517,7 +523,9 @@ def get_workout_chart_data(
     auth_user: User, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get chart data from a workout gpx file, to display it with Recharts
+    Get chart data from a workout gpx file, to display it with Chart.js.
+
+    **Scope**: ``workouts:read``
 
     **Example request**:
 
@@ -587,7 +595,9 @@ def get_segment_gpx(
     auth_user: User, workout_short_id: str, segment_id: int
 ) -> Union[Dict, HttpResponse]:
     """
-    Get gpx file for a workout segment displayed on map with Leaflet
+    Get gpx file for a workout segment displayed on map with Leaflet.
+
+    **Scope**: ``workouts:read``
 
     **Example request**:
 
@@ -640,6 +650,8 @@ def get_segment_chart_data(
 ) -> Union[Dict, HttpResponse]:
     """
     Get chart data from a workout gpx file, to display it with Recharts
+
+    **Scope**: ``workouts:read``
 
     **Example request**:
 
@@ -710,7 +722,9 @@ def download_workout_gpx(
     auth_user: User, workout_short_id: str
 ) -> Union[HttpResponse, Response]:
     """
-    Download gpx file
+    Download gpx file.
+
+    **Scope**: ``workouts:read``
 
     **Example request**:
 
@@ -763,7 +777,7 @@ def download_workout_gpx(
 @workouts_blueprint.route('/workouts/map/<map_id>', methods=['GET'])
 def get_map(map_id: int) -> Union[HttpResponse, Response]:
     """
-    Get map image for workouts with gpx
+    Get map image for workouts with gpx.
 
     **Example request**:
 
@@ -853,7 +867,9 @@ def get_map_tile(s: str, z: str, x: str, y: str) -> Tuple[Response, int]:
 @require_auth(scopes=['workouts:write'])
 def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    Post a workout with a gpx file
+    Post a workout with a gpx file.
+
+    **Scope**: ``workouts:write``
 
     **Example request**:
 
@@ -1023,7 +1039,9 @@ def post_workout_no_gpx(
     auth_user: User,
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    Post a workout without gpx file
+    Post a workout without gpx file.
+
+    **Scope**: ``workouts:write``
 
     **Example request**:
 
@@ -1172,7 +1190,9 @@ def update_workout(
     auth_user: User, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Update a workout
+    Update a workout.
+
+    **Scope**: ``workouts:write``
 
     **Example request**:
 
@@ -1320,7 +1340,9 @@ def delete_workout(
     auth_user: User, workout_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    Delete a workout
+    Delete a workout.
+
+    **Scope**: ``workouts:write``
 
     **Example request**:
 

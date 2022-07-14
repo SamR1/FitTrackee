@@ -73,7 +73,7 @@ def send_account_confirmation_email(user: User) -> None:
 @auth_blueprint.route('/auth/register', methods=['POST'])
 def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    register a user and send confirmation email.
+    Register a user and send confirmation email.
 
     The newly created account is inactive. The user must confirm his email
     to activate it.
@@ -131,7 +131,6 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
         error, registration is disabled
     :statuscode 500:
         error, please try again or contact the administrator
-
     """
     if not current_app.config.get('is_registration_enabled'):
         return ForbiddenErrorResponse('error, registration is disabled')
@@ -190,7 +189,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
 @auth_blueprint.route('/auth/login', methods=['POST'])
 def login_user() -> Union[Dict, HttpResponse]:
     """
-    user login
+    User login.
 
     Only user with an active account can log in.
 
@@ -268,7 +267,9 @@ def get_authenticated_user_profile(
     auth_user: User,
 ) -> Union[Dict, HttpResponse]:
     """
-    get authenticated user info (profile, account, preferences)
+    Get authenticated user info (profile, account, preferences).
+
+    **Scope**: ``profile:read``
 
     **Example request**:
 
@@ -359,7 +360,6 @@ def get_authenticated_user_profile(
         - provide a valid auth token
         - signature expired, please log in again
         - invalid token, please log in again
-
     """
     return {'status': 'success', 'data': auth_user.serialize(auth_user)}
 
@@ -368,7 +368,9 @@ def get_authenticated_user_profile(
 @require_auth(scopes=['profile:write'])
 def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
     """
-    edit authenticated user profile
+    Edit authenticated user profile.
+
+    **Scope**: ``profile:write``
 
     **Example request**:
 
@@ -469,7 +471,6 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
         - signature expired, please log in again
         - invalid token, please log in again
     :statuscode 500: error, please try again or contact the administrator
-
     """
     # get post data
     post_data = request.get_json()
@@ -516,7 +517,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
 @require_auth(scopes=['profile:write'])
 def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
     """
-    update authenticated user email and password
+    Update authenticated user email and password.
 
     It sends emails if sending is enabled:
 
@@ -525,6 +526,8 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
 
       - one to the current address to inform user
       - another one to the new address to confirm it.
+
+    **Scope**: ``profile:write``
 
     **Example request**:
 
@@ -628,7 +631,6 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
         - invalid token, please log in again
         - invalid credentials
     :statuscode 500: error, please try again or contact the administrator
-
     """
     data = request.get_json()
     if not data:
@@ -724,7 +726,9 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
 @require_auth(scopes=['profile:write'])
 def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     """
-    edit authenticated user preferences
+    Edit authenticated user preferences.
+
+    **Scope**: ``profile:write``
 
     **Example request**:
 
@@ -825,7 +829,6 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         - signature expired, please log in again
         - invalid token, please log in again
     :statuscode 500: error, please try again or contact the administrator
-
     """
     # get post data
     post_data = request.get_json()
@@ -867,7 +870,9 @@ def edit_user_sport_preferences(
     auth_user: User,
 ) -> Union[Dict, HttpResponse]:
     """
-    edit authenticated user sport preferences
+    Edit authenticated user sport preferences.
+
+    **Scope**: ``profile:write``
 
     **Example request**:
 
@@ -912,7 +917,6 @@ def edit_user_sport_preferences(
     :statuscode 404:
         - sport does not exist
     :statuscode 500: error, please try again or contact the administrator
-
     """
     post_data = request.get_json()
     if (
@@ -973,7 +977,9 @@ def reset_user_sport_preferences(
     auth_user: User, sport_id: int
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    reset authenticated user preferences for a given sport
+    Reset authenticated user preferences for a given sport.
+
+    **Scope**: ``profile:write``
 
     **Example request**:
 
@@ -1001,7 +1007,6 @@ def reset_user_sport_preferences(
     :statuscode 404:
         - sport does not exist
     :statuscode 500: error, please try again or contact the administrator
-
     """
     sport = Sport.query.filter_by(id=sport_id).first()
     if not sport:
@@ -1026,7 +1031,9 @@ def reset_user_sport_preferences(
 @require_auth(scopes=['profile:write'])
 def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
     """
-    update authenticated user picture
+    Update authenticated user picture.
+
+    **Scope**: ``profile:write``
 
     **Example request**:
 
@@ -1063,7 +1070,6 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
         - invalid token, please log in again
     :statuscode 413: error during picture update: file size exceeds 1.0MB
     :statuscode 500: error during picture update
-
     """
     try:
         response_object = get_error_response_if_file_is_invalid(
@@ -1114,7 +1120,9 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
 @require_auth(scopes=['profile:write'])
 def del_picture(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    delete authenticated user picture
+    Delete authenticated user picture.
+
+    **Scope**: ``profile:write``
 
     **Example request**:
 
@@ -1156,7 +1164,7 @@ def del_picture(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 @auth_blueprint.route('/auth/password/reset-request', methods=['POST'])
 def request_password_reset() -> Union[Dict, HttpResponse]:
     """
-    handle password reset request
+    Handle password reset request.
 
     If email sending is disabled, this endpoint is not available
 
@@ -1226,9 +1234,9 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
 @auth_blueprint.route('/auth/password/update', methods=['POST'])
 def update_password() -> Union[Dict, HttpResponse]:
     """
-    update user password after password reset request
+    Update user password after password reset request.
 
-    It sends emails if sending is enabled
+    It sends emails if sending is enabled.
 
     **Example request**:
 
@@ -1309,7 +1317,7 @@ def update_password() -> Union[Dict, HttpResponse]:
 @auth_blueprint.route('/auth/email/update', methods=['POST'])
 def update_email() -> Union[Dict, HttpResponse]:
     """
-    update user email after confirmation
+    Update user email after confirmation.
 
     **Example request**:
 
@@ -1368,7 +1376,7 @@ def update_email() -> Union[Dict, HttpResponse]:
 @auth_blueprint.route('/auth/account/confirm', methods=['POST'])
 def confirm_account() -> Union[Dict, HttpResponse]:
     """
-    activate user account after registration
+    Activate user account after registration.
 
     **Example request**:
 
@@ -1430,9 +1438,9 @@ def confirm_account() -> Union[Dict, HttpResponse]:
 @auth_blueprint.route('/auth/account/resend-confirmation', methods=['POST'])
 def resend_account_confirmation_email() -> Union[Dict, HttpResponse]:
     """
-    resend email with instructions to confirm account
+    Resend email with instructions to confirm account.
 
-    If email sending is disabled, this endpoint is not available
+    If email sending is disabled, this endpoint is not available.
 
     **Example request**:
 

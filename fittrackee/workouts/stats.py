@@ -179,7 +179,9 @@ def get_workouts_by_time(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get workouts statistics for a user by time
+    Get workouts statistics for a user by time.
+
+    **Scope**: ``workouts:read``
 
     **Example requests**:
 
@@ -255,7 +257,7 @@ def get_workouts_by_time(
         "status": "success"
       }
 
-    :param integer user_name: user name
+    :param integer user_name: username
 
     :query string from: start date (format: ``%Y-%m-%d``)
     :query string to: end date (format: ``%Y-%m-%d``)
@@ -286,7 +288,9 @@ def get_workouts_by_sport(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get workouts statistics for a user by sport
+    Get workouts statistics for a user by sport.
+
+    **Scope**: ``workouts:read``
 
     **Example requests**:
 
@@ -357,7 +361,7 @@ def get_workouts_by_sport(
         "status": "success"
       }
 
-    :param integer user_name: user name
+    :param integer user_name: username
 
     :query integer sport_id: sport id
 
@@ -380,7 +384,9 @@ def get_workouts_by_sport(
 @require_auth(scopes=['workouts:read'], as_admin=True)
 def get_application_stats(auth_user: User) -> Dict:
     """
-    Get all application statistics
+    Get all application statistics.
+
+    **Scope**: ``workouts:read``
 
     **Example requests**:
 

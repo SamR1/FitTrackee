@@ -22,7 +22,7 @@ config_blueprint = Blueprint('config', __name__)
 @config_blueprint.route('/config', methods=['GET'])
 def get_application_config() -> Union[Dict, HttpResponse]:
     """
-    Get Application config
+    Get Application configuration.
 
     **Example request**:
 
@@ -70,9 +70,11 @@ def get_application_config() -> Union[Dict, HttpResponse]:
 @require_auth(scopes=['application:write'], as_admin=True)
 def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
     """
-    Update Application config
+    Update Application configuration.
 
-    Authenticated user must be an admin
+    Authenticated user must be an admin.
+
+    **Scope**: ``application:write``
 
     **Example request**:
 
@@ -105,7 +107,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
 
     :<json string admin_contact: email to contact the administrator
     :<json integer gpx_limit_import: max number of files in zip archive
-    :<json boolean is_registration_enabled: is registration enabled ?
+    :<json boolean is_registration_enabled: is registration enabled?
     :<json integer max_single_file_size: max size of a single file
     :<json integer max_users: max users allowed to register on instance
     :<json integer max_zip_file_size: max size of a zip archive
@@ -187,6 +189,5 @@ def health_check() -> Union[Dict, HttpResponse]:
       }
 
     :statuscode 200: success
-
     """
     return {'status': 'success', 'message': 'pong!'}
