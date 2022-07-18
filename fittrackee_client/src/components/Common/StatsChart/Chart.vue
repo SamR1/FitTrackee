@@ -137,13 +137,17 @@
                 const total: number = context.chart.data.datasets
                   .map((d) => d.data[context.dataIndex])
                   .reduce((total, value) => getSum(total, value), 0)
+                let unitFrom = 'km'
+                if (props.displayedData === 'total_ascent' || props.displayedData === 'total_descent')
+                  unitFrom = 'm'
                 return context.datasetIndex ===
                   props.displayedSportIds.length - 1 && total > 0
                   ? formatTooltipValue(
                       props.displayedData,
                       total,
                       props.useImperialUnits,
-                      false
+                      false,
+                      unitFrom
                     )
                   : null
               }
