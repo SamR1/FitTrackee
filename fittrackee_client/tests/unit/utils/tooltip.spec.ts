@@ -30,16 +30,16 @@ describe('formatTooltipValue', () => {
       expectedResult: '30.00 km',
     },
     {
-      description: 'returns 0.003 km if input is total ascent',
-      inputDisplayedData: datasetKeys[4], // 'total_distance'
+      description: 'returns 30 km if input is total ascent',
+      inputDisplayedData: datasetKeys[4], // 'total_ascent'
       inputValue: 30,
-      expectedResult: '0.03 km',
+      expectedResult: '30.00 km',
     },
     {
-      description: 'returns 0.003 km if input is total descent',
-      inputDisplayedData: datasetKeys[5], // 'total_distance'
+      description: 'returns 30 km if input is total descent',
+      inputDisplayedData: datasetKeys[5], // 'total_descent'
       inputValue: 30,
-      expectedResult: '0.03 km',
+      expectedResult: '30.00 km',
     },
   ]
 
@@ -84,16 +84,16 @@ describe('formatTooltipValue after conversion to imperial units', () => {
       expectedResult: '30.00 mi',
     },
     {
-      description: 'returns 0.03 mi if input is total ascent',
-      inputDisplayedData: datasetKeys[4], // 'total_distance'
+      description: 'returns 30 mi if input is total ascent',
+      inputDisplayedData: datasetKeys[4], // 'total_ascent'
       inputValue: 30,
-      expectedResult: '0.03 mi',
+      expectedResult: '30.00 mi',
     },
     {
-      description: 'returns 0.03 mi if input is total descent',
-      inputDisplayedData: datasetKeys[5], // 'total_distance'
+      description: 'returns 30 mi if input is total descent',
+      inputDisplayedData: datasetKeys[5], // 'total_descent'
       inputValue: 30,
-      expectedResult: '0.03 mi',
+      expectedResult: '30.00 mi',
     },
   ]
 
@@ -138,16 +138,16 @@ describe('formatTooltipValue (formatWithUnits = false)', () => {
       expectedResult: '30.00 km',
     },
     {
-      description: 'returns 0.003 km if input is total ascent',
-      inputDisplayedData: datasetKeys[4], // 'total_distance'
+      description: 'returns 30 km if input is total ascent',
+      inputDisplayedData: datasetKeys[4], // 'total_ascent'
       inputValue: 30,
-      expectedResult: '0.03 km',
+      expectedResult: '30.00 km',
     },
     {
-      description: 'returns 0.003 km if input is total descent',
-      inputDisplayedData: datasetKeys[5], // 'total_distance'
+      description: 'returns 30 km if input is total descent',
+      inputDisplayedData: datasetKeys[5], // 'total_descent'
       inputValue: 30,
-      expectedResult: '0.03 km',
+      expectedResult: '30.00 km',
     },
   ]
 
