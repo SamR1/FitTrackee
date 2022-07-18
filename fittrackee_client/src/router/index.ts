@@ -8,12 +8,14 @@ import Profile from '@/components/User/ProfileDisplay/index.vue'
 import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
 import UserPreferences from '@/components/User/ProfileDisplay/UserPreferences.vue'
 import ProfileEdition from '@/components/User/ProfileEdition/index.vue'
+import UserAccountEdition from '@/components/User/ProfileEdition/UserAccountEdition.vue'
 import UserInfosEdition from '@/components/User/ProfileEdition/UserInfosEdition.vue'
 import UserPictureEdition from '@/components/User/ProfileEdition/UserPictureEdition.vue'
 import UserPreferencesEdition from '@/components/User/ProfileEdition/UserPreferencesEdition.vue'
 import UserSportPreferences from '@/components/User/UserSportPreferences.vue'
 import store from '@/store'
 import { AUTH_USER_STORE } from '@/store/constants'
+import AboutView from '@/views/AboutView.vue'
 import Dashboard from '@/views/Dashboard.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import LoginOrRegister from '@/views/user/LoginOrRegister.vue'
@@ -41,6 +43,32 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Register',
     component: LoginOrRegister,
     props: { action: 'register' },
+  },
+  {
+    path: '/account-confirmation',
+    name: 'AccountConfirmation',
+    component: () =>
+      import(
+        /* webpackChunkName: 'profile' */ '@/views/user/AccountConfirmationView.vue'
+      ),
+  },
+  {
+    path: '/account-confirmation/resend',
+    name: 'AccountConfirmationResend',
+    component: () =>
+      import(
+        /* webpackChunkName: 'reset' */ '@/views/user/AccountConfirmationResendView.vue'
+      ),
+    props: { action: 'account-confirmation-resend' },
+  },
+  {
+    path: '/account-confirmation/email-sent',
+    name: 'AccountConfirmationEmailSend',
+    component: () =>
+      import(
+        /* webpackChunkName: 'reset' */ '@/views/user/AccountConfirmationResendView.vue'
+      ),
+    props: { action: 'email-sent' },
   },
   {
     path: '/password-reset/sent',
@@ -77,6 +105,14 @@ const routes: Array<RouteRecordRaw> = [
         /* webpackChunkName: 'reset' */ '@/views/user/PasswordResetView.vue'
       ),
     props: { action: 'reset' },
+  },
+  {
+    path: '/email-update',
+    name: 'EmailUpdate',
+    component: () =>
+      import(
+        /* webpackChunkName: 'profile' */ '@/views/user/EmailUpdateView.vue'
+      ),
   },
   {
     path: '/profile',
@@ -122,6 +158,11 @@ const routes: Array<RouteRecordRaw> = [
             path: '',
             name: 'UserInfosEdition',
             component: UserInfosEdition,
+          },
+          {
+            path: 'account',
+            name: 'UserAccountEdition',
+            component: UserAccountEdition,
           },
           {
             path: 'picture',
@@ -221,11 +262,23 @@ const routes: Array<RouteRecordRaw> = [
         component: AdminSports,
       },
       {
+        path: 'users/:username',
+        name: 'UserFromAdmin',
+        component: () =>
+          import(/* webpackChunkName: 'profile' */ '@/views/user/UserView.vue'),
+        props: { fromAdmin: true },
+      },
+      {
         path: 'users',
         name: 'UsersAdministration',
         component: AdminUsers,
       },
     ],
+  },
+  {
+    path: '/about',
+    name: 'About',
+    component: AboutView,
   },
   {
     path: '/:pathMatch(.*)*',
@@ -246,18 +299,27 @@ const pathsWithoutAuthentication = [
   '/password-reset/request',
   '/password-reset/sent',
   '/register',
+  '/account-confirmation',
+  '/account-confirmation/resend',
+  '/account-confirmation/email-sent',
 ]
+
+const pathsWithoutChecks = ['/email-update', '/about']
 
 router.beforeEach((to, from, next) => {
   store
     .dispatch(AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER)
     .then(() => {
+      if (pathsWithoutChecks.includes(to.path)) {
+        return next()
+      }
       if (
         store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED] &&
         pathsWithoutAuthentication.includes(to.path)
       ) {
         return next('/')
-      } else if (
+      }
+      if (
         !store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED] &&
         !pathsWithoutAuthentication.includes(to.path)
       ) {

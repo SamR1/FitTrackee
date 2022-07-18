@@ -58,7 +58,7 @@
 
   import { htmlLegendPlugin } from '@/components/Workout/WorkoutDetail/WorkoutChart/legend'
   import { TUnit } from '@/types/units'
-  import { IUserProfile } from '@/types/user'
+  import { IAuthUserProfile } from '@/types/user'
   import {
     IWorkoutChartData,
     IWorkoutData,
@@ -68,7 +68,7 @@
   import { getDatasets } from '@/utils/workouts'
 
   interface Props {
-    authUser: IUserProfile
+    authUser: IAuthUserProfile
     workoutData: IWorkoutData
   }
   const props = defineProps<Props>()
@@ -77,14 +77,14 @@
 
   const { t } = useI18n()
 
-  let displayDistance = ref(true)
-  let beginElevationAtZero = ref(true)
+  const displayDistance = ref(true)
+  const beginElevationAtZero = ref(true)
   const datasets: ComputedRef<IWorkoutChartData> = computed(() =>
     getDatasets(props.workoutData.chartData, t, props.authUser.imperial_units)
   )
   const fromKmUnit = getUnitTo('km')
   const fromMUnit = getUnitTo('m')
-  let chartData: ComputedRef<ChartData<'line'>> = computed(() => ({
+  const chartData: ComputedRef<ChartData<'line'>> = computed(() => ({
     labels: displayDistance.value
       ? datasets.value.distance_labels
       : datasets.value.duration_labels,

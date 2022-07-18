@@ -19,7 +19,11 @@
       <i class="fa fa-chevron-up" aria-hidden="true"></i>
     </div>
   </div>
-  <Footer v-if="appConfig" :version="appConfig ? appConfig.version : ''" />
+  <Footer
+    v-if="appConfig"
+    :version="appConfig ? appConfig.version : ''"
+    :adminContact="appConfig.admin_contact"
+  />
 </template>
 
 <script setup lang="ts">
@@ -31,6 +35,7 @@
   import { ROOT_STORE } from '@/store/constants'
   import { TAppConfig } from '@/types/application'
   import { useStore } from '@/use/useStore'
+  import { localeFromLanguage } from '@/utils/locales'
 
   const store = useStore()
 
@@ -43,7 +48,10 @@
   const hideScrollBar = ref(false)
   const displayScrollButton = ref(false)
 
-  onBeforeMount(() => store.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_CONFIG))
+  onBeforeMount(() => {
+    initLanguage()
+    store.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_CONFIG)
+  })
   onMounted(() => scroll())
 
   function updateHideScrollBar(isMenuOpen: boolean) {
@@ -57,7 +65,7 @@
   }
   function scroll() {
     window.onscroll = () => {
-      let bottom = document.querySelector('#bottom')
+      const bottom = document.querySelector('#bottom')
       displayScrollButton.value = bottom !== null && isScrolledToBottom(bottom)
     }
   }
@@ -69,6 +77,18 @@
     setTimeout(() => {
       displayScrollButton.value = false
     }, 300)
+  }
+  function initLanguage() {
+    let language = 'en'
+    try {
+      const navigatorLanguage = navigator.language.split('-')[0]
+      if (navigatorLanguage in localeFromLanguage) {
+        language = navigatorLanguage
+      }
+    } catch (e) {
+      language = 'en'
+    }
+    store.dispatch(ROOT_STORE.ACTIONS.UPDATE_APPLICATION_LANGUAGE, language)
   }
 </script>
 

@@ -5,14 +5,14 @@ from uuid import uuid4
 
 from flask import Flask
 
-from fittrackee.workouts.utils_id import encode_uuid
+from fittrackee.workouts.utils.short_id import encode_uuid
 
 
 def get_random_short_id() -> str:
     return encode_uuid(uuid4())
 
 
-def post_an_workout(
+def post_a_workout(
     app: Flask, gpx_file: str, notes: Optional[str] = None
 ) -> Tuple[str, str]:
     client = app.test_client()

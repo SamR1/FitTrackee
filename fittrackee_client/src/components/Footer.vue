@@ -7,21 +7,13 @@
       </div>
       <div class="footer-item bullet">•</div>
       <div class="footer-item">
-        <a
-          href="https://github.com/SamR1/FitTrackee"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          source code
-        </a>
-        under
-        <a
-          href="https://choosealicense.com/licenses/agpl-3.0/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          AGPLv3 </a
-        >license
+        <router-link to="/about">
+          {{ $t('common.ABOUT') }}
+        </router-link>
+      </div>
+      <div class="footer-item bullet" v-if="adminContact">•</div>
+      <div class="footer-item" v-if="adminContact">
+        <a :href="`mailto:${adminContact}`">{{ $t('common.CONTACT') }}</a>
       </div>
       <div class="footer-item bullet">•</div>
       <div class="footer-item">
@@ -30,7 +22,7 @@
           target="_blank"
           rel="noopener noreferrer"
         >
-          documentation
+          {{ $t('common.DOCUMENTATION') }}
         </a>
       </div>
     </div>
@@ -42,10 +34,11 @@
 
   interface Props {
     version: string
+    adminContact?: string
   }
   const props = defineProps<Props>()
 
-  const { version } = toRefs(props)
+  const { adminContact, version } = toRefs(props)
 </script>
 
 <style scoped lang="scss">

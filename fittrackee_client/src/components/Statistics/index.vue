@@ -41,7 +41,7 @@
   const { t } = useI18n()
 
   const { sports, user } = toRefs(props)
-  let selectedTimeFrame = ref('month')
+  const selectedTimeFrame = ref('month')
   const chartParams: Ref<IStatisticsDateParams> = ref(
     getChartParams(selectedTimeFrame.value)
   )

@@ -6,45 +6,21 @@ from fittrackee import db
 from fittrackee.users.models import User, UserSportPreference
 from fittrackee.workouts.models import Sport, Workout
 
-from ..api_test_case import ApiTestCaseMixin
-
-expected_sport_1_cycling_result = {
-    'id': 1,
-    'label': 'Cycling',
-    'is_active': True,
-    'is_active_for_user': True,
-    'color': None,
-    'stopped_speed_threshold': 1,
-}
-expected_sport_1_cycling_admin_result = expected_sport_1_cycling_result.copy()
-expected_sport_1_cycling_admin_result['has_workouts'] = False
-
-expected_sport_2_running_result = {
-    'id': 2,
-    'label': 'Running',
-    'is_active': True,
-    'is_active_for_user': True,
-    'color': None,
-    'stopped_speed_threshold': 0.1,
-}
-expected_sport_2_running_admin_result = expected_sport_2_running_result.copy()
-expected_sport_2_running_admin_result['has_workouts'] = False
-
-expected_sport_1_cycling_inactive_result = {
-    'id': 1,
-    'label': 'Cycling',
-    'is_active': False,
-    'is_active_for_user': False,
-    'color': None,
-    'stopped_speed_threshold': 1,
-}
-expected_sport_1_cycling_inactive_admin_result = (
-    expected_sport_1_cycling_inactive_result.copy()
-)
-expected_sport_1_cycling_inactive_admin_result['has_workouts'] = False
+from ..mixins import ApiTestCaseMixin
+from ..utils import jsonify_dict
 
 
 class TestGetSports(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self,
+        app: Flask,
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get('/api/sports')
+
+        self.assert_401(response)
+
     def test_it_gets_all_sports(
         self,
         app: Flask,
@@ -52,7 +28,9 @@ class TestGetSports(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         sport_2_running: Sport,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/sports',
@@ -63,8 +41,12 @@ class TestGetSports(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['sports']) == 2
-        assert data['data']['sports'][0] == expected_sport_1_cycling_result
-        assert data['data']['sports'][1] == expected_sport_2_running_result
+        assert data['data']['sports'][0] == jsonify_dict(
+            sport_1_cycling.serialize()
+        )
+        assert data['data']['sports'][1] == jsonify_dict(
+            sport_2_running.serialize()
+        )
 
     def test_it_gets_all_sports_with_inactive_one(
         self,
@@ -73,7 +55,9 @@ class TestGetSports(ApiTestCaseMixin):
         sport_1_cycling_inactive: Sport,
         sport_2_running: Sport,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/sports',
@@ -84,11 +68,12 @@ class TestGetSports(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['sports']) == 2
-        assert (
-            data['data']['sports'][0]
-            == expected_sport_1_cycling_inactive_result
+        assert data['data']['sports'][0] == jsonify_dict(
+            sport_1_cycling_inactive.serialize()
         )
-        assert data['data']['sports'][1] == expected_sport_2_running_result
+        assert data['data']['sports'][1] == jsonify_dict(
+            sport_2_running.serialize()
+        )
 
     def test_it_gets_all_sports_with_admin_rights(
         self,
@@ -98,7 +83,7 @@ class TestGetSports(ApiTestCaseMixin):
         sport_2_running: Sport,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -110,12 +95,11 @@ class TestGetSports(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['sports']) == 2
-        assert (
-            data['data']['sports'][0]
-            == expected_sport_1_cycling_inactive_admin_result
+        assert data['data']['sports'][0] == jsonify_dict(
+            sport_1_cycling_inactive.serialize(is_admin=True)
         )
-        assert (
-            data['data']['sports'][1] == expected_sport_2_running_admin_result
+        assert data['data']['sports'][1] == jsonify_dict(
+            sport_2_running.serialize(is_admin=True)
         )
 
     def test_it_gets_sports_with_auth_user_preferences(
@@ -132,7 +116,7 @@ class TestGetSports(ApiTestCaseMixin):
         db.session.commit()
 
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -144,11 +128,14 @@ class TestGetSports(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['sports']) == 2
-        assert data['data']['sports'][0]['color'] == '#000000'
-        assert data['data']['sports'][0]['stopped_speed_threshold'] == 0.5
-        assert data['data']['sports'][0]['is_active_for_user'] is False
-        assert (
-            data['data']['sports'][1] == expected_sport_2_running_admin_result
+        assert data['data']['sports'][0] == jsonify_dict(
+            sport_1_cycling.serialize(
+                is_admin=True,
+                sport_preferences=user_admin_sport_1_preference.serialize(),
+            )
+        )
+        assert data['data']['sports'][1] == jsonify_dict(
+            sport_2_running.serialize(is_admin=True)
         )
 
 
@@ -156,7 +143,9 @@ class TestGetSport(ApiTestCaseMixin):
     def test_it_gets_a_sport(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/sports/1',
@@ -167,7 +156,9 @@ class TestGetSport(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['sports']) == 1
-        assert data['data']['sports'][0] == expected_sport_1_cycling_result
+        assert data['data']['sports'][0] == jsonify_dict(
+            sport_1_cycling.serialize()
+        )
 
     def test_it_gets_a_sport_with_preferences(
         self,
@@ -176,7 +167,9 @@ class TestGetSport(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         user_sport_1_preference: UserSportPreference,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/sports/1',
@@ -187,27 +180,33 @@ class TestGetSport(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['sports']) == 1
-        assert data['data']['sports'][0] == expected_sport_1_cycling_result
+        assert data['data']['sports'][0] == jsonify_dict(
+            sport_1_cycling.serialize(
+                sport_preferences=user_sport_1_preference.serialize()
+            )
+        )
 
     def test_it_returns_404_if_sport_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/sports/1',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
+        data = self.assert_404(response)
         assert len(data['data']['sports']) == 0
 
     def test_it_gets_a_inactive_sport(
         self, app: Flask, user_1: User, sport_1_cycling_inactive: Sport
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/sports/1',
@@ -218,16 +217,15 @@ class TestGetSport(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['sports']) == 1
-        assert (
-            data['data']['sports'][0]
-            == expected_sport_1_cycling_inactive_result
+        assert data['data']['sports'][0] == jsonify_dict(
+            sport_1_cycling_inactive.serialize()
         )
 
     def test_it_get_an_inactive_sport_with_admin_rights(
         self, app: Flask, user_1_admin: User, sport_1_cycling_inactive: Sport
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -239,9 +237,8 @@ class TestGetSport(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['sports']) == 1
-        assert (
-            data['data']['sports'][0]
-            == expected_sport_1_cycling_inactive_admin_result
+        assert data['data']['sports'][0] == jsonify_dict(
+            sport_1_cycling_inactive.serialize(is_admin=True)
         )
 
 
@@ -250,7 +247,7 @@ class TestUpdateSport(ApiTestCaseMixin):
         self, app: Flask, user_1_admin: User, sport_1_cycling: Sport
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -273,7 +270,7 @@ class TestUpdateSport(ApiTestCaseMixin):
     ) -> None:
         sport_1_cycling.is_active = False
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -299,7 +296,7 @@ class TestUpdateSport(ApiTestCaseMixin):
         workout_cycling_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -326,7 +323,7 @@ class TestUpdateSport(ApiTestCaseMixin):
     ) -> None:
         sport_1_cycling.is_active = False
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -352,7 +349,7 @@ class TestUpdateSport(ApiTestCaseMixin):
         user_admin_sport_1_preference: UserSportPreference,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -368,7 +365,6 @@ class TestUpdateSport(ApiTestCaseMixin):
         assert len(data['data']['sports']) == 1
         assert data['data']['sports'][0]['is_active'] is False
         assert data['data']['sports'][0]['is_active_for_user'] is False
-        assert data['data']['sports'][0]['is_active_for_user'] is False
         assert data['data']['sports'][0]['has_workouts'] is False
 
     def test_it_enables_a_sport_with_preferences(
@@ -380,7 +376,7 @@ class TestUpdateSport(ApiTestCaseMixin):
     ) -> None:
         sport_1_cycling.is_active = False
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -401,7 +397,9 @@ class TestUpdateSport(ApiTestCaseMixin):
     def test_returns_error_if_user_has_no_admin_rights(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.patch(
             '/api/sports/1',
@@ -410,17 +408,13 @@ class TestUpdateSport(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 403
-        assert 'success' not in data['status']
-        assert 'error' in data['status']
-        assert 'you do not have permissions' in data['message']
+        self.assert_403(response)
 
     def test_returns_error_if_payload_is_invalid(
         self, app: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -430,16 +424,13 @@ class TestUpdateSport(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 400
-        assert 'error' in data['status']
-        assert 'invalid payload' in data['message']
+        self.assert_400(response)
 
     def test_it_returns_error_if_sport_does_not_exist(
         self, app: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, as_admin=True
+            app, user_1_admin.email
         )
 
         response = client.patch(
@@ -449,7 +440,5 @@ class TestUpdateSport(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 404
-        assert 'not found' in data['status']
+        data = self.assert_404(response)
         assert len(data['data']['sports']) == 0

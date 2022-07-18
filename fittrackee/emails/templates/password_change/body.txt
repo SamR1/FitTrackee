@@ -1,0 +1,4 @@
+{% extends "layout.txt" %}{% block content %}{{ _('The password for your FitTrackee account has been changed.') }}
+
+{% if operating_system and browser_name %}{{ _('For security, this request was received from a %(operating_system)s device using %(browser_name)s.', operating_system=operating_system, browser_name=browser_name) }}
+{% endif %}{{ _("If this password change wasn't initiated by you, please change your password immediately or contact your administrator if your account is locked.") }}{% endblock %}

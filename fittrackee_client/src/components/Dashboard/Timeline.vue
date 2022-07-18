@@ -53,7 +53,7 @@
   const store = useStore()
 
   const { sports, user } = toRefs(props)
-  let page = ref(1)
+  const page = ref(1)
   const per_page = 5
   const initWorkoutsCount =
     props.user.nb_workouts >= per_page ? per_page : props.user.nb_workouts

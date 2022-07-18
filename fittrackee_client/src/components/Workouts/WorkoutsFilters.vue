@@ -165,12 +165,12 @@
   import { LocationQuery, useRoute, useRouter } from 'vue-router'
 
   import { ISport } from '@/types/sports'
-  import { IUserProfile } from '@/types/user'
+  import { IAuthUserProfile } from '@/types/user'
   import { translateSports } from '@/utils/sports'
   import { units } from '@/utils/units'
 
   interface Props {
-    authUser: IUserProfile
+    authUser: IAuthUserProfile
     sports: ISport[]
   }
   const props = defineProps<Props>()

@@ -96,7 +96,7 @@
     TStatisticsFromApi,
     IStatisticsParams,
   } from '@/types/statistics'
-  import { IUserProfile } from '@/types/user'
+  import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatStats } from '@/utils/statistics'
 
@@ -111,7 +111,7 @@
         required: true,
       },
       user: {
-        type: Object as PropType<IUserProfile>,
+        type: Object as PropType<IAuthUserProfile>,
         required: true,
       },
       chartParams: {
@@ -134,7 +134,7 @@
     setup(props) {
       const store = useStore()
 
-      let displayedData: Ref<TStatisticsDatasetKeys> = ref('total_distance')
+      const displayedData: Ref<TStatisticsDatasetKeys> = ref('total_distance')
       const statistics: ComputedRef<TStatisticsFromApi> = computed(
         () => store.getters[STATS_STORE.GETTERS.USER_STATS]
       )
@@ -169,7 +169,7 @@
       }
       function getApiParams(
         chartParams: IStatisticsDateParams,
-        user: IUserProfile
+        user: IAuthUserProfile
       ): IStatisticsParams {
         return {
           from: format(chartParams.start, 'yyyy-MM-dd'),

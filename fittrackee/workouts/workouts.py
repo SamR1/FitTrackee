@@ -13,7 +13,7 @@ from flask import (
     send_from_directory,
 )
 from sqlalchemy import exc
-from werkzeug.exceptions import RequestEntityTooLarge
+from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db
@@ -25,15 +25,22 @@ from fittrackee.responses import (
     InvalidPayloadErrorResponse,
     NotFoundErrorResponse,
     PayloadTooLargeErrorResponse,
+    get_error_response_if_file_is_invalid,
     handle_error_and_return_response,
 )
 from fittrackee.users.decorators import authenticate
 from fittrackee.users.models import User
-from fittrackee.users.utils import can_view_workout
-from fittrackee.utils import verify_extension_and_size
 
 from .models import Workout
-from .utils import (
+from .utils.convert import convert_in_duration
+from .utils.gpx import (
+    WorkoutGPXException,
+    extract_segment_from_gpx_file,
+    get_chart_data,
+)
+from .utils.short_id import decode_short_id
+from .utils.visibility import can_view_workout
+from .utils.workouts import (
     WorkoutException,
     create_workout,
     edit_workout,
@@ -41,13 +48,6 @@ from .utils import (
     get_datetime_from_request_args,
     process_files,
 )
-from .utils_format import convert_in_duration
-from .utils_gpx import (
-    WorkoutGPXException,
-    extract_segment_from_gpx_file,
-    get_chart_data,
-)
-from .utils_id import decode_short_id
 
 workouts_blueprint = Blueprint('workouts', __name__)
 
@@ -303,7 +303,7 @@ def get_workout(
     auth_user: User, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get an workout
+    Get a workout
 
     **Example request**:
 
@@ -405,7 +405,7 @@ def get_workout_data(
     data_type: str,
     segment_id: Optional[int] = None,
 ) -> Union[Dict, HttpResponse]:
-    """Get data from an workout gpx file"""
+    """Get data from a workout gpx file"""
     workout_uuid = decode_short_id(workout_short_id)
     workout = Workout.query.filter_by(uuid=workout_uuid).first()
     if not workout:
@@ -467,7 +467,7 @@ def get_workout_gpx(
     auth_user: User, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get gpx file for an workout displayed on map with Leaflet
+    Get gpx file for a workout displayed on map with Leaflet
 
     **Example request**:
 
@@ -517,7 +517,7 @@ def get_workout_chart_data(
     auth_user: User, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get chart data from an workout gpx file, to display it with Recharts
+    Get chart data from a workout gpx file, to display it with Recharts
 
     **Example request**:
 
@@ -587,7 +587,7 @@ def get_segment_gpx(
     auth_user: User, workout_short_id: str, segment_id: int
 ) -> Union[Dict, HttpResponse]:
     """
-    Get gpx file for an workout segment displayed on map with Leaflet
+    Get gpx file for a workout segment displayed on map with Leaflet
 
     **Example request**:
 
@@ -639,7 +639,7 @@ def get_segment_chart_data(
     auth_user: User, workout_short_id: str, segment_id: int
 ) -> Union[Dict, HttpResponse]:
     """
-    Get chart data from an workout gpx file, to display it with Recharts
+    Get chart data from a workout gpx file, to display it with Recharts
 
     **Example request**:
 
@@ -798,6 +798,8 @@ def get_map(map_id: int) -> Union[HttpResponse, Response]:
             current_app.config['UPLOAD_FOLDER'],
             workout.map,
         )
+    except NotFound:
+        return NotFoundErrorResponse('Map file does not exist.')
     except Exception as e:
         return handle_error_and_return_response(e)
 
@@ -851,7 +853,7 @@ def get_map_tile(s: str, z: str, x: str, y: str) -> Tuple[Response, int]:
 @authenticate
 def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    Post an workout with a gpx file
+    Post a workout with a gpx file
 
     **Example request**:
 
@@ -961,7 +963,9 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     """
     try:
-        error_response = verify_extension_and_size('workout', request)
+        error_response = get_error_response_if_file_is_invalid(
+            'workout', request
+        )
     except RequestEntityTooLarge as e:
         appLog.error(e)
         return PayloadTooLargeErrorResponse(
@@ -1019,7 +1023,7 @@ def post_workout_no_gpx(
     auth_user: User,
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    Post an workout without gpx file
+    Post a workout without gpx file
 
     **Example request**:
 
@@ -1109,7 +1113,8 @@ def post_workout_no_gpx(
           "status": "success"
         }
 
-    :<json string workout_date: workout date  (format: ``%Y-%m-%d %H:%M``)
+    :<json string workout_date: workout date, in user timezone
+        (format: ``%Y-%m-%d %H:%M``)
     :<json float distance: workout distance in km
     :<json integer duration: workout duration in seconds
     :<json string notes: notes (not mandatory)
@@ -1167,7 +1172,7 @@ def update_workout(
     auth_user: User, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Update an workout
+    Update a workout
 
     **Example request**:
 
@@ -1259,7 +1264,8 @@ def update_workout(
 
     :param string workout_short_id: workout short id
 
-    :<json string workout_date: workout date  (format: ``%Y-%m-%d %H:%M``)
+    :<json string workout_date: workout date in user timezone
+        (format: ``%Y-%m-%d %H:%M``)
         (only for workout without gpx)
     :<json float distance: workout distance in km
         (only for workout without gpx)
@@ -1314,7 +1320,7 @@ def delete_workout(
     auth_user: User, workout_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    Delete an workout
+    Delete a workout
 
     **Example request**:
 

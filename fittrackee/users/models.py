@@ -11,7 +11,9 @@ from sqlalchemy.sql.expression import select
 from fittrackee import bcrypt, db
 from fittrackee.workouts.models import Workout
 
-from .utils_token import decode_user_token, get_user_token
+from .exceptions import UserNotFoundException
+from .roles import UserRole
+from .utils.token import decode_user_token, get_user_token
 
 BaseModel: DeclarativeMeta = db.Model
 
@@ -19,8 +21,8 @@ BaseModel: DeclarativeMeta = db.Model
 class User(BaseModel):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    username = db.Column(db.String(20), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
+    username = db.Column(db.String(255), unique=True, nullable=False)
+    email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
     admin = db.Column(db.Boolean, default=False, nullable=False)
@@ -32,7 +34,7 @@ class User(BaseModel):
     picture = db.Column(db.String(255), nullable=True)
     timezone = db.Column(db.String(50), nullable=True)
     # does the week start Monday?
-    weekm = db.Column(db.Boolean(50), default=False, nullable=False)
+    weekm = db.Column(db.Boolean, default=False, nullable=False)
     workouts = db.relationship(
         'Workout',
         lazy=True,
@@ -45,6 +47,9 @@ class User(BaseModel):
     )
     language = db.Column(db.String(50), nullable=True)
     imperial_units = db.Column(db.Boolean, default=False, nullable=False)
+    is_active = db.Column(db.Boolean, default=False, nullable=False)
+    email_to_confirm = db.Column(db.String(255), nullable=True)
+    confirmation_token = db.Column(db.String(255), nullable=True)
 
     def __repr__(self) -> str:
         return f'<User {self.username!r}>'
@@ -54,14 +59,16 @@ class User(BaseModel):
         username: str,
         email: str,
         password: str,
-        created_at: Optional[datetime] = datetime.utcnow(),
+        created_at: Optional[datetime] = None,
     ) -> None:
         self.username = username
         self.email = email
         self.password = bcrypt.generate_password_hash(
             password, current_app.config.get('BCRYPT_LOG_ROUNDS')
         ).decode()
-        self.created_at = created_at
+        self.created_at = (
+            datetime.utcnow() if created_at is None else created_at
+        )
 
     @staticmethod
     def encode_auth_token(user_id: int) -> str:
@@ -107,7 +114,18 @@ class User(BaseModel):
             .label('workouts_count')
         )
 
-    def serialize(self) -> Dict:
+    def serialize(self, current_user: 'User') -> Dict:
+        role = (
+            UserRole.AUTH_USER
+            if current_user.id == self.id
+            else UserRole.ADMIN
+            if current_user.admin
+            else UserRole.USER
+        )
+
+        if role == UserRole.USER:
+            raise UserNotFoundException()
+
         sports = []
         total = (0, '0:00:00')
         if self.workouts_count > 0:  # type: ignore
@@ -125,22 +143,21 @@ class User(BaseModel):
                 .filter(Workout.user_id == self.id)
                 .first()
             )
-        return {
-            'username': self.username,
-            'email': self.email,
-            'created_at': self.created_at,
+
+        serialized_user = {
             'admin': self.admin,
-            'first_name': self.first_name,
-            'last_name': self.last_name,
             'bio': self.bio,
-            'location': self.location,
             'birth_date': self.birth_date,
-            'picture': self.picture is not None,
-            'timezone': self.timezone,
-            'weekm': self.weekm,
-            'language': self.language,
+            'created_at': self.created_at,
+            'email': self.email,
+            'email_to_confirm': self.email_to_confirm,
+            'first_name': self.first_name,
+            'is_active': self.is_active,
+            'last_name': self.last_name,
+            'location': self.location,
             'nb_sports': len(sports),
             'nb_workouts': self.workouts_count,
+            'picture': self.picture is not None,
             'records': [record.serialize() for record in self.records],
             'sports_list': [
                 sport for sportslist in sports for sport in sportslist
@@ -148,8 +165,20 @@ class User(BaseModel):
             'total_distance': float(total[0]),
             'total_duration': str(total[1]),
             'total_ascent': str(total[2]),
-            'imperial_units': self.imperial_units,
+            'username': self.username,
         }
+        if role == UserRole.AUTH_USER:
+            serialized_user = {
+                **serialized_user,
+                **{
+                    'imperial_units': self.imperial_units,
+                    'language': self.language,
+                    'timezone': self.timezone,
+                    'weekm': self.weekm,
+                },
+            }
+
+        return serialized_user
 
 
 class UserSportPreference(BaseModel):

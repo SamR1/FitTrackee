@@ -1,7 +1,9 @@
 import os
+import shutil
 from typing import Generator, Optional, Union
 
 import pytest
+from flask import current_app
 
 from fittrackee import create_app, db
 from fittrackee.application.models import AppConfig
@@ -65,6 +67,11 @@ def get_app(
             # FATAL: remaining connection slots are reserved for
             # non-replication superuser connections
             db.engine.dispose()
+            # remove all temp files like gpx files
+            shutil.rmtree(
+                current_app.config['UPLOAD_FOLDER'],
+                ignore_errors=True,
+            )
             return app
 
 
@@ -74,6 +81,8 @@ def app(monkeypatch: pytest.MonkeyPatch) -> Generator:
     monkeypatch.setenv('WEATHER_API_KEY', '')
     if os.getenv('TILE_SERVER_URL'):
         monkeypatch.delenv('TILE_SERVER_URL')
+    if os.getenv('STATICMAP_SUBDOMAINS'):
+        monkeypatch.delenv('STATICMAP_SUBDOMAINS')
     if os.getenv('MAP_ATTRIBUTION'):
         monkeypatch.delenv('MAP_ATTRIBUTION')
     if os.getenv('DEFAULT_STATICMAP'):
@@ -143,6 +152,12 @@ def app_tls(monkeypatch: pytest.MonkeyPatch) -> Generator:
 @pytest.fixture
 def app_wo_email_auth(monkeypatch: pytest.MonkeyPatch) -> Generator:
     monkeypatch.setenv('EMAIL_URL', 'smtp://0.0.0.0:1025')
+    yield from get_app(with_config=True)
+
+
+@pytest.fixture
+def app_wo_email_activation(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv('EMAIL_URL', '')
     yield from get_app(with_config=True)
 
 

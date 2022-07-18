@@ -1,5 +1,10 @@
 <template>
-  <div id="user-auth-form">
+  <div
+    id="user-auth-form"
+    :class="`${
+      ['reset', 'reset-request'].includes(action) ? action : 'user-form'
+    }`"
+  >
     <div id="user-form">
       <div
         class="form-box"
@@ -11,6 +16,26 @@
           message="user.REGISTER_DISABLED"
           v-if="registration_disabled"
         />
+        <AlertMessage
+          message="admin.EMAIL_SENDING_DISABLED"
+          v-if="sendingEmailDisabled"
+        />
+        <div
+          class="info-box success-message"
+          v-if="isSuccess || isRegistrationSuccess"
+        >
+          {{
+            $t(
+              `user.PROFILE.SUCCESSFUL_${
+                isRegistrationSuccess
+                  ? `REGISTRATION${
+                      appConfig.is_email_sending_enabled ? '_WITH_EMAIL' : ''
+                    }`
+                  : 'UPDATE'
+              }`
+            )
+          }}
+        </div>
         <form
           :class="{ errors: formErrors }"
           @submit.prevent="onSubmit(action)"
@@ -23,57 +48,61 @@
               required
               pattern="[a-zA-Z0-9_]+"
               minlength="3"
-              maxlength="12"
+              maxlength="30"
               @invalid="invalidateForm"
               v-model="formData.username"
               :placeholder="$t('user.USERNAME')"
             />
+            <div v-if="action === 'register'" class="form-info">
+              <i class="fa fa-info-circle" aria-hidden="true" />
+              {{ $t('user.USERNAME_INFO') }}
+            </div>
             <input
               v-if="action !== 'reset'"
               id="email"
-              :disabled="registration_disabled"
+              :disabled="registration_disabled || sendingEmailDisabled"
               required
               @invalid="invalidateForm"
               type="email"
               v-model="formData.email"
-              :placeholder="
-                action === 'reset-request'
-                  ? $t('user.ENTER_EMAIL')
-                  : $t('user.EMAIL')
-              "
+              :placeholder="$t('user.EMAIL')"
             />
-            <input
-              v-if="action !== 'reset-request'"
-              id="password"
+            <div
+              v-if="
+                [
+                  'reset-request',
+                  'register',
+                  'account-confirmation-resend',
+                ].includes(action)
+              "
+              class="form-info"
+            >
+              <i class="fa fa-info-circle" aria-hidden="true" />
+              {{ $t('user.EMAIL_INFO') }}
+            </div>
+            <PasswordInput
+              v-if="
+                !['account-confirmation-resend', 'reset-request'].includes(
+                  action
+                )
+              "
               :disabled="registration_disabled"
-              required
-              @invalid="invalidateForm"
-              type="password"
-              minlength="8"
-              v-model="formData.password"
+              :required="true"
               :placeholder="
                 action === 'reset'
                   ? $t('user.ENTER_PASSWORD')
                   : $t('user.PASSWORD')
               "
-            />
-            <input
-              v-if="['register', 'reset'].includes(action)"
-              id="confirm-password"
-              :disabled="registration_disabled"
-              type="password"
-              minlength="8"
-              required
-              @invalid="invalidateForm"
-              v-model="formData.password_conf"
-              :placeholder="
-                action === 'reset'
-                  ? $t('user.ENTER_PASSWORD_CONFIRMATION')
-                  : $t('user.PASSWORD_CONFIRM')
-              "
+              :password="formData.password"
+              :checkStrength="['reset', 'register'].includes(action)"
+              @updatePassword="updatePassword"
+              @passwordError="invalidateForm"
             />
           </div>
-          <button type="submit" :disabled="registration_disabled">
+          <button
+            type="submit"
+            :disabled="registration_disabled || sendingEmailDisabled"
+          >
             {{ $t(buttonText) }}
           </button>
         </form>
@@ -81,8 +110,12 @@
           <router-link class="links" to="/register">
             {{ $t('user.REGISTER') }}
           </router-link>
-          -
-          <router-link class="links" to="/password-reset/request">
+          <span v-if="appConfig.is_email_sending_enabled">-</span>
+          <router-link
+            v-if="appConfig.is_email_sending_enabled"
+            class="links"
+            to="/password-reset/request"
+          >
             {{ $t('user.PASSWORD_FORGOTTEN') }}
           </router-link>
         </div>
@@ -90,6 +123,16 @@
           <span class="account">{{ $t('user.ALREADY_HAVE_ACCOUNT') }}</span>
           <router-link class="links" to="/login">
             {{ $t('user.LOGIN') }}
+          </router-link>
+        </div>
+        <div
+          v-if="
+            ['login', 'register'].includes(action) &&
+            appConfig.is_email_sending_enabled
+          "
+        >
+          <router-link class="links" to="/account-confirmation/resend">
+            {{ $t('user.ACCOUNT_CONFIRMATION_NOT_RECEIVED') }}
           </router-link>
         </div>
         <ErrorMessage :message="errorMessages" v-if="errorMessages" />
@@ -110,6 +153,7 @@
   } from 'vue'
   import { useRoute } from 'vue-router'
 
+  import PasswordInput from '@/components/Common/PasswordInput.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import { TAppConfig } from '@/types/application'
   import { ILoginRegisterFormData } from '@/types/user'
@@ -131,7 +175,6 @@
     username: '',
     email: '',
     password: '',
-    password_conf: '',
   })
   const buttonText: ComputedRef<string> = computed(() =>
     getButtonText(props.action)
@@ -139,12 +182,26 @@
   const errorMessages: ComputedRef<string | string[] | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
   )
+  const isRegistrationSuccess: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.IS_REGISTRATION_SUCCESS]
+  )
+  const isSuccess: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUCCESS]
+  )
   const appConfig: ComputedRef<TAppConfig> = computed(
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
+  )
+  const language: ComputedRef<string> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
   const registration_disabled: ComputedRef<boolean> = computed(
     () =>
       props.action === 'register' && !appConfig.value.is_registration_enabled
+  )
+  const sendingEmailDisabled: ComputedRef<boolean> = computed(
+    () =>
+      ['reset-request', 'account-confirmation-resend'].includes(props.action) &&
+      !appConfig.value.is_email_sending_enabled
   )
   const formErrors = ref(false)
 
@@ -160,6 +217,9 @@
   function invalidateForm() {
     formErrors.value = true
   }
+  function updatePassword(password: string) {
+    formData.password = password
+  }
   function onSubmit(actionType: string) {
     switch (actionType) {
       case 'reset':
@@ -171,7 +231,6 @@
         }
         return store.dispatch(AUTH_USER_STORE.ACTIONS.RESET_USER_PASSWORD, {
           password: formData.password,
-          password_conf: formData.password_conf,
           token: props.token,
         })
       case 'reset-request':
@@ -181,7 +240,15 @@
             email: formData.email,
           }
         )
+      case 'account-confirmation-resend':
+        return store.dispatch(
+          AUTH_USER_STORE.ACTIONS.RESEND_ACCOUNT_CONFIRMATION_EMAIL,
+          {
+            email: formData.email,
+          }
+        )
       default:
+        formData['language'] = language.value
         store.dispatch(AUTH_USER_STORE.ACTIONS.LOGIN_OR_REGISTER, {
           actionType,
           formData,
@@ -193,13 +260,17 @@
     formData.username = ''
     formData.email = ''
     formData.password = ''
-    formData.password_conf = ''
   }
 
   watch(
     () => route.path,
     async () => {
       store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+      store.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+      store.commit(
+        AUTH_USER_STORE.MUTATIONS.UPDATE_IS_REGISTRATION_SUCCESS,
+        false
+      )
       formErrors.value = false
       resetFormData()
     }
@@ -212,10 +283,6 @@
 
   #user-auth-form {
     display: flex;
-    align-items: center;
-
-    margin: $default-margin 0;
-    height: 100%;
 
     #user-form {
       width: 60%;
@@ -229,7 +296,6 @@
         font-style: italic;
         padding: 0 $default-padding;
       }
-
       button {
         margin: $default-margin;
         border: solid 1px var(--app-color);
@@ -238,16 +304,23 @@
           border-color: var(--disabled-color);
         }
       }
+      .success-message {
+        margin: $default-margin;
+      }
     }
 
     @media screen and (max-width: $medium-limit) {
-      height: auto;
       margin-bottom: 50px;
-
       #user-form {
-        margin-top: $default-margin;
         width: 100%;
       }
+    }
+  }
+
+  .user-form {
+    margin-top: 200px;
+    @media screen and (max-width: $small-limit) {
+      margin-top: $default-margin;
     }
   }
 </style>

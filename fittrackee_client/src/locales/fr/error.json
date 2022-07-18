@@ -4,5 +4,6 @@
   "NOT_FOUND": {
     "PAGE": "Page introuvable",
     "WORKOUT": "Séance introuvable"
-  }
+  },
+  "SOMETHING_WRONG": "Une erreur s'est produite"
 }

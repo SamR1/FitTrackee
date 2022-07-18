@@ -5,7 +5,7 @@ from flask import Flask
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
-from ..api_test_case import ApiTestCaseMixin
+from ..mixins import ApiTestCaseMixin
 
 
 class TestGetRecords(ApiTestCaseMixin):
@@ -19,7 +19,9 @@ class TestGetRecords(ApiTestCaseMixin):
         workout_cycling_user_1: Workout,
         workout_cycling_user_2: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/records',
@@ -92,7 +94,9 @@ class TestGetRecords(ApiTestCaseMixin):
         sport_2_running: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
             '/api/records',
@@ -111,7 +115,9 @@ class TestGetRecords(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         sport_2_running: Sport,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         client.post(
             '/api/workouts/no_gpx',
@@ -141,7 +147,9 @@ class TestGetRecords(ApiTestCaseMixin):
     def test_it_gets_updated_records_after_workouts_post_and_patch(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
         response = client.post(
             '/api/workouts/no_gpx',
             content_type='application/json',
@@ -628,7 +636,9 @@ class TestGetRecords(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         sport_2_running: Sport,
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(app)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.post(
             '/api/workouts/no_gpx',
@@ -877,3 +887,13 @@ class TestGetRecords(ApiTestCaseMixin):
         assert workout_4_short_id == data['data']['records'][7]['workout_id']
         assert 'MS' == data['data']['records'][7]['record_type']
         assert 12.0 == data['data']['records'][7]['value']
+
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self,
+        app: Flask,
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get('/api/records')
+
+        self.assert_401(response)

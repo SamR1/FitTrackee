@@ -1,0 +1,4 @@
+{% extends "layout.txt" %}{% block content %}{{ _('You recently requested to change your email address for your FitTrackee account to:') }} {{ new_email_address }}
+
+{{ _('For security, this request was received from a %(operating_system)s device using %(browser_name)s.', operating_system=operating_system, browser_name=browser_name) }}
+{{ _("If this email change wasn't initiated by you, please change your password immediately or contact your administrator if your account is locked.") }}{% endblock %}

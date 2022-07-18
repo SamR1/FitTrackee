@@ -33,7 +33,7 @@
   import CalendarHeader from '@/components/Dashboard/UserCalendar/CalendarHeader.vue'
   import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
-  import { IUserProfile } from '@/types/user'
+  import { IAuthUserProfile } from '@/types/user'
   import { IWorkout, TWorkoutsPayload } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getCalendarStartAndEnd } from '@/utils/dates'
@@ -41,7 +41,7 @@
 
   interface Props {
     sports: ISport[]
-    user: IUserProfile
+    user: IAuthUserProfile
   }
   const props = defineProps<Props>()
 
@@ -49,8 +49,8 @@
 
   const { sports, user } = toRefs(props)
   const dateFormat = 'yyyy-MM-dd'
-  let day = ref(new Date())
-  let calendarDates = ref(getCalendarStartAndEnd(day.value, props.user.weekm))
+  const day = ref(new Date())
+  const calendarDates = ref(getCalendarStartAndEnd(day.value, props.user.weekm))
   const calendarWorkouts: ComputedRef<IWorkout[]> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.CALENDAR_WORKOUTS]
   )

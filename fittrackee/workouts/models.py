@@ -12,11 +12,11 @@ from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session, object_session
 from sqlalchemy.types import JSON, Enum
 
-from fittrackee import db
+from fittrackee import appLog, db
+from fittrackee.files import get_absolute_file_path
 
-from .utils_files import get_absolute_file_path
-from .utils_format import convert_in_duration, convert_value_to_integer
-from .utils_id import encode_uuid
+from .utils.convert import convert_in_duration, convert_value_to_integer
+from .utils.short_id import encode_uuid
 
 BaseModel: DeclarativeMeta = db.Model
 record_types = [
@@ -379,9 +379,15 @@ def on_workout_delete(
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session: Session, context: Any) -> None:
         if old_record.map:
-            os.remove(get_absolute_file_path(old_record.map))
+            try:
+                os.remove(get_absolute_file_path(old_record.map))
+            except OSError:
+                appLog.error('map file not found when deleting workout')
         if old_record.gpx:
-            os.remove(get_absolute_file_path(old_record.gpx))
+            try:
+                os.remove(get_absolute_file_path(old_record.gpx))
+            except OSError:
+                appLog.error('gpx file not found when deleting workout')
 
 
 class WorkoutSegment(BaseModel):

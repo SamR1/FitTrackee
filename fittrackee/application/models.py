@@ -23,6 +23,7 @@ class AppConfig(BaseModel):
         db.Integer, default=1048576, nullable=False
     )
     max_zip_file_size = db.Column(db.Integer, default=10485760, nullable=False)
+    admin_contact = db.Column(db.String(255), nullable=True)
 
     @property
     def is_registration_enabled(self) -> bool:
@@ -43,7 +44,9 @@ class AppConfig(BaseModel):
 
     def serialize(self) -> Dict:
         return {
+            'admin_contact': self.admin_contact,
             'gpx_limit_import': self.gpx_limit_import,
+            'is_email_sending_enabled': current_app.config['CAN_SEND_EMAILS'],
             'is_registration_enabled': self.is_registration_enabled,
             'max_single_file_size': self.max_single_file_size,
             'max_zip_file_size': self.max_zip_file_size,

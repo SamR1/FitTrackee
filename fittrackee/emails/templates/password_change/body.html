@@ -1,0 +1,5 @@
+{% extends "layout.html" %}
+{% block title %}{{ _('Password changed') }}{% endblock %}
+{% block preheader %}{{ _('Your password has been changed.') }}{% endblock %}
+{% block content %}<p>{{ _('The password for your FitTrackee account has been changed.') }}</p>{% endblock %}
+{% block not_initiated %}{{ _("If this password change wasn't initiated by you, please change your password immediately or contact your administrator if your account is locked.") }}{% endblock %}

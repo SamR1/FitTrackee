@@ -1,0 +1,7 @@
+{% extends "layout.txt" %}{% block content %}{{ _('You recently requested to change your email address for your FitTrackee account.') }}
+{{ _('Use the link below to confirm this address.') }}
+
+{{ _('Verify your email') }}: {{ email_confirmation_url }}
+
+{% if operating_system and browser_name %}{{ _('For security, this request was received from a %(operating_system)s device using %(browser_name)s.', operating_system=operating_system, browser_name=browser_name) }}
+{% endif %}{{ _("If this email change wasn't initiated by you, please ignore this email.") }}{% endblock %}
