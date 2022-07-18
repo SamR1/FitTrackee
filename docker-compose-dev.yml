@@ -19,7 +19,7 @@ services:
     ports:
       - "5000:5000"
     env_file:
-      - .env.docker
+      - .env
     depends_on:
       - fittrackee-db
       - redis

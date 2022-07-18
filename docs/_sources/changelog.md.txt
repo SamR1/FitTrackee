@@ -1,5 +1,182 @@
 # Change log
 
+## Version 0.6.10 (2022/07/13)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#210](https://github.com/SamR1/FitTrackee/issues/210) - ERROR - could not download 6 tiles  
+  **Note**: for tile server requiring subdomains, see the new environment variable [`STATICMAP_SUBDOMAINS`](https://samr1.github.io/FitTrackee/installation.html#envvar-STATICMAP_SUBDOMAINS)
+
+### Pull Requests
+
+#### Bugs Fixed
+
+* [#209](https://github.com/SamR1/FitTrackee/pull/209) - Incorrect duration with track containing multiple segments
+
+Thanks to @gorgobacka
+
+In this release 1 issue was closed.  
+
+
+## Version 0.6.9 (2022/07/03)
+
+FitTrackee is now available in German (thanks to @gorgobacka).  
+And translations can be updated on Weblate.
+
+### Issues Closed
+
+#### Features
+
+* [#200](https://github.com/SamR1/FitTrackee/issues/200) - Detect browser language to use matching translation if available
+
+#### Bugs Fixed
+
+* [PR#208](https://github.com/SamR1/FitTrackee/pull/208) - fix order on records cards
+* [#201](https://github.com/SamR1/FitTrackee/issues/201) - html lang attribute is not updated when changing language
+
+#### Translations
+
+* [PR#197](https://github.com/SamR1/FitTrackee/pull/197) - Translations update from Weblate (French)
+* [#196](https://github.com/SamR1/FitTrackee/issues/196) - Use translation management tool
+* [#190](https://github.com/SamR1/FitTrackee/issues/190) - Add German translation
+
+In this release 4 issues were closed.  
+
+Thanks to the contributors:
+- @gorgobacka
+- J. Lavoie (from Weblate)
+
+
+## Version 0.6.8 (2022/06/22)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#193](https://github.com/SamR1/FitTrackee/issues/193) - Allow deleting a workout when files are missing
+* [#192](https://github.com/SamR1/FitTrackee/issues/192) - Returns 404 instead of 500 when map file not found
+* [#191](https://github.com/SamR1/FitTrackee/issues/191) - Layout issue on Workouts page
+
+### Misc
+
+* change gpx and map file naming (included in [PR#195](https://github.com/SamR1/FitTrackee/pull/195))  
+  Note: it does not affect previously imported files
+* [cc4287e](https://github.com/SamR1/FitTrackee/commit/cc4287ed327faaba268a0c689841d16a7aecc3fb) - Fix docker env file
+
+In this release 3 issues were closed.  
+
+## Version 0.6.7 (2022/06/11)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#156](https://github.com/SamR1/FitTrackee/issues/156) - Process gpx file with offset
+
+In this release 1 issue was closed.  
+
+
+## Version 0.6.6 (2022/05/29)
+
+### Misc
+
+No new features in this release, only dependencies update and code refacto before introducing new features.
+
+
+## Version 0.6.5 (2022/04/24)
+
+It is now possible to start FitTrackee without a configured SMTP provider (see [documentation](https://samr1.github.io/FitTrackee/installation.html#emails)).
+It reduces pre-requisites for single-user instances.
+
+To manage users, a new [CLI](https://samr1.github.io/FitTrackee/cli.html) is available.
+
+
+### Issues Closed
+
+#### Features
+
+* [#180](https://github.com/SamR1/FitTrackee/issues/180) - allow using FitTrackee without SMTP server
+
+In this release 1 issue was closed.  
+
+
+## Version 0.6.4 (2022/04/23)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#178](https://github.com/SamR1/FitTrackee/issues/178) - cannot send email with TLS
+
+In this release 1 issue was closed.  
+
+
+## Version 0.6.3 (2022/04/09)
+
+### Pull Requests
+
+#### Bugs Fixed
+
+* [#177](https://github.com/SamR1/FitTrackee/pull/177) - Minor fixes 
+  * add missing translation 
+  * fix 'Add Workout' card position on small screens
+
+
+## Version 0.6.2 (2022/04/03)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#175](https://github.com/SamR1/FitTrackee/issues/175) - Distance card on dashboard is not refreshed
+* [#173](https://github.com/SamR1/FitTrackee/issues/173) - link to user profile in workout card is incorrect
+
+In this release 2 issues were closed.  
+
+
+## Version 0.6.1 (2022/03/27)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#171](https://github.com/SamR1/FitTrackee/issues/171) - Stats chart is not updated correctly 
+
+In this release 1 issue was closed.  
+
+
+## Version 0.6.0 (2022/03/27)
+
+This version introduces some changes on [user registration](https://samr1.github.io/FitTrackee/features.html#account-preferences).  
+From now on, a user needs to confirm his account after registration (an email with confirmation instructions is sent after registration).
+
+
+### Issues Closed
+
+#### Features
+
+* [#155](https://github.com/SamR1/FitTrackee/issues/155) -  Improve user registration
+* [#106](https://github.com/SamR1/FitTrackee/issues/106) -  Allow user to update email
+
+#### Bugs Fixed
+
+* [#169](https://github.com/SamR1/FitTrackee/issues/169) -  user picture is not refreshed after update
+
+### Pull Requests
+
+#### Bugs Fixed
+
+* [#161](https://github.com/SamR1/FitTrackee/pull/161) - Minor translation issue on 'Farthest'
+* [#160](https://github.com/SamR1/FitTrackee/pull/160) - Minor translation issue on APP_ERROR
+
+Thanks to @Fmstrat
+
+In this release 3 issues were closed.  
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/installation.html#upgrade))
+
+
 ## Version 0.5.7 (2022/02/13)
 
 This release contains several fixes including security fixes.  

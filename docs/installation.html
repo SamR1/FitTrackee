@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Installation &#8212; FitTrackee 0.5.7
+    <title>Installation &#8212; FitTrackee 0.6.10
  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css" />
@@ -13,10 +13,11 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="API documentation" href="api/index.html" />
+    <link rel="next" title="Command line interface" href="cli.html" />
     <link rel="prev" title="Features" href="features.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -40,7 +41,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.5.7
+        <span class="navbar-text navbar-version pull-left"><b>0.6.10
 </b></span>
       </div>
 
@@ -61,6 +62,7 @@
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Command line interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/index.html">API documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting/index.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Change log</a></li>
@@ -123,7 +125,7 @@
     </a>
   </li>
   <li>
-    <a href="api/index.html" title="Next Chapter: API documentation"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">API documentation &raquo;</span>
+    <a href="cli.html" title="Next Chapter: Command line interface"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Command line ... &raquo;</span>
     </a>
   </li>
               
@@ -158,7 +160,7 @@
     <div class="body col-md-12 content" role="main">
       
   <section id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h1>
 <p>This application is written in Python (API) and Typescript (client):</p>
 <ul class="simple">
 <li><dl class="simple">
@@ -182,16 +184,18 @@
 </dl>
 </li>
 </ul>
-<p>Logo, sports and weather icons are made by <a class="reference external" href="https://www.freepik.com/">Freepik</a> from <a class="reference external" href="https://www.flaticon.com/">www.flaticon.com</a>.</p>
+<div class="line-block">
+<div class="line">Logo, some sports and weather icons are made by <a class="reference external" href="https://www.freepik.com/">Freepik</a> from <a class="reference external" href="https://www.flaticon.com/">www.flaticon.com</a>.</div>
+<div class="line">FitTrackee also uses icons from <a class="reference external" href="https://forkaweso.me">Fork Awesome</a>.</div>
+</div>
 <section id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>PostgreSQL database (10+)</p></li>
-<li><p>Redis for task queue</p></li>
 <li><p>Python 3.7+</p></li>
+<li><p>PostgreSQL database (10+)</p></li>
+<li><p>SMTP provider and Redis for task queue (if email sending is enabled)</p></li>
+<li><p>API key from <a class="reference external" href="https://darksky.net/dev">Dark Sky</a> (not mandatory)</p></li>
 <li><p><a class="reference external" href="https://poetry.eustace.io">Poetry</a> (for installation from sources only)</p></li>
-<li><p>API key from <a class="reference external" href="https://darksky.net/dev">Dark Sky</a> [not mandatory]</p></li>
-<li><p>SMTP provider</p></li>
 <li><p><a class="reference external" href="https://yarnpkg.com">Yarn</a> (for development only)</p></li>
 <li><p>Docker and Docker Compose (for development or evaluation purposes)</p></li>
 </ul>
@@ -206,7 +210,7 @@ necessary.</div>
 </div>
 </section>
 <section id="environment-variables">
-<h2>Environment variables<a class="headerlink" href="#environment-variables" title="Permalink to this headline">¶</a></h2>
+<h2>Environment variables<a class="headerlink" href="#environment-variables" title="Permalink to this heading">¶</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <div class="line-block">
@@ -230,7 +234,7 @@ deployment method.</p>
 <span class="sig-name descname"><span class="pre">HOST</span></span><a class="headerlink" href="#envvar-HOST" title="Permalink to this definition">¶</a></dt>
 <dd><p><strong>FitTrackee</strong> host.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p>0.0.0.0</p>
 </dd>
 </dl>
@@ -241,7 +245,7 @@ deployment method.</p>
 <span class="sig-name descname"><span class="pre">PORT</span></span><a class="headerlink" href="#envvar-PORT" title="Permalink to this definition">¶</a></dt>
 <dd><p><strong>FitTrackee</strong> port.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p>5000</p>
 </dd>
 </dl>
@@ -252,7 +256,7 @@ deployment method.</p>
 <span class="sig-name descname"><span class="pre">APP_SETTINGS</span></span><a class="headerlink" href="#envvar-APP_SETTINGS" title="Permalink to this definition">¶</a></dt>
 <dd><p><strong>FitTrackee</strong> configuration.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p>fittrackee.config.ProductionConfig</p>
 </dd>
 </dl>
@@ -269,7 +273,7 @@ deployment method.</p>
 <span class="sig-name descname"><span class="pre">APP_WORKERS</span></span><a class="headerlink" href="#envvar-APP_WORKERS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of workers spawned by <strong>Gunicorn</strong>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p>1</p>
 </dd>
 </dl>
@@ -290,10 +294,10 @@ deployment method.</p>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.4.0.</span></p>
 </div>
-<p>Directory containing uploaded files.</p>
+<p><strong>Absolute path</strong> to the directory where <cite>uploads</cite> folder will be created.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p><cite>fittrackee/uploads/</cite></p>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>&lt;application_directory&gt;/fittrackee</cite></p>
 </dd>
 </dl>
 <div class="admonition danger">
@@ -312,8 +316,8 @@ deployment method.</p>
 <div class="line">Database URL with username and password, must be initialized in production environment.</div>
 <div class="line">For example in dev environment : <code class="docutils literal notranslate"><span class="pre">postgresql://fittrackee:fittrackee&#64;localhost:5432/fittrackee</span></code></div>
 </div>
-<div class="admonition danger">
-<p class="admonition-title">Danger</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
 <div class="line-block">
 <div class="line">Since <a class="reference external" href="https://docs.sqlalchemy.org/en/14/changelog/changelog_14.html#change-3687655465c25a39b968b4f5f6e9170b">SQLAlchemy update (1.4+)</a>,
 engine URL should begin with <cite>postgresql://</cite>.</div>
@@ -330,7 +334,7 @@ engine URL should begin with <cite>postgresql://</cite>.</div>
 <p>Disable pooling if needed (when starting application with <strong>FitTrackee</strong> entry point and not directly with <strong>Gunicorn</strong>),
 see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/pooling.html#using-connection-pools-with-multiprocessing-or-os-fork">SqlAlchemy documentation</a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p>false</p>
 </dd>
 </dl>
@@ -349,6 +353,18 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 <p><span class="versionmodified added">New in version 0.3.0.</span></p>
 </div>
 <p>Email URL with credentials, see <a class="reference external" href="installation.html#emails">Emails</a>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.6.5.</span></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p>empty string</p>
+</dd>
+</dl>
+<div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<p>If the email URL is empty, email sending will be disabled.</p>
+</div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>If the email URL is invalid, the application may not start.</p>
@@ -372,7 +388,7 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 </div>
 <p>Redis instance used by <strong>Dramatiq</strong>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p>local Redis instance (<code class="docutils literal notranslate"><span class="pre">redis://</span></code>)</p>
 </dd>
 </dl>
@@ -398,8 +414,25 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 <div class="line">Since <strong>0.4.9</strong>, it’s also used to generate static maps (to keep default server, see <a class="reference external" href="installation.html#envvar-DEFAULT_STATICMAP">DEFAULT_STATICMAP</a>)</div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p><cite>https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-STATICMAP_SUBDOMAINS">
+<span class="sig-name descname"><span class="pre">STATICMAP_SUBDOMAINS</span> <span class="pre">🆕</span></span><a class="headerlink" href="#envvar-STATICMAP_SUBDOMAINS" title="Permalink to this definition">¶</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.6.10.</span></p>
+</div>
+<div class="line-block">
+<div class="line">Some tile servers require a subdomain, see <a class="reference external" href="installation.html#map-tile-server">Map tile server</a>.</div>
+<div class="line">For instance: “a,b,c” for OSM France.</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p>empty string</p>
 </dd>
 </dl>
 </dd></dl>
@@ -412,7 +445,7 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 </div>
 <p>Map attribution (if using another tile server), see <a class="reference external" href="installation.html#map-tile-server">Map tile server</a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p><cite>&amp;copy; &lt;a href=”http://www.openstreetmap.org/copyright” target=”_blank” rel=”noopener noreferrer”&gt;OpenStreetMap&lt;/a&gt; contributors</cite></p>
 </dd>
 </dl>
@@ -420,13 +453,23 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-DEFAULT_STATICMAP">
-<span id="envvar-DEFAULT_STATICMAP 🆕"></span><span class="sig-name descname"><span class="pre">DEFAULT_STATICMAP</span> <span class="pre">🆕</span></span><a class="headerlink" href="#envvar-DEFAULT_STATICMAP" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">DEFAULT_STATICMAP</span></span><a class="headerlink" href="#envvar-DEFAULT_STATICMAP" title="Permalink to this definition">¶</a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.4.9.</span></p>
 </div>
-<p>If <cite>True</cite>, it keeps using default tile server to generate static maps.</p>
+<div class="line-block">
+<div class="line">If <cite>True</cite>, it keeps using default tile server to generate static maps (Komoot.de tile server).</div>
+<div class="line">Otherwise, it uses the tile server set in <a class="reference external" href="installation.html#envvar-TILE_SERVER_URL">TILE_SERVER_URL</a>.</div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.6.10.</span></p>
+</div>
+<div class="line-block">
+<div class="line">This variable is now case-insensitive.</div>
+<div class="line">If <cite>False</cite>, depending on tile server, <a class="reference external" href="installation.html#envvar-STATICMAP_SUBDOMAINS">subdomains</a> may be mandatory.</div>
+</div>
 <dl class="field-list simple">
-<dt class="field-odd">Default</dt>
+<dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p>False</p>
 </dd>
 </dl>
@@ -448,7 +491,7 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 </dd></dl>
 
 <section id="emails">
-<h3>Emails<a class="headerlink" href="#emails" title="Permalink to this headline">¶</a></h3>
+<h3>Emails<a class="headerlink" href="#emails" title="Permalink to this heading">¶</a></h3>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.3.0.</span></p>
 </div>
@@ -458,16 +501,43 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 <li><p>with SSL: <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:465/?ssl=True</span></code></p></li>
 <li><p>with STARTTLS: <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:587/?tls=True</span></code></p></li>
 </ul>
-<div class="versionadded">
-<p><span class="versionmodified added">New in version 0.5.3.</span></p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<div class="line-block">
+<div class="line">- If the email URL is invalid, the application may not start.</div>
+<div class="line">- Sending emails with Office365 may not work if SMTP auth is disabled.</div>
+</div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.5.3.</span></p>
 </div>
 <div class="line-block">
 <div class="line">Credentials can be omitted: <code class="docutils literal notranslate"><span class="pre">smtp://smtp.example.com:25</span></code>.</div>
 <div class="line">If <code class="docutils literal notranslate"><span class="pre">:&lt;port&gt;</span></code> is omitted, the port defaults to 25.</div>
 </div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<div class="line-block">
+<div class="line">Since 0.6.0, newly created accounts must be confirmed (an email with confirmation instructions is sent after registration).</div>
+</div>
+</div>
+<p>Emails sent by FitTrackee are:</p>
+<ul class="simple">
+<li><p>account confirmation instructions</p></li>
+<li><p>password reset request</p></li>
+<li><p>email change (to old and new email adresses)</p></li>
+<li><p>password change</p></li>
+</ul>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.6.5.</span></p>
+</div>
+<div class="line-block">
+<div class="line">For single-user instance, it is possible to disable email sending with an empty <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> (in this case, no need to start dramatiq workers).</div>
+<div class="line">A <a class="reference external" href="cli.html#ftcli-users-update">CLI</a> is available to activate account and modify email and password.</div>
+</div>
 </section>
 <section id="map-tile-server">
-<h3>Map tile server<a class="headerlink" href="#map-tile-server" title="Permalink to this headline">¶</a></h3>
+<h3>Map tile server<a class="headerlink" href="#map-tile-server" title="Permalink to this heading">¶</a></h3>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.4.0.</span></p>
 </div>
@@ -484,10 +554,21 @@ The tile server can be changed by updating <code class="docutils literal notrans
 <div class="line">Check the terms of service of tile provider for map attribution</div>
 </div>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.6.10.</span></p>
+</div>
+<p>Since the tile server can be used for static map generation, some servers require a subdomain.</p>
+<p>For instance, to set OSM France tile server, the expected values are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">TILE_SERVER_URL=https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MAP_ATTRIBUTION='fond</span> <span class="pre">de</span> <span class="pre">carte</span> <span class="pre">par</span> <span class="pre">&lt;a</span> <span class="pre">href=&quot;http://www.openstreetmap.fr/mentions-legales/&quot;</span> <span class="pre">target=&quot;_blank&quot;</span> <span class="pre">rel=&quot;nofollow</span> <span class="pre">noopener&quot;&gt;OpenStreetMap</span> <span class="pre">France&lt;/a&gt;,</span> <span class="pre">sous&amp;nbsp;&lt;a</span> <span class="pre">href=&quot;http://creativecommons.org/licenses/by-sa/2.0/fr/&quot;</span> <span class="pre">target=&quot;_blank&quot;</span> <span class="pre">rel=&quot;nofollow</span> <span class="pre">noopener&quot;&gt;licence</span> <span class="pre">CC</span> <span class="pre">BY-SA&lt;/a&gt;'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">STATICMAP_SUBDOMAINS=a,b,c</span></code></p></li>
+</ul>
+<p>The subdomain will be chosen randomly.</p>
 </section>
 </section>
 <section id="id1">
-<h2>Installation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<h2>Installation<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <div class="line-block">
@@ -495,7 +576,7 @@ The tile server can be changed by updating <code class="docutils literal notrans
 </div>
 </div>
 <section id="from-pypi">
-<h3>From PyPI<a class="headerlink" href="#from-pypi" title="Permalink to this headline">¶</a></h3>
+<h3>From PyPI<a class="headerlink" href="#from-pypi" title="Permalink to this heading">¶</a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
@@ -529,7 +610,7 @@ $ <span class="nb">source</span> .env
 <ul class="simple">
 <li><p>Initialize database schema</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ fittrackee_upgrade_db
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ftcli db upgrade
 </pre></div>
 </div>
 <ul class="simple">
@@ -539,7 +620,7 @@ $ <span class="nb">source</span> .env
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Start task queue workers</p></li>
+<li><p>Start task queue workers if email sending is enabled.</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ fittrackee_worker --processes <span class="m">2</span>
 </pre></div>
@@ -552,14 +633,18 @@ $ <span class="nb">source</span> .env
 </div>
 <ul class="simple">
 <li><p>Open <a class="reference external" href="http://localhost:3000">http://localhost:3000</a> and register</p></li>
-<li><p>To set admin rights to the newly created account, use the following command:</p></li>
+<li><p>To set admin rights to the newly created account, use the following command line:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ fittrackee_set_admin &lt;username&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ftcli users update &lt;username&gt; --set-admin <span class="nb">true</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the user account is inactive, it activates it.</p>
 </div>
 </section>
 <section id="from-sources">
-<h3>From sources<a class="headerlink" href="#from-sources" title="Permalink to this headline">¶</a></h3>
+<h3>From sources<a class="headerlink" href="#from-sources" title="Permalink to this heading">¶</a></h3>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <div class="line-block">
@@ -577,7 +662,7 @@ $ poetry config virtualenvs.in-project <span class="nb">true</span>
 <p>For other OS, see <a class="reference external" href="https://python-poetry.org/docs/#installation">Poetry Documentation</a></p>
 </div>
 <section id="dev-environment">
-<h4>Dev environment<a class="headerlink" href="#dev-environment" title="Permalink to this headline">¶</a></h4>
+<h4>Dev environment<a class="headerlink" href="#dev-environment" title="Permalink to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Clone this repo:</p></li>
 </ul>
@@ -609,14 +694,18 @@ $ make install-db
 </div>
 <ul class="simple">
 <li><p>Open <a class="reference external" href="http://localhost:3000">http://localhost:3000</a> and register</p></li>
-<li><p>To set admin rights to the newly created account, use the following command:</p></li>
+<li><p>To set admin rights to the newly created account, use the following command line:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make set-admin <span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make user-set-admin <span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the user account is inactive, it activates it.</p>
 </div>
 </section>
 <section id="production-environment">
-<h4>Production environment<a class="headerlink" href="#production-environment" title="Permalink to this headline">¶</a></h4>
+<h4>Production environment<a class="headerlink" href="#production-environment" title="Permalink to this heading">¶</a></h4>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <div class="line-block">
@@ -624,11 +713,11 @@ $ make install-db
 </div>
 </div>
 <ul class="simple">
-<li><p>Download the last release (for now, it is the release v0.5.7):</p></li>
+<li><p>Download the last release (for now, it is the release v0.6.10):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.5.7.tar.gz
-$ tar -xzf v0.5.7.tar.gz
-$ mv FitTrackee-0.5.7 FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.6.10.tar.gz
+$ tar -xzf v0.6.10.tar.gz
+$ mv FitTrackee-0.6.10 FitTrackee
 $ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
@@ -653,18 +742,26 @@ database credentials</strong>):</p></li>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make run
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If email sending is disabled: <code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">make</span> <span class="pre">run-server</span></code></p>
+</div>
 <ul class="simple">
 <li><p>Open <a class="reference external" href="http://localhost:5000">http://localhost:5000</a> and register</p></li>
-<li><p>To set admin rights to the newly created account, use the following command:</p></li>
+<li><p>To set admin rights to the newly created account, use the following command line:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make set-admin <span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make user-set-admin <span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the user account is inactive, it activates it.</p>
 </div>
 </section>
 </section>
 </section>
 <section id="upgrade">
-<h2>Upgrade<a class="headerlink" href="#upgrade" title="Permalink to this headline">¶</a></h2>
+<h2>Upgrade<a class="headerlink" href="#upgrade" title="Permalink to this heading">¶</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <div class="line-block">
@@ -674,9 +771,9 @@ database credentials</strong>):</p></li>
 </div>
 </div>
 <section id="id2">
-<h3>From PyPI<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<h3>From PyPI<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
-<li><p>Activate the virtualenv</p></li>
+<li><p>Stop the application and activate the virtualenv</p></li>
 <li><p>Upgrade with pip</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pip install -U fittrackee
@@ -692,17 +789,17 @@ $ <span class="nb">source</span> .env
 <ul class="simple">
 <li><p>Upgrade database if needed (see changelog for migrations):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ fittrackee_upgrade_db
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ftcli db upgrade
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Restart the application and task queue workers.</p></li>
+<li><p>Restart the application and task queue workers (if email sending is enabled).</p></li>
 </ul>
 </section>
 <section id="id3">
-<h3>From sources<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<h3>From sources<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
 <section id="id4">
-<h4>Dev environment<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
+<h4>Dev environment<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Stop the application and pull the repository:</p></li>
 </ul>
@@ -736,15 +833,15 @@ $ <span class="nb">source</span> .env
 </div>
 </section>
 <section id="prod-environment">
-<h4>Prod environment<a class="headerlink" href="#prod-environment" title="Permalink to this headline">¶</a></h4>
+<h4>Prod environment<a class="headerlink" href="#prod-environment" title="Permalink to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Stop the application</p></li>
 <li><p>Change to the directory where FitTrackee directory is located</p></li>
-<li><p>Download the last release (for now, it is the release v0.5.7) and overwrite existing files:</p></li>
+<li><p>Download the last release (for now, it is the release v0.6.10) and overwrite existing files:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.5.7.tar.gz
-$ tar -xzf v0.5.7.tar.gz
-$ cp -R FitTrackee-0.5.7/* FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.6.10.tar.gz
+$ tar -xzf v0.6.10.tar.gz
+$ cp -R FitTrackee-0.6.10/* FitTrackee/
 $ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
@@ -767,11 +864,15 @@ $ <span class="nb">cd</span> FitTrackee
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make run
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If email sending is disabled: <code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">make</span> <span class="pre">run-server</span></code></p>
+</div>
 </section>
 </section>
 </section>
 <section id="deployment">
-<h2>Deployment<a class="headerlink" href="#deployment" title="Permalink to this headline">¶</a></h2>
+<h2>Deployment<a class="headerlink" href="#deployment" title="Permalink to this heading">¶</a></h2>
 <p>There are several ways to start <strong>FitTrackee</strong> web application and task queue
 library.
 One way is to use a <strong>systemd</strong> services and <strong>Nginx</strong> to proxy pass to <strong>Gunicorn</strong>.</p>
@@ -803,6 +904,7 @@ One way is to use a <strong>systemd</strong> services and <strong>Nginx</strong>
 <span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;SENDER_EMAIL=&quot;</span>
 <span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;REDIS_URL=&quot;</span>
 <span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;TILE_SERVER_URL=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;STATICMAP_SUBDOMAINS=&quot;</span>
 <span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;MAP_ATTRIBUTION=&quot;</span>
 <span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;WEATHER_API_KEY=&quot;</span>
 <span class="n">WorkingDirectory</span><span class="o">=/</span><span class="n">home</span><span class="o">/&lt;</span><span class="n">USER</span><span class="o">&gt;/&lt;</span><span class="n">FITTRACKEE</span> <span class="n">DIRECTORY</span><span class="o">&gt;</span>
@@ -886,29 +988,33 @@ server {
 </div>
 </section>
 <section id="docker">
-<h2>Docker<a class="headerlink" href="#docker" title="Permalink to this headline">¶</a></h2>
+<h2>Docker<a class="headerlink" href="#docker" title="Permalink to this heading">¶</a></h2>
 <section id="id5">
-<h3>Installation<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<h3>Installation<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h3>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.4.4.</span></p>
 </div>
-<p>For evaluation purposes , docker files are available,
-installing <strong>FitTrackee</strong> from <strong>sources</strong>.</p>
+<p>For evaluation purposes, docker files are available, installing <strong>FitTrackee</strong> from <strong>sources</strong>.</p>
 <ul class="simple">
 <li><p>To install <strong>FitTrackee</strong> with database initialisation and run the application and dramatiq workers:</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/SamR1/FitTrackee.git
 $ <span class="nb">cd</span> FitTrackee
+$ cp .env.docker .env
 $ make docker-build docker-run docker-init
 </pre></div>
 </div>
 <p>Open <a class="reference external" href="http://localhost:5000">http://localhost:5000</a> and register.</p>
 <p>Open <a class="reference external" href="http://localhost:8025">http://localhost:8025</a> to access <a class="reference external" href="https://github.com/mailhog/MailHog">MailHog interface</a> (email testing tool)</p>
 <ul class="simple">
-<li><p>To set admin rights to the newly created account, use the following command:</p></li>
+<li><p>To set admin rights to the newly created account, use the following command line:</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make docker-set-admin <span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the user account is inactive, it activates it.</p>
 </div>
 <ul class="simple">
 <li><p>To stop <strong>Fittrackee</strong>:</p></li>
@@ -930,7 +1036,7 @@ $ make docker-build docker-run docker-init
 </div>
 </section>
 <section id="development">
-<h3>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h3>
+<h3>Development<a class="headerlink" href="#development" title="Permalink to this heading">¶</a></h3>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.5.0.</span></p>
 </div>
@@ -968,7 +1074,7 @@ $ make docker-build docker-run docker-init
     </p>
     <p>
         &copy; Copyright 2018 - 2022, SamR1.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.2.<br/>
     </p>
   </div>
 </footer>

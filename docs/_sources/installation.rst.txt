@@ -14,17 +14,17 @@ This application is written in Python (API) and Typescript (client):
     - `Leaflet <https://leafletjs.com/>`__ to display map
     - `Chart.js <https://www.chartjs.org/>`__ to display charts with elevation and speed
 
-Logo, sports and weather icons are made by `Freepik <https://www.freepik.com/>`__ from `www.flaticon.com <https://www.flaticon.com/>`__.
+| Logo, some sports and weather icons are made by `Freepik <https://www.freepik.com/>`__ from `www.flaticon.com <https://www.flaticon.com/>`__.
+| FitTrackee also uses icons from `Fork Awesome <https://forkaweso.me>`__.
 
 Prerequisites
 ~~~~~~~~~~~~~
 
--  PostgreSQL database (10+)
--  Redis for task queue
 -  Python 3.7+
+-  PostgreSQL database (10+)
+-  SMTP provider and Redis for task queue (if email sending is enabled)
+-  API key from `Dark Sky <https://darksky.net/dev>`__ (not mandatory)
 -  `Poetry <https://poetry.eustace.io>`__ (for installation from sources only)
--  API key from `Dark Sky <https://darksky.net/dev>`__ [not mandatory]
--  SMTP provider
 -  `Yarn <https://yarnpkg.com>`__ (for development only)
 -  Docker and Docker Compose (for development or evaluation purposes)
 
@@ -95,9 +95,9 @@ deployment method.
 
     .. versionadded:: 0.4.0
 
-    Directory containing uploaded files.
+    **Absolute path** to the directory where `uploads` folder will be created.
 
-    :default: `fittrackee/uploads/`
+    :default: `<application_directory>/fittrackee`
 
     .. danger::
         | With installation from PyPI, the directory will be located in
@@ -108,7 +108,7 @@ deployment method.
     | Database URL with username and password, must be initialized in production environment.
     | For example in dev environment : ``postgresql://fittrackee:fittrackee@localhost:5432/fittrackee``
 
-    .. danger::
+    .. warning::
         | Since `SQLAlchemy update (1.4+) <https://docs.sqlalchemy.org/en/14/changelog/changelog_14.html#change-3687655465c25a39b968b4f5f6e9170b>`__,
           engine URL should begin with `postgresql://`.
 
@@ -131,6 +131,13 @@ deployment method.
     .. versionadded:: 0.3.0
 
     Email URL with credentials, see `Emails <installation.html#emails>`__.
+
+    .. versionchanged:: 0.6.5
+
+    :default: empty string
+
+    .. danger::
+        If the email URL is empty, email sending will be disabled.
 
     .. warning::
         If the email URL is invalid, the application may not start.
@@ -168,6 +175,16 @@ deployment method.
     :default: `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`
 
 
+.. envvar:: STATICMAP_SUBDOMAINS 🆕
+
+    .. versionadded:: 0.6.10
+
+    | Some tile servers require a subdomain, see `Map tile server <installation.html#map-tile-server>`__.
+    | For instance: "a,b,c" for OSM France.
+
+    :default: empty string
+
+
 .. envvar:: MAP_ATTRIBUTION
 
     .. versionadded:: 0.4.0
@@ -177,11 +194,17 @@ deployment method.
     :default: `&copy; <a href="http://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors`
 
 
-.. envvar:: DEFAULT_STATICMAP 🆕
+.. envvar:: DEFAULT_STATICMAP
 
     .. versionadded:: 0.4.9
 
-    If `True`, it keeps using default tile server to generate static maps.
+    | If `True`, it keeps using default tile server to generate static maps (Komoot.de tile server).
+    | Otherwise, it uses the tile server set in `TILE_SERVER_URL <installation.html#envvar-TILE_SERVER_URL>`__.
+
+    .. versionchanged:: 0.6.10
+
+    | This variable is now case-insensitive.
+    | If `False`, depending on tile server, `subdomains <installation.html#envvar-STATICMAP_SUBDOMAINS>`__ may be mandatory.
 
     :default: False
 
@@ -209,11 +232,30 @@ To send emails, a valid ``EMAIL_URL`` must be provided:
 - with SSL: ``smtp://username:password@smtp.example.com:465/?ssl=True``
 - with STARTTLS: ``smtp://username:password@smtp.example.com:587/?tls=True``
 
+.. warning::
+    | - If the email URL is invalid, the application may not start.
+    | - Sending emails with Office365 may not work if SMTP auth is disabled.
 
-.. versionadded:: 0.5.3
+.. versionchanged:: 0.5.3
 
 | Credentials can be omitted: ``smtp://smtp.example.com:25``.
 | If ``:<port>`` is omitted, the port defaults to 25.
+
+.. warning::
+     | Since 0.6.0, newly created accounts must be confirmed (an email with confirmation instructions is sent after registration).
+
+Emails sent by FitTrackee are:
+
+- account confirmation instructions
+- password reset request
+- email change (to old and new email adresses)
+- password change
+
+.. versionchanged:: 0.6.5
+
+| For single-user instance, it is possible to disable email sending with an empty ``EMAIL_URL`` (in this case, no need to start dramatiq workers).
+| A `CLI <cli.html#ftcli-users-update>`__ is available to activate account and modify email and password.
+
 
 Map tile server
 ^^^^^^^^^^^^^^^
@@ -229,6 +271,20 @@ To keep using **ThunderForest Outdoors**, the configuration is:
 
 .. note::
     | Check the terms of service of tile provider for map attribution
+
+
+.. versionchanged:: 0.6.10
+
+Since the tile server can be used for static map generation, some servers require a subdomain.
+
+For instance, to set OSM France tile server, the expected values are:
+
+- ``TILE_SERVER_URL=https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png``
+- ``MAP_ATTRIBUTION='fond de carte par <a href="http://www.openstreetmap.fr/mentions-legales/" target="_blank" rel="nofollow noopener">OpenStreetMap France</a>, sous&nbsp;<a href="http://creativecommons.org/licenses/by-sa/2.0/fr/" target="_blank" rel="nofollow noopener">licence CC BY-SA</a>'``
+- ``STATICMAP_SUBDOMAINS=a,b,c``
+
+The subdomain will be chosen randomly.
+
 
 Installation
 ~~~~~~~~~~~~
@@ -273,7 +329,7 @@ For instance, copy and update ``.env`` file from ``.env.example`` and source the
 
 .. code-block:: bash
 
-    $ fittrackee_upgrade_db
+    $ ftcli db upgrade
 
 - Start the application
 
@@ -281,7 +337,7 @@ For instance, copy and update ``.env`` file from ``.env.example`` and source the
 
     $ fittrackee
 
-- Start task queue workers
+- Start task queue workers if email sending is enabled.
 
 .. code-block:: bash
 
@@ -292,12 +348,14 @@ For instance, copy and update ``.env`` file from ``.env.example`` and source the
 
 - Open http://localhost:3000 and register
 
-- To set admin rights to the newly created account, use the following command:
+- To set admin rights to the newly created account, use the following command line:
 
 .. code:: bash
 
-   $ fittrackee_set_admin <username>
+   $ ftcli users update <username> --set-admin true
 
+.. note::
+    If the user account is inactive, it activates it.
 
 From sources
 ^^^^^^^^^^^^
@@ -352,12 +410,14 @@ Dev environment
 
 - Open http://localhost:3000 and register
 
-- To set admin rights to the newly created account, use the following command:
+- To set admin rights to the newly created account, use the following command line:
 
 .. code:: bash
 
-   $ make set-admin USERNAME=<username>
+   $ make user-set-admin USERNAME=<username>
 
+.. note::
+    If the user account is inactive, it activates it.
 
 Production environment
 """"""""""""""""""""""
@@ -365,13 +425,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.5.7):
+-  Download the last release (for now, it is the release v0.6.10):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.5.7.tar.gz
-   $ tar -xzf v0.5.7.tar.gz
-   $ mv FitTrackee-0.5.7 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.10.tar.gz
+   $ tar -xzf v0.6.10.tar.gz
+   $ mv FitTrackee-0.6.10 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -396,14 +456,19 @@ Production environment
 
    $ make run
 
+.. note::
+    If email sending is disabled: ``$ make run-server``
+
 - Open http://localhost:5000 and register
 
-- To set admin rights to the newly created account, use the following command:
+- To set admin rights to the newly created account, use the following command line:
 
 .. code:: bash
 
-   $ make set-admin USERNAME=<username>
+   $ make user-set-admin USERNAME=<username>
 
+.. note::
+    If the user account is inactive, it activates it.
 
 Upgrade
 ~~~~~~~
@@ -417,7 +482,7 @@ Upgrade
 From PyPI
 ^^^^^^^^^
 
-- Activate the virtualenv
+- Stop the application and activate the virtualenv
 
 - Upgrade with pip
 
@@ -436,10 +501,9 @@ From PyPI
 
 .. code-block:: bash
 
-    $ fittrackee_upgrade_db
+    $ ftcli db upgrade
 
-
-- Restart the application and task queue workers.
+- Restart the application and task queue workers (if email sending is enabled).
 
 
 From sources
@@ -487,13 +551,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.5.7) and overwrite existing files:
+- Download the last release (for now, it is the release v0.6.10) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.5.7.tar.gz
-   $ tar -xzf v0.5.7.tar.gz
-   $ cp -R FitTrackee-0.5.7/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.10.tar.gz
+   $ tar -xzf v0.6.10.tar.gz
+   $ cp -R FitTrackee-0.6.10/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -516,6 +580,8 @@ Prod environment
 
    $ make run
 
+.. note::
+    If email sending is disabled: ``$ make run-server``
 
 Deployment
 ~~~~~~~~~~
@@ -554,6 +620,7 @@ Examples (to update depending on your application configuration and given distri
     Environment="SENDER_EMAIL="
     Environment="REDIS_URL="
     Environment="TILE_SERVER_URL="
+    Environment="STATICMAP_SUBDOMAINS="
     Environment="MAP_ATTRIBUTION="
     Environment="WEATHER_API_KEY="
     WorkingDirectory=/home/<USER>/<FITTRACKEE DIRECTORY>
@@ -641,8 +708,7 @@ Installation
 
 .. versionadded:: 0.4.4
 
-For evaluation purposes , docker files are available,
-installing **FitTrackee** from **sources**.
+For evaluation purposes, docker files are available, installing **FitTrackee** from **sources**.
 
 - To install **FitTrackee** with database initialisation and run the application and dramatiq workers:
 
@@ -650,17 +716,21 @@ installing **FitTrackee** from **sources**.
 
     $ git clone https://github.com/SamR1/FitTrackee.git
     $ cd FitTrackee
+    $ cp .env.docker .env
     $ make docker-build docker-run docker-init
 
 Open http://localhost:5000 and register.
 
 Open http://localhost:8025 to access `MailHog interface <https://github.com/mailhog/MailHog>`_ (email testing tool)
 
-- To set admin rights to the newly created account, use the following command:
+- To set admin rights to the newly created account, use the following command line:
 
 .. code:: bash
 
    $ make docker-set-admin USERNAME=<username>
+
+.. note::
+    If the user account is inactive, it activates it.
 
 - To stop **Fittrackee**:
 

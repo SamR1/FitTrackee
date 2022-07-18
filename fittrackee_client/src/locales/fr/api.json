@@ -1,32 +1,36 @@
 {
-  "ERROR": {
-    "UNKNOWN": "Erreur. Veuillez réessayer ou contacter l'administrateur.",
-    "email: valid email must be provided": "Email : une adresse email valide doit être fournie.",
-    "error on getting configuration": "Erreur lors de la récupération de la configuration.",
-    "error when updating configuration": "Erreur lors de la mise à jour de la configuration",
-    "error, please try again or contact the administrator": "Erreur, veuillez réessayer ou contacter l'administrateur.",
-    "error, registration is disabled": "Erreur, les inscriptions sont désactivées.",
-    "file extension not allowed": "Extension de fichier non autorisée.",
-    "file size is greater than the allowed size": "La taille du fichier est supérieure à la limite autorisée.",
-    "invalid credentials": "Identifiants invalides.",
-    "invalid payload": "Données fournies incorrectes.",
-    "invalid token, please log in again": "Jeton de connexion invalide, merci de vous reconnecter.",
-    "invalid token, please request a new token": "Jeton de connexion, merci de vous reconnecter.",
-    "no file part": "Pas de fichier fourni.",
-    "no selected file": "Pas de fichier sélectionné.",
-    "Network Error": "Erreur Réseau.",
-    "password: password and password confirmation do not match": "Mot de passe : les mots de passe saisis sont différents.",
-    "provide a valid auth token": "Merci de fournir un jeton de connexion valide.",
-    "sport does not exist": "Ce sport n'existe pas.",
-    "signature expired, please log in again": "Signature expirée. Merci de vous reconnecter.",
-    "sorry, that user already exists": "Désolé, cet utilisateur existe déjà.",
-    "successfully registered": "Inscription validée.",
-    "user does not exist": "L'utilisateur n'existe pas",
-    "you can not delete your account, no other user has admin rights": "Vous ne pouvez pas supprimer votre compte, aucun autre utilisateur n'a des droits d'administration.",
-    "you do not have permissions": "Vous n'avez pas les permissions nécessaires."
-  },
-  "PAGINATION": {
-    "PREVIOUS": "précédent",
-    "NEXT": "suivant"
-  }
+    "ERROR": {
+        "UNKNOWN": "Erreur. Veuillez réessayer ou contacter l'administrateur.",
+        "email: valid email must be provided": "Courriel : une adresse électronique valide doit être fournie.",
+        "error during gpx processing": "Erreur lors du traitement du fichier gpx.",
+        "error during gpx file parsing": "Erreur lors de l'analyse du fichier.",
+        "error on getting configuration": "Erreur lors de la récupération de la configuration.",
+        "error when updating configuration": "Erreur lors de la mise à jour de la configuration",
+        "error, please try again or contact the administrator": "Erreur, veuillez réessayer ou contacter l'administrateur.",
+        "error, registration is disabled": "Erreur, les inscriptions sont désactivées.",
+        "file extension not allowed": "Extension de fichier non autorisée.",
+        "file size is greater than the allowed size": "La taille du fichier est supérieure à la limite autorisée.",
+        "invalid credentials": "Identifiants invalides.",
+        "invalid payload": "Données fournies incorrectes.",
+        "invalid token, please log in again": "Jeton de connexion invalide, merci de vous reconnecter.",
+        "invalid token, please request a new token": "Jeton de connexion, merci de vous reconnecter.",
+        "no file part": "Pas de fichier fourni.",
+        "no selected file": "Pas de fichier sélectionné.",
+        "Network Error": "Erreur réseau.",
+        "new email must be different than curent email": "La nouvelle addresse électronique doit être differente de l'adresse actuelle",
+        "password: password and password confirmation do not match": "Mot de passe : les mots de passe saisis sont différents.",
+        "provide a valid auth token": "Merci de fournir un jeton de connexion valide.",
+        "sport does not exist": "Ce sport n'existe pas.",
+        "signature expired, please log in again": "Signature expirée. Merci de vous reconnecter.",
+        "sorry, that username is already taken": "Désolé, ce nom d'utilisateur est déjà utilisé.",
+        "successfully registered": "Inscription validée.",
+        "user does not exist": "L'utilisateur n'existe pas.",
+        "valid email must be provided for admin contact": "Une adresse électronique doit être fournie pour le contact de l'administrateur",
+        "you can not delete your account, no other user has admin rights": "Vous ne pouvez pas supprimer votre compte, aucun autre utilisateur n'a des droits d'administration.",
+        "you do not have permissions": "Vous n'avez pas les permissions nécessaires."
+    },
+    "PAGINATION": {
+        "PREVIOUS": "précédent",
+        "NEXT": "suivant"
+    }
 }

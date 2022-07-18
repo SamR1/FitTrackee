@@ -22,31 +22,42 @@ from .gpx import get_gpx_info
 from .maps import generate_map, get_map_hash
 
 
-def get_datetime_with_tz(
-    timezone: str, workout_date: datetime, gpx_data: Optional[Dict] = None
-) -> Tuple[Optional[datetime], datetime]:
+def get_workout_datetime(
+    workout_date: Union[datetime, str],
+    user_timezone: Optional[str],
+    date_str_format: Optional[str] = None,
+    with_timezone: bool = False,
+) -> Tuple[datetime, Optional[datetime]]:
     """
-    Return naive datetime and datetime with user timezone
+    Return naive datetime and datetime with user timezone if with_timezone
     """
-    workout_date_tz = None
-    if timezone:
-        user_tz = pytz.timezone(timezone)
-        utc_tz = pytz.utc
-        if gpx_data:
-            # workout date in gpx is in UTC, but in naive datetime
-            fmt = '%Y-%m-%d %H:%M:%S'
-            workout_date_string = workout_date.strftime(fmt)
-            workout_date_tmp = utc_tz.localize(
-                datetime.strptime(workout_date_string, fmt)
-            )
-            workout_date_tz = workout_date_tmp.astimezone(user_tz)
-        else:
-            workout_date_tz = user_tz.localize(workout_date)
-            workout_date = workout_date_tz.astimezone(utc_tz)
-            # make datetime 'naive' like in gpx file
-            workout_date = workout_date.replace(tzinfo=None)
+    workout_date_with_user_tz = None
 
-    return workout_date_tz, workout_date
+    # workout w/o gpx
+    if isinstance(workout_date, str):
+        if not date_str_format:
+            date_str_format = '%Y-%m-%d %H:%M:%S'
+        workout_date = datetime.strptime(workout_date, date_str_format)
+        if user_timezone:
+            workout_date = pytz.timezone(user_timezone).localize(workout_date)
+
+    if workout_date.tzinfo is None:
+        naive_workout_date = workout_date
+        if user_timezone and with_timezone:
+            pytz.utc.localize(naive_workout_date)
+            workout_date_with_user_tz = pytz.utc.localize(
+                naive_workout_date
+            ).astimezone(pytz.timezone(user_timezone))
+    else:
+        naive_workout_date = workout_date.astimezone(pytz.utc).replace(
+            tzinfo=None
+        )
+        if user_timezone and with_timezone:
+            workout_date_with_user_tz = workout_date.astimezone(
+                pytz.timezone(user_timezone)
+            )
+
+    return naive_workout_date, workout_date_with_user_tz
 
 
 def get_datetime_from_request_args(
@@ -57,15 +68,22 @@ def get_datetime_from_request_args(
 
     date_from_str = params.get('from')
     if date_from_str:
-        date_from = datetime.strptime(date_from_str, '%Y-%m-%d')
-        _, date_from = get_datetime_with_tz(user.timezone, date_from)
+        date_from, _ = get_workout_datetime(
+            workout_date=date_from_str,
+            user_timezone=user.timezone,
+            date_str_format='%Y-%m-%d',
+        )
     date_to_str = params.get('to')
     if date_to_str:
-        date_to = datetime.strptime(
-            f'{date_to_str} 23:59:59', '%Y-%m-%d %H:%M:%S'
+        date_to, _ = get_workout_datetime(
+            workout_date=f'{date_to_str} 23:59:59',
+            user_timezone=user.timezone,
         )
-        _, date_to = get_datetime_with_tz(user.timezone, date_to)
     return date_from, date_to
+
+
+def _remove_microseconds(delta: timedelta) -> timedelta:
+    return delta - timedelta(microseconds=delta.microseconds)
 
 
 def update_workout_data(
@@ -74,8 +92,8 @@ def update_workout_data(
     """
     Update workout or workout segment with data from gpx file
     """
-    workout.pauses = gpx_data['stop_time']
-    workout.moving = gpx_data['moving_time']
+    workout.pauses = _remove_microseconds(gpx_data['stop_time'])
+    workout.moving = _remove_microseconds(gpx_data['moving_time'])
     workout.min_alt = gpx_data['elevation_min']
     workout.max_alt = gpx_data['elevation_max']
     workout.descent = gpx_data['downhill']
@@ -92,17 +110,17 @@ def create_workout(
     Create Workout from data entered by user and from gpx if a gpx file is
     provided
     """
-    workout_date = (
-        gpx_data['start']
+    workout_date, workout_date_tz = get_workout_datetime(
+        workout_date=gpx_data['start']
         if gpx_data
-        else datetime.strptime(workout_data['workout_date'], '%Y-%m-%d %H:%M')
-    )
-    workout_date_tz, workout_date = get_datetime_with_tz(
-        user.timezone, workout_date, gpx_data
+        else workout_data['workout_date'],
+        date_str_format=None if gpx_data else '%Y-%m-%d %H:%M',
+        user_timezone=user.timezone,
+        with_timezone=True,
     )
 
     duration = (
-        gpx_data['duration']
+        _remove_microseconds(gpx_data['duration'])
         if gpx_data
         else timedelta(seconds=workout_data['duration'])
     )
@@ -202,11 +220,10 @@ def edit_workout(
         workout.notes = workout_data.get('notes')
     if not workout.gpx:
         if workout_data.get('workout_date'):
-            workout_date = datetime.strptime(
-                workout_data['workout_date'], '%Y-%m-%d %H:%M'
-            )
-            _, workout.workout_date = get_datetime_with_tz(
-                auth_user.timezone, workout_date
+            workout.workout_date, _ = get_workout_datetime(
+                workout_date=workout_data.get('workout_date', ''),
+                date_str_format='%Y-%m-%d %H:%M',
+                user_timezone=auth_user.timezone,
             )
 
         if workout_data.get('duration'):
@@ -238,7 +255,7 @@ def get_file_path(dir_path: str, filename: str) -> str:
 def get_new_file_path(
     auth_user_id: int,
     workout_date: str,
-    sport: str,
+    sport_id: int,
     old_filename: Optional[str] = None,
     extension: Optional[str] = None,
 ) -> str:
@@ -248,11 +265,9 @@ def get_new_file_path(
     if not extension and old_filename:
         extension = f".{old_filename.rsplit('.', 1)[1].lower()}"
     _, new_filename = tempfile.mkstemp(
-        prefix=f'{workout_date}_{sport}_', suffix=extension
+        prefix=f'{workout_date}_{sport_id}_', suffix=extension
     )
     dir_path = os.path.join('workouts', str(auth_user_id))
-    if not os.path.exists(dir_path):
-        os.makedirs(dir_path)
     file_path = os.path.join(dir_path, new_filename.split('/')[-1])
     return file_path
 
@@ -268,11 +283,16 @@ def process_one_gpx_file(
             params['file_path'], stopped_speed_threshold
         )
         auth_user = params['auth_user']
+        workout_date, _ = get_workout_datetime(
+            workout_date=gpx_data['start'],
+            date_str_format=None if gpx_data else '%Y-%m-%d %H:%M',
+            user_timezone=None,
+        )
         new_filepath = get_new_file_path(
             auth_user_id=auth_user.id,
-            workout_date=gpx_data['start'],
+            workout_date=workout_date.strftime('%Y-%m-%d_%H-%M-%S'),
             old_filename=filename,
-            sport=params['sport_label'],
+            sport_id=params['sport_id'],
         )
         absolute_gpx_filepath = get_absolute_file_path(new_filepath)
         os.rename(params['file_path'], absolute_gpx_filepath)
@@ -280,16 +300,16 @@ def process_one_gpx_file(
 
         map_filepath = get_new_file_path(
             auth_user_id=auth_user.id,
-            workout_date=gpx_data['start'],
+            workout_date=workout_date.strftime('%Y-%m-%d_%H-%M-%S'),
             extension='.png',
-            sport=params['sport_label'],
+            sport_id=params['sport_id'],
         )
         absolute_map_filepath = get_absolute_file_path(map_filepath)
         generate_map(absolute_map_filepath, map_data)
     except (gpxpy.gpx.GPXXMLSyntaxException, TypeError) as e:
-        raise WorkoutException('error', 'Error during gpx file parsing.', e)
+        raise WorkoutException('error', 'error during gpx file parsing', e)
     except Exception as e:
-        raise WorkoutException('error', 'Error during gpx processing.', e)
+        raise WorkoutException('error', 'error during gpx processing', e)
 
     try:
         new_workout = create_workout(
@@ -380,7 +400,7 @@ def process_files(
         'auth_user': auth_user,
         'workout_data': workout_data,
         'file_path': file_path,
-        'sport_label': sport.label,
+        'sport_id': sport.id,
     }
 
     try:

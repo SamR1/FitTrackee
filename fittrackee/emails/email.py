@@ -3,8 +3,9 @@ import smtplib
 import ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from typing import Dict, Optional, Type, Union
+from typing import Dict, List, Optional, Type, Union
 
+from babel.support import Translations
 from flask import Flask
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from urllib3.util import parse_url
@@ -38,16 +39,43 @@ class EmailMessage:
 
 
 class EmailTemplate:
-    def __init__(self, template_directory: str) -> None:
+    def __init__(
+        self,
+        template_directory: str,
+        translations_directory: str,
+        languages: List[str],
+    ) -> None:
+        self._translations = self._get_translations(
+            translations_directory, languages
+        )
         self._env = Environment(
             autoescape=select_autoescape(['html', 'htm', 'xml']),
             loader=FileSystemLoader(template_directory),
+            extensions=['jinja2.ext.i18n'],
+        )
+
+    @staticmethod
+    def _get_translations(
+        translations_directory: str, languages: List[str]
+    ) -> Dict:
+        translations = {}
+        for language in languages:
+            translations[language] = Translations.load(
+                dirname=translations_directory, locales=[language]
+            )
+        return translations
+
+    def _load_translation(self, lang: str) -> None:
+        self._env.install_gettext_translations(  # type: ignore
+            self._translations[lang],
+            newstyle=True,
         )
 
     def get_content(
         self, template_name: str, lang: str, part: str, data: Dict
     ) -> str:
-        template = self._env.get_template(f'{template_name}/{lang}/{part}')
+        self._load_translation(lang)
+        template = self._env.get_template(f'{template_name}/{part}')
         return template.render(data)
 
     def get_all_contents(self, template: str, lang: str, data: Dict) -> Dict:
@@ -92,7 +120,11 @@ class EmailService:
         self.username = parsed_url['username']
         self.password = parsed_url['password']
         self.sender_email = app.config['SENDER_EMAIL']
-        self.email_template = EmailTemplate(app.config['TEMPLATES_FOLDER'])
+        self.email_template = EmailTemplate(
+            app.config['TEMPLATES_FOLDER'],
+            app.config['TRANSLATIONS_FOLDER'],
+            app.config['LANGUAGES'],
+        )
 
     @staticmethod
     def parse_email_url(email_url: str) -> Dict:
@@ -131,9 +163,11 @@ class EmailService:
         with self.smtp(
             self.host, self.port, **connection_params  # type: ignore
         ) as smtp:
+            if self.use_tls:
+                smtp.ehlo()
+                smtp.starttls(context=context)
+                smtp.ehlo()
             if self.username and self.password:
                 smtp.login(self.username, self.password)  # type: ignore
-            if self.use_tls:
-                smtp.starttls(context=context)
             smtp.sendmail(self.sender_email, recipient, message.as_string())
             smtp.quit()

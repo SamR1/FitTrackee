@@ -8,26 +8,40 @@ import {
 import { AUTH_USER_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
 import {
-  IUserProfile,
+  IAuthUserProfile,
   ILoginOrRegisterData,
   IUserDeletionPayload,
-  IUserPasswordPayload,
+  IUserEmailPayload,
   IUserPasswordResetPayload,
   IUserPayload,
   IUserPicturePayload,
   IUserPreferencesPayload,
   IUserSportPreferencesPayload,
+  IUserAccountPayload,
+  IUserAccountUpdatePayload,
 } from '@/types/user'
 
 export interface IAuthUserState {
   authToken: string | null
-  authUserProfile: IUserProfile
+  authUserProfile: IAuthUserProfile
+  isRegistrationSuccess: boolean
+  isSuccess: boolean
   loading: boolean
 }
 
 export interface IAuthUserActions {
   [AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER](
     context: ActionContext<IAuthUserState, IRootState>
+  ): void
+
+  [AUTH_USER_STORE.ACTIONS.CONFIRM_ACCOUNT](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IUserAccountUpdatePayload
+  ): void
+
+  [AUTH_USER_STORE.ACTIONS.CONFIRM_EMAIL](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IUserAccountUpdatePayload
   ): void
 
   [AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE](
@@ -48,6 +62,11 @@ export interface IAuthUserActions {
     payload: IUserPayload
   ): void
 
+  [AUTH_USER_STORE.ACTIONS.UPDATE_USER_ACCOUNT](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IUserAccountPayload
+  ): void
+
   [AUTH_USER_STORE.ACTIONS.UPDATE_USER_PREFERENCES](
     context: ActionContext<IAuthUserState, IRootState>,
     payload: IUserPreferencesPayload
@@ -65,7 +84,12 @@ export interface IAuthUserActions {
 
   [AUTH_USER_STORE.ACTIONS.SEND_PASSWORD_RESET_REQUEST](
     context: ActionContext<IAuthUserState, IRootState>,
-    payload: IUserPasswordPayload
+    payload: IUserEmailPayload
+  ): void
+
+  [AUTH_USER_STORE.ACTIONS.RESEND_ACCOUNT_CONFIRMATION_EMAIL](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IUserEmailPayload
   ): void
 
   [AUTH_USER_STORE.ACTIONS.RESET_USER_PASSWORD](
@@ -93,11 +117,17 @@ export interface IAuthUserGetters {
 
   [AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE](
     state: IAuthUserState
-  ): IUserProfile
+  ): IAuthUserProfile
 
   [AUTH_USER_STORE.GETTERS.IS_ADMIN](state: IAuthUserState): boolean
 
   [AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED](state: IAuthUserState): boolean
+
+  [AUTH_USER_STORE.GETTERS.IS_REGISTRATION_SUCCESS](
+    state: IAuthUserState
+  ): boolean
+
+  [AUTH_USER_STORE.GETTERS.IS_SUCCESS](state: IAuthUserState): boolean
 
   [AUTH_USER_STORE.GETTERS.USER_LOADING](state: IAuthUserState): boolean
 }
@@ -110,9 +140,17 @@ export type TAuthUserMutations<S = IAuthUserState> = {
   ): void
   [AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE](
     state: S,
-    authUserProfile: IUserProfile
+    authUserProfile: IAuthUserProfile
+  ): void
+  [AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS](
+    state: S,
+    isSuccess: boolean
   ): void
   [AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING](
+    state: S,
+    loading: boolean
+  ): void
+  [AUTH_USER_STORE.MUTATIONS.UPDATE_IS_REGISTRATION_SUCCESS](
     state: S,
     loading: boolean
   ): void

@@ -1,5 +1,5 @@
 <template>
-  <div id="password-action-done" class="center-card center-card with-margin">
+  <div id="password-action-done" class="center-card with-margin">
     <EmailSent v-if="action === 'request-sent'" />
     <Password v-else />
     <div class="password-message">

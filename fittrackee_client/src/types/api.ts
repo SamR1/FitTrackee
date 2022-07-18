@@ -7,11 +7,12 @@ export interface IPagination {
 }
 
 export type TPaginationPayload = {
-  [key: string]: string | number
+  [key: string]: string | number | undefined
   order: string
   order_by: string
   per_page: number
   page: number
+  q?: string
 }
 
 export interface IQueryOptions {

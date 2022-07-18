@@ -1,6 +1,4 @@
-FROM python:3.9
-
-MAINTAINER SamR1@users.noreply.github.com
+FROM python:3.10
 
 # set working directory
 RUN mkdir -p /usr/src/app

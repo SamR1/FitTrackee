@@ -1,7 +1,7 @@
 <template>
   <div
     id="workout-edition"
-    class="center-card center-card with-margin"
+    class="center-card with-margin"
     :class="{ 'center-form': workout && workout.with_gpx }"
   >
     <Card>
@@ -137,6 +137,8 @@
                         class="workout-duration"
                         type="text"
                         placeholder="HH"
+                        minlength="1"
+                        maxlength="2"
                         pattern="^([0-1]?[0-9]|2[0-3])$"
                         required
                         @invalid="invalidateForm"
@@ -150,6 +152,8 @@
                         class="workout-duration"
                         type="text"
                         pattern="^([0-5][0-9])$"
+                        minlength="2"
+                        maxlength="2"
                         placeholder="MM"
                         required
                         @invalid="invalidateForm"
@@ -163,6 +167,8 @@
                         class="workout-duration"
                         type="text"
                         pattern="^([0-5][0-9])$"
+                        minlength="2"
+                        maxlength="2"
                         placeholder="SS"
                         required
                         @invalid="invalidateForm"
@@ -237,7 +243,7 @@
   import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import { TAppConfig } from '@/types/application'
   import { ISport } from '@/types/sports'
-  import { IUserProfile } from '@/types/user'
+  import { IAuthUserProfile } from '@/types/user'
   import { IWorkout, IWorkoutForm } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
@@ -246,7 +252,7 @@
   import { convertDistance } from '@/utils/units'
 
   interface Props {
-    authUser: IUserProfile
+    authUser: IAuthUserProfile
     sports: ISport[]
     isCreation?: boolean
     loading?: boolean
@@ -295,7 +301,7 @@
     workoutDurationSeconds: '',
     workoutDistance: '',
   })
-  let withGpx = ref(
+  const withGpx = ref(
     props.workout.id ? props.workout.with_gpx : props.isCreation
   )
   let gpxFile: File | null = null
@@ -415,12 +421,6 @@
   @import '~@/scss/vars.scss';
 
   #workout-edition {
-    @media screen and (max-width: $small-limit) {
-      &.center-form {
-        margin: 50px auto;
-      }
-    }
-
     ::v-deep(.card) {
       .card-title {
         text-align: center;
@@ -508,6 +508,17 @@
             }
           }
         }
+      }
+    }
+
+    @media screen and (max-width: $small-limit) {
+      margin-bottom: 0;
+      &.center-form {
+        margin: 50px auto;
+      }
+
+      &.with-margin {
+        margin-top: 0;
       }
     }
   }

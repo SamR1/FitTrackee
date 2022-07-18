@@ -1,6 +1,6 @@
 import logging
 import os
-import shutil
+import re
 from importlib import import_module, reload
 from typing import Any
 
@@ -15,10 +15,12 @@ from flask_bcrypt import Bcrypt
 from flask_dramatiq import Dramatiq
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import ProgrammingError
 
 from fittrackee.emails.email import EmailService
+from fittrackee.request import CustomRequest
 
-VERSION = __version__ = '0.5.7'
+VERSION = __version__ = '0.6.10'
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 migrate = Migrate()
@@ -33,9 +35,17 @@ logging.basicConfig(
 appLog = logging.getLogger('fittrackee')
 
 
-def create_app() -> Flask:
+class CustomFlask(Flask):
+    # add custom Request to handle user-agent parsing
+    # (removed in Werkzeug 2.1)
+    request_class = CustomRequest
+
+
+def create_app(init_email: bool = True) -> Flask:
     # instantiate the app
-    app = Flask(__name__, static_folder='dist/static', template_folder='dist')
+    app = CustomFlask(
+        __name__, static_folder='dist/static', template_folder='dist'
+    )
 
     # set config
     with app.app_context():
@@ -54,8 +64,15 @@ def create_app() -> Flask:
     migrate.init_app(app, db)
     dramatiq.init_app(app)
 
-    # set up email
-    email_service.init_email(app)
+    # set up email if 'EMAIL_URL' is initialized
+    if init_email:
+        if app.config['EMAIL_URL']:
+            email_service.init_email(app)
+            app.config['CAN_SEND_EMAILS'] = True
+        else:
+            appLog.warning(
+                'EMAIL_URL is not provided, email sending is deactivated.'
+            )
 
     # get configuration from database
     from .application.utils import (
@@ -66,9 +83,16 @@ def create_app() -> Flask:
     with app.app_context():
         # Note: check if "app_config" table exist to avoid errors when
         # dropping tables on dev environments
-        if db.engine.dialect.has_table(db.engine.connect(), 'app_config'):
-            db_app_config = get_or_init_config()
-            update_app_config_from_database(app, db_app_config)
+        try:
+            if db.engine.dialect.has_table(db.engine.connect(), 'app_config'):
+                db_app_config = get_or_init_config()
+                update_app_config_from_database(app, db_app_config)
+        except ProgrammingError as e:
+            # avoid error on AppConfig migration
+            if re.match(
+                r'psycopg2.errors.UndefinedColumn(.*)app_config.', str(e)
+            ):
+                pass
 
     from .application.app_config import config_blueprint  # noqa
     from .users.auth import auth_blueprint  # noqa
@@ -96,7 +120,7 @@ def create_app() -> Flask:
         appLog.setLevel(logging.DEBUG)
 
         # Enable CORS
-        @app.after_request
+        @app.after_request  # type: ignore
         def after_request(response: Response) -> Response:
             response.headers.add('Access-Control-Allow-Origin', '*')
             response.headers.add(
@@ -128,18 +152,5 @@ def create_app() -> Flask:
             )
         else:
             return render_template('index.html')
-
-    @app.cli.command('drop-db')
-    def drop_db() -> None:
-        """Empty database and delete uploaded files for dev environments."""
-        if app_settings == 'fittrackee.config.ProductionConfig':
-            print('This is a production server, aborting!')
-            return
-        db.engine.execute("DROP TABLE IF EXISTS alembic_version;")
-        db.drop_all()
-        db.session.commit()
-        print('Database dropped.')
-        shutil.rmtree(app.config['UPLOAD_FOLDER'], ignore_errors=True)
-        print('Uploaded files deleted.')
 
     return app

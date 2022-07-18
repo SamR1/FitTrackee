@@ -17,10 +17,22 @@ First off, thank you for your interest in contributing!
 
 The **GitHub** repository contains:
 - source code (note that the repository also includes client build),
+- translations,
 - tests,
 - documentation (source and build).
 
-Continuous integration pipeline runs on **Gitlab CI**.
+Continuous integration workflows run on **Github Actions** platform (on **push** and **pull requests**).
+
+### Translations
+
+The available languages are:  
+[![Translation status](https://hosted.weblate.org/widgets/fittrackee/-/multi-auto.svg)](https://hosted.weblate.org/engage/fittrackee/)
+
+Translations files are located:
+- on API side (emails): `fittrackee/emails/translations/` (implemented with [Babel](https://babel.pocoo.org/en/latest/))
+- on client side: `fittrackee_client/src/locales` (implemented with [Vue I18n](https://vue-i18n.intlify.dev/))
+
+Translations can be updated through [Weblate](https://hosted.weblate.org/engage/fittrackee/).  
 
 ### How to install FitTrackee
 
@@ -50,29 +62,45 @@ Please make your changes from the development branch (`dev`).
     ```
   * Check the downgrade migration.
   
-* Run checks (lint, typecheck and tests).
+* Run checks (lint, type check and unit tests).
   ```shell
   $ make check-all
   ```
-  There are some end-to-end tests, to run them:
+  There are some end-to-end tests, to run them (needs a running application):
   ```shell
   $ make test-e2e
   ```
-  Note: For now, pull requests from forks don't trigger pipelines on GitLab CI (see [current issue](https://gitlab.com/gitlab-org/gitlab/-/issues/5667)).  
-  So make sure that checks don't return errors locally. 
+
+* If needed, update translations.
+   * On client side, update files in `fittrackee_client/src/locales` folder.  
+   * On API side (emails), to extract new strings into `messages.pot`:
+     ```shell
+     $ make babel-extract
+     ```
+     To add new strings in translations files (`fittrackee/emails/translations/<LANG>/LC_MESSAGES/messages.po`):
+     ```shell
+     $ make babel-update
+     ```
+     After updating strings in `messages.po`, compile the translations:
+     ```shell
+     $ make babel-compile
+     ```
 
 * If needed, add or update tests.
 
-* If needed, update documentation.
+* If needed, update documentation (no need to build documentation, it will be done when releasing).
 
-* If code contains client changes, you can generate a build, in a **separate commit** to ease code review.
+* If updated code contains client-side changes, you can generate javascript assets to check **FitTrackee** whithout starting client dev server:
   ```shell
   $ make build-client
   ```
+  No need to commit these files, dist files will be generated before merging or when releasing.
 
 * Create your pull request to merge on `dev` branch.
 
 * Ensure the pull requests description clearly describes the problem and solution. Include the relevant issue number if applicable.
+
+* If needed, [update your branch](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/keeping-your-pull-request-in-sync-with-the-base-branch). 
 
 
 Thanks.

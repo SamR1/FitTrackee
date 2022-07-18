@@ -12,7 +12,6 @@ else:
 
 
 class BaseConfig:
-    """Base configuration"""
 
     DEBUG = False
     TESTING = False
@@ -30,6 +29,7 @@ class BaseConfig:
     UI_URL = os.environ.get('UI_URL')
     EMAIL_URL = os.environ.get('EMAIL_URL')
     SENDER_EMAIL = os.environ.get('SENDER_EMAIL')
+    CAN_SEND_EMAILS = False
     DRAMATIQ_BROKER = broker
     TILE_SERVER = {
         'URL': os.environ.get(
@@ -43,40 +43,42 @@ class BaseConfig:
             ' contributors',
         ),
         'DEFAULT_STATICMAP': (
-            os.environ.get('DEFAULT_STATICMAP', 'False') == 'True'
+            os.environ.get('DEFAULT_STATICMAP', 'false').lower() == 'true'
         ),
+        'STATICMAP_SUBDOMAINS': os.environ.get('STATICMAP_SUBDOMAINS', ''),
     }
+    TRANSLATIONS_FOLDER = os.path.join(
+        current_app.root_path, 'emails/translations'
+    )
+    LANGUAGES = ['en', 'fr', 'de']
 
 
 class DevelopmentConfig(BaseConfig):
-    """Development configuration"""
-
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
-    SECRET_KEY = 'development key'
+    SECRET_KEY = 'development key'  # nosec
     BCRYPT_LOG_ROUNDS = 4
     DRAMATIQ_BROKER_URL = os.getenv('REDIS_URL', 'redis://')
 
 
 class TestingConfig(BaseConfig):
-    """Testing configuration"""
-
     DEBUG = True
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_TEST_URL')
-    SECRET_KEY = 'test key'
+    SECRET_KEY = 'test key'  # nosec
     BCRYPT_LOG_ROUNDS = 4
     TOKEN_EXPIRATION_DAYS = 0
     TOKEN_EXPIRATION_SECONDS = 3
     PASSWORD_TOKEN_EXPIRATION_SECONDS = 3
-    UPLOAD_FOLDER = '/tmp/fitTrackee/uploads'
     UI_URL = 'http://0.0.0.0:5000'
     SENDER_EMAIL = 'fittrackee@example.com'
 
 
-class ProductionConfig(BaseConfig):
-    """Production configuration"""
+class End2EndTestingConfig(TestingConfig):
+    DRAMATIQ_BROKER_URL = os.getenv('REDIS_URL', 'redis://')
 
+
+class ProductionConfig(BaseConfig):
     DEBUG = False
     # https://docs.sqlalchemy.org/en/13/core/pooling.html#using-connection-pools-with-multiprocessing-or-os-fork  # noqa
     SQLALCHEMY_ENGINE_OPTIONS = (

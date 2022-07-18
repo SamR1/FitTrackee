@@ -10,12 +10,17 @@
   #bike {
     display: flex;
     justify-content: center;
-
+    margin-top: 180px;
     padding: $default-padding;
-    height: 100%;
 
     .bike-img {
-      max-width: 40%;
+      max-width: 200px;
+    }
+    @media screen and (max-width: $small-limit) {
+      margin-top: $default-margin;
+      .bike-img {
+        max-width: 150px;
+      }
     }
   }
 </style>

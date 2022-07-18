@@ -6,12 +6,29 @@ make-p:
 	# Launch all P targets in parallel and exit as soon as one exits.
 	set -m; (for p in $(P); do ($(MAKE) $$p || kill 0)& done; wait)
 
+babel-extract:
+	$(PYBABEL) extract -F babel.cfg -k lazy_gettext -o messages.pot .
+
+babel-init:
+	$(PYBABEL) init -i messages.pot -d fittrackee/emails/translations -l $(LANG)
+
+babel-compile:
+	$(PYBABEL) compile -d fittrackee/emails/translations
+
+babel-update:
+	$(PYBABEL) update -i messages.pot -d fittrackee/emails/translations
+
+bandit:
+	$(BANDIT) -r fittrackee -c pyproject.toml
+
 build-client: lint-client
 	cd fittrackee_client && $(NPM) build
 
-check-all: lint-all type-check test-python test-client
+check-all: bandit lint-all type-check test-all
 
-check-python: lint-python type-check test-python
+check-client: lint-client test-client
+
+check-python: bandit lint-python type-check test-python
 
 clean:
 	rm -rf .mypy_cache
@@ -69,7 +86,7 @@ docker-stop:
 	docker-compose -f docker-compose-dev.yml stop
 
 docker-up:
-	docker-compose -f docker-compose-dev.yml up fittrackeee
+	docker-compose -f docker-compose-dev.yml up fittrackee
 
 downgrade-db:
 	$(FLASK) db downgrade --directory $(MIGRATIONS)
@@ -87,19 +104,21 @@ html:
 
 install-db:
 	psql -U postgres -f db/create.sql
-	$(FLASK) db upgrade --directory $(MIGRATIONS)
+	$(FTCLI) db upgrade
 
 init-db:
-	$(FLASK) drop-db
-	$(FLASK) db upgrade --directory $(MIGRATIONS)
+	$(FTCLI) db drop
+	$(FTCLI) db upgrade
 
 install: install-client install-python
 
 install-client:
-	cd fittrackee_client && $(NPM) install --prod
+	# NPM_ARGS="--ignore-engines", if errors with Node latest version
+	cd fittrackee_client && $(NPM) install --prod $(NPM_ARGS)
 
 install-client-dev:
-	cd fittrackee_client && $(NPM) install
+	# NPM_ARGS="--ignore-engines", if errors with Node latest version
+	cd fittrackee_client && $(NPM) install $(NPM_ARGS)
 
 install-dev: install-client-dev install-python-dev
 
@@ -162,10 +181,13 @@ serve-python-dev:
 	$(FLASK) run --with-threads -h $(HOST) -p $(PORT) --cert=adhoc
 
 set-admin:
-	$(FLASK) users set-admin $(USERNAME)
+	echo "Deprecated command, will be removed in a next version. Use 'user-set-admin' instead."
+	$(FTCLI) users update $(USERNAME) --set-admin true
 
 test-e2e:
 	$(PYTEST) e2e --driver firefox $(PYTEST_ARGS)
+
+test-all: test-client test-python
 
 test-e2e-client:
 	E2E_ARGS=client $(PYTEST) e2e --driver firefox $(PYTEST_ARGS)
@@ -181,4 +203,17 @@ type-check:
 	$(MYPY) fittrackee
 
 upgrade-db:
-	$(FLASK) db upgrade --directory $(MIGRATIONS)
+	$(FTCLI) db upgrade
+
+user-activate:
+	$(FTCLI) users update $(USERNAME) --activate
+
+user-reset-password:
+	$(FTCLI) users update $(USERNAME) --reset-password
+
+ADMIN := true
+user-set-admin:
+	$(FTCLI) users update $(USERNAME) --set-admin $(ADMIN)
+
+user-update-email:
+	$(FTCLI) users update $(USERNAME) --update-email $(EMAIL)

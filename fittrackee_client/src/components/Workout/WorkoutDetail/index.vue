@@ -46,7 +46,7 @@
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap/index.vue'
   import { WORKOUTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
-  import { IUserProfile } from '@/types/user'
+  import { IAuthUserProfile } from '@/types/user'
   import {
     IWorkout,
     IWorkoutData,
@@ -58,7 +58,7 @@
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
 
   interface Props {
-    authUser: IUserProfile
+    authUser: IAuthUserProfile
     displaySegment: boolean
     sports: ISport[]
     workoutData: IWorkoutData
@@ -75,7 +75,7 @@
   const workout: ComputedRef<IWorkout> = computed(
     () => props.workoutData.workout
   )
-  let segmentId: Ref<number | null> = ref(
+  const segmentId: Ref<number | null> = ref(
     route.params.workoutId ? +route.params.segmentId : null
   )
   const segment: ComputedRef<IWorkoutSegment | null> = computed(() =>
@@ -83,7 +83,7 @@
       ? workout.value.segments[+segmentId.value - 1]
       : null
   )
-  let displayModal: Ref<boolean> = ref(false)
+  const displayModal: Ref<boolean> = ref(false)
   const sport = computed(() =>
     props.sports
       ? props.sports.find(

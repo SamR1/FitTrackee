@@ -35,8 +35,9 @@
 
   function getPath(tab: string) {
     switch (tab) {
+      case 'ACCOUNT':
       case 'PICTURE':
-        return '/profile/edit/picture'
+        return `/profile/edit/${tab.toLocaleLowerCase()}`
       case 'PREFERENCES':
       case 'SPORTS':
         return `/profile${
@@ -52,7 +53,10 @@
 <style lang="scss">
   @import '~@/scss/vars.scss';
 
-  .profile-tabs {
-    margin: $default-margin 0 $default-margin;
+  .profile-tabs-checkboxes {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: $default-margin * 0.5;
   }
 </style>
