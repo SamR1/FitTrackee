@@ -275,7 +275,7 @@ describe('formatRecord (invalid record type)', () => {
         false
       )
     ).to.throw(
-      'Invalid record type, expected: "AS", "FD", "LD", "HA", "MD", got: "M"'
+      'Invalid record type, expected: "AS", "FD", "HA", "LD", "MD", got: "M"'
     )
   })
 })

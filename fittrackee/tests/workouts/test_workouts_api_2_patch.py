@@ -32,7 +32,7 @@ def assert_workout_data_with_gpx(data: Dict, sport_id: int) -> None:
     assert data['data']['workouts'][0]['with_gpx'] is True
 
     records = data['data']['workouts'][0]['records']
-    assert len(records) == 4
+    assert len(records) == 5
     assert records[0]['sport_id'] == sport_id
     assert records[0]['workout_id'] == data['data']['workouts'][0]['id']
     assert records[0]['record_type'] == 'MS'
