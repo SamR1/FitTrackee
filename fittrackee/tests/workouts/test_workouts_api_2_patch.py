@@ -45,14 +45,18 @@ def assert_workout_data_with_gpx(data: Dict, sport_id: int) -> None:
     assert records[1]['value'] == '0:04:10'
     assert records[2]['sport_id'] == sport_id
     assert records[2]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[2]['record_type'] == 'FD'
+    assert records[2]['record_type'] == 'HA'
     assert records[2]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
-    assert records[2]['value'] == 0.32
     assert records[3]['sport_id'] == sport_id
     assert records[3]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[3]['record_type'] == 'AS'
+    assert records[3]['record_type'] == 'FD'
     assert records[3]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
-    assert records[3]['value'] == 4.61
+    assert records[3]['value'] == 0.32
+    assert records[4]['sport_id'] == sport_id
+    assert records[4]['workout_id'] == data['data']['workouts'][0]['id']
+    assert records[4]['record_type'] == 'AS'
+    assert records[4]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
+    assert records[4]['value'] == 4.61
 
 
 class TestEditWorkoutWithGpx(ApiTestCaseMixin):
