@@ -138,7 +138,9 @@ class User(BaseModel):
             )
             total = (
                 db.session.query(
-                    func.sum(Workout.distance), func.sum(Workout.duration), func.sum(Workout.ascent)
+                    func.sum(Workout.distance),
+                    func.sum(Workout.duration),
+                    func.sum(Workout.ascent),
                 )
                 .filter(Workout.user_id == self.id)
                 .first()
