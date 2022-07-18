@@ -20,11 +20,6 @@
       :value="totalDuration.days"
       :text="totalDuration.duration"
     />
-    <StatCard
-      icon="tags"
-      :value="user.nb_sports"
-      :text="$t('workouts.SPORT', user.nb_sports)"
-    />
   </div>
 </template>
 
