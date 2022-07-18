@@ -94,6 +94,28 @@ describe('formatRecord', () => {
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
       },
     },
+    {
+      description: "return formatted record for 'Highest ascent'",
+      inputParams: {
+        record: {
+          id: 13,
+          record_type: 'HA',
+          sport_id: 1,
+          user: 'admin',
+          value: 100,
+          workout_date: 'Sun, 07 Jul 2019 08:00:00 GMT',
+          workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
+        },
+        timezone: 'Europe/Paris',
+      },
+      expected: {
+        id: 13,
+        record_type: 'HA',
+        value: '100 m',
+        workout_date: '2019/07/07',
+        workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
+      },
+    },
   ]
   testsParams.map((testParams) => {
     it(testParams.description, () => {
@@ -199,6 +221,28 @@ describe('formatRecord after conversion', () => {
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
       },
     },
+    {
+      description: "return formatted record for 'Highest ascent'",
+      inputParams: {
+        record: {
+          id: 13,
+          record_type: 'HA',
+          sport_id: 1,
+          user: 'admin',
+          value: 100,
+          workout_date: 'Sun, 07 Jul 2019 08:00:00 GMT',
+          workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
+        },
+        timezone: 'Europe/Paris',
+      },
+      expected: {
+        id: 13,
+        record_type: 'HA',
+        value: '328.08 ft',
+        workout_date: '2019/07/07',
+        workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
+      },
+    },
   ]
   testsParams.map((testParams) => {
     it(testParams.description, () => {
@@ -231,7 +275,7 @@ describe('formatRecord (invalid record type)', () => {
         false
       )
     ).to.throw(
-      'Invalid record type, expected: "AS", "FD", "LD", "MD", got: "M"'
+      'Invalid record type, expected: "AS", "FD", "LD", "HA", "MD", got: "M"'
     )
   })
 })
