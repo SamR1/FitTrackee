@@ -164,7 +164,7 @@ class User(BaseModel):
             ],
             'total_distance': float(total[0]),
             'total_duration': str(total[1]),
-            'total_ascent': str(total[2]),
+            'total_ascent': float(total[2]),
             'username': self.username,
         }
         if role == UserRole.AUTH_USER:
