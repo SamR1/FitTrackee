@@ -320,6 +320,10 @@ class Workout(BaseModel):
     def get_user_workout_records(
         cls, user_id: int, sport_id: int, as_integer: Optional[bool] = False
     ) -> Dict:
+        """
+        Note:
+        Values for ascent are null for workouts without gpx
+        """
         record_types_columns = {
             'AS': 'ave_speed',  # 'Average speed'
             'FD': 'distance',  # 'Farthest Distance'
@@ -331,7 +335,11 @@ class Workout(BaseModel):
         for record_type, column in record_types_columns.items():
             column_sorted = getattr(getattr(Workout, column), 'desc')()
             record_workout = (
-                Workout.query.filter_by(user_id=user_id, sport_id=sport_id)
+                Workout.query.filter(
+                    Workout.user_id == user_id,
+                    Workout.sport_id == sport_id,
+                    getattr(Workout, column) != None,  # noqa
+                )
                 .order_by(column_sorted, Workout.workout_date)
                 .first()
             )
