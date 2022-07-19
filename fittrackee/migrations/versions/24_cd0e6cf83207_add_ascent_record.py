@@ -1,7 +1,7 @@
 """add ascent record
 
 Revision ID: cd0e6cf83207
-Revises: e30007d681cb
+Revises: 5e3a3a31c432
 Create Date: 2022-03-22 20:21:13.661883
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = 'cd0e6cf83207'
-down_revision = 'e30007d681cb'
+down_revision = '5e3a3a31c432'
 branch_labels = None
 depends_on = None
 
@@ -22,6 +22,7 @@ def upgrade():
         ALTER TYPE record_types ADD VALUE 'HA';
         """
     )
+
 
 def downgrade():
     op.execute("ALTER TYPE record_types RENAME TO record_types_old")
