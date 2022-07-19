@@ -99,7 +99,7 @@
               },
             },
             afterFit: function (scale: LayoutItem) {
-              scale.width = props.fullStats ? 75 : 60
+              scale.width = props.fullStats ? 90 : 60
             },
           },
         },
