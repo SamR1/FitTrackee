@@ -55,6 +55,11 @@
       function getSum(total: any, value: any): number {
         return getNumber(total) + getNumber(value)
       }
+      function getUnit(displayedData: string) {
+        return ['total_ascent', 'total_descent'].includes(displayedData)
+          ? 'm'
+          : 'km'
+      }
       const chartData: ComputedRef<ChartData<'bar'>> = computed(() => ({
         labels: props.labels,
         // workaround to avoid dataset modification
@@ -88,7 +93,8 @@
                   props.displayedData,
                   +value,
                   props.useImperialUnits,
-                  false
+                  false,
+                  getUnit(props.displayedData)
                 )
               },
             },
@@ -137,9 +143,6 @@
                 const total: number = context.chart.data.datasets
                   .map((d) => d.data[context.dataIndex])
                   .reduce((total, value) => getSum(total, value), 0)
-                let unitFrom = 'km'
-                if (props.displayedData === 'total_ascent' || props.displayedData === 'total_descent')
-                  unitFrom = 'm'
                 return context.datasetIndex ===
                   props.displayedSportIds.length - 1 && total > 0
                   ? formatTooltipValue(
@@ -147,7 +150,7 @@
                       total,
                       props.useImperialUnits,
                       false,
-                      unitFrom
+                      getUnit(props.displayedData)
                     )
                   : null
               }
@@ -176,7 +179,9 @@
                   label += formatTooltipValue(
                     props.displayedData,
                     context.parsed.y,
-                    props.useImperialUnits
+                    props.useImperialUnits,
+                    true,
+                    getUnit(props.displayedData)
                   )
                 }
                 return label
@@ -194,7 +199,9 @@
                   formatTooltipValue(
                     props.displayedData,
                     sum,
-                    props.useImperialUnits
+                    props.useImperialUnits,
+                    true,
+                    getUnit(props.displayedData)
                   )
                 )
               },
