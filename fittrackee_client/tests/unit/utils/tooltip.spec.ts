@@ -111,6 +111,54 @@ describe('formatTooltipValue after conversion to imperial units', () => {
   })
 })
 
+describe('formatTooltipValue with unitFrom', () => {
+  const testsParams = [
+    {
+      description: 'returns 30 km if input is total ascent',
+      inputDisplayedData: datasetKeys[4], // 'total_ascent'
+      inputValue: 30,
+      expectedResult: '30.00 m',
+      useImperialUnits: false,
+    },
+    {
+      description: 'returns 30 km if input is total descent',
+      inputDisplayedData: datasetKeys[5], // 'total_descent'
+      inputValue: 30,
+      expectedResult: '30.00 m',
+      useImperialUnits: false,
+    },
+    {
+      description: 'returns 30 mi if input is total ascent',
+      inputDisplayedData: datasetKeys[4], // 'total_ascent'
+      inputValue: 30,
+      expectedResult: '30.00 ft',
+      useImperialUnits: true,
+    },
+    {
+      description: 'returns 30 mi if input is total descent',
+      inputDisplayedData: datasetKeys[5], // 'total_descent'
+      inputValue: 30,
+      expectedResult: '30.00 ft',
+      useImperialUnits: true,
+    },
+  ]
+
+  testsParams.map((testParams) => {
+    it(testParams.description, () => {
+      assert.equal(
+        formatTooltipValue(
+          testParams.inputDisplayedData,
+          testParams.inputValue,
+          testParams.useImperialUnits,
+          true,
+          'm'
+        ),
+        testParams.expectedResult
+      )
+    })
+  })
+})
+
 describe('formatTooltipValue (formatWithUnits = false)', () => {
   const testsParams = [
     {
