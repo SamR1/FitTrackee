@@ -25,6 +25,7 @@ def upgrade():
 
 
 def downgrade():
+    op.execute("DELETE FROM records WHERE record_type = 'HA';")
     op.execute("ALTER TYPE record_types RENAME TO record_types_old")
     op.execute("CREATE TYPE record_types AS ENUM('AS', 'FD', 'LD', 'MS')")
     op.execute(
