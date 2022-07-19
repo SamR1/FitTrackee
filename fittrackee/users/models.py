@@ -127,7 +127,7 @@ class User(BaseModel):
             raise UserNotFoundException()
 
         sports = []
-        total = (0, '0:00:00')
+        total = (0, '0:00:00', 0)
         if self.workouts_count > 0:  # type: ignore
             sports = (
                 db.session.query(Workout.sport_id)
@@ -164,9 +164,9 @@ class User(BaseModel):
             'sports_list': [
                 sport for sportslist in sports for sport in sportslist
             ],
+            'total_ascent': float(total[2]) if total[2] else 0.0,
             'total_distance': float(total[0]),
             'total_duration': str(total[1]),
-            'total_ascent': float(total[2]),
             'username': self.username,
         }
         if role == UserRole.AUTH_USER:
