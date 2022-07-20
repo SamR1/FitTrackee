@@ -64,3 +64,9 @@ services:
     ports:
       - "1025:1025"
       - "8025:8025"
+
+  selenium:
+    image: selenium/standalone-firefox:latest
+    hostname: selenium
+    privileged: true
+    shm_size: 2g

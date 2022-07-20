@@ -4,4 +4,4 @@ cd /usr/src/app
 
 source .env
 
-/bin/bash
+pytest fittrackee $*
