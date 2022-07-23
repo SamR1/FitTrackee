@@ -784,7 +784,7 @@ Open http://localhost:3000
 
 .. code-block:: bash
 
-    $ make lint-client  # run lint on javascript files
-    $ make test-client  # run unit tests on Client
-    $ make lint-python  # run type check and lint on python files
-    $ make test-python  # run unit tests on API
+    $ make docker-lint-client  # run lint on javascript files
+    $ make docker-test-client  # run unit tests on Client
+    $ make docker-lint-python  # run type check and lint on python files
+    $ make docker-test-python  # run unit tests on API
