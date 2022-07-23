@@ -290,6 +290,7 @@ def get_authenticated_user_profile(
           "bio": null,
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+          "display_ascent": true,
           "email": "sam@example.com",
           "first_name": null,
           "imperial_units": false,
@@ -316,6 +317,15 @@ def get_authenticated_user_profile(
               "sport_id": 1,
               "user": "sam",
               "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 13,
+              "record_type": "HA",
+              "sport_id": 1,
+              "user": "Sam",
+              "value": 43.97,
               "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             },
@@ -390,6 +400,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "bio": null,
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+          "display_ascent": true,
           "email": "sam@example.com",
           "first_name": null,
           "imperial_units": false,
@@ -416,6 +427,15 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
               "sport_id": 1,
               "user": "sam",
               "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 13,
+              "record_type": "HA",
+              "sport_id": 1,
+              "user": "Sam",
+              "value": 43.97,
               "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             },
@@ -546,6 +566,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "bio": null,
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+          "display_ascent": true,
           "email": "sam@example.com",
           "first_name": null,
           "imperial_units": false,
@@ -572,6 +593,15 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
               "sport_id": 1,
               "user": "sam",
               "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 13,
+              "record_type": "HA",
+              "sport_id": 1,
+              "user": "Sam",
+              "value": 43.97,
               "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             },
@@ -746,6 +776,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "bio": null,
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+          "display_ascent": true,
           "email": "sam@example.com",
           "first_name": null,
           "imperial_units": false,
@@ -772,6 +803,15 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
               "sport_id": 1,
               "user": "sam",
               "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 13,
+              "record_type": "HA",
+              "sport_id": 1,
+              "user": "Sam",
+              "value": 43.97,
               "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             },
@@ -809,10 +849,11 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         "status": "success"
       }
 
+    :<json boolean display_ascent: display highest ascent records
+    :<json boolean imperial_units: display distance in imperial units
+    :<json string language: language preferences
     :<json string timezone: user time zone
     :<json boolean weekm: does week start on Monday?
-    :<json string language: language preferences
-    :<json boolean imperial_units: display distance in imperial units
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
