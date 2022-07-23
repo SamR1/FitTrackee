@@ -830,6 +830,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     # get post data
     post_data = request.get_json()
     user_mandatory_data = {
+        'display_ascent',
         'imperial_units',
         'language',
         'timezone',
@@ -838,12 +839,14 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     if not post_data or not post_data.keys() >= user_mandatory_data:
         return InvalidPayloadErrorResponse()
 
+    display_ascent = post_data.get('display_ascent')
     imperial_units = post_data.get('imperial_units')
     language = get_language(post_data.get('language'))
     timezone = post_data.get('timezone')
     weekm = post_data.get('weekm')
 
     try:
+        auth_user.display_ascent = display_ascent
         auth_user.imperial_units = imperial_units
         auth_user.language = language
         auth_user.timezone = timezone

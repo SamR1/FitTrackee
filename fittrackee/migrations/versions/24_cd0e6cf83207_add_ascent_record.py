@@ -23,8 +23,16 @@ def upgrade():
         """
     )
 
+    op.add_column(
+        'users', sa.Column('display_ascent', sa.Boolean(), nullable=True)
+    )
+    op.execute("UPDATE users SET display_ascent = true")
+    op.alter_column('users', 'display_ascent', nullable=False)
+
 
 def downgrade():
+    op.drop_column('users', 'display_ascent')
+
     op.execute("DELETE FROM records WHERE record_type = 'HA';")
     op.execute("ALTER TYPE record_types RENAME TO record_types_old")
     op.execute("CREATE TYPE record_types AS ENUM('AS', 'FD', 'LD', 'MS')")

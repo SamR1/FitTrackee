@@ -66,6 +66,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         assert serialized_user['language'] == user_1.language
         assert serialized_user['timezone'] == user_1.timezone
         assert serialized_user['weekm'] == user_1.weekm
+        assert serialized_user['display_ascent'] == user_1.display_ascent
 
     def test_it_returns_workouts_infos(self, app: Flask, user_1: User) -> None:
         serialized_user = user_1.serialize(user_1)

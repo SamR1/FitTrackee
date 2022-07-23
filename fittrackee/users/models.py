@@ -50,6 +50,7 @@ class User(BaseModel):
     is_active = db.Column(db.Boolean, default=False, nullable=False)
     email_to_confirm = db.Column(db.String(255), nullable=True)
     confirmation_token = db.Column(db.String(255), nullable=True)
+    display_ascent = db.Column(db.Boolean, default=True, nullable=False)
 
     def __repr__(self) -> str:
         return f'<User {self.username!r}>'
@@ -170,6 +171,7 @@ class User(BaseModel):
             serialized_user = {
                 **serialized_user,
                 **{
+                    'display_ascent': self.display_ascent,
                     'imperial_units': self.imperial_units,
                     'language': self.language,
                     'timezone': self.timezone,
