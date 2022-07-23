@@ -400,7 +400,8 @@ describe('getRecordsBySports', () => {
           testParams.input.records,
           translatedSports,
           testParams.input.tz,
-          false
+          false,
+          true
         ),
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -530,7 +531,78 @@ describe('getRecordsBySports after conversion', () => {
           testParams.input.records,
           translatedSports,
           testParams.input.tz,
+          true,
           true
+        ),
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        testParams.expected
+      )
+    })
+  )
+})
+
+describe('getRecordsBySports with HA record', () => {
+  const testsParams = [
+    {
+      description: 'returns empty object if no records',
+      input: {
+        records: [],
+        tz: 'Europe/Paris',
+      },
+      expected: {},
+    },
+    {
+      description: 'returns records except HA record',
+      input: {
+        records: [
+          {
+            id: 9,
+            record_type: 'AS',
+            sport_id: 1,
+            user: 'admin',
+            value: 18,
+            workout_date: 'Sun, 07 Jul 2019 08:00:00 GMT',
+            workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
+          },
+          {
+            id: 9,
+            record_type: 'HA',
+            sport_id: 1,
+            user: 'admin',
+            value: 235,
+            workout_date: 'Sun, 07 Jul 2019 08:00:00 GMT',
+            workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
+          },
+        ],
+        tz: 'Europe/Paris',
+      },
+      expected: {
+        'Cycling (Sport)': {
+          color: null,
+          label: 'Cycling (Sport)',
+          records: [
+            {
+              id: 9,
+              record_type: 'AS',
+              value: '18 km/h',
+              workout_date: '2019/07/07',
+              workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
+            },
+          ],
+        },
+      },
+    },
+  ]
+  testsParams.map((testParams) =>
+    it(testParams.description, () => {
+      assert.deepEqual(
+        getRecordsBySports(
+          testParams.input.records,
+          translatedSports,
+          testParams.input.tz,
+          false,
+          false
         ),
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore

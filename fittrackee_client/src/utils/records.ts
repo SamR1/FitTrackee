@@ -29,10 +29,20 @@ export const formatRecord = (
       )} ${distanceUnitTo}/h`
       break
     case 'FD':
-      value = `${convertDistance(+record.value, distanceUnitFrom, distanceUnitTo, 3)} ${distanceUnitTo}`
+      value = `${convertDistance(
+        +record.value,
+        distanceUnitFrom,
+        distanceUnitTo,
+        3
+      )} ${distanceUnitTo}`
       break
     case 'HA':
-      value = `${convertDistance(+record.value, ascentUnitFrom, ascentUnitTo, 2)} ${ascentUnitTo}`
+      value = `${convertDistance(
+        +record.value,
+        ascentUnitFrom,
+        ascentUnitTo,
+        2
+      )} ${ascentUnitTo}`
       break
     case 'LD':
       value = record.value
@@ -62,21 +72,24 @@ export const getRecordsBySports = (
   records: IRecord[],
   translatedSports: ITranslatedSport[],
   tz: string,
-  useImperialUnits: boolean
+  useImperialUnits: boolean,
+  display_ascent: boolean
 ): IRecordsBySports =>
-  records.reduce((sportList: IRecordsBySports, record) => {
-    const sport = translatedSports.find((s) => s.id === record.sport_id)
-    if (sport && sport.label) {
-      if (sportList[sport.translatedLabel] === void 0) {
-        sportList[sport.translatedLabel] = {
-          label: sport.label,
-          color: sport.color,
-          records: [],
+  records
+    .filter((r) => (display_ascent ? true : r.record_type !== 'HA'))
+    .reduce((sportList: IRecordsBySports, record) => {
+      const sport = translatedSports.find((s) => s.id === record.sport_id)
+      if (sport && sport.label) {
+        if (sportList[sport.translatedLabel] === void 0) {
+          sportList[sport.translatedLabel] = {
+            label: sport.label,
+            color: sport.color,
+            records: [],
+          }
         }
+        sportList[sport.translatedLabel].records.push(
+          formatRecord(record, tz, useImperialUnits)
+        )
       }
-      sportList[sport.translatedLabel].records.push(
-        formatRecord(record, tz, useImperialUnits)
-      )
-    }
-    return sportList
-  }, {})
+      return sportList
+    }, {})
