@@ -849,7 +849,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         "status": "success"
       }
 
-    :<json boolean display_ascent: display highest ascent records
+    :<json boolean display_ascent: display highest ascent records and total
     :<json boolean imperial_units: display distance in imperial units
     :<json string language: language preferences
     :<json string timezone: user time zone
