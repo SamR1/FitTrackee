@@ -11,6 +11,7 @@
       :text="distanceUnitTo === 'mi' ? 'miles' : distanceUnitTo"
     />
     <StatCard
+      v-if="user.display_ascent"
       icon="location-arrow"
       :value="totalAscent"
       :text="ascentUnitTo === 'ft' ? 'feet' : ascentUnitTo"
@@ -19,6 +20,12 @@
       icon="clock-o"
       :value="totalDuration.days"
       :text="totalDuration.duration"
+    />
+    <StatCard
+      v-if="!user.display_ascent"
+      icon="tags"
+      :value="user.nb_sports"
+      :text="$t('workouts.SPORT', user.nb_sports)"
     />
   </div>
 </template>
