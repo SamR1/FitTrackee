@@ -996,15 +996,23 @@ server {
 </div>
 <p>For evaluation purposes, docker files are available, installing <strong>FitTrackee</strong> from <strong>sources</strong>.</p>
 <ul class="simple">
-<li><p>To install <strong>FitTrackee</strong> with database initialisation and run the application and dramatiq workers:</p></li>
+<li><p>To install <strong>FitTrackee</strong>:</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/SamR1/FitTrackee.git
 $ <span class="nb">cd</span> FitTrackee
 $ cp .env.docker .env
-$ make docker-build docker-run docker-init
+$ make docker-build
 </pre></div>
 </div>
-<p>Open <a class="reference external" href="http://localhost:5000">http://localhost:5000</a> and register.</p>
+<ul class="simple">
+<li><p>To initialise database:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ docker-init
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Open <a class="reference external" href="http://localhost:5000">http://localhost:5000</a> and register.</p></li>
+</ul>
 <p>Open <a class="reference external" href="http://localhost:8025">http://localhost:8025</a> to access <a class="reference external" href="https://github.com/mailhog/MailHog">MailHog interface</a> (email testing tool)</p>
 <ul class="simple">
 <li><p>To set admin rights to the newly created account, use the following command line:</p></li>
@@ -1056,6 +1064,15 @@ $ make docker-build docker-run docker-init
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Some environment variables need to be updated like <cite>UI_URL</cite></p>
+</div>
+<ul class="simple">
+<li><p>to run lint or tests:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make lint-client  <span class="c1"># run lint on javascript files</span>
+$ make test-client  <span class="c1"># run unit tests on Client</span>
+$ make lint-python  <span class="c1"># run type check and lint on python files</span>
+$ make test-python  <span class="c1"># run unit tests on API</span>
+</pre></div>
 </div>
 </section>
 </section>
