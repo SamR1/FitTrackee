@@ -51,6 +51,22 @@
             </option>
           </select>
         </label>
+        <label class="form-items">
+          {{ $t('user.PROFILE.ASCENT_DATA') }}
+          <select
+            id="display_ascent"
+            v-model="userForm.display_ascent"
+            :disabled="loading"
+          >
+            <option
+              v-for="status in ascentData"
+              :value="status.value"
+              :key="status.value"
+            >
+              {{ $t(`common.${status.label}`) }}
+            </option>
+          </select>
+        </label>
         <div class="form-buttons">
           <button class="confirm" type="submit">
             {{ $t('buttons.SUBMIT') }}
@@ -72,18 +88,19 @@
 
   import TimezoneDropdown from '@/components/User/ProfileEdition/TimezoneDropdown.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import { IUserProfile, IUserPreferencesPayload } from '@/types/user'
+  import { IUserPreferencesPayload, IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { availableLanguages } from '@/utils/locales'
 
   interface Props {
-    user: IUserProfile
+    user: IAuthUserProfile
   }
   const props = defineProps<Props>()
 
   const store = useStore()
 
   const userForm: IUserPreferencesPayload = reactive({
+    display_ascent: true,
     imperial_units: false,
     language: '',
     timezone: 'Europe/Paris',
@@ -109,6 +126,16 @@
       value: false,
     },
   ]
+  const ascentData = [
+    {
+      label: 'DISPLAYED',
+      value: true,
+    },
+    {
+      label: 'HIDDEN',
+      value: false,
+    },
+  ]
   const loading = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
   )
@@ -122,7 +149,8 @@
     }
   })
 
-  function updateUserForm(user: IUserProfile) {
+  function updateUserForm(user: IAuthUserProfile) {
+    userForm.display_ascent = user.display_ascent
     userForm.imperial_units = user.imperial_units ? user.imperial_units : false
     userForm.language = user.language ? user.language : 'en'
     userForm.timezone = user.timezone ? user.timezone : 'Europe/Paris'
