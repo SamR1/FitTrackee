@@ -710,16 +710,22 @@ Installation
 
 For evaluation purposes, docker files are available, installing **FitTrackee** from **sources**.
 
-- To install **FitTrackee** with database initialisation and run the application and dramatiq workers:
+- To install **FitTrackee**:
 
 .. code-block:: bash
 
     $ git clone https://github.com/SamR1/FitTrackee.git
     $ cd FitTrackee
     $ cp .env.docker .env
-    $ make docker-build docker-run docker-init
+    $ make docker-build
 
-Open http://localhost:5000 and register.
+- To initialise database:
+
+.. code-block:: bash
+
+    $ docker-init
+
+- Open http://localhost:5000 and register.
 
 Open http://localhost:8025 to access `MailHog interface <https://github.com/mailhog/MailHog>`_ (email testing tool)
 
@@ -773,3 +779,12 @@ Open http://localhost:3000
 
 .. note::
     Some environment variables need to be updated like `UI_URL`
+
+- to run lint or tests:
+
+.. code-block:: bash
+
+    $ make lint-client  # run lint on javascript files
+    $ make test-client  # run unit tests on Client
+    $ make lint-python  # run type check and lint on python files
+    $ make test-python  # run unit tests on API
