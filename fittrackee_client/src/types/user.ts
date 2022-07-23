@@ -24,6 +24,7 @@ export interface IUserProfile {
 }
 
 export interface IAuthUserProfile extends IUserProfile {
+  display_ascent: boolean
   imperial_units: boolean
   language: string | null
   timezone: string
@@ -58,6 +59,7 @@ export interface IAdminUserPayload {
 }
 
 export interface IUserPreferencesPayload {
+  display_ascent: boolean
   imperial_units: boolean
   language: string
   timezone: string

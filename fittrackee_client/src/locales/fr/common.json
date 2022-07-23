@@ -3,9 +3,11 @@
   "CONFIRMATION": "Confirmation",
   "CONTACT": "contact",
   "DAY": "jour | jours",
+  "DISPLAYED": "Affiché",
   "DOCUMENTATION": "documentation (en)",
   "HOME": "Accueil",
   "HERE": "ici",
+  "HIDDEN": "Masqué",
   "SELECTS": {
     "ORDER_BY": {
       "LABEL": "trier par "

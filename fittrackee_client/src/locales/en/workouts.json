@@ -43,6 +43,7 @@
   "RECORD": "record | records",
   "RECORD_AS": "Ave. speed",
   "RECORD_FD": "Farthest distance",
+  "RECORD_HA": "Highest ascent",
   "RECORD_LD": "Longest duration",
   "RECORD_MS": "Max. speed",
   "REMAINING_CHARS": "remaining characters",
