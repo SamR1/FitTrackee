@@ -50,7 +50,7 @@ docker-build-all: docker-build docker-build-client
 docker-build-client:
 	docker-compose -f docker-compose-dev.yml build fittrackee_client
 
-docker-init: docker-init-db docker-restart docker-run-workers
+docker-init: docker-run docker-init-db docker-restart docker-run-workers
 
 docker-init-db:
 	docker-compose -f docker-compose-dev.yml exec fittrackee docker/init-database.sh
