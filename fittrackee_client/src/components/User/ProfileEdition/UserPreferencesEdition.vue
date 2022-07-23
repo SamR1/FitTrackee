@@ -23,50 +23,66 @@
             @updateTimezone="updateTZ"
           />
         </label>
-        <label class="form-items">
-          {{ $t('user.PROFILE.FIRST_DAY_OF_WEEK') }}
-          <select id="weekm" v-model="userForm.weekm" :disabled="loading">
-            <option
-              v-for="start in weekStart"
-              :value="start.value"
-              :key="start.value"
-            >
-              {{ $t(`user.PROFILE.${start.label}`) }}
-            </option>
-          </select>
-        </label>
-        <label class="form-items">
-          {{ $t('user.PROFILE.UNITS.LABEL') }}
-          <select
-            id="imperial_units"
-            v-model="userForm.imperial_units"
-            :disabled="loading"
-          >
-            <option
-              v-for="unit in imperialUnits"
-              :value="unit.value"
-              :key="unit.value"
-            >
-              {{ $t(`user.PROFILE.UNITS.${unit.label}`) }}
-            </option>
-          </select>
-        </label>
-        <label class="form-items">
-          {{ $t('user.PROFILE.ASCENT_DATA') }}
-          <select
-            id="display_ascent"
-            v-model="userForm.display_ascent"
-            :disabled="loading"
-          >
-            <option
-              v-for="status in ascentData"
-              :value="status.value"
-              :key="status.value"
-            >
-              {{ $t(`common.${status.label}`) }}
-            </option>
-          </select>
-        </label>
+        <div class="form-items form-checkboxes">
+          <span class="checkboxes-label">
+            {{ $t('user.PROFILE.FIRST_DAY_OF_WEEK') }}
+          </span>
+          <div class="checkboxes">
+            <label v-for="start in weekStart" :key="start.label">
+              <input
+                type="radio"
+                :id="start.label"
+                :name="start.label"
+                :checked="start.value === userForm.weekm"
+                :disabled="loading"
+                @input="updateWeekM(start.value)"
+              />
+              <span class="checkbox-label">
+                {{ $t(`user.PROFILE.${start.label}`) }}
+              </span>
+            </label>
+          </div>
+        </div>
+        <div class="form-items form-checkboxes">
+          <span class="checkboxes-label">
+            {{ $t('user.PROFILE.UNITS.LABEL') }}
+          </span>
+          <div class="checkboxes">
+            <label v-for="unit in imperialUnits" :key="unit.label">
+              <input
+                type="radio"
+                :id="unit.label"
+                :name="unit.label"
+                :checked="unit.value === userForm.imperial_units"
+                :disabled="loading"
+                @input="updateImperialUnit(unit.value)"
+              />
+              <span class="checkbox-label">
+                {{ $t(`user.PROFILE.UNITS.${unit.label}`) }}
+              </span>
+            </label>
+          </div>
+        </div>
+        <div class="form-items form-checkboxes">
+          <span class="checkboxes-label">
+            {{ $t('user.PROFILE.ASCENT_DATA') }}
+          </span>
+          <div class="checkboxes">
+            <label v-for="status in ascentData" :key="status.label">
+              <input
+                type="radio"
+                :id="status.label"
+                :name="status.label"
+                :checked="status.value === userForm.display_ascent"
+                :disabled="loading"
+                @input="updateAscentDisplay(status.value)"
+              />
+              <span class="checkbox-label">
+                {{ $t(`common.${status.label}`) }}
+              </span>
+            </label>
+          </div>
+        </div>
         <div class="form-buttons">
           <button class="confirm" type="submit">
             {{ $t('buttons.SUBMIT') }}
@@ -108,22 +124,22 @@
   })
   const weekStart = [
     {
-      label: 'MONDAY',
-      value: true,
-    },
-    {
       label: 'SUNDAY',
       value: false,
+    },
+    {
+      label: 'MONDAY',
+      value: true,
     },
   ]
   const imperialUnits = [
     {
-      label: 'IMPERIAL',
-      value: true,
-    },
-    {
       label: 'METRIC',
       value: false,
+    },
+    {
+      label: 'IMPERIAL',
+      value: true,
     },
   ]
   const ascentData = [
@@ -162,8 +178,43 @@
   function updateTZ(value: string) {
     userForm.timezone = value
   }
+  function updateAscentDisplay(value: boolean) {
+    userForm.display_ascent = value
+  }
+  function updateImperialUnit(value: boolean) {
+    userForm.imperial_units = value
+  }
+  function updateWeekM(value: boolean) {
+    userForm.weekm = value
+  }
 
   onUnmounted(() => {
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   })
 </script>
+
+<style lang="scss" scoped>
+  @import '~@/scss/vars.scss';
+  #user-preferences-edition {
+    .form-items {
+      padding-top: $default-padding * 0.5;
+    }
+
+    .form-checkboxes {
+      .checkboxes-label {
+        font-weight: bold;
+      }
+      .checkboxes {
+        display: flex;
+        gap: $default-padding;
+        flex-wrap: wrap;
+        .checkbox-label {
+          padding-left: $default-padding * 0.5;
+        }
+        label {
+          font-weight: normal;
+        }
+      }
+    }
+  }
+</style>
