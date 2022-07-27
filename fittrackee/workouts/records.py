@@ -17,10 +17,11 @@ def get_records(auth_user: User) -> Dict:
     Get all records for authenticated user.
 
     Following types of records are available:
-        - average speed (record_type: 'AS')
-        - farest distance (record_type: 'FD')
-        - longest duration (record_type: 'LD')
-        - maximum speed (record_type: 'MS')
+        - average speed (record_type: ``AS``)
+        - farthest distance (record_type: ``FD``)
+        - highest ascent (record_type: ``HA``)
+        - longest duration (record_type: ``LD``)
+        - maximum speed (record_type: ``MS``)
 
     **Example request**:
 
@@ -56,6 +57,15 @@ def get_records(auth_user: User) -> Dict:
               "sport_id": 1,
               "user": "admin",
               "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 13,
+              "record_type": "HA",
+              "sport_id": 1,
+              "user": "Sam",
+              "value": 43.97,
               "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             },

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "0.6.10"
+version = "0.6.11"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0"
@@ -42,7 +42,7 @@ SQLAlchemy = "1.4.39"
 pyOpenSSL = "^22.0"
 ua-parser = "^0.15.0"
 Babel = "^2.10.3"
-Werkzeug = "2.1"  # removal of parse_rule in 2.2 breaks sphinxcontrib-httpdomai autoflask
+Werkzeug = "2.1"  # removal of parse_rule in 2.2 breaks sphinxcontrib-httpdomain autoflask
 
 [tool.poetry.dev-dependencies]
 black = "^22.6"
