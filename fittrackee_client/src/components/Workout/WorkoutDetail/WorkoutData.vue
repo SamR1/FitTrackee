@@ -84,7 +84,8 @@
         unitFrom="m"
         :strong="true"
         :useImperialUnits="useImperialUnits"
-      /><br />
+      />
+      <WorkoutRecord :workoutObject="workoutObject" recordType="HA" /><br />
       <span class="label"> {{ $t('workouts.DESCENT') }} </span>:
       <Distance
         :distance="workoutObject.descent"
