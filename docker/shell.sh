@@ -2,6 +2,6 @@
 set -e
 cd /usr/src/app
 
-source .env.docker
+source .env
 
 /bin/bash

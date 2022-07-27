@@ -42,7 +42,8 @@
       props.user.records,
       translateSports(props.sports, t),
       props.user.timezone,
-      props.user.imperial_units
+      props.user.imperial_units,
+      props.user.display_ascent
     )
   )
 </script>

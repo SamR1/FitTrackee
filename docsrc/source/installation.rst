@@ -426,13 +426,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.6.10):
+-  Download the last release (for now, it is the release v0.6.11):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.10.tar.gz
-   $ tar -xzf v0.6.10.tar.gz
-   $ mv FitTrackee-0.6.10 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.11.tar.gz
+   $ tar -xzf v0.6.11.tar.gz
+   $ mv FitTrackee-0.6.11 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -552,13 +552,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.6.10) and overwrite existing files:
+- Download the last release (for now, it is the release v0.6.11) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.10.tar.gz
-   $ tar -xzf v0.6.10.tar.gz
-   $ cp -R FitTrackee-0.6.10/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.6.11.tar.gz
+   $ tar -xzf v0.6.11.tar.gz
+   $ cp -R FitTrackee-0.6.11/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -711,16 +711,22 @@ Installation
 
 For evaluation purposes, docker files are available, installing **FitTrackee** from **sources**.
 
-- To install **FitTrackee** with database initialisation and run the application and dramatiq workers:
+- To install **FitTrackee**:
 
 .. code-block:: bash
 
     $ git clone https://github.com/SamR1/FitTrackee.git
     $ cd FitTrackee
     $ cp .env.docker .env
-    $ make docker-build docker-run docker-init
+    $ make docker-build
 
-Open http://localhost:5000 and register.
+- To initialise database:
+
+.. code-block:: bash
+
+    $ docker-init
+
+- Open http://localhost:5000 and register.
 
 Open http://localhost:8025 to access `MailHog interface <https://github.com/mailhog/MailHog>`_ (email testing tool)
 
@@ -774,3 +780,12 @@ Open http://localhost:3000
 
 .. note::
     Some environment variables need to be updated like `UI_URL`
+
+- to run lint or tests:
+
+.. code-block:: bash
+
+    $ make docker-lint-client  # run lint on javascript files
+    $ make docker-test-client  # run unit tests on Client
+    $ make docker-lint-python  # run type check and lint on python files
+    $ make docker-test-python  # run unit tests on API

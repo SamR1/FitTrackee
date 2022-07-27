@@ -1376,6 +1376,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     weekm=True,
                     language=input_language,
                     imperial_units=True,
+                    display_ascent=False,
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -1385,8 +1386,11 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['message'] == 'user preferences updated'
+        assert data['data']['display_ascent'] is False
+        assert data['data']['imperial_units'] is True
         assert data['data']['language'] == expected_language
-        assert data['data'] == jsonify_dict(user_1.serialize(user_1))
+        assert data['data']['timezone'] == 'America/New_York'
+        assert data['data']['weekm'] is True
 
     @pytest.mark.parametrize(
         'client_scope, can_access',

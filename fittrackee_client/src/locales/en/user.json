@@ -48,6 +48,7 @@
   "PASSWORD_UPDATED": "Your password have been updated. Click {0} to log in.",
   "PROFILE": {
     "ACCOUNT_EDITION": "Account edition",
+    "ASCENT_DATA": "Ascent-related data (records, total)",
     "BACK_TO_PROFILE": "Back to profile",
     "BIO": "Bio",
     "BIRTH_DATE": "Birth date",

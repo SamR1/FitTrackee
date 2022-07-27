@@ -38,6 +38,7 @@ class UserModelAssertMixin:
         assert 'nb_workouts' in serialized_user
         assert 'records' in serialized_user
         assert 'sports_list' in serialized_user
+        assert 'total_ascent' in serialized_user
         assert 'total_distance' in serialized_user
         assert 'total_duration' in serialized_user
 
@@ -66,6 +67,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         assert serialized_user['language'] == user_1.language
         assert serialized_user['timezone'] == user_1.timezone
         assert serialized_user['weekm'] == user_1.weekm
+        assert serialized_user['display_ascent'] == user_1.display_ascent
 
     def test_it_returns_workouts_infos(self, app: Flask, user_1: User) -> None:
         serialized_user = user_1.serialize(user_1)
@@ -167,6 +169,46 @@ class TestUserRecords(UserModelAssertMixin):
             == workout_cycling_user_1.short_id
         )
         assert serialized_user['records'][0]['workout_date']
+
+    def test_it_returns_totals_when_user_has_workout_without_ascent(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        serialized_user = user_1.serialize(user_1)
+        assert serialized_user['total_ascent'] == 0
+        assert serialized_user['total_distance'] == 10
+        assert serialized_user['total_duration'] == '1:00:00'
+
+    def test_it_returns_totals_when_user_has_workout_with_ascent(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.ascent = 100
+        serialized_user = user_1.serialize(user_1)
+        assert serialized_user['total_ascent'] == 100
+        assert serialized_user['total_distance'] == 10
+        assert serialized_user['total_duration'] == '1:00:00'
+
+    def test_it_returns_totals_when_user_has_mutiple_workouts(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1: Workout,
+        workout_running_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.ascent = 100
+        serialized_user = user_1.serialize(user_1)
+        assert serialized_user['total_ascent'] == 100
+        assert serialized_user['total_distance'] == 22
+        assert serialized_user['total_duration'] == '2:40:00'
 
 
 class TestUserWorkouts(UserModelAssertMixin):
