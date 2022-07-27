@@ -15,6 +15,8 @@
           )
         }}
       </dd>
+      <dt>{{ $t('user.PROFILE.ASCENT_DATA') }}:</dt>
+      <dd>{{ $t(`common.${display_ascent}`) }}</dd>
     </dl>
     <div class="profile-buttons">
       <button @click="$router.push('/profile/edit/preferences')">
@@ -28,11 +30,11 @@
 <script setup lang="ts">
   import { computed } from 'vue'
 
-  import { IUserProfile } from '@/types/user'
+  import { IAuthUserProfile } from '@/types/user'
   import { languageLabels } from '@/utils/locales'
 
   interface Props {
-    user: IUserProfile
+    user: IAuthUserProfile
   }
   const props = defineProps<Props>()
 
@@ -44,5 +46,8 @@
   const fistDayOfWeek = computed(() => (props.user.weekm ? 'MONDAY' : 'SUNDAY'))
   const timezone = computed(() =>
     props.user.timezone ? props.user.timezone : 'Europe/Paris'
+  )
+  const display_ascent = computed(() =>
+    props.user.display_ascent ? 'DISPLAYED' : 'HIDDEN'
   )
 </script>

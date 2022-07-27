@@ -43,6 +43,7 @@
   "RECORD": "record | records",
   "RECORD_AS": "Vitesse moy.",
   "RECORD_FD": "Distance la + longue",
+  "RECORD_HA": "Dénivelé positif le + élevé",
   "RECORD_LD": "Durée la + longue",
   "RECORD_MS": "Vitesse max.",
   "REMAINING_CHARS": "nombre de caractères restants ",

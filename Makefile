@@ -50,10 +50,17 @@ docker-build-all: docker-build docker-build-client
 docker-build-client:
 	docker-compose -f docker-compose-dev.yml build fittrackee_client
 
-docker-init: docker-init-db docker-restart docker-run-workers
+docker-init: docker-run docker-init-db docker-restart docker-run-workers
 
 docker-init-db:
 	docker-compose -f docker-compose-dev.yml exec fittrackee docker/init-database.sh
+
+docker-lint-client:
+	docker-compose -f docker-compose-dev.yml up -d fittrackee_client
+	docker-compose -f docker-compose-dev.yml exec fittrackee_client yarn lint
+
+docker-lint-python: docker-run
+	docker-compose -f docker-compose-dev.yml exec fittrackee docker/lint-python.sh
 
 docker-logs:
 	docker-compose -f docker-compose-dev.yml logs --follow
@@ -84,6 +91,18 @@ docker-shell:
 
 docker-stop:
 	docker-compose -f docker-compose-dev.yml stop
+
+docker-test-client:
+	docker-compose -f docker-compose-dev.yml up -d fittrackee_client
+	docker-compose -f docker-compose-dev.yml exec fittrackee_client yarn test:unit
+
+# needs a running application
+docker-test-e2e: docker-run
+	docker-compose -f docker-compose-dev.yml up -d selenium
+	docker-compose -f docker-compose-dev.yml exec fittrackee docker/test-e2e.sh $(PYTEST_ARGS)
+
+docker-test-python: docker-run
+	docker-compose -f docker-compose-dev.yml exec fittrackee docker/test-python.sh $(PYTEST_ARGS)
 
 docker-up:
 	docker-compose -f docker-compose-dev.yml up fittrackee
@@ -184,10 +203,10 @@ set-admin:
 	echo "Deprecated command, will be removed in a next version. Use 'user-set-admin' instead."
 	$(FTCLI) users update $(USERNAME) --set-admin true
 
+test-all: test-client test-python
+
 test-e2e:
 	$(PYTEST) e2e --driver firefox $(PYTEST_ARGS)
-
-test-all: test-client test-python
 
 test-e2e-client:
 	E2E_ARGS=client $(PYTEST) e2e --driver firefox $(PYTEST_ARGS)

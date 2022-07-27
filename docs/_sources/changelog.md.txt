@@ -1,6 +1,28 @@
 # Change log
 
-## Version 0.6.10 (2022/07/13)
+## Version 0.6.11 (2022/07/27)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#213](https://github.com/SamR1/FitTrackee/issues/213) - Statistics - When using imperial measurements, ascent/descent should be in ft not mi
+
+### Pull Requests
+
+#### Features
+
+* [#223](https://github.com/SamR1/FitTrackee/pull/223) - Display ascent record icon
+* [#167](https://github.com/SamR1/FitTrackee/pull/167) - Added ascent record to Dashboard 
+* [#162](https://github.com/SamR1/FitTrackee/pull/162) - Added total elevation to dashboard 
+
+Thanks to @Fmstrat
+
+In this release 1 issue was closed.  
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/installation.html#upgrade))
+
+
+### Version 0.6.10 (2022/07/13)
 
 ### Issues Closed
 

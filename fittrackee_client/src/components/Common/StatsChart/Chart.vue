@@ -55,6 +55,11 @@
       function getSum(total: any, value: any): number {
         return getNumber(total) + getNumber(value)
       }
+      function getUnit(displayedData: string) {
+        return ['total_ascent', 'total_descent'].includes(displayedData)
+          ? 'm'
+          : 'km'
+      }
       const chartData: ComputedRef<ChartData<'bar'>> = computed(() => ({
         labels: props.labels,
         // workaround to avoid dataset modification
@@ -88,12 +93,13 @@
                   props.displayedData,
                   +value,
                   props.useImperialUnits,
-                  false
+                  false,
+                  getUnit(props.displayedData)
                 )
               },
             },
             afterFit: function (scale: LayoutItem) {
-              scale.width = props.fullStats ? 75 : 60
+              scale.width = props.fullStats ? 90 : 60
             },
           },
         },
@@ -143,7 +149,8 @@
                       props.displayedData,
                       total,
                       props.useImperialUnits,
-                      false
+                      false,
+                      getUnit(props.displayedData)
                     )
                   : null
               }
@@ -172,7 +179,9 @@
                   label += formatTooltipValue(
                     props.displayedData,
                     context.parsed.y,
-                    props.useImperialUnits
+                    props.useImperialUnits,
+                    true,
+                    getUnit(props.displayedData)
                   )
                 }
                 return label
@@ -190,7 +199,9 @@
                   formatTooltipValue(
                     props.displayedData,
                     sum,
-                    props.useImperialUnits
+                    props.useImperialUnits,
+                    true,
+                    getUnit(props.displayedData)
                   )
                 )
               },

@@ -3,9 +3,9 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Records &#8212; FitTrackee 0.6.10
+    <title>Records &#8212; FitTrackee 0.6.11
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
@@ -41,7 +41,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.10
+        <span class="navbar-text navbar-version pull-left"><b>0.6.11
 </b></span>
       </div>
 
@@ -135,10 +135,11 @@
 <dd><p>Get all records for authenticated user.</p>
 <dl class="simple">
 <dt>Following types of records are available:</dt><dd><ul class="simple">
-<li><p>average speed (record_type: ‘AS’)</p></li>
-<li><p>farest distance (record_type: ‘FD’)</p></li>
-<li><p>longest duration (record_type: ‘LD’)</p></li>
-<li><p>maximum speed (record_type: ‘MS’)</p></li>
+<li><p>average speed (record_type: <code class="docutils literal notranslate"><span class="pre">AS</span></code>)</p></li>
+<li><p>farthest distance (record_type: <code class="docutils literal notranslate"><span class="pre">FD</span></code>)</p></li>
+<li><p>highest ascent (record_type: <code class="docutils literal notranslate"><span class="pre">HA</span></code>)</p></li>
+<li><p>longest duration (record_type: <code class="docutils literal notranslate"><span class="pre">LD</span></code>)</p></li>
+<li><p>maximum speed (record_type: <code class="docutils literal notranslate"><span class="pre">MS</span></code>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -172,6 +173,15 @@
 <span class="w">        </span><span class="nt">&quot;sport_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
 <span class="w">        </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;admin&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">        </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sun, 07 Jul 2019 08:00:00 GMT&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;workout_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hvYBqYBRa7wwXpaStWR4V2&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">13</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;record_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HA&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;sport_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sam&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">43.97</span><span class="p">,</span><span class="w"></span>
 <span class="w">        </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sun, 07 Jul 2019 08:00:00 GMT&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">        </span><span class="nt">&quot;workout_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hvYBqYBRa7wwXpaStWR4V2&quot;</span><span class="w"></span>
 <span class="w">      </span><span class="p">},</span><span class="w"></span>
@@ -248,7 +258,7 @@
     </p>
     <p>
         &copy; Copyright 2018 - 2022, SamR1.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br/>
     </p>
   </div>
 </footer>

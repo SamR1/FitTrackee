@@ -32,11 +32,13 @@ export const htmlLegendPlugin = {
     legendItems.forEach((item: LegendItem) => {
       const li = document.createElement('li')
       li.onclick = () => {
-        chart.setDatasetVisibility(
-          item.datasetIndex,
-          !chart.isDatasetVisible(item.datasetIndex)
-        )
-        chart.update()
+        if (item.datasetIndex) {
+          chart.setDatasetVisibility(
+            item.datasetIndex,
+            !chart.isDatasetVisible(item.datasetIndex)
+          )
+          chart.update()
+        }
       }
 
       const checkBox = document.createElement('input')
