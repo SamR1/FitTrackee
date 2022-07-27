@@ -1423,14 +1423,11 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
 name = "werkzeug"
-version = "2.2.0"
+version = "2.1.0"
 description = "The comprehensive WSGI web application library."
 category = "main"
 optional = false
 python-versions = ">=3.7"
-
-[package.dependencies]
-MarkupSafe = ">=2.1.1"
 
 [package.extras]
 watchdog = ["watchdog"]
@@ -1469,7 +1466,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "91b2935a867a0b5ca0122c7c933787b603bb02a78659ca467ecf491666278907"
+content-hash = "6f1f00124810227580f0f3ee53ac83d6131d21f6f12669313e25d18016cdbe19"
 
 [metadata.files]
 alabaster = [
