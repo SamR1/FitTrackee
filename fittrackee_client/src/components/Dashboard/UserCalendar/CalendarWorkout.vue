@@ -16,9 +16,11 @@
         class="fa fa-trophy custom-fa-small"
         aria-hidden="true"
         :title="
-          workout.records.map(
-            (record) => ` ${$t(`workouts.RECORD_${record.record_type}`)}`
-          )
+          workout.records
+            .filter((record) =>
+              displayHARecord ? true : record.record_type !== 'HA'
+            )
+            .map((record) => ` ${$t(`workouts.RECORD_${record.record_type}`)}`)
         "
       />
     </sup>
@@ -30,13 +32,14 @@
 
   import { IWorkout } from '@/types/workouts'
   interface Props {
+    displayHARecord: boolean
     workout: IWorkout
     sportLabel: string
     sportColor: string | null
   }
   const props = defineProps<Props>()
 
-  const { workout, sportLabel, sportColor } = toRefs(props)
+  const { displayHARecord, workout, sportLabel, sportColor } = toRefs(props)
 </script>
 
 <style lang="scss">

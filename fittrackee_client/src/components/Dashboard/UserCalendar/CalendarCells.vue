@@ -14,6 +14,7 @@
         <CalendarWorkouts
           :workouts="filterWorkouts(day, workouts)"
           :sports="sports"
+          :displayHARecord="displayHARecord"
         />
         <div class="calendar-cell-day">
           {{ format(day, 'd') }}
@@ -34,6 +35,7 @@
 
   interface Props {
     currentDay: Date
+    displayHARecord: boolean
     endDate: Date
     sports: ISport[]
     startDate: Date
@@ -45,6 +47,7 @@
 
   const {
     currentDay,
+    displayHARecord,
     endDate,
     sports,
     startDate,

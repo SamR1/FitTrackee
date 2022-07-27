@@ -13,6 +13,7 @@
       />
       <CalendarCells
         :currentDay="day"
+        :displayHARecord="user.display_ascent"
         :end-date="calendarDates.end"
         :sports="sports"
         :start-date="calendarDates.start"
