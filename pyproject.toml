@@ -46,7 +46,7 @@ Babel = "^2.10.3"
 [tool.poetry.dev-dependencies]
 black = "^22.6"
 freezegun = "^1.2"
-mypy = "^0.961"
+mypy = "^0.971"
 pytest = "^7.1"
 pytest-black = "^0.3.12"
 pytest-cov = "^3.0"
@@ -60,7 +60,7 @@ sphinxcontrib-httpdomain = "^1.7"
 types-pytz = "^2022.1"
 types-requests = "^2.28"
 types-freezegun = "^1.1"
-Sphinx = "^5.0"
+Sphinx = "^5.1"
 bandit = "^1.7.4"
 
 [tool.poetry.scripts]

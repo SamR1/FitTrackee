@@ -84,7 +84,13 @@
         unitFrom="m"
         :strong="true"
         :useImperialUnits="useImperialUnits"
-      /><br />
+      />
+      <WorkoutRecord
+        v-if="displayHARecord"
+        :workoutObject="workoutObject"
+        recordType="HA"
+      />
+      <br />
       <span class="label"> {{ $t('workouts.DESCENT') }} </span>:
       <Distance
         :distance="workoutObject.descent"
@@ -110,10 +116,11 @@
   interface Props {
     workoutObject: IWorkoutObject
     useImperialUnits: boolean
+    displayHARecord: boolean
   }
   const props = defineProps<Props>()
 
-  const { workoutObject, useImperialUnits } = toRefs(props)
+  const { displayHARecord, workoutObject, useImperialUnits } = toRefs(props)
   const withPause = computed(
     () =>
       props.workoutObject.pauses !== '0:00:00' &&
