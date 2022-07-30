@@ -50,6 +50,7 @@
     "PASSWORD_UPDATED": "Votre mot de passe a été mis à jour. Cliquez {0} pour vous connecter.",
     "PROFILE": {
         "ACCOUNT_EDITION": "Mise à jour du compte",
+        "ASCENT_DATA": "Données relatives au dénivelé positif (records, total)",
         "BACK_TO_PROFILE": "Revenir au profil",
         "BIO": "Bio",
         "BIRTH_DATE": "Date de naissance",

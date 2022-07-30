@@ -9,30 +9,47 @@ export const formatRecord = (
   tz: string,
   useImperialUnits: boolean
 ): Record<string, string | number> => {
-  const unitFrom: TUnit = 'km'
-  const unitTo: TUnit = useImperialUnits
-    ? units[unitFrom].defaultTarget
-    : unitFrom
+  const distanceUnitFrom: TUnit = 'km'
+  const distanceUnitTo: TUnit = useImperialUnits
+    ? units[distanceUnitFrom].defaultTarget
+    : distanceUnitFrom
+  const ascentUnitFrom: TUnit = 'm'
+  const ascentUnitTo: TUnit = useImperialUnits
+    ? units[ascentUnitFrom].defaultTarget
+    : ascentUnitFrom
   let value
   switch (record.record_type) {
     case 'AS':
     case 'MS':
       value = `${convertDistance(
         +record.value,
-        unitFrom,
-        unitTo,
+        distanceUnitFrom,
+        distanceUnitTo,
         2
-      )} ${unitTo}/h`
+      )} ${distanceUnitTo}/h`
       break
     case 'FD':
-      value = `${convertDistance(+record.value, unitFrom, unitTo, 3)} ${unitTo}`
+      value = `${convertDistance(
+        +record.value,
+        distanceUnitFrom,
+        distanceUnitTo,
+        3
+      )} ${distanceUnitTo}`
+      break
+    case 'HA':
+      value = `${convertDistance(
+        +record.value,
+        ascentUnitFrom,
+        ascentUnitTo,
+        2
+      )} ${ascentUnitTo}`
       break
     case 'LD':
       value = record.value
       break
     default:
       throw new Error(
-        `Invalid record type, expected: "AS", "FD", "LD", "MD", got: "${record.record_type}"`
+        `Invalid record type, expected: "AS", "FD", "HA", "LD", "MD", got: "${record.record_type}"`
       )
   }
   return {
@@ -55,21 +72,24 @@ export const getRecordsBySports = (
   records: IRecord[],
   translatedSports: ITranslatedSport[],
   tz: string,
-  useImperialUnits: boolean
+  useImperialUnits: boolean,
+  display_ascent: boolean
 ): IRecordsBySports =>
-  records.reduce((sportList: IRecordsBySports, record) => {
-    const sport = translatedSports.find((s) => s.id === record.sport_id)
-    if (sport && sport.label) {
-      if (sportList[sport.translatedLabel] === void 0) {
-        sportList[sport.translatedLabel] = {
-          label: sport.label,
-          color: sport.color,
-          records: [],
+  records
+    .filter((r) => (display_ascent ? true : r.record_type !== 'HA'))
+    .reduce((sportList: IRecordsBySports, record) => {
+      const sport = translatedSports.find((s) => s.id === record.sport_id)
+      if (sport && sport.label) {
+        if (sportList[sport.translatedLabel] === void 0) {
+          sportList[sport.translatedLabel] = {
+            label: sport.label,
+            color: sport.color,
+            records: [],
+          }
         }
+        sportList[sport.translatedLabel].records.push(
+          formatRecord(record, tz, useImperialUnits)
+        )
       }
-      sportList[sport.translatedLabel].records.push(
-        formatRecord(record, tz, useImperialUnits)
-      )
-    }
-    return sportList
-  }, {})
+      return sportList
+    }, {})

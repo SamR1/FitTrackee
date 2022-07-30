@@ -1279,6 +1279,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     weekm=True,
                     language=input_language,
                     imperial_units=True,
+                    display_ascent=False,
                     map_visibility='followers_only',
                     workouts_visibility='public',
                 )
@@ -1290,8 +1291,11 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['message'] == 'user preferences updated'
+        assert data['data']['display_ascent'] is False
+        assert data['data']['imperial_units'] is True
         assert data['data']['language'] == expected_language
-        assert data['data'] == jsonify_dict(user_1.serialize(user_1))
+        assert data['data']['timezone'] == 'America/New_York'
+        assert data['data']['weekm'] is True
 
     @pytest.mark.parametrize(
         'input_map_visibility,input_workout_visibility',
@@ -1320,6 +1324,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     weekm=True,
                     language='fr',
                     imperial_units=True,
+                    display_ascent=True,
                     map_visibility=input_map_visibility.value,
                     workouts_visibility=input_workout_visibility.value,
                 )

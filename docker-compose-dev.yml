@@ -12,6 +12,8 @@ services:
       - POSTGRES_PASSWORD=postgres
     volumes:
       - ./data/db:/var/lib/postgresql/data
+    networks:
+      - fittrackee-net
   
   fittrackee:
     container_name: fittrackee
@@ -24,14 +26,12 @@ services:
       - fittrackee-db
       - redis
       - mail
-    links:
-      - fittrackee-db
-      - redis
-      - mail
     volumes:
       - .:/usr/src/app
       - ./data/workouts:/usr/src/app/workouts
       - ./data/uploads:/usr/src/app/uploads
+    networks:
+      - fittrackee-net
 
   fittrackee_client:
     container_name: fittrackee_client
@@ -57,6 +57,8 @@ services:
     hostname: redis
     ports:
       - "6379:6379"
+    networks:
+      - fittrackee-net
 
   mail:
     container_name: fittrackee-mailhog
@@ -64,3 +66,14 @@ services:
     ports:
       - "1025:1025"
       - "8025:8025"
+    networks:
+      - fittrackee-net
+
+  selenium:
+    image: selenium/standalone-firefox:latest
+    hostname: selenium
+    privileged: true
+    shm_size: 2g
+
+networks:
+  fittrackee-net:

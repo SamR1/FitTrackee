@@ -60,7 +60,7 @@ def assert_workout_data_with_gpx(data: Dict, user: User) -> None:
     assert segment['pauses'] is None
 
     records = data['data']['workouts'][0]['records']
-    assert len(records) == 4
+    assert len(records) == 5
     assert records[0]['sport_id'] == 1
     assert records[0]['workout_id'] == data['data']['workouts'][0]['id']
     assert records[0]['record_type'] == 'MS'
@@ -73,14 +73,19 @@ def assert_workout_data_with_gpx(data: Dict, user: User) -> None:
     assert records[1]['value'] == '0:04:10'
     assert records[2]['sport_id'] == 1
     assert records[2]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[2]['record_type'] == 'FD'
+    assert records[2]['record_type'] == 'HA'
+    assert records[2]['value'] == 0.4
     assert records[2]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
-    assert records[2]['value'] == 0.32
     assert records[3]['sport_id'] == 1
     assert records[3]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[3]['record_type'] == 'AS'
+    assert records[3]['record_type'] == 'FD'
     assert records[3]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
-    assert records[3]['value'] == 4.61
+    assert records[3]['value'] == 0.32
+    assert records[4]['sport_id'] == 1
+    assert records[4]['workout_id'] == data['data']['workouts'][0]['id']
+    assert records[4]['record_type'] == 'AS'
+    assert records[4]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
+    assert records[4]['value'] == 4.61
 
 
 def assert_workout_data_with_gpx_segments(data: Dict, user: User) -> None:
@@ -139,7 +144,7 @@ def assert_workout_data_with_gpx_segments(data: Dict, user: User) -> None:
     assert segment['pauses'] is None
 
     records = data['data']['workouts'][0]['records']
-    assert len(records) == 4
+    assert len(records) == 5
     assert records[0]['sport_id'] == 1
     assert records[0]['workout_id'] == data['data']['workouts'][0]['id']
     assert records[0]['record_type'] == 'MS'
@@ -152,14 +157,18 @@ def assert_workout_data_with_gpx_segments(data: Dict, user: User) -> None:
     assert records[1]['value'] == '0:03:55'
     assert records[2]['sport_id'] == 1
     assert records[2]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[2]['record_type'] == 'FD'
+    assert records[2]['record_type'] == 'HA'
     assert records[2]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
-    assert records[2]['value'] == 0.3
     assert records[3]['sport_id'] == 1
     assert records[3]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[3]['record_type'] == 'AS'
+    assert records[3]['record_type'] == 'FD'
     assert records[3]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
-    assert records[3]['value'] == 4.59
+    assert records[3]['value'] == 0.3
+    assert records[4]['sport_id'] == 1
+    assert records[4]['workout_id'] == data['data']['workouts'][0]['id']
+    assert records[4]['record_type'] == 'AS'
+    assert records[4]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
+    assert records[4]['value'] == 4.59
 
 
 def assert_workout_data_wo_gpx(data: Dict, user: User) -> None:
@@ -259,6 +268,39 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, BaseTestMixin):
         assert len(data['data']['workouts']) == 1
         assert 'just a workout' == data['data']['workouts'][0]['title']
         assert_workout_data_with_gpx(data, user_1)
+
+    def test_it_returns_ha_record_when_a_workout_without_gpx_exists(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        records = data['data']['workouts'][0]['records']
+        assert len(records) == 1
+        assert records[0]['sport_id'] == 1
+        assert records[0]['workout_id'] == data['data']['workouts'][0]['id']
+        assert records[0]['record_type'] == 'HA'
+        assert records[0]['value'] == 0.4
+        assert records[0]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
 
     def test_it_creates_workout_with_expecting_gpx_path(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str

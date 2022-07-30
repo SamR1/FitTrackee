@@ -37,6 +37,7 @@ export interface IUserProfile {
 }
 
 export interface IAuthUserProfile extends IUserProfile {
+  display_ascent: boolean
   email: string
   imperial_units: boolean
   language: string | null
@@ -44,6 +45,7 @@ export interface IAuthUserProfile extends IUserProfile {
   nb_sports: number
   records: IRecord[]
   sports_list: number[]
+  timezone: string
   total_distance: number
   total_duration: string
   weekm: boolean
@@ -84,6 +86,7 @@ export interface IUserRelationshipActionPayload {
 }
 
 export interface IUserPreferencesPayload {
+  display_ascent: boolean
   imperial_units: boolean
   language: string
   map_visibility: TPrivacyLevels

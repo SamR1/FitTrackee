@@ -120,6 +120,7 @@ class User(BaseModel):
         db.Boolean, default=True, nullable=False
     )
     is_remote = db.Column(db.Boolean, default=False, nullable=False)
+    display_ascent = db.Column(db.Boolean, default=True, nullable=False)
     workouts_visibility = db.Column(
         Enum(PrivacyLevel, name='privacy_levels'),
         server_default='PRIVATE',
@@ -461,11 +462,13 @@ class User(BaseModel):
             serialized_user['following'] = self.following.count()
 
         if role is not None:
-            total = (0, '0:00:00')
+            total = (0, '0:00:00', 0)
             if self.workouts_count > 0:  # type: ignore
                 total = (
                     db.session.query(
-                        func.sum(Workout.distance), func.sum(Workout.duration)
+                        func.sum(Workout.distance),
+                        func.sum(Workout.duration),
+                        func.sum(Workout.ascent),
                     )
                     .filter(Workout.user_id == self.id)
                     .first()
@@ -478,6 +481,9 @@ class User(BaseModel):
             serialized_user['sports_list'] = [
                 sport for sportslist in sports for sport in sportslist
             ]
+            serialized_user['total_ascent'] = (
+                float(total[2]) if total[2] else 0.0
+            )
             serialized_user['total_distance'] = float(total[0])
             serialized_user['total_duration'] = str(total[1])
 
@@ -489,6 +495,7 @@ class User(BaseModel):
             serialized_user = {
                 **serialized_user,
                 **{
+                    'display_ascent': self.display_ascent,
                     'imperial_units': self.imperial_units,
                     'language': self.language,
                     'timezone': self.timezone,

@@ -29,6 +29,8 @@
         </div>
         <WorkoutVisibility
           :workoutObject="workoutObject"
+          :useImperialUnits="authUser.imperial_units"
+          :displayHARecord="authUser.display_ascent"
           v-if="workoutObject.workoutVisibility"
         />
       </template>

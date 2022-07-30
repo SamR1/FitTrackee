@@ -216,6 +216,15 @@ def get_users(auth_user: User) -> Dict:
                   "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
                 },
                 {
+                  "id": 13,
+                  "record_type": "HA",
+                  "sport_id": 1,
+                  "user": "Sam",
+                  "value": 43.97,
+                  "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                  "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+                },
+                {
                   "id": 11,
                   "record_type": "LD",
                   "sport_id": 1,
@@ -453,6 +462,15 @@ def get_single_user(
                 "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
               },
               {
+                "id": 13,
+                "record_type": "HA",
+                "sport_id": 1,
+                "user": "Sam",
+                "value": 43.97,
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              },
+              {
                 "id": 11,
                 "record_type": "LD",
                 "sport_id": 1,
@@ -644,6 +662,15 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
                 "sport_id": 1,
                 "user": "admin",
                 "value": 18,
+                "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+              },
+              {
+                "id": 13,
+                "record_type": "HA",
+                "sport_id": 1,
+                "user": "Sam",
+                "value": 43.97,
                 "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
                 "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
               },

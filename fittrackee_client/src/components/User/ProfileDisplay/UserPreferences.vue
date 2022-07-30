@@ -15,6 +15,8 @@
           )
         }}
       </dd>
+      <dt>{{ $t('user.PROFILE.ASCENT_DATA') }}:</dt>
+      <dd>{{ $t(`common.${display_ascent}`) }}</dd>
       <dt>{{ $t('privacy.WORKOUTS_VISIBILITY') }}:</dt>
       <dd>{{ $t(`privacy.LEVELS.${user.workouts_visibility}`) }}</dd>
       <dt>{{ $t('privacy.MAP_VISIBILITY') }}:</dt>
@@ -49,5 +51,8 @@
   const fistDayOfWeek = computed(() => (props.user.weekm ? 'MONDAY' : 'SUNDAY'))
   const timezone = computed(() =>
     props.user.timezone ? props.user.timezone : 'Europe/Paris'
+  )
+  const display_ascent = computed(() =>
+    props.user.display_ascent ? 'DISPLAYED' : 'HIDDEN'
   )
 </script>

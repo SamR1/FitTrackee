@@ -123,6 +123,15 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                     "workout_id": "kjxavSTUrJvoAh2wvCeGEF"
                   },
                   {
+                    "id": 13,
+                    "record_type": "HA",
+                    "sport_id": 1,
+                    "user": "Sam",
+                    "value": 43.97,
+                    "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                    "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+                  },
+                  {
                     "id": 3,
                     "record_type": "LD",
                     "sport_id": 1,
