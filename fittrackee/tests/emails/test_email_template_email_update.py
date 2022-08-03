@@ -41,7 +41,7 @@ class TestEmailTemplateForEmailUpdateToCurrentEmail:
         'lang, expected_subject',
         [
             ('en', 'FitTrackee - Email changed'),
-            ('fr', 'FitTrackee - Adresse email modifiée'),
+            ('fr', 'FitTrackee - Adresse électronique modifiée'),
         ],
     )
     def test_it_gets_subject(
@@ -105,6 +105,11 @@ class TestEmailTemplateForEmailUpdateToCurrentEmail:
             'email_update_to_current_email', 'fr', 'body.html', self.EMAIL_DATA
         )
 
+        print('')
+        print(expected_fr_current_email_html_body)
+        print('')
+        print(text_body)
+
         assert expected_fr_current_email_html_body in text_body
 
 
@@ -121,7 +126,10 @@ class TestEmailTemplateForEmailUpdateToNewEmail:
         'lang, expected_subject',
         [
             ('en', 'FitTrackee - Confirm email change'),
-            ('fr', "FitTrackee - Confirmer le changement d'adresse email"),
+            (
+                'fr',
+                "FitTrackee - Confirmer le changement d'adresse électronique"
+            ),
         ],
     )
     def test_it_gets_subject(
@@ -199,7 +207,10 @@ class TestEmailTemplateForEmailUpdateToNewEmailWithoutSecurityInfos:
         'lang, expected_subject',
         [
             ('en', 'FitTrackee - Confirm email change'),
-            ('fr', "FitTrackee - Confirmer le changement d'adresse email"),
+            (
+                'fr',
+                "FitTrackee - Confirmer le changement d'adresse électronique"
+            ),
         ],
     )
     def test_it_gets_subject(

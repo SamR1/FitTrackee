@@ -29,13 +29,13 @@ http://localhost"""
 
 expected_fr_text_body = """Bonjour test,
 
-Vous avez récemment demandé la modification de l'adresse email associée à votre compte sur FitTrackee.
-Cliquez sur le lien ci-dessous pour confirmer cette adresse email.
+Vous avez récemment demandé la modification de l'adresse électronique associée à votre compte sur FitTrackee.
+Cliquez sur le lien ci-dessous pour confirmer cette adresse électronique.
 
-Vérifier l'adresse email: http://localhost/email-update?token=xxx
+Vérifier l'adresse électronique: http://localhost/email-update?token=xxx
 
 Pour vérification, cette demande a été reçue à partir d'un appareil sous Linux, utilisant le navigateur Firefox.
-Si vous n'êtes pas à l'origine de cette modification, vous pouvez ignorer cet e-mail.
+Si vous n'êtes pas à l'origine de cette modification, vous pouvez ignorer ce courriel.
 
 Merci,
 L'équipe FitTrackee
@@ -43,12 +43,12 @@ http://localhost"""
 
 expected_fr_text_body_without_security = """Bonjour test,
 
-Vous avez récemment demandé la modification de l'adresse email associée à votre compte sur FitTrackee.
-Cliquez sur le lien ci-dessous pour confirmer cette adresse email.
+Vous avez récemment demandé la modification de l'adresse électronique associée à votre compte sur FitTrackee.
+Cliquez sur le lien ci-dessous pour confirmer cette adresse électronique.
 
-Vérifier l'adresse email: http://localhost/email-update?token=xxx
+Vérifier l'adresse électronique: http://localhost/email-update?token=xxx
 
-Si vous n'êtes pas à l'origine de cette modification, vous pouvez ignorer cet e-mail.
+Si vous n'êtes pas à l'origine de cette modification, vous pouvez ignorer ce courriel.
 
 Merci,
 L'équipe FitTrackee
@@ -198,7 +198,7 @@ expected_en_html_body_without_security = """  <body>
 </html>"""
 
 expected_fr_html_body = """  <body>
-    <span class="preheader">Confirmer le changement d'adresse email.</span>
+    <span class="preheader">Confirmer le changement d'adresse électronique.</span>
     <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
       <tr>
         <td align="center">
@@ -217,14 +217,14 @@ expected_fr_html_body = """  <body>
                     <td class="content-cell">
                       <div class="f-fallback">
                         <h1>Bonjour test,</h1>
-                        <p>Vous avez récemment demandé la modification de l'adresse email associée à votre compte sur FitTrackee. Cliquez sur le bouton ci-dessous pour confirmer cette adresse email.</p>
+                        <p>Vous avez récemment demandé la modification de l'adresse électronique associée à votre compte sur FitTrackee. Cliquez sur le bouton ci-dessous pour confirmer cette adresse électronique.</p>
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                           <tr>
                             <td align="center">
                               <table width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation">
                                 <tr>
                                   <td align="center">
-                                    <a href="http://localhost/email-update?token=xxx" class="f-fallback button button--green" target="_blank">Vérifier l'adresse email</a>
+                                    <a href="http://localhost/email-update?token=xxx" class="f-fallback button button--green" target="_blank">Vérifier l'adresse électronique</a>
                                   </td>
                                 </tr>
                               </table>
@@ -233,7 +233,7 @@ expected_fr_html_body = """  <body>
                         </table>
                         <p>
                           Pour vérification, cette demande a été reçue à partir d'un appareil sous Linux, utilisant le navigateur Firefox.
-                          Si vous n'êtes pas à l'origine de cette modification, vous pouvez ignorer cet e-mail.
+                          Si vous n'êtes pas à l'origine de cette modification, vous pouvez ignorer ce courriel.
                         </p>
                         <p>Merci,
                           <br>L'équipe FitTrackee</p>
@@ -270,7 +270,7 @@ expected_fr_html_body = """  <body>
 </html>"""
 
 expected_fr_html_body_without_security = """  <body>
-    <span class="preheader">Confirmer le changement d'adresse email.</span>
+    <span class="preheader">Confirmer le changement d'adresse électronique.</span>
     <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
       <tr>
         <td align="center">
@@ -289,14 +289,14 @@ expected_fr_html_body_without_security = """  <body>
                     <td class="content-cell">
                       <div class="f-fallback">
                         <h1>Bonjour test,</h1>
-                        <p>Vous avez récemment demandé la modification de l'adresse email associée à votre compte sur FitTrackee. Cliquez sur le bouton ci-dessous pour confirmer cette adresse email.</p>
+                        <p>Vous avez récemment demandé la modification de l'adresse électronique associée à votre compte sur FitTrackee. Cliquez sur le bouton ci-dessous pour confirmer cette adresse électronique.</p>
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                           <tr>
                             <td align="center">
                               <table width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation">
                                 <tr>
                                   <td align="center">
-                                    <a href="http://localhost/email-update?token=xxx" class="f-fallback button button--green" target="_blank">Vérifier l'adresse email</a>
+                                    <a href="http://localhost/email-update?token=xxx" class="f-fallback button button--green" target="_blank">Vérifier l'adresse électronique</a>
                                   </td>
                                 </tr>
                               </table>
@@ -304,7 +304,7 @@ expected_fr_html_body_without_security = """  <body>
                           </tr>
                         </table>
                         <p>
-                          Si vous n'êtes pas à l'origine de cette modification, vous pouvez ignorer cet e-mail.
+                          Si vous n'êtes pas à l'origine de cette modification, vous pouvez ignorer ce courriel.
                         </p>
                         <p>Merci,
                           <br>L'équipe FitTrackee</p>

@@ -8,14 +8,16 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2022-07-03 07:58+0200\n"
-"PO-Revision-Date: 2022-07-02 18:25+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2022-07-04 21:17+0000\n"
+"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/fittrackee/"
+"fittrackee-api-emails/de/>\n"
 "Language: de\n"
-"Language-Team: de <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.13.1-dev\n"
 "Generated-By: Babel 2.10.3\n"
 
 #: fittrackee/emails/templates/layout.html:215
@@ -46,16 +48,16 @@ msgstr "Danke"
 #: fittrackee/emails/templates/layout.html:222
 #: fittrackee/emails/templates/layout.txt:6
 msgid "The FitTrackee Team"
-msgstr "Dein FitTrackee Team"
+msgstr "Dein FitTrackee-Team"
 
 #: fittrackee/emails/templates/account_confirmation/body.html:2
 #: fittrackee/emails/templates/account_confirmation/subject.txt:1
 msgid "Confirm your account"
-msgstr "Bestätige Dein Konto"
+msgstr "Bestätige dein Konto"
 
 #: fittrackee/emails/templates/account_confirmation/body.html:3
 msgid "Use this link to confirm your account."
-msgstr "Verwendet diesen Link um Dein Konto zu bestätigen."
+msgstr "Verwendet diesen Link, um Dden Konto zu bestätigen."
 
 #: fittrackee/emails/templates/account_confirmation/body.html:4
 #: fittrackee/emails/templates/account_confirmation/body.txt:1
@@ -64,14 +66,15 @@ msgstr "Du hast ein Konto bei FitTrackee angelegt."
 
 #: fittrackee/emails/templates/account_confirmation/body.html:4
 msgid "Use the button below to confirm your address email."
-msgstr "Verwende den unteren Button um Deine E-Mail Adresse zu bestätigen."
+msgstr ""
+"Verwende die unteren Schaltfläche, um deine E-Mail-Adresse zu bestätigen."
 
 #: fittrackee/emails/templates/account_confirmation/body.html:11
 #: fittrackee/emails/templates/account_confirmation/body.txt:4
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:11
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:4
 msgid "Verify your email"
-msgstr "Bestätige Deine E-Mail"
+msgstr "Bestätige deine E-Mail"
 
 #: fittrackee/emails/templates/account_confirmation/body.html:18
 #: fittrackee/emails/templates/account_confirmation/body.txt:7
@@ -89,21 +92,21 @@ msgid ""
 "If you're having trouble with the button above, copy and paste the URL "
 "below into your web browser."
 msgstr ""
-"Falls Du Probleme mit dem oberen Button hast, kopiere diese URL und gebe "
-"sie in Deinen Webbrowser ein."
+"Falls du Probleme mit der oberen Schaltfläche hast, kopiere diese URL und "
+"gebe sie in deinen Webbrowser ein."
 
 #: fittrackee/emails/templates/account_confirmation/body.txt:2
 msgid "Use the link below to confirm your address email."
-msgstr "Verwende den unteren Link um Deine E-Mail Adresse zu bestätigen."
+msgstr "Verwende den unteren Link, um deine E-Mail-Adresse zu bestätigen."
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:2
 #: fittrackee/emails/templates/email_update_to_current_email/subject.txt:1
 msgid "Email changed"
-msgstr "E-Mail Adresse geändert"
+msgstr "E-Mail-Adresse geändert"
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:3
 msgid "Your email is being updated."
-msgstr "Deine E-Mail Adresse wure aktualisiert."
+msgstr "Deine E-Mail-Adresse wurde aktualisiert."
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:4
 #: fittrackee/emails/templates/email_update_to_current_email/body.txt:1
@@ -111,8 +114,8 @@ msgid ""
 "You recently requested to change your email address for your FitTrackee "
 "account to:"
 msgstr ""
-"Du hast kürzlich beantragt, die E-Mail Adresse Deines FitTrackee Kontos "
-"zu ändern. Neue Adresse:"
+"Du hast kürzlich beantragt, die E-Mail-Adresse deines FitTrackee-Kontos zu "
+"ändern. Neue Adresse:"
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:18
 #: fittrackee/emails/templates/email_update_to_current_email/body.txt:4
@@ -120,18 +123,18 @@ msgid ""
 "If this email change wasn't initiated by you, please change your password"
 " immediately or contact your administrator if your account is locked."
 msgstr ""
-"Falls die Änderung der E-Mail Adresse nicht von Dir initiiert wurde, "
-"ändere bitte sofort Dein Passwort oder kontaktiere den Administrator, "
-"falls Dein Konto gesperrt ist."
+"Falls die Änderung der E-Mail-Adresse nicht von Dir initiiert wurde, ändere "
+"bitte sofort Dein Passwort oder kontaktiere den Administrator, falls dein "
+"Konto gesperrt ist."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:2
 #: fittrackee/emails/templates/email_update_to_new_email/subject.txt:1
 msgid "Confirm email change"
-msgstr "Bestätige E-Mail Änderung"
+msgstr "E-Mail-Änderung bestätigen"
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:3
 msgid "Use this link to confirm email change."
-msgstr "Verwende den unteren Link um Deine Adresse zu bestätigen."
+msgstr "Verwende den unteren Link, um deine Adresse zu bestätigen."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:4
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:1
@@ -139,23 +142,23 @@ msgid ""
 "You recently requested to change your email address for your FitTrackee "
 "account."
 msgstr ""
-"Du hast kürzlich beantragt, die E-Mail Adresse Deines FitTrackee Kontos "
-"zu ändern."
+"Du hast kürzlich beantragt, die E-Mail-Adresse deines FitTrackee-Kontos zu "
+"ändern."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:4
 msgid "Use the button below to confirm this address."
-msgstr "Verwende den unteren Button um Deine Adresse zu bestätigen."
+msgstr "Verwende die untere Schaltfläche, um deine Adresse zu bestätigen."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:18
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:7
 msgid "If this email change wasn't initiated by you, please ignore this email."
 msgstr ""
-"Falls die Änderung der E-Mail Adresse nicht von Dir initiiert wurde, "
+"Falls die Änderung der E-Mail-Adresse nicht von dir initiiert wurde, "
 "ignoriere diese E-Mail bitte."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:2
 msgid "Use the link below to confirm this address."
-msgstr "Verwende den unteren Link um Deine Adresse zu bestätigen."
+msgstr "Verwende den unteren Link, um deine Adresse zu bestätigen."
 
 #: fittrackee/emails/templates/password_change/body.html:2
 #: fittrackee/emails/templates/password_change/subject.txt:1
@@ -169,7 +172,7 @@ msgstr "Dein Passwort wurde geändert."
 #: fittrackee/emails/templates/password_change/body.html:4
 #: fittrackee/emails/templates/password_change/body.txt:1
 msgid "The password for your FitTrackee account has been changed."
-msgstr "Das Passwort Deines FitTrackee Kontos wurde geändert."
+msgstr "Das Passwort deines FitTrackee-Kontos wurde geändert."
 
 #: fittrackee/emails/templates/password_change/body.html:5
 #: fittrackee/emails/templates/password_change/body.txt:4
@@ -178,9 +181,9 @@ msgid ""
 "password immediately or contact your administrator if your account is "
 "locked."
 msgstr ""
-"Falls die Änderung des Passworts nicht von Dir initiiert wurde, ändere "
-"bitte sofort Dein Passwort oder kontaktiere den Administrator, falls Dein"
-" Konto gesperrt ist."
+"Falls die Änderung des Passworts nicht von dir initiiert wurde, ändere bitte "
+"sofort dein Passwort oder kontaktiere den Administrator, falls dein Konto "
+"gesperrt ist."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:2
 #: fittrackee/emails/templates/password_reset_request/subject.txt:1
@@ -193,19 +196,19 @@ msgid ""
 "Use this link to reset your password. The link is only valid for "
 "%(expiration_delay)s."
 msgstr ""
-"Verwende den unteren Link um Dein Passwort zurückzusetzen. Der Link ist "
-"nur für %(expiration_delay)s gültig."
+"Verwende den unteren Link, um dein Passwort zurückzusetzen. Der Link ist nur "
+"für %(expiration_delay)s gültig."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:4
 #: fittrackee/emails/templates/password_reset_request/body.txt:1
 msgid "You recently requested to reset your password for your FitTrackee account."
 msgstr ""
-"Du hast kürzlich beantragt, das Passwort Deines FitTrackee Kontos "
+"Du hast kürzlich beantragt, das Passwort deines FitTrackee-Kontos "
 "zurückzusetzen."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:4
 msgid "Use the button below to reset it."
-msgstr "Verwende den unteren Button um es zurückzusetzen."
+msgstr "Verwende die untere Schaltfläche, um es zurückzusetzen."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:5
 #: fittrackee/emails/templates/password_reset_request/body.txt:2
@@ -216,16 +219,15 @@ msgstr "Der Link ist nur für %(expiration_delay)s gültig."
 #: fittrackee/emails/templates/password_reset_request/body.html:13
 #: fittrackee/emails/templates/password_reset_request/body.txt:4
 msgid "Reset your password"
-msgstr "Setze Dein Passwort zurück"
+msgstr "Dein Passwort zurücksetzen"
 
 #: fittrackee/emails/templates/password_reset_request/body.html:20
 #: fittrackee/emails/templates/password_reset_request/body.txt:7
 msgid "If you did not request a password reset, please ignore this email."
 msgstr ""
-"Falls Du das Zurücksetzen des Passworts nicht angefordert hast, igoniere "
+"Falls du das Zurücksetzen des Passworts nicht angefordert hast, igoniere "
 "diese E-Mail bitte."
 
 #: fittrackee/emails/templates/password_reset_request/body.txt:1
 msgid "Use the link below to reset it."
-msgstr "Verwende den unteren Link um es zurückzusetzen."
-
+msgstr "Verwende den unteren Link, um es zurückzusetzen."
