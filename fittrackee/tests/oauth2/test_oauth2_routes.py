@@ -108,7 +108,7 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
 
         self.assert_400(
             response,
-            error_message=('OAuth2 client invalid scopes'),
+            error_message='OAuth2 client invalid scopes',
         )
 
     def test_it_creates_oauth_client(self, app: Flask, user_1: User) -> None:
@@ -254,6 +254,29 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
 
         self.assert_400(response, error_message='invalid payload')
 
+    def test_it_returns_error_when_response_type_is_not_code(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        oauth_client = self.create_oauth2_client(user_1)
+
+        response = client.post(
+            self.route,
+            data={
+                'client_id': oauth_client.client_id,
+                'response_type': self.random_string(),
+                'confirm': True,
+            },
+            headers=dict(
+                Authorization=f'Bearer {auth_token}',
+                content_type='multipart/form-data',
+            ),
+        )
+
+        self.assert_400(response, error_message='invalid payload')
+
     @pytest.mark.parametrize(
         'input_confirmation', [{'confirm': True}, {'confirm': 'true'}]
     )
@@ -341,7 +364,9 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
             f'{oauth_client.get_default_redirect_uri()}?code={code.code}'
         )
 
-    @pytest.mark.parametrize('input_confirmation', [{}, {'confirm': False}])
+    @pytest.mark.parametrize(
+        'input_confirmation', [{}, {'confirm': False}, {'confirm': 'false'}]
+    )
     def test_it_returns_error_when_no_confirmation(
         self, app: Flask, user_1: User, input_confirmation: Dict
     ) -> None:
@@ -531,10 +556,29 @@ class TestOAuthIssueAccessToken(OAuthIssueTokenTestCase):
 
         self.assert_invalid_request(response)
 
-    def test_it_returns_error_when_code_is_invalid(
+    def test_it_returns_error_when_grant_type_is_not_authorization_code(
         self, app: Flask, user_1: User
     ) -> None:
         oauth_client, code = self.create_authorized_oauth_client(app, user_1)
+        client = app.test_client()
+
+        response = client.post(
+            self.route,
+            data={
+                'client_id': oauth_client.client_id,
+                'client_secret': oauth_client.client_secret,
+                'grant_type': self.random_string(),
+                'code': code,
+            },
+            headers=dict(content_type='multipart/form-data'),
+        )
+
+        self.assert_unsupported_grant_type(response)
+
+    def test_it_returns_error_when_code_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        oauth_client, _ = self.create_authorized_oauth_client(app, user_1)
         client = app.test_client()
 
         response = client.post(
@@ -570,6 +614,34 @@ class TestOAuthIssueAccessToken(OAuthIssueTokenTestCase):
 
 class TestOAuthIssueAccessTokenWithCodeChallenge(OAuthIssueTokenTestCase):
     route = '/api/oauth/token'
+
+    def test_it_returns_error_when_grant_type_is_not_authorization_code(
+        self, app: Flask, user_1: User
+    ) -> None:
+        code_verifier = generate_token(48)
+        oauth_client, code = self.create_authorized_oauth_client(
+            app,
+            user_1,
+            code_challenge={
+                'code_challenge': create_s256_code_challenge(code_verifier),
+                'code_challenge_method': 'S256',
+            },
+        )
+        client = app.test_client()
+
+        response = client.post(
+            self.route,
+            data={
+                'client_id': oauth_client.client_id,
+                'client_secret': oauth_client.client_secret,
+                'grant_type': self.random_string(),
+                'code': code,
+                'code_verifier': code_verifier,
+            },
+            headers=dict(content_type='multipart/form-data'),
+        )
+
+        self.assert_unsupported_grant_type(response)
 
     def test_it_raises_error_when_code_verifier_is_invalid(
         self, app: Flask, user_1: User

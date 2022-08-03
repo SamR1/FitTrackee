@@ -523,13 +523,14 @@ def authorize(auth_user: User) -> Union[HttpResponse, Dict]:
     :form string  response_type: client response type (only 'code' is supported
                                 by FitTrackee)
     :form string  scopes: OAuth2 client scopes
-    :form boolean confirm: confirmation
+    :form boolean confirm: confirmation (must be 'true')
     :form string  state: unique value to prevent cross-site request forgery
-                         (not mandatory)
+                         (not mandatory but recommended)
     :form string  code_challenge: string generated from a code verifier
-                         (for PKCE, not mandatory)
+                         (for PKCE, not mandatory but recommended)
     :form string  code_challenge_method: method used to create challenge,
-                         for instance "S256" (for PKCE, not mandatory)
+                         for instance "S256" (mandatory if `code_challenge`
+                         provided)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -543,7 +544,12 @@ def authorize(auth_user: User) -> Union[HttpResponse, Dict]:
         - invalid token, please log in again
     """
     data = request.form
-    if not data or 'client_id' not in data or 'response_type' not in data:
+    if (
+        not data
+        or 'client_id' not in data
+        or 'response_type' not in data
+        or data.get('response_type') != 'code'
+    ):
         return InvalidPayloadErrorResponse()
 
     confirm = data.get('confirm', 'false')
@@ -594,7 +600,7 @@ def issue_token() -> Response:
     :form string  code: code generated after authorizing the client
                          (for token issue)
     :form string  code_verifier: code verifier
-                         (for PKCE and token issue, not mandatory)
+                         (for token issue with PKCE, not mandatory)
     :form string  refresh_token: refresh token (for token refresh)
 
     :statuscode 200: success
