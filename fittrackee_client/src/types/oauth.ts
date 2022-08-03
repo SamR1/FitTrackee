@@ -27,5 +27,7 @@ export interface IOAuth2ClientAuthorizePayload {
   redirect_uri: string
   response_type: string
   scope: string
-  state?: string
+  state: string
+  code_challenge: string
+  code_challenge_method: string
 }

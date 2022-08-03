@@ -73,7 +73,15 @@
       redirect_uri: `${route.query.redirect_uri}`,
       response_type: `${route.query.response_type}`,
       scope: `${route.query.scope}`,
-      state: `${route.query.state}`,
+      state: `${route.query.state ? route.query.state : ''}`,
+      code_challenge: `${
+        route.query.code_challenge ? route.query.code_challenge : ''
+      }`,
+      code_challenge_method: `${
+        route.query.code_challenge_method
+          ? route.query.code_challenge_method
+          : ''
+      }`,
     })
   }
 </script>

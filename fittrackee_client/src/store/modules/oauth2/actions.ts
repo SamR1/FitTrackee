@@ -43,6 +43,12 @@ export const actions: ActionTree<IOAuth2State, IRootState> & IOAuth2Actions = {
     if (payload.state) {
       form.set('state', payload.state)
     }
+    if (payload.code_challenge) {
+      form.set('code_challenge', payload.code_challenge)
+    }
+    if (payload.code_challenge_method) {
+      form.set('code_challenge_method', payload.code_challenge_method)
+    }
 
     authApi
       .post('oauth/authorize', form, {
