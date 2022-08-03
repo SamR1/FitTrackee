@@ -19,7 +19,7 @@ def oauth2_cli() -> None:
 
 
 @oauth2_cli.command('clean')
-@click.option('--days', type=int, help='Number of days.')
+@click.option('--days', type=int, required=True, help='Number of days.')
 def clean(
     days: int,
 ) -> None:
