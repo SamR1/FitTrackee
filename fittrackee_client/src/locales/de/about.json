@@ -1,6 +1,6 @@
 {
-  "CONTACT_ADMIN": "Kontaktiere den Administrator",
-  "FITTRACKEE_DESCRIPTION": "<strong>FitTrackee</strong> ist ein selbst-gehosteter Outdoor-Aktivitäts-Tracker.",
-  "FITTRACKEE_LICENSE": "unter {0} Lizenz",
-  "SOURCE_CODE": "Quellkode"
+    "CONTACT_ADMIN": "Kontaktiere den Administrator",
+    "FITTRACKEE_DESCRIPTION": "<strong>FitTrackee</strong> ist ein selbst-gehosteter Outdoor-Aktivitäts-Tracker.",
+    "FITTRACKEE_LICENSE": "unter {0} Lizenz ",
+    "SOURCE_CODE": "Quellkode"
 }
