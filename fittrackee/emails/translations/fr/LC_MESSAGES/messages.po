@@ -37,7 +37,7 @@ msgid ""
 "For security, this request was received from a %(operating_system)s "
 "device using %(browser_name)s."
 msgstr ""
-"Par sécurité, cette demande a été reçue à partir d'un appareil sous "
+"Pour vérification, cette demande a été reçue à partir d'un appareil sous "
 "%(operating_system)s, utilisant le navigateur %(browser_name)s."
 
 #: fittrackee/emails/templates/layout.html:221
@@ -115,7 +115,7 @@ msgid ""
 "account to:"
 msgstr ""
 "Vous avez récemment demandé la modification de l'adresse électronique "
-"associée à votre compte sur FitTrackee vers :"
+"associée à votre compte sur FitTrackee vers :"
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:18
 #: fittrackee/emails/templates/email_update_to_current_email/body.txt:4
