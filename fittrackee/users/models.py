@@ -50,6 +50,7 @@ class User(BaseModel):
     is_active = db.Column(db.Boolean, default=False, nullable=False)
     email_to_confirm = db.Column(db.String(255), nullable=True)
     confirmation_token = db.Column(db.String(255), nullable=True)
+    display_ascent = db.Column(db.Boolean, default=True, nullable=False)
 
     def __repr__(self) -> str:
         return f'<User {self.username!r}>'
@@ -127,7 +128,7 @@ class User(BaseModel):
             raise UserNotFoundException()
 
         sports = []
-        total = (0, '0:00:00')
+        total = (0, '0:00:00', 0)
         if self.workouts_count > 0:  # type: ignore
             sports = (
                 db.session.query(Workout.sport_id)
@@ -138,7 +139,9 @@ class User(BaseModel):
             )
             total = (
                 db.session.query(
-                    func.sum(Workout.distance), func.sum(Workout.duration)
+                    func.sum(Workout.distance),
+                    func.sum(Workout.duration),
+                    func.sum(Workout.ascent),
                 )
                 .filter(Workout.user_id == self.id)
                 .first()
@@ -162,6 +165,7 @@ class User(BaseModel):
             'sports_list': [
                 sport for sportslist in sports for sport in sportslist
             ],
+            'total_ascent': float(total[2]) if total[2] else 0.0,
             'total_distance': float(total[0]),
             'total_duration': str(total[1]),
             'username': self.username,
@@ -170,6 +174,7 @@ class User(BaseModel):
             serialized_user = {
                 **serialized_user,
                 **{
+                    'display_ascent': self.display_ascent,
                     'imperial_units': self.imperial_units,
                     'language': self.language,
                     'timezone': self.timezone,

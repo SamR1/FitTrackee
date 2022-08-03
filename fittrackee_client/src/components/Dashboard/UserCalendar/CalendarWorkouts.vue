@@ -8,6 +8,7 @@
         <CalendarWorkout
           v-for="(workout, index) in workouts.slice(0, displayedWorkoutCount)"
           :key="index"
+          :displayHARecord="displayHARecord"
           :workout="workout"
           :sportLabel="getSportLabel(workout, sports)"
           :sportColor="getSportColor(workout, sports)"
@@ -46,12 +47,13 @@
   import { getDonutDatasets } from '@/utils/workouts'
 
   interface Props {
+    displayHARecord: boolean
     workouts: IWorkout[]
     sports: ISport[]
   }
   const props = defineProps<Props>()
 
-  const { workouts, sports } = toRefs(props)
+  const { displayHARecord, workouts, sports } = toRefs(props)
   const chartDatasets = computed(() => getDonutDatasets(props.workouts))
   const colors = computed(() => sportIdColors(props.sports))
   const displayedWorkoutCount = 6

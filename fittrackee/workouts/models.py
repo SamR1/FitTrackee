@@ -22,6 +22,7 @@ BaseModel: DeclarativeMeta = db.Model
 record_types = [
     'AS',  # 'Best Average Speed'
     'FD',  # 'Farthest Distance'
+    'HA',  # 'Highest Ascent'
     'LD',  # 'Longest Duration'
     'MS',  # 'Max speed'
 ]
@@ -319,9 +320,14 @@ class Workout(BaseModel):
     def get_user_workout_records(
         cls, user_id: int, sport_id: int, as_integer: Optional[bool] = False
     ) -> Dict:
+        """
+        Note:
+        Values for ascent are null for workouts without gpx
+        """
         record_types_columns = {
             'AS': 'ave_speed',  # 'Average speed'
             'FD': 'distance',  # 'Farthest Distance'
+            'HA': 'ascent',  # 'Highest Ascent'
             'LD': 'moving',  # 'Longest Duration'
             'MS': 'max_speed',  # 'Max speed'
         }
@@ -329,7 +335,11 @@ class Workout(BaseModel):
         for record_type, column in record_types_columns.items():
             column_sorted = getattr(getattr(Workout, column), 'desc')()
             record_workout = (
-                Workout.query.filter_by(user_id=user_id, sport_id=sport_id)
+                Workout.query.filter(
+                    Workout.user_id == user_id,
+                    Workout.sport_id == sport_id,
+                    getattr(Workout, column) != None,  # noqa
+                )
                 .order_by(column_sorted, Workout.workout_date)
                 .first()
             )
@@ -481,7 +491,7 @@ class Record(BaseModel):
             return datetime.timedelta(seconds=self._value)
         elif self.record_type in ['AS', 'MS']:
             return float(self._value / 100)
-        else:  # 'FD'
+        else:  # 'FD' or 'HA'
             return float(self._value / 1000)
 
     @value.setter  # type: ignore
@@ -491,7 +501,7 @@ class Record(BaseModel):
     def serialize(self) -> Dict:
         if self.value is None:
             value = None
-        elif self.record_type in ['AS', 'FD', 'MS']:
+        elif self.record_type in ['AS', 'FD', 'HA', 'MS']:
             value = float(self.value)  # type: ignore
         else:  # 'LD'
             value = str(self.value)  # type: ignore

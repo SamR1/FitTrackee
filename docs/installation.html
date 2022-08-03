@@ -3,9 +3,9 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Installation &#8212; FitTrackee 0.6.10
+    <title>Installation &#8212; FitTrackee 0.6.11
  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css" />
@@ -41,7 +41,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.10
+        <span class="navbar-text navbar-version pull-left"><b>0.6.11
 </b></span>
       </div>
 
@@ -713,11 +713,11 @@ $ make install-db
 </div>
 </div>
 <ul class="simple">
-<li><p>Download the last release (for now, it is the release v0.6.10):</p></li>
+<li><p>Download the last release (for now, it is the release v0.6.11):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.6.10.tar.gz
-$ tar -xzf v0.6.10.tar.gz
-$ mv FitTrackee-0.6.10 FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.6.11.tar.gz
+$ tar -xzf v0.6.11.tar.gz
+$ mv FitTrackee-0.6.11 FitTrackee
 $ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
@@ -837,11 +837,11 @@ $ <span class="nb">source</span> .env
 <ul class="simple">
 <li><p>Stop the application</p></li>
 <li><p>Change to the directory where FitTrackee directory is located</p></li>
-<li><p>Download the last release (for now, it is the release v0.6.10) and overwrite existing files:</p></li>
+<li><p>Download the last release (for now, it is the release v0.6.11) and overwrite existing files:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.6.10.tar.gz
-$ tar -xzf v0.6.10.tar.gz
-$ cp -R FitTrackee-0.6.10/* FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.6.11.tar.gz
+$ tar -xzf v0.6.11.tar.gz
+$ cp -R FitTrackee-0.6.11/* FitTrackee/
 $ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
@@ -996,15 +996,23 @@ server {
 </div>
 <p>For evaluation purposes, docker files are available, installing <strong>FitTrackee</strong> from <strong>sources</strong>.</p>
 <ul class="simple">
-<li><p>To install <strong>FitTrackee</strong> with database initialisation and run the application and dramatiq workers:</p></li>
+<li><p>To install <strong>FitTrackee</strong>:</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/SamR1/FitTrackee.git
 $ <span class="nb">cd</span> FitTrackee
 $ cp .env.docker .env
-$ make docker-build docker-run docker-init
+$ make docker-build
 </pre></div>
 </div>
-<p>Open <a class="reference external" href="http://localhost:5000">http://localhost:5000</a> and register.</p>
+<ul class="simple">
+<li><p>To initialise database:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ docker-init
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Open <a class="reference external" href="http://localhost:5000">http://localhost:5000</a> and register.</p></li>
+</ul>
 <p>Open <a class="reference external" href="http://localhost:8025">http://localhost:8025</a> to access <a class="reference external" href="https://github.com/mailhog/MailHog">MailHog interface</a> (email testing tool)</p>
 <ul class="simple">
 <li><p>To set admin rights to the newly created account, use the following command line:</p></li>
@@ -1057,6 +1065,15 @@ $ make docker-build docker-run docker-init
 <p class="admonition-title">Note</p>
 <p>Some environment variables need to be updated like <cite>UI_URL</cite></p>
 </div>
+<ul class="simple">
+<li><p>to run lint or tests:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make docker-lint-client  <span class="c1"># run lint on javascript files</span>
+$ make docker-test-client  <span class="c1"># run unit tests on Client</span>
+$ make docker-lint-python  <span class="c1"># run type check and lint on python files</span>
+$ make docker-test-python  <span class="c1"># run unit tests on API</span>
+</pre></div>
+</div>
 </section>
 </section>
 </section>
@@ -1074,7 +1091,7 @@ $ make docker-build docker-run docker-init
     </p>
     <p>
         &copy; Copyright 2018 - 2022, SamR1.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br/>
     </p>
   </div>
 </footer>
