@@ -77,6 +77,8 @@ deployment method.
 
     **FitTrackee** secret key, must be initialized in production environment.
 
+    .. warning::
+        Use a strong secret key. This key is used in JWT generation.
 
 .. envvar:: APP_WORKERS
 
@@ -686,6 +688,7 @@ Examples (to update depending on your application configuration and given distri
             proxy_set_header  X-Real-IP $remote_addr;
             proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header  X-Forwarded-Host $server_name;
+            proxy_set_header  X-Forwarded-Proto $scheme;
         }
     }
 
