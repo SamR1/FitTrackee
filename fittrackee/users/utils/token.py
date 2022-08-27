@@ -21,10 +21,11 @@ def get_user_token(
         if password_reset
         else current_app.config['TOKEN_EXPIRATION_SECONDS']
     )
+    now = datetime.utcnow()
     payload = {
-        'exp': datetime.utcnow()
+        'exp': now
         + timedelta(days=expiration_days, seconds=expiration_seconds),
-        'iat': datetime.utcnow(),
+        'iat': now,
         'sub': user_id,
     }
     return jwt.encode(

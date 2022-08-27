@@ -83,6 +83,8 @@ Account & preferences
   | A disabled sport (by admin or user) will not appear in dropdown when **adding a workout**.
   | A workout with a disabled sport will still be displayed in the application.
 
+- A user can create `clients <apps.html>`__ for third-party applications (*new in 0.7.0*).
+
 
 Administration
 ^^^^^^^^^^^^^^

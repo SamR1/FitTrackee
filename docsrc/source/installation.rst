@@ -9,6 +9,7 @@ This application is written in Python (API) and Typescript (client):
     - `staticmap <https://github.com/komoot/staticmap>`_ to generate a static map image from gpx coordinates
     - `python-forecast.io <https://github.com/ZeevG/python-forecast.io>`_ to fetch weather data from `Dark Sky <https://darksky.net>`__ (former forecast.io)
     - `dramatiq <https://flask-dramatiq.readthedocs.io/en/latest/>`_ for task queue
+    - `Authlib <https://docs.authlib.org/en/latest/>`_ for OAuth 2.0 Authorization support
 - Client:
     - Vue3/Vuex
     - `Leaflet <https://leafletjs.com/>`__ to display map
@@ -76,6 +77,8 @@ deployment method.
 
     **FitTrackee** secret key, must be initialized in production environment.
 
+    .. warning::
+        Use a strong secret key. This key is used in JWT generation.
 
 .. envvar:: APP_WORKERS
 
@@ -685,6 +688,7 @@ Examples (to update depending on your application configuration and given distri
             proxy_set_header  X-Real-IP $remote_addr;
             proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header  X-Forwarded-Host $server_name;
+            proxy_set_header  X-Forwarded-Proto $scheme;
         }
     }
 

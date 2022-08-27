@@ -3,6 +3,7 @@ import { ActionContext } from 'vuex'
 
 import { ROOT_STORE } from '@/store/constants'
 import { IAuthUserState } from '@/store/modules/authUser/types'
+import { IOAuth2State } from '@/store/modules/oauth2/types'
 import { IRootState } from '@/store/modules/root/types'
 import { ISportsState } from '@/store/modules/sports/types'
 import { IStatisticsState } from '@/store/modules/statistics/types'
@@ -19,6 +20,7 @@ export const handleError = (
   context:
     | ActionContext<IRootState, IRootState>
     | ActionContext<IAuthUserState, IRootState>
+    | ActionContext<IOAuth2State, IRootState>
     | ActionContext<IStatisticsState, IRootState>
     | ActionContext<ISportsState, IRootState>
     | ActionContext<IUsersState, IRootState>

@@ -43,6 +43,7 @@ pyOpenSSL = "^22.0"
 ua-parser = "^0.15.0"
 Babel = "^2.10.3"
 Werkzeug = "2.1"  # removal of parse_rule in 2.2 breaks sphinxcontrib-httpdomain autoflask
+Authlib = "^1.0.1"
 
 [tool.poetry.dev-dependencies]
 black = "^22.6"

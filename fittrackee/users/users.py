@@ -12,6 +12,7 @@ from fittrackee.emails.tasks import (
     reset_password_email,
 )
 from fittrackee.files import get_absolute_file_path
+from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     ForbiddenErrorResponse,
     HttpResponse,
@@ -24,7 +25,6 @@ from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
 from .auth import get_language
-from .decorators import authenticate, authenticate_as_admin
 from .exceptions import InvalidEmailException, UserNotFoundException
 from .models import User, UserSportPreference
 from .utils.admin import UserManagerService
@@ -35,13 +35,15 @@ USER_PER_PAGE = 10
 
 
 @users_blueprint.route('/users', methods=['GET'])
-@authenticate_as_admin
+@require_auth(scopes=['users:read'], as_admin=True)
 def get_users(auth_user: User) -> Dict:
     """
     Get all users (regardless their account status), if authenticated user
-    has admin rights
+    has admin rights.
 
     It returns user preferences only for authenticated user.
+
+    **Scope**: ``users:read``
 
     **Example request**:
 
@@ -245,7 +247,7 @@ def get_users(auth_user: User) -> Dict:
 
 
 @users_blueprint.route('/users/<user_name>', methods=['GET'])
-@authenticate
+@require_auth(scopes=['users:read'])
 def get_single_user(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -254,6 +256,8 @@ def get_single_user(
     details.
 
     It returns user preferences only for authenticated user.
+
+    **Scope**: ``users:read``
 
     **Example request**:
 
@@ -413,10 +417,10 @@ def get_picture(user_name: str) -> Any:
 
 
 @users_blueprint.route('/users/<user_name>', methods=['PATCH'])
-@authenticate_as_admin
+@require_auth(scopes=['users:write'], as_admin=True)
 def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     """
-    Update user account
+    Update user account.
 
     - add/remove admin rights (regardless user account status)
     - reset password (and send email to update user password,
@@ -424,7 +428,9 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     - update user email (and send email to new user email, if sending enabled)
     - activate account for an inactive user
 
-    Only user with admin rights can modify another user
+    Only user with admin rights can modify another user.
+
+    **Scope**: ``users:write``
 
     **Example request**:
 
@@ -621,17 +627,19 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
 
 @users_blueprint.route('/users/<user_name>', methods=['DELETE'])
-@authenticate
+@require_auth(scopes=['users:write'])
 def delete_user(
     auth_user: User, user_name: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    Delete a user account
+    Delete a user account.
 
-    A user can only delete his own account
+    A user can only delete his own account.
 
     An admin can delete all accounts except his account if he's the only
-    one admin
+    one admin.
+
+    **Scope**: ``users:write``
 
     **Example request**:
 
