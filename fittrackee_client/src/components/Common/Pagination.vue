@@ -66,7 +66,7 @@
   function getQuery(
     page: number,
     cursor?: number
-  ): TWorkoutsPayload | TPaginationPayload {
+  ): TPaginationPayload | IOauth2ClientsPayload {
     const newQuery = Object.assign({}, query.value)
     newQuery.page = cursor ? page + cursor : page
     return newQuery
