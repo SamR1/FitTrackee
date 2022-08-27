@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>FitTrackee &#8212; FitTrackee 0.6.11
+    <title>Third-party applications &#8212; FitTrackee 0.6.11
  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css" />
@@ -17,7 +17,8 @@
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Features" href="features.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+    <link rel="prev" title="Features" href="features.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -38,7 +39,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="index.html">
           FitTrackee</a>
         <span class="navbar-text navbar-version pull-left"><b>0.6.11
 </b></span>
@@ -55,12 +56,12 @@
      id="dLabelGlobalToc"
      data-toggle="dropdown"
      data-target="#"
-     href="#">Docs <b class="caret"></b></a>
+     href="index.html">Docs <b class="caret"></b></a>
   <ul class="dropdown-menu globaltoc"
       role="menu"
-      aria-labelledby="dLabelGlobalToc"><ul>
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="apps.html">Third-party applications</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Third-party applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cli.html">Command line interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/index.html">API documentation</a></li>
@@ -79,8 +80,7 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">FitTrackee</a></li>
-<li><a class="reference internal" href="#table-of-contents">Table of contents</a></li>
+<li><a class="reference internal" href="#">Third-party applications</a></li>
 </ul>
 </ul>
 </li>
@@ -90,7 +90,11 @@
               
                 
   <li>
-    <a href="features.html" title="Next Chapter: Features"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Features &raquo;</span>
+    <a href="features.html" title="Previous Chapter: Features"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Features</span>
+    </a>
+  </li>
+  <li>
+    <a href="installation.html" title="Next Chapter: Installation"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Installation &raquo;</span>
     </a>
   </li>
               
@@ -100,7 +104,7 @@
             
               <li class="hidden-sm">
 <div id="sourcelink">
-  <a href="_sources/index.rst.txt"
+  <a href="_sources/apps.rst.txt"
      rel="nofollow">Source</a>
 </div></li>
             
@@ -124,45 +128,47 @@
   <div class="row">
     <div class="body col-md-12 content" role="main">
       
-  <section id="fittrackee">
-<h1>FitTrackee<a class="headerlink" href="#fittrackee" title="Permalink to this heading">¶</a></h1>
-<div class="line-block">
-<div class="line">This web application allows you to track your outdoor activities (workouts)
-from gpx files and keep your data on your own server.</div>
-<div class="line">No mobile app has been developed yet, but several existing mobile apps can
-store workouts data locally and export them into a gpx file.</div>
-<div class="line">Examples for Android (non-exhaustive list):</div>
-<div class="line">* <a class="reference external" href="https://github.com/jonasoreland/runnerup">Runner Up</a> (GPL v3)</div>
-<div class="line">* <a class="reference external" href="https://gitlab.com/brvier/ForRunners">ForRunners</a> (GPL v3)</div>
-<div class="line">* <a class="reference external" href="https://github.com/OpenTracksApp/OpenTracks">OpenTracks</a> (Apache License)</div>
-<div class="line">* <a class="reference external" href="https://codeberg.org/jannis/FitoTrack">FitoTrack</a> (GPL v3)</div>
+  <section id="third-party-applications">
+<h1>Third-party applications<a class="headerlink" href="#third-party-applications" title="Permalink to this heading">¶</a></h1>
+<p>(<em>new in 0.7.0</em>)</p>
+<p>FitTrackee provides a REST API (see <a class="reference external" href="api/index.html">documentation</a>) whose
+most endpoints require authorization/authentication.</p>
+<p>To allow a third-party application to interact with API endpoints, an
+<a class="reference external" href="https://datatracker.ietf.org/doc/html/rfc6749">OAuth2</a> client can be created
+in user settings (‘apps’ tab).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>OAuth2 support is implemented with <a class="reference external" href="https://docs.authlib.org/en/latest/">Authlib</a> library.</p>
 </div>
-<div class="line-block">
-<div class="line">Maps are displayed using <a class="reference external" href="https://www.openstreetmap.org">Open Street
-Map</a>.</div>
-<div class="line">It is also possible to add a workout without a gpx file.</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>OAuth2 endpoints requiring authentication are not accessible by third-party
+applications (<a class="reference external" href="api/oauth2.html">documentation</a>), only by FitTrackee
+client (first-party application).</p>
 </div>
-<div class="line-block">
-<div class="line"><strong>Still under heavy development (some features may be unstable).</strong></div>
-<div class="line">(see <a class="reference external" href="https://github.com/SamR1/FitTrackee/issues">issues</a> for more information)</div>
-</div>
-<figure class="align-default">
-<img alt="FitTrackee Dashboard" src="_images/fittrackee_screenshot-01.png" />
-</figure>
-</section>
-<section id="table-of-contents">
-<h1>Table of contents<a class="headerlink" href="#table-of-contents" title="Permalink to this heading">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="apps.html">Third-party applications</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cli.html">Command line interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/index.html">API documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting/index.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">Change log</a></li>
+<p>FitTrackee supports only <a class="reference external" href="https://datatracker.ietf.org/doc/html/rfc6749#section-1.3.1">Authorization Code</a>
+flow (with PKCE support).
+It allows to exchange an authorization code for an access token.
+It is recommended to use <a class="reference external" href="https://datatracker.ietf.org/doc/html/rfc7636">PKCE</a>
+to provide a better security.</p>
+<p>The following scopes are available:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">application:write</span></code>: grants write access to application configuration (only for users with administration rights),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">profile:read</span></code>: grants read access to auth endpoints,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">profile:write</span></code>: grants write access to auth endpoints,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">users:read</span></code>: grants read access to users endpoints,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">users:write</span></code>: grants write access to users endpoints,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">workouts:read</span></code>: grants read access to workouts-related endpoints,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">workouts:write</span></code>: grants write access to workouts-related endpoints.</p></li>
 </ul>
-</div>
+<figure class="align-default">
+<img alt="OAuth2 client creation on FitTrackee" src="_images/fittrackee_screenshot-07.png" />
+</figure>
+<p>Some resources about OAuth 2.0:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.oauth.com">OAuth 2.0 Simplified</a> by <a class="reference external" href="https://aaronparecki.com">Aaron Parecki</a></p></li>
+<li><p><a class="reference external" href="https://requests-oauthlib.readthedocs.io/en/latest/examples/real_world_example.html">Web App Example of OAuth 2 web application flow</a> with Requests-OAuthlib</p></li>
+</ul>
 </section>
 
 

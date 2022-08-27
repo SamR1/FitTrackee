@@ -61,6 +61,7 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apps.html">Third-party applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cli.html">Command line interface</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">API documentation</a></li>
@@ -132,7 +133,7 @@
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-register">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/register</span></span><a class="headerlink" href="#post--api-auth-register" title="Permalink to this definition">¶</a></dt>
-<dd><p>register a user and send confirmation email.</p>
+<dd><p>Register a user and send confirmation email.</p>
 <p>The newly created account is inactive. The user must confirm his email
 to activate it.</p>
 <p><strong>Example request</strong>:</p>
@@ -204,7 +205,7 @@ character “_” allowed</p></li>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-account-confirm">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/confirm</span></span><a class="headerlink" href="#post--api-auth-account-confirm" title="Permalink to this definition">¶</a></dt>
-<dd><p>activate user account after registration</p>
+<dd><p>Activate user account after registration.</p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/account/confirm</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -240,8 +241,8 @@ character “_” allowed</p></li>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-account-resend-confirmation">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/resend-confirmation</span></span><a class="headerlink" href="#post--api-auth-account-resend-confirmation" title="Permalink to this definition">¶</a></dt>
-<dd><p>resend email with instructions to confirm account</p>
-<p>If email sending is disabled, this endpoint is not available</p>
+<dd><p>Resend email with instructions to confirm account.</p>
+<p>If email sending is disabled, this endpoint is not available.</p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/account/resend-confirmation</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -277,7 +278,7 @@ character “_” allowed</p></li>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-login">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/login</span></span><a class="headerlink" href="#post--api-auth-login" title="Permalink to this definition">¶</a></dt>
-<dd><p>user login</p>
+<dd><p>User login.</p>
 <p>Only user with an active account can log in.</p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/login</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -331,7 +332,8 @@ character “_” allowed</p></li>
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-auth-profile">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile</span></span><a class="headerlink" href="#get--api-auth-profile" title="Permalink to this definition">¶</a></dt>
-<dd><p>get authenticated user info (profile, account, preferences)</p>
+<dd><p>Get authenticated user info (profile, account, preferences).</p>
+<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">profile:read</span></code></p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/auth/profile</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -443,7 +445,8 @@ character “_” allowed</p></li>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-profile-edit">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/edit</span></span><a class="headerlink" href="#post--api-auth-profile-edit" title="Permalink to this definition">¶</a></dt>
-<dd><p>edit authenticated user profile</p>
+<dd><p>Edit authenticated user profile.</p>
+<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/profile/edit</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -570,7 +573,8 @@ character “_” allowed</p></li>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-profile-edit-preferences">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/edit/preferences</span></span><a class="headerlink" href="#post--api-auth-profile-edit-preferences" title="Permalink to this definition">¶</a></dt>
-<dd><p>edit authenticated user preferences</p>
+<dd><p>Edit authenticated user preferences.</p>
+<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/profile/edit/preferences</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -698,7 +702,8 @@ character “_” allowed</p></li>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-profile-edit-sports">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/edit/sports</span></span><a class="headerlink" href="#post--api-auth-profile-edit-sports" title="Permalink to this definition">¶</a></dt>
-<dd><p>edit authenticated user sport preferences</p>
+<dd><p>Edit authenticated user sport preferences.</p>
+<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/profile/edit/sports</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -761,7 +766,8 @@ character “_” allowed</p></li>
 <dl class="http delete">
 <dt class="sig sig-object http" id="delete--api-auth-profile-reset-sports-(sport_id)">
 <span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/reset/sports/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sport_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#delete--api-auth-profile-reset-sports-(sport_id)" title="Permalink to this definition">¶</a></dt>
-<dd><p>reset authenticated user preferences for a given sport</p>
+<dd><p>Reset authenticated user preferences for a given sport.</p>
+<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/api/auth/profile/reset/sports/1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -805,7 +811,8 @@ character “_” allowed</p></li>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-picture">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/picture</span></span><a class="headerlink" href="#post--api-auth-picture" title="Permalink to this definition">¶</a></dt>
-<dd><p>update authenticated user picture</p>
+<dd><p>Update authenticated user picture.</p>
+<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/picture</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">multipart/form-data</span>
@@ -858,7 +865,8 @@ character “_” allowed</p></li>
 <dl class="http delete">
 <dt class="sig sig-object http" id="delete--api-auth-picture">
 <span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/auth/picture</span></span><a class="headerlink" href="#delete--api-auth-picture" title="Permalink to this definition">¶</a></dt>
-<dd><p>delete authenticated user picture</p>
+<dd><p>Delete authenticated user picture.</p>
+<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/api/auth/picture</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -893,7 +901,7 @@ character “_” allowed</p></li>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-password-reset-request">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/password/reset-request</span></span><a class="headerlink" href="#post--api-auth-password-reset-request" title="Permalink to this definition">¶</a></dt>
-<dd><p>handle password reset request</p>
+<dd><p>Handle password reset request.</p>
 <p>If email sending is disabled, this endpoint is not available</p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/password/reset-request</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -929,7 +937,7 @@ character “_” allowed</p></li>
 <dl class="http patch">
 <dt class="sig sig-object http" id="patch--api-auth-profile-edit-account">
 <span class="sig-name descname"><span class="pre">PATCH</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/edit/account</span></span><a class="headerlink" href="#patch--api-auth-profile-edit-account" title="Permalink to this definition">¶</a></dt>
-<dd><p>update authenticated user email and password</p>
+<dd><p>Update authenticated user email and password.</p>
 <p>It sends emails if sending is enabled:</p>
 <ul class="simple">
 <li><p>Password change</p></li>
@@ -940,6 +948,7 @@ character “_” allowed</p></li>
 </ul>
 </li>
 </ul>
+<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">PATCH</span> <span class="nn">/api/auth/profile/edit/account</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -1069,8 +1078,8 @@ character “_” allowed</p></li>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-password-update">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/password/update</span></span><a class="headerlink" href="#post--api-auth-password-update" title="Permalink to this definition">¶</a></dt>
-<dd><p>update user password after password reset request</p>
-<p>It sends emails if sending is enabled</p>
+<dd><p>Update user password after password reset request.</p>
+<p>It sends emails if sending is enabled.</p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/password/update</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -1107,7 +1116,7 @@ character “_” allowed</p></li>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-email-update">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/email/update</span></span><a class="headerlink" href="#post--api-auth-email-update" title="Permalink to this definition">¶</a></dt>
-<dd><p>update user email after confirmation</p>
+<dd><p>Update user email after confirmation.</p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/email/update</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
