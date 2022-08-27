@@ -132,7 +132,9 @@ class EmailService:
         if parsed_url.scheme != 'smtp':
             raise InvalidEmailUrlScheme()
         credentials = (
-            parsed_url.auth.split(':') if parsed_url.auth else [None, None]
+            parsed_url.auth.split(':')
+            if parsed_url.auth
+            else [None, None]  # type: ignore
         )
         return {
             'host': parsed_url.host,
