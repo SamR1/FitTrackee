@@ -1,5 +1,26 @@
 # Change log
 
+## Version 0.6.12 (2022/09/14)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#230](https://github.com/SamR1/FitTrackee/issues/230) - Database problem after upgrade to 0.6.11
+
+### Pull Requests
+
+#### Misc
+
+* [#225](https://github.com/SamR1/FitTrackee/pull/225) - Fix grammar issue
+
+Thanks to @Skylan0916
+
+In this release 1 issue was closed.  
+**Note:** This release contains a fix on the last database migration that will be executed only on versions lower than v0.6.11 (no data differences with v0.6.11, the fix allows to execute the migration on Postgres<12)  
+(see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/installation.html#upgrade)).
+
+
 ## Version 0.6.11 (2022/07/27)
 
 ### Issues Closed
