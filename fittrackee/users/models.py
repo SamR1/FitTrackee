@@ -97,7 +97,11 @@ class User(BaseModel):
         :return: integer|string
         """
         try:
-            return decode_user_token(auth_token)
+            resp = decode_user_token(auth_token)
+            is_blacklisted = BlacklistedToken.check(auth_token)
+            if is_blacklisted:
+                return 'blacklisted token, please log in again'
+            return resp
         except jwt.ExpiredSignatureError:
             return 'signature expired, please log in again'
         except jwt.InvalidTokenError:
@@ -233,3 +237,19 @@ class UserSportPreference(BaseModel):
             'is_active': self.is_active,
             'stopped_speed_threshold': self.stopped_speed_threshold,
         }
+
+
+class BlacklistedToken(BaseModel):
+    __tablename__ = 'blacklisted_tokens'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    token = db.Column(db.String(500), unique=True, nullable=False)
+    blacklisted_on = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self, token: str) -> None:
+        self.token = token
+        self.blacklisted_on = datetime.utcnow()
+
+    @classmethod
+    def check(cls, auth_token: str) -> bool:
+        return cls.query.filter_by(token=str(auth_token)).first() is not None
