@@ -17,11 +17,17 @@ depends_on = None
 
 
 def upgrade():
+    # workaround for PostgreSQL<12
+    # (can not use ALTER TYPE to add values in migrations)
+    op.execute("ALTER TYPE record_types RENAME TO record_types_old")
+    op.execute("CREATE TYPE record_types AS ENUM('AS', 'FD', 'LD', 'MS', 'HA')")
     op.execute(
         """
-        ALTER TYPE record_types ADD VALUE 'HA';
-        """
+        ALTER TABLE records ALTER COLUMN record_type TYPE record_types
+        USING record_type::text::record_types
+    """
     )
+    op.execute("DROP TYPE record_types_old")
 
     op.add_column(
         'users', sa.Column('display_ascent', sa.Boolean(), nullable=True)
