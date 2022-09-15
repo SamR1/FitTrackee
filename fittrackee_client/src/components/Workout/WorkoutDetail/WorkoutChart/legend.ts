@@ -32,7 +32,7 @@ export const htmlLegendPlugin = {
     legendItems.forEach((item: LegendItem) => {
       const li = document.createElement('li')
       li.onclick = () => {
-        if (item.datasetIndex) {
+        if (item.datasetIndex !== undefined) {
           chart.setDatasetVisibility(
             item.datasetIndex,
             !chart.isDatasetVisible(item.datasetIndex)
