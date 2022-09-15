@@ -25,7 +25,7 @@
         <dd>
           {{ client.client_id }}
           <i
-            v-if="afterCreation"
+            v-if="afterCreation && clipboardSupport"
             :class="`fa fa-${idCopied ? 'check' : 'copy'}`"
             aria-hidden="true"
             :title="$t('oauth2.COPY_TO_CLIPBOARD')"
@@ -39,6 +39,7 @@
         <dd v-if="afterCreation && client.client_secret" class="app-secret">
           {{ client.client_secret }}
           <i
+            v-if="clipboardSupport"
             :class="`fa fa-${secretCopied ? 'check' : 'copy'}`"
             aria-hidden="true"
             :title="$t('oauth2.COPY_TO_CLIPBOARD')"
@@ -146,9 +147,13 @@
   const messageToDisplay: Ref<string | null> = ref(null)
   const idCopied: Ref<boolean> = ref(false)
   const secretCopied: Ref<boolean> = ref(false)
+  const clipboardSupport: Ref<boolean> = ref(false)
 
   onBeforeMount(() => {
     loadClient()
+    if (navigator.clipboard) {
+      clipboardSupport.value = true
+    }
   })
 
   function loadClient() {
