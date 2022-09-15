@@ -17,4 +17,5 @@ Authentication
     auth.request_password_reset,
     auth.update_user_account,
     auth.update_password,
-    auth.update_email
+    auth.update_email,
+    auth.logout_user

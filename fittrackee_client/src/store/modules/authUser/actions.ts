@@ -59,6 +59,13 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
       )
       context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
     }
+    // after logout in another tab
+    if (
+      !window.localStorage.authToken &&
+      context.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED]
+    ) {
+      removeAuthUserData(context)
+    }
   },
   [AUTH_USER_STORE.ACTIONS.CONFIRM_ACCOUNT](
     context: ActionContext<IAuthUserState, IRootState>,
@@ -182,7 +189,17 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
   [AUTH_USER_STORE.ACTIONS.LOGOUT](
     context: ActionContext<IAuthUserState, IRootState>
   ): void {
-    removeAuthUserData(context)
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .post('auth/logout')
+      .then((res) => {
+        if (res.data.status === 'success') {
+          removeAuthUserData(context)
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
   },
   [AUTH_USER_STORE.ACTIONS.UPDATE_USER_PROFILE](
     context: ActionContext<IAuthUserState, IRootState>,

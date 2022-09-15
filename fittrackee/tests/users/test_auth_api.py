@@ -8,7 +8,8 @@ import pytest
 from flask import Flask
 from freezegun import freeze_time
 
-from fittrackee.users.models import User, UserSportPreference
+from fittrackee import db
+from fittrackee.users.models import BlacklistedToken, User, UserSportPreference
 from fittrackee.users.utils.token import get_user_token
 from fittrackee.workouts.models import Sport
 
@@ -496,6 +497,22 @@ class TestUserProfile(ApiTestCaseMixin):
 
         response = client.get(
             '/api/auth/profile', headers=dict(Authorization='Bearer invalid')
+        )
+
+        self.assert_invalid_token(response)
+
+    def test_it_returns_error_if_token_is_blacklisted(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        db.session.add(BlacklistedToken(token=auth_token))
+        db.session.commit()
+
+        response = client.get(
+            '/api/auth/profile',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         self.assert_invalid_token(response)
@@ -2562,3 +2579,85 @@ class TestResendAccountConfirmationEmail(ApiTestCaseMixin):
         self.assert_404_with_message(
             response, 'the requested URL was not found on the server'
         )
+
+
+class TestUserLogout(ApiTestCaseMixin):
+    def test_it_returns_error_when_headers_are_missing(
+        self, app: Flask
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post('/api/auth/logout', headers=dict())
+
+        self.assert_401(response, 'provide a valid auth token')
+
+    def test_it_returns_error_when_token_is_invalid(self, app: Flask) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/logout', headers=dict(Authorization='Bearer invalid')
+        )
+
+        self.assert_invalid_token(response)
+
+    def test_it_returns_error_when_token_is_expired(
+        self, app: Flask, user_1: User
+    ) -> None:
+        now = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        with freeze_time(now + timedelta(seconds=4)):
+
+            response = client.post(
+                '/api/auth/logout',
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+            self.assert_invalid_token(response)
+
+    def test_user_can_logout(self, app: Flask, user_1: User) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/logout',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'successfully logged out'
+        assert response.status_code == 200
+
+    def test_token_is_blacklisted_on_logout(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        client.post(
+            '/api/auth/logout',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        token = BlacklistedToken.query.filter_by(token=auth_token).first()
+        assert token.blacklisted_on is not None
+
+    def test_it_returns_error_if_token_is_already_blacklisted(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        db.session.add(BlacklistedToken(token=auth_token))
+        db.session.commit()
+
+        response = client.post(
+            '/api/auth/logout',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_invalid_token(response)

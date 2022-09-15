@@ -1,6 +1,5 @@
 import json
 import time
-from random import randint
 from typing import Dict, List, Optional, Tuple, Union
 from urllib.parse import parse_qs
 
@@ -18,7 +17,12 @@ from .custom_asserts import (
     assert_errored_response,
     assert_oauth_errored_response,
 )
-from .utils import TEST_OAUTH_CLIENT_METADATA, random_email, random_string
+from .utils import (
+    TEST_OAUTH_CLIENT_METADATA,
+    random_email,
+    random_int,
+    random_string,
+)
 
 
 class RandomMixin:
@@ -40,7 +44,7 @@ class RandomMixin:
 
     @staticmethod
     def random_int(min_val: int = 0, max_val: int = 999999) -> int:
-        return randint(min_val, max_val)
+        return random_int(min_val, max_val)
 
 
 class OAuth2Mixin(RandomMixin):

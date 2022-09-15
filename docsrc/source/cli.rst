@@ -65,6 +65,23 @@ Remove tokens expired for more than provided number of days
 Users
 ~~~~~
 
+``ftcli users clean_tokens``
+""""""""""""""""""""""""""""
+.. versionadded:: 0.7.0
+
+Remove blacklisted tokens expired for more than provided number of days.
+
+.. cssclass:: table-bordered
+.. list-table::
+   :widths: 25 50
+   :header-rows: 1
+
+   * - Options
+     - Description
+   * - ``--days``
+     - Number of days.
+
+
 ``ftcli users update``
 """"""""""""""""""""""
 .. versionadded:: 0.6.5

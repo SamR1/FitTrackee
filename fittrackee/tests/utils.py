@@ -35,6 +35,10 @@ def random_email() -> str:
     return random_string(suffix='@example.com')
 
 
+def random_int(min_val: int = 0, max_val: int = 999999) -> int:
+    return random.randint(min_val, max_val)
+
+
 def random_short_id() -> str:
     return encode_uuid(uuid4())
 

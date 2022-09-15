@@ -33,7 +33,7 @@ from fittrackee.responses import (
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport
 
-from .models import User, UserSportPreference
+from .models import BlacklistedToken, User, UserSportPreference
 from .utils.controls import check_password, is_valid_email, register_controls
 from .utils.token import decode_user_token
 
@@ -1536,3 +1536,70 @@ def resend_account_confirmation_email() -> Union[Dict, HttpResponse]:
         return response
     except (exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)
+
+
+@auth_blueprint.route('/auth/logout', methods=['POST'])
+@require_auth()
+def logout_user(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    User logout.
+    If a valid token is provided, it will be blacklisted.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/auth/logout HTTP/1.1
+      Content-Type: application/json
+
+    **Example responses**:
+
+    - successful logout
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "message": "successfully logged out",
+        "status": "success"
+      }
+
+    - error on logout
+
+    .. sourcecode:: http
+
+      HTTP/1.1 401 UNAUTHORIZED
+      Content-Type: application/json
+
+      {
+        "message": "provide a valid auth token",
+        "status": "error"
+      }
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: successfully logged out
+    :statuscode 401:
+      - provide a valid auth token
+      - The access token provided is expired, revoked, malformed, or invalid
+        for other reasons.
+    :statuscode 500:
+      - error on token blacklist
+
+    """
+    auth_token = request.headers.get('Authorization', '').split(' ')[1]
+    try:
+        db.session.add(BlacklistedToken(token=auth_token))
+        db.session.commit()
+    except Exception:
+        return {
+            'status': 'error',
+            'message': 'error on token blacklist',
+        }, 500
+
+    return {
+        'status': 'success',
+        'message': 'successfully logged out',
+    }, 200

@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 
 import click
@@ -5,6 +6,12 @@ import click
 from fittrackee.cli.app import app
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.utils.admin import UserManagerService
+from fittrackee.users.utils.token import clean_blacklisted_tokens
+
+handler = logging.StreamHandler()
+logger = logging.getLogger('fittrackee_clean_blacklisted_tokens')
+logger.setLevel(logging.INFO)
+logger.addHandler(handler)
 
 
 @click.group(name='users')
@@ -60,3 +67,16 @@ def manage_user(
             )
         except Exception as e:
             click.echo(f'An error occurred: {e}', err=True)
+
+
+@users_cli.command('clean_tokens')
+@click.option('--days', type=int, required=True, help='Number of days.')
+def clean(
+    days: int,
+) -> None:
+    """
+    Clean blacklisted tokens expired for more than provided number of days.
+    """
+    with app.app_context():
+        deleted_rows = clean_blacklisted_tokens(days)
+        logger.info(f'Blacklisted tokens deleted: {deleted_rows}.')
