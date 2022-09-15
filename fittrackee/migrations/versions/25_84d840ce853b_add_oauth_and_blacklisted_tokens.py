@@ -71,6 +71,7 @@ def upgrade():
     op.create_table('blacklisted_tokens',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('token', sa.String(length=500), nullable=False),
+    sa.Column('expired_at', sa.Integer(), nullable=False),
     sa.Column('blacklisted_on', sa.DateTime(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('token')
