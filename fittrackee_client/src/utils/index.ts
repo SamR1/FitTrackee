@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios'
 import { ActionContext } from 'vuex'
 
-import { ROOT_STORE } from '@/store/constants'
+import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
 import { IAuthUserState } from '@/store/modules/authUser/types'
 import { IOAuth2State } from '@/store/modules/oauth2/types'
 import { IRootState } from '@/store/modules/root/types'
@@ -28,6 +28,15 @@ export const handleError = (
   error: AxiosError | null,
   msg = 'UNKNOWN'
 ): void => {
+  // if stored token is blacklisted
+  if (
+    error?.response?.status === 401 &&
+    error.response.data.error === 'invalid_token'
+  ) {
+    localStorage.removeItem('authToken')
+    context.dispatch(AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER)
+    return
+  }
   const errorMessages = !error
     ? msg
     : error.response
