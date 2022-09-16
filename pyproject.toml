@@ -38,12 +38,12 @@ python-forecastio = "^1.4"
 pytz = "^2022.2"
 shortuuid = "^1.0.9"
 staticmap = "^0.5.4"
-SQLAlchemy = "1.4.40"
+SQLAlchemy = "=1.4.41"
 pyOpenSSL = "^22.0"
 ua-parser = "^0.16.1"
 Babel = "^2.10.3"
 Werkzeug = "2.1"  # removal of parse_rule in 2.2 breaks sphinxcontrib-httpdomain autoflask
-Authlib = "^1.0.1"
+Authlib = "=1.0.1"
 
 [tool.poetry.dev-dependencies]
 black = "^22.6"
