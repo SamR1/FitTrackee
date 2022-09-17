@@ -5,7 +5,7 @@ from typing import Any, Dict, Tuple, Union
 from flask import Blueprint, current_app, request, send_file
 from sqlalchemy import exc
 
-from fittrackee import db
+from fittrackee import db, limiter
 from fittrackee.emails.tasks import (
     email_updated_to_new_address,
     password_change_email,
@@ -379,6 +379,7 @@ def get_single_user(
 
 
 @users_blueprint.route('/users/<user_name>/picture', methods=['GET'])
+@limiter.exempt
 def get_picture(user_name: str) -> Any:
     """get user picture
 

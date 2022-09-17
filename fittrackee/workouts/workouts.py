@@ -16,7 +16,7 @@ from sqlalchemy import exc
 from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
-from fittrackee import appLog, db
+from fittrackee import appLog, db, limiter
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     DataInvalidPayloadErrorResponse,
@@ -784,6 +784,7 @@ def download_workout_gpx(
 
 
 @workouts_blueprint.route('/workouts/map/<map_id>', methods=['GET'])
+@limiter.exempt
 def get_map(map_id: int) -> Union[HttpResponse, Response]:
     """
     Get map image for workouts with gpx.
@@ -830,6 +831,7 @@ def get_map(map_id: int) -> Union[HttpResponse, Response]:
 @workouts_blueprint.route(
     '/workouts/map_tile/<s>/<z>/<x>/<y>.png', methods=['GET']
 )
+@limiter.exempt
 def get_map_tile(s: str, z: str, x: str, y: str) -> Tuple[Response, int]:
     """
     Get map tile from tile server.

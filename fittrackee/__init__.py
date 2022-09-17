@@ -2,8 +2,9 @@ import logging
 import os
 import re
 from importlib import import_module, reload
-from typing import Any
+from typing import Any, Dict, Tuple
 
+import redis
 from flask import (
     Flask,
     Response,
@@ -13,6 +14,9 @@ from flask import (
 )
 from flask_bcrypt import Bcrypt
 from flask_dramatiq import Dramatiq
+from flask_limiter import Limiter
+from flask_limiter.errors import RateLimitExceeded
+from flask_limiter.util import get_remote_address
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import ProgrammingError
@@ -22,11 +26,10 @@ from fittrackee.emails.email import EmailService
 from fittrackee.request import CustomRequest
 
 VERSION = __version__ = '0.6.12'
-db = SQLAlchemy()
-bcrypt = Bcrypt()
-migrate = Migrate()
-email_service = EmailService()
-dramatiq = Dramatiq()
+REDIS_URL = os.getenv('REDIS_URL', 'redis://')
+API_RATE_LIMITS = os.environ.get('API_RATE_LIMITS', '300 per 5 minutes').split(
+    ','
+)
 log_file = os.getenv('APP_LOG')
 logging.basicConfig(
     filename=log_file,
@@ -34,6 +37,27 @@ logging.basicConfig(
     datefmt='%Y/%m/%d %H:%M:%S',
 )
 appLog = logging.getLogger('fittrackee')
+
+db = SQLAlchemy()
+bcrypt = Bcrypt()
+migrate = Migrate()
+email_service = EmailService()
+dramatiq = Dramatiq()
+limiter = Limiter(
+    key_func=get_remote_address,
+    default_limits=API_RATE_LIMITS,  # type: ignore
+    default_limits_per_method=True,
+    headers_enabled=True,
+    storage_uri=REDIS_URL,
+    strategy='fixed-window',
+)
+# if redis is not available, disable the rate limiter
+r = redis.from_url(REDIS_URL)
+try:
+    r.ping()
+except redis.exceptions.ConnectionError:
+    limiter.enabled = False
+    appLog.warning('Redis not available, API rate limits are disabled.')
 
 
 class CustomFlask(Flask):
@@ -64,6 +88,7 @@ def create_app(init_email: bool = True) -> Flask:
     bcrypt.init_app(app)
     migrate.init_app(app, db)
     dramatiq.init_app(app)
+    limiter.init_app(app)
 
     # set oauth2
     from fittrackee.oauth2.config import config_oauth
@@ -140,7 +165,15 @@ def create_app(init_email: bool = True) -> Flask:
             )
             return response
 
+    @app.errorhandler(429)
+    def rate_limit_handler(error: RateLimitExceeded) -> Tuple[Dict, int]:
+        return {
+            'status': 'error',
+            'message': f'rate limit exceeded ({error.description})',
+        }, 429
+
     @app.route('/favicon.ico')
+    @limiter.exempt
     def favicon() -> Any:
         return send_file(
             os.path.join(app.root_path, 'dist/favicon.ico')  # type: ignore
@@ -148,6 +181,7 @@ def create_app(init_email: bool = True) -> Flask:
 
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
+    @limiter.exempt
     def catch_all(path: str) -> Any:
         # workaround to serve images (not in static directory)
         if path.startswith('img/'):
