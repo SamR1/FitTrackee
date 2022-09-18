@@ -10,6 +10,7 @@ This application is written in Python (API) and Typescript (client):
     - `python-forecast.io <https://github.com/ZeevG/python-forecast.io>`_ to fetch weather data from `Dark Sky <https://darksky.net>`__ (former forecast.io)
     - `dramatiq <https://flask-dramatiq.readthedocs.io/en/latest/>`_ for task queue
     - `Authlib <https://docs.authlib.org/en/latest/>`_ for OAuth 2.0 Authorization support
+    - `Flask-Limiter <https://flask-limiter.readthedocs.io/en/stable>`_ for API rate limits
 - Client:
     - Vue3/Vuex
     - `Leaflet <https://leafletjs.com/>`__ to display map
@@ -21,13 +22,16 @@ This application is written in Python (API) and Typescript (client):
 Prerequisites
 ~~~~~~~~~~~~~
 
--  Python 3.7+
--  PostgreSQL database (10+)
--  SMTP provider and Redis for task queue (if email sending is enabled)
--  API key from `Dark Sky <https://darksky.net/dev>`__ (not mandatory)
--  `Poetry <https://poetry.eustace.io>`__ (for installation from sources only)
--  `Yarn <https://yarnpkg.com>`__ (for development only)
--  Docker and Docker Compose (for development or evaluation purposes)
+- mandatory
+    - Python 3.7+
+    - PostgreSQL 10+
+- optional
+    - Redis for task queue (if email sending is enabled) and API rate limits
+    - SMTP provider (if email sending is enabled)
+    - API key from `Dark Sky <https://darksky.net/dev>`__
+    - `Poetry <https://poetry.eustace.io>`__ (for installation from sources only)
+    - `Yarn <https://yarnpkg.com>`__ (for development only)
+    -  Docker and Docker Compose (for development or evaluation purposes)
 
 .. note::
     | The following steps describe an installation on Linux systems (tested
@@ -156,7 +160,7 @@ deployment method.
 
     .. versionadded:: 0.3.0
 
-    Redis instance used by **Dramatiq**.
+    Redis instance used by **Dramatiq** and **Flask-Limiter**.
 
     :default: local Redis instance (``redis://``)
 
@@ -166,6 +170,15 @@ deployment method.
     .. versionadded:: 0.3.0
 
     Number of processes used by **Dramatiq**.
+
+
+.. envvar:: API_RATE_LIMITS 🆕
+
+    .. versionadded:: 0.7.0
+
+    API rate limits, see `API rate limits <installation.html#api-rate-limits>`__.
+
+    :default: `300 per 5 minutes`
 
 
 .. envvar:: TILE_SERVER_URL
@@ -178,7 +191,7 @@ deployment method.
     :default: `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`
 
 
-.. envvar:: STATICMAP_SUBDOMAINS 🆕
+.. envvar:: STATICMAP_SUBDOMAINS
 
     .. versionadded:: 0.6.10
 
@@ -287,6 +300,42 @@ For instance, to set OSM France tile server, the expected values are:
 - ``STATICMAP_SUBDOMAINS=a,b,c``
 
 The subdomain will be chosen randomly.
+
+
+API rate limits 🆕
+^^^^^^^^^^^^^^^^^^
+.. versionadded:: 0.7.0
+
+| API rate limits are managed by `Flask-Limiter <https://flask-limiter.readthedocs.io/en/stable>`_, based on IP with fixed window strategy.
+| To enable rate limits, **Redis** must be available.
+
+.. note::
+    | If no Redis instance is available for rate limits, FitTrackee can still start.
+
+| All endpoints are subject to rate limits, except endpoints serving assets.
+| Limits can be modified by setting the environment variable ``API_RATE_LIMITS`` (see `Flask-Limiter documentation for notation <https://flask-limiter.readthedocs.io/en/stable/configuration.html#rate-limit-string-notation>`_).
+| Rate limits must be separated by a comma, for instance:
+
+.. code-block::
+
+    export API_RATE_LIMITS="200 per day, 50 per hour"
+
+**Flask-Limiter** provides a `Command Line Interface <https://flask-limiter.readthedocs.io/en/stable/cli.html>`_ for maintenance and diagnostic purposes.
+
+.. code-block:: bash
+
+    $ flask limiter
+    Usage: flask limiter [OPTIONS] COMMAND [ARGS]...
+
+      Flask-Limiter maintenance & utility commmands
+
+    Options:
+      --help  Show this message and exit.
+
+    Commands:
+      clear   Clear limits for a specific key
+      config  View the extension configuration
+      limits  Enumerate details about all routes with rate limits
 
 
 Installation
