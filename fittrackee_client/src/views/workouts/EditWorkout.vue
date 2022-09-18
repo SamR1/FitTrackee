@@ -2,6 +2,7 @@
   <div id="edit-workout" class="view">
     <div class="container">
       <WorkoutEdition
+        v-if="workoutData.workout.id"
         :authUser="authUser"
         :sports="sports"
         :workout="workoutData.workout"
