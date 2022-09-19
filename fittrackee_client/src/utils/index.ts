@@ -28,7 +28,12 @@ export const handleError = (
   error: AxiosError | null,
   msg = 'UNKNOWN'
 ): void => {
-  // if stored token is blacklisted
+  // if request is cancelled, no error to display
+  if (error && error.message === 'canceled') {
+    return
+  }
+
+  // if stored token is blacklisted, disconnect user
   if (
     error?.response?.status === 401 &&
     error.response.data.error === 'invalid_token'
@@ -37,6 +42,7 @@ export const handleError = (
     context.dispatch(AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER)
     return
   }
+
   const errorMessages = !error
     ? msg
     : error.response

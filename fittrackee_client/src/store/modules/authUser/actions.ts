@@ -142,8 +142,10 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
         }
       })
       .catch((error) => {
-        handleError(context, error)
-        removeAuthUserData(context)
+        if (error.message !== 'canceled') {
+          handleError(context, error)
+          removeAuthUserData(context)
+        }
       })
   },
   [AUTH_USER_STORE.ACTIONS.LOGIN_OR_REGISTER](
