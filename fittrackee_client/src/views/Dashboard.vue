@@ -73,7 +73,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, Ref, computed, ref } from 'vue'
+  import { ComputedRef, Ref, computed, onBeforeMount, ref } from 'vue'
 
   import Timeline from '@/components/Dashboard/Timeline.vue'
   import UserCalendar from '@/components/Dashboard/UserCalendar/index.vue'
@@ -94,6 +94,8 @@
     () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
   )
   const isSelected: Ref<string> = ref('calendar')
+
+  onBeforeMount(() => store.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE))
 
   function updateDisplayColumn(target: string) {
     isSelected.value = target
