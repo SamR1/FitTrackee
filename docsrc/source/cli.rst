@@ -1,7 +1,7 @@
 Command line interface
 ######################
 
-A command line interface (CLI) is available to manage database and users.
+A command line interface (CLI) is available to manage database, OAuth2 tokens and users.
 
 .. code-block:: bash
 
