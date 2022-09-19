@@ -554,7 +554,7 @@ class TestOAuthIssueAccessToken(OAuthIssueTokenTestCase):
             headers=dict(content_type='multipart/form-data'),
         )
 
-        self.assert_invalid_request(response)
+        self.assert_invalid_grant(response)
 
     def test_it_returns_error_when_grant_type_is_not_authorization_code(
         self, app: Flask, user_1: User
@@ -592,7 +592,7 @@ class TestOAuthIssueAccessToken(OAuthIssueTokenTestCase):
             headers=dict(content_type='multipart/form-data'),
         )
 
-        self.assert_invalid_request(response)
+        self.assert_invalid_grant(response)
 
     def test_it_returns_access_token(self, app: Flask, user_1: User) -> None:
         oauth_client, code = self.create_authorized_oauth_client(app, user_1)

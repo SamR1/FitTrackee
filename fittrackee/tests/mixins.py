@@ -242,6 +242,17 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
         )
 
     @staticmethod
+    def assert_invalid_grant(
+        response: TestResponse, error_description: Optional[str] = None
+    ) -> Dict:
+        return assert_oauth_errored_response(
+            response,
+            400,
+            error='invalid_grant',
+            error_description=error_description,
+        )
+
+    @staticmethod
     def assert_invalid_request(
         response: TestResponse, error_description: Optional[str] = None
     ) -> Dict:
