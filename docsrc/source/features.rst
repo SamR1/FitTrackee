@@ -1,6 +1,14 @@
 Features
 ########
 
+| **FitTrackee** allows you to store and display gpx files and some statistics from your outdoor activities.
+| For now, this app is kind of a single-user application. Even if several users can register, a user can only view his own workouts.
+
+Gpx files are stored in an upload directory (without encryption).
+
+With the default configuration, `Open Street Map <https://www.openstreetmap.org>`__ is used as tile server in Workout detail and for static map generation.
+
+
 Workouts
 ^^^^^^^^
 - 11 sports are supported:
