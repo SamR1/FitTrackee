@@ -4,6 +4,11 @@ import {
   AuthUserMutations,
 } from '@/store/modules/authUser/enums'
 import {
+  OAuth2Actions,
+  OAuth2Getters,
+  OAuth2Mutations,
+} from '@/store/modules/oauth2/enums'
+import {
   RootActions,
   RootGetters,
   RootMutations,
@@ -51,6 +56,11 @@ export const AUTH_USER_STORE = {
   ACTIONS: AuthUserActions,
   GETTERS: AuthUserGetters,
   MUTATIONS: AuthUserMutations,
+}
+export const OAUTH2_STORE = {
+  ACTIONS: OAuth2Actions,
+  GETTERS: OAuth2Getters,
+  MUTATIONS: OAuth2Mutations,
 }
 
 export const USERS_STORE = {

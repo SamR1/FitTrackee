@@ -4,13 +4,13 @@ from flask import Blueprint, request
 from sqlalchemy import exc
 
 from fittrackee import db
+from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     DataNotFoundErrorResponse,
     HttpResponse,
     InvalidPayloadErrorResponse,
     handle_error_and_return_response,
 )
-from fittrackee.users.decorators import authenticate, authenticate_as_admin
 from fittrackee.users.models import User, UserSportPreference
 
 from .models import Sport
@@ -19,10 +19,12 @@ sports_blueprint = Blueprint('sports', __name__)
 
 
 @sports_blueprint.route('/sports', methods=['GET'])
-@authenticate
+@require_auth(scopes=['workouts:read'])
 def get_sports(auth_user: User) -> Dict:
     """
     Get all sports
+
+    **Scope**: ``workouts:read``
 
     **Example request**:
 
@@ -195,10 +197,12 @@ def get_sports(auth_user: User) -> Dict:
 
 
 @sports_blueprint.route('/sports/<int:sport_id>', methods=['GET'])
-@authenticate
+@require_auth(scopes=['workouts:read'])
 def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
     """
     Get a sport
+
+    **Scope**: ``workouts:read``
 
     **Example request**:
 
@@ -304,11 +308,14 @@ def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
 
 
 @sports_blueprint.route('/sports/<int:sport_id>', methods=['PATCH'])
-@authenticate_as_admin
+@require_auth(scopes=['workouts:write'], as_admin=True)
 def update_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
     """
-    Update a sport
-    Authenticated user must be an admin
+    Update a sport.
+
+    Authenticated user must be an admin.
+
+    **Scope**: ``workouts:write``
 
     **Example request**:
 
@@ -317,7 +324,7 @@ def update_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
       PATCH /api/sports/1 HTTP/1.1
       Content-Type: application/json
 
-    **Example response**:
+    **Example responses**:
 
     - success
 

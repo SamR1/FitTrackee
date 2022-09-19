@@ -21,7 +21,7 @@
     name: string
     charLimit?: number
     disabled?: boolean
-    input?: string
+    input?: string | null
   }
   const props = withDefaults(defineProps<Props>(), {
     charLimit: 500,
@@ -40,7 +40,7 @@
   watch(
     () => props.input,
     (value) => {
-      text.value = value
+      text.value = value === null ? '' : value
     }
   )
 </script>

@@ -35,7 +35,7 @@ Ce lien n'est valide que pendant 3 secondes.
 Réinitialiser le mot de passe: http://localhost/password-reset?token=xxx
 
 Pour vérification, cette demande a été reçue à partir d'un appareil sous Linux, utilisant le navigateur Firefox.
-Si vous n'avez pas demandé de réinitialisation, vous pouvez ignorer cet e-mail.
+Si vous n'avez pas demandé de réinitialisation, vous pouvez ignorer ce courriel.
 
 Merci,
 L'équipe FitTrackee
@@ -48,7 +48,7 @@ Ce lien n'est valide que pendant 3 secondes.
 
 Réinitialiser le mot de passe: http://localhost/password-reset?token=xxx
 
-Si vous n'avez pas demandé de réinitialisation, vous pouvez ignorer cet e-mail.
+Si vous n'avez pas demandé de réinitialisation, vous pouvez ignorer ce courriel.
 
 Merci,
 L'équipe FitTrackee
@@ -239,7 +239,7 @@ expected_fr_html_body = """  <body>
                         </table>
                         <p>
                           Pour vérification, cette demande a été reçue à partir d'un appareil sous Linux, utilisant le navigateur Firefox.
-                          Si vous n'avez pas demandé de réinitialisation, vous pouvez ignorer cet e-mail.
+                          Si vous n'avez pas demandé de réinitialisation, vous pouvez ignorer ce courriel.
                         </p>
                         <p>Merci,
                           <br>L'équipe FitTrackee</p>
@@ -313,7 +313,7 @@ expected_fr_html_body_without_security = """  <body>
                           </tr>
                         </table>
                         <p>
-                          Si vous n'avez pas demandé de réinitialisation, vous pouvez ignorer cet e-mail.
+                          Si vous n'avez pas demandé de réinitialisation, vous pouvez ignorer ce courriel.
                         </p>
                         <p>Merci,
                           <br>L'équipe FitTrackee</p>

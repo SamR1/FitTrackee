@@ -1,7 +1,7 @@
 Command line interface
 ######################
 
-A command line interface (CLI) is available to manage database and users.
+A command line interface (CLI) is available to manage database, OAuth2 tokens and users.
 
 .. code-block:: bash
 
@@ -14,8 +14,9 @@ A command line interface (CLI) is available to manage database and users.
       --help  Show this message and exit.
 
     Commands:
-      db     Manage database.
-      users  Manage users.
+      db      Manage database.
+      oauth2  Manage OAuth2 tokens.
+      users   Manage users.
 
 .. warning::
     | The following commands are now deprecated and will be removed in a next version:
@@ -40,9 +41,46 @@ Apply migrations.
 Empty database and delete uploaded files, only on development environments.
 
 
+OAuth2
+~~~~~~
+
+``ftcli oauth2 clean``
+""""""""""""""""""""""
+.. versionadded:: 0.7.0
+
+Remove tokens expired for more than provided number of days
+
+.. cssclass:: table-bordered
+.. list-table::
+   :widths: 25 50
+   :header-rows: 1
+
+   * - Options
+     - Description
+   * - ``--days``
+     - Number of days.
+
+
 
 Users
 ~~~~~
+
+``ftcli users clean_tokens``
+""""""""""""""""""""""""""""
+.. versionadded:: 0.7.0
+
+Remove blacklisted tokens expired for more than provided number of days.
+
+.. cssclass:: table-bordered
+.. list-table::
+   :widths: 25 50
+   :header-rows: 1
+
+   * - Options
+     - Description
+   * - ``--days``
+     - Number of days.
+
 
 ``ftcli users update``
 """"""""""""""""""""""

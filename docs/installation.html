@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Installation &#8212; FitTrackee 0.6.12
+    <title>Installation &#8212; FitTrackee 0.7.0
  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css" />
@@ -18,7 +18,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Command line interface" href="cli.html" />
-    <link rel="prev" title="Features" href="features.html" />
+    <link rel="prev" title="Third-party applications" href="apps.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -41,7 +41,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.12
+        <span class="navbar-text navbar-version pull-left"><b>0.7.0
 </b></span>
       </div>
 
@@ -61,6 +61,7 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apps.html">Third-party applications</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cli.html">Command line interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/index.html">API documentation</a></li>
@@ -84,9 +85,10 @@
 <li><a class="reference internal" href="#environment-variables">Environment variables</a><ul>
 <li><a class="reference internal" href="#emails">Emails</a></li>
 <li><a class="reference internal" href="#map-tile-server">Map tile server</a></li>
+<li><a class="reference internal" href="#api-rate-limits">API rate limits 🆕</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id1">Installation</a><ul>
+<li><a class="reference internal" href="#id2">Installation</a><ul>
 <li><a class="reference internal" href="#from-pypi">From PyPI</a></li>
 <li><a class="reference internal" href="#from-sources">From sources</a><ul>
 <li><a class="reference internal" href="#dev-environment">Dev environment</a></li>
@@ -96,9 +98,9 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#upgrade">Upgrade</a><ul>
-<li><a class="reference internal" href="#id2">From PyPI</a></li>
-<li><a class="reference internal" href="#id3">From sources</a><ul>
-<li><a class="reference internal" href="#id4">Dev environment</a></li>
+<li><a class="reference internal" href="#id3">From PyPI</a></li>
+<li><a class="reference internal" href="#id4">From sources</a><ul>
+<li><a class="reference internal" href="#id5">Dev environment</a></li>
 <li><a class="reference internal" href="#prod-environment">Prod environment</a></li>
 </ul>
 </li>
@@ -106,7 +108,7 @@
 </li>
 <li><a class="reference internal" href="#deployment">Deployment</a></li>
 <li><a class="reference internal" href="#docker">Docker</a><ul>
-<li><a class="reference internal" href="#id5">Installation</a></li>
+<li><a class="reference internal" href="#id6">Installation</a></li>
 <li><a class="reference internal" href="#development">Development</a></li>
 </ul>
 </li>
@@ -121,7 +123,7 @@
               
                 
   <li>
-    <a href="features.html" title="Previous Chapter: Features"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Features</span>
+    <a href="apps.html" title="Previous Chapter: Third-party applications"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Third-party a...</span>
     </a>
   </li>
   <li>
@@ -170,6 +172,8 @@
 <li><p><a class="reference external" href="https://github.com/komoot/staticmap">staticmap</a> to generate a static map image from gpx coordinates</p></li>
 <li><p><a class="reference external" href="https://github.com/ZeevG/python-forecast.io">python-forecast.io</a> to fetch weather data from <a class="reference external" href="https://darksky.net">Dark Sky</a> (former forecast.io)</p></li>
 <li><p><a class="reference external" href="https://flask-dramatiq.readthedocs.io/en/latest/">dramatiq</a> for task queue</p></li>
+<li><p><a class="reference external" href="https://docs.authlib.org/en/latest/">Authlib</a> for OAuth 2.0 Authorization support</p></li>
+<li><p><a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable">Flask-Limiter</a> for API rate limits</p></li>
 </ul>
 </dd>
 </dl>
@@ -191,13 +195,26 @@
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
+<li><dl class="simple">
+<dt>mandatory</dt><dd><ul>
 <li><p>Python 3.7+</p></li>
-<li><p>PostgreSQL database (10+)</p></li>
-<li><p>SMTP provider and Redis for task queue (if email sending is enabled)</p></li>
-<li><p>API key from <a class="reference external" href="https://darksky.net/dev">Dark Sky</a> (not mandatory)</p></li>
+<li><p>PostgreSQL 10+</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>optional</dt><dd><ul>
+<li><p>Redis for task queue (if email sending is enabled) and API rate limits</p></li>
+<li><p>SMTP provider (if email sending is enabled)</p></li>
+<li><p>API key from <a class="reference external" href="https://darksky.net/dev">Dark Sky</a></p></li>
 <li><p><a class="reference external" href="https://poetry.eustace.io">Poetry</a> (for installation from sources only)</p></li>
 <li><p><a class="reference external" href="https://yarnpkg.com">Yarn</a> (for development only)</p></li>
 <li><p>Docker and Docker Compose (for development or evaluation purposes)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -235,7 +252,7 @@ deployment method.</p>
 <dd><p><strong>FitTrackee</strong> host.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default<span class="colon">:</span></dt>
-<dd class="field-odd"><p>0.0.0.0</p>
+<dd class="field-odd"><p>127.0.0.1</p>
 </dd>
 </dl>
 </dd></dl>
@@ -266,6 +283,10 @@ deployment method.</p>
 <dt class="sig sig-object std" id="envvar-APP_SECRET_KEY">
 <span class="sig-name descname"><span class="pre">APP_SECRET_KEY</span></span><a class="headerlink" href="#envvar-APP_SECRET_KEY" title="Permalink to this definition">¶</a></dt>
 <dd><p><strong>FitTrackee</strong> secret key, must be initialized in production environment.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Use a strong secret key. This key is used in JWT generation.</p>
+</div>
 </dd></dl>
 
 <dl class="std envvar">
@@ -386,7 +407,7 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.3.0.</span></p>
 </div>
-<p>Redis instance used by <strong>Dramatiq</strong>.</p>
+<p>Redis instance used by <strong>Dramatiq</strong> and <strong>Flask-Limiter</strong>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p>local Redis instance (<code class="docutils literal notranslate"><span class="pre">redis://</span></code>)</p>
@@ -401,6 +422,20 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 <p><span class="versionmodified added">New in version 0.3.0.</span></p>
 </div>
 <p>Number of processes used by <strong>Dramatiq</strong>.</p>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-API_RATE_LIMITS">
+<span class="sig-name descname"><span class="pre">API_RATE_LIMITS</span> <span class="pre">🆕</span></span><a class="headerlink" href="#envvar-API_RATE_LIMITS" title="Permalink to this definition">¶</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.0.</span></p>
+</div>
+<p>API rate limits, see <a class="reference external" href="installation.html#api-rate-limits">API rate limits</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>300 per 5 minutes</cite></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="std envvar">
@@ -422,7 +457,7 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-STATICMAP_SUBDOMAINS">
-<span class="sig-name descname"><span class="pre">STATICMAP_SUBDOMAINS</span> <span class="pre">🆕</span></span><a class="headerlink" href="#envvar-STATICMAP_SUBDOMAINS" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">STATICMAP_SUBDOMAINS</span></span><a class="headerlink" href="#envvar-STATICMAP_SUBDOMAINS" title="Permalink to this definition">¶</a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.6.10.</span></p>
 </div>
@@ -566,9 +601,48 @@ The tile server can be changed by updating <code class="docutils literal notrans
 </ul>
 <p>The subdomain will be chosen randomly.</p>
 </section>
+<section id="api-rate-limits">
+<h3>API rate limits 🆕<a class="headerlink" href="#api-rate-limits" title="Permalink to this heading">¶</a></h3>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.0.</span></p>
+</div>
+<div class="line-block">
+<div class="line">API rate limits are managed by <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable">Flask-Limiter</a>, based on IP with fixed window strategy.</div>
+<div class="line">To enable rate limits, <strong>Redis</strong> must be available.</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">If no Redis instance is available for rate limits, FitTrackee can still start.</div>
+</div>
+</div>
+<div class="line-block">
+<div class="line">All endpoints are subject to rate limits, except endpoints serving assets.</div>
+<div class="line">Limits can be modified by setting the environment variable <code class="docutils literal notranslate"><span class="pre">API_RATE_LIMITS</span></code> (see <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable/configuration.html#rate-limit-string-notation">Flask-Limiter documentation for notation</a>).</div>
+<div class="line">Rate limits must be separated by a comma, for instance:</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">API_RATE_LIMITS</span><span class="o">=</span><span class="s2">&quot;200 per day, 50 per hour&quot;</span>
+</pre></div>
+</div>
+<p><strong>Flask-Limiter</strong> provides a <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable/cli.html">Command Line Interface</a> for maintenance and diagnostic purposes.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ flask limiter
+Usage: flask limiter <span class="o">[</span>OPTIONS<span class="o">]</span> COMMAND <span class="o">[</span>ARGS<span class="o">]</span>...
+
+  Flask-Limiter maintenance <span class="p">&amp;</span> utility commmands
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  clear   Clear limits <span class="k">for</span> a specific key
+  config  View the extension configuration
+  limits  Enumerate details about all routes with rate limits
+</pre></div>
+</div>
 </section>
-<section id="id1">
-<h2>Installation<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="id2">
+<h2>Installation<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <div class="line-block">
@@ -713,11 +787,11 @@ $ make install-db
 </div>
 </div>
 <ul class="simple">
-<li><p>Download the last release (for now, it is the release v0.6.12):</p></li>
+<li><p>Download the last release (for now, it is the release v0.7.0):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.6.12.tar.gz
-$ tar -xzf v0.6.12.tar.gz
-$ mv FitTrackee-0.6.12 FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.7.0.tar.gz
+$ tar -xzf v0.7.0.tar.gz
+$ mv FitTrackee-0.7.0 FitTrackee
 $ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
@@ -770,8 +844,8 @@ database credentials</strong>):</p></li>
 <div class="line">- upload directory (see <a class="reference external" href="installation.html#environment-variables">Environment variables</a>)</div>
 </div>
 </div>
-<section id="id2">
-<h3>From PyPI<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
+<section id="id3">
+<h3>From PyPI<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Stop the application and activate the virtualenv</p></li>
 <li><p>Upgrade with pip</p></li>
@@ -796,10 +870,10 @@ $ <span class="nb">source</span> .env
 <li><p>Restart the application and task queue workers (if email sending is enabled).</p></li>
 </ul>
 </section>
-<section id="id3">
-<h3>From sources<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
 <section id="id4">
-<h4>Dev environment<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h4>
+<h3>From sources<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
+<section id="id5">
+<h4>Dev environment<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Stop the application and pull the repository:</p></li>
 </ul>
@@ -837,11 +911,11 @@ $ <span class="nb">source</span> .env
 <ul class="simple">
 <li><p>Stop the application</p></li>
 <li><p>Change to the directory where FitTrackee directory is located</p></li>
-<li><p>Download the last release (for now, it is the release v0.6.12) and overwrite existing files:</p></li>
+<li><p>Download the last release (for now, it is the release v0.7.0) and overwrite existing files:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.6.12.tar.gz
-$ tar -xzf v0.6.12.tar.gz
-$ cp -R FitTrackee-0.6.12/* FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.7.0.tar.gz
+$ tar -xzf v0.7.0.tar.gz
+$ cp -R FitTrackee-0.7.0/* FitTrackee/
 $ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
@@ -970,6 +1044,7 @@ One way is to use a <strong>systemd</strong> services and <strong>Nginx</strong>
         proxy_set_header  X-Real-IP $remote_addr;
         proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header  X-Forwarded-Host $server_name;
+        proxy_set_header  X-Forwarded-Proto $scheme;
     }
 }
 
@@ -989,8 +1064,8 @@ server {
 </section>
 <section id="docker">
 <h2>Docker<a class="headerlink" href="#docker" title="Permalink to this heading">¶</a></h2>
-<section id="id5">
-<h3>Installation<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h3>
+<section id="id6">
+<h3>Installation<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h3>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.4.4.</span></p>
 </div>

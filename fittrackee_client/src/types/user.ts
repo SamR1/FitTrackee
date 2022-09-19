@@ -18,6 +18,7 @@ export interface IUserProfile {
   picture: string | boolean
   records: IRecord[]
   sports_list: number[]
+  total_ascent: number
   total_distance: number
   total_duration: string
   username: string

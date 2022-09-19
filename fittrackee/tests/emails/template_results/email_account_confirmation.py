@@ -17,12 +17,12 @@ http://localhost"""
 expected_fr_text_body = """Bonjour test,
 
 Vous avez créé un compte sur FitTrackee.
-Cliquez sur le lien ci-dessous pour confirmer votre adresse email.
+Cliquez sur le lien ci-dessous pour confirmer votre adresse électronique.
 
-Vérifier l'adresse email: http://localhost/account-confirmation?token=xxx
+Vérifier l'adresse électronique: http://localhost/account-confirmation?token=xxx
 
 Pour vérification, cette demande a été reçue à partir d'un appareil sous Linux, utilisant le navigateur Firefox.
-Si vous n'êtes pas à l'origine de la création de ce compte, vous pouvez ignorer cet e-mail.
+Si vous n'êtes pas à l'origine de la création de ce compte, vous pouvez ignorer ce courriel.
 
 Merci,
 L'équipe FitTrackee
@@ -101,7 +101,7 @@ expected_en_html_body = """  <body>
 </html>"""
 
 expected_fr_html_body = """  <body>
-    <span class="preheader">Utiliser ce lien pour confirmer votre inscription.</span>
+    <span class="preheader">Utilisez ce lien pour confirmer votre inscription.</span>
     <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
       <tr>
         <td align="center">
@@ -120,14 +120,14 @@ expected_fr_html_body = """  <body>
                     <td class="content-cell">
                       <div class="f-fallback">
                         <h1>Bonjour test,</h1>
-                        <p>Vous avez créé un compte sur FitTrackee. Cliquez sur le bouton pour confirmer votre adresse email.</p>
+                        <p>Vous avez créé un compte sur FitTrackee. Cliquez sur le bouton pour confirmer votre adresse électronique.</p>
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                           <tr>
                             <td align="center">
                               <table width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation">
                                 <tr>
                                   <td align="center">
-                                    <a href="http://localhost/account-confirmation?token=xxx" class="f-fallback button button--green" target="_blank">Vérifier l'adresse email</a>
+                                    <a href="http://localhost/account-confirmation?token=xxx" class="f-fallback button button--green" target="_blank">Vérifier l'adresse électronique</a>
                                   </td>
                                 </tr>
                               </table>
@@ -136,7 +136,7 @@ expected_fr_html_body = """  <body>
                         </table>
                         <p>
                           Pour vérification, cette demande a été reçue à partir d'un appareil sous Linux, utilisant le navigateur Firefox.
-                          Si vous n'êtes pas à l'origine de la création de ce compte, vous pouvez ignorer cet e-mail.
+                          Si vous n'êtes pas à l'origine de la création de ce compte, vous pouvez ignorer ce courriel.
                         </p>
                         <p>Merci,
                           <br>L'équipe FitTrackee</p>

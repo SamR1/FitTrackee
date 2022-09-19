@@ -184,7 +184,8 @@
   const { t } = useI18n()
 
   const { isEdition, user } = toRefs(props)
-  const sportColors = inject('sportColors')
+  const defaultColor = '#838383'
+  const sportColors: Record<string, string> | undefined = inject('sportColors')
   const sports: ComputedRef<ISport[]> = computed(
     () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
   )
@@ -207,7 +208,11 @@
   function updateSportInEdition(sport: ISport | null) {
     if (sport !== null) {
       sportPayload.sport_id = sport.id
-      sportPayload.color = sport.color ? sport.color : sportColors[sport.label]
+      sportPayload.color = sport.color
+        ? sport.color
+        : sportColors
+        ? sportColors[sport.label]
+        : defaultColor
       sportPayload.is_active = sport.is_active_for_user
       sportPayload.stopped_speed_threshold = sport.stopped_speed_threshold
     } else {

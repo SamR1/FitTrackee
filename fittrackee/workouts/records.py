@@ -2,7 +2,7 @@ from typing import Dict
 
 from flask import Blueprint
 
-from fittrackee.users.decorators import authenticate
+from fittrackee.oauth2.server import require_auth
 from fittrackee.users.models import User
 
 from .models import Record
@@ -11,7 +11,7 @@ records_blueprint = Blueprint('records', __name__)
 
 
 @records_blueprint.route('/records', methods=['GET'])
-@authenticate
+@require_auth(scopes=['workouts:read'])
 def get_records(auth_user: User) -> Dict:
     """
     Get all records for authenticated user.
@@ -22,6 +22,8 @@ def get_records(auth_user: User) -> Dict:
         - highest ascent (record_type: ``HA``)
         - longest duration (record_type: ``LD``)
         - maximum speed (record_type: ``MS``)
+
+    **Scope**: ``workouts:read``
 
     **Example request**:
 

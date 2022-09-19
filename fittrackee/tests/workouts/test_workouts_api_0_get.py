@@ -3,6 +3,7 @@ from typing import List
 from unittest.mock import patch
 from uuid import uuid4
 
+import pytest
 from flask import Flask
 
 from fittrackee.users.models import User
@@ -100,6 +101,42 @@ class TestGetWorkouts(ApiTestCaseMixin):
         response = client.get('/api/workouts')
 
         self.assert_401(response, 'provide a valid auth token')
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', True),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.get(
+            '/api/workouts',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
 
 
 class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
@@ -1179,6 +1216,55 @@ class TestGetWorkout(ApiTestCaseMixin):
 
         self.assert_404_with_message(response, 'Map file does not exist')
 
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', True),
+            ('workouts:write', False),
+        ],
+    )
+    @pytest.mark.parametrize(
+        'endpoint',
+        [
+            '/api/workouts/{workout_short_id}',
+            '/api/workouts/{workout_short_id}/gpx',
+            '/api/workouts/{workout_short_id}/chart_data',
+            '/api/workouts/{workout_short_id}/gpx/segment/1',
+            '/api/workouts/{workout_short_id}/chart_data/segment/1',
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        client_scope: str,
+        can_access: bool,
+        endpoint: str,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.get(
+            endpoint.format(workout_short_id=workout_cycling_user_1.short_id),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
+
 
 class TestDownloadWorkoutGpx(ApiTestCaseMixin):
     def test_it_returns_404_if_workout_does_not_exist(
@@ -1263,3 +1349,41 @@ class TestDownloadWorkoutGpx(ApiTestCaseMixin):
             mimetype='application/gpx+xml',
             as_attachment=True,
         )
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', True),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.get(
+            f'/api/workouts/{workout_cycling_user_1.short_id}/gpx/download',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)

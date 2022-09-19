@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Statistics &#8212; FitTrackee 0.6.12
+    <title>Statistics &#8212; FitTrackee 0.7.0
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
@@ -41,7 +41,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.12
+        <span class="navbar-text navbar-version pull-left"><b>0.7.0
 </b></span>
       </div>
 
@@ -61,6 +61,7 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apps.html">Third-party applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cli.html">Command line interface</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">API documentation</a></li>
@@ -132,7 +133,8 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-stats-(user_name)-by_time">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/stats/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/by_time</span></span><a class="headerlink" href="#get--api-stats-(user_name)-by_time" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get workouts statistics for a user by time</p>
+<dd><p>Get workouts statistics for a user by time.</p>
+<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
 <p><strong>Example requests</strong>:</p>
 <ul class="simple">
 <li><p>without parameters</p></li>
@@ -208,7 +210,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>user_name</strong> (<em>integer</em>) – user name</p></li>
+<li><p><strong>user_name</strong> (<em>integer</em>) – username</p></li>
 </ul>
 </dd>
 <dt class="field-even">Query Parameters<span class="colon">:</span></dt>
@@ -251,7 +253,8 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-stats-(user_name)-by_sport">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/stats/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/by_sport</span></span><a class="headerlink" href="#get--api-stats-(user_name)-by_sport" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get workouts statistics for a user by sport</p>
+<dd><p>Get workouts statistics for a user by sport.</p>
+<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
 <p><strong>Example requests</strong>:</p>
 <ul class="simple">
 <li><p>without parameters (get stats for all sports with workouts)</p></li>
@@ -322,7 +325,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>user_name</strong> (<em>integer</em>) – user name</p></li>
+<li><p><strong>user_name</strong> (<em>integer</em>) – username</p></li>
 </ul>
 </dd>
 <dt class="field-even">Query Parameters<span class="colon">:</span></dt>
@@ -357,7 +360,8 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-stats-all">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/stats/all</span></span><a class="headerlink" href="#get--api-stats-all" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get all application statistics</p>
+<dd><p>Get all application statistics.</p>
+<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
 <p><strong>Example requests</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/stats/all</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>

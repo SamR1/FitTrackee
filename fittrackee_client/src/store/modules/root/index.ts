@@ -1,6 +1,7 @@
 import { Module, ModuleTree } from 'vuex'
 
 import authUserModule from '@/store/modules/authUser'
+import oAuthModule from '@/store/modules/oauth2'
 import { actions } from '@/store/modules/root/actions'
 import { getters } from '@/store/modules/root/getters'
 import { mutations } from '@/store/modules/root/mutations'
@@ -13,6 +14,7 @@ import workoutsModule from '@/store/modules/workouts'
 
 const modules: ModuleTree<IRootState> = {
   authUserModule,
+  oAuthModule,
   sportsModule,
   statsModule,
   usersModule,
