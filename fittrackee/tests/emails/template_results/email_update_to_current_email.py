@@ -13,7 +13,7 @@ http://localhost"""
 
 expected_fr_text_body = """Bonjour test,
 
-Vous avez récemment demandé la modification de l'adresse email associée à votre compte sur FitTrackee vers : new.email@example.com
+Vous avez récemment demandé la modification de l'adresse électronique associée à votre compte sur FitTrackee vers : new.email@example.com
 
 Pour vérification, cette demande a été reçue à partir d'un appareil sous Linux, utilisant le navigateur Firefox.
 Si vous n'êtes pas à l'origine de cette modification, veuillez changer votre mot de passe immédiatement ou contacter l'administrateur si votre compte est bloqué.
@@ -88,7 +88,7 @@ expected_en_html_body = """  <body>
 </html>"""
 
 expected_fr_html_body = """  <body>
-    <span class="preheader">Votre adresse email est en cours de mise à jour.</span>
+    <span class="preheader">Votre adresse électronique est en cours de mise à jour.</span>
     <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
       <tr>
         <td align="center">
@@ -107,7 +107,7 @@ expected_fr_html_body = """  <body>
                     <td class="content-cell">
                       <div class="f-fallback">
                         <h1>Bonjour test,</h1>
-                        <p>Vous avez récemment demandé la modification de l'adresse email associée à votre compte sur FitTrackee vers :</p>
+                        <p>Vous avez récemment demandé la modification de l'adresse électronique associée à votre compte sur FitTrackee vers :</p>
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                           <tr>
                             <td align="center">

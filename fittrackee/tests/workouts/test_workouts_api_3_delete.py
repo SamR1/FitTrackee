@@ -190,6 +190,45 @@ class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
 
         assert response.status_code == 204
 
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', False),
+            ('workouts:write', True),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.delete(
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
+            data=dict(),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
+
 
 class TestDeleteWorkoutWithoutGpx(ApiTestCaseMixin):
     def test_it_deletes_a_workout_wo_gpx(

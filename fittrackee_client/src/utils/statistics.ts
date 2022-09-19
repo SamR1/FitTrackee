@@ -156,9 +156,7 @@ export const formatStats = (
     datasetKeys.map((datasetKey) => {
       datasets[datasetKey].map((dataset) => {
         dataset.data.push(
-          apiStats !== {} &&
-            date in apiStats &&
-            sportsId[dataset.label] in apiStats[date]
+          date in apiStats && sportsId[dataset.label] in apiStats[date]
             ? convertStatsValue(
                 datasetKey,
                 apiStats[date][sportsId[dataset.label]][datasetKey],

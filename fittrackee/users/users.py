@@ -6,7 +6,7 @@ from typing import Any, Dict, Optional, Tuple, Union
 from flask import Blueprint, current_app, request, send_file
 from sqlalchemy import exc
 
-from fittrackee import appLog, db
+from fittrackee import appLog, db, limiter
 from fittrackee.emails.tasks import (
     email_updated_to_new_address,
     password_change_email,
@@ -19,6 +19,7 @@ from fittrackee.federation.utils.user import (
     get_user_from_username,
 )
 from fittrackee.files import get_absolute_file_path
+from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     ForbiddenErrorResponse,
     HttpResponse,
@@ -31,11 +32,6 @@ from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
 from .auth import get_language
-from .decorators import (
-    authenticate,
-    authenticate_as_admin,
-    get_auth_user_if_authenticated,
-)
 from .exceptions import (
     FollowRequestAlreadyRejectedError,
     InvalidEmailException,
@@ -144,13 +140,15 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
 
 
 @users_blueprint.route('/users', methods=['GET'])
-@authenticate
+@require_auth(scopes=['users:read'])
 def get_users(auth_user: User) -> Dict:
     """
     Get all users (it returns only local users if federation is enabled).
     If authenticated user has admin rights, users email is returned.
 
     It returns user preferences only for authenticated user.
+
+    **Scope**: ``users:read``
 
     **Example request**:
 
@@ -305,7 +303,7 @@ def get_users(auth_user: User) -> Dict:
 
 @users_blueprint.route('/users/remote', methods=['GET'])
 @federation_required_for_route
-@authenticate
+@require_auth(scopes=['users:read'])
 def get_remote_users(
     auth_user: User,
     app_domain: Domain,
@@ -314,6 +312,8 @@ def get_remote_users(
     Get all remote existing users (only if federation is enabled).
     If a full account is provided in query, if creates remote user if it
     doesn't exist.
+
+    **Scope**: ``users:read``
 
     **Example request**:
 
@@ -394,7 +394,7 @@ def get_remote_users(
 
 
 @users_blueprint.route('/users/<user_name>', methods=['GET'])
-@get_auth_user_if_authenticated
+@require_auth(scopes=['users:read'], optional_auth_user=True)
 def get_single_user(
     auth_user: Optional[User], user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -561,6 +561,7 @@ def get_single_user(
 
 
 @users_blueprint.route('/users/<user_name>/picture', methods=['GET'])
+@limiter.exempt
 def get_picture(user_name: str) -> Any:
     """get user picture
 
@@ -599,10 +600,10 @@ def get_picture(user_name: str) -> Any:
 
 
 @users_blueprint.route('/users/<user_name>', methods=['PATCH'])
-@authenticate_as_admin
+@require_auth(scopes=['users:write'], as_admin=True)
 def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     """
-    Update user account
+    Update user account.
 
     - add/remove admin rights (regardless user account status)
     - reset password (and send email to update user password,
@@ -610,7 +611,9 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     - update user email (and send email to new user email, if sending enabled)
     - activate account for an inactive user
 
-    Only user with admin rights can modify another user
+    Only user with admin rights can modify another user.
+
+    **Scope**: ``users:write``
 
     **Example request**:
 
@@ -812,17 +815,19 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
 
 @users_blueprint.route('/users/<user_name>', methods=['DELETE'])
-@authenticate
+@require_auth(scopes=['users:write'])
 def delete_user(
     auth_user: User, user_name: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    Delete a user account
+    Delete a user account.
 
-    A user can only delete his own account
+    A user can only delete his own account.
 
     An admin can delete all accounts except his account if he's the only
-    one admin
+    one admin.
+
+    **Scope**: ``users:write``
 
     **Example request**:
 
@@ -912,12 +917,14 @@ def delete_user(
 
 
 @users_blueprint.route('/users/<user_name>/follow', methods=['POST'])
-@authenticate
+@require_auth(scopes=['users:write'])
 def follow_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     """
     Send a follow request to a user.
     If federation is enabled, it sends a follow request to remote instance
     if the targeted user is a remote user.
+
+    **Scope**: ``users:write``
 
     **Example request**:
 
@@ -983,7 +990,7 @@ def follow_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
 
 @users_blueprint.route('/users/<user_name>/unfollow', methods=['POST'])
-@authenticate
+@require_auth(scopes=['users:write'])
 def unfollow_user(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -991,6 +998,8 @@ def unfollow_user(
     Unfollow a user.
     If federation is enabled, it sends a Undo activity to the remote instance
     if the targeted user is a remote user.
+
+    **Scope**: ``users:write``
 
     **Example request**:
 
@@ -1095,7 +1104,7 @@ def get_user_relationships(
 
 
 @users_blueprint.route('/users/<user_name>/followers', methods=['GET'])
-@authenticate
+@require_auth(scopes=['users:read'])
 def get_followers(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -1103,6 +1112,8 @@ def get_followers(
     Get user followers.
     If the authenticated user has admin rights, it returns following users with
     additional field 'email'
+
+    **Scope**: ``users:read``
 
     **Example request**:
 
@@ -1187,7 +1198,7 @@ def get_followers(
 
 
 @users_blueprint.route('/users/<user_name>/following', methods=['GET'])
-@authenticate
+@require_auth(scopes=['users:read'])
 def get_following(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -1195,6 +1206,8 @@ def get_following(
     Get user following.
     If the authenticate user has admin rights, it returns following users with
     additional field 'email'
+
+    **Scope**: ``users:read``
 
     **Example request**:
 

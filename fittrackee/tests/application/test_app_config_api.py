@@ -328,3 +328,39 @@ class TestUpdateConfig(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert data['data']['admin_contact'] is None
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', True),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', False),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1_admin, scope=client_scope
+        )
+
+        response = client.patch(
+            '/api/config',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)

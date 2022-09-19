@@ -1,8 +1,9 @@
 import { AxiosError } from 'axios'
 import { ActionContext } from 'vuex'
 
-import { ROOT_STORE } from '@/store/constants'
+import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
 import { IAuthUserState } from '@/store/modules/authUser/types'
+import { IOAuth2State } from '@/store/modules/oauth2/types'
 import { IRootState } from '@/store/modules/root/types'
 import { ISportsState } from '@/store/modules/sports/types'
 import { IStatisticsState } from '@/store/modules/statistics/types'
@@ -19,6 +20,7 @@ export const handleError = (
   context:
     | ActionContext<IRootState, IRootState>
     | ActionContext<IAuthUserState, IRootState>
+    | ActionContext<IOAuth2State, IRootState>
     | ActionContext<IStatisticsState, IRootState>
     | ActionContext<ISportsState, IRootState>
     | ActionContext<IUsersState, IRootState>
@@ -26,6 +28,21 @@ export const handleError = (
   error: AxiosError | null,
   msg = 'UNKNOWN'
 ): void => {
+  // if request is cancelled, no error to display
+  if (error && error.message === 'canceled') {
+    return
+  }
+
+  // if stored token is blacklisted, disconnect user
+  if (
+    error?.response?.status === 401 &&
+    error.response.data.error === 'invalid_token'
+  ) {
+    localStorage.removeItem('authToken')
+    context.dispatch(AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER)
+    return
+  }
+
   const errorMessages = !error
     ? msg
     : error.response

@@ -3,9 +3,9 @@ from typing import Dict, Union
 from flask import Blueprint, request
 from sqlalchemy import and_, or_
 
+from fittrackee.oauth2.server import require_auth
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.responses import HttpResponse, handle_error_and_return_response
-from fittrackee.users.decorators import authenticate
 from fittrackee.users.models import User
 
 from .models import Workout
@@ -17,7 +17,7 @@ DEFAULT_WORKOUTS_PER_PAGE = 5
 
 
 @timeline_blueprint.route('/timeline', methods=['GET'])
-@authenticate
+@require_auth(scopes=['users:read'])
 def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
     try:
         params = request.args.copy()

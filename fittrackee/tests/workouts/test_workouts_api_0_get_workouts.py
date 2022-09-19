@@ -1,6 +1,7 @@
 import json
 from unittest.mock import patch
 
+import pytest
 from flask import Flask
 
 from fittrackee.users.models import User
@@ -108,6 +109,42 @@ class TestGetWorkouts(ApiTestCaseMixin):
         assert response.status_code == 401
         assert 'error' in data['status']
         assert 'provide a valid auth token' in data['message']
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', True),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.get(
+            '/api/workouts',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
 
 
 class TestGetWorkoutsWithPagination(ApiTestCaseMixin):

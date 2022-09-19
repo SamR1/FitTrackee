@@ -932,6 +932,45 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, BaseTestMixin):
         )
         assert 'data' not in data
 
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', False),
+            ('workouts:write', True),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {access_token}',
+            ),
+        )
+
+        self.assert_response_scope(response, can_access)
+
 
 class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
@@ -1227,6 +1266,45 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
             data['data']['workouts'][0]['workout_visibility']
             == input_workout_visibility.value
         )
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', False),
+            ('workouts:write', True),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            data=dict(),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {access_token}',
+            ),
+        )
+
+        self.assert_response_scope(response, can_access)
 
 
 class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):

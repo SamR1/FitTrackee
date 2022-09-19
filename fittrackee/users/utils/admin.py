@@ -1,9 +1,7 @@
 import secrets
 from typing import Optional, Tuple
 
-from flask import current_app
-
-from fittrackee import bcrypt, db
+from fittrackee import db
 from fittrackee.federation.utils.user import get_user_from_username
 
 from ..exceptions import InvalidEmailException, InvalidUserException
@@ -34,9 +32,7 @@ class UserManagerService:
     @staticmethod
     def _reset_user_password(user: User) -> str:
         new_password = secrets.token_urlsafe(30)
-        user.password = bcrypt.generate_password_hash(
-            new_password, current_app.config.get('BCRYPT_LOG_ROUNDS')
-        ).decode()
+        user.password = user.generate_password_hash(new_password)
         return new_password
 
     @staticmethod

@@ -5,7 +5,7 @@ from typing import Generator, Optional, Union
 import pytest
 from flask import current_app
 
-from fittrackee import create_app, db
+from fittrackee import create_app, db, limiter
 from fittrackee.application.models import AppConfig
 from fittrackee.application.utils import update_app_config_from_database
 from fittrackee.federation.models import Domain
@@ -50,6 +50,7 @@ def get_app(
     with_domain: Optional[bool] = True,
 ) -> Generator:
     app = create_app()
+    limiter.enabled = False
     with app.app_context():
         try:
             db.create_all()

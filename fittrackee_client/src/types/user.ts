@@ -29,10 +29,11 @@ export interface IUserProfile {
   nb_workouts: number
   picture: string | boolean
   profile_link?: string
-  records?: IRecord[]
-  sports_list?: number[]
-  total_distance?: number
-  total_duration?: string
+  records: IRecord[]
+  sports_list: number[]
+  total_ascent: number
+  total_distance: number
+  total_duration: string
   username: string
 }
 

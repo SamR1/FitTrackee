@@ -53,6 +53,10 @@ class BaseConfig:
         current_app.root_path, 'emails/translations'
     )
     LANGUAGES = ['en', 'fr', 'de']
+    OAUTH2_TOKEN_EXPIRES_IN = {
+        'authorization_code': 864000,  # 10 days
+    }
+    OAUTH2_REFRESH_TOKEN_GENERATOR = True
     VERSION = VERSION
     # ActivityPub
     AP_DOMAIN = UI_URL.replace('https://', '')
@@ -77,6 +81,9 @@ class TestingConfig(BaseConfig):
     PASSWORD_TOKEN_EXPIRATION_SECONDS = 3
     UI_URL = 'http://0.0.0.0:5000'
     SENDER_EMAIL = 'fittrackee@example.com'
+    OAUTH2_TOKEN_EXPIRES_IN = {
+        'authorization_code': 60,
+    }
     AP_DOMAIN = '0.0.0.0:5000'
 
 

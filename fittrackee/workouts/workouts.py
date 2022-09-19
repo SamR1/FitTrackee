@@ -16,8 +16,9 @@ from sqlalchemy import exc
 from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
-from fittrackee import appLog, db
+from fittrackee import appLog, db, limiter
 from fittrackee.federation.tasks.inbox import send_to_remote_inbox
+from fittrackee.oauth2.server import require_auth
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.responses import (
     DataInvalidPayloadErrorResponse,
@@ -30,10 +31,6 @@ from fittrackee.responses import (
     PayloadTooLargeErrorResponse,
     get_error_response_if_file_is_invalid,
     handle_error_and_return_response,
-)
-from fittrackee.users.decorators import (
-    authenticate,
-    get_auth_user_if_authenticated,
 )
 from fittrackee.users.models import User
 
@@ -62,10 +59,12 @@ MAX_WORKOUTS_PER_PAGE = 100
 
 
 @workouts_blueprint.route('/workouts', methods=['GET'])
-@authenticate
+@require_auth(scopes=['workouts:read'])
 def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Get workouts for the authenticated user.
+
+    **Scope**: ``workouts:read``
 
     **Example requests**:
 
@@ -315,12 +314,12 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
 @workouts_blueprint.route(
     '/workouts/<string:workout_short_id>', methods=['GET']
 )
-@get_auth_user_if_authenticated
+@require_auth(scopes=['workouts:read'], optional_auth_user=True)
 def get_workout(
     auth_user: Optional[User], workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get a workout
+    Get a workout.
 
     **Example request**:
 
@@ -374,7 +373,7 @@ def get_workout(
           "status": "success"
         }
 
-    - acitivity not found:
+    - workout not found:
 
     .. sourcecode:: http
 
@@ -485,12 +484,12 @@ def get_workout_data(
 @workouts_blueprint.route(
     '/workouts/<string:workout_short_id>/gpx', methods=['GET']
 )
-@get_auth_user_if_authenticated
+@require_auth(scopes=['workouts:read'], optional_auth_user=True)
 def get_workout_gpx(
     auth_user: Optional[User], workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get gpx file for a workout displayed on map with Leaflet
+    Get gpx file for a workout displayed on map with Leaflet.
 
     **Example request**:
 
@@ -535,12 +534,12 @@ def get_workout_gpx(
 @workouts_blueprint.route(
     '/workouts/<string:workout_short_id>/chart_data', methods=['GET']
 )
-@get_auth_user_if_authenticated
+@require_auth(scopes=['workouts:read'], optional_auth_user=True)
 def get_workout_chart_data(
     auth_user: Optional[User], workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get chart data from workout gpx file
+    Get chart data from a workout gpx file, to display it with Chart.js.
 
     **Example request**:
 
@@ -605,12 +604,12 @@ def get_workout_chart_data(
     '/workouts/<string:workout_short_id>/gpx/segment/<int:segment_id>',
     methods=['GET'],
 )
-@get_auth_user_if_authenticated
+@require_auth(scopes=['workouts:read'], optional_auth_user=True)
 def get_segment_gpx(
     auth_user: Optional[User], workout_short_id: str, segment_id: int
 ) -> Union[Dict, HttpResponse]:
     """
-    Get gpx file for  workout segment displayed on map with Leaflet
+    Get gpx file for a workout segment displayed on map with Leaflet.
 
     **Example request**:
 
@@ -657,7 +656,7 @@ def get_segment_gpx(
     '<int:segment_id>',
     methods=['GET'],
 )
-@get_auth_user_if_authenticated
+@require_auth(scopes=['workouts:read'], optional_auth_user=True)
 def get_segment_chart_data(
     auth_user: Optional[User], workout_short_id: str, segment_id: int
 ) -> Union[Dict, HttpResponse]:
@@ -728,12 +727,14 @@ def get_segment_chart_data(
 @workouts_blueprint.route(
     '/workouts/<string:workout_short_id>/gpx/download', methods=['GET']
 )
-@authenticate
+@require_auth(scopes=['workouts:read'])
 def download_workout_gpx(
     auth_user: User, workout_short_id: str
 ) -> Union[HttpResponse, Response]:
     """
-    Download gpx file
+    Download gpx file.
+
+    **Scope**: ``workouts:read``
 
     **Example request**:
 
@@ -784,9 +785,10 @@ def download_workout_gpx(
 
 
 @workouts_blueprint.route('/workouts/map/<map_id>', methods=['GET'])
+@limiter.exempt
 def get_map(map_id: int) -> Union[HttpResponse, Response]:
     """
-    Get map image for workouts with gpx
+    Get map image for workouts with gpx.
 
     **Example request**:
 
@@ -830,6 +832,7 @@ def get_map(map_id: int) -> Union[HttpResponse, Response]:
 @workouts_blueprint.route(
     '/workouts/map_tile/<s>/<z>/<x>/<y>.png', methods=['GET']
 )
+@limiter.exempt
 def get_map_tile(s: str, z: str, x: str, y: str) -> Tuple[Response, int]:
     """
     Get map tile from tile server.
@@ -873,10 +876,12 @@ def get_map_tile(s: str, z: str, x: str, y: str) -> Tuple[Response, int]:
 
 
 @workouts_blueprint.route('/workouts', methods=['POST'])
-@authenticate
+@require_auth(scopes=['workouts:write'])
 def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    Post a workout with a gpx file
+    Post a workout with a gpx file.
+
+    **Scope**: ``workouts:write``
 
     **Example request**:
 
@@ -1042,12 +1047,14 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
 
 @workouts_blueprint.route('/workouts/no_gpx', methods=['POST'])
-@authenticate
+@require_auth(scopes=['workouts:write'])
 def post_workout_no_gpx(
     auth_user: User,
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    Post a workout without gpx file
+    Post a workout without gpx file.
+
+    **Scope**: ``workouts:write``
 
     **Example request**:
 
@@ -1212,12 +1219,14 @@ def post_workout_no_gpx(
 @workouts_blueprint.route(
     '/workouts/<string:workout_short_id>', methods=['PATCH']
 )
-@authenticate
+@require_auth(scopes=['workouts:write'])
 def update_workout(
     auth_user: User, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Update a workout
+    Update a workout.
+
+    **Scope**: ``workouts:write``
 
     **Example request**:
 
@@ -1364,12 +1373,14 @@ def update_workout(
 @workouts_blueprint.route(
     '/workouts/<string:workout_short_id>', methods=['DELETE']
 )
-@authenticate
+@require_auth(scopes=['workouts:write'])
 def delete_workout(
     auth_user: User, workout_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    Delete a workout
+    Delete a workout.
+
+    **Scope**: ``workouts:write``
 
     **Example request**:
 

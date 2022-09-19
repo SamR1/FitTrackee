@@ -1,16 +1,24 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Dict
 from unittest.mock import Mock, patch
 
 import pytest
 from flask import Flask
+from freezegun import freeze_time
 
+from fittrackee import db
 from fittrackee.federation.exceptions import FederationDisabledException
+from fittrackee.tests.utils import random_string
 from fittrackee.users.exceptions import (
     FollowRequestAlreadyProcessedError,
     NotExistingFollowRequestError,
 )
-from fittrackee.users.models import FollowRequest, User, UserSportPreference
+from fittrackee.users.models import (
+    BlacklistedToken,
+    FollowRequest,
+    User,
+    UserSportPreference,
+)
 from fittrackee.workouts.models import Sport, Workout
 
 
@@ -298,7 +306,7 @@ class TestUserRecords(UserModelAssertMixin):
         assert serialized_user['total_distance'] == 10
         assert serialized_user['total_duration'] == '1:00:00'
 
-    def test_it_returns_totals_when_user_has_mutiple_workouts(
+    def test_it_returns_totals_when_user_has_multiple_workouts(
         self,
         app: Flask,
         user_1: User,
@@ -386,6 +394,37 @@ class TestUserModelToken:
         auth_token = user_1.encode_auth_token(user_1.id)
         assert isinstance(auth_token, str)
         assert User.decode_auth_token(auth_token) == user_1.id
+
+    def test_it_returns_error_when_token_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        assert (
+            User.decode_auth_token(random_string())
+            == 'invalid token, please log in again'
+        )
+
+    def test_it_returns_error_when_token_is_expired(
+        self, app: Flask, user_1: User
+    ) -> None:
+        auth_token = user_1.encode_auth_token(user_1.id)
+        now = datetime.utcnow()
+        with freeze_time(now + timedelta(seconds=4)):
+            assert (
+                User.decode_auth_token(auth_token)
+                == 'signature expired, please log in again'
+            )
+
+    def test_it_returns_error_when_token_is_blacklisted(
+        self, app: Flask, user_1: User
+    ) -> None:
+        auth_token = user_1.encode_auth_token(user_1.id)
+        db.session.add(BlacklistedToken(token=auth_token))
+        db.session.commit()
+
+        assert (
+            User.decode_auth_token(auth_token)
+            == 'blacklisted token, please log in again'
+        )
 
 
 class TestUserSportModel:

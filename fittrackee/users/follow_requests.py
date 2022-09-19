@@ -8,6 +8,7 @@ from fittrackee.federation.exceptions import (
     DomainNotFoundException,
 )
 from fittrackee.federation.utils.user import get_user_from_username
+from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     HttpResponse,
     InvalidPayloadErrorResponse,
@@ -15,7 +16,6 @@ from fittrackee.responses import (
     UserNotFoundErrorResponse,
 )
 
-from .decorators import authenticate
 from .exceptions import (
     FollowRequestAlreadyProcessedError,
     NotExistingFollowRequestError,
@@ -30,7 +30,7 @@ MAX_FOLLOW_REQUESTS_PER_PAGE = 50
 
 
 @follow_requests_blueprint.route('/follow-requests', methods=['GET'])
-@authenticate
+@require_auth(scopes=['users:read'])
 def get_follow_requests(auth_user: User) -> Dict:
     """
     Get follow requests to process, received by authenticated user.
@@ -180,7 +180,7 @@ def process_follow_request(
 @follow_requests_blueprint.route(
     '/follow-requests/<user_name>/accept', methods=['POST']
 )
-@authenticate
+@require_auth(scopes=['users:write'])
 def accept_follow_request(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -235,7 +235,7 @@ def accept_follow_request(
 @follow_requests_blueprint.route(
     '/follow-requests/<user_name>/reject', methods=['POST']
 )
-@authenticate
+@require_auth(scopes=['users:write'])
 def reject_follow_request(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:

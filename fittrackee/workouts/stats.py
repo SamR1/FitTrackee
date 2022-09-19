@@ -5,6 +5,7 @@ from flask import Blueprint, request
 from sqlalchemy import func
 
 from fittrackee import db
+from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     HttpResponse,
     InvalidPayloadErrorResponse,
@@ -12,7 +13,6 @@ from fittrackee.responses import (
     UserNotFoundErrorResponse,
     handle_error_and_return_response,
 )
-from fittrackee.users.decorators import authenticate, authenticate_as_admin
 from fittrackee.users.models import User
 
 from .models import Sport, Workout
@@ -177,12 +177,14 @@ def get_workouts(
 
 
 @stats_blueprint.route('/stats/<user_name>/by_time', methods=['GET'])
-@authenticate
+@require_auth(scopes=['workouts:read'])
 def get_workouts_by_time(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get workouts statistics for a user by time
+    Get workouts statistics for a user by time.
+
+    **Scope**: ``workouts:read``
 
     **Example requests**:
 
@@ -258,7 +260,7 @@ def get_workouts_by_time(
         "status": "success"
       }
 
-    :param integer user_name: user name
+    :param integer user_name: username
 
     :query string from: start date (format: ``%Y-%m-%d``)
     :query string to: end date (format: ``%Y-%m-%d``)
@@ -284,12 +286,14 @@ def get_workouts_by_time(
 
 
 @stats_blueprint.route('/stats/<user_name>/by_sport', methods=['GET'])
-@authenticate
+@require_auth(scopes=['workouts:read'])
 def get_workouts_by_sport(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get workouts statistics for a user by sport
+    Get workouts statistics for a user by sport.
+
+    **Scope**: ``workouts:read``
 
     **Example requests**:
 
@@ -360,7 +364,7 @@ def get_workouts_by_sport(
         "status": "success"
       }
 
-    :param integer user_name: user name
+    :param integer user_name: username
 
     :query integer sport_id: sport id
 
@@ -380,11 +384,13 @@ def get_workouts_by_sport(
 
 
 @stats_blueprint.route('/stats/all', methods=['GET'])
-@authenticate_as_admin
+@require_auth(scopes=['workouts:read'], as_admin=True)
 def get_application_stats(auth_user: User) -> Dict:
     """
     Get all application statistics.
     Users count is local users count when federation is enabled.
+
+    **Scope**: ``workouts:read``
 
     **Example requests**:
 

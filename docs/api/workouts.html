@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Workouts &#8212; FitTrackee 0.6.11
+    <title>Workouts &#8212; FitTrackee 0.7.0
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
@@ -41,7 +41,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.11
+        <span class="navbar-text navbar-version pull-left"><b>0.7.0
 </b></span>
       </div>
 
@@ -61,6 +61,7 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apps.html">Third-party applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cli.html">Command line interface</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">API documentation</a></li>
@@ -133,6 +134,7 @@
 <dt class="sig sig-object http" id="get--api-workouts">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts</span></span><a class="headerlink" href="#get--api-workouts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get workouts for the authenticated user.</p>
+<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
 <p><strong>Example requests</strong>:</p>
 <ul class="simple">
 <li><p>without parameters</p></li>
@@ -294,7 +296,8 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a workout</p>
+<dd><p>Get a workout.</p>
+<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
@@ -345,7 +348,7 @@
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>acitivity not found:</p></li>
+<li><p>workout not found:</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">404</span> <span class="ne">NOT FOUND</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -388,7 +391,8 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)-gpx">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/gpx</span></span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)-gpx" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get gpx file for a workout displayed on map with Leaflet</p>
+<dd><p>Get gpx file for a workout displayed on map with Leaflet.</p>
+<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF/gpx</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -441,7 +445,8 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)-chart_data">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/chart_data</span></span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)-chart_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get chart data from a workout gpx file, to display it with Recharts</p>
+<dd><p>Get chart data from a workout gpx file, to display it with Chart.js.</p>
+<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF/chart</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -514,6 +519,7 @@
 <dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)-chart_data-segment-(int-segment_id)">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/chart_data/segment/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">segment_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)-chart_data-segment-(int-segment_id)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get chart data from a workout gpx file, to display it with Recharts</p>
+<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF/chart/segment/0</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -583,7 +589,8 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)-gpx-segment-(int-segment_id)">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/gpx/segment/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">segment_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)-gpx-segment-(int-segment_id)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get gpx file for a workout segment displayed on map with Leaflet</p>
+<dd><p>Get gpx file for a workout segment displayed on map with Leaflet.</p>
+<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF/gpx/segment/0</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -634,7 +641,7 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-workouts-map-(map_id)">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/map/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">map_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-workouts-map-(map_id)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get map image for workouts with gpx</p>
+<dd><p>Get map image for workouts with gpx.</p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/map/fa33f4d996844a5c73ecd1ae24456ab8?1563529507772</span>
   <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -696,7 +703,8 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)-gpx-download">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/gpx/download</span></span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)-gpx-download" title="Permalink to this definition">¶</a></dt>
-<dd><p>Download gpx file</p>
+<dd><p>Download gpx file.</p>
+<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF/gpx/download</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
@@ -734,7 +742,8 @@
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-workouts">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/workouts</span></span><a class="headerlink" href="#post--api-workouts" title="Permalink to this definition">¶</a></dt>
-<dd><p>Post a workout with a gpx file</p>
+<dd><p>Post a workout with a gpx file.</p>
+<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:write</span></code></p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/workouts/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">multipart/form-data</span>
@@ -857,7 +866,8 @@
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-workouts-no_gpx">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/no_gpx</span></span><a class="headerlink" href="#post--api-workouts-no_gpx" title="Permalink to this definition">¶</a></dt>
-<dd><p>Post a workout without gpx file</p>
+<dd><p>Post a workout without gpx file.</p>
+<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:write</span></code></p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/workouts/no_gpx</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -978,7 +988,8 @@
 <dl class="http patch">
 <dt class="sig sig-object http" id="patch--api-workouts-(string-workout_short_id)">
 <span class="sig-name descname"><span class="pre">PATCH</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#patch--api-workouts-(string-workout_short_id)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update a workout</p>
+<dd><p>Update a workout.</p>
+<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:write</span></code></p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">PATCH</span> <span class="nn">/api/workouts/1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -1108,7 +1119,8 @@
 <dl class="http delete">
 <dt class="sig sig-object http" id="delete--api-workouts-(string-workout_short_id)">
 <span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#delete--api-workouts-(string-workout_short_id)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete a workout</p>
+<dd><p>Delete a workout.</p>
+<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:write</span></code></p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>

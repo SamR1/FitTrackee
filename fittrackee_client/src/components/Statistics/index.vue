@@ -28,13 +28,13 @@
   import SportsMenu from '@/components/Statistics/StatsSportsMenu.vue'
   import { ISport, ITranslatedSport } from '@/types/sports'
   import { IStatisticsDateParams } from '@/types/statistics'
-  import { IUserProfile } from '@/types/user'
+  import { IAuthUserProfile } from '@/types/user'
   import { translateSports } from '@/utils/sports'
   import { getStatsDateParams, updateChartParams } from '@/utils/statistics'
 
   interface Props {
     sports: ISport[]
-    user: IUserProfile
+    user: IAuthUserProfile
   }
   const props = defineProps<Props>()
 

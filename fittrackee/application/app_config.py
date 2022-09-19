@@ -4,12 +4,12 @@ from flask import Blueprint, current_app, request
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 
 from fittrackee import db
+from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     HttpResponse,
     InvalidPayloadErrorResponse,
     handle_error_and_return_response,
 )
-from fittrackee.users.decorators import authenticate_as_admin
 from fittrackee.users.models import User
 from fittrackee.users.utils.controls import is_valid_email
 
@@ -22,7 +22,7 @@ config_blueprint = Blueprint('config', __name__)
 @config_blueprint.route('/config', methods=['GET'])
 def get_application_config() -> Union[Dict, HttpResponse]:
     """
-    Get Application config
+    Get Application configuration.
 
     **Example request**:
 
@@ -49,7 +49,7 @@ def get_application_config() -> Union[Dict, HttpResponse]:
           "max_users": 0,
           "max_zip_file_size": 10485760,
           "map_attribution": "&copy; <a href=http://www.openstreetmap.org/copyright>OpenStreetMap</a> contributors"
-          "version": "0.6.11"
+          "version": "0.7.0"
         },
         "status": "success"
       }
@@ -68,12 +68,14 @@ def get_application_config() -> Union[Dict, HttpResponse]:
 
 
 @config_blueprint.route('/config', methods=['PATCH'])
-@authenticate_as_admin
+@require_auth(scopes=['application:write'], as_admin=True)
 def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
     """
-    Update Application config
+    Update Application configuration.
 
-    Authenticated user must be an admin
+    Authenticated user must be an admin.
+
+    **Scope**: ``application:write``
 
     **Example request**:
 
@@ -100,7 +102,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
           "max_users": 10,
           "max_zip_file_size": 10485760,
           "map_attribution": "&copy; <a href=http://www.openstreetmap.org/copyright>OpenStreetMap</a> contributors"
-          "version": "0.6.11"
+          "version": "0.7.0"
         },
         "status": "success"
       }
@@ -192,6 +194,5 @@ def health_check() -> Union[Dict, HttpResponse]:
       }
 
     :statuscode 200: success
-
     """
     return {'status': 'success', 'message': 'pong!'}

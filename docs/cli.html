@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Command line interface &#8212; FitTrackee 0.6.11
+    <title>Command line interface &#8212; FitTrackee 0.7.0
  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css" />
@@ -41,7 +41,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.11
+        <span class="navbar-text navbar-version pull-left"><b>0.7.0
 </b></span>
       </div>
 
@@ -61,6 +61,7 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apps.html">Third-party applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Command line interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/index.html">API documentation</a></li>
@@ -85,7 +86,12 @@
 <li><a class="reference internal" href="#ftcli-db-drop"><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">db</span> <span class="pre">drop</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#oauth2">OAuth2</a><ul>
+<li><a class="reference internal" href="#ftcli-oauth2-clean"><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">oauth2</span> <span class="pre">clean</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#users">Users</a><ul>
+<li><a class="reference internal" href="#ftcli-users-clean-tokens"><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">clean_tokens</span></code></a></li>
 <li><a class="reference internal" href="#ftcli-users-update"><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">update</span></code></a></li>
 </ul>
 </li>
@@ -140,7 +146,7 @@
       
   <section id="command-line-interface">
 <h1>Command line interface<a class="headerlink" href="#command-line-interface" title="Permalink to this heading">¶</a></h1>
-<p>A command line interface (CLI) is available to manage database and users.</p>
+<p>A command line interface (CLI) is available to manage database, OAuth2 tokens and users.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ftcli
 Usage: ftcli <span class="o">[</span>OPTIONS<span class="o">]</span> COMMAND <span class="o">[</span>ARGS<span class="o">]</span>...
 
@@ -150,8 +156,9 @@ Options:
   --help  Show this message and exit.
 
 Commands:
-  db     Manage database.
-  users  Manage users.
+  db      Manage database.
+  oauth2  Manage OAuth2 tokens.
+  users   Manage users.
 </pre></div>
 </div>
 <div class="admonition warning">
@@ -179,8 +186,57 @@ Commands:
 <p>Empty database and delete uploaded files, only on development environments.</p>
 </section>
 </section>
+<section id="oauth2">
+<h2>OAuth2<a class="headerlink" href="#oauth2" title="Permalink to this heading">¶</a></h2>
+<section id="ftcli-oauth2-clean">
+<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">oauth2</span> <span class="pre">clean</span></code><a class="headerlink" href="#ftcli-oauth2-clean" title="Permalink to this heading">¶</a></h3>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.0.</span></p>
+</div>
+<p>Remove tokens expired for more than provided number of days</p>
+<table class="table-bordered docutils align-default">
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 66.7%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Options</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--days</span></code></p></td>
+<td><p>Number of days.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
 <section id="users">
 <h2>Users<a class="headerlink" href="#users" title="Permalink to this heading">¶</a></h2>
+<section id="ftcli-users-clean-tokens">
+<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">clean_tokens</span></code><a class="headerlink" href="#ftcli-users-clean-tokens" title="Permalink to this heading">¶</a></h3>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.0.</span></p>
+</div>
+<p>Remove blacklisted tokens expired for more than provided number of days.</p>
+<table class="table-bordered docutils align-default">
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 66.7%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Options</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--days</span></code></p></td>
+<td><p>Number of days.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="ftcli-users-update">
 <h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">update</span></code><a class="headerlink" href="#ftcli-users-update" title="Permalink to this heading">¶</a></h3>
 <div class="versionadded">

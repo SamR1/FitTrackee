@@ -4,6 +4,8 @@ from typing import Optional
 import jwt
 from flask import current_app
 
+from fittrackee.utils import clean
+
 
 def get_user_token(
     user_id: int, password_reset: Optional[bool] = False
@@ -21,10 +23,11 @@ def get_user_token(
         if password_reset
         else current_app.config['TOKEN_EXPIRATION_SECONDS']
     )
+    now = datetime.utcnow()
     payload = {
-        'exp': datetime.utcnow()
+        'exp': now
         + timedelta(days=expiration_days, seconds=expiration_seconds),
-        'iat': datetime.utcnow(),
+        'iat': now,
         'sub': user_id,
     }
     return jwt.encode(
@@ -44,3 +47,14 @@ def decode_user_token(auth_token: str) -> int:
         algorithms=['HS256'],
     )
     return payload['sub']
+
+
+def clean_blacklisted_tokens(days: int) -> int:
+    """
+    Delete blacklisted tokens expired for more than provided number of days
+    """
+    sql = """
+        DELETE FROM blacklisted_tokens
+        WHERE blacklisted_tokens.expired_at < %(limit)s;
+    """
+    return clean(sql, days)

@@ -10,7 +10,7 @@ from sqlalchemy import exc, func, or_
 from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
-from fittrackee import appLog, bcrypt, db
+from fittrackee import appLog, db
 from fittrackee.emails.tasks import (
     account_confirmation_email,
     email_updated_to_current_address,
@@ -19,6 +19,7 @@ from fittrackee.emails.tasks import (
     reset_password_email,
 )
 from fittrackee.files import get_absolute_file_path
+from fittrackee.oauth2.server import require_auth
 from fittrackee.privacy_levels import PrivacyLevel, get_map_visibility
 from fittrackee.responses import (
     ForbiddenErrorResponse,
@@ -33,8 +34,7 @@ from fittrackee.responses import (
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport
 
-from .decorators import authenticate
-from .models import User, UserSportPreference
+from .models import BlacklistedToken, User, UserSportPreference
 from .utils.controls import check_password, is_valid_email, register_controls
 from .utils.token import decode_user_token
 
@@ -74,7 +74,7 @@ def send_account_confirmation_email(user: User) -> None:
 @auth_blueprint.route('/auth/register', methods=['POST'])
 def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    register a user and send confirmation email.
+    Register a user and send confirmation email.
 
     The newly created account is inactive. The user must confirm his email
     to activate it.
@@ -132,7 +132,6 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
         error, registration is disabled
     :statuscode 500:
         error, please try again or contact the administrator
-
     """
     if not current_app.config.get('is_registration_enabled'):
         return ForbiddenErrorResponse('error, registration is disabled')
@@ -197,7 +196,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
 @auth_blueprint.route('/auth/login', methods=['POST'])
 def login_user() -> Union[Dict, HttpResponse]:
     """
-    user login
+    User login.
 
     Only user with an active account can log in.
 
@@ -255,7 +254,7 @@ def login_user() -> Union[Dict, HttpResponse]:
             func.lower(User.email) == func.lower(email),
             User.is_active == True,  # noqa
         ).first()
-        if user and bcrypt.check_password_hash(user.password, password):
+        if user and user.check_password(password):
             # generate auth token
             auth_token = user.encode_auth_token(user.id)
             return {
@@ -270,12 +269,14 @@ def login_user() -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile', methods=['GET'])
-@authenticate
+@require_auth(scopes=['profile:read'])
 def get_authenticated_user_profile(
     auth_user: User,
 ) -> Union[Dict, HttpResponse]:
     """
-    get authenticated user info (profile, account, preferences)
+    Get authenticated user info (profile, account, preferences).
+
+    **Scope**: ``profile:read``
 
     **Example request**:
 
@@ -381,16 +382,17 @@ def get_authenticated_user_profile(
         - provide a valid auth token
         - signature expired, please log in again
         - invalid token, please log in again
-
     """
     return {'status': 'success', 'data': auth_user.serialize(auth_user)}
 
 
 @auth_blueprint.route('/auth/profile/edit', methods=['POST'])
-@authenticate
+@require_auth(scopes=['profile:write'])
 def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
     """
-    edit authenticated user profile
+    Edit authenticated user profile.
+
+    **Scope**: ``profile:write``
 
     **Example request**:
 
@@ -506,7 +508,6 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
         - signature expired, please log in again
         - invalid token, please log in again
     :statuscode 500: error, please try again or contact the administrator
-
     """
     # get post data
     post_data = request.get_json()
@@ -550,10 +551,10 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile/edit/account', methods=['PATCH'])
-@authenticate
+@require_auth(scopes=['profile:write'])
 def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
     """
-    update authenticated user email and password
+    Update authenticated user email and password.
 
     It sends emails if sending is enabled:
 
@@ -562,6 +563,8 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
 
       - one to the current address to inform user
       - another one to the new address to confirm it.
+
+    **Scope**: ``profile:write``
 
     **Example request**:
 
@@ -675,7 +678,6 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
         - invalid token, please log in again
         - invalid credentials
     :statuscode 500: error, please try again or contact the administrator
-
     """
     data = request.get_json()
     if not data:
@@ -686,7 +688,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
     current_password = data.get('password')
     if not current_password:
         return InvalidPayloadErrorResponse('current password is missing')
-    if not bcrypt.check_password_hash(auth_user.password, current_password):
+    if not auth_user.check_password(current_password):
         return UnauthorizedErrorResponse('invalid credentials')
 
     new_password = data.get('new_password')
@@ -706,9 +708,9 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
         if new_password is not None:
             error_messages += check_password(new_password)
             if error_messages == '':
-                hashed_password = bcrypt.generate_password_hash(
-                    new_password, current_app.config.get('BCRYPT_LOG_ROUNDS')
-                ).decode()
+                hashed_password = auth_user.generate_password_hash(
+                    new_password
+                )
                 auth_user.password = hashed_password
 
         if error_messages != '':
@@ -768,10 +770,12 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile/edit/preferences', methods=['POST'])
-@authenticate
+@require_auth(scopes=['profile:write'])
 def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     """
-    edit authenticated user preferences
+    Edit authenticated user preferences.
+
+    **Scope**: ``profile:write``
 
     **Example request**:
 
@@ -892,7 +896,6 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         - signature expired, please log in again
         - invalid token, please log in again
     :statuscode 500: error, please try again or contact the administrator
-
     """
     # get post data
     post_data = request.get_json()
@@ -940,12 +943,14 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile/edit/sports', methods=['POST'])
-@authenticate
+@require_auth(scopes=['profile:write'])
 def edit_user_sport_preferences(
     auth_user: User,
 ) -> Union[Dict, HttpResponse]:
     """
-    edit authenticated user sport preferences
+    Edit authenticated user sport preferences.
+
+    **Scope**: ``profile:write``
 
     **Example request**:
 
@@ -990,7 +995,6 @@ def edit_user_sport_preferences(
     :statuscode 404:
         - sport does not exist
     :statuscode 500: error, please try again or contact the administrator
-
     """
     post_data = request.get_json()
     if (
@@ -1046,12 +1050,14 @@ def edit_user_sport_preferences(
 @auth_blueprint.route(
     '/auth/profile/reset/sports/<sport_id>', methods=['DELETE']
 )
-@authenticate
+@require_auth(scopes=['profile:write'])
 def reset_user_sport_preferences(
     auth_user: User, sport_id: int
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    reset authenticated user preferences for a given sport
+    Reset authenticated user preferences for a given sport.
+
+    **Scope**: ``profile:write``
 
     **Example request**:
 
@@ -1079,7 +1085,6 @@ def reset_user_sport_preferences(
     :statuscode 404:
         - sport does not exist
     :statuscode 500: error, please try again or contact the administrator
-
     """
     sport = Sport.query.filter_by(id=sport_id).first()
     if not sport:
@@ -1101,10 +1106,12 @@ def reset_user_sport_preferences(
 
 
 @auth_blueprint.route('/auth/picture', methods=['POST'])
-@authenticate
+@require_auth(scopes=['profile:write'])
 def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
     """
-    update authenticated user picture
+    Update authenticated user picture.
+
+    **Scope**: ``profile:write``
 
     **Example request**:
 
@@ -1141,7 +1148,6 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
         - invalid token, please log in again
     :statuscode 413: error during picture update: file size exceeds 1.0MB
     :statuscode 500: error during picture update
-
     """
     try:
         response_object = get_error_response_if_file_is_invalid(
@@ -1189,10 +1195,12 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/picture', methods=['DELETE'])
-@authenticate
+@require_auth(scopes=['profile:write'])
 def del_picture(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    delete authenticated user picture
+    Delete authenticated user picture.
+
+    **Scope**: ``profile:write``
 
     **Example request**:
 
@@ -1234,7 +1242,7 @@ def del_picture(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 @auth_blueprint.route('/auth/password/reset-request', methods=['POST'])
 def request_password_reset() -> Union[Dict, HttpResponse]:
     """
-    handle password reset request
+    Handle password reset request.
 
     If email sending is disabled, this endpoint is not available
 
@@ -1304,9 +1312,9 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
 @auth_blueprint.route('/auth/password/update', methods=['POST'])
 def update_password() -> Union[Dict, HttpResponse]:
     """
-    update user password after password reset request
+    Update user password after password reset request.
 
-    It sends emails if sending is enabled
+    It sends emails if sending is enabled.
 
     **Example request**:
 
@@ -1359,9 +1367,7 @@ def update_password() -> Union[Dict, HttpResponse]:
     if not user:
         return UnauthorizedErrorResponse()
     try:
-        user.password = bcrypt.generate_password_hash(
-            password, current_app.config.get('BCRYPT_LOG_ROUNDS')
-        ).decode()
+        user.password = user.generate_password_hash(password)
         db.session.commit()
 
         if current_app.config['CAN_SEND_EMAILS']:
@@ -1389,7 +1395,7 @@ def update_password() -> Union[Dict, HttpResponse]:
 @auth_blueprint.route('/auth/email/update', methods=['POST'])
 def update_email() -> Union[Dict, HttpResponse]:
     """
-    update user email after confirmation
+    Update user email after confirmation.
 
     **Example request**:
 
@@ -1448,7 +1454,7 @@ def update_email() -> Union[Dict, HttpResponse]:
 @auth_blueprint.route('/auth/account/confirm', methods=['POST'])
 def confirm_account() -> Union[Dict, HttpResponse]:
     """
-    activate user account after registration
+    Activate user account after registration.
 
     **Example request**:
 
@@ -1510,9 +1516,9 @@ def confirm_account() -> Union[Dict, HttpResponse]:
 @auth_blueprint.route('/auth/account/resend-confirmation', methods=['POST'])
 def resend_account_confirmation_email() -> Union[Dict, HttpResponse]:
     """
-    resend email with instructions to confirm account
+    Resend email with instructions to confirm account.
 
-    If email sending is disabled, this endpoint is not available
+    If email sending is disabled, this endpoint is not available.
 
     **Example request**:
 
@@ -1564,3 +1570,70 @@ def resend_account_confirmation_email() -> Union[Dict, HttpResponse]:
         return response
     except (exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)
+
+
+@auth_blueprint.route('/auth/logout', methods=['POST'])
+@require_auth()
+def logout_user(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    User logout.
+    If a valid token is provided, it will be blacklisted.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/auth/logout HTTP/1.1
+      Content-Type: application/json
+
+    **Example responses**:
+
+    - successful logout
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "message": "successfully logged out",
+        "status": "success"
+      }
+
+    - error on logout
+
+    .. sourcecode:: http
+
+      HTTP/1.1 401 UNAUTHORIZED
+      Content-Type: application/json
+
+      {
+        "message": "provide a valid auth token",
+        "status": "error"
+      }
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: successfully logged out
+    :statuscode 401:
+      - provide a valid auth token
+      - The access token provided is expired, revoked, malformed, or invalid
+        for other reasons.
+    :statuscode 500:
+      - error on token blacklist
+
+    """
+    auth_token = request.headers.get('Authorization', '').split(' ')[1]
+    try:
+        db.session.add(BlacklistedToken(token=auth_token))
+        db.session.commit()
+    except Exception:
+        return {
+            'status': 'error',
+            'message': 'error on token blacklist',
+        }, 500
+
+    return {
+        'status': 'success',
+        'message': 'successfully logged out',
+    }, 200

@@ -8,8 +8,9 @@ import pytest
 from flask import Flask
 from freezegun import freeze_time
 
+from fittrackee import db
 from fittrackee.privacy_levels import PrivacyLevel
-from fittrackee.users.models import User, UserSportPreference
+from fittrackee.users.models import BlacklistedToken, User, UserSportPreference
 from fittrackee.users.utils.token import get_user_token
 from fittrackee.workouts.models import Sport
 
@@ -505,7 +506,23 @@ class TestUserProfile(ApiTestCaseMixin):
             '/api/auth/profile', headers=dict(Authorization='Bearer invalid')
         )
 
-        self.assert_401(response, 'invalid token, please log in again')
+        self.assert_invalid_token(response)
+
+    def test_it_returns_error_if_token_is_blacklisted(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        db.session.add(BlacklistedToken(token=auth_token))
+        db.session.commit()
+
+        response = client.get(
+            '/api/auth/profile',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_invalid_token(response)
 
     def test_it_returns_user(self, app: Flask, user_1: User) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -521,6 +538,38 @@ class TestUserProfile(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['data'] == jsonify_dict(user_1.serialize(user_1))
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', True),
+            ('profile:write', False),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', False),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self, app: Flask, user_1: User, client_scope: str, can_access: bool
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.get(
+            '/api/auth/profile',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
 
 
 class TestUserProfileUpdate(ApiTestCaseMixin):
@@ -586,6 +635,42 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert data['message'] == 'user profile updated'
         assert data['data'] == jsonify_dict(user_1.serialize(user_1))
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', False),
+            ('profile:write', True),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', False),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.post(
+            '/api/auth/profile/edit',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
 
 
 class TestUserAccountUpdate(ApiTestCaseMixin):
@@ -1221,6 +1306,42 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             password_change_email_mock,
         )
 
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', False),
+            ('profile:write', True),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', False),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.patch(
+            '/api/auth/profile/edit/account',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
+
 
 class TestUserPreferencesUpdate(ApiTestCaseMixin):
     def test_it_returns_error_if_payload_is_empty(
@@ -1339,6 +1460,42 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
             data['data']['workouts_visibility']
             == input_workout_visibility.value
         )
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', False),
+            ('profile:write', True),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', False),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.post(
+            '/api/auth/profile/edit/preferences',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
 
 
 class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
@@ -1522,6 +1679,42 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         assert data['data']['is_active']
         assert data['data']['stopped_speed_threshold'] == 0.5
 
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', False),
+            ('profile:write', True),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', False),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
+
 
 class TestUserSportPreferencesReset(ApiTestCaseMixin):
     def test_it_returns_error_if_sport_does_not_exist(
@@ -1576,6 +1769,44 @@ class TestUserSportPreferencesReset(ApiTestCaseMixin):
         )
 
         assert response.status_code == 204
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', False),
+            ('profile:write', True),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', False),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        client_scope: str,
+        can_access: bool,
+        sport_1_cycling: Sport,
+        user_sport_1_preference: UserSportPreference,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.delete(
+            f'/api/auth/profile/reset/sports/{sport_1_cycling.id}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
 
 
 class TestUserPicture(ApiTestCaseMixin):
@@ -1705,6 +1936,42 @@ class TestUserPicture(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'avatar.png' not in user_1.picture
         assert 'avatar2.png' in user_1.picture
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('profile:read', False),
+            ('profile:write', True),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', False),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.post(
+            '/api/auth/picture',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
 
 
 class TestRegistrationConfiguration(ApiTestCaseMixin):
@@ -2364,3 +2631,85 @@ class TestResendAccountConfirmationEmail(ApiTestCaseMixin):
         self.assert_404_with_message(
             response, 'the requested URL was not found on the server'
         )
+
+
+class TestUserLogout(ApiTestCaseMixin):
+    def test_it_returns_error_when_headers_are_missing(
+        self, app: Flask
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post('/api/auth/logout', headers=dict())
+
+        self.assert_401(response, 'provide a valid auth token')
+
+    def test_it_returns_error_when_token_is_invalid(self, app: Flask) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/logout', headers=dict(Authorization='Bearer invalid')
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_error_when_token_is_expired(
+        self, app: Flask, user_1: User
+    ) -> None:
+        now = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        with freeze_time(now + timedelta(seconds=4)):
+
+            response = client.post(
+                '/api/auth/logout',
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+            self.assert_401(response)
+
+    def test_user_can_logout(self, app: Flask, user_1: User) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/logout',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'successfully logged out'
+        assert response.status_code == 200
+
+    def test_token_is_blacklisted_on_logout(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        client.post(
+            '/api/auth/logout',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        token = BlacklistedToken.query.filter_by(token=auth_token).first()
+        assert token.blacklisted_on is not None
+
+    def test_it_returns_error_if_token_is_already_blacklisted(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        db.session.add(BlacklistedToken(token=auth_token))
+        db.session.commit()
+
+        response = client.post(
+            '/api/auth/logout',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_401(response)

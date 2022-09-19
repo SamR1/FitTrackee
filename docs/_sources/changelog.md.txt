@@ -1,5 +1,46 @@
 # Change log
 
+## Version 0.7.0 (2022/09/19)
+
+### Features and enhancements
+
+* [#88](https://github.com/SamR1/FitTrackee/issues/88) - OAuth 2.0 access token for api access
+* [#231](https://github.com/SamR1/FitTrackee/issues/231) - Invalidate token on logout
+* [PR#236](https://github.com/SamR1/FitTrackee/issues/236) - Add API rate limits
+
+### Bugs Fixed
+
+* [#232](https://github.com/SamR1/FitTrackee/issues/232) - Speed chart can not be hidden
+* [#237](https://github.com/SamR1/FitTrackee/issues/237) - Can not edit a workout when notes value is null
+
+### Translations
+
+* [PR#212](https://github.com/SamR1/FitTrackee/issues/212) - Translations update from Hosted Weblate (thanks to J. Lavoie)
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/installation.html#upgrade))
+
+
+## Version 0.6.12 (2022/09/14)
+
+### Issues Closed
+
+#### Bugs Fixed
+
+* [#230](https://github.com/SamR1/FitTrackee/issues/230) - Database problem after upgrade to 0.6.11
+
+### Pull Requests
+
+#### Misc
+
+* [#225](https://github.com/SamR1/FitTrackee/pull/225) - Fix grammar issue
+
+Thanks to @Skylan0916
+
+In this release 1 issue was closed.  
+**Note:** This release contains a fix on the last database migration that will be executed only on versions lower than v0.6.11 (no data differences with v0.6.11, the fix allows to execute the migration on Postgres<12)  
+(see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/installation.html#upgrade)).
+
+
 ## Version 0.6.11 (2022/07/27)
 
 ### Issues Closed
