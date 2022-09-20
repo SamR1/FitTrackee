@@ -1,23 +1,25 @@
 {
-  "ABOUT": "Über",
-  "CONFIRMATION": "Bestätigung",
-  "CONTACT": "Kontakt",
-  "DAY": "Tag | Tage",
-  "DOCUMENTATION": "Dokumentation (en)",
-  "HOME": "Startseite",
-  "HERE": "hier",
-  "SELECTS": {
-    "ORDER_BY": {
-      "LABEL": "sortiert nach"
+    "ABOUT": "Über",
+    "CONFIRMATION": "Bestätigung",
+    "CONTACT": "Kontakt",
+    "DAY": "Tag | Tage",
+    "DOCUMENTATION": "Dokumentation (en)",
+    "HOME": "Startseite",
+    "HERE": "hier",
+    "SELECTS": {
+        "ORDER_BY": {
+            "LABEL": "sortiert nach"
+        },
+        "ORDER": {
+            "LABEL": "sortieren",
+            "ASC": "aufsteigend",
+            "DESC": "absteigend"
+        },
+        "PER_PAGE": {
+            "LABEL": "pro Seite"
+        }
     },
-    "ORDER": {
-      "LABEL": "sortieren",
-      "ASC": "aufsteigend",
-      "DESC": "absteigend"
-    },
-    "PER_PAGE": {
-      "LABEL": "pro Seite"
-    }
-  },
-  "TOTAL": "Insgesamt"
+    "TOTAL": "Insgesamt",
+    "DISPLAYED": "Angezeigt",
+    "HIDDEN": "Versteckt"
 }
