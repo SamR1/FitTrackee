@@ -17,7 +17,7 @@ DEFAULT_WORKOUTS_PER_PAGE = 5
 
 
 @timeline_blueprint.route('/timeline', methods=['GET'])
-@require_auth(scopes=['users:read'])
+@require_auth(scopes=['workouts:read'])
 def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
     try:
         params = request.args.copy()

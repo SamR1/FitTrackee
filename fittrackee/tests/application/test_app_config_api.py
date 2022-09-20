@@ -333,6 +333,8 @@ class TestUpdateConfig(ApiTestCaseMixin):
         'client_scope, can_access',
         [
             ('application:write', True),
+            ('follow:read', False),
+            ('follow:write', False),
             ('profile:read', False),
             ('profile:write', False),
             ('users:read', False),

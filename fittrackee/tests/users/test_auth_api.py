@@ -543,6 +543,8 @@ class TestUserProfile(ApiTestCaseMixin):
         'client_scope, can_access',
         [
             ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', False),
             ('profile:read', True),
             ('profile:write', False),
             ('users:read', False),
@@ -640,6 +642,8 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
         'client_scope, can_access',
         [
             ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', False),
             ('profile:read', False),
             ('profile:write', True),
             ('users:read', False),
@@ -1310,6 +1314,8 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
         'client_scope, can_access',
         [
             ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', False),
             ('profile:read', False),
             ('profile:write', True),
             ('users:read', False),
@@ -1465,6 +1471,8 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         'client_scope, can_access',
         [
             ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', False),
             ('profile:read', False),
             ('profile:write', True),
             ('users:read', False),
@@ -1683,6 +1691,8 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         'client_scope, can_access',
         [
             ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', False),
             ('profile:read', False),
             ('profile:write', True),
             ('users:read', False),
@@ -1774,6 +1784,8 @@ class TestUserSportPreferencesReset(ApiTestCaseMixin):
         'client_scope, can_access',
         [
             ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', False),
             ('profile:read', False),
             ('profile:write', True),
             ('users:read', False),
@@ -1941,6 +1953,8 @@ class TestUserPicture(ApiTestCaseMixin):
         'client_scope, can_access',
         [
             ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', False),
             ('profile:read', False),
             ('profile:write', True),
             ('users:read', False),

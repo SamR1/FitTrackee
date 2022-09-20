@@ -936,6 +936,8 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, BaseTestMixin):
         'client_scope, can_access',
         [
             ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', False),
             ('profile:read', False),
             ('profile:write', False),
             ('users:read', False),
@@ -1271,6 +1273,8 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
         'client_scope, can_access',
         [
             ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', False),
             ('profile:read', False),
             ('profile:write', False),
             ('users:read', False),

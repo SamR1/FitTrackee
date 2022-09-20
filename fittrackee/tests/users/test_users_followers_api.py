@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import List
 from unittest.mock import patch
 
+import pytest
 from flask import Flask
 
 from fittrackee.users.models import FollowRequest, User
@@ -91,6 +92,41 @@ class TestFollowersAsUser(FollowersAsUserTestCase):
         assert data['data']['followers'][1]['username'] == user_2.username
         assert 'email' not in data['data']['followers'][0]
         assert 'email' not in data['data']['followers'][1]
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('follow:read', True),
+            ('follow:write', False),
+            ('profile:write', False),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', False),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self, app: Flask, user_1: User, client_scope: str, can_access: bool
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.get(
+            f'/api/users/{user_1.username}/followers',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
 
 
 class TestFollowersAsAdmin(FollowersAsUserTestCase):
@@ -329,6 +365,41 @@ class TestFollowingAsUser(FollowersAsUserTestCase):
         assert data['data']['following'][1]['username'] == user_2.username
         assert 'email' in data['data']['following'][0]
         assert 'email' not in data['data']['following'][1]
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('follow:read', True),
+            ('follow:write', False),
+            ('profile:write', False),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', False),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self, app: Flask, user_1: User, client_scope: str, can_access: bool
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.get(
+            f'/api/users/{user_1.username}/following',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
 
 
 class TestFollowingAsAdmin(FollowersAsUserTestCase):

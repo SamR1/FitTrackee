@@ -406,6 +406,8 @@ def get_single_user(
 
     It returns user preferences only for authenticated user.
 
+    **Scope**: ``users:read`` for Oauth 2.0 client
+
     **Example request**:
 
     .. sourcecode:: http
@@ -917,14 +919,14 @@ def delete_user(
 
 
 @users_blueprint.route('/users/<user_name>/follow', methods=['POST'])
-@require_auth(scopes=['users:write'])
+@require_auth(scopes=['follow:write'])
 def follow_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     """
     Send a follow request to a user.
     If federation is enabled, it sends a follow request to remote instance
     if the targeted user is a remote user.
 
-    **Scope**: ``users:write``
+    **Scope**: ``follow:write``
 
     **Example request**:
 
@@ -990,7 +992,7 @@ def follow_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
 
 @users_blueprint.route('/users/<user_name>/unfollow', methods=['POST'])
-@require_auth(scopes=['users:write'])
+@require_auth(scopes=['follow:write'])
 def unfollow_user(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -999,7 +1001,7 @@ def unfollow_user(
     If federation is enabled, it sends a Undo activity to the remote instance
     if the targeted user is a remote user.
 
-    **Scope**: ``users:write``
+    **Scope**: ``follow:write``
 
     **Example request**:
 
@@ -1104,7 +1106,7 @@ def get_user_relationships(
 
 
 @users_blueprint.route('/users/<user_name>/followers', methods=['GET'])
-@require_auth(scopes=['users:read'])
+@require_auth(scopes=['follow:read'])
 def get_followers(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -1113,7 +1115,7 @@ def get_followers(
     If the authenticated user has admin rights, it returns following users with
     additional field 'email'
 
-    **Scope**: ``users:read``
+    **Scope**: ``follow:read``
 
     **Example request**:
 
@@ -1198,7 +1200,7 @@ def get_followers(
 
 
 @users_blueprint.route('/users/<user_name>/following', methods=['GET'])
-@require_auth(scopes=['users:read'])
+@require_auth(scopes=['follow:read'])
 def get_following(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -1207,7 +1209,7 @@ def get_following(
     If the authenticate user has admin rights, it returns following users with
     additional field 'email'
 
-    **Scope**: ``users:read``
+    **Scope**: ``follow:read``
 
     **Example request**:
 

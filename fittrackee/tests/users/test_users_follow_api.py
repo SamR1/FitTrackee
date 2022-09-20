@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 from unittest.mock import Mock, patch
 
+import pytest
 from flask import Flask
 
 from fittrackee.users.models import FollowRequest, User
@@ -119,6 +120,46 @@ class TestFollowWithoutFederation(ApiTestCaseMixin):
 
         send_to_remote_inbox_mock.send.assert_not_called()
 
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', True),
+            ('profile:write', False),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', False),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.post(
+            f'/api/users/{user_2.username}/follow',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
+
 
 class TestUnfollowWithoutFederation(ApiTestCaseMixin):
     def test_it_raises_error_if_target_user_does_not_exist(
@@ -203,3 +244,43 @@ class TestUnfollowWithoutFederation(ApiTestCaseMixin):
         )
 
         send_to_remote_inbox_mock.send.assert_not_called()
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', True),
+            ('profile:write', False),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', False),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.post(
+            f'/api/users/{user_2.username}/unfollow',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)

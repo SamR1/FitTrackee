@@ -30,10 +30,12 @@ MAX_FOLLOW_REQUESTS_PER_PAGE = 50
 
 
 @follow_requests_blueprint.route('/follow-requests', methods=['GET'])
-@require_auth(scopes=['users:read'])
+@require_auth(scopes=['follow:read'])
 def get_follow_requests(auth_user: User) -> Dict:
     """
     Get follow requests to process, received by authenticated user.
+
+    **Scope**: ``follow:read``
 
     **Example requests**:
 
@@ -180,12 +182,14 @@ def process_follow_request(
 @follow_requests_blueprint.route(
     '/follow-requests/<user_name>/accept', methods=['POST']
 )
-@require_auth(scopes=['users:write'])
+@require_auth(scopes=['follow:write'])
 def accept_follow_request(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
     """
     Accept a follow request.
+
+    **Scope**: ``follow:write``
 
     **Example requests**:
 
@@ -235,12 +239,14 @@ def accept_follow_request(
 @follow_requests_blueprint.route(
     '/follow-requests/<user_name>/reject', methods=['POST']
 )
-@require_auth(scopes=['users:write'])
+@require_auth(scopes=['follow:write'])
 def reject_follow_request(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
     """
     Reject a follow request.
+
+    **Scope**: ``follow:write``
 
     **Example requests**:
 

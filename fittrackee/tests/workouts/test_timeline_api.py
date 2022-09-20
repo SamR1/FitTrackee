@@ -269,6 +269,41 @@ class TestGetUserTimeline(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data['data']['workouts'][0]['map'] == map_id
 
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', False),
+            ('profile:write', False),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', True),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self, app: Flask, user_1: User, client_scope: str, can_access: bool
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.get(
+            '/api/timeline',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
+
 
 class TestGetUserTimelinePagination(ApiTestCaseMixin):
     def test_it_returns_pagination_when_no_workouts(
