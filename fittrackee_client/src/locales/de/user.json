@@ -75,7 +75,8 @@
             "PICTURE": "Bild",
             "PREFERENCES": "Einstellungen",
             "PROFILE": "Profil",
-            "SPORTS": "Sportarten"
+            "SPORTS": "Sportarten",
+            "APPS": "Anwendungen"
         },
         "SPORT": {
             "ACTION": "Aktion",
@@ -94,7 +95,8 @@
             "IMPERIAL": "Imperiales System (ft, mi)",
             "METRIC": "Metrisches System (m, km)"
         },
-        "TIMEZONE": "Zeitzone"
+        "TIMEZONE": "Zeitzone",
+        "ASCENT_DATA": "Anstiegs-bezogene Daten (Aufnahmen, gesamt)"
     },
     "REGISTER": "Registrieren",
     "RESENT_ACCOUNT_CONFIRMATION": "E-Mail zur Kontobestätigung erneut senden",
