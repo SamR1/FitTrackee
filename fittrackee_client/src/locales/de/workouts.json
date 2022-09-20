@@ -97,5 +97,6 @@
     "WORKOUT_DATE": "Trainingsdatum",
     "WORKOUT_DELETION_CONFIRMATION": "Bist du sicher, dass du dieses Training löschen möchtest?",
     "ZIP_ARCHIVE": ".zip Datei",
-    "ZIP_ARCHIVE_DESCRIPTION": "oder .zip Datei mit .gpx Dateien"
+    "ZIP_ARCHIVE_DESCRIPTION": "oder .zip Datei mit .gpx Dateien",
+    "RECORD_HA": "Höchster Anstieg"
 }
