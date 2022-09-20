@@ -2,13 +2,13 @@ from typing import TYPE_CHECKING, Dict, Tuple
 
 from ..constants import AP_CTX
 from ..enums import ActivityType
-from .base_object import ActivityObject
+from .base_object import BaseObject
 
 if TYPE_CHECKING:
-    from ..models import Actor
+    from fittrackee.federation.models import Actor
 
 
-class FollowRequestObject(ActivityObject):
+class FollowRequestObject(BaseObject):
     from_actor: 'Actor'
     to_actor: 'Actor'
 

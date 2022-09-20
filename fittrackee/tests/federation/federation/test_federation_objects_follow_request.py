@@ -1,12 +1,12 @@
 from flask import Flask
 
-from fittrackee.federation.activities.follow_request import FollowRequestObject
 from fittrackee.federation.constants import AP_CTX
 from fittrackee.federation.enums import ActivityType
+from fittrackee.federation.objects.follow_request import FollowRequestObject
 from fittrackee.users.models import User
 
 
-class TestFollowRequestActivityObject:
+class TestFollowRequestObject:
     def test_it_generates_follow_activity(
         self,
         app_with_federation: Flask,

@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from ..models import Actor
 
 
-class ActivityObject(ABC):
+class BaseObject(ABC):
     id: str
     type: 'ActivityType'
     actor: 'Actor'

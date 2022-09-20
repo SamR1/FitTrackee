@@ -17,7 +17,7 @@ from fittrackee.workouts.exceptions import SportNotFoundException
 from fittrackee.workouts.models import Sport
 from fittrackee.workouts.utils.workouts import create_workout
 
-from .workout import convert_workout_activity
+from ..objects.workout import convert_workout_activity
 
 
 class AbstractActivity(ABC):

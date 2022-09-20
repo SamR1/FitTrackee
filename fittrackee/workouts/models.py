@@ -12,8 +12,8 @@ from sqlalchemy.orm.session import Session, object_session
 from sqlalchemy.types import JSON, Enum
 
 from fittrackee import BaseModel, appLog, db
-from fittrackee.federation.activities.workout import WorkoutObject
 from fittrackee.federation.decorators import federation_required
+from fittrackee.federation.objects.workout import WorkoutObject
 from fittrackee.files import get_absolute_file_path
 from fittrackee.privacy_levels import PrivacyLevel, get_map_visibility
 

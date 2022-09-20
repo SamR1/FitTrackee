@@ -3,13 +3,13 @@ from typing import Any
 import pytest
 from flask import Flask
 
-from fittrackee.federation.activities.workout import (
+from fittrackee.federation.constants import AP_CTX, DATE_FORMAT
+from fittrackee.federation.exceptions import InvalidWorkoutException
+from fittrackee.federation.objects.workout import (
     WorkoutObject,
     convert_duration_string_to_seconds,
     convert_workout_activity,
 )
-from fittrackee.federation.constants import AP_CTX, DATE_FORMAT
-from fittrackee.federation.exceptions import InvalidWorkoutException
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.tests.mixins import RandomMixin
 from fittrackee.users.models import User

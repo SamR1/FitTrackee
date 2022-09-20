@@ -7,14 +7,14 @@ from fittrackee.workouts.exceptions import PrivateWorkoutException
 from ..constants import AP_CTX, DATE_FORMAT, PUBLIC_STREAM
 from ..enums import ActivityType
 from ..exceptions import InvalidWorkoutException
-from .base_object import ActivityObject
+from .base_object import BaseObject
 from .templates.workout_note import WORKOUT_NOTE
 
 if TYPE_CHECKING:
     from fittrackee.workouts.models import Workout
 
 
-class WorkoutObject(ActivityObject):
+class WorkoutObject(BaseObject):
     workout: 'Workout'
 
     def __init__(self, workout: 'Workout') -> None:

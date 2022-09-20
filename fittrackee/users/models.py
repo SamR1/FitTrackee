@@ -9,10 +9,10 @@ from sqlalchemy.sql.expression import select
 from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, bcrypt, db
-from fittrackee.federation.activities.follow_request import FollowRequestObject
 from fittrackee.federation.decorators import federation_required
 from fittrackee.federation.enums import ActivityType
 from fittrackee.federation.models import Actor, Domain
+from fittrackee.federation.objects.follow_request import FollowRequestObject
 from fittrackee.federation.tasks.inbox import send_to_remote_inbox
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.workouts.models import Workout
