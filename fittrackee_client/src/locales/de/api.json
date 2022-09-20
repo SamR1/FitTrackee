@@ -25,7 +25,9 @@
         "user does not exist": "Der Nutzer existiert nicht.",
         "valid email must be provided for admin contact": "Um den Administrator zu kontaktieren, muss eine gültige E-Mail-Adresse angegeben werden",
         "you can not delete your account, no other user has admin rights": "Du kannst Dein Konto nicht löschen, da kein anderer Nutzer hat Administratorrechte besitzt.",
-        "you do not have permissions": "Du hast keine Berechtigung."
+        "you do not have permissions": "Du hast keine Berechtigung.",
+        "error during gpx processing": "Fehler bei der GPX-Verarbeitung.",
+        "error during gpx file parsing": "Fehler beim Einlesen der GPX-Datei"
     },
     "PAGINATION": {
         "PREVIOUS": "Vorhergehende",
