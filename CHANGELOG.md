@@ -1,5 +1,17 @@
 # Change log
 
+## Version 0.7.1 (2022/09/21)
+
+### Bugs Fixed
+
+* [PR#241](https://github.com/SamR1/FitTrackee/issues/241) - Add missing password strength estimation package (german)
+
+### Translations
+
+* [PR#239](https://github.com/SamR1/FitTrackee/issues/239) - Translations update from Weblate (German, thanks to @qwerty287)
+* [cb9d02f](https://github.com/SamR1/FitTrackee/commit/cb9d02ff1d047e9abd80a87121796f94376b54d3) - Update OAuth 2.0 translations (English & French)
+
+
 ## Version 0.7.0 (2022/09/19)
 
 ### Features and enhancements
