@@ -15,6 +15,7 @@
     "@vue-leaflet/vue-leaflet": "^0.6.1",
     "@zxcvbn-ts/core": "^2.0.5",
     "@zxcvbn-ts/language-common": "^2.0.1",
+    "@zxcvbn-ts/language-de": "^2.1.0",
     "@zxcvbn-ts/language-en": "^2.1.0",
     "@zxcvbn-ts/language-fr": "^2.2.0",
     "axios": "^0.26.1",
