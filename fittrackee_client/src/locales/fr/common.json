@@ -5,9 +5,9 @@
   "DAY": "jour | jours",
   "DISPLAYED": "Affiché",
   "DOCUMENTATION": "documentation (en)",
-  "HOME": "Accueil",
   "HERE": "ici",
   "HIDDEN": "Masqué",
+  "HOME": "Accueil",
   "SELECTS": {
     "ORDER_BY": {
       "LABEL": "trier par "

@@ -48,6 +48,7 @@
     "PASSWORD_UPDATED": "Dein Passwort wurde aktualisiert. Klicke {0} um dich anzumelden.",
     "PROFILE": {
         "ACCOUNT_EDITION": "Kontoausgabe",
+        "ASCENT_DATA": "Anstiegs-bezogene Daten (Aufnahmen, gesamt)",
         "BACK_TO_PROFILE": "Zurück zum Profil",
         "BIO": "Biographie",
         "BIRTH_DATE": "Geburtsdatum",
@@ -72,6 +73,7 @@
         "SUNDAY": "Sontag",
         "TABS": {
             "ACCOUNT": "Konto",
+            "APPS": "Anwendungen",
             "PICTURE": "Bild",
             "PREFERENCES": "Einstellungen",
             "PROFILE": "Profil",

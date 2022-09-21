@@ -5,9 +5,9 @@
   "DAY": "day | days",
   "DISPLAYED": "Displayed",
   "DOCUMENTATION": "documentation",
-  "HOME": "Home",
   "HERE": "here",
   "HIDDEN": "Hidden",
+  "HOME": "Home",
   "SELECTS": {
     "ORDER_BY": {
       "LABEL": "order by"
