@@ -1,1 +1,36 @@
-{}
+{
+    "ADD_A_NEW_APP": "Eine neue OAuth2-Anwendung hinzufügen",
+    "APP": {
+        "CLIENT_ID": "ID",
+        "CLIENT_SECRET": "Geheimnis",
+        "DESCRIPTION": "Anwendungsbeschreibung",
+        "ISSUE_AT": "Erstellt am",
+        "NAME": "Anwendungsname",
+        "REDIRECT_URL": "Weiterleitungs-URL",
+        "SCOPE": {
+            "LABEL": "Geltungsbereich",
+            "profile:write_DESCRIPTION": "erlaubt Schreibzugriff auf <code>auth</code>-Endpunkte",
+            "profile:read_DESCRIPTION": "erlaubt Lesezugriff auf <code>auth</code>-Endpunkte",
+            "users:read_DESCRIPTION": "erlaubt Lesezugriff auf <code>users</code>-Endpunkte",
+            "users:write_DESCRIPTION": "erlaubt Schreibzugriff auf <code>users</code>-Endpunkte",
+            "workouts:read_DESCRIPTION": "erlaubt Lesezugriff auf <code>workouts</code>-Endpunkte",
+            "workouts:write_DESCRIPTION": "erlaubt Schreibzugriff auf <code>workouts</code>-Endpunkte",
+            "application:write_DESCRIPTION": "erlaubt Schreibzugriff auf die Anwendungskonfiguration"
+        },
+        "URL": "Anwendungs-URL"
+    },
+    "APP_CREATED_SUCCESSFULLY": "Anwendung erfolgreich erstellt. Stelle sicher, dass du das Geheimnis kopierst, du kannst es nicht erneut anzeigen.",
+    "APP_DELETION_CONFIRMATION": "Bist sicher, dass du diese App löschen willst?",
+    "APP_REQUESTING_ACCESS": "Die Anwendung {0} fragt an:",
+    "APPS_LIST": "OAuth2-Anwendungen",
+    "AUTHORIZE_APP": "{0} den Zugriff auf deinen Account erlauben?",
+    "COPY_TO_CLIPBOARD": "in Zwischenablage kopieren",
+    "DELETE_APP": "Anwendung löschen",
+    "NEW_APP": "Anwendung hinzufügen",
+    "NO_APP": "Anwendung wurde nicht gefunden!",
+    "NO_APPS": "keine Anwendungen",
+    "NO_DESCRIPTION": "keine Beschreibung",
+    "REVOKE_ALL_TOKENS": "Alle Tokens zurückrufen",
+    "TOKENS_REVOCATION_CONFIRMATION": "Bist du sicher, dass du alle Tokens zurückrufen möchtest?",
+    "TOKENS_REVOKED": "Alle vorhandenen und vergebenen Tokens wurde zurückgerufen."
+}
