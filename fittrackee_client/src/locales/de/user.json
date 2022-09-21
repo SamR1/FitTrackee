@@ -48,6 +48,7 @@
     "PASSWORD_UPDATED": "Dein Passwort wurde aktualisiert. Klicke {0} um dich anzumelden.",
     "PROFILE": {
         "ACCOUNT_EDITION": "Kontoausgabe",
+        "ASCENT_DATA": "Anstiegs-bezogene Daten (Aufnahmen, gesamt)",
         "BACK_TO_PROFILE": "Zurück zum Profil",
         "BIO": "Biographie",
         "BIRTH_DATE": "Geburtsdatum",
@@ -72,11 +73,11 @@
         "SUNDAY": "Sontag",
         "TABS": {
             "ACCOUNT": "Konto",
+            "APPS": "Anwendungen",
             "PICTURE": "Bild",
             "PREFERENCES": "Einstellungen",
             "PROFILE": "Profil",
-            "SPORTS": "Sportarten",
-            "APPS": "Anwendungen"
+            "SPORTS": "Sportarten"
         },
         "SPORT": {
             "ACTION": "Aktion",
@@ -95,8 +96,7 @@
             "IMPERIAL": "Imperiales System (ft, mi)",
             "METRIC": "Metrisches System (m, km)"
         },
-        "TIMEZONE": "Zeitzone",
-        "ASCENT_DATA": "Anstiegs-bezogene Daten (Aufnahmen, gesamt)"
+        "TIMEZONE": "Zeitzone"
     },
     "REGISTER": "Registrieren",
     "RESENT_ACCOUNT_CONFIRMATION": "E-Mail zur Kontobestätigung erneut senden",

@@ -1,5 +1,6 @@
 {
     "ACCOUNT-CONFIRMATION-RESEND": "Bestätigungs-E-Mail erneut senden",
+    "AUTHORIZE": "Autorisieren",
     "BACK": "Zurück",
     "CANCEL": "Abbrechen",
     "CLEAR_FILTER": "Filter löschen",
@@ -13,6 +14,5 @@
     "REGISTER": "Registrieren",
     "RESET": "Zurücksetzen",
     "SUBMIT": "Speichern",
-    "YES": "Ja",
-    "AUTHORIZE": "Autorisieren"
+    "YES": "Ja"
 }

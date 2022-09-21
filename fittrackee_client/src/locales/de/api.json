@@ -2,6 +2,8 @@
     "ERROR": {
         "UNKNOWN": "Fehler. Bitte versuche es erneut oder kontaktiere den Administrator.",
         "email: valid email must be provided": "E-Mail: Eine gültige E-Mail muss angegeben werden.",
+        "error during gpx processing": "Fehler bei der GPX-Verarbeitung.",
+        "error during gpx file parsing": "Fehler beim Einlesen der GPX-Datei",
         "error on getting configuration": "Fehler beim Abrufen der Konfiguration.",
         "error when updating configuration": "Fehler beim Aktualisieren der Konfiguration",
         "error, please try again or contact the administrator": "Fehler. Bitte versuche es erneut oder kontaktiere den Administrator.",
@@ -25,9 +27,7 @@
         "user does not exist": "Der Nutzer existiert nicht.",
         "valid email must be provided for admin contact": "Um den Administrator zu kontaktieren, muss eine gültige E-Mail-Adresse angegeben werden",
         "you can not delete your account, no other user has admin rights": "Du kannst Dein Konto nicht löschen, da kein anderer Nutzer hat Administratorrechte besitzt.",
-        "you do not have permissions": "Du hast keine Berechtigung.",
-        "error during gpx processing": "Fehler bei der GPX-Verarbeitung.",
-        "error during gpx file parsing": "Fehler beim Einlesen der GPX-Datei"
+        "you do not have permissions": "Du hast keine Berechtigung."
     },
     "PAGINATION": {
         "PREVIOUS": "Vorhergehende",

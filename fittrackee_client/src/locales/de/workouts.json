@@ -43,6 +43,7 @@
     "RECORD": "Aufzeichnung | Aufzeichnungen",
     "RECORD_AS": "Durchschn. Geschwindigkeit",
     "RECORD_FD": "Weiteste Entfernung",
+    "RECORD_HA": "Höchster Anstieg",
     "RECORD_LD": "Längste Dauer",
     "RECORD_MS": "Max. Geschwindigkeit",
     "REMAINING_CHARS": "verbleibende Zeichen",
@@ -97,6 +98,5 @@
     "WORKOUT_DATE": "Trainingsdatum",
     "WORKOUT_DELETION_CONFIRMATION": "Bist du sicher, dass du dieses Training löschen möchtest?",
     "ZIP_ARCHIVE": ".zip Datei",
-    "ZIP_ARCHIVE_DESCRIPTION": "oder .zip Datei mit .gpx Dateien",
-    "RECORD_HA": "Höchster Anstieg"
+    "ZIP_ARCHIVE_DESCRIPTION": "oder .zip Datei mit .gpx Dateien"
 }

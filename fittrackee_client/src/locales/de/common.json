@@ -3,9 +3,11 @@
     "CONFIRMATION": "Bestätigung",
     "CONTACT": "Kontakt",
     "DAY": "Tag | Tage",
+    "DISPLAYED": "Angezeigt",
     "DOCUMENTATION": "Dokumentation (en)",
-    "HOME": "Startseite",
     "HERE": "hier",
+    "HIDDEN": "Versteckt",
+    "HOME": "Startseite",
     "SELECTS": {
         "ORDER_BY": {
             "LABEL": "sortiert nach"
@@ -19,7 +21,5 @@
             "LABEL": "pro Seite"
         }
     },
-    "TOTAL": "Insgesamt",
-    "DISPLAYED": "Angezeigt",
-    "HIDDEN": "Versteckt"
+    "TOTAL": "Insgesamt"
 }
