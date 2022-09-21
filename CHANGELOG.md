@@ -1,5 +1,12 @@
 # Change log
 
+## Version 0.7.2 (2022/09/21)
+
+### Translations
+
+* [PR#242](https://github.com/SamR1/FitTrackee/issues/242) - Translations update from Weblate (German, thanks to @qwerty287)
+
+
 ## Version 0.7.1 (2022/09/21)
 
 ### Bugs Fixed
