@@ -23,6 +23,20 @@
             @updateTimezone="updateTZ"
           />
         </label>
+        <label class="form-items">
+          {{ $t('user.PROFILE.DATE_FORMAT') }}
+          <select
+            name="date_format"
+            :disabled="loading"
+            v-model="userForm.date_format"
+          >
+            <option disabled value="">Please select one:</option>
+            <option value="dd/MM/yyyy">dd/MM/yyyy - 08/07/2022</option>
+            <option value="MM/dd/yyyy">MM/dd/yyyy - 07/08/2022</option>
+            <option value="MMM. do, yyyy">MMM. do, yyyy - Jul. 8th, 2022</option>
+            <option value="yyyy-MM-dd">yyyy-MM-dd - 2022-07-08</option>
+          </select>
+        </label>
         <div class="form-items form-checkboxes">
           <span class="checkboxes-label">
             {{ $t('user.PROFILE.FIRST_DAY_OF_WEEK') }}
@@ -120,6 +134,7 @@
     imperial_units: false,
     language: '',
     timezone: 'Europe/Paris',
+    date_format: 'dd/MM/yyyy',
     weekm: false,
   })
   const weekStart = [
@@ -170,6 +185,7 @@
     userForm.imperial_units = user.imperial_units ? user.imperial_units : false
     userForm.language = user.language ? user.language : 'en'
     userForm.timezone = user.timezone ? user.timezone : 'Europe/Paris'
+    userForm.date_format = user.date_format ? user.date_format : 'dd/MM/yyyy'
     userForm.weekm = user.weekm ? user.weekm : false
   }
   function updateProfile() {

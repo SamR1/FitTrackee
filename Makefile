@@ -65,11 +65,17 @@ docker-lint-python: docker-run
 docker-logs:
 	docker-compose -f docker-compose-dev.yml logs --follow
 
+docker-migrate-db:
+	docker-compose -f docker-compose-dev.yml exec fittrackee $(DOCKER_FLASK) db migrate --directory $(DOCKER_MIGRATIONS)
+
 docker-rebuild:
 	docker-compose -f docker-compose-dev.yml build --no-cache
 
 docker-restart:
 	docker-compose -f docker-compose-dev.yml restart fittrackee
+
+docker-revision:
+	docker-compose -f docker-compose-dev.yml exec fittrackee $(DOCKER_FLASK) db revision --directory $(DOCKER_MIGRATIONS) --message $(MIGRATION_MESSAGE)
 
 docker-run-all: docker-run docker-run-workers
 
@@ -106,6 +112,9 @@ docker-test-python: docker-run
 
 docker-up:
 	docker-compose -f docker-compose-dev.yml up fittrackee
+
+docker-upgrade-db:
+	docker-compose -f docker-compose-dev.yml exec fittrackee $(DOCKER_FTCLI) db upgrade
 
 downgrade-db:
 	$(FLASK) db downgrade --directory $(MIGRATIONS)

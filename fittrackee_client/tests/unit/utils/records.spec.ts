@@ -19,6 +19,7 @@ describe('formatRecord', () => {
           workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
         },
         timezone: 'Europe/Paris',
+        date_format: 'dd/MM/yyyy'
       },
       expected: {
         id: 9,
@@ -41,6 +42,7 @@ describe('formatRecord', () => {
           workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
         },
         timezone: 'Europe/Paris',
+        date_format: 'yyyy/MM/dd'
       },
       expected: {
         id: 10,
@@ -63,6 +65,7 @@ describe('formatRecord', () => {
           workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
         },
         timezone: 'Europe/Paris',
+        date_format: 'yyyy/MM/dd'
       },
       expected: {
         id: 11,
@@ -85,12 +88,13 @@ describe('formatRecord', () => {
           workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
         },
         timezone: 'Europe/Paris',
+        date_format: 'dd/MM/yyyy'
       },
       expected: {
         id: 12,
         record_type: 'MS',
         value: '18 km/h',
-        workout_date: '2019/07/08',
+        workout_date: '08/07/2019',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
       },
     },
@@ -107,12 +111,13 @@ describe('formatRecord', () => {
           workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
         },
         timezone: 'Europe/Paris',
+        date_format: 'MMM. do, yyyy'
       },
       expected: {
         id: 13,
         record_type: 'HA',
         value: '100 m',
-        workout_date: '2019/07/07',
+        workout_date: 'Jul. 7th, 2019',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
       },
     },
@@ -123,7 +128,8 @@ describe('formatRecord', () => {
         formatRecord(
           testParams.inputParams.record,
           testParams.inputParams.timezone,
-          false
+          false,
+          testParams.inputParams.date_format
         ),
         testParams.expected
       )
@@ -146,6 +152,7 @@ describe('formatRecord after conversion', () => {
           workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
         },
         timezone: 'Europe/Paris',
+        date_format: 'yyyy/dd/MM'
       },
       expected: {
         id: 9,
@@ -168,6 +175,7 @@ describe('formatRecord after conversion', () => {
           workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
         },
         timezone: 'Europe/Paris',
+        date_format: 'yyyy/dd/MM'
       },
       expected: {
         id: 10,
@@ -190,6 +198,7 @@ describe('formatRecord after conversion', () => {
           workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
         },
         timezone: 'Europe/Paris',
+        date_format: 'yyyy/dd/MM'
       },
       expected: {
         id: 11,
@@ -212,6 +221,7 @@ describe('formatRecord after conversion', () => {
           workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
         },
         timezone: 'Europe/Paris',
+        date_format: 'yyyy/dd/MM'
       },
       expected: {
         id: 12,
@@ -234,6 +244,7 @@ describe('formatRecord after conversion', () => {
           workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
         },
         timezone: 'Europe/Paris',
+        date_format: 'yyyy/dd/MM'
       },
       expected: {
         id: 13,
@@ -250,7 +261,8 @@ describe('formatRecord after conversion', () => {
         formatRecord(
           testParams.inputParams.record,
           testParams.inputParams.timezone,
-          true
+          true,
+          testParams.inputParams.date_format
         ),
         testParams.expected
       )
@@ -272,7 +284,8 @@ describe('formatRecord (invalid record type)', () => {
           workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
         },
         'Europe/Paris',
-        false
+        false,
+        'yyyy/dd/MM'
       )
     ).to.throw(
       'Invalid record type, expected: "AS", "FD", "HA", "LD", "MD", got: "M"'
@@ -287,6 +300,7 @@ describe('getRecordsBySports', () => {
       input: {
         records: [],
         tz: 'Europe/Paris',
+        date_format: 'yyyy/dd/MM'
       },
       expected: {},
     },
@@ -305,6 +319,7 @@ describe('getRecordsBySports', () => {
           },
         ],
         tz: 'Europe/Paris',
+        date_format: 'yyyy/dd/MM'
       },
       expected: {
         'Cycling (Sport)': {
@@ -355,6 +370,7 @@ describe('getRecordsBySports', () => {
           },
         ],
         tz: 'Europe/Paris',
+        date_format: 'yyyy/dd/MM'
       },
       expected: {
         'Cycling (Sport)': {
@@ -401,7 +417,8 @@ describe('getRecordsBySports', () => {
           translatedSports,
           testParams.input.tz,
           false,
-          true
+          true,
+          testParams.input.date_format
         ),
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -418,6 +435,7 @@ describe('getRecordsBySports after conversion', () => {
       input: {
         records: [],
         tz: 'Europe/Paris',
+        date_format: 'yyyy/dd/MM'
       },
       expected: {},
     },
@@ -436,6 +454,7 @@ describe('getRecordsBySports after conversion', () => {
           },
         ],
         tz: 'Europe/Paris',
+        date_format: 'yyyy/dd/MM'
       },
       expected: {
         'Cycling (Sport)': {
@@ -486,6 +505,7 @@ describe('getRecordsBySports after conversion', () => {
           },
         ],
         tz: 'Europe/Paris',
+        date_format: 'yyyy/dd/MM'
       },
       expected: {
         'Cycling (Sport)': {
@@ -532,7 +552,8 @@ describe('getRecordsBySports after conversion', () => {
           translatedSports,
           testParams.input.tz,
           true,
-          true
+          true,
+          testParams.input.date_format
         ),
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -549,6 +570,7 @@ describe('getRecordsBySports with HA record', () => {
       input: {
         records: [],
         tz: 'Europe/Paris',
+        date_format: 'yyyy/dd/MM'
       },
       expected: {},
     },
@@ -576,6 +598,7 @@ describe('getRecordsBySports with HA record', () => {
           },
         ],
         tz: 'Europe/Paris',
+        date_format: 'yyyy/dd/MM'
       },
       expected: {
         'Cycling (Sport)': {
@@ -602,7 +625,8 @@ describe('getRecordsBySports with HA record', () => {
           translatedSports,
           testParams.input.tz,
           false,
-          false
+          false,
+          testParams.input.date_format
         ),
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore

@@ -64,7 +64,7 @@
                   {{
                     format(
                       getDateWithTZ(user.created_at, authUser.timezone),
-                      'dd/MM/yyyy HH:mm'
+                      `${authUser.date_format} HH:mm`
                     )
                   }}
                 </td>

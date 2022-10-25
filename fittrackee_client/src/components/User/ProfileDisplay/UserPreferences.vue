@@ -5,6 +5,8 @@
       <dd>{{ language }}</dd>
       <dt>{{ $t('user.PROFILE.TIMEZONE') }}:</dt>
       <dd>{{ timezone }}</dd>
+      <dt>{{ $t('user.PROFILE.DATE_FORMAT') }}:</dt>
+      <dd>{{ date_format }}</dd>
       <dt>{{ $t('user.PROFILE.FIRST_DAY_OF_WEEK') }}:</dt>
       <dd>{{ $t(`user.PROFILE.${fistDayOfWeek}`) }}</dd>
       <dt>{{ $t('user.PROFILE.UNITS.LABEL') }}:</dt>
@@ -46,6 +48,9 @@
   const fistDayOfWeek = computed(() => (props.user.weekm ? 'MONDAY' : 'SUNDAY'))
   const timezone = computed(() =>
     props.user.timezone ? props.user.timezone : 'Europe/Paris'
+  )
+  const date_format = computed(() =>
+    props.user.date_format ? props.user.date_format : 'dd/MM/yyyy'
   )
   const display_ascent = computed(() =>
     props.user.display_ascent ? 'DISPLAYED' : 'HIDDEN'

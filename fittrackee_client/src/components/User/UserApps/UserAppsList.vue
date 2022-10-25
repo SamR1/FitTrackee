@@ -11,7 +11,7 @@
           {{
             format(
               getDateWithTZ(client.issued_at, authUser.timezone),
-              'dd/MM/yyyy HH:mm'
+              `${authUser.date_format} HH:mm`
             )
           }}
         </span>

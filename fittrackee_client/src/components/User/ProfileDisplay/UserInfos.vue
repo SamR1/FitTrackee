@@ -147,12 +147,12 @@
   )
   const registrationDate = computed(() =>
     props.user.created_at
-      ? format(new Date(props.user.created_at), 'dd/MM/yyyy HH:mm')
+      ? format(new Date(props.user.created_at), `${props.user.date_format} HH:mm`)
       : ''
   )
   const birthDate = computed(() =>
     props.user.birth_date
-      ? format(new Date(props.user.birth_date), 'dd/MM/yyyy')
+      ? format(new Date(props.user.birth_date), props.user.date_format)
       : ''
   )
   const isSuccess = computed(

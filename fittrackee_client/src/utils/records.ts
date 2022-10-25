@@ -7,7 +7,8 @@ import { convertDistance, units } from '@/utils/units'
 export const formatRecord = (
   record: IRecord,
   tz: string,
-  useImperialUnits: boolean
+  useImperialUnits: boolean,
+  date_format: string
 ): Record<string, string | number> => {
   const distanceUnitFrom: TUnit = 'km'
   const distanceUnitTo: TUnit = useImperialUnits
@@ -53,7 +54,7 @@ export const formatRecord = (
       )
   }
   return {
-    workout_date: formatWorkoutDate(getDateWithTZ(record.workout_date, tz))
+    workout_date: formatWorkoutDate(getDateWithTZ(record.workout_date, tz), date_format)
       .workout_date,
     workout_id: record.workout_id,
     id: record.id,
@@ -73,7 +74,8 @@ export const getRecordsBySports = (
   translatedSports: ITranslatedSport[],
   tz: string,
   useImperialUnits: boolean,
-  display_ascent: boolean
+  display_ascent: boolean,
+  date_format: string
 ): IRecordsBySports =>
   records
     .filter((r) => (display_ascent ? true : r.record_type !== 'HA'))
@@ -88,7 +90,7 @@ export const getRecordsBySports = (
           }
         }
         sportList[sport.translatedLabel].records.push(
-          formatRecord(record, tz, useImperialUnits)
+          formatRecord(record, tz, useImperialUnits, date_format)
         )
       }
       return sportList

@@ -86,7 +86,7 @@
                 {{
                   format(
                     getDateWithTZ(workout.workout_date, user.timezone),
-                    'dd/MM/yyyy HH:mm'
+                    `${user.date_format} HH:mm`
                   )
                 }}
               </td>

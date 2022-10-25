@@ -84,7 +84,7 @@
   })
   const registrationDate = computed(() =>
     props.user.created_at
-      ? format(new Date(props.user.created_at), 'dd/MM/yyyy HH:mm')
+      ? format(new Date(props.user.created_at), `${props.user.date_format} HH:mm`)
       : ''
   )
   const loading = computed(
