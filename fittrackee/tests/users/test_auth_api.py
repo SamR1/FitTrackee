@@ -1394,6 +1394,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     language=input_language,
                     imperial_units=True,
                     display_ascent=False,
+                    date_format='yyyy-MM-dd'
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -1407,6 +1408,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert data['data']['imperial_units'] is True
         assert data['data']['language'] == expected_language
         assert data['data']['timezone'] == 'America/New_York'
+        assert data['data']['date_format'] == 'yyyy-MM-dd'
         assert data['data']['weekm'] is True
 
     @pytest.mark.parametrize(

@@ -42,6 +42,9 @@ clean-install: clean
 	rm -rf dist/
 
 ## Docker commands for evaluation purposes
+docker-bandit:
+	docker-compose -f docker-compose-dev.yml exec fittrackee $(DOCKER_BANDIT) -r fittrackee -c pyproject.toml
+
 docker-build:
 	docker-compose -f docker-compose-dev.yml build fittrackee
 
@@ -50,10 +53,14 @@ docker-build-all: docker-build docker-build-client
 docker-build-client:
 	docker-compose -f docker-compose-dev.yml build fittrackee_client
 
+docker-check-all: docker-bandit docker-lint-all docker-type-check docker-test-client docker-test-python
+
 docker-init: docker-run docker-init-db docker-restart docker-run-workers
 
 docker-init-db:
 	docker-compose -f docker-compose-dev.yml exec fittrackee docker/init-database.sh
+
+docker-lint-all: docker-lint-client docker-lint-python
 
 docker-lint-client:
 	docker-compose -f docker-compose-dev.yml up -d fittrackee_client
@@ -109,6 +116,10 @@ docker-test-e2e: docker-run
 
 docker-test-python: docker-run
 	docker-compose -f docker-compose-dev.yml exec fittrackee docker/test-python.sh $(PYTEST_ARGS)
+
+docker-type-check:
+	echo 'Running mypy in docker...'
+	docker-compose -f docker-compose-dev.yml exec fittrackee $(DOCKER_MYPY) fittrackee
 
 docker-up:
 	docker-compose -f docker-compose-dev.yml up fittrackee
