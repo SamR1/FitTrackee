@@ -370,7 +370,7 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
             seven_workouts_user_1[5].serialize()
         )
         assert data['data']['workouts'][2] == jsonify_dict(
-            seven_workouts_user_1[4].serialize()
+            seven_workouts_user_1[3].serialize()
         )
         assert data['pagination'] == {
             'has_next': True,
@@ -443,7 +443,7 @@ class TestGetWorkoutsWithOrder(ApiTestCaseMixin):
             == data['data']['workouts'][0]['workout_date']
         )
         assert (
-            'Fri, 23 Feb 2018 00:00:00 GMT'
+            'Fri, 23 Feb 2018 10:00:00 GMT'
             == data['data']['workouts'][4]['workout_date']
         )
         assert data['pagination'] == {
@@ -642,11 +642,9 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         assert len(data['data']['workouts']) == 2
         assert 'creation_date' in data['data']['workouts'][0]
         assert (
-            'Fri, 23 Feb 2018 00:00:00 GMT'
+            'Fri, 23 Feb 2018 10:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
-        assert '0:16:40' == data['data']['workouts'][0]['duration']
-        assert 'creation_date' in data['data']['workouts'][1]
         assert (
             'Fri, 23 Feb 2018 00:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
@@ -849,7 +847,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
         assert (
-            'Fri, 23 Feb 2018 00:00:00 GMT'
+            'Fri, 23 Feb 2018 10:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
         assert data['pagination'] == {
