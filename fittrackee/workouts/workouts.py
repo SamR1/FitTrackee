@@ -197,7 +197,10 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
     :query float ave_speed_to: maximal average speed
     :query float max_speed_from: minimal max. speed
     :query float max_speed_to: maximal max. speed
-    :query string order: sorting order (default: ``desc``)
+    :query string order: sorting order: ``asc``, ``desc`` (default: ``desc``)
+    :query string order_by: sorting criteria: ``ave_speed``, ``distance``,
+                            ``duration``, ``workout_date`` (default:
+                            ``workout_date``)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 

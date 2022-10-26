@@ -173,9 +173,10 @@ def get_users(auth_user: User) -> Dict:
     :query integer page: page if using pagination (default: 1)
     :query integer per_page: number of users per page (default: 10, max: 50)
     :query string q: query on user name
-    :query string order_by: sorting criteria (``username``, ``created_at``,
-                            ``workouts_count``, ``admin``, ``is_active``)
-    :query string order: sorting order (default: ``asc``)
+    :query string order: sorting order: ``asc``, ``desc`` (default: ``asc``)
+    :query string order_by: sorting criteria: ``username``, ``created_at``,
+                            ``workouts_count``, ``admin``, ``is_active``
+                            (default: ``username``)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
