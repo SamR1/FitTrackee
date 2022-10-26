@@ -224,8 +224,9 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
         ave_speed_to = params.get('ave_speed_to')
         max_speed_from = params.get('max_speed_from')
         max_speed_to = params.get('max_speed_to')
+        order_by = params.get('order_by', 'workout_date')
         workout_column = getattr(
-            Workout, params.get('order_by', 'workout_date')
+            Workout, 'moving' if order_by == 'duration' else order_by
         )
         order = params.get('order', 'desc')
         sport_id = params.get('sport_id')
