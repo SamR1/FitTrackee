@@ -1394,7 +1394,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     language=input_language,
                     imperial_units=True,
                     display_ascent=False,
-                    date_format='yyyy-MM-dd'
+                    date_format='yyyy-MM-dd',
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
