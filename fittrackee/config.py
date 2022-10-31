@@ -50,7 +50,12 @@ class BaseConfig:
     TRANSLATIONS_FOLDER = os.path.join(
         current_app.root_path, 'emails/translations'
     )
-    LANGUAGES = ['en', 'fr', 'de']
+    LANGUAGES = [
+        'en',
+        'fr',
+        'de',
+        # 'nb',  # disabled for now
+    ]
     OAUTH2_TOKEN_EXPIRES_IN = {
         'authorization_code': 864000,  # 10 days
     }
