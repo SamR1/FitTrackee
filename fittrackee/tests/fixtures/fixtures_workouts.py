@@ -154,7 +154,9 @@ def seven_workouts_user_1() -> List[Workout]:
     workout_4 = Workout(
         user_id=1,
         sport_id=1,
-        workout_date=datetime.datetime.strptime('23/02/2018', '%d/%m/%Y'),
+        workout_date=datetime.datetime.strptime(
+            '23/02/2018 10:00', '%d/%m/%Y %H:%M'
+        ),
         distance=1,
         duration=datetime.timedelta(seconds=600),
     )

@@ -668,10 +668,16 @@ Commands:
 <li><p>Create <code class="docutils literal notranslate"><span class="pre">fittrackee</span></code> database</p></li>
 </ul>
 <p>Example :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">fittrackee</span><span class="p">;</span><span class="w"></span>
-<span class="k">CREATE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">fittrackee</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="n">PASSWORD</span><span class="w"> </span><span class="s1">&#39;&lt;PASSWORD&gt;&#39;</span><span class="p">;</span><span class="w"></span>
-<span class="k">GRANT</span><span class="w"> </span><span class="k">ALL</span><span class="w"> </span><span class="k">PRIVILEGES</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">fittrackee</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">fittrackee</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">fittrackee</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="n">PASSWORD</span><span class="w"> </span><span class="s1">&#39;&lt;PASSWORD&gt;&#39;</span><span class="p">;</span><span class="w"></span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">fittrackee</span><span class="w"> </span><span class="k">AUTHORIZATION</span><span class="w"> </span><span class="n">fittrackee</span><span class="p">;</span><span class="w"></span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">fittrackee</span><span class="w"> </span><span class="k">OWNER</span><span class="w"> </span><span class="n">fittrackee</span><span class="p">;</span><span class="w"></span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">see PostgreSQL <a class="reference external" href="https://www.postgresql.org/docs/15/ddl-schemas.html">documentation</a> for schema and privileges.</div>
+</div>
 </div>
 <ul class="simple">
 <li><p>Initialize environment variables, see <a class="reference external" href="installation.html#environment-variables">Environment variables</a></p></li>

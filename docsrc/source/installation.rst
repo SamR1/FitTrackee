@@ -364,9 +364,12 @@ Example :
 
 .. code-block:: sql
 
-    CREATE DATABASE fittrackee;
     CREATE USER fittrackee WITH PASSWORD '<PASSWORD>';
-    GRANT ALL PRIVILEGES ON DATABASE fittrackee TO fittrackee;
+    CREATE SCHEMA fittrackee AUTHORIZATION fittrackee;
+    CREATE DATABASE fittrackee OWNER fittrackee;
+
+.. note::
+    | see PostgreSQL `documentation <https://www.postgresql.org/docs/15/ddl-schemas.html>`_ for schema and privileges.
 
 - Initialize environment variables, see `Environment variables <installation.html#environment-variables>`__
 
