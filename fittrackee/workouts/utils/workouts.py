@@ -174,7 +174,7 @@ def create_segment(
         workout_uuid=workout_uuid,
         segment_id=segment_data['idx'],
     )
-    new_segment.duration = segment_data['duration']
+    new_segment.duration = _remove_microseconds(segment_data['duration'])
     new_segment.distance = segment_data['distance']
     update_workout_data(new_segment, segment_data)
     return new_segment
