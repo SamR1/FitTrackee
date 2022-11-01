@@ -235,6 +235,27 @@ class TestUserRegistration(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert 'auth_token' not in data
 
+    def test_it_creates_user_with_default_date_format(
+        self, app: Flask
+    ) -> None:
+        client = app.test_client()
+        username = self.random_string()
+
+        client.post(
+            '/api/auth/register',
+            data=json.dumps(
+                dict(
+                    username=username,
+                    email=self.random_email(),
+                    password=self.random_string(),
+                )
+            ),
+            content_type='application/json',
+        )
+
+        new_user = User.query.filter_by(username=username).first()
+        assert new_user.date_format == 'MM/dd/yyyy'
+
     @pytest.mark.parametrize(
         'input_language,expected_language',
         [('en', 'en'), ('fr', 'fr'), ('invalid', 'en'), (None, 'en')],
@@ -1394,6 +1415,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     language=input_language,
                     imperial_units=True,
                     display_ascent=False,
+                    date_format='yyyy-MM-dd',
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -1407,6 +1429,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert data['data']['imperial_units'] is True
         assert data['data']['language'] == expected_language
         assert data['data']['timezone'] == 'America/New_York'
+        assert data['data']['date_format'] == 'yyyy-MM-dd'
         assert data['data']['weekm'] is True
 
     @pytest.mark.parametrize(

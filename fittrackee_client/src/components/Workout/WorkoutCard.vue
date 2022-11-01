@@ -29,10 +29,7 @@
           class="workout-date"
           v-if="workout.workout_date && user"
           :title="
-            format(
-              getDateWithTZ(workout.workout_date, user.timezone),
-              'dd/MM/yyyy HH:mm'
-            )
+            formatDate(workout.workout_date, user.timezone, user.date_format)
           "
         >
           {{
@@ -141,7 +138,7 @@
 </template>
 
 <script setup lang="ts">
-  import { Locale, format, formatDistance } from 'date-fns'
+  import { Locale, formatDistance } from 'date-fns'
   import { ComputedRef, computed, toRefs, withDefaults } from 'vue'
 
   import StaticMap from '@/components/Common/StaticMap.vue'
@@ -151,7 +148,7 @@
   import { IUserProfile } from '@/types/user'
   import { IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
-  import { getDateWithTZ } from '@/utils/dates'
+  import { formatDate } from '@/utils/dates'
 
   interface Props {
     user: IUserProfile

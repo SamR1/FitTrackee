@@ -62,9 +62,10 @@
                     {{ $t('user.PROFILE.REGISTRATION_DATE') }}
                   </span>
                   {{
-                    format(
-                      getDateWithTZ(user.created_at, authUser.timezone),
-                      'dd/MM/yyyy HH:mm'
+                    formatDate(
+                      user.created_at,
+                      authUser.timezone,
+                      authUser.date_format
                     )
                   }}
                 </td>
@@ -130,7 +131,6 @@
 </template>
 
 <script setup lang="ts">
-  import { format } from 'date-fns'
   import {
     ComputedRef,
     Ref,
@@ -152,7 +152,7 @@
   import { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList } from '@/utils/api'
-  import { getDateWithTZ } from '@/utils/dates'
+  import { formatDate } from '@/utils/dates'
 
   const store = useStore()
   const route = useRoute()

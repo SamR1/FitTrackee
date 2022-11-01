@@ -131,7 +131,8 @@
       getDateWithTZ(
         props.workoutData.workout.workout_date,
         props.authUser.timezone
-      )
+      ),
+      props.authUser.date_format
     )
     return {
       ascent: segment ? segment.ascent : workout.ascent,

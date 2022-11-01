@@ -50,9 +50,10 @@
         <dt>{{ capitalize($t('oauth2.APP.ISSUE_AT')) }}:</dt>
         <dd>
           {{
-            format(
-              getDateWithTZ(client.issued_at, authUser.timezone),
-              'dd/MM/yyyy HH:mm'
+            formatDate(
+              client.issued_at,
+              authUser.timezone,
+              authUser.date_format
             )
           }}
         </dd>
@@ -105,7 +106,6 @@
 </template>
 
 <script setup lang="ts">
-  import { format } from 'date-fns'
   import {
     ComputedRef,
     Ref,
@@ -124,7 +124,7 @@
   import { IOAuth2Client } from '@/types/oauth'
   import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
-  import { getDateWithTZ } from '@/utils/dates'
+  import { formatDate } from '@/utils/dates'
 
   interface Props {
     authUser: IAuthUserProfile

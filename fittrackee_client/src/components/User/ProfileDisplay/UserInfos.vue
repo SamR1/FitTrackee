@@ -130,6 +130,8 @@
   import { TAppConfig } from '@/types/application'
   import { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { formatDate, getDateFormat } from '@/utils/dates'
+  import { localeFromLanguage } from '@/utils/locales'
 
   interface Props {
     user: IUserProfile
@@ -142,17 +144,28 @@
   const store = useStore()
 
   const { user, fromAdmin } = toRefs(props)
+  const language: ComputedRef<string> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
+  )
   const authUser: ComputedRef<IAuthUserProfile> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
   )
   const registrationDate = computed(() =>
     props.user.created_at
-      ? format(new Date(props.user.created_at), 'dd/MM/yyyy HH:mm')
+      ? formatDate(
+          props.user.created_at,
+          authUser.value.timezone,
+          authUser.value.date_format
+        )
       : ''
   )
   const birthDate = computed(() =>
     props.user.birth_date
-      ? format(new Date(props.user.birth_date), 'dd/MM/yyyy')
+      ? format(
+          new Date(props.user.birth_date),
+          `${getDateFormat(authUser.value.date_format, language.value)}`,
+          { locale: localeFromLanguage[language.value] }
+        )
       : ''
   )
   const isSuccess = computed(
