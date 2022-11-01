@@ -5,6 +5,7 @@ import {
   incrementDate,
   getStartDate,
   formatWorkoutDate,
+  formatDate,
 } from '@/utils/dates'
 
 describe('startDate (week starting Sunday)', () => {
@@ -238,5 +239,54 @@ describe('formatWorkoutDate', () => {
         testParams.expected
       )
     })
+  })
+})
+
+describe('formatDate', () => {
+  const dateString = 'Tue, 01 Nov 2022 00:00:00 GMT'
+
+  const testsParams = [
+    {
+      description:
+        'format date for "Europe/Paris" timezone and "dd/MM/yyyy" format (with time)',
+      inputParams: {
+        timezone: 'Europe/Paris',
+        dateFormat: 'dd/MM/yyyy',
+        withTime: true,
+      },
+      expectedDate: '01/11/2022 01:00',
+    },
+    {
+      description:
+        'format date for "America/New_York" timezone and "MM/dd/yyyy" format (w/o time)',
+      inputParams: {
+        timezone: 'America/New_York',
+        dateFormat: 'MM/dd/yyyy',
+        withTime: false,
+      },
+      expectedDate: '10/31/2022',
+    },
+  ]
+  testsParams.map((testParams) => {
+    it(testParams.description, () => {
+      assert.deepEqual(
+        formatDate(
+          dateString,
+          testParams.inputParams.timezone,
+          testParams.inputParams.dateFormat,
+          testParams.inputParams.withTime
+        ),
+        testParams.expectedDate
+      )
+    })
+  })
+})
+
+describe('formatDate (w/ default value)', () => {
+  it('format date for "Europe/Paris" timezone and "dd/MM/yyyy" format', () => {
+    assert.deepEqual(
+      formatDate('Tue, 01 Nov 2022 00:00:00 GMT', 'Europe/Paris', 'yyyy-MM-dd'),
+      '2022-11-01 01:00'
+    )
   })
 })

@@ -84,9 +84,10 @@
                   {{ $t('workouts.DATE') }}
                 </span>
                 {{
-                  format(
-                    getDateWithTZ(workout.workout_date, user.timezone),
-                    `${user.date_format} HH:mm`
+                  formatDate(
+                    workout.workout_date,
+                    user.timezone,
+                    user.date_format
                   )
                 }}
               </td>
@@ -162,7 +163,6 @@
 </template>
 
 <script setup lang="ts">
-  import { format } from 'date-fns'
   import {
     ComputedRef,
     Ref,
@@ -186,7 +186,7 @@
   import { IWorkout, TWorkoutsPayload } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList, workoutsPayloadKeys } from '@/utils/api'
-  import { getDateWithTZ } from '@/utils/dates'
+  import { formatDate } from '@/utils/dates'
   import { getSportColor, getSportLabel } from '@/utils/sports'
   import { convertDistance } from '@/utils/units'
   import { defaultOrder } from '@/utils/workouts'

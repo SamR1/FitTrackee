@@ -78,3 +78,14 @@ export const formatWorkoutDate = (
     workout_time: format(dateTime, timeFormat),
   }
 }
+
+export const formatDate = (
+  dateString: string,
+  timezone: string,
+  dateFormat: string,
+  withTime = true
+): string =>
+  format(
+    getDateWithTZ(dateString, timezone),
+    `${dateFormat}${withTime ? ' HH:mm' : ''}`
+  )

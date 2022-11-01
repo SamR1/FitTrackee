@@ -130,6 +130,7 @@
   import { TAppConfig } from '@/types/application'
   import { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { formatDate } from '@/utils/dates'
 
   interface Props {
     user: IUserProfile
@@ -147,12 +148,16 @@
   )
   const registrationDate = computed(() =>
     props.user.created_at
-      ? format(new Date(props.user.created_at), `${props.user.date_format} HH:mm`)
+      ? formatDate(
+          props.user.created_at,
+          authUser.value.timezone,
+          authUser.value.date_format
+        )
       : ''
   )
   const birthDate = computed(() =>
     props.user.birth_date
-      ? format(new Date(props.user.birth_date), props.user.date_format)
+      ? format(new Date(props.user.birth_date), authUser.value.date_format)
       : ''
   )
   const isSuccess = computed(

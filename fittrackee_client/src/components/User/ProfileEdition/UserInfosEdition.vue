@@ -65,11 +65,12 @@
   import { ComputedRef, computed, reactive, onMounted, onUnmounted } from 'vue'
 
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import { IUserProfile, IUserPayload } from '@/types/user'
+  import { IUserProfile, IUserPayload, IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { formatDate } from '@/utils/dates'
 
   interface Props {
-    user: IUserProfile
+    user: IAuthUserProfile
   }
   const props = defineProps<Props>()
 
@@ -84,7 +85,11 @@
   })
   const registrationDate = computed(() =>
     props.user.created_at
-      ? format(new Date(props.user.created_at), `${props.user.date_format} HH:mm`)
+      ? formatDate(
+          props.user.created_at,
+          props.user.timezone,
+          props.user.date_format
+        )
       : ''
   )
   const loading = computed(
