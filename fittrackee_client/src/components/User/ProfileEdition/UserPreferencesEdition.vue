@@ -23,6 +23,22 @@
             @updateTimezone="updateTZ"
           />
         </label>
+        <label class="form-items">
+          {{ $t('user.PROFILE.DATE_FORMAT') }}
+          <select
+            id="date_format"
+            v-model="userForm.date_format"
+            :disabled="loading"
+          >
+            <option
+              v-for="dateFormat in dateFormatOptions"
+              :value="dateFormat.value"
+              :key="dateFormat.value"
+            >
+              {{ dateFormat.label }}
+            </option>
+          </select>
+        </label>
         <div class="form-items form-checkboxes">
           <span class="checkboxes-label">
             {{ $t('user.PROFILE.FIRST_DAY_OF_WEEK') }}
@@ -106,6 +122,7 @@
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import { IUserPreferencesPayload, IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { availableDateFormatOptions } from '@/utils/dates'
   import { availableLanguages } from '@/utils/locales'
 
   interface Props {
@@ -120,6 +137,7 @@
     imperial_units: false,
     language: '',
     timezone: 'Europe/Paris',
+    date_format: 'dd/MM/yyyy',
     weekm: false,
   })
   const weekStart = [
@@ -158,6 +176,13 @@
   const errorMessages: ComputedRef<string | string[] | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
   )
+  const dateFormatOptions = computed(() =>
+    availableDateFormatOptions(
+      new Date().toUTCString(),
+      props.user.timezone,
+      userForm.language
+    )
+  )
 
   onMounted(() => {
     if (props.user) {
@@ -170,6 +195,7 @@
     userForm.imperial_units = user.imperial_units ? user.imperial_units : false
     userForm.language = user.language ? user.language : 'en'
     userForm.timezone = user.timezone ? user.timezone : 'Europe/Paris'
+    userForm.date_format = user.date_format ? user.date_format : 'dd/MM/yyyy'
     userForm.weekm = user.weekm ? user.weekm : false
   }
   function updateProfile() {

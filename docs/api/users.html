@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Users &#8212; FitTrackee 0.7.2
+    <title>Users &#8212; FitTrackee 0.7.3
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
@@ -15,6 +15,7 @@
     <script src="../_static/underscore.js"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Workouts" href="workouts.html" />
@@ -41,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.2
+        <span class="navbar-text navbar-version pull-left"><b>0.7.3
 </b></span>
       </div>
 
@@ -265,9 +266,10 @@ has admin rights.</p>
 <li><p><strong>page</strong> (<em>integer</em>) – page if using pagination (default: 1)</p></li>
 <li><p><strong>per_page</strong> (<em>integer</em>) – number of users per page (default: 10, max: 50)</p></li>
 <li><p><strong>q</strong> (<em>string</em>) – query on user name</p></li>
-<li><p><strong>order_by</strong> (<em>string</em>) – sorting criteria (<code class="docutils literal notranslate"><span class="pre">username</span></code>, <code class="docutils literal notranslate"><span class="pre">created_at</span></code>,
-<code class="docutils literal notranslate"><span class="pre">workouts_count</span></code>, <code class="docutils literal notranslate"><span class="pre">admin</span></code>, <code class="docutils literal notranslate"><span class="pre">is_active</span></code>)</p></li>
-<li><p><strong>order</strong> (<em>string</em>) – sorting order (default: <code class="docutils literal notranslate"><span class="pre">asc</span></code>)</p></li>
+<li><p><strong>order</strong> (<em>string</em>) – sorting order: <code class="docutils literal notranslate"><span class="pre">asc</span></code>, <code class="docutils literal notranslate"><span class="pre">desc</span></code> (default: <code class="docutils literal notranslate"><span class="pre">asc</span></code>)</p></li>
+<li><p><strong>order_by</strong> (<em>string</em>) – sorting criteria: <code class="docutils literal notranslate"><span class="pre">username</span></code>, <code class="docutils literal notranslate"><span class="pre">created_at</span></code>,
+<code class="docutils literal notranslate"><span class="pre">workouts_count</span></code>, <code class="docutils literal notranslate"><span class="pre">admin</span></code>, <code class="docutils literal notranslate"><span class="pre">is_active</span></code>
+(default: <code class="docutils literal notranslate"><span class="pre">username</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Request Headers<span class="colon">:</span></dt>
@@ -660,7 +662,7 @@ one admin.</p>
     </p>
     <p>
         &copy; Copyright 2018 - 2022, SamR1.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br/>
     </p>
   </div>
 </footer>

@@ -42,6 +42,9 @@ clean-install: clean
 	rm -rf dist/
 
 ## Docker commands for evaluation purposes
+docker-bandit:
+	docker-compose -f docker-compose-dev.yml exec fittrackee $(DOCKER_BANDIT) -r fittrackee -c pyproject.toml
+
 docker-build:
 	docker-compose -f docker-compose-dev.yml build fittrackee
 
@@ -50,10 +53,14 @@ docker-build-all: docker-build docker-build-client
 docker-build-client:
 	docker-compose -f docker-compose-dev.yml build fittrackee_client
 
+docker-check-all: docker-bandit docker-lint-all docker-type-check docker-test-client docker-test-python
+
 docker-init: docker-run docker-init-db docker-restart docker-run-workers
 
 docker-init-db:
 	docker-compose -f docker-compose-dev.yml exec fittrackee docker/init-database.sh
+
+docker-lint-all: docker-lint-client docker-lint-python
 
 docker-lint-client:
 	docker-compose -f docker-compose-dev.yml up -d fittrackee_client
@@ -65,11 +72,17 @@ docker-lint-python: docker-run
 docker-logs:
 	docker-compose -f docker-compose-dev.yml logs --follow
 
+docker-migrate-db:
+	docker-compose -f docker-compose-dev.yml exec fittrackee $(DOCKER_FLASK) db migrate --directory $(DOCKER_MIGRATIONS)
+
 docker-rebuild:
 	docker-compose -f docker-compose-dev.yml build --no-cache
 
 docker-restart:
 	docker-compose -f docker-compose-dev.yml restart fittrackee
+
+docker-revision:
+	docker-compose -f docker-compose-dev.yml exec fittrackee $(DOCKER_FLASK) db revision --directory $(DOCKER_MIGRATIONS) --message $(MIGRATION_MESSAGE)
 
 docker-run-all: docker-run docker-run-workers
 
@@ -104,8 +117,15 @@ docker-test-e2e: docker-run
 docker-test-python: docker-run
 	docker-compose -f docker-compose-dev.yml exec fittrackee docker/test-python.sh $(PYTEST_ARGS)
 
+docker-type-check:
+	echo 'Running mypy in docker...'
+	docker-compose -f docker-compose-dev.yml exec fittrackee $(DOCKER_MYPY) fittrackee
+
 docker-up:
 	docker-compose -f docker-compose-dev.yml up fittrackee
+
+docker-upgrade-db:
+	docker-compose -f docker-compose-dev.yml exec fittrackee $(DOCKER_FTCLI) db upgrade
 
 downgrade-db:
 	$(FLASK) db downgrade --directory $(MIGRATIONS)

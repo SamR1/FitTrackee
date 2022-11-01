@@ -1,13 +1,17 @@
+import createI18n from '@/i18n'
 import { ITranslatedSport } from '@/types/sports'
 import { TUnit } from '@/types/units'
 import { ICardRecord, IRecord, IRecordsBySports } from '@/types/workouts'
-import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
+import { formatDate, getDateFormat } from '@/utils/dates'
 import { convertDistance, units } from '@/utils/units'
+
+const { locale } = createI18n.global
 
 export const formatRecord = (
   record: IRecord,
   tz: string,
-  useImperialUnits: boolean
+  useImperialUnits: boolean,
+  date_format: string
 ): Record<string, string | number> => {
   const distanceUnitFrom: TUnit = 'km'
   const distanceUnitTo: TUnit = useImperialUnits
@@ -53,8 +57,7 @@ export const formatRecord = (
       )
   }
   return {
-    workout_date: formatWorkoutDate(getDateWithTZ(record.workout_date, tz))
-      .workout_date,
+    workout_date: formatDate(record.workout_date, tz, date_format, false),
     workout_id: record.workout_id,
     id: record.id,
     record_type: record.record_type,
@@ -73,9 +76,11 @@ export const getRecordsBySports = (
   translatedSports: ITranslatedSport[],
   tz: string,
   useImperialUnits: boolean,
-  display_ascent: boolean
-): IRecordsBySports =>
-  records
+  display_ascent: boolean,
+  date_format: string
+): IRecordsBySports => {
+  date_format = getDateFormat(date_format, locale.value)
+  return records
     .filter((r) => (display_ascent ? true : r.record_type !== 'HA'))
     .reduce((sportList: IRecordsBySports, record) => {
       const sport = translatedSports.find((s) => s.id === record.sport_id)
@@ -88,8 +93,9 @@ export const getRecordsBySports = (
           }
         }
         sportList[sport.translatedLabel].records.push(
-          formatRecord(record, tz, useImperialUnits)
+          formatRecord(record, tz, useImperialUnits, date_format)
         )
       }
       return sportList
     }, {})
+}

@@ -33,6 +33,7 @@ class User(BaseModel):
     bio = db.Column(db.String(200), nullable=True)
     picture = db.Column(db.String(255), nullable=True)
     timezone = db.Column(db.String(50), nullable=True)
+    date_format = db.Column(db.String(50), nullable=True)
     # does the week start Monday?
     weekm = db.Column(db.Boolean, default=False, nullable=False)
     workouts = db.relationship(
@@ -190,6 +191,7 @@ class User(BaseModel):
             serialized_user = {
                 **serialized_user,
                 **{
+                    'date_format': self.date_format,
                     'display_ascent': self.display_ascent,
                     'imperial_units': self.imperial_units,
                     'language': self.language,

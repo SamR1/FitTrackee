@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Installation &#8212; FitTrackee 0.7.2
+    <title>Installation &#8212; FitTrackee 0.7.3
  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css" />
@@ -15,6 +15,7 @@
     <script src="_static/underscore.js"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Command line interface" href="cli.html" />
@@ -41,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.2
+        <span class="navbar-text navbar-version pull-left"><b>0.7.3
 </b></span>
       </div>
 
@@ -668,10 +669,16 @@ Commands:
 <li><p>Create <code class="docutils literal notranslate"><span class="pre">fittrackee</span></code> database</p></li>
 </ul>
 <p>Example :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">fittrackee</span><span class="p">;</span><span class="w"></span>
-<span class="k">CREATE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">fittrackee</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="n">PASSWORD</span><span class="w"> </span><span class="s1">&#39;&lt;PASSWORD&gt;&#39;</span><span class="p">;</span><span class="w"></span>
-<span class="k">GRANT</span><span class="w"> </span><span class="k">ALL</span><span class="w"> </span><span class="k">PRIVILEGES</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">fittrackee</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">fittrackee</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">fittrackee</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="n">PASSWORD</span><span class="w"> </span><span class="s1">&#39;&lt;PASSWORD&gt;&#39;</span><span class="p">;</span><span class="w"></span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">fittrackee</span><span class="w"> </span><span class="k">AUTHORIZATION</span><span class="w"> </span><span class="n">fittrackee</span><span class="p">;</span><span class="w"></span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">fittrackee</span><span class="w"> </span><span class="k">OWNER</span><span class="w"> </span><span class="n">fittrackee</span><span class="p">;</span><span class="w"></span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">see PostgreSQL <a class="reference external" href="https://www.postgresql.org/docs/15/ddl-schemas.html">documentation</a> for schema and privileges.</div>
+</div>
 </div>
 <ul class="simple">
 <li><p>Initialize environment variables, see <a class="reference external" href="installation.html#environment-variables">Environment variables</a></p></li>
@@ -787,11 +794,11 @@ $ make install-db
 </div>
 </div>
 <ul class="simple">
-<li><p>Download the last release (for now, it is the release v0.7.2):</p></li>
+<li><p>Download the last release (for now, it is the release v0.7.3):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.7.2.tar.gz
-$ tar -xzf v0.7.2.tar.gz
-$ mv FitTrackee-0.7.2 FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.7.3.tar.gz
+$ tar -xzf v0.7.3.tar.gz
+$ mv FitTrackee-0.7.3 FitTrackee
 $ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
@@ -911,11 +918,11 @@ $ <span class="nb">source</span> .env
 <ul class="simple">
 <li><p>Stop the application</p></li>
 <li><p>Change to the directory where FitTrackee directory is located</p></li>
-<li><p>Download the last release (for now, it is the release v0.7.2) and overwrite existing files:</p></li>
+<li><p>Download the last release (for now, it is the release v0.7.3) and overwrite existing files:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.7.2.tar.gz
-$ tar -xzf v0.7.2.tar.gz
-$ cp -R FitTrackee-0.7.2/* FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.7.3.tar.gz
+$ tar -xzf v0.7.3.tar.gz
+$ cp -R FitTrackee-0.7.3/* FitTrackee/
 $ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
@@ -1166,7 +1173,7 @@ $ make docker-test-python  <span class="c1"># run unit tests on API</span>
     </p>
     <p>
         &copy; Copyright 2018 - 2022, SamR1.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br/>
     </p>
   </div>
 </footer>

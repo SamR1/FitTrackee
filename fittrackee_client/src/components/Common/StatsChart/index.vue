@@ -145,7 +145,8 @@
           props.sports,
           props.displayedSportIds,
           statistics.value,
-          props.user.imperial_units
+          props.user.imperial_units,
+          props.user.date_format
         )
       )
 

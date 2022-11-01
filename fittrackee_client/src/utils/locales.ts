@@ -8,12 +8,14 @@ export const localeFromLanguage: Record<string, Locale> = {
   de: de,
   en: enUS,
   fr: fr,
+  // nb: nb, // disabled for now
 }
 
 export const languageLabels: Record<string, string> = {
   de: 'Deutsch',
   en: 'English',
   fr: 'Français',
+  // nb: 'Norsk bokmål', // disabled for now
 }
 
 const { availableLocales } = createI18n.global

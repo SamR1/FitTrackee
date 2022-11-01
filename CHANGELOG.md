@@ -1,5 +1,26 @@
 # Change log
 
+## Version 0.7.3 (2022/11/01)
+
+### Features and enhancements
+
+* [#112](https://github.com/SamR1/FitTrackee/issues/112) - allow user to change date format
+* [#244](https://github.com/SamR1/FitTrackee/issues/231) - New sport type: "Virtual Ride"
+
+Thanks to @jat255 
+
+### Bugs Fixed
+
+* [#246](https://github.com/SamR1/FitTrackee/issues/246) - Add support to PostgreSQL 15
+* [#247](https://github.com/SamR1/FitTrackee/issues/247) - Segments duration is displayed with microseconds
+
+### Translations
+
+* [PR#252](https://github.com/SamR1/FitTrackee/issues/252) - init Norwegian Bokmål translations files
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/installation.html#upgrade))
+
+
 ## Version 0.7.2 (2022/09/21)
 
 ### Translations

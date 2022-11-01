@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "0.7.2"
+version = "0.7.3"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0"
@@ -18,54 +18,54 @@ classifiers = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Programming Language :: JavaScript"
 ]
 exclude = ["fittrackee/tests"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
+authlib = "1.1.0"
+babel = "^2.11.0"
 dramatiq = {version = "^1.13", extras = ["redis"]}
 flask = "^2.1"
 flask-bcrypt = "^1.0"
 flask-dramatiq = "^0.6.0"
+flask-limiter = {version = "^2.7", extras = ["redis"]}
 flask-migrate = "^3.1"
 gpxpy = "=1.5.0"
 gunicorn = "^20.1"
-humanize = "^4.3"
+humanize = "^4.4"
 psycopg2-binary = "^2.9"
-pyjwt = "^2.4"
+pyjwt = "^2.6"
 python-forecastio = "^1.4"
-pytz = "^2022.2"
+pytz = "^2022.6"
 shortuuid = "^1.0.9"
 staticmap = "^0.5.4"
-SQLAlchemy = "=1.4.41"
-pyOpenSSL = "^22.0"
+sqlalchemy = "=1.4.42"
+pyopenssl = "^22.1"
 ua-parser = "^0.16.1"
-Babel = "^2.10.3"
-Werkzeug = "2.1"  # removal of parse_rule in 2.2 breaks sphinxcontrib-httpdomain autoflask
-Authlib = "1.1.0"
-Flask-Limiter = {version = "^2.6.2", extras = ["redis"]}
-PyJWT = "^2.5"
+werkzeug = "2.1"  # removal of parse_rule in 2.2 breaks sphinxcontrib-httpdomain autoflask
 
 [tool.poetry.dev-dependencies]
-black = "^22.8"
+bandit = "^1.7.4"
+black = "^22.10"
 freezegun = "^1.2"
-mypy = "^0.971"
+mypy = "^0.982"
 pytest = "^7.1"
 pytest-black = "^0.3.12"
 pytest-cov = "^3.0"
 pytest-flake8 = "^1.1"
-pytest-isort = "^3.0"
+pytest-isort = "^3.1"
 pytest-runner = "^6.0"
 pytest-selenium = "^2.0.1"
 recommonmark = "^0.7"
+sphinx = "^5.1"
 sphinx-bootstrap-theme = "^0.8.1"
 sphinxcontrib-httpdomain = "^1.7"
-types-pytz = "^2022.2"
-types-requests = "^2.28"
 types-freezegun = "^1.1"
-Sphinx = "^5.1"
-bandit = "^1.7.4"
+types-pytz = "^2022.6"
+types-requests = "^2.28"
 types-redis = "^4.3.20"
 
 [tool.poetry.scripts]

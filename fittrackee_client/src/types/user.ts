@@ -29,6 +29,7 @@ export interface IAuthUserProfile extends IUserProfile {
   imperial_units: boolean
   language: string | null
   timezone: string
+  date_format: string
   weekm: boolean
 }
 
@@ -64,6 +65,7 @@ export interface IUserPreferencesPayload {
   imperial_units: boolean
   language: string
   timezone: string
+  date_format: string
   weekm: boolean
 }
 

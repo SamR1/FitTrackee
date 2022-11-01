@@ -9,9 +9,10 @@
         <span class="app-issued-at">
           {{ $t('oauth2.APP.ISSUE_AT') }}
           {{
-            format(
-              getDateWithTZ(client.issued_at, authUser.timezone),
-              'dd/MM/yyyy HH:mm'
+            formatDate(
+              client.issued_at,
+              authUser.timezone,
+              authUser.date_format
             )
           }}
         </span>
@@ -34,7 +35,6 @@
 </template>
 
 <script setup lang="ts">
-  import { format } from 'date-fns'
   import { ComputedRef, computed, onBeforeMount, toRefs, watch } from 'vue'
   import { LocationQuery, useRoute } from 'vue-router'
 
@@ -45,7 +45,7 @@
   import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { defaultPage, getNumberQueryValue } from '@/utils/api'
-  import { getDateWithTZ } from '@/utils/dates'
+  import { formatDate } from '@/utils/dates'
 
   interface Props {
     authUser: IAuthUserProfile

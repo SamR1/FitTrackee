@@ -43,7 +43,8 @@
       translateSports(props.sports, t),
       props.user.timezone,
       props.user.imperial_units,
-      props.user.display_ascent
+      props.user.display_ascent,
+      props.user.date_format
     )
   )
 </script>
