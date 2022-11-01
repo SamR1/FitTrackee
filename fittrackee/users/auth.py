@@ -759,6 +759,17 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Edit authenticated user preferences.
 
+    Supported date formats:
+
+    - ``MM/dd/yyyy`` (default value)
+    - ``dd/MM/yyyy``
+    - ``yyyy-MM-dd``
+    - ``date_string``, corresponding on client to:
+
+      - ``MMM. do, yyyy`` for ``en`` locale
+      - ``d MMM yyyy`` for ``fr`` locale
+      - ``do MMM yyyy`` for ``de`` locale
+
     **Scope**: ``profile:write``
 
     **Example request**:
@@ -855,8 +866,8 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         "status": "success"
       }
 
-    :<json boolean display_ascent: display highest ascent records and total
     :<json string date_format: the format used to display dates in the app
+    :<json boolean display_ascent: display highest ascent records and total
     :<json boolean imperial_units: display distance in imperial units
     :<json string language: language preferences
     :<json string timezone: user time zone
