@@ -5,7 +5,7 @@
 ### Features and enhancements
 
 * [#112](https://github.com/SamR1/FitTrackee/issues/112) - allow user to change date format
-* [#244](https://github.com/SamR1/FitTrackee/issues/231) - New sport type: "Virtual Ride"
+* [#244](https://github.com/SamR1/FitTrackee/issues/244) - New sport type: "Virtual Ride"
 
 Thanks to @jat255 
 
