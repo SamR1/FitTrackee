@@ -173,7 +173,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
         if not user:
             new_user = User(username=username, email=email, password=password)
             new_user.timezone = 'Europe/Paris'
-            new_user.date_format = 'dd/MM/yyyy'
+            new_user.date_format = 'MM/dd/yyyy'
             new_user.confirmation_token = secrets.token_urlsafe(30)
             new_user.language = language
             db.session.add(new_user)
@@ -781,7 +781,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "bio": null,
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
-          "date_format": "dd/MM/yyyy",
+          "date_format": "MM/dd/yyyy",
           "display_ascent": true,
           "email": "sam@example.com",
           "first_name": null,
