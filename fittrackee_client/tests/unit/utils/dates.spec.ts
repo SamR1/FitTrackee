@@ -335,7 +335,7 @@ describe('getDateFormat', () => {
         dateFormat: 'date_string',
         language: 'de',
       },
-      expectedFormat: 'd MMM yyyy',
+      expectedFormat: 'do MMM yyyy',
     },
   ]
   testsParams.map((testParams) => {
@@ -380,7 +380,7 @@ describe('availableDateFormatOptions', () => {
         { label: 'dd/MM/yyyy - 09/10/2022', value: 'dd/MM/yyyy' },
         { label: 'MM/dd/yyyy - 10/09/2022', value: 'MM/dd/yyyy' },
         { label: 'yyyy-MM-dd - 2022-10-09', value: 'yyyy-MM-dd' },
-        { label: 'd MMM yyyy - 9 Okt. 2022', value: 'date_string' },
+        { label: 'do MMM yyyy - 9. Okt. 2022', value: 'date_string' },
       ],
     },
   ]

@@ -94,7 +94,7 @@ const availableDateFormats = [
   'date_string',
 ]
 const dateStringFormats: Record<string, string> = {
-  de: 'd MMM yyyy',
+  de: 'do MMM yyyy',
   en: 'MMM. do, yyyy',
   fr: 'd MMM yyyy',
 }
