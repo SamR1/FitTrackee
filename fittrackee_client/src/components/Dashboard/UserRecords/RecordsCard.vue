@@ -86,7 +86,7 @@
           align-items: center;
           justify-content: space-between;
           span {
-            padding: 2px 5px;
+            padding: 2px;
           }
           .record-type {
             flex-grow: 1;
@@ -94,7 +94,12 @@
           .record-value {
             font-weight: bold;
             white-space: nowrap;
-            padding-right: $default-padding * 2;
+            padding-right: $default-padding;
+          }
+          .record-date {
+            white-space: nowrap;
+            min-width: 30%;
+            text-align: right;
           }
         }
       }
