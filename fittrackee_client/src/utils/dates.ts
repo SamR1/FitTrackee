@@ -88,8 +88,8 @@ export const formatWorkoutDate = (
 }
 
 const availableDateFormats = [
-  'dd/MM/yyyy',
   'MM/dd/yyyy',
+  'dd/MM/yyyy',
   'yyyy-MM-dd',
   'date_string',
 ]

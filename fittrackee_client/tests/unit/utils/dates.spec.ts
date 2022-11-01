@@ -359,8 +359,8 @@ describe('availableDateFormatOptions', () => {
     {
       inputLanguage: 'en',
       expectedOptions: [
-        { label: 'dd/MM/yyyy - 09/10/2022', value: 'dd/MM/yyyy' },
         { label: 'MM/dd/yyyy - 10/09/2022', value: 'MM/dd/yyyy' },
+        { label: 'dd/MM/yyyy - 09/10/2022', value: 'dd/MM/yyyy' },
         { label: 'yyyy-MM-dd - 2022-10-09', value: 'yyyy-MM-dd' },
         { label: 'MMM. do, yyyy - Oct. 9th, 2022', value: 'date_string' },
       ],
@@ -368,8 +368,8 @@ describe('availableDateFormatOptions', () => {
     {
       inputLanguage: 'fr',
       expectedOptions: [
-        { label: 'dd/MM/yyyy - 09/10/2022', value: 'dd/MM/yyyy' },
         { label: 'MM/dd/yyyy - 10/09/2022', value: 'MM/dd/yyyy' },
+        { label: 'dd/MM/yyyy - 09/10/2022', value: 'dd/MM/yyyy' },
         { label: 'yyyy-MM-dd - 2022-10-09', value: 'yyyy-MM-dd' },
         { label: 'd MMM yyyy - 9 oct. 2022', value: 'date_string' },
       ],
@@ -377,8 +377,8 @@ describe('availableDateFormatOptions', () => {
     {
       inputLanguage: 'de',
       expectedOptions: [
-        { label: 'dd/MM/yyyy - 09/10/2022', value: 'dd/MM/yyyy' },
         { label: 'MM/dd/yyyy - 10/09/2022', value: 'MM/dd/yyyy' },
+        { label: 'dd/MM/yyyy - 09/10/2022', value: 'dd/MM/yyyy' },
         { label: 'yyyy-MM-dd - 2022-10-09', value: 'yyyy-MM-dd' },
         { label: 'do MMM yyyy - 9. Okt. 2022', value: 'date_string' },
       ],
