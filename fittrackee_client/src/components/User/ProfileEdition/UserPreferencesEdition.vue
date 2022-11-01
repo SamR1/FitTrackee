@@ -26,15 +26,17 @@
         <label class="form-items">
           {{ $t('user.PROFILE.DATE_FORMAT') }}
           <select
-            name="date_format"
-            :disabled="loading"
+            id="date_format"
             v-model="userForm.date_format"
+            :disabled="loading"
           >
-            <option disabled value="">Please select one:</option>
-            <option value="dd/MM/yyyy">dd/MM/yyyy - 08/07/2022</option>
-            <option value="MM/dd/yyyy">MM/dd/yyyy - 07/08/2022</option>
-            <option value="MMM. do, yyyy">MMM. do, yyyy - Jul. 8th, 2022</option>
-            <option value="yyyy-MM-dd">yyyy-MM-dd - 2022-07-08</option>
+            <option
+              v-for="dateFormat in dateFormatOptions"
+              :value="dateFormat.value"
+              :key="dateFormat.value"
+            >
+              {{ dateFormat.label }}
+            </option>
           </select>
         </label>
         <div class="form-items form-checkboxes">
@@ -120,6 +122,7 @@
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import { IUserPreferencesPayload, IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { availableDateFormatOptions } from '@/utils/dates'
   import { availableLanguages } from '@/utils/locales'
 
   interface Props {
@@ -172,6 +175,13 @@
   )
   const errorMessages: ComputedRef<string | string[] | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
+  )
+  const dateFormatOptions = computed(() =>
+    availableDateFormatOptions(
+      new Date().toUTCString(),
+      props.user.timezone,
+      userForm.language
+    )
   )
 
   onMounted(() => {

@@ -11,6 +11,11 @@ import {
 } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
 
+import createI18n from '@/i18n'
+import { localeFromLanguage } from '@/utils/locales'
+
+const { locale } = createI18n.global
+
 export const getStartDate = (
   duration: string,
   day: Date,
@@ -70,22 +75,70 @@ export const formatWorkoutDate = (
   if (!dateFormat) {
     dateFormat = 'yyyy/MM/dd'
   }
+  dateFormat = getDateFormat(dateFormat, locale.value)
   if (!timeFormat) {
     timeFormat = 'HH:mm'
   }
   return {
-    workout_date: format(dateTime, dateFormat),
+    workout_date: format(dateTime, dateFormat, {
+      locale: localeFromLanguage[locale.value],
+    }),
     workout_time: format(dateTime, timeFormat),
   }
+}
+
+const availableDateFormats = [
+  'dd/MM/yyyy',
+  'MM/dd/yyyy',
+  'yyyy-MM-dd',
+  'date_string',
+]
+const dateStringFormats: Record<string, string> = {
+  de: 'd MMM yyyy',
+  en: 'MMM. do, yyyy',
+  fr: 'd MMM yyyy',
+}
+
+export const getDateFormat = (dateFormat: string, language: string): string => {
+  return dateFormat === 'date_string' ? dateStringFormats[language] : dateFormat
 }
 
 export const formatDate = (
   dateString: string,
   timezone: string,
   dateFormat: string,
-  withTime = true
-): string =>
-  format(
+  withTime = true,
+  language: string | null = null
+): string => {
+  if (!language) {
+    language = locale.value
+  }
+  return format(
     getDateWithTZ(dateString, timezone),
-    `${dateFormat}${withTime ? ' HH:mm' : ''}`
+    `${getDateFormat(dateFormat, language)}${withTime ? ' HH:mm' : ''}`,
+    { locale: localeFromLanguage[language] }
   )
+}
+
+export const availableDateFormatOptions = (
+  inputDate: string,
+  timezone: string,
+  language: string | null = null
+) => {
+  const l: string = language ? language : locale.value
+  const options: Record<string, string>[] = []
+  availableDateFormats.map((df) => {
+    const dateFormat = getDateFormat(df, l)
+    options.push({
+      label: `${dateFormat} - ${formatDate(
+        inputDate,
+        timezone,
+        dateFormat,
+        false,
+        l
+      )}`,
+      value: df,
+    })
+  })
+  return options
+}
