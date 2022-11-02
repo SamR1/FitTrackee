@@ -30,12 +30,7 @@
           <div
             class="workout-date"
             v-if="workout.workout_date && user"
-            :title="
-              format(
-                getDateWithTZ(workout.workout_date, user.timezone),
-                'dd/MM/yyyy HH:mm'
-              )
-            "
+            :title="formatDate(workout.workout_date, timezone, dateFormat)"
           >
             {{
               formatDistance(new Date(workout.workout_date), new Date(), {
@@ -44,30 +39,6 @@
               })
             }}
           </div>
-        </div>
-        <router-link
-          class="workout-title"
-          v-if="workout.id"
-          :to="{
-            name: 'Workout',
-            params: { workoutId: workout.id },
-          }"
-        >
-          {{ workout.title }}
-        </router-link>
-        <div
-          class="workout-date"
-          v-if="workout.workout_date && user"
-          :title="
-            formatDate(workout.workout_date, user.timezone, user.date_format)
-          "
-        >
-          {{
-            formatDistance(new Date(workout.workout_date), new Date(), {
-              addSuffix: true,
-              locale,
-            })
-          }}
         </div>
         <div v-if="user.is_remote" class="user-remote-fullname">
           {{ user.fullname }}
@@ -187,6 +158,8 @@
   interface Props {
     user: IUserProfile
     useImperialUnits: boolean
+    dateFormat: string
+    timezone: string
     workout?: IWorkout
     sport?: ISport
   }

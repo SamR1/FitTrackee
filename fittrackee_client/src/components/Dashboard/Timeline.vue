@@ -1,11 +1,13 @@
 <template>
   <div id="timeline">
     <div class="section-title">{{ $t('workouts.LATEST_WORKOUTS') }}</div>
-    <div v-if="user.nb_workouts > 0 && workouts.length === 0">
+    <div v-if="authUser.nb_workouts > 0 && workouts.length === 0">
       <WorkoutCard
         v-for="index in [...Array(initWorkoutsCount).keys()]"
-        :user="user"
-        :useImperialUnits="user.imperial_units"
+        :user="authUser"
+        :useImperialUnits="authUser.imperial_units"
+        :dateFormat="dateFormat"
+        :timezone="authUser.timezone"
         :key="index"
       />
     </div>
@@ -19,7 +21,9 @@
             : null
         "
         :user="workout.user"
-        :useImperialUnits="user.imperial_units"
+        :useImperialUnits="authUser.imperial_units"
+        :dateFormat="dateFormat"
+        :timezone="authUser.timezone"
         :key="workout.id"
       />
       <NoWorkouts v-if="workouts.length === 0" />
@@ -37,27 +41,29 @@
 
   import WorkoutCard from '@/components/Workout/WorkoutCard.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
-  import { WORKOUTS_STORE } from '@/store/constants'
+  import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
-  import { IUserProfile } from '@/types/user'
+  import { IAuthUserProfile } from '@/types/user'
   import { IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
+  import { getDateFormat } from '@/utils/dates'
   import { defaultOrder } from '@/utils/workouts'
 
   interface Props {
     sports: ISport[]
-    user: IUserProfile
+    authUser: IAuthUserProfile
   }
   const props = defineProps<Props>()
+  const { sports, authUser } = toRefs(props)
 
   const store = useStore()
 
-  const { sports, user } = toRefs(props)
   const page = ref(1)
   const per_page = 5
   const initWorkoutsCount =
-    props.user.nb_workouts >= per_page ? per_page : props.user.nb_workouts
-  onBeforeMount(() => loadWorkouts())
+    authUser.value.nb_workouts >= per_page
+      ? per_page
+      : authUser.value.nb_workouts
   const workouts: ComputedRef<IWorkout[]> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.TIMELINE_WORKOUTS]
   )
@@ -66,6 +72,14 @@
       ? workouts.value[workouts.value.length - 1].previous_workout !== null
       : false
   )
+  const appLanguage: ComputedRef<string> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
+  )
+  const dateFormat: ComputedRef<string> = computed(() =>
+    getDateFormat(authUser.value.date_format, appLanguage.value)
+  )
+
+  onBeforeMount(() => loadWorkouts())
 
   function loadWorkouts() {
     store.dispatch(WORKOUTS_STORE.ACTIONS.GET_TIMELINE_WORKOUTS, {

@@ -95,13 +95,14 @@ export interface IWorkoutObject {
   duration: string
   maxAlt: number | null
   maxSpeed: number
-  mapVisibility: TPrivacyLevels | null
+  mapVisibility: TPrivacyLevels | null | undefined
   minAlt: number | null
   moving: string
   nextUrl: string | null
   pauses: string | null
   previousUrl: string | null
   records: IRecord[]
+  remoteUrl: string | undefined
   segmentId: number | null
   title: string
   type: string

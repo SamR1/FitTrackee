@@ -25,6 +25,7 @@
           <WorkoutData
             :workoutObject="workoutObject"
             :useImperialUnits="authUser.imperial_units"
+            :displayHARecord="authUser.display_ascent"
           />
         </div>
         <WorkoutVisibility
