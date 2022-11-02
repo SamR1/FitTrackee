@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Third-party applications &#8212; FitTrackee 0.7.2
+    <title>Third-party applications &#8212; FitTrackee 0.7.3
  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css" />
@@ -15,6 +15,7 @@
     <script src="_static/underscore.js"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Installation" href="installation.html" />
@@ -41,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.2
+        <span class="navbar-text navbar-version pull-left"><b>0.7.3
 </b></span>
       </div>
 
@@ -80,7 +81,12 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">Third-party applications</a></li>
+<li><a class="reference internal" href="#">Third-party applications</a><ul>
+<li><a class="reference internal" href="#scopes">Scopes</a></li>
+<li><a class="reference internal" href="#flow">Flow</a></li>
+<li><a class="reference internal" href="#resources">Resources</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -132,7 +138,7 @@
 <h1>Third-party applications<a class="headerlink" href="#third-party-applications" title="Permalink to this heading">¶</a></h1>
 <p>(<em>new in 0.7.0</em>)</p>
 <p>FitTrackee provides a REST API (see <a class="reference external" href="api/index.html">documentation</a>) whose
-most endpoints require authorization/authentication.</p>
+most endpoints require authentication/authorization.</p>
 <p>To allow a third-party application to interact with API endpoints, an
 <a class="reference external" href="https://datatracker.ietf.org/doc/html/rfc6749">OAuth2</a> client can be created
 in user settings (‘apps’ tab).</p>
@@ -143,11 +149,12 @@ applications (<a class="reference external" href="api/oauth2.html">documentation
 client (first-party application).</p>
 </div>
 <p>FitTrackee supports only <a class="reference external" href="https://datatracker.ietf.org/doc/html/rfc6749#section-1.3.1">Authorization Code</a>
-flow (with PKCE support).
+flow (with <a class="reference external" href="https://datatracker.ietf.org/doc/html/rfc7636">PKCE</a> support).
 It allows to exchange an authorization code for an access token.
 The client ID and secret must be sent in the POST body.
-It is recommended to use <a class="reference external" href="https://datatracker.ietf.org/doc/html/rfc7636">PKCE</a>
-to provide a better security.</p>
+It is recommended to use PKCE to provide a better security.</p>
+<section id="scopes">
+<h2>Scopes<a class="headerlink" href="#scopes" title="Permalink to this heading">¶</a></h2>
 <p>The following scopes are available:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">application:write</span></code>: grants write access to application configuration (only for users with administration rights),</p></li>
@@ -158,9 +165,59 @@ to provide a better security.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">workouts:read</span></code>: grants read access to workouts-related endpoints,</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">workouts:write</span></code>: grants write access to workouts-related endpoints.</p></li>
 </ul>
+</section>
+<section id="flow">
+<h2>Flow<a class="headerlink" href="#flow" title="Permalink to this heading">¶</a></h2>
+<ul>
+<li><p>The user creates an App (client) on FitTrackee for a third-party application.</p>
 <figure class="align-default">
 <img alt="OAuth2 client creation on FitTrackee" src="_images/fittrackee_screenshot-07.png" />
 </figure>
+<div class="line-block">
+<div class="line">After registration, the client id and secret are shown.</div>
+<div class="line">They must be stored in the 3rd-party application by the user.</div>
+</div>
+</li>
+<li><div class="line-block">
+<div class="line">The 3rd-party app needs to redirect to FitTrackee, in order for the user to authorize the 3rd-party app to access user data on FitTrackee.</div>
+</div>
+<figure class="align-default">
+<img alt="App authorization on FitTrackee" src="_images/fittrackee_screenshot-08.png" />
+</figure>
+<div class="line-block">
+<div class="line">The authorization URL is <code class="docutils literal notranslate"><span class="pre">https://&lt;FITTRACKEE_HOST&gt;/profile/apps/authorize</span></code>.</div>
+<div class="line">The required parameters are:</div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">client_id</span></code>: the client id displayed after registration</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">response_type</span></code>:  <code class="docutils literal notranslate"><span class="pre">code</span></code>, since FitTrackee only supports Authorization Code flow.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scope</span></code>: scopes separated with space.</p></li>
+</ul>
+<div class="line-block">
+<div class="line">and optional parameters:</div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">state</span></code>: unique value to prevent cross-site request forgery</p></li>
+</ul>
+<div class="line-block">
+<div class="line">For PKCE, the following parameters are mandatory:</div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">code_challenge</span></code>: string generated from a code verifier</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">code_challenge_method</span></code>: method used to create challenge, for instance “S256”</p></li>
+</ul>
+<div class="line-block">
+<div class="line">Example for PKCE:</div>
+<div class="line"><cite>https://&lt;FITTRACKEE_HOST&gt;/profile/apps/authorize?response_type=code&amp;client_id=&lt;CLIENT_ID&gt;&amp;scope=profile%3Aread+workouts%3Awrite&amp;state=&lt;STATE&gt;&amp;code_challenge=&lt;CODE_CHALLENGE&gt;&amp;code_challenge_method=S256</cite></div>
+</div>
+</li>
+<li><div class="line-block">
+<div class="line">After the authorization, FitTrackee redirects to the 3rd-party app, so the 3rd-party app can get the authorization code from the redirect URL and then fetches an access token with the client id and secret (endpoint <a class="reference external" href="https://samr1.github.io/FitTrackee/api/oauth2.html#post--api-oauth-token">/api/oauth/token</a>).</div>
+<div class="line">Example of a redirect URL:</div>
+<div class="line"><cite>https://example.com/callback?code=&lt;AUTHORIZATION_CODE&gt;&amp;state=&lt;STATE&gt;</cite></div>
+</div>
+</li>
+</ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>OAuth2 support is implemented with <a class="reference external" href="https://docs.authlib.org/en/latest/">Authlib</a> library.</p>
@@ -175,13 +232,17 @@ to provide a better security.</p>
 </pre></div>
 </div>
 </div>
+</section>
+<section id="resources">
+<h2>Resources<a class="headerlink" href="#resources" title="Permalink to this heading">¶</a></h2>
 <p>Some resources about OAuth 2.0:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://www.oauth.com">OAuth 2.0 Simplified</a> by <a class="reference external" href="https://aaronparecki.com">Aaron Parecki</a></p></li>
+<li><p><a class="reference external" href="https://www.oauth.com">OAuth 2.0 Simplified</a> by <a class="reference external" href="https://aaronparecki.com">Aaron Parecki</a> (example for <a class="reference external" href="https://www.oauth.com/oauth2-servers/server-side-apps/example-flow/">authorization code flow with PKCE</a>)</p></li>
 <li><p><a class="reference external" href="https://requests-oauthlib.readthedocs.io/en/latest/examples/real_world_example.html">Web App Example of OAuth 2 web application flow</a> with Requests-OAuthlib (python)</p></li>
 <li><p><a class="reference external" href="https://docs.authlib.org/en/latest/client/oauth2.html#oauth-2-session">OAuth 2 Session</a> with Authlib (python)</p></li>
 <li><p><a class="reference external" href="https://codeberg.org/SamR1/ft-oauth-client">Minimal example of an application interacting with FitTrackee</a> (python)</p></li>
 </ul>
+</section>
 </section>
 
 
@@ -197,7 +258,7 @@ to provide a better security.</p>
     </p>
     <p>
         &copy; Copyright 2018 - 2022, SamR1.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br/>
     </p>
   </div>
 </footer>

@@ -45,6 +45,30 @@
             }}
           </div>
         </div>
+        <router-link
+          class="workout-title"
+          v-if="workout.id"
+          :to="{
+            name: 'Workout',
+            params: { workoutId: workout.id },
+          }"
+        >
+          {{ workout.title }}
+        </router-link>
+        <div
+          class="workout-date"
+          v-if="workout.workout_date && user"
+          :title="
+            formatDate(workout.workout_date, user.timezone, user.date_format)
+          "
+        >
+          {{
+            formatDistance(new Date(workout.workout_date), new Date(), {
+              addSuffix: true,
+              locale,
+            })
+          }}
+        </div>
         <div v-if="user.is_remote" class="user-remote-fullname">
           {{ user.fullname }}
         </div>
@@ -147,7 +171,7 @@
 </template>
 
 <script setup lang="ts">
-  import { Locale, format, formatDistance } from 'date-fns'
+  import { Locale, formatDistance } from 'date-fns'
   import { ComputedRef, computed, toRefs, withDefaults } from 'vue'
 
   import StaticMap from '@/components/Common/StaticMap.vue'
@@ -157,7 +181,7 @@
   import { IUserProfile } from '@/types/user'
   import { IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
-  import { getDateWithTZ } from '@/utils/dates'
+  import { formatDate } from '@/utils/dates'
   import { getUserName } from '@/utils/user'
 
   interface Props {

@@ -1,9 +1,12 @@
 import json
+from datetime import timedelta
+from typing import List
 from unittest.mock import patch
 
 import pytest
 from flask import Flask
 
+from fittrackee import db
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
@@ -385,7 +388,7 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
             == data['data']['workouts'][0]['workout_date']
         )
         assert (
-            'Fri, 23 Feb 2018 00:00:00 GMT'
+            'Fri, 23 Feb 2018 10:00:00 GMT'
             == data['data']['workouts'][2]['workout_date']
         )
         assert data['pagination'] == {
@@ -459,7 +462,7 @@ class TestGetWorkoutsWithOrder(ApiTestCaseMixin):
             == data['data']['workouts'][0]['workout_date']
         )
         assert (
-            'Fri, 23 Feb 2018 00:00:00 GMT'
+            'Fri, 23 Feb 2018 10:00:00 GMT'
             == data['data']['workouts'][4]['workout_date']
         )
         assert data['pagination'] == {
@@ -574,16 +577,20 @@ class TestGetWorkoutsWithOrderBy(ApiTestCaseMixin):
             'total': 7,
         }
 
-    def test_it_gets_workouts_ordered_by_duration(
+    def test_it_gets_workouts_ordered_by_moving_time(
         self,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
+        seven_workouts_user_1[6].duration = seven_workouts_user_1[
+            6
+        ].moving + timedelta(seconds=1000)
+        db.session.commit()
 
         response = client.get(
             '/api/workouts?order_by=duration',
@@ -595,7 +602,23 @@ class TestGetWorkoutsWithOrderBy(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 5
         assert '1:40:00' == data['data']['workouts'][0]['duration']
-        assert '0:17:04' == data['data']['workouts'][4]['duration']
+        assert '1:40:00' == data['data']['workouts'][0]['moving']
+        assert (
+            'Sun, 01 Apr 2018 00:00:00 GMT'
+            == data['data']['workouts'][0]['workout_date']
+        )
+        assert '0:57:36' == data['data']['workouts'][1]['duration']
+        assert '0:57:36' == data['data']['workouts'][1]['moving']
+        assert (
+            'Thu, 01 Jun 2017 00:00:00 GMT'
+            == data['data']['workouts'][1]['workout_date']
+        )
+        assert '1:06:40' == data['data']['workouts'][2]['duration']
+        assert '0:50:00' == data['data']['workouts'][2]['moving']
+        assert (
+            'Wed, 09 May 2018 00:00:00 GMT'
+            == data['data']['workouts'][2]['workout_date']
+        )
         assert data['pagination'] == {
             'has_next': True,
             'has_prev': False,
@@ -658,16 +681,16 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         assert len(data['data']['workouts']) == 2
         assert 'creation_date' in data['data']['workouts'][0]
         assert (
-            'Fri, 23 Feb 2018 00:00:00 GMT'
+            'Fri, 23 Feb 2018 10:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
-        assert '0:16:40' == data['data']['workouts'][0]['duration']
+        assert '0:10:00' == data['data']['workouts'][0]['duration']
         assert 'creation_date' in data['data']['workouts'][1]
         assert (
             'Fri, 23 Feb 2018 00:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
         )
-        assert '0:10:00' == data['data']['workouts'][1]['duration']
+        assert '0:16:40' == data['data']['workouts'][1]['duration']
         assert data['pagination'] == {
             'has_next': False,
             'has_prev': False,
@@ -866,7 +889,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
         assert (
-            'Fri, 23 Feb 2018 00:00:00 GMT'
+            'Fri, 23 Feb 2018 10:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
         assert data['pagination'] == {

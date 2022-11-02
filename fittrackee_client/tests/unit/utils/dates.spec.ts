@@ -5,6 +5,9 @@ import {
   incrementDate,
   getStartDate,
   formatWorkoutDate,
+  formatDate,
+  availableDateFormatOptions,
+  getDateFormat,
 } from '@/utils/dates'
 
 describe('startDate (week starting Sunday)', () => {
@@ -236,6 +239,161 @@ describe('formatWorkoutDate', () => {
           testParams.inputParams.timeFormat
         ),
         testParams.expected
+      )
+    })
+  })
+})
+
+describe('formatDate', () => {
+  const dateString = 'Tue, 01 Nov 2022 00:00:00 GMT'
+
+  const testsParams = [
+    {
+      description:
+        'format date for "Europe/Paris" timezone and "dd/MM/yyyy" format (with time)',
+      inputParams: {
+        timezone: 'Europe/Paris',
+        dateFormat: 'dd/MM/yyyy',
+        withTime: true,
+      },
+      expectedDate: '01/11/2022 01:00',
+    },
+    {
+      description:
+        'format date for "America/New_York" timezone and "MM/dd/yyyy" format (w/o time)',
+      inputParams: {
+        timezone: 'America/New_York',
+        dateFormat: 'MM/dd/yyyy',
+        withTime: false,
+      },
+      expectedDate: '10/31/2022',
+    },
+  ]
+  testsParams.map((testParams) => {
+    it(testParams.description, () => {
+      assert.deepEqual(
+        formatDate(
+          dateString,
+          testParams.inputParams.timezone,
+          testParams.inputParams.dateFormat,
+          testParams.inputParams.withTime
+        ),
+        testParams.expectedDate
+      )
+    })
+  })
+})
+
+describe('formatDate (w/ default value)', () => {
+  it('format date for "Europe/Paris" timezone and "dd/MM/yyyy" format', () => {
+    assert.deepEqual(
+      formatDate('Tue, 01 Nov 2022 00:00:00 GMT', 'Europe/Paris', 'yyyy-MM-dd'),
+      '2022-11-01 01:00'
+    )
+  })
+})
+
+describe('getDateFormat', () => {
+  const testsParams = [
+    {
+      inputParams: {
+        dateFormat: 'dd/MM/yyyy',
+        language: 'en',
+      },
+      expectedFormat: 'dd/MM/yyyy',
+    },
+    {
+      inputParams: {
+        dateFormat: 'MM/dd/yyyy',
+        language: 'en',
+      },
+      expectedFormat: 'MM/dd/yyyy',
+    },
+    {
+      inputParams: {
+        dateFormat: 'yyyy-MM-dd',
+        language: 'en',
+      },
+      expectedFormat: 'yyyy-MM-dd',
+    },
+    {
+      inputParams: {
+        dateFormat: 'date_string',
+        language: 'en',
+      },
+      expectedFormat: 'MMM. do, yyyy',
+    },
+    {
+      inputParams: {
+        dateFormat: 'date_string',
+        language: 'fr',
+      },
+      expectedFormat: 'd MMM yyyy',
+    },
+    {
+      inputParams: {
+        dateFormat: 'date_string',
+        language: 'de',
+      },
+      expectedFormat: 'do MMM yyyy',
+    },
+  ]
+  testsParams.map((testParams) => {
+    it(`get date format for "${testParams.inputParams.language}" and  "${testParams.inputParams.dateFormat}" `, () => {
+      assert.deepEqual(
+        getDateFormat(
+          testParams.inputParams.dateFormat,
+          testParams.inputParams.language
+        ),
+        testParams.expectedFormat
+      )
+    })
+  })
+})
+
+describe('availableDateFormatOptions', () => {
+  const inputDate = `Sun, 9 Oct 2022 18:18:41 GMT`
+  const inputTimezone = `Europe/Paris`
+
+  const testsParams = [
+    {
+      inputLanguage: 'en',
+      expectedOptions: [
+        { label: 'MM/dd/yyyy - 10/09/2022', value: 'MM/dd/yyyy' },
+        { label: 'dd/MM/yyyy - 09/10/2022', value: 'dd/MM/yyyy' },
+        { label: 'yyyy-MM-dd - 2022-10-09', value: 'yyyy-MM-dd' },
+        { label: 'MMM. do, yyyy - Oct. 9th, 2022', value: 'date_string' },
+      ],
+    },
+    {
+      inputLanguage: 'fr',
+      expectedOptions: [
+        { label: 'MM/dd/yyyy - 10/09/2022', value: 'MM/dd/yyyy' },
+        { label: 'dd/MM/yyyy - 09/10/2022', value: 'dd/MM/yyyy' },
+        { label: 'yyyy-MM-dd - 2022-10-09', value: 'yyyy-MM-dd' },
+        { label: 'd MMM yyyy - 9 oct. 2022', value: 'date_string' },
+      ],
+    },
+    {
+      inputLanguage: 'de',
+      expectedOptions: [
+        { label: 'MM/dd/yyyy - 10/09/2022', value: 'MM/dd/yyyy' },
+        { label: 'dd/MM/yyyy - 09/10/2022', value: 'dd/MM/yyyy' },
+        { label: 'yyyy-MM-dd - 2022-10-09', value: 'yyyy-MM-dd' },
+        { label: 'do MMM yyyy - 9. Okt. 2022', value: 'date_string' },
+      ],
+    },
+  ]
+
+  testsParams.map((testParams) => {
+    it(`returns available options for ${testParams.inputLanguage} locale`, () => {
+      assert.deepEqual(
+        availableDateFormatOptions(
+          inputDate,
+          inputTimezone,
+          testParams.inputLanguage
+        ),
+        testParams.expectedOptions
       )
     })
   })

@@ -6,6 +6,7 @@
   >
     <CyclingSport v-if="sportLabel === 'Cycling (Sport)'" />
     <CyclingTransport v-if="sportLabel === 'Cycling (Transport)'" />
+    <CyclingVirtual v-if="sportLabel === 'Cycling (Virtual)'" />
     <Hiking v-if="sportLabel === 'Hiking'" />
     <MountainBiking v-if="sportLabel === 'Mountain Biking'" />
     <MountainBikingElectric
@@ -26,6 +27,7 @@
 
   import CyclingSport from '@/components/Common/Images/SportImage/CyclingSport.vue'
   import CyclingTransport from '@/components/Common/Images/SportImage/CyclingTransport.vue'
+  import CyclingVirtual from '@/components/Common/Images/SportImage/CyclingVirtual.vue'
   import Hiking from '@/components/Common/Images/SportImage/Hiking.vue'
   import MountainBiking from '@/components/Common/Images/SportImage/MountainBiking.vue'
   import MountainBikingElectric from '@/components/Common/Images/SportImage/MountainBikingElectric.vue'

@@ -1,6 +1,7 @@
 from typing import Dict, Union
 
 from flask import Blueprint, request
+from sqlalchemy import asc, desc
 
 from fittrackee import appLog
 from fittrackee.federation.exceptions import (
@@ -122,8 +123,9 @@ def get_follow_requests(auth_user: User) -> Dict:
             updated_at=None,
         )
         .order_by(
-            FollowRequest.created_at.asc() if order == 'asc' else True,
-            FollowRequest.created_at.desc() if order == 'desc' else True,
+            asc(FollowRequest.created_at)
+            if order == 'asc'
+            else desc(FollowRequest.created_at)
         )
         .paginate(page, per_page, False)
     )

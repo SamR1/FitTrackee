@@ -102,7 +102,6 @@
 
 <script setup lang="ts">
   import { ComputedRef, computed, ref, capitalize, Ref } from 'vue'
-  import { useI18n } from 'vue-i18n'
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'

@@ -1340,8 +1340,45 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
             data = json.loads(response.data.decode())
             assert 'created' in data['status']
             assert len(data['data']['workouts']) == 3
-            assert 'just a workout' == data['data']['workouts'][0]['title']
-            assert_workout_data_with_gpx(data, user_1)
+            assert 'creation_date' in data['data']['workouts'][0]
+            assert (
+                'Tue, 13 Mar 2018 12:44:45 GMT'
+                == data['data']['workouts'][0]['workout_date']
+            )
+            assert data['data']['workouts'][0]['user'] == jsonify_dict(
+                user_1.serialize()
+            )
+            assert 1 == data['data']['workouts'][0]['sport_id']
+            assert '0:04:10' == data['data']['workouts'][0]['duration']
+            assert data['data']['workouts'][0]['ascent'] == 0.4
+            assert data['data']['workouts'][0]['ave_speed'] == 4.61
+            assert data['data']['workouts'][0]['descent'] == 23.4
+            assert data['data']['workouts'][0]['distance'] == 0.32
+            assert data['data']['workouts'][0]['max_alt'] == 998.0
+            assert data['data']['workouts'][0]['max_speed'] == 5.12
+            assert data['data']['workouts'][0]['min_alt'] == 975.0
+            assert data['data']['workouts'][0]['moving'] == '0:04:10'
+            assert data['data']['workouts'][0]['pauses'] is None
+            assert data['data']['workouts'][0]['with_gpx'] is True
+            assert data['data']['workouts'][0]['map'] is not None
+            assert data['data']['workouts'][0]['weather_start'] is None
+            assert data['data']['workouts'][0]['weather_end'] is None
+            assert data['data']['workouts'][0]['notes'] is None
+            assert len(data['data']['workouts'][0]['segments']) == 1
+
+            segment = data['data']['workouts'][0]['segments'][0]
+            assert segment['workout_id'] == data['data']['workouts'][0]['id']
+            assert segment['segment_id'] == 0
+            assert segment['duration'] == '0:04:10'
+            assert segment['ascent'] == 0.4
+            assert segment['ave_speed'] == 4.61
+            assert segment['descent'] == 23.4
+            assert segment['distance'] == 0.32
+            assert segment['max_alt'] == 998.0
+            assert segment['max_speed'] == 5.12
+            assert segment['min_alt'] == 975.0
+            assert segment['moving'] == '0:04:10'
+            assert segment['pauses'] is None
 
     def test_it_returns_400_if_folder_is_present_in_zip_archive(
         self, app: Flask, user_1: User, sport_1_cycling: Sport

@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Authentication &#8212; FitTrackee 0.7.2
+    <title>Authentication &#8212; FitTrackee 0.7.3
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
@@ -15,6 +15,7 @@
     <script src="../_static/underscore.js"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Configuration" href="configuration.html" />
@@ -41,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.2
+        <span class="navbar-text navbar-version pull-left"><b>0.7.3
 </b></span>
       </div>
 
@@ -574,6 +575,19 @@ character “_” allowed</p></li>
 <dt class="sig sig-object http" id="post--api-auth-profile-edit-preferences">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/edit/preferences</span></span><a class="headerlink" href="#post--api-auth-profile-edit-preferences" title="Permalink to this definition">¶</a></dt>
 <dd><p>Edit authenticated user preferences.</p>
+<p>Supported date formats:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">MM/dd/yyyy</span></code> (default value)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dd/MM/yyyy</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">yyyy-MM-dd</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">date_string</span></code>, corresponding on client to:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">MMM.</span> <span class="pre">do,</span> <span class="pre">yyyy</span></code> for <code class="docutils literal notranslate"><span class="pre">en</span></code> locale</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">d</span> <span class="pre">MMM</span> <span class="pre">yyyy</span></code> for <code class="docutils literal notranslate"><span class="pre">fr</span></code> locale</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">do</span> <span class="pre">MMM</span> <span class="pre">yyyy</span></code> for <code class="docutils literal notranslate"><span class="pre">de</span></code> locale</p></li>
+</ul>
+</li>
+</ul>
 <p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/profile/edit/preferences</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -590,6 +604,7 @@ character “_” allowed</p></li>
 <span class="w">    </span><span class="nt">&quot;bio&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;birth_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sun, 14 Jul 2019 14:09:58 GMT&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;date_format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MM/dd/yyyy&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;display_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sam@example.com&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;first_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"></span>
@@ -667,6 +682,7 @@ character “_” allowed</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Request JSON Object<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>date_format</strong> (<em>string</em>) – the format used to display dates in the app</p></li>
 <li><p><strong>display_ascent</strong> (<em>boolean</em>) – display highest ascent records and total</p></li>
 <li><p><strong>imperial_units</strong> (<em>boolean</em>) – display distance in imperial units</p></li>
 <li><p><strong>language</strong> (<em>string</em>) – language preferences</p></li>
@@ -1222,7 +1238,7 @@ for other reasons.</p></li>
     </p>
     <p>
         &copy; Copyright 2018 - 2022, SamR1.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br/>
     </p>
   </div>
 </footer>

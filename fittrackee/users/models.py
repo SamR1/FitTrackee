@@ -109,8 +109,9 @@ class User(BaseModel):
     bio = db.Column(db.String(200), nullable=True)
     picture = db.Column(db.String(255), nullable=True)
     timezone = db.Column(db.String(50), nullable=True)
+    date_format = db.Column(db.String(50), nullable=True)
     # weekm: does the week start Monday?
-    weekm = db.Column(db.Boolean(50), default=False, nullable=False)
+    weekm = db.Column(db.Boolean, default=False, nullable=False)
     language = db.Column(db.String(50), nullable=True)
     imperial_units = db.Column(db.Boolean, default=False, nullable=False)
     is_active = db.Column(db.Boolean, default=False, nullable=False)
@@ -511,6 +512,7 @@ class User(BaseModel):
             serialized_user = {
                 **serialized_user,
                 **{
+                    'date_format': self.date_format,
                     'display_ascent': self.display_ascent,
                     'imperial_units': self.imperial_units,
                     'language': self.language,

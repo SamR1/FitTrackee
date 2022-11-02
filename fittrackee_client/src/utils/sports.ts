@@ -4,6 +4,7 @@ import { IWorkout } from '@/types/workouts'
 export const sportColors: Record<string, string> = {
   'Cycling (Sport)': '#4c9792',
   'Cycling (Transport)': '#88af98',
+  'Cycling (Virtual)': '#64a360',
   Hiking: '#bb757c',
   'Mountain Biking': '#d4b371',
   'Mountain Biking (Electric)': '#fc9d6f',

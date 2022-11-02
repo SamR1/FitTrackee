@@ -12,7 +12,7 @@ from flask import (
     request,
     send_from_directory,
 )
-from sqlalchemy import exc
+from sqlalchemy import asc, desc, exc
 from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
@@ -200,7 +200,10 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
     :query float ave_speed_to: maximal average speed
     :query float max_speed_from: minimal max. speed
     :query float max_speed_to: maximal max. speed
-    :query string order: sorting order (default: ``desc``)
+    :query string order: sorting order: ``asc``, ``desc`` (default: ``desc``)
+    :query string order_by: sorting criteria: ``ave_speed``, ``distance``,
+                            ``duration``, ``workout_date`` (default:
+                            ``workout_date``)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -225,6 +228,9 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
         max_speed_from = params.get('max_speed_from')
         max_speed_to = params.get('max_speed_to')
         order_by = params.get('order_by', 'workout_date')
+        workout_column = getattr(
+            Workout, 'moving' if order_by == 'duration' else order_by
+        )
         order = params.get('order', 'desc')
         sport_id = params.get('sport_id')
         per_page = int(params.get('per_page', DEFAULT_WORKOUTS_PER_PAGE))
@@ -264,30 +270,9 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 else True,
             )
             .order_by(
-                Workout.ave_speed.asc()
-                if order_by == 'ave_speed' and order == 'asc'
-                else True,
-                Workout.ave_speed.desc()
-                if order_by == 'ave_speed' and order == 'desc'
-                else True,
-                Workout.distance.asc()
-                if order_by == 'distance' and order == 'asc'
-                else True,
-                Workout.distance.desc()
-                if order_by == 'distance' and order == 'desc'
-                else True,
-                Workout.moving.asc()
-                if order_by == 'duration' and order == 'asc'
-                else True,
-                Workout.moving.desc()
-                if order_by == 'duration' and order == 'desc'
-                else True,
-                Workout.workout_date.asc()
-                if order_by == 'workout_date' and order == 'asc'
-                else True,
-                Workout.workout_date.desc()
-                if order_by == 'workout_date' and order == 'desc'
-                else True,
+                asc(workout_column)
+                if order == 'asc'
+                else desc(workout_column),
             )
             .paginate(page, per_page, False)
         )

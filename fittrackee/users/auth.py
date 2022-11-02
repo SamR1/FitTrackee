@@ -178,6 +178,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
         if not user:
             new_user = User(username=username, email=email, password=password)
             new_user.timezone = 'Europe/Paris'
+            new_user.date_format = 'MM/dd/yyyy'
             new_user.confirmation_token = secrets.token_urlsafe(30)
             new_user.language = language
             db.session.add(new_user)
@@ -775,6 +776,17 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Edit authenticated user preferences.
 
+    Supported date formats:
+
+    - ``MM/dd/yyyy`` (default value)
+    - ``dd/MM/yyyy``
+    - ``yyyy-MM-dd``
+    - ``date_string``, corresponding on client to:
+
+      - ``MMM. do, yyyy`` for ``en`` locale
+      - ``d MMM yyyy`` for ``fr`` locale
+      - ``do MMM yyyy`` for ``de`` locale
+
     **Scope**: ``profile:write``
 
     **Example request**:
@@ -797,6 +809,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "bio": null,
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+          "date_format": "MM/dd/yyyy",
           "display_ascent": true,
           "email": "sam@example.com",
           "first_name": null,
@@ -875,6 +888,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         "status": "success"
       }
 
+    :<json string date_format: the format used to display dates in the app
     :<json boolean display_ascent: display highest ascent records and total
     :<json boolean imperial_units: display distance in imperial units
     :<json string language: language preferences
@@ -900,6 +914,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     # get post data
     post_data = request.get_json()
     user_mandatory_data = {
+        'date_format',
         'display_ascent',
         'imperial_units',
         'language',
@@ -911,6 +926,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     if not post_data or not post_data.keys() >= user_mandatory_data:
         return InvalidPayloadErrorResponse()
 
+    date_format = post_data.get('date_format')
     display_ascent = post_data.get('display_ascent')
     imperial_units = post_data.get('imperial_units')
     language = get_language(post_data.get('language'))
@@ -920,6 +936,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     workouts_visibility = post_data.get('workouts_visibility')
 
     try:
+        auth_user.date_format = date_format
         auth_user.display_ascent = display_ascent
         auth_user.imperial_units = imperial_units
         auth_user.language = language

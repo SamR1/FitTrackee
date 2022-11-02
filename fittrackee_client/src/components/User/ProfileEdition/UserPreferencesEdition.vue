@@ -23,6 +23,22 @@
             @updateTimezone="updateTZ"
           />
         </label>
+        <label class="form-items">
+          {{ $t('user.PROFILE.DATE_FORMAT') }}
+          <select
+            id="date_format"
+            v-model="userForm.date_format"
+            :disabled="loading"
+          >
+            <option
+              v-for="dateFormat in dateFormatOptions"
+              :value="dateFormat.value"
+              :key="dateFormat.value"
+            >
+              {{ dateFormat.label }}
+            </option>
+          </select>
+        </label>
         <div class="form-items form-checkboxes">
           <span class="checkboxes-label">
             {{ $t('user.PROFILE.FIRST_DAY_OF_WEEK') }}
@@ -135,6 +151,7 @@
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import { IUserPreferencesPayload, IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { availableDateFormatOptions } from '@/utils/dates'
   import { availableLanguages } from '@/utils/locales'
   import {
     privacyLevels,
@@ -155,6 +172,7 @@
     language: '',
     map_visibility: 'private',
     timezone: 'Europe/Paris',
+    date_format: 'dd/MM/yyyy',
     weekm: false,
     workouts_visibility: 'private',
   })
@@ -194,6 +212,13 @@
   const errorMessages: ComputedRef<string | string[] | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
   )
+  const dateFormatOptions = computed(() =>
+    availableDateFormatOptions(
+      new Date().toUTCString(),
+      props.user.timezone,
+      userForm.language
+    )
+  )
   const mapPrivacyLevels = computed(() =>
     getMapVisibilityLevels(userForm.workouts_visibility)
   )
@@ -212,6 +237,7 @@
       ? user.map_visibility
       : 'private'
     userForm.timezone = user.timezone ? user.timezone : 'Europe/Paris'
+    userForm.date_format = user.date_format ? user.date_format : 'dd/MM/yyyy'
     userForm.weekm = user.weekm ? user.weekm : false
     userForm.workouts_visibility = user.workouts_visibility
       ? user.workouts_visibility

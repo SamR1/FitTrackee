@@ -14,6 +14,7 @@ import {
   subYears,
 } from 'date-fns'
 
+import createI18n from '@/i18n'
 import { IChartDataset } from '@/types/chart'
 import { ISport } from '@/types/sports'
 import {
@@ -23,14 +24,17 @@ import {
   TStatisticsDatasets,
   TStatisticsFromApi,
 } from '@/types/statistics'
-import { incrementDate, getStartDate } from '@/utils/dates'
+import { incrementDate, getStartDate, getDateFormat } from '@/utils/dates'
+import { localeFromLanguage } from '@/utils/locales'
 import { sportColors } from '@/utils/sports'
 import { convertStatsDistance } from '@/utils/units'
+
+const { locale } = createI18n.global
 
 const dateFormats: Record<string, Record<string, string>> = {
   week: {
     api: 'yyyy-MM-dd',
-    chart: 'dd/MM/yyyy',
+    chart: 'MM/dd/yyyy',
   },
   month: {
     api: 'yyyy-MM',
@@ -135,7 +139,8 @@ export const formatStats = (
   sports: ISport[],
   displayedSportsId: number[],
   apiStats: TStatisticsFromApi,
-  useImperialUnits: boolean
+  useImperialUnits: boolean,
+  userDateFormat: string
 ): IStatisticsChartData => {
   const dayKeys = getDateKeys(params, weekStartingMonday)
   const dateFormat = dateFormats[params.duration]
@@ -151,7 +156,13 @@ export const formatStats = (
 
   dayKeys.map((key) => {
     const date: string = format(key, dateFormat.api)
-    const label: string = format(key, dateFormat.chart)
+    const label: string = format(
+      key,
+      params.duration === 'week'
+        ? getDateFormat(userDateFormat, locale.value)
+        : dateFormat.chart,
+      { locale: localeFromLanguage[locale.value] }
+    )
     labels.push(label)
     datasetKeys.map((datasetKey) => {
       datasets[datasetKey].map((dataset) => {

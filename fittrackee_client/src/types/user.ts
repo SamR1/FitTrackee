@@ -47,6 +47,7 @@ export interface IAuthUserProfile extends IUserProfile {
   records: IRecord[]
   sports_list: number[]
   timezone: string
+  date_format: string
   total_distance: number
   total_duration: string
   weekm: boolean
@@ -92,6 +93,7 @@ export interface IUserPreferencesPayload {
   language: string
   map_visibility: TPrivacyLevels
   timezone: string
+  date_format: string
   weekm: boolean
   workouts_visibility: TPrivacyLevels
 }

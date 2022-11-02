@@ -2,6 +2,7 @@ import { assert } from 'chai'
 
 import { sports } from './fixtures'
 
+import createI18n from '@/i18n'
 import {
   IStatisticsChartData,
   TStatisticsDatasets,
@@ -14,6 +15,8 @@ import {
   getStatsDateParams,
   updateChartParams,
 } from '@/utils/statistics'
+
+const { locale } = createI18n.global
 
 describe('getDateKeys (week starting Sunday)', () => {
   const testsParams = [
@@ -353,7 +356,15 @@ describe('formatStats', () => {
       },
     }
     assert.deepEqual(
-      formatStats(inputParams, false, sports, [], inputStats, false),
+      formatStats(
+        inputParams,
+        false,
+        sports,
+        [],
+        inputStats,
+        false,
+        'MM/dd/yyyy'
+      ),
       expected
     )
   })
@@ -416,7 +427,15 @@ describe('formatStats', () => {
       },
     }
     assert.deepEqual(
-      formatStats(inputParams, false, sports, [2], inputStats, false),
+      formatStats(
+        inputParams,
+        false,
+        sports,
+        [2],
+        inputStats,
+        false,
+        'MM/dd/yyyy'
+      ),
       expected
     )
   })
@@ -479,7 +498,15 @@ describe('formatStats', () => {
       },
     }
     assert.deepEqual(
-      formatStats(inputParams, false, sports, [], inputStats, false),
+      formatStats(
+        inputParams,
+        false,
+        sports,
+        [],
+        inputStats,
+        false,
+        'MM/dd/yyyy'
+      ),
       expected
     )
   })
@@ -581,7 +608,15 @@ describe('formatStats', () => {
       },
     }
     assert.deepEqual(
-      formatStats(inputParams, false, sports, [1], inputStats, false),
+      formatStats(
+        inputParams,
+        false,
+        sports,
+        [1],
+        inputStats,
+        false,
+        'MM/dd/yyyy'
+      ),
       expected
     )
   })
@@ -685,13 +720,21 @@ describe('formatStats (duration)', () => {
       },
     }
     assert.deepEqual(
-      formatStats(inputParams, false, sports, [1], inputStats, false),
+      formatStats(
+        inputParams,
+        false,
+        sports,
+        [1],
+        inputStats,
+        false,
+        'MM/dd/yyyy'
+      ),
       expected
     )
   })
-  it("returns datasets when duration is 'year'", () => {
+  it("returns datasets when duration is 'month'", () => {
     const inputStats: TStatisticsFromApi = {
-      '2020': {
+      '2021-10': {
         1: {
           average_speed: 12,
           nb_workouts: 1,
@@ -701,7 +744,7 @@ describe('formatStats (duration)', () => {
           total_descent: 100,
         },
       },
-      '2021': {
+      '2021-11': {
         1: {
           average_speed: 18,
           nb_workouts: 1,
@@ -719,7 +762,7 @@ describe('formatStats (duration)', () => {
           total_descent: 200,
         },
       },
-      '2022': {
+      '2021-12': {
         3: {
           average_speed: 8.64,
           nb_workouts: 2,
@@ -731,19 +774,19 @@ describe('formatStats (duration)', () => {
       },
     }
     const inputParams = {
-      duration: 'year',
-      start: new Date('January 1, 2020 00:00:00'),
+      duration: 'month',
+      start: new Date('October 1, 2021 00:00:00'),
       end: new Date('December 31, 2021 23:59:59.999'),
     }
     const expected: IStatisticsChartData = {
-      labels: ['2020', '2021'],
+      labels: ['10/2021', '11/2021', '12/2021'],
       datasets: {
         average_speed: [
           {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             borderColor: ['#4c9792'],
-            data: [12, 18],
+            data: [12, 18, null],
             type: 'line',
             spanGaps: true,
           },
@@ -752,41 +795,49 @@ describe('formatStats (duration)', () => {
           {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
-            data: [1, 1],
+            data: [1, 1, 0],
           },
         ],
         total_distance: [
           {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
-            data: [10, 15],
+            data: [10, 15, 0],
           },
         ],
         total_duration: [
           {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
-            data: [3000, 3500],
+            data: [3000, 3500, 0],
           },
         ],
         total_ascent: [
           {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
-            data: [150, 250],
+            data: [150, 250, 0],
           },
         ],
         total_descent: [
           {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
-            data: [100, 150],
+            data: [100, 150, 0],
           },
         ],
       },
     }
     assert.deepEqual(
-      formatStats(inputParams, false, sports, [1], inputStats, false),
+      formatStats(
+        inputParams,
+        false,
+        sports,
+        [1],
+        inputStats,
+        false,
+        'MM/dd/yyyy'
+      ),
       expected
     )
   })
@@ -838,7 +889,7 @@ describe('formatStats (duration)', () => {
       end: new Date('October 23, 2021 23:59:59.999'),
     }
     const expected: IStatisticsChartData = {
-      labels: ['03/10/2021', '10/10/2021', '17/10/2021'],
+      labels: ['10/03/2021', '10/10/2021', '10/17/2021'],
       datasets: {
         average_speed: [
           {
@@ -888,7 +939,15 @@ describe('formatStats (duration)', () => {
       },
     }
     assert.deepEqual(
-      formatStats(inputParams, false, sports, [1], inputStats, false),
+      formatStats(
+        inputParams,
+        false,
+        sports,
+        [1],
+        inputStats,
+        false,
+        'MM/dd/yyyy'
+      ),
       expected
     )
   })
@@ -940,7 +999,7 @@ describe('formatStats (duration)', () => {
       end: new Date('October 24, 2021 23:59:59.999'),
     }
     const expected: IStatisticsChartData = {
-      labels: ['04/10/2021', '11/10/2021', '18/10/2021'],
+      labels: ['10/04/2021', '10/11/2021', '10/18/2021'],
       datasets: {
         average_speed: [
           {
@@ -990,12 +1049,20 @@ describe('formatStats (duration)', () => {
       },
     }
     assert.deepEqual(
-      formatStats(inputParams, true, sports, [1], inputStats, false),
+      formatStats(
+        inputParams,
+        true,
+        sports,
+        [1],
+        inputStats,
+        false,
+        'MM/dd/yyyy'
+      ),
       expected
     )
   })
 
-  it('returns datasets after conversion to imperial units', () => {
+  it("returns datasets when duration is 'week' and date format 'dd/MM/yyyy'", () => {
     const inputStats: TStatisticsFromApi = {
       '2021-10-03': {
         1: {
@@ -1049,6 +1116,227 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             borderColor: ['#4c9792'],
+            data: [12, 18, null],
+            type: 'line',
+            spanGaps: true,
+          },
+        ],
+        nb_workouts: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [1, 1, 0],
+          },
+        ],
+        total_distance: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [10, 15, 0],
+          },
+        ],
+        total_duration: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [3000, 3500, 0],
+          },
+        ],
+        total_ascent: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [150, 250, 0],
+          },
+        ],
+        total_descent: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [100, 150, 0],
+          },
+        ],
+      },
+    }
+    assert.deepEqual(
+      formatStats(
+        inputParams,
+        false,
+        sports,
+        [1],
+        inputStats,
+        false,
+        'dd/MM/yyyy'
+      ),
+      expected
+    )
+  })
+
+  it("returns datasets when duration is 'week' and date format  is 'date_string'", () => {
+    locale.value = 'fr'
+    const inputStats: TStatisticsFromApi = {
+      '2021-10-03': {
+        1: {
+          average_speed: 12,
+          nb_workouts: 1,
+          total_distance: 10,
+          total_duration: 3000,
+          total_ascent: 150,
+          total_descent: 100,
+        },
+      },
+      '2021-10-10': {
+        1: {
+          average_speed: 18,
+          nb_workouts: 1,
+          total_distance: 15,
+          total_duration: 3500,
+          total_ascent: 250,
+          total_descent: 150,
+        },
+        2: {
+          average_speed: 24,
+          nb_workouts: 2,
+          total_distance: 20,
+          total_duration: 3000,
+          total_ascent: 150,
+          total_descent: 200,
+        },
+      },
+      '2021-10-17': {
+        3: {
+          average_speed: 8.64,
+          nb_workouts: 2,
+          total_distance: 20,
+          total_duration: 3000,
+          total_ascent: 100,
+          total_descent: 100,
+        },
+      },
+    }
+    const inputParams = {
+      duration: 'week',
+      start: new Date('October 03, 2021 00:00:00'),
+      end: new Date('October 23, 2021 23:59:59.999'),
+    }
+    const expected: IStatisticsChartData = {
+      labels: ['3 oct. 2021', '10 oct. 2021', '17 oct. 2021'],
+      datasets: {
+        average_speed: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            borderColor: ['#4c9792'],
+            data: [12, 18, null],
+            type: 'line',
+            spanGaps: true,
+          },
+        ],
+        nb_workouts: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [1, 1, 0],
+          },
+        ],
+        total_distance: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [10, 15, 0],
+          },
+        ],
+        total_duration: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [3000, 3500, 0],
+          },
+        ],
+        total_ascent: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [150, 250, 0],
+          },
+        ],
+        total_descent: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [100, 150, 0],
+          },
+        ],
+      },
+    }
+    assert.deepEqual(
+      formatStats(
+        inputParams,
+        false,
+        sports,
+        [1],
+        inputStats,
+        false,
+        'date_string'
+      ),
+      expected
+    )
+  })
+
+  it('returns datasets after conversion to imperial units', () => {
+    const inputStats: TStatisticsFromApi = {
+      '2021-10-03': {
+        1: {
+          average_speed: 12,
+          nb_workouts: 1,
+          total_distance: 10,
+          total_duration: 3000,
+          total_ascent: 150,
+          total_descent: 100,
+        },
+      },
+      '2021-10-10': {
+        1: {
+          average_speed: 18,
+          nb_workouts: 1,
+          total_distance: 15,
+          total_duration: 3500,
+          total_ascent: 250,
+          total_descent: 150,
+        },
+        2: {
+          average_speed: 24,
+          nb_workouts: 2,
+          total_distance: 20,
+          total_duration: 3000,
+          total_ascent: 150,
+          total_descent: 200,
+        },
+      },
+      '2021-10-17': {
+        3: {
+          average_speed: 8.64,
+          nb_workouts: 2,
+          total_distance: 20,
+          total_duration: 3000,
+          total_ascent: 100,
+          total_descent: 100,
+        },
+      },
+    }
+    const inputParams = {
+      duration: 'week',
+      start: new Date('October 03, 2021 00:00:00'),
+      end: new Date('October 23, 2021 23:59:59.999'),
+    }
+    const expected: IStatisticsChartData = {
+      labels: ['10/03/2021', '10/10/2021', '10/17/2021'],
+      datasets: {
+        average_speed: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            borderColor: ['#4c9792'],
             data: [7.46, 11.18, null],
             type: 'line',
             spanGaps: true,
@@ -1092,7 +1380,15 @@ describe('formatStats (duration)', () => {
       },
     }
     assert.deepEqual(
-      formatStats(inputParams, false, sports, [1], inputStats, true),
+      formatStats(
+        inputParams,
+        false,
+        sports,
+        [1],
+        inputStats,
+        true,
+        'MM/dd/yyyy'
+      ),
       expected
     )
   })

@@ -4,7 +4,7 @@ import shutil
 from typing import Any, Dict, Optional, Tuple, Union
 
 from flask import Blueprint, current_app, request, send_file
-from sqlalchemy import exc
+from sqlalchemy import asc, desc, exc
 
 from fittrackee import appLog, db, limiter
 from fittrackee.emails.tasks import (
@@ -84,45 +84,14 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
     per_page = int(params.get('per_page', USERS_PER_PAGE))
     if per_page > 50:
         per_page = 50
-    order_by = params.get('order_by', 'username')
+    user_column = getattr(User, params.get('order_by', 'username'))
     order = params.get('order', 'asc')
     users_pagination = (
         User.query.filter(
             User.username.ilike('%' + query + '%') if query else True,
             User.is_remote == remote,
         )
-        .order_by(
-            User.workouts_count.asc()  # type: ignore
-            if order_by == 'workouts_count' and order == 'asc'
-            else True,
-            User.workouts_count.desc()  # type: ignore
-            if order_by == 'workouts_count' and order == 'desc'
-            else True,
-            User.username.asc()
-            if order_by == 'username' and order == 'asc'
-            else True,
-            User.username.desc()
-            if order_by == 'username' and order == 'desc'
-            else True,
-            User.created_at.asc()
-            if order_by == 'created_at' and order == 'asc'
-            else True,
-            User.created_at.desc()
-            if order_by == 'created_at' and order == 'desc'
-            else True,
-            User.admin.asc()
-            if order_by == 'admin' and order == 'asc'
-            else True,
-            User.admin.desc()
-            if order_by == 'admin' and order == 'desc'
-            else True,
-            User.is_active.asc()
-            if order_by == 'is_active' and order == 'asc'
-            else True,
-            User.is_active.desc()
-            if order_by == 'is_active' and order == 'desc'
-            else True,
-        )
+        .order_by(asc(user_column) if order == 'asc' else desc(user_column))
         .paginate(page, per_page, False)
     )
     users = users_pagination.items
@@ -284,10 +253,10 @@ def get_users(auth_user: User) -> Dict:
     :query integer page: page if using pagination (default: 1)
     :query integer per_page: number of users per page (default: 10, max: 50)
     :query string q: query on user name
-    :query string order_by: sorting criteria (``username``, ``created_at``,
-                            ``workouts_count``, ``admin``,
-                            default: ``username``)
-    :query string order: sorting order (``asc``, ``desc``, default: ``asc``)
+    :query string order: sorting order: ``asc``, ``desc`` (default: ``asc``)
+    :query string order_by: sorting criteria: ``username``, ``created_at``,
+                            ``workouts_count``, ``admin``, ``is_active``
+                            (default: ``username``)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
