@@ -126,7 +126,7 @@ def upgrade():
         'users_actor_id_fkey', 'users', 'actors', ['actor_id'], ['id']
     )
     op.drop_constraint('users_username_key', 'users', type_='unique')
-    # user email and password are empty for remote actors
+    # user email, password and date format are empty for remote actors
     op.alter_column(
         'users', 'email', existing_type=sa.VARCHAR(length=255),
         nullable=True
@@ -135,6 +135,7 @@ def upgrade():
         'users', 'password', existing_type=sa.VARCHAR(length=255),
         nullable=True
     )
+    op.alter_column('users', 'date_format', nullable=True)
     # privacy levels
     privacy_levels.create(op.get_bind())
     op.add_column(
