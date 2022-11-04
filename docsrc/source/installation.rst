@@ -733,6 +733,14 @@ Examples (to update depending on your application configuration and given distri
         ssl_certificate fullchain.pem;
         ssl_certificate_key privkey.pem;
 
+        ## this parameter controls how large of a file can be 
+        ## uploaded, and defaults to 1MB. If you change the FitTrackee
+        ## settings to allow larger uploads, you'll need to change this
+        ## setting by uncommenting the line below and setting the size limit
+        ## you want. Set to "0" to prevent nginx from checking the 
+        ## request body size at all
+        # client_max_body_size 1m; 
+
         location / {
             proxy_pass http://127.0.0.1:5000;
             proxy_redirect    default;
