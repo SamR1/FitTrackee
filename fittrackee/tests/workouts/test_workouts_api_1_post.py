@@ -1177,6 +1177,40 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
             )
             assert 'data' not in data
 
+    def test_it_returns_error_if_a_file_from_archive_size_exceeds_limit(
+        self,
+        app_with_max_file_size: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+    ) -> None:
+        file_path = os.path.join(
+            app_with_max_file_size.root_path, 'tests/files/gpx_test.zip'
+        )
+        # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
+        with open(file_path, 'rb') as zip_file:
+            client, auth_token = self.get_test_client_and_auth_token(
+                app_with_max_file_size, user_1.email
+            )
+
+            response = client.post(
+                '/api/workouts',
+                data=dict(
+                    file=(zip_file, 'gpx_test.zip'), data='{"sport_id": 1}'
+                ),
+                headers=dict(
+                    content_type='multipart/form-data',
+                    Authorization=f'Bearer {auth_token}',
+                ),
+            )
+
+            data = self.assert_400(
+                response,
+                'at least one file in zip archive exceeds size limit, '
+                'please check the archive',
+                'fail',
+            )
+            assert 'data' not in data
+
 
 class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
     def workout_assertion(

@@ -349,15 +349,27 @@ def process_zip_archive(
     does not exceed defined limit.
     """
     with zipfile.ZipFile(common_params['file_path'], "r") as zip_ref:
-        info_list = [
-            zip_info
-            for zip_info in zip_ref.infolist()
-            if is_gpx_file(zip_info.filename)
-        ]
-        if len(info_list) > current_app.config['gpx_limit_import']:
+        max_file_size = current_app.config['max_single_file_size']
+        gpx_files_count = 0
+        files_with_invalid_size_count = 0
+        for zip_info in zip_ref.infolist():
+            if is_gpx_file(zip_info.filename):
+                gpx_files_count += 1
+                if zip_info.file_size > max_file_size:
+                    files_with_invalid_size_count += 1
+
+        if gpx_files_count > current_app.config['gpx_limit_import']:
             raise WorkoutException(
                 'fail', 'the number of files in the archive exceeds the limit'
             )
+
+        if files_with_invalid_size_count > 0:
+            raise WorkoutException(
+                'fail',
+                'at least one file in zip archive exceeds size limit, '
+                'please check the archive',
+            )
+
         zip_ref.extractall(extract_dir)
 
     new_workouts = []
