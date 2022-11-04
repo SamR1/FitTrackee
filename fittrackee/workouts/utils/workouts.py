@@ -333,6 +333,14 @@ def process_one_gpx_file(
         raise WorkoutException('fail', 'Error during workout save.', e)
 
 
+def is_gpx_file(filename: str) -> bool:
+    return (
+        '.' in filename
+        and filename.rsplit('.', 1)[1].lower()
+        in current_app.config['WORKOUT_ALLOWED_EXTENSIONS']
+    )
+
+
 def process_zip_archive(
     common_params: Dict, extract_dir: str, stopped_speed_threshold: float
 ) -> List:
@@ -341,21 +349,21 @@ def process_zip_archive(
     does not exceed defined limit.
     """
     with zipfile.ZipFile(common_params['file_path'], "r") as zip_ref:
+        info_list = [
+            zip_info
+            for zip_info in zip_ref.infolist()
+            if is_gpx_file(zip_info.filename)
+        ]
+        if len(info_list) > current_app.config['gpx_limit_import']:
+            raise WorkoutException(
+                'fail', 'the number of files in the archive exceeds the limit'
+            )
         zip_ref.extractall(extract_dir)
 
     new_workouts = []
-    gpx_files_limit = current_app.config['gpx_limit_import']
-    gpx_files_ok = 0
 
     for gpx_file in os.listdir(extract_dir):
-        if (
-            '.' in gpx_file
-            and gpx_file.rsplit('.', 1)[1].lower()
-            in current_app.config['WORKOUT_ALLOWED_EXTENSIONS']
-        ):
-            gpx_files_ok += 1
-            if gpx_files_ok > gpx_files_limit:
-                break
+        if is_gpx_file(gpx_file):
             file_path = os.path.join(extract_dir, gpx_file)
             params = common_params
             params['file_path'] = file_path
