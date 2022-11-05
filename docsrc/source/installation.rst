@@ -480,13 +480,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.7.3):
+-  Download the last release (for now, it is the release v0.7.4):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.3.tar.gz
-   $ tar -xzf v0.7.3.tar.gz
-   $ mv FitTrackee-0.7.3 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.4.tar.gz
+   $ tar -xzf v0.7.4.tar.gz
+   $ mv FitTrackee-0.7.4 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -606,13 +606,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.7.3) and overwrite existing files:
+- Download the last release (for now, it is the release v0.7.4) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.3.tar.gz
-   $ tar -xzf v0.7.3.tar.gz
-   $ cp -R FitTrackee-0.7.3/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.4.tar.gz
+   $ tar -xzf v0.7.4.tar.gz
+   $ cp -R FitTrackee-0.7.4/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
