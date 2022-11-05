@@ -42,7 +42,7 @@ python-forecastio = "^1.4"
 pytz = "^2022.6"
 shortuuid = "^1.0.9"
 staticmap = "^0.5.4"
-sqlalchemy = "=1.4.42"
+sqlalchemy = "=1.4.43"
 pyopenssl = "^22.1"
 ua-parser = "^0.16.1"
 werkzeug = "2.1"  # removal of parse_rule in 2.2 breaks sphinxcontrib-httpdomain autoflask
