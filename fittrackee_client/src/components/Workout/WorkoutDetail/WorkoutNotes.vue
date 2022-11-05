@@ -3,14 +3,14 @@
     <Card>
       <template #title>{{ $t('workouts.NOTES') }}</template>
       <template #content>
-        <span v-html="notes !== '' ? $sanitize(linkifyStr(notes, { target: '_blank' })) : $t('workouts.NO_NOTES')" />
+        <span v-html="notes !== '' ? $sanitize(linkifyHtml(notes, { target: '_blank' })) : $t('workouts.NO_NOTES')" />
       </template>
     </Card>
   </div>
 </template>
 
 <script setup lang="ts">
-import linkifyStr from 'linkify-string'
+import linkifyHtml from 'linkify-html'
 import { toRefs, withDefaults } from 'vue'
 
 interface Props {

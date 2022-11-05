@@ -48,7 +48,7 @@ const app = createApp(App)
   .use(store)
   .use(router)
   .use(VueFullscreen, { name: 'VFullscreen' })
-  .use(Vue3Sanitize, { allowedTags: ['a'] })
+  .use(Vue3Sanitize, { allowedTags: ['a'], disallowedTagsMode: 'escape' })
   .directive('click-outside', clickOutsideDirective)
 
 customComponents.forEach((component) => {
