@@ -1024,7 +1024,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
             appLog.error(e.e)
         if e.status == 'error':
             return InternalServerErrorResponse(e.message)
-        return InvalidPayloadErrorResponse(e.message)
+        return InvalidPayloadErrorResponse(e.message, e.status)
 
     shutil.rmtree(folders['extract_dir'], ignore_errors=True)
     shutil.rmtree(folders['tmp_dir'], ignore_errors=True)

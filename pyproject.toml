@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "0.7.3"
+version = "0.7.4"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0"
@@ -42,7 +42,7 @@ python-forecastio = "^1.4"
 pytz = "^2022.6"
 shortuuid = "^1.0.9"
 staticmap = "^0.5.4"
-sqlalchemy = "=1.4.42"
+sqlalchemy = "=1.4.43"
 pyopenssl = "^22.1"
 pycryptodome = "^3.15"
 ua-parser = "^0.16.1"

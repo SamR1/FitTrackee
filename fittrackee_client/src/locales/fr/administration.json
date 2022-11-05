@@ -11,11 +11,11 @@
     "FEDERATION_ENABLED": "Fédération activée",
     "MAX_USERS_LABEL": "Nombre maximum d'utilisateurs actifs ",
     "MAX_USERS_HELP": "Si égal à 0, pas limite d'inscription",
-    "MAX_FILES_IN_ZIP_LABEL": "Taille max. des archives zip (en Mo) ",
+    "MAX_FILES_IN_ZIP_LABEL": "Nombre max. de fichiers dans une archive zip ",
     "NO_CONTACT_EMAIL": "non renseigné",
     "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Taille max. des fichiers (en Mo) ",
     "TITLE": "Configuration de l'application",
-    "ZIP_UPLOAD_MAX_SIZE_LABEL": "Nombre max. de fichiers dans une archive zip "
+    "ZIP_UPLOAD_MAX_SIZE_LABEL": "Taille max. des archives zip (en Mo) "
   },
   "BACK_TO_ADMIN": "Revenir à l'admin",
   "CONFIRM_USER_ACCOUNT_DELETION": "Êtes-vous sûr de vouloir supprimer le compte de l'utilisateur {0} ? Toutes les données seront définitivement.",
