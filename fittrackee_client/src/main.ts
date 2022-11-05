@@ -14,6 +14,7 @@ import {
 } from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 import { createApp } from 'vue'
+import Vue3Sanitize from "vue-3-sanitize"
 import VueFullscreen from 'vue-fullscreen'
 
 import './registerServiceWorker'
@@ -47,6 +48,7 @@ const app = createApp(App)
   .use(store)
   .use(router)
   .use(VueFullscreen, { name: 'VFullscreen' })
+  .use(Vue3Sanitize, { allowedTags: ['a'] })
   .directive('click-outside', clickOutsideDirective)
 
 customComponents.forEach((component) => {
