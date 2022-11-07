@@ -58,10 +58,14 @@
             />
           </td>
           <td>
-            {{ Number(workoutObject.weatherStart.temperature).toFixed(1) }}°C
+            {{ useImperialUnits ?
+                convertCelsiusToFahrenheit(Number(workoutObject.weatherStart.temperature)).toFixed(1) + " °F" :
+                Number(workoutObject.weatherStart.temperature).toFixed(1) + " °C"}}
           </td>
           <td>
-            {{ Number(workoutObject.weatherEnd.temperature).toFixed(1) }}°C
+            {{ useImperialUnits ?
+                convertCelsiusToFahrenheit(Number(workoutObject.weatherEnd.temperature)).toFixed(1) + " °F" :
+                Number(workoutObject.weatherEnd.temperature).toFixed(1) + " °C"}}
           </td>
         </tr>
         <tr>
@@ -120,6 +124,10 @@
   const props = defineProps<Props>()
 
   const { useImperialUnits, workoutObject } = toRefs(props)
+
+  function convertCelsiusToFahrenheit(celsius_temp: number): number {
+    return celsius_temp * 1.8 + 32
+  }
 </script>
 
 <style lang="scss" scoped>

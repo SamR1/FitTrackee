@@ -82,8 +82,8 @@
         },
         "UNITS": {
             "LABEL": "Unités pour les distances",
-            "IMPERIAL": "Système impérial (ft, mi)",
-            "METRIC": "Système métrique (m, km)"
+            "IMPERIAL": "Système impérial (ft, mi, °F)",
+            "METRIC": "Système métrique (m, km, °C)"
         },
         "SPORT": {
             "ACTION": "action",
