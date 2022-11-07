@@ -1,10 +1,10 @@
 import os
+from datetime import datetime, timedelta
 from typing import Dict, Optional, Union
 
 import forecastio
-import requests
 import pytz
-from datetime import datetime, timedelta
+import requests
 from gpxpy.gpx import GPXTrackPoint
 
 from fittrackee import appLog
@@ -16,7 +16,8 @@ VC_API_KEY = os.getenv('VC_WEATHER_API_KEY')
 def get_weather(point: GPXTrackPoint) -> Optional[Dict]:
     try:
         if not point.time:
-            # if there's no time associated with the point; we cannot get weather
+            # if there's no time associated with the point;
+            # we cannot get weather
             return None
         else:
             point_time = (
@@ -44,8 +45,9 @@ def get_weather(point: GPXTrackPoint) -> Optional[Dict]:
                 }
             elif VC_API_KEY:
                 # if visualcrossing API key is present, use that
-                return get_visual_crossing_weather(VC_API_KEY, point.latitude, 
-                                                   point.longitude, point.time)
+                return get_visual_crossing_weather(
+                    VC_API_KEY, point.latitude, point.longitude, point.time
+                )
             else:
                 return None
 
@@ -54,58 +56,74 @@ def get_weather(point: GPXTrackPoint) -> Optional[Dict]:
         return None
 
 
-def get_visual_crossing_weather(api_key: str, 
-                                latitude: float, 
-                                longitude: float, 
-                                time: datetime) -> Dict[str, Union[str, float]]:
+def get_visual_crossing_weather(
+    api_key: str, latitude: float, longitude: float, time: datetime
+) -> Dict[str, Union[str, float]]:
     # All requests to the Timeline Weather API use the following the form:
 
     # https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services
-    # /timeline/[location]/[date1]/[date2]?key=YOUR_API_KEY 
+    # /timeline/[location]/[date1]/[date2]?key=YOUR_API_KEY
 
-    # location (required) – is the address, partial address or latitude,longitude location for 
+    # location (required) – is the address, partial address or
+    # latitude,longitude location for
     # which to retrieve weather data. You can also use US ZIP Codes.
 
-    # date1 (optional) – is the start date for which to retrieve weather data. 
-    # You can also request the information for a specific time for a single date by 
-    # including time into the date1 field using the format yyyy-MM-ddTHH:mm:ss. 
-    # For example 2020-10-19T13:00:00.
+    # date1 (optional) – is the start date for which to retrieve weather data.
+    # You can also request the information for a specific time for a single
+    # date by including time into the date1 field using the format
+    # yyyy-MM-ddTHH:mm:ss. For example 2020-10-19T13:00:00.
 
-    # The results are returned in the ‘currentConditions’ field and are truncated to the 
-    # hour requested (i.e. 2020-10-19T13:59:00 will return data at 2020-10-19T13:00:00).
-    
-    # first, round datetime to nearest hour by truncating, and then adding an hour if
-    # the "real" time's number of minutes is 30 or more (we do this since the API only truncates)
-    trunc_time = (time.replace(second=0, microsecond=0, minute=0, hour=time.hour) + 
-        timedelta(hours=time.minute//30))
-    appLog.debug(f'VC_weather: truncated time {time} ({time.timestamp()}) to '
-                 f'{trunc_time} ({trunc_time.timestamp()})')
+    # The results are returned in the ‘currentConditions’ field and are
+    # truncated to the hour requested (i.e. 2020-10-19T13:59:00 will return
+    # data at 2020-10-19T13:00:00).
 
-    base_url = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services'
-    url = f"{base_url}/timeline/{latitude},{longitude}/{int(trunc_time.timestamp())}?key={api_key}"
+    # first, round datetime to nearest hour by truncating, and then adding an
+    # hour if the "real" time's number of minutes is 30 or more (we do this
+    # since the API only truncates)
+    trunc_time = time.replace(
+        second=0, microsecond=0, minute=0, hour=time.hour
+    ) + timedelta(hours=time.minute // 30)
+    appLog.debug(
+        f'VC_weather: truncated time {time} ({time.timestamp()}) to '
+        f'{trunc_time} ({trunc_time.timestamp()})'
+    )
+
+    base_url = (
+        'https://weather.visualcrossing.com/'
+        + 'VisualCrossingWebServices/rest/services'
+    )
+    url = (
+        f"{base_url}/timeline/{latitude},{longitude}"
+        f"/{int(trunc_time.timestamp())}?key={api_key}"
+    )
     params = {
-        "unitGroup": "metric", 
-        "contentType": "json", 
-        "elements": "datetime,datetimeEpoch,temp,humidity,windspeed,winddir,conditions,description,icon",
-        "include": "current"
+        "unitGroup": "metric",
+        "contentType": "json",
+        "elements": (
+            "datetime,datetimeEpoch,temp,humidity,windspeed,"
+            "winddir,conditions,description,icon"
+        ),
+        "include": "current",
     }
-    appLog.debug(f'VC_weather: getting weather from {url}'.replace(api_key, '*****'))
+    appLog.debug(
+        f'VC_weather: getting weather from {url}'.replace(api_key, '*****')
+    )
     r = requests.get(url, params=params)
     r.raise_for_status()
     res = r.json()
     weather = res['currentConditions']
     # FitTrackee expects the following units:
-    #   temp: Celsius, 
+    #   temp: Celsius,
     #   humidity: in fraction (rather than percent)
     #   windSpeed: m/s
     #   windBearing: direction wind is from in degrees (0 is north)
     # VC provides humidity in percent, wind in km/h
-    data =  {
+    data = {
         'summary': weather['conditions'],
         'icon': f"vc-{weather['icon']}",
         'temperature': weather['temp'],
         'humidity': weather['humidity'] / 100,
-        'wind': weather['windspeed'] * 1000 / (60 * 60), # km/h to m/s
+        'wind': weather['windspeed'] * 1000 / (60 * 60),  # km/h to m/s
         'windBearing': weather['winddir'],
     }
     return data
