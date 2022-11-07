@@ -94,8 +94,8 @@
     "SUCCESSFUL_UPDATE": "Your account has been updated successfully.",
     "UNITS": {
       "LABEL": "Units for distance",
-      "IMPERIAL": "Imperial system (ft, mi, °F)",
-      "METRIC": "Metric system (m, km, °C)"
+      "IMPERIAL": "Imperial system (ft, mi, mph, °F)",
+      "METRIC": "Metric system (m, km, m/s, °C)"
     },
     "TIMEZONE": "Timezone"
   },

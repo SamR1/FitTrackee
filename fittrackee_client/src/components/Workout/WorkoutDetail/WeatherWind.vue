@@ -1,13 +1,8 @@
 <template>
   <div class="wind">
-    <Distance
-      :distance="weather.wind"
-      unitFrom="m"
-      :digits="1"
-      :displayUnit="false"
-      :useImperialUnits="useImperialUnits"
-    />
-    {{ useImperialUnits ? 'ft' : 'm' }}/s
+    {{ useImperialUnits ? 
+       convert_mps_to_mph(Number(weather.wind)).toFixed(1) + ' mph' : 
+       Number(weather.wind).toFixed(1) + " m/s" }}
     <div class="wind-bearing">
       <i
         v-if="weather.windBearing"
@@ -44,6 +39,10 @@
         windBearing
       )}`
     )
+  }
+
+  function convert_mps_to_mph(windSpeed: number): number {
+    return windSpeed * 2.2369363
   }
 </script>
 
