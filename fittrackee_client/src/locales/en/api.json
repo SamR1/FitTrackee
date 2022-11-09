@@ -1,6 +1,7 @@
 {
   "ERROR": {
     "UNKNOWN": "Error. Please try again or contact the administrator.",
+    "at least one file in zip archive exceeds size limit, please check the archive": "At least one file in zip archive exceeds size limit, please check the archive.",
     "email: valid email must be provided": "Email: valid email must be provided.",
     "error during gpx processing": "Error during gpx processing.",
     "error during gpx file parsing": "Error during gpx file parsing.",
@@ -18,6 +19,7 @@
     "new email must be different than curent email": "The new email must be different than curent email",
     "no file part": "No file provided.",
     "no selected file": "No selected file.",
+    "the number of files in the archive exceeds the limit": "The number of files in the archive exceeds the limit.",
     "password: password and password confirmation do not match": "Password: password and password confirmation don't match.",
     "provide a valid auth token": "Provide a valid auth token.",
     "sorry, that username is already taken": "Sorry, that username is already taken.",

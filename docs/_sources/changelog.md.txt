@@ -1,5 +1,47 @@
 # Change log
 
+## Version 0.7.6 (2022/11/09)
+
+### Translations
+
+* [3c8d9c2](https://github.com/SamR1/FitTrackee/commit/3c8d9c262358958346125dd286f09ed9881fda4b) - fix api locale file (remove trailing comma) 
+
+### Misc
+
+* dev dependencies update
+
+
+## Version 0.7.5 (2022/11/09)
+
+### Bugs Fixed
+
+* [#264](https://github.com/SamR1/FitTrackee/issues/264) - UI has white and gray background
+
+### Translations
+
+* [#266](https://github.com/SamR1/FitTrackee/issues/266) - Translations update from Hosted Weblate (German, thanks to @qwerty287)
+
+
+## Version 0.7.4 (2022/11/05)
+
+### Bugs Fixed
+
+* [#260](https://github.com/SamR1/FitTrackee/issues/260) - Files size is not checked in zip archive
+* [#261](https://github.com/SamR1/FitTrackee/issues/261) - The API should return an error when the number of files in an archive exceeds the limit
+
+Note: archive import still needs some improvements (see [#89](https://github.com/SamR1/FitTrackee/issues/89))
+
+### Translations
+
+* [b1536fc](https://github.com/SamR1/FitTrackee/pull/262/commits/b1536fc637649c4c32a88af6d96c131f05bc1742) - fix french translations in administration 
+
+### Documentation
+
+* [#257](https://github.com/SamR1/FitTrackee/issues/257) - Add client_max_body_size note to example nginx config 
+
+Thanks to @jat255 
+
+
 ## Version 0.7.3 (2022/11/01)
 
 ### Features and enhancements

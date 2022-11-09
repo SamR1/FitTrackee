@@ -1112,7 +1112,7 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
             data = self.assert_500(response, 'error during gpx processing')
             assert 'data' not in data
 
-    def test_it_imports_only_max_number_of_files(
+    def test_it_returns_400_when_files_in_archive_exceed_limit(
         self,
         app_with_max_workouts: Flask,
         user_1: User,
@@ -1127,7 +1127,7 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
                 app_with_max_workouts, user_1.email
             )
 
-            client.post(
+            response = client.post(
                 '/api/workouts',
                 data=dict(
                     file=(zip_file, 'gpx_test.zip'), data='{"sport_id": 1}'
@@ -1138,12 +1138,11 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
                 ),
             )
 
-            response = client.get(
-                '/api/workouts',
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+            self.assert_400(
+                response,
+                'the number of files in the archive exceeds the limit',
+                'fail',
             )
-            data = json.loads(response.data.decode())
-            assert len(data['data']['workouts']) == 2
 
     def test_it_returns_error_if_archive_size_exceeds_limit(
         self,
@@ -1175,6 +1174,40 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
                 response,
                 'Error during workout upload, '
                 'file size (2.5KB) exceeds 1.0KB.',
+            )
+            assert 'data' not in data
+
+    def test_it_returns_error_if_a_file_from_archive_size_exceeds_limit(
+        self,
+        app_with_max_file_size: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+    ) -> None:
+        file_path = os.path.join(
+            app_with_max_file_size.root_path, 'tests/files/gpx_test.zip'
+        )
+        # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
+        with open(file_path, 'rb') as zip_file:
+            client, auth_token = self.get_test_client_and_auth_token(
+                app_with_max_file_size, user_1.email
+            )
+
+            response = client.post(
+                '/api/workouts',
+                data=dict(
+                    file=(zip_file, 'gpx_test.zip'), data='{"sport_id": 1}'
+                ),
+                headers=dict(
+                    content_type='multipart/form-data',
+                    Authorization=f'Bearer {auth_token}',
+                ),
+            )
+
+            data = self.assert_400(
+                response,
+                'at least one file in zip archive exceeds size limit, '
+                'please check the archive',
+                'fail',
             )
             assert 'data' not in data
 

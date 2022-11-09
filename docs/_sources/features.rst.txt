@@ -105,9 +105,9 @@ Administration
   The following parameters can be set:
 
   - active users limit. If 0, registration is enabled (no limit defined)
-  - maximum size of uploaded files
+  - maximum size of gpx file (individually uploaded or in a zip archive) (*changed in 0.7.4*)
   - maximum size of zip archive
-  - maximum number of files in the zip archive. If an archive contains more files, only the configured number of files is processed, without raising errors.
+  - maximum number of files in the zip archive (*changed in 0.7.4*)
   - administrator email for contact (*new in 0.6.0*)
 
   .. warning::
