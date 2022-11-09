@@ -1,5 +1,5 @@
 <template>
-  <div id="profile" class="container view" v-if="authUser.username">
+  <div id="profile" class="view" v-if="authUser.username">
     <router-view :user="authUser"></router-view>
     <div id="bottom" />
   </div>
@@ -24,6 +24,7 @@
   #profile {
     display: flex;
     flex-direction: column;
+    padding: 0 $default-padding;
 
     ::v-deep(.profile-form) {
       display: flex;
