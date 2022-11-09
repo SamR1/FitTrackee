@@ -1,5 +1,16 @@
 # Change log
 
+## Version 0.7.6 (2022/11/09)
+
+### Translations
+
+* [3c8d9c2](https://github.com/SamR1/FitTrackee/commit/3c8d9c262358958346125dd286f09ed9881fda4b) - fix api locale file (remove trailing comma) 
+
+### Misc
+
+* dev dependencies update
+
+
 ## Version 0.7.5 (2022/11/09)
 
 ### Bugs Fixed
