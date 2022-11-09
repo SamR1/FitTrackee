@@ -30,7 +30,6 @@
 
   #loginOrRegister {
     display: flex;
-    height: 100%;
 
     .container {
       display: flex;
