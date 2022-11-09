@@ -18,7 +18,7 @@ from fittrackee.users.models import User
 class CustomResourceProtector(ResourceProtector):
     def __call__(
         self,
-        scopes: Union[str, List] = None,
+        scopes: Union[str, List, None] = None,
         as_admin: bool = False,
     ) -> Callable:
         def wrapper(f: Callable) -> Callable:
