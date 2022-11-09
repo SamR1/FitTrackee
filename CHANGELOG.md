@@ -1,5 +1,16 @@
 # Change log
 
+## Version 0.7.5 (2022/11/09)
+
+### Bugs Fixed
+
+* [#264](https://github.com/SamR1/FitTrackee/issues/264) - UI has white and gray background
+
+### Translations
+
+* [#266](https://github.com/SamR1/FitTrackee/issues/266) - Translations update from Hosted Weblate (German, thanks to @qwerty287)
+
+
 ## Version 0.7.4 (2022/11/05)
 
 ### Bugs Fixed
