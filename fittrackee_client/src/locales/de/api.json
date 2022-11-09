@@ -1,6 +1,7 @@
 {
     "ERROR": {
         "UNKNOWN": "Fehler. Bitte versuche es erneut oder kontaktiere den Administrator.",
+        "at least one file in zip archive exceeds size limit, please check the archive": "Mindestens eine Datei im ZIP-Archiv überschreitet das Größenlimit, bitte überprüfe das Archiv.",
         "email: valid email must be provided": "E-Mail: Eine gültige E-Mail muss angegeben werden.",
         "error during gpx processing": "Fehler bei der GPX-Verarbeitung.",
         "error during gpx file parsing": "Fehler beim Einlesen der GPX-Datei",
@@ -18,6 +19,7 @@
         "new email must be different than curent email": "Die neue E-Mail muss sich von der aktuellen E-Mail unterscheiden",
         "no file part": "Keine Datei angegeben.",
         "no selected file": "Keine Datei ausgewählt.",
+        "the number of files in the archive exceeds the limit": "Die Anzahl der Dateien im Archiv überschreitet die Begrenzung.",
         "password: password and password confirmation do not match": "Passwort: Passwort und Passwortbestätigung stimmen nicht überein.",
         "provide a valid auth token": "Gebe ein gültiges Authentifizierungstoken an.",
         "sorry, that username is already taken": "Es tut mir leid, der Benutzername ist schon vergeben.",
@@ -27,7 +29,7 @@
         "user does not exist": "Der Nutzer existiert nicht.",
         "valid email must be provided for admin contact": "Um den Administrator zu kontaktieren, muss eine gültige E-Mail-Adresse angegeben werden",
         "you can not delete your account, no other user has admin rights": "Du kannst Dein Konto nicht löschen, da kein anderer Nutzer hat Administratorrechte besitzt.",
-        "you do not have permissions": "Du hast keine Berechtigung."
+        "you do not have permissions": "Du hast keine Berechtigung.",
     },
     "PAGINATION": {
         "PREVIOUS": "Vorhergehende",
