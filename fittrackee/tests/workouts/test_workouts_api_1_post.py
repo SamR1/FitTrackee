@@ -446,12 +446,37 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert len(data['data']['workouts']) == 1
         assert_workout_data_with_gpx(data)
 
+    def test_it_returns_400_when_quotes_are_not_escaped_in_notes(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data='{{"sport_id": 1, "notes": "test "workout""}}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        self.assert_400(response)
+
     @pytest.mark.parametrize(
         'input_description,input_notes',
         [
             ('empty notes', ''),
             ('short notes', 'test workout'),
-            ('notes with special characters', 'test \nworkout'),
+            ('notes with special characters', "test \n'workout'"),
         ],
     )
     def test_it_adds_a_workout_with_gpx_notes(

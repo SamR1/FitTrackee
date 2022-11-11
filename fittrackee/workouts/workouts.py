@@ -988,7 +988,11 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     if error_response:
         return error_response
 
-    workout_data = json.loads(request.form['data'], strict=False)
+    try:
+        workout_data = json.loads(request.form['data'], strict=False)
+    except json.decoder.JSONDecodeError:
+        return InvalidPayloadErrorResponse()
+
     if not workout_data or workout_data.get('sport_id') is None:
         return InvalidPayloadErrorResponse()
 
