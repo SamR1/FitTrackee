@@ -3,7 +3,7 @@ import os
 import re
 from datetime import datetime
 from io import BytesIO
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 from unittest.mock import Mock
 
 import pytest
@@ -886,8 +886,46 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
         assert len(data['data']['workouts']) == 1
         assert_workout_data_wo_gpx(data)
 
-    def test_it_returns_400_if_workout_date_is_missing(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    @pytest.mark.parametrize(
+        'description,input_data',
+        [
+            (
+                "'sport_id' is missing",
+                {
+                    "duration": 3600,
+                    "workout_date": '2018-05-15 14:05',
+                    "distance": 10,
+                },
+            ),
+            (
+                "'duration' is missing",
+                {
+                    "sport_id": 1,
+                    "workout_date": '2018-05-15 14:05',
+                    "distance": 10,
+                },
+            ),
+            (
+                "'workout_date' is missing",
+                {"sport_id": 1, "duration": 3600, "distance": 10},
+            ),
+            (
+                "'distance' is missing",
+                {
+                    "sport_id": 1,
+                    "duration": 3600,
+                    "workout_date": '2018-05-15 14:05',
+                },
+            ),
+        ],
+    )
+    def test_it_returns_400_if_key_is_missing(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        description: str,
+        input_data: Dict,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -896,13 +934,13 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
         response = client.post(
             '/api/workouts/no_gpx',
             content_type='application/json',
-            data=json.dumps(dict(sport_id=1, duration=3600, distance=10)),
+            data=json.dumps(input_data),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         self.assert_400(response)
 
-    def test_it_returns_500_if_workout_format_is_invalid(
+    def test_it_returns_500_if_workout_date_format_is_invalid(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -925,12 +963,13 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
 
         self.assert_500(response, 'Error during workout save.', status='fail')
 
-    def test_it_adds_workout_with_zero_value(
+    @pytest.mark.parametrize('input_distance', [0, '', None])
+    def test_it_returns_400_when_distance_is_invalid(
         self,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        sport_2_running: Sport,
+        input_distance: Any,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -942,41 +981,43 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
             data=json.dumps(
                 dict(
                     sport_id=1,
-                    duration=0,
-                    workout_date='2018-05-14 14:05',
-                    distance=0,
-                    title='Workout test',
+                    duration=3600,
+                    workout_date='2018-05-15 14:05',
+                    distance=input_distance,
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert response.status_code == 201
-        assert 'created' in data['status']
-        assert len(data['data']['workouts']) == 1
-        assert 'creation_date' in data['data']['workouts'][0]
-        assert (
-            data['data']['workouts'][0]['workout_date']
-            == 'Mon, 14 May 2018 14:05:00 GMT'
-        )
-        assert data['data']['workouts'][0]['user'] == 'test'
-        assert data['data']['workouts'][0]['sport_id'] == 1
-        assert data['data']['workouts'][0]['duration'] is None
-        assert data['data']['workouts'][0]['title'] == 'Workout test'
-        assert data['data']['workouts'][0]['ascent'] is None
-        assert data['data']['workouts'][0]['ave_speed'] is None
-        assert data['data']['workouts'][0]['descent'] is None
-        assert data['data']['workouts'][0]['distance'] is None
-        assert data['data']['workouts'][0]['max_alt'] is None
-        assert data['data']['workouts'][0]['max_speed'] is None
-        assert data['data']['workouts'][0]['min_alt'] is None
-        assert data['data']['workouts'][0]['moving'] is None
-        assert data['data']['workouts'][0]['pauses'] is None
-        assert data['data']['workouts'][0]['with_gpx'] is False
+        self.assert_400(response)
 
-        assert len(data['data']['workouts'][0]['segments']) == 0
-        assert len(data['data']['workouts'][0]['records']) == 0
+    @pytest.mark.parametrize('input_duration', [0, '', None])
+    def test_it_returns_400_when_duration_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        input_duration: Any,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=input_duration,
+                    workout_date='2018-05-15 14:05',
+                    distance=10,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response)
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
