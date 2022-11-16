@@ -4,7 +4,9 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 import gpxpy.gpx
 
 from ..exceptions import WorkoutGPXException
-from .weather import get_weather
+from .weather import WeatherService
+
+weather_service = WeatherService()
 
 
 def open_gpx_file(gpx_file: str) -> Optional[gpxpy.gpx.GPX]:
@@ -99,7 +101,7 @@ def get_gpx_info(
                 if start is None:
                     start = point.time
                     if point.time and update_weather_data:
-                        weather_data.append(get_weather(point))
+                        weather_data.append(weather_service.get_weather(point))
 
                 # if a previous segment exists, calculate stopped time between
                 # the two segments
@@ -114,7 +116,7 @@ def get_gpx_info(
 
                 # last gpx point => get weather
                 if segment_idx == (segments_nb - 1) and update_weather_data:
-                    weather_data.append(get_weather(point))
+                    weather_data.append(weather_service.get_weather(point))
 
             if update_map_data:
                 map_data.append([point.longitude, point.latitude])
