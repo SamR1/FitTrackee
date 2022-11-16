@@ -988,7 +988,11 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     if error_response:
         return error_response
 
-    workout_data = json.loads(request.form['data'], strict=False)
+    try:
+        workout_data = json.loads(request.form['data'], strict=False)
+    except json.decoder.JSONDecodeError:
+        return InvalidPayloadErrorResponse()
+
     if not workout_data or workout_data.get('sport_id') is None:
         return InvalidPayloadErrorResponse()
 
@@ -1149,10 +1153,10 @@ def post_workout_no_gpx(
     workout_data = request.get_json()
     if (
         not workout_data
-        or workout_data.get('sport_id') is None
-        or workout_data.get('duration') is None
-        or workout_data.get('distance') is None
-        or workout_data.get('workout_date') is None
+        or not workout_data.get('sport_id')
+        or not workout_data.get('duration')
+        or not workout_data.get('distance')
+        or not workout_data.get('workout_date')
     ):
         return InvalidPayloadErrorResponse()
 

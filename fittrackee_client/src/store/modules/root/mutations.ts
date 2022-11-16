@@ -11,7 +11,7 @@ export const mutations: MutationTree<IRootState> & TRootMutations = {
   },
   [ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES](
     state: IRootState,
-    errorMessages: string
+    errorMessages: string | string[]
   ) {
     state.errorMessages = errorMessages
   },
