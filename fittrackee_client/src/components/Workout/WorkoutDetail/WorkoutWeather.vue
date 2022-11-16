@@ -58,14 +58,20 @@
             />
           </td>
           <td>
-            {{ useImperialUnits ?
-                convertCelsiusToFahrenheit(Number(workoutObject.weatherStart.temperature)).toFixed(1) + " °F" :
-                Number(workoutObject.weatherStart.temperature).toFixed(1) + " °C"}}
+            {{
+              getTemperature(
+                workoutObject.weatherStart.temperature,
+                useImperialUnits
+              )
+            }}
           </td>
           <td>
-            {{ useImperialUnits ?
-                convertCelsiusToFahrenheit(Number(workoutObject.weatherEnd.temperature)).toFixed(1) + " °F" :
-                Number(workoutObject.weatherEnd.temperature).toFixed(1) + " °C"}}
+            {{
+              getTemperature(
+                workoutObject.weatherEnd.temperature,
+                useImperialUnits
+              )
+            }}
           </td>
         </tr>
         <tr>
@@ -116,6 +122,7 @@
 
   import WeatherWind from '@/components/Workout/WorkoutDetail/WeatherWind.vue'
   import { IWorkoutObject } from '@/types/workouts'
+  import { getTemperature } from '@/utils/units'
 
   interface Props {
     workoutObject: IWorkoutObject
@@ -124,10 +131,6 @@
   const props = defineProps<Props>()
 
   const { useImperialUnits, workoutObject } = toRefs(props)
-
-  function convertCelsiusToFahrenheit(celsius_temp: number): number {
-    return celsius_temp * 1.8 + 32
-  }
 </script>
 
 <style lang="scss" scoped>

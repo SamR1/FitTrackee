@@ -1,8 +1,6 @@
 <template>
   <div class="wind">
-    {{ useImperialUnits ? 
-       convert_mps_to_mph(Number(weather.wind)).toFixed(1) + ' mph' : 
-       Number(weather.wind).toFixed(1) + " m/s" }}
+    {{ getWindSpeed(weather.wind, useImperialUnits) }}
     <div class="wind-bearing">
       <i
         v-if="weather.windBearing"
@@ -22,6 +20,7 @@
   import { useI18n } from 'vue-i18n'
 
   import { IWeather } from '@/types/workouts'
+  import { getWindSpeed } from '@/utils/units'
   import { convertDegreeToDirection } from '@/utils/weather'
 
   interface Props {
@@ -39,10 +38,6 @@
         windBearing
       )}`
     )
-  }
-
-  function convert_mps_to_mph(windSpeed: number): number {
-    return windSpeed * 2.2369363
   }
 </script>
 
