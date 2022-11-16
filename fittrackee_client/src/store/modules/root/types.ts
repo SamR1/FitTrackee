@@ -60,7 +60,7 @@ export type TRootMutations<S = IRootState> = {
   [ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES](state: S): void
   [ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES](
     state: S,
-    errorMessages: string
+    errorMessages: string | string[]
   ): void
   [ROOT_STORE.MUTATIONS.UPDATE_APPLICATION_CONFIG](
     state: S,
