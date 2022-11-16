@@ -235,7 +235,7 @@ test-python:
 	$(PYTEST) fittrackee --cov-config .coveragerc --cov=fittrackee --cov-report term-missing $(PYTEST_ARGS)
 
 test-client:
-	cd fittrackee_client && $(NPM) test:unit
+	cd fittrackee_client && $(NPM) test:unit $(MOCHA_ARGS)
 
 type-check:
 	echo 'Running mypy...'
