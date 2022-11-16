@@ -16,6 +16,8 @@
     "FROM": "à partir de",
     "GPX_FILE": "fichier .gpx",
     "HIDE_FILTERS": "masquer les filtres",
+    "INVALID_DISTANCE": "La distance doit être supérieure à 0",
+    "INVALID_DURATION": "La durée doit être supérieure à 0 secondes",
     "LATEST_WORKOUTS": "Séances récentes",
     "LOAD_MORE_WORKOUT": "Charger les séances suivantes",
     "MAX_ALTITUDE": "altitude max",
