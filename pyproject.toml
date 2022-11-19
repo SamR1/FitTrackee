@@ -59,6 +59,7 @@ pytest-flake8 = "^1.1"
 pytest-isort = "^3.1"
 pytest-runner = "^6.0"
 pytest-selenium = "^2.0.1"
+pytest-xdist = {extras = ["psutil"], version = "^3.0.2"}
 recommonmark = "^0.7"
 sphinx = "^5.1"
 sphinx-bootstrap-theme = "^0.8.1"

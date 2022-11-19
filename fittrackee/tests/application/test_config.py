@@ -41,7 +41,11 @@ class TestTestingConfig:
         app.config.from_object('fittrackee.config.TestingConfig')
 
         assert app.config['SQLALCHEMY_DATABASE_URI'] == os.environ.get(
-            'DATABASE_TEST_URL'
+            'DATABASE_TEST_URL', ''
+        ) + (
+            f"_{os.getenv('PYTEST_XDIST_WORKER')}"
+            if os.getenv('PYTEST_XDIST_WORKER')
+            else ''
         )
 
     def test_it_does_not_preserve_context_on_exception(
