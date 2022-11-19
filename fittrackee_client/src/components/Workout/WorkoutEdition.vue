@@ -135,6 +135,7 @@
                         id="workout-duration-hour"
                         name="workout-duration-hour"
                         class="workout-duration"
+                        :class="{ errored: isDurationInvalid() }"
                         type="text"
                         placeholder="HH"
                         minlength="1"
@@ -150,6 +151,7 @@
                         id="workout-duration-minutes"
                         name="workout-duration-minutes"
                         class="workout-duration"
+                        :class="{ errored: isDurationInvalid() }"
                         type="text"
                         pattern="^([0-5][0-9])$"
                         minlength="2"
@@ -165,6 +167,7 @@
                         id="workout-duration-seconds"
                         name="workout-duration-seconds"
                         class="workout-duration"
+                        :class="{ errored: isDurationInvalid() }"
                         type="text"
                         pattern="^([0-5][0-9])$"
                         minlength="2"
@@ -185,6 +188,7 @@
                     }}):
                   </label>
                   <input
+                    :class="{ errored: isDistanceInvalid() }"
                     name="workout-distance"
                     type="number"
                     min="0"
@@ -261,6 +265,7 @@
 <script setup lang="ts">
   import {
     ComputedRef,
+    Ref,
     computed,
     reactive,
     ref,
@@ -346,6 +351,7 @@
   )
   let gpxFile: File | null = null
   const formErrors = ref(false)
+  const payloadErrorMessages: Ref<string[]> = ref([])
   const mapPrivacyLevels = computed(() =>
     getMapVisibilityLevels(workoutForm.workoutVisibility)
   )
@@ -392,15 +398,28 @@
       workoutForm.workoutDurationSeconds = duration[2]
     }
   }
+  function isDistanceInvalid() {
+    return payloadErrorMessages.value.includes('workouts.INVALID_DISTANCE')
+  }
+  function isDurationInvalid() {
+    return payloadErrorMessages.value.includes('workouts.INVALID_DURATION')
+  }
   function formatPayload(payload: IWorkoutForm) {
+    payloadErrorMessages.value = []
     payload.title = workoutForm.title
-    payload.distance = authUser.value.imperial_units
-      ? convertDistance(+workoutForm.workoutDistance, 'mi', 'km', 3)
-      : +workoutForm.workoutDistance
     payload.duration =
       +workoutForm.workoutDurationHour * 3600 +
       +workoutForm.workoutDurationMinutes * 60 +
       +workoutForm.workoutDurationSeconds
+    if (payload.duration <= 0) {
+      payloadErrorMessages.value.push('workouts.INVALID_DURATION')
+    }
+    payload.distance = authUser.value.imperial_units
+      ? convertDistance(+workoutForm.workoutDistance, 'mi', 'km', 3)
+      : +workoutForm.workoutDistance
+    if (payload.distance <= 0) {
+      payloadErrorMessages.value.push('workouts.INVALID_DISTANCE')
+    }
     payload.workout_date = `${workoutForm.workoutDate} ${workoutForm.workoutTime}`
     payload.workout_visibility = workoutForm.workoutVisibility
   }
@@ -433,7 +452,17 @@
         store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_WORKOUT, payload)
       } else {
         formatPayload(payload)
-        store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_WORKOUT_WITHOUT_GPX, payload)
+        if (payloadErrorMessages.value.length > 0) {
+          store.commit(
+            ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES,
+            payloadErrorMessages.value
+          )
+        } else {
+          store.dispatch(
+            WORKOUTS_STORE.ACTIONS.ADD_WORKOUT_WITHOUT_GPX,
+            payload
+          )
+        }
       }
     }
   }
@@ -578,6 +607,10 @@
       &.with-margin {
         margin-top: 0;
       }
+    }
+
+    .errored {
+      outline: 2px solid var(--input-error-color);
     }
   }
 </style>

@@ -3,7 +3,13 @@
     <Card>
       <template #title>{{ $t('workouts.NOTES') }}</template>
       <template #content>
-        {{ notes && notes !== '' ? notes : $t('workouts.NO_NOTES') }}
+        <span
+          v-html="
+            notes && notes !== ''
+              ? linkifyAndClean(notes)
+              : $t('workouts.NO_NOTES')
+          "
+        />
       </template>
     </Card>
   </div>
@@ -11,6 +17,8 @@
 
 <script setup lang="ts">
   import { toRefs, withDefaults } from 'vue'
+
+  import { linkifyAndClean } from '@/utils/inputs'
 
   interface Props {
     notes?: string | null

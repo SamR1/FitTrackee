@@ -16,6 +16,8 @@
   "FROM": "from",
   "GPX_FILE": ".gpx file",
   "HIDE_FILTERS": "hide filters",
+  "INVALID_DISTANCE": "The distance must be greater than 0",
+  "INVALID_DURATION": "The duration must be greater than 0 seconds",
   "LATEST_WORKOUTS": "Latest workouts",
   "LOAD_MORE_WORKOUT": "Load more workouts",
   "MAP": "map",
