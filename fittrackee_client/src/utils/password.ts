@@ -19,6 +19,8 @@ export const setZxcvbnOptions = async (language: string) => {
     fr: zxcvbnFrPackage,
     // no package available for norwegian bokmal, fallback on english
     nb: zxcvbnEnPackage,
+    // no package available for dutch (Nederlands), fallback on english
+    nl: zxcvbnEnPackage,
   }
   const zxcvbnPackage = zxcvbnLangPackages[language]
   const options = {
