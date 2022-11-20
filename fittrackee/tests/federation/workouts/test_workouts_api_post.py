@@ -490,3 +490,51 @@ class TestFederationPostWorkoutWithZipArchive(ApiTestCaseMixin):
             send_to_remote_inbox_mock.send.assert_has_calls(
                 calls, any_order=True
             )
+
+    def test_it_calls_sent_to_inbox_for_latest_workouts(
+        self,
+        send_to_remote_inbox_mock: Mock,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user_2: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        generate_follow_request(remote_user_2, user_1)
+        user_1.approves_follow_request_from(remote_user_2)
+        # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
+        file_path = os.path.join(
+            app_with_federation.root_path, 'tests/files/gpx_test.zip'
+        )
+        max_workouts_to_send = 2
+
+        with open(file_path, 'rb') as zip_file:
+            client, auth_token = self.get_test_client_and_auth_token(
+                app_with_federation, user_1.email
+            )
+
+            with patch(
+                'fittrackee.workouts.workouts.MAX_WORKOUTS_TO_SEND',
+                max_workouts_to_send,
+            ):
+                client.post(
+                    '/api/workouts',
+                    data=dict(
+                        file=(zip_file, 'gpx_test.zip'),
+                        data=(
+                            f'{{"sport_id": 1, "map_visibility": '
+                            f'"{PrivacyLevel.PRIVATE.value}", '
+                            f'"workout_visibility": '
+                            f'"{PrivacyLevel.FOLLOWERS_AND_REMOTE.value}"}}'
+                        ),
+                    ),
+                    headers=dict(
+                        content_type='multipart/form-data',
+                        Authorization=f'Bearer {auth_token}',
+                    ),
+                )
+
+            assert (
+                send_to_remote_inbox_mock.send.call_count
+                == max_workouts_to_send
+            )

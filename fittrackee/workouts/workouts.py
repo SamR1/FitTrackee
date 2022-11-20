@@ -49,6 +49,7 @@ from .utils.workouts import (
     edit_workout,
     get_absolute_file_path,
     get_datetime_from_request_args,
+    get_ordered_workouts,
     process_files,
 )
 
@@ -56,6 +57,7 @@ workouts_blueprint = Blueprint('workouts', __name__)
 
 DEFAULT_WORKOUTS_PER_PAGE = 5
 MAX_WORKOUTS_PER_PAGE = 100
+MAX_WORKOUTS_TO_SEND = 5
 
 
 @workouts_blueprint.route('/workouts', methods=['GET'])
@@ -1020,8 +1022,10 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         )
         if len(new_workouts) > 0:
             if current_app.config['federation_enabled']:
-                # TODO: handle massive imports
-                for new_workout in new_workouts:
+                workouts_to_send = get_ordered_workouts(
+                    new_workouts, limit=MAX_WORKOUTS_TO_SEND
+                )
+                for new_workout in workouts_to_send:
                     if new_workout.workout_visibility in (
                         PrivacyLevel.PUBLIC,
                         PrivacyLevel.FOLLOWERS_AND_REMOTE,
