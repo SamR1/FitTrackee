@@ -20,7 +20,11 @@ def get_app_config(
     with_federation: Optional[bool] = False,
 ) -> Optional[AppConfig]:
     if with_config:
-        config = AppConfig()
+        config = AppConfig.query.one_or_none()
+        if not config:
+            config = AppConfig()
+            db.session.add(config)
+            db.session.flush()
         config.federation_enabled = with_federation
         config.gpx_limit_import = 10 if max_workouts is None else max_workouts
         config.max_single_file_size = (
@@ -34,7 +38,6 @@ def get_app_config(
             * 1024
         )
         config.max_users = 100 if max_users is None else max_users
-        db.session.add(config)
         db.session.commit()
         return config
     return None
@@ -65,11 +68,13 @@ def get_app(
             if app_db_config:
                 update_app_config_from_database(app, app_db_config)
             if with_domain:
-                domain = Domain(
-                    name=app.config['AP_DOMAIN'], software_name='fittrackee'
-                )
-                db.session.add(domain)
-                db.session.commit()
+                domain = Domain.query.one_or_none()
+                if not domain:
+                    domain = Domain(
+                        name=app.config['AP_DOMAIN'],
+                        software_name='fittrackee',
+                    )
+                    db.session.add(domain)
             yield app
         except Exception as e:
             print(f'Error with app configuration: {e}')

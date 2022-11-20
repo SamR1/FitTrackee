@@ -232,6 +232,8 @@ test-e2e-client:
 	E2E_ARGS=client $(PYTEST) e2e --driver firefox $(PYTEST_ARGS)
 
 test-python:
+	# for tests parallelization: 4 workers max.
+	# make test-python PYTEST_ARGS="-p no:warnings -n auto --maxprocesses=4"
 	$(PYTEST) fittrackee --cov-config .coveragerc --cov=fittrackee --cov-report term-missing $(PYTEST_ARGS)
 
 test-client:

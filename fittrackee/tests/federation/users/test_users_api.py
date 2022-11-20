@@ -8,12 +8,7 @@ from fittrackee.federation.models import Actor
 from fittrackee.users.models import User
 
 from ...mixins import ApiTestCaseMixin
-from ...utils import (
-    RandomActor,
-    generate_response,
-    jsonify_dict,
-    random_string,
-)
+from ...utils import RandomActor, generate_response, jsonify_dict
 
 
 class TestGetLocalUsers(ApiTestCaseMixin):
@@ -46,7 +41,7 @@ class TestGetLocalUsers(ApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_desc, input_username',
         [
-            ('not existing user', random_string()),
+            ('not existing user', 'not_existing'),
             ('remote user account', '@sam@example.com'),
         ],
     )

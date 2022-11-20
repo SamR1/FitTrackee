@@ -178,15 +178,15 @@ class TestSignatureVerificationInstantiation(SignatureVerificationTestCase):
             (
                 'missing keyId',
                 'headers="(request-target) host date digest",'
-                f'signature="{random_string()}"',
+                'signature="signature"',
             ),
             (
                 'missing headers',
-                f'keyId="{random_string()}", signature="{random_string()}"',
+                'keyId="key_id", signature="signature"',
             ),
             (
                 'missing signature',
-                f'keyId="{random_string()}",'
+                'keyId="key_id",'
                 'headers="(request-target) host date digest"',
             ),
         ],
@@ -340,29 +340,8 @@ class TestGetActorPublicKey(SignatureVerificationTestCase):
 
 
 class TestSignatureDigestVerification(SignatureVerificationTestCase):
-    @pytest.mark.parametrize(
-        'input_description,input_digest',
-        [
-            (
-                'invalid digest',
-                random_string(),
-            ),
-            (
-                'mismatched digest (different data)',
-                generate_digest({"foo": "bar"}),
-            ),
-            (
-                'mismatched digest (different algo)',
-                generate_digest(TEST_ACTIVITY, algorithm='rsa-sha512'),
-            ),
-        ],
-    )
-    def test_verify_raises_error_if_http_digest_is_invalid(
-        self,
-        input_description: str,
-        input_digest: str,
-        app_with_federation: Flask,
-        user_1: User,
+    def assert_http_digest_is_invalid(
+        self, app_with_federation: Flask, input_digest: str
     ) -> None:
         sig_verification = SignatureVerification.get_signature(
             self.get_request_mock(
@@ -380,6 +359,26 @@ class TestSignatureDigestVerification(SignatureVerificationTestCase):
             InvalidSignatureException, match='invalid HTTP digest'
         ):
             sig_verification.verify_digest()
+
+    def test_verify_raises_error_with_invalid_digest(
+        self, app_with_federation: Flask, user_1: User
+    ) -> None:
+        digest = random_string()
+        self.assert_http_digest_is_invalid(app_with_federation, digest)
+
+    def test_verify_raises_error_with_mismatched_digest(
+        self, app_with_federation: Flask, user_1: User
+    ) -> None:
+        # different data
+        digest = generate_digest({"foo": "bar"})
+        self.assert_http_digest_is_invalid(app_with_federation, digest)
+
+    def test_verify_raises_error_when_digest_is_generated_with_different_algo(
+        self, app_with_federation: Flask, user_1: User
+    ) -> None:
+        # instead of 'rsa-sha256'
+        digest = generate_digest(TEST_ACTIVITY, algorithm='rsa-sha512')
+        self.assert_http_digest_is_invalid(app_with_federation, digest)
 
     @pytest.mark.parametrize(
         'input_description,input_algorithm',

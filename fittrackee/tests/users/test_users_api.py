@@ -12,7 +12,7 @@ from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin
-from ..utils import jsonify_dict, random_string
+from ..utils import jsonify_dict
 
 
 class TestGetUserAsAdmin(ApiTestCaseMixin):
@@ -1024,7 +1024,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_desc, input_username',
         [
-            ('not existing user', random_string()),
+            ('not existing user', 'not_existing'),
             ('user account format', '@sam@example.com'),
         ],
     )

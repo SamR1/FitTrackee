@@ -71,7 +71,7 @@ class TestGetOrCreateDomainFromActorUrl:
         'input_desc,input_url',
         [
             ('empty string', ''),
-            ('random string', random_string()),
+            ('random string', 'invalid_url'),
         ],
     )
     def test_it_raises_exception_when_url_is_invalid(
