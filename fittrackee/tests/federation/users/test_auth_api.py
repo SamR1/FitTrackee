@@ -1,7 +1,10 @@
 import json
 
+import pytest
 from flask import Flask
 
+from fittrackee.privacy_levels import PrivacyLevel
+from fittrackee.tests.mixins import ApiTestCaseMixin
 from fittrackee.users.models import User
 
 
@@ -58,3 +61,49 @@ class TestUserRegistration:
             User.is_remote == False,  # noqa
         ).first()
         assert created_user.id != remote_user.id
+
+
+class TestUserPreferencesUpdate(ApiTestCaseMixin):
+    @pytest.mark.parametrize(
+        'input_map_visibility,input_workout_visibility',
+        [
+            (PrivacyLevel.FOLLOWERS_AND_REMOTE, PrivacyLevel.PUBLIC),
+            (PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS_AND_REMOTE),
+        ],
+    )
+    def test_it_updates_user_preferences_with_remote_level(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        input_map_visibility: PrivacyLevel,
+        input_workout_visibility: PrivacyLevel,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/profile/edit/preferences',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    timezone='America/New_York',
+                    weekm=True,
+                    language='fr',
+                    imperial_units=True,
+                    display_ascent=True,
+                    date_format='MM/dd/yyyy',
+                    map_visibility=input_map_visibility.value,
+                    workouts_visibility=input_workout_visibility.value,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['data']['map_visibility'] == input_map_visibility.value
+        assert (
+            data['data']['workouts_visibility']
+            == input_workout_visibility.value
+        )

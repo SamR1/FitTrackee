@@ -1492,6 +1492,44 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         )
 
     @pytest.mark.parametrize(
+        'input_map_visibility,input_workout_visibility',
+        [
+            (PrivacyLevel.FOLLOWERS_AND_REMOTE, PrivacyLevel.FOLLOWERS),
+            (PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS_AND_REMOTE),
+        ],
+    )
+    def test_it_returns_400_when_privacy_level_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        input_map_visibility: PrivacyLevel,
+        input_workout_visibility: PrivacyLevel,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/profile/edit/preferences',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    timezone='America/New_York',
+                    weekm=True,
+                    language='fr',
+                    imperial_units=True,
+                    display_ascent=True,
+                    date_format='MM/dd/yyyy',
+                    map_visibility=input_map_visibility.value,
+                    workouts_visibility=input_workout_visibility.value,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response)
+
+    @pytest.mark.parametrize(
         'client_scope, can_access',
         [
             ('application:write', False),

@@ -935,6 +935,12 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     map_visibility = post_data.get('map_visibility')
     workouts_visibility = post_data.get('workouts_visibility')
 
+    if not current_app.config['federation_enabled'] and (
+        map_visibility == PrivacyLevel.FOLLOWERS_AND_REMOTE.value
+        or workouts_visibility == PrivacyLevel.FOLLOWERS_AND_REMOTE.value
+    ):
+        return InvalidPayloadErrorResponse()
+
     try:
         auth_user.date_format = date_format
         auth_user.display_ascent = display_ascent

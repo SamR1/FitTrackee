@@ -24,7 +24,8 @@ branch_labels = None
 depends_on = None
 
 privacy_levels = ENUM(
-    'PUBLIC', 'FOLLOWERS', 'PRIVATE', name='privacy_levels'
+    'PUBLIC', 'FOLLOWERS_AND_REMOTE', 'FOLLOWERS', 'PRIVATE',
+    name='privacy_levels'
 )
 
 

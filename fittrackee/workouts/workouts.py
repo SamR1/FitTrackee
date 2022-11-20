@@ -997,6 +997,14 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     if not workout_data or workout_data.get('sport_id') is None:
         return InvalidPayloadErrorResponse()
 
+    if not current_app.config['federation_enabled'] and (
+        workout_data.get('workout_visibility')
+        == PrivacyLevel.FOLLOWERS_AND_REMOTE.value
+        or workout_data.get('map_visibility')
+        == PrivacyLevel.FOLLOWERS_AND_REMOTE.value
+    ):
+        return InvalidPayloadErrorResponse()
+
     workout_file = request.files['file']
     upload_dir = os.path.join(
         current_app.config['UPLOAD_FOLDER'], 'workouts', str(auth_user.id)
@@ -1162,14 +1170,23 @@ def post_workout_no_gpx(
     ):
         return InvalidPayloadErrorResponse()
 
+    if (
+        not current_app.config['federation_enabled']
+        and workout_data.get('workout_visibility')
+        == PrivacyLevel.FOLLOWERS_AND_REMOTE
+    ):
+        return InvalidPayloadErrorResponse()
+
     try:
         new_workout = create_workout(auth_user, workout_data)
         db.session.add(new_workout)
         db.session.commit()
 
-        if (
-            current_app.config['federation_enabled']
-            and new_workout.workout_visibility != PrivacyLevel.PRIVATE
+        if current_app.config[
+            'federation_enabled'
+        ] and new_workout.workout_visibility in (
+            PrivacyLevel.PUBLIC,
+            PrivacyLevel.FOLLOWERS_AND_REMOTE,
         ):
             sender_id = new_workout.user.actor.id
             workout_activity, note_activity = new_workout.get_activities()

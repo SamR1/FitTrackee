@@ -670,6 +670,49 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, BaseTestMixin):
             == input_workout_visibility.value
         )
 
+    @pytest.mark.parametrize(
+        'input_map_visibility,input_workout_visibility',
+        [
+            (PrivacyLevel.FOLLOWERS_AND_REMOTE, PrivacyLevel.FOLLOWERS),
+            (PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS_AND_REMOTE),
+        ],
+    )
+    def test_it_returns_400_when_privacy_level_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        input_map_visibility: PrivacyLevel,
+        input_workout_visibility: PrivacyLevel,
+    ) -> None:
+        """
+        when workout visibility is stricter, map visibility is initialised
+        with workout visibility value
+        """
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data=(
+                    f'{{"sport_id": 1, "map_visibility": '
+                    f'"{input_map_visibility.value}", '
+                    f'"workout_visibility": '
+                    f'"{input_workout_visibility.value}"}}'
+                ),
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        self.assert_400(response)
+
     def test_it_calls_configured_tile_server_for_static_map_when_default_static_map_to_false(  # noqa
         self,
         app: Flask,
@@ -1232,11 +1275,8 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
         )
 
     @pytest.mark.parametrize(
-        'input_map_visibility,input_workout_visibility',
-        [
-            (PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC),
-            (PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS),
-        ],
+        'input_workout_visibility',
+        [PrivacyLevel.PUBLIC, PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE],
     )
     def test_workout_is_created_with_provided_privacy_parameters(
         self,
@@ -1244,7 +1284,6 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         gpx_file: str,
-        input_map_visibility: PrivacyLevel,
         input_workout_visibility: PrivacyLevel,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1260,7 +1299,6 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
                     duration=3600,
                     workout_date='2018-05-15 14:05',
                     distance=10,
-                    map_visibility=input_map_visibility.value,
                     workout_visibility=input_workout_visibility.value,
                 )
             ),
@@ -1272,33 +1310,19 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
         assert 'created' in data['status']
         assert len(data['data']['workouts']) == 1
         assert (
-            data['data']['workouts'][0]['map_visibility']
-            == input_map_visibility.value
-        )
-        assert (
             data['data']['workouts'][0]['workout_visibility']
             == input_workout_visibility.value
         )
 
-    @pytest.mark.parametrize(
-        'input_map_visibility,input_workout_visibility',
-        [
-            (PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE),
-            (PrivacyLevel.PUBLIC, PrivacyLevel.FOLLOWERS),
-        ],
-    )
-    def test_workout_is_created_with_valid_privacy_parameters_when_provided(
+    def test_it_returns_400_when_privacy_level_is_invalid(
         self,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         gpx_file: str,
-        input_map_visibility: PrivacyLevel,
-        input_workout_visibility: PrivacyLevel,
     ) -> None:
         """
-        when workout visibility is stricter, map visibility is initialised
-        with workout visibility value
+        'FOLLOWERS_AND_REMOTE' is not available on un-federated instances
         """
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1313,25 +1337,13 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
                     duration=3600,
                     workout_date='2018-05-15 14:05',
                     distance=10,
-                    map_visibility=input_map_visibility.value,
-                    workout_visibility=input_workout_visibility.value,
+                    workout_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE.value,
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        assert response.status_code == 201
-        data = json.loads(response.data.decode())
-        assert 'created' in data['status']
-        assert len(data['data']['workouts']) == 1
-        assert (
-            data['data']['workouts'][0]['map_visibility']
-            == input_workout_visibility.value
-        )
-        assert (
-            data['data']['workouts'][0]['workout_visibility']
-            == input_workout_visibility.value
-        )
+        self.assert_400(response)
 
     @pytest.mark.parametrize(
         'client_scope, can_access',

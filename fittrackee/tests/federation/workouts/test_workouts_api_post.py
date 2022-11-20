@@ -38,6 +38,37 @@ class TestFederationPostWorkoutWithoutGpx(ApiTestCaseMixin):
                     duration=3600,
                     workout_date='2018-05-15 14:05',
                     distance=10,
+                    workout_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE.value,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        send_to_remote_inbox_mock.send.assert_not_called()
+
+    def test_it_does_not_call_sent_to_inbox_if_privacy_is_local_followers_only(
+        self,
+        send_to_remote_inbox_mock: Mock,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        follow_request_from_remote_user_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.approves_follow_request_from(remote_user)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=3600,
+                    workout_date='2018-05-15 14:05',
+                    distance=10,
                     workout_visibility=PrivacyLevel.FOLLOWERS.value,
                 )
             ),
@@ -82,7 +113,7 @@ class TestFederationPostWorkoutWithoutGpx(ApiTestCaseMixin):
     @pytest.mark.parametrize(
         'workout_visibility',
         [
-            PrivacyLevel.FOLLOWERS,
+            PrivacyLevel.FOLLOWERS_AND_REMOTE,
             PrivacyLevel.PUBLIC,
         ],
     )
@@ -129,7 +160,7 @@ class TestFederationPostWorkoutWithoutGpx(ApiTestCaseMixin):
     @pytest.mark.parametrize(
         'workout_visibility',
         [
-            PrivacyLevel.FOLLOWERS,
+            PrivacyLevel.FOLLOWERS_AND_REMOTE,
             PrivacyLevel.PUBLIC,
         ],
     )
