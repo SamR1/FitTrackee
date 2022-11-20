@@ -10,6 +10,12 @@ if os.getenv('APP_SETTINGS') == 'fittrackee.config.TestingConfig':
 else:
     broker = RedisBroker
 
+XDIST_WORKER = (
+    f"_{os.getenv('PYTEST_XDIST_WORKER')}"
+    if os.getenv('PYTEST_XDIST_WORKER')
+    else ''
+)
+
 
 class BaseConfig:
 
@@ -74,7 +80,13 @@ class DevelopmentConfig(BaseConfig):
 class TestingConfig(BaseConfig):
     DEBUG = True
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_TEST_URL')
+    SQLALCHEMY_DATABASE_URI = (
+        os.environ.get('DATABASE_TEST_URL', '') + XDIST_WORKER
+    )
+    UPLOAD_FOLDER = os.path.join(
+        os.getenv('UPLOAD_FOLDER', current_app.root_path),
+        'uploads' + XDIST_WORKER,
+    )
     SECRET_KEY = 'test key'  # nosec
     BCRYPT_LOG_ROUNDS = 4
     TOKEN_EXPIRATION_DAYS = 0

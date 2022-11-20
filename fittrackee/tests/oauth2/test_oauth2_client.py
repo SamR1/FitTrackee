@@ -172,7 +172,7 @@ class TestCreateOAuth2Client:
 
 class TestOAuthCheckScopes:
     @pytest.mark.parametrize(
-        'input_scope', ['', 1, random_string(), [random_string(), 'readwrite']]
+        'input_scope', ['', 1, 'invalid_scope', ['invalid_scope', 'readwrite']]
     )
     def test_it_raises_error_when_scope_is_invalid(
         self, input_scope: Any
@@ -184,11 +184,11 @@ class TestOAuthCheckScopes:
         'input_scope,expected_scope',
         [
             ('profile:read', 'profile:read'),
-            ('profile:read ' + random_string(), 'profile:read'),
+            ('profile:read invalid_scope:read', 'profile:read'),
             ('profile:write', 'profile:write'),
             ('profile:read profile:write', 'profile:read profile:write'),
             (
-                'profile:write profile:read ' + random_string(),
+                'profile:write invalid_scope:read profile:read',
                 'profile:write profile:read',
             ),
         ],
