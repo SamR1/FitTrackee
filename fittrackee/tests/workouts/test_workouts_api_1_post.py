@@ -1393,9 +1393,6 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
     ) -> None:
         # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
         file_path = os.path.join(app.root_path, 'tests/files/gpx_test.zip')
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
         with open(file_path, 'rb') as zip_file:
             client, auth_token = self.get_test_client_and_auth_token(
                 app, user_1.email

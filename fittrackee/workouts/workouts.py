@@ -1019,6 +1019,37 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
             auth_user, workout_data, workout_file, folders
         )
         if len(new_workouts) > 0:
+            if current_app.config['federation_enabled']:
+                # TODO: handle massive imports
+                for new_workout in new_workouts:
+                    if new_workout.workout_visibility in (
+                        PrivacyLevel.PUBLIC,
+                        PrivacyLevel.FOLLOWERS_AND_REMOTE,
+                    ):
+
+                        sender_id = new_workout.user.actor.id
+                        (
+                            workout_activity,
+                            note_activity,
+                        ) = new_workout.get_activities()
+                        recipients = (
+                            new_workout.user.get_followers_shared_inboxes()
+                        )
+
+                        # only workout data are sent (no map data)
+                        if recipients['fittrackee']:
+                            send_to_remote_inbox.send(
+                                sender_id=sender_id,
+                                activity=workout_activity,
+                                recipients=list(recipients['fittrackee']),
+                            )
+                        if recipients['others']:
+                            send_to_remote_inbox.send(
+                                sender_id=sender_id,
+                                activity=note_activity,
+                                recipients=list(recipients['others']),
+                            )
+
             response_object = {
                 'status': 'created',
                 'data': {
