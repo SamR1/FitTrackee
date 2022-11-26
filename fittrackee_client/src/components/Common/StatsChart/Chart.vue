@@ -5,8 +5,8 @@
 </template>
 
 <script lang="ts">
-  import { ChartData, ChartOptions, LayoutItem } from 'chart.js'
-  import { ComputedRef, PropType, computed, defineComponent } from 'vue'
+  import { ChartOptions, LayoutItem } from 'chart.js'
+  import { PropType, computed, defineComponent } from 'vue'
   import { BarChart, useBarChart } from 'vue-chart-3'
   import { useI18n } from 'vue-i18n'
 
@@ -60,7 +60,7 @@
           ? 'm'
           : 'km'
       }
-      const chartData: ComputedRef<ChartData<'bar'>> = computed(() => ({
+      const chartData = computed(() => ({
         labels: props.labels,
         // workaround to avoid dataset modification
         datasets: JSON.parse(JSON.stringify(props.datasets)),
