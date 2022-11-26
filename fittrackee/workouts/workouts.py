@@ -271,7 +271,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 if order == 'asc'
                 else desc(workout_column),
             )
-            .paginate(page, per_page, False)
+            .paginate(page=page, per_page=per_page, error_out=False)
         )
         workouts = workouts_pagination.items
         return {

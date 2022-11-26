@@ -200,7 +200,7 @@ def get_users(auth_user: User) -> Dict:
             User.username.ilike('%' + query + '%') if query else True,
         )
         .order_by(asc(user_column) if order == 'asc' else desc(user_column))
-        .paginate(page, per_page, False)
+        .paginate(page=page, per_page=per_page, error_out=False)
     )
     users = users_pagination.items
     return {
