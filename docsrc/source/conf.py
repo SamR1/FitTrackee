@@ -19,10 +19,6 @@ import sphinx_bootstrap_theme
 sys.path.insert(0, os.path.abspath('../../fittrackee'))
 
 
-def setup(app):
-    app.add_css_file("custom.css")
-
-
 # -- Project information -----------------------------------------------------
 
 project = 'FitTrackee'
@@ -75,6 +71,12 @@ html_theme_options = {
     ],
 }
 
+html_css_files = [
+    'css/fork-awesome.min.css',
+    'css/custom.css',
+]
+
+html_last_updated_fmt = ''
 
 # -- Sources configuration ---------------------------------------------------
 

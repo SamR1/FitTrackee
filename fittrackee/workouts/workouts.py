@@ -956,7 +956,8 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         }
 
     :form file: gpx file (allowed extensions: .gpx, .zip)
-    :form data: sport id and notes (example: ``{"sport_id": 1, "notes": ""}``)
+    :form data: sport id and notes (example: ``{"sport_id": 1, "notes": ""}``).
+                Double quotes in notes must be escaped.
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
