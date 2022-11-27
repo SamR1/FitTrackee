@@ -396,7 +396,7 @@ For instance, copy and update ``.env`` file from ``.env.example`` and source the
 
 .. code-block:: bash
 
-    $ fittrackee_worker --processes 2
+    $ flask worker --processes 2
 
 .. note::
     | To start application and workers with **systemd** service, see `Deployment <installation.html#deployment>`__
