@@ -108,7 +108,7 @@
       },
     },
     scales: {
-      [displayDistance.value ? 'xDistance' : 'xDuration']: {
+      x: {
         grid: {
           drawOnChartArea: false,
         },

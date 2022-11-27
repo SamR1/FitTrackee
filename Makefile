@@ -203,19 +203,24 @@ run-workers:
 	$(FLASK) worker --processes=$(WORKERS_PROCESSES) >> dramatiq.log  2>&1
 
 serve:
+    # for dev environments
 	$(MAKE) P="serve-client serve-python" make-p
 
 serve-dev:
+    # for dev environments
 	$(MAKE) P="serve-client serve-python-dev" make-p
 
 serve-client:
+    # for dev environments
 	cd fittrackee_client && PORT=3000 $(NPM) serve
 
 serve-python:
+    # for dev environments
 	echo 'Running on http://$(HOST):$(PORT)'
 	$(FLASK) run --with-threads -h $(HOST) -p $(PORT)
 
 serve-python-dev:
+    # for dev environments (
 	echo 'Running on https://$(HOST):$(PORT)'
 	$(FLASK) run --with-threads -h $(HOST) -p $(PORT) --cert=adhoc
 

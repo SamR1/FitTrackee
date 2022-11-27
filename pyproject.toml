@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "0.7.6"
+version = "0.7.7"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0"
@@ -31,8 +31,8 @@ dramatiq = {version = "^1.13", extras = ["redis"]}
 flask = "^2.1"
 flask-bcrypt = "^1.0"
 flask-dramatiq = "^0.6.0"
-flask-limiter = {version = "^2.7", extras = ["redis"]}
-flask-migrate = "^3.1"
+flask-limiter = {version = "^2.8", extras = ["redis"]}
+flask-migrate = "^4.0"
 gpxpy = "=1.5.0"
 gunicorn = "^20.1"
 humanize = "^4.4"
@@ -40,19 +40,18 @@ psycopg2-binary = "^2.9"
 pyjwt = "^2.6"
 python-forecastio = "^1.4"
 pytz = "^2022.6"
-shortuuid = "^1.0.10"
+shortuuid = "^1.0.11"
 staticmap = "^0.5.4"
-sqlalchemy = "=1.4.43"
+sqlalchemy = "=1.4.44"
 pyopenssl = "^22.1"
 pycryptodome = "^3.15"
 ua-parser = "^0.16.1"
-werkzeug = "2.1"  # removal of parse_rule in 2.2 breaks sphinxcontrib-httpdomain autoflask
 
 [tool.poetry.dev-dependencies]
 bandit = "^1.7.4"
 black = "^22.10"
 freezegun = "^1.2"
-mypy = "^0.990"
+mypy = "^0.991"
 pytest = "^7.1"
 pytest-black = "^0.3.12"
 pytest-cov = "^3.0"
@@ -64,7 +63,7 @@ pytest-xdist = {extras = ["psutil"], version = "^3.0.2"}
 recommonmark = "^0.7"
 sphinx = "^5.1"
 sphinx-bootstrap-theme = "^0.8.1"
-sphinxcontrib-httpdomain = "^1.7"
+sphinxcontrib-httpdomain = "^1.8"
 types-freezegun = "^1.1"
 types-pytz = "^2022.6"
 types-requests = "^2.28"
@@ -72,7 +71,7 @@ types-redis = "^4.3"
 
 [tool.poetry.scripts]
 fittrackee = 'fittrackee.__main__:main'
-fittrackee_worker = 'flask_dramatiq:worker'
+fittrackee_worker = 'fittrackee.__main__:worker'  # disabled
 ftcli = 'fittrackee.cli:cli'
 fittrackee_set_admin = 'fittrackee.__main__:set_admin'  # deprecated
 fittrackee_upgrade_db = 'fittrackee.__main__:upgrade_db'  # deprecated

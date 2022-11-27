@@ -92,7 +92,7 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
             User.is_remote == remote,
         )
         .order_by(asc(user_column) if order == 'asc' else desc(user_column))
-        .paginate(page, per_page, False)
+        .paginate(page=page, per_page=per_page, error_out=False)
     )
     users = users_pagination.items
     return {
@@ -1055,7 +1055,7 @@ def get_user_relationships(
 
     paginated_relations = relations_object.order_by(
         FollowRequest.updated_at.desc()
-    ).paginate(page, USERS_PER_PAGE, False)
+    ).paginate(page=page, per_page=USERS_PER_PAGE, error_out=False)
 
     return {
         'status': 'success',

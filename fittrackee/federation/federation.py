@@ -177,7 +177,7 @@ def get_relationships(
     try:
         paginated_relations = relations_object.order_by(
             FollowRequest.updated_at.desc()
-        ).paginate(int(page), USERS_PER_PAGE, False)
+        ).paginate(page=int(page), per_page=USERS_PER_PAGE, error_out=False)
         collection_page = OrderedCollectionPage(url, paginated_relations)
         return collection_page.serialize()
     except ValueError as e:

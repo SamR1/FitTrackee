@@ -127,7 +127,7 @@ def get_follow_requests(auth_user: User) -> Dict:
             if order == 'asc'
             else desc(FollowRequest.created_at)
         )
-        .paginate(page, per_page, False)
+        .paginate(page=page, per_page=per_page, error_out=False)
     )
     follow_requests = follow_requests_pagination.items
     return {

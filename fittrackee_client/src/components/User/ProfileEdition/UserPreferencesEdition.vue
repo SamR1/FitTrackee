@@ -293,5 +293,10 @@
         }
       }
     }
+
+    #language,
+    #date_format {
+      padding: $default-padding * 0.5;
+    }
   }
 </style>

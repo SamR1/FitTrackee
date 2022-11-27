@@ -81,6 +81,14 @@ def upgrade_db() -> None:
         upgrade(directory=BASEDIR + '/migrations')
 
 
+def worker() -> None:
+    raise SystemExit(
+        "Error: this command is disabled, "
+        "it will be removed in a next version.\n"
+        "Please use flask-dramatiq CLI instead ('flask worker')."
+    )
+
+
 def main() -> None:
     options = {'bind': f'{HOST}:{PORT}', 'workers': WORKERS}
     StandaloneApplication(app, options).run()

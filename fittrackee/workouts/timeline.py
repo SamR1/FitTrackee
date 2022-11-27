@@ -38,7 +38,9 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
             .order_by(
                 Workout.workout_date.desc(),
             )
-            .paginate(page, DEFAULT_WORKOUTS_PER_PAGE, False)
+            .paginate(
+                page=page, per_page=DEFAULT_WORKOUTS_PER_PAGE, error_out=False
+            )
         )
         workouts = workouts_pagination.items
         return {

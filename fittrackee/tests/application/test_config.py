@@ -55,13 +55,6 @@ class TestTestingConfig:
             else ''
         )
 
-    def test_it_does_not_preserve_context_on_exception(
-        self, app: Flask
-    ) -> None:
-        app.config.from_object('fittrackee.config.TestingConfig')
-
-        assert not app.config['PRESERVE_CONTEXT_ON_EXCEPTION']
-
     def test_it_returns_application_version(self, app: Flask) -> None:
         app.config.from_object('fittrackee.config.TestingConfig')
 
@@ -87,13 +80,6 @@ class TestProductionConfig:
         assert app.config['SQLALCHEMY_DATABASE_URI'] == os.environ.get(
             'DATABASE_TEST_URL'
         )
-
-    def test_it_does_not_preserve_context_on_exception(
-        self, app: Flask
-    ) -> None:
-        app.config.from_object('fittrackee.config.ProductionConfig')
-
-        assert not app.config['PRESERVE_CONTEXT_ON_EXCEPTION']
 
     def test_it_returns_application_version(self, app: Flask) -> None:
         app.config.from_object('fittrackee.config.ProductionConfig')

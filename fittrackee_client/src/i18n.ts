@@ -6,7 +6,7 @@ import { createI18n, LocaleMessages, VueMessageType } from 'vue-i18n'
  * The loaded `JSON` locale messages is pre-compiled by `@intlify/vue-i18n-loader`, which is integrated into `vue-cli-plugin-i18n`.
  * See: https://github.com/intlify/vue-i18n-loader#rocket-i18n-resource-pre-compilation
  */
-const disabledLanguages = ['nb'] // to remove after norwegian translations release
+const disabledLanguages = ['nb', 'nl'] // to update after translations release
 
 function loadLocaleMessages(): Record<string, LocaleMessages<VueMessageType>> {
   const locales = require.context('./locales', true, /[A-Za-z0-9-_,\s]+\.ts$/i)

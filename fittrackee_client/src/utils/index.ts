@@ -9,6 +9,7 @@ import { ISportsState } from '@/store/modules/sports/types'
 import { IStatisticsState } from '@/store/modules/statistics/types'
 import { IUsersState } from '@/store/modules/users/types'
 import { IWorkoutsState } from '@/store/modules/workouts/types'
+import { IApiErrorMessage } from '@/types/api'
 
 export const getApiUrl = (): string => {
   return process.env.NODE_ENV === 'production'
@@ -33,11 +34,11 @@ export const handleError = (
     return
   }
 
+  const errorInfo: IApiErrorMessage | null =
+    error?.response && error.response.data ? error.response.data : null
+
   // if stored token is blacklisted, disconnect user
-  if (
-    error?.response?.status === 401 &&
-    error.response.data.error === 'invalid_token'
-  ) {
+  if (error?.response?.status === 401 && errorInfo?.error === 'invalid_token') {
     localStorage.removeItem('authToken')
     context.dispatch(AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER)
     return
@@ -48,8 +49,8 @@ export const handleError = (
     : error.response
     ? error.response.status === 413
       ? 'file size is greater than the allowed size'
-      : error.response.data.message
-      ? error.response.data.message
+      : errorInfo?.message
+      ? errorInfo.message
       : msg
     : error.message
     ? error.message
