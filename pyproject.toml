@@ -70,7 +70,7 @@ types-redis = "^4.3"
 
 [tool.poetry.scripts]
 fittrackee = 'fittrackee.__main__:main'
-fittrackee_worker = 'flask_dramatiq:worker'
+fittrackee_worker = 'fittrackee.__main__:worker'  # disabled
 ftcli = 'fittrackee.cli:cli'
 fittrackee_set_admin = 'fittrackee.__main__:set_admin'  # deprecated
 fittrackee_upgrade_db = 'fittrackee.__main__:upgrade_db'  # deprecated
