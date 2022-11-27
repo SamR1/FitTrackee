@@ -271,7 +271,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 if order == 'asc'
                 else desc(workout_column),
             )
-            .paginate(page, per_page, False)
+            .paginate(page=page, per_page=per_page, error_out=False)
         )
         workouts = workouts_pagination.items
         return {
@@ -956,7 +956,8 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         }
 
     :form file: gpx file (allowed extensions: .gpx, .zip)
-    :form data: sport id and notes (example: ``{"sport_id": 1, "notes": ""}``)
+    :form data: sport id and notes (example: ``{"sport_id": 1, "notes": ""}``).
+                Double quotes in notes must be escaped.
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -988,7 +989,11 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     if error_response:
         return error_response
 
-    workout_data = json.loads(request.form['data'], strict=False)
+    try:
+        workout_data = json.loads(request.form['data'], strict=False)
+    except json.decoder.JSONDecodeError:
+        return InvalidPayloadErrorResponse()
+
     if not workout_data or workout_data.get('sport_id') is None:
         return InvalidPayloadErrorResponse()
 
@@ -1149,10 +1154,10 @@ def post_workout_no_gpx(
     workout_data = request.get_json()
     if (
         not workout_data
-        or workout_data.get('sport_id') is None
-        or workout_data.get('duration') is None
-        or workout_data.get('distance') is None
-        or workout_data.get('workout_date') is None
+        or not workout_data.get('sport_id')
+        or not workout_data.get('duration')
+        or not workout_data.get('distance')
+        or not workout_data.get('workout_date')
     ):
         return InvalidPayloadErrorResponse()
 

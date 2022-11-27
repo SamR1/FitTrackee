@@ -1,5 +1,26 @@
 # Change log
 
+## Version 0.7.7 (2022/11/27)
+
+### Features and enhancements
+
+* [#258](https://github.com/SamR1/FitTrackee/issues/258) - Request: parse links in notes area (thanks to @jat255)
+
+### Bugs Fixed
+
+* [PR#271](https://github.com/SamR1/FitTrackee/pull/271) - Fix workouts creation
+
+### Translations
+
+* [PR#273](https://github.com/SamR1/FitTrackee/pull/273) - Init Dutch translations files
+
+### Misc
+
+* [PR#274](https://github.com/SamR1/FitTrackee/pull/274) - Tests parallelization
+* [PR#275](https://github.com/SamR1/FitTrackee/pull/275) - Disable worker entry point
+
+**Note:** `fittrackee_worker` command is disabled, please use existing flask-dramatiq CLI (see [documentation](https://samr1.github.io/FitTrackee/installation.html#from-pypi))
+
 ## Version 0.7.6 (2022/11/09)
 
 ### Translations
