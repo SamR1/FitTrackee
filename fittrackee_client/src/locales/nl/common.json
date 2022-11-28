@@ -1,2 +1,25 @@
 {
+    "ABOUT": "over",
+    "CONFIRMATION": "Bevestiging",
+    "DOCUMENTATION": "documentatie",
+    "DISPLAYED": "Weergegeven",
+    "HERE": "hier",
+    "CONTACT": "contacteer",
+    "DAY": "dag | dagen",
+    "HOME": "Startscherm",
+    "SELECTS": {
+        "ORDER": {
+            "LABEL": "sorteer",
+            "DESC": "dalend",
+            "ASC": "stijgend"
+        },
+        "ORDER_BY": {
+            "LABEL": "rangschik op"
+        },
+        "PER_PAGE": {
+            "LABEL": "per pagina"
+        }
+    },
+    "HIDDEN": "Verborgen",
+    "TOTAL": "Totaal"
 }
