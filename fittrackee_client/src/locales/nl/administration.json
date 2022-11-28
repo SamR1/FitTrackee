@@ -1,2 +1,59 @@
 {
+    "ACTION": "Actie",
+    "ACTIVATE_USER_ACCOUNT": "Activeer account",
+    "ACTIVE": "Ingeschakeld",
+    "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Toevoegen/verwijderen van administrator rechten, verwijder gebruikersaccount.",
+    "APPLICATION": "Applicatie",
+    "APP_CONFIG": {
+        "ADMIN_CONTACT": "Administrator email voor contact",
+        "MAX_USERS_LABEL": "Max. aantal actieve gebruikers",
+        "MAX_FILES_IN_ZIP_LABEL": "Max. aantal bestanden in zip archief",
+        "NO_CONTACT_EMAIL": "Geen contact email",
+        "TITLE": "Applicatie configureren",
+        "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. grootte van zip archief (in Mb)",
+        "MAX_USERS_HELP": "Bij 0, geen limiet op registratie.",
+        "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Max. grootte van upgeloade bestanden (in Mb)"
+    },
+    "ADMIN": "Beheer",
+    "ADMINISTRATION": "Instellingen",
+    "BACK_TO_ADMIN": "Terug naar beheer",
+    "CONFIRM_USER_PASSWORD_RESET": "Weet u zeker dat u het wachtwoord voor {0} wilt resetten?",
+    "CURRENT_EMAIL": "Huidige email",
+    "EMAIL_SENDING_DISABLED": "Emails verzenden is uitgeschakeld.",
+    "ENABLE_DISABLE_SPORTS": "Aan- of uitzetten van sporten.",
+    "NEW_EMAIL": "Nieuwe email",
+    "PASSWORD_RESET_SUCCESSFUL": "Het wachtwoord werd gereset.",
+    "REGISTRATION_DISABLED": "Registratie is momenteel uitgeschakeld.",
+    "REGISTRATION_ENABLED": "Registratie is momenteel ingeschakeld.",
+    "RESET_USER_PASSWORD": "Reset wachtwoord",
+    "SPORTS": {
+        "TABLE": {
+            "ACTIVE": "Ingeschakeld",
+            "IMAGE": "Afbeelding",
+            "LABEL": "Label",
+            "HAS_WORKOUTS": "Workouts aanwezig"
+        },
+        "TITLE": "Beheer sporten"
+    },
+    "UPDATE_USER_EMAIL": "Update email",
+    "USER": "gebruiker | gebruikers",
+    "USER_EMAIL_UPDATE_SUCCESSFUL": "Het emailadres werd bijgewerkt.",
+    "USERS": {
+        "TABLE": {
+            "ADD_ADMIN_RIGHTS": "Admin rechten toevoegen",
+            "REMOVE_ADMIN_RIGHTS": "Verwijder admin rechten"
+        },
+        "SELECTS": {
+            "ORDER_BY": {
+                "ADMIN": "admin status",
+                "CREATED_AT": "Registratie datum",
+                "IS_ACTIVE": "Account status",
+                "USERNAME": "gebruikersnaam",
+                "WORKOUTS_COUNT": "aantal workouts"
+            }
+        }
+    },
+    "CONFIRM_USER_ACCOUNT_DELETION": "Weet u zeker dat u de account {0} wilt wissen? Alle gegevens worden verwijderd, dit kan niet ongedaan gemaakt worden.",
+    "DELETE_USER": "Verwijder gebruiker",
+    "UPDATE_APPLICATION_DESCRIPTION": "De applicatie configureren (maximum aantal geregistreerde gebruikers, maximum bestandsgrootte)."
 }
