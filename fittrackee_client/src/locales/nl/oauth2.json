@@ -1,2 +1,36 @@
 {
+    "APP": {
+        "CLIENT_SECRET": "Geheim",
+        "ISSUE_AT": "Probleem bij",
+        "REDIRECT_URL": "Doorverwijs URL",
+        "SCOPE": {
+            "LABEL": "Omvang",
+            "users:read_DESCRIPTION": "staat leestoegang toe aan <code>users</code>  endpoints.",
+            "profile:write_DESCRIPTION": "staat schrijftoegang toe aan <code>auth</code> endpoints.",
+            "profile:read_DESCRIPTION": "staat leestoegang toe aan <code>auth</code> endpoints.",
+            "users:write_DESCRIPTION": "staat schrijftoegang toe aan <code>users</code> endpoints.",
+            "workouts:read_DESCRIPTION": "staat leestoegang toe aan <code>workouts</code> endpoints.",
+            "workouts:write_DESCRIPTION": "staat schrijftoegang toe aan <code>workouts</code> endpoints.",
+            "application:write_DESCRIPTION": "geeft toestemming tot aanpassen van de applicatie instellingen."
+        },
+        "NAME": "Naam van de app",
+        "URL": "App URL",
+        "DESCRIPTION": "App omschrijving",
+        "CLIENT_ID": "Id"
+    },
+    "APP_CREATED_SUCCESSFULLY": "App succesvol aangemaakt. Kopieer zeker de geheime sleutel, deze zal later niet meer verschijnen.",
+    "APP_DELETION_CONFIRMATION": "Weet u zeker dat u deze app wilt verwijderen?",
+    "APP_REQUESTING_ACCESS": "De app {0} vraagt:",
+    "APPS_LIST": "OAuth2 apps",
+    "AUTHORIZE_APP": "Toegang geven aan {0} tot uw gebruikersaccount?",
+    "COPY_TO_CLIPBOARD": "kopieer naar klembord",
+    "DELETE_APP": "Verwijder app",
+    "NEW_APP": "Voeg een app toe",
+    "NO_APP": "App niet gevonden!",
+    "NO_APPS": "geen apps",
+    "NO_DESCRIPTION": "geen beschrijving",
+    "REVOKE_ALL_TOKENS": "Verwijder alle tokens",
+    "TOKENS_REVOCATION_CONFIRMATION": "Weet u zeker dat u alle tokens wilt intrekken?",
+    "TOKENS_REVOKED": "Alle bestaande tokens werden ingetrokken.",
+    "ADD_A_NEW_APP": "Nieuwe OAuth2 app toevoegen"
 }
