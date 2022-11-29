@@ -8,11 +8,11 @@
         "ADMIN_CONTACT": "Administrator email voor contact",
         "MAX_USERS_LABEL": "Max. aantal actieve gebruikers",
         "MAX_FILES_IN_ZIP_LABEL": "Max. aantal bestanden in zip archief",
-        "NO_CONTACT_EMAIL": "Geen contact email",
+        "NO_CONTACT_EMAIL": "geen contact email",
         "TITLE": "Applicatie configureren",
         "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. grootte van zip archief (in Mb)",
         "MAX_USERS_HELP": "Bij 0, geen limiet op registratie.",
-        "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Max. grootte van upgeloade bestanden (in Mb)"
+        "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Max. grootte van bestanden voor upload (in Mb)"
     },
     "ADMIN": "Beheer",
     "ADMINISTRATION": "Instellingen",
@@ -31,7 +31,7 @@
             "ACTIVE": "Ingeschakeld",
             "IMAGE": "Afbeelding",
             "LABEL": "Label",
-            "HAS_WORKOUTS": "Workouts aanwezig"
+            "HAS_WORKOUTS": "Trainingen aanwezig"
         },
         "TITLE": "Beheer sporten"
     },
@@ -49,7 +49,7 @@
                 "CREATED_AT": "Registratie datum",
                 "IS_ACTIVE": "Account status",
                 "USERNAME": "gebruikersnaam",
-                "WORKOUTS_COUNT": "aantal workouts"
+                "WORKOUTS_COUNT": "aantal trainingen"
             }
         }
     },
