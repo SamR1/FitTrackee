@@ -5,12 +5,12 @@
         "REDIRECT_URL": "Doorverwijs URL",
         "SCOPE": {
             "LABEL": "Omvang",
-            "users:read_DESCRIPTION": "staat leestoegang toe aan <code>users</code>  endpoints.",
+            "users:read_DESCRIPTION": "staat leestoegang toe aan <code>users</code> endpoints.",
             "profile:write_DESCRIPTION": "staat schrijftoegang toe aan <code>auth</code> endpoints.",
             "profile:read_DESCRIPTION": "staat leestoegang toe aan <code>auth</code> endpoints.",
             "users:write_DESCRIPTION": "staat schrijftoegang toe aan <code>users</code> endpoints.",
-            "workouts:read_DESCRIPTION": "staat leestoegang toe aan <code>trainingen</code> endpoints.",
-            "workouts:write_DESCRIPTION": "staat schrijftoegang toe aan <code>trainingen</code> endpoints.",
+            "workouts:read_DESCRIPTION": "staat leestoegang toe aan <code>workouts</code> endpoints.",
+            "workouts:write_DESCRIPTION": "staat schrijftoegang toe aan <code>workouts</code> endpoints.",
             "application:write_DESCRIPTION": "geeft toestemming tot aanpassen van de applicatie instellingen."
         },
         "NAME": "Naam van de app",
