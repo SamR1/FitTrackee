@@ -16,18 +16,19 @@ def can_view_workout(
     status:
     - owner: provided user is workout owner
     - follower: provided user follows workout owner
+    - remote_follower: provided user follows workout owner from remote instance
     - other: other cases (user does not follow workout owner,
       unauthenticated user (no user provided))
     """
     status = 'other'
     if user is not None:
-        status = (
-            'owner'
-            if workout.user_id == user.id
-            else 'follower'
-            if user in workout.user.followers
-            else 'other'
-        )
+        if workout.user_id == user.id:
+            status = 'owner'
+        if user in workout.user.followers:
+            status = (
+                'remote_follower' if workout.user.is_remote else 'follower'
+            )
+
     visibility = getattr(workout, visibility)
     if (
         visibility == PrivacyLevel.PUBLIC
@@ -36,7 +37,14 @@ def can_view_workout(
             workout.user_id == user.id
             or (
                 user in workout.user.followers
-                and visibility == PrivacyLevel.FOLLOWERS
+                and visibility
+                in [PrivacyLevel.FOLLOWERS, PrivacyLevel.FOLLOWERS_AND_REMOTE]
+                and status == 'follower'
+            )
+            or (
+                user in workout.user.followers
+                and visibility == PrivacyLevel.FOLLOWERS_AND_REMOTE
+                and status == 'remote_follower'
             )
         )
     ):
