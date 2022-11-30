@@ -37,5 +37,4 @@ def post_a_workout(
         ),
     )
     data = json.loads(response.data.decode())
-    print(data)
     return token, data['data']['workouts'][0]['id']
