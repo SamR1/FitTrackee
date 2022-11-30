@@ -1,2 +1,59 @@
 {
+    "USERS": {
+        "TABLE": {
+            "ADD_ADMIN_RIGHTS": "",
+            "REMOVE_ADMIN_RIGHTS": ""
+        },
+        "SELECTS": {
+            "ORDER_BY": {
+                "USERNAME": "",
+                "CREATED_AT": "",
+                "IS_ACTIVE": "",
+                "WORKOUTS_COUNT": "",
+                "ADMIN": ""
+            }
+        }
+    },
+    "ADMIN": "",
+    "CONFIRM_USER_PASSWORD_RESET": "",
+    "APP_CONFIG": {
+        "MAX_USERS_LABEL": "",
+        "MAX_FILES_IN_ZIP_LABEL": "",
+        "ZIP_UPLOAD_MAX_SIZE_LABEL": "",
+        "TITLE": "",
+        "ADMIN_CONTACT": "",
+        "SINGLE_UPLOAD_MAX_SIZE_LABEL": "",
+        "NO_CONTACT_EMAIL": "",
+        "MAX_USERS_HELP": ""
+    },
+    "SPORTS": {
+        "TITLE": "",
+        "TABLE": {
+            "ACTIVE": "",
+            "LABEL": "",
+            "IMAGE": "",
+            "HAS_WORKOUTS": ""
+        }
+    },
+    "USER": "",
+    "ADMINISTRATION": "",
+    "UPDATE_USER_EMAIL": "",
+    "USER_EMAIL_UPDATE_SUCCESSFUL": "",
+    "ACTION": "",
+    "BACK_TO_ADMIN": "",
+    "DELETE_USER": "",
+    "APPLICATION": "",
+    "PASSWORD_RESET_SUCCESSFUL": "",
+    "UPDATE_APPLICATION_DESCRIPTION": "",
+    "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "",
+    "ENABLE_DISABLE_SPORTS": "",
+    "NEW_EMAIL": "",
+    "CURRENT_EMAIL": "",
+    "REGISTRATION_DISABLED": "",
+    "CONFIRM_USER_ACCOUNT_DELETION": "",
+    "REGISTRATION_ENABLED": "",
+    "ACTIVATE_USER_ACCOUNT": "",
+    "RESET_USER_PASSWORD": "",
+    "EMAIL_SENDING_DISABLED": "",
+    "ACTIVE": ""
 }
