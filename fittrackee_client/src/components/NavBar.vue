@@ -198,9 +198,8 @@
         padding: 0 10px;
 
         ::v-deep(.dropdown-list) {
-          padding-left: $default-padding;
-          padding-right: $default-padding;
-          right: $default-padding;
+          margin-left: -95px !important;
+          width: 115px !important;
         }
       }
 
@@ -292,8 +291,8 @@
           padding: 7px 25px;
 
           ::v-deep(.dropdown-list) {
-            right: initial;
-            left: 45px;
+            margin-left: initial !important;
+            width: auto !important;
           }
         }
 
