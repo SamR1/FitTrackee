@@ -214,8 +214,14 @@ class Workout(BaseModel):
             user_status == 'owner'
             or self.calculated_map_visibility == PrivacyLevel.PUBLIC
             or (
-                self.calculated_map_visibility == PrivacyLevel.FOLLOWERS
+                self.calculated_map_visibility
+                in [PrivacyLevel.FOLLOWERS, PrivacyLevel.FOLLOWERS_AND_REMOTE]
                 and user_status == 'follower'
+            )
+            or (
+                self.calculated_map_visibility
+                == PrivacyLevel.FOLLOWERS_AND_REMOTE
+                and user_status == 'remote_follower'
             )
         )
 
@@ -223,11 +229,18 @@ class Workout(BaseModel):
         self, user_status: str, params: Optional[Dict] = None
     ) -> Dict:
         if (
-            self.workout_visibility == PrivacyLevel.PRIVATE
-            and user_status != 'owner'
-        ) or (
-            self.workout_visibility != PrivacyLevel.PUBLIC
-            and user_status == 'other'
+            (
+                self.workout_visibility == PrivacyLevel.PRIVATE
+                and user_status != 'owner'
+            )
+            or (
+                self.workout_visibility == PrivacyLevel.FOLLOWERS
+                and user_status == 'remote_follower'
+            )
+            or (
+                self.workout_visibility != PrivacyLevel.PUBLIC
+                and user_status == 'other'
+            )
         ):
             raise WorkoutForbiddenException()
         can_see_map_data = self._can_see_map_data(user_status)
