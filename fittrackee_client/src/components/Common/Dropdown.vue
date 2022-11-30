@@ -54,7 +54,7 @@
   .dropdown-list {
     list-style-type: none;
     background-color: #ffffff;
-    padding: 0;
+    padding: 0 !important;
     margin-top: 5px;
     margin-left: -20px !important;
     position: absolute;
@@ -64,16 +64,12 @@
     width: auto !important;
 
     li {
-      padding-top: 5px;
-      padding-right: 5px;
-    }
-    li:last-child {
-      padding-bottom: 5px;
+      padding: 3px 8px;
     }
   }
 
   .dropdown-item {
-    cursor: default;
+    cursor: pointer;
 
     &.selected {
       font-weight: bold;
@@ -81,6 +77,10 @@
 
     &.selected::after {
       content: ' ✔';
+    }
+
+    &:hover {
+      background-color: var(--dropdown-hover-color);
     }
   }
 </style>

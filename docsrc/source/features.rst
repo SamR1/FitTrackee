@@ -11,19 +11,19 @@ With the default configuration, `Open Street Map <https://www.openstreetmap.org>
 
 Workouts
 ^^^^^^^^
-- 12 sports are supported:
+- 13 sports are supported:
      - Cycling (Sport)
      - Cycling (Transport)
-     - Cycling (Virtual)  (**new in 0.7.3**)
+     - Cycling (Virtual)  (*new in 0.7.3*)
      - Hiking
      - Mountain Biking
-     - Mountain Biking (Electric)  (**new in 0.5.0**)
-     - Rowing  (**new in 0.5.0**)
+     - Mountain Biking (Electric)  (*new in 0.5.0*)
+     - Rowing  (*new in 0.5.0*)
      - Running
-     - Skiing (Alpine) (**new in 0.5.0**)
-     - Skiing (Cross Country)  (**new in 0.5.0**)
-     - Snowshoes  (**new in 0.5.2**)
-     - Trail  (**new in 0.5.0**)
+     - Skiing (Alpine) (*new in 0.5.0*)
+     - Skiing (Cross Country)  (*new in 0.5.0*)
+     - Snowshoes (*new in 0.5.2*)
+     - Trail (*new in 0.5.0*)
      - Walking
 - (*new in 0.5.0*) Stopped speed threshold used by `gpxpy <https://github.com/tkrajina/gpxpy>`_ is not the default one for the following sports (0.1 km/h instead of 1 km/h):
      - Hiking
@@ -38,23 +38,23 @@ Workouts
 - Dashboard with month calendar displaying workouts and record. The week can start on Sunday or Monday (which can be changed in the user preferences). The calendar displays up to 100 workouts.
 - Workout creation by uploading a gpx file (related data are stored in database with metric system). A workout can even be created without gpx (the user must enter date, time, duration and distance).
 - | A workout with a gpx file can be displayed with map and charts (speed and elevation).
-  | Controls allow full screen view and position reset (**new in 0.5.5**).
+  | Controls allow full screen view and position reset (*new in 0.5.5*).
 - | If DarkSky API key is provided, weather is displayed in workout detail.
-  | Wind is displayed, with arrow indicating direction (a tooltip can be displayed with the direction that the wind is coming **from**) (**new in 0.5.5**).
+  | Wind is displayed, with arrow indicating direction (a tooltip can be displayed with the direction that the wind is coming **from**) (*new in 0.5.5*).
 - Segments can be displayed.
-- Workout gpx file can be downloaded (**new in 0.5.1**)
+- Workout gpx file can be downloaded (*new in 0.5.1*)
 - Workout edition and deletion. User can add a note.
 - User statistics, by time period (week, month, year) and sport:
     - total distance
     - total duration
     - total workouts
-    - total ascent  (**new in 0.5.0**)
-    - total descent  (**new in 0.5.0**)
-    - average speed  (**new in 0.5.1**)
+    - total ascent  (*new in 0.5.0*)
+    - total descent  (*new in 0.5.0*)
+    - average speed  (*new in 0.5.1*)
 - User records by sports:
     - average speed
     - farthest distance
-    - highest ascent (**new in 0.6.11**, can be hidden, see user preferences)
+    - highest ascent (*new in 0.6.11*, can be hidden, see user preferences)
     - longest duration
     - maximum speed
 
@@ -135,6 +135,13 @@ Administration
 Translations
 ^^^^^^^^^^^^
 FitTrackee is available in the following languages (which can be saved in the user preferences):
+
+- English
+- French (*new in 0.2.3*)
+- German (*new in 0.6.9*)
+- Dutch (*new in 0.7.8*)
+
+Translations status on `Weblate <https://hosted.weblate.org/engage/fittrackee/>`__:
 
 .. figure:: https://hosted.weblate.org/widgets/fittrackee/-/multi-auto.svg
 

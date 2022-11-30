@@ -226,14 +226,9 @@
       .nav-item {
         padding: 0 10px;
 
-        &.dropdown-wrapper {
-          width: 60px;
-        }
-
         ::v-deep(.dropdown-list) {
-          margin-left: -10px;
-          padding-left: 10px;
-          width: 75px;
+          margin-left: -95px !important;
+          width: 115px !important;
         }
       }
 
@@ -347,6 +342,11 @@
 
         .nav-item {
           padding: 7px 25px;
+
+          ::v-deep(.dropdown-list) {
+            margin-left: initial !important;
+            width: auto !important;
+          }
         }
 
         .nav-separator {
