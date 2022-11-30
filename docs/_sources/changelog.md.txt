@@ -1,5 +1,15 @@
 # Change log
 
+## Version 0.7.8 (2022/11/30)
+
+FitTrackee is now available in Dutch (thanks to @bjornclauw).
+
+
+### Translations
+
+* [#270](https://github.com/SamR1/FitTrackee/issues/270) - [translations request] Dutch (Nederlands)
+
+
 ## Version 0.7.7 (2022/11/27)
 
 ### Features and enhancements
