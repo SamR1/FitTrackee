@@ -197,14 +197,10 @@
       .nav-item {
         padding: 0 10px;
 
-        &.dropdown-wrapper {
-          width: 60px;
-        }
-
         ::v-deep(.dropdown-list) {
-          margin-left: -10px;
-          padding-left: 10px;
-          width: 75px;
+          padding-left: $default-padding;
+          padding-right: $default-padding;
+          right: $default-padding;
         }
       }
 
@@ -294,6 +290,11 @@
 
         .nav-item {
           padding: 7px 25px;
+
+          ::v-deep(.dropdown-list) {
+            right: initial;
+            left: 45px;
+          }
         }
 
         .nav-profile-img {
