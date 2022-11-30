@@ -1,6 +1,6 @@
 /* eslint-disable import/no-duplicates */
 import { Locale } from 'date-fns'
-import { de, enUS, fr } from 'date-fns/locale'
+import { de, enUS, fr, nl } from 'date-fns/locale'
 
 import createI18n from '@/i18n'
 
@@ -9,7 +9,7 @@ export const localeFromLanguage: Record<string, Locale> = {
   en: enUS,
   fr: fr,
   // nb: nb, // disabled for now
-  // nl: nl, // disabled for now
+  nl: nl,
 }
 
 export const languageLabels: Record<string, string> = {
@@ -17,7 +17,7 @@ export const languageLabels: Record<string, string> = {
   en: 'English',
   fr: 'Français',
   // nb: 'Norsk bokmål', // disabled for now
-  // nl: 'Nederlands', // disabled for now
+  nl: 'Nederlands',
 }
 
 const { availableLocales } = createI18n.global
