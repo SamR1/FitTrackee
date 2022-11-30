@@ -1,2 +1,8 @@
 {
+    "STATISTICS": "Statistieken",
+    "TIME_FRAMES": {
+        "week": "week",
+        "month": "maand",
+        "year": "jaar"
+    }
 }

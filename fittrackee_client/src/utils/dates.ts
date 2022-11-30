@@ -98,7 +98,7 @@ const dateStringFormats: Record<string, string> = {
   en: 'MMM. do, yyyy',
   fr: 'd MMM yyyy',
   // nb: 'do MMM yyyy',
-  // nl: 'd MMM yyyy',
+  nl: 'd MMM yyyy',
 }
 
 export const getDateFormat = (dateFormat: string, language: string): string => {
