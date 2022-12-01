@@ -357,6 +357,7 @@ class TestWorkoutModelAsFollower(WorkoutModelTestCase):
             serialized_workout['workout_visibility']
             == input_workout_visibility
         )
+        assert serialized_workout['segments'] == []
 
     @pytest.mark.parametrize(
         'input_map_visibility,input_workout_visibility',
@@ -394,6 +395,7 @@ class TestWorkoutModelAsFollower(WorkoutModelTestCase):
             serialized_workout['workout_visibility']
             == input_workout_visibility
         )
+        assert serialized_workout['segments'] == []
 
     def test_serializer_does_not_return_next_workout(
         self,
@@ -487,6 +489,7 @@ class TestWorkoutModelAsOther(WorkoutModelTestCase):
         assert serialized_workout['with_gpx'] is True
         assert serialized_workout['map_visibility'] == PrivacyLevel.PUBLIC
         assert serialized_workout['workout_visibility'] == PrivacyLevel.PUBLIC
+        assert serialized_workout['segments'] == []
 
     @pytest.mark.parametrize(
         'input_map_visibility,input_workout_visibility',
@@ -524,6 +527,7 @@ class TestWorkoutModelAsOther(WorkoutModelTestCase):
             serialized_workout['workout_visibility']
             == input_workout_visibility
         )
+        assert serialized_workout['segments'] == []
 
     def test_serializer_does_not_return_next_workout(
         self,

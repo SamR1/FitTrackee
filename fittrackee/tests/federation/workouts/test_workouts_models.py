@@ -8,7 +8,7 @@ from fittrackee.workouts.exceptions import (
     PrivateWorkoutException,
     WorkoutForbiddenException,
 )
-from fittrackee.workouts.models import Sport, Workout
+from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
 
 from ...utils import random_string
 
@@ -67,6 +67,7 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
         sport_1_cycling: Sport,
         user_1: User,
         workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_workout_visibility
         workout_cycling_user_1.map_visibility = input_map_visibility
@@ -84,6 +85,9 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
             serialized_workout['workout_visibility']
             == input_workout_visibility
         )
+        assert serialized_workout['segments'] == [
+            workout_cycling_user_1_segment.serialize()
+        ]
 
     @pytest.mark.parametrize(
         'input_map_visibility,input_workout_visibility',
@@ -106,6 +110,7 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
         sport_1_cycling: Sport,
         user_1: User,
         workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_workout_visibility
         workout_cycling_user_1.map_visibility = input_map_visibility
@@ -121,6 +126,7 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
             serialized_workout['workout_visibility']
             == input_workout_visibility
         )
+        assert serialized_workout['segments'] == []
 
 
 class TestWorkoutModelGetWorkoutActivity:

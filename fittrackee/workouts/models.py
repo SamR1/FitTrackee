@@ -367,7 +367,11 @@ class Workout(BaseModel):
             if previous_workout
             else None,  # noqa
             'next_workout': next_workout.short_id if next_workout else None,
-            'segments': [segment.serialize() for segment in self.segments],
+            'segments': (
+                [segment.serialize() for segment in self.segments]
+                if can_see_map_data
+                else []
+            ),
             'records': [record.serialize() for record in self.records],
             'map': self.map_id if self.map and can_see_map_data else None,
             'map_visibility': self.calculated_map_visibility.value,
