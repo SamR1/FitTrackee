@@ -20,9 +20,27 @@
       <dt>{{ $t('user.PROFILE.ASCENT_DATA') }}:</dt>
       <dd>{{ $t(`common.${display_ascent}`) }}</dd>
       <dt>{{ $t('privacy.WORKOUTS_VISIBILITY') }}:</dt>
-      <dd>{{ $t(`privacy.LEVELS.${user.workouts_visibility}`) }}</dd>
+      <dd>
+        {{
+          $t(
+            `privacy.LEVELS.${getPrivacyLevelForLabel(
+              user.workouts_visibility,
+              appConfig.federation_enabled
+            )}`
+          )
+        }}
+      </dd>
       <dt>{{ $t('privacy.MAP_VISIBILITY') }}:</dt>
-      <dd>{{ $t(`privacy.LEVELS.${user.map_visibility}`) }}</dd>
+      <dd>
+        {{
+          $t(
+            `privacy.LEVELS.${getPrivacyLevelForLabel(
+              user.map_visibility,
+              appConfig.federation_enabled
+            )}`
+          )
+        }}
+      </dd>
     </dl>
     <div class="profile-buttons">
       <button @click="$router.push('/profile/edit/preferences')">
@@ -37,11 +55,12 @@
   import { ComputedRef, computed, toRefs } from 'vue'
 
   import { ROOT_STORE } from '@/store/constants'
+  import { TAppConfig } from '@/types/application'
   import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getDateFormat } from '@/utils/dates'
   import { languageLabels } from '@/utils/locales'
-
+  import { getPrivacyLevelForLabel } from '@/utils/privacy'
   interface Props {
     user: IAuthUserProfile
   }
@@ -52,6 +71,10 @@
 
   const appLanguage: ComputedRef<string> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
+  )
+
+  const appConfig: ComputedRef<TAppConfig> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
   )
   const userLanguage = computed(() =>
     props.user.language

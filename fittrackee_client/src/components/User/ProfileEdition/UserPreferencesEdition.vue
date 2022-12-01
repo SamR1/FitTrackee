@@ -108,7 +108,14 @@
             @change="updateMapVisibility"
           >
             <option v-for="level in privacyLevels" :value="level" :key="level">
-              {{ $t(`privacy.LEVELS.${level}`) }}
+              {{
+                $t(
+                  `privacy.LEVELS.${getPrivacyLevelForLabel(
+                    level,
+                    appConfig.federation_enabled
+                  )}`
+                )
+              }}
             </option>
           </select>
         </label>
@@ -124,7 +131,14 @@
               :value="level"
               :key="level"
             >
-              {{ $t(`privacy.LEVELS.${level}`) }}
+              {{
+                $t(
+                  `privacy.LEVELS.${getPrivacyLevelForLabel(
+                    level,
+                    appConfig.federation_enabled
+                  )}`
+                )
+              }}
             </option>
           </select>
         </label>
@@ -149,14 +163,16 @@
 
   import TimezoneDropdown from '@/components/User/ProfileEdition/TimezoneDropdown.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import { TAppConfig } from '@/types/application'
   import { IUserPreferencesPayload, IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { availableDateFormatOptions } from '@/utils/dates'
   import { availableLanguages } from '@/utils/locales'
   import {
-    privacyLevels,
-    getUpdatedMapVisibility,
+    getPrivacyLevels,
+    getPrivacyLevelForLabel,
     getMapVisibilityLevels,
+    getUpdatedMapVisibility,
   } from '@/utils/privacy'
 
   interface Props {
@@ -206,6 +222,9 @@
       value: false,
     },
   ]
+  const appConfig: ComputedRef<TAppConfig> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
+  )
   const loading = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
   )
@@ -218,6 +237,9 @@
       props.user.timezone,
       userForm.language
     )
+  )
+  const privacyLevels = computed(() =>
+    getPrivacyLevels(appConfig.value.federation_enabled)
   )
   const mapPrivacyLevels = computed(() =>
     getMapVisibilityLevels(userForm.workouts_visibility)
@@ -295,7 +317,9 @@
     }
 
     #language,
-    #date_format {
+    #date_format,
+    #map_visibility,
+    #workouts_visibility {
       padding: $default-padding * 0.5;
     }
   }

@@ -8,6 +8,7 @@ export interface IAppStatistics {
 export type TAppConfig = {
   [key: string]: number | boolean | string
   admin_contact: string
+  federation_enabled: boolean
   gpx_limit_import: number
   is_email_sending_enabled: boolean
   is_registration_enabled: boolean

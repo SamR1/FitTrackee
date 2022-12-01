@@ -3,7 +3,11 @@ import { LocationQueryValue } from 'vue-router'
 import { TPaginationPayload } from '@/types/api'
 import { IRecord } from '@/types/workouts'
 
-export type TPrivacyLevels = 'private' | 'followers_only' | 'public'
+export type TPrivacyLevels =
+  | 'private'
+  | 'followers_only'
+  | 'followers_and_remote_only'
+  | 'public'
 export type TRelationshipAction = 'follow' | 'unfollow'
 export type TRelationships = 'followers' | 'following'
 export type TFollowRequestAction = 'accept' | 'reject'

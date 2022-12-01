@@ -2,6 +2,8 @@
   "LEVELS": {
     "private": "Privé (seulement moi)",
     "followers_only": "Abonnées uniquement",
+    "followers_and_remote_only": "Abonnées locaux et distants uniquement",
+    "local_followers_only": "Abonnées locaux uniquement",
     "public": "Public (tout le monde)"
   },
   "MAP_VISIBILITY": "Visibilité de la carte et de l'analyse",

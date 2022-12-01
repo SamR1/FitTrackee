@@ -11,7 +11,14 @@
         :title="$t(`privacy.LEVELS.${workoutObject.workoutVisibility}`)"
       />
       <span class="visibility-label">
-        ({{ $t(`privacy.LEVELS.${workoutObject.workoutVisibility}`) }})
+        ({{
+          $t(
+            `privacy.LEVELS.${getPrivacyLevelForLabel(
+              workoutObject.workoutVisibility,
+              appConfig.federation_enabled
+            )}`
+          )
+        }})
       </span>
       <span v-if="workoutObject.with_gpx">-</span>
     </div>
@@ -23,28 +30,44 @@
         :title="$t(`privacy.LEVELS.${workoutObject.mapVisibility}`)"
       />
       <span class="visibility-label">
-        ({{ $t(`privacy.LEVELS.${workoutObject.mapVisibility}`) }})
+        ({{
+          $t(
+            `privacy.LEVELS.${getPrivacyLevelForLabel(
+              workoutObject.mapVisibility,
+              appConfig.federation_enabled
+            )}`
+          )
+        }})
       </span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { toRefs } from 'vue'
+  import { computed, ComputedRef, toRefs } from 'vue'
 
+  import { ROOT_STORE } from '@/store/constants'
+  import { TAppConfig } from '@/types/application'
   import { TPrivacyLevels } from '@/types/user'
   import { IWorkoutObject } from '@/types/workouts'
-
+  import { useStore } from '@/use/useStore'
+  import { getPrivacyLevelForLabel } from '@/utils/privacy'
   interface Props {
     workoutObject: IWorkoutObject
   }
   const props = defineProps<Props>()
   const { workoutObject } = toRefs(props)
 
+  const store = useStore()
+
+  const appConfig: ComputedRef<TAppConfig> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
+  )
   function getPrivacyIcon(privacyLevel: TPrivacyLevels): string {
     switch (privacyLevel) {
       case 'public':
         return 'globe'
+      case 'followers_and_remote_only':
       case 'followers_only':
         return 'users'
       default:

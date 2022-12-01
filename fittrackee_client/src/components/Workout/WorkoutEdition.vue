@@ -213,7 +213,14 @@
                     :value="level"
                     :key="level"
                   >
-                    {{ $t(`privacy.LEVELS.${level}`) }}
+                    {{
+                      $t(
+                        `privacy.LEVELS.${getPrivacyLevelForLabel(
+                          level,
+                          appConfig.federation_enabled
+                        )}`
+                      )
+                    }}
                   </option>
                 </select>
               </div>
@@ -229,7 +236,14 @@
                     :value="level"
                     :key="level"
                   >
-                    {{ $t(`privacy.LEVELS.${level}`) }}
+                    {{
+                      $t(
+                        `privacy.LEVELS.${getPrivacyLevelForLabel(
+                          level,
+                          appConfig.federation_enabled
+                        )}`
+                      )
+                    }}
                   </option>
                 </select>
               </div>
@@ -287,9 +301,10 @@
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
   import { getReadableFileSize } from '@/utils/files'
   import {
+    getPrivacyLevels,
+    getPrivacyLevelForLabel,
     getMapVisibilityLevels,
     getUpdatedMapVisibility,
-    privacyLevels,
   } from '@/utils/privacy'
   import { translateSports } from '@/utils/sports'
   import { convertDistance } from '@/utils/units'
@@ -322,6 +337,9 @@
   )
   const appConfig: ComputedRef<TAppConfig> = computed(
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
+  )
+  const privacyLevels = computed(() =>
+    getPrivacyLevels(appConfig.value.federation_enabled)
   )
   const fileSizeLimit = appConfig.value.max_single_file_size
     ? getReadableFileSize(appConfig.value.max_single_file_size)

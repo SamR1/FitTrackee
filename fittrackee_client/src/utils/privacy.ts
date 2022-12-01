@@ -1,10 +1,22 @@
 import { TPrivacyLevels } from '@/types/user'
 
-export const privacyLevels: TPrivacyLevels[] = [
-  'private',
-  'followers_only',
-  'public',
-]
+export const getPrivacyLevels = (
+  federationEnabled: boolean
+): TPrivacyLevels[] => {
+  return federationEnabled
+    ? ['private', 'followers_only', 'followers_and_remote_only', 'public']
+    : ['private', 'followers_only', 'public']
+}
+
+export const getPrivacyLevelForLabel = (
+  privacyLevel: string,
+  federationEnabled: boolean
+): string => {
+  if (privacyLevel !== 'followers_only') {
+    return privacyLevel
+  }
+  return federationEnabled ? 'local_followers_only' : 'followers_only'
+}
 
 export const getUpdatedMapVisibility = (
   mapVisibility: TPrivacyLevels,
@@ -14,7 +26,10 @@ export const getUpdatedMapVisibility = (
   // for map visibility
   if (
     workoutVisibility === 'private' ||
-    (workoutVisibility === 'followers_only' && mapVisibility === 'public')
+    (workoutVisibility === 'followers_only' &&
+      ['followers_and_remote_only', 'public'].includes(mapVisibility)) ||
+    (workoutVisibility === 'followers_and_remote_only' &&
+      mapVisibility === 'public')
   ) {
     return workoutVisibility
   }
@@ -26,7 +41,9 @@ export const getMapVisibilityLevels = (
 ): TPrivacyLevels[] => {
   switch (workoutVisibility) {
     case 'public':
-      return privacyLevels
+      return ['private', 'followers_only', 'public']
+    case 'followers_and_remote_only':
+      return ['private', 'followers_only']
     case 'followers_only':
       return ['private', 'followers_only']
     case 'private':
