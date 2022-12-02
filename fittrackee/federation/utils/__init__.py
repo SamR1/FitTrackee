@@ -8,6 +8,8 @@ from typing import Dict, Tuple
 from Crypto.PublicKey import RSA  # nosec B413
 from flask import current_app
 
+from fittrackee.privacy_levels import PrivacyLevel
+
 from ..enums import ActivityType
 
 
@@ -55,4 +57,11 @@ def is_invalid_activity_data(activity_data: Dict) -> bool:
         'type' not in activity_data
         or 'object' not in activity_data
         or activity_data['type'] not in [a.value for a in ActivityType]
+    )
+
+
+def sending_activities_allowed(visibility: PrivacyLevel) -> bool:
+    return current_app.config['federation_enabled'] and visibility in (
+        PrivacyLevel.PUBLIC,
+        PrivacyLevel.FOLLOWERS_AND_REMOTE,
     )
