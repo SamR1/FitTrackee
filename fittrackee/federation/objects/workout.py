@@ -2,12 +2,12 @@ from typing import TYPE_CHECKING, Dict
 
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.workouts.constants import WORKOUT_DATE_FORMAT
-from fittrackee.workouts.exceptions import PrivateWorkoutException
 
 from ..constants import AP_CTX, DATE_FORMAT, PUBLIC_STREAM
 from ..enums import ActivityType
 from ..exceptions import InvalidWorkoutException
 from .base_object import BaseObject
+from .exceptions import InvalidVisibilityException
 from .templates.workout_note import WORKOUT_NOTE
 
 if TYPE_CHECKING:
@@ -18,8 +18,13 @@ class WorkoutObject(BaseObject):
     workout: 'Workout'
 
     def __init__(self, workout: 'Workout') -> None:
-        if workout.workout_visibility == PrivacyLevel.PRIVATE:
-            raise PrivateWorkoutException()
+        if workout.workout_visibility in [
+            PrivacyLevel.PRIVATE,
+            PrivacyLevel.FOLLOWERS,
+        ]:
+            raise InvalidVisibilityException(
+                f"object visibility is: '{workout.workout_visibility.value}'"
+            )
         self.workout = workout
         self.type = ActivityType.CREATE
         self.actor = self.workout.user.actor

@@ -1,13 +1,11 @@
 import pytest
 from flask import Flask
 
+from fittrackee.federation.objects.exceptions import InvalidVisibilityException
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.tests.workouts.test_workouts_model import WorkoutModelTestCase
 from fittrackee.users.models import User
-from fittrackee.workouts.exceptions import (
-    PrivateWorkoutException,
-    WorkoutForbiddenException,
-)
+from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
 
 from ...utils import random_string
@@ -130,22 +128,24 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
 
 
 class TestWorkoutModelGetWorkoutActivity:
-    def test_it_raises_error_if_visibility_is_private(
+    @pytest.mark.parametrize(
+        'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
+    )
+    def test_it_raises_error_if_visibility_is_invalid(
         self,
         app_with_federation: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        input_visibility: PrivacyLevel,
     ) -> None:
-        with pytest.raises(PrivateWorkoutException):
+        workout_cycling_user_1.workout_visibility = input_visibility
+        with pytest.raises(InvalidVisibilityException):
             workout_cycling_user_1.get_activities()
 
     @pytest.mark.parametrize(
         'workout_visibility',
-        [
-            PrivacyLevel.FOLLOWERS,
-            PrivacyLevel.PUBLIC,
-        ],
+        [PrivacyLevel.FOLLOWERS_AND_REMOTE, PrivacyLevel.PUBLIC],
     )
     def test_it_returns_activities_when_visibility_is_not_private(
         self,
@@ -155,7 +155,7 @@ class TestWorkoutModelGetWorkoutActivity:
         workout_cycling_user_1: Workout,
         workout_visibility: PrivacyLevel,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = workout_visibility.value
+        workout_cycling_user_1.workout_visibility = workout_visibility
 
         workout, note = workout_cycling_user_1.get_activities()
 

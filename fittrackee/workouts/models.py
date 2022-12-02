@@ -17,7 +17,7 @@ from fittrackee.federation.objects.workout import WorkoutObject
 from fittrackee.files import get_absolute_file_path
 from fittrackee.privacy_levels import PrivacyLevel, get_map_visibility
 
-from .exceptions import PrivateWorkoutException, WorkoutForbiddenException
+from .exceptions import WorkoutForbiddenException
 from .utils.convert import convert_in_duration, convert_value_to_integer
 from .utils.short_id import encode_uuid
 
@@ -421,9 +421,6 @@ class Workout(BaseModel):
 
     @federation_required
     def get_activities(self) -> Tuple[Dict, Dict]:
-        if self.workout_visibility == PrivacyLevel.PRIVATE:
-            raise PrivateWorkoutException()
-
         workout_object = WorkoutObject(self)
         return workout_object.get_activity(), workout_object.get_activity(
             is_note=True

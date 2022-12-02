@@ -5,6 +5,7 @@ from flask import Flask
 
 from fittrackee.federation.constants import AP_CTX, DATE_FORMAT
 from fittrackee.federation.exceptions import InvalidWorkoutException
+from fittrackee.federation.objects.exceptions import InvalidVisibilityException
 from fittrackee.federation.objects.workout import (
     WorkoutObject,
     convert_duration_string_to_seconds,
@@ -14,7 +15,6 @@ from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.tests.mixins import RandomMixin
 from fittrackee.users.models import User
 from fittrackee.workouts.constants import WORKOUT_DATE_FORMAT
-from fittrackee.workouts.exceptions import PrivateWorkoutException
 from fittrackee.workouts.models import Sport, Workout
 
 
@@ -25,17 +25,25 @@ class WorkoutObjectTestCase(RandomMixin):
 
 
 class TestWorkoutObject(WorkoutObjectTestCase):
-    def test_it_raises_error_when_visibility_is_private(
+    @pytest.mark.parametrize(
+        'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
+    )
+    def test_it_raises_error_when_visibility_is_invalid(
         self,
         app_with_federation: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        input_visibility: PrivacyLevel,
     ) -> None:
-        with pytest.raises(PrivateWorkoutException):
+        workout_cycling_user_1.workout_visibility = input_visibility
+        with pytest.raises(
+            InvalidVisibilityException,
+            match=f"object visibility is: '{input_visibility.value}'",
+        ):
             WorkoutObject(workout_cycling_user_1)
 
-    def test_it_generates_create_activity_when_visibility_is_followers_only(
+    def test_it_generates_create_activity_when_visibility_is_followers_and_remote_only(  # noqa
         self,
         app_with_federation: Flask,
         user_1: User,
@@ -43,7 +51,9 @@ class TestWorkoutObject(WorkoutObjectTestCase):
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.title = self.random_string()
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_1.workout_visibility = (
+            PrivacyLevel.FOLLOWERS_AND_REMOTE
+        )
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
         workout = WorkoutObject(workout_cycling_user_1)
 
@@ -149,16 +159,6 @@ Distance: {workout.distance:.2f}km
 Duration: {workout.duration}</p>
 """
 
-    def test_it_raises_error_if_visibility_is_private(
-        self,
-        app_with_federation: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-    ) -> None:
-        with pytest.raises(PrivateWorkoutException):
-            WorkoutObject(workout_cycling_user_1)
-
     def test_it_returns_note_activity_when_visibility_is_followers_only(
         self,
         app_with_federation: Flask,
@@ -167,7 +167,9 @@ Duration: {workout.duration}</p>
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.title = self.random_string()
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_1.workout_visibility = (
+            PrivacyLevel.FOLLOWERS_AND_REMOTE
+        )
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
         workout = WorkoutObject(workout_cycling_user_1)
         expected_url = self.expected_url(user_1, workout_cycling_user_1)

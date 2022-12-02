@@ -1,10 +1,6 @@
 from fittrackee.exceptions import GenericException
 
 
-class PrivateWorkoutException(Exception):
-    ...
-
-
 class SportNotFoundException(Exception):
     ...
 
