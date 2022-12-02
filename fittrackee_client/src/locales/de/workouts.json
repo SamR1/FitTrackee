@@ -98,5 +98,7 @@
     "WORKOUT_DATE": "Trainingsdatum",
     "WORKOUT_DELETION_CONFIRMATION": "Bist du sicher, dass du dieses Training löschen möchtest?",
     "ZIP_ARCHIVE": ".zip Datei",
-    "ZIP_ARCHIVE_DESCRIPTION": "oder .zip Datei mit .gpx Dateien"
+    "ZIP_ARCHIVE_DESCRIPTION": "oder .zip Datei mit .gpx Dateien",
+    "INVALID_DISTANCE": "Die Distanz muss größer als 0 sein",
+    "INVALID_DURATION": "Die Dauer muss größer als 0 Sekunden sein"
 }
