@@ -12,5 +12,5 @@ class BaseObject(ABC):
     actor: 'Actor'
 
     @abstractmethod
-    def serialize(self) -> Dict:
+    def get_activity(self) -> Dict:
         pass

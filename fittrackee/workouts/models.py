@@ -425,7 +425,7 @@ class Workout(BaseModel):
             raise PrivateWorkoutException()
 
         workout_object = WorkoutObject(self)
-        return workout_object.serialize(), workout_object.serialize(
+        return workout_object.get_activity(), workout_object.get_activity(
             is_note=True
         )
 

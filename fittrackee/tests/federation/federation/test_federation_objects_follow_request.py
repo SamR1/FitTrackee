@@ -19,7 +19,7 @@ class TestFollowRequestObject:
             activity_type=ActivityType.FOLLOW,
         )
 
-        serialized_follow_request = follow_request.serialize()
+        serialized_follow_request = follow_request.get_activity()
 
         assert serialized_follow_request == {
             '@context': AP_CTX,
@@ -44,7 +44,7 @@ class TestFollowRequestObject:
             activity_type=ActivityType.ACCEPT,
         )
 
-        serialized_follow_request = follow_request.serialize()
+        serialized_follow_request = follow_request.get_activity()
 
         assert serialized_follow_request == {
             '@context': AP_CTX,
@@ -77,7 +77,7 @@ class TestFollowRequestObject:
             activity_type=ActivityType.REJECT,
         )
 
-        serialized_follow_request = follow_request.serialize()
+        serialized_follow_request = follow_request.get_activity()
 
         assert serialized_follow_request == {
             '@context': AP_CTX,
@@ -110,7 +110,7 @@ class TestFollowRequestObject:
             activity_type=ActivityType.UNDO,
         )
 
-        serialized_follow_request = follow_request.serialize()
+        serialized_follow_request = follow_request.get_activity()
 
         assert serialized_follow_request == {
             '@context': AP_CTX,

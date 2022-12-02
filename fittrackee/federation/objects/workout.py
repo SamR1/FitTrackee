@@ -71,7 +71,7 @@ class WorkoutObject(BaseObject):
             activity['object']['cc'] = []
         return activity
 
-    def serialize(self, is_note: bool = False) -> Dict:
+    def get_activity(self, is_note: bool = False) -> Dict:
         activity = self.activity_dict.copy()
         # for non-FitTrackee instances (like Mastodon)
         if is_note:

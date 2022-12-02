@@ -47,7 +47,7 @@ class FollowRequestObject(BaseObject):
             'object': self.to_actor.activitypub_id,
         }
 
-    def serialize(self) -> Dict:
+    def get_activity(self) -> Dict:
         if self.type == ActivityType.FOLLOW:
             activity = self._get_follow_activity()
         else:

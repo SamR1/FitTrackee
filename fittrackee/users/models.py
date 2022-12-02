@@ -81,7 +81,7 @@ class FollowRequest(BaseModel):
             to_actor=self.to_user.actor,
             activity_type=self._get_activity_type(undo),
         )
-        return follow_request_object.serialize()
+        return follow_request_object.get_activity()
 
 
 class User(BaseModel):

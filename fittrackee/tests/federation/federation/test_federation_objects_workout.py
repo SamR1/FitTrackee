@@ -47,7 +47,7 @@ class TestWorkoutObject(WorkoutObjectTestCase):
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
         workout = WorkoutObject(workout_cycling_user_1)
 
-        serialized_workout = workout.serialize()
+        serialized_workout = workout.get_activity()
 
         assert serialized_workout == {
             '@context': AP_CTX,
@@ -99,7 +99,7 @@ class TestWorkoutObject(WorkoutObjectTestCase):
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
         workout = WorkoutObject(workout_cycling_user_1)
 
-        serialized_workout = workout.serialize()
+        serialized_workout = workout.get_activity()
 
         assert serialized_workout == {
             '@context': AP_CTX,
@@ -172,7 +172,7 @@ Duration: {workout.duration}</p>
         workout = WorkoutObject(workout_cycling_user_1)
         expected_url = self.expected_url(user_1, workout_cycling_user_1)
 
-        serialized_workout_note = workout.serialize(is_note=True)
+        serialized_workout_note = workout.get_activity(is_note=True)
 
         assert serialized_workout_note == {
             '@context': AP_CTX,
@@ -215,7 +215,7 @@ Duration: {workout.duration}</p>
         workout = WorkoutObject(workout_cycling_user_1)
         expected_url = self.expected_url(user_1, workout_cycling_user_1)
 
-        serialized_workout_note = workout.serialize(is_note=True)
+        serialized_workout_note = workout.get_activity(is_note=True)
 
         assert serialized_workout_note == {
             '@context': AP_CTX,
