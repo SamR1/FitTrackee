@@ -12,40 +12,40 @@
     "HIDE_PASSWORD": "masquer le mot de passe",
     "INVALID_TOKEN": "Jeton invalide, veuillez demander une nouvelle réinitialisation de mot de passe.",
     "LANGUAGE": "Langue",
-    "LOG_IN": "connecter",
     "LOGIN": "Se connecter",
     "LOGOUT": "Se déconnecter",
     "LOGOUT_CONFIRMATION": "Etes-vous sûr de vouloir vous déconnecter",
+    "LOG_IN": "connecter",
     "NEW_PASSWORD": "Nouveau mot de passe",
     "NO_USERS_FOUND": "Aucun utilisateur.",
     "ONLY_USERS_FROM_THIS_INSTANCE_ARE_DISPLAYED": ", seuls les {0} de cette instance sont affichés",
     "PASSWORD": "Mot de passe",
-    "PASSWORD_INFO": "8 caractères minimum.",
     "PASSWORD_FORGOTTEN": "Mot de passe oublié ?",
+    "PASSWORD_INFO": "8 caractères minimum.",
     "PASSWORD_RESET": "Réinitialisation du mot de passe",
     "PASSWORD_SENT_EMAIL_TEXT": "Vérifiez vos courriels. Si vote adresse est dans notre base de données, vous recevrez un courriel avec un lien pour réinitialiser votre mot de passe.",
     "PASSWORD_STRENGTH": {
-        "WEAK": "faible",
         "AVERAGE": "moyenne",
         "GOOD": "bonne",
-        "STRONG": "forte",
         "LABEL": "robustesse du mot de passe",
+        "STRONG": "forte",
         "SUGGESTIONS": {
-            "l33t": "Évitez les substitutions de lettres prévisibles comme {'@'} pour a.",
-            "reverseWords": "Évitez les orthographes inversées des mots courants.",
             "allUppercase": "Mettez quelques lettres en majuscules, mais pas toutes.",
+            "anotherWord": "Ajoutez des mots moins courants.",
+            "associatedYears": "Évitez les années qui vous sont associées. (ex : date de naissance).",
             "capitalization": "Capitalisez mais pas seulement la première lettre.",
             "dates": "Évitez les dates et les années qui vous sont associées. (ex : date ou année de naissance).",
-            "recentYears": "Évitez les dernières années.",
-            "associatedYears": "Évitez les années qui vous sont associées. (ex : date de naissance).",
-            "sequences": "Évitez les séquences de caractères courantes.",
-            "repeated": "Évitez les mots et les caractères répétés.",
+            "l33t": "Évitez les substitutions de lettres prévisibles comme {'@'} pour a.",
             "longerKeyboardPattern": "Utilisez des motifs de clavier plus longs et changez de sens de frappe plusieurs fois.",
-            "anotherWord": "Ajoutez des mots moins courants.",
-            "useWords": "Utilisez plusieurs mots, mais évitez les phrases courantes.",
             "noNeed": "Vous pouvez créer des mots de passe forts sans utiliser de symboles, de chiffres ou de lettres majuscules.",
-            "pwned": "Si vous utilisez ce mot de passe ailleurs, vous devriez le modifier."
-        }
+            "pwned": "Si vous utilisez ce mot de passe ailleurs, vous devriez le modifier.",
+            "recentYears": "Évitez les dernières années.",
+            "repeated": "Évitez les mots et les caractères répétés.",
+            "reverseWords": "Évitez les orthographes inversées des mots courants.",
+            "sequences": "Évitez les séquences de caractères courantes.",
+            "useWords": "Utilisez plusieurs mots, mais évitez les phrases courantes."
+        },
+        "WEAK": "faible"
     },
     "PASSWORD_UPDATED": "Votre mot de passe a été mis à jour. Cliquez {0} pour vous connecter.",
     "PROFILE": {
@@ -67,12 +67,24 @@
         "MONDAY": "Lundi",
         "PICTURE": "Image de profil",
         "PICTURE_EDITION": "Mise à jour de l'image de profil",
-        "PICTURE_UPDATE": "Mettre à jour l'image",
         "PICTURE_REMOVE": "Supprimer",
+        "PICTURE_UPDATE": "Mettre à jour l'image",
         "PREFERENCES_EDITION": "Mise à jour des préférences",
         "PROFILE_EDITION": "Mise à jour du profil",
         "REGISTRATION_DATE": "Date d'inscription",
+        "SPORT": {
+            "ACTION": "action",
+            "COLOR": "couleur",
+            "DISABLED_BY_ADMIN": "désactivé par l'administrateur",
+            "IS_ACTIVE": "actif",
+            "LABEL": "label",
+            "STOPPED_SPEED_THRESHOLD": "seuil de vitesse arrêtée"
+        },
         "SPORTS_EDITION": "Mise à jour des préférences des sports",
+        "SUCCESSFUL_EMAIL_UPDATE": "Votre compte a été modifié avec succès. Veuillez vérifier votre boîte de réception pour valider votre nouvelle adresse électronique.",
+        "SUCCESSFUL_REGISTRATION": "Votre compte a été créé avec succès.",
+        "SUCCESSFUL_REGISTRATION_WITH_EMAIL": "Un lien pour activer votre compte a été envoyé à l'adresse électronique fournie.",
+        "SUCCESSFUL_UPDATE": "Votre compte a été modifié avec succès.",
         "SUNDAY": "Dimanche",
         "TABS": {
             "ACCOUNT": "compte",
@@ -83,24 +95,12 @@
             "PROFILE": "profil",
             "SPORTS": "sports"
         },
-        "SPORT": {
-            "ACTION": "action",
-            "COLOR": "couleur",
-            "DISABLED_BY_ADMIN": "désactivé par l'administrateur",
-            "IS_ACTIVE": "actif",
-            "LABEL": "label",
-            "STOPPED_SPEED_THRESHOLD": "seuil de vitesse arrêtée"
-        },
-        "SUCCESSFUL_EMAIL_UPDATE": "Votre compte a été modifié avec succès. Veuillez vérifier votre boîte de réception pour valider votre nouvelle adresse électronique.",
-        "SUCCESSFUL_REGISTRATION": "Votre compte a été créé avec succès.",
-        "SUCCESSFUL_REGISTRATION_WITH_EMAIL": "Un lien pour activer votre compte a été envoyé à l'adresse électronique fournie.",
-        "SUCCESSFUL_UPDATE": "Votre compte a été modifié avec succès.",
+        "TIMEZONE": "Fuseau horaire",
         "UNITS": {
-            "LABEL": "Unités pour les distances ",
             "IMPERIAL": "Système impérial (ft, mi)",
+            "LABEL": "Unités pour les distances",
             "METRIC": "Système métrique (m, km)"
-        },
-        "TIMEZONE": "Fuseau horaire"
+        }
     },
     "REGISTER": "S'inscrire",
     "REGISTER_DISABLED": "Désolé, les inscriptions sont désactivées.",
@@ -121,8 +121,8 @@
     "THIS_USER_ACCOUNT_IS_INACTIVE": "Le compte de cet utilisateur est inactif.",
     "USER": "utilisateur | utilisateurs",
     "USER_FROM_REMOTE_INSTANCE_ORIGINAL_LINK": "Cet utilisateur provient d'une autre instance{1} (cliquez {0} pour afficher le profil d'origine).",
-    "USER_PICTURE": "photo de l'utilisateur",
     "USERNAME": "Nom d'utilisateur",
     "USERNAME_INFO": "3 à 30 caractères requis, seuls les caractères alphanumériques et le caractère _ sont autorisés.",
+    "USER_PICTURE": "photo de l'utilisateur",
     "YOU": "vous"
 }

@@ -1,13 +1,13 @@
 {
-  "LEVELS": {
-    "private": "Private (only me)",
-    "followers_only": "Followers only",
-    "local_followers_only": "Local followers only",
-    "followers_and_remote_only": "Local and remote followers only",
-    "public": "Public (everyone)"
-  },
-  "MAP_VISIBILITY": "Map and analysis visibility",
-  "VISIBILITY": "visibility",
-  "WORKOUT_VISIBILITY": "Workout visibility",
-  "WORKOUTS_VISIBILITY": "Workouts related data visibility"
+    "LEVELS": {
+        "followers_and_remote_only": "Local and remote followers only",
+        "followers_only": "Followers only",
+        "local_followers_only": "Local followers only",
+        "private": "Private (only me)",
+        "public": "Public (everyone)"
+    },
+    "MAP_VISIBILITY": "Map and analysis visibility",
+    "VISIBILITY": "visibility",
+    "WORKOUTS_VISIBILITY": "Workouts related data visibility",
+    "WORKOUT_VISIBILITY": "Workout visibility"
 }

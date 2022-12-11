@@ -1,9 +1,9 @@
 {
-  "UNKNOWN": "Fehler. Bitte versuche es erneut oder kontaktiere den Administrator.",
-  "APP_ERROR": "Bei der Anwendung scheinen einige Probleme aufgetreten zu sein.<br />Bitte versuche es später noch einmal oder kontaktiere den Administrator.",
-  "NOT_FOUND": {
-    "PAGE": "Seite nicht gefunden",
-    "WORKOUT": "Training nicht gefunden"
-  },
-  "SOMETHING_WRONG": "Etwas lief schief"
+    "APP_ERROR": "Bei der Anwendung scheinen einige Probleme aufgetreten zu sein.<br />Bitte versuche es später noch einmal oder kontaktiere den Administrator.",
+    "NOT_FOUND": {
+        "PAGE": "Seite nicht gefunden",
+        "WORKOUT": "Training nicht gefunden"
+    },
+    "SOMETHING_WRONG": "Etwas lief schief",
+    "UNKNOWN": "Fehler. Bitte versuche es erneut oder kontaktiere den Administrator."
 }
