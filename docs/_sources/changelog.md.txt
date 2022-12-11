@@ -1,5 +1,19 @@
 # Change log
 
+## Version 0.7.9 (2022/12/11)
+
+### Features and enhancements
+
+* [#280](https://github.com/SamR1/FitTrackee/issues/280) - New sport: Mountaineering
+
+### Translations
+
+* [PR#278](https://github.com/SamR1/FitTrackee/pull/278) - Translations update from Hosted Weblate (German, thanks to @qwerty287)
+* [PR#282](https://github.com/SamR1/FitTrackee/pull/282) - Init italian translation files
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/installation.html#upgrade))
+
+
 ## Version 0.7.8 (2022/11/30)
 
 FitTrackee is now available in Dutch (thanks to @bjornclauw).
