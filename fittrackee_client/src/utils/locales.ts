@@ -8,6 +8,7 @@ export const localeFromLanguage: Record<string, Locale> = {
   de: de,
   en: enUS,
   fr: fr,
+  // it: it,
   // nb: nb, // disabled for now
   nl: nl,
 }
@@ -16,6 +17,7 @@ export const languageLabels: Record<string, string> = {
   de: 'Deutsch',
   en: 'English',
   fr: 'Français',
+  // it: 'Italiano',
   // nb: 'Norsk bokmål', // disabled for now
   nl: 'Nederlands',
 }

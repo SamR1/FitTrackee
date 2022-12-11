@@ -18,6 +18,7 @@
     "@zxcvbn-ts/language-de": "^2.1.0",
     "@zxcvbn-ts/language-en": "^2.1.0",
     "@zxcvbn-ts/language-fr": "^2.2.0",
+    "@zxcvbn-ts/language-it": "^2.1.0",
     "axios": "^1.2.0",
     "chart.js": "^4.0.1",
     "chartjs-plugin-datalabels": "^2.1.0",

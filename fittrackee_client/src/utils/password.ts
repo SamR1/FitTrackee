@@ -13,10 +13,14 @@ export const setZxcvbnOptions = async (language: string) => {
   const zxcvbnDePackage = await import(
     /* webpackChunkName: "password" */ '@zxcvbn-ts/language-de'
   )
+  const zxcvbnItPackage = await import(
+    /* webpackChunkName: "password" */ '@zxcvbn-ts/language-it'
+  )
   const zxcvbnLangPackages: Record<string, typeof zxcvbnEnPackage> = {
     de: zxcvbnDePackage,
     en: zxcvbnEnPackage,
     fr: zxcvbnFrPackage,
+    it: zxcvbnItPackage,
     // no package available for norwegian bokmal, fallback on english
     nb: zxcvbnEnPackage,
     // no package available for dutch (Nederlands), fallback on english
