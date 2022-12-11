@@ -8,6 +8,9 @@
     "Cycling (Virtual)": {
         "LABEL": "Fietsen (Virtueel)"
     },
+    "Hiking": {
+        "LABEL": "Trektocht"
+    },
     "Mountain Biking": {
         "LABEL": "Mountainbiken"
     },
@@ -29,13 +32,10 @@
     "Snowshoes": {
         "LABEL": "Sneeuwschoenen"
     },
-    "Walking": {
-        "LABEL": "Wandelen"
-    },
-    "Hiking": {
-        "LABEL": "Trektocht"
-    },
     "Trail": {
         "LABEL": "Trail"
+    },
+    "Walking": {
+        "LABEL": "Wandelen"
     }
 }

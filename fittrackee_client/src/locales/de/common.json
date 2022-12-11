@@ -9,13 +9,13 @@
     "HIDDEN": "Versteckt",
     "HOME": "Startseite",
     "SELECTS": {
+        "ORDER": {
+            "ASC": "aufsteigend",
+            "DESC": "absteigend",
+            "LABEL": "sortieren"
+        },
         "ORDER_BY": {
             "LABEL": "sortiert nach"
-        },
-        "ORDER": {
-            "LABEL": "sortieren",
-            "ASC": "aufsteigend",
-            "DESC": "absteigend"
         },
         "PER_PAGE": {
             "LABEL": "pro Seite"

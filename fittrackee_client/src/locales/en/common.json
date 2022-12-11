@@ -1,25 +1,25 @@
 {
-  "ABOUT": "about",
-  "CONFIRMATION": "Confirmation",
-  "CONTACT": "contact",
-  "DAY": "day | days",
-  "DISPLAYED": "Displayed",
-  "DOCUMENTATION": "documentation",
-  "HERE": "here",
-  "HIDDEN": "Hidden",
-  "HOME": "Home",
-  "SELECTS": {
-    "ORDER_BY": {
-      "LABEL": "order by"
+    "ABOUT": "about",
+    "CONFIRMATION": "Confirmation",
+    "CONTACT": "contact",
+    "DAY": "day | days",
+    "DISPLAYED": "Displayed",
+    "DOCUMENTATION": "documentation",
+    "HERE": "here",
+    "HIDDEN": "Hidden",
+    "HOME": "Home",
+    "SELECTS": {
+        "ORDER": {
+            "ASC": "ascending",
+            "DESC": "descending",
+            "LABEL": "sort"
+        },
+        "ORDER_BY": {
+            "LABEL": "order by"
+        },
+        "PER_PAGE": {
+            "LABEL": "par page"
+        }
     },
-    "ORDER": {
-      "LABEL": "sort",
-      "ASC": "ascending",
-      "DESC": "descending"
-    },
-    "PER_PAGE": {
-      "LABEL": "par page"
-    }
-  },
-  "TOTAL": "Total"
+    "TOTAL": "Total"
 }

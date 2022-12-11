@@ -1,17 +1,18 @@
 {
     "ABOUT": "over",
     "CONFIRMATION": "Bevestiging",
-    "DOCUMENTATION": "documentatie",
-    "DISPLAYED": "Weergegeven",
-    "HERE": "hier",
     "CONTACT": "contacteer",
     "DAY": "dag | dagen",
+    "DISPLAYED": "Weergegeven",
+    "DOCUMENTATION": "documentatie",
+    "HERE": "hier",
+    "HIDDEN": "Verborgen",
     "HOME": "Startscherm",
     "SELECTS": {
         "ORDER": {
-            "LABEL": "sorteer",
+            "ASC": "oplopend",
             "DESC": "aflopend",
-            "ASC": "oplopend"
+            "LABEL": "sorteer"
         },
         "ORDER_BY": {
             "LABEL": "sorteer op"
@@ -20,6 +21,5 @@
             "LABEL": "per pagina"
         }
     },
-    "HIDDEN": "Verborgen",
     "TOTAL": "Totaal"
 }
