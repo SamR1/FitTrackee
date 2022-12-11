@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "0.7.8"
+version = "0.7.9"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0"
@@ -25,10 +25,10 @@ exclude = ["fittrackee/tests"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-authlib = "1.1.0"
+authlib = "=1.2.0"
 babel = "^2.11.0"
 dramatiq = {version = "^1.13", extras = ["redis"]}
-flask = "^2.1"
+flask = "^2.2"
 flask-bcrypt = "^1.0"
 flask-dramatiq = "^0.6.0"
 flask-limiter = {version = "^2.8", extras = ["redis"]}
@@ -42,13 +42,13 @@ python-forecastio = "^1.4"
 pytz = "^2022.6"
 shortuuid = "^1.0.11"
 staticmap = "^0.5.4"
-sqlalchemy = "=1.4.44"
+sqlalchemy = "=1.4.45"
 pyopenssl = "^22.1"
 ua-parser = "^0.16.1"
 
 [tool.poetry.dev-dependencies]
 bandit = "^1.7.4"
-black = "^22.10"
+black = "^22.12"
 freezegun = "^1.2"
 mypy = "^0.991"
 pytest = "^7.1"

@@ -1,18 +1,18 @@
 {
-    "YES": "Ja",
     "ACCOUNT-CONFIRMATION-RESEND": "Herzend bevestigings email",
     "AUTHORIZE": "Toekennen",
     "BACK": "Terug",
     "CANCEL": "Annuleren",
     "CLEAR_FILTER": "Verwijder filters",
     "DELETE_MY_ACCOUNT": "Verwijder mijn account",
+    "DISABLE": "Uitzetten",
     "EDIT": "Bewerken",
     "ENABLE": "Aanzetten",
     "FILTER": "Filter",
+    "LOGIN": "Inloggen",
     "NO": "Nee",
     "REGISTER": "Registreer",
     "RESET": "Reset",
-    "DISABLE": "Uitzetten",
     "SUBMIT": "Aanpassen",
-    "LOGIN": "Inloggen"
+    "YES": "Ja"
 }
