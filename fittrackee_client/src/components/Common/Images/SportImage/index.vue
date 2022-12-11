@@ -12,6 +12,7 @@
     <MountainBikingElectric
       v-if="sportLabel === 'Mountain Biking (Electric)'"
     />
+    <Mountaineering v-if="sportLabel === 'Mountaineering'" />
     <Rowing v-if="sportLabel === 'Rowing'" />
     <Running v-if="sportLabel === 'Running'" />
     <SkiingAlpine v-if="sportLabel === 'Skiing (Alpine)'" />
@@ -31,6 +32,7 @@
   import Hiking from '@/components/Common/Images/SportImage/Hiking.vue'
   import MountainBiking from '@/components/Common/Images/SportImage/MountainBiking.vue'
   import MountainBikingElectric from '@/components/Common/Images/SportImage/MountainBikingElectric.vue'
+  import Mountaineering from '@/components/Common/Images/SportImage/Mountaineering.vue'
   import Rowing from '@/components/Common/Images/SportImage/Rowing.vue'
   import Running from '@/components/Common/Images/SportImage/Running.vue'
   import SkiingAlpine from '@/components/Common/Images/SportImage/SkiingAlpine.vue'
