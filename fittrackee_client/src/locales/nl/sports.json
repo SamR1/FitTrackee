@@ -17,6 +17,9 @@
     "Mountain Biking (Electric)": {
         "LABEL": "Mountainbiken (Elektrisch)"
     },
+    "Mountaineering": {
+        "LABEL": "Bergbeklimmen"
+    },
     "Rowing": {
         "LABEL": "Roeien"
     },
@@ -37,8 +40,5 @@
     },
     "Walking": {
         "LABEL": "Wandelen"
-    },
-    "Mountaineering": {
-        "LABEL": "Bergbeklimmen"
     }
 }
