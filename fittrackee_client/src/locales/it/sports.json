@@ -1,2 +1,44 @@
 {
+    "Rowing": {
+        "LABEL": "Canottaggio"
+    },
+    "Running": {
+        "LABEL": "Corsa"
+    },
+    "Skiing (Alpine)": {
+        "LABEL": "Sci (Alpino)"
+    },
+    "Skiing (Cross Country)": {
+        "LABEL": "Sci (Cross Country)"
+    },
+    "Mountaineering": {
+        "LABEL": "Alpinismo"
+    },
+    "Cycling (Sport)": {
+        "LABEL": "Ciclismo (Sport)"
+    },
+    "Cycling (Transport)": {
+        "LABEL": "Ciclismo (Trasporto)"
+    },
+    "Mountain Biking": {
+        "LABEL": "Mountain Biking"
+    },
+    "Cycling (Virtual)": {
+        "LABEL": "Cicliscmo (Virtuale)"
+    },
+    "Hiking": {
+        "LABEL": "Escursioni"
+    },
+    "Snowshoes": {
+        "LABEL": "Racchette da neve"
+    },
+    "Mountain Biking (Electric)": {
+        "LABEL": "Mountain Biking (Elettrica)"
+    },
+    "Trail": {
+        "LABEL": "Sentieri"
+    },
+    "Walking": {
+        "LABEL": "Camminata"
+    }
 }

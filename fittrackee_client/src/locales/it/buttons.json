@@ -1,2 +1,18 @@
 {
+    "CANCEL": "Annulla",
+    "DELETE_MY_ACCOUNT": "Elimina il mio account",
+    "DISABLE": "Disattiva",
+    "FILTER": "Filtra",
+    "NO": "No",
+    "REGISTER": "Registra",
+    "SUBMIT": "Invia",
+    "YES": "Si",
+    "ACCOUNT-CONFIRMATION-RESEND": "Re-invia email di conferma",
+    "AUTHORIZE": "Autorizza",
+    "ENABLE": "Attiva",
+    "BACK": "Indietro",
+    "CLEAR_FILTER": "Resetta filtri",
+    "EDIT": "Modifica",
+    "LOGIN": "Log in",
+    "RESET": "Reset"
 }
