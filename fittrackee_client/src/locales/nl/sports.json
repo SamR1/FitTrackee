@@ -37,5 +37,8 @@
     },
     "Walking": {
         "LABEL": "Wandelen"
+    },
+    "Mountaineering": {
+        "LABEL": "Bergbeklimmen"
     }
 }
