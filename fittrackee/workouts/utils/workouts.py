@@ -241,6 +241,12 @@ def edit_workout(
             else float(workout.distance) / (workout.duration.seconds / 3600)
         )
         workout.max_speed = workout.ave_speed
+
+        if 'ascent' in workout_data:
+            workout.ascent = workout_data.get('ascent')
+
+        if 'descent' in workout_data:
+            workout.descent = workout_data.get('descent')
     return workout
 
 
