@@ -16,6 +16,7 @@
     "FROM": "à partir de",
     "GPX_FILE": "fichier .gpx",
     "HIDE_FILTERS": "masquer les filtres",
+    "INVALID_ASCENT_OR_DESCENT": "Les 2 valeurs pour l'élévation doivent être renseignées et être supérieures ou égales à 0.",
     "INVALID_DISTANCE": "La distance doit être supérieure à 0",
     "INVALID_DURATION": "La durée doit être supérieure à 0 secondes",
     "LATEST_WORKOUTS": "Séances récentes",

@@ -134,7 +134,7 @@
                   {{ $t('workouts.ASCENT') }}
                 </span>
                 <Distance
-                  v-if="workout.with_gpx"
+                  v-if="workout.ascent !== null"
                   :distance="workout.ascent"
                   unitFrom="m"
                   :useImperialUnits="user.imperial_units"
@@ -145,7 +145,7 @@
                   {{ $t('workouts.DESCENT') }}
                 </span>
                 <Distance
-                  v-if="workout.with_gpx"
+                  v-if="workout.descent !== null"
                   :distance="workout.descent"
                   unitFrom="m"
                   :useImperialUnits="user.imperial_units"
