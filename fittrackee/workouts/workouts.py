@@ -1132,13 +1132,15 @@ def post_workout_no_gpx(
           "status": "success"
         }
 
-    :<json string workout_date: workout date, in user timezone
-        (format: ``%Y-%m-%d %H:%M``)
+    :<json float ascent: workout ascent (not mandatory)
+    :<json float descent: workout descent (not mandatory)
     :<json float distance: workout distance in km
     :<json integer duration: workout duration in seconds
     :<json string notes: notes (not mandatory)
     :<json integer sport_id: workout sport id
-    :<json string title: workout title
+    :<json string title: workout title (not mandatory)
+    :<json string workout_date: workout date, in user timezone
+        (format: ``%Y-%m-%d %H:%M``)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1161,6 +1163,20 @@ def post_workout_no_gpx(
     ):
         return InvalidPayloadErrorResponse()
 
+    ascent = workout_data.get('ascent')
+    descent = workout_data.get('descent')
+    try:
+        if (
+            (ascent is None and descent is not None)
+            or (ascent is not None and descent is None)
+            or (
+                (ascent is not None and descent is not None)
+                and (float(ascent) < 0 or float(descent) < 0)
+            )
+        ):
+            return InvalidPayloadErrorResponse()
+    except ValueError:
+        return InvalidPayloadErrorResponse()
     try:
         new_workout = create_workout(auth_user, workout_data)
         db.session.add(new_workout)

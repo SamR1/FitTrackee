@@ -160,6 +160,8 @@ def create_workout(
             else float(new_workout.distance) / (duration.seconds / 3600)
         )
         new_workout.max_speed = new_workout.ave_speed
+        new_workout.ascent = workout_data.get('ascent')
+        new_workout.descent = workout_data.get('descent')
     return new_workout
 
 
