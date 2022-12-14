@@ -116,6 +116,8 @@ export interface IWorkoutForm {
   distance?: number
   duration?: number
   file?: Blob
+  ascent?: number | null
+  descent?: number | null
 }
 
 export interface IWorkoutPayload {
