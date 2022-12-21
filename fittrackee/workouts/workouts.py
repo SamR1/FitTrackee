@@ -1132,8 +1132,10 @@ def post_workout_no_gpx(
           "status": "success"
         }
 
-    :<json float ascent: workout ascent (not mandatory)
-    :<json float descent: workout descent (not mandatory)
+    :<json float ascent: workout ascent (not mandatory,
+           must be provided with descent)
+    :<json float descent: workout descent (not mandatory,
+           must be provided with ascent)
     :<json float distance: workout distance in km
     :<json integer duration: workout duration in seconds
     :<json string notes: notes (not mandatory)
@@ -1302,9 +1304,9 @@ def update_workout(
     :param string workout_short_id: workout short id
 
     :<json float ascent: workout ascent
-        (only for workout without gpx)
+        (only for workout without gpx, must be provided with descent)
     :<json float descent: workout descent
-        (only for workout without gpx)
+        (only for workout without gpx, must be provided with ascent)
     :<json float distance: workout distance in km
         (only for workout without gpx)
     :<json integer duration: workout duration in seconds

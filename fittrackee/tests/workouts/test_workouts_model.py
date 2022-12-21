@@ -75,7 +75,7 @@ class TestWorkoutModel:
         assert serialized_workout['with_gpx'] is False
         assert str(serialized_workout['workout_date']) == '2018-01-01 00:00:00'
 
-    def test_serialize_for_workout_without_gpx_and_with_elevation(
+    def test_serialize_for_workout_without_gpx_and_with_ascent_and_descent(
         self,
         app: Flask,
         sport_1_cycling: Sport,

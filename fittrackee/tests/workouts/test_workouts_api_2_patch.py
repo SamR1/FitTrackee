@@ -578,7 +578,7 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         assert records[3]['workout_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
         assert records[3]['value'] == 20.0
 
-    def test_it_updates_elevation_values(
+    def test_it_updates_ascent_and_descent_values(
         self,
         app: Flask,
         user_1: User,
@@ -634,7 +634,7 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         assert records[4]['workout_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
         assert records[4]['value'] == 10.0
 
-    def test_it_empties_elevation_values(
+    def test_it_empties_ascent_and_descent_values(
         self,
         app: Flask,
         user_1: User,
@@ -745,7 +745,7 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
             ('O', 150),
         ],
     )
-    def test_it_returns_400_if_elevation_is_invalid(
+    def test_it_returns_400_if_ascent_or_descent_are_invalid(
         self,
         app: Flask,
         user_1: User,
@@ -775,7 +775,7 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         'input_key',
         ['ascent', 'descent'],
     )
-    def test_it_returns_400_if_only_one_elevation_value_is_provided(
+    def test_it_returns_400_if_only_one_value_ascent_or_descent_is_provided(
         self,
         app: Flask,
         user_1: User,
