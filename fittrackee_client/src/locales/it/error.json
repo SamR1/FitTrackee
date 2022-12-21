@@ -1,9 +1,9 @@
 {
+    "APP_ERROR": "L'applicazione ha riscontrato dei problemi. <br /> Per favore riprova più tardi o contatta l'amministratore.",
     "NOT_FOUND": {
         "PAGE": "Pagina non trovata",
         "WORKOUT": "Workout non trovato"
     },
     "SOMETHING_WRONG": "Qualcosa è andato storto",
-    "UNKNOWN": "Errore. Per favore riprova o contatta l'amministratore.",
-    "APP_ERROR": "L'applicazione ha riscontrato dei problemi. <br /> Per favore riprova più tardi o contatta l'amministratore."
+    "UNKNOWN": "Errore. Per favore riprova o contatta l'amministratore."
 }

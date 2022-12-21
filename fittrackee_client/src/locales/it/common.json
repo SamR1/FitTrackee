@@ -1,9 +1,18 @@
 {
+    "ABOUT": "about",
+    "CONFIRMATION": "Conferma",
+    "CONTACT": "contatto",
+    "DAY": "giorno | giorni",
+    "DISPLAYED": "Mostrato",
+    "DOCUMENTATION": "documentazione",
+    "HERE": "qui",
+    "HIDDEN": "Nascosto",
+    "HOME": "Home",
     "SELECTS": {
         "ORDER": {
             "ASC": "Dal più basso al più alto",
-            "LABEL": "ordina",
-            "DESC": "Dal più alto al più basso"
+            "DESC": "Dal più alto al più basso",
+            "LABEL": "ordina"
         },
         "ORDER_BY": {
             "LABEL": "ordina per"
@@ -12,14 +21,5 @@
             "LABEL": "per pagina"
         }
     },
-    "TOTAL": "Totale",
-    "ABOUT": "about",
-    "CONTACT": "contatto",
-    "DISPLAYED": "Mostrato",
-    "DOCUMENTATION": "documentazione",
-    "HERE": "qui",
-    "HIDDEN": "Nascosto",
-    "CONFIRMATION": "Conferma",
-    "DAY": "giorno | giorni",
-    "HOME": "Home"
+    "TOTAL": "Totale"
 }

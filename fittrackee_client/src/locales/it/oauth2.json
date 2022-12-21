@@ -1,36 +1,36 @@
 {
+    "ADD_A_NEW_APP": "Aggiungi una nuova applicazione OAuth2",
     "APP": {
-        "ISSUE_AT": "Issue at",
-        "REDIRECT_URL": "URL redirect",
-        "SCOPE": {
-            "application:write_DESCRIPTION": "da permessi di scrittura alla configurazioen dell'applicazione.",
-            "profile:write_DESCRIPTION": "da permessi di scrittura a <code>auth</code> endpoints.",
-            "users:read_DESCRIPTION": "da permessi di lettura a <code>users</code> endpoints.",
-            "workouts:read_DESCRIPTION": "da permessi di lettura a <code>workouts</code> endpoints.",
-            "workouts:write_DESCRIPTION": "da permessi di scrittura a <code>workouts</code> endpoints.",
-            "profile:read_DESCRIPTION": "da permessi di lettura a <code>auth</code> endpoints.",
-            "LABEL": "Scope",
-            "users:write_DESCRIPTION": "da permessi di scrittura a <code>users</code>endpoints."
-        },
         "CLIENT_ID": "Id",
         "CLIENT_SECRET": "Secret",
-        "URL": "URL applicazione",
         "DESCRIPTION": "Descrizione applicazione",
-        "NAME": "Nome applicazione"
+        "ISSUE_AT": "Issue at",
+        "NAME": "Nome applicazione",
+        "REDIRECT_URL": "URL redirect",
+        "SCOPE": {
+            "LABEL": "Scope",
+            "application:write_DESCRIPTION": "da permessi di scrittura alla configurazioen dell'applicazione.",
+            "profile:read_DESCRIPTION": "da permessi di lettura a <code>auth</code> endpoints.",
+            "profile:write_DESCRIPTION": "da permessi di scrittura a <code>auth</code> endpoints.",
+            "users:read_DESCRIPTION": "da permessi di lettura a <code>users</code> endpoints.",
+            "users:write_DESCRIPTION": "da permessi di scrittura a <code>users</code>endpoints.",
+            "workouts:read_DESCRIPTION": "da permessi di lettura a <code>workouts</code> endpoints.",
+            "workouts:write_DESCRIPTION": "da permessi di scrittura a <code>workouts</code> endpoints."
+        },
+        "URL": "URL applicazione"
     },
     "APPS_LIST": "Applicazioni OAuth2",
     "APP_CREATED_SUCCESSFULLY": "Applicazione creata. Sii certo di copiare il secret ora, non lo rivedrai più.",
+    "APP_DELETION_CONFIRMATION": "Sei sicuro di voler eliminare quest'app?",
+    "APP_REQUESTING_ACCESS": "L'applicazione {0} sta chiedendo:",
     "AUTHORIZE_APP": "Autorizzi {0} ad utilizzare il tuo account?",
     "COPY_TO_CLIPBOARD": "copia nella clipboard",
-    "NO_DESCRIPTION": "nessuna descrizione",
-    "REVOKE_ALL_TOKENS": "Rimuovi tutti i tokens",
-    "TOKENS_REVOCATION_CONFIRMATION": "Sei sicuro di voler rimuovere tutti i token?",
-    "ADD_A_NEW_APP": "Aggiungi una nuova applicazione OAuth2",
-    "APP_REQUESTING_ACCESS": "L'applicazione {0} sta chiedendo:",
     "DELETE_APP": "Elimina applicazione",
     "NEW_APP": "Aggiungi applicazione",
     "NO_APP": "Applicazione non trovata!",
-    "APP_DELETION_CONFIRMATION": "Sei sicuro di voler eliminare quest'app?",
     "NO_APPS": "nessuna applicazione",
+    "NO_DESCRIPTION": "nessuna descrizione",
+    "REVOKE_ALL_TOKENS": "Rimuovi tutti i tokens",
+    "TOKENS_REVOCATION_CONFIRMATION": "Sei sicuro di voler rimuovere tutti i token?",
     "TOKENS_REVOKED": "Tutti i token esistenti associati sono stati rimossi."
 }
