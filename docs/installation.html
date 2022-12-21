@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Installation &#8212; FitTrackee 0.7.9
+    <title>Installation &#8212; FitTrackee 0.7.10
  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css" />
@@ -43,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.9
+        <span class="navbar-text navbar-version pull-left"><b>0.7.10
 </b></span>
       </div>
 
@@ -209,7 +209,7 @@
 <dt>optional</dt><dd><ul>
 <li><p>Redis for task queue (if email sending is enabled) and API rate limits</p></li>
 <li><p>SMTP provider (if email sending is enabled)</p></li>
-<li><p>API key from <a class="reference external" href="https://darksky.net/dev">Dark Sky</a></p></li>
+<li><p>API key from <a class="reference external" href="https://darksky.net/dev">Dark Sky</a> (deprecated, DarkSky will stop on March 31st, 2023)</p></li>
 <li><p><a class="reference external" href="https://poetry.eustace.io">Poetry</a> (for installation from sources only)</p></li>
 <li><p><a class="reference external" href="https://yarnpkg.com">Yarn</a> (for development only)</p></li>
 <li><p>Docker and Docker Compose (for development or evaluation purposes)</p></li>
@@ -795,11 +795,11 @@ $ make install-db
 </div>
 </div>
 <ul class="simple">
-<li><p>Download the last release (for now, it is the release v0.7.9):</p></li>
+<li><p>Download the last release (for now, it is the release v0.7.10):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.7.9.tar.gz
-$ tar -xzf v0.7.9.tar.gz
-$ mv FitTrackee-0.7.9 FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.7.10.tar.gz
+$ tar -xzf v0.7.10.tar.gz
+$ mv FitTrackee-0.7.10 FitTrackee
 $ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
@@ -919,11 +919,11 @@ $ <span class="nb">source</span> .env
 <ul class="simple">
 <li><p>Stop the application</p></li>
 <li><p>Change to the directory where FitTrackee directory is located</p></li>
-<li><p>Download the last release (for now, it is the release v0.7.9) and overwrite existing files:</p></li>
+<li><p>Download the last release (for now, it is the release v0.7.10) and overwrite existing files:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.7.9.tar.gz
-$ tar -xzf v0.7.9.tar.gz
-$ cp -R FitTrackee-0.7.9/* FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/SamR1/FitTrackee/archive/v0.7.10.tar.gz
+$ tar -xzf v0.7.10.tar.gz
+$ cp -R FitTrackee-0.7.10/* FitTrackee/
 $ <span class="nb">cd</span> FitTrackee
 </pre></div>
 </div>
@@ -1182,7 +1182,7 @@ $ make docker-test-python  <span class="c1"># run unit tests on API</span>
     </p>
     <p>
         &copy; Copyright 2018 - 2022, SamR1 <a rel="me" href="https://fosstodon.org/@FitTrackee"><i class="fa fa-mastodon" aria-hidden="true"></i></a>.
-      Last updated on Dec 11, 2022.<br/>
+      Last updated on Dec 21, 2022.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br/>
     </p>
   </div>
