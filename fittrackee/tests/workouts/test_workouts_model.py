@@ -613,4 +613,4 @@ class TestWorkoutModelGetActivity:
         workout_cycling_user_1: Workout,
     ) -> None:
         with pytest.raises(FederationDisabledException):
-            workout_cycling_user_1.get_activities()
+            workout_cycling_user_1.get_activities(activity_type='Create')

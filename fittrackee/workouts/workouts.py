@@ -61,12 +61,13 @@ MAX_WORKOUTS_PER_PAGE = 100
 MAX_WORKOUTS_TO_SEND = 5
 
 
-def handle_workout_activities(workout: Workout) -> None:
+def handle_workout_activities(workout: Workout, activity_type: str) -> None:
     sender_id = workout.user.actor.id
-    workout_activity, note_activity = workout.get_activities()
+    workout_activity, note_activity = workout.get_activities(
+        activity_type=activity_type
+    )
     recipients = workout.user.get_followers_shared_inboxes()
 
-    # only workout data are sent (no map data)
     if recipients['fittrackee']:
         send_to_remote_inbox.send(
             sender_id=sender_id,
@@ -1050,7 +1051,9 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                     new_workouts, limit=MAX_WORKOUTS_TO_SEND
                 )
                 for new_workout in workouts_to_send:
-                    handle_workout_activities(new_workout)
+                    handle_workout_activities(
+                        new_workout, activity_type='Create'
+                    )
 
             response_object = {
                 'status': 'created',
@@ -1234,7 +1237,7 @@ def post_workout_no_gpx(
         db.session.commit()
 
         if sending_activities_allowed(new_workout.workout_visibility):
-            handle_workout_activities(new_workout)
+            handle_workout_activities(new_workout, activity_type='Create')
 
         return (
             {
@@ -1491,6 +1494,9 @@ def delete_workout(
             return DataNotFoundErrorResponse('workouts')
         if auth_user.id != workout.user.id:
             return ForbiddenErrorResponse()
+
+        if sending_activities_allowed(workout.workout_visibility):
+            handle_workout_activities(workout, activity_type='Delete')
 
         db.session.delete(workout)
         db.session.commit()

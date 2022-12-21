@@ -9,6 +9,8 @@ from PIL import Image
 from werkzeug.datastructures import FileStorage
 
 from fittrackee import db
+from fittrackee.tests.utils import random_short_id
+from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
 from fittrackee.workouts.utils.maps import StaticMap
 
@@ -220,6 +222,28 @@ def workout_cycling_user_2() -> Workout:
         duration=datetime.timedelta(seconds=3600),
     )
     update_workout(workout)
+    db.session.add(workout)
+    db.session.commit()
+    return workout
+
+
+@pytest.fixture()
+def remote_cycling_workout(remote_user: User) -> Workout:
+    workout = Workout(
+        user_id=remote_user.id,
+        sport_id=1,
+        workout_date=datetime.datetime.strptime('01/01/2022', '%d/%m/%Y'),
+        distance=10,
+        duration=datetime.timedelta(seconds=3600),
+    )
+    update_workout(workout)
+    remote_domain = remote_user.actor.domain.name
+    remote_id = random_short_id()
+    workout.ap_id = (
+        f"https://{remote_domain}/federation/user/{remote_user.username}/"
+        f"workouts/{remote_id}"
+    )
+    workout.remote_url = f"https://{remote_domain}/workouts/{remote_id}"
     db.session.add(workout)
     db.session.commit()
     return workout

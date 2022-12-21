@@ -151,7 +151,9 @@ class TestFederationPostWorkoutWithoutGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        workout_activity, _ = user_1.workouts[0].get_activities()
+        workout_activity, _ = user_1.workouts[0].get_activities(
+            activity_type='Create'
+        )
         send_to_remote_inbox_mock.send.assert_called_once_with(
             sender_id=user_1.actor.id,
             activity=workout_activity,
@@ -195,7 +197,9 @@ class TestFederationPostWorkoutWithoutGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        _, note_activity = user_1.workouts[0].get_activities()
+        _, note_activity = user_1.workouts[0].get_activities(
+            activity_type='Create'
+        )
         send_to_remote_inbox_mock.send.assert_called_once_with(
             sender_id=user_1.actor.id,
             activity=note_activity,
@@ -339,7 +343,9 @@ class TestFederationPostWorkoutWithGpx(ApiTestCaseMixin):
             ),
         )
 
-        workout_activity, _ = user_1.workouts[0].get_activities()
+        workout_activity, _ = user_1.workouts[0].get_activities(
+            activity_type='Create'
+        )
         send_to_remote_inbox_mock.send.assert_called_once_with(
             sender_id=user_1.actor.id,
             activity=workout_activity,
@@ -378,7 +384,9 @@ class TestFederationPostWorkoutWithGpx(ApiTestCaseMixin):
             ),
         )
 
-        _, note_activity = user_1.workouts[0].get_activities()
+        _, note_activity = user_1.workouts[0].get_activities(
+            activity_type='Create'
+        )
         send_to_remote_inbox_mock.send.assert_called_once_with(
             sender_id=user_1.actor.id,
             activity=note_activity,
@@ -427,7 +435,9 @@ class TestFederationPostWorkoutWithZipArchive(ApiTestCaseMixin):
             assert send_to_remote_inbox_mock.send.call_count == 3
             calls = []
             for workout in user_1.workouts:
-                workout_activity, _ = workout.get_activities()
+                workout_activity, _ = workout.get_activities(
+                    activity_type='Create'
+                )
                 calls.append(
                     call(
                         sender_id=user_1.actor.id,
@@ -479,7 +489,9 @@ class TestFederationPostWorkoutWithZipArchive(ApiTestCaseMixin):
             assert send_to_remote_inbox_mock.send.call_count == 3
             calls = []
             for workout in user_1.workouts:
-                _, note_activity = workout.get_activities()
+                _, note_activity = workout.get_activities(
+                    activity_type='Create'
+                )
                 calls.append(
                     call(
                         sender_id=user_1.actor.id,

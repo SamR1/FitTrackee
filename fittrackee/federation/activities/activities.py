@@ -2,7 +2,10 @@ from abc import ABC, abstractmethod
 from typing import Dict, Tuple
 
 from fittrackee import appLog, db
-from fittrackee.federation.exceptions import ActorNotFoundException
+from fittrackee.federation.exceptions import (
+    ActorNotFoundException,
+    ObjectNotFoundException,
+)
 from fittrackee.federation.models import Actor
 from fittrackee.federation.utils.user import (
     create_remote_user,
@@ -14,7 +17,7 @@ from fittrackee.users.exceptions import (
     NotExistingFollowRequestError,
 )
 from fittrackee.workouts.exceptions import SportNotFoundException
-from fittrackee.workouts.models import Sport
+from fittrackee.workouts.models import Sport, Workout
 from fittrackee.workouts.utils.workouts import create_workout
 
 from ..objects.workout import convert_workout_activity
@@ -170,3 +173,21 @@ class CreateActivity(AbstractActivity):
         actor = self.get_actor()
         if self.activity['object']['type'] == 'Workout':
             self.create_remote_workout(actor=actor)
+
+
+class DeleteActivity(AbstractActivity):
+    def delete_remote_workout(self, actor: Actor) -> None:
+        workout_ap_id = self.activity['object']['id']
+        workout_to_delete = Workout.query.filter_by(
+            ap_id=workout_ap_id
+        ).first()
+        if not workout_to_delete:
+            raise ObjectNotFoundException('workout', self.activity_name())
+
+        db.session.delete(workout_to_delete)
+        db.session.commit()
+
+    def process_activity(self) -> None:
+        actor = self.get_actor()
+        if 'workout' in self.activity['id']:
+            self.delete_remote_workout(actor)

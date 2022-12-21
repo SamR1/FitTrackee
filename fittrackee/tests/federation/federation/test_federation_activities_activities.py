@@ -5,10 +5,11 @@ from unittest.mock import patch
 import pytest
 from flask import Flask
 
-from fittrackee.federation.constants import AP_CTX, DATE_FORMAT
+from fittrackee.federation.constants import AP_CTX, DATE_FORMAT, PUBLIC_STREAM
 from fittrackee.federation.enums import ActivityType
 from fittrackee.federation.exceptions import (
     ActorNotFoundException,
+    ObjectNotFoundException,
     UnsupportedActivityException,
 )
 from fittrackee.federation.models import Actor
@@ -545,6 +546,34 @@ class WorkoutActivitiesTestCase(RandomMixin):
             },
         }
 
+    def generate_workout_delete_activity(
+        self,
+        remote_actor: Union[RandomActor, Actor],
+        remote_workout: Optional[Workout] = None,
+    ) -> Dict:
+        remote_domain = (
+            remote_actor.domain
+            if isinstance(remote_actor, RandomActor)
+            else f'https://{remote_actor.domain.name}'
+        )
+        workout_short_id = (
+            remote_workout.ap_id
+            if remote_workout
+            else f'{remote_domain}/workouts/{self.random_short_id()}'
+        )
+        return {
+            '@context': AP_CTX,
+            'id': f'{workout_short_id}/delete',
+            'type': 'Delete',
+            'actor': remote_actor.activitypub_id,
+            'to': [PUBLIC_STREAM],
+            'cc': [],
+            'object': {
+                'id': workout_short_id,
+                'type': 'Tombstone',
+            },
+        }
+
 
 class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
     def test_it_raises_error_if_workout_actor_does_not_exist(
@@ -652,3 +681,61 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
             user_id=remote_user.id, sport_id=sport_1_cycling.id
         ).first()
         assert remote_workout.records == []
+
+
+class TestDeleteActivityForWorkout(WorkoutActivitiesTestCase):
+    def test_it_raises_error_if_remote_workout_does_not_exist(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+    ) -> None:
+        delete_activity = self.generate_workout_delete_activity(
+            remote_actor=remote_user.actor
+        )
+        activity = get_activity_instance({'type': delete_activity['type']})(
+            activity_dict=delete_activity
+        )
+
+        with pytest.raises(
+            ObjectNotFoundException,
+            match='workout not found for DeleteActivity',
+        ):
+            activity.process_activity()
+
+    def test_it_raises_error_if_workout_actor_does_not_exist(
+        self,
+        app_with_federation: Flask,
+        random_actor: Actor,
+    ) -> None:
+        delete_activity = self.generate_workout_delete_activity(
+            remote_actor=random_actor
+        )
+        activity = get_activity_instance({'type': delete_activity['type']})(
+            activity_dict=delete_activity
+        )
+
+        with pytest.raises(
+            ActorNotFoundException,
+            match='actor not found for DeleteActivity',
+        ):
+            activity.process_activity()
+
+    def test_it_deletes_remote_workout(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        remote_cycling_workout: Workout,
+    ) -> None:
+        delete_activity = self.generate_workout_delete_activity(
+            remote_actor=remote_user.actor,
+            remote_workout=remote_cycling_workout,
+        )
+        activity = get_activity_instance({'type': delete_activity['type']})(
+            activity_dict=delete_activity
+        )
+        workout_id = remote_cycling_workout.id
+
+        activity.process_activity()
+
+        assert Workout.query.filter_by(id=workout_id).first() is None

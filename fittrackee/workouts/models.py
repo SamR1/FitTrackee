@@ -13,6 +13,7 @@ from sqlalchemy.types import JSON, Enum
 
 from fittrackee import BaseModel, appLog, db
 from fittrackee.federation.decorators import federation_required
+from fittrackee.federation.objects.tombstone import TombstoneObject
 from fittrackee.federation.objects.workout import WorkoutObject
 from fittrackee.files import get_absolute_file_path
 from fittrackee.privacy_levels import PrivacyLevel, get_map_visibility
@@ -424,11 +425,17 @@ class Workout(BaseModel):
         return records
 
     @federation_required
-    def get_activities(self) -> Tuple[Dict, Dict]:
-        workout_object = WorkoutObject(self)
-        return workout_object.get_activity(), workout_object.get_activity(
-            is_note=True
-        )
+    def get_activities(self, activity_type: str) -> Tuple[Dict, Dict]:
+        if activity_type == 'Create':
+            workout_object = WorkoutObject(self)
+            return workout_object.get_activity(), workout_object.get_activity(
+                is_note=True
+            )
+        # Delete activity
+        tombstone_object = TombstoneObject(self)
+        delete_activity = tombstone_object.get_activity()
+        # delete activities for workout and note are the same
+        return delete_activity, delete_activity
 
 
 @listens_for(Workout, 'after_insert')

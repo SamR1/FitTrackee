@@ -127,7 +127,7 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
         assert serialized_workout['segments'] == []
 
 
-class TestWorkoutModelGetWorkoutActivity:
+class TestWorkoutModelGetWorkoutCreateActivity:
     @pytest.mark.parametrize(
         'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
     )
@@ -141,13 +141,13 @@ class TestWorkoutModelGetWorkoutActivity:
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_visibility
         with pytest.raises(InvalidVisibilityException):
-            workout_cycling_user_1.get_activities()
+            workout_cycling_user_1.get_activities(activity_type='Create')
 
     @pytest.mark.parametrize(
         'workout_visibility',
         [PrivacyLevel.FOLLOWERS_AND_REMOTE, PrivacyLevel.PUBLIC],
     )
-    def test_it_returns_activities_when_visibility_is_not_private(
+    def test_it_returns_activities_when_visibility_is_valid(
         self,
         app_with_federation: Flask,
         user_1: User,
@@ -157,9 +157,53 @@ class TestWorkoutModelGetWorkoutActivity:
     ) -> None:
         workout_cycling_user_1.workout_visibility = workout_visibility
 
-        workout, note = workout_cycling_user_1.get_activities()
+        create_workout, create_note = workout_cycling_user_1.get_activities(
+            activity_type='Create'
+        )
 
-        assert workout['type'] == 'Create'
-        assert workout['object']['type'] == 'Workout'
-        assert note['type'] == 'Create'
-        assert note['object']['type'] == 'Note'
+        assert create_workout['type'] == 'Create'
+        assert create_workout['object']['type'] == 'Workout'
+        assert create_note['type'] == 'Create'
+        assert create_note['object']['type'] == 'Note'
+
+
+class TestWorkoutModelGetWorkoutDeleteActivity:
+    @pytest.mark.parametrize(
+        'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
+    )
+    def test_it_raises_error_if_visibility_is_invalid(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_visibility: PrivacyLevel,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = input_visibility
+        with pytest.raises(InvalidVisibilityException):
+            workout_cycling_user_1.get_activities(activity_type='Delete')
+
+    @pytest.mark.parametrize(
+        'workout_visibility',
+        [PrivacyLevel.FOLLOWERS_AND_REMOTE, PrivacyLevel.PUBLIC],
+    )
+    def test_it_returns_activities_when_visibility_is_valid(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_visibility: PrivacyLevel,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = workout_visibility
+
+        delete_workout, _ = workout_cycling_user_1.get_activities(
+            activity_type='Delete'
+        )
+
+        assert delete_workout['type'] == 'Delete'
+        assert delete_workout['object']['type'] == 'Tombstone'
+        assert delete_workout['object']['id'] == (
+            f'{user_1.actor.activitypub_id}/workouts/'
+            f'{workout_cycling_user_1.short_id}'
+        )

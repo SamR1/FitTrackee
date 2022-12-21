@@ -1,6 +1,7 @@
 from .activities import (
     AcceptActivity,
     CreateActivity,
+    DeleteActivity,
     FollowActivity,
     RejectActivity,
     UndoActivity,
@@ -9,6 +10,7 @@ from .activities import (
 __all__ = [
     'AcceptActivity',
     'CreateActivity',
+    'DeleteActivity',
     'FollowActivity',
     'RejectActivity',
     'UndoActivity',

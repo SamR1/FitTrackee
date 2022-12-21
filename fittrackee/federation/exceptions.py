@@ -74,3 +74,11 @@ class UnsupportedActivityException(GenericException):
             status='error',
             message=f"Unsupported activity '{activity_type}'.",
         )
+
+
+class ObjectNotFoundException(GenericException):
+    def __init__(self, object_type: str, activity_type: str) -> None:
+        super().__init__(
+            status='error',
+            message=f"{object_type} not found for {activity_type}.",
+        )
