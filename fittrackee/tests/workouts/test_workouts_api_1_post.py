@@ -1092,6 +1092,49 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
         assert_workout_data_wo_gpx(data, user_1)
 
     @pytest.mark.parametrize(
+        'input_ascent, input_descent',
+        [
+            (100, 150),
+            (0, 150),
+            (100, 0),
+        ],
+    )
+    def test_it_adds_workout_with_ascent_and_descent_when_provided(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        input_ascent: int,
+        input_descent: int,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=3600,
+                    workout_date='2018-05-15 14:05',
+                    distance=10,
+                    ascent=input_ascent,
+                    descent=input_descent,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['ascent'] == input_ascent
+        assert data['data']['workouts'][0]['descent'] == input_descent
+
+    @pytest.mark.parametrize(
         'description,input_data',
         [
             (
@@ -1140,6 +1183,82 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
             '/api/workouts/no_gpx',
             content_type='application/json',
             data=json.dumps(input_data),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response)
+
+    @pytest.mark.parametrize(
+        'description,input_data',
+        [
+            ("only ascent", {"ascent": 100}),
+            ("only descent", {"descent": 150}),
+        ],
+    )
+    def test_it_returns_400_when_ascent_or_descent_are_missing(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        description: str,
+        input_data: Dict,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            data=json.dumps(
+                {
+                    'sport_id': 1,
+                    'duration': 3600,
+                    'workout_date': '2018-05-15 14:05',
+                    'distance': 10,
+                    **input_data,
+                }
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response)
+
+    @pytest.mark.parametrize(
+        'description,input_data',
+        [
+            ("ascent is below 0", {"ascent": -100, "descent": 100}),
+            ("descent is below 0", {"ascent": 150, "descent": -100}),
+            ("ascent is None", {"ascent": None, "descent": 100}),
+            ("descent is None", {"ascent": 150, "descent": None}),
+            ("ascent is invalid", {"ascent": "a", "descent": 100}),
+            ("descent is invalid", {"ascent": 150, "descent": "b"}),
+        ],
+    )
+    def test_it_returns_400_when_ascent_or_descent_are_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        description: str,
+        input_data: Dict,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            data=json.dumps(
+                {
+                    'sport_id': 1,
+                    'duration': 3600,
+                    'workout_date': '2018-05-15 14:05',
+                    'distance': 10,
+                    **input_data,
+                }
+            ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 

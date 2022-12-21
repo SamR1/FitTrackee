@@ -123,6 +123,8 @@ export interface IWorkoutForm {
   distance?: number
   duration?: number
   file?: Blob
+  ascent?: number | null
+  descent?: number | null
   map_visibility?: TPrivacyLevels
   workout_visibility: TPrivacyLevels
 }

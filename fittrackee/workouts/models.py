@@ -150,8 +150,8 @@ class Workout(BaseModel):
     distance = db.Column(db.Numeric(6, 3), nullable=True)  # kilometers
     min_alt = db.Column(db.Numeric(6, 2), nullable=True)  # meters
     max_alt = db.Column(db.Numeric(6, 2), nullable=True)  # meters
-    descent = db.Column(db.Numeric(7, 2), nullable=True)  # meters
-    ascent = db.Column(db.Numeric(7, 2), nullable=True)  # meters
+    descent = db.Column(db.Numeric(8, 3), nullable=True)  # meters
+    ascent = db.Column(db.Numeric(8, 3), nullable=True)  # meters
     max_speed = db.Column(db.Numeric(6, 2), nullable=True)  # km/h
     ave_speed = db.Column(db.Numeric(6, 2), nullable=True)  # km/h
     bounds = db.Column(postgresql.ARRAY(db.Float), nullable=True)
@@ -353,8 +353,10 @@ class Workout(BaseModel):
             'distance': float(self.distance) if self.distance else None,
             'min_alt': float(self.min_alt) if self.min_alt else None,
             'max_alt': float(self.max_alt) if self.max_alt else None,
-            'descent': float(self.descent) if self.descent else None,
-            'ascent': float(self.ascent) if self.ascent else None,
+            'descent': float(self.descent)
+            if self.descent is not None
+            else None,
+            'ascent': float(self.ascent) if self.ascent is not None else None,
             'max_speed': float(self.max_speed) if self.max_speed else None,
             'ave_speed': float(self.ave_speed) if self.ave_speed else None,
             'with_gpx': self.gpx is not None and can_see_map_data,
@@ -490,8 +492,8 @@ class WorkoutSegment(BaseModel):
     distance = db.Column(db.Numeric(6, 3), nullable=True)  # kilometers
     min_alt = db.Column(db.Numeric(6, 2), nullable=True)  # meters
     max_alt = db.Column(db.Numeric(6, 2), nullable=True)  # meters
-    descent = db.Column(db.Numeric(7, 2), nullable=True)  # meters
-    ascent = db.Column(db.Numeric(7, 2), nullable=True)  # meters
+    descent = db.Column(db.Numeric(8, 3), nullable=True)  # meters
+    ascent = db.Column(db.Numeric(8, 3), nullable=True)  # meters
     max_speed = db.Column(db.Numeric(6, 2), nullable=True)  # km/h
     ave_speed = db.Column(db.Numeric(6, 2), nullable=True)  # km/h
 

@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Workouts &#8212; FitTrackee 0.7.9
+    <title>Workouts &#8212; FitTrackee 0.7.10
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
@@ -43,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.9
+        <span class="navbar-text navbar-version pull-left"><b>0.7.10
 </b></span>
       </div>
 
@@ -961,13 +961,17 @@ Double quotes in notes must be escaped.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Request JSON Object<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>workout_date</strong> (<em>string</em>) – workout date, in user timezone
-(format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span> <span class="pre">%H:%M</span></code>)</p></li>
+<li><p><strong>ascent</strong> (<em>float</em>) – workout ascent (not mandatory,
+must be provided with descent)</p></li>
+<li><p><strong>descent</strong> (<em>float</em>) – workout descent (not mandatory,
+must be provided with ascent)</p></li>
 <li><p><strong>distance</strong> (<em>float</em>) – workout distance in km</p></li>
 <li><p><strong>duration</strong> (<em>integer</em>) – workout duration in seconds</p></li>
 <li><p><strong>notes</strong> (<em>string</em>) – notes (not mandatory)</p></li>
 <li><p><strong>sport_id</strong> (<em>integer</em>) – workout sport id</p></li>
-<li><p><strong>title</strong> (<em>string</em>) – workout title</p></li>
+<li><p><strong>title</strong> (<em>string</em>) – workout title (not mandatory)</p></li>
+<li><p><strong>workout_date</strong> (<em>string</em>) – workout date, in user timezone
+(format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span> <span class="pre">%H:%M</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Request Headers<span class="colon">:</span></dt>
@@ -1088,9 +1092,10 @@ Double quotes in notes must be escaped.</p></li>
 </dd>
 <dt class="field-even">Request JSON Object<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>workout_date</strong> (<em>string</em>) – workout date in user timezone
-(format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span> <span class="pre">%H:%M</span></code>)
-(only for workout without gpx)</p></li>
+<li><p><strong>ascent</strong> (<em>float</em>) – workout ascent
+(only for workout without gpx, must be provided with descent)</p></li>
+<li><p><strong>descent</strong> (<em>float</em>) – workout descent
+(only for workout without gpx, must be provided with ascent)</p></li>
 <li><p><strong>distance</strong> (<em>float</em>) – workout distance in km
 (only for workout without gpx)</p></li>
 <li><p><strong>duration</strong> (<em>integer</em>) – workout duration in seconds
@@ -1098,6 +1103,9 @@ Double quotes in notes must be escaped.</p></li>
 <li><p><strong>notes</strong> (<em>string</em>) – notes</p></li>
 <li><p><strong>sport_id</strong> (<em>integer</em>) – workout sport id</p></li>
 <li><p><strong>title</strong> (<em>string</em>) – workout title</p></li>
+<li><p><strong>workout_date</strong> (<em>string</em>) – workout date in user timezone
+(format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span> <span class="pre">%H:%M</span></code>)
+(only for workout without gpx)</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Request Headers<span class="colon">:</span></dt>
@@ -1179,7 +1187,7 @@ Double quotes in notes must be escaped.</p></li>
     </p>
     <p>
         &copy; Copyright 2018 - 2022, SamR1 <a rel="me" href="https://fosstodon.org/@FitTrackee"><i class="fa fa-mastodon" aria-hidden="true"></i></a>.
-      Last updated on Dec 11, 2022.<br/>
+      Last updated on Dec 21, 2022.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br/>
     </p>
   </div>

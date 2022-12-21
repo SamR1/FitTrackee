@@ -16,6 +16,7 @@
     "FROM": "from",
     "GPX_FILE": ".gpx file",
     "HIDE_FILTERS": "hide filters",
+    "INVALID_ASCENT_OR_DESCENT": "Both elevation values must be provided and be greater than or equal to 0.",
     "INVALID_DISTANCE": "The distance must be greater than 0",
     "INVALID_DURATION": "The duration must be greater than 0 seconds",
     "LATEST_WORKOUTS": "Latest workouts",

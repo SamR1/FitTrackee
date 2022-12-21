@@ -172,6 +172,8 @@ def create_workout(
             else float(new_workout.distance) / (duration.seconds / 3600)
         )
         new_workout.max_speed = new_workout.ave_speed
+        new_workout.ascent = workout_data.get('ascent')
+        new_workout.descent = workout_data.get('descent')
     return new_workout
 
 
@@ -255,6 +257,13 @@ def edit_workout(
             else float(workout.distance) / (workout.duration.seconds / 3600)
         )
         workout.max_speed = workout.ave_speed
+
+        if 'ascent' in workout_data:
+            workout.ascent = workout_data.get('ascent')
+
+        if 'descent' in workout_data:
+            workout.descent = workout_data.get('descent')
+
     else:
         if workout_data.get('map_visibility') is not None:
             map_visibility = PrivacyLevel(workout_data.get('map_visibility'))
