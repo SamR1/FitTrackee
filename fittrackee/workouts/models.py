@@ -160,7 +160,6 @@ class Workout(BaseModel):
     weather_start = db.Column(JSON, nullable=True)
     weather_end = db.Column(JSON, nullable=True)
     notes = db.Column(db.String(500), nullable=True)
-    remote_url = db.Column(db.String(255), nullable=True)
     workout_visibility = db.Column(
         Enum(PrivacyLevel, name='privacy_levels'),
         server_default='PRIVATE',
@@ -171,6 +170,9 @@ class Workout(BaseModel):
         server_default='PRIVATE',
         nullable=False,
     )
+    ap_id = db.Column(db.Text(), nullable=True)
+    remote_url = db.Column(db.Text(), nullable=True)
+
     segments = db.relationship(
         'WorkoutSegment',
         lazy=True,

@@ -600,6 +600,7 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
         remote_workout = Workout.query.filter_by(
             user_id=remote_user.id, sport_id=sport_1_cycling.id
         ).first()
+        assert remote_workout.ap_id == workout_activity['object']['id']
         assert remote_workout.remote_url == workout_activity['object']['url']
         assert (
             remote_workout.distance == workout_activity['object']['distance']

@@ -137,6 +137,7 @@ def create_workout(
         duration=duration,
     )
     new_workout.notes = workout_data.get('notes')
+    new_workout.ap_id = workout_data.get('id')
     new_workout.remote_url = workout_data.get('url')
     new_workout.workout_visibility = PrivacyLevel(
         workout_data.get('workout_visibility', user.workouts_visibility.value)

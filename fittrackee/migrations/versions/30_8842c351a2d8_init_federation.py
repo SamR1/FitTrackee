@@ -231,10 +231,6 @@ def upgrade():
 
     op.add_column(
         'workouts',
-        sa.Column('remote_url', sa.String(length=255), nullable=True)
-    )
-    op.add_column(
-        'workouts',
         sa.Column(
             'workout_visibility',
             privacy_levels,
@@ -251,6 +247,14 @@ def upgrade():
             nullable=True
         )
     )
+    op.add_column(
+        'workouts',
+        sa.Column('ap_id', sa.Text(), nullable=True)
+    )
+    op.add_column(
+        'workouts',
+        sa.Column('remote_url', sa.Text(), nullable=True)
+    )
     op.execute(
         "UPDATE workouts "
         "SET workout_visibility = 'PRIVATE', "
@@ -261,9 +265,10 @@ def upgrade():
 
 
 def downgrade():
+    op.drop_column('workouts', 'remote_url')
+    op.drop_column('workouts', 'ap_id')
     op.drop_column('workouts', 'map_visibility')
     op.drop_column('workouts', 'workout_visibility')
-    op.drop_column('workouts', 'remote_url')
 
     op.drop_table('follow_requests')
 
