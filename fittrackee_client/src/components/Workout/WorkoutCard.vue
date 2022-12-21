@@ -114,7 +114,7 @@
             />
           </div>
         </div>
-        <div class="data altitude" v-if="workout && workout.with_gpx">
+        <div class="data altitude" v-if="hasElevation(workout)">
           <i class="fa fa-location-arrow" aria-hidden="true" />
           <div class="data-values">
             +<Distance
@@ -167,6 +167,10 @@
   const locale: ComputedRef<Locale> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LOCALE]
   )
+
+  function hasElevation(workout: IWorkout): boolean {
+    return workout && workout.ascent !== null && workout.descent !== null
+  }
 </script>
 
 <style lang="scss" scoped>

@@ -1,5 +1,20 @@
 # Change log
 
+## Version 0.7.10 (2022/12/21)
+
+### Features and enhancements
+
+* [#92](https://github.com/SamR1/FitTrackee/issues/92) - Add ascent and descent parameters in workout import without GPX file
+
+### Translations
+
+* [#279](https://github.com/SamR1/FitTrackee/issues/279) - [Translation Request] - Italian (thanks to @dperruso)
+* [c88a515](https://github.com/SamR1/FitTrackee/commit/c88a5158fea5f9e2fa8c41ecc2c100f6d9319371) - Translations update from Hosted Weblate (Dutch, thanks to @bjornclauw)
+* [f96dcef](https://github.com/SamR1/FitTrackee/commit/f96dcef0dc69d00f65a036fa2e33c22612004cb1) - Translations update (German)
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/installation.html#upgrade))
+
+
 ## Version 0.7.9 (2022/12/11)
 
 ### Features and enhancements
