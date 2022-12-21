@@ -38,7 +38,9 @@ Workouts
   It can be overridden in user preferences.
 
 - Dashboard with month calendar displaying workouts and record. The week can start on Sunday or Monday (which can be changed in the user preferences). The calendar displays up to 100 workouts.
-- Workout creation by uploading a gpx file (related data are stored in database with metric system). A workout can even be created without gpx (the user must enter date, time, duration and distance).
+- Workout creation by uploading a gpx file (related data are stored in database with metric system).
+- | A workout can even be created without gpx (the user must enter date, time, duration and distance).
+  | Ascent and descent can also be provided (*new in 0.7.10*).
 - | A workout with a gpx file can be displayed with map and charts (speed and elevation).
   | Controls allow full screen view and position reset (*new in 0.5.5*).
 - | If DarkSky API key is provided, weather is displayed in workout detail.
@@ -142,6 +144,7 @@ FitTrackee is available in the following languages (which can be saved in the us
 - French (*new in 0.2.3*)
 - German (*new in 0.6.9*)
 - Dutch (*new in 0.7.8*)
+- Italian (*new in 0.7.10*)
 
 Translations status on `Weblate <https://hosted.weblate.org/engage/fittrackee/>`__:
 
