@@ -100,5 +100,6 @@
     "WORKOUT_DATE": "datum training",
     "WORKOUT_DELETION_CONFIRMATION": "Weet u zeker dat u deze training wilt verwijderen?",
     "ZIP_ARCHIVE": ".zip bestand",
-    "ZIP_ARCHIVE_DESCRIPTION": "of .zip archief met .gpx bestanden"
+    "ZIP_ARCHIVE_DESCRIPTION": "of .zip archief met .gpx bestanden",
+    "INVALID_ASCENT_OR_DESCENT": "Beide waarden moeten opgegeven worden en dienen groter dan of gelijk aan 0 te zijn."
 }
