@@ -16,10 +16,10 @@ class BaseWeather(ABC):
         # Expected dict:
         # {
         #     "humidity": 0.69,
-        # 	  "icon": "partly-cloudy-day",
-        # 	  "temperature": 12.26,
-        # 	  "wind": 3.49,
-        # 	  "windBearing": 315
+        #     "icon": "partly-cloudy-day",
+        #     "temperature": 12.26,
+        #     "wind": 3.49,
+        #     "windBearing": 315
         # }
         #
         # FitTrackee expects the following units:
