@@ -28,7 +28,7 @@ Prerequisites
 - optional
     - Redis for task queue (if email sending is enabled) and API rate limits
     - SMTP provider (if email sending is enabled)
-    - API key from `Dark Sky <https://darksky.net/dev>`__
+    - API key from `Dark Sky <https://darksky.net/dev>`__ (deprecated, DarkSky will stop on March 31st, 2023)
     - `Poetry <https://poetry.eustace.io>`__ (for installation from sources only)
     - `Yarn <https://yarnpkg.com>`__ (for development only)
     -  Docker and Docker Compose (for development or evaluation purposes)
@@ -392,16 +392,16 @@ For instance, copy and update ``.env`` file from ``.env.example`` and source the
 
     $ fittrackee
 
-- Start task queue workers if email sending is enabled.
+- Start task queue workers if email sending is enabled, with flask-dramatiq CLI:
 
 .. code-block:: bash
 
-    $ fittrackee_worker --processes 2
+    $ flask worker --processes 2
 
 .. note::
     | To start application and workers with **systemd** service, see `Deployment <installation.html#deployment>`__
 
-- Open http://localhost:3000 and register
+- Open http://localhost:5000 and register
 
 - To set admin rights to the newly created account, use the following command line:
 
@@ -480,13 +480,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.7.3):
+-  Download the last release (for now, it is the release v0.7.10):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.3.tar.gz
-   $ tar -xzf v0.7.3.tar.gz
-   $ mv FitTrackee-0.7.3 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.10.tar.gz
+   $ tar -xzf v0.7.10.tar.gz
+   $ mv FitTrackee-0.7.10 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -606,13 +606,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.7.3) and overwrite existing files:
+- Download the last release (for now, it is the release v0.7.10) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.3.tar.gz
-   $ tar -xzf v0.7.3.tar.gz
-   $ cp -R FitTrackee-0.7.3/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.10.tar.gz
+   $ tar -xzf v0.7.10.tar.gz
+   $ cp -R FitTrackee-0.7.10/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -732,6 +732,14 @@ Examples (to update depending on your application configuration and given distri
         server_name example.com;
         ssl_certificate fullchain.pem;
         ssl_certificate_key privkey.pem;
+
+        ## this parameter controls how large of a file can be 
+        ## uploaded, and defaults to 1MB. If you change the FitTrackee
+        ## settings to allow larger uploads, you'll need to change this
+        ## setting by uncommenting the line below and setting the size limit
+        ## you want. Set to "0" to prevent nginx from checking the 
+        ## request body size at all
+        # client_max_body_size 1m; 
 
         location / {
             proxy_pass http://127.0.0.1:5000;

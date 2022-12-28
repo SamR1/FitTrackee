@@ -60,8 +60,6 @@
 <style lang="scss" scoped>
   @import '~@/scss/vars.scss';
   #workouts {
-    height: 100%;
-
     .workouts-container {
       display: flex;
       flex-direction: row;

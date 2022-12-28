@@ -1,0 +1,9 @@
+{
+    "APP_ERROR": "Er heeft zich een onbekende fout voorgedaan.<br />Probeer aub later opnieuw of contacteer de administrator.",
+    "NOT_FOUND": {
+        "PAGE": "Pagina niet gevonden",
+        "WORKOUT": "Training niet gevonden"
+    },
+    "SOMETHING_WRONG": "Er ging iets mis",
+    "UNKNOWN": "Fout. Probeer opnieuw of contacteer de administrator."
+}

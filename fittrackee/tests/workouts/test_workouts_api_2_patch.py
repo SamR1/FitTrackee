@@ -578,6 +578,93 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         assert records[3]['workout_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
         assert records[3]['value'] == 20.0
 
+    def test_it_updates_ascent_and_descent_values(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_short_id = workout_cycling_user_1.short_id
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        ascent = 10
+        descent = 0
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            data=json.dumps(dict(ascent=ascent, descent=descent)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['ascent'] == ascent
+        assert data['data']['workouts'][0]['descent'] == descent
+
+        records = data['data']['workouts'][0]['records']
+        assert len(records) == 5
+        assert records[0]['sport_id'] == sport_1_cycling.id
+        assert records[0]['workout_id'] == workout_short_id
+        assert records[0]['record_type'] == 'HA'
+        assert records[0]['workout_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
+        assert records[0]['value'] == ascent
+        assert records[1]['sport_id'] == sport_1_cycling.id
+        assert records[1]['workout_id'] == workout_short_id
+        assert records[1]['record_type'] == 'MS'
+        assert records[1]['workout_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
+        assert records[1]['value'] == 10.0
+        assert records[2]['sport_id'] == sport_1_cycling.id
+        assert records[2]['workout_id'] == workout_short_id
+        assert records[2]['record_type'] == 'LD'
+        assert records[2]['workout_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
+        assert records[2]['value'] == '1:00:00'
+        assert records[3]['sport_id'] == sport_1_cycling.id
+        assert records[3]['workout_id'] == workout_short_id
+        assert records[3]['record_type'] == 'FD'
+        assert records[3]['workout_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
+        assert records[3]['value'] == 10.0
+        assert records[4]['sport_id'] == sport_1_cycling.id
+        assert records[4]['workout_id'] == workout_short_id
+        assert records[4]['record_type'] == 'AS'
+        assert records[4]['workout_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
+        assert records[4]['value'] == 10.0
+
+    def test_it_empties_ascent_and_descent_values(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_short_id = workout_cycling_user_1.short_id
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        workout_cycling_user_1.ascent = 100
+        workout_cycling_user_1.descent = 150
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            data=json.dumps(dict(ascent=None, descent=None)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['ascent'] is None
+        assert data['data']['workouts'][0]['descent'] is None
+        records = data['data']['workouts'][0]['records']
+        assert len(records) == 4
+        assert 'HA' not in [record['record_type'] for record in records]
+
     def test_it_returns_400_if_payload_is_empty(
         self,
         app: Flask,
@@ -646,3 +733,64 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
 
         data = self.assert_404(response)
         assert len(data['data']['workouts']) == 0
+
+    @pytest.mark.parametrize(
+        'input_ascent, input_descent',
+        [
+            (100, None),
+            (None, 150),
+            (100, -10),
+            (-100, 150),
+            (100, 'O'),
+            ('O', 150),
+        ],
+    )
+    def test_it_returns_400_if_ascent_or_descent_are_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_ascent: int,
+        input_descent: int,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        response = client.patch(
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    ascent=input_ascent,
+                    descent=input_descent,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response)
+
+    @pytest.mark.parametrize(
+        'input_key',
+        ['ascent', 'descent'],
+    )
+    def test_it_returns_400_if_only_one_value_ascent_or_descent_is_provided(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_key: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        response = client.patch(
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
+            content_type='application/json',
+            data=json.dumps({input_key: 100}),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response)

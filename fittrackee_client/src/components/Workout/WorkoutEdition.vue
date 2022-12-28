@@ -37,7 +37,7 @@
                 </div>
               </div>
               <div class="form-item">
-                <label> {{ $t('workouts.SPORT', 1) }}: </label>
+                <label> {{ $t('workouts.SPORT', 1) }}*: </label>
                 <select
                   id="sport"
                   required
@@ -57,7 +57,7 @@
               <div class="form-item" v-if="isCreation && withGpx">
                 <label for="gpxFile">
                   {{ $t('workouts.GPX_FILE') }}
-                  {{ $t('workouts.ZIP_ARCHIVE_DESCRIPTION') }}:
+                  {{ $t('workouts.ZIP_ARCHIVE_DESCRIPTION') }}*:
                 </label>
                 <input
                   id="gpxFile"
@@ -105,7 +105,7 @@
               <div v-if="!withGpx">
                 <div class="workout-date-duration">
                   <div class="form-item">
-                    <label>{{ $t('workouts.WORKOUT_DATE') }}:</label>
+                    <label>{{ $t('workouts.WORKOUT_DATE') }}*:</label>
                     <div class="workout-date-time">
                       <input
                         id="workout-date"
@@ -129,12 +129,13 @@
                     </div>
                   </div>
                   <div class="form-item">
-                    <label>{{ $t('workouts.DURATION') }}:</label>
+                    <label>{{ $t('workouts.DURATION') }}*:</label>
                     <div>
                       <input
                         id="workout-duration-hour"
                         name="workout-duration-hour"
                         class="workout-duration"
+                        :class="{ errored: isDurationInvalid() }"
                         type="text"
                         placeholder="HH"
                         minlength="1"
@@ -150,6 +151,7 @@
                         id="workout-duration-minutes"
                         name="workout-duration-minutes"
                         class="workout-duration"
+                        :class="{ errored: isDurationInvalid() }"
                         type="text"
                         pattern="^([0-5][0-9])$"
                         minlength="2"
@@ -165,6 +167,7 @@
                         id="workout-duration-seconds"
                         name="workout-duration-seconds"
                         class="workout-duration"
+                        :class="{ errored: isDurationInvalid() }"
                         type="text"
                         pattern="^([0-5][0-9])$"
                         minlength="2"
@@ -178,22 +181,59 @@
                     </div>
                   </div>
                 </div>
-                <div class="form-item">
-                  <label>
-                    {{ $t('workouts.DISTANCE') }} ({{
-                      authUser.imperial_units ? 'mi' : 'km'
-                    }}):
-                  </label>
-                  <input
-                    name="workout-distance"
-                    type="number"
-                    min="0"
-                    step="0.001"
-                    required
-                    @invalid="invalidateForm"
-                    :disabled="loading"
-                    v-model="workoutForm.workoutDistance"
-                  />
+                <div class="workout-data">
+                  <div class="form-item">
+                    <label>
+                      {{ $t('workouts.DISTANCE') }} ({{
+                        authUser.imperial_units ? 'mi' : 'km'
+                      }})*:
+                    </label>
+                    <input
+                      :class="{ errored: isDistanceInvalid() }"
+                      name="workout-distance"
+                      type="number"
+                      min="0"
+                      step="0.001"
+                      required
+                      @invalid="invalidateForm"
+                      :disabled="loading"
+                      v-model="workoutForm.workoutDistance"
+                    />
+                  </div>
+                  <div class="form-item">
+                    <label>
+                      {{ $t('workouts.ASCENT') }} ({{
+                        authUser.imperial_units ? 'ft' : 'm'
+                      }}):
+                    </label>
+                    <input
+                      :class="{ errored: isElevationInvalid() }"
+                      name="workout-ascent"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      @invalid="invalidateForm"
+                      :disabled="loading"
+                      v-model="workoutForm.workoutAscent"
+                    />
+                  </div>
+                  <div class="form-item">
+                    <label>
+                      {{ $t('workouts.DESCENT') }} ({{
+                        authUser.imperial_units ? 'ft' : 'm'
+                      }}):
+                    </label>
+                    <input
+                      :class="{ errored: isElevationInvalid() }"
+                      name="workout-descent"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      @invalid="invalidateForm"
+                      :disabled="loading"
+                      v-model="workoutForm.workoutDescent"
+                    />
+                  </div>
                 </div>
               </div>
               <div class="form-item">
@@ -228,6 +268,7 @@
 <script setup lang="ts">
   import {
     ComputedRef,
+    Ref,
     computed,
     reactive,
     ref,
@@ -300,12 +341,15 @@
     workoutDurationMinutes: '',
     workoutDurationSeconds: '',
     workoutDistance: '',
+    workoutAscent: '',
+    workoutDescent: '',
   })
   const withGpx = ref(
     props.workout.id ? props.workout.with_gpx : props.isCreation
   )
   let gpxFile: File | null = null
   const formErrors = ref(false)
+  const payloadErrorMessages: Ref<string[]> = ref([])
 
   onMounted(() => {
     if (props.workout.id) {
@@ -337,26 +381,78 @@
       const duration = workout.duration.split(':')
       workoutForm.workoutDistance = `${
         authUser.value.imperial_units
-          ? convertDistance(workout.distance, 'km', 'mi', 2)
-          : parseFloat(workout.distance.toFixed(2))
+          ? convertDistance(workout.distance, 'km', 'mi', 3)
+          : parseFloat(workout.distance.toFixed(3))
       }`
       workoutForm.workoutDate = workoutDateTime.workout_date
       workoutForm.workoutTime = workoutDateTime.workout_time
       workoutForm.workoutDurationHour = duration[0]
       workoutForm.workoutDurationMinutes = duration[1]
       workoutForm.workoutDurationSeconds = duration[2]
+      workoutForm.workoutAscent =
+        workout.ascent === null
+          ? ''
+          : `${
+              authUser.value.imperial_units
+                ? convertDistance(workout.ascent, 'm', 'ft', 2)
+                : parseFloat(workout.ascent.toFixed(2))
+            }`
+      workoutForm.workoutDescent =
+        workout.descent === null
+          ? ''
+          : `${
+              authUser.value.imperial_units
+                ? convertDistance(workout.descent, 'm', 'ft', 2)
+                : parseFloat(workout.descent.toFixed(2))
+            }`
     }
   }
+  function isDistanceInvalid() {
+    return payloadErrorMessages.value.includes('workouts.INVALID_DISTANCE')
+  }
+  function isDurationInvalid() {
+    return payloadErrorMessages.value.includes('workouts.INVALID_DURATION')
+  }
+  function isElevationInvalid() {
+    return payloadErrorMessages.value.includes(
+      'workouts.INVALID_ASCENT_OR_DESCENT'
+    )
+  }
   function formatPayload(payload: IWorkoutForm) {
+    payloadErrorMessages.value = []
     payload.title = workoutForm.title
-    payload.distance = authUser.value.imperial_units
-      ? convertDistance(+workoutForm.workoutDistance, 'mi', 'km', 3)
-      : +workoutForm.workoutDistance
     payload.duration =
       +workoutForm.workoutDurationHour * 3600 +
       +workoutForm.workoutDurationMinutes * 60 +
       +workoutForm.workoutDurationSeconds
+    if (payload.duration <= 0) {
+      payloadErrorMessages.value.push('workouts.INVALID_DURATION')
+    }
+    payload.distance = authUser.value.imperial_units
+      ? convertDistance(+workoutForm.workoutDistance, 'mi', 'km', 3)
+      : +workoutForm.workoutDistance
+    if (payload.distance <= 0) {
+      payloadErrorMessages.value.push('workouts.INVALID_DISTANCE')
+    }
     payload.workout_date = `${workoutForm.workoutDate} ${workoutForm.workoutTime}`
+    payload.ascent =
+      workoutForm.workoutAscent === ''
+        ? null
+        : authUser.value.imperial_units
+        ? convertDistance(+workoutForm.workoutAscent, 'ft', 'm', 3)
+        : +workoutForm.workoutAscent
+    payload.descent =
+      workoutForm.workoutDescent === ''
+        ? null
+        : authUser.value.imperial_units
+        ? convertDistance(+workoutForm.workoutDescent, 'ft', 'm', 3)
+        : +workoutForm.workoutDescent
+    if (
+      (payload.ascent !== null && payload.descent === null) ||
+      (payload.ascent === null && payload.descent !== null)
+    ) {
+      payloadErrorMessages.value.push('workouts.INVALID_ASCENT_OR_DESCENT')
+    }
   }
   function updateWorkout() {
     const payload: IWorkoutForm = {
@@ -369,10 +465,17 @@
       } else {
         formatPayload(payload)
       }
-      store.dispatch(WORKOUTS_STORE.ACTIONS.EDIT_WORKOUT, {
-        workoutId: props.workout.id,
-        data: payload,
-      })
+      if (payloadErrorMessages.value.length > 0) {
+        store.commit(
+          ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES,
+          payloadErrorMessages.value
+        )
+      } else {
+        store.dispatch(WORKOUTS_STORE.ACTIONS.EDIT_WORKOUT, {
+          workoutId: props.workout.id,
+          data: payload,
+        })
+      }
     } else {
       if (withGpx.value) {
         if (!gpxFile) {
@@ -384,7 +487,17 @@
         store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_WORKOUT, payload)
       } else {
         formatPayload(payload)
-        store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_WORKOUT_WITHOUT_GPX, payload)
+        if (payloadErrorMessages.value.length > 0) {
+          store.commit(
+            ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES,
+            payloadErrorMessages.value
+          )
+        } else {
+          store.dispatch(
+            WORKOUTS_STORE.ACTIONS.ADD_WORKOUT_WITHOUT_GPX,
+            payload
+          )
+        }
       }
     }
   }
@@ -507,6 +620,22 @@
               }
             }
           }
+
+          .workout-data {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            .form-item {
+              width: 30%;
+            }
+
+            @media screen and (max-width: $medium-limit) {
+              flex-direction: column;
+              .form-item {
+                width: initial;
+              }
+            }
+          }
         }
       }
     }
@@ -520,6 +649,10 @@
       &.with-margin {
         margin-top: 0;
       }
+    }
+
+    .errored {
+      outline: 2px solid var(--input-error-color);
     }
   }
 </style>

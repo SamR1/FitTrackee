@@ -3,7 +3,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/fittrackee.svg)](https://pypi.org/project/fittrackee/) 
 [![Python Version](https://img.shields.io/badge/python-3.7+-brightgreen.svg)](https://python.org)
-[![Flask Version](https://img.shields.io/badge/flask-2.1-brightgreen.svg)](http://flask.pocoo.org/) 
+[![Flask Version](https://img.shields.io/badge/flask-2.2-brightgreen.svg)](http://flask.pocoo.org/) 
 [![code style: black](https://img.shields.io/badge/code%20style-black-black)](https://github.com/psf/black) 
 [![type check: mypy](https://img.shields.io/badge/type%20check-mypy-blue)](http://mypy-lang.org/)  
 [![Vue Version](https://img.shields.io/badge/vue-3.2-brightgreen.svg)](https://v3.vuejs.org/) 
@@ -26,8 +26,7 @@ Examples for Android (non-exhaustive list):
 Maps are displayed using [Open Street Map](https://www.openstreetmap.org).  
 It is also possible to add a workout without a gpx file.
 
-Translations can be updated through [Weblate](https://hosted.weblate.org/engage/fittrackee/).  
-Available languages:  
+Translations status on [Weblate](https://hosted.weblate.org/engage/fittrackee/):  
 [![Translation status](https://hosted.weblate.org/widgets/fittrackee/-/multi-auto.svg)](https://hosted.weblate.org/engage/fittrackee/)
 
 **Still under heavy development (some features may be unstable).**  

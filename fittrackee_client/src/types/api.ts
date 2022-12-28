@@ -19,3 +19,8 @@ export interface IQueryOptions {
   defaultSort?: string
   query?: TPaginationPayload
 }
+
+export interface IApiErrorMessage {
+  error?: string
+  message?: string
+}

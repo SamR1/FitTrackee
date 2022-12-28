@@ -1,0 +1,38 @@
+{
+    "ERROR": {
+        "Network Error": "Errore di rete.",
+        "UNKNOWN": "Errore. Per favore riprova o contatta l'amminstratore.",
+        "at least one file in zip archive exceeds size limit, please check the archive": "Almeno un file nell'archivio zip supera il limite di dimensione, per favore controlla.",
+        "email: valid email must be provided": "Email: dev'essere inserita un'email valida.",
+        "error during gpx file parsing": "Errore nella lettura del file gpx.",
+        "error during gpx processing": "Errore nell'elaborazione del file gpx.",
+        "error on getting configuration": "Errore nella lettura della configurazione.",
+        "error when updating configuration": "Errore nell'aggiornamento della configurazione",
+        "error, please try again or contact the administrator": "Errore, per favore riprova o contatta l'amministratore.",
+        "error, registration is disabled": "Errore, la registrazione è disabilitata.",
+        "file extension not allowed": "File con estensione non permessa.",
+        "file size is greater than the allowed size": "La dimensione del file è maggiore di quella massima permessa.",
+        "invalid credentials": "Credenziali errate.",
+        "invalid payload": "I dati inseriti non sono validi.",
+        "invalid token, please log in again": "Token scaduto, per favore ripeti il log in.",
+        "invalid token, please request a new token": "Token scaduto, per favore ripeti il log in.",
+        "new email must be different than curent email": "La nuova email dev'essere diversa dalla vecchia mail",
+        "no file part": "Nessun file scelto.",
+        "no selected file": "Nessun file scelto.",
+        "password: password and password confirmation do not match": "Password: la password inserita e la conferma non combaciano.",
+        "provide a valid auth token": "Insersci un token di autenticazione valido.",
+        "signature expired, please log in again": "Token scaduto. Per favore ripeti il log in.",
+        "sorry, that username is already taken": "Mi dispiace, quell'username è già esistente.",
+        "sport does not exist": "Questo sport non esiste.",
+        "successfully registered": "Registrato con successo.",
+        "the number of files in the archive exceeds the limit": "Il numero di files nell'archivio supera il limite massimo permesso.",
+        "user does not exist": "L'utente non esiste.",
+        "valid email must be provided for admin contact": "Dev'essere inserita un'email valida",
+        "you can not delete your account, no other user has admin rights": "Non puoi eliminare questo account, nessun'altro account ha permessi di amministratore.",
+        "you do not have permissions": "Non hai i permessi necessari."
+    },
+    "PAGINATION": {
+        "NEXT": "avanti",
+        "PREVIOUS": "precedente"
+    }
+}

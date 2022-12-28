@@ -26,7 +26,11 @@ def get_app_config(
     max_users: Optional[int] = None,
 ) -> Optional[AppConfig]:
     if with_config:
-        config = AppConfig()
+        config = AppConfig.query.one_or_none()
+        if not config:
+            config = AppConfig()
+            db.session.add(config)
+            db.session.flush()
         config.gpx_limit_import = 10 if max_workouts is None else max_workouts
         config.max_single_file_size = (
             (1 if max_single_file_size is None else max_single_file_size)
@@ -39,7 +43,6 @@ def get_app_config(
             * 1024
         )
         config.max_users = 100 if max_users is None else max_users
-        db.session.add(config)
         db.session.commit()
         return config
     return None

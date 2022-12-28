@@ -1,5 +1,4 @@
 from typing import Union
-from uuid import uuid4
 
 import pytest
 
@@ -34,7 +33,7 @@ class TestReadableDuration:
             ('en', '30 seconds'),
             ('fr', '30 secondes'),
             (None, '30 seconds'),
-            (uuid4().hex, '30 seconds'),
+            ('invalid_locale', '30 seconds'),
         ],
     )
     def test_it_returns_duration_in_locale(

@@ -111,7 +111,7 @@ def get_clients(auth_user: User) -> Dict:
     clients_pagination = (
         OAuth2Client.query.filter_by(user_id=auth_user.id)
         .order_by(OAuth2Client.id.desc())
-        .paginate(page, per_page, False)
+        .paginate(page=page, per_page=per_page, error_out=False)
     )
     clients = clients_pagination.items
     return {

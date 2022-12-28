@@ -271,7 +271,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 if order == 'asc'
                 else desc(workout_column),
             )
-            .paginate(page, per_page, False)
+            .paginate(page=page, per_page=per_page, error_out=False)
         )
         workouts = workouts_pagination.items
         return {
@@ -956,7 +956,8 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         }
 
     :form file: gpx file (allowed extensions: .gpx, .zip)
-    :form data: sport id and notes (example: ``{"sport_id": 1, "notes": ""}``)
+    :form data: sport id and notes (example: ``{"sport_id": 1, "notes": ""}``).
+                Double quotes in notes must be escaped.
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -988,7 +989,11 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     if error_response:
         return error_response
 
-    workout_data = json.loads(request.form['data'], strict=False)
+    try:
+        workout_data = json.loads(request.form['data'], strict=False)
+    except json.decoder.JSONDecodeError:
+        return InvalidPayloadErrorResponse()
+
     if not workout_data or workout_data.get('sport_id') is None:
         return InvalidPayloadErrorResponse()
 
@@ -1022,7 +1027,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
             appLog.error(e.e)
         if e.status == 'error':
             return InternalServerErrorResponse(e.message)
-        return InvalidPayloadErrorResponse(e.message)
+        return InvalidPayloadErrorResponse(e.message, e.status)
 
     shutil.rmtree(folders['extract_dir'], ignore_errors=True)
     shutil.rmtree(folders['tmp_dir'], ignore_errors=True)
@@ -1127,13 +1132,17 @@ def post_workout_no_gpx(
           "status": "success"
         }
 
-    :<json string workout_date: workout date, in user timezone
-        (format: ``%Y-%m-%d %H:%M``)
+    :<json float ascent: workout ascent (not mandatory,
+           must be provided with descent)
+    :<json float descent: workout descent (not mandatory,
+           must be provided with ascent)
     :<json float distance: workout distance in km
     :<json integer duration: workout duration in seconds
     :<json string notes: notes (not mandatory)
     :<json integer sport_id: workout sport id
-    :<json string title: workout title
+    :<json string title: workout title (not mandatory)
+    :<json string workout_date: workout date, in user timezone
+        (format: ``%Y-%m-%d %H:%M``)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1149,13 +1158,27 @@ def post_workout_no_gpx(
     workout_data = request.get_json()
     if (
         not workout_data
-        or workout_data.get('sport_id') is None
-        or workout_data.get('duration') is None
-        or workout_data.get('distance') is None
-        or workout_data.get('workout_date') is None
+        or not workout_data.get('sport_id')
+        or not workout_data.get('duration')
+        or not workout_data.get('distance')
+        or not workout_data.get('workout_date')
     ):
         return InvalidPayloadErrorResponse()
 
+    ascent = workout_data.get('ascent')
+    descent = workout_data.get('descent')
+    try:
+        if (
+            (ascent is None and descent is not None)
+            or (ascent is not None and descent is None)
+            or (
+                (ascent is not None and descent is not None)
+                and (float(ascent) < 0 or float(descent) < 0)
+            )
+        ):
+            return InvalidPayloadErrorResponse()
+    except ValueError:
+        return InvalidPayloadErrorResponse()
     try:
         new_workout = create_workout(auth_user, workout_data)
         db.session.add(new_workout)
@@ -1280,9 +1303,10 @@ def update_workout(
 
     :param string workout_short_id: workout short id
 
-    :<json string workout_date: workout date in user timezone
-        (format: ``%Y-%m-%d %H:%M``)
-        (only for workout without gpx)
+    :<json float ascent: workout ascent
+        (only for workout without gpx, must be provided with descent)
+    :<json float descent: workout descent
+        (only for workout without gpx, must be provided with ascent)
     :<json float distance: workout distance in km
         (only for workout without gpx)
     :<json integer duration: workout duration in seconds
@@ -1290,6 +1314,9 @@ def update_workout(
     :<json string notes: notes
     :<json integer sport_id: workout sport id
     :<json string title: workout title
+    :<json string workout_date: workout date in user timezone
+        (format: ``%Y-%m-%d %H:%M``)
+        (only for workout without gpx)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1316,6 +1343,33 @@ def update_workout(
         response_object = can_view_workout(auth_user.id, workout.user_id)
         if response_object:
             return response_object
+
+        if not workout.gpx:
+            try:
+                # for workout without gpx file, both elevation values must be
+                # provided.
+                if (
+                    (
+                        'ascent' in workout_data
+                        and 'descent' not in workout_data
+                    )
+                    or (
+                        'ascent' not in workout_data
+                        and 'descent' in workout_data
+                    )
+                ) or (
+                    not (
+                        workout_data.get('ascent') is None
+                        and workout_data.get('descent') is None
+                    )
+                    and (
+                        float(workout_data.get('ascent')) < 0
+                        or float(workout_data.get('descent')) < 0
+                    )
+                ):
+                    return InvalidPayloadErrorResponse()
+            except (TypeError, ValueError):
+                return InvalidPayloadErrorResponse()
 
         workout = edit_workout(workout, workout_data, auth_user)
         db.session.commit()

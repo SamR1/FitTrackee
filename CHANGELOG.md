@@ -1,5 +1,107 @@
 # Change log
 
+## Version 0.7.10 (2022/12/21)
+
+### Features and enhancements
+
+* [#92](https://github.com/SamR1/FitTrackee/issues/92) - Add ascent and descent parameters in workout import without GPX file
+
+### Translations
+
+* [#279](https://github.com/SamR1/FitTrackee/issues/279) - [Translation Request] - Italian (thanks to @dperruso)
+* [c88a515](https://github.com/SamR1/FitTrackee/commit/c88a5158fea5f9e2fa8c41ecc2c100f6d9319371) - Translations update from Hosted Weblate (Dutch, thanks to @bjornclauw)
+* [f96dcef](https://github.com/SamR1/FitTrackee/commit/f96dcef0dc69d00f65a036fa2e33c22612004cb1) - Translations update (German)
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/installation.html#upgrade))
+
+
+## Version 0.7.9 (2022/12/11)
+
+### Features and enhancements
+
+* [#280](https://github.com/SamR1/FitTrackee/issues/280) - New sport: Mountaineering
+
+### Translations
+
+* [PR#278](https://github.com/SamR1/FitTrackee/pull/278) - Translations update from Hosted Weblate (German, thanks to @qwerty287)
+* [PR#282](https://github.com/SamR1/FitTrackee/pull/282) - Init italian translation files
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/installation.html#upgrade))
+
+
+## Version 0.7.8 (2022/11/30)
+
+FitTrackee is now available in Dutch (thanks to @bjornclauw).
+
+
+### Translations
+
+* [#270](https://github.com/SamR1/FitTrackee/issues/270) - [translations request] Dutch (Nederlands)
+
+
+## Version 0.7.7 (2022/11/27)
+
+### Features and enhancements
+
+* [#258](https://github.com/SamR1/FitTrackee/issues/258) - Request: parse links in notes area (thanks to @jat255)
+
+### Bugs Fixed
+
+* [PR#271](https://github.com/SamR1/FitTrackee/pull/271) - Fix workouts creation
+
+### Translations
+
+* [PR#273](https://github.com/SamR1/FitTrackee/pull/273) - Init Dutch translations files
+
+### Misc
+
+* [PR#274](https://github.com/SamR1/FitTrackee/pull/274) - Tests parallelization
+* [PR#275](https://github.com/SamR1/FitTrackee/pull/275) - Disable worker entry point
+
+**Note:** `fittrackee_worker` command is disabled, please use existing flask-dramatiq CLI (see [documentation](https://samr1.github.io/FitTrackee/installation.html#from-pypi))
+
+## Version 0.7.6 (2022/11/09)
+
+### Translations
+
+* [3c8d9c2](https://github.com/SamR1/FitTrackee/commit/3c8d9c262358958346125dd286f09ed9881fda4b) - fix api locale file (remove trailing comma) 
+
+### Misc
+
+* dev dependencies update
+
+
+## Version 0.7.5 (2022/11/09)
+
+### Bugs Fixed
+
+* [#264](https://github.com/SamR1/FitTrackee/issues/264) - UI has white and gray background
+
+### Translations
+
+* [#266](https://github.com/SamR1/FitTrackee/issues/266) - Translations update from Hosted Weblate (German, thanks to @qwerty287)
+
+
+## Version 0.7.4 (2022/11/05)
+
+### Bugs Fixed
+
+* [#260](https://github.com/SamR1/FitTrackee/issues/260) - Files size is not checked in zip archive
+* [#261](https://github.com/SamR1/FitTrackee/issues/261) - The API should return an error when the number of files in an archive exceeds the limit
+
+Note: archive import still needs some improvements (see [#89](https://github.com/SamR1/FitTrackee/issues/89))
+
+### Translations
+
+* [b1536fc](https://github.com/SamR1/FitTrackee/pull/262/commits/b1536fc637649c4c32a88af6d96c131f05bc1742) - fix french translations in administration 
+
+### Documentation
+
+* [#257](https://github.com/SamR1/FitTrackee/issues/257) - Add client_max_body_size note to example nginx config 
+
+Thanks to @jat255 
+
+
 ## Version 0.7.3 (2022/11/01)
 
 ### Features and enhancements

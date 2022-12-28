@@ -203,19 +203,24 @@ run-workers:
 	$(FLASK) worker --processes=$(WORKERS_PROCESSES) >> dramatiq.log  2>&1
 
 serve:
+    # for dev environments
 	$(MAKE) P="serve-client serve-python" make-p
 
 serve-dev:
+    # for dev environments
 	$(MAKE) P="serve-client serve-python-dev" make-p
 
 serve-client:
+    # for dev environments
 	cd fittrackee_client && PORT=3000 $(NPM) serve
 
 serve-python:
+    # for dev environments
 	echo 'Running on http://$(HOST):$(PORT)'
 	$(FLASK) run --with-threads -h $(HOST) -p $(PORT)
 
 serve-python-dev:
+    # for dev environments (
 	echo 'Running on https://$(HOST):$(PORT)'
 	$(FLASK) run --with-threads -h $(HOST) -p $(PORT) --cert=adhoc
 
@@ -232,10 +237,12 @@ test-e2e-client:
 	E2E_ARGS=client $(PYTEST) e2e --driver firefox $(PYTEST_ARGS)
 
 test-python:
+	# for tests parallelization: 4 workers max.
+	# make test-python PYTEST_ARGS="-p no:warnings -n auto --maxprocesses=4"
 	$(PYTEST) fittrackee --cov-config .coveragerc --cov=fittrackee --cov-report term-missing $(PYTEST_ARGS)
 
 test-client:
-	cd fittrackee_client && $(NPM) test:unit
+	cd fittrackee_client && $(NPM) test:unit $(MOCHA_ARGS)
 
 type-check:
 	echo 'Running mypy...'

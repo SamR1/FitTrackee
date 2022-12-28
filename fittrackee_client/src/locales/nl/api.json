@@ -1,0 +1,38 @@
+{
+    "ERROR": {
+        "Network Error": "Netwerk fout.",
+        "UNKNOWN": "Fout. Probeer opnieuw of contacteer de administrator.",
+        "at least one file in zip archive exceeds size limit, please check the archive": "Ten minste 1 bestand in het zip archief is groter dan toegelaten, gelieve de bestanden te controleren.",
+        "email: valid email must be provided": "Email: een geldige email is vereist.",
+        "error during gpx file parsing": "Fout bij het verwerken van het gpx bestand.",
+        "error during gpx processing": "Fout bij verwerken van gpx.",
+        "error on getting configuration": "Fout bij ophalen van configuratie.",
+        "error when updating configuration": "Fout bij het updaten van de configuratie",
+        "error, please try again or contact the administrator": "Fout, probeer opnieuw of contacteer de administrator.",
+        "error, registration is disabled": "Fout, registratie is uitgeschakeld.",
+        "file extension not allowed": "Bestandsformaat niet toegelaten.",
+        "file size is greater than the allowed size": "Bestandsgrootte is groter dan toegestaan.",
+        "invalid credentials": "Ongeldige inloggegevens.",
+        "invalid payload": "Ingegeven data is ongeldig.",
+        "invalid token, please log in again": "Ongeldige token, log opnieuw in.",
+        "invalid token, please request a new token": "Ongeldige token, log opnieuw in.",
+        "new email must be different than curent email": "Het nieuwe email adres dient te verschillen van het oude",
+        "no file part": "Geen bestand opgegeven.",
+        "no selected file": "Geen bestand geselecteerd.",
+        "password: password and password confirmation do not match": "Wachtwoord: het wachtwoord en de bevestiging komen niet overeen.",
+        "provide a valid auth token": "Geef een geldig auth token.",
+        "signature expired, please log in again": "Signatuur verlopen. Log opnieuw in.",
+        "sorry, that username is already taken": "Sorry, deze gebruikersnaam is al in gebruik.",
+        "sport does not exist": "Deze sport bestaat niet.",
+        "successfully registered": "Succesvol geregistreerd.",
+        "the number of files in the archive exceeds the limit": "Het aantal bestanden in het zip archief overschrijdt de limiet.",
+        "user does not exist": "Gebruiker bestaat niet.",
+        "valid email must be provided for admin contact": "Een geldige email is vereist voor admin contact informatie",
+        "you can not delete your account, no other user has admin rights": "U kunt uw account niet verwijderen, geen andere gebruiker heeft admin rechten.",
+        "you do not have permissions": "U hebt geen machtigingen."
+    },
+    "PAGINATION": {
+        "NEXT": "volgende",
+        "PREVIOUS": "vorige"
+    }
+}
