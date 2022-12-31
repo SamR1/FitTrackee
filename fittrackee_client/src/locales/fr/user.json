@@ -94,9 +94,9 @@
         },
         "TIMEZONE": "Fuseau horaire",
         "UNITS": {
-            "IMPERIAL": "Système impérial (ft, mi)",
+            "IMPERIAL": "Système impérial (ft, mi, mph, °F)",
             "LABEL": "Unités pour les distances",
-            "METRIC": "Système métrique (m, km)"
+            "METRIC": "Système métrique (m, km, m/s, °C)"
         }
     },
     "REGISTER": "S'inscrire",

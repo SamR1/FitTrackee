@@ -1,3 +1,4 @@
+import os
 from typing import Dict
 
 from flask import current_app
@@ -43,6 +44,7 @@ class AppConfig(BaseModel):
         return current_app.config['TILE_SERVER']['ATTRIBUTION']
 
     def serialize(self) -> Dict:
+        weather_provider = os.getenv('WEATHER_API_PROVIDER', '').lower()
         return {
             'admin_contact': self.admin_contact,
             'gpx_limit_import': self.gpx_limit_import,
@@ -53,6 +55,11 @@ class AppConfig(BaseModel):
             'max_users': self.max_users,
             'map_attribution': self.map_attribution,
             'version': VERSION,
+            'weather_provider': (
+                weather_provider
+                if weather_provider in ['darksky', 'visualcrossing']
+                else None
+            ),
         }
 
 

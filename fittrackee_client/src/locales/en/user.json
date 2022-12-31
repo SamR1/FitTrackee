@@ -94,9 +94,9 @@
         },
         "TIMEZONE": "Timezone",
         "UNITS": {
-            "IMPERIAL": "Imperial system (ft, mi)",
+            "IMPERIAL": "Imperial system (ft, mi, mph, °F)",
             "LABEL": "Units for distance",
-            "METRIC": "Metric system (m, km)"
+            "METRIC": "Metric system (m, km, m/s, °C)"
         }
     },
     "REGISTER": "Register",

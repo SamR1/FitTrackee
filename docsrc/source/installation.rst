@@ -28,7 +28,7 @@ Prerequisites
 - optional
     - Redis for task queue (if email sending is enabled) and API rate limits
     - SMTP provider (if email sending is enabled)
-    - API key from `Dark Sky <https://darksky.net/dev>`__ (deprecated, DarkSky will stop on March 31st, 2023)
+    - API key from a `weather data provider <installation.html#weather-data>`__
     - `Poetry <https://poetry.eustace.io>`__ (for installation from sources only)
     - `Yarn <https://yarnpkg.com>`__ (for development only)
     -  Docker and Docker Compose (for development or evaluation purposes)
@@ -229,7 +229,14 @@ deployment method.
 
     .. versionchanged:: 0.4.0 ⚠️ replaces ``WEATHER_API``
 
-    **Dark Sky** API key for weather data (not mandatory).
+    Weather API key (not mandatory), see ``WEATHER_API_PROVIDER``.
+
+
+.. envvar:: WEATHER_API_PROVIDER
+
+    .. versionadded:: 0.7.11
+
+    Provider for weather data (not mandatory), see `Weather data <installation.html#weather-data>`__.
 
 
 .. envvar:: VUE_APP_API_URL
@@ -336,6 +343,21 @@ API rate limits 🆕
       clear   Clear limits for a specific key
       config  View the extension configuration
       limits  Enumerate details about all routes with rate limits
+
+
+Weather data
+^^^^^^^^^^^^
+.. versionchanged:: 0.7.11
+
+The following weather data providers are supported by **FitTrackee**:
+
+- `Dark Sky <https://darksky.net>`__ (deprecated, will stop on March 31st, 2023)
+- `Visual Crossing <https://www.visualcrossing.com>`__ (**note**: historical data are provided on hourly period)
+
+To configure a weather provider, set the following environment variables:
+
+- ``WEATHER_API_PROVIDER``: ``darksky`` for **Dark Sky** or ``visualcrossing`` for **Visual Crossing**
+- ``WEATHER_API_KEY``: the key to the corresponding weather provider
 
 
 Installation
