@@ -16,6 +16,7 @@
     "FROM": "van",
     "GPX_FILE": ".gpx bestand",
     "HIDE_FILTERS": "verberg filters",
+    "INVALID_ASCENT_OR_DESCENT": "Beide waarden moeten opgegeven worden en dienen groter dan of gelijk aan 0 te zijn.",
     "INVALID_DISTANCE": "De afstand moet groter zijn dan 0",
     "INVALID_DURATION": "De duur moet langer zijn dan 0 seconden",
     "LATEST_WORKOUTS": "Laatste trainingen",
@@ -100,6 +101,5 @@
     "WORKOUT_DATE": "datum training",
     "WORKOUT_DELETION_CONFIRMATION": "Weet u zeker dat u deze training wilt verwijderen?",
     "ZIP_ARCHIVE": ".zip bestand",
-    "ZIP_ARCHIVE_DESCRIPTION": "of .zip archief met .gpx bestanden",
-    "INVALID_ASCENT_OR_DESCENT": "Beide waarden moeten opgegeven worden en dienen groter dan of gelijk aan 0 te zijn."
+    "ZIP_ARCHIVE_DESCRIPTION": "of .zip archief met .gpx bestanden"
 }

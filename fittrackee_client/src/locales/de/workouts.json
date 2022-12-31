@@ -16,6 +16,7 @@
     "FROM": "Von",
     "GPX_FILE": ".gpx Datei",
     "HIDE_FILTERS": "verberge Filter",
+    "INVALID_ASCENT_OR_DESCENT": "Beide Höhenwerte müssen angegeben werden und größer oder gleich 0 sein.",
     "INVALID_DISTANCE": "Die Distanz muss größer als 0 sein",
     "INVALID_DURATION": "Die Dauer muss größer als 0 Sekunden sein",
     "LATEST_WORKOUTS": "Letzte Trainings",
@@ -100,6 +101,5 @@
     "WORKOUT_DATE": "Trainingsdatum",
     "WORKOUT_DELETION_CONFIRMATION": "Bist du sicher, dass du dieses Training löschen möchtest?",
     "ZIP_ARCHIVE": ".zip Datei",
-    "ZIP_ARCHIVE_DESCRIPTION": "oder .zip Datei mit .gpx Dateien",
-    "INVALID_ASCENT_OR_DESCENT": "Beide Höhenwerte müssen angegeben werden und größer oder gleich 0 sein."
+    "ZIP_ARCHIVE_DESCRIPTION": "oder .zip Datei mit .gpx Dateien"
 }
