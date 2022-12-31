@@ -43,7 +43,7 @@ Workouts
   | Ascent and descent can also be provided (*new in 0.7.10*).
 - | A workout with a gpx file can be displayed with map and charts (speed and elevation).
   | Controls allow full screen view and position reset (*new in 0.5.5*).
-- | If **DarkSky API** or **Visual Crossing** (*new in 0.7.11*) API key is provided, weather is displayed in workout detail.
+- | If **DarkSky API** or **Visual Crossing** (*new in 0.7.11*) API key is provided, weather is displayed in workout detail. Data source is displayed in About page.
   | Wind is displayed, with arrow indicating direction (a tooltip can be displayed with the direction that the wind is coming **from**) (*new in 0.5.5*).
 - Segments can be displayed.
 - Workout gpx file can be downloaded (*new in 0.5.1*)

@@ -172,7 +172,7 @@ deployment method.
     Number of processes used by **Dramatiq**.
 
 
-.. envvar:: API_RATE_LIMITS 🆕
+.. envvar:: API_RATE_LIMITS
 
     .. versionadded:: 0.7.0
 
@@ -232,7 +232,7 @@ deployment method.
     Weather API key (not mandatory), see ``WEATHER_API_PROVIDER``.
 
 
-.. envvar:: WEATHER_API_PROVIDER
+.. envvar:: WEATHER_API_PROVIDER 🆕
 
     .. versionadded:: 0.7.11
 
@@ -309,8 +309,8 @@ For instance, to set OSM France tile server, the expected values are:
 The subdomain will be chosen randomly.
 
 
-API rate limits 🆕
-^^^^^^^^^^^^^^^^^^
+API rate limits
+^^^^^^^^^^^^^^^
 .. versionadded:: 0.7.0
 
 | API rate limits are managed by `Flask-Limiter <https://flask-limiter.readthedocs.io/en/stable>`_, based on IP with fixed window strategy.
@@ -502,13 +502,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.7.10):
+-  Download the last release (for now, it is the release v0.7.11):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.10.tar.gz
-   $ tar -xzf v0.7.10.tar.gz
-   $ mv FitTrackee-0.7.10 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.11.tar.gz
+   $ tar -xzf v0.7.11.tar.gz
+   $ mv FitTrackee-0.7.11 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -628,13 +628,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.7.10) and overwrite existing files:
+- Download the last release (for now, it is the release v0.7.11) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.10.tar.gz
-   $ tar -xzf v0.7.10.tar.gz
-   $ cp -R FitTrackee-0.7.10/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.11.tar.gz
+   $ tar -xzf v0.7.11.tar.gz
+   $ cp -R FitTrackee-0.7.11/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
