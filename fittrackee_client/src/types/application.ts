@@ -6,7 +6,7 @@ export interface IAppStatistics {
 }
 
 export type TAppConfig = {
-  [key: string]: number | boolean | string
+  [key: string]: number | boolean | string | null
   admin_contact: string
   gpx_limit_import: number
   is_email_sending_enabled: boolean
@@ -16,6 +16,7 @@ export type TAppConfig = {
   max_users: number
   max_zip_file_size: number
   version: string
+  weather_provider: string | null
 }
 
 export interface IApplication {

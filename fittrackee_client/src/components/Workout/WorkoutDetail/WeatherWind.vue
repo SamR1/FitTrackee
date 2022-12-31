@@ -1,13 +1,6 @@
 <template>
   <div class="wind">
-    <Distance
-      :distance="weather.wind"
-      unitFrom="m"
-      :digits="1"
-      :displayUnit="false"
-      :useImperialUnits="useImperialUnits"
-    />
-    {{ useImperialUnits ? 'ft' : 'm' }}/s
+    {{ getWindSpeed(weather.wind, useImperialUnits) }}
     <div class="wind-bearing">
       <i
         v-if="weather.windBearing"
@@ -27,6 +20,7 @@
   import { useI18n } from 'vue-i18n'
 
   import { IWeather } from '@/types/workouts'
+  import { getWindSpeed } from '@/utils/units'
   import { convertDegreeToDirection } from '@/utils/weather'
 
   interface Props {

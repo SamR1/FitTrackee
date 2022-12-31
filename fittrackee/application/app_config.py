@@ -47,8 +47,9 @@ def get_application_config() -> Union[Dict, HttpResponse]:
           "max_single_file_size": 1048576,
           "max_users": 0,
           "max_zip_file_size": 10485760,
-          "map_attribution": "&copy; <a href=http://www.openstreetmap.org/copyright>OpenStreetMap</a> contributors"
-          "version": "0.7.10"
+          "map_attribution": "&copy; <a href=http://www.openstreetmap.org/copyright>OpenStreetMap</a> contributors",
+          "version": "0.7.11",
+          "weather_provider": null
         },
         "status": "success"
       }
@@ -99,8 +100,9 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
           "max_single_file_size": 1048576,
           "max_users": 10,
           "max_zip_file_size": 10485760,
-          "map_attribution": "&copy; <a href=http://www.openstreetmap.org/copyright>OpenStreetMap</a> contributors"
-          "version": "0.7.10"
+          "map_attribution": "&copy; <a href=http://www.openstreetmap.org/copyright>OpenStreetMap</a> contributors",
+          "version": "0.7.11",
+          "weather_provider": null
         },
         "status": "success"
       }

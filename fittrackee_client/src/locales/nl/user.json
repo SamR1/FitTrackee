@@ -94,9 +94,9 @@
         },
         "TIMEZONE": "Tijdzone",
         "UNITS": {
-            "IMPERIAL": "Imperialistisch systeem (ft, mi)",
+            "IMPERIAL": "Imperialistisch systeem (ft, mi, mph, °F)",
             "LABEL": "Eenheid voor afstand",
-            "METRIC": "Metrisch systeem (m, km)"
+            "METRIC": "Metrisch systeem (m, km, m/s, °C)"
         }
     },
     "REGISTER": "Registreren",

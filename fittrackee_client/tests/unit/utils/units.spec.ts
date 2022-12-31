@@ -1,7 +1,7 @@
 import { assert } from 'chai'
 
 import { TUnit } from '@/types/units'
-import { convertDistance } from '@/utils/units'
+import { convertDistance, getTemperature, getWindSpeed } from '@/utils/units'
 
 describe('convertDistance', () => {
   const testsParams: [number, TUnit, TUnit, number][] = [
@@ -53,6 +53,38 @@ describe('convertDistance w/ digits', () => {
         ),
         testParams[4]
       )
+    })
+  })
+})
+
+describe('getTemperature', () => {
+  const testsParams: [number, boolean, string][] = [
+    [0, false, '0°C'],
+    [10.0, false, '10.0°C'],
+    [10.3, false, '10.3°C'],
+    [0, true, '32.0 °F'],
+    [13.0, true, '55.4 °F'],
+  ]
+
+  testsParams.map((testParams) => {
+    it(`get temperature for input: ${testParams[0]} and imperialUnits: ${testParams[1]}`, () => {
+      assert.equal(getTemperature(testParams[0], testParams[1]), testParams[2])
+    })
+  })
+})
+
+describe('getWindSpeed', () => {
+  const testsParams: [number, boolean, string][] = [
+    [0, false, '0m/s'],
+    [6.0, false, '6.0m/s'],
+    [6.3, false, '6.3m/s'],
+    [0, true, '0 mph'],
+    [13.2, true, '29.5 mph'],
+  ]
+
+  testsParams.map((testParams) => {
+    it(`get wind speed for input: ${testParams[0]} and imperialUnits: ${testParams[1]}`, () => {
+      assert.equal(getWindSpeed(testParams[0], testParams[1]), testParams[2])
     })
   })
 })
