@@ -8,6 +8,7 @@ from flask import Flask
 from fittrackee.federation.constants import AP_CTX, DATE_FORMAT, PUBLIC_STREAM
 from fittrackee.federation.enums import ActivityType
 from fittrackee.federation.exceptions import (
+    ActivityException,
     ActorNotFoundException,
     ObjectNotFoundException,
     UnsupportedActivityException,
@@ -719,6 +720,34 @@ class TestDeleteActivityForWorkout(WorkoutActivitiesTestCase):
             match='actor not found for DeleteActivity',
         ):
             activity.process_activity()
+
+    def test_it_raises_error_when_activity_actor_is_not_workout_actor(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        remote_cycling_workout: Workout,
+        remote_user_2: User,
+    ) -> None:
+        delete_activity = self.generate_workout_delete_activity(
+            remote_actor=remote_user_2.actor,
+            remote_workout=remote_cycling_workout,
+        )
+        activity = get_activity_instance({'type': delete_activity['type']})(
+            activity_dict=delete_activity
+        )
+
+        with pytest.raises(
+            ActivityException,
+            match=(
+                'DeleteActivity: activity actor does not match workout actor.'
+            ),
+        ):
+            activity.process_activity()
+        assert (
+            Workout.query.filter_by(id=remote_cycling_workout.id).first()
+            is not None
+        )
 
     def test_it_deletes_remote_workout(
         self,

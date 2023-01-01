@@ -3,6 +3,7 @@ from typing import Dict, Tuple
 
 from fittrackee import appLog, db
 from fittrackee.federation.exceptions import (
+    ActivityException,
     ActorNotFoundException,
     ObjectNotFoundException,
 )
@@ -183,6 +184,12 @@ class DeleteActivity(AbstractActivity):
         ).first()
         if not workout_to_delete:
             raise ObjectNotFoundException('workout', self.activity_name())
+
+        if workout_to_delete.user.actor.id != actor.id:
+            raise ActivityException(
+                f'{self.activity_name()}: activity actor does not '
+                f'match workout actor.'
+            )
 
         db.session.delete(workout_to_delete)
         db.session.commit()

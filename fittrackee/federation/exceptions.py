@@ -3,6 +3,11 @@ from typing import Optional
 from fittrackee.exceptions import GenericException
 
 
+class ActivityException(GenericException):
+    def __init__(self, message: str) -> None:
+        super().__init__(status='error', message=message)
+
+
 class ActorNotFoundException(GenericException):
     def __init__(self, message: Optional[str] = None) -> None:
         super().__init__(
@@ -42,6 +47,14 @@ class InvalidWorkoutException(GenericException):
         )
 
 
+class ObjectNotFoundException(GenericException):
+    def __init__(self, object_type: str, activity_type: str) -> None:
+        super().__init__(
+            status='error',
+            message=f"{object_type} not found for {activity_type}.",
+        )
+
+
 class SenderNotFoundException(GenericException):
     def __init__(self) -> None:
         super().__init__(
@@ -73,12 +86,4 @@ class UnsupportedActivityException(GenericException):
         super().__init__(
             status='error',
             message=f"Unsupported activity '{activity_type}'.",
-        )
-
-
-class ObjectNotFoundException(GenericException):
-    def __init__(self, object_type: str, activity_type: str) -> None:
-        super().__init__(
-            status='error',
-            message=f"{object_type} not found for {activity_type}.",
         )
