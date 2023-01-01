@@ -1,6 +1,7 @@
 import os
 import shutil
-from typing import Generator, Optional, Union
+from typing import Generator, Iterator, Optional, Union
+from unittest.mock import patch
 
 import pytest
 from flask import current_app
@@ -9,6 +10,13 @@ from fittrackee import create_app, db, limiter
 from fittrackee.application.models import AppConfig
 from fittrackee.application.utils import update_app_config_from_database
 from fittrackee.federation.models import Domain
+from fittrackee.workouts.utils.gpx import weather_service
+
+
+@pytest.fixture(autouse=True)
+def default_weather_service(monkeypatch: pytest.MonkeyPatch) -> Iterator[None]:
+    with patch.object(weather_service, 'get_weather', return_value=None):
+        yield
 
 
 def get_app_config(
@@ -96,7 +104,6 @@ def get_app(
 @pytest.fixture
 def app(monkeypatch: pytest.MonkeyPatch) -> Generator:
     monkeypatch.setenv('EMAIL_URL', 'smtp://none:none@0.0.0.0:1025')
-    monkeypatch.setenv('WEATHER_API_KEY', '')
     if os.getenv('TILE_SERVER_URL'):
         monkeypatch.delenv('TILE_SERVER_URL')
     if os.getenv('STATICMAP_SUBDOMAINS'):

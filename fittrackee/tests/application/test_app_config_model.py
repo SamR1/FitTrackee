@@ -1,3 +1,4 @@
+import pytest
 from flask import Flask
 
 from fittrackee import VERSION
@@ -6,7 +7,10 @@ from fittrackee.users.models import User
 
 
 class TestConfigModel:
-    def test_application_config(self, app: Flask) -> None:
+    def test_application_config(
+        self, app: Flask, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setenv('WEATHER_API_PROVIDER', 'darksky')
         app_config = AppConfig.query.first()
         app_config.admin_contact = 'admin@example.com'
 
@@ -41,6 +45,7 @@ class TestConfigModel:
             == app_config.map_attribution
         )
         assert serialized_app_config['version'] == VERSION
+        assert serialized_app_config['weather_provider'] == 'darksky'
 
     def test_it_returns_registration_disabled_when_users_count_exceeds_limit(
         self, app: Flask, user_1: User, user_2: User
@@ -59,3 +64,28 @@ class TestConfigModel:
         serialized_app_config = app_config.serialize()
 
         assert serialized_app_config['is_email_sending_enabled'] is False
+
+    @pytest.mark.parametrize(
+        'input_weather_api_provider, expected_weather_provider',
+        [
+            ('darksky', 'darksky'),
+            ('Visualcrossing', 'visualcrossing'),
+            ('invalid_provider', None),
+            ('', None),
+        ],
+    )
+    def test_it_returns_weather_provider(
+        self,
+        app: Flask,
+        input_weather_api_provider: str,
+        expected_weather_provider: str,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        monkeypatch.setenv('WEATHER_API_PROVIDER', input_weather_api_provider)
+        app_config = AppConfig.query.first()
+        serialized_app_config = app_config.serialize()
+
+        assert (
+            serialized_app_config['weather_provider']
+            == expected_weather_provider
+        )

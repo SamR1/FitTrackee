@@ -1,6 +1,27 @@
 # Change log
 
+## Version 0.7.11 (2022/12/31)
+
+### Features and enhancements
+
+* [PR#265](https://github.com/SamR1/FitTrackee/pull/265) - Implementing alternative weather API (VisualCrossing.com)  
+  **Note**: A new environment variable must be to set to configure the weather data provider: `WEATHER_API_PROVIDER` (see [documentation](https://samr1.github.io/FitTrackee/installation.html#weather-data))
+
+### Translations
+
+* [PR#287](https://github.com/SamR1/FitTrackee/pull/287) - Translations update from Hosted Weblate (Dutch)
+* [PR#289](https://github.com/SamR1/FitTrackee/pull/289) - Translations update from Hosted Weblate (German)
+
+
+Thanks to the contributors:
+- @bjornclauw
+- @jat255 
+- @qwerty287
+
+
 ## Version 0.7.10 (2022/12/21)
+
+FitTrackee is now available in Italian (thanks to @dperruso).
 
 ### Features and enhancements
 

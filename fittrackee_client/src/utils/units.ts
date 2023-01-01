@@ -63,3 +63,23 @@ export const convertStatsDistance = (
   const unitTo = useImperialUnits ? units[unitFrom].defaultTarget : unitFrom
   return useImperialUnits ? convertDistance(value, unitFrom, unitTo, 2) : value
 }
+
+export const getTemperature = (
+  temperatureInCelsius: number,
+  useImperialUnits: boolean
+): string => {
+  const temperature = useImperialUnits
+    ? temperatureInCelsius * 1.8 + 32
+    : temperatureInCelsius
+  const unit = useImperialUnits ? ' °F' : '°C'
+  return `${temperature === 0 ? 0 : Number(temperature).toFixed(1)}${unit}`
+}
+
+export const getWindSpeed = (
+  windSpeedInMS: number,
+  useImperialUnits: boolean
+): string => {
+  const windSpeed = useImperialUnits ? windSpeedInMS * 2.2369363 : windSpeedInMS
+  const unit = useImperialUnits ? ' mph' : 'm/s'
+  return `${windSpeed === 0 ? 0 : Number(windSpeed).toFixed(1)}${unit}`
+}

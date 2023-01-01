@@ -40,6 +40,12 @@
           {{ $t('about.CONTACT_ADMIN') }}
         </a>
       </div>
+      <div v-if="weather_provider && weather_provider.name">
+        {{ $t('about.WEATHER_DATA_FROM') }}
+        <a :href="weather_provider.url" target="_blank" rel="nofollow noopener">
+          {{ weather_provider.name }}
+        </a>
+      </div>
     </div>
   </div>
 </template>
@@ -55,6 +61,22 @@
   const appConfig: ComputedRef<TAppConfig> = computed(
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
   )
+  const weather_provider: ComputedRef<Record<string, string>> = computed(() =>
+    get_weather_provider()
+  )
+
+  function get_weather_provider() {
+    const weather_provider: Record<string, string> = {}
+    if (appConfig.value.weather_provider === 'darksky') {
+      weather_provider['name'] = 'Dark Sky'
+      weather_provider['url'] = 'https://darksky.net'
+    }
+    if (appConfig.value.weather_provider === 'visualcrossing') {
+      weather_provider['name'] = 'Visual Crossing'
+      weather_provider['url'] = 'https://www.visualcrossing.com'
+    }
+    return weather_provider
+  }
 </script>
 
 <style lang="scss" scoped>

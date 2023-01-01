@@ -58,10 +58,20 @@
             />
           </td>
           <td>
-            {{ Number(workoutObject.weatherStart.temperature).toFixed(1) }}°C
+            {{
+              getTemperature(
+                workoutObject.weatherStart.temperature,
+                useImperialUnits
+              )
+            }}
           </td>
           <td>
-            {{ Number(workoutObject.weatherEnd.temperature).toFixed(1) }}°C
+            {{
+              getTemperature(
+                workoutObject.weatherEnd.temperature,
+                useImperialUnits
+              )
+            }}
           </td>
         </tr>
         <tr>
@@ -112,6 +122,7 @@
 
   import WeatherWind from '@/components/Workout/WorkoutDetail/WeatherWind.vue'
   import { IWorkoutObject } from '@/types/workouts'
+  import { getTemperature } from '@/utils/units'
 
   interface Props {
     workoutObject: IWorkoutObject
