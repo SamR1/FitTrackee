@@ -2214,7 +2214,7 @@ class TestPasswordResetRequest(ApiTestCaseMixin):
                 'email': user_1.email,
             },
             {
-                'expiration_delay': '3 seconds',
+                'expiration_delay': '10 seconds',
                 'username': user_1.username,
                 'password_reset_url': (
                     f'http://0.0.0.0:5000/password-reset?token={token}'
@@ -2321,7 +2321,7 @@ class TestPasswordUpdate(ApiTestCaseMixin):
         token = get_user_token(user_1.id, password_reset=True)
         client = app.test_client()
 
-        with freeze_time(now + timedelta(seconds=4)):
+        with freeze_time(now + timedelta(seconds=11)):
             response = client.post(
                 '/api/auth/password/update',
                 data=json.dumps(
@@ -2735,7 +2735,7 @@ class TestUserLogout(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        with freeze_time(now + timedelta(seconds=4)):
+        with freeze_time(now + timedelta(seconds=11)):
 
             response = client.post(
                 '/api/auth/logout',
