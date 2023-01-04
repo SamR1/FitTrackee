@@ -8,6 +8,7 @@ class ActivityType(Enum):
     FOLLOW = 'Follow'
     REJECT = 'Reject'
     UNDO = 'Undo'
+    UPDATE = 'Update'
 
 
 class ActorType(Enum):

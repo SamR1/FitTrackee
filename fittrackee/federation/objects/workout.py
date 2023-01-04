@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 class WorkoutObject(BaseObject):
     workout: 'Workout'
 
-    def __init__(self, workout: 'Workout') -> None:
+    def __init__(self, workout: 'Workout', activity_type: str) -> None:
         if workout.workout_visibility in [
             PrivacyLevel.PRIVATE,
             PrivacyLevel.FOLLOWERS,
@@ -26,7 +26,7 @@ class WorkoutObject(BaseObject):
                 f"object visibility is: '{workout.workout_visibility.value}'"
             )
         self.workout = workout
-        self.type = ActivityType.CREATE
+        self.type = ActivityType(activity_type)
         self.actor = self.workout.user.actor
         self.activity_id = (
             f'{self.actor.activitypub_id}/workouts/{self.workout.short_id}'

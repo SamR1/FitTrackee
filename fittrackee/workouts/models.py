@@ -426,8 +426,8 @@ class Workout(BaseModel):
 
     @federation_required
     def get_activities(self, activity_type: str) -> Tuple[Dict, Dict]:
-        if activity_type == 'Create':
-            workout_object = WorkoutObject(self)
+        if activity_type in ['Create', 'Update']:
+            workout_object = WorkoutObject(self, activity_type=activity_type)
             return workout_object.get_activity(), workout_object.get_activity(
                 is_note=True
             )

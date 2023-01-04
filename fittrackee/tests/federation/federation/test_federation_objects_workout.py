@@ -41,21 +41,38 @@ class TestWorkoutObject(WorkoutObjectTestCase):
             InvalidVisibilityException,
             match=f"object visibility is: '{input_visibility.value}'",
         ):
-            WorkoutObject(workout_cycling_user_1)
+            WorkoutObject(workout_cycling_user_1, 'Create')
 
-    def test_it_generates_create_activity_when_visibility_is_followers_and_remote_only(  # noqa
+    def test_it_raises_error_when_activity_type_is_invalid(
         self,
         app_with_federation: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
+        invalid_activity_type = self.random_string()
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        with pytest.raises(
+            ValueError,
+            match=f"'{invalid_activity_type}' is not a valid ActivityType",
+        ):
+            WorkoutObject(workout_cycling_user_1, invalid_activity_type)
+
+    @pytest.mark.parametrize('input_activity_type', ['Create', 'Update'])
+    def test_it_generates_activity_when_visibility_is_followers_and_remote_only(  # noqa
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_activity_type: str,
+    ) -> None:
         workout_cycling_user_1.title = self.random_string()
         workout_cycling_user_1.workout_visibility = (
             PrivacyLevel.FOLLOWERS_AND_REMOTE
         )
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
-        workout = WorkoutObject(workout_cycling_user_1)
+        workout = WorkoutObject(workout_cycling_user_1, input_activity_type)
 
         serialized_workout = workout.get_activity()
 
@@ -65,7 +82,7 @@ class TestWorkoutObject(WorkoutObjectTestCase):
                 f'{user_1.actor.activitypub_id}/workouts/'
                 f'{workout_cycling_user_1.short_id}/activity'
             ),
-            'type': 'Create',
+            'type': input_activity_type,
             'actor': user_1.actor.activitypub_id,
             'published': published,
             'to': [user_1.actor.followers_url],
@@ -97,17 +114,19 @@ class TestWorkoutObject(WorkoutObjectTestCase):
             },
         }
 
+    @pytest.mark.parametrize('input_activity_type', ['Create', 'Update'])
     def test_it_generates_create_activity_when_visibility_is_public(
         self,
         app_with_federation: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        input_activity_type: str,
     ) -> None:
         workout_cycling_user_1.title = self.random_string()
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
-        workout = WorkoutObject(workout_cycling_user_1)
+        workout = WorkoutObject(workout_cycling_user_1, input_activity_type)
 
         serialized_workout = workout.get_activity()
 
@@ -117,7 +136,7 @@ class TestWorkoutObject(WorkoutObjectTestCase):
                 f'{user_1.actor.activitypub_id}/workouts/'
                 f'{workout_cycling_user_1.short_id}/activity'
             ),
-            'type': 'Create',
+            'type': input_activity_type,
             'actor': user_1.actor.activitypub_id,
             'published': published,
             'to': ['https://www.w3.org/ns/activitystreams#Public'],
@@ -171,7 +190,7 @@ Duration: {workout.duration}</p>
             PrivacyLevel.FOLLOWERS_AND_REMOTE
         )
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
-        workout = WorkoutObject(workout_cycling_user_1)
+        workout = WorkoutObject(workout_cycling_user_1, 'Create')
         expected_url = self.expected_url(user_1, workout_cycling_user_1)
 
         serialized_workout_note = workout.get_activity(is_note=True)
@@ -214,7 +233,7 @@ Duration: {workout.duration}</p>
         workout_cycling_user_1.title = self.random_string()
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
-        workout = WorkoutObject(workout_cycling_user_1)
+        workout = WorkoutObject(workout_cycling_user_1, 'Create')
         expected_url = self.expected_url(user_1, workout_cycling_user_1)
 
         serialized_workout_note = workout.get_activity(is_note=True)

@@ -1,6 +1,7 @@
 import json
 import os
 import shutil
+from copy import copy
 from datetime import timedelta
 from typing import Dict, List, Optional, Tuple, Union
 
@@ -1402,6 +1403,9 @@ def update_workout(
             return DataNotFoundErrorResponse('workouts')
         if auth_user.id != workout.user.id:
             return ForbiddenErrorResponse()
+        old_workout = (
+            copy(workout) if current_app.config['federation_enabled'] else None
+        )
 
         if not workout.gpx:
             try:
@@ -1432,6 +1436,26 @@ def update_workout(
 
         workout = edit_workout(workout, workout_data, auth_user)
         db.session.commit()
+
+        if current_app.config['federation_enabled']:
+            if workout.workout_visibility in (
+                PrivacyLevel.PUBLIC,
+                PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            ):
+                if old_workout.workout_visibility in (
+                    PrivacyLevel.PRIVATE,
+                    PrivacyLevel.FOLLOWERS,
+                ):
+                    handle_workout_activities(workout, activity_type='Create')
+                else:
+                    handle_workout_activities(workout, activity_type='Update')
+
+            elif old_workout.workout_visibility in (
+                PrivacyLevel.PUBLIC,
+                PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            ):
+                handle_workout_activities(old_workout, activity_type='Delete')
+
         return {
             'status': 'success',
             'data': {'workouts': [workout.serialize('owner')]},

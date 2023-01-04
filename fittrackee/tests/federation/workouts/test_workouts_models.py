@@ -128,6 +128,8 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
 
 
 class TestWorkoutModelGetWorkoutCreateActivity:
+    activity_type = 'Create'
+
     @pytest.mark.parametrize(
         'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
     )
@@ -141,7 +143,9 @@ class TestWorkoutModelGetWorkoutCreateActivity:
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_visibility
         with pytest.raises(InvalidVisibilityException):
-            workout_cycling_user_1.get_activities(activity_type='Create')
+            workout_cycling_user_1.get_activities(
+                activity_type=self.activity_type
+            )
 
     @pytest.mark.parametrize(
         'workout_visibility',
@@ -158,13 +162,19 @@ class TestWorkoutModelGetWorkoutCreateActivity:
         workout_cycling_user_1.workout_visibility = workout_visibility
 
         create_workout, create_note = workout_cycling_user_1.get_activities(
-            activity_type='Create'
+            activity_type=self.activity_type
         )
 
-        assert create_workout['type'] == 'Create'
+        assert create_workout['type'] == self.activity_type
         assert create_workout['object']['type'] == 'Workout'
-        assert create_note['type'] == 'Create'
+        assert create_note['type'] == self.activity_type
         assert create_note['object']['type'] == 'Note'
+
+
+class TestWorkoutModelGetWorkoutUpdateActivity(
+    TestWorkoutModelGetWorkoutCreateActivity
+):
+    activity_type = 'Update'
 
 
 class TestWorkoutModelGetWorkoutDeleteActivity:
