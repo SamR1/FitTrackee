@@ -11,7 +11,7 @@ from requests import Response
 
 from fittrackee import db
 from fittrackee.users.models import FollowRequest, User
-from fittrackee.workouts.utils.short_id import encode_uuid
+from fittrackee.utils import encode_uuid
 
 
 def random_string(

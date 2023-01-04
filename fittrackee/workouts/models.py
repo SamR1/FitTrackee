@@ -17,10 +17,10 @@ from fittrackee.federation.objects.tombstone import TombstoneObject
 from fittrackee.federation.objects.workout import WorkoutObject
 from fittrackee.files import get_absolute_file_path
 from fittrackee.privacy_levels import PrivacyLevel, get_map_visibility
+from fittrackee.utils import encode_uuid
 
 from .exceptions import WorkoutForbiddenException
 from .utils.convert import convert_in_duration, convert_value_to_integer
-from .utils.short_id import encode_uuid
 
 record_types = [
     'AS',  # 'Best Average Speed'
@@ -182,6 +182,12 @@ class Workout(BaseModel):
     )
     records = db.relationship(
         'Record',
+        lazy=True,
+        cascade='all, delete',
+        backref=db.backref('workout', lazy='joined', single_parent=True),
+    )
+    comments = db.relationship(
+        'WorkoutComment',
         lazy=True,
         cascade='all, delete',
         backref=db.backref('workout', lazy='joined', single_parent=True),
@@ -625,3 +631,51 @@ def on_record_delete(
                 )
                 new_record.value = record_data['record_value']  # type: ignore
                 session.add(new_record)
+
+
+class WorkoutComment(BaseModel):
+    __tablename__ = 'workout_comments'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    uuid = db.Column(
+        postgresql.UUID(as_uuid=True),
+        default=uuid4,
+        unique=True,
+        nullable=False,
+    )
+    user_id = db.Column(
+        db.Integer, db.ForeignKey('users.id'), index=True, nullable=False
+    )
+    workout_id = db.Column(
+        db.Integer, db.ForeignKey('workouts.id'), nullable=False
+    )
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    text = db.Column(db.String(), nullable=False)
+    text_visibility = db.Column(
+        Enum(PrivacyLevel, name='privacy_levels'),
+        server_default='PRIVATE',
+        nullable=False,
+    )
+    reply_to = db.Column(db.Integer, nullable=True)
+    ap_id = db.Column(db.Text(), nullable=True)
+    remote_url = db.Column(db.Text(), nullable=True)
+
+    def __repr__(self) -> str:
+        return f'<WorkoutComment {self.id}>'
+
+    def __init__(
+        self,
+        user_id: int,
+        workout_id: int,
+        text: str,
+        created_at: Optional[datetime.datetime] = None,
+    ) -> None:
+        self.user_id = user_id
+        self.workout_id = workout_id
+        self.text = text
+        self.created_at = (
+            datetime.datetime.utcnow() if created_at is None else created_at
+        )
+
+    @property
+    def short_id(self) -> str:
+        return encode_uuid(self.uuid)

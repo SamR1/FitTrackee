@@ -8,9 +8,9 @@ from fittrackee import db
 from fittrackee.federation.exceptions import FederationDisabledException
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import User
+from fittrackee.utils import encode_uuid
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Sport, Workout
-from fittrackee.workouts.utils.short_id import encode_uuid
 
 from ..utils import random_string
 

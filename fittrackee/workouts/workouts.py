@@ -35,6 +35,7 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.users.models import User
+from fittrackee.utils import decode_short_id
 
 from .models import Workout
 from .utils.convert import convert_in_duration
@@ -43,7 +44,6 @@ from .utils.gpx import (
     extract_segment_from_gpx_file,
     get_chart_data,
 )
-from .utils.short_id import decode_short_id
 from .utils.visibility import can_view_workout
 from .utils.workouts import (
     WorkoutException,

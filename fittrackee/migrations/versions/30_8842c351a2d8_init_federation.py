@@ -10,7 +10,7 @@ from datetime import datetime
 
 import sqlalchemy as sa
 from alembic import op
-from sqlalchemy.dialects.postgresql import ENUM
+from sqlalchemy.dialects.postgresql import ENUM, UUID
 
 from fittrackee.federation.utils import (
     generate_keys, get_ap_url, remove_url_scheme
@@ -263,8 +263,38 @@ def upgrade():
     op.alter_column('workouts', 'workout_visibility', nullable=False)
     op.alter_column('workouts', 'map_visibility', nullable=False)
 
+    op.create_table('workout_comments',
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('uuid', UUID(as_uuid=True), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('workout_id', sa.Integer(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('text', sa.String(), nullable=False),
+    sa.Column('reply_to', sa.Integer(), nullable=True),
+    sa.Column('ap_id', sa.Text(), nullable=True),
+    sa.Column('remote_url', sa.Text(), nullable=True),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['workout_id'], ['workouts.id'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('uuid')
+    )
+    op.add_column(
+        'workout_comments',
+        sa.Column(
+            'text_visibility',
+            privacy_levels,
+            server_default='PRIVATE',
+            nullable=True
+        )
+    )
+    with op.batch_alter_table('workout_comments', schema=None) as batch_op:
+        batch_op.create_index(batch_op.f('ix_workout_comments_user_id'), ['user_id'], unique=False)
 
 def downgrade():
+    with op.batch_alter_table('workout_comments', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_workout_comments_user_id'))
+    op.drop_table('workout_comments')
+
     op.drop_column('workouts', 'remote_url')
     op.drop_column('workouts', 'ap_id')
     op.drop_column('workouts', 'map_visibility')

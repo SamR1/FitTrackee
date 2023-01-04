@@ -182,6 +182,11 @@ class User(BaseModel):
         lazy='dynamic',
         viewonly=True,
     )
+    workout_comments = db.relationship(
+        'WorkoutComment',
+        lazy=True,
+        backref=db.backref('user', lazy='joined', single_parent=True),
+    )
 
     def __repr__(self) -> str:
         return f'<User {self.username!r}>'
