@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from datetime import datetime, timedelta
 from typing import Dict, Tuple
 
 from fittrackee import appLog, db
@@ -8,6 +9,9 @@ from fittrackee.federation.exceptions import (
     ObjectNotFoundException,
 )
 from fittrackee.federation.models import Actor
+from fittrackee.federation.objects.workout import (
+    convert_duration_string_to_seconds,
+)
 from fittrackee.federation.utils.user import (
     create_remote_user,
     get_or_create_remote_domain_from_url,
@@ -17,6 +21,7 @@ from fittrackee.users.exceptions import (
     FollowRequestAlreadyRejectedError,
     NotExistingFollowRequestError,
 )
+from fittrackee.workouts.constants import WORKOUT_DATE_FORMAT
 from fittrackee.workouts.exceptions import SportNotFoundException
 from fittrackee.workouts.models import Sport, Workout
 from fittrackee.workouts.utils.workouts import create_workout
@@ -198,3 +203,62 @@ class DeleteActivity(AbstractActivity):
         actor = self.get_actor()
         if 'workout' in self.activity['id']:
             self.delete_remote_workout(actor)
+
+
+class UpdateActivity(AbstractActivity):
+    @staticmethod
+    def convert_duration_string_to_timedelta(
+        duration_string: str,
+    ) -> timedelta:
+        return timedelta(
+            seconds=convert_duration_string_to_seconds(duration_string)
+        )
+
+    def update_remote_workout(self, actor: Actor) -> None:
+        workout_data = self.activity['object']
+        workout_to_update = Workout.query.filter_by(
+            ap_id=workout_data['id']
+        ).first()
+        if not workout_to_update:
+            raise ObjectNotFoundException('workout', self.activity_name())
+
+        if workout_to_update.user.actor.id != actor.id:
+            raise ActivityException(
+                f'{self.activity_name()}: activity actor does not '
+                f'match workout actor.'
+            )
+
+        try:
+            workout_to_update.ave_speed = workout_data['ave_speed']
+            workout_to_update.distance = workout_data['distance']
+            workout_to_update.duration = (
+                self.convert_duration_string_to_timedelta(
+                    workout_data['duration']
+                )
+            )
+            workout_to_update.max_speed = workout_data['max_speed']
+            workout_to_update.moving = (
+                self.convert_duration_string_to_timedelta(
+                    workout_data['moving']
+                )
+            )
+            workout_to_update.sport_id = workout_data['sport_id']
+            workout_to_update.title = workout_data['title']
+            # workout date must be in GMT+00:00
+            workout_to_update.workout_date = datetime.strptime(
+                workout_data['workout_date'], WORKOUT_DATE_FORMAT
+            )
+            workout_to_update.workout_visibility = workout_data[
+                'workout_visibility'
+            ]
+            db.session.commit()
+        except Exception as e:
+            raise ActivityException(
+                f'{self.activity_name()}: invalid Workout activity '
+                f'({e.__class__.__name__}: {e}).'
+            )
+
+    def process_activity(self) -> None:
+        actor = self.get_actor()
+        if 'workout' in self.activity['id']:
+            self.update_remote_workout(actor)

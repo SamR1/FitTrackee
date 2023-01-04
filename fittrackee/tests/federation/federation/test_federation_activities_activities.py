@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Dict, Optional, Union
 from unittest.mock import patch
 
@@ -14,6 +14,9 @@ from fittrackee.federation.exceptions import (
     UnsupportedActivityException,
 )
 from fittrackee.federation.models import Actor
+from fittrackee.federation.objects.workout import (
+    convert_duration_string_to_seconds,
+)
 from fittrackee.federation.tasks.activity import get_activity_instance
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.exceptions import (
@@ -500,8 +503,11 @@ class TestUndoActivityForFollowRequest(FollowRequestActivitiesTestCase):
 
 
 class WorkoutActivitiesTestCase(RandomMixin):
-    def generate_workout_create_activity(
-        self, remote_actor: Union[RandomActor, Actor], sport_id: int
+    def generate_random_object(
+        self,
+        remote_actor: Union[RandomActor, Actor],
+        sport_id: int,
+        activity_type: str,
     ) -> Dict:
         remote_domain = (
             remote_actor.domain
@@ -514,38 +520,96 @@ class WorkoutActivitiesTestCase(RandomMixin):
         workout_url = f'{remote_domain}/workouts/{workout_short_id}'
         published = datetime.utcnow().strftime(DATE_FORMAT)
         return {
-            '@context': AP_CTX,
-            'id': (
-                f'{remote_actor.activitypub_id}/workouts/'
-                f'{workout_short_id}/activity'
+            "@context": AP_CTX,
+            "id": (
+                f"{remote_actor.activitypub_id}/workouts/"
+                f"{workout_short_id}/activity"
             ),
-            'type': 'Create',
-            'actor': remote_actor.activitypub_id,
-            'published': published,
-            'to': [remote_actor.followers_url],
-            'cc': [],
-            'object': {
-                'id': (
-                    f'{remote_actor.activitypub_id}/workouts/'
-                    f'{workout_short_id}'
+            "type": activity_type,
+            "actor": remote_actor.activitypub_id,
+            "published": published,
+            "to": [remote_actor.followers_url],
+            "cc": [],
+            "object": {
+                "id": (
+                    f"{remote_actor.activitypub_id}/workouts/"
+                    f"{workout_short_id}"
                 ),
-                'type': 'Workout',
-                'published': published,
-                'url': workout_url,
-                'attributedTo': remote_actor.activitypub_id,
-                'to': [remote_actor.followers_url],
-                'cc': [],
-                'ave_speed': workout_distance,
-                'distance': workout_distance,
-                'duration': '01:00:00',
-                'max_speed': workout_distance,
-                'moving': '01:00:00',
-                'sport_id': sport_id,
-                'title': self.random_string(),
-                'workout_date': workout_date,
-                'workout_visibility': PrivacyLevel.FOLLOWERS.value,
+                "type": "Workout",
+                "published": published,
+                "url": workout_url,
+                "attributedTo": remote_actor.activitypub_id,
+                "to": [remote_actor.followers_url],
+                "cc": [],
+                "ave_speed": workout_distance,
+                "distance": workout_distance,
+                "duration": "01:00:00",
+                "max_speed": workout_distance,
+                "moving": "01:00:00",
+                "sport_id": sport_id,
+                "title": self.random_string(),
+                "workout_date": workout_date,
+                "workout_visibility": PrivacyLevel.FOLLOWERS.value,
             },
         }
+
+    def generate_workout_create_activity(
+        self, remote_actor: Union[RandomActor, Actor], sport_id: int
+    ) -> Dict:
+        return self.generate_random_object(remote_actor, sport_id, 'Create')
+
+    def generate_workout_update_activity(
+        self,
+        remote_actor: Union[RandomActor, Actor, None] = None,
+        sport_id: Optional[int] = None,
+        workout: Optional[Workout] = None,
+        updates: Optional[Dict] = None,
+    ) -> Dict:
+        activity = {}
+        if not updates:
+            updates = {}
+        if workout:
+            actor: Actor = workout.user.actor
+            remote_domain = f'https://{workout.user.actor.domain.name}'
+            published = datetime.utcnow().strftime(DATE_FORMAT)
+            activity = {
+                "@context": AP_CTX,
+                "id": (
+                    f"{actor.activitypub_id}/workouts/"
+                    f"{workout.short_id}/activity"
+                ),
+                "type": "Update",
+                "actor": actor.activitypub_id,
+                "published": published,
+                "to": [actor.followers_url],
+                "cc": [],
+                "object": {
+                    "id": workout.ap_id,
+                    "type": "Workout",
+                    "published": published,
+                    "url": f"{remote_domain}/workouts/{workout.short_id}",
+                    "attributedTo": actor.activitypub_id,
+                    "to": [actor.followers_url],
+                    "cc": [],
+                    "ave_speed": workout.ave_speed,
+                    "distance": workout.distance,
+                    "duration": str(workout.duration),
+                    "max_speed": workout.max_speed,
+                    "moving": str(workout.moving),
+                    "sport_id": workout.sport_id,
+                    "title": workout.title,
+                    "workout_date": datetime.utcnow().strftime(
+                        WORKOUT_DATE_FORMAT
+                    ),
+                    "workout_visibility": PrivacyLevel.FOLLOWERS.value,
+                },
+            }
+        elif remote_actor and remote_actor and sport_id:
+            activity = self.generate_random_object(
+                remote_actor, sport_id, 'Update'
+            )
+        activity["object"] = {**activity["object"], **updates}
+        return activity
 
     def generate_workout_delete_activity(
         self,
@@ -768,3 +832,214 @@ class TestDeleteActivityForWorkout(WorkoutActivitiesTestCase):
         activity.process_activity()
 
         assert Workout.query.filter_by(id=workout_id).first() is None
+
+
+class TestUpdateActivityForWorkout(WorkoutActivitiesTestCase):
+    def test_it_raises_error_if_remote_workout_does_not_exist(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+        sport_1_cycling: Sport,
+    ) -> None:
+        update_activity = self.generate_workout_update_activity(
+            remote_actor=remote_user.actor, sport_id=sport_1_cycling.id
+        )
+        activity = get_activity_instance({"type": update_activity["type"]})(
+            activity_dict=update_activity
+        )
+        with pytest.raises(
+            ObjectNotFoundException,
+            match="workout not found for UpdateActivity",
+        ):
+
+            activity.process_activity()
+
+    def test_it_raises_error_if_workout_actor_does_not_exist(
+        self,
+        app_with_federation: Flask,
+        random_actor: Actor,
+        sport_1_cycling: Sport,
+    ) -> None:
+        update_activity = self.generate_workout_update_activity(
+            remote_actor=random_actor, sport_id=sport_1_cycling.id
+        )
+        activity = get_activity_instance({"type": update_activity["type"]})(
+            activity_dict=update_activity
+        )
+        with pytest.raises(
+            ActorNotFoundException,
+            match="actor not found for UpdateActivity",
+        ):
+
+            activity.process_activity()
+
+    def test_it_raises_error_when_activity_actor_is_not_workout_actor(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        remote_cycling_workout: Workout,
+        remote_user_2: User,
+    ) -> None:
+        update_activity = self.generate_workout_update_activity(
+            workout=remote_cycling_workout,
+            updates={'title': self.random_string()},
+        )
+        update_activity = {
+            **update_activity,
+            'actor': remote_user_2.actor.activitypub_id,
+        }
+        activity = get_activity_instance({'type': update_activity['type']})(
+            activity_dict=update_activity
+        )
+        serialize_workout = remote_cycling_workout.serialize(
+            user_status='owner'
+        )
+
+        with pytest.raises(
+            ActivityException,
+            match=(
+                "UpdateActivity: activity actor does not match workout actor."
+            ),
+        ):
+
+            activity.process_activity()
+
+        workout = Workout.query.filter_by(id=remote_cycling_workout.id).first()
+        assert workout.serialize('owner') == serialize_workout
+
+    @pytest.mark.parametrize(
+        "input_key, input_new_value",
+        [
+            ("ave_speed", 9.0),
+            ("distance", 12.0),
+            ("max_speed", 13.0),
+            ("sport_id", 2),
+            ("title", "new_title"),
+            ("workout_visibility", PrivacyLevel.PUBLIC),
+        ],
+    )
+    def test_it_updates_remote_workout(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        remote_cycling_workout: Workout,
+        input_key: str,
+        input_new_value: Union[str, int, float, PrivacyLevel],
+    ) -> None:
+        update_activity = self.generate_workout_update_activity(
+            workout=remote_cycling_workout,
+            updates={input_key: input_new_value},
+        )
+        activity = get_activity_instance({"type": update_activity["type"]})(
+            activity_dict=update_activity
+        )
+
+        activity.process_activity()
+
+        workout = Workout.query.filter_by(id=remote_cycling_workout.id).first()
+        assert workout.__getattribute__(input_key) == input_new_value
+
+    @pytest.mark.parametrize(
+        "input_key, input_new_value",
+        [
+            ("duration", "00:50:00"),
+            ("moving", "01:20:10"),
+        ],
+    )
+    def test_it_updates_remote_workout_durations(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        remote_cycling_workout: Workout,
+        input_key: str,
+        input_new_value: str,
+    ) -> None:
+        update_activity = self.generate_workout_update_activity(
+            workout=remote_cycling_workout,
+            updates={input_key: input_new_value},
+        )
+        activity = get_activity_instance({"type": update_activity["type"]})(
+            activity_dict=update_activity
+        )
+
+        activity.process_activity()
+
+        workout = Workout.query.filter_by(id=remote_cycling_workout.id).first()
+        assert workout.__getattribute__(input_key) == timedelta(
+            seconds=convert_duration_string_to_seconds(input_new_value)
+        )
+
+    def test_it_updates_remote_workout_date(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        remote_cycling_workout: Workout,
+    ) -> None:
+        new_workout_date = "2022-01-04 08:16"
+        update_activity = self.generate_workout_update_activity(
+            workout=remote_cycling_workout,
+            updates={"workout_date": new_workout_date},
+        )
+        activity = get_activity_instance({"type": update_activity["type"]})(
+            activity_dict=update_activity
+        )
+
+        activity.process_activity()
+
+        workout = Workout.query.filter_by(id=remote_cycling_workout.id).first()
+        assert workout.workout_date == datetime.strptime(
+            new_workout_date, WORKOUT_DATE_FORMAT
+        )
+
+    def test_it_updates_remote_workout_modification_date(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        remote_cycling_workout: Workout,
+    ) -> None:
+        update_activity = self.generate_workout_update_activity(
+            workout=remote_cycling_workout,
+            updates={"title": self.random_string()},
+        )
+        activity = get_activity_instance({"type": update_activity["type"]})(
+            activity_dict=update_activity
+        )
+
+        activity.process_activity()
+
+        workout = Workout.query.filter_by(id=remote_cycling_workout.id).first()
+        assert workout.modification_date is not None
+
+    def test_it_raises_exception_when_activity_is_invalid(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        remote_cycling_workout: Workout,
+    ) -> None:
+        update_activity = self.generate_workout_update_activity(
+            workout=remote_cycling_workout,
+        )
+        del update_activity["object"]["title"]
+        activity = get_activity_instance({"type": update_activity["type"]})(
+            activity_dict=update_activity
+        )
+        with pytest.raises(
+            ActivityException,
+            match=(
+                "UpdateActivity: invalid Workout activity"
+                " \\(KeyError: 'title'\\)."
+            ),
+        ):
+
+            activity.process_activity()

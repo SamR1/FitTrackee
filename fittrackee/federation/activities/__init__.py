@@ -5,6 +5,7 @@ from .activities import (
     FollowActivity,
     RejectActivity,
     UndoActivity,
+    UpdateActivity,
 )
 
 __all__ = [
@@ -14,4 +15,5 @@ __all__ = [
     'FollowActivity',
     'RejectActivity',
     'UndoActivity',
+    'UpdateActivity',
 ]
