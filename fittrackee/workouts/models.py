@@ -3,6 +3,7 @@ import os
 from typing import Any, Dict, Optional, Tuple, Union
 from uuid import UUID, uuid4
 
+from flask import current_app
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
@@ -19,7 +20,7 @@ from fittrackee.files import get_absolute_file_path
 from fittrackee.privacy_levels import PrivacyLevel, get_map_visibility
 from fittrackee.utils import encode_uuid
 
-from .exceptions import WorkoutForbiddenException
+from .exceptions import InvalidVisibilityException, WorkoutForbiddenException
 from .utils.convert import convert_in_duration, convert_value_to_integer
 
 record_types = [
@@ -666,15 +667,54 @@ class WorkoutComment(BaseModel):
         self,
         user_id: int,
         workout_id: int,
+        workout_visibility: PrivacyLevel,
         text: str,
+        text_visibility: PrivacyLevel = PrivacyLevel.PRIVATE,
         created_at: Optional[datetime.datetime] = None,
     ) -> None:
         self.user_id = user_id
         self.workout_id = workout_id
         self.text = text
+        self.text_visibility = self._check_visibility(
+            workout_visibility, text_visibility
+        )
         self.created_at = (
             datetime.datetime.utcnow() if created_at is None else created_at
         )
+
+    @staticmethod
+    def _check_visibility(
+        workout_visibility: PrivacyLevel, text_visibility: PrivacyLevel
+    ) -> PrivacyLevel:
+        if (
+            text_visibility == PrivacyLevel.FOLLOWERS_AND_REMOTE
+            and not current_app.config['federation_enabled']
+        ):
+            raise InvalidVisibilityException(
+                f'invalid visibility: {text_visibility},'
+                f' federation is disabled.'
+            )
+
+        if (
+            (
+                workout_visibility == PrivacyLevel.PRIVATE
+                and text_visibility != PrivacyLevel.PRIVATE
+            )
+            or (
+                workout_visibility == PrivacyLevel.FOLLOWERS
+                and text_visibility
+                in [PrivacyLevel.PUBLIC, PrivacyLevel.FOLLOWERS_AND_REMOTE]
+            )
+            or (
+                workout_visibility == PrivacyLevel.FOLLOWERS_AND_REMOTE
+                and text_visibility == PrivacyLevel.PUBLIC
+            )
+        ):
+            raise InvalidVisibilityException(
+                f'invalid visibility: {text_visibility} '
+                f'(workout visibility: {workout_visibility})'
+            )
+        return text_visibility
 
     @property
     def short_id(self) -> str:

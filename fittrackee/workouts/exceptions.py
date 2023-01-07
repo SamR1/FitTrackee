@@ -1,6 +1,10 @@
 from fittrackee.exceptions import GenericException
 
 
+class InvalidVisibilityException(Exception):
+    ...
+
+
 class SportNotFoundException(Exception):
     ...
 
