@@ -1,8 +1,8 @@
 import pytest
 from flask import Flask
 
+from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.federation.constants import AP_CTX, PUBLIC_STREAM
-from fittrackee.federation.objects.exceptions import InvalidVisibilityException
 from fittrackee.federation.objects.tombstone import TombstoneObject
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import User

@@ -9,3 +9,7 @@ class GenericException(Exception):
         self.status = status
         self.message = message
         self.e = e
+
+
+class InvalidVisibilityException(Exception):
+    ...

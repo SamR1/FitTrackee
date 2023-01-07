@@ -1,7 +1,7 @@
 import pytest
 from flask import Flask
 
-from fittrackee.federation.objects.exceptions import InvalidVisibilityException
+from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.tests.workouts.test_workouts_model import WorkoutModelTestCase
 from fittrackee.users.models import User

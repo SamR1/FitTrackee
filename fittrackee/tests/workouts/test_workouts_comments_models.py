@@ -6,10 +6,11 @@ from flask import Flask
 from freezegun import freeze_time
 
 from fittrackee import db
+from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.privacy_levels import PrivacyLevel
-from fittrackee.users.models import User
+from fittrackee.users.models import FollowRequest, User
 from fittrackee.utils import encode_uuid
-from fittrackee.workouts.exceptions import InvalidVisibilityException
+from fittrackee.workouts.exceptions import CommentForbiddenException
 from fittrackee.workouts.models import Sport, Workout, WorkoutComment
 
 from ..mixins import RandomMixin
@@ -213,3 +214,208 @@ class TestWorkoutCommentModel(WorkoutCommentModelTestCase):
         )
 
         assert str(comment) == f'<WorkoutComment {comment.id}>'
+
+
+class TestWorkoutCommentModelSerializeForCommentOwner(
+    WorkoutCommentModelTestCase
+):
+    @pytest.mark.parametrize(
+        'input_visibility',
+        [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC],
+    )
+    def test_it_serializes_owner_comment(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_visibility: PrivacyLevel,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = input_visibility
+        comment = self.create_comment(
+            user=user_1,
+            workout=workout_cycling_user_1,
+            text_visibility=input_visibility,
+        )
+
+        serialized_comment = comment.serialize(user_1)
+
+        assert serialized_comment == {
+            'user_id': user_1.id,
+            'workout_id': workout_cycling_user_1.id,
+            'text': comment.text,
+            'text_visibility': comment.text_visibility,
+            'created_at': comment.created_at,
+        }
+
+
+class TestWorkoutCommentModelSerializeForFollower(WorkoutCommentModelTestCase):
+    def test_it_raises_error_when_user_does_not_follow_comment_owner(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
+        comment = self.create_comment(
+            user=user_1,
+            workout=workout_cycling_user_1,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+
+        with pytest.raises(CommentForbiddenException):
+            comment.serialize(user_2)
+
+    def test_it_raises_error_when_privacy_does_not_allow_it(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.approves_follow_request_from(user_2)
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
+        comment = self.create_comment(
+            user=user_1,
+            workout=workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PRIVATE,
+        )
+
+        with pytest.raises(CommentForbiddenException):
+            comment.serialize(user_2)
+
+    @pytest.mark.parametrize(
+        'input_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC]
+    )
+    def test_it_serializes_comment_for_follower_when_privacy_allows_it(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+        input_visibility: PrivacyLevel,
+    ) -> None:
+        user_1.approves_follow_request_from(user_2)
+        workout_cycling_user_1.workout_visibility = input_visibility
+        comment = self.create_comment(
+            user=user_1,
+            workout=workout_cycling_user_1,
+            text_visibility=input_visibility,
+        )
+
+        serialized_comment = comment.serialize(user_2)
+
+        assert serialized_comment == {
+            'user_id': user_1.id,
+            'workout_id': workout_cycling_user_1.id,
+            'text': comment.text,
+            'text_visibility': comment.text_visibility,
+            'created_at': comment.created_at,
+        }
+
+
+class TestWorkoutCommentModelSerializeForUser(WorkoutCommentModelTestCase):
+    @pytest.mark.parametrize(
+        'input_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
+    )
+    def test_it_raises_error_when_comment_is_not_public(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_visibility: PrivacyLevel,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_1,
+            workout=workout_cycling_user_1,
+            text_visibility=input_visibility,
+        )
+
+        with pytest.raises(CommentForbiddenException):
+            comment.serialize(user_2)
+
+    def test_it_serializes_comment_when_comment_is_public(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        # TODO: mentions
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_1,
+            workout=workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+
+        serialized_comment = comment.serialize(user_2)
+
+        assert serialized_comment == {
+            'user_id': user_1.id,
+            'workout_id': workout_cycling_user_1.id,
+            'text': comment.text,
+            'text_visibility': comment.text_visibility,
+            'created_at': comment.created_at,
+        }
+
+
+class TestWorkoutCommentModelSerializeForUnauthenticatedUser(
+    WorkoutCommentModelTestCase
+):
+    @pytest.mark.parametrize(
+        'input_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
+    )
+    def test_it_raises_error_when_comment_is_not_public(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_visibility: PrivacyLevel,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_1,
+            workout=workout_cycling_user_1,
+            text_visibility=input_visibility,
+        )
+
+        with pytest.raises(CommentForbiddenException):
+            comment.serialize()
+
+    def test_it_serializes_comment_when_comment_is_public(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        # TODO: mentions
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_1,
+            workout=workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+
+        serialized_comment = comment.serialize()
+
+        assert serialized_comment == {
+            'user_id': user_1.id,
+            'workout_id': workout_cycling_user_1.id,
+            'text': comment.text,
+            'text_visibility': comment.text_visibility,
+            'created_at': comment.created_at,
+        }

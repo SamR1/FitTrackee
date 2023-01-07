@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING, Dict
 
+from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.privacy_levels import PrivacyLevel
 
 from ..constants import AP_CTX, PUBLIC_STREAM
 from ..enums import ActivityType
 from .base_object import BaseObject
-from .exceptions import InvalidVisibilityException
 
 if TYPE_CHECKING:
     from fittrackee.workouts.models import Workout

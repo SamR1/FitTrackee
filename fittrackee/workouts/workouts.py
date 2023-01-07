@@ -18,6 +18,7 @@ from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db, limiter
+from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.federation.tasks.inbox import send_to_remote_inbox
 from fittrackee.federation.utils import sending_activities_allowed
 from fittrackee.oauth2.server import require_auth
@@ -37,7 +38,7 @@ from fittrackee.responses import (
 from fittrackee.users.models import User
 from fittrackee.utils import decode_short_id
 
-from .models import Workout
+from .models import Workout, WorkoutComment
 from .utils.convert import convert_in_duration
 from .utils.gpx import (
     WorkoutGPXException,
@@ -1532,3 +1533,60 @@ def delete_workout(
         OSError,
     ) as e:
         return handle_error_and_return_response(e, db=db)
+
+
+@workouts_blueprint.route(
+    "/workouts/<string:workout_short_id>/comments", methods=["POST"]
+)
+@require_auth(scopes=["workouts:write"])
+def add_workout_comment(
+    auth_user: User, workout_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    comment_data = request.get_json()
+    if (
+        not comment_data
+        or not comment_data.get('text')
+        or not comment_data.get('text_visibility')
+    ):
+        return InvalidPayloadErrorResponse()
+
+    workout_uuid = decode_short_id(workout_short_id)
+    workout = Workout.query.filter_by(uuid=workout_uuid).first()
+    if not workout:
+        return NotFoundErrorResponse(
+            f"workout not found (id: {workout_short_id})"
+        )
+
+    can_view, _ = can_view_workout(workout, 'workout_visibility', auth_user)
+    if not can_view:
+        return NotFoundErrorResponse(
+            f"workout not found (id: {workout_short_id})"
+        )
+
+    try:
+        new_comment = WorkoutComment(
+            user_id=auth_user.id,
+            workout_id=workout.id,
+            workout_visibility=workout.workout_visibility,
+            text=comment_data['text'],
+            text_visibility=PrivacyLevel(comment_data['text_visibility']),
+        )
+        db.session.add(new_comment)
+        db.session.commit()
+
+        return (
+            {
+                'status': 'created',
+                'comment': new_comment.serialize(auth_user),
+            },
+            201,
+        )
+    except InvalidVisibilityException as e:
+        return InvalidPayloadErrorResponse(message=str(e))
+    except (exc.IntegrityError, ValueError) as e:
+        return handle_error_and_return_response(
+            error=e,
+            message='Error during comment save.',
+            status='fail',
+            db=db,
+        )

@@ -1,6 +1,6 @@
 import datetime
 import os
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Union
 from uuid import UUID, uuid4
 
 from flask import current_app
@@ -13,6 +13,7 @@ from sqlalchemy.orm.session import Session, object_session
 from sqlalchemy.types import JSON, Enum
 
 from fittrackee import BaseModel, appLog, db
+from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.federation.decorators import federation_required
 from fittrackee.federation.objects.tombstone import TombstoneObject
 from fittrackee.federation.objects.workout import WorkoutObject
@@ -20,8 +21,12 @@ from fittrackee.files import get_absolute_file_path
 from fittrackee.privacy_levels import PrivacyLevel, get_map_visibility
 from fittrackee.utils import encode_uuid
 
-from .exceptions import InvalidVisibilityException, WorkoutForbiddenException
+from .exceptions import CommentForbiddenException, WorkoutForbiddenException
 from .utils.convert import convert_in_duration, convert_value_to_integer
+
+if TYPE_CHECKING:
+    from fittrackee.users.models import User
+
 
 record_types = [
     'AS',  # 'Best Average Speed'
@@ -719,3 +724,25 @@ class WorkoutComment(BaseModel):
     @property
     def short_id(self) -> str:
         return encode_uuid(self.uuid)
+
+    def serialize(self, user: Optional['User'] = None) -> Dict:
+        # TODO: mentions
+        if (
+            self.text_visibility != PrivacyLevel.PUBLIC
+            and user != self.user
+            and (
+                (user not in self.user.followers)
+                or (
+                    user in self.user.followers
+                    and self.text_visibility == PrivacyLevel.PRIVATE
+                )
+            )
+        ):
+            raise CommentForbiddenException
+        return {
+            'user_id': self.user_id,
+            'workout_id': self.workout_id,
+            'text': self.text,
+            'text_visibility': self.text_visibility,
+            'created_at': self.created_at,
+        }

@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Dict
 
+from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.workouts.constants import WORKOUT_DATE_FORMAT
 
@@ -7,7 +8,6 @@ from ..constants import AP_CTX, DATE_FORMAT, PUBLIC_STREAM
 from ..enums import ActivityType
 from ..exceptions import InvalidWorkoutException
 from .base_object import BaseObject
-from .exceptions import InvalidVisibilityException
 from .templates.workout_note import WORKOUT_NOTE
 
 if TYPE_CHECKING:

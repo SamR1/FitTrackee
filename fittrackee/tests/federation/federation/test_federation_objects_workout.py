@@ -3,9 +3,9 @@ from typing import Any
 import pytest
 from flask import Flask
 
+from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.federation.constants import AP_CTX, DATE_FORMAT
 from fittrackee.federation.exceptions import InvalidWorkoutException
-from fittrackee.federation.objects.exceptions import InvalidVisibilityException
 from fittrackee.federation.objects.workout import (
     WorkoutObject,
     convert_duration_string_to_seconds,
