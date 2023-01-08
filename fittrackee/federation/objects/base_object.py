@@ -28,7 +28,7 @@ class BaseObject(ABC):
             PrivacyLevel.FOLLOWERS,
         ]:
             raise InvalidVisibilityException(
-                f"object visibility is: '{visibility}'"
+                f"object visibility is: '{visibility.value}'"
             )
 
     def _init_activity_dict(self) -> Dict:
