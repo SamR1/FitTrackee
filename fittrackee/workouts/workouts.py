@@ -65,7 +65,13 @@ MAX_WORKOUTS_TO_SEND = 5
 
 
 def handle_workout_activities(workout: Workout, activity_type: str) -> None:
-    sender_id = workout.user.actor.id
+    actor = workout.user.actor
+    if activity_type == 'Create':
+        workout.ap_id = f'{actor.activitypub_id}/workouts/{workout.short_id}'
+        workout.remote_url = (
+            f'https://{actor.domain.name}/' f'workouts/{workout.short_id}'
+        )
+        db.session.commit()
     workout_activity, note_activity = workout.get_activities(
         activity_type=activity_type
     )
@@ -73,13 +79,13 @@ def handle_workout_activities(workout: Workout, activity_type: str) -> None:
 
     if recipients['fittrackee']:
         send_to_remote_inbox.send(
-            sender_id=sender_id,
+            sender_id=actor.id,
             activity=workout_activity,
             recipients=list(recipients['fittrackee']),
         )
     if recipients['others']:
         send_to_remote_inbox.send(
-            sender_id=sender_id,
+            sender_id=actor.id,
             activity=note_activity,
             recipients=list(recipients['others']),
         )

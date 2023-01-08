@@ -10,7 +10,7 @@ from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.tests.utils import generate_follow_request
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.constants import WORKOUT_DATE_FORMAT
-from fittrackee.workouts.models import Sport
+from fittrackee.workouts.models import Sport, Workout
 
 from ...mixins import ApiTestCaseMixin
 
@@ -206,6 +206,41 @@ class TestFederationPostWorkoutWithoutGpx(ApiTestCaseMixin):
             recipients=[remote_user_2.actor.shared_inbox_url],
         )
 
+    def test_workout_ap_id_and_remote_url_are_saved_when_activity_is_sent(
+        self,
+        send_to_remote_inbox_mock: Mock,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=3600,
+                    workout_date='2018-05-15 14:05',
+                    distance=10,
+                    workout_visibility=PrivacyLevel.PUBLIC,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        workout = Workout.query.first()
+        assert workout.ap_id == (
+            f'{user_1.actor.activitypub_id}/workouts/{workout.short_id}'
+        )
+        assert workout.remote_url == (
+            f'https://{user_1.actor.domain.name}/'
+            f'workouts/{workout.short_id}'
+        )
+
 
 @patch('fittrackee.workouts.workouts.send_to_remote_inbox')
 class TestFederationPostWorkoutWithGpx(ApiTestCaseMixin):
@@ -393,6 +428,44 @@ class TestFederationPostWorkoutWithGpx(ApiTestCaseMixin):
             recipients=[remote_user_2.actor.shared_inbox_url],
         )
 
+    def test_workout_ap_id_and_remote_url_are_saved_when_activity_is_sent(
+        self,
+        send_to_remote_inbox_mock: Mock,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data=(
+                    f'{{"sport_id": 1, "map_visibility": '
+                    f'"{PrivacyLevel.PRIVATE.value}", '
+                    f'"workout_visibility": '
+                    f'"{PrivacyLevel.FOLLOWERS_AND_REMOTE.value}"}}'
+                ),
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        workout = Workout.query.first()
+        assert workout.ap_id == (
+            f'{user_1.actor.activitypub_id}/workouts/{workout.short_id}'
+        )
+        assert workout.remote_url == (
+            f'https://{user_1.actor.domain.name}/'
+            f'workouts/{workout.short_id}'
+        )
+
 
 @patch('fittrackee.workouts.workouts.send_to_remote_inbox')
 class TestFederationPostWorkoutWithZipArchive(ApiTestCaseMixin):
@@ -550,3 +623,55 @@ class TestFederationPostWorkoutWithZipArchive(ApiTestCaseMixin):
                 send_to_remote_inbox_mock.send.call_count
                 == max_workouts_to_send
             )
+
+    def test_workout_ap_id_and_remote_url_are_saved_when_activity_is_sent(
+        self,
+        send_to_remote_inbox_mock: Mock,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+    ) -> None:
+        # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
+        file_path = os.path.join(
+            app_with_federation.root_path, 'tests/files/gpx_test.zip'
+        )
+        max_workouts_to_send = 2
+
+        with open(file_path, 'rb') as zip_file:
+            client, auth_token = self.get_test_client_and_auth_token(
+                app_with_federation, user_1.email
+            )
+
+            with patch(
+                'fittrackee.workouts.workouts.MAX_WORKOUTS_TO_SEND',
+                max_workouts_to_send,
+            ):
+                client.post(
+                    '/api/workouts',
+                    data=dict(
+                        file=(zip_file, 'gpx_test.zip'),
+                        data=(
+                            f'{{"sport_id": 1, "map_visibility": '
+                            f'"{PrivacyLevel.PRIVATE.value}", '
+                            f'"workout_visibility": '
+                            f'"{PrivacyLevel.FOLLOWERS_AND_REMOTE.value}"}}'
+                        ),
+                    ),
+                    headers=dict(
+                        content_type='multipart/form-data',
+                        Authorization=f'Bearer {auth_token}',
+                    ),
+                )
+
+        workouts = Workout.query.all()
+        for workout in workouts[:max_workouts_to_send]:
+            assert workout.ap_id == (
+                f'{user_1.actor.activitypub_id}/workouts/{workout.short_id}'
+            )
+            assert workout.remote_url == (
+                f'https://{user_1.actor.domain.name}/'
+                f'workouts/{workout.short_id}'
+            )
+        for workout in workouts[max_workouts_to_send:]:
+            assert workout.ap_id is None
+            assert workout.remote_url is None

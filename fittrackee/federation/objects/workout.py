@@ -1,10 +1,7 @@
 from typing import TYPE_CHECKING, Dict
 
-from fittrackee.exceptions import InvalidVisibilityException
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.workouts.constants import WORKOUT_DATE_FORMAT
 
-from ..constants import AP_CTX, DATE_FORMAT, PUBLIC_STREAM
 from ..enums import ActivityType
 from ..exceptions import InvalidWorkoutException
 from .base_object import BaseObject
@@ -18,39 +15,15 @@ class WorkoutObject(BaseObject):
     workout: 'Workout'
 
     def __init__(self, workout: 'Workout', activity_type: str) -> None:
-        if workout.workout_visibility in [
-            PrivacyLevel.PRIVATE,
-            PrivacyLevel.FOLLOWERS,
-        ]:
-            raise InvalidVisibilityException(
-                f"object visibility is: '{workout.workout_visibility.value}'"
-            )
+        self._check_visibility(workout.workout_visibility)
         self.workout = workout
+        self.visibility = workout.workout_visibility
         self.type = ActivityType(activity_type)
         self.actor = self.workout.user.actor
-        self.activity_id = (
-            f'{self.actor.activitypub_id}/workouts/{self.workout.short_id}'
-        )
-        self.published = self.workout.creation_date.strftime(DATE_FORMAT)
-        self.workout_url = (
-            f'https://{self.actor.domain.name}/'
-            f'workouts/{self.workout.short_id}'
-        )
+        self.activity_id = self.workout.ap_id
+        self.published = self._get_published_date(self.workout.creation_date)
+        self.object_url = self.workout.remote_url
         self.activity_dict = self._init_activity_dict()
-
-    def _init_activity_dict(self) -> Dict:
-        return {
-            '@context': AP_CTX,
-            'type': self.type.value,
-            'actor': self.actor.activitypub_id,
-            'published': self.published,
-            'object': {
-                'id': self.activity_id,
-                'published': self.published,
-                'url': self.workout_url,
-                'attributedTo': self.actor.activitypub_id,
-            },
-        }
 
     def _get_note_content(self) -> str:
         # TODO:
@@ -60,21 +33,8 @@ class WorkoutObject(BaseObject):
             workout_title=self.workout.title,
             workout_distance=self.workout.distance,
             workout_duration=self.workout.duration,
-            workout_url=self.workout_url,
+            workout_url=self.object_url,
         )
-
-    def _update_activity_recipients(self, activity: Dict) -> Dict:
-        if self.workout.workout_visibility == PrivacyLevel.PUBLIC:
-            activity['to'] = [PUBLIC_STREAM]
-            activity['cc'] = [self.actor.followers_url]
-            activity['object']['to'] = [PUBLIC_STREAM]
-            activity['object']['cc'] = [self.actor.followers_url]
-        else:
-            activity['to'] = [self.actor.followers_url]
-            activity['cc'] = []
-            activity['object']['to'] = [self.actor.followers_url]
-            activity['object']['cc'] = []
-        return activity
 
     def get_activity(self, is_note: bool = False) -> Dict:
         activity = self.activity_dict.copy()
@@ -85,7 +45,6 @@ class WorkoutObject(BaseObject):
             activity['object']['content'] = self._get_note_content()
         # for FitTrackee instances
         else:
-            activity['id'] = f'{self.activity_id}/activity'
             activity['object'] = {
                 **activity['object'],
                 **{
@@ -103,7 +62,7 @@ class WorkoutObject(BaseObject):
                     'workout_visibility': self.workout.workout_visibility,
                 },
             }
-        return self._update_activity_recipients(activity)
+        return activity
 
 
 def convert_duration_string_to_seconds(duration_str: str) -> int:
