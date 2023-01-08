@@ -22,6 +22,7 @@ from fittrackee.privacy_levels import PrivacyLevel, get_map_visibility
 from fittrackee.utils import encode_uuid
 
 from .exceptions import CommentForbiddenException, WorkoutForbiddenException
+from .utils.comment_visibility import can_view_workout_comment
 from .utils.convert import convert_in_duration, convert_value_to_integer
 
 if TYPE_CHECKING:
@@ -727,17 +728,7 @@ class WorkoutComment(BaseModel):
 
     def serialize(self, user: Optional['User'] = None) -> Dict:
         # TODO: mentions
-        if (
-            self.text_visibility != PrivacyLevel.PUBLIC
-            and user != self.user
-            and (
-                (user not in self.user.followers)
-                or (
-                    user in self.user.followers
-                    and self.text_visibility == PrivacyLevel.PRIVATE
-                )
-            )
-        ):
+        if not can_view_workout_comment(self, user):
             raise CommentForbiddenException
         return {
             'user_id': self.user_id,

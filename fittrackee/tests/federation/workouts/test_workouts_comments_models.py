@@ -3,9 +3,7 @@ from flask import Flask
 
 from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.privacy_levels import PrivacyLevel
-from fittrackee.tests.workouts.test_workouts_comments_models import (
-    WorkoutCommentModelTestCase,
-)
+from fittrackee.tests.workouts.utils import WorkoutCommentMixin
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.exceptions import CommentForbiddenException
 from fittrackee.workouts.models import Sport, Workout, WorkoutComment
@@ -78,9 +76,7 @@ class TestWorkoutCommentModel(RandomMixin):
             )
 
 
-class TestWorkoutCommentModelSerializeForCommentOwner(
-    WorkoutCommentModelTestCase
-):
+class TestWorkoutCommentModelSerializeForCommentOwner(WorkoutCommentMixin):
     def test_it_serializes_owner_comment(
         self,
         app_with_federation: Flask,
@@ -108,9 +104,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(
         }
 
 
-class TestWorkoutCommentModelSerializeForRemoteFollower(
-    WorkoutCommentModelTestCase
-):
+class TestWorkoutCommentModelSerializeForRemoteFollower(WorkoutCommentMixin):
     def test_it_raises_error_when_user_does_not_follow_comment_user(
         self,
         app_with_federation: Flask,
@@ -126,6 +120,28 @@ class TestWorkoutCommentModelSerializeForRemoteFollower(
             user=remote_user,
             workout=remote_cycling_workout,
             text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+        )
+
+        with pytest.raises(CommentForbiddenException):
+            comment.serialize(user_1)
+
+    def test_it_raises_error_when_privacy_does_not_allows_it(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        remote_cycling_workout: Workout,
+        user_1: User,
+        follow_request_from_user_1_to_remote_user: FollowRequest,
+    ) -> None:
+        remote_user.approves_follow_request_from(user_1)
+        remote_cycling_workout.workout_visibility = (
+            PrivacyLevel.FOLLOWERS_AND_REMOTE
+        )
+        comment = self.create_comment(
+            user=remote_user,
+            workout=remote_cycling_workout,
+            text_visibility=PrivacyLevel.FOLLOWERS,
         )
 
         with pytest.raises(CommentForbiddenException):
@@ -164,7 +180,7 @@ class TestWorkoutCommentModelSerializeForRemoteFollower(
         }
 
 
-class TestWorkoutCommentModelSerializeForUser(WorkoutCommentModelTestCase):
+class TestWorkoutCommentModelSerializeForUser(WorkoutCommentMixin):
     def test_it_raises_error_when_comment_is_visible_to_remote_follower(
         self,
         app_with_federation: Flask,
@@ -185,7 +201,7 @@ class TestWorkoutCommentModelSerializeForUser(WorkoutCommentModelTestCase):
 
 
 class TestWorkoutCommentModelSerializeForUnauthenticatedUser(
-    WorkoutCommentModelTestCase
+    WorkoutCommentMixin
 ):
     def test_it_raises_error_when_comment_is_visible_to_remote_follower(
         self,

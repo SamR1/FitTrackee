@@ -1,10 +1,16 @@
 import json
+from datetime import datetime
 from io import BytesIO
 from typing import Optional, Tuple
 
 from flask import Flask
 
+from fittrackee import db
 from fittrackee.privacy_levels import PrivacyLevel
+from fittrackee.users.models import User
+from fittrackee.workouts.models import Workout, WorkoutComment
+
+from ..mixins import RandomMixin
 
 
 def post_a_workout(
@@ -38,3 +44,26 @@ def post_a_workout(
     )
     data = json.loads(response.data.decode())
     return token, data['data']['workouts'][0]['id']
+
+
+class WorkoutCommentMixin(RandomMixin):
+    def create_comment(
+        self,
+        user: User,
+        workout: Workout,
+        text: Optional[str] = None,
+        text_visibility: PrivacyLevel = PrivacyLevel.PRIVATE,
+        created_at: Optional[datetime] = None,
+    ) -> WorkoutComment:
+        text = self.random_string() if text is None else text
+        comment = WorkoutComment(
+            user_id=user.id,
+            workout_id=workout.id,
+            workout_visibility=workout.workout_visibility,
+            text=text,
+            text_visibility=text_visibility,
+            created_at=created_at,
+        )
+        db.session.add(comment)
+        db.session.commit()
+        return comment

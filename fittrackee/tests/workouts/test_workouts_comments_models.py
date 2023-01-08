@@ -1,11 +1,9 @@
 from datetime import datetime
-from typing import Optional
 
 import pytest
 from flask import Flask
 from freezegun import freeze_time
 
-from fittrackee import db
 from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
@@ -13,33 +11,10 @@ from fittrackee.utils import encode_uuid
 from fittrackee.workouts.exceptions import CommentForbiddenException
 from fittrackee.workouts.models import Sport, Workout, WorkoutComment
 
-from ..mixins import RandomMixin
+from .utils import WorkoutCommentMixin
 
 
-class WorkoutCommentModelTestCase(RandomMixin):
-    def create_comment(
-        self,
-        user: User,
-        workout: Workout,
-        text: Optional[str] = None,
-        text_visibility: PrivacyLevel = PrivacyLevel.PRIVATE,
-        created_at: Optional[datetime] = None,
-    ) -> WorkoutComment:
-        text = self.random_string() if text is None else text
-        comment = WorkoutComment(
-            user_id=user.id,
-            workout_id=workout.id,
-            workout_visibility=workout.workout_visibility,
-            text=text,
-            text_visibility=text_visibility,
-            created_at=created_at,
-        )
-        db.session.add(comment)
-        db.session.commit()
-        return comment
-
-
-class TestWorkoutCommentModel(WorkoutCommentModelTestCase):
+class TestWorkoutCommentModel(WorkoutCommentMixin):
     def test_comment_model(
         self,
         app: Flask,
@@ -216,9 +191,7 @@ class TestWorkoutCommentModel(WorkoutCommentModelTestCase):
         assert str(comment) == f'<WorkoutComment {comment.id}>'
 
 
-class TestWorkoutCommentModelSerializeForCommentOwner(
-    WorkoutCommentModelTestCase
-):
+class TestWorkoutCommentModelSerializeForCommentOwner(WorkoutCommentMixin):
     @pytest.mark.parametrize(
         'input_visibility',
         [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC],
@@ -249,7 +222,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(
         }
 
 
-class TestWorkoutCommentModelSerializeForFollower(WorkoutCommentModelTestCase):
+class TestWorkoutCommentModelSerializeForFollower(WorkoutCommentMixin):
     def test_it_raises_error_when_user_does_not_follow_comment_owner(
         self,
         app: Flask,
@@ -321,7 +294,7 @@ class TestWorkoutCommentModelSerializeForFollower(WorkoutCommentModelTestCase):
         }
 
 
-class TestWorkoutCommentModelSerializeForUser(WorkoutCommentModelTestCase):
+class TestWorkoutCommentModelSerializeForUser(WorkoutCommentMixin):
     @pytest.mark.parametrize(
         'input_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
     )
@@ -372,7 +345,7 @@ class TestWorkoutCommentModelSerializeForUser(WorkoutCommentModelTestCase):
 
 
 class TestWorkoutCommentModelSerializeForUnauthenticatedUser(
-    WorkoutCommentModelTestCase
+    WorkoutCommentMixin
 ):
     @pytest.mark.parametrize(
         'input_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]

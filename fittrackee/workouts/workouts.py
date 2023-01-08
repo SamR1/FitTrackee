@@ -39,6 +39,7 @@ from fittrackee.users.models import User
 from fittrackee.utils import decode_short_id
 
 from .models import Workout, WorkoutComment
+from .utils.comment_visibility import can_view_workout_comment
 from .utils.convert import convert_in_duration
 from .utils.gpx import (
     WorkoutGPXException,
@@ -1590,3 +1591,41 @@ def add_workout_comment(
             status='fail',
             db=db,
         )
+
+
+@workouts_blueprint.route(
+    "/workouts/<string:workout_short_id>/comments/<string:comment_short_id>",
+    methods=["GET"],
+)
+@require_auth(scopes=['workouts:read'], optional_auth_user=True)
+def get_workout_comment(
+    auth_user: Optional[User], workout_short_id: str, comment_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    workout_uuid = decode_short_id(workout_short_id)
+    workout = Workout.query.filter_by(uuid=workout_uuid).first()
+    if not workout:
+        return NotFoundErrorResponse(
+            f"workout not found (id: {workout_short_id})"
+        )
+
+    workout_comment_uuid = decode_short_id(comment_short_id)
+    workout_comment = WorkoutComment.query.filter_by(
+        uuid=workout_comment_uuid
+    ).first()
+    if not workout_comment:
+        return NotFoundErrorResponse(
+            f"workout comment not found (id: {comment_short_id})"
+        )
+
+    if not can_view_workout_comment(workout_comment, auth_user):
+        return NotFoundErrorResponse(
+            f"workout comment not found (id: {comment_short_id})"
+        )
+
+    return (
+        {
+            'status': 'success',
+            'comment': workout_comment.serialize(auth_user),
+        },
+        200,
+    )
