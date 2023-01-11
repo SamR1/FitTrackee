@@ -1579,6 +1579,27 @@ def add_workout_comment(
             text_visibility=PrivacyLevel(comment_data['text_visibility']),
         )
         db.session.add(new_comment)
+        db.session.flush()
+        if sending_activities_allowed(new_comment.text_visibility):
+            new_comment.ap_id = (
+                f'{auth_user.actor.activitypub_id}/'
+                f'workouts/{workout.short_id}/'
+                f'comments/{new_comment.short_id}'
+            )
+            new_comment.remote_url = (
+                f'https://{auth_user.actor.domain.name}/'
+                f'workouts/{workout.short_id}/'
+                f'comments/{new_comment.short_id}'
+            )
+            note_activity = new_comment.get_activity(activity_type='Create')
+            recipients = auth_user.get_followers_shared_inboxes()
+            send_to_remote_inbox.send(
+                sender_id=auth_user.actor.id,
+                activity=note_activity,
+                recipients=(
+                    list(recipients['fittrackee']) + list(recipients['others'])
+                ),
+            )
         db.session.commit()
 
         return (

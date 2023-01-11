@@ -15,6 +15,7 @@ from sqlalchemy.types import JSON, Enum
 from fittrackee import BaseModel, appLog, db
 from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.federation.decorators import federation_required
+from fittrackee.federation.objects.comments import WorkoutCommentObject
 from fittrackee.federation.objects.tombstone import TombstoneObject
 from fittrackee.federation.objects.workout import WorkoutObject
 from fittrackee.files import get_absolute_file_path
@@ -737,3 +738,11 @@ class WorkoutComment(BaseModel):
             'text_visibility': self.text_visibility,
             'created_at': self.created_at,
         }
+
+    def get_activity(self, activity_type: str) -> Dict:
+        if activity_type == 'Create':
+            return WorkoutCommentObject(
+                self, activity_type=activity_type
+            ).get_activity()
+        # TODO: Update and Delete
+        return {}

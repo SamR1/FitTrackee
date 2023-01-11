@@ -220,3 +220,54 @@ class TestWorkoutCommentModelSerializeForUnauthenticatedUser(
 
         with pytest.raises(CommentForbiddenException):
             comment.serialize()
+
+
+class TestWorkoutCommentModelGetActivity(WorkoutCommentMixin):
+    activity_type = 'Create'
+
+    @pytest.mark.parametrize(
+        'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
+    )
+    def test_it_raises_error_if_visibility_is_invalid(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        remote_cycling_workout: Workout,
+        input_visibility: PrivacyLevel,
+    ) -> None:
+        remote_cycling_workout.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_1,
+            workout=remote_cycling_workout,
+            text_visibility=input_visibility,
+        )
+        with pytest.raises(InvalidVisibilityException):
+            comment.get_activity(activity_type=self.activity_type)
+
+    @pytest.mark.parametrize(
+        'input_visibility',
+        [PrivacyLevel.FOLLOWERS_AND_REMOTE, PrivacyLevel.PUBLIC],
+    )
+    def test_it_returns_activities_when_visibility_is_valid(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        remote_cycling_workout: Workout,
+        input_visibility: PrivacyLevel,
+    ) -> None:
+        remote_cycling_workout.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_1,
+            workout=remote_cycling_workout,
+            text_visibility=input_visibility,
+        )
+
+        note_activity = comment.get_activity(activity_type=self.activity_type)
+
+        assert note_activity['type'] == self.activity_type
+        assert note_activity['object']['type'] == 'Note'
+        assert note_activity['object']['id'] == comment.ap_id
