@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from typing import Dict, Tuple
 
 from fittrackee import appLog, db
+from fittrackee.federation.constants import PUBLIC_STREAM
 from fittrackee.federation.exceptions import (
     ActivityException,
     ActorNotFoundException,
@@ -16,6 +17,7 @@ from fittrackee.federation.utils.user import (
     create_remote_user,
     get_or_create_remote_domain_from_url,
 )
+from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.exceptions import (
     FollowRequestAlreadyProcessedError,
     FollowRequestAlreadyRejectedError,
@@ -86,6 +88,19 @@ class AbstractActivity(ABC):
                 message=f'object actor not found for {self.activity_name()}'
             )
         return actor, object_actor
+
+    @staticmethod
+    def _get_visibility(activity_object: Dict, actor: Actor) -> PrivacyLevel:
+        recipients = activity_object.get("cc", []) + activity_object.get(
+            "to", []
+        )
+        if PUBLIC_STREAM in recipients:
+            return PrivacyLevel.PUBLIC
+        elif actor.followers_url in recipients:
+            return PrivacyLevel.FOLLOWERS_AND_REMOTE
+        # TODO:
+        # For comments only (only visible to mentioned users)
+        return PrivacyLevel.PRIVATE
 
 
 class FollowBaseActivity(AbstractActivity):
@@ -169,6 +184,9 @@ class CreateActivity(AbstractActivity):
         sport = Sport.query.filter_by(id=sport_id).first()
         if not sport:
             raise SportNotFoundException()
+        workout_data['workout_visibility'] = self._get_visibility(
+            workout_data, actor
+        )
         new_workout = create_workout(
             actor.user, convert_workout_activity(workout_data)
         )
@@ -248,9 +266,9 @@ class UpdateActivity(AbstractActivity):
             workout_to_update.workout_date = datetime.strptime(
                 workout_data['workout_date'], WORKOUT_DATE_FORMAT
             )
-            workout_to_update.workout_visibility = workout_data[
-                'workout_visibility'
-            ]
+            workout_to_update.workout_visibility = self._get_visibility(
+                workout_data, actor
+            )
             db.session.commit()
         except Exception as e:
             raise ActivityException(

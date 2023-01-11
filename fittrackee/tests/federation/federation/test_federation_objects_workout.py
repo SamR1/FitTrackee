@@ -96,9 +96,6 @@ class TestWorkoutObject(RandomMixin):
                 'workout_date': workout_cycling_user_1.workout_date.strftime(
                     WORKOUT_DATE_FORMAT
                 ),
-                'workout_visibility': (
-                    workout_cycling_user_1.workout_visibility
-                ),
             },
         }
 
@@ -143,9 +140,6 @@ class TestWorkoutObject(RandomMixin):
                 'title': workout_cycling_user_1.title,
                 'workout_date': workout_cycling_user_1.workout_date.strftime(
                     WORKOUT_DATE_FORMAT
-                ),
-                'workout_visibility': (
-                    workout_cycling_user_1.workout_visibility
                 ),
             },
         }

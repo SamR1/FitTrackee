@@ -508,6 +508,7 @@ class WorkoutActivitiesTestCase(RandomMixin):
         remote_actor: Union[RandomActor, Actor],
         sport_id: int,
         activity_type: str,
+        visibility: PrivacyLevel,
     ) -> Dict:
         remote_domain = (
             remote_actor.domain
@@ -519,7 +520,7 @@ class WorkoutActivitiesTestCase(RandomMixin):
         workout_short_id = self.random_short_id()
         workout_url = f'{remote_domain}/workouts/{workout_short_id}'
         published = datetime.utcnow().strftime(DATE_FORMAT)
-        return {
+        activity: Dict = {
             "@context": AP_CTX,
             "id": (
                 f"{remote_actor.activitypub_id}/workouts/"
@@ -528,7 +529,7 @@ class WorkoutActivitiesTestCase(RandomMixin):
             "type": activity_type,
             "actor": remote_actor.activitypub_id,
             "published": published,
-            "to": [remote_actor.followers_url],
+            "to": [],
             "cc": [],
             "object": {
                 "id": (
@@ -539,7 +540,7 @@ class WorkoutActivitiesTestCase(RandomMixin):
                 "published": published,
                 "url": workout_url,
                 "attributedTo": remote_actor.activitypub_id,
-                "to": [remote_actor.followers_url],
+                "to": [],
                 "cc": [],
                 "ave_speed": workout_distance,
                 "distance": workout_distance,
@@ -549,14 +550,29 @@ class WorkoutActivitiesTestCase(RandomMixin):
                 "sport_id": sport_id,
                 "title": self.random_string(),
                 "workout_date": workout_date,
-                "workout_visibility": PrivacyLevel.FOLLOWERS.value,
             },
         }
+        if visibility == PrivacyLevel.PUBLIC:
+            activity['to'] = [PUBLIC_STREAM]
+            activity['cc'] = [remote_actor.followers_url]
+            activity['object']['to'] = [PUBLIC_STREAM]
+            activity['object']['cc'] = [remote_actor.followers_url]
+        else:
+            activity['to'] = [remote_actor.followers_url]
+            activity['cc'] = []
+            activity['object']['to'] = [remote_actor.followers_url]
+            activity['object']['cc'] = []
+        return activity
 
     def generate_workout_create_activity(
-        self, remote_actor: Union[RandomActor, Actor], sport_id: int
+        self,
+        remote_actor: Union[RandomActor, Actor],
+        sport_id: int,
+        visibility: PrivacyLevel = PrivacyLevel.PUBLIC,
     ) -> Dict:
-        return self.generate_random_object(remote_actor, sport_id, 'Create')
+        return self.generate_random_object(
+            remote_actor, sport_id, 'Create', visibility
+        )
 
     def generate_workout_update_activity(
         self,
@@ -581,7 +597,7 @@ class WorkoutActivitiesTestCase(RandomMixin):
                 "type": "Update",
                 "actor": actor.activitypub_id,
                 "published": published,
-                "to": [actor.followers_url],
+                "to": [],
                 "cc": [],
                 "object": {
                     "id": workout.ap_id,
@@ -589,7 +605,7 @@ class WorkoutActivitiesTestCase(RandomMixin):
                     "published": published,
                     "url": f"{remote_domain}/workouts/{workout.short_id}",
                     "attributedTo": actor.activitypub_id,
-                    "to": [actor.followers_url],
+                    "to": [],
                     "cc": [],
                     "ave_speed": workout.ave_speed,
                     "distance": workout.distance,
@@ -601,12 +617,26 @@ class WorkoutActivitiesTestCase(RandomMixin):
                     "workout_date": datetime.utcnow().strftime(
                         WORKOUT_DATE_FORMAT
                     ),
-                    "workout_visibility": PrivacyLevel.FOLLOWERS.value,
                 },
             }
+            if "workout_visibility" in updates:
+                workout_visibility = updates["workout_visibility"]
+                del updates["workout_visibility"]
+            else:
+                workout_visibility = workout.workout_visibility
+            if workout_visibility == PrivacyLevel.PUBLIC:
+                activity['to'] = [PUBLIC_STREAM]
+                activity['cc'] = [actor.followers_url]
+                activity['object']['to'] = [PUBLIC_STREAM]
+                activity['object']['cc'] = [actor.followers_url]
+            else:
+                activity['to'] = [actor.followers_url]
+                activity['cc'] = []
+                activity['object']['to'] = [actor.followers_url]
+                activity['object']['cc'] = []
         elif remote_actor and remote_actor and sport_id:
             activity = self.generate_random_object(
-                remote_actor, sport_id, 'Update'
+                remote_actor, sport_id, 'Update', PrivacyLevel.PUBLIC
             )
         activity["object"] = {**activity["object"], **updates}
         return activity
@@ -676,14 +706,16 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
         with pytest.raises(SportNotFoundException):
             activity.process_activity()
 
-    def test_it_creates_remote_workout_without_gpx(
+    def test_it_creates_remote_workout_without_gpx_with_public_visibility(
         self,
         app_with_federation: Flask,
         remote_user: User,
         sport_1_cycling: Sport,
     ) -> None:
         workout_activity = self.generate_workout_create_activity(
-            remote_actor=remote_user.actor, sport_id=sport_1_cycling.id
+            remote_actor=remote_user.actor,
+            sport_id=sport_1_cycling.id,
+            visibility=PrivacyLevel.PUBLIC,
         )
         activity = get_activity_instance({'type': workout_activity['type']})(
             activity_dict=workout_activity
@@ -699,9 +731,31 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
         assert (
             remote_workout.distance == workout_activity['object']['distance']
         )
+        assert remote_workout.workout_visibility == PrivacyLevel.PUBLIC
+
+    def test_it_creates_remote_workout_without_gpx_with_followers_visibility(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+        sport_1_cycling: Sport,
+    ) -> None:
+        workout_activity = self.generate_workout_create_activity(
+            remote_actor=remote_user.actor,
+            sport_id=sport_1_cycling.id,
+            visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+        )
+        activity = get_activity_instance({'type': workout_activity['type']})(
+            activity_dict=workout_activity
+        )
+
+        activity.process_activity()
+
+        remote_workout = Workout.query.filter_by(
+            user_id=remote_user.id, sport_id=sport_1_cycling.id
+        ).first()
         assert (
             remote_workout.workout_visibility
-            == workout_activity['object']['workout_visibility']
+            == PrivacyLevel.FOLLOWERS_AND_REMOTE
         )
 
     def test_serializer_returns_remote_url(
@@ -712,7 +766,9 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
         sport_1_cycling: Sport,
     ) -> None:
         workout_activity = self.generate_workout_create_activity(
-            remote_actor=remote_user.actor, sport_id=sport_1_cycling.id
+            remote_actor=remote_user.actor,
+            sport_id=sport_1_cycling.id,
+            visibility=PrivacyLevel.PUBLIC,
         )
         activity = get_activity_instance({'type': workout_activity['type']})(
             activity_dict=workout_activity
@@ -723,7 +779,7 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
             user_id=remote_user.id, sport_id=sport_1_cycling.id
         ).first()
         assert (
-            remote_workout.serialize(user_1)['remote_url']
+            remote_workout.serialize('remote_follower')['remote_url']
             == remote_workout.remote_url
         )
 
@@ -929,6 +985,9 @@ class TestUpdateActivityForWorkout(WorkoutActivitiesTestCase):
         input_key: str,
         input_new_value: Union[str, int, float, PrivacyLevel],
     ) -> None:
+        remote_cycling_workout.workout_visibility = (
+            PrivacyLevel.FOLLOWERS_AND_REMOTE
+        )
         update_activity = self.generate_workout_update_activity(
             workout=remote_cycling_workout,
             updates={input_key: input_new_value},

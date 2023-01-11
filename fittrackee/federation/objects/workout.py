@@ -59,7 +59,6 @@ class WorkoutObject(BaseObject):
                     'workout_date': self.workout.workout_date.strftime(
                         WORKOUT_DATE_FORMAT
                     ),
-                    'workout_visibility': self.workout.workout_visibility,
                 },
             }
         return activity
