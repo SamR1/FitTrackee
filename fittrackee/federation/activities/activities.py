@@ -25,7 +25,7 @@ from fittrackee.users.exceptions import (
 )
 from fittrackee.workouts.constants import WORKOUT_DATE_FORMAT
 from fittrackee.workouts.exceptions import SportNotFoundException
-from fittrackee.workouts.models import Sport, Workout
+from fittrackee.workouts.models import Sport, Workout, WorkoutComment
 from fittrackee.workouts.utils.workouts import create_workout
 
 from ..objects.workout import convert_workout_activity
@@ -193,10 +193,31 @@ class CreateActivity(AbstractActivity):
         db.session.add(new_workout)
         db.session.commit()
 
+    def create_remote_note(self, actor: Actor) -> None:
+        note_data = self.activity["object"]
+        reply_to_object = note_data.get("inReplyTo")
+        workout = Workout.query.filter_by(ap_id=reply_to_object).first()
+        if not workout:
+            raise ObjectNotFoundException("workout", self.activity_name())
+
+        new_comment = WorkoutComment(
+            user_id=actor.user.id,
+            workout_id=workout.id,
+            workout_visibility=workout.workout_visibility,
+            text=note_data["content"],
+            text_visibility=self._get_visibility(note_data, actor),
+        )
+        new_comment.ap_id = note_data["id"]
+        new_comment.remote_url = note_data["url"]
+        db.session.add(new_comment)
+        db.session.commit()
+
     def process_activity(self) -> None:
         actor = self.get_actor()
         if self.activity['object']['type'] == 'Workout':
             self.create_remote_workout(actor=actor)
+        if self.activity['object']['type'] == 'Note':
+            self.create_remote_note(actor=actor)
 
 
 class DeleteActivity(AbstractActivity):

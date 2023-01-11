@@ -27,7 +27,7 @@ from fittrackee.users.exceptions import (
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.constants import WORKOUT_DATE_FORMAT
 from fittrackee.workouts.exceptions import SportNotFoundException
-from fittrackee.workouts.models import Sport, Workout
+from fittrackee.workouts.models import Sport, Workout, WorkoutComment
 
 from ...mixins import RandomMixin
 from ...utils import RandomActor
@@ -1102,3 +1102,163 @@ class TestUpdateActivityForWorkout(WorkoutActivitiesTestCase):
         ):
 
             activity.process_activity()
+
+
+class WorkoutCommentActivitiesTestCase(RandomMixin):
+    def generate_random_object(
+        self,
+        remote_actor: Union[RandomActor, Actor],
+        workout: Optional[Workout] = None,
+        visibility: Optional[PrivacyLevel] = PrivacyLevel.PUBLIC,
+    ) -> Dict:
+        remote_domain = (
+            remote_actor.domain
+            if isinstance(remote_actor, RandomActor)
+            else f'https://{remote_actor.domain.name}'
+        )
+        workout_short_id = (
+            workout.short_id if workout else self.random_short_id()
+        )
+        if not workout:
+            workout_api_id = (
+                f'{remote_domain}/federation/users/'
+                f'{remote_actor.name}/'
+                f'workouts/{workout_short_id}'
+            )
+        else:
+            workout_api_id = workout.ap_id
+
+        comment_short_id = self.random_short_id()
+        comment_ap_id = (
+            f"{remote_actor.activitypub_id}/workouts/{workout_short_id}"
+            f"/comments/{comment_short_id}"
+        )
+        comment_url = (
+            f'{remote_domain}/workouts/{workout_short_id}'
+            f'/comment/{comment_short_id}'
+        )
+        published = datetime.utcnow().strftime(DATE_FORMAT)
+        activity: Dict = {
+            "@context": AP_CTX,
+            "id": f"{comment_ap_id}/activity",
+            "type": "Create",
+            "actor": remote_actor.activitypub_id,
+            "published": published,
+            "to": [remote_actor.followers_url],
+            "cc": [],
+            "object": {
+                "id": comment_ap_id,
+                "type": "Note",
+                "published": published,
+                "url": comment_url,
+                "attributedTo": remote_actor.activitypub_id,
+                "inReplyTo": workout_api_id,
+                "content": self.random_string(),
+                "to": [remote_actor.followers_url],
+                "cc": [],
+            },
+        }
+        if visibility == PrivacyLevel.PUBLIC:
+            activity['to'] = [PUBLIC_STREAM]
+            activity['cc'] = [remote_actor.followers_url]
+            activity['object']['to'] = [PUBLIC_STREAM]
+            activity['object']['cc'] = [remote_actor.followers_url]
+        elif visibility == PrivacyLevel.FOLLOWERS_AND_REMOTE:
+            activity['to'] = [remote_actor.followers_url]
+            activity['cc'] = []
+            activity['object']['to'] = [remote_actor.followers_url]
+            activity['object']['cc'] = []
+        elif workout:
+            activity['to'] = [workout.user.actor.followers_url]
+            activity['cc'] = []
+            activity['object']['to'] = [workout.user.actor.followers_url]
+            activity['object']['cc'] = []
+        return activity
+
+    def generate_workout_comment_create_activity(
+        self,
+        remote_actor: Union[RandomActor, Actor],
+        workout: Optional[Workout] = None,
+        visibility: Optional[PrivacyLevel] = PrivacyLevel.PUBLIC,
+    ) -> Dict:
+        return self.generate_random_object(remote_actor, workout, visibility)
+
+
+class TestCreateActivityForWorkoutComment(WorkoutCommentActivitiesTestCase):
+    def test_it_raises_error_if_comment_actor_does_not_exist(
+        self,
+        app_with_federation: Flask,
+        random_actor: RandomActor,
+    ) -> None:
+
+        comment_activity = self.generate_workout_comment_create_activity(
+            remote_actor=random_actor
+        )
+        activity = get_activity_instance({'type': comment_activity['type']})(
+            activity_dict=comment_activity
+        )
+
+        with pytest.raises(
+            ActorNotFoundException,
+            match='actor not found for CreateActivity',
+        ):
+            activity.process_activity()
+
+    def test_it_raises_error_if_comment_workout_does_not_exist(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+    ) -> None:
+        comment_activity = self.generate_workout_comment_create_activity(
+            remote_actor=remote_user.actor
+        )
+        activity = get_activity_instance({'type': comment_activity['type']})(
+            activity_dict=comment_activity
+        )
+
+        with pytest.raises(
+            ObjectNotFoundException,
+            match='workout not found for CreateActivity',
+        ):
+            activity.process_activity()
+
+    @pytest.mark.parametrize(
+        'input_visibility',
+        [
+            PrivacyLevel.PUBLIC,
+            PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            PrivacyLevel.PRIVATE,
+        ],
+    )
+    def test_it_creates_remote_workout_comment_with_expected_visibility(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_visibility: PrivacyLevel,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = input_visibility
+        workout_cycling_user_1.api_id = (
+            f'{user_1.actor.domain}/federation/users/{user_1.username}/'
+            f'workouts/{workout_cycling_user_1.short_id}'
+        )
+        comment_activity = self.generate_workout_comment_create_activity(
+            remote_actor=remote_user.actor,
+            workout=workout_cycling_user_1,
+            visibility=input_visibility,
+        )
+        activity = get_activity_instance({'type': comment_activity['type']})(
+            activity_dict=comment_activity
+        )
+
+        activity.process_activity()
+
+        remote_comment = WorkoutComment.query.filter_by(
+            user_id=remote_user.id
+        ).first()
+        assert remote_comment.ap_id == comment_activity['object']['id']
+        assert remote_comment.remote_url == comment_activity['object']['url']
+        assert remote_comment.text == comment_activity['object']['content']
+        assert remote_comment.text_visibility == input_visibility
