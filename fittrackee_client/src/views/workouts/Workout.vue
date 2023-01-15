@@ -24,7 +24,7 @@
           <WorkoutSegments
             v-if="!displaySegment && workoutData.workout.segments.length > 1"
             :segments="workoutData.workout.segments"
-            :useImperialUnits="authUser.imperial_units"
+            :useImperialUnits="authUser ? authUser.imperial_units : false"
           />
           <WorkoutNotes
             v-if="!displaySegment && isWorkoutOwner"
@@ -104,6 +104,9 @@
       payload.segmentId = route.params.segmentId
     }
     store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, payload)
+    if (sports.value.length === 0) {
+      store.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
+    }
   })
 
   onUnmounted(() => {

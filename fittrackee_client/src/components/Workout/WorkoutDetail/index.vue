@@ -24,14 +24,14 @@
           />
           <WorkoutData
             :workoutObject="workoutObject"
-            :useImperialUnits="authUser.imperial_units"
-            :displayHARecord="authUser.display_ascent"
+            :useImperialUnits="useImperialUnits"
+            :displayHARecord="displayHARecord"
           />
         </div>
         <WorkoutVisibility
           :workoutObject="workoutObject"
-          :useImperialUnits="authUser.imperial_units"
-          :displayHARecord="authUser.display_ascent"
+          :useImperialUnits="useImperialUnits"
+          :displayHARecord="displayHARecord"
           v-if="workoutObject.workoutVisibility"
         />
       </template>
@@ -69,7 +69,7 @@
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
 
   interface Props {
-    authUser: IAuthUserProfile
+    authUser?: IAuthUserProfile
     displaySegment: boolean
     sports: ISport[]
     workoutData: IWorkoutData
@@ -104,6 +104,19 @@
         )
       : {}
   )
+  const useImperialUnits = computed(
+    () => authUser?.value?.imperial_units == undefined
+      ? false
+      : authUser.value.imperial_units
+  )
+  const displayHARecord = computed(
+    () => authUser?.value?.display_ascent == undefined
+      ? true
+      : authUser.value.display_ascent
+  )
+  const resolvedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  const timezone = authUser?.value && authUser.value.timezone ? authUser.value.timezone : resolvedTimezone
+  const dateFormat = authUser?.value && authUser.value.date_format ? authUser.value.date_format : 'MM/dd/yyyy'
   const workoutObject = computed(() =>
     getWorkoutObject(workout.value, segment.value)
   )
@@ -142,9 +155,9 @@
     const workoutDate = formatWorkoutDate(
       getDateWithTZ(
         props.workoutData.workout.workout_date,
-        props.authUser.timezone
+        timezone
       ),
-      props.authUser.date_format
+      dateFormat
     )
     return {
       ascent: segment ? segment.ascent : workout.ascent,

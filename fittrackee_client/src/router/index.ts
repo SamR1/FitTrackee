@@ -382,7 +382,7 @@ const pathsWithoutAuthentication = [
   '/account-confirmation/email-sent',
 ]
 
-const pathNamesWithoutChecks = ['EmailUpdate', 'About', 'User']
+const pathNamesWithoutChecks = ['EmailUpdate', 'About', 'User', 'Workout']
 
 router.beforeEach((to, from, next) => {
   store
