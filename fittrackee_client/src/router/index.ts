@@ -382,13 +382,13 @@ const pathsWithoutAuthentication = [
   '/account-confirmation/email-sent',
 ]
 
-const pathsWithoutChecks = ['/email-update', '/about', '/users']
+const pathNamesWithoutChecks = ['EmailUpdate', 'About', 'User']
 
 router.beforeEach((to, from, next) => {
   store
     .dispatch(AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER)
     .then(() => {
-      if (pathsWithoutChecks.includes(to.path)) {
+      if (to.name && pathNamesWithoutChecks.includes(to.name.toString())) {
         return next()
       }
 

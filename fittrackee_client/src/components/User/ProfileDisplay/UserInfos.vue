@@ -161,13 +161,14 @@
   const language: ComputedRef<string> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
+  const resolvedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const registrationDate = computed(() =>
     props.user.created_at
       ? formatDate(
           props.user.created_at,
-          authUser?.value ? authUser.value.timezone : 'Europe/Paris',
-          authUser?.value ? authUser.value.date_format : 'MM/dd/yyyy'
-        )
+          authUser?.value && authUser.value.timezone ? authUser.value.timezone : resolvedTimezone,
+          authUser?.value && authUser.value.date_format ? authUser.value.date_format : 'MM/dd/yyyy'
+      )
       : ''
   )
   const birthDate = computed(() =>
@@ -175,7 +176,7 @@
       ? format(
           new Date(props.user.birth_date),
           `${getDateFormat(
-            authUser?.value ? authUser.value.date_format : 'MM/dd/yyyy',
+            authUser?.value && authUser.value.date_format ? authUser.value.date_format : 'MM/dd/yyyy',
             language.value
           )}`,
           { locale: localeFromLanguage[language.value] }
