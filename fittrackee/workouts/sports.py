@@ -179,9 +179,13 @@ def get_sports(auth_user: User) -> Dict:
     sports = Sport.query.order_by(Sport.id).all()
     sports_data = []
     for sport in sports:
-        sport_preferences = UserSportPreference.query.filter_by(
-            user_id=auth_user.id, sport_id=sport.id
-        ).first() if auth_user else None
+        sport_preferences = (
+            UserSportPreference.query.filter_by(
+                user_id=auth_user.id, sport_id=sport.id
+            ).first()
+            if auth_user
+            else None
+        )
         sports_data.append(
             sport.serialize(
                 is_admin=auth_user.admin if auth_user else False,
