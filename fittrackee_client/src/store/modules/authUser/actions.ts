@@ -142,6 +142,10 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
               res.data.data.language
             )
           }
+          context.commit(
+            ROOT_STORE.MUTATIONS.UPDATE_DISPLAY_OPTIONS,
+            res.data.data
+          )
           context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
         } else {
           handleError(context, null)
@@ -323,6 +327,10 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
         if (res.data.status === 'success') {
           context.commit(
             AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE,
+            res.data.data
+          )
+          context.commit(
+            ROOT_STORE.MUTATIONS.UPDATE_DISPLAY_OPTIONS,
             res.data.data
           )
           context

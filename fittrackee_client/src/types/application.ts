@@ -20,9 +20,16 @@ export type TAppConfig = {
   weather_provider: string | null
 }
 
+export interface IDisplayOptions {
+  dateFormat: string
+  displayAscent: boolean
+  timezone: string
+  useImperialUnits: boolean
+}
 export interface IApplication {
   statistics: IAppStatistics
   config: TAppConfig
+  displayOptions: IDisplayOptions
 }
 
 export type TAppConfigForm = {

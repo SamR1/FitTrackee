@@ -139,7 +139,7 @@
 
   import UserRelationshipActions from '@/components/User/UserRelationshipActions.vue'
   import { ROOT_STORE, USERS_STORE } from '@/store/constants'
-  import { TAppConfig } from '@/types/application'
+  import { IDisplayOptions, TAppConfig } from '@/types/application'
   import { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatDate, getDateFormat } from '@/utils/dates'
@@ -161,13 +161,15 @@
   const language: ComputedRef<string> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
-  const resolvedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  const displayOptions: ComputedRef<IDisplayOptions> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.DISPLAY_OPTIONS]
+  )
   const registrationDate = computed(() =>
     props.user.created_at
       ? formatDate(
           props.user.created_at,
-          authUser?.value && authUser.value.timezone ? authUser.value.timezone : resolvedTimezone,
-          authUser?.value && authUser.value.date_format ? authUser.value.date_format : 'MM/dd/yyyy'
+          displayOptions.value.timezone,
+          displayOptions.value.dateFormat
       )
       : ''
   )
@@ -176,7 +178,7 @@
       ? format(
           new Date(props.user.birth_date),
           `${getDateFormat(
-            authUser?.value && authUser.value.date_format ? authUser.value.date_format : 'MM/dd/yyyy',
+            displayOptions.value.dateFormat,
             language.value
           )}`,
           { locale: localeFromLanguage[language.value] }

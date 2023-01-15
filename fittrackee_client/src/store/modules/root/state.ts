@@ -15,6 +15,14 @@ export const state: IRootState = {
       users: 0,
       workouts: 0,
     },
+    displayOptions: {
+      dateFormat: 'MM/dd/yyyy',
+      displayAscent: true,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        ? Intl.DateTimeFormat().resolvedOptions().timeZone
+        : 'Europe/Paris',
+      useImperialUnits: false,
+    },
   },
   appLoading: false,
 }

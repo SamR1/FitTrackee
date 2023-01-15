@@ -12,7 +12,9 @@ import {
   IApplication,
   IAppStatistics,
   TAppConfigForm,
+  IDisplayOptions,
 } from '@/types/application'
+import { IAuthUserProfile } from '@/types/user'
 
 export interface IRootState {
   root: boolean
@@ -54,6 +56,7 @@ export interface IRootGetters {
   [ROOT_STORE.GETTERS.LANGUAGE](state: IRootState): string
 
   [ROOT_STORE.GETTERS.LOCALE](state: IRootState): Locale
+  [ROOT_STORE.GETTERS.DISPLAY_OPTIONS](state: IRootState): IDisplayOptions
 }
 
 export type TRootMutations<S = IRootState> = {
@@ -75,6 +78,10 @@ export type TRootMutations<S = IRootState> = {
     statistics: IAppStatistics
   ): void
   [ROOT_STORE.MUTATIONS.UPDATE_LANG](state: S, language: string): void
+  [ROOT_STORE.MUTATIONS.UPDATE_DISPLAY_OPTIONS](
+    state: S,
+    authUser: IAuthUserProfile
+  ): void
 }
 
 export type TRootStoreModule<S = IRootState> = Omit<

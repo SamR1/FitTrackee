@@ -22,4 +22,7 @@ export const getters: GetterTree<IRootState, IRootState> & IRootGetters = {
   [ROOT_STORE.GETTERS.LOCALE]: (state: IRootState) => {
     return state.locale
   },
+  [ROOT_STORE.GETTERS.DISPLAY_OPTIONS]: (state: IRootState) => {
+    return state.application.displayOptions
+  },
 }

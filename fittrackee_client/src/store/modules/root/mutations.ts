@@ -3,6 +3,7 @@ import { MutationTree } from 'vuex'
 import { ROOT_STORE } from '@/store/constants'
 import { IRootState, TRootMutations } from '@/store/modules/root/types'
 import { TAppConfig, IAppStatistics } from '@/types/application'
+import { IAuthUserProfile } from '@/types/user'
 import { localeFromLanguage } from '@/utils/locales'
 
 export const mutations: MutationTree<IRootState> & TRootMutations = {
@@ -36,5 +37,17 @@ export const mutations: MutationTree<IRootState> & TRootMutations = {
   [ROOT_STORE.MUTATIONS.UPDATE_LANG](state: IRootState, language: string) {
     state.language = language
     state.locale = localeFromLanguage[language]
+  },
+  [ROOT_STORE.MUTATIONS.UPDATE_DISPLAY_OPTIONS](
+    state: IRootState,
+    authUser: IAuthUserProfile
+  ) {
+    state.application.displayOptions = {
+      ...state.application.displayOptions,
+      dateFormat: authUser.date_format,
+      displayAscent: authUser.display_ascent,
+      timezone: authUser.timezone,
+      useImperialUnits: authUser.imperial_units,
+    }
   },
 }

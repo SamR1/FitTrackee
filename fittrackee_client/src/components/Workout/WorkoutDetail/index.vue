@@ -24,14 +24,14 @@
           />
           <WorkoutData
             :workoutObject="workoutObject"
-            :useImperialUnits="useImperialUnits"
-            :displayHARecord="displayHARecord"
+            :useImperialUnits="displayOptions.useImperialUnits"
+            :displayHARecord="displayOptions.displayAscent"
           />
         </div>
         <WorkoutVisibility
           :workoutObject="workoutObject"
-          :useImperialUnits="useImperialUnits"
-          :displayHARecord="displayHARecord"
+          :useImperialUnits="displayOptions.useImperialUnits"
+          :displayHARecord="displayOptions.displayAscent"
           v-if="workoutObject.workoutVisibility"
         />
       </template>
@@ -55,7 +55,8 @@
   import WorkoutData from '@/components/Workout/WorkoutDetail/WorkoutData.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap/index.vue'
   import WorkoutVisibility from '@/components/Workout/WorkoutDetail/WorkoutVisibility.vue'
-  import { WORKOUTS_STORE } from '@/store/constants'
+  import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import { IDisplayOptions } from "@/types/application";
   import { ISport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'
   import {
@@ -83,7 +84,7 @@
   const route = useRoute()
   const store = useStore()
 
-  const { authUser, isWorkoutOwner, markerCoordinates, workoutData } =
+  const { isWorkoutOwner, markerCoordinates, workoutData } =
     toRefs(props)
   const workout: ComputedRef<IWorkout> = computed(
     () => props.workoutData.workout
@@ -104,19 +105,9 @@
         )
       : {}
   )
-  const useImperialUnits = computed(
-    () => authUser?.value?.imperial_units == undefined
-      ? false
-      : authUser.value.imperial_units
+  const displayOptions: ComputedRef<IDisplayOptions> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.DISPLAY_OPTIONS]
   )
-  const displayHARecord = computed(
-    () => authUser?.value?.display_ascent == undefined
-      ? true
-      : authUser.value.display_ascent
-  )
-  const resolvedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-  const timezone = authUser?.value && authUser.value.timezone ? authUser.value.timezone : resolvedTimezone
-  const dateFormat = authUser?.value && authUser.value.date_format ? authUser.value.date_format : 'MM/dd/yyyy'
   const workoutObject = computed(() =>
     getWorkoutObject(workout.value, segment.value)
   )
@@ -155,9 +146,9 @@
     const workoutDate = formatWorkoutDate(
       getDateWithTZ(
         props.workoutData.workout.workout_date,
-        timezone
+        displayOptions.value.timezone
       ),
-      dateFormat
+      displayOptions.value.dateFormat
     )
     return {
       ascent: segment ? segment.ascent : workout.ascent,
