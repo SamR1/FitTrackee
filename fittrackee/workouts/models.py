@@ -732,7 +732,8 @@ class WorkoutComment(BaseModel):
         if not can_view_workout_comment(self, user):
             raise CommentForbiddenException
         return {
-            'user_id': self.user_id,
+            'id': self.short_id,
+            'user': self.user.serialize(),
             'workout_id': self.workout_id,
             'text': self.text,
             'text_visibility': self.text_visibility,

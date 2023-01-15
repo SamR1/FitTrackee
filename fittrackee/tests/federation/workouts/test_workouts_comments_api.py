@@ -10,6 +10,7 @@ from fittrackee.workouts.models import Sport, Workout, WorkoutComment
 
 from ...mixins import ApiTestCaseMixin, BaseTestMixin
 from ...utils import jsonify_dict
+from ...workouts.test_workouts_comments_api import GetWorkoutCommentsTestCase
 from ...workouts.utils import WorkoutCommentMixin
 
 
@@ -487,3 +488,304 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
             response,
             f"workout comment not found (id: {workout_comment.short_id})",
         )
+
+
+class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
+    def test_it_does_not_return_comment_when_for_followers_and_remote(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        response = client.get(
+            f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
+            content_type="application/json",
+            headers=dict(
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+
+        self.assert_comments_response(response, expected_comments=[])
+
+
+class TestGetWorkoutCommentsAsFollower(GetWorkoutCommentsTestCase):
+    def test_it_does_not_return_comment_when_visibility_does_not_allow_it(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+        follow_request_from_user_3_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        user_2.approves_follow_request_from(user_3)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PRIVATE,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        response = client.get(
+            f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
+            content_type="application/json",
+            headers=dict(
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+
+        self.assert_comments_response(response, expected_comments=[])
+
+    @pytest.mark.parametrize(
+        'input_text_visibility',
+        [
+            PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            PrivacyLevel.FOLLOWERS,
+            PrivacyLevel.PUBLIC,
+        ],
+    )
+    def test_it_returns_comment_when_visibility_allows_access(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        input_text_visibility: PrivacyLevel,
+    ) -> None:
+        user_1.send_follow_request_to(user_3)
+        user_3.approves_follow_request_from(user_1)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=input_text_visibility,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        response = client.get(
+            f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
+            content_type="application/json",
+            headers=dict(
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+
+        self.assert_comments_response(
+            response,
+            expected_comments=[
+                jsonify_dict(workout_comment.serialize(user_1))
+            ],
+        )
+
+
+class TestGetWorkoutCommentsAsOwner(GetWorkoutCommentsTestCase):
+    def test_it_returns_comment_when_for_followers_and_remote(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_comment = self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        response = client.get(
+            f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
+            content_type="application/json",
+            headers=dict(
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+
+        self.assert_comments_response(
+            response,
+            expected_comments=[
+                jsonify_dict(workout_comment.serialize(user_1))
+            ],
+        )
+
+
+class TestGetWorkoutCommentsAsUnauthenticatedUser(GetWorkoutCommentsTestCase):
+    def test_it_does_not_return_comment_when_for_followers_and_remote(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+        )
+        client = app_with_federation.test_client()
+
+        response = client.get(
+            f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
+            content_type="application/json",
+        )
+
+        self.assert_comments_response(response, expected_comments=[])
+
+
+class TestGetWorkoutCommentsPagination(GetWorkoutCommentsTestCase):
+    def test_it_returns_only_comments_user_can_access(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        remote_user: User,
+        remote_user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+        follow_request_from_user_1_to_remote_user: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        remote_user.approves_follow_request_from(user_1)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        # remote user 2
+        visible_comments = [
+            self.create_comment(
+                remote_user_2,
+                workout_cycling_user_2,
+                text_visibility=PrivacyLevel.PUBLIC,
+            )
+        ]
+
+        for privacy_levels in [
+            PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            PrivacyLevel.FOLLOWERS,
+            PrivacyLevel.PRIVATE,
+        ]:
+            self.create_comment(
+                remote_user_2,
+                workout_cycling_user_2,
+                text_visibility=privacy_levels,
+            )
+        # remote user followed by user 1
+        for privacy_levels in [
+            PrivacyLevel.PUBLIC,
+            PrivacyLevel.FOLLOWERS_AND_REMOTE,
+        ]:
+            visible_comments.append(
+                self.create_comment(
+                    remote_user,
+                    workout_cycling_user_2,
+                    text_visibility=privacy_levels,
+                )
+            )
+        self.create_comment(
+            remote_user,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PRIVATE,
+        )
+        # user 3
+        visible_comments.append(
+            self.create_comment(
+                user_3,
+                workout_cycling_user_2,
+                text_visibility=PrivacyLevel.PUBLIC,
+            )
+        )
+        for privacy_levels in [
+            PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            PrivacyLevel.FOLLOWERS,
+            PrivacyLevel.PRIVATE,
+        ]:
+            self.create_comment(
+                user_3,
+                workout_cycling_user_2,
+                text_visibility=privacy_levels,
+            )
+        # user 2 followed by user 1
+        for privacy_levels in [
+            PrivacyLevel.PUBLIC,
+            PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            PrivacyLevel.FOLLOWERS,
+        ]:
+            visible_comments.append(
+                self.create_comment(
+                    user_2,
+                    workout_cycling_user_2,
+                    text_visibility=privacy_levels,
+                )
+            )
+        self.create_comment(
+            user_2,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PRIVATE,
+        )
+        # user 1
+        for privacy_levels in [
+            PrivacyLevel.PUBLIC,
+            PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            PrivacyLevel.FOLLOWERS,
+            PrivacyLevel.PUBLIC,
+        ]:
+            visible_comments.append(
+                self.create_comment(
+                    user_1,
+                    workout_cycling_user_2,
+                    text_visibility=privacy_levels,
+                )
+            )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        response = client.get(
+            f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['data']['comments'] == [
+            jsonify_dict(comment.serialize(user_1))
+            for comment in visible_comments[:5]
+        ]
+        assert data['pagination'] == {
+            'has_next': True,
+            'has_prev': False,
+            'page': 1,
+            'pages': 3,
+            'total': 11,
+        }

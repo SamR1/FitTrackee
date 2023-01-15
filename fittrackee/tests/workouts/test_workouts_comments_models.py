@@ -214,7 +214,8 @@ class TestWorkoutCommentModelSerializeForCommentOwner(WorkoutCommentMixin):
         serialized_comment = comment.serialize(user_1)
 
         assert serialized_comment == {
-            'user_id': user_1.id,
+            'id': comment.short_id,
+            'user': user_1.serialize(),
             'workout_id': workout_cycling_user_1.id,
             'text': comment.text,
             'text_visibility': comment.text_visibility,
@@ -286,7 +287,8 @@ class TestWorkoutCommentModelSerializeForFollower(WorkoutCommentMixin):
         serialized_comment = comment.serialize(user_2)
 
         assert serialized_comment == {
-            'user_id': user_1.id,
+            'id': comment.short_id,
+            'user': user_1.serialize(),
             'workout_id': workout_cycling_user_1.id,
             'text': comment.text,
             'text_visibility': comment.text_visibility,
@@ -336,7 +338,8 @@ class TestWorkoutCommentModelSerializeForUser(WorkoutCommentMixin):
         serialized_comment = comment.serialize(user_2)
 
         assert serialized_comment == {
-            'user_id': user_1.id,
+            'id': comment.short_id,
+            'user': user_1.serialize(),
             'workout_id': workout_cycling_user_1.id,
             'text': comment.text,
             'text_visibility': comment.text_visibility,
@@ -386,7 +389,8 @@ class TestWorkoutCommentModelSerializeForUnauthenticatedUser(
         serialized_comment = comment.serialize()
 
         assert serialized_comment == {
-            'user_id': user_1.id,
+            'id': comment.short_id,
+            'user': user_1.serialize(),
             'workout_id': workout_cycling_user_1.id,
             'text': comment.text,
             'text_visibility': comment.text_visibility,

@@ -13,7 +13,7 @@ from flask import (
     request,
     send_from_directory,
 )
-from sqlalchemy import asc, desc, exc
+from sqlalchemy import and_, asc, desc, exc, or_
 from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
@@ -36,6 +36,7 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.users.models import User
+from fittrackee.users.utils.following import get_following
 from fittrackee.utils import decode_short_id
 
 from .models import Workout, WorkoutComment
@@ -62,6 +63,7 @@ workouts_blueprint = Blueprint('workouts', __name__)
 DEFAULT_WORKOUTS_PER_PAGE = 5
 MAX_WORKOUTS_PER_PAGE = 100
 MAX_WORKOUTS_TO_SEND = 5
+DEFAULT_COMMENTS_PER_PAGE = 5
 
 
 def handle_workout_activities(workout: Workout, activity_type: str) -> None:
@@ -1656,3 +1658,77 @@ def get_workout_comment(
         },
         200,
     )
+
+
+@workouts_blueprint.route(
+    "/workouts/<string:workout_short_id>/comments", methods=["GET"]
+)
+@require_auth(scopes=['workouts:read'], optional_auth_user=True)
+def get_workout_comments(
+    auth_user: Optional[User], workout_short_id: str
+) -> Union[Dict, HttpResponse]:
+    workout_uuid = decode_short_id(workout_short_id)
+    workout = Workout.query.filter_by(uuid=workout_uuid).first()
+    if not workout:
+        return NotFoundErrorResponse(
+            f"workout not found (id: {workout_short_id})"
+        )
+
+    try:
+        params = request.args.copy()
+        page = int(params.get('page', 1))
+        if not auth_user:
+            comments_filter = WorkoutComment.query.filter(
+                WorkoutComment.workout_id == workout.id,
+                WorkoutComment.text_visibility == PrivacyLevel.PUBLIC,
+            )
+        else:
+            local_following_ids, remote_following_ids = get_following(
+                auth_user
+            )
+            comments_filter = WorkoutComment.query.filter(
+                WorkoutComment.workout_id == workout.id,
+                or_(
+                    WorkoutComment.text_visibility == PrivacyLevel.PUBLIC,
+                    or_(
+                        WorkoutComment.user_id == auth_user.id,
+                        and_(
+                            WorkoutComment.user_id.in_(local_following_ids),
+                            WorkoutComment.text_visibility.in_(
+                                [
+                                    PrivacyLevel.FOLLOWERS,
+                                    PrivacyLevel.FOLLOWERS_AND_REMOTE,
+                                ]
+                            ),
+                        ),
+                        and_(
+                            WorkoutComment.user_id.in_(remote_following_ids),
+                            WorkoutComment.text_visibility
+                            == PrivacyLevel.FOLLOWERS_AND_REMOTE,
+                        ),
+                    ),
+                ),
+            )
+        comments_pagination = comments_filter.order_by(
+            WorkoutComment.created_at.asc()
+        ).paginate(
+            page=page, per_page=DEFAULT_COMMENTS_PER_PAGE, error_out=False
+        )
+        comments = comments_pagination.items
+        return {
+            'status': 'success',
+            'data': {
+                'comments': [
+                    comment.serialize(auth_user) for comment in comments
+                ]
+            },
+            'pagination': {
+                'has_next': comments_pagination.has_next,
+                'has_prev': comments_pagination.has_prev,
+                'page': comments_pagination.page,
+                'pages': comments_pagination.pages,
+                'total': comments_pagination.total,
+            },
+        }
+    except Exception as e:
+        return handle_error_and_return_response(e)
