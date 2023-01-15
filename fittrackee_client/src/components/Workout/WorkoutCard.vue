@@ -5,17 +5,7 @@
         <div class="workout-user-date">
           <div class="workout-user">
             <UserPicture :user="user" />
-            <router-link
-              v-if="user.username"
-              class="workout-user-name"
-              :to="{
-                name: 'User',
-                params: { username: getUserName(user) },
-              }"
-              :title="user.username"
-            >
-              {{ user.username }}
-            </router-link>
+            <Username :user="user" />
           </div>
           <router-link
             class="workout-title"
@@ -146,6 +136,7 @@
   import { ComputedRef, computed, toRefs, withDefaults } from 'vue'
 
   import StaticMap from '@/components/Common/StaticMap.vue'
+  import Username from '@/components/User/Username.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import { ROOT_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
@@ -153,7 +144,6 @@
   import { IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
-  import { getUserName } from '@/utils/user'
 
   interface Props {
     user: IUserProfile
@@ -208,19 +198,6 @@
             }
             .no-picture {
               font-size: 1.5em;
-            }
-          }
-          .workout-user-name {
-            padding-left: 5px;
-            max-width: 300px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            @media screen and (max-width: $small-limit) {
-              max-width: fit-content;
-            }
-            @media screen and (max-width: $x-small-limit) {
-              max-width: 170px;
             }
           }
         }

@@ -7,6 +7,7 @@ import ErrorMessage from '@/components/Common/ErrorMessage.vue'
 import SportImage from '@/components/Common/Images/SportImage/index.vue'
 import Loader from '@/components/Common/Loader.vue'
 import Modal from '@/components/Common/Modal.vue'
+import VisibilityIcon from '@/components/Common/VisibilityIcon.vue'
 
 export const customComponents = [
   { target: AlertMessage, name: 'AlertMessage' },
@@ -18,4 +19,5 @@ export const customComponents = [
   { target: Loader, name: 'Loader' },
   { target: Modal, name: 'Modal' },
   { target: SportImage, name: 'SportImage' },
+  { target: VisibilityIcon, name: 'VisibilityIcon' },
 ]

@@ -5,6 +5,10 @@
     "AVERAGE_SPEED": "vitesse moyenne",
     "AVE_SPEED": "vitesse moy.",
     "BACK_TO_WORKOUT": "revenir à la séance",
+    "COMMENTS": {
+        "ADD": "ajouter un commentaire ",
+        "LABEL": "commentaire | commentaires"
+    },
     "DATE": "date",
     "DESCENT": "dénivelé négatif",
     "DISPLAY_FILTERS": "afficher les filtres",

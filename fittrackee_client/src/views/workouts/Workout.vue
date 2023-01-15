@@ -30,6 +30,7 @@
             v-if="!displaySegment && isWorkoutOwner"
             :notes="workoutData.workout.notes"
           />
+          <WorkoutComments :workoutData="workoutData" />
           <div id="bottom" />
         </div>
         <div v-else>
@@ -56,6 +57,7 @@
   import NotFound from '@/components/Common/NotFound.vue'
   import WorkoutDetail from '@/components/Workout/WorkoutDetail/index.vue'
   import WorkoutChart from '@/components/Workout/WorkoutDetail/WorkoutChart/index.vue'
+  import WorkoutComments from '@/components/Workout/WorkoutDetail/WorkoutComments.vue'
   import WorkoutNotes from '@/components/Workout/WorkoutDetail/WorkoutNotes.vue'
   import WorkoutSegments from '@/components/Workout/WorkoutDetail/WorkoutSegments.vue'
   import WorkoutUser from '@/components/Workout/WorkoutDetail/WorkoutUser.vue'

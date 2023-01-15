@@ -10,9 +10,11 @@ import {
   IWorkoutsState,
 } from '@/store/modules/workouts/types'
 import {
+  ICommentForm,
   IWorkout,
   IWorkoutForm,
   IWorkoutPayload,
+  TCommentsPayload,
   TWorkoutsPayload,
 } from '@/types/workouts'
 import { handleError } from '@/utils'
@@ -115,6 +117,10 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
                 }
               })
           }
+          context.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS, {
+            workoutId: res.data.data.workouts[0].id,
+            page: 1,
+          })
         } else {
           context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
           handleError(context, null)
@@ -239,5 +245,54 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       .finally(() =>
         context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING, false)
       )
+  },
+  [WORKOUTS_STORE.ACTIONS.ADD_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: ICommentForm
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .post(`/workouts/${payload.workoutId}/comments`, {
+        text: payload.text,
+        text_visibility: payload.textVisibility,
+      })
+      .then((res) => {
+        if (res.data.status === 'created') {
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.ADD_WORKOUT_COMMENT,
+            res.data.comment
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+  },
+  [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: TCommentsPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .get(`/workouts/${payload.workoutId}/comments`, {
+        params: {
+          page: payload.page,
+        },
+      })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_COMMENTS,
+            res.data.data.comments
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
   },
 }

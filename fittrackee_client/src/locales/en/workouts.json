@@ -5,6 +5,10 @@
     "AVERAGE_SPEED": "average speed",
     "AVE_SPEED": "ave. speed",
     "BACK_TO_WORKOUT": "back to workout",
+    "COMMENTS": {
+        "ADD": "add a comment",
+        "LABEL": "comment | comments"
+    },
     "DATE": "date",
     "DESCENT": "descent",
     "DISPLAY_FILTERS": "display filters",

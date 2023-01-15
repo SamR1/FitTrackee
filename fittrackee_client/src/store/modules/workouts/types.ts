@@ -9,12 +9,15 @@ import { WORKOUTS_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
 import { IPagination } from '@/types/api'
 import {
+  ICommentForm,
   IWorkout,
   IWorkoutApiChartData,
   TWorkoutsPayload,
   IWorkoutData,
   IWorkoutPayload,
   IWorkoutForm,
+  TCommentsPayload,
+  IComment,
 } from '@/types/workouts'
 
 export interface IWorkoutsState {
@@ -62,6 +65,14 @@ export interface IWorkoutsActions {
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: IWorkoutForm
   ): void
+  [WORKOUTS_STORE.ACTIONS.ADD_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: ICommentForm
+  ): void
+  [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: TCommentsPayload
+  ): void
 }
 
 export interface IWorkoutsGetters {
@@ -108,6 +119,14 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
   [WORKOUTS_STORE.MUTATIONS.EMPTY_CALENDAR_WORKOUTS](state: S): void
   [WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUTS](state: S): void
   [WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT](state: S): void
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_COMMENTS](
+    state: S,
+    comments: IComment[]
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.ADD_WORKOUT_COMMENT](
+    state: S,
+    comment: IComment
+  ): void
 }
 
 export type TWorkoutsStoreModule<S = IWorkoutsState> = Omit<

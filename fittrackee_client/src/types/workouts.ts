@@ -164,6 +164,7 @@ export interface IWorkoutData {
   loading: boolean
   workout: IWorkout
   chartData: IWorkoutApiChartData[]
+  comments: IComment[]
 }
 
 export type TWorkoutDatasetKeys = 'speed' | 'elevation'
@@ -183,4 +184,20 @@ export interface IWorkoutChartData {
   duration_labels: unknown[]
   datasets: TWorkoutDatasets
   coordinates: TCoordinates[]
+}
+
+export interface ICommentForm {
+  text: string
+  textVisibility: TPrivacyLevels
+  workoutId: string
+}
+
+export interface IComment extends ICommentForm {
+  id: string
+}
+
+export interface TCommentsPayload {
+  workoutId: string
+
+  page: number
 }
