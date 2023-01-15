@@ -116,10 +116,9 @@
         >
           {{ $t('user.PROFILE.EDIT') }}
         </button>
-        <button @click="$router.push('/')">{{ $t('common.HOME') }}</button>
+        <button @click="$router.go(-1)">{{ $t('buttons.BACK') }}</button>
       </div>
     </div>
-
     <ErrorMessage :message="errorMessages" v-if="errorMessages" />
   </div>
 </template>
