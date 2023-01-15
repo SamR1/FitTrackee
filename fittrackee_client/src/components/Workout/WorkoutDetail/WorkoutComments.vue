@@ -14,6 +14,9 @@
           <div class="comment-detail">
             <div class="comment-info">
               <Username :user="comment.user"/>
+              <div v-if="comment.user.is_remote" class="user-remote-fullname">
+                {{ comment.user.fullname }}
+              </div>
               <div class="spacer"/>
               <div
                 class="comment-date"
@@ -112,7 +115,7 @@
           .spacer {
             flex-grow: 3;
           }
-          .comment-date {
+          .comment-date, .user-remote-fullname {
             font-size: 0.85em;
             font-style: italic;
             white-space: nowrap;
