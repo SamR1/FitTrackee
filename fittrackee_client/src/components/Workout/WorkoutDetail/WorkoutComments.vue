@@ -35,9 +35,7 @@
               </div>
               <VisibilityIcon :visibility="comment.text_visibility" />
             </div>
-            <div class="comment-text">
-              {{ comment.text }}
-            </div>
+            <span class="comment-text" v-html="linkifyAndClean(comment.text)"/>
           </div>
         </div>
         <WorkoutAddComment :workout="workoutData.workout" />
@@ -58,7 +56,8 @@
   import { IAuthUserProfile } from "@/types/user"
   import { IWorkoutData } from "@/types/workouts"
   import { useStore } from "@/use/useStore"
-  import { formatDate } from "@/utils/dates";
+  import { formatDate } from "@/utils/dates"
+  import { linkifyAndClean } from '@/utils/inputs'
 
   interface Props {
     workoutData: IWorkoutData

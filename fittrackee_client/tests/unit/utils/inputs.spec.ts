@@ -28,35 +28,39 @@ describe('linkifyAndClean (URL is linkified)', () => {
 describe('linkifyAndClean (input sanitization)', () => {
   const testsParams = [
     {
-      description: 'it escapes "script" tags',
+      description: 'it removes "script" tags',
       inputString: "<script>alert('evil!')</script>",
-      expectedString: "&lt;script&gt;alert('evil!')&lt;/script&gt;",
+      expectedString: '',
     },
     {
-      description: 'it escapes nested tags',
-      inputString: '<p><b>test</b></p>',
-      expectedString: '&lt;p&gt;&lt;b&gt;test&lt;/b&gt;&lt;/p&gt;',
+      description: 'it removes nested tags',
+      inputString: '<div><b>test</b></div>',
+      expectedString: 'test',
     },
     {
-      description: 'it escapes single tag',
+      description: 'it removes single tag',
+      inputString: '<div>test',
+      expectedString: 'test',
+    },
+    {
+      description: 'it closes single tag',
       inputString: '<p>test',
-      expectedString: '&lt;p&gt;test&lt;/p&gt;',
+      expectedString: '<p>test</p>',
     },
     {
-      description: 'it removes css classe',
-      inputString: '<div class="active">test</div>',
-      expectedString: '&lt;div&gt;test&lt;/div&gt;',
+      description: 'it removes css class',
+      inputString: '<p class="active">test</p>',
+      expectedString: '<p>test</p>',
     },
     {
       description: 'it removes style attribute',
-      inputString: '<div style="display:none;">test</div>',
-      expectedString: '&lt;div&gt;test&lt;/div&gt;',
+      inputString: '<p style="display:none;">test</p>',
+      expectedString: '<p>test</p>',
     },
     {
       description: 'it keeps nested HTML link',
-      inputString: '<p><a href="http://www.example.com">example</a></p>',
-      expectedString:
-        '&lt;p&gt;<a href="http://www.example.com">example</a>&lt;/p&gt;',
+      inputString: '<div><a href="http://www.example.com">example</a></div>',
+      expectedString: '<a href="http://www.example.com">example</a>',
     },
   ]
 
