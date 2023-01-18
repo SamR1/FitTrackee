@@ -83,13 +83,13 @@ def handle_workout_activities(workout: Workout, activity_type: str) -> None:
         send_to_remote_inbox.send(
             sender_id=actor.id,
             activity=workout_activity,
-            recipients=list(recipients['fittrackee']),
+            recipients=recipients['fittrackee'],
         )
     if recipients['others']:
         send_to_remote_inbox.send(
             sender_id=actor.id,
             activity=note_activity,
-            recipients=list(recipients['others']),
+            recipients=recipients['others'],
         )
 
 
@@ -1594,14 +1594,13 @@ def add_workout_comment(
                 f'comments/{new_comment.short_id}'
             )
             note_activity = new_comment.get_activity(activity_type='Create')
-            recipients = auth_user.get_followers_shared_inboxes()
-            send_to_remote_inbox.send(
-                sender_id=auth_user.actor.id,
-                activity=note_activity,
-                recipients=(
-                    list(recipients['fittrackee']) + list(recipients['others'])
-                ),
-            )
+            recipients = auth_user.get_followers_shared_inboxes_as_list()
+            if recipients:
+                send_to_remote_inbox.send(
+                    sender_id=auth_user.actor.id,
+                    activity=note_activity,
+                    recipients=recipients,
+                )
         db.session.commit()
 
         return (
@@ -1732,3 +1731,60 @@ def get_workout_comments(
         }
     except Exception as e:
         return handle_error_and_return_response(e)
+
+
+@workouts_blueprint.route(
+    "/workouts/<string:workout_short_id>/comments/<string:comment_short_id>",
+    methods=["DELETE"],
+)
+@require_auth(scopes=['workouts:write'])
+def delete_workout_comment(
+    auth_user: User, workout_short_id: str, comment_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    try:
+        workout_uuid = decode_short_id(workout_short_id)
+        workout = Workout.query.filter_by(uuid=workout_uuid).first()
+        if not workout:
+            return NotFoundErrorResponse(
+                f"workout not found (id: {workout_short_id})"
+            )
+
+        workout_comment_uuid = decode_short_id(comment_short_id)
+        workout_comment = WorkoutComment.query.filter_by(
+            uuid=workout_comment_uuid
+        ).first()
+        if not workout_comment:
+            return NotFoundErrorResponse(
+                f"workout comment not found (id: {comment_short_id})"
+            )
+
+        if not can_view_workout_comment(workout_comment, auth_user):
+            return NotFoundErrorResponse(
+                f"workout comment not found (id: {comment_short_id})"
+            )
+
+        if auth_user.id != workout_comment.user.id:
+            return ForbiddenErrorResponse()
+
+        if sending_activities_allowed(workout_comment.text_visibility):
+            note_activity = workout_comment.get_activity(
+                activity_type='Delete'
+            )
+            recipients = auth_user.get_followers_shared_inboxes_as_list()
+            if recipients:
+                send_to_remote_inbox.send(
+                    sender_id=auth_user.actor.id,
+                    activity=note_activity,
+                    recipients=recipients,
+                )
+
+        db.session.delete(workout_comment)
+        db.session.commit()
+        return {'status': 'no content'}, 204
+    except (
+        exc.IntegrityError,
+        exc.OperationalError,
+        ValueError,
+        OSError,
+    ) as e:
+        return handle_error_and_return_response(e, db=db)

@@ -65,5 +65,15 @@ class WorkoutCommentMixin(RandomMixin):
             created_at=created_at,
         )
         db.session.add(comment)
+        db.session.flush()
+        actor = comment.user.actor
+        comment.ap_id = (
+            f'{actor.activitypub_id}/workouts/{workout.short_id}'
+            f'/comments/{comment.short_id}'
+        )
+        comment.remote_url = (
+            f'https://{actor.domain.name}/workouts/{workout.short_id}'
+            f'/comments/{comment.short_id}'
+        )
         db.session.commit()
         return comment

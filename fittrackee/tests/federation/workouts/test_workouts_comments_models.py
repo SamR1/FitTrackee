@@ -224,8 +224,9 @@ class TestWorkoutCommentModelSerializeForUnauthenticatedUser(
             comment.serialize()
 
 
-class TestWorkoutCommentModelGetActivity(WorkoutCommentMixin):
+class TestWorkoutCommentModelGetCreateActivity(WorkoutCommentMixin):
     activity_type = 'Create'
+    expected_object_type = 'Note'
 
     @pytest.mark.parametrize(
         'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
@@ -271,5 +272,12 @@ class TestWorkoutCommentModelGetActivity(WorkoutCommentMixin):
         note_activity = comment.get_activity(activity_type=self.activity_type)
 
         assert note_activity['type'] == self.activity_type
-        assert note_activity['object']['type'] == 'Note'
+        assert note_activity['object']['type'] == self.expected_object_type
         assert note_activity['object']['id'] == comment.ap_id
+
+
+class TestWorkoutCommentModelGetDeleteActivity(
+    TestWorkoutCommentModelGetCreateActivity
+):
+    activity_type = 'Delete'
+    expected_object_type = 'Tombstone'

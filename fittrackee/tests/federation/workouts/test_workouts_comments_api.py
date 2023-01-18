@@ -789,3 +789,180 @@ class TestGetWorkoutCommentsPagination(GetWorkoutCommentsTestCase):
             'pages': 3,
             'total': 11,
         }
+
+
+@patch('fittrackee.workouts.workouts.send_to_remote_inbox')
+class TestDeleteWorkoutComment(
+    WorkoutCommentMixin, ApiTestCaseMixin, BaseTestMixin
+):
+    def test_it_returns_404_if_comment_is_not_visible_to_user(
+        self,
+        send_to_remote_inbox_mock: Mock,
+        app_with_federation: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        response = client.delete(
+            f"/api/workouts/{workout_cycling_user_1.short_id}"
+            f"/comments/{comment.short_id}",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_message(
+            response,
+            f"workout comment not found (id: {comment.short_id})",
+        )
+
+    def test_it_does_not_call_sent_to_inbox_if_privacy_is_local_followers_only(
+        self,
+        send_to_remote_inbox_mock: Mock,
+        app_with_federation: Flask,
+        user_1: User,
+        user_2: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_remote_user_to_user_1: FollowRequest,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.approves_follow_request_from(remote_user)
+        user_1.approves_follow_request_from(user_2)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        client.delete(
+            f"/api/workouts/{workout_cycling_user_2.short_id}"
+            f"/comments/{comment.short_id}",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        send_to_remote_inbox_mock.send.assert_not_called()
+
+    def test_it_does_not_call_sent_to_inbox_if_user_has_no_remote_followers(
+        self,
+        send_to_remote_inbox_mock: Mock,
+        app_with_federation: Flask,
+        user_1: User,
+        user_2: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.approves_follow_request_from(user_2)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        client.delete(
+            f"/api/workouts/{workout_cycling_user_2.short_id}"
+            f"/comments/{comment.short_id}",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        send_to_remote_inbox_mock.send.assert_not_called()
+
+    @pytest.mark.parametrize(
+        'input_visibility',
+        [PrivacyLevel.FOLLOWERS_AND_REMOTE, PrivacyLevel.PUBLIC],
+    )
+    def test_it_calls_sent_to_inbox_if_user_has_follower_from_remote_fittrackee_instance(  # noqa
+        self,
+        send_to_remote_inbox_mock: Mock,
+        app_with_federation: Flask,
+        user_1: User,
+        user_2: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_remote_user_to_user_1: FollowRequest,
+        input_visibility: PrivacyLevel,
+    ) -> None:
+        user_1.approves_follow_request_from(remote_user)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        client.delete(
+            f"/api/workouts/{workout_cycling_user_2.short_id}"
+            f"/comments/{comment.short_id}",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        note_activity = comment.get_activity(activity_type='Delete')
+        send_to_remote_inbox_mock.send.assert_called_once_with(
+            sender_id=user_1.actor.id,
+            activity=note_activity,
+            recipients=[remote_user.actor.shared_inbox_url],
+        )
+
+    @pytest.mark.parametrize(
+        'input_visibility',
+        [PrivacyLevel.FOLLOWERS_AND_REMOTE, PrivacyLevel.PUBLIC],
+    )
+    def test_it_calls_sent_to_inbox_if_user_has_follower_from_remote_other_instance(  # noqa
+        self,
+        send_to_remote_inbox_mock: Mock,
+        app_with_federation: Flask,
+        user_1: User,
+        user_2: User,
+        remote_user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        input_visibility: PrivacyLevel,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        remote_user_2.send_follow_request_to(user_1)
+        user_1.approves_follow_request_from(remote_user_2)
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        client.delete(
+            f"/api/workouts/{workout_cycling_user_2.short_id}"
+            f"/comments/{comment.short_id}",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        note_activity = comment.get_activity(activity_type='Delete')
+        send_to_remote_inbox_mock.send.assert_called_once_with(
+            sender_id=user_1.actor.id,
+            activity=note_activity,
+            recipients=[remote_user_2.actor.shared_inbox_url],
+        )

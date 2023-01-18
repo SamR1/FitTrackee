@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, Optional, Union
+from typing import Dict, List, Optional, Union
 
 import jwt
 from flask import current_app
@@ -405,7 +405,12 @@ class User(BaseModel):
         return self.follow_request_status(follow_request)
 
     @federation_required
-    def get_followers_shared_inboxes(self) -> Dict:
+    def get_followers_shared_inboxes(self) -> Dict[str, List[str]]:
+        """
+        returns a dict with 2 distinct lists:
+        - followers for remote FitTrackee instances
+        - followers for remote non-FitTrackee instances
+        """
         fittrackee_shared_inboxes = set()
         other_shared_inboxes = set()
         for follower in self.followers.all():
@@ -417,9 +422,22 @@ class User(BaseModel):
                 else:
                     other_shared_inboxes.add(follower.actor.shared_inbox_url)
         return {
-            'fittrackee': fittrackee_shared_inboxes,
-            'others': other_shared_inboxes,
+            'fittrackee': list(fittrackee_shared_inboxes),
+            'others': list(other_shared_inboxes),
         }
+
+    def get_followers_shared_inboxes_as_list(self) -> List[str]:
+        """
+        returns all remote followers regardless instances application
+        (FitTrackee or non-FitTrackee)
+        """
+        return list(
+            set(
+                follower.actor.shared_inbox_url
+                for follower in self.followers.all()
+                if follower.actor.is_remote
+            )
+        )
 
     def get_user_url(self) -> str:
         """Return user url on user interface"""

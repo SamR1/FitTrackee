@@ -216,8 +216,8 @@ class TestUserGetRecipientsSharedInbox:
         inboxes = user_1.get_followers_shared_inboxes()
 
         assert inboxes == {
-            'fittrackee': set(),
-            'others': set(),
+            'fittrackee': [],
+            'others': [],
         }
 
     def test_it_returns_empty_set_if_only_local_followers(
@@ -232,8 +232,8 @@ class TestUserGetRecipientsSharedInbox:
         inboxes = user_1.get_followers_shared_inboxes()
 
         assert inboxes == {
-            'fittrackee': set(),
-            'others': set(),
+            'fittrackee': [],
+            'others': [],
         }
 
     def test_it_returns_shared_inbox_when_remote_followers_from_fittrackee_instance(  # noqa
@@ -248,8 +248,8 @@ class TestUserGetRecipientsSharedInbox:
         inboxes = user_1.get_followers_shared_inboxes()
 
         assert inboxes == {
-            'fittrackee': {remote_user.actor.shared_inbox_url},
-            'others': set(),
+            'fittrackee': [remote_user.actor.shared_inbox_url],
+            'others': [],
         }
 
     def test_it_returns_shared_inbox_when_remote_followers_from_not_fittrackee_instance(  # noqa
@@ -264,8 +264,8 @@ class TestUserGetRecipientsSharedInbox:
         inboxes = user_1.get_followers_shared_inboxes()
 
         assert inboxes == {
-            'fittrackee': set(),
-            'others': {remote_user_2.actor.shared_inbox_url},
+            'fittrackee': [],
+            'others': [remote_user_2.actor.shared_inbox_url],
         }
 
     def test_it_returns_shared_inbox_from_several_remote_users(
@@ -283,6 +283,75 @@ class TestUserGetRecipientsSharedInbox:
         inboxes = user_1.get_followers_shared_inboxes()
 
         assert inboxes == {
-            'fittrackee': {remote_user.actor.shared_inbox_url},
-            'others': {remote_user_2.actor.shared_inbox_url},
+            'fittrackee': [remote_user.actor.shared_inbox_url],
+            'others': [remote_user_2.actor.shared_inbox_url],
         }
+
+
+class TestUserGetRecipientsSharedInboxAsList:
+    def test_it_returns_empty_set_if_not_followers(
+        self, app_with_federation: Flask, user_1: User
+    ) -> None:
+        inboxes = user_1.get_followers_shared_inboxes_as_list()
+
+        assert inboxes == []
+
+    def test_it_returns_empty_set_if_only_local_followers(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.approves_follow_request_from(user_2)
+
+        inboxes = user_1.get_followers_shared_inboxes_as_list()
+
+        assert inboxes == []
+
+    def test_it_returns_shared_inbox_when_remote_followers_from_fittrackee_instance(  # noqa
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user: User,
+        follow_request_from_remote_user_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.approves_follow_request_from(remote_user)
+
+        inboxes = user_1.get_followers_shared_inboxes_as_list()
+
+        assert inboxes == [remote_user.actor.shared_inbox_url]
+
+    def test_it_returns_shared_inbox_when_remote_followers_from_not_fittrackee_instance(  # noqa
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user_2: User,
+    ) -> None:
+        generate_follow_request(remote_user_2, user_1)
+        user_1.approves_follow_request_from(remote_user_2)
+
+        inboxes = user_1.get_followers_shared_inboxes_as_list()
+
+        assert inboxes == [remote_user_2.actor.shared_inbox_url]
+
+    def test_it_returns_shared_inbox_from_several_remote_users(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user: User,
+        remote_user_2: User,
+        follow_request_from_remote_user_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.approves_follow_request_from(remote_user)
+        generate_follow_request(remote_user_2, user_1)
+        user_1.approves_follow_request_from(remote_user_2)
+
+        inboxes = user_1.get_followers_shared_inboxes_as_list()
+
+        assert sorted(inboxes) == sorted(
+            [
+                remote_user.actor.shared_inbox_url,
+                remote_user_2.actor.shared_inbox_url,
+            ]
+        )

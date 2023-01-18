@@ -206,6 +206,10 @@ class TestWorkoutModelGetWorkoutDeleteActivity:
         workout_visibility: PrivacyLevel,
     ) -> None:
         workout_cycling_user_1.workout_visibility = workout_visibility
+        workout_cycling_user_1.ap_id = (
+            f'{user_1.actor.activitypub_id}/workouts/'
+            f'{workout_cycling_user_1.short_id}'
+        )
 
         delete_workout, _ = workout_cycling_user_1.get_activities(
             activity_type='Delete'
@@ -213,7 +217,4 @@ class TestWorkoutModelGetWorkoutDeleteActivity:
 
         assert delete_workout['type'] == 'Delete'
         assert delete_workout['object']['type'] == 'Tombstone'
-        assert delete_workout['object']['id'] == (
-            f'{user_1.actor.activitypub_id}/workouts/'
-            f'{workout_cycling_user_1.short_id}'
-        )
+        assert delete_workout['object']['id'] == workout_cycling_user_1.ap_id

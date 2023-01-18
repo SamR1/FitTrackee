@@ -741,9 +741,14 @@ class WorkoutComment(BaseModel):
         }
 
     def get_activity(self, activity_type: str) -> Dict:
+        # TODO: Update
         if activity_type == 'Create':
             return WorkoutCommentObject(
                 self, activity_type=activity_type
             ).get_activity()
-        # TODO: Update and Delete
+        if activity_type == 'Delete':
+            tombstone_object = TombstoneObject(self)
+            delete_activity = tombstone_object.get_activity()
+            return delete_activity
+        # TODO: Update
         return {}
