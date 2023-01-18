@@ -7,7 +7,8 @@
     "BACK_TO_WORKOUT": "back to workout",
     "COMMENTS": {
         "ADD": "add a comment",
-        "LABEL": "comment | comments"
+        "LABEL": "comment | comments",
+        "NO_COMMENTS": "No comments"
     },
     "DATE": "date",
     "DESCENT": "descent",

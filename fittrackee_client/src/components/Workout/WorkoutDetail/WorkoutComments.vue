@@ -38,6 +38,9 @@
             <span class="comment-text" v-html="linkifyAndClean(comment.text)"/>
           </div>
         </div>
+        <div class="no-comments" v-if="workoutData.comments.length === 0">
+          {{ $t('workouts.COMMENTS.NO_COMMENTS')}}
+        </div>
         <WorkoutAddComment :workout="workoutData.workout" />
       </template>
     </Card>
@@ -82,11 +85,8 @@
   @import '~@/scss/vars.scss';
 
   .workout-comments {
-    margin-top: $default-margin*2;
     .workout-comment {
       display: flex;
-      padding-bottom: $default-padding*2;
-
       ::v-deep(.user-picture) {
         min-width: min-content;
         align-items: flex-start;
@@ -126,6 +126,10 @@
           padding-left: $default-padding ;
         }
       }
+    }
+
+    .no-comments {
+      font-style: italic;
     }
   }
 </style>

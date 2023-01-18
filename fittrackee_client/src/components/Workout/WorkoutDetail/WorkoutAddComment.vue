@@ -2,7 +2,7 @@
   <div class="add-comment">
     <form :class="{ errors: formErrors }" @submit.prevent="submitComment">
       <div class="form-items">
-        <div class="form-item">
+        <div class="form-item add-comment-label">
           <label> {{ $t('workouts.COMMENTS.ADD') }}: </label>
           <CustomTextArea
               class="comment"
@@ -98,7 +98,7 @@
   @import '~@/scss/vars.scss';
 
   .add-comment {
-    margin-top: $default-margin;
+    margin-top: $default-margin * 2;
     .comment {
       padding: $default-padding 0;
     }
@@ -118,6 +118,9 @@
       select {
         padding: $default-padding * 0.5 $default-padding;
       }
+    }
+    .add-comment-label {
+      font-style: italic;
     }
   }
 </style>

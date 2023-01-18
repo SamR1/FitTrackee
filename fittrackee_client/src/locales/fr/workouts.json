@@ -7,7 +7,8 @@
     "BACK_TO_WORKOUT": "revenir à la séance",
     "COMMENTS": {
         "ADD": "ajouter un commentaire ",
-        "LABEL": "commentaire | commentaires"
+        "LABEL": "commentaire | commentaires",
+        "NO_COMMENTS": "Pas de commentaires"
     },
     "DATE": "date",
     "DESCENT": "dénivelé négatif",
