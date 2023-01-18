@@ -30,7 +30,7 @@
             v-if="!displaySegment && isWorkoutOwner"
             :notes="workoutData.workout.notes"
           />
-          <WorkoutComments :workoutData="workoutData" />
+          <WorkoutComments :workoutData="workoutData" :auth-user="authUser"/>
           <div id="bottom" />
         </div>
         <div v-else>

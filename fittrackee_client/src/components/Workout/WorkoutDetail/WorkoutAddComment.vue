@@ -1,13 +1,14 @@
 <template>
   <div class="add-comment">
-    <form :class="{ errors: formErrors }" @submit.prevent="submitComment">
+    <form @submit.prevent="submitComment">
       <div class="form-items">
         <div class="form-item add-comment-label">
-          <label> {{ $t('workouts.COMMENTS.ADD') }}: </label>
           <CustomTextArea
               class="comment"
               name="text"
-              :value="commentForm.text"
+              :input="commentText"
+              :required="true"
+              :placeholder="$t('workouts.COMMENTS.ADD')"
               @updateValue="updateText"
           />
         </div>
@@ -17,7 +18,7 @@
           <label> {{ $t('privacy.VISIBILITY') }}: </label>
           <select
             id="text_visibility"
-            v-model="commentForm.textVisibility"
+            v-model="commentTextVisibility"
           >
             <option
               v-for="level in privacyLevels"
@@ -39,7 +40,7 @@
         <button class="confirm" type="submit">
           {{ $t('buttons.SUBMIT') }}
         </button>
-        <button class="cancel">
+        <button class="cancel" @click.prevent="onCancel">
           {{ $t('buttons.CANCEL') }}
         </button>
       </div>
@@ -49,10 +50,11 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, reactive, ref, toRefs } from 'vue'
+  import { ComputedRef, Ref, computed, ref, toRefs } from 'vue'
 
   import { ROOT_STORE, WORKOUTS_STORE } from "@/store/constants"
   import { TAppConfig } from "@/types/application"
+  import { TPrivacyLevels } from "@/types/user";
   import { ICommentForm, IWorkout } from "@/types/workouts"
   import { useStore } from "@/use/useStore"
   import { getPrivacyLevels, getPrivacyLevelForLabel } from "@/utils/privacy"
@@ -72,25 +74,26 @@
   const privacyLevels = computed(() =>
     getPrivacyLevels(appConfig.value.federation_enabled)
   )
-  const commentForm = reactive({
-    text: '',
-    textVisibility: workout.value.workout_visibility,
-  })
+  const commentText: Ref<string> = ref('')
+  const commentTextVisibility: Ref<TPrivacyLevels> = ref(workout.value.workout_visibility)
   const errorMessages: ComputedRef<string | string[] | null> = computed(
       () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
   )
-  const formErrors = ref(false)
 
   function updateText(value: string) {
-    commentForm.text = value
+    commentText.value = value
+  }
+  function onCancel() {
+    updateText('')
   }
   function submitComment() {
     const payload: ICommentForm = {
-      text: commentForm.text,
-      textVisibility: commentForm.textVisibility,
+      text: commentText.value,
+      textVisibility: commentTextVisibility.value,
       workoutId: workout.value.id,
     }
     store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_COMMENT, payload)
+    updateText('')
   }
 </script>
 

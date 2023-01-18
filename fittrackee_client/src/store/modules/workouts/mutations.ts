@@ -84,7 +84,7 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
     state: IWorkoutsState,
     comments: IComment[]
   ) {
-    state.workoutData.comments = state.workoutData.comments.concat(comments)
+    state.workoutData.comments = comments
   },
   [WORKOUTS_STORE.MUTATIONS.ADD_WORKOUT_COMMENT](
     state: IWorkoutsState,

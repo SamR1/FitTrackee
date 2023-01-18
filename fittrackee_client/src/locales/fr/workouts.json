@@ -6,7 +6,8 @@
     "AVE_SPEED": "vitesse moy.",
     "BACK_TO_WORKOUT": "revenir à la séance",
     "COMMENTS": {
-        "ADD": "ajouter un commentaire ",
+        "ADD": "ajouter un commentaire",
+        "DELETION_CONFIRMATION": "Etes-vous sûr de vouloir supprimer ce commentaire ?",
         "LABEL": "commentaire | commentaires",
         "NO_COMMENTS": "Pas de commentaires"
     },

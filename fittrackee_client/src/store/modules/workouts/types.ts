@@ -16,8 +16,9 @@ import {
   IWorkoutData,
   IWorkoutPayload,
   IWorkoutForm,
-  TCommentsPayload,
+  ICommentsPayload,
   IComment,
+  ICommentPayload,
 } from '@/types/workouts'
 
 export interface IWorkoutsState {
@@ -71,7 +72,11 @@ export interface IWorkoutsActions {
   ): void
   [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS](
     context: ActionContext<IWorkoutsState, IRootState>,
-    payload: TCommentsPayload
+    payload: ICommentsPayload
+  ): void
+  [WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: ICommentPayload
   ): void
 }
 

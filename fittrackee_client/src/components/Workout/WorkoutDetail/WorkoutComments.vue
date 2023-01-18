@@ -1,5 +1,12 @@
 <template>
   <div class="workout-comments">
+    <Modal
+      v-if="commentToDelete"
+      :title="$t('common.CONFIRMATION')"
+      :message="$t('workouts.COMMENTS.DELETION_CONFIRMATION')"
+      @confirmAction="deleteComment(commentToDelete)"
+      @cancelAction="() => commentToDelete = null"
+    />
     <Card>
       <template #title>
         {{ $t('workouts.COMMENTS.LABEL', 0) }}
@@ -34,6 +41,12 @@
                 }}
               </div>
               <VisibilityIcon :visibility="comment.text_visibility" />
+              <i
+                class="fa fa-trash"
+                v-if="isCommentOwner(authUser, comment.user)"
+                aria-hidden="true"
+                @click="() => commentToDelete = comment"
+              />
             </div>
             <span class="comment-text" v-html="linkifyAndClean(comment.text)"/>
           </div>
@@ -49,26 +62,27 @@
 
 <script setup lang="ts">
   import { Locale, formatDistance } from 'date-fns'
-  import { ComputedRef, computed,  toRefs, withDefaults } from 'vue'
+  import { ComputedRef, Ref, computed, ref, toRefs, watch } from 'vue'
 
   import Username from '@/components/User/Username.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import WorkoutAddComment from "@/components/Workout/WorkoutDetail/WorkoutAddComment.vue"
-  import { ROOT_STORE } from "@/store/constants"
+  import { ROOT_STORE, WORKOUTS_STORE } from "@/store/constants"
   import { IDisplayOptions } from "@/types/application"
-  import { IAuthUserProfile } from "@/types/user"
-  import { IWorkoutData } from "@/types/workouts"
+  import { IAuthUserProfile, IUserProfile } from "@/types/user"
+  import { IComment, IWorkoutData } from "@/types/workouts"
   import { useStore } from "@/use/useStore"
   import { formatDate } from "@/utils/dates"
   import { linkifyAndClean } from '@/utils/inputs'
+  import { getUserName } from "@/utils/user"
 
   interface Props {
     workoutData: IWorkoutData
-    user?: IAuthUserProfile | null
+    authUser?: IAuthUserProfile | null
   }
 
   const props = withDefaults(defineProps<Props>(), {
-    user: null,
+    authUser: null,
   })
   const { workoutData } = toRefs(props)
 
@@ -79,6 +93,26 @@
   const displayOptions: ComputedRef<IDisplayOptions> = computed(
     () => store.getters[ROOT_STORE.GETTERS.DISPLAY_OPTIONS]
   )
+  const commentToDelete: Ref<IComment | null> = ref(null)
+
+  function isCommentOwner(authUser: IAuthUserProfile | null, commentUser: IUserProfile) {
+    return authUser && getUserName(authUser) === getUserName(commentUser)
+  }
+
+  function deleteComment(comment: IComment) {
+    store.dispatch(WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT_COMMENT, {
+      workoutId: comment.workout_id,
+      commentId: comment.id
+    })
+  }
+
+  watch(
+    () => workoutData.value.comments,
+    () => {
+      commentToDelete.value = null
+    }
+  )
+
 </script>
 
 <style scoped lang="scss">
@@ -118,6 +152,13 @@
             font-size: 0.85em;
             font-style: italic;
             white-space: nowrap;
+          }
+          .fa-trash {
+            padding-bottom: 3px;
+          }
+
+          ::v-deep(.fa-users) {
+            font-size: .8em;
           }
         }
         .comment-text {

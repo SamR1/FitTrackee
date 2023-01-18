@@ -14,8 +14,9 @@ import {
   IWorkout,
   IWorkoutForm,
   IWorkoutPayload,
-  TCommentsPayload,
+  ICommentsPayload,
   TWorkoutsPayload,
+  ICommentPayload,
 } from '@/types/workouts'
 import { handleError } from '@/utils'
 
@@ -272,7 +273,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
   },
   [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS](
     context: ActionContext<IWorkoutsState, IRootState>,
-    payload: TCommentsPayload
+    payload: ICommentsPayload
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     authApi
@@ -289,6 +290,25 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
           )
         } else {
           handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+  },
+  [WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: ICommentPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .delete(`workouts/${payload.workoutId}/comments/${payload.commentId}`)
+      .then((res) => {
+        if (res.status === 204) {
+          context.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS, {
+            workoutId: payload.workoutId,
+            page: 1,
+          })
         }
       })
       .catch((error) => {

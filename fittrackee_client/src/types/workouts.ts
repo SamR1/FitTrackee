@@ -192,12 +192,21 @@ export interface ICommentForm {
   workoutId: string
 }
 
-export interface IComment extends ICommentForm {
+export interface IComment {
   id: string
+  text: string
+  text_visibility: TPrivacyLevels
+  workout_id: string
 }
 
-export interface TCommentsPayload {
+export interface ICommentsPayload {
   workoutId: string
 
   page: number
+}
+
+export interface ICommentPayload {
+  workoutId: string
+
+  commentId: string
 }
