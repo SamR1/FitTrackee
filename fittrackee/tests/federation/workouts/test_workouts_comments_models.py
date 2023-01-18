@@ -98,7 +98,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(WorkoutCommentMixin):
         assert serialized_comment == {
             'id': comment.short_id,
             'user': user_1.serialize(),
-            'workout_id': workout_cycling_user_1.id,
+            'workout_id': workout_cycling_user_1.short_id,
             'text': comment.text,
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
@@ -175,7 +175,7 @@ class TestWorkoutCommentModelSerializeForRemoteFollower(WorkoutCommentMixin):
         assert serialized_comment == {
             'id': comment.short_id,
             'user': remote_user.serialize(),
-            'workout_id': remote_cycling_workout.id,
+            'workout_id': remote_cycling_workout.short_id,
             'text': comment.text,
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,

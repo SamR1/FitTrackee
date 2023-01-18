@@ -734,7 +734,7 @@ class WorkoutComment(BaseModel):
         return {
             'id': self.short_id,
             'user': self.user.serialize(),
-            'workout_id': self.workout_id,
+            'workout_id': self.workout.short_id,
             'text': self.text,
             'text_visibility': self.text_visibility,
             'created_at': self.created_at,
