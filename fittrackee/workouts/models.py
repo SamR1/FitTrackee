@@ -19,11 +19,14 @@ from fittrackee.federation.objects.comment import WorkoutCommentObject
 from fittrackee.federation.objects.tombstone import TombstoneObject
 from fittrackee.federation.objects.workout import WorkoutObject
 from fittrackee.files import get_absolute_file_path
-from fittrackee.privacy_levels import PrivacyLevel, get_map_visibility
+from fittrackee.privacy_levels import (
+    PrivacyLevel,
+    can_view,
+    get_map_visibility,
+)
 from fittrackee.utils import encode_uuid
 
 from .exceptions import CommentForbiddenException, WorkoutForbiddenException
-from .utils.comment_visibility import can_view_workout_comment
 from .utils.convert import convert_in_duration, convert_value_to_integer
 
 if TYPE_CHECKING:
@@ -226,43 +229,16 @@ class Workout(BaseModel):
     def calculated_map_visibility(self) -> PrivacyLevel:
         return get_map_visibility(self.map_visibility, self.workout_visibility)
 
-    def _can_see_map_data(self, user_status: str) -> bool:
-        return (
-            user_status == 'owner'
-            or self.calculated_map_visibility == PrivacyLevel.PUBLIC
-            or (
-                self.calculated_map_visibility
-                in [PrivacyLevel.FOLLOWERS, PrivacyLevel.FOLLOWERS_AND_REMOTE]
-                and user_status == 'follower'
-            )
-            or (
-                self.calculated_map_visibility
-                == PrivacyLevel.FOLLOWERS_AND_REMOTE
-                and user_status == 'remote_follower'
-            )
-        )
-
     def serialize(
-        self, user_status: str, params: Optional[Dict] = None
+        self, user: Optional['User'] = None, params: Optional[Dict] = None
     ) -> Dict:
-        if (
-            (
-                self.workout_visibility == PrivacyLevel.PRIVATE
-                and user_status != 'owner'
-            )
-            or (
-                self.workout_visibility == PrivacyLevel.FOLLOWERS
-                and user_status == 'remote_follower'
-            )
-            or (
-                self.workout_visibility != PrivacyLevel.PUBLIC
-                and user_status == 'other'
-            )
-        ):
+        if not can_view(self, "workout_visibility", user=user):
             raise WorkoutForbiddenException()
-        can_see_map_data = self._can_see_map_data(user_status)
-
-        if user_status == 'owner':
+        can_see_map_data = can_view(
+            self, "calculated_map_visibility", user=user
+        )
+        is_owner = user and user.id == self.user_id
+        if is_owner:
             date_from = params.get('from') if params else None
             date_to = params.get('to') if params else None
             distance_from = params.get('distance_from') if params else None
@@ -370,9 +346,9 @@ class Workout(BaseModel):
             'distance': float(self.distance) if self.distance else None,
             'min_alt': float(self.min_alt) if self.min_alt else None,
             'max_alt': float(self.max_alt) if self.max_alt else None,
-            'descent': float(self.descent)
-            if self.descent is not None
-            else None,
+            'descent': (
+                float(self.descent) if self.descent is not None else None
+            ),
             'ascent': float(self.ascent) if self.ascent is not None else None,
             'max_speed': float(self.max_speed) if self.max_speed else None,
             'ave_speed': float(self.ave_speed) if self.ave_speed else None,
@@ -396,7 +372,7 @@ class Workout(BaseModel):
             'map_visibility': self.calculated_map_visibility.value,
             'weather_start': self.weather_start,
             'weather_end': self.weather_end,
-            'notes': self.notes if user_status == 'owner' else None,
+            'notes': self.notes if is_owner else None,
             'workout_visibility': self.workout_visibility.value,
         }
         if self.user.is_remote:
@@ -404,9 +380,7 @@ class Workout(BaseModel):
         return workout
 
     @classmethod
-    def get_user_workout_records(
-        cls, user_id: int, sport_id: int, as_integer: Optional[bool] = False
-    ) -> Dict:
+    def get_user_workout_records(cls, user_id: int, sport_id: int) -> Dict:
         """
         Note:
         Values for ascent are null for workouts without gpx
@@ -730,7 +704,7 @@ class WorkoutComment(BaseModel):
 
     def serialize(self, user: Optional['User'] = None) -> Dict:
         # TODO: mentions
-        if not can_view_workout_comment(self, user):
+        if not can_view(self, 'text_visibility', user):
             raise CommentForbiddenException
         return {
             'id': self.short_id,

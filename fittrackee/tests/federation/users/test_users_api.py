@@ -47,7 +47,7 @@ class TestGetLocalUsers(ApiTestCaseMixin):
     )
     def test_it_returns_empty_users_list_filtering_on_username(
         self,
-        app: Flask,
+        app_with_federation: Flask,
         user_1_admin: User,
         user_2: User,
         user_3: User,
@@ -55,7 +55,7 @@ class TestGetLocalUsers(ApiTestCaseMixin):
         input_username: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app_with_federation, user_1_admin.email
         )
 
         response = client.get(

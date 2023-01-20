@@ -22,11 +22,10 @@ from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.federation.tasks.inbox import send_to_remote_inbox
 from fittrackee.federation.utils import sending_activities_allowed
 from fittrackee.oauth2.server import require_auth
-from fittrackee.privacy_levels import PrivacyLevel
+from fittrackee.privacy_levels import PrivacyLevel, can_view
 from fittrackee.responses import (
     DataInvalidPayloadErrorResponse,
     DataNotFoundErrorResponse,
-    ForbiddenErrorResponse,
     HttpResponse,
     InternalServerErrorResponse,
     InvalidPayloadErrorResponse,
@@ -39,16 +38,14 @@ from fittrackee.users.models import User
 from fittrackee.users.utils.following import get_following
 from fittrackee.utils import decode_short_id
 
-from .decorators import check_workout_comment
+from .decorators import check_workout, check_workout_comment
 from .models import Workout, WorkoutComment
-from .utils.comment_visibility import can_view_workout_comment
 from .utils.convert import convert_in_duration
 from .utils.gpx import (
     WorkoutGPXException,
     extract_segment_from_gpx_file,
     get_chart_data,
 )
-from .utils.visibility import can_view_workout
 from .utils.workouts import (
     WorkoutException,
     create_workout,
@@ -317,7 +314,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
             'status': 'success',
             'data': {
                 'workouts': [
-                    workout.serialize('owner', params) for workout in workouts
+                    workout.serialize(auth_user, params)
+                    for workout in workouts
                 ]
             },
             'pagination': {
@@ -336,8 +334,9 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
     '/workouts/<string:workout_short_id>', methods=['GET']
 )
 @require_auth(scopes=['workouts:read'], optional_auth_user=True)
+@check_workout(check_owner=False)
 def get_workout(
-    auth_user: Optional[User], workout_short_id: str
+    auth_user: Optional[User], workout: Workout, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
     Get a workout.
@@ -421,20 +420,9 @@ def get_workout(
     :statuscode 404: workout not found
 
     """
-    workout_uuid = decode_short_id(workout_short_id)
-    workout = Workout.query.filter_by(uuid=workout_uuid).first()
-    if not workout:
-        return DataNotFoundErrorResponse('workouts')
-
-    can_view, user_status = can_view_workout(
-        workout, 'workout_visibility', auth_user
-    )
-    if not can_view:
-        return DataNotFoundErrorResponse('workouts')
-
     return {
         'status': 'success',
-        'data': {'workouts': [workout.serialize(user_status)]},
+        'data': {'workouts': [workout.serialize(auth_user)]},
     }
 
 
@@ -454,10 +442,7 @@ def get_workout_data(
     if not workout:
         return not_found_response
 
-    can_view, user_status = can_view_workout(
-        workout, 'map_visibility', auth_user
-    )
-    if not can_view:
+    if not can_view(workout, 'calculated_map_visibility', auth_user):
         return not_found_response
 
     if not workout.gpx or workout.gpx == '':
@@ -1071,7 +1056,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                 'status': 'created',
                 'data': {
                     'workouts': [
-                        new_workout.serialize('owner')
+                        new_workout.serialize(auth_user)
                         for new_workout in new_workouts
                     ]
                 },
@@ -1254,7 +1239,7 @@ def post_workout_no_gpx(
         return (
             {
                 'status': 'created',
-                'data': {'workouts': [new_workout.serialize('owner')]},
+                'data': {'workouts': [new_workout.serialize(auth_user)]},
             },
             201,
         )
@@ -1272,8 +1257,9 @@ def post_workout_no_gpx(
     '/workouts/<string:workout_short_id>', methods=['PATCH']
 )
 @require_auth(scopes=['workouts:write'])
+@check_workout()
 def update_workout(
-    auth_user: User, workout_short_id: str
+    auth_user: User, workout: Workout, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
     Update a workout.
@@ -1402,18 +1388,6 @@ def update_workout(
         return InvalidPayloadErrorResponse()
 
     try:
-        workout_uuid = decode_short_id(workout_short_id)
-        workout = Workout.query.filter_by(uuid=workout_uuid).first()
-        if not workout:
-            return DataNotFoundErrorResponse('workouts')
-
-        can_view, _ = can_view_workout(
-            workout, 'workout_visibility', auth_user
-        )
-        if not can_view:
-            return DataNotFoundErrorResponse('workouts')
-        if auth_user.id != workout.user.id:
-            return ForbiddenErrorResponse()
         old_workout = (
             copy(workout) if current_app.config['federation_enabled'] else None
         )
@@ -1448,7 +1422,7 @@ def update_workout(
         workout = edit_workout(workout, workout_data, auth_user)
         db.session.commit()
 
-        if current_app.config['federation_enabled']:
+        if old_workout:
             if workout.workout_visibility in (
                 PrivacyLevel.PUBLIC,
                 PrivacyLevel.FOLLOWERS_AND_REMOTE,
@@ -1469,7 +1443,7 @@ def update_workout(
 
         return {
             'status': 'success',
-            'data': {'workouts': [workout.serialize('owner')]},
+            'data': {'workouts': [workout.serialize(auth_user)]},
         }
 
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
@@ -1480,8 +1454,9 @@ def update_workout(
     '/workouts/<string:workout_short_id>', methods=['DELETE']
 )
 @require_auth(scopes=['workouts:write'])
+@check_workout()
 def delete_workout(
-    auth_user: User, workout_short_id: str
+    auth_user: User, workout: Workout, workout_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Delete a workout.
@@ -1515,21 +1490,7 @@ def delete_workout(
     :statuscode 500: error, please try again or contact the administrator
 
     """
-
     try:
-        workout_uuid = decode_short_id(workout_short_id)
-        workout = Workout.query.filter_by(uuid=workout_uuid).first()
-        if not workout:
-            return DataNotFoundErrorResponse('workouts')
-
-        can_view, _ = can_view_workout(
-            workout, 'workout_visibility', auth_user
-        )
-        if not can_view:
-            return DataNotFoundErrorResponse('workouts')
-        if auth_user.id != workout.user.id:
-            return ForbiddenErrorResponse()
-
         if sending_activities_allowed(workout.workout_visibility):
             handle_workout_activities(workout, activity_type='Delete')
 
@@ -1559,21 +1520,18 @@ def add_workout_comment(
         or not comment_data.get('text_visibility')
     ):
         return InvalidPayloadErrorResponse()
-
-    workout_uuid = decode_short_id(workout_short_id)
-    workout = Workout.query.filter_by(uuid=workout_uuid).first()
-    if not workout:
-        return NotFoundErrorResponse(
-            f"workout not found (id: {workout_short_id})"
-        )
-
-    can_view, _ = can_view_workout(workout, 'workout_visibility', auth_user)
-    if not can_view:
-        return NotFoundErrorResponse(
-            f"workout not found (id: {workout_short_id})"
-        )
-
     try:
+        workout_uuid = decode_short_id(workout_short_id)
+        workout = Workout.query.filter_by(uuid=workout_uuid).first()
+        if not workout:
+            return NotFoundErrorResponse(
+                f"workout not found (id: {workout_short_id})"
+            )
+
+        if not can_view(workout, 'workout_visibility', auth_user):
+            return NotFoundErrorResponse(
+                f"workout not found (id: {workout_short_id})"
+            )
         new_comment = WorkoutComment(
             user_id=auth_user.id,
             workout_id=workout.id,
@@ -1627,30 +1585,10 @@ def add_workout_comment(
     methods=["GET"],
 )
 @require_auth(scopes=['workouts:read'], optional_auth_user=True)
+@check_workout_comment(check_owner=False)
 def get_workout_comment(
-    auth_user: Optional[User], workout_short_id: str, comment_short_id: str
+    auth_user: Optional[User], workout_comment: WorkoutComment
 ) -> Union[Tuple[Dict, int], HttpResponse]:
-    workout_uuid = decode_short_id(workout_short_id)
-    workout = Workout.query.filter_by(uuid=workout_uuid).first()
-    if not workout:
-        return NotFoundErrorResponse(
-            f"workout not found (id: {workout_short_id})"
-        )
-
-    workout_comment_uuid = decode_short_id(comment_short_id)
-    workout_comment = WorkoutComment.query.filter_by(
-        uuid=workout_comment_uuid
-    ).first()
-    if not workout_comment:
-        return NotFoundErrorResponse(
-            f"workout comment not found (id: {comment_short_id})"
-        )
-
-    if not can_view_workout_comment(workout_comment, auth_user):
-        return NotFoundErrorResponse(
-            f"workout comment not found (id: {comment_short_id})"
-        )
-
     return (
         {
             'status': 'success',
@@ -1739,7 +1677,7 @@ def get_workout_comments(
     methods=["DELETE"],
 )
 @require_auth(scopes=['workouts:write'])
-@check_workout_comment
+@check_workout_comment()
 def delete_workout_comment(
     auth_user: User, workout_comment: WorkoutComment
 ) -> Union[Tuple[Dict, int], HttpResponse]:
@@ -1773,7 +1711,7 @@ def delete_workout_comment(
     methods=['PATCH'],
 )
 @require_auth(scopes=['workouts:write'])
-@check_workout_comment
+@check_workout_comment()
 def update_workout_comment(
     auth_user: User, workout_comment: WorkoutComment
 ) -> Union[Dict, HttpResponse]:

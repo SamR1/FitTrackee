@@ -10,7 +10,6 @@ from fittrackee.users.models import User
 from fittrackee.users.utils.following import get_following
 
 from .models import Workout
-from .utils.visibility import get_workout_user_status
 
 timeline_blueprint = Blueprint('timeline', __name__)
 
@@ -57,10 +56,7 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
             'status': 'success',
             'data': {
                 'workouts': [
-                    workout.serialize(
-                        get_workout_user_status(workout, auth_user)
-                    )
-                    for workout in workouts
+                    workout.serialize(auth_user) for workout in workouts
                 ]
             },
             'pagination': {

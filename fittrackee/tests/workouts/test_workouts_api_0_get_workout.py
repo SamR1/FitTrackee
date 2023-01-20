@@ -61,7 +61,7 @@ class TestGetWorkoutAsWorkoutOwner(GetWorkoutTestCase):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0] == jsonify_dict(
-            workout_cycling_user_1.serialize(user_status='owner')
+            workout_cycling_user_1.serialize(user_1)
         )
 
 

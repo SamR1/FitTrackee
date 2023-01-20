@@ -1,10 +1,9 @@
 import pytest
 from flask import Flask
 
-from fittrackee.privacy_levels import PrivacyLevel
+from fittrackee.privacy_levels import PrivacyLevel, can_view
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
-from fittrackee.workouts.utils.visibility import can_view_workout
 
 
 class TestFederationCanViewWorkout:
@@ -19,9 +18,10 @@ class TestFederationCanViewWorkout:
             PrivacyLevel.FOLLOWERS_AND_REMOTE
         )
 
-        assert can_view_workout(
-            workout_cycling_user_1, 'workout_visibility', user_1
-        ) == (True, 'owner')
+        assert (
+            can_view(workout_cycling_user_1, 'workout_visibility', user_1)
+            is True
+        )
 
     @pytest.mark.parametrize(
         'input_workout_visibility',
@@ -43,9 +43,10 @@ class TestFederationCanViewWorkout:
         remote_user.approves_follow_request_from(user_1)
         workout_cycling_user_2.workout_visibility = input_workout_visibility
 
-        assert can_view_workout(
-            workout_cycling_user_2, 'workout_visibility', user_1
-        ) == (False, 'remote_follower')
+        assert (
+            can_view(workout_cycling_user_2, 'workout_visibility', user_1)
+            is False
+        )
 
     @pytest.mark.parametrize(
         'input_workout_visibility',
@@ -67,9 +68,10 @@ class TestFederationCanViewWorkout:
         remote_user.approves_follow_request_from(user_1)
         workout_cycling_user_2.workout_visibility = input_workout_visibility
 
-        assert can_view_workout(
-            workout_cycling_user_2, 'workout_visibility', user_1
-        ) == (True, 'remote_follower')
+        assert (
+            can_view(workout_cycling_user_2, 'workout_visibility', user_1)
+            is True
+        )
 
     def test_local_follower_can_view_workout_when_follower_and_remote_only(
         self,
@@ -85,9 +87,10 @@ class TestFederationCanViewWorkout:
             PrivacyLevel.FOLLOWERS_AND_REMOTE
         )
 
-        assert can_view_workout(
-            workout_cycling_user_2, 'workout_visibility', user_1
-        ) == (True, 'follower')
+        assert (
+            can_view(workout_cycling_user_2, 'workout_visibility', user_1)
+            is True
+        )
 
     def test_another_user_can_not_view_workout_when_follower_and_remote_only(
         self,
@@ -101,9 +104,10 @@ class TestFederationCanViewWorkout:
             PrivacyLevel.FOLLOWERS_AND_REMOTE
         )
 
-        assert can_view_workout(
-            workout_cycling_user_2, 'workout_visibility', user_1
-        ) == (False, 'other')
+        assert (
+            can_view(workout_cycling_user_2, 'workout_visibility', user_1)
+            is False
+        )
 
 
 class TestFederationCanViewWorkoutMap:
@@ -118,9 +122,9 @@ class TestFederationCanViewWorkoutMap:
             PrivacyLevel.FOLLOWERS_AND_REMOTE
         )
 
-        assert can_view_workout(
-            workout_cycling_user_1, 'map_visibility', user_1
-        ) == (True, 'owner')
+        assert (
+            can_view(workout_cycling_user_1, 'map_visibility', user_1) is True
+        )
 
     @pytest.mark.parametrize(
         'input_map_visibility',
@@ -143,9 +147,9 @@ class TestFederationCanViewWorkoutMap:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         workout_cycling_user_2.map_visibility = input_map_visibility
 
-        assert can_view_workout(
-            workout_cycling_user_2, 'map_visibility', user_1
-        ) == (False, 'remote_follower')
+        assert (
+            can_view(workout_cycling_user_2, 'map_visibility', user_1) is False
+        )
 
     @pytest.mark.parametrize(
         'input_map_visibility',
@@ -168,9 +172,9 @@ class TestFederationCanViewWorkoutMap:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         workout_cycling_user_2.map_visibility = input_map_visibility
 
-        assert can_view_workout(
-            workout_cycling_user_2, 'map_visibility', user_1
-        ) == (True, 'remote_follower')
+        assert (
+            can_view(workout_cycling_user_2, 'map_visibility', user_1) is True
+        )
 
     def test_local_follower_can_not_view_workout_map_when_follower_and_remote_only(  # noqa
         self,
@@ -187,9 +191,9 @@ class TestFederationCanViewWorkoutMap:
             PrivacyLevel.FOLLOWERS_AND_REMOTE
         )
 
-        assert can_view_workout(
-            workout_cycling_user_2, 'map_visibility', user_1
-        ) == (True, 'follower')
+        assert (
+            can_view(workout_cycling_user_2, 'map_visibility', user_1) is True
+        )
 
     def test_another_user_can_not_view_workout_map_when_follower_and_remote_only(  # noqa
         self,
@@ -204,6 +208,6 @@ class TestFederationCanViewWorkoutMap:
             PrivacyLevel.FOLLOWERS_AND_REMOTE
         )
 
-        assert can_view_workout(
-            workout_cycling_user_2, 'map_visibility', user_1
-        ) == (False, 'other')
+        assert (
+            can_view(workout_cycling_user_2, 'map_visibility', user_1) is False
+        )

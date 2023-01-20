@@ -4,6 +4,7 @@ from flask import Flask
 from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.tests.workouts.test_workouts_model import WorkoutModelTestCase
+from fittrackee.tests.workouts.utils import add_follower
 from fittrackee.users.models import User
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
@@ -14,31 +15,33 @@ DATE_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 
 
 class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
-    user_status = 'remote_follower'
-
     def test_it_raises_exception_when_workout_visibility_is_private(
         self,
-        app: Flask,
+        app_with_federation: Flask,
         sport_1_cycling: Sport,
         user_1: User,
         workout_cycling_user_1: Workout,
+        remote_user: User,
     ) -> None:
+        add_follower(user_1, remote_user)
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PRIVATE
 
         with pytest.raises(WorkoutForbiddenException):
-            workout_cycling_user_1.serialize(user_status=self.user_status)
+            workout_cycling_user_1.serialize(remote_user)
 
     def test_it_raises_exception_when_workout_visibility_is_local_follower_only(  # noqa
         self,
-        app: Flask,
+        app_with_federation: Flask,
         sport_1_cycling: Sport,
         user_1: User,
+        remote_user: User,
         workout_cycling_user_1: Workout,
     ) -> None:
+        add_follower(user_1, remote_user)
         workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
 
         with pytest.raises(WorkoutForbiddenException):
-            workout_cycling_user_1.serialize(user_status=self.user_status)
+            workout_cycling_user_1.serialize(remote_user)
 
     @pytest.mark.parametrize(
         'input_map_visibility,input_workout_visibility',
@@ -61,19 +64,21 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
         self,
         input_map_visibility: PrivacyLevel,
         input_workout_visibility: PrivacyLevel,
-        app: Flask,
+        app_with_federation: Flask,
         sport_1_cycling: Sport,
         user_1: User,
+        remote_user: User,
         workout_cycling_user_1: Workout,
         workout_cycling_user_1_segment: WorkoutSegment,
     ) -> None:
+        add_follower(user_1, remote_user)
         workout_cycling_user_1.workout_visibility = input_workout_visibility
         workout_cycling_user_1.map_visibility = input_map_visibility
         workout = self.update_workout(
             workout_cycling_user_1, map_id=random_string()
         )
 
-        serialized_workout = workout.serialize(user_status=self.user_status)
+        serialized_workout = workout.serialize(remote_user)
 
         assert serialized_workout['map'] == workout.map
         assert serialized_workout['bounds'] == workout.bounds
@@ -104,17 +109,19 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
         self,
         input_map_visibility: PrivacyLevel,
         input_workout_visibility: PrivacyLevel,
-        app: Flask,
+        app_with_federation: Flask,
         sport_1_cycling: Sport,
         user_1: User,
+        remote_user: User,
         workout_cycling_user_1: Workout,
         workout_cycling_user_1_segment: WorkoutSegment,
     ) -> None:
+        add_follower(user_1, remote_user)
         workout_cycling_user_1.workout_visibility = input_workout_visibility
         workout_cycling_user_1.map_visibility = input_map_visibility
         workout = self.update_workout(workout_cycling_user_1)
 
-        serialized_workout = workout.serialize(user_status=self.user_status)
+        serialized_workout = workout.serialize(remote_user)
 
         assert serialized_workout['map'] is None
         assert serialized_workout['bounds'] == []

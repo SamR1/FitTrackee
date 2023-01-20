@@ -311,7 +311,7 @@ class TestWorkoutConvertDurationStringToSeconds:
 class TestWorkoutConvertWorkoutActivity(RandomMixin):
     def test_it_convert_workout_data_from_activity(
         self,
-        app: Flask,
+        app_with_federation: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,

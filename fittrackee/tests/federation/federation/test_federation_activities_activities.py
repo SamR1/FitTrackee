@@ -780,7 +780,7 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
             user_id=remote_user.id, sport_id=sport_1_cycling.id
         ).first()
         assert (
-            remote_workout.serialize('remote_follower')['remote_url']
+            remote_workout.serialize(remote_user)['remote_url']
             == remote_workout.remote_url
         )
 
@@ -949,10 +949,7 @@ class TestUpdateActivityForWorkout(WorkoutActivitiesTestCase):
         activity = get_activity_instance({'type': update_activity['type']})(
             activity_dict=update_activity
         )
-        serialize_workout = remote_cycling_workout.serialize(
-            user_status='owner'
-        )
-
+        serialize_workout = remote_cycling_workout.serialize(remote_user)
         with pytest.raises(
             ActivityException,
             match=(
@@ -963,7 +960,7 @@ class TestUpdateActivityForWorkout(WorkoutActivitiesTestCase):
             activity.process_activity()
 
         workout = Workout.query.filter_by(id=remote_cycling_workout.id).first()
-        assert workout.serialize('owner') == serialize_workout
+        assert workout.serialize(remote_user) == serialize_workout
 
     @pytest.mark.parametrize(
         "input_key, input_new_value",

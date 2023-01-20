@@ -46,6 +46,11 @@ def post_a_workout(
     return token, data['data']['workouts'][0]['id']
 
 
+def add_follower(user: User, follower: User) -> None:
+    follower.send_follow_request_to(user)
+    user.approves_follow_request_from(follower)
+
+
 class WorkoutCommentMixin(RandomMixin):
     def create_comment(
         self,

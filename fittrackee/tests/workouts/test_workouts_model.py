@@ -13,6 +13,7 @@ from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Sport, Workout
 
 from ..utils import random_string
+from .utils import add_follower
 
 
 class WorkoutModelTestCase:
@@ -32,8 +33,6 @@ class WorkoutModelTestCase:
 
 
 class TestWorkoutModelForOwner(WorkoutModelTestCase):
-    user_status = 'owner'
-
     def test_sport_label_and_date_are_in_string_value(
         self,
         app: Flask,
@@ -67,7 +66,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
     ) -> None:
         workout = workout_cycling_user_1
 
-        serialized_workout = workout.serialize(user_status=self.user_status)
+        serialized_workout = workout.serialize(user_1)
         assert serialized_workout['ascent'] is None
         assert serialized_workout['ave_speed'] == float(workout.ave_speed)
         assert serialized_workout['bounds'] == []
@@ -110,7 +109,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout.ascent = 0
         workout.descent = 10
 
-        serialized_workout = workout.serialize(user_status=self.user_status)
+        serialized_workout = workout.serialize(user_1)
         assert serialized_workout['ascent'] == workout.ascent
         assert serialized_workout['ave_speed'] == float(workout.ave_speed)
         assert serialized_workout['bounds'] == []
@@ -151,7 +150,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
     ) -> None:
         workout = self.update_workout(workout_cycling_user_1)
 
-        serialized_workout = workout.serialize(user_status=self.user_status)
+        serialized_workout = workout.serialize(user_1)
         assert serialized_workout['ascent'] is None
         assert serialized_workout['ave_speed'] == float(workout.ave_speed)
         assert serialized_workout['bounds'] == [
@@ -198,7 +197,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             workout_cycling_user_1, map_id=random_string()
         )
 
-        serialized_workout = workout.serialize(user_status=self.user_status)
+        serialized_workout = workout.serialize(user_1)
 
         assert serialized_workout['map'] == workout.map
         assert serialized_workout['bounds'] == workout.bounds
@@ -272,9 +271,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             workout_cycling_user_1.calculated_map_visibility
             == expected_map_visibility
         )
-        serialized_workout = workout_cycling_user_1.serialize(
-            user_status=self.user_status
-        )
+        serialized_workout = workout_cycling_user_1.serialize(user_1)
         assert (
             serialized_workout['map_visibility']
             == expected_map_visibility.value
@@ -303,7 +300,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        serialized_workout = workout_running_user_1.serialize(self.user_status)
+        serialized_workout = workout_running_user_1.serialize(user_1)
 
         assert (
             serialized_workout['previous_workout']
@@ -319,7 +316,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        serialized_workout = workout_cycling_user_1.serialize(self.user_status)
+        serialized_workout = workout_cycling_user_1.serialize(user_1)
 
         assert (
             serialized_workout['next_workout']
@@ -328,32 +325,32 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
 
 
 class TestWorkoutModelAsFollower(WorkoutModelTestCase):
-    user_status = 'follower'
-
     def test_it_raises_exception_when_workout_visibility_is_private(
         self,
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
+        user_2: User,
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PRIVATE
+        add_follower(user_1, user_2)
 
         with pytest.raises(WorkoutForbiddenException):
-            workout_cycling_user_1.serialize(user_status=self.user_status)
+            workout_cycling_user_1.serialize(user_2)
 
     def test_serializer_does_not_return_notes(
         self,
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
+        user_2: User,
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.notes = random_string()
         workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
-        serialized_workout = workout_cycling_user_1.serialize(
-            user_status=self.user_status
-        )
+        add_follower(user_1, user_2)
+        serialized_workout = workout_cycling_user_1.serialize(user_2)
 
         assert serialized_workout['notes'] is None
 
@@ -381,15 +378,17 @@ class TestWorkoutModelAsFollower(WorkoutModelTestCase):
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
+        user_2: User,
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_workout_visibility
         workout_cycling_user_1.map_visibility = input_map_visibility
+        add_follower(user_1, user_2)
         workout = self.update_workout(
             workout_cycling_user_1, map_id=random_string()
         )
 
-        serialized_workout = workout.serialize(user_status=self.user_status)
+        serialized_workout = workout.serialize(user_2)
 
         assert serialized_workout['map'] == workout.map
         assert serialized_workout['bounds'] == workout.bounds
@@ -421,13 +420,15 @@ class TestWorkoutModelAsFollower(WorkoutModelTestCase):
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
+        user_2: User,
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_workout_visibility
         workout_cycling_user_1.map_visibility = input_map_visibility
+        add_follower(user_1, user_2)
         workout = self.update_workout(workout_cycling_user_1)
 
-        serialized_workout = workout.serialize(user_status=self.user_status)
+        serialized_workout = workout.serialize(user_2)
 
         assert serialized_workout['map'] is None
         assert serialized_workout['bounds'] == []
@@ -447,11 +448,11 @@ class TestWorkoutModelAsFollower(WorkoutModelTestCase):
         user_1: User,
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
+        user_2: User,
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
-        serialized_workout = workout_cycling_user_1.serialize(
-            user_status=self.user_status
-        )
+        add_follower(user_1, user_2)
+        serialized_workout = workout_cycling_user_1.serialize(user_2)
 
         assert serialized_workout['next_workout'] is None
 
@@ -461,20 +462,152 @@ class TestWorkoutModelAsFollower(WorkoutModelTestCase):
         sport_1_cycling: Sport,
         sport_2_running: Sport,
         user_1: User,
+        user_2: User,
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
         workout_running_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
-        serialized_workout = workout_running_user_1.serialize(
-            user_status=self.user_status
-        )
+        add_follower(user_1, user_2)
+
+        serialized_workout = workout_running_user_1.serialize(user_2)
 
         assert serialized_workout['previous_workout'] is None
 
 
-class TestWorkoutModelAsOther(WorkoutModelTestCase):
-    user_status = 'other'
+class TestWorkoutModelAsUser(WorkoutModelTestCase):
+    @pytest.mark.parametrize(
+        'input_desc, input_workout_visibility',
+        [
+            ('visibility: follower', PrivacyLevel.FOLLOWERS),
+            ('visibility: private', PrivacyLevel.PRIVATE),
+        ],
+    )
+    def test_it_raises_exception_when_workout_visibility_is_not_public(
+        self,
+        input_desc: str,
+        input_workout_visibility: PrivacyLevel,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = input_workout_visibility
 
+        with pytest.raises(WorkoutForbiddenException):
+            workout_cycling_user_1.serialize(user_2)
+
+    def test_serializer_does_not_return_notes(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.notes = random_string()
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+
+        serialized_workout = workout_cycling_user_1.serialize(user_2)
+
+        assert serialized_workout['notes'] is None
+
+    def test_serializer_returns_map_related_data_when_visibility_is_public(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.map_visibility = PrivacyLevel.PUBLIC
+        workout = self.update_workout(
+            workout_cycling_user_1, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(user_2)
+
+        assert serialized_workout['map'] == workout.map
+        assert serialized_workout['bounds'] == workout.bounds
+        assert serialized_workout['with_gpx'] is True
+        assert serialized_workout['map_visibility'] == PrivacyLevel.PUBLIC
+        assert serialized_workout['workout_visibility'] == PrivacyLevel.PUBLIC
+        assert serialized_workout['segments'] == []
+
+    @pytest.mark.parametrize(
+        'input_map_visibility,input_workout_visibility',
+        [
+            (
+                PrivacyLevel.PRIVATE,
+                PrivacyLevel.PUBLIC,
+            ),
+            (
+                PrivacyLevel.FOLLOWERS,
+                PrivacyLevel.PUBLIC,
+            ),
+        ],
+    )
+    def test_serializer_does_not_return_map_related_data(
+        self,
+        input_map_visibility: PrivacyLevel,
+        input_workout_visibility: PrivacyLevel,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = input_workout_visibility
+        workout_cycling_user_1.map_visibility = input_map_visibility
+        workout = self.update_workout(workout_cycling_user_1)
+
+        serialized_workout = workout.serialize(user_2)
+
+        assert serialized_workout['map'] is None
+        assert serialized_workout['bounds'] == []
+        assert serialized_workout['with_gpx'] is False
+        assert serialized_workout['map_visibility'] == input_map_visibility
+        assert (
+            serialized_workout['workout_visibility']
+            == input_workout_visibility
+        )
+        assert serialized_workout['segments'] == []
+
+    def test_serializer_does_not_return_next_workout(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        workout_running_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+
+        serialized_workout = workout_cycling_user_1.serialize(user_2)
+
+        assert serialized_workout['next_workout'] is None
+
+    def test_serializer_does_not_return_previous_workout(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        workout_running_user_1: Workout,
+    ) -> None:
+        workout_running_user_1.workout_visibility = PrivacyLevel.PUBLIC
+
+        serialized_workout = workout_running_user_1.serialize(user_2)
+
+        assert serialized_workout['previous_workout'] is None
+
+
+class TestWorkoutModelAsUnauthenticatedUser(WorkoutModelTestCase):
     @pytest.mark.parametrize(
         'input_desc, input_workout_visibility',
         [
@@ -494,7 +627,7 @@ class TestWorkoutModelAsOther(WorkoutModelTestCase):
         workout_cycling_user_1.workout_visibility = input_workout_visibility
 
         with pytest.raises(WorkoutForbiddenException):
-            workout_cycling_user_1.serialize(user_status=self.user_status)
+            workout_cycling_user_1.serialize()
 
     def test_serializer_does_not_return_notes(
         self,
@@ -505,9 +638,8 @@ class TestWorkoutModelAsOther(WorkoutModelTestCase):
     ) -> None:
         workout_cycling_user_1.notes = random_string()
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
-        serialized_workout = workout_cycling_user_1.serialize(
-            user_status=self.user_status
-        )
+
+        serialized_workout = workout_cycling_user_1.serialize()
 
         assert serialized_workout['notes'] is None
 
@@ -524,7 +656,7 @@ class TestWorkoutModelAsOther(WorkoutModelTestCase):
             workout_cycling_user_1, map_id=random_string()
         )
 
-        serialized_workout = workout.serialize(user_status=self.user_status)
+        serialized_workout = workout.serialize()
 
         assert serialized_workout['map'] == workout.map
         assert serialized_workout['bounds'] == workout.bounds
@@ -559,7 +691,7 @@ class TestWorkoutModelAsOther(WorkoutModelTestCase):
         workout_cycling_user_1.map_visibility = input_map_visibility
         workout = self.update_workout(workout_cycling_user_1)
 
-        serialized_workout = workout.serialize(user_status=self.user_status)
+        serialized_workout = workout.serialize()
 
         assert serialized_workout['map'] is None
         assert serialized_workout['bounds'] == []
@@ -581,9 +713,8 @@ class TestWorkoutModelAsOther(WorkoutModelTestCase):
         workout_running_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
-        serialized_workout = workout_cycling_user_1.serialize(
-            user_status=self.user_status
-        )
+
+        serialized_workout = workout_cycling_user_1.serialize()
 
         assert serialized_workout['next_workout'] is None
 
@@ -597,9 +728,8 @@ class TestWorkoutModelAsOther(WorkoutModelTestCase):
         workout_running_user_1: Workout,
     ) -> None:
         workout_running_user_1.workout_visibility = PrivacyLevel.PUBLIC
-        serialized_workout = workout_running_user_1.serialize(
-            user_status=self.user_status
-        )
+
+        serialized_workout = workout_running_user_1.serialize()
 
         assert serialized_workout['previous_workout'] is None
 
