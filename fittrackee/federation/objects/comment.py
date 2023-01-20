@@ -32,4 +32,9 @@ class WorkoutCommentObject(BaseObject):
         self.activity_dict['object']['type'] = 'Note'
         self.activity_dict['object']['content'] = self.workout_comment.text
         self.activity_dict['object']['inReplyTo'] = self.workout.ap_id
+        if self.type == ActivityType.UPDATE:
+            self.activity_dict['object'] = {
+                **self.activity_dict['object'],
+                'updated': self._get_modification_date(self.workout_comment),
+            }
         return self.activity_dict

@@ -2,7 +2,7 @@ import json
 import os
 import shutil
 from copy import copy
-from datetime import timedelta
+from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple, Union
 
 import requests
@@ -39,6 +39,7 @@ from fittrackee.users.models import User
 from fittrackee.users.utils.following import get_following
 from fittrackee.utils import decode_short_id
 
+from .decorators import check_workout_comment
 from .models import Workout, WorkoutComment
 from .utils.comment_visibility import can_view_workout_comment
 from .utils.convert import convert_in_duration
@@ -1738,34 +1739,11 @@ def get_workout_comments(
     methods=["DELETE"],
 )
 @require_auth(scopes=['workouts:write'])
+@check_workout_comment
 def delete_workout_comment(
-    auth_user: User, workout_short_id: str, comment_short_id: str
+    auth_user: User, workout_comment: WorkoutComment
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     try:
-        workout_uuid = decode_short_id(workout_short_id)
-        workout = Workout.query.filter_by(uuid=workout_uuid).first()
-        if not workout:
-            return NotFoundErrorResponse(
-                f"workout not found (id: {workout_short_id})"
-            )
-
-        workout_comment_uuid = decode_short_id(comment_short_id)
-        workout_comment = WorkoutComment.query.filter_by(
-            uuid=workout_comment_uuid
-        ).first()
-        if not workout_comment:
-            return NotFoundErrorResponse(
-                f"workout comment not found (id: {comment_short_id})"
-            )
-
-        if not can_view_workout_comment(workout_comment, auth_user):
-            return NotFoundErrorResponse(
-                f"workout comment not found (id: {comment_short_id})"
-            )
-
-        if auth_user.id != workout_comment.user.id:
-            return ForbiddenErrorResponse()
-
         if sending_activities_allowed(workout_comment.text_visibility):
             note_activity = workout_comment.get_activity(
                 activity_type='Delete'
@@ -1788,3 +1766,47 @@ def delete_workout_comment(
         OSError,
     ) as e:
         return handle_error_and_return_response(e, db=db)
+
+
+@workouts_blueprint.route(
+    "/workouts/<string:workout_short_id>/comments/<string:comment_short_id>",
+    methods=['PATCH'],
+)
+@require_auth(scopes=['workouts:write'])
+@check_workout_comment
+def update_workout_comment(
+    auth_user: User, workout_comment: WorkoutComment
+) -> Union[Dict, HttpResponse]:
+    comment_data = request.get_json()
+    if not comment_data or not comment_data.get('text'):
+        return InvalidPayloadErrorResponse()
+
+    try:
+        workout_comment.text = comment_data.get('text')
+        workout_comment.modification_date = datetime.utcnow()
+        db.session.commit()
+
+        if current_app.config[
+            'federation_enabled'
+        ] and workout_comment.text_visibility in (
+            PrivacyLevel.PUBLIC,
+            PrivacyLevel.FOLLOWERS_AND_REMOTE,
+        ):
+            recipients = auth_user.get_followers_shared_inboxes_as_list()
+            if recipients:
+                note_activity = workout_comment.get_activity(
+                    activity_type='Update'
+                )
+                send_to_remote_inbox.send(
+                    sender_id=auth_user.actor.id,
+                    activity=note_activity,
+                    recipients=recipients,
+                )
+
+        return {
+            'status': 'success',
+            'comment': workout_comment.serialize(auth_user),
+        }
+
+    except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(e)

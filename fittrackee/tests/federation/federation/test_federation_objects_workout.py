@@ -1,4 +1,5 @@
-from typing import Any
+from datetime import datetime
+from typing import Any, Dict
 
 import pytest
 from flask import Flask
@@ -18,7 +19,17 @@ from fittrackee.workouts.constants import WORKOUT_DATE_FORMAT
 from fittrackee.workouts.models import Sport, Workout
 
 
-class TestWorkoutObject(RandomMixin):
+class WorkoutObjectTestCase(RandomMixin):
+    @staticmethod
+    def get_updated(workout: Workout, activity_type: str) -> Dict:
+        return (
+            {'updated': workout.modification_date.strftime(DATE_FORMAT)}
+            if activity_type == 'Update'
+            else {}
+        )
+
+
+class TestWorkoutObject(WorkoutObjectTestCase):
     @pytest.mark.parametrize(
         'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
     )
@@ -65,19 +76,25 @@ class TestWorkoutObject(RandomMixin):
         workout_cycling_user_1.workout_visibility = (
             PrivacyLevel.FOLLOWERS_AND_REMOTE
         )
+        workout_cycling_user_1.modification_date = (
+            datetime.utcnow() if input_activity_type == "Update" else None
+        )
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
+        updated = self.get_updated(workout_cycling_user_1, input_activity_type)
         workout = WorkoutObject(workout_cycling_user_1, input_activity_type)
 
         serialized_workout = workout.get_activity()
 
         assert serialized_workout == {
             '@context': AP_CTX,
-            'id': f'{workout_cycling_user_1.ap_id}/activity',
+            'id': (
+                f'{workout_cycling_user_1.ap_id}/{input_activity_type.lower()}'
+            ),
             'type': input_activity_type,
             'actor': user_1.actor.activitypub_id,
             'published': published,
             'to': [user_1.actor.followers_url],
-            'cc': [],
+            'cc': [user_1.actor.activitypub_id],
             'object': {
                 'id': workout_cycling_user_1.ap_id,
                 'type': 'Workout',
@@ -85,7 +102,7 @@ class TestWorkoutObject(RandomMixin):
                 'url': workout_cycling_user_1.remote_url,
                 'attributedTo': user_1.actor.activitypub_id,
                 'to': [user_1.actor.followers_url],
-                'cc': [],
+                'cc': [user_1.actor.activitypub_id],
                 'ave_speed': float(workout_cycling_user_1.ave_speed),
                 'distance': float(workout_cycling_user_1.distance),
                 'duration': str(workout_cycling_user_1.duration),
@@ -96,6 +113,7 @@ class TestWorkoutObject(RandomMixin):
                 'workout_date': workout_cycling_user_1.workout_date.strftime(
                     WORKOUT_DATE_FORMAT
                 ),
+                **updated,
             },
         }
 
@@ -110,14 +128,20 @@ class TestWorkoutObject(RandomMixin):
     ) -> None:
         workout_cycling_user_1.title = self.random_string()
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.modification_date = (
+            datetime.utcnow() if input_activity_type == "Update" else None
+        )
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
+        updated = self.get_updated(workout_cycling_user_1, input_activity_type)
         workout = WorkoutObject(workout_cycling_user_1, input_activity_type)
 
         serialized_workout = workout.get_activity()
 
         assert serialized_workout == {
             '@context': AP_CTX,
-            'id': f'{workout_cycling_user_1.ap_id}/activity',
+            'id': (
+                f'{workout_cycling_user_1.ap_id}/{input_activity_type.lower()}'
+            ),
             'type': input_activity_type,
             'actor': user_1.actor.activitypub_id,
             'published': published,
@@ -141,11 +165,12 @@ class TestWorkoutObject(RandomMixin):
                 'workout_date': workout_cycling_user_1.workout_date.strftime(
                     WORKOUT_DATE_FORMAT
                 ),
+                **updated,
             },
         }
 
 
-class TestWorkoutNoteObject(RandomMixin):
+class TestWorkoutNoteObject(WorkoutObjectTestCase):
     @staticmethod
     def expected_workout_note(workout: Workout, expected_url: str) -> str:
         return f"""<p>New workout: <a href="{expected_url}" target="_blank" rel="noopener noreferrer">{workout.title}</a> ({workout.sport.label})
@@ -154,30 +179,39 @@ Distance: {workout.distance:.2f}km
 Duration: {workout.duration}</p>
 """
 
+    @pytest.mark.parametrize('input_activity_type', ['Create', 'Update'])
     def test_it_returns_note_activity_when_visibility_is_followers_only(
         self,
         app_with_federation: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        input_activity_type: str,
     ) -> None:
         workout_cycling_user_1.title = self.random_string()
         workout_cycling_user_1.workout_visibility = (
             PrivacyLevel.FOLLOWERS_AND_REMOTE
         )
+        workout_cycling_user_1.modification_date = (
+            datetime.utcnow() if input_activity_type == "Update" else None
+        )
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
-        workout = WorkoutObject(workout_cycling_user_1, 'Create')
+        updated = self.get_updated(workout_cycling_user_1, input_activity_type)
+        workout = WorkoutObject(workout_cycling_user_1, input_activity_type)
 
         serialized_workout_note = workout.get_activity(is_note=True)
 
         assert serialized_workout_note == {
             '@context': AP_CTX,
-            'id': f'{workout_cycling_user_1.ap_id}/note/activity',
-            'type': 'Create',
+            'id': (
+                f'{workout_cycling_user_1.ap_id}/'
+                f'note/{input_activity_type.lower()}'
+            ),
+            'type': input_activity_type,
             'actor': user_1.actor.activitypub_id,
             'published': published,
             'to': [user_1.actor.followers_url],
-            'cc': [],
+            'cc': [user_1.actor.activitypub_id],
             'object': {
                 'id': workout_cycling_user_1.ap_id,
                 'type': 'Note',
@@ -188,28 +222,38 @@ Duration: {workout.duration}</p>
                     workout_cycling_user_1, workout_cycling_user_1.remote_url
                 ),
                 'to': [user_1.actor.followers_url],
-                'cc': [],
+                'cc': [user_1.actor.activitypub_id],
+                **updated,
             },
         }
 
+    @pytest.mark.parametrize('input_activity_type', ['Create', 'Update'])
     def test_it_returns_note_activity_when_visibility_is_public(
         self,
         app_with_federation: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        input_activity_type: str,
     ) -> None:
         workout_cycling_user_1.title = self.random_string()
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.modification_date = (
+            datetime.utcnow() if input_activity_type == "Update" else None
+        )
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
-        workout = WorkoutObject(workout_cycling_user_1, 'Create')
+        updated = self.get_updated(workout_cycling_user_1, input_activity_type)
+        workout = WorkoutObject(workout_cycling_user_1, input_activity_type)
 
         serialized_workout_note = workout.get_activity(is_note=True)
 
         assert serialized_workout_note == {
             '@context': AP_CTX,
-            'id': f'{workout_cycling_user_1.ap_id}/note/activity',
-            'type': 'Create',
+            'id': (
+                f'{workout_cycling_user_1.ap_id}/'
+                f'note/{input_activity_type.lower()}'
+            ),
+            'type': input_activity_type,
             'actor': user_1.actor.activitypub_id,
             'published': published,
             'to': ['https://www.w3.org/ns/activitystreams#Public'],
@@ -225,6 +269,7 @@ Duration: {workout.duration}</p>
                 ),
                 'to': ['https://www.w3.org/ns/activitystreams#Public'],
                 'cc': [user_1.actor.followers_url],
+                **updated,
             },
         }
 

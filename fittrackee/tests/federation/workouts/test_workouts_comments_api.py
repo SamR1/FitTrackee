@@ -966,3 +966,84 @@ class TestDeleteWorkoutComment(
             activity=note_activity,
             recipients=[remote_user_2.actor.shared_inbox_url],
         )
+
+
+@patch('fittrackee.workouts.workouts.send_to_remote_inbox')
+class TestPatchWorkoutComment(
+    WorkoutCommentMixin, ApiTestCaseMixin, BaseTestMixin
+):
+    def test_it_does_not_call_sent_to_inbox_when_comment_is_local(  # noqa
+        self,
+        send_to_remote_inbox_mock: Mock,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1: Workout,
+        follow_request_from_remote_user_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.approves_follow_request_from(remote_user)
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        response = client.patch(
+            f"/api/workouts/{workout_cycling_user_1.short_id}"
+            f"/comments/{comment.short_id}",
+            content_type="application/json",
+            data=json.dumps(dict(text=self.random_string())),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        send_to_remote_inbox_mock.send.assert_not_called()
+
+    @pytest.mark.parametrize(
+        'text_visibility',
+        [PrivacyLevel.FOLLOWERS_AND_REMOTE, PrivacyLevel.PUBLIC],
+    )
+    def test_it_calls_sent_to_inbox_if_user_has_follower_from_remote_instance(
+        self,
+        send_to_remote_inbox_mock: Mock,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1: Workout,
+        remote_user: User,
+        follow_request_from_remote_user_to_user_1: FollowRequest,
+        text_visibility: PrivacyLevel,
+    ) -> None:
+        user_1.approves_follow_request_from(remote_user)
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=text_visibility,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        response = client.patch(
+            f"/api/workouts/{workout_cycling_user_1.short_id}"
+            f"/comments/{comment.short_id}",
+            content_type="application/json",
+            data=json.dumps(dict(text=self.random_string())),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        update_comment_activity = comment.get_activity(activity_type='Update')
+        send_to_remote_inbox_mock.send.assert_called_once_with(
+            sender_id=user_1.actor.id,
+            activity=update_comment_activity,
+            recipients=[remote_user.actor.shared_inbox_url],
+        )

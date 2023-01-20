@@ -15,7 +15,7 @@ from sqlalchemy.types import JSON, Enum
 from fittrackee import BaseModel, appLog, db
 from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.federation.decorators import federation_required
-from fittrackee.federation.objects.comments import WorkoutCommentObject
+from fittrackee.federation.objects.comment import WorkoutCommentObject
 from fittrackee.federation.objects.tombstone import TombstoneObject
 from fittrackee.federation.objects.workout import WorkoutObject
 from fittrackee.files import get_absolute_file_path
@@ -657,6 +657,7 @@ class WorkoutComment(BaseModel):
         db.Integer, db.ForeignKey('workouts.id'), nullable=False
     )
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    modification_date = db.Column(db.DateTime, nullable=True)
     text = db.Column(db.String(), nullable=False)
     text_visibility = db.Column(
         Enum(PrivacyLevel, name='privacy_levels'),
@@ -738,11 +739,11 @@ class WorkoutComment(BaseModel):
             'text': self.text,
             'text_visibility': self.text_visibility,
             'created_at': self.created_at,
+            'modification_date': self.modification_date,
         }
 
     def get_activity(self, activity_type: str) -> Dict:
-        # TODO: Update
-        if activity_type == 'Create':
+        if activity_type in ['Create', 'Update']:
             return WorkoutCommentObject(
                 self, activity_type=activity_type
             ).get_activity()
@@ -750,5 +751,4 @@ class WorkoutComment(BaseModel):
             tombstone_object = TombstoneObject(self)
             delete_activity = tombstone_object.get_activity()
             return delete_activity
-        # TODO: Update
         return {}

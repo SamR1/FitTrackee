@@ -35,6 +35,7 @@ class TestWorkoutCommentModel(WorkoutCommentMixin):
         assert comment.workout_id == workout_cycling_user_1.id
         assert comment.text == text
         assert comment.created_at == created_at
+        assert comment.modification_date is None
 
     def test_created_date_is_initialized_on_creation_when_not_provided(
         self,
@@ -220,6 +221,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(WorkoutCommentMixin):
             'text': comment.text,
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
+            'modification_date': comment.modification_date,
         }
 
 
@@ -293,6 +295,7 @@ class TestWorkoutCommentModelSerializeForFollower(WorkoutCommentMixin):
             'text': comment.text,
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
+            'modification_date': comment.modification_date,
         }
 
 
@@ -344,6 +347,7 @@ class TestWorkoutCommentModelSerializeForUser(WorkoutCommentMixin):
             'text': comment.text,
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
+            'modification_date': comment.modification_date,
         }
 
 
@@ -395,4 +399,5 @@ class TestWorkoutCommentModelSerializeForUnauthenticatedUser(
             'text': comment.text,
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
+            'modification_date': comment.modification_date,
         }

@@ -269,6 +269,7 @@ def upgrade():
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('workout_id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('modification_date', sa.DateTime(), nullable=True),
     sa.Column('text', sa.String(), nullable=False),
     sa.Column('reply_to', sa.Integer(), nullable=True),
     sa.Column('ap_id', sa.Text(), nullable=True),

@@ -102,6 +102,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(WorkoutCommentMixin):
             'text': comment.text,
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
+            'modification_date': comment.modification_date,
         }
 
 
@@ -179,6 +180,7 @@ class TestWorkoutCommentModelSerializeForRemoteFollower(WorkoutCommentMixin):
             'text': comment.text,
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
+            'modification_date': comment.modification_date,
         }
 
 

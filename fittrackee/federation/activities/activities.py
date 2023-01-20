@@ -297,7 +297,37 @@ class UpdateActivity(AbstractActivity):
                 f'({e.__class__.__name__}: {e}).'
             )
 
+    def update_remote_workout_comment(self, actor: Actor) -> None:
+        note_data = self.activity['object']
+        comment_to_update = WorkoutComment.query.filter_by(
+            ap_id=note_data['id']
+        ).first()
+        if not comment_to_update:
+            raise ObjectNotFoundException('comment', self.activity_name())
+
+        if comment_to_update.user.actor.id != actor.id:
+            raise ActivityException(
+                f'{self.activity_name()}: activity actor does not '
+                f'match Note actor.'
+            )
+
+        try:
+            comment_to_update.text = note_data['content']
+            comment_to_update.text_visibility = self._get_visibility(
+                note_data, actor
+            )
+            comment_to_update.modification_date = datetime.utcnow()
+            db.session.commit()
+        except Exception as e:
+            raise ActivityException(
+                f'{self.activity_name()}: invalid Note activity '
+                f'({e.__class__.__name__}: {e}).'
+            )
+
     def process_activity(self) -> None:
         actor = self.get_actor()
-        if 'workout' in self.activity['id']:
+        if self.activity["object"]["type"] == "Workout":
             self.update_remote_workout(actor)
+        if self.activity["object"]["type"] == "Note":
+            # Workout comment
+            self.update_remote_workout_comment(actor)

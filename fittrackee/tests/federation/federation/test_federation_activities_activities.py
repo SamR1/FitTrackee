@@ -19,6 +19,7 @@ from fittrackee.federation.objects.workout import (
 )
 from fittrackee.federation.tasks.activity import get_activity_instance
 from fittrackee.privacy_levels import PrivacyLevel
+from fittrackee.tests.workouts.utils import WorkoutCommentMixin
 from fittrackee.users.exceptions import (
     FollowRequestAlreadyProcessedError,
     FollowRequestAlreadyRejectedError,
@@ -1107,6 +1108,7 @@ class TestUpdateActivityForWorkout(WorkoutActivitiesTestCase):
 class WorkoutCommentActivitiesTestCase(RandomMixin):
     def generate_random_object(
         self,
+        activity_type: str,
         remote_actor: Union[RandomActor, Actor],
         workout: Optional[Workout] = None,
         visibility: Optional[PrivacyLevel] = PrivacyLevel.PUBLIC,
@@ -1141,7 +1143,7 @@ class WorkoutCommentActivitiesTestCase(RandomMixin):
         activity: Dict = {
             "@context": AP_CTX,
             "id": f"{comment_ap_id}/activity",
-            "type": "Create",
+            "type": activity_type,
             "actor": remote_actor.activitypub_id,
             "published": published,
             "to": [remote_actor.followers_url],
@@ -1181,7 +1183,19 @@ class WorkoutCommentActivitiesTestCase(RandomMixin):
         workout: Optional[Workout] = None,
         visibility: Optional[PrivacyLevel] = PrivacyLevel.PUBLIC,
     ) -> Dict:
-        return self.generate_random_object(remote_actor, workout, visibility)
+        return self.generate_random_object(
+            "Create", remote_actor, workout, visibility
+        )
+
+    def generate_workout_comment_update_activity(
+        self,
+        remote_actor: Union[RandomActor, Actor],
+        workout: Optional[Workout] = None,
+        visibility: Optional[PrivacyLevel] = PrivacyLevel.PUBLIC,
+    ) -> Dict:
+        return self.generate_random_object(
+            "Update", remote_actor, workout, visibility
+        )
 
 
 class TestCreateActivityForWorkoutComment(WorkoutCommentActivitiesTestCase):
@@ -1262,3 +1276,195 @@ class TestCreateActivityForWorkoutComment(WorkoutCommentActivitiesTestCase):
         assert remote_comment.remote_url == comment_activity['object']['url']
         assert remote_comment.text == comment_activity['object']['content']
         assert remote_comment.text_visibility == input_visibility
+
+
+class TestUpdateActivityForWorkoutComment(
+    WorkoutCommentMixin, WorkoutCommentActivitiesTestCase
+):
+    def test_it_raises_error_if_remote_workout_comment_does_not_exist(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        remote_user: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment_activity = self.generate_workout_comment_update_activity(
+            remote_user.actor
+        )
+        activity = get_activity_instance({'type': comment_activity['type']})(
+            activity_dict=comment_activity
+        )
+        with pytest.raises(
+            ObjectNotFoundException,
+            match="comment not found for UpdateActivity",
+        ):
+
+            activity.process_activity()
+
+    def test_it_raises_error_if_workout_actor_does_not_exist(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        random_actor: Actor,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment_activity = self.generate_workout_comment_update_activity(
+            random_actor
+        )
+        activity = get_activity_instance({'type': comment_activity['type']})(
+            activity_dict=comment_activity
+        )
+        with pytest.raises(
+            ActorNotFoundException,
+            match="actor not found for UpdateActivity",
+        ):
+
+            activity.process_activity()
+
+    def test_it_raises_error_when_activity_actor_is_not_comment_actor(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        remote_user: User,
+        remote_user_2: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        remote_comment = self.create_comment(
+            remote_user,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        remote_comment.modification_date = datetime.utcnow()
+        comment_activity = {
+            **remote_comment.get_activity("Update"),
+            'actor': remote_user_2.actor.activitypub_id,
+        }
+        activity = get_activity_instance({'type': comment_activity['type']})(
+            activity_dict=comment_activity
+        )
+
+        with pytest.raises(
+            ActivityException,
+            match=(
+                "UpdateActivity: activity actor does not match Note actor."
+            ),
+        ):
+
+            activity.process_activity()
+
+        assert remote_comment.user == remote_user
+
+    def test_it_updates_remote_workout_comment_text(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        remote_user: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        remote_comment = self.create_comment(
+            remote_user,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        remote_comment.modification_date = datetime.utcnow()
+        comment_activity = remote_comment.get_activity("Update")
+        comment_activity["object"]["content"] = self.random_string()
+        activity = get_activity_instance({'type': comment_activity['type']})(
+            activity_dict=comment_activity
+        )
+
+        activity.process_activity()
+
+        assert remote_comment.text == comment_activity["object"]["content"]
+
+    def test_it_updates_remote_workout_modification_date(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        remote_user: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        remote_comment = self.create_comment(
+            remote_user,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        remote_comment.modification_date = datetime.utcnow()
+        comment_activity = remote_comment.get_activity("Update")
+        activity = get_activity_instance({'type': comment_activity['type']})(
+            activity_dict=comment_activity
+        )
+
+        activity.process_activity()
+
+        assert remote_comment.modification_date is not None
+
+    def test_it_updates_remote_workout_visibility(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        remote_user: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        remote_comment = self.create_comment(
+            remote_user,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        remote_comment.modification_date = datetime.utcnow()
+        comment_activity = remote_comment.get_activity("Update")
+        comment_activity["to"] = [remote_user.actor.followers_url]
+        comment_activity["cc"] = [remote_user.actor.activitypub_id]
+        comment_activity["object"]["to"] = [remote_user.actor.followers_url]
+        comment_activity["object"]["cc"] = [remote_user.actor.activitypub_id]
+        activity = get_activity_instance({'type': comment_activity['type']})(
+            activity_dict=comment_activity
+        )
+
+        activity.process_activity()
+
+        assert (
+            remote_comment.text_visibility == PrivacyLevel.FOLLOWERS_AND_REMOTE
+        )
+
+    def test_it_raises_exception_when_activity_is_invalid(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        remote_user: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        remote_comment = self.create_comment(
+            remote_user,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        remote_comment.modification_date = datetime.utcnow()
+        comment_activity = remote_comment.get_activity("Update")
+        del comment_activity["object"]["content"]
+        activity = get_activity_instance({'type': comment_activity['type']})(
+            activity_dict=comment_activity
+        )
+        with pytest.raises(
+            ActivityException,
+            match=(
+                "UpdateActivity: invalid Note activity"
+                " \\(KeyError: 'content'\\)."
+            ),
+        ):
+
+            activity.process_activity()
