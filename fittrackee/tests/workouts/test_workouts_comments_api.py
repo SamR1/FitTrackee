@@ -14,7 +14,9 @@ from ..utils import jsonify_dict
 from .utils import WorkoutCommentMixin
 
 
-class TestPostWorkoutComment(ApiTestCaseMixin, BaseTestMixin):
+class TestPostWorkoutComment(
+    WorkoutCommentMixin, ApiTestCaseMixin, BaseTestMixin
+):
     def test_it_returns_error_if_user_is_not_authenticated(
         self,
         app: Flask,
@@ -259,6 +261,73 @@ class TestPostWorkoutComment(ApiTestCaseMixin, BaseTestMixin):
             user_id=user_1.id, workout_id=workout_cycling_user_2.id
         ).first()
         assert data['comment'] == jsonify_dict(new_comment.serialize(user_1))
+
+    def test_it_returns_400_when_user_replies_to_not_existing_comment(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_1.short_id}/comments",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    text=self.random_string(),
+                    text_visibility=PrivacyLevel.PUBLIC,
+                    reply_to=self.random_short_id(),
+                )
+            ),
+            headers=dict(
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+
+        self.assert_400(response, "'reply_to' is invalid")
+
+    def test_it_returns_201_when_user_replies_to_a_comment(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_comment = self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_1.short_id}/comments",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    text=self.random_string(),
+                    text_visibility=PrivacyLevel.PUBLIC,
+                    reply_to=workout_comment.short_id,
+                )
+            ),
+            headers=dict(
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert data['comment']['reply_to'] == workout_comment.short_id
 
     @pytest.mark.parametrize(
         'client_scope, can_access',

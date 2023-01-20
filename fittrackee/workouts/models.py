@@ -628,7 +628,13 @@ class WorkoutComment(BaseModel):
         db.Integer, db.ForeignKey('users.id'), index=True, nullable=False
     )
     workout_id = db.Column(
-        db.Integer, db.ForeignKey('workouts.id'), nullable=False
+        db.Integer, db.ForeignKey('workouts.id'), index=True, nullable=False
+    )
+    reply_to = db.Column(
+        db.Integer,
+        db.ForeignKey('workout_comments.id'),
+        index=True,
+        nullable=True,
     )
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     modification_date = db.Column(db.DateTime, nullable=True)
@@ -638,9 +644,12 @@ class WorkoutComment(BaseModel):
         server_default='PRIVATE',
         nullable=False,
     )
-    reply_to = db.Column(db.Integer, nullable=True)
     ap_id = db.Column(db.Text(), nullable=True)
     remote_url = db.Column(db.Text(), nullable=True)
+
+    parent_comment = db.relationship(
+        'WorkoutComment', remote_side=[id], lazy='joined'
+    )
 
     def __repr__(self) -> str:
         return f'<WorkoutComment {self.id}>'
@@ -653,6 +662,7 @@ class WorkoutComment(BaseModel):
         text: str,
         text_visibility: PrivacyLevel = PrivacyLevel.PRIVATE,
         created_at: Optional[datetime.datetime] = None,
+        reply_to: Optional[int] = None,
     ) -> None:
         self.user_id = user_id
         self.workout_id = workout_id
@@ -663,6 +673,7 @@ class WorkoutComment(BaseModel):
         self.created_at = (
             datetime.datetime.utcnow() if created_at is None else created_at
         )
+        self.reply_to = reply_to
 
     @staticmethod
     def _check_visibility(
@@ -714,6 +725,9 @@ class WorkoutComment(BaseModel):
             'text_visibility': self.text_visibility,
             'created_at': self.created_at,
             'modification_date': self.modification_date,
+            'reply_to': (
+                self.parent_comment.short_id if self.reply_to else None
+            ),
         }
 
     def get_activity(self, activity_type: str) -> Dict:

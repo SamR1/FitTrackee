@@ -277,6 +277,7 @@ def upgrade():
     sa.Column('remote_url', sa.Text(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.ForeignKeyConstraint(['workout_id'], ['workouts.id'], ),
+    sa.ForeignKeyConstraint(['reply_to'], ['workout_comments.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('uuid')
     )
@@ -291,10 +292,14 @@ def upgrade():
     )
     with op.batch_alter_table('workout_comments', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_workout_comments_user_id'), ['user_id'], unique=False)
+        batch_op.create_index(batch_op.f('ix_workout_comments_workout_id'), ['workout_id'], unique=False)
+        batch_op.create_index(batch_op.f('ix_workout_comments_reply_to'), ['reply_to'], unique=False)
 
 def downgrade():
     with op.batch_alter_table('workout_comments', schema=None) as batch_op:
         batch_op.drop_index(batch_op.f('ix_workout_comments_user_id'))
+        batch_op.drop_index(batch_op.f('ix_workout_comments_workout_id'))
+        batch_op.drop_index(batch_op.f('ix_workout_comments_reply_to'))
     op.drop_table('workout_comments')
 
     op.drop_column('workouts', 'remote_url')

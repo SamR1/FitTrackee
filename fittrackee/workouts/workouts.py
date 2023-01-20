@@ -1532,12 +1532,23 @@ def add_workout_comment(
             return NotFoundErrorResponse(
                 f"workout not found (id: {workout_short_id})"
             )
+
+        reply_to = comment_data.get('reply_to')
+        workout_comment = None
+        if reply_to:
+            workout_comment = WorkoutComment.query.filter_by(
+                uuid=decode_short_id(reply_to)
+            ).first()
+            if not workout_comment:
+                return InvalidPayloadErrorResponse("'reply_to' is invalid")
+
         new_comment = WorkoutComment(
             user_id=auth_user.id,
             workout_id=workout.id,
             workout_visibility=workout.workout_visibility,
             text=comment_data['text'],
             text_visibility=PrivacyLevel(comment_data['text_visibility']),
+            reply_to=workout_comment.id if workout_comment else None,
         )
         db.session.add(new_comment)
         db.session.flush()

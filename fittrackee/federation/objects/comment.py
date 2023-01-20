@@ -31,7 +31,11 @@ class WorkoutCommentObject(BaseObject):
     def get_activity(self) -> Dict:
         self.activity_dict['object']['type'] = 'Note'
         self.activity_dict['object']['content'] = self.workout_comment.text
-        self.activity_dict['object']['inReplyTo'] = self.workout.ap_id
+        self.activity_dict['object']['inReplyTo'] = (
+            self.workout_comment.parent_comment.ap_id
+            if self.workout_comment.reply_to
+            else self.workout.ap_id
+        )
         if self.type == ActivityType.UPDATE:
             self.activity_dict['object'] = {
                 **self.activity_dict['object'],

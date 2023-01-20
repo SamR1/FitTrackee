@@ -136,6 +136,54 @@ class TestWorkoutCommentCreateObject(WorkoutCommentMixin):
             },
         }
 
+    def test_it_generates_activity_when_comment_has_parent_comment(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.ap_id = self.random_string()
+        parent_comment = self.create_comment(
+            user_3,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        workout_comment = self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+            parent_comment=parent_comment,
+        )
+        published = workout_comment.created_at.strftime(DATE_FORMAT)
+        comment_object = WorkoutCommentObject(workout_comment, 'Create')
+
+        serialized_comment = comment_object.get_activity()
+
+        assert serialized_comment == {
+            "@context": AP_CTX,
+            "id": f"{workout_comment.ap_id}/create",
+            "type": "Create",
+            "actor": user_2.actor.activitypub_id,
+            "published": published,
+            "to": ["https://www.w3.org/ns/activitystreams#Public"],
+            "cc": [user_2.actor.followers_url],
+            "object": {
+                "id": workout_comment.ap_id,
+                "type": "Note",
+                "published": published,
+                "url": workout_comment.remote_url,
+                "attributedTo": user_2.actor.activitypub_id,
+                "inReplyTo": parent_comment.ap_id,
+                "content": workout_comment.text,
+                "to": ["https://www.w3.org/ns/activitystreams#Public"],
+                "cc": [user_2.actor.followers_url],
+            },
+        }
+
 
 class TestWorkoutCommentUpdateObject(WorkoutCommentMixin):
     @pytest.mark.parametrize(

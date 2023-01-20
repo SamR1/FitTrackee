@@ -15,7 +15,9 @@ from ...workouts.utils import WorkoutCommentMixin
 
 
 @patch('fittrackee.workouts.workouts.send_to_remote_inbox')
-class TestPostWorkoutComment(ApiTestCaseMixin, BaseTestMixin):
+class TestPostWorkoutComment(
+    WorkoutCommentMixin, ApiTestCaseMixin, BaseTestMixin
+):
     @pytest.mark.parametrize(
         'input_workout_visibility',
         [
@@ -142,6 +144,45 @@ class TestPostWorkoutComment(ApiTestCaseMixin, BaseTestMixin):
             f'workouts/{remote_cycling_workout.short_id}/'
             f'comments/{new_comment.short_id}'
         )
+        assert new_comment.reply_to is None
+
+    def test_it_returns_201_when_user_replies_to_a_remote_comment(
+        self,
+        send_to_remote_inbox_mock: Mock,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        remote_user: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_comment = self.create_comment(
+            remote_user,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_1.short_id}/comments",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    text=self.random_string(),
+                    text_visibility=PrivacyLevel.PUBLIC,
+                    reply_to=workout_comment.short_id,
+                )
+            ),
+            headers=dict(
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert data['comment']['reply_to'] == workout_comment.short_id
 
     def test_it_does_not_call_sent_to_inbox_if_privacy_is_local_followers_only(
         self,

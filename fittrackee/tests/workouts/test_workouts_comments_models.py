@@ -222,6 +222,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(WorkoutCommentMixin):
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
             'modification_date': comment.modification_date,
+            'reply_to': comment.reply_to,
         }
 
 
@@ -296,6 +297,7 @@ class TestWorkoutCommentModelSerializeForFollower(WorkoutCommentMixin):
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
             'modification_date': comment.modification_date,
+            'reply_to': comment.reply_to,
         }
 
 
@@ -348,6 +350,7 @@ class TestWorkoutCommentModelSerializeForUser(WorkoutCommentMixin):
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
             'modification_date': comment.modification_date,
+            'reply_to': comment.reply_to,
         }
 
 
@@ -400,4 +403,5 @@ class TestWorkoutCommentModelSerializeForUnauthenticatedUser(
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
             'modification_date': comment.modification_date,
+            'reply_to': comment.reply_to,
         }

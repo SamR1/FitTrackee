@@ -59,6 +59,7 @@ class WorkoutCommentMixin(RandomMixin):
         text: Optional[str] = None,
         text_visibility: PrivacyLevel = PrivacyLevel.PRIVATE,
         created_at: Optional[datetime] = None,
+        parent_comment: Optional[WorkoutComment] = None,
     ) -> WorkoutComment:
         text = self.random_string() if text is None else text
         comment = WorkoutComment(
@@ -68,6 +69,7 @@ class WorkoutCommentMixin(RandomMixin):
             text=text,
             text_visibility=text_visibility,
             created_at=created_at,
+            reply_to=parent_comment.id if parent_comment else None,
         )
         db.session.add(comment)
         db.session.flush()
