@@ -1,3 +1,4 @@
+import re
 from abc import ABC, abstractmethod
 from datetime import datetime, timedelta
 from typing import Dict, Tuple
@@ -195,8 +196,29 @@ class CreateActivity(AbstractActivity):
 
     def create_remote_note(self, actor: Actor) -> None:
         note_data = self.activity["object"]
-        reply_to_object = note_data.get("inReplyTo")
-        workout = Workout.query.filter_by(ap_id=reply_to_object).first()
+        reply_to_object_api_id = note_data.get("inReplyTo")
+        workout = None
+        parent_comment = None
+        if reply_to_object_api_id:
+            if re.match(
+                r"https://(.*)/workouts/(.*)/comments/(.*)",
+                reply_to_object_api_id,
+            ):
+                parent_comment = WorkoutComment.query.filter_by(
+                    ap_id=reply_to_object_api_id
+                ).first()
+                if not parent_comment:
+                    raise ObjectNotFoundException(
+                        "parent workout_comment", self.activity_name()
+                    )
+                workout = parent_comment.workout
+            elif re.match(
+                r"https://(.*)/workouts/(.*)", reply_to_object_api_id
+            ):
+                workout = Workout.query.filter_by(
+                    ap_id=reply_to_object_api_id
+                ).first()
+
         if not workout:
             raise ObjectNotFoundException("workout", self.activity_name())
 
@@ -206,6 +228,7 @@ class CreateActivity(AbstractActivity):
             workout_visibility=workout.workout_visibility,
             text=note_data["content"],
             text_visibility=self._get_visibility(note_data, actor),
+            reply_to=parent_comment.id if parent_comment else None,
         )
         new_comment.ap_id = note_data["id"]
         new_comment.remote_url = note_data["url"]

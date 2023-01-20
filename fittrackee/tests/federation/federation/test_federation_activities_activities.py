@@ -1251,9 +1251,9 @@ class TestCreateActivityForWorkoutComment(WorkoutCommentActivitiesTestCase):
         input_visibility: PrivacyLevel,
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_visibility
-        workout_cycling_user_1.api_id = (
-            f'{user_1.actor.domain}/federation/users/{user_1.username}/'
-            f'workouts/{workout_cycling_user_1.short_id}'
+        workout_cycling_user_1.ap_id = (
+            f'{user_1.actor.activitypub_id}/workouts/'
+            f'{workout_cycling_user_1.short_id}'
         )
         comment_activity = self.generate_workout_comment_create_activity(
             remote_actor=remote_user.actor,
@@ -1273,6 +1273,92 @@ class TestCreateActivityForWorkoutComment(WorkoutCommentActivitiesTestCase):
         assert remote_comment.remote_url == comment_activity['object']['url']
         assert remote_comment.text == comment_activity['object']['content']
         assert remote_comment.text_visibility == input_visibility
+        assert remote_comment.reply_to is None
+
+
+class TestCreateActivityForWorkoutCommentReply(
+    WorkoutCommentMixin, WorkoutCommentActivitiesTestCase
+):
+    def test_it_raises_error_if_parent_comment_does_not_exist(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        remote_user: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.ap_id = (
+            f'{user_1.actor.activitypub_id}/workouts/'
+            f'{workout_cycling_user_1.short_id}'
+        )
+        comment_activity = self.generate_workout_comment_create_activity(
+            remote_actor=remote_user.actor, workout=workout_cycling_user_1
+        )
+        comment_activity["object"]["inReplyTo"] = (
+            comment_activity["object"]["inReplyTo"]
+            + f"/comments/{self.random_short_id()}"
+        )
+        activity = get_activity_instance({'type': comment_activity['type']})(
+            activity_dict=comment_activity
+        )
+
+        with pytest.raises(
+            ObjectNotFoundException,
+            match='parent workout_comment not found for CreateActivity',
+        ):
+            activity.process_activity()
+
+    @pytest.mark.parametrize(
+        'input_visibility',
+        [
+            PrivacyLevel.PUBLIC,
+            PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            PrivacyLevel.PRIVATE,
+        ],
+    )
+    def test_it_creates_remote_workout_comment_with_expected_visibility(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_visibility: PrivacyLevel,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.ap_id = (
+            f'{user_1.actor.activitypub_id}/workouts/'
+            f'{workout_cycling_user_1.short_id}'
+        )
+        parent_comment = self.create_comment(
+            user_1, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+        )
+        parent_comment.ap_id = (
+            f'{user_1.actor.activitypub_id}/workouts/'
+            f'{workout_cycling_user_1.short_id}/comments/'
+            + parent_comment.short_id
+        )
+        comment_activity = self.generate_workout_comment_create_activity(
+            remote_actor=remote_user.actor,
+            workout=workout_cycling_user_1,
+            visibility=input_visibility,
+        )
+        comment_activity["object"]["inReplyTo"] = parent_comment.ap_id
+        activity = get_activity_instance({'type': comment_activity['type']})(
+            activity_dict=comment_activity
+        )
+
+        activity.process_activity()
+
+        remote_comment = WorkoutComment.query.filter_by(
+            user_id=remote_user.id
+        ).first()
+        assert remote_comment.ap_id == comment_activity['object']['id']
+        assert remote_comment.remote_url == comment_activity['object']['url']
+        assert remote_comment.text == comment_activity['object']['content']
+        assert remote_comment.text_visibility == input_visibility
+        assert remote_comment.reply_to == parent_comment.id
 
 
 class TestUpdateActivityForWorkoutComment(
