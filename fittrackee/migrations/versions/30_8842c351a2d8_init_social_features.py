@@ -1,4 +1,4 @@
-"""init federation with ActivityPub Actor
+"""init social features
 
 Revision ID: 8842c351a2d8
 Revises: 4e8597c50064
@@ -263,6 +263,7 @@ def upgrade():
     op.alter_column('workouts', 'workout_visibility', nullable=False)
     op.alter_column('workouts', 'map_visibility', nullable=False)
 
+    privacy_levels.create(op.get_bind())
     op.create_table('workout_comments',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('uuid', UUID(as_uuid=True), nullable=False),
@@ -285,7 +286,7 @@ def upgrade():
             'text_visibility',
             privacy_levels,
             server_default='PRIVATE',
-            nullable=True
+            nullable=False
         )
     )
     with op.batch_alter_table('workout_comments', schema=None) as batch_op:
