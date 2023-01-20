@@ -186,16 +186,20 @@ export interface IWorkoutChartData {
   coordinates: TCoordinates[]
 }
 
-export interface ICommentForm {
-  text: string
-  textVisibility: TPrivacyLevels
-  workoutId: string
-}
-
 export interface IComment {
+  created_at: string
   id: string
+  modification_date: string | null
   text: string
   text_visibility: TPrivacyLevels
+  user: IUserProfile
+  workout_id: string
+}
+
+export interface ICommentForm {
+  id?: string
+  text: string
+  text_visibility?: TPrivacyLevels
   workout_id: string
 }
 

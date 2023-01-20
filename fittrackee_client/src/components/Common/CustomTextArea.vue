@@ -37,7 +37,7 @@
 
   const emit = defineEmits(['updateValue'])
 
-  const text = ref('')
+  const text = ref(props.input)
 
   function updateText(event: Event & { target: HTMLInputElement }) {
     emit('updateValue', event.target.value)

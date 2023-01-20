@@ -78,6 +78,10 @@ export interface IWorkoutsActions {
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: ICommentPayload
   ): void
+  [WORKOUTS_STORE.ACTIONS.EDIT_WORKOUT_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: ICommentForm
+  ): void
 }
 
 export interface IWorkoutsGetters {
@@ -129,6 +133,10 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
     comments: IComment[]
   ): void
   [WORKOUTS_STORE.MUTATIONS.ADD_WORKOUT_COMMENT](
+    state: S,
+    comment: IComment
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.UPDATE_WORKOUT_COMMENT](
     state: S,
     comment: IComment
   ): void

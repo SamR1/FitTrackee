@@ -253,9 +253,9 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     authApi
-      .post(`/workouts/${payload.workoutId}/comments`, {
+      .post(`/workouts/${payload.workout_id}/comments`, {
         text: payload.text,
-        text_visibility: payload.textVisibility,
+        text_visibility: payload.text_visibility,
       })
       .then((res) => {
         if (res.data.status === 'created') {
@@ -309,6 +309,27 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
             workoutId: payload.workoutId,
             page: 1,
           })
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+  },
+  [WORKOUTS_STORE.ACTIONS.EDIT_WORKOUT_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: ICommentForm
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .patch(`workouts/${payload.workout_id}/comments/${payload.id}`, {
+        text: payload.text,
+      })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.UPDATE_WORKOUT_COMMENT,
+            res.data.comment
+          )
         }
       })
       .catch((error) => {

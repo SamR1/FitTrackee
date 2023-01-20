@@ -14,7 +14,7 @@
         </div>
       </div>
       <div class="form-select-buttons">
-        <div class="form-item text-visibility">
+        <div class="form-item text-visibility" v-if="!comment">
           <label> {{ $t('privacy.VISIBILITY') }}: </label>
           <select
             id="text_visibility"
@@ -55,18 +55,21 @@
   import { ROOT_STORE, WORKOUTS_STORE } from "@/store/constants"
   import { TAppConfig } from "@/types/application"
   import { TPrivacyLevels } from "@/types/user";
-  import { ICommentForm, IWorkout } from "@/types/workouts"
+  import { IComment, ICommentForm, IWorkout } from "@/types/workouts"
   import { useStore } from "@/use/useStore"
   import { getPrivacyLevels, getPrivacyLevelForLabel } from "@/utils/privacy"
 
   interface Props {
     workout: IWorkout
+    comment?: IComment
   }
 
   const props = defineProps<Props>()
-  const { workout }  = toRefs(props)
+  const { workout, comment }  = toRefs(props)
 
   const store = useStore()
+
+  const emit = defineEmits(['closeEdition'])
 
   const appConfig: ComputedRef<TAppConfig> = computed(
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
@@ -74,8 +77,8 @@
   const privacyLevels = computed(() =>
     getPrivacyLevels(appConfig.value.federation_enabled)
   )
-  const commentText: Ref<string> = ref('')
-  const commentTextVisibility: Ref<TPrivacyLevels> = ref(workout.value.workout_visibility)
+  const commentText: Ref<string> = ref(comment?.value ? comment.value.text : '')
+  const commentTextVisibility: Ref<TPrivacyLevels> = ref(comment?.value ? comment.value.text_visibility : workout.value.workout_visibility)
   const errorMessages: ComputedRef<string | string[] | null> = computed(
       () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
   )
@@ -85,15 +88,26 @@
   }
   function onCancel() {
     updateText('')
+    emit('closeEdition')
   }
   function submitComment() {
-    const payload: ICommentForm = {
-      text: commentText.value,
-      textVisibility: commentTextVisibility.value,
-      workoutId: workout.value.id,
+    if (comment?.value && comment.value.id) {
+      const payload: ICommentForm = {
+        id: comment.value.id,
+        text: commentText.value,
+        workout_id: workout.value.id,
+      }
+      store.dispatch(WORKOUTS_STORE.ACTIONS.EDIT_WORKOUT_COMMENT, payload)
+      emit('closeEdition')
+    } else {
+      const payload: ICommentForm = {
+        text: commentText.value,
+        text_visibility: commentTextVisibility.value,
+        workout_id: workout.value.id,
+      }
+      store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_COMMENT, payload)
+      updateText('')
     }
-    store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_COMMENT, payload)
-    updateText('')
   }
 </script>
 
@@ -101,7 +115,7 @@
   @import '~@/scss/vars.scss';
 
   .add-comment {
-    margin-top: $default-margin * 2;
+    margin: $default-margin * 2 0;
     .comment {
       padding: $default-padding 0;
     }

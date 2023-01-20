@@ -92,4 +92,15 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
   ) {
     state.workoutData.comments.push(comment)
   },
+  [WORKOUTS_STORE.MUTATIONS.UPDATE_WORKOUT_COMMENT](
+    state: IWorkoutsState,
+    comment: IComment
+  ) {
+    state.workoutData.comments = state.workoutData.comments.map((c) => {
+      if (c.id === comment.id) {
+        return comment
+      }
+      return c
+    })
+  },
 }
