@@ -1,9 +1,10 @@
-from typing import List, Tuple
+from typing import TYPE_CHECKING, List, Tuple
 
-from ..models import User
+if TYPE_CHECKING:
+    from ..models import User
 
 
-def get_following(user: User) -> Tuple[List, List]:
+def get_following(user: "User") -> Tuple[List, List]:
     local_following_ids = []
     remote_following_ids = []
     for following in user.following:

@@ -13,7 +13,7 @@ from flask import (
     request,
     send_from_directory,
 )
-from sqlalchemy import and_, asc, desc, exc, or_
+from sqlalchemy import asc, desc, exc
 from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
@@ -35,11 +35,10 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.users.models import User
-from fittrackee.users.utils.following import get_following
 from fittrackee.utils import decode_short_id
 
 from .decorators import check_workout, check_workout_comment
-from .models import Workout, WorkoutComment
+from .models import Workout, WorkoutComment, get_comments
 from .utils.convert import convert_in_duration
 from .utils.gpx import (
     WorkoutGPXException,
@@ -1626,42 +1625,11 @@ def get_workout_comments(
     try:
         params = request.args.copy()
         page = int(params.get('page', 1))
-        if not auth_user:
-            comments_filter = WorkoutComment.query.filter(
-                WorkoutComment.workout_id == workout.id,
-                WorkoutComment.text_visibility == PrivacyLevel.PUBLIC,
-            )
-        else:
-            local_following_ids, remote_following_ids = get_following(
-                auth_user
-            )
-            comments_filter = WorkoutComment.query.filter(
-                WorkoutComment.workout_id == workout.id,
-                or_(
-                    WorkoutComment.text_visibility == PrivacyLevel.PUBLIC,
-                    or_(
-                        WorkoutComment.user_id == auth_user.id,
-                        and_(
-                            WorkoutComment.user_id.in_(local_following_ids),
-                            WorkoutComment.text_visibility.in_(
-                                [
-                                    PrivacyLevel.FOLLOWERS,
-                                    PrivacyLevel.FOLLOWERS_AND_REMOTE,
-                                ]
-                            ),
-                        ),
-                        and_(
-                            WorkoutComment.user_id.in_(remote_following_ids),
-                            WorkoutComment.text_visibility
-                            == PrivacyLevel.FOLLOWERS_AND_REMOTE,
-                        ),
-                    ),
-                ),
-            )
-        comments_pagination = comments_filter.order_by(
-            WorkoutComment.created_at.asc()
-        ).paginate(
-            page=page, per_page=DEFAULT_COMMENTS_PER_PAGE, error_out=False
+        comments_pagination = get_comments(
+            workout_id=workout.id,
+            page=page,
+            per_page=DEFAULT_COMMENTS_PER_PAGE,
+            user=auth_user,
         )
         comments = comments_pagination.items
         return {

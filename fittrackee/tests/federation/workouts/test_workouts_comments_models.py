@@ -104,6 +104,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(WorkoutCommentMixin):
             'created_at': comment.created_at,
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
+            'replies': [],
         }
 
 
@@ -183,6 +184,7 @@ class TestWorkoutCommentModelSerializeForRemoteFollower(WorkoutCommentMixin):
             'created_at': comment.created_at,
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
+            'replies': [],
         }
 
 

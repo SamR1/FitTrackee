@@ -531,6 +531,47 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
         )
 
 
+class TestGetWorkoutCommentWithReplies(
+    WorkoutCommentMixin, ApiTestCaseMixin, BaseTestMixin
+):
+    def test_it_gets_reply(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_comment = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+        )
+        reply = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            parent_comment=workout_comment,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        response = client.get(
+            f"/api/workouts/{workout_cycling_user_1.short_id}/"
+            f"comments/{workout_comment.short_id}",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['comment']['replies'] == [
+            jsonify_dict(reply.serialize(user_1))
+        ]
+
+
 class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
     def test_it_does_not_return_comment_when_for_followers_and_remote(
         self,
@@ -830,6 +871,48 @@ class TestGetWorkoutCommentsPagination(GetWorkoutCommentsTestCase):
             'pages': 3,
             'total': 11,
         }
+
+
+class TestGetWorkoutsCommentWithReplies(
+    WorkoutCommentMixin, ApiTestCaseMixin, BaseTestMixin
+):
+    def test_it_gets_reply(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_comment = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+        )
+        reply = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            parent_comment=workout_comment,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        response = client.get(
+            f"/api/workouts/{workout_cycling_user_1.short_id}/comments",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert len(data['data']['comments']) == 1
+        assert data['data']['comments'][0]['id'] == workout_comment.short_id
+        assert data['data']['comments'][0]['replies'] == [
+            jsonify_dict(reply.serialize(user_1))
+        ]
 
 
 @patch('fittrackee.workouts.workouts.send_to_remote_inbox')

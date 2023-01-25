@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Union
 from uuid import UUID, uuid4
 
 from flask import current_app
+from flask_sqlalchemy.query import Query
+from sqlalchemy import and_, or_
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
@@ -24,6 +26,7 @@ from fittrackee.privacy_levels import (
     can_view,
     get_map_visibility,
 )
+from fittrackee.users.utils.following import get_following
 from fittrackee.utils import encode_uuid
 
 from .exceptions import CommentForbiddenException, WorkoutForbiddenException
@@ -40,6 +43,7 @@ record_types = [
     'LD',  # 'Longest Duration'
     'MS',  # 'Max speed'
 ]
+REPLY_PER_PAGE = 5
 
 
 def update_records(
@@ -79,6 +83,51 @@ def update_records(
                 .where(record_table.c.sport_id == sport_id)
                 .where(record_table.c.record_type == record_type)
             )
+
+
+def get_comments(
+    workout_id: int,
+    page: int,
+    per_page: int,
+    user: Optional['User'],
+    reply_to: Optional[int] = None,
+) -> Query:
+    if user:
+        local_following_ids, remote_following_ids = get_following(user)
+        comments_filter = WorkoutComment.query.filter(
+            WorkoutComment.workout_id == workout_id,
+            WorkoutComment.reply_to == reply_to,
+            or_(
+                WorkoutComment.text_visibility == PrivacyLevel.PUBLIC,
+                or_(
+                    WorkoutComment.user_id == user.id,
+                    and_(
+                        WorkoutComment.user_id.in_(local_following_ids),
+                        WorkoutComment.text_visibility.in_(
+                            [
+                                PrivacyLevel.FOLLOWERS,
+                                PrivacyLevel.FOLLOWERS_AND_REMOTE,
+                            ]
+                        ),
+                    ),
+                    and_(
+                        WorkoutComment.user_id.in_(remote_following_ids),
+                        WorkoutComment.text_visibility
+                        == PrivacyLevel.FOLLOWERS_AND_REMOTE,
+                    ),
+                ),
+            ),
+        )
+    else:
+        comments_filter = WorkoutComment.query.filter(
+            WorkoutComment.workout_id == workout_id,
+            WorkoutComment.reply_to == reply_to,
+            WorkoutComment.text_visibility == PrivacyLevel.PUBLIC,
+        )
+    comments_pagination = comments_filter.order_by(
+        WorkoutComment.created_at.asc()
+    ).paginate(page=page, per_page=per_page, error_out=False)
+    return comments_pagination
 
 
 class Sport(BaseModel):
@@ -717,6 +766,15 @@ class WorkoutComment(BaseModel):
         # TODO: mentions
         if not can_view(self, 'text_visibility', user):
             raise CommentForbiddenException
+
+        replies_filter = get_comments(
+            workout_id=self.workout_id,
+            page=1,
+            per_page=REPLY_PER_PAGE,
+            user=user,
+            reply_to=self.id,
+        )
+
         return {
             'id': self.short_id,
             'user': self.user.serialize(),
@@ -728,6 +786,9 @@ class WorkoutComment(BaseModel):
             'reply_to': (
                 self.parent_comment.short_id if self.reply_to else None
             ),
+            'replies': [
+                reply.serialize(user) for reply in replies_filter.items
+            ],
         }
 
     def get_activity(self, activity_type: str) -> Dict:
