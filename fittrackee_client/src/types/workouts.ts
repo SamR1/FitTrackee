@@ -190,6 +190,7 @@ export interface IComment {
   created_at: string
   id: string
   modification_date: string | null
+  replies: IComment[]
   text: string
   text_visibility: TPrivacyLevels
   user: IUserProfile
@@ -198,6 +199,7 @@ export interface IComment {
 
 export interface ICommentForm {
   id?: string
+  reply_to?: string
   text: string
   text_visibility?: TPrivacyLevels
   workout_id: string

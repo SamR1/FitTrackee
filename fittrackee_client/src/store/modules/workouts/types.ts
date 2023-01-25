@@ -136,10 +136,6 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
     state: S,
     comment: IComment
   ): void
-  [WORKOUTS_STORE.MUTATIONS.UPDATE_WORKOUT_COMMENT](
-    state: S,
-    comment: IComment
-  ): void
 }
 
 export type TWorkoutsStoreModule<S = IWorkoutsState> = Omit<

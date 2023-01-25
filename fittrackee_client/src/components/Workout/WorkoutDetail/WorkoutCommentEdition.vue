@@ -4,12 +4,12 @@
       <div class="form-items">
         <div class="form-item add-comment-label">
           <CustomTextArea
-              class="comment"
-              name="text"
-              :input="commentText"
-              :required="true"
-              :placeholder="$t('workouts.COMMENTS.ADD')"
-              @updateValue="updateText"
+            class="comment"
+            name="text"
+            :input="commentText"
+            :required="true"
+            :placeholder="$t('workouts.COMMENTS.ADD')"
+            @updateValue="updateText"
           />
         </div>
       </div>
@@ -61,11 +61,15 @@
 
   interface Props {
     workout: IWorkout
-    comment?: IComment
+    comment?: IComment | null
+    replyTo?: string | null
   }
 
-  const props = defineProps<Props>()
-  const { workout, comment }  = toRefs(props)
+  const props = withDefaults(defineProps<Props>(), {
+    comment: null,
+    replyTo: null,
+  })
+  const { workout, comment, replyTo }  = toRefs(props)
 
   const store = useStore()
 
@@ -104,6 +108,9 @@
         text: commentText.value,
         text_visibility: commentTextVisibility.value,
         workout_id: workout.value.id,
+      }
+      if (replyTo?.value) {
+        payload.reply_to = replyTo.value
       }
       store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_COMMENT, payload)
       updateText('')
