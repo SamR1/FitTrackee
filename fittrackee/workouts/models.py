@@ -681,7 +681,7 @@ class WorkoutComment(BaseModel):
     )
     reply_to = db.Column(
         db.Integer,
-        db.ForeignKey('workout_comments.id'),
+        db.ForeignKey('workout_comments.id', ondelete="SET NULL"),
         index=True,
         nullable=True,
     )

@@ -1649,6 +1649,39 @@ class TestDeleteWorkoutComment(
         assert response.status_code == 204
         assert WorkoutComment.query.first() is None
 
+    def test_it_deletes_workout_comment_having_reply(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        reply = self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+            parent_comment=comment,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.delete(
+            f"/api/workouts/{workout_cycling_user_1.short_id}"
+            f"/comments/{comment.short_id}",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+        assert reply.reply_to is None
+
     @pytest.mark.parametrize(
         'client_scope, can_access',
         [

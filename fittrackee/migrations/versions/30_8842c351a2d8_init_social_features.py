@@ -277,7 +277,7 @@ def upgrade():
     sa.Column('remote_url', sa.Text(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.ForeignKeyConstraint(['workout_id'], ['workouts.id'], ),
-    sa.ForeignKeyConstraint(['reply_to'], ['workout_comments.id'], ),
+    sa.ForeignKeyConstraint(['reply_to'], ['workout_comments.id'], ondelete='SET NULL'),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('uuid')
     )
