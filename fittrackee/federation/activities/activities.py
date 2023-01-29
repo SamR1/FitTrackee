@@ -244,27 +244,32 @@ class CreateActivity(AbstractActivity):
 
 
 class DeleteActivity(AbstractActivity):
-    def delete_remote_workout(self, actor: Actor) -> None:
-        workout_ap_id = self.activity['object']['id']
-        workout_to_delete = Workout.query.filter_by(
-            ap_id=workout_ap_id
-        ).first()
-        if not workout_to_delete:
-            raise ObjectNotFoundException('workout', self.activity_name())
+    def process_activity(self) -> None:
+        actor = self.get_actor()
+        object_ap_id = self.activity['object']['id']
 
-        if workout_to_delete.user.actor.id != actor.id:
+        # check if related object is a comment
+        object_to_delete = WorkoutComment.query.filter_by(
+            ap_id=object_ap_id
+        ).first()
+
+        # if not, check if related object is a workout
+        if not object_to_delete:
+            object_to_delete = Workout.query.filter_by(
+                ap_id=object_ap_id
+            ).first()
+
+        if not object_to_delete:
+            raise ObjectNotFoundException('object', self.activity_name())
+
+        if object_to_delete.user.actor.id != actor.id:
             raise ActivityException(
                 f'{self.activity_name()}: activity actor does not '
                 f'match workout actor.'
             )
 
-        db.session.delete(workout_to_delete)
+        db.session.delete(object_to_delete)
         db.session.commit()
-
-    def process_activity(self) -> None:
-        actor = self.get_actor()
-        if 'workout' in self.activity['id']:
-            self.delete_remote_workout(actor)
 
 
 class UpdateActivity(AbstractActivity):

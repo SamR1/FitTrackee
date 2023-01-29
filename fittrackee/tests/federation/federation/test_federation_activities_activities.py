@@ -820,7 +820,7 @@ class TestDeleteActivityForWorkout(WorkoutActivitiesTestCase):
 
         with pytest.raises(
             ObjectNotFoundException,
-            match='workout not found for DeleteActivity',
+            match='object not found for DeleteActivity',
         ):
             activity.process_activity()
 
@@ -1194,6 +1194,37 @@ class WorkoutCommentActivitiesTestCase(RandomMixin):
             "Update", remote_actor, workout, visibility
         )
 
+    def generate_workout_comment_delete_activity(
+        self,
+        remote_actor: Union[RandomActor, Actor],
+        remote_comment: Optional[WorkoutComment] = None,
+    ) -> Dict:
+        remote_domain = (
+            remote_actor.domain
+            if isinstance(remote_actor, RandomActor)
+            else f'https://{remote_actor.domain.name}'
+        )
+        comment_ap_id = (
+            remote_comment.ap_id
+            if remote_comment
+            else (
+                f'{remote_domain}/workouts/{self.random_short_id()}'
+                f'/comments/{self.random_short_id()}/'
+            )
+        )
+        return {
+            '@context': AP_CTX,
+            'id': f'{comment_ap_id}/delete',
+            'type': 'Delete',
+            'actor': remote_actor.activitypub_id,
+            'to': [PUBLIC_STREAM],
+            'cc': [],
+            'object': {
+                'id': comment_ap_id,
+                'type': 'Tombstone',
+            },
+        }
+
 
 class TestCreateActivityForWorkoutComment(WorkoutCommentActivitiesTestCase):
     def test_it_raises_error_if_comment_actor_does_not_exist(
@@ -1551,3 +1582,141 @@ class TestUpdateActivityForWorkoutComment(
         ):
 
             activity.process_activity()
+
+
+class TestDeleteActivityForWorkoutComment(
+    WorkoutCommentMixin, WorkoutCommentActivitiesTestCase
+):
+    def test_it_raises_error_if_remote_workout_does_not_exist(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        remote_user: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment_activity = self.generate_workout_comment_delete_activity(
+            remote_actor=remote_user.actor
+        )
+        activity = get_activity_instance({'type': comment_activity['type']})(
+            activity_dict=comment_activity
+        )
+        with pytest.raises(
+            ObjectNotFoundException,
+            match="object not found for DeleteActivity",
+        ):
+
+            activity.process_activity()
+
+    def test_it_raises_error_if_workout_actor_does_not_exist(
+        self,
+        app_with_federation: Flask,
+        random_actor: Actor,
+    ) -> None:
+        delete_activity = self.generate_workout_comment_delete_activity(
+            remote_actor=random_actor
+        )
+        activity = get_activity_instance({'type': delete_activity['type']})(
+            activity_dict=delete_activity
+        )
+
+        with pytest.raises(
+            ActorNotFoundException,
+            match='actor not found for DeleteActivity',
+        ):
+            activity.process_activity()
+
+    def test_it_raises_error_when_activity_actor_is_not_comment_actor(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        remote_cycling_workout: Workout,
+        remote_user_2: User,
+    ) -> None:
+        remote_cycling_workout.workout_visibility = PrivacyLevel.PUBLIC
+        remote_comment = self.create_comment(
+            remote_user,
+            remote_cycling_workout,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        delete_activity = self.generate_workout_comment_delete_activity(
+            remote_actor=remote_user_2.actor,
+            remote_comment=remote_comment,
+        )
+        activity = get_activity_instance({'type': delete_activity['type']})(
+            activity_dict=delete_activity
+        )
+
+        with pytest.raises(
+            ActivityException,
+            match=(
+                'DeleteActivity: activity actor does not match workout actor.'
+            ),
+        ):
+            activity.process_activity()
+        assert (
+            WorkoutComment.query.filter_by(id=remote_comment.id).first()
+            is not None
+        )
+
+    def test_it_deletes_remote_workout(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        remote_cycling_workout: Workout,
+    ) -> None:
+        remote_cycling_workout.workout_visibility = PrivacyLevel.PUBLIC
+        remote_comment = self.create_comment(
+            remote_user,
+            remote_cycling_workout,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        delete_activity = self.generate_workout_comment_delete_activity(
+            remote_actor=remote_user.actor,
+            remote_comment=remote_comment,
+        )
+        activity = get_activity_instance({'type': delete_activity['type']})(
+            activity_dict=delete_activity
+        )
+        comment_id = remote_comment.id
+
+        activity.process_activity()
+
+        assert WorkoutComment.query.filter_by(id=comment_id).first() is None
+
+    def test_it_deletes_remote_workout_with_reply(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        remote_cycling_workout: Workout,
+    ) -> None:
+        remote_cycling_workout.workout_visibility = PrivacyLevel.PUBLIC
+        remote_comment = self.create_comment(
+            remote_user,
+            remote_cycling_workout,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        reply = self.create_comment(
+            user_1,
+            remote_cycling_workout,
+            text_visibility=PrivacyLevel.PUBLIC,
+            parent_comment=remote_comment,
+        )
+        delete_activity = self.generate_workout_comment_delete_activity(
+            remote_actor=remote_user.actor,
+            remote_comment=remote_comment,
+        )
+        activity = get_activity_instance({'type': delete_activity['type']})(
+            activity_dict=delete_activity
+        )
+        comment_id = remote_comment.id
+
+        activity.process_activity()
+
+        assert WorkoutComment.query.filter_by(id=comment_id).first() is None
+        assert reply.reply_to is None
