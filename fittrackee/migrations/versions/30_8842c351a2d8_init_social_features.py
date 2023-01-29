@@ -268,7 +268,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('uuid', UUID(as_uuid=True), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('workout_id', sa.Integer(), nullable=False),
+    sa.Column('workout_id', sa.Integer(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('modification_date', sa.DateTime(), nullable=True),
     sa.Column('text', sa.String(), nullable=False),
@@ -276,7 +276,7 @@ def upgrade():
     sa.Column('ap_id', sa.Text(), nullable=True),
     sa.Column('remote_url', sa.Text(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-    sa.ForeignKeyConstraint(['workout_id'], ['workouts.id'], ),
+    sa.ForeignKeyConstraint(['workout_id'], ['workouts.id'], ondelete='SET NULL'),
     sa.ForeignKeyConstraint(['reply_to'], ['workout_comments.id'], ondelete='SET NULL'),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('uuid')

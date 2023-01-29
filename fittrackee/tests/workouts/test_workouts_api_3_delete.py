@@ -3,10 +3,11 @@ from flask import Flask
 
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
+from fittrackee.utils import decode_short_id
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin
-from .utils import post_a_workout
+from .utils import WorkoutCommentMixin, post_a_workout
 
 
 def get_gpx_filepath(workout_id: int) -> str:
@@ -14,7 +15,7 @@ def get_gpx_filepath(workout_id: int) -> str:
     return workout.gpx
 
 
-class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
+class TestDeleteWorkoutWithGpx(WorkoutCommentMixin, ApiTestCaseMixin):
     def test_it_deletes_a_workout_with_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
@@ -169,6 +170,32 @@ class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
 
         assert response.status_code == 204
 
+    def test_it_deletes_a_workout_with_comment(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        token, workout_short_id = post_a_workout(app, gpx_file)
+        workout = Workout.query.filter_by(
+            uuid=decode_short_id(workout_short_id)
+        ).first()
+        workout.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_2, workout, text_visibility=PrivacyLevel.PUBLIC
+        )
+        client = app.test_client()
+
+        response = client.delete(
+            f'/api/workouts/{workout_short_id}',
+            headers=dict(Authorization=f'Bearer {token}'),
+        )
+        assert response.status_code == 204
+        assert Workout.query.first() is None
+        assert comment.workout_id is None
+
     def test_a_workout_with_gpx_can_be_deleted_if_map_file_is_invalid(
         self,
         app: Flask,
@@ -232,7 +259,7 @@ class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
-class TestDeleteWorkoutWithoutGpx(ApiTestCaseMixin):
+class TestDeleteWorkoutWithoutGpx(WorkoutCommentMixin, ApiTestCaseMixin):
     def test_it_deletes_a_workout_wo_gpx(
         self,
         app: Flask,
@@ -248,6 +275,30 @@ class TestDeleteWorkoutWithoutGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         assert response.status_code == 204
+        assert Workout.query.first() is None
+
+    def test_it_deletes_a_workout_with_comment(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        response = client.delete(
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+        assert response.status_code == 204
+        assert Workout.query.first() is None
+        assert comment.workout_id is None
 
     @pytest.mark.parametrize(
         'input_desc,input_workout_visibility,expected_status_code',

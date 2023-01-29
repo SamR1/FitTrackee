@@ -249,7 +249,6 @@ class Workout(BaseModel):
     comments = db.relationship(
         'WorkoutComment',
         lazy=True,
-        cascade='all, delete',
         backref=db.backref('workout', lazy='joined', single_parent=True),
     )
 
@@ -677,7 +676,10 @@ class WorkoutComment(BaseModel):
         db.Integer, db.ForeignKey('users.id'), index=True, nullable=False
     )
     workout_id = db.Column(
-        db.Integer, db.ForeignKey('workouts.id'), index=True, nullable=False
+        db.Integer,
+        db.ForeignKey('workouts.id', ondelete="SET NULL"),
+        index=True,
+        nullable=True,
     )
     reply_to = db.Column(
         db.Integer,
