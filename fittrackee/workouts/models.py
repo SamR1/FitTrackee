@@ -1,10 +1,9 @@
 import datetime
 import os
-from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 from uuid import UUID, uuid4
 
 from flask import current_app
-from flask_sqlalchemy.query import Query
 from sqlalchemy import and_, or_
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.engine.base import Connection
@@ -43,7 +42,6 @@ record_types = [
     'LD',  # 'Longest Duration'
     'MS',  # 'Max speed'
 ]
-REPLY_PER_PAGE = 5
 
 
 def update_records(
@@ -87,11 +85,9 @@ def update_records(
 
 def get_comments(
     workout_id: int,
-    page: int,
-    per_page: int,
     user: Optional['User'],
     reply_to: Optional[int] = None,
-) -> Query:
+) -> List['WorkoutComment']:
     if user:
         local_following_ids, remote_following_ids = get_following(user)
         comments_filter = WorkoutComment.query.filter(
@@ -124,10 +120,7 @@ def get_comments(
             WorkoutComment.reply_to == reply_to,
             WorkoutComment.text_visibility == PrivacyLevel.PUBLIC,
         )
-    comments_pagination = comments_filter.order_by(
-        WorkoutComment.created_at.asc()
-    ).paginate(page=page, per_page=per_page, error_out=False)
-    return comments_pagination
+    return comments_filter.order_by(WorkoutComment.created_at.asc()).all()
 
 
 class Sport(BaseModel):
@@ -769,14 +762,6 @@ class WorkoutComment(BaseModel):
         if not can_view(self, 'text_visibility', user):
             raise CommentForbiddenException
 
-        replies_filter = get_comments(
-            workout_id=self.workout_id,
-            page=1,
-            per_page=REPLY_PER_PAGE,
-            user=user,
-            reply_to=self.id,
-        )
-
         return {
             'id': self.short_id,
             'user': self.user.serialize(),
@@ -789,7 +774,12 @@ class WorkoutComment(BaseModel):
                 self.parent_comment.short_id if self.reply_to else None
             ),
             'replies': [
-                reply.serialize(user) for reply in replies_filter.items
+                reply.serialize(user)
+                for reply in get_comments(
+                    workout_id=self.workout_id,
+                    user=user,
+                    reply_to=self.id,
+                )
             ],
         }
 

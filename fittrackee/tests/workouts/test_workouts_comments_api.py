@@ -1159,78 +1159,8 @@ class TestGetWorkoutCommentsAsUnauthenticatedUser(GetWorkoutCommentsTestCase):
         )
 
 
-class TestGetWorkoutCommentsPagination(GetWorkoutCommentsTestCase):
-    def test_it_returns_pagination_when_no_comments(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-    ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
-            content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
-        )
-
-        data = json.loads(response.data.decode())
-        assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['comments'] == []
-        assert data['pagination'] == {
-            'has_next': False,
-            'has_prev': False,
-            'page': 1,
-            'pages': 0,
-            'total': 0,
-        }
-
-    def test_it_returns_pagination_when_one_workout_returned(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        user_3: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-    ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        self.create_comment(
-            user_3,
-            workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
-        )
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
-            content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
-        )
-
-        data = json.loads(response.data.decode())
-        assert len(data['data']['comments']) == 1
-        assert data['pagination'] == {
-            'has_next': False,
-            'has_prev': False,
-            'page': 1,
-            'pages': 1,
-            'total': 1,
-        }
-
-    def test_it_gets_first_page(
+class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
+    def test_it_returns_all_comments(
         self,
         app: Flask,
         user_1: User,
@@ -1259,84 +1189,7 @@ class TestGetWorkoutCommentsPagination(GetWorkoutCommentsTestCase):
         )
 
         data = json.loads(response.data.decode())
-        assert len(data['data']['comments']) == 5
-        assert data['pagination'] == {
-            'has_next': True,
-            'has_prev': False,
-            'page': 1,
-            'pages': 2,
-            'total': 7,
-        }
-
-    def test_it_gets_second_page(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        user_3: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-    ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        for _ in range(7):
-            self.create_comment(
-                user_3,
-                workout_cycling_user_2,
-                text_visibility=PrivacyLevel.PUBLIC,
-            )
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            f"/api/workouts/{workout_cycling_user_2.short_id}/comments?page=2",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        data = json.loads(response.data.decode())
-        assert len(data['data']['comments']) == 2
-        assert data['pagination'] == {
-            'has_next': False,
-            'has_prev': True,
-            'page': 2,
-            'pages': 2,
-            'total': 7,
-        }
-
-    def test_it_gets_empty_third_page(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        user_3: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-    ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        for _ in range(7):
-            self.create_comment(
-                user_3,
-                workout_cycling_user_2,
-                text_visibility=PrivacyLevel.PUBLIC,
-            )
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            f"/api/workouts/{workout_cycling_user_2.short_id}/comments?page=3",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        data = json.loads(response.data.decode())
-        assert len(data['data']['comments']) == 0
-        assert data['pagination'] == {
-            'has_next': False,
-            'has_prev': True,
-            'page': 3,
-            'pages': 2,
-            'total': 7,
-        }
+        assert len(data['data']['comments']) == 7
 
     def test_it_returns_only_comments_user_can_access(
         self,
@@ -1350,23 +1203,28 @@ class TestGetWorkoutCommentsPagination(GetWorkoutCommentsTestCase):
     ) -> None:
         user_2.approves_follow_request_from(user_1)
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        visible_comments = []
         # user 3
-        visible_comments.append(
+        visible_comments = [
             self.create_comment(
                 user_3,
                 workout_cycling_user_2,
                 text_visibility=PrivacyLevel.PUBLIC,
             )
-        )
-        for privacy_levels in [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]:
+        ]
+        for privacy_levels in [
+            PrivacyLevel.FOLLOWERS,
+            PrivacyLevel.PRIVATE,
+        ]:
             self.create_comment(
                 user_3,
                 workout_cycling_user_2,
                 text_visibility=privacy_levels,
             )
-        # user 2
-        for privacy_levels in [PrivacyLevel.PUBLIC, PrivacyLevel.FOLLOWERS]:
+        # user 2 followed by user 1
+        for privacy_levels in [
+            PrivacyLevel.PUBLIC,
+            PrivacyLevel.FOLLOWERS,
+        ]:
             visible_comments.append(
                 self.create_comment(
                     user_2,
@@ -1404,47 +1262,8 @@ class TestGetWorkoutCommentsPagination(GetWorkoutCommentsTestCase):
         data = json.loads(response.data.decode())
         assert data['data']['comments'] == [
             jsonify_dict(comment.serialize(user_1))
-            for comment in visible_comments[:5]
+            for comment in visible_comments
         ]
-        assert data['pagination'] == {
-            'has_next': True,
-            'has_prev': False,
-            'page': 1,
-            'pages': 2,
-            'total': 6,
-        }
-
-    def test_it_returns_comments_ordered_by_creation_date_ascending(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        user_3: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-    ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        comments = []
-        for _ in range(7):
-            comments.append(
-                self.create_comment(
-                    user_3,
-                    workout_cycling_user_2,
-                    text_visibility=PrivacyLevel.PUBLIC,
-                )
-            )
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-        response = client.get(
-            f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['comments'][0]['id'] == comments[0].short_id
-        assert data['data']['comments'][4]['id'] == comments[4].short_id
 
 
 class TestGetWorkoutsCommentWithReplies(

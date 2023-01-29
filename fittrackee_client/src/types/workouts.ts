@@ -205,12 +205,6 @@ export interface ICommentForm {
   workout_id: string
 }
 
-export interface ICommentsPayload {
-  workoutId: string
-
-  page: number
-}
-
 export interface ICommentPayload {
   workoutId: string
 

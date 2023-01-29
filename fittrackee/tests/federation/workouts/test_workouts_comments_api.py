@@ -747,7 +747,7 @@ class TestGetWorkoutCommentsAsUnauthenticatedUser(GetWorkoutCommentsTestCase):
         self.assert_comments_response(response, expected_comments=[])
 
 
-class TestGetWorkoutCommentsPagination(GetWorkoutCommentsTestCase):
+class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
     def test_it_returns_only_comments_user_can_access(
         self,
         app_with_federation: Flask,
@@ -862,15 +862,8 @@ class TestGetWorkoutCommentsPagination(GetWorkoutCommentsTestCase):
         data = json.loads(response.data.decode())
         assert data['data']['comments'] == [
             jsonify_dict(comment.serialize(user_1))
-            for comment in visible_comments[:5]
+            for comment in visible_comments
         ]
-        assert data['pagination'] == {
-            'has_next': True,
-            'has_prev': False,
-            'page': 1,
-            'pages': 3,
-            'total': 11,
-        }
 
 
 class TestGetWorkoutsCommentWithReplies(

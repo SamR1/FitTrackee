@@ -60,7 +60,6 @@ workouts_blueprint = Blueprint('workouts', __name__)
 DEFAULT_WORKOUTS_PER_PAGE = 5
 MAX_WORKOUTS_PER_PAGE = 100
 MAX_WORKOUTS_TO_SEND = 5
-DEFAULT_COMMENTS_PER_PAGE = 5
 
 
 def handle_workout_activities(workout: Workout, activity_type: str) -> None:
@@ -1623,28 +1622,16 @@ def get_workout_comments(
         )
 
     try:
-        params = request.args.copy()
-        page = int(params.get('page', 1))
-        comments_pagination = get_comments(
+        comments = get_comments(
             workout_id=workout.id,
-            page=page,
-            per_page=DEFAULT_COMMENTS_PER_PAGE,
             user=auth_user,
         )
-        comments = comments_pagination.items
         return {
             'status': 'success',
             'data': {
                 'comments': [
                     comment.serialize(auth_user) for comment in comments
                 ]
-            },
-            'pagination': {
-                'has_next': comments_pagination.has_next,
-                'has_prev': comments_pagination.has_prev,
-                'page': comments_pagination.page,
-                'pages': comments_pagination.pages,
-                'total': comments_pagination.total,
             },
         }
     except Exception as e:

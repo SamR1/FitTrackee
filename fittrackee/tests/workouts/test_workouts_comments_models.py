@@ -605,7 +605,7 @@ class TestWorkoutCommentModelSerializeForReplies(WorkoutCommentMixin):
             'replies': [visible_reply.serialize()],
         }
 
-    def test_it_returns_only_5_first_replies(
+    def test_it_returns_all_replies(
         self,
         app: Flask,
         user_1: User,
@@ -633,5 +633,5 @@ class TestWorkoutCommentModelSerializeForReplies(WorkoutCommentMixin):
 
         assert serialized_comment['replies'] == [
             visible_reply.serialize(user_1)
-            for visible_reply in visible_replies[:5]
+            for visible_reply in visible_replies
         ]

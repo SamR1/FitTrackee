@@ -14,7 +14,6 @@ import {
   IWorkout,
   IWorkoutForm,
   IWorkoutPayload,
-  ICommentsPayload,
   TWorkoutsPayload,
   ICommentPayload,
 } from '@/types/workouts'
@@ -118,10 +117,10 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
                 }
               })
           }
-          context.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS, {
-            workoutId: res.data.data.workouts[0].id,
-            page: 1,
-          })
+          context.dispatch(
+            WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
+            res.data.data.workouts[0].id
+          )
         } else {
           context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
           handleError(context, null)
@@ -261,11 +260,10 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       .post(`/workouts/${payload.workout_id}/comments`, data)
       .then((res) => {
         if (res.data.status === 'created') {
-          // TODO: handle pagination
-          context.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS, {
-            workoutId: payload.workout_id,
-            page: 1,
-          })
+          context.dispatch(
+            WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
+            payload.workout_id
+          )
         } else {
           handleError(context, null)
         }
@@ -276,15 +274,11 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
   },
   [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS](
     context: ActionContext<IWorkoutsState, IRootState>,
-    payload: ICommentsPayload
+    workoutId: string
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     authApi
-      .get(`/workouts/${payload.workoutId}/comments`, {
-        params: {
-          page: payload.page,
-        },
-      })
+      .get(`/workouts/${workoutId}/comments`)
       .then((res) => {
         if (res.data.status === 'success') {
           context.commit(
@@ -308,10 +302,10 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       .delete(`workouts/${payload.workoutId}/comments/${payload.commentId}`)
       .then((res) => {
         if (res.status === 204) {
-          context.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS, {
-            workoutId: payload.workoutId,
-            page: 1,
-          })
+          context.dispatch(
+            WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
+            payload.workoutId
+          )
         }
       })
       .catch((error) => {
@@ -329,11 +323,10 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       })
       .then((res) => {
         if (res.data.status === 'success') {
-          // TODO: handle pagination
-          context.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS, {
-            workoutId: payload.workout_id,
-            page: 1,
-          })
+          context.dispatch(
+            WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
+            payload.workout_id
+          )
         }
       })
       .catch((error) => {
