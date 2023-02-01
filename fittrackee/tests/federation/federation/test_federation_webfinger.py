@@ -116,7 +116,7 @@ class TestWebfinger(ApiTestCaseMixin):
         assert data['links'] == [
             {
                 'href': (
-                    f'https://{actor_1.domain.name}/users/'
+                    f'{app_with_federation.config["UI_URL"]}/users/'
                     f'{actor_1.user.username}'
                 ),
                 'rel': 'http://webfinger.net/rel/profile-page',

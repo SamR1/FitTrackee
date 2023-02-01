@@ -21,6 +21,47 @@ class TestGetApUrl:
         with pytest.raises(Exception, match="Invalid 'url_type'."):
             get_ap_url(username=uuid4().hex, url_type='url')
 
+    def test_it_returns_user_url(self, app: Flask) -> None:
+        username = uuid4().hex
+
+        user_url = get_ap_url(username=username, url_type='user_url')
+
+        assert (
+            user_url
+            == f"https://{app.config['AP_DOMAIN']}/federation/user/{username}"
+        )
+
+    @pytest.mark.parametrize(
+        'input_url_type', ['inbox', 'outbox', 'following', 'followers']
+    )
+    def test_it_returns_expected_url(
+        self, app: Flask, input_url_type: str
+    ) -> None:
+        username = uuid4().hex
+
+        url = get_ap_url(username=username, url_type=input_url_type)
+
+        assert url == (
+            f"https://{app.config['AP_DOMAIN']}/federation/"
+            f"user/{username}/{input_url_type}"
+        )
+
+    def test_it_returns_user_profile_url(self, app: Flask) -> None:
+        username = uuid4().hex
+
+        user_url = get_ap_url(username=username, url_type='profile_url')
+
+        assert user_url == f"{app.config['UI_URL']}/users/{username}"
+
+    def test_it_returns_shared_inbox(self, app: Flask) -> None:
+        shared_inbox = get_ap_url(
+            username=uuid4().hex, url_type='shared_inbox'
+        )
+
+        assert shared_inbox == (
+            f"https://{app.config['AP_DOMAIN']}/federation/inbox"
+        )
+
 
 class TestActivityPubDomainModel:
     def test_it_returns_string_representation(

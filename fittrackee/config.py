@@ -6,6 +6,7 @@ from flask import current_app
 from sqlalchemy.pool import NullPool
 
 from fittrackee import VERSION
+from fittrackee.federation.utils import remove_url_scheme
 
 if os.getenv('APP_SETTINGS') == 'fittrackee.config.TestingConfig':
     broker = StubBroker
@@ -72,7 +73,7 @@ class BaseConfig:
     OAUTH2_REFRESH_TOKEN_GENERATOR = True
     VERSION = VERSION
     # ActivityPub
-    AP_DOMAIN = UI_URL.replace('https://', '')
+    AP_DOMAIN = remove_url_scheme(UI_URL)
 
 
 class DevelopmentConfig(BaseConfig):

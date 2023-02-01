@@ -25,7 +25,7 @@ def generate_keys() -> Tuple[str, str]:
 
 def get_ap_url(username: str, url_type: str) -> str:
     """
-    Return ActivityPub URLs.
+    Return ActivityPub URLs for local actor.
 
     Supported URL types:
     - 'user_url'
@@ -34,6 +34,7 @@ def get_ap_url(username: str, url_type: str) -> str:
     - 'following'
     - 'followers'
     - 'shared_inbox'
+    - 'profile_url'
     """
     ap_url = f"https://{current_app.config['AP_DOMAIN']}/federation/"
     ap_url_user = f'{ap_url}user/{username}'
@@ -44,7 +45,7 @@ def get_ap_url(username: str, url_type: str) -> str:
     if url_type == 'shared_inbox':
         return f'{ap_url}inbox'
     if url_type == 'profile_url':
-        return f"https://{current_app.config['AP_DOMAIN']}/users/{username}"
+        return f"{current_app.config['UI_URL']}/users/{username}"
     raise Exception('Invalid \'url_type\'.')
 
 
