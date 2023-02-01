@@ -89,7 +89,7 @@
 
   import Username from "@/components/User/Username.vue"
   import UserPicture from "@/components/User/UserPicture.vue"
-  import WorkoutCommentEdition from "@/components/Workout/WorkoutDetail/WorkoutCommentEdition.vue"
+  import WorkoutCommentEdition from "@/components/WorkoutComment/WorkoutCommentEdition.vue"
   import { ROOT_STORE } from "@/store/constants"
   import { IDisplayOptions } from "@/types/application"
   import { IAuthUserProfile, IUserProfile } from "@/types/user"

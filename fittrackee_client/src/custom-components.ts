@@ -8,7 +8,7 @@ import SportImage from '@/components/Common/Images/SportImage/index.vue'
 import Loader from '@/components/Common/Loader.vue'
 import Modal from '@/components/Common/Modal.vue'
 import VisibilityIcon from '@/components/Common/VisibilityIcon.vue'
-import WorkoutComment from '@/components/Workout/WorkoutDetail/WorkoutComment.vue'
+import WorkoutComment from '@/components/WorkoutComment/WorkoutComment.vue'
 
 export const customComponents = [
   { target: AlertMessage, name: 'AlertMessage' },
