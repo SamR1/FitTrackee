@@ -202,6 +202,7 @@
   .workout-detail {
     display: flex;
     ::v-deep(.card) {
+      margin: 0 $default-margin;
       width: 100%;
       .card-content {
         display: flex;
