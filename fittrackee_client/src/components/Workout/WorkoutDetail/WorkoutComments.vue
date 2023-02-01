@@ -23,7 +23,9 @@
         <div class="no-comments" v-if="workoutData.comments.length === 0">
           {{ $t('workouts.COMMENTS.NO_COMMENTS')}}
         </div>
-        <WorkoutCommentEdition :workout="workoutData.workout" />
+        <WorkoutCommentEdition
+          v-if="authUser.username" :workout="workoutData.workout"
+        />
       </template>
     </Card>
   </div>
@@ -40,12 +42,10 @@
 
   interface Props {
     workoutData: IWorkoutData
-    authUser?: IAuthUserProfile | null
+    authUser: IAuthUserProfile
   }
 
-  const props = withDefaults(defineProps<Props>(), {
-    authUser: null,
-  })
+  const props = defineProps<Props>()
   const { workoutData } = toRefs(props)
 
   const store = useStore()

@@ -49,7 +49,7 @@
         />
         <i
           class="fa fa-comment-o"
-          v-if="!addReply || addReply !== comment"
+          v-if="authUser.username && (!addReply || addReply !== comment)"
           @click="() => addReply = comment"
         />
       </div>
@@ -102,12 +102,10 @@
   interface Props {
     comment: IComment
     workout: IWorkout
-    authUser?: IAuthUserProfile | null
+    authUser: IAuthUserProfile
   }
 
-  const props = withDefaults(defineProps<Props>(), {
-    authUser: null,
-  })
+  const props = defineProps<Props>()
   const { authUser, comment, workout } = toRefs(props)
 
   const emit = defineEmits(['deleteComment'])
