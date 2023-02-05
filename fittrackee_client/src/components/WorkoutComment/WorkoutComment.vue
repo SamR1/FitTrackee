@@ -39,7 +39,7 @@
           class="fa fa-edit"
           v-if="isCommentOwner(authUser, comment.user)"
           aria-hidden="true"
-          @click="() => commentToEdit = comment"
+          @click="() => displayCommentEdition(comment)"
         />
         <i
           class="fa fa-trash"
@@ -50,18 +50,27 @@
         <i
           class="fa fa-comment-o"
           v-if="authUser.username && (!addReply || addReply !== comment)"
-          @click="() => addReply = comment"
+          @click="() => displayReplyTextArea(comment)"
         />
       </div>
       <span
         v-if="commentToEdit !== comment"
         class="comment-text"
-        v-html="linkifyAndClean(comment.text)"
+        v-html="linkifyAndClean(comment.text_html)"
       />
       <WorkoutCommentEdition
-        v-else :workout="workout"
+        v-else
+        :workout="workout"
         :comment="comment"
         @closeEdition="() => commentToEdit = null"
+      />
+      <WorkoutComment
+        v-for="reply in comment.replies"
+        :key="reply.id"
+        :comment="reply"
+        :workout="workout"
+        :authUser="authUser"
+        @deleteComment="deleteComment(reply)"
       />
       <WorkoutCommentEdition
         v-if="addReply === comment"
@@ -70,14 +79,6 @@
         :reply-to="comment.id"
         @closeEdition="() => addReply = null"
       />
-        <WorkoutComment
-          v-for="reply in comment.replies"
-          :key="reply.id"
-          :comment="reply"
-          :workout="workout"
-          :authUser="authUser"
-          @deleteComment="deleteComment(reply)"
-        />
     </div>
 
   </div>
@@ -125,6 +126,24 @@
   }
   function deleteComment(comment: IComment) {
     emit('deleteComment', comment)
+  }
+  function focusOnTextArea(commentId: string) {
+    setTimeout(() => {
+      const textarea = document.getElementById(`text-${commentId}`)
+      if (textarea) {
+        textarea.focus()
+      }
+    }, 100)
+  }
+  function displayCommentEdition(comment: IComment) {
+    commentToEdit.value = comment
+    addReply.value = null
+    focusOnTextArea(comment.id)
+  }
+  function displayReplyTextArea(comment: IComment) {
+    commentToEdit.value = null
+    addReply.value = comment
+    focusOnTextArea(comment.id)
   }
 
 </script>

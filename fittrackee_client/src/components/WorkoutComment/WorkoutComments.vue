@@ -23,9 +23,17 @@
         <div class="no-comments" v-if="workoutData.comments.length === 0">
           {{ $t('workouts.COMMENTS.NO_COMMENTS')}}
         </div>
-        <WorkoutCommentEdition
-          v-if="authUser.username" :workout="workoutData.workout"
-        />
+        <div class="add-comment" v-if="displayAddComment">
+          <WorkoutCommentEdition
+            v-if="authUser.username" :workout="workoutData.workout"
+            @closeEdition="displayAddComment = false"
+          />
+        </div>
+        <div class="add-comment-button" v-else>
+          <button @click.prevent="displayCommentTextArea">
+            {{ $t('workouts.COMMENTS.ADD') }}
+          </button>
+        </div>
       </template>
     </Card>
   </div>
@@ -50,12 +58,22 @@
 
   const store = useStore()
   const commentToDelete: Ref<IComment | null> = ref(null)
+  const displayAddComment: Ref<boolean> = ref(false)
 
   function deleteComment(comment: IComment) {
     store.dispatch(WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT_COMMENT, {
       workoutId: comment.workout_id,
       commentId: comment.id
     })
+  }
+  function displayCommentTextArea() {
+    displayAddComment.value = true
+    setTimeout(() => {
+      const textarea = document.getElementById('text')
+      if (textarea) {
+        textarea.focus()
+      }
+    }, 100)
   }
 
   watch(
@@ -74,6 +92,9 @@
     padding-bottom: $default-padding * 2;
     .no-comments {
       font-style: italic;
+    }
+    .add-comment-button {
+      margin: $default-margin 0;
     }
   }
 </style>

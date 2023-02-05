@@ -5,7 +5,7 @@
         <div class="form-item add-comment-label">
           <CustomTextArea
             class="comment"
-            name="text"
+            :name="`text${comment ? `-${comment.id}` : replyTo ? `-${replyTo}` : ''}`"
             :input="commentText"
             :required="true"
             :placeholder="$t('workouts.COMMENTS.ADD')"

@@ -192,6 +192,7 @@ export interface IComment {
   modification_date: string | null
   replies: IComment[]
   text: string
+  text_html: string
   text_visibility: TPrivacyLevels
   user: IUserProfile
   workout_id: string
