@@ -4,7 +4,8 @@ from ..enums import ActivityType
 from .base_object import BaseObject
 
 if TYPE_CHECKING:
-    from fittrackee.workouts.models import Workout, WorkoutComment
+    from fittrackee.comments.models import WorkoutComment
+    from fittrackee.workouts.models import Workout
 
 
 class WorkoutCommentObject(BaseObject):

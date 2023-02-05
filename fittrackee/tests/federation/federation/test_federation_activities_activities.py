@@ -5,6 +5,7 @@ from unittest.mock import patch
 import pytest
 from flask import Flask
 
+from fittrackee.comments.models import WorkoutComment
 from fittrackee.federation.constants import AP_CTX, DATE_FORMAT, PUBLIC_STREAM
 from fittrackee.federation.enums import ActivityType
 from fittrackee.federation.exceptions import (
@@ -28,7 +29,7 @@ from fittrackee.users.exceptions import (
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.constants import WORKOUT_DATE_FORMAT
 from fittrackee.workouts.exceptions import SportNotFoundException
-from fittrackee.workouts.models import Sport, Workout, WorkoutComment
+from fittrackee.workouts.models import Sport, Workout
 
 from ...mixins import RandomMixin
 from ...utils import RandomActor

@@ -1,12 +1,13 @@
 import pytest
 from flask import Flask
 
+from fittrackee.comments.exceptions import CommentForbiddenException
+from fittrackee.comments.models import WorkoutComment
 from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.tests.workouts.utils import WorkoutCommentMixin
 from fittrackee.users.models import FollowRequest, User
-from fittrackee.workouts.exceptions import CommentForbiddenException
-from fittrackee.workouts.models import Sport, Workout, WorkoutComment
+from fittrackee.workouts.models import Sport, Workout
 
 from ...mixins import RandomMixin
 

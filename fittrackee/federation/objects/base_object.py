@@ -8,7 +8,8 @@ from fittrackee.privacy_levels import PrivacyLevel
 from ..constants import AP_CTX, DATE_FORMAT, PUBLIC_STREAM
 
 if TYPE_CHECKING:
-    from fittrackee.workouts.models import Workout, WorkoutComment
+    from fittrackee.comments.models import WorkoutComment
+    from fittrackee.workouts.models import Workout
 
     from ..enums import ActivityType
     from ..models import Actor

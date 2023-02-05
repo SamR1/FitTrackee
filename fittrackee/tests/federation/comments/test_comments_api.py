@@ -4,17 +4,18 @@ from unittest.mock import Mock, patch
 import pytest
 from flask import Flask
 
+from fittrackee.comments.models import WorkoutComment
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
-from fittrackee.workouts.models import Sport, Workout, WorkoutComment
+from fittrackee.workouts.models import Sport, Workout
 
+from ...comments.test_comments_api import GetWorkoutCommentsTestCase
 from ...mixins import ApiTestCaseMixin, BaseTestMixin
 from ...utils import jsonify_dict
-from ...workouts.test_workouts_comments_api import GetWorkoutCommentsTestCase
 from ...workouts.utils import WorkoutCommentMixin
 
 
-@patch('fittrackee.workouts.workouts.send_to_remote_inbox')
+@patch('fittrackee.comments.comments.send_to_remote_inbox')
 class TestPostWorkoutComment(
     WorkoutCommentMixin, ApiTestCaseMixin, BaseTestMixin
 ):
@@ -908,7 +909,7 @@ class TestGetWorkoutsCommentWithReplies(
         ]
 
 
-@patch('fittrackee.workouts.workouts.send_to_remote_inbox')
+@patch('fittrackee.comments.comments.send_to_remote_inbox')
 class TestDeleteWorkoutComment(
     WorkoutCommentMixin, ApiTestCaseMixin, BaseTestMixin
 ):
@@ -1085,7 +1086,7 @@ class TestDeleteWorkoutComment(
         )
 
 
-@patch('fittrackee.workouts.workouts.send_to_remote_inbox')
+@patch('fittrackee.comments.comments.send_to_remote_inbox')
 class TestPatchWorkoutComment(
     WorkoutCommentMixin, ApiTestCaseMixin, BaseTestMixin
 ):

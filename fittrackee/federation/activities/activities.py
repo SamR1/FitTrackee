@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from typing import Dict, Tuple
 
 from fittrackee import appLog, db
+from fittrackee.comments.models import WorkoutComment
 from fittrackee.federation.constants import PUBLIC_STREAM
 from fittrackee.federation.exceptions import (
     ActivityException,
@@ -26,7 +27,7 @@ from fittrackee.users.exceptions import (
 )
 from fittrackee.workouts.constants import WORKOUT_DATE_FORMAT
 from fittrackee.workouts.exceptions import SportNotFoundException
-from fittrackee.workouts.models import Sport, Workout, WorkoutComment
+from fittrackee.workouts.models import Sport, Workout
 from fittrackee.workouts.utils.workouts import create_workout
 
 from ..objects.workout import convert_workout_activity

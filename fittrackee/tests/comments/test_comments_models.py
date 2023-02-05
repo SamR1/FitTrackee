@@ -4,14 +4,15 @@ import pytest
 from flask import Flask
 from freezegun import freeze_time
 
+from fittrackee.comments.exceptions import CommentForbiddenException
+from fittrackee.comments.models import WorkoutComment
 from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.utils import encode_uuid
-from fittrackee.workouts.exceptions import CommentForbiddenException
-from fittrackee.workouts.models import Sport, Workout, WorkoutComment
+from fittrackee.workouts.models import Sport, Workout
 
-from .utils import WorkoutCommentMixin
+from ..workouts.utils import WorkoutCommentMixin
 
 
 class TestWorkoutCommentModel(WorkoutCommentMixin):

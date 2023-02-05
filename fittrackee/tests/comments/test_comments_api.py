@@ -5,13 +5,14 @@ import pytest
 from flask import Flask
 from werkzeug import Response
 
+from fittrackee.comments.models import WorkoutComment
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
-from fittrackee.workouts.models import Sport, Workout, WorkoutComment
+from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin, BaseTestMixin
 from ..utils import jsonify_dict
-from .utils import WorkoutCommentMixin
+from ..workouts.utils import WorkoutCommentMixin
 
 
 class TestPostWorkoutComment(

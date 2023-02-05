@@ -6,9 +6,10 @@ from typing import Optional, Tuple
 from flask import Flask
 
 from fittrackee import db
+from fittrackee.comments.models import WorkoutComment
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import User
-from fittrackee.workouts.models import Workout, WorkoutComment
+from fittrackee.workouts.models import Workout
 
 from ..mixins import RandomMixin
 
