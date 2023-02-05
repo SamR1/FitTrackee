@@ -39,6 +39,8 @@ export const getUpdatedMapVisibility = (
 export const getMapVisibilityLevels = (
   workoutVisibility: TPrivacyLevels
 ): TPrivacyLevels[] => {
+  // regardless federation activation, map can not be visible
+  // to remote followers
   switch (workoutVisibility) {
     case 'public':
       return ['private', 'followers_only', 'public']
@@ -46,6 +48,28 @@ export const getMapVisibilityLevels = (
       return ['private', 'followers_only']
     case 'followers_only':
       return ['private', 'followers_only']
+    case 'private':
+      return ['private']
+  }
+}
+
+export const getCommentVisibilityLevels = (
+  workoutVisibility: TPrivacyLevels,
+  federationEnabled: boolean
+): TPrivacyLevels[] => {
+  switch (workoutVisibility) {
+    case 'public':
+      return federationEnabled
+        ? ['private', 'followers_only', 'followers_and_remote_only', 'public']
+        : ['private', 'followers_only', 'public']
+    // Note: only if federation is still enabled
+    case 'followers_and_remote_only':
+      return federationEnabled
+        ? ['private', 'followers_only', 'followers_and_remote_only']
+        : ['private', 'followers_only']
+    case 'followers_only':
+      return ['private', 'followers_only']
+    // Note: it's not possible to add comment to a private workout
     case 'private':
       return ['private']
   }

@@ -2,6 +2,7 @@ import { assert } from 'chai'
 
 import { TPrivacyLevels } from '@/types/user'
 import {
+  getCommentVisibilityLevels,
   getMapVisibilityLevels,
   getPrivacyLevelForLabel,
   getUpdatedMapVisibility,
@@ -77,6 +78,39 @@ describe('getMapVisibilityLevels', () => {
   testsParams.map((testParams) => {
     it(`get visibility levels depending on workout visibility (input value: '${testParams[0]}')`, () => {
       assert.deepEqual(getMapVisibilityLevels(testParams[0]), testParams[1])
+    })
+  })
+})
+
+describe('getCommentVisibilityLevels', () => {
+  const testsParams: [boolean, TPrivacyLevels, TPrivacyLevels[]][] = [
+    // should not be displayed in UI
+    [false, 'private', ['private']],
+    [false, 'followers_only', ['private', 'followers_only']],
+    // should not be displayed in UI
+    [false, 'followers_and_remote_only', ['private', 'followers_only']],
+    [false, 'public', ['private', 'followers_only', 'public']],
+    // should not be displayed in UI
+    [true, 'private', ['private']],
+    [true, 'followers_only', ['private', 'followers_only']],
+    [
+      true,
+      'followers_and_remote_only',
+      ['private', 'followers_only', 'followers_and_remote_only'],
+    ],
+    [
+      true,
+      'public',
+      ['private', 'followers_only', 'followers_and_remote_only', 'public'],
+    ],
+  ]
+
+  testsParams.map((testParams) => {
+    it(`get visibility levels depending on workout visibility (federation enable: '${testParams[0]}',input value: '${testParams[1]}')`, () => {
+      assert.deepEqual(
+        getCommentVisibilityLevels(testParams[1], testParams[0]),
+        testParams[2]
+      )
     })
   })
 })

@@ -21,7 +21,9 @@
             v-model="commentTextVisibility"
           >
             <option
-              v-for="level in privacyLevels"
+              v-for="level in getCommentVisibilityLevels(
+                workout.workout_visibility, appConfig.federation_enabled
+              )"
               :value="level"
               :key="level"
             >
@@ -57,7 +59,7 @@
   import { TPrivacyLevels } from "@/types/user";
   import { IComment, ICommentForm, IWorkout } from "@/types/workouts"
   import { useStore } from "@/use/useStore"
-  import { getPrivacyLevels, getPrivacyLevelForLabel } from "@/utils/privacy"
+  import { getCommentVisibilityLevels, getPrivacyLevelForLabel } from "@/utils/privacy"
 
   interface Props {
     workout: IWorkout
@@ -77,9 +79,6 @@
 
   const appConfig: ComputedRef<TAppConfig> = computed(
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
-  )
-  const privacyLevels = computed(() =>
-    getPrivacyLevels(appConfig.value.federation_enabled)
   )
   const commentText: Ref<string> = ref(comment?.value ? comment.value.text : '')
   const commentTextVisibility: Ref<TPrivacyLevels> = ref(comment?.value ? comment.value.text_visibility : workout.value.workout_visibility)
