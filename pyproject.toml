@@ -46,6 +46,7 @@ sqlalchemy = "=1.4.45"
 pyopenssl = "^22.1"
 pycryptodome = "^3.15"
 ua-parser = "^0.16.1"
+nh3 = "^0.2.7"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.7.4"

@@ -1165,6 +1165,32 @@ files = [
 ]
 
 [[package]]
+name = "nh3"
+version = "0.2.7"
+description = "Ammonia HTML sanitizer Python binding"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "nh3-0.2.7-cp37-abi3-macosx_10_7_x86_64.whl", hash = "sha256:137c770b327261114275c6184028046dad62fc7dfdf55b5afee1b06bbf67c1ed"},
+    {file = "nh3-0.2.7-cp37-abi3-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:66da2da5d17e8e439af5557c24e1c4a1461fb72b846f453d37da98fa576c3a97"},
+    {file = "nh3-0.2.7-cp37-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:91b4857c093969424285cf33a0139f71567932244beabe0fc52b36936d25fd7d"},
+    {file = "nh3-0.2.7-cp37-abi3-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:1ff36c7815b4a4e2fb6602532f9d28e6c214a787043bc6006e51025984b2e1f7"},
+    {file = "nh3-0.2.7-cp37-abi3-manylinux_2_17_ppc64.manylinux2014_ppc64.whl", hash = "sha256:839252dcf467c43fba08d5ce07ed6d003621858d8e49fad4f217cda12c197fe0"},
+    {file = "nh3-0.2.7-cp37-abi3-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:4dd8fe9c062601e7387cf80c98a16c14b0becbfb24a922a4c1cec9a471061b73"},
+    {file = "nh3-0.2.7-cp37-abi3-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:75a7c0f1d00453b69d94c3b97a905201cd9626a55b10dd57fa914a456fb5befd"},
+    {file = "nh3-0.2.7-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:086d85aa8061db9ce6fe75c2c11821187ed20f6199a71295c10b5f68954d3283"},
+    {file = "nh3-0.2.7-cp37-abi3-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:0b8a4949c0f70ed6333bb876a3d47a82d6330eacb795d91d39aee3c8ac35c5ab"},
+    {file = "nh3-0.2.7-cp37-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:f7b28a2f2a91a216db4ab33697750e8efcd865e0001f03ade543d6c806f1ebdf"},
+    {file = "nh3-0.2.7-cp37-abi3-musllinux_1_2_armv7l.whl", hash = "sha256:f63072406db848d6817b8270e543dfd890bab118de9e9e913f58717886686aad"},
+    {file = "nh3-0.2.7-cp37-abi3-musllinux_1_2_i686.whl", hash = "sha256:47509292594cd422760fc1e25d0a39931ac889e4bcb32c33a256309ccf6bb167"},
+    {file = "nh3-0.2.7-cp37-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:66a9f6ebdd1d814b30888b0b3279b21493076bc0fe07f891199065be734eef1f"},
+    {file = "nh3-0.2.7-cp37-abi3-win32.whl", hash = "sha256:1bc9d342ef7a79f42291ea9c3c0145903120689a42b390de2763a28dd2d60d9c"},
+    {file = "nh3-0.2.7-cp37-abi3-win_amd64.whl", hash = "sha256:c8047185c604cb92f62bfef43c0d851705c26ee21a607db21e4ed5c6c5b05fc3"},
+    {file = "nh3-0.2.7.tar.gz", hash = "sha256:6cb41d30226f566cada0596e91b16b24c888b694b8c5b4ee7b69bb06c41a41eb"},
+]
+
+[[package]]
 name = "ordered-set"
 version = "4.1.0"
 description = "An OrderedSet is a custom MutableSet that remembers its order, so that every"
@@ -2759,4 +2785,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.7"
-content-hash = "d6189c917efde17fca7afe5c037ade93e3043f6fbaded901edcd6f1e70870764"
+content-hash = "c0e2929bf0efb34cfc6006017cca355ec54f9e95495601734eb5ba0fa3515985"

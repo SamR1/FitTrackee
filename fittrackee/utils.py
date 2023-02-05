@@ -4,6 +4,7 @@ from typing import Optional
 from uuid import UUID
 
 import humanize
+import nh3
 import shortuuid
 
 from fittrackee import db
@@ -44,3 +45,12 @@ def decode_short_id(short_id: str) -> UUID:
     Return UUID from a short id string
     """
     return shortuuid.decode(short_id)
+
+
+def clean_input(text: str) -> str:
+    # HTML sanitization
+    return nh3.clean(
+        text,
+        tags={"a", "br", "p", "span"},
+        attributes={"a": {"href", "target"}},
+    )

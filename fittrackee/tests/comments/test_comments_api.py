@@ -263,6 +263,39 @@ class TestPostWorkoutComment(
         ).first()
         assert data['comment'] == jsonify_dict(new_comment.serialize(user_1))
 
+    def test_it_sanitizes_text_before_storing_in_database(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment_text = "<script>alert('evil!')</script> Hello"
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_1.short_id}/comments",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    text=comment_text,
+                    text_visibility=PrivacyLevel.FOLLOWERS,
+                )
+            ),
+            headers=dict(
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+
+        assert response.status_code == 201
+        new_comment = WorkoutComment.query.filter_by(
+            user_id=user_1.id, workout_id=workout_cycling_user_1.id
+        ).first()
+        assert new_comment.text == " Hello"
+
     def test_it_returns_400_when_user_replies_to_not_existing_comment(
         self,
         app: Flask,
@@ -1773,6 +1806,34 @@ class TestPatchWorkoutComment(
         assert comment.text == updated_text
         assert comment.text_visibility == PrivacyLevel.PUBLIC
         assert comment.modification_date is not None
+
+    def test_it_sanitizes_text_before_storing_in_database(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        updated_text = "<script>alert('evil!')</script> Hello"
+
+        client.patch(
+            f"/api/workouts/{workout_cycling_user_1.short_id}"
+            f"/comments/{comment.short_id}",
+            content_type="application/json",
+            data=json.dumps(dict(text=updated_text)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert comment.text == " Hello"
 
     @pytest.mark.parametrize(
         'client_scope, can_access',

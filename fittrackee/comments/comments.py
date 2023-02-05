@@ -17,7 +17,7 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.users.models import User
-from fittrackee.utils import decode_short_id
+from fittrackee.utils import clean_input, decode_short_id
 from fittrackee.workouts.models import Workout
 
 from .decorators import check_workout_comment
@@ -66,7 +66,7 @@ def add_workout_comment(
             user_id=auth_user.id,
             workout_id=workout.id,
             workout_visibility=workout.workout_visibility,
-            text=comment_data['text'],
+            text=clean_input(comment_data['text']),
             text_visibility=PrivacyLevel(comment_data['text_visibility']),
             reply_to=workout_comment.id if workout_comment else None,
         )
@@ -208,7 +208,7 @@ def update_workout_comment(
         return InvalidPayloadErrorResponse()
 
     try:
-        workout_comment.text = comment_data.get('text')
+        workout_comment.text = clean_input(comment_data['text'])
         workout_comment.modification_date = datetime.utcnow()
         db.session.commit()
 

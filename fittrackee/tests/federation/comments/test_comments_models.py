@@ -101,6 +101,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(WorkoutCommentMixin):
             'user': user_1.serialize(),
             'workout_id': workout_cycling_user_1.short_id,
             'text': comment.text,
+            'text_html': comment.text,  # no mention
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
             'modification_date': comment.modification_date,
@@ -181,6 +182,7 @@ class TestWorkoutCommentModelSerializeForRemoteFollower(WorkoutCommentMixin):
             'user': remote_user.serialize(),
             'workout_id': remote_cycling_workout.short_id,
             'text': comment.text,
+            'text_html': comment.text,  # no mention
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
             'modification_date': comment.modification_date,
@@ -288,3 +290,27 @@ class TestWorkoutCommentModelGetDeleteActivity(
 ):
     activity_type = 'Delete'
     expected_object_type = 'Tombstone'
+
+
+class TestWorkoutCommentModelSerializeForMentions(WorkoutCommentMixin):
+    def test_it_serializes_comment_with_mentions_as_link(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        user_2: User,
+        remote_user: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_2,
+            workout=workout_cycling_user_1,
+            text=f"@{remote_user.actor.fullname} {self.random_string()}",
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+
+        serialized_comment = comment.serialize(user_1)
+
+        assert serialized_comment["text"] == comment.text
+        assert serialized_comment["text_html"] == comment.handle_mentions()[0]

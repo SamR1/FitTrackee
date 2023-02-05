@@ -1,5 +1,5 @@
 import datetime
-from typing import TYPE_CHECKING, Dict, List, Optional
+from typing import TYPE_CHECKING, Dict, List, Optional, Set, Tuple
 from uuid import uuid4
 
 from flask import current_app
@@ -18,6 +18,7 @@ from fittrackee.utils import encode_uuid
 from .exceptions import CommentForbiddenException
 
 if TYPE_CHECKING:
+    from fittrackee.federation.models import Actor
     from fittrackee.users.models import User
 
 
@@ -162,6 +163,11 @@ class WorkoutComment(BaseModel):
     def short_id(self) -> str:
         return encode_uuid(self.uuid)
 
+    def handle_mentions(self) -> Tuple[str, Set['Actor']]:
+        from .utils import handle_mentions
+
+        return handle_mentions(self.text)
+
     def serialize(self, user: Optional['User'] = None) -> Dict:
         # TODO: mentions
         if not can_view(self, 'text_visibility', user):
@@ -172,6 +178,8 @@ class WorkoutComment(BaseModel):
             'user': self.user.serialize(),
             'workout_id': self.workout.short_id,
             'text': self.text,
+            # TODO: store html version in database?
+            'text_html': self.handle_mentions()[0],
             'text_visibility': self.text_visibility,
             'created_at': self.created_at,
             'modification_date': self.modification_date,

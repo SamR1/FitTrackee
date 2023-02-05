@@ -30,8 +30,12 @@ class WorkoutCommentObject(BaseObject):
         self.activity_dict = self._init_activity_dict()
 
     def get_activity(self) -> Dict:
+        (
+            text_with_mention,
+            mentioned_actors,
+        ) = self.workout_comment.handle_mentions()
         self.activity_dict['object']['type'] = 'Note'
-        self.activity_dict['object']['content'] = self.workout_comment.text
+        self.activity_dict['object']['content'] = text_with_mention
         self.activity_dict['object']['inReplyTo'] = (
             self.workout_comment.parent_comment.ap_id
             if self.workout_comment.reply_to
@@ -42,4 +46,7 @@ class WorkoutCommentObject(BaseObject):
                 **self.activity_dict['object'],
                 'updated': self._get_modification_date(self.workout_comment),
             }
+        mentions = [actor.activitypub_id for actor in mentioned_actors]
+        self.activity_dict['cc'].extend(mentions)
+        self.activity_dict['object']['cc'].extend(mentions)
         return self.activity_dict

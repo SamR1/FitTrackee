@@ -184,6 +184,41 @@ class TestWorkoutCommentCreateObject(WorkoutCommentMixin):
             },
         }
 
+    def test_it_generates_activity_with_mentioned_users(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.ap_id = self.random_string()
+        workout_comment = self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text=f"@{user_3.username} @{remote_user.actor.fullname} great!",
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        comment_object = WorkoutCommentObject(workout_comment, 'Create')
+
+        serialized_comment = comment_object.get_activity()
+
+        text_with_mentions, _ = workout_comment.handle_mentions()
+        assert set(serialized_comment['cc']) == {
+            user_2.actor.followers_url,
+            user_3.actor.activitypub_id,
+            remote_user.actor.activitypub_id,
+        }
+        assert set(serialized_comment['object']['cc']) == {
+            user_2.actor.followers_url,
+            user_3.actor.activitypub_id,
+            remote_user.actor.activitypub_id,
+        }
+        assert serialized_comment['object']['content'] == text_with_mentions
+
 
 class TestWorkoutCommentUpdateObject(WorkoutCommentMixin):
     @pytest.mark.parametrize(
@@ -317,3 +352,39 @@ class TestWorkoutCommentUpdateObject(WorkoutCommentMixin):
                 ),
             },
         }
+
+    def test_it_generates_activity_with_mentioned_users(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.ap_id = self.random_string()
+        workout_comment = self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text=f"@{user_3.username} @{remote_user.actor.fullname} great!",
+            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+        )
+        workout_comment.modification_date = datetime.utcnow()
+        comment_object = WorkoutCommentObject(workout_comment, 'Update')
+
+        serialized_comment = comment_object.get_activity()
+
+        text_with_mentions, _ = workout_comment.handle_mentions()
+        assert set(serialized_comment['cc']) == {
+            user_2.actor.activitypub_id,
+            user_3.actor.activitypub_id,
+            remote_user.actor.activitypub_id,
+        }
+        assert set(serialized_comment['object']['cc']) == {
+            user_2.actor.activitypub_id,
+            user_3.actor.activitypub_id,
+            remote_user.actor.activitypub_id,
+        }
+        assert serialized_comment['object']['content'] == text_with_mentions
