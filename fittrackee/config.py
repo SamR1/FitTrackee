@@ -99,16 +99,18 @@ class TestingConfig(BaseConfig):
     TOKEN_EXPIRATION_DAYS = 0
     TOKEN_EXPIRATION_SECONDS = 10
     PASSWORD_TOKEN_EXPIRATION_SECONDS = 10
-    UI_URL = 'http://0.0.0.0:5000'
+    UI_URL = 'https://example.com'
     SENDER_EMAIL = 'fittrackee@example.com'
     OAUTH2_TOKEN_EXPIRES_IN = {
         'authorization_code': 60,
     }
-    AP_DOMAIN = '0.0.0.0:5000'
+    AP_DOMAIN = 'example.com'
 
 
 class End2EndTestingConfig(TestingConfig):
     DRAMATIQ_BROKER_URL = os.getenv('REDIS_URL', 'redis://')
+    UI_URL = 'http://0.0.0.0:5000'
+    AP_DOMAIN = '0.0.0.0:5000'
 
 
 class ProductionConfig(BaseConfig):

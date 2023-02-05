@@ -1422,7 +1422,7 @@ class TestUpdateUser(ApiTestCaseMixin):
             },
             {
                 'username': user_2.username,
-                'fittrackee_url': 'http://0.0.0.0:5000',
+                'fittrackee_url': app.config["UI_URL"],
             },
         )
 
@@ -1482,9 +1482,9 @@ class TestUpdateUser(ApiTestCaseMixin):
                 ),
                 'username': user_2.username,
                 'password_reset_url': (
-                    'http://0.0.0.0:5000/password-reset?token=xxx'
+                    f'{app.config["UI_URL"]}/password-reset?token=xxx'
                 ),
-                'fittrackee_url': 'http://0.0.0.0:5000',
+                'fittrackee_url': app.config["UI_URL"],
             },
         )
 
@@ -1634,9 +1634,10 @@ class TestUpdateUser(ApiTestCaseMixin):
             },
             {
                 'username': user_2.username,
-                'fittrackee_url': 'http://0.0.0.0:5000',
+                'fittrackee_url': app.config["UI_URL"],
                 'email_confirmation_url': (
-                    f'http://0.0.0.0:5000/email-update?token={expected_token}'
+                    f'{app.config["UI_URL"]}/email-update'
+                    f'?token={expected_token}'
                 ),
             },
         )
