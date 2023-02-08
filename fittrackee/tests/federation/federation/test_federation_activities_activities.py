@@ -220,7 +220,7 @@ class TestFollowActivity(FollowRequestActivitiesTestCase):
         follow_request = FollowRequest.query.filter_by(
             followed_user_id=user_1.id,
         ).first()
-        assert follow_request.from_user.actor.fullname == random_actor.fullname
+        assert follow_request.from_user.fullname == random_actor.fullname
 
     def test_it_does_not_raise_error_if_pending_follow_request_already_exist(
         self,

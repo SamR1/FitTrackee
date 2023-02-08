@@ -420,7 +420,7 @@ class TestCreateRemoteUser:
         with patch(
             'fittrackee.federation.utils.user.fetch_account_from_webfinger',
             return_value={
-                'subject': f'acct:{remote_user.actor.fullname}',
+                'subject': f'acct:{remote_user.fullname}',
                 'links': [
                     {
                         'rel': 'self',
@@ -604,9 +604,7 @@ class TestGetUserFromUsernameWithoutUpdate:
     def test_it_returns_remote_user(
         self, app_with_federation: Flask, remote_user: User
     ) -> None:
-        assert (
-            get_user_from_username(remote_user.actor.fullname) == remote_user
-        )
+        assert get_user_from_username(remote_user.fullname) == remote_user
 
 
 class TestGetUserFromUsernameWithAction:
@@ -668,9 +666,7 @@ class TestGetUserFromUsernameWithAction:
         with patch(
             'fittrackee.federation.utils.user.update_remote_user'
         ) as update_remote_user_mock:
-            get_user_from_username(
-                remote_user.actor.fullname, with_action='refresh'
-            )
+            get_user_from_username(remote_user.fullname, with_action='refresh')
 
         update_remote_user_mock.assert_called_with(remote_user.actor)
 
@@ -682,7 +678,7 @@ class TestGetUserFromUsernameWithAction:
             side_effect=RemoteActorException(),
         ):
             user = get_user_from_username(
-                remote_user.actor.fullname, with_action='refresh'
+                remote_user.fullname, with_action='refresh'
             )
 
         assert user == remote_user

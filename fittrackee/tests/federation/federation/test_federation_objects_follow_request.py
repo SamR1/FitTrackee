@@ -24,8 +24,7 @@ class TestFollowRequestObject:
         assert serialized_follow_request == {
             '@context': AP_CTX,
             'id': (
-                f'{user_1.actor.activitypub_id}#follows/'
-                f'{user_2.actor.fullname}'
+                f'{user_1.actor.activitypub_id}#follows/' f'{user_2.fullname}'
             ),
             'type': 'Follow',
             'actor': user_1.actor.activitypub_id,
@@ -50,14 +49,14 @@ class TestFollowRequestObject:
             '@context': AP_CTX,
             'id': (
                 f'{user_2.actor.activitypub_id}#accepts/'
-                f'follow/{user_1.actor.fullname}'
+                f'follow/{user_1.fullname}'
             ),
             'type': 'Accept',
             'actor': user_2.actor.activitypub_id,
             'object': {
                 'id': (
                     f'{user_1.actor.activitypub_id}#follows/'
-                    f'{user_2.actor.fullname}'
+                    f'{user_2.fullname}'
                 ),
                 'type': 'Follow',
                 'actor': user_1.actor.activitypub_id,
@@ -83,14 +82,14 @@ class TestFollowRequestObject:
             '@context': AP_CTX,
             'id': (
                 f'{user_2.actor.activitypub_id}#rejects/'
-                f'follow/{user_1.actor.fullname}'
+                f'follow/{user_1.fullname}'
             ),
             'type': 'Reject',
             'actor': user_2.actor.activitypub_id,
             'object': {
                 'id': (
                     f'{user_1.actor.activitypub_id}#follows/'
-                    f'{user_2.actor.fullname}'
+                    f'{user_2.fullname}'
                 ),
                 'type': 'Follow',
                 'actor': user_1.actor.activitypub_id,
@@ -115,15 +114,14 @@ class TestFollowRequestObject:
         assert serialized_follow_request == {
             '@context': AP_CTX,
             'id': (
-                f'{user_1.actor.activitypub_id}#undoes/'
-                f'{user_2.actor.fullname}'
+                f'{user_1.actor.activitypub_id}#undoes/' f'{user_2.fullname}'
             ),
             'type': 'Undo',
             'actor': user_1.actor.activitypub_id,
             'object': {
                 'id': (
                     f'{user_1.actor.activitypub_id}#follows/'
-                    f'{user_2.actor.fullname}'
+                    f'{user_2.fullname}'
                 ),
                 'type': 'Follow',
                 'actor': user_1.actor.activitypub_id,

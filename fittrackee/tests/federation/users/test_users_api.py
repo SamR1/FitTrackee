@@ -112,7 +112,7 @@ class TestGetRemoteUsers(ApiTestCaseMixin):
             'fittrackee.federation.utils.user.update_remote_user',
         ):
             response = client.get(
-                f'/api/users/remote?q=@{remote_user.actor.fullname}',
+                f'/api/users/remote?q=@{remote_user.fullname}',
                 content_type='application/json',
                 headers=dict(Authorization=f'Bearer {auth_token}'),
             )
@@ -143,7 +143,7 @@ class TestGetRemoteUsers(ApiTestCaseMixin):
             'fittrackee.federation.utils.user.update_remote_user',
         ) as update_remote_user_mock:
             client.get(
-                f'/api/users/remote?q=@{remote_user.actor.fullname}',
+                f'/api/users/remote?q=@{remote_user.fullname}',
                 content_type='application/json',
                 headers=dict(Authorization=f'Bearer {auth_token}'),
             )
@@ -287,7 +287,7 @@ class TestGetRemoteUser(ApiTestCaseMixin):
         ):
 
             response = client.get(
-                f'/api/users/@{remote_user.actor.fullname}',
+                f'/api/users/@{remote_user.fullname}',
                 content_type='application/json',
                 headers=dict(Authorization=f'Bearer {auth_token}'),
             )
@@ -309,7 +309,7 @@ class TestGetRemoteUser(ApiTestCaseMixin):
         ) as update_remote_user_mock:
 
             client.get(
-                f'/api/users/@{remote_user.actor.fullname}',
+                f'/api/users/@{remote_user.fullname}',
                 content_type='application/json',
                 headers=dict(Authorization=f'Bearer {auth_token}'),
             )
@@ -367,7 +367,7 @@ class TestUpdateUser(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/users/@{remote_user.actor.fullname}',
+            f'/api/users/@{remote_user.fullname}',
             content_type='application/json',
             data=json.dumps(dict(admin=True)),
             headers=dict(Authorization=f'Bearer {auth_token}'),

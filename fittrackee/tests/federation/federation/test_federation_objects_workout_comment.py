@@ -199,7 +199,7 @@ class TestWorkoutCommentCreateObject(WorkoutCommentMixin):
         workout_comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text=f"@{user_3.username} @{remote_user.actor.fullname} great!",
+            text=f"@{user_3.username} @{remote_user.fullname} great!",
             text_visibility=PrivacyLevel.PUBLIC,
         )
         comment_object = WorkoutCommentObject(workout_comment, 'Create')
@@ -368,7 +368,7 @@ class TestWorkoutCommentUpdateObject(WorkoutCommentMixin):
         workout_comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text=f"@{user_3.username} @{remote_user.actor.fullname} great!",
+            text=f"@{user_3.username} @{remote_user.fullname} great!",
             text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
         )
         workout_comment.modification_date = datetime.utcnow()

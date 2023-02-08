@@ -706,3 +706,12 @@ class TestUserGetRecipientsSharedInbox:
     ) -> None:
         with pytest.raises(FederationDisabledException):
             user_1.get_followers_shared_inboxes()
+
+
+class TestUserFullname:
+    def test_it_returns_user_actor_fullname(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        assert user_1.fullname == user_1.actor.fullname

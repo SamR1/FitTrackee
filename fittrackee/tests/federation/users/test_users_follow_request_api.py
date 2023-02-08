@@ -159,7 +159,7 @@ class TestAcceptRemoteFollowRequestWithFederation(
         self.assert_it_returns_follow_request_processed(
             client,
             auth_token,
-            remote_user.actor.fullname,
+            remote_user.fullname,
             'accept',
         )
 
@@ -294,7 +294,7 @@ class TestRejectRemoteFollowRequestWithFederation(
         self.assert_it_returns_follow_request_processed(
             client,
             auth_token,
-            remote_user.actor.fullname,
+            remote_user.fullname,
             'reject',
         )
 

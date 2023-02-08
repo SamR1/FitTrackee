@@ -78,7 +78,7 @@ class TestWebfinger(ApiTestCaseMixin):
         client = app_with_federation.test_client()
 
         response = client.get(
-            '/.well-known/webfinger?resource=acct:' f'{user_1.actor.fullname}',
+            '/.well-known/webfinger?resource=acct:' f'{user_1.fullname}',
             content_type='application/json',
         )
 

@@ -32,7 +32,7 @@ class TestHandleMentions:
     def test_it_linkifies_user_when_local_user_found_with_domain(
         self, app: Flask, user_1: User
     ) -> None:
-        text = f"@{user_1.actor.fullname} nice!"
+        text = f"@{user_1.fullname} nice!"
 
         converted_text, mentioned_actors = handle_mentions(text)
 

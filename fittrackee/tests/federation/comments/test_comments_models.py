@@ -306,7 +306,7 @@ class TestWorkoutCommentModelSerializeForMentions(WorkoutCommentMixin):
         comment = self.create_comment(
             user=user_2,
             workout=workout_cycling_user_1,
-            text=f"@{remote_user.actor.fullname} {self.random_string()}",
+            text=f"@{remote_user.fullname} {self.random_string()}",
             text_visibility=PrivacyLevel.PUBLIC,
         )
 

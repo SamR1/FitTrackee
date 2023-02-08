@@ -455,6 +455,10 @@ class User(BaseModel):
         self.actor_id = actor.id
         db.session.commit()
 
+    @property
+    def fullname(self) -> str:
+        return self.actor.fullname
+
     def serialize(self, current_user: Optional['User'] = None) -> Dict:
         if current_user is None:
             role = None
@@ -493,7 +497,7 @@ class User(BaseModel):
             'username': self.username,
         }
         if self.is_remote:
-            serialized_user['fullname'] = f'@{self.actor.fullname}'
+            serialized_user['fullname'] = f'@{self.fullname}'
             serialized_user['followers'] = self.actor.stats.followers
             serialized_user['following'] = self.actor.stats.following
             serialized_user['profile_link'] = self.actor.profile_url

@@ -22,8 +22,7 @@ class TestUserModel:
         assert remote_user.is_remote is True
         assert remote_user.serialize()['is_remote'] is True
         assert (
-            remote_user.serialize()['fullname']
-            == f'@{remote_user.actor.fullname}'
+            remote_user.serialize()['fullname'] == f'@{remote_user.fullname}'
         )
         assert (
             remote_user.serialize()['profile_link']
