@@ -15,7 +15,6 @@ from fittrackee.federation.utils.user import (
     create_remote_user_from_username,
     get_or_create_remote_domain_from_url,
     get_user_from_username,
-    get_user_from_username_if_exists,
     get_username_and_domain,
     store_or_delete_user_picture,
     update_remote_actor_stats,
@@ -25,12 +24,7 @@ from fittrackee.files import get_absolute_file_path
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.models import User
 
-from ...utils import (
-    RandomActor,
-    generate_response,
-    random_domain,
-    random_string,
-)
+from ...utils import RandomActor, generate_response, random_string
 
 
 class TestGetUsernameAndDomain:
@@ -682,72 +676,6 @@ class TestGetUserFromUsernameWithAction:
             )
 
         assert user == remote_user
-
-
-class TestGetUserFromUsernameIfExists:
-    def test_it_returns_none_if_no_local_user(
-        self, app_with_federation: Flask
-    ) -> None:
-        assert (
-            get_user_from_username_if_exists(username=random_string()) is None
-        )
-
-    def test_it_returns_none_if_no_remote_user(
-        self, app_with_federation: Flask
-    ) -> None:
-        assert (
-            get_user_from_username_if_exists(
-                username=random_string(), domain=random_domain()
-            )
-            is None
-        )
-
-    def test_it_returns_none_if_no_remote_user_with_existing(
-        self, app_with_federation: Flask, remote_domain: Domain
-    ) -> None:
-        assert (
-            get_user_from_username_if_exists(
-                username=random_string(), domain=remote_domain.name
-            )
-            is None
-        )
-
-    def test_it_returns_none_if_only_remote_user_exists_when_username_provided(
-        self, app_with_federation: Flask, user_1: User, remote_user: User
-    ) -> None:
-        assert (
-            get_user_from_username_if_exists(username=remote_user.username)
-            is None
-        )
-
-    def test_it_returns_local_user(
-        self, app_with_federation: Flask, user_1: User
-    ) -> None:
-        assert (
-            get_user_from_username_if_exists(username=user_1.username)
-            == user_1
-        )
-
-    def test_it_returns_local_user_from_fullname(
-        self, app_with_federation: Flask, user_1: User
-    ) -> None:
-        assert (
-            get_user_from_username_if_exists(
-                username=user_1.username, domain=user_1.actor.domain.name
-            )
-            == user_1
-        )
-
-    def test_it_returns_remote_user(
-        self, app_with_federation: Flask, remote_user: User
-    ) -> None:
-        assert (
-            get_user_from_username_if_exists(
-                username=remote_user.username,
-                domain=remote_user.actor.domain.name,
-            )
-            == remote_user
-        )
 
 
 class TestStoreOrDeleteUserPicture:

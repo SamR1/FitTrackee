@@ -225,27 +225,3 @@ def get_user_from_username(
     if not user:
         raise UserNotFoundException()
     return user
-
-
-def get_user_from_username_if_exists(
-    username: str, domain: str = ''
-) -> Optional[User]:
-    # local actor
-    if not domain or domain == current_app.config['AP_DOMAIN']:
-        return User.query.filter(
-            User.username == username,
-            User.is_remote == False,  # noqa
-        ).first()
-
-    # remote actor
-    return (
-        db.session.query(User)
-        .join(Actor, User.actor_id == Actor.id)
-        .join(Domain, Actor.domain_id == Domain.id)
-        .filter(
-            User.is_remote == True,  # noqa
-            Actor.preferred_username == username,
-            Domain.name == domain,
-        )
-        .first()
-    )

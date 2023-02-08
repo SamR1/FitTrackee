@@ -295,7 +295,19 @@ def upgrade():
         batch_op.create_index(batch_op.f('ix_workout_comments_workout_id'), ['workout_id'], unique=False)
         batch_op.create_index(batch_op.f('ix_workout_comments_reply_to'), ['reply_to'], unique=False)
 
+    op.create_table('mentions',
+    sa.Column('comment_id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.ForeignKeyConstraint(['comment_id'], ['workout_comments.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('comment_id', 'user_id')
+    )
+
+
 def downgrade():
+    op.drop_table('mentions')
+
     with op.batch_alter_table('workout_comments', schema=None) as batch_op:
         batch_op.drop_index(batch_op.f('ix_workout_comments_user_id'))
         batch_op.drop_index(batch_op.f('ix_workout_comments_workout_id'))

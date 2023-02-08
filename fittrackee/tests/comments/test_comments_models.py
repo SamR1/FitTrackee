@@ -1,11 +1,12 @@
 from datetime import datetime
+from unittest.mock import Mock, patch
 
 import pytest
 from flask import Flask
 from freezegun import freeze_time
 
 from fittrackee.comments.exceptions import CommentForbiddenException
-from fittrackee.comments.models import WorkoutComment
+from fittrackee.comments.models import Mention, WorkoutComment
 from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
@@ -644,6 +645,121 @@ class TestWorkoutCommentModelSerializeForReplies(WorkoutCommentMixin):
             visible_reply.serialize(user_1)
             for visible_reply in visible_replies
         ]
+
+
+class TestWorkoutCommentModelWithMentions(WorkoutCommentMixin):
+    def test_it_returns_empty_dict_when_no_mentions(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        user_2: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_2,
+            workout=workout_cycling_user_1,
+            text=self.random_string(),
+            text_visibility=PrivacyLevel.PUBLIC,
+            with_mentions=False,
+        )
+
+        _, mentioned_users = comment.create_mentions()
+
+        assert mentioned_users == {"local": set(), "remote": set()}
+
+    @patch('fittrackee.federation.utils.user.fetch_account_from_webfinger')
+    def test_it_does_not_create_mentions_when_mentioned_user_does_not_exist(
+        self,
+        fetch_mock: Mock,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        user_2: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_2,
+            workout=workout_cycling_user_1,
+            text=f"@{self.random_string()} {self.random_string()}",
+            text_visibility=PrivacyLevel.PUBLIC,
+            with_mentions=False,
+        )
+        fetch_mock.side_effect = Exception()
+
+        comment.create_mentions()
+
+        assert Mention.query.filter_by().first() is None
+
+    def test_it_returns_empty_dict_when_mentioned_user_does_not_exist(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        user_2: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_2,
+            workout=workout_cycling_user_1,
+            text=f"@{self.random_string()} {self.random_string()}",
+            text_visibility=PrivacyLevel.PUBLIC,
+            with_mentions=False,
+        )
+
+        _, mentioned_users = comment.create_mentions()
+
+        assert mentioned_users == {"local": set(), "remote": set()}
+
+    def test_it_creates_mentions_when_mentioned_user_exists(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_2,
+            workout=workout_cycling_user_1,
+            text=f"@{user_3.username} {self.random_string()}",
+            text_visibility=PrivacyLevel.PUBLIC,
+            with_mentions=False,
+        )
+
+        comment.create_mentions()
+
+        mention = Mention.query.first()
+        assert mention.comment_id == comment.id
+        assert mention.user_id == user_3.id
+
+    def test_it_returns_mentioned_user(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        mention = f"@{user_3.username}"
+        comment = self.create_comment(
+            user=user_2,
+            workout=workout_cycling_user_1,
+            text=f"{mention} {self.random_string()}",
+            text_visibility=PrivacyLevel.PUBLIC,
+            with_mentions=False,
+        )
+
+        _, mentioned_users = comment.create_mentions()
+
+        assert mentioned_users == {"local": {user_3}, "remote": set()}
 
 
 class TestWorkoutCommentModelSerializeForMentions(WorkoutCommentMixin):

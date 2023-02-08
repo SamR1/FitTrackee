@@ -18,7 +18,6 @@ from fittrackee.utils import encode_uuid
 from .exceptions import CommentForbiddenException
 
 if TYPE_CHECKING:
-    from fittrackee.federation.models import Actor
     from fittrackee.users.models import User
 
 
@@ -163,10 +162,50 @@ class WorkoutComment(BaseModel):
     def short_id(self) -> str:
         return encode_uuid(self.uuid)
 
-    def handle_mentions(self) -> Tuple[str, Set['Actor']]:
+    def handle_mentions(self) -> Tuple[str, Dict[str, Set['User']]]:
         from .utils import handle_mentions
 
         return handle_mentions(self.text)
+
+    def create_mentions(self) -> Tuple[str, Dict[str, Set['User']]]:
+        linkified_text, mentioned_users = self.handle_mentions()
+        for user in mentioned_users["local"].union(mentioned_users["remote"]):
+            mention = Mention(comment_id=self.id, user_id=user.id)
+            db.session.add(mention)
+            db.session.flush()
+        return linkified_text, mentioned_users
+
+    def update_mentions(self) -> None:
+        from fittrackee.users.models import User
+
+        existing_mentioned_users = set(
+            db.session.query(User)
+            .join(Mention, User.id == Mention.user_id)
+            .all()
+        )
+        linkified_text, mentioned_users = self.handle_mentions()
+        updated_mentioned_users = mentioned_users["local"].union(
+            mentioned_users["remote"]
+        )
+        intersection = updated_mentioned_users.intersection(
+            existing_mentioned_users
+        )
+
+        # delete removed mentions
+        mentions_to_delete = {
+            user.id for user in (existing_mentioned_users - intersection)
+        }
+        Mention.query.filter(
+            Mention.comment_id == self.id,
+            Mention.user_id.in_(mentions_to_delete),
+        ).delete()
+        db.session.flush()
+
+        # create new mentions
+        for user in updated_mentioned_users - intersection:
+            mention = Mention(comment_id=self.id, user_id=user.id)
+            db.session.add(mention)
+            db.session.flush()
 
     def serialize(self, user: Optional['User'] = None) -> Dict:
         # TODO: mentions
@@ -178,7 +217,6 @@ class WorkoutComment(BaseModel):
             'user': self.user.serialize(),
             'workout_id': self.workout.short_id,
             'text': self.text,
-            # TODO: store html version in database?
             'text_html': self.handle_mentions()[0],
             'text_visibility': self.text_visibility,
             'created_at': self.created_at,
@@ -206,3 +244,33 @@ class WorkoutComment(BaseModel):
             delete_activity = tombstone_object.get_activity()
             return delete_activity
         return {}
+
+
+class Mention(BaseModel):
+    __tablename__ = 'mentions'
+
+    comment_id = db.Column(
+        db.Integer,
+        db.ForeignKey('workout_comments.id', ondelete="CASCADE"),
+        primary_key=True,
+    )
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete="CASCADE"),
+        primary_key=True,
+    )
+    created_at = db.Column(
+        db.DateTime, nullable=False, default=datetime.datetime.utcnow
+    )
+
+    def __init__(
+        self,
+        comment_id: int,
+        user_id: int,
+        created_at: Optional[datetime.datetime] = None,
+    ):
+        self.comment_id = comment_id
+        self.user_id = user_id
+        self.created_at = (
+            datetime.datetime.utcnow() if created_at is None else created_at
+        )

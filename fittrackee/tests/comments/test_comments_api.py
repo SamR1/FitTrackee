@@ -5,7 +5,7 @@ import pytest
 from flask import Flask
 from werkzeug import Response
 
-from fittrackee.comments.models import WorkoutComment
+from fittrackee.comments.models import Mention, WorkoutComment
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
@@ -362,6 +362,42 @@ class TestPostWorkoutComment(
         assert response.status_code == 201
         data = json.loads(response.data.decode())
         assert data['comment']['reply_to'] == workout_comment.short_id
+
+    def test_it_creates_mention(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        client.post(
+            f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    text=f"@{user_3.username}",
+                    text_visibility=PrivacyLevel.PUBLIC,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        new_comment = WorkoutComment.query.filter_by(
+            user_id=user_1.id, workout_id=workout_cycling_user_2.id
+        ).first()
+        assert (
+            Mention.query.filter_by(
+                comment_id=new_comment.id, user_id=user_3.id
+            ).first()
+            is not None
+        )
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
@@ -1535,6 +1571,35 @@ class TestDeleteWorkoutComment(
         assert response.status_code == 204
         assert reply.reply_to is None
 
+    def test_it_deletes_mentions(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text=f"@{user_3.username}",
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        comment_id = comment.id
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        client.delete(
+            f"/api/workouts/{workout_cycling_user_2.short_id}"
+            f"/comments/{comment.short_id}",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert Mention.query.filter_by(comment_id=comment_id).all() == []
+
     @pytest.mark.parametrize(
         'client_scope, can_access',
         [
@@ -1834,6 +1899,77 @@ class TestPatchWorkoutComment(
         )
 
         assert comment.text == " Hello"
+
+    def test_it_updates_mentions_to_remove_mention(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text=f"@{user_3.username}",
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        client.patch(
+            f"/api/workouts/{workout_cycling_user_2.short_id}"
+            f"/comments/{comment.short_id}",
+            content_type="application/json",
+            data=json.dumps(dict(text=self.random_string())),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        new_comment = WorkoutComment.query.filter_by(
+            user_id=user_1.id, workout_id=workout_cycling_user_2.id
+        ).first()
+        assert Mention.query.filter_by(comment_id=new_comment.id).all() == []
+
+    def test_it_updates_mentions_to_add_mention(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text=self.random_string(),
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        client.patch(
+            f"/api/workouts/{workout_cycling_user_2.short_id}"
+            f"/comments/{comment.short_id}",
+            content_type="application/json",
+            data=json.dumps(dict(text=f"@{user_3.username}")),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        new_comment = WorkoutComment.query.filter_by(
+            user_id=user_1.id, workout_id=workout_cycling_user_2.id
+        ).first()
+        assert (
+            Mention.query.filter_by(
+                comment_id=new_comment.id, user_id=user_3.id
+            ).first()
+            is not None
+        )
 
     @pytest.mark.parametrize(
         'client_scope, can_access',

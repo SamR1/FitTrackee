@@ -1,4 +1,5 @@
 from datetime import datetime
+from unittest.mock import Mock, patch
 
 import pytest
 from flask import Flask
@@ -184,8 +185,10 @@ class TestWorkoutCommentCreateObject(WorkoutCommentMixin):
             },
         }
 
+    @patch('fittrackee.federation.utils.user.update_remote_user')
     def test_it_generates_activity_with_mentioned_users(
         self,
+        update_remote_user_mock: Mock,
         app_with_federation: Flask,
         user_1: User,
         user_2: User,
@@ -353,8 +356,10 @@ class TestWorkoutCommentUpdateObject(WorkoutCommentMixin):
             },
         }
 
+    @patch('fittrackee.federation.utils.user.update_remote_user')
     def test_it_generates_activity_with_mentioned_users(
         self,
+        update_remote_user_mock: Mock,
         app_with_federation: Flask,
         user_1: User,
         user_2: User,

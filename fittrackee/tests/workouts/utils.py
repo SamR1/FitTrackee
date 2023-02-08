@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 from io import BytesIO
 from typing import Optional, Tuple
+from unittest.mock import patch
 
 from flask import Flask
 
@@ -61,6 +62,7 @@ class WorkoutCommentMixin(RandomMixin):
         text_visibility: PrivacyLevel = PrivacyLevel.PRIVATE,
         created_at: Optional[datetime] = None,
         parent_comment: Optional[WorkoutComment] = None,
+        with_mentions: bool = True,
     ) -> WorkoutComment:
         text = self.random_string() if text is None else text
         comment = WorkoutComment(
@@ -74,6 +76,9 @@ class WorkoutCommentMixin(RandomMixin):
         )
         db.session.add(comment)
         db.session.flush()
+        if with_mentions:
+            with patch('fittrackee.federation.utils.user.update_remote_user'):
+                comment.create_mentions()
         actor = comment.user.actor
         comment.ap_id = (
             f'{actor.activitypub_id}/workouts/{workout.short_id}'

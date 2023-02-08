@@ -4,7 +4,7 @@ from unittest.mock import Mock, patch
 import pytest
 from flask import Flask
 
-from fittrackee.comments.models import WorkoutComment
+from fittrackee.comments.models import Mention, WorkoutComment
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
@@ -339,6 +339,47 @@ class TestPostWorkoutComment(
             sender_id=user_1.actor.id,
             activity=note_activity,
             recipients=[remote_user_2.actor.shared_inbox_url],
+        )
+
+    @patch('fittrackee.federation.utils.user.update_remote_user')
+    def test_it_creates_mention(
+        self,
+        update_mock: Mock,
+        send_to_remote_inbox_mock: Mock,
+        app_with_federation: Flask,
+        user_1: User,
+        user_2: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        remote_user.send_follow_request_to(user_1)
+        user_1.approves_follow_request_from(remote_user)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        client.post(
+            f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    text=f"@{remote_user.fullname}",
+                    text_visibility=PrivacyLevel.PUBLIC,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        new_comment = WorkoutComment.query.filter_by(
+            user_id=user_1.id, workout_id=workout_cycling_user_2.id
+        ).first()
+        assert (
+            Mention.query.filter_by(
+                comment_id=new_comment.id, user_id=remote_user.id
+            ).first()
+            is not None
         )
 
 
@@ -1085,6 +1126,38 @@ class TestDeleteWorkoutComment(
             recipients=[remote_user_2.actor.shared_inbox_url],
         )
 
+    def test_it_deletes_mentions(
+        self,
+        send_to_remote_inbox_mock: Mock,
+        app_with_federation: Flask,
+        user_1: User,
+        user_2: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_remote_user_to_user_1: FollowRequest,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        user_1.approves_follow_request_from(remote_user)
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text=f"@{remote_user.fullname}",
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        comment_id = comment.id
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        client.delete(
+            f"/api/workouts/{workout_cycling_user_2.short_id}"
+            f"/comments/{comment.short_id}",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert Mention.query.filter_by(comment_id=comment_id).all() == []
+
 
 @patch('fittrackee.comments.comments.send_to_remote_inbox')
 class TestPatchWorkoutComment(
@@ -1165,3 +1238,94 @@ class TestPatchWorkoutComment(
             activity=update_comment_activity,
             recipients=[remote_user.actor.shared_inbox_url],
         )
+
+    @patch('fittrackee.federation.utils.user.update_remote_user')
+    def test_it_updates_mentions_to_remove_mention(
+        self,
+        update_mock: Mock,
+        send_to_remote_inbox_mock: Mock,
+        app_with_federation: Flask,
+        user_1: User,
+        user_2: User,
+        remote_user: User,
+        remote_user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_remote_user_to_user_1: FollowRequest,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        user_1.approves_follow_request_from(remote_user)
+        remote_user_2.send_follow_request_to(user_1)
+        user_1.approves_follow_request_from(remote_user_2)
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text=f"@{remote_user.fullname} @{remote_user_2.fullname}",
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        client.patch(
+            f"/api/workouts/{workout_cycling_user_2.short_id}"
+            f"/comments/{comment.short_id}",
+            content_type="application/json",
+            data=json.dumps(dict(text=f"@{remote_user.fullname}")),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        new_comment = WorkoutComment.query.filter_by(
+            user_id=user_1.id, workout_id=workout_cycling_user_2.id
+        ).first()
+        mentions = Mention.query.filter_by(comment_id=new_comment.id).all()
+        assert len(mentions) == 1
+        assert mentions[0] == (
+            Mention.query.filter_by(
+                comment_id=new_comment.id, user_id=remote_user.id
+            ).first()
+        )
+
+    @patch('fittrackee.federation.utils.user.update_remote_user')
+    def test_it_updates_mentions_to_add_mention(
+        self,
+        update_mock: Mock,
+        send_to_remote_inbox_mock: Mock,
+        app_with_federation: Flask,
+        user_1: User,
+        user_2: User,
+        remote_user: User,
+        remote_user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_remote_user_to_user_1: FollowRequest,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        user_1.approves_follow_request_from(remote_user)
+        remote_user_2.send_follow_request_to(user_1)
+        user_1.approves_follow_request_from(remote_user_2)
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text=f"@{remote_user.fullname}",
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_federation, user_1.email
+        )
+
+        client.patch(
+            f"/api/workouts/{workout_cycling_user_2.short_id}"
+            f"/comments/{comment.short_id}",
+            content_type="application/json",
+            data=json.dumps(
+                dict(text=f"@{remote_user.fullname} @{remote_user_2.fullname}")
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        new_comment = WorkoutComment.query.filter_by(
+            user_id=user_1.id, workout_id=workout_cycling_user_2.id
+        ).first()
+        mentions = Mention.query.filter_by(comment_id=new_comment.id).all()
+        assert len(mentions) == 2

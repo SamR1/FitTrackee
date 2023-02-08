@@ -32,7 +32,7 @@ class WorkoutCommentObject(BaseObject):
     def get_activity(self) -> Dict:
         (
             text_with_mention,
-            mentioned_actors,
+            mentioned_users,
         ) = self.workout_comment.handle_mentions()
         self.activity_dict['object']['type'] = 'Note'
         self.activity_dict['object']['content'] = text_with_mention
@@ -46,7 +46,12 @@ class WorkoutCommentObject(BaseObject):
                 **self.activity_dict['object'],
                 'updated': self._get_modification_date(self.workout_comment),
             }
-        mentions = [actor.activitypub_id for actor in mentioned_actors]
+        mentions = [
+            user.actor.activitypub_id
+            for user in mentioned_users["local"].union(
+                mentioned_users["remote"]
+            )
+        ]
         self.activity_dict['cc'].extend(mentions)
         self.activity_dict['object']['cc'].extend(mentions)
         return self.activity_dict

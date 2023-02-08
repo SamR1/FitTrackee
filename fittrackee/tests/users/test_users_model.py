@@ -715,3 +715,25 @@ class TestUserFullname:
         user_1: User,
     ) -> None:
         assert user_1.fullname == user_1.actor.fullname
+
+
+class TestUserLinkifyMention:
+    def test_it_returns_linkified_mention_with_username(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        assert user_1.linkify_mention(with_domain=False) == (
+            f'<a href="{user_1.get_user_url()}" target="_blank" '
+            f'rel="noopener noreferrer">@{user_1.username}</a>'
+        )
+
+    def test_it_returns_linkified_mention_with_fullname(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        assert user_1.linkify_mention(with_domain=True) == (
+            f'<a href="{user_1.get_user_url()}" target="_blank" '
+            f'rel="noopener noreferrer">@{user_1.fullname}</a>'
+        )

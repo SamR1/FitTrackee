@@ -5,54 +5,102 @@ from fittrackee.tests.utils import random_string
 from fittrackee.users.models import User
 
 
-class TestHandleMentions:
-    def test_it_does_not_linkify_user_if_not_user_found(
+class TestGetMentionedUsers:
+    def test_it_returns_empty_dict_when_no_mentions(self, app: Flask) -> None:
+        text = random_string()
+
+        _, mentioned_users = handle_mentions(text)
+
+        assert mentioned_users == {"local": set(), "remote": set()}
+
+    def test_it_returns_unchanged_text_when_no_mentions(
         self, app: Flask
     ) -> None:
-        text = f"@{random_string()} nice!"
+        text = ' '.join([random_string()] * 5)
 
-        converted_text, mentioned_actors = handle_mentions(text)
+        linkified_text, _ = handle_mentions(text)
 
-        assert converted_text == text
-        assert mentioned_actors == set()
+        assert linkified_text == text
 
-    def test_it_linkifies_user_when_local_user_found(
+    def test_it_returns_empty_dict_when_user_not_found_by_username(
+        self, app: Flask
+    ) -> None:
+        text = f"@{random_string()} {random_string()}"
+
+        _, mentioned_users = handle_mentions(text)
+
+        assert mentioned_users == {"local": set(), "remote": set()}
+
+    def test_it_returns_unchanged_text_when_user_not_found_by_username(
+        self, app: Flask
+    ) -> None:
+        text = f"@{random_string()} {random_string()}"
+
+        linkified_text, _ = handle_mentions(text)
+
+        assert linkified_text == text
+
+    def test_it_returns_empty_dict_when_user_not_found_by_fullname(
+        self, app: Flask
+    ) -> None:
+        text = f"@{random_string()}@{random_string()} {random_string()}"
+
+        _, mentioned_users = handle_mentions(text)
+
+        assert mentioned_users == {"local": set(), "remote": set()}
+
+    def test_it_returns_user_when_mentioned_by_username(
         self, app: Flask, user_1: User
     ) -> None:
-        text = f"@{user_1.username} nice!"
+        text = f"@{user_1.username} {random_string()}"
 
-        converted_text, mentioned_actors = handle_mentions(text)
+        _, mentioned_users = handle_mentions(text)
 
-        assert converted_text == (
-            f'<a href="{user_1.actor.profile_url}" target="_blank" '
-            f'rel="noopener noreferrer">@{user_1.username}</a> nice!'
-        )
-        assert mentioned_actors == {user_1.actor}
+        assert mentioned_users == {"local": {user_1}, "remote": set()}
 
-    def test_it_linkifies_user_when_local_user_found_with_domain(
+    def test_it_returns_text_with_link_when_user_found_by_username(
         self, app: Flask, user_1: User
     ) -> None:
-        text = f"@{user_1.fullname} nice!"
+        mention = f"@{user_1.fullname}"
+        text = f"{mention} {random_string()}"
 
-        converted_text, mentioned_actors = handle_mentions(text)
+        linkified_text, _ = handle_mentions(text)
 
-        assert converted_text == (
-            f'<a href="{user_1.actor.profile_url}" target="_blank" '
-            f'rel="noopener noreferrer">@{user_1.username}</a> nice!'
+        assert linkified_text == text.replace(
+            mention,
+            f'<a href="{user_1.get_user_url()}" target="_blank" '
+            f'rel="noopener noreferrer">{mention}</a>',
         )
-        assert mentioned_actors == {user_1.actor}
 
-    def test_it_linkifies_multiple_users(
-        self, app: Flask, user_1: User, user_2: User
+    def test_it_returns_user_when_mentioned_by_actor_fullname(
+        self, app: Flask, user_1: User
     ) -> None:
-        text = f"@{user_1.username} @{user_2.username} nice!"
+        text = f"@{user_1.fullname} {random_string()}"
 
-        converted_text, mentioned_actors = handle_mentions(text)
+        _, mentioned_users = handle_mentions(text)
 
-        assert converted_text == (
-            f'<a href="{user_1.actor.profile_url}" target="_blank" '
-            f'rel="noopener noreferrer">@{user_1.username}</a> '
-            f'<a href="{user_2.actor.profile_url}" target="_blank" '
-            f'rel="noopener noreferrer">@{user_2.username}</a> nice!'
+        assert mentioned_users == {"local": {user_1}, "remote": set()}
+
+    def test_it_returns_text_with_link_when_user_found_by_actor_fullname(
+        self, app: Flask, user_1: User
+    ) -> None:
+        mention = f"@{user_1.fullname}"
+        text = f"{mention} {random_string()}"
+
+        linkified_text, _ = handle_mentions(text)
+
+        assert linkified_text == text.replace(
+            mention,
+            f'<a href="{user_1.get_user_url()}" target="_blank" '
+            f'rel="noopener noreferrer">{mention}</a>',
         )
-        assert mentioned_actors == {user_1.actor, user_2.actor}
+
+    def test_it_returns_deduplicated_user_when_mentioned_twice(
+        self, app: Flask, user_1: User
+    ) -> None:
+        mention = f"@{user_1.username} " * 2
+        text = f"{mention} {random_string()}"
+
+        _, mentioned_users = handle_mentions(text)
+
+        assert mentioned_users == {"local": {user_1}, "remote": set()}

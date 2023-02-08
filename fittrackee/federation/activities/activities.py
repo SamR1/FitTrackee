@@ -234,13 +234,16 @@ class CreateActivity(AbstractActivity):
         new_comment.ap_id = note_data["id"]
         new_comment.remote_url = note_data["url"]
         db.session.add(new_comment)
+        db.session.flush()
+        new_comment.create_mentions()
         db.session.commit()
 
     def process_activity(self) -> None:
-        actor = self.get_actor()
-        if self.activity['object']['type'] == 'Workout':
+        object_type = self.activity['object']['type']
+        actor = self.get_actor(create_remote_actor=object_type == "Note")
+        if object_type == 'Workout':
             self.create_remote_workout(actor=actor)
-        if self.activity['object']['type'] == 'Note':
+        if object_type == 'Note':
             self.create_remote_note(actor=actor)
 
 
@@ -346,6 +349,7 @@ class UpdateActivity(AbstractActivity):
                 note_data, actor
             )
             comment_to_update.modification_date = datetime.utcnow()
+            comment_to_update.update_mentions()
             db.session.commit()
         except Exception as e:
             raise ActivityException(

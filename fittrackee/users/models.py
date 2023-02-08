@@ -25,6 +25,11 @@ from .exceptions import (
 from .roles import UserRole
 from .utils.token import decode_user_token, get_user_token
 
+USER_LINK_TEMPLATE = (
+    '<a href="{profile_url}" target="_blank" rel="noopener noreferrer">'
+    '{username}</a>'
+)
+
 
 class FollowRequest(BaseModel):
     """Follow request between two users"""
@@ -458,6 +463,14 @@ class User(BaseModel):
     @property
     def fullname(self) -> str:
         return self.actor.fullname
+
+    def linkify_mention(self, with_domain: bool) -> str:
+        mention = f"@{self.username}"
+        if with_domain:
+            mention += f"@{self.actor.domain.name}"
+        return USER_LINK_TEMPLATE.format(
+            profile_url=self.actor.profile_url, username=mention
+        )
 
     def serialize(self, current_user: Optional['User'] = None) -> Dict:
         if current_user is None:

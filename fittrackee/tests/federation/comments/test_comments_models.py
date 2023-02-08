@@ -1,8 +1,10 @@
+from unittest.mock import Mock, patch
+
 import pytest
 from flask import Flask
 
 from fittrackee.comments.exceptions import CommentForbiddenException
-from fittrackee.comments.models import WorkoutComment
+from fittrackee.comments.models import Mention, WorkoutComment
 from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.tests.workouts.utils import WorkoutCommentMixin
@@ -10,6 +12,7 @@ from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
 from ...mixins import RandomMixin
+from ...utils import RandomActor
 
 
 class TestWorkoutCommentModel(RandomMixin):
@@ -292,9 +295,96 @@ class TestWorkoutCommentModelGetDeleteActivity(
     expected_object_type = 'Tombstone'
 
 
+@patch('fittrackee.federation.utils.user.update_remote_user')
+class TestWorkoutCommentModelWithMentions(WorkoutCommentMixin):
+    def test_it_creates_mentions_when_mentioned_user_exists(
+        self,
+        update_mock: Mock,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        user_2: User,
+        remote_user: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_2,
+            workout=workout_cycling_user_1,
+            text=f"@{remote_user.fullname} {self.random_string()}",
+            text_visibility=PrivacyLevel.PUBLIC,
+            with_mentions=False,
+        )
+
+        comment.create_mentions()
+
+        mention = Mention.query.first()
+        assert mention.comment_id == comment.id
+        assert mention.user_id == remote_user.id
+
+    def test_it_creates_mentions_when_mentioned_user_does_not_exist(
+        self,
+        update_mock: Mock,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        user_2: User,
+        random_actor: RandomActor,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_2,
+            workout=workout_cycling_user_1,
+            text=f"@{random_actor.fullname} {self.random_string()}",
+            text_visibility=PrivacyLevel.PUBLIC,
+            with_mentions=False,
+        )
+
+        with patch(
+            'fittrackee.federation.utils.user.fetch_account_from_webfinger',
+            return_value=random_actor.get_webfinger(),
+        ), patch(
+            'fittrackee.federation.utils.user.get_remote_actor_url',
+            return_value=random_actor.get_remote_user_object(),
+        ):
+            comment.create_mentions()
+
+        remote_user = User.query.filter_by(username=random_actor.name).first()
+        mention = Mention.query.first()
+        assert mention.comment_id == comment.id
+        assert mention.user_id == remote_user.id
+
+    def test_it_returns_mentioned_user(
+        self,
+        update_mock: Mock,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        user_2: User,
+        remote_user: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        mention = f"@{remote_user.fullname}"
+        comment = self.create_comment(
+            user=user_2,
+            workout=workout_cycling_user_1,
+            text=f"{mention} {self.random_string()}",
+            text_visibility=PrivacyLevel.PUBLIC,
+            with_mentions=False,
+        )
+
+        _, mentioned_users = comment.create_mentions()
+
+        assert mentioned_users == {"local": set(), "remote": {remote_user}}
+
+
+@patch('fittrackee.federation.utils.user.update_remote_user')
 class TestWorkoutCommentModelSerializeForMentions(WorkoutCommentMixin):
     def test_it_serializes_comment_with_mentions_as_link(
         self,
+        update_mock: Mock,
         app_with_federation: Flask,
         user_1: User,
         sport_1_cycling: Sport,

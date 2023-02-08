@@ -72,6 +72,7 @@ def add_workout_comment(
         )
         db.session.add(new_comment)
         db.session.flush()
+        new_comment.create_mentions()
         if sending_activities_allowed(new_comment.text_visibility):
             new_comment.ap_id = (
                 f'{auth_user.actor.activitypub_id}/'
@@ -210,6 +211,7 @@ def update_workout_comment(
     try:
         workout_comment.text = clean_input(comment_data['text'])
         workout_comment.modification_date = datetime.utcnow()
+        workout_comment.update_mentions()
         db.session.commit()
 
         if current_app.config[
