@@ -111,6 +111,18 @@ def user_3() -> User:
 
 
 @pytest.fixture()
+def user_4() -> User:
+    user = User(username='john', email='john@doe.com', password='12345678')
+    user.is_active = True
+    user.weekm = True
+    db.session.add(user)
+    db.session.flush()
+    user.create_actor()
+    db.session.commit()
+    return user
+
+
+@pytest.fixture()
 def inactive_user() -> User:
     user = User(
         username='inactive', email='inactive@example.com', password='12345678'

@@ -99,6 +99,14 @@ class WorkoutComment(BaseModel):
     parent_comment = db.relationship(
         'WorkoutComment', remote_side=[id], lazy='joined'
     )
+    mentions = db.relationship(
+        "User",
+        secondary="mentions",
+        primaryjoin="WorkoutComment.id == Mention.comment_id",
+        secondaryjoin="Mention.user_id == User.id",
+        lazy="dynamic",
+        viewonly=True,
+    )
 
     def __repr__(self) -> str:
         return f'<WorkoutComment {self.id}>'
@@ -107,56 +115,27 @@ class WorkoutComment(BaseModel):
         self,
         user_id: int,
         workout_id: int,
-        workout_visibility: PrivacyLevel,
         text: str,
-        text_visibility: PrivacyLevel = PrivacyLevel.PRIVATE,
+        text_visibility: PrivacyLevel,
         created_at: Optional[datetime.datetime] = None,
         reply_to: Optional[int] = None,
     ) -> None:
-        self.user_id = user_id
-        self.workout_id = workout_id
-        self.text = text
-        self.text_visibility = self._check_visibility(
-            workout_visibility, text_visibility
-        )
-        self.created_at = (
-            datetime.datetime.utcnow() if created_at is None else created_at
-        )
-        self.reply_to = reply_to
-
-    @staticmethod
-    def _check_visibility(
-        workout_visibility: PrivacyLevel, text_visibility: PrivacyLevel
-    ) -> PrivacyLevel:
         if (
             text_visibility == PrivacyLevel.FOLLOWERS_AND_REMOTE
             and not current_app.config['federation_enabled']
         ):
             raise InvalidVisibilityException(
-                f'invalid visibility: {text_visibility},'
-                f' federation is disabled.'
+                "invalid visibility: followers_and_remote_only, "
+                "federation is disabled."
             )
-
-        if (
-            (
-                workout_visibility == PrivacyLevel.PRIVATE
-                and text_visibility != PrivacyLevel.PRIVATE
-            )
-            or (
-                workout_visibility == PrivacyLevel.FOLLOWERS
-                and text_visibility
-                in [PrivacyLevel.PUBLIC, PrivacyLevel.FOLLOWERS_AND_REMOTE]
-            )
-            or (
-                workout_visibility == PrivacyLevel.FOLLOWERS_AND_REMOTE
-                and text_visibility == PrivacyLevel.PUBLIC
-            )
-        ):
-            raise InvalidVisibilityException(
-                f'invalid visibility: {text_visibility} '
-                f'(workout visibility: {workout_visibility})'
-            )
-        return text_visibility
+        self.user_id = user_id
+        self.workout_id = workout_id
+        self.text = text
+        self.text_visibility = text_visibility
+        self.created_at = (
+            datetime.datetime.utcnow() if created_at is None else created_at
+        )
+        self.reply_to = reply_to
 
     @property
     def short_id(self) -> str:
@@ -208,7 +187,6 @@ class WorkoutComment(BaseModel):
             db.session.flush()
 
     def serialize(self, user: Optional['User'] = None) -> Dict:
-        # TODO: mentions
         if not can_view(self, 'text_visibility', user):
             raise CommentForbiddenException
 

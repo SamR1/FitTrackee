@@ -68,7 +68,6 @@ class WorkoutCommentMixin(RandomMixin):
         comment = WorkoutComment(
             user_id=user.id,
             workout_id=workout.id,
-            workout_visibility=workout.workout_visibility,
             text=text,
             text_visibility=text_visibility,
             created_at=created_at,

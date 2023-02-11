@@ -38,6 +38,7 @@ class TestWorkoutCommentModel(WorkoutCommentMixin):
         assert comment.text == text
         assert comment.created_at == created_at
         assert comment.modification_date is None
+        assert comment.text_visibility == PrivacyLevel.PRIVATE
 
     def test_created_date_is_initialized_on_creation_when_not_provided(
         self,
@@ -55,26 +56,6 @@ class TestWorkoutCommentModel(WorkoutCommentMixin):
             )
 
         assert comment.created_at == now
-
-    def test_privacy_is_private_when_not_provided_on_creation(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-    ) -> None:
-        now = datetime.utcnow()
-        with freeze_time(now):
-
-            comment = WorkoutComment(
-                user_id=user_1.id,
-                workout_id=workout_cycling_user_1.id,
-                workout_visibility=workout_cycling_user_1.workout_visibility,
-                text=self.random_string(),
-                created_at=now,
-            )
-
-        assert comment.text_visibility == PrivacyLevel.PRIVATE
 
     def test_it_raises_error_when_privacy_is_invalid(
         self,
@@ -95,74 +76,8 @@ class TestWorkoutCommentModel(WorkoutCommentMixin):
             WorkoutComment(
                 user_id=user_1.id,
                 workout_id=workout_cycling_user_1.id,
-                workout_visibility=workout_cycling_user_1.workout_visibility,
                 text=self.random_string(),
                 text_visibility=text_visibility,
-            )
-
-    @pytest.mark.parametrize(
-        'input_workout_visibility, input_text_visibility',
-        [
-            (PrivacyLevel.PRIVATE, PrivacyLevel.PRIVATE),
-            (PrivacyLevel.FOLLOWERS, PrivacyLevel.FOLLOWERS),
-            (PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE),
-            (PrivacyLevel.PUBLIC, PrivacyLevel.PUBLIC),
-            (PrivacyLevel.PUBLIC, PrivacyLevel.FOLLOWERS),
-            (PrivacyLevel.PUBLIC, PrivacyLevel.PRIVATE),
-        ],
-    )
-    def test_it_initializes_text_visibility_when_workout_visibility_is_not_stricter(  # noqa
-        self,
-        input_workout_visibility: PrivacyLevel,
-        input_text_visibility: PrivacyLevel,
-        app: Flask,
-        sport_1_cycling: Sport,
-        user_1: User,
-        workout_cycling_user_1: Workout,
-    ) -> None:
-        workout_cycling_user_1.workout_visibility = input_workout_visibility
-
-        comment = WorkoutComment(
-            user_id=user_1.id,
-            workout_id=workout_cycling_user_1.id,
-            workout_visibility=workout_cycling_user_1.workout_visibility,
-            text=self.random_string(),
-            text_visibility=input_text_visibility,
-        )
-
-        assert comment.text_visibility == input_text_visibility
-
-    @pytest.mark.parametrize(
-        'input_workout_visibility, input_text_visibility',
-        [
-            (PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS),
-            (PrivacyLevel.PRIVATE, PrivacyLevel.PUBLIC),
-            (PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC),
-        ],
-    )
-    def test_it_raises_when_workout_visibility_is_stricter(
-        self,
-        input_workout_visibility: PrivacyLevel,
-        input_text_visibility: PrivacyLevel,
-        app: Flask,
-        sport_1_cycling: Sport,
-        user_1: User,
-        workout_cycling_user_1: Workout,
-    ) -> None:
-        workout_cycling_user_1.workout_visibility = input_workout_visibility
-        with pytest.raises(
-            InvalidVisibilityException,
-            match=(
-                f'invalid visibility: {input_text_visibility} '
-                f'\\(workout visibility: {input_workout_visibility}\\)'
-            ),
-        ):
-            WorkoutComment(
-                user_id=user_1.id,
-                workout_id=workout_cycling_user_1.id,
-                workout_visibility=workout_cycling_user_1.workout_visibility,
-                text=self.random_string(),
-                text_visibility=input_text_visibility,
             )
 
     def test_short_id_returns_encoded_comment_uuid(

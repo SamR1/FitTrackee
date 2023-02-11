@@ -65,7 +65,6 @@ def add_workout_comment(
         new_comment = WorkoutComment(
             user_id=auth_user.id,
             workout_id=workout.id,
-            workout_visibility=workout.workout_visibility,
             text=clean_input(comment_data['text']),
             text_visibility=PrivacyLevel(comment_data['text_visibility']),
             reply_to=workout_comment.id if workout_comment else None,

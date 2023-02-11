@@ -1,5 +1,8 @@
 from typing import TYPE_CHECKING, Dict
 
+from fittrackee.exceptions import InvalidVisibilityException
+from fittrackee.privacy_levels import PrivacyLevel
+
 from ..enums import ActivityType
 from .base_object import BaseObject
 
@@ -16,7 +19,7 @@ class WorkoutCommentObject(BaseObject):
     def __init__(
         self, workout_comment: 'WorkoutComment', activity_type: str
     ) -> None:
-        self._check_visibility(workout_comment.text_visibility)
+        self._check_visibility(workout_comment)
         self.workout_comment = workout_comment
         self.visibility = workout_comment.text_visibility
         self.workout = workout_comment.workout
@@ -28,6 +31,17 @@ class WorkoutCommentObject(BaseObject):
         )
         self.object_url = self.workout_comment.remote_url
         self.activity_dict = self._init_activity_dict()
+
+    @staticmethod
+    def _check_visibility(comment: 'WorkoutComment') -> None:
+        if (
+            comment.text_visibility
+            in [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
+            and not comment.mentions.all()
+        ):
+            raise InvalidVisibilityException(
+                f"object visibility is: '{comment.text_visibility.value}'"
+            )
 
     def get_activity(self) -> Dict:
         (
@@ -52,6 +66,12 @@ class WorkoutCommentObject(BaseObject):
                 mentioned_users["remote"]
             )
         ]
-        self.activity_dict['cc'].extend(mentions)
-        self.activity_dict['object']['cc'].extend(mentions)
+        if self.visibility == PrivacyLevel.PRIVATE:
+            self.activity_dict['to'] = mentions
+            self.activity_dict['cc'] = [self.actor.activitypub_id]
+            self.activity_dict['object']['to'] = mentions
+            self.activity_dict['object']['cc'] = [self.actor.activitypub_id]
+        else:
+            self.activity_dict['cc'].extend(mentions)
+            self.activity_dict['object']['cc'].extend(mentions)
         return self.activity_dict

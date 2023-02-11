@@ -169,7 +169,7 @@ class TestPostWorkoutComment(
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -180,7 +180,7 @@ class TestPostWorkoutComment(
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.PUBLIC,
+                    text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
                 )
             ),
             headers=dict(
@@ -190,8 +190,8 @@ class TestPostWorkoutComment(
 
         self.assert_400(
             response,
-            f"invalid visibility: {PrivacyLevel.PUBLIC} "
-            f"(workout visibility: {PrivacyLevel.FOLLOWERS})",
+            "invalid visibility: followers_and_remote_only, "
+            "federation is disabled.",
         )
 
     def test_it_returns_500_when_data_is_invalid(

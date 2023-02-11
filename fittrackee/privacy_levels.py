@@ -11,7 +11,7 @@ class PrivacyLevel(str, Enum):  # to make enum serializable
     PUBLIC = 'public'
     FOLLOWERS_AND_REMOTE = 'followers_and_remote_only'
     FOLLOWERS = 'followers_only'  # only local followers in federated instances
-    PRIVATE = 'private'
+    PRIVATE = 'private'  # in case of comments, for mentioned users only
 
 
 def get_map_visibility(
@@ -39,7 +39,6 @@ def can_view(
     visibility: str,
     user: Optional['User'] = None,
 ) -> bool:
-    # TODO: handle mentions and private visibility for comments
     if (
         target_object.__getattribute__(visibility) == PrivacyLevel.PUBLIC
         or user == target_object.user
@@ -50,9 +49,15 @@ def can_view(
         return False
 
     if (
+        target_object.__class__.__name__ == "WorkoutComment"
+        and user in target_object.mentions.all()
+    ):
+        return True
+
+    if (
         target_object.__getattribute__(visibility) == PrivacyLevel.FOLLOWERS
-        and user in target_object.user.followers
         and user.is_remote is False
+        and user in target_object.user.followers
         and target_object.user.is_remote is False
     ):
         return True

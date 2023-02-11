@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import TYPE_CHECKING, Dict, Union
 
-from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.privacy_levels import PrivacyLevel
 
 from ..constants import AP_CTX, DATE_FORMAT, PUBLIC_STREAM
@@ -24,16 +23,6 @@ class BaseObject(ABC):
     object_url: str
     published: str
 
-    @staticmethod
-    def _check_visibility(visibility: PrivacyLevel) -> None:
-        if visibility in [
-            PrivacyLevel.PRIVATE,
-            PrivacyLevel.FOLLOWERS,
-        ]:
-            raise InvalidVisibilityException(
-                f"object visibility is: '{visibility.value}'"
-            )
-
     def _init_activity_dict(self) -> Dict:
         activity = {
             '@context': AP_CTX,
@@ -48,7 +37,6 @@ class BaseObject(ABC):
                 'attributedTo': self.actor.activitypub_id,
             },
         }
-        # TODO: handle mention and private visibility for comment
         if self.visibility == PrivacyLevel.PUBLIC:
             activity['to'] = [PUBLIC_STREAM]
             activity['cc'] = [self.actor.followers_url]

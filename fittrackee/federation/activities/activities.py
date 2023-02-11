@@ -226,7 +226,6 @@ class CreateActivity(AbstractActivity):
         new_comment = WorkoutComment(
             user_id=actor.user.id,
             workout_id=workout.id,
-            workout_visibility=workout.workout_visibility,
             text=note_data["content"],
             text_visibility=self._get_visibility(note_data, actor),
             reply_to=parent_comment.id if parent_comment else None,
