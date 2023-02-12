@@ -83,7 +83,7 @@ class TestWorkoutCommentCreateObject(WorkoutCommentMixin):
             "actor": user_2.actor.activitypub_id,
             "published": published,
             "to": [user_2.actor.followers_url],
-            "cc": [user_2.actor.activitypub_id],
+            "cc": [],
             "object": {
                 "id": workout_comment.ap_id,
                 "type": "Note",
@@ -93,7 +93,7 @@ class TestWorkoutCommentCreateObject(WorkoutCommentMixin):
                 "inReplyTo": workout_cycling_user_1.ap_id,
                 "content": workout_comment.text,
                 "to": [user_2.actor.followers_url],
-                "cc": [user_2.actor.activitypub_id],
+                "cc": [],
             },
         }
 
@@ -186,8 +186,10 @@ class TestWorkoutCommentCreateObject(WorkoutCommentMixin):
             },
         }
 
-    @patch('fittrackee.federation.utils.user.update_remote_user')
-    def test_it_generates_activity_for_public_comment_with_mentioned_users(
+
+@patch('fittrackee.federation.utils.user.update_remote_user')
+class TestWorkoutCommentWithMentionsCreateObject(WorkoutCommentMixin):
+    def test_it_generates_activity_for_public_comment(
         self,
         update_remote_user_mock: Mock,
         app_with_federation: Flask,
@@ -211,23 +213,63 @@ class TestWorkoutCommentCreateObject(WorkoutCommentMixin):
         serialized_comment = comment_object.get_activity()
 
         text_with_mentions, _ = workout_comment.handle_mentions()
+        assert serialized_comment['to'] == [
+            "https://www.w3.org/ns/activitystreams#Public"
+        ]
         assert set(serialized_comment['cc']) == {
             user_2.actor.followers_url,
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,
         }
+        assert serialized_comment['object']['to'] == [
+            "https://www.w3.org/ns/activitystreams#Public"
+        ]
         assert set(serialized_comment['object']['cc']) == {
             user_2.actor.followers_url,
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,
         }
-        assert serialized_comment['object']['content'] == text_with_mentions
+
+    def test_it_generates_activity_with_followers_and_remote_visibility(
+        self,
+        update_remote_user_mock: Mock,
+        app_with_federation: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.ap_id = self.random_string()
+        workout_comment = self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text=f"@{user_3.username} @{remote_user.fullname} great!",
+            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+        )
+        comment_object = WorkoutCommentObject(workout_comment, 'Create')
+
+        serialized_comment = comment_object.get_activity()
+
+        text_with_mentions, _ = workout_comment.handle_mentions()
+        assert serialized_comment['to'] == [user_2.actor.followers_url]
+        assert set(serialized_comment['cc']) == {
+            user_3.actor.activitypub_id,
+            remote_user.actor.activitypub_id,
+        }
+        assert serialized_comment['object']['to'] == [
+            user_2.actor.followers_url
+        ]
+        assert set(serialized_comment['object']['cc']) == {
+            user_3.actor.activitypub_id,
+            remote_user.actor.activitypub_id,
+        }
 
     @pytest.mark.parametrize(
-        'text_visibility',
-        [PrivacyLevel.FOLLOWERS, PrivacyLevel.FOLLOWERS_AND_REMOTE],
+        'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
     )
-    @patch('fittrackee.federation.utils.user.update_remote_user')
     def test_it_generates_activity_with_mentioned_users(
         self,
         update_remote_user_mock: Mock,
@@ -238,7 +280,7 @@ class TestWorkoutCommentCreateObject(WorkoutCommentMixin):
         remote_user: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        text_visibility: PrivacyLevel,
+        input_visibility: PrivacyLevel,
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
         workout_cycling_user_1.ap_id = self.random_string()
@@ -246,44 +288,7 @@ class TestWorkoutCommentCreateObject(WorkoutCommentMixin):
             user_2,
             workout_cycling_user_1,
             text=f"@{user_3.username} @{remote_user.fullname} great!",
-            text_visibility=text_visibility,
-        )
-        comment_object = WorkoutCommentObject(workout_comment, 'Create')
-
-        serialized_comment = comment_object.get_activity()
-
-        text_with_mentions, _ = workout_comment.handle_mentions()
-        assert set(serialized_comment['cc']) == {
-            user_2.actor.activitypub_id,
-            user_3.actor.activitypub_id,
-            remote_user.actor.activitypub_id,
-        }
-        assert set(serialized_comment['object']['cc']) == {
-            user_2.actor.activitypub_id,
-            user_3.actor.activitypub_id,
-            remote_user.actor.activitypub_id,
-        }
-        assert serialized_comment['object']['content'] == text_with_mentions
-
-    @patch('fittrackee.federation.utils.user.update_remote_user')
-    def test_it_generates_activity_for_private_comment_with_mentioned_users(
-        self,
-        update_remote_user_mock: Mock,
-        app_with_federation: Flask,
-        user_1: User,
-        user_2: User,
-        user_3: User,
-        remote_user: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-    ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
-        workout_cycling_user_1.ap_id = self.random_string()
-        workout_comment = self.create_comment(
-            user_2,
-            workout_cycling_user_1,
-            text=f"@{user_3.username} @{remote_user.fullname} great!",
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=input_visibility,
         )
         comment_object = WorkoutCommentObject(workout_comment, 'Create')
 
@@ -294,17 +299,12 @@ class TestWorkoutCommentCreateObject(WorkoutCommentMixin):
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,
         }
-        assert set(serialized_comment['cc']) == {
-            user_2.actor.activitypub_id,
-        }
+        assert serialized_comment['cc'] == []
         assert set(serialized_comment['object']['to']) == {
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,
         }
-        assert set(serialized_comment['object']['cc']) == {
-            user_2.actor.activitypub_id,
-        }
-        assert serialized_comment['object']['content'] == text_with_mentions
+        assert serialized_comment['object']['cc'] == []
 
 
 class TestWorkoutCommentUpdateObject(WorkoutCommentMixin):
@@ -378,7 +378,7 @@ class TestWorkoutCommentUpdateObject(WorkoutCommentMixin):
             "actor": user_2.actor.activitypub_id,
             "published": published,
             "to": [user_2.actor.followers_url],
-            "cc": [user_2.actor.activitypub_id],
+            "cc": [],
             "object": {
                 "id": workout_comment.ap_id,
                 "type": "Note",
@@ -388,7 +388,7 @@ class TestWorkoutCommentUpdateObject(WorkoutCommentMixin):
                 "inReplyTo": workout_cycling_user_1.ap_id,
                 "content": workout_comment.text,
                 "to": [user_2.actor.followers_url],
-                "cc": [user_2.actor.activitypub_id],
+                "cc": [],
                 "updated": workout_comment.modification_date.strftime(
                     DATE_FORMAT
                 ),
@@ -410,7 +410,6 @@ class TestWorkoutCommentUpdateObject(WorkoutCommentMixin):
             workout_cycling_user_1,
             text_visibility=PrivacyLevel.PUBLIC,
         )
-
         workout_comment.modification_date = datetime.utcnow()
         published = workout_comment.created_at.strftime(DATE_FORMAT)
         comment_object = WorkoutCommentObject(workout_comment, 'Update')
@@ -441,8 +440,10 @@ class TestWorkoutCommentUpdateObject(WorkoutCommentMixin):
             },
         }
 
-    @patch('fittrackee.federation.utils.user.update_remote_user')
-    def test_it_generates_activity_for_public_comment_with_mentioned_users(
+
+@patch('fittrackee.federation.utils.user.update_remote_user')
+class TestWorkoutCommentWithMentionsUpdateObject(WorkoutCommentMixin):
+    def test_it_generates_activity_for_public_comment(
         self,
         update_remote_user_mock: Mock,
         app_with_federation: Flask,
@@ -467,24 +468,24 @@ class TestWorkoutCommentUpdateObject(WorkoutCommentMixin):
         serialized_comment = comment_object.get_activity()
 
         text_with_mentions, _ = workout_comment.handle_mentions()
+        assert serialized_comment['to'] == [
+            "https://www.w3.org/ns/activitystreams#Public"
+        ]
         assert set(serialized_comment['cc']) == {
             user_2.actor.followers_url,
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,
         }
+        assert serialized_comment['object']['to'] == [
+            "https://www.w3.org/ns/activitystreams#Public"
+        ]
         assert set(serialized_comment['object']['cc']) == {
             user_2.actor.followers_url,
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,
         }
-        assert serialized_comment['object']['content'] == text_with_mentions
 
-    @pytest.mark.parametrize(
-        'text_visibility',
-        [PrivacyLevel.FOLLOWERS, PrivacyLevel.FOLLOWERS_AND_REMOTE],
-    )
-    @patch('fittrackee.federation.utils.user.update_remote_user')
-    def test_it_generates_activity_with_mentioned_users(
+    def test_it_generates_activity_with_followers_and_remote_visibility(
         self,
         update_remote_user_mock: Mock,
         app_with_federation: Flask,
@@ -494,7 +495,6 @@ class TestWorkoutCommentUpdateObject(WorkoutCommentMixin):
         remote_user: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        text_visibility: PrivacyLevel,
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
         workout_cycling_user_1.ap_id = self.random_string()
@@ -502,7 +502,7 @@ class TestWorkoutCommentUpdateObject(WorkoutCommentMixin):
             user_2,
             workout_cycling_user_1,
             text=f"@{user_3.username} @{remote_user.fullname} great!",
-            text_visibility=text_visibility,
+            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
         )
         workout_comment.modification_date = datetime.utcnow()
         comment_object = WorkoutCommentObject(workout_comment, 'Update')
@@ -510,19 +510,22 @@ class TestWorkoutCommentUpdateObject(WorkoutCommentMixin):
         serialized_comment = comment_object.get_activity()
 
         text_with_mentions, _ = workout_comment.handle_mentions()
+        assert serialized_comment['to'] == [user_2.actor.followers_url]
         assert set(serialized_comment['cc']) == {
-            user_2.actor.activitypub_id,
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,
         }
+        assert serialized_comment['object']['to'] == [
+            user_2.actor.followers_url
+        ]
         assert set(serialized_comment['object']['cc']) == {
-            user_2.actor.activitypub_id,
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,
         }
-        assert serialized_comment['object']['content'] == text_with_mentions
 
-    @patch('fittrackee.federation.utils.user.update_remote_user')
+    @pytest.mark.parametrize(
+        'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
+    )
     def test_it_generates_activity_for_private_comment_with_mentioned_users(
         self,
         update_remote_user_mock: Mock,
@@ -533,6 +536,7 @@ class TestWorkoutCommentUpdateObject(WorkoutCommentMixin):
         remote_user: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        input_visibility: PrivacyLevel,
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
         workout_cycling_user_1.ap_id = self.random_string()
@@ -552,14 +556,9 @@ class TestWorkoutCommentUpdateObject(WorkoutCommentMixin):
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,
         }
-        assert set(serialized_comment['cc']) == {
-            user_2.actor.activitypub_id,
-        }
+        assert serialized_comment['cc'] == []
         assert set(serialized_comment['object']['to']) == {
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,
         }
-        assert set(serialized_comment['object']['cc']) == {
-            user_2.actor.activitypub_id,
-        }
-        assert serialized_comment['object']['content'] == text_with_mentions
+        assert serialized_comment['object']['cc'] == []

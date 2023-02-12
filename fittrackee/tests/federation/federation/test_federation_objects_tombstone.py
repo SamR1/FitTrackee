@@ -98,7 +98,7 @@ class TestTombstoneObjectForWorkoutComment(WorkoutCommentMixin):
     @pytest.mark.parametrize(
         'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
     )
-    def test_it_raises_error_when_visibility_is_private(
+    def test_it_raises_error_when_comment_has_no_mention(
         self,
         app_with_federation: Flask,
         user_1: User,
@@ -152,7 +152,7 @@ class TestTombstoneObjectForWorkoutComment(WorkoutCommentMixin):
             "cc": [user_1.actor.followers_url],
         }
 
-    def test_it_generates_delete_activity_for_workout_with_follower_visibility(
+    def test_it_generates_delete_activity_for_comment_with_follower_visibility(
         self,
         app_with_federation: Flask,
         user_1: User,

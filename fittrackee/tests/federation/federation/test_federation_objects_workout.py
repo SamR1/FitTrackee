@@ -94,7 +94,7 @@ class TestWorkoutObject(WorkoutObjectTestCase):
             'actor': user_1.actor.activitypub_id,
             'published': published,
             'to': [user_1.actor.followers_url],
-            'cc': [user_1.actor.activitypub_id],
+            'cc': [],
             'object': {
                 'id': workout_cycling_user_1.ap_id,
                 'type': 'Workout',
@@ -102,7 +102,7 @@ class TestWorkoutObject(WorkoutObjectTestCase):
                 'url': workout_cycling_user_1.remote_url,
                 'attributedTo': user_1.actor.activitypub_id,
                 'to': [user_1.actor.followers_url],
-                'cc': [user_1.actor.activitypub_id],
+                'cc': [],
                 'ave_speed': float(workout_cycling_user_1.ave_speed),
                 'distance': float(workout_cycling_user_1.distance),
                 'duration': str(workout_cycling_user_1.duration),
@@ -211,7 +211,7 @@ Duration: {workout.duration}</p>
             'actor': user_1.actor.activitypub_id,
             'published': published,
             'to': [user_1.actor.followers_url],
-            'cc': [user_1.actor.activitypub_id],
+            'cc': [],
             'object': {
                 'id': workout_cycling_user_1.ap_id,
                 'type': 'Note',
@@ -222,7 +222,7 @@ Duration: {workout.duration}</p>
                     workout_cycling_user_1, workout_cycling_user_1.remote_url
                 ),
                 'to': [user_1.actor.followers_url],
-                'cc': [user_1.actor.activitypub_id],
+                'cc': [],
                 **updated,
             },
         }

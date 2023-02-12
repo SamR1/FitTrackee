@@ -42,11 +42,11 @@ class BaseObject(ABC):
             activity['cc'] = [self.actor.followers_url]
             activity['object']['to'] = [PUBLIC_STREAM]
             activity['object']['cc'] = [self.actor.followers_url]
-        else:
+        else:  # for followers
             activity['to'] = [self.actor.followers_url]
-            activity['cc'] = [self.actor.activitypub_id]
+            activity['cc'] = []
             activity['object']['to'] = [self.actor.followers_url]
-            activity['object']['cc'] = [self.actor.activitypub_id]
+            activity['object']['cc'] = []
         return activity
 
     @staticmethod

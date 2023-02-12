@@ -66,11 +66,11 @@ class WorkoutCommentObject(BaseObject):
                 mentioned_users["remote"]
             )
         ]
-        if self.visibility == PrivacyLevel.PRIVATE:
+        if self.visibility in [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]:
             self.activity_dict['to'] = mentions
-            self.activity_dict['cc'] = [self.actor.activitypub_id]
+            self.activity_dict['cc'] = []
             self.activity_dict['object']['to'] = mentions
-            self.activity_dict['object']['cc'] = [self.actor.activitypub_id]
+            self.activity_dict['object']['cc'] = []
         else:
             self.activity_dict['cc'].extend(mentions)
             self.activity_dict['object']['cc'].extend(mentions)
