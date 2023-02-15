@@ -308,29 +308,6 @@ class TestWorkoutCommentWithMentionsCreateObject(WorkoutCommentMixin):
 
 
 class TestWorkoutCommentUpdateObject(WorkoutCommentMixin):
-    @pytest.mark.parametrize(
-        'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
-    )
-    def test_it_raises_error_when_visibility_is_invalid(
-        self,
-        app_with_federation: Flask,
-        user_1: User,
-        user_2: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        input_visibility: PrivacyLevel,
-    ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
-        # no mentioned users
-        workout_comment = self.create_comment(
-            user_2, workout_cycling_user_1, text_visibility=input_visibility
-        )
-        with pytest.raises(
-            InvalidVisibilityException,
-            match=f"object visibility is: '{input_visibility.value}'",
-        ):
-            WorkoutCommentObject(workout_comment, 'Update')
-
     def test_it_raises_error_when_activity_type_is_invalid(
         self,
         app_with_federation: Flask,
@@ -349,6 +326,54 @@ class TestWorkoutCommentUpdateObject(WorkoutCommentMixin):
             match=f"'{invalid_activity_type}' is not a valid ActivityType",
         ):
             WorkoutCommentObject(workout_comment, invalid_activity_type)
+
+    @pytest.mark.parametrize(
+        'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
+    )
+    def test_it_generates_activity_when_visibility_is_private_or_for_local_followers(  # noqa
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_visibility: PrivacyLevel,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.ap_id = self.random_string()
+        # case of mention removed
+        workout_comment = self.create_comment(
+            user_2, workout_cycling_user_1, text_visibility=input_visibility
+        )
+        workout_comment.modification_date = datetime.utcnow()
+        published = workout_comment.created_at.strftime(DATE_FORMAT)
+        comment_object = WorkoutCommentObject(workout_comment, 'Update')
+
+        serialized_comment = comment_object.get_activity()
+
+        assert serialized_comment == {
+            "@context": AP_CTX,
+            "id": f"{workout_comment.ap_id}/update",
+            "type": "Update",
+            "actor": user_2.actor.activitypub_id,
+            "published": published,
+            "to": [],  # mention removed
+            "cc": [],
+            "object": {
+                "id": workout_comment.ap_id,
+                "type": "Note",
+                "published": published,
+                "url": workout_comment.remote_url,
+                "attributedTo": user_2.actor.activitypub_id,
+                "inReplyTo": workout_cycling_user_1.ap_id,
+                "content": workout_comment.text,
+                "to": [],
+                "cc": [],
+                "updated": workout_comment.modification_date.strftime(
+                    DATE_FORMAT
+                ),
+            },
+        }
 
     def test_it_generates_activity_when_visibility_is_followers_and_remote_only(  # noqa
         self,

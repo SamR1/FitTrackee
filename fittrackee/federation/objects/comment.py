@@ -19,7 +19,13 @@ class WorkoutCommentObject(BaseObject):
     def __init__(
         self, workout_comment: 'WorkoutComment', activity_type: str
     ) -> None:
-        self._check_visibility(workout_comment)
+        """
+        Note: No visibility check on instantiation if activity is not a
+        creation.
+        It should be possible, for instance, to send an Update activity for a
+        comment with remote mentions removed.
+        """
+        self._check_visibility(workout_comment, activity_type)
         self.workout_comment = workout_comment
         self.visibility = workout_comment.text_visibility
         self.workout = workout_comment.workout
@@ -33,9 +39,12 @@ class WorkoutCommentObject(BaseObject):
         self.activity_dict = self._init_activity_dict()
 
     @staticmethod
-    def _check_visibility(comment: 'WorkoutComment') -> None:
+    def _check_visibility(
+        comment: 'WorkoutComment', activity_type: str
+    ) -> None:
         if (
-            comment.text_visibility
+            activity_type == 'Create'
+            and comment.text_visibility
             in [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
             and not comment.mentions.all()
         ):
@@ -60,6 +69,7 @@ class WorkoutCommentObject(BaseObject):
                 **self.activity_dict['object'],
                 'updated': self._get_modification_date(self.workout_comment),
             }
+        # existing mentions (local and remote)
         mentions = [
             user.actor.activitypub_id
             for user in mentioned_users["local"].union(

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, Optional, Tuple, Union
+from typing import Dict, List, Optional, Set, Tuple, Union
 
 from flask import Blueprint, current_app, request
 from sqlalchemy import exc
@@ -7,7 +7,6 @@ from sqlalchemy import exc
 from fittrackee import db
 from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.federation.tasks.inbox import send_to_remote_inbox
-from fittrackee.federation.utils import sending_activities_allowed
 from fittrackee.oauth2.server import require_auth
 from fittrackee.privacy_levels import PrivacyLevel, can_view
 from fittrackee.responses import (
@@ -24,6 +23,39 @@ from .decorators import check_workout_comment
 from .models import WorkoutComment, get_comments
 
 comments_blueprint = Blueprint('comments', __name__)
+
+
+def get_all_recipients(
+    user: User,
+    comment: WorkoutComment,
+    deleted_mentioned_users: Optional[Set] = None,
+) -> List[str]:
+    recipients = user.get_followers_shared_inboxes_as_list()
+    mentions = [
+        user.actor.shared_inbox_url for user in comment.remote_mentions.all()
+    ]
+    if deleted_mentioned_users is None:
+        deleted_mentioned_users = set()
+    deleted_mentions = [
+        user.actor.shared_inbox_url for user in deleted_mentioned_users
+    ]
+    return list(set(recipients + mentions + deleted_mentions))
+
+
+def sending_comment_activities_allowed(
+    comment: WorkoutComment, deleted_mentioned_users: Optional[Set] = None
+) -> bool:
+    if deleted_mentioned_users is None:
+        deleted_mentioned_users = set()
+    return current_app.config['federation_enabled'] and (
+        comment.has_remote_mentions
+        or len(deleted_mentioned_users) > 0
+        or comment.text_visibility
+        in (
+            PrivacyLevel.PUBLIC,
+            PrivacyLevel.FOLLOWERS_AND_REMOTE,
+        )
+    )
 
 
 @comments_blueprint.route(
@@ -72,7 +104,7 @@ def add_workout_comment(
         db.session.add(new_comment)
         db.session.flush()
         new_comment.create_mentions()
-        if sending_activities_allowed(new_comment.text_visibility):
+        if sending_comment_activities_allowed(new_comment):
             new_comment.ap_id = (
                 f'{auth_user.actor.activitypub_id}/'
                 f'workouts/{workout.short_id}/'
@@ -84,7 +116,7 @@ def add_workout_comment(
                 f'comments/{new_comment.short_id}'
             )
             note_activity = new_comment.get_activity(activity_type='Create')
-            recipients = auth_user.get_followers_shared_inboxes_as_list()
+            recipients = get_all_recipients(auth_user, new_comment)
             if recipients:
                 send_to_remote_inbox.send(
                     sender_id=auth_user.actor.id,
@@ -170,11 +202,11 @@ def delete_workout_comment(
     auth_user: User, workout_comment: WorkoutComment
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     try:
-        if sending_activities_allowed(workout_comment.text_visibility):
+        if sending_comment_activities_allowed(workout_comment):
             note_activity = workout_comment.get_activity(
                 activity_type='Delete'
             )
-            recipients = auth_user.get_followers_shared_inboxes_as_list()
+            recipients = get_all_recipients(auth_user, workout_comment)
             if recipients:
                 send_to_remote_inbox.send(
                     sender_id=auth_user.actor.id,
@@ -210,16 +242,15 @@ def update_workout_comment(
     try:
         workout_comment.text = clean_input(comment_data['text'])
         workout_comment.modification_date = datetime.utcnow()
-        workout_comment.update_mentions()
+        deleted_mentioned_users = workout_comment.update_mentions()
         db.session.commit()
 
-        if current_app.config[
-            'federation_enabled'
-        ] and workout_comment.text_visibility in (
-            PrivacyLevel.PUBLIC,
-            PrivacyLevel.FOLLOWERS_AND_REMOTE,
+        if sending_comment_activities_allowed(
+            workout_comment, deleted_mentioned_users
         ):
-            recipients = auth_user.get_followers_shared_inboxes_as_list()
+            recipients = get_all_recipients(
+                auth_user, workout_comment, deleted_mentioned_users
+            )
             if recipients:
                 note_activity = workout_comment.get_activity(
                     activity_type='Update'

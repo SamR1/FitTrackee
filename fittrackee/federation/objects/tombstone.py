@@ -24,8 +24,16 @@ class TombstoneObject(BaseObject):
         self.type = ActivityType.DELETE
         self.actor = self.object_to_delete.user.actor
         self.visibility = self._get_object_visibility()
-        # TODO: handle comments with mentions
-        if self.visibility in [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]:
+        if self.visibility in [
+            PrivacyLevel.PRIVATE,
+            PrivacyLevel.FOLLOWERS,
+        ] and (
+            self.object_to_delete_type != 'WorkoutComment'
+            or (
+                self.object_to_delete_type == 'WorkoutComment'
+                and not self.object_to_delete.has_remote_mentions
+            )
+        ):
             raise InvalidVisibilityException(
                 f"object visibility is: '{self.visibility.value}'"
             )
@@ -50,6 +58,17 @@ class TombstoneObject(BaseObject):
         if self.visibility == PrivacyLevel.PUBLIC:
             delete_activity['to'] = [PUBLIC_STREAM]
             delete_activity['cc'] = [self.actor.followers_url]
+        elif self.visibility in [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]:
+            # for comments w/ mentions
+            _, mentioned_users = self.object_to_delete.handle_mentions()
+            mentions = [
+                user.actor.activitypub_id
+                for user in mentioned_users["local"].union(
+                    mentioned_users["remote"]
+                )
+            ]
+            delete_activity['to'] = mentions
+            delete_activity['cc'] = []
         else:
             delete_activity['to'] = [self.actor.followers_url]
             delete_activity['cc'] = []

@@ -1281,20 +1281,24 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
                 text_visibility=PrivacyLevel.PUBLIC,
             )
         ]
-        for privacy_levels in [
-            PrivacyLevel.FOLLOWERS,
-            PrivacyLevel.PRIVATE,
-        ]:
+        for privacy_levels in [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]:
             self.create_comment(
                 user_3,
                 workout_cycling_user_2,
                 text_visibility=privacy_levels,
             )
+        for privacy_levels in [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]:
+            # user_1 is mentioned in private comment
+            visible_comments.append(
+                self.create_comment(
+                    user_3,
+                    workout_cycling_user_2,
+                    text=f"@{user_1.username}",
+                    text_visibility=privacy_levels,
+                )
+            )
         # user 2 followed by user 1
-        for privacy_levels in [
-            PrivacyLevel.PUBLIC,
-            PrivacyLevel.FOLLOWERS,
-        ]:
+        for privacy_levels in [PrivacyLevel.PUBLIC, PrivacyLevel.FOLLOWERS]:
             visible_comments.append(
                 self.create_comment(
                     user_2,

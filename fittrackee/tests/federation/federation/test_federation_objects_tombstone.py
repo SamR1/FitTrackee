@@ -1,3 +1,5 @@
+from unittest.mock import Mock, patch
+
 import pytest
 from flask import Flask
 
@@ -187,5 +189,51 @@ class TestTombstoneObjectForWorkoutComment(WorkoutCommentMixin):
                 ),
             },
             "to": [user_1.actor.followers_url],
+            "cc": [],
+        }
+
+    @pytest.mark.parametrize(
+        'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
+    )
+    @patch('fittrackee.federation.utils.user.update_remote_user')
+    def test_it_generates_delete_activity_for_comment_with_private_or_local_followers_visibility_and_mention(  # noqa
+        self,
+        update_mock: Mock,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_visibility: PrivacyLevel,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text=f"@{remote_user.fullname}",
+            text_visibility=input_visibility,
+        )
+        tombstone = TombstoneObject(comment)
+
+        delete_activity = tombstone.get_activity()
+
+        assert delete_activity == {
+            "@context": AP_CTX,
+            "id": (
+                f'{user_1.actor.activitypub_id}/workouts/'
+                f'{workout_cycling_user_1.short_id}/comments/'
+                f'{comment.short_id}/delete'
+            ),
+            "type": "Delete",
+            "actor": user_1.actor.activitypub_id,
+            "object": {
+                "type": "Tombstone",
+                "id": (
+                    f'{user_1.actor.activitypub_id}/workouts/'
+                    f'{workout_cycling_user_1.short_id}/comments/'
+                    f'{comment.short_id}'
+                ),
+            },
+            "to": [remote_user.actor.activitypub_id],
             "cc": [],
         }

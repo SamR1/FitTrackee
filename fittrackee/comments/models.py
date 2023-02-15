@@ -5,6 +5,8 @@ from uuid import uuid4
 from flask import current_app
 from sqlalchemy import and_, or_
 from sqlalchemy.dialects import postgresql
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm.query import Query
 from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, db
@@ -28,11 +30,14 @@ def get_comments(
 ) -> List['WorkoutComment']:
     if user:
         local_following_ids, remote_following_ids = get_following(user)
-        comments_filter = WorkoutComment.query.filter(
+        comments_filter = WorkoutComment.query.join(
+            Mention, Mention.comment_id == WorkoutComment.id, isouter=True
+        ).filter(
             WorkoutComment.workout_id == workout_id,
             WorkoutComment.reply_to == reply_to,
             or_(
                 WorkoutComment.text_visibility == PrivacyLevel.PUBLIC,
+                or_(user.id == Mention.user_id),
                 or_(
                     WorkoutComment.user_id == user.id,
                     and_(
@@ -141,6 +146,21 @@ class WorkoutComment(BaseModel):
     def short_id(self) -> str:
         return encode_uuid(self.uuid)
 
+    @hybrid_property
+    def remote_mentions(self) -> Query:
+        from fittrackee.users.models import User
+
+        return (
+            db.session.query(User)
+            .join(Mention, User.id == Mention.user_id)
+            .filter(Mention.comment_id == self.id)
+            .filter(User.is_remote == True)  # noqa
+        )
+
+    @hybrid_property
+    def has_remote_mentions(self) -> bool:
+        return self.remote_mentions.count() > 0
+
     def handle_mentions(self) -> Tuple[str, Dict[str, Set['User']]]:
         from .utils import handle_mentions
 
@@ -154,7 +174,7 @@ class WorkoutComment(BaseModel):
             db.session.flush()
         return linkified_text, mentioned_users
 
-    def update_mentions(self) -> None:
+    def update_mentions(self) -> Set['User']:
         from fittrackee.users.models import User
 
         existing_mentioned_users = set(
@@ -171,9 +191,8 @@ class WorkoutComment(BaseModel):
         )
 
         # delete removed mentions
-        mentions_to_delete = {
-            user.id for user in (existing_mentioned_users - intersection)
-        }
+        deleted_mentioned_users = existing_mentioned_users - intersection
+        mentions_to_delete = {user.id for user in deleted_mentioned_users}
         Mention.query.filter(
             Mention.comment_id == self.id,
             Mention.user_id.in_(mentions_to_delete),
@@ -184,7 +203,10 @@ class WorkoutComment(BaseModel):
         for user in updated_mentioned_users - intersection:
             mention = Mention(comment_id=self.id, user_id=user.id)
             db.session.add(mention)
-            db.session.flush()
+        db.session.flush()
+
+        # return users associated to deleted mention to send delete
+        return deleted_mentioned_users
 
     def serialize(self, user: Optional['User'] = None) -> Dict:
         if not can_view(self, 'text_visibility', user):

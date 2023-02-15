@@ -135,3 +135,66 @@ class TestCommentWithMentionSerializeVisibility(WorkoutCommentMixin):
             assert comment.serialize(user_2)  # follower
             assert comment.serialize(user_3)  # user
             assert comment.serialize()  # unauthenticated user
+
+
+class TestWorkoutCommentRemoteMentions(WorkoutCommentMixin):
+    def test_it_gets_remote_followers_count(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        user_2: User,
+        user_3: User,
+        remote_user: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_2,
+            workout=workout_cycling_user_1,
+            text=(
+                f"@{user_3.username} {self.random_string()} "
+                f"@{remote_user.fullname}"
+            ),
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+
+        assert comment.remote_mentions.count() == 1
+
+    def test_has_remote_mentions_returns_false_when_no_remote_mentions(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_2,
+            workout=workout_cycling_user_1,
+            text=f"@{user_3.username} {self.random_string()}",
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+
+        assert comment.has_remote_mentions is False
+
+    def test_has_remote_mentions_returns_true_when_remote_mentions(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        remote_user: User,
+        user_2: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_2,
+            workout=workout_cycling_user_1,
+            text=f"@{remote_user.fullname} {self.random_string()}",
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+
+        assert comment.has_remote_mentions is True
