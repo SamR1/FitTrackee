@@ -1,4 +1,3 @@
-import re
 from abc import ABC, abstractmethod
 from datetime import datetime, timedelta
 from typing import Dict, Tuple
@@ -177,6 +176,38 @@ class UndoActivity(AbstractActivity):
             raise e
 
 
+def create_comment(
+    note_data: Dict, actor: Actor, visibility: PrivacyLevel
+) -> Comment:
+    reply_to_object_api_id = note_data.get("inReplyTo")
+    workout = None
+    parent_comment = None
+    if reply_to_object_api_id:
+        # comment to a workout
+        workout = Workout.query.filter_by(ap_id=reply_to_object_api_id).first()
+        if not workout:
+            # reply to a comment
+            parent_comment = Comment.query.filter_by(
+                ap_id=reply_to_object_api_id
+            ).first()
+            if parent_comment:
+                # get workout from parent comment
+                workout = parent_comment.workout if parent_comment else None
+
+    new_comment = Comment(
+        user_id=actor.user.id,
+        workout_id=workout.id if workout else None,
+        text=note_data["content"],
+        text_visibility=visibility,
+        reply_to=parent_comment.id if parent_comment else None,
+    )
+    new_comment.ap_id = note_data["id"]
+    new_comment.remote_url = note_data["url"]
+    db.session.add(new_comment)
+    db.session.flush()
+    return new_comment
+
+
 class CreateActivity(AbstractActivity):
     def create_remote_workout(self, actor: Actor) -> None:
         workout_data = self.activity['object']
@@ -197,43 +228,9 @@ class CreateActivity(AbstractActivity):
 
     def create_remote_note(self, actor: Actor) -> None:
         note_data = self.activity["object"]
-        reply_to_object_api_id = note_data.get("inReplyTo")
-        workout = None
-        parent_comment = None
-        if reply_to_object_api_id:
-            if re.match(
-                r"https://(.*)/workouts/(.*)/comments/(.*)",
-                reply_to_object_api_id,
-            ):
-                parent_comment = Comment.query.filter_by(
-                    ap_id=reply_to_object_api_id
-                ).first()
-                if not parent_comment:
-                    raise ObjectNotFoundException(
-                        "parent comment", self.activity_name()
-                    )
-                workout = parent_comment.workout
-            elif re.match(
-                r"https://(.*)/workouts/(.*)", reply_to_object_api_id
-            ):
-                workout = Workout.query.filter_by(
-                    ap_id=reply_to_object_api_id
-                ).first()
-
-        if not workout:
-            raise ObjectNotFoundException("workout", self.activity_name())
-
-        new_comment = Comment(
-            user_id=actor.user.id,
-            workout_id=workout.id,
-            text=note_data["content"],
-            text_visibility=self._get_visibility(note_data, actor),
-            reply_to=parent_comment.id if parent_comment else None,
+        new_comment = create_comment(
+            note_data, actor, self._get_visibility(note_data, actor)
         )
-        new_comment.ap_id = note_data["id"]
-        new_comment.remote_url = note_data["url"]
-        db.session.add(new_comment)
-        db.session.flush()
         new_comment.create_mentions()
         db.session.commit()
 
@@ -332,7 +329,9 @@ class UpdateActivity(AbstractActivity):
             ap_id=note_data['id']
         ).first()
         if not comment_to_update:
-            raise ObjectNotFoundException('comment', self.activity_name())
+            comment_to_update = create_comment(
+                note_data, actor, self._get_visibility(note_data, actor)
+            )
 
         if comment_to_update.user.actor.id != actor.id:
             raise ActivityException(
@@ -355,9 +354,9 @@ class UpdateActivity(AbstractActivity):
             )
 
     def process_activity(self) -> None:
-        actor = self.get_actor()
-        if self.activity["object"]["type"] == "Workout":
+        object_type = self.activity['object']['type']
+        actor = self.get_actor(create_remote_actor=object_type == "Note")
+        if object_type == "Workout":
             self.update_remote_workout(actor)
-        if self.activity["object"]["type"] == "Note":
-            # Workout comment
+        if object_type == "Note":
             self.update_remote_workout_comment(actor)

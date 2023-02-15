@@ -8,12 +8,13 @@ from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.federation.constants import AP_CTX, DATE_FORMAT
 from fittrackee.federation.objects.comment import CommentObject
 from fittrackee.privacy_levels import PrivacyLevel
-from fittrackee.tests.workouts.utils import WorkoutCommentMixin
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
+from ...comments.utils import CommentMixin
 
-class TestWorkoutCommentCreateObject(WorkoutCommentMixin):
+
+class TestWorkoutCommentCreateObject(CommentMixin):
     @pytest.mark.parametrize(
         'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
     )
@@ -188,7 +189,7 @@ class TestWorkoutCommentCreateObject(WorkoutCommentMixin):
 
 
 @patch('fittrackee.federation.utils.user.update_remote_user')
-class TestWorkoutCommentWithMentionsCreateObject(WorkoutCommentMixin):
+class TestWorkoutCommentWithMentionsCreateObject(CommentMixin):
     def test_it_generates_activity_for_public_comment(
         self,
         update_remote_user_mock: Mock,
@@ -307,7 +308,7 @@ class TestWorkoutCommentWithMentionsCreateObject(WorkoutCommentMixin):
         assert serialized_comment['object']['cc'] == []
 
 
-class TestWorkoutCommentUpdateObject(WorkoutCommentMixin):
+class TestWorkoutCommentUpdateObject(CommentMixin):
     def test_it_raises_error_when_activity_type_is_invalid(
         self,
         app_with_federation: Flask,
@@ -461,7 +462,7 @@ class TestWorkoutCommentUpdateObject(WorkoutCommentMixin):
 
 
 @patch('fittrackee.federation.utils.user.update_remote_user')
-class TestWorkoutCommentWithMentionsUpdateObject(WorkoutCommentMixin):
+class TestWorkoutCommentWithMentionsUpdateObject(CommentMixin):
     def test_it_generates_activity_for_public_comment(
         self,
         update_remote_user_mock: Mock,

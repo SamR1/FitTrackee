@@ -13,10 +13,10 @@ from fittrackee.users.models import FollowRequest, User
 from fittrackee.utils import encode_uuid
 from fittrackee.workouts.models import Sport, Workout
 
-from ..workouts.utils import WorkoutCommentMixin
+from .utils import CommentMixin
 
 
-class TestWorkoutCommentModel(WorkoutCommentMixin):
+class TestWorkoutCommentModel(CommentMixin):
     def test_comment_model(
         self,
         app: Flask,
@@ -109,7 +109,7 @@ class TestWorkoutCommentModel(WorkoutCommentMixin):
         assert str(comment) == f'<Comment {comment.id}>'
 
 
-class TestWorkoutCommentModelSerializeForCommentOwner(WorkoutCommentMixin):
+class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
     @pytest.mark.parametrize(
         'input_visibility',
         [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC],
@@ -145,7 +145,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(WorkoutCommentMixin):
         }
 
 
-class TestWorkoutCommentModelSerializeForFollower(WorkoutCommentMixin):
+class TestWorkoutCommentModelSerializeForFollower(CommentMixin):
     def test_it_raises_error_when_user_does_not_follow_comment_owner(
         self,
         app: Flask,
@@ -222,7 +222,7 @@ class TestWorkoutCommentModelSerializeForFollower(WorkoutCommentMixin):
         }
 
 
-class TestWorkoutCommentModelSerializeForUser(WorkoutCommentMixin):
+class TestWorkoutCommentModelSerializeForUser(CommentMixin):
     @pytest.mark.parametrize(
         'input_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
     )
@@ -277,9 +277,7 @@ class TestWorkoutCommentModelSerializeForUser(WorkoutCommentMixin):
         }
 
 
-class TestWorkoutCommentModelSerializeForUnauthenticatedUser(
-    WorkoutCommentMixin
-):
+class TestWorkoutCommentModelSerializeForUnauthenticatedUser(CommentMixin):
     @pytest.mark.parametrize(
         'input_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
     )
@@ -332,7 +330,7 @@ class TestWorkoutCommentModelSerializeForUnauthenticatedUser(
         }
 
 
-class TestWorkoutCommentModelSerializeForReplies(WorkoutCommentMixin):
+class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
     def test_it_serializes_comment_with_reply(
         self,
         app: Flask,
@@ -562,7 +560,7 @@ class TestWorkoutCommentModelSerializeForReplies(WorkoutCommentMixin):
         ]
 
 
-class TestWorkoutCommentModelWithMentions(WorkoutCommentMixin):
+class TestWorkoutCommentModelWithMentions(CommentMixin):
     def test_it_returns_empty_dict_when_no_mentions(
         self,
         app: Flask,
@@ -677,7 +675,7 @@ class TestWorkoutCommentModelWithMentions(WorkoutCommentMixin):
         assert mentioned_users == {"local": {user_3}, "remote": set()}
 
 
-class TestWorkoutCommentModelSerializeForMentions(WorkoutCommentMixin):
+class TestWorkoutCommentModelSerializeForMentions(CommentMixin):
     def test_it_serializes_comment_with_mentions_as_link(
         self,
         app: Flask,

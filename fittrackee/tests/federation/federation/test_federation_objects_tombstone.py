@@ -7,9 +7,10 @@ from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.federation.constants import AP_CTX, PUBLIC_STREAM
 from fittrackee.federation.objects.tombstone import TombstoneObject
 from fittrackee.privacy_levels import PrivacyLevel
-from fittrackee.tests.workouts.utils import WorkoutCommentMixin
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
+
+from ...comments.utils import CommentMixin
 
 
 class TestTombstoneObjectForWorkout:
@@ -96,7 +97,7 @@ class TestTombstoneObjectForWorkout:
         }
 
 
-class TestTombstoneObjectForWorkoutComment(WorkoutCommentMixin):
+class TestTombstoneObjectForWorkoutComment(CommentMixin):
     @pytest.mark.parametrize(
         'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
     )

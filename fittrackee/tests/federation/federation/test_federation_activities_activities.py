@@ -20,7 +20,6 @@ from fittrackee.federation.objects.workout import (
 )
 from fittrackee.federation.tasks.activity import get_activity_instance
 from fittrackee.privacy_levels import PrivacyLevel
-from fittrackee.tests.workouts.utils import WorkoutCommentMixin
 from fittrackee.users.exceptions import (
     FollowRequestAlreadyProcessedError,
     FollowRequestAlreadyRejectedError,
@@ -31,6 +30,7 @@ from fittrackee.workouts.constants import WORKOUT_DATE_FORMAT
 from fittrackee.workouts.exceptions import SportNotFoundException
 from fittrackee.workouts.models import Sport, Workout
 
+from ...comments.utils import CommentMixin
 from ...mixins import RandomMixin
 from ...utils import RandomActor
 
@@ -1103,7 +1103,7 @@ class TestUpdateActivityForWorkout(WorkoutActivitiesTestCase):
             activity.process_activity()
 
 
-class WorkoutCommentActivitiesTestCase(RandomMixin):
+class CommentActivitiesTestCase(RandomMixin):
     def generate_random_object(
         self,
         activity_type: str,
@@ -1192,9 +1192,10 @@ class WorkoutCommentActivitiesTestCase(RandomMixin):
         remote_actor: Union[RandomActor, Actor],
         workout: Optional[Workout] = None,
         visibility: Optional[PrivacyLevel] = PrivacyLevel.PUBLIC,
+        text: Optional[str] = None,
     ) -> Dict:
         return self.generate_random_object(
-            "Update", remote_actor, workout, visibility
+            "Update", remote_actor, workout, visibility, text
         )
 
     def generate_workout_comment_delete_activity(
@@ -1229,12 +1230,13 @@ class WorkoutCommentActivitiesTestCase(RandomMixin):
         }
 
 
-class TestCreateActivityForWorkoutComment(WorkoutCommentActivitiesTestCase):
-    def test_it_raises_error_if_comment_workout_does_not_exist(
+class TestCreateActivityForComment(CommentActivitiesTestCase):
+    def test_it_creates_remote_comment_when_no_related_workout_found(
         self,
         app_with_federation: Flask,
         remote_user: User,
     ) -> None:
+        """workout may be not visible"""
         comment_activity = self.generate_workout_comment_create_activity(
             remote_actor=remote_user.actor
         )
@@ -1242,11 +1244,10 @@ class TestCreateActivityForWorkoutComment(WorkoutCommentActivitiesTestCase):
             activity_dict=comment_activity
         )
 
-        with pytest.raises(
-            ObjectNotFoundException,
-            match='workout not found for CreateActivity',
-        ):
-            activity.process_activity()
+        activity.process_activity()
+
+        remote_comment = Comment.query.filter_by().first()
+        assert remote_comment.ap_id == comment_activity['object']['id']
 
     def test_it_creates_remote_workout_comment_when_remote_user_does_not_exist(
         self,
@@ -1375,10 +1376,10 @@ class TestCreateActivityForWorkoutComment(WorkoutCommentActivitiesTestCase):
         assert remote_comment.reply_to is None
 
 
-class TestCreateActivityForWorkoutCommentReply(
-    WorkoutCommentMixin, WorkoutCommentActivitiesTestCase
+class TestCreateActivityForCommentReply(
+    CommentMixin, CommentActivitiesTestCase
 ):
-    def test_it_raises_error_if_parent_comment_does_not_exist(
+    def test_it_creates_comment_when_parent_comment_does_not_exist(
         self,
         app_with_federation: Flask,
         user_1: User,
@@ -1392,7 +1393,9 @@ class TestCreateActivityForWorkoutCommentReply(
             f'{workout_cycling_user_1.short_id}'
         )
         comment_activity = self.generate_workout_comment_create_activity(
-            remote_actor=remote_user.actor, workout=workout_cycling_user_1
+            remote_actor=remote_user.actor,
+            workout=workout_cycling_user_1,
+            visibility=PrivacyLevel.PUBLIC,
         )
         comment_activity["object"]["inReplyTo"] = (
             comment_activity["object"]["inReplyTo"]
@@ -1402,11 +1405,16 @@ class TestCreateActivityForWorkoutCommentReply(
             activity_dict=comment_activity
         )
 
-        with pytest.raises(
-            ObjectNotFoundException,
-            match='parent comment not found for CreateActivity',
-        ):
-            activity.process_activity()
+        activity.process_activity()
+
+        remote_comment = Comment.query.filter_by(
+            user_id=remote_user.id
+        ).first()
+        assert remote_comment.ap_id == comment_activity['object']['id']
+        assert remote_comment.remote_url == comment_activity['object']['url']
+        assert remote_comment.text == comment_activity['object']['content']
+        assert remote_comment.text_visibility == PrivacyLevel.PUBLIC
+        assert remote_comment.reply_to is None
 
     @pytest.mark.parametrize(
         'input_visibility',
@@ -1460,32 +1468,8 @@ class TestCreateActivityForWorkoutCommentReply(
         assert remote_comment.reply_to == parent_comment.id
 
 
-class TestUpdateActivityForWorkoutComment(
-    WorkoutCommentMixin, WorkoutCommentActivitiesTestCase
-):
-    def test_it_raises_error_if_remote_workout_comment_does_not_exist(
-        self,
-        app_with_federation: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        remote_user: User,
-    ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
-        comment_activity = self.generate_workout_comment_update_activity(
-            remote_user.actor
-        )
-        activity = get_activity_instance({'type': comment_activity['type']})(
-            activity_dict=comment_activity
-        )
-        with pytest.raises(
-            ObjectNotFoundException,
-            match="comment not found for UpdateActivity",
-        ):
-
-            activity.process_activity()
-
-    def test_it_raises_error_if_workout_actor_does_not_exist(
+class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
+    def test_it_creates_comment_when_workout_actor_does_not_exist(
         self,
         app_with_federation: Flask,
         user_1: User,
@@ -1500,12 +1484,61 @@ class TestUpdateActivityForWorkoutComment(
         activity = get_activity_instance({'type': comment_activity['type']})(
             activity_dict=comment_activity
         )
-        with pytest.raises(
-            ActorNotFoundException,
-            match="actor not found for UpdateActivity",
-        ):
 
+        with patch(
+            'fittrackee.federation.utils.user.get_remote_actor_url',
+            return_value=random_actor.get_remote_user_object(),
+        ), patch(
+            'fittrackee.federation.utils.user.store_or_delete_user_picture'
+        ), patch(
+            'fittrackee.federation.utils.user.update_remote_actor_stats'
+        ):
             activity.process_activity()
+
+        remote_comment = Comment.query.filter_by().first()
+        assert remote_comment.ap_id == comment_activity['object']['id']
+        new_user = User.query.filter_by(username=random_actor.name).first()
+        assert new_user is not None
+
+    def test_it_creates_comment_when_original_comment_does_not_exist(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        random_actor: Actor,
+    ) -> None:
+        # case of a comment edited to add a mention to a user (not-followers)
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment_activity = self.generate_workout_comment_update_activity(
+            random_actor, text=f"@{user_1.username}"
+        )
+        activity = get_activity_instance({'type': comment_activity['type']})(
+            activity_dict=comment_activity
+        )
+
+        with patch(
+            'fittrackee.federation.utils.user.get_remote_actor_url',
+            return_value=random_actor.get_remote_user_object(),
+        ), patch(
+            'fittrackee.federation.utils.user.store_or_delete_user_picture'
+        ), patch(
+            'fittrackee.federation.utils.user.update_remote_actor_stats'
+        ):
+            activity.process_activity()
+
+        remote_comment = Comment.query.filter_by().first()
+        assert remote_comment.ap_id == comment_activity['object']['id']
+        assert (
+            User.query.filter_by(username=random_actor.name).first()
+            is not None
+        )
+        assert (
+            Mention.query.filter_by(
+                user_id=user_1.id, comment_id=remote_comment.id
+            ).first()
+            is not None
+        )
 
     def test_it_raises_error_when_activity_actor_is_not_comment_actor(
         self,
@@ -1701,9 +1734,7 @@ class TestUpdateActivityForWorkoutComment(
             activity.process_activity()
 
 
-class TestDeleteActivityForWorkoutComment(
-    WorkoutCommentMixin, WorkoutCommentActivitiesTestCase
-):
+class TestDeleteActivityForComment(CommentMixin, CommentActivitiesTestCase):
     def test_it_raises_error_if_remote_workout_does_not_exist(
         self,
         app_with_federation: Flask,

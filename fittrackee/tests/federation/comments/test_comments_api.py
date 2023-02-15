@@ -10,16 +10,14 @@ from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
 from ...comments.test_comments_api import GetWorkoutCommentsTestCase
+from ...comments.utils import CommentMixin
 from ...mixins import ApiTestCaseMixin, BaseTestMixin
 from ...utils import jsonify_dict
-from ...workouts.utils import WorkoutCommentMixin
 
 
 @patch('fittrackee.federation.utils.user.update_remote_user')
 @patch('fittrackee.comments.comments.send_to_remote_inbox')
-class TestPostWorkoutComment(
-    WorkoutCommentMixin, ApiTestCaseMixin, BaseTestMixin
-):
+class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
     @pytest.mark.parametrize(
         'input_workout_visibility',
         [
@@ -446,7 +444,7 @@ class TestPostWorkoutComment(
 
 
 class TestGetWorkoutCommentAsUser(
-    WorkoutCommentMixin, ApiTestCaseMixin, BaseTestMixin
+    CommentMixin, ApiTestCaseMixin, BaseTestMixin
 ):
     def test_it_returns_404_when_comment_visibility_does_not_allow_access(
         self,
@@ -483,7 +481,7 @@ class TestGetWorkoutCommentAsUser(
 
 
 class TestGetWorkoutCommentAsFollower(
-    WorkoutCommentMixin, ApiTestCaseMixin, BaseTestMixin
+    CommentMixin, ApiTestCaseMixin, BaseTestMixin
 ):
     def test_it_returns_comment_when_visibility_allows_access(
         self,
@@ -522,7 +520,7 @@ class TestGetWorkoutCommentAsFollower(
 
 
 class TestGetWorkoutCommentAsRemoteFollower(
-    WorkoutCommentMixin, ApiTestCaseMixin, BaseTestMixin
+    CommentMixin, ApiTestCaseMixin, BaseTestMixin
 ):
     def test_it_returns_comment_when_visibility_allows_access(
         self,
@@ -561,7 +559,7 @@ class TestGetWorkoutCommentAsRemoteFollower(
 
 
 class TestGetWorkoutCommentAsOwner(
-    WorkoutCommentMixin, ApiTestCaseMixin, BaseTestMixin
+    CommentMixin, ApiTestCaseMixin, BaseTestMixin
 ):
     def test_it_returns_comment_when_visibility_allows_access(
         self,
@@ -597,7 +595,7 @@ class TestGetWorkoutCommentAsOwner(
 
 
 class TestGetWorkoutCommentAsUnauthenticatedUser(
-    WorkoutCommentMixin, ApiTestCaseMixin, BaseTestMixin
+    CommentMixin, ApiTestCaseMixin, BaseTestMixin
 ):
     def test_it_returns_404_when_comment_visibility_does_not_allow_access(
         self,
@@ -630,7 +628,7 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
 
 
 class TestGetWorkoutCommentWithReplies(
-    WorkoutCommentMixin, ApiTestCaseMixin, BaseTestMixin
+    CommentMixin, ApiTestCaseMixin, BaseTestMixin
 ):
     def test_it_gets_reply(
         self,
@@ -978,7 +976,7 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
 
 
 class TestGetWorkoutCommentWithMention(
-    WorkoutCommentMixin, ApiTestCaseMixin, BaseTestMixin
+    CommentMixin, ApiTestCaseMixin, BaseTestMixin
 ):
     @pytest.mark.parametrize(
         'input_workout_visibility',
@@ -1025,7 +1023,7 @@ class TestGetWorkoutCommentWithMention(
 
 
 class TestGetWorkoutsCommentsWithReplies(
-    WorkoutCommentMixin, ApiTestCaseMixin, BaseTestMixin
+    CommentMixin, ApiTestCaseMixin, BaseTestMixin
 ):
     def test_it_gets_reply(
         self,
@@ -1068,9 +1066,7 @@ class TestGetWorkoutsCommentsWithReplies(
 
 @patch('fittrackee.federation.utils.user.update_remote_user')
 @patch('fittrackee.comments.comments.send_to_remote_inbox')
-class TestDeleteWorkoutComment(
-    WorkoutCommentMixin, ApiTestCaseMixin, BaseTestMixin
-):
+class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
     def test_it_returns_404_if_comment_is_not_visible_to_user(
         self,
         send_to_remote_inbox_mock: Mock,
@@ -1323,9 +1319,7 @@ class TestDeleteWorkoutComment(
 
 @patch('fittrackee.federation.utils.user.update_remote_user')
 @patch('fittrackee.comments.comments.send_to_remote_inbox')
-class TestPatchWorkoutComment(
-    WorkoutCommentMixin, ApiTestCaseMixin, BaseTestMixin
-):
+class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
     def test_it_does_not_call_sent_to_inbox_when_comment_is_local_with_no_mentions(  # noqa
         self,
         send_to_remote_inbox_mock: Mock,

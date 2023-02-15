@@ -7,14 +7,14 @@ from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.comments.models import Mention
 from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.privacy_levels import PrivacyLevel
-from fittrackee.tests.workouts.utils import WorkoutCommentMixin
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
+from ...comments.utils import CommentMixin
 from ...utils import RandomActor
 
 
-class TestWorkoutCommentModelSerializeForCommentOwner(WorkoutCommentMixin):
+class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
     def test_it_serializes_owner_comment(
         self,
         app_with_federation: Flask,
@@ -47,7 +47,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(WorkoutCommentMixin):
         }
 
 
-class TestWorkoutCommentModelSerializeForRemoteFollower(WorkoutCommentMixin):
+class TestWorkoutCommentModelSerializeForRemoteFollower(CommentMixin):
     def test_it_raises_error_when_user_does_not_follow_comment_user(
         self,
         app_with_federation: Flask,
@@ -128,7 +128,7 @@ class TestWorkoutCommentModelSerializeForRemoteFollower(WorkoutCommentMixin):
         }
 
 
-class TestWorkoutCommentModelSerializeForUser(WorkoutCommentMixin):
+class TestWorkoutCommentModelSerializeForUser(CommentMixin):
     def test_it_raises_error_when_comment_is_visible_to_remote_follower(
         self,
         app_with_federation: Flask,
@@ -148,9 +148,7 @@ class TestWorkoutCommentModelSerializeForUser(WorkoutCommentMixin):
             comment.serialize(user_1)
 
 
-class TestWorkoutCommentModelSerializeForUnauthenticatedUser(
-    WorkoutCommentMixin
-):
+class TestWorkoutCommentModelSerializeForUnauthenticatedUser(CommentMixin):
     def test_it_raises_error_when_comment_is_visible_to_remote_follower(
         self,
         app_with_federation: Flask,
@@ -170,7 +168,7 @@ class TestWorkoutCommentModelSerializeForUnauthenticatedUser(
             comment.serialize()
 
 
-class TestWorkoutCommentModelGetCreateActivity(WorkoutCommentMixin):
+class TestWorkoutCommentModelGetCreateActivity(CommentMixin):
     activity_type = 'Create'
     expected_object_type = 'Note'
 
@@ -230,7 +228,7 @@ class TestWorkoutCommentModelGetDeleteActivity(
 
 
 @patch('fittrackee.federation.utils.user.update_remote_user')
-class TestWorkoutCommentModelWithMentions(WorkoutCommentMixin):
+class TestWorkoutCommentModelWithMentions(CommentMixin):
     def test_it_creates_mentions_when_mentioned_user_exists(
         self,
         update_mock: Mock,
@@ -315,7 +313,7 @@ class TestWorkoutCommentModelWithMentions(WorkoutCommentMixin):
 
 
 @patch('fittrackee.federation.utils.user.update_remote_user')
-class TestWorkoutCommentModelSerializeForMentions(WorkoutCommentMixin):
+class TestWorkoutCommentModelSerializeForMentions(CommentMixin):
     def test_it_serializes_comment_with_mentions_as_link(
         self,
         update_mock: Mock,

@@ -8,10 +8,10 @@ from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
-from ...workouts.utils import WorkoutCommentMixin
+from ...comments.utils import CommentMixin
 
 
-class TestCommentWithMentionSerializeVisibility(WorkoutCommentMixin):
+class TestCommentWithMentionSerializeVisibility(CommentMixin):
     def test_public_comment_is_visible_to_all_users(
         self,
         app_with_federation: Flask,
@@ -137,7 +137,7 @@ class TestCommentWithMentionSerializeVisibility(WorkoutCommentMixin):
             assert comment.serialize()  # unauthenticated user
 
 
-class TestWorkoutCommentRemoteMentions(WorkoutCommentMixin):
+class TestWorkoutCommentRemoteMentions(CommentMixin):
     def test_it_gets_remote_followers_count(
         self,
         app_with_federation: Flask,

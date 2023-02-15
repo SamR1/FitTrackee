@@ -6,8 +6,9 @@ from fittrackee.users.models import FollowRequest, User
 from fittrackee.utils import decode_short_id
 from fittrackee.workouts.models import Sport, Workout
 
+from ..comments.utils import CommentMixin
 from ..mixins import ApiTestCaseMixin
-from .utils import WorkoutCommentMixin, post_a_workout
+from .utils import post_a_workout
 
 
 def get_gpx_filepath(workout_id: int) -> str:
@@ -15,7 +16,7 @@ def get_gpx_filepath(workout_id: int) -> str:
     return workout.gpx
 
 
-class TestDeleteWorkoutWithGpx(WorkoutCommentMixin, ApiTestCaseMixin):
+class TestDeleteWorkoutWithGpx(CommentMixin, ApiTestCaseMixin):
     def test_it_deletes_a_workout_with_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
@@ -259,7 +260,7 @@ class TestDeleteWorkoutWithGpx(WorkoutCommentMixin, ApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
-class TestDeleteWorkoutWithoutGpx(WorkoutCommentMixin, ApiTestCaseMixin):
+class TestDeleteWorkoutWithoutGpx(CommentMixin, ApiTestCaseMixin):
     def test_it_deletes_a_workout_wo_gpx(
         self,
         app: Flask,

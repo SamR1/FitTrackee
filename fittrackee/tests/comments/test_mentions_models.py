@@ -10,7 +10,7 @@ from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
-from ..workouts.utils import WorkoutCommentMixin
+from .utils import CommentMixin
 
 ALL_VISIBILITIES = [
     PrivacyLevel.PUBLIC,
@@ -19,7 +19,7 @@ ALL_VISIBILITIES = [
 ]
 
 
-class TestMentionModel(WorkoutCommentMixin):
+class TestMentionModel(CommentMixin):
     def test_mention_model(
         self,
         app: Flask,
@@ -59,7 +59,7 @@ class TestMentionModel(WorkoutCommentMixin):
         assert mention.created_at == now
 
 
-class TestCommentWithMentionSerializeVisibility(WorkoutCommentMixin):
+class TestCommentWithMentionSerializeVisibility(CommentMixin):
     @pytest.mark.parametrize('workout_visibility', ALL_VISIBILITIES)
     def test_public_comment_is_visible_to_all_users(
         self,
