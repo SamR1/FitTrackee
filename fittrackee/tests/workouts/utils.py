@@ -7,7 +7,7 @@ from unittest.mock import patch
 from flask import Flask
 
 from fittrackee import db
-from fittrackee.comments.models import WorkoutComment
+from fittrackee.comments.models import Comment
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Workout
@@ -61,11 +61,11 @@ class WorkoutCommentMixin(RandomMixin):
         text: Optional[str] = None,
         text_visibility: PrivacyLevel = PrivacyLevel.PRIVATE,
         created_at: Optional[datetime] = None,
-        parent_comment: Optional[WorkoutComment] = None,
+        parent_comment: Optional[Comment] = None,
         with_mentions: bool = True,
-    ) -> WorkoutComment:
+    ) -> Comment:
         text = self.random_string() if text is None else text
-        comment = WorkoutComment(
+        comment = Comment(
             user_id=user.id,
             workout_id=workout.id,
             text=text,

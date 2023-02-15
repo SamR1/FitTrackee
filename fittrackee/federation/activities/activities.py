@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from typing import Dict, Tuple
 
 from fittrackee import appLog, db
-from fittrackee.comments.models import WorkoutComment
+from fittrackee.comments.models import Comment
 from fittrackee.federation.constants import PUBLIC_STREAM
 from fittrackee.federation.exceptions import (
     ActivityException,
@@ -205,12 +205,12 @@ class CreateActivity(AbstractActivity):
                 r"https://(.*)/workouts/(.*)/comments/(.*)",
                 reply_to_object_api_id,
             ):
-                parent_comment = WorkoutComment.query.filter_by(
+                parent_comment = Comment.query.filter_by(
                     ap_id=reply_to_object_api_id
                 ).first()
                 if not parent_comment:
                     raise ObjectNotFoundException(
-                        "parent workout_comment", self.activity_name()
+                        "parent comment", self.activity_name()
                     )
                 workout = parent_comment.workout
             elif re.match(
@@ -223,7 +223,7 @@ class CreateActivity(AbstractActivity):
         if not workout:
             raise ObjectNotFoundException("workout", self.activity_name())
 
-        new_comment = WorkoutComment(
+        new_comment = Comment(
             user_id=actor.user.id,
             workout_id=workout.id,
             text=note_data["content"],
@@ -252,9 +252,7 @@ class DeleteActivity(AbstractActivity):
         object_ap_id = self.activity['object']['id']
 
         # check if related object is a comment
-        object_to_delete = WorkoutComment.query.filter_by(
-            ap_id=object_ap_id
-        ).first()
+        object_to_delete = Comment.query.filter_by(ap_id=object_ap_id).first()
 
         # if not, check if related object is a workout
         if not object_to_delete:
@@ -330,7 +328,7 @@ class UpdateActivity(AbstractActivity):
 
     def update_remote_workout_comment(self, actor: Actor) -> None:
         note_data = self.activity['object']
-        comment_to_update = WorkoutComment.query.filter_by(
+        comment_to_update = Comment.query.filter_by(
             ap_id=note_data['id']
         ).first()
         if not comment_to_update:

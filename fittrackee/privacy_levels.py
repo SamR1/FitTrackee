@@ -2,7 +2,7 @@ from enum import Enum
 from typing import TYPE_CHECKING, Optional, Union
 
 if TYPE_CHECKING:
-    from fittrackee.comments.models import WorkoutComment
+    from fittrackee.comments.models import Comment
     from fittrackee.users.models import User
     from fittrackee.workouts.models import Workout
 
@@ -35,7 +35,7 @@ def get_map_visibility(
 
 
 def can_view(
-    target_object: Union['Workout', 'WorkoutComment'],
+    target_object: Union['Workout', 'Comment'],
     visibility: str,
     user: Optional['User'] = None,
 ) -> bool:
@@ -49,7 +49,7 @@ def can_view(
         return False
 
     if (
-        target_object.__class__.__name__ == "WorkoutComment"
+        target_object.__class__.__name__ == "Comment"
         and user in target_object.mentions.all()
     ):
         return True

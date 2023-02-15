@@ -11,7 +11,7 @@ from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, db
 from fittrackee.exceptions import InvalidVisibilityException
-from fittrackee.federation.objects.comment import WorkoutCommentObject
+from fittrackee.federation.objects.comment import CommentObject
 from fittrackee.federation.objects.tombstone import TombstoneObject
 from fittrackee.privacy_levels import PrivacyLevel, can_view
 from fittrackee.users.utils.following import get_following
@@ -24,25 +24,23 @@ if TYPE_CHECKING:
 
 
 def get_comments(
-    workout_id: int,
-    user: Optional['User'],
-    reply_to: Optional[int] = None,
-) -> List['WorkoutComment']:
+    workout_id: int, user: Optional['User'], reply_to: Optional[int] = None
+) -> List['Comment']:
     if user:
         local_following_ids, remote_following_ids = get_following(user)
-        comments_filter = WorkoutComment.query.join(
-            Mention, Mention.comment_id == WorkoutComment.id, isouter=True
+        comments_filter = Comment.query.join(
+            Mention, Mention.comment_id == Comment.id, isouter=True
         ).filter(
-            WorkoutComment.workout_id == workout_id,
-            WorkoutComment.reply_to == reply_to,
+            Comment.workout_id == workout_id,
+            Comment.reply_to == reply_to,
             or_(
-                WorkoutComment.text_visibility == PrivacyLevel.PUBLIC,
+                Comment.text_visibility == PrivacyLevel.PUBLIC,
                 or_(user.id == Mention.user_id),
                 or_(
-                    WorkoutComment.user_id == user.id,
+                    Comment.user_id == user.id,
                     and_(
-                        WorkoutComment.user_id.in_(local_following_ids),
-                        WorkoutComment.text_visibility.in_(
+                        Comment.user_id.in_(local_following_ids),
+                        Comment.text_visibility.in_(
                             [
                                 PrivacyLevel.FOLLOWERS,
                                 PrivacyLevel.FOLLOWERS_AND_REMOTE,
@@ -50,24 +48,24 @@ def get_comments(
                         ),
                     ),
                     and_(
-                        WorkoutComment.user_id.in_(remote_following_ids),
-                        WorkoutComment.text_visibility
+                        Comment.user_id.in_(remote_following_ids),
+                        Comment.text_visibility
                         == PrivacyLevel.FOLLOWERS_AND_REMOTE,
                     ),
                 ),
             ),
         )
     else:
-        comments_filter = WorkoutComment.query.filter(
-            WorkoutComment.workout_id == workout_id,
-            WorkoutComment.reply_to == reply_to,
-            WorkoutComment.text_visibility == PrivacyLevel.PUBLIC,
+        comments_filter = Comment.query.filter(
+            Comment.workout_id == workout_id,
+            Comment.reply_to == reply_to,
+            Comment.text_visibility == PrivacyLevel.PUBLIC,
         )
-    return comments_filter.order_by(WorkoutComment.created_at.asc()).all()
+    return comments_filter.order_by(Comment.created_at.asc()).all()
 
 
-class WorkoutComment(BaseModel):
-    __tablename__ = 'workout_comments'
+class Comment(BaseModel):
+    __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     uuid = db.Column(
         postgresql.UUID(as_uuid=True),
@@ -86,7 +84,7 @@ class WorkoutComment(BaseModel):
     )
     reply_to = db.Column(
         db.Integer,
-        db.ForeignKey('workout_comments.id', ondelete="SET NULL"),
+        db.ForeignKey('comments.id', ondelete="SET NULL"),
         index=True,
         nullable=True,
     )
@@ -102,19 +100,19 @@ class WorkoutComment(BaseModel):
     remote_url = db.Column(db.Text(), nullable=True)
 
     parent_comment = db.relationship(
-        'WorkoutComment', remote_side=[id], lazy='joined'
+        'Comment', remote_side=[id], lazy='joined'
     )
     mentions = db.relationship(
         "User",
         secondary="mentions",
-        primaryjoin="WorkoutComment.id == Mention.comment_id",
+        primaryjoin="Comment.id == Mention.comment_id",
         secondaryjoin="Mention.user_id == User.id",
         lazy="dynamic",
         viewonly=True,
     )
 
     def __repr__(self) -> str:
-        return f'<WorkoutComment {self.id}>'
+        return f'<Comment {self.id}>'
 
     def __init__(
         self,
@@ -236,7 +234,7 @@ class WorkoutComment(BaseModel):
 
     def get_activity(self, activity_type: str) -> Dict:
         if activity_type in ['Create', 'Update']:
-            return WorkoutCommentObject(
+            return CommentObject(
                 self, activity_type=activity_type
             ).get_activity()
         if activity_type == 'Delete':
@@ -251,7 +249,7 @@ class Mention(BaseModel):
 
     comment_id = db.Column(
         db.Integer,
-        db.ForeignKey('workout_comments.id', ondelete="CASCADE"),
+        db.ForeignKey('comments.id', ondelete="CASCADE"),
         primary_key=True,
     )
     user_id = db.Column(

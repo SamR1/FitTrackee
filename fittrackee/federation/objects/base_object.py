@@ -7,7 +7,7 @@ from fittrackee.privacy_levels import PrivacyLevel
 from ..constants import AP_CTX, DATE_FORMAT, PUBLIC_STREAM
 
 if TYPE_CHECKING:
-    from fittrackee.comments.models import WorkoutComment
+    from fittrackee.comments.models import Comment
     from fittrackee.workouts.models import Workout
 
     from ..enums import ActivityType
@@ -55,7 +55,7 @@ class BaseObject(ABC):
 
     @staticmethod
     def _get_modification_date(
-        activity_object: Union['Workout', 'WorkoutComment']
+        activity_object: Union['Workout', 'Comment']
     ) -> str:
         return activity_object.modification_date.strftime(DATE_FORMAT)
 

@@ -12,7 +12,7 @@
         {{ $t('workouts.COMMENTS.LABEL', 0) }}
       </template>
       <template #content>
-        <WorkoutComment
+        <Comment
           v-for="comment in workoutData.comments"
           :key="comment.id"
           :comment="comment"
@@ -42,7 +42,7 @@
 <script setup lang="ts">
   import { Ref, ref, toRefs, watch } from "vue"
 
-  import WorkoutCommentEdition from "@/components/WorkoutComment/WorkoutCommentEdition.vue"
+  import WorkoutCommentEdition from "@/components/Comment/CommentEdition.vue"
   import { WORKOUTS_STORE } from "@/store/constants"
   import { IAuthUserProfile } from "@/types/user"
   import { IComment, IWorkoutData } from "@/types/workouts"

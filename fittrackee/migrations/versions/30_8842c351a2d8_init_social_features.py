@@ -264,7 +264,7 @@ def upgrade():
     op.alter_column('workouts', 'map_visibility', nullable=False)
 
     privacy_levels.create(op.get_bind())
-    op.create_table('workout_comments',
+    op.create_table('comments',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('uuid', UUID(as_uuid=True), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
@@ -277,12 +277,12 @@ def upgrade():
     sa.Column('remote_url', sa.Text(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.ForeignKeyConstraint(['workout_id'], ['workouts.id'], ondelete='SET NULL'),
-    sa.ForeignKeyConstraint(['reply_to'], ['workout_comments.id'], ondelete='SET NULL'),
+    sa.ForeignKeyConstraint(['reply_to'], ['comments.id'], ondelete='SET NULL'),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('uuid')
     )
     op.add_column(
-        'workout_comments',
+        'comments',
         sa.Column(
             'text_visibility',
             privacy_levels,
@@ -290,7 +290,7 @@ def upgrade():
             nullable=False
         )
     )
-    with op.batch_alter_table('workout_comments', schema=None) as batch_op:
+    with op.batch_alter_table('comments', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_workout_comments_user_id'), ['user_id'], unique=False)
         batch_op.create_index(batch_op.f('ix_workout_comments_workout_id'), ['workout_id'], unique=False)
         batch_op.create_index(batch_op.f('ix_workout_comments_reply_to'), ['reply_to'], unique=False)
@@ -299,7 +299,7 @@ def upgrade():
     sa.Column('comment_id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.ForeignKeyConstraint(['comment_id'], ['workout_comments.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['comment_id'], ['comments.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('comment_id', 'user_id')
     )
@@ -308,11 +308,11 @@ def upgrade():
 def downgrade():
     op.drop_table('mentions')
 
-    with op.batch_alter_table('workout_comments', schema=None) as batch_op:
+    with op.batch_alter_table('comments', schema=None) as batch_op:
         batch_op.drop_index(batch_op.f('ix_workout_comments_user_id'))
         batch_op.drop_index(batch_op.f('ix_workout_comments_workout_id'))
         batch_op.drop_index(batch_op.f('ix_workout_comments_reply_to'))
-    op.drop_table('workout_comments')
+    op.drop_table('comments')
 
     op.drop_column('workouts', 'remote_url')
     op.drop_column('workouts', 'ap_id')

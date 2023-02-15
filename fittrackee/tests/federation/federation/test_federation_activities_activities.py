@@ -5,7 +5,7 @@ from unittest.mock import patch
 import pytest
 from flask import Flask
 
-from fittrackee.comments.models import Mention, WorkoutComment
+from fittrackee.comments.models import Comment, Mention
 from fittrackee.federation.constants import AP_CTX, DATE_FORMAT, PUBLIC_STREAM
 from fittrackee.federation.enums import ActivityType
 from fittrackee.federation.exceptions import (
@@ -1200,7 +1200,7 @@ class WorkoutCommentActivitiesTestCase(RandomMixin):
     def generate_workout_comment_delete_activity(
         self,
         remote_actor: Union[RandomActor, Actor],
-        remote_comment: Optional[WorkoutComment] = None,
+        remote_comment: Optional[Comment] = None,
     ) -> Dict:
         remote_domain = (
             remote_actor.domain
@@ -1280,7 +1280,7 @@ class TestCreateActivityForWorkoutComment(WorkoutCommentActivitiesTestCase):
         ):
             activity.process_activity()
 
-        remote_comment = WorkoutComment.query.filter_by().first()
+        remote_comment = Comment.query.filter_by().first()
         assert remote_comment.ap_id == comment_activity['object']['id']
         assert (
             User.query.filter_by(username=random_actor.name).first()
@@ -1321,7 +1321,7 @@ class TestCreateActivityForWorkoutComment(WorkoutCommentActivitiesTestCase):
         ):
             activity.process_activity()
 
-        remote_comment = WorkoutComment.query.filter_by().first()
+        remote_comment = Comment.query.filter_by().first()
         assert remote_comment.ap_id == comment_activity['object']['id']
         new_user = User.query.filter_by(username=random_actor.name).first()
         assert new_user is not None
@@ -1365,7 +1365,7 @@ class TestCreateActivityForWorkoutComment(WorkoutCommentActivitiesTestCase):
 
         activity.process_activity()
 
-        remote_comment = WorkoutComment.query.filter_by(
+        remote_comment = Comment.query.filter_by(
             user_id=remote_user.id
         ).first()
         assert remote_comment.ap_id == comment_activity['object']['id']
@@ -1404,7 +1404,7 @@ class TestCreateActivityForWorkoutCommentReply(
 
         with pytest.raises(
             ObjectNotFoundException,
-            match='parent workout_comment not found for CreateActivity',
+            match='parent comment not found for CreateActivity',
         ):
             activity.process_activity()
 
@@ -1450,7 +1450,7 @@ class TestCreateActivityForWorkoutCommentReply(
 
         activity.process_activity()
 
-        remote_comment = WorkoutComment.query.filter_by(
+        remote_comment = Comment.query.filter_by(
             user_id=remote_user.id
         ).first()
         assert remote_comment.ap_id == comment_activity['object']['id']
@@ -1774,8 +1774,7 @@ class TestDeleteActivityForWorkoutComment(
         ):
             activity.process_activity()
         assert (
-            WorkoutComment.query.filter_by(id=remote_comment.id).first()
-            is not None
+            Comment.query.filter_by(id=remote_comment.id).first() is not None
         )
 
     def test_it_deletes_remote_workout(
@@ -1804,7 +1803,7 @@ class TestDeleteActivityForWorkoutComment(
 
         activity.process_activity()
 
-        assert WorkoutComment.query.filter_by(id=comment_id).first() is None
+        assert Comment.query.filter_by(id=comment_id).first() is None
         assert Mention.query.filter_by(comment_id=comment_id).all() == []
 
     def test_it_deletes_remote_workout_with_reply(
@@ -1838,5 +1837,5 @@ class TestDeleteActivityForWorkoutComment(
 
         activity.process_activity()
 
-        assert WorkoutComment.query.filter_by(id=comment_id).first() is None
+        assert Comment.query.filter_by(id=comment_id).first() is None
         assert reply.reply_to is None

@@ -1,3 +1,4 @@
+import Comment from '@/components/Comment/Comment.vue'
 import AlertMessage from '@/components/Common/AlertMessage.vue'
 import Card from '@/components/Common/Card.vue'
 import CustomTextArea from '@/components/Common/CustomTextArea.vue'
@@ -8,7 +9,6 @@ import SportImage from '@/components/Common/Images/SportImage/index.vue'
 import Loader from '@/components/Common/Loader.vue'
 import Modal from '@/components/Common/Modal.vue'
 import VisibilityIcon from '@/components/Common/VisibilityIcon.vue'
-import WorkoutComment from '@/components/WorkoutComment/WorkoutComment.vue'
 
 export const customComponents = [
   { target: AlertMessage, name: 'AlertMessage' },
@@ -21,5 +21,5 @@ export const customComponents = [
   { target: Modal, name: 'Modal' },
   { target: SportImage, name: 'SportImage' },
   { target: VisibilityIcon, name: 'VisibilityIcon' },
-  { target: WorkoutComment, name: 'WorkoutComment' },
+  { target: Comment, name: 'Comment' },
 ]

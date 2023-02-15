@@ -12,7 +12,7 @@ from sqlalchemy.orm.session import Session, object_session
 from sqlalchemy.types import JSON, Enum
 
 from fittrackee import BaseModel, appLog, db
-from fittrackee.comments.models import WorkoutComment
+from fittrackee.comments.models import Comment
 from fittrackee.federation.decorators import federation_required
 from fittrackee.federation.objects.tombstone import TombstoneObject
 from fittrackee.federation.objects.workout import WorkoutObject
@@ -196,7 +196,7 @@ class Workout(BaseModel):
         backref=db.backref('workout', lazy='joined', single_parent=True),
     )
     comments = db.relationship(
-        WorkoutComment,
+        Comment,
         lazy=True,
         backref=db.backref('workout', lazy='joined', single_parent=True),
     )

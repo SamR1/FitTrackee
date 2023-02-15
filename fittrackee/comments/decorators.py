@@ -6,7 +6,7 @@ from fittrackee.responses import ForbiddenErrorResponse, NotFoundErrorResponse
 from fittrackee.utils import decode_short_id
 from fittrackee.workouts.models import Workout
 
-from .models import WorkoutComment
+from .models import Comment
 
 
 def check_workout_comment(check_owner: bool = True) -> Callable:
@@ -26,24 +26,24 @@ def check_workout_comment(check_owner: bool = True) -> Callable:
                 )
 
             workout_comment_uuid = decode_short_id(comment_short_id)
-            workout_comment = WorkoutComment.query.filter_by(
+            comment = Comment.query.filter_by(
                 uuid=workout_comment_uuid
             ).first()
-            if not workout_comment:
+            if not comment:
                 return NotFoundErrorResponse(
                     f"workout comment not found (id: {comment_short_id})"
                 )
 
-            if not can_view(workout_comment, "text_visibility", auth_user):
+            if not can_view(comment, "text_visibility", auth_user):
                 return NotFoundErrorResponse(
                     f"workout comment not found (id: {comment_short_id})"
                 )
 
             if check_owner and (
-                not auth_user or auth_user.id != workout_comment.user.id
+                not auth_user or auth_user.id != comment.user.id
             ):
                 return ForbiddenErrorResponse()
-            return f(auth_user, workout_comment)
+            return f(auth_user, comment)
 
         return wrapper_check_workout_comment
 

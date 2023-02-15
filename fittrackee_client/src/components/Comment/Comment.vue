@@ -64,7 +64,7 @@
         :comment="comment"
         @closeEdition="() => commentToEdit = null"
       />
-      <WorkoutComment
+      <Comment
         v-for="reply in comment.replies"
         :key="reply.id"
         :comment="reply"
@@ -88,9 +88,9 @@
   import { Locale, formatDistance } from "date-fns"
   import { ComputedRef, Ref, computed, ref, toRefs } from "vue"
 
+  import WorkoutCommentEdition from "@/components/Comment/CommentEdition.vue"
   import Username from "@/components/User/Username.vue"
   import UserPicture from "@/components/User/UserPicture.vue"
-  import WorkoutCommentEdition from "@/components/WorkoutComment/WorkoutCommentEdition.vue"
   import { ROOT_STORE } from "@/store/constants"
   import { IDisplayOptions } from "@/types/application"
   import { IAuthUserProfile, IUserProfile } from "@/types/user"

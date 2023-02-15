@@ -8,17 +8,15 @@ from ..enums import ActivityType
 from .base_object import BaseObject
 
 if TYPE_CHECKING:
-    from fittrackee.comments.models import WorkoutComment
+    from fittrackee.comments.models import Comment
     from fittrackee.workouts.models import Workout
 
 
 class TombstoneObject(BaseObject):
     # WIP
-    object_to_delete: Union['Workout', 'WorkoutComment']
+    object_to_delete: Union['Workout', 'Comment']
 
-    def __init__(
-        self, object_to_delete: Union['Workout', 'WorkoutComment']
-    ) -> None:
+    def __init__(self, object_to_delete: Union['Workout', 'Comment']) -> None:
         self.object_to_delete = object_to_delete
         self.object_to_delete_type = object_to_delete.__class__.__name__
         self.type = ActivityType.DELETE
@@ -28,9 +26,9 @@ class TombstoneObject(BaseObject):
             PrivacyLevel.PRIVATE,
             PrivacyLevel.FOLLOWERS,
         ] and (
-            self.object_to_delete_type != 'WorkoutComment'
+            self.object_to_delete_type != 'Comment'
             or (
-                self.object_to_delete_type == 'WorkoutComment'
+                self.object_to_delete_type == 'Comment'
                 and not self.object_to_delete.has_remote_mentions
             )
         ):
@@ -39,7 +37,7 @@ class TombstoneObject(BaseObject):
             )
 
     def _get_object_visibility(self) -> PrivacyLevel:
-        if self.object_to_delete_type == 'WorkoutComment':
+        if self.object_to_delete_type == 'Comment':
             return self.object_to_delete.text_visibility
         return self.object_to_delete.workout_visibility
 

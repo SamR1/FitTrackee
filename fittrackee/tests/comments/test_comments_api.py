@@ -5,7 +5,7 @@ import pytest
 from flask import Flask
 from werkzeug import Response
 
-from fittrackee.comments.models import Mention, WorkoutComment
+from fittrackee.comments.models import Comment, Mention
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
@@ -224,7 +224,7 @@ class TestPostWorkoutComment(
         )
 
         self.assert_500(response, 'Error during comment save.', 'fail')
-        assert WorkoutComment.query.all() == []
+        assert Comment.query.all() == []
 
     def test_it_returns_201_when_comment_is_created(
         self,
@@ -258,7 +258,7 @@ class TestPostWorkoutComment(
 
         assert response.status_code == 201
         data = json.loads(response.data.decode())
-        new_comment = WorkoutComment.query.filter_by(
+        new_comment = Comment.query.filter_by(
             user_id=user_1.id, workout_id=workout_cycling_user_2.id
         ).first()
         assert data['comment'] == jsonify_dict(new_comment.serialize(user_1))
@@ -291,7 +291,7 @@ class TestPostWorkoutComment(
         )
 
         assert response.status_code == 201
-        new_comment = WorkoutComment.query.filter_by(
+        new_comment = Comment.query.filter_by(
             user_id=user_1.id, workout_id=workout_cycling_user_1.id
         ).first()
         assert new_comment.text == " Hello"
@@ -335,7 +335,7 @@ class TestPostWorkoutComment(
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
-        workout_comment = self.create_comment(
+        comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
             text_visibility=PrivacyLevel.PUBLIC,
@@ -351,7 +351,7 @@ class TestPostWorkoutComment(
                 dict(
                     text=self.random_string(),
                     text_visibility=PrivacyLevel.PUBLIC,
-                    reply_to=workout_comment.short_id,
+                    reply_to=comment.short_id,
                 )
             ),
             headers=dict(
@@ -361,7 +361,7 @@ class TestPostWorkoutComment(
 
         assert response.status_code == 201
         data = json.loads(response.data.decode())
-        assert data['comment']['reply_to'] == workout_comment.short_id
+        assert data['comment']['reply_to'] == comment.short_id
 
     def test_it_creates_mention(
         self,
@@ -389,7 +389,7 @@ class TestPostWorkoutComment(
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        new_comment = WorkoutComment.query.filter_by(
+        new_comment = Comment.query.filter_by(
             user_id=user_1.id, workout_id=workout_cycling_user_2.id
         ).first()
         assert (
@@ -524,7 +524,7 @@ class TestGetWorkoutCommentAsUser(
         input_text_visibility: PrivacyLevel,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        workout_comment = self.create_comment(
+        comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
             text_visibility=input_text_visibility,
@@ -535,7 +535,7 @@ class TestGetWorkoutCommentAsUser(
 
         response = client.get(
             f"/api/workouts/{workout_cycling_user_2.short_id}/"
-            f"comments/{workout_comment.short_id}",
+            f"comments/{comment.short_id}",
             content_type="application/json",
             headers=dict(
                 Authorization=f"Bearer {auth_token}",
@@ -544,7 +544,7 @@ class TestGetWorkoutCommentAsUser(
 
         self.assert_404_with_message(
             response,
-            f"workout comment not found (id: {workout_comment.short_id})",
+            f"workout comment not found (id: {comment.short_id})",
         )
 
     def test_it_returns_comment_when_visibility_is_public(
@@ -557,7 +557,7 @@ class TestGetWorkoutCommentAsUser(
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        workout_comment = self.create_comment(
+        comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
             text_visibility=PrivacyLevel.PUBLIC,
@@ -568,7 +568,7 @@ class TestGetWorkoutCommentAsUser(
 
         response = client.get(
             f"/api/workouts/{workout_cycling_user_2.short_id}/"
-            f"comments/{workout_comment.short_id}",
+            f"comments/{comment.short_id}",
             content_type="application/json",
             headers=dict(
                 Authorization=f"Bearer {auth_token}",
@@ -578,9 +578,7 @@ class TestGetWorkoutCommentAsUser(
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
-        assert data['comment'] == jsonify_dict(
-            workout_comment.serialize(user_1)
-        )
+        assert data['comment'] == jsonify_dict(comment.serialize(user_1))
 
 
 class TestGetWorkoutCommentAsFollower(
@@ -600,7 +598,7 @@ class TestGetWorkoutCommentAsFollower(
         user_2.approves_follow_request_from(user_1)
         user_2.approves_follow_request_from(user_3)
         workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
-        workout_comment = self.create_comment(
+        comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
             text_visibility=PrivacyLevel.PRIVATE,
@@ -611,7 +609,7 @@ class TestGetWorkoutCommentAsFollower(
 
         response = client.get(
             f"/api/workouts/{workout_cycling_user_2.short_id}/"
-            f"comments/{workout_comment.short_id}",
+            f"comments/{comment.short_id}",
             content_type="application/json",
             headers=dict(
                 Authorization=f"Bearer {auth_token}",
@@ -620,7 +618,7 @@ class TestGetWorkoutCommentAsFollower(
 
         self.assert_404_with_message(
             response,
-            f"workout comment not found (id: {workout_comment.short_id})",
+            f"workout comment not found (id: {comment.short_id})",
         )
 
     @pytest.mark.parametrize(
@@ -639,7 +637,7 @@ class TestGetWorkoutCommentAsFollower(
         user_1.send_follow_request_to(user_3)
         user_3.approves_follow_request_from(user_1)
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        workout_comment = self.create_comment(
+        comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
             text_visibility=input_text_visibility,
@@ -650,7 +648,7 @@ class TestGetWorkoutCommentAsFollower(
 
         response = client.get(
             f"/api/workouts/{workout_cycling_user_2.short_id}/"
-            f"comments/{workout_comment.short_id}",
+            f"comments/{comment.short_id}",
             content_type="application/json",
             headers=dict(
                 Authorization=f"Bearer {auth_token}",
@@ -660,9 +658,7 @@ class TestGetWorkoutCommentAsFollower(
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
-        assert data['comment'] == jsonify_dict(
-            workout_comment.serialize(user_1)
-        )
+        assert data['comment'] == jsonify_dict(comment.serialize(user_1))
 
 
 class TestGetWorkoutCommentAsOwner(
@@ -684,7 +680,7 @@ class TestGetWorkoutCommentAsOwner(
     ) -> None:
         user_2.approves_follow_request_from(user_1)
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        workout_comment = self.create_comment(
+        comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
             text_visibility=input_text_visibility,
@@ -695,7 +691,7 @@ class TestGetWorkoutCommentAsOwner(
 
         response = client.get(
             f"/api/workouts/{workout_cycling_user_2.short_id}/"
-            f"comments/{workout_comment.short_id}",
+            f"comments/{comment.short_id}",
             content_type="application/json",
             headers=dict(
                 Authorization=f"Bearer {auth_token}",
@@ -705,9 +701,7 @@ class TestGetWorkoutCommentAsOwner(
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
-        assert data['comment'] == jsonify_dict(
-            workout_comment.serialize(user_1)
-        )
+        assert data['comment'] == jsonify_dict(comment.serialize(user_1))
 
 
 class TestGetWorkoutCommentAsUnauthenticatedUser(
@@ -729,7 +723,7 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
     ) -> None:
         user_2.approves_follow_request_from(user_1)
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        workout_comment = self.create_comment(
+        comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
             text_visibility=input_text_visibility,
@@ -738,13 +732,13 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
 
         response = client.get(
             f"/api/workouts/{workout_cycling_user_2.short_id}/"
-            f"comments/{workout_comment.short_id}",
+            f"comments/{comment.short_id}",
             content_type="application/json",
         )
 
         self.assert_404_with_message(
             response,
-            f"workout comment not found (id: {workout_comment.short_id})",
+            f"workout comment not found (id: {comment.short_id})",
         )
 
     def test_it_returns_comment_when_visibility_is_public(
@@ -756,7 +750,7 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
-        workout_comment = self.create_comment(
+        comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
             text_visibility=PrivacyLevel.PUBLIC,
@@ -765,14 +759,14 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
 
         response = client.get(
             f"/api/workouts/{workout_cycling_user_1.short_id}/"
-            f"comments/{workout_comment.short_id}",
+            f"comments/{comment.short_id}",
             content_type="application/json",
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
-        assert data['comment'] == jsonify_dict(workout_comment.serialize())
+        assert data['comment'] == jsonify_dict(comment.serialize())
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
@@ -809,7 +803,7 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
         ) = self.create_oauth2_client_and_issue_token(
             app, user_1, scope=client_scope
         )
-        workout_comment = self.create_comment(
+        comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
             text_visibility=PrivacyLevel.PUBLIC,
@@ -817,7 +811,7 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
 
         response = client.get(
             f"/api/workouts/{workout_cycling_user_2.short_id}/"
-            f"comments/{workout_comment.short_id}",
+            f"comments/{comment.short_id}",
             content_type="application/json",
             headers=dict(
                 Authorization=f"Bearer {access_token}",
@@ -838,7 +832,7 @@ class TestGetWorkoutCommentWithReplies(
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
-        workout_comment = self.create_comment(
+        comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
             text_visibility=PrivacyLevel.FOLLOWERS,
@@ -847,7 +841,7 @@ class TestGetWorkoutCommentWithReplies(
             user_1,
             workout_cycling_user_1,
             text_visibility=PrivacyLevel.FOLLOWERS,
-            parent_comment=workout_comment,
+            parent_comment=comment,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -855,7 +849,7 @@ class TestGetWorkoutCommentWithReplies(
 
         response = client.get(
             f"/api/workouts/{workout_cycling_user_1.short_id}/"
-            f"comments/{workout_comment.short_id}",
+            f"comments/{comment.short_id}",
             content_type="application/json",
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
@@ -981,7 +975,7 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        workout_comment = self.create_comment(
+        comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
             text_visibility=PrivacyLevel.PUBLIC,
@@ -1000,9 +994,7 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
 
         self.assert_comments_response(
             response,
-            expected_comments=[
-                jsonify_dict(workout_comment.serialize(user_1))
-            ],
+            expected_comments=[jsonify_dict(comment.serialize(user_1))],
         )
 
     @pytest.mark.parametrize(
@@ -1102,7 +1094,7 @@ class TestGetWorkoutCommentsAsFollower(GetWorkoutCommentsTestCase):
         user_1.send_follow_request_to(user_3)
         user_3.approves_follow_request_from(user_1)
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        workout_comment = self.create_comment(
+        comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
             text_visibility=input_text_visibility,
@@ -1121,9 +1113,7 @@ class TestGetWorkoutCommentsAsFollower(GetWorkoutCommentsTestCase):
 
         self.assert_comments_response(
             response,
-            expected_comments=[
-                jsonify_dict(workout_comment.serialize(user_1))
-            ],
+            expected_comments=[jsonify_dict(comment.serialize(user_1))],
         )
 
 
@@ -1144,7 +1134,7 @@ class TestGetWorkoutCommentsAsOwner(GetWorkoutCommentsTestCase):
     ) -> None:
         user_2.approves_follow_request_from(user_1)
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        workout_comment = self.create_comment(
+        comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
             text_visibility=input_text_visibility,
@@ -1163,9 +1153,7 @@ class TestGetWorkoutCommentsAsOwner(GetWorkoutCommentsTestCase):
 
         self.assert_comments_response(
             response,
-            expected_comments=[
-                jsonify_dict(workout_comment.serialize(user_1))
-            ],
+            expected_comments=[jsonify_dict(comment.serialize(user_1))],
         )
 
 
@@ -1209,7 +1197,7 @@ class TestGetWorkoutCommentsAsUnauthenticatedUser(GetWorkoutCommentsTestCase):
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
-        workout_comment = self.create_comment(
+        comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
             text_visibility=PrivacyLevel.PUBLIC,
@@ -1223,9 +1211,7 @@ class TestGetWorkoutCommentsAsUnauthenticatedUser(GetWorkoutCommentsTestCase):
 
         self.assert_comments_response(
             response,
-            expected_comments=[
-                jsonify_dict(workout_comment.serialize(user_1))
-            ],
+            expected_comments=[jsonify_dict(comment.serialize(user_1))],
         )
 
 
@@ -1351,7 +1337,7 @@ class TestGetWorkoutsCommentWithReplies(
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
-        workout_comment = self.create_comment(
+        comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
             text_visibility=PrivacyLevel.FOLLOWERS,
@@ -1360,7 +1346,7 @@ class TestGetWorkoutsCommentWithReplies(
             user_1,
             workout_cycling_user_1,
             text_visibility=PrivacyLevel.FOLLOWERS,
-            parent_comment=workout_comment,
+            parent_comment=comment,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1376,7 +1362,7 @@ class TestGetWorkoutsCommentWithReplies(
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert len(data['data']['comments']) == 1
-        assert data['data']['comments'][0]['id'] == workout_comment.short_id
+        assert data['data']['comments'][0]['id'] == comment.short_id
         assert data['data']['comments'][0]['replies'] == [
             jsonify_dict(reply.serialize(user_1))
         ]
@@ -1540,7 +1526,7 @@ class TestDeleteWorkoutComment(
         )
 
         assert response.status_code == 204
-        assert WorkoutComment.query.first() is None
+        assert Comment.query.first() is None
 
     def test_it_deletes_workout_comment_having_reply(
         self,
@@ -1932,7 +1918,7 @@ class TestPatchWorkoutComment(
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        new_comment = WorkoutComment.query.filter_by(
+        new_comment = Comment.query.filter_by(
             user_id=user_1.id, workout_id=workout_cycling_user_2.id
         ).first()
         assert Mention.query.filter_by(comment_id=new_comment.id).all() == []
@@ -1965,7 +1951,7 @@ class TestPatchWorkoutComment(
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        new_comment = WorkoutComment.query.filter_by(
+        new_comment = Comment.query.filter_by(
             user_id=user_1.id, workout_id=workout_cycling_user_2.id
         ).first()
         assert (

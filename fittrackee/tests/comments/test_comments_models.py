@@ -6,7 +6,7 @@ from flask import Flask
 from freezegun import freeze_time
 
 from fittrackee.comments.exceptions import CommentForbiddenException
-from fittrackee.comments.models import Mention, WorkoutComment
+from fittrackee.comments.models import Comment, Mention
 from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
@@ -73,7 +73,7 @@ class TestWorkoutCommentModel(WorkoutCommentMixin):
                 'federation is disabled.'
             ),
         ):
-            WorkoutComment(
+            Comment(
                 user_id=user_1.id,
                 workout_id=workout_cycling_user_1.id,
                 text=self.random_string(),
@@ -106,7 +106,7 @@ class TestWorkoutCommentModel(WorkoutCommentMixin):
             workout=workout_cycling_user_1,
         )
 
-        assert str(comment) == f'<WorkoutComment {comment.id}>'
+        assert str(comment) == f'<Comment {comment.id}>'
 
 
 class TestWorkoutCommentModelSerializeForCommentOwner(WorkoutCommentMixin):

@@ -7,41 +7,35 @@ from ..enums import ActivityType
 from .base_object import BaseObject
 
 if TYPE_CHECKING:
-    from fittrackee.comments.models import WorkoutComment
+    from fittrackee.comments.models import Comment
     from fittrackee.workouts.models import Workout
 
 
-class WorkoutCommentObject(BaseObject):
+class CommentObject(BaseObject):
 
     workout: 'Workout'
-    workout_comment: 'WorkoutComment'
+    comment: 'Comment'
 
-    def __init__(
-        self, workout_comment: 'WorkoutComment', activity_type: str
-    ) -> None:
+    def __init__(self, comment: 'Comment', activity_type: str) -> None:
         """
         Note: No visibility check on instantiation if activity is not a
         creation.
         It should be possible, for instance, to send an Update activity for a
         comment with remote mentions removed.
         """
-        self._check_visibility(workout_comment, activity_type)
-        self.workout_comment = workout_comment
-        self.visibility = workout_comment.text_visibility
-        self.workout = workout_comment.workout
+        self._check_visibility(comment, activity_type)
+        self.comment = comment
+        self.visibility = comment.text_visibility
+        self.workout = comment.workout
         self.type = ActivityType(activity_type)
-        self.actor = self.workout_comment.user.actor
-        self.activity_id = self.workout_comment.ap_id
-        self.published = self._get_published_date(
-            self.workout_comment.created_at
-        )
-        self.object_url = self.workout_comment.remote_url
+        self.actor = self.comment.user.actor
+        self.activity_id = self.comment.ap_id
+        self.published = self._get_published_date(self.comment.created_at)
+        self.object_url = self.comment.remote_url
         self.activity_dict = self._init_activity_dict()
 
     @staticmethod
-    def _check_visibility(
-        comment: 'WorkoutComment', activity_type: str
-    ) -> None:
+    def _check_visibility(comment: 'Comment', activity_type: str) -> None:
         if (
             activity_type == 'Create'
             and comment.text_visibility
@@ -56,18 +50,18 @@ class WorkoutCommentObject(BaseObject):
         (
             text_with_mention,
             mentioned_users,
-        ) = self.workout_comment.handle_mentions()
+        ) = self.comment.handle_mentions()
         self.activity_dict['object']['type'] = 'Note'
         self.activity_dict['object']['content'] = text_with_mention
         self.activity_dict['object']['inReplyTo'] = (
-            self.workout_comment.parent_comment.ap_id
-            if self.workout_comment.reply_to
+            self.comment.parent_comment.ap_id
+            if self.comment.reply_to
             else self.workout.ap_id
         )
         if self.type == ActivityType.UPDATE:
             self.activity_dict['object'] = {
                 **self.activity_dict['object'],
-                'updated': self._get_modification_date(self.workout_comment),
+                'updated': self._get_modification_date(self.comment),
             }
         # existing mentions (local and remote)
         mentions = [

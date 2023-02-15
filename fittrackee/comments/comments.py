@@ -20,14 +20,14 @@ from fittrackee.utils import clean_input, decode_short_id
 from fittrackee.workouts.models import Workout
 
 from .decorators import check_workout_comment
-from .models import WorkoutComment, get_comments
+from .models import Comment, get_comments
 
 comments_blueprint = Blueprint('comments', __name__)
 
 
 def get_all_recipients(
     user: User,
-    comment: WorkoutComment,
+    comment: Comment,
     deleted_mentioned_users: Optional[Set] = None,
 ) -> List[str]:
     recipients = user.get_followers_shared_inboxes_as_list()
@@ -43,7 +43,7 @@ def get_all_recipients(
 
 
 def sending_comment_activities_allowed(
-    comment: WorkoutComment, deleted_mentioned_users: Optional[Set] = None
+    comment: Comment, deleted_mentioned_users: Optional[Set] = None
 ) -> bool:
     if deleted_mentioned_users is None:
         deleted_mentioned_users = set()
@@ -86,20 +86,20 @@ def add_workout_comment(
             )
 
         reply_to = comment_data.get('reply_to')
-        workout_comment = None
+        comment = None
         if reply_to:
-            workout_comment = WorkoutComment.query.filter_by(
+            comment = Comment.query.filter_by(
                 uuid=decode_short_id(reply_to)
             ).first()
-            if not workout_comment:
+            if not comment:
                 return InvalidPayloadErrorResponse("'reply_to' is invalid")
 
-        new_comment = WorkoutComment(
+        new_comment = Comment(
             user_id=auth_user.id,
             workout_id=workout.id,
             text=clean_input(comment_data['text']),
             text_visibility=PrivacyLevel(comment_data['text_visibility']),
-            reply_to=workout_comment.id if workout_comment else None,
+            reply_to=comment.id if comment else None,
         )
         db.session.add(new_comment)
         db.session.flush()
@@ -150,12 +150,12 @@ def add_workout_comment(
 @require_auth(scopes=['workouts:read'], optional_auth_user=True)
 @check_workout_comment(check_owner=False)
 def get_workout_comment(
-    auth_user: Optional[User], workout_comment: WorkoutComment
+    auth_user: Optional[User], comment: Comment
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     return (
         {
             'status': 'success',
-            'comment': workout_comment.serialize(auth_user),
+            'comment': comment.serialize(auth_user),
         },
         200,
     )
@@ -199,14 +199,12 @@ def get_workout_comments(
 @require_auth(scopes=['workouts:write'])
 @check_workout_comment()
 def delete_workout_comment(
-    auth_user: User, workout_comment: WorkoutComment
+    auth_user: User, comment: Comment
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     try:
-        if sending_comment_activities_allowed(workout_comment):
-            note_activity = workout_comment.get_activity(
-                activity_type='Delete'
-            )
-            recipients = get_all_recipients(auth_user, workout_comment)
+        if sending_comment_activities_allowed(comment):
+            note_activity = comment.get_activity(activity_type='Delete')
+            recipients = get_all_recipients(auth_user, comment)
             if recipients:
                 send_to_remote_inbox.send(
                     sender_id=auth_user.actor.id,
@@ -214,7 +212,7 @@ def delete_workout_comment(
                     recipients=recipients,
                 )
 
-        db.session.delete(workout_comment)
+        db.session.delete(comment)
         db.session.commit()
         return {'status': 'no content'}, 204
     except (
@@ -233,28 +231,26 @@ def delete_workout_comment(
 @require_auth(scopes=['workouts:write'])
 @check_workout_comment()
 def update_workout_comment(
-    auth_user: User, workout_comment: WorkoutComment
+    auth_user: User, comment: Comment
 ) -> Union[Dict, HttpResponse]:
     comment_data = request.get_json()
     if not comment_data or not comment_data.get('text'):
         return InvalidPayloadErrorResponse()
 
     try:
-        workout_comment.text = clean_input(comment_data['text'])
-        workout_comment.modification_date = datetime.utcnow()
-        deleted_mentioned_users = workout_comment.update_mentions()
+        comment.text = clean_input(comment_data['text'])
+        comment.modification_date = datetime.utcnow()
+        deleted_mentioned_users = comment.update_mentions()
         db.session.commit()
 
         if sending_comment_activities_allowed(
-            workout_comment, deleted_mentioned_users
+            comment, deleted_mentioned_users
         ):
             recipients = get_all_recipients(
-                auth_user, workout_comment, deleted_mentioned_users
+                auth_user, comment, deleted_mentioned_users
             )
             if recipients:
-                note_activity = workout_comment.get_activity(
-                    activity_type='Update'
-                )
+                note_activity = comment.get_activity(activity_type='Update')
                 send_to_remote_inbox.send(
                     sender_id=auth_user.actor.id,
                     activity=note_activity,
@@ -263,7 +259,7 @@ def update_workout_comment(
 
         return {
             'status': 'success',
-            'comment': workout_comment.serialize(auth_user),
+            'comment': comment.serialize(auth_user),
         }
 
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:

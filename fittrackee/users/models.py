@@ -187,8 +187,8 @@ class User(BaseModel):
         lazy='dynamic',
         viewonly=True,
     )
-    workout_comments = db.relationship(
-        'WorkoutComment',
+    comments = db.relationship(
+        'Comment',
         lazy=True,
         backref=db.backref('user', lazy='joined', single_parent=True),
     )
