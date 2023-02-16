@@ -49,7 +49,6 @@ class TestWorkoutCommentModel(CommentMixin):
     ) -> None:
         now = datetime.utcnow()
         with freeze_time(now):
-
             comment = self.create_comment(
                 user=user_1,
                 workout=workout_cycling_user_1,

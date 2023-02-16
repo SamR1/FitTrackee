@@ -331,7 +331,6 @@ class TestGetWorkoutGpxAsWorkoutOwner(GetWorkoutGpxTestCase):
         with patch(
             'builtins.open', new_callable=mock_open, read_data=gpx_content
         ):
-
             response = client.get(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id
@@ -368,7 +367,6 @@ class TestGetWorkoutGpxAsFollower(
             new_callable=mock_open,
             read_data=self.random_string(),
         ):
-
             response = client.get(
                 self.route.format(
                     workout_uuid=workout_cycling_user_2.short_id
@@ -470,7 +468,6 @@ class TestGetWorkoutGpxAsUser(
             new_callable=mock_open,
             read_data=self.random_string(),
         ):
-
             response = client.get(
                 self.route.format(
                     workout_uuid=workout_cycling_user_2.short_id
@@ -810,7 +807,6 @@ class TestGetWorkoutChartDataAsUser(
             'fittrackee.workouts.workouts.get_chart_data',
             return_value=chart_data,
         ):
-
             response = client.get(
                 self.route.format(
                     workout_uuid=workout_cycling_user_2.short_id
@@ -942,7 +938,6 @@ class TestGetWorkoutSegmentGpxAsWorkoutOwner(GetWorkoutSegmentGpxTestCase):
             new_callable=mock_open,
             read_data=gpx_file_with_segments,
         ):
-
             response = client.get(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id,
@@ -971,7 +966,6 @@ class TestGetWorkoutSegmentGpxAsWorkoutOwner(GetWorkoutSegmentGpxTestCase):
             new_callable=mock_open,
             read_data=gpx_file_with_segments,
         ):
-
             response = client.get(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id, segment_id=1
@@ -1010,7 +1004,6 @@ class TestGetWorkoutSegmentGpxAsFollower(
             new_callable=mock_open,
             read_data=gpx_file_with_segments,
         ):
-
             response = client.get(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id, segment_id=1
@@ -1055,7 +1048,6 @@ class TestGetWorkoutSegmentGpxAsFollower(
             new_callable=mock_open,
             read_data=gpx_file_with_segments,
         ):
-
             response = client.get(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id, segment_id=1
@@ -1118,7 +1110,6 @@ class TestGetWorkoutSegmentGpxAsUser(
             new_callable=mock_open,
             read_data=gpx_file_with_segments,
         ):
-
             response = client.get(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id, segment_id=1
@@ -1150,7 +1141,6 @@ class TestGetWorkoutSegmentGpxAsUser(
             new_callable=mock_open,
             read_data=gpx_file_with_segments,
         ):
-
             response = client.get(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id, segment_id=1
@@ -1207,7 +1197,6 @@ class TestGetWorkoutSegmentGpxAsUnauthenticatedUser(
             new_callable=mock_open,
             read_data=gpx_file_with_segments,
         ):
-
             response = client.get(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id, segment_id=1
@@ -1236,7 +1225,6 @@ class TestGetWorkoutSegmentGpxAsUnauthenticatedUser(
             new_callable=mock_open,
             read_data=gpx_file_with_segments,
         ):
-
             response = client.get(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id, segment_id=1
@@ -1556,7 +1544,6 @@ class TestGetWorkoutSegmentChartDataAsUnauthenticatedUser(
             'fittrackee.workouts.workouts.get_chart_data',
             return_value=chart_data,
         ):
-
             response = client.get(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id, segment_id=1
@@ -1594,7 +1581,6 @@ class TestGetWorkoutMap(ApiTestCaseMixin):
             'fittrackee.workouts.workouts.send_from_directory',
             return_value='file',
         ) as mock:
-
             response = client.get(
                 f'/api/workouts/map/{map_id}',
             )

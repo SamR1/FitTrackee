@@ -335,7 +335,6 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         seven_workouts_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_paris.email
         )

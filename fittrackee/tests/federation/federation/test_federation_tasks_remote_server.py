@@ -27,7 +27,6 @@ class TestUpdateRemoteServer:
             'get_remote_server_node_info_data',
             return_value=node_info_data,
         ):
-
             update_remote_server(remote_domain.name)
 
         assert remote_domain.software_name == expected_software_name

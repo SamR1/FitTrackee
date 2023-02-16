@@ -2737,7 +2737,6 @@ class TestUserLogout(ApiTestCaseMixin):
             app, user_1.email
         )
         with freeze_time(now + timedelta(seconds=11)):
-
             response = client.post(
                 '/api/auth/logout',
                 headers=dict(Authorization=f'Bearer {auth_token}'),

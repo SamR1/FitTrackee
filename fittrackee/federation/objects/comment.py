@@ -12,7 +12,6 @@ if TYPE_CHECKING:
 
 
 class CommentObject(BaseObject):
-
     workout: 'Workout'
     comment: 'Comment'
 

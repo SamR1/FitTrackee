@@ -679,7 +679,6 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
         random_actor: RandomActor,
         sport_1_cycling: Sport,
     ) -> None:
-
         workout_activity = self.generate_workout_create_activity(
             remote_actor=random_actor, sport_id=sport_1_cycling.id
         )
@@ -909,7 +908,6 @@ class TestUpdateActivityForWorkout(WorkoutActivitiesTestCase):
             ObjectNotFoundException,
             match="workout not found for UpdateActivity",
         ):
-
             activity.process_activity()
 
     def test_it_raises_error_if_workout_actor_does_not_exist(
@@ -928,7 +926,6 @@ class TestUpdateActivityForWorkout(WorkoutActivitiesTestCase):
             ActorNotFoundException,
             match="actor not found for UpdateActivity",
         ):
-
             activity.process_activity()
 
     def test_it_raises_error_when_activity_actor_is_not_workout_actor(
@@ -957,7 +954,6 @@ class TestUpdateActivityForWorkout(WorkoutActivitiesTestCase):
                 "UpdateActivity: activity actor does not match workout actor."
             ),
         ):
-
             activity.process_activity()
 
         workout = Workout.query.filter_by(id=remote_cycling_workout.id).first()
@@ -1099,7 +1095,6 @@ class TestUpdateActivityForWorkout(WorkoutActivitiesTestCase):
                 " \\(KeyError: 'title'\\)."
             ),
         ):
-
             activity.process_activity()
 
 
@@ -1570,7 +1565,6 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
                 "UpdateActivity: activity actor does not match Note actor."
             ),
         ):
-
             activity.process_activity()
 
         assert remote_comment.user == remote_user
@@ -1730,7 +1724,6 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
                 " \\(KeyError: 'content'\\)."
             ),
         ):
-
             activity.process_activity()
 
 
@@ -1754,7 +1747,6 @@ class TestDeleteActivityForComment(CommentMixin, CommentActivitiesTestCase):
             ObjectNotFoundException,
             match="object not found for DeleteActivity",
         ):
-
             activity.process_activity()
 
     def test_it_raises_error_if_workout_actor_does_not_exist(

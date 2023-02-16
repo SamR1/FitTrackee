@@ -3,7 +3,7 @@
     <textarea
       :id="name"
       :name="name"
-      :maxLenght="charLimit"
+      :maxLength="charLimit"
       :disabled="disabled"
       :required="required"
       :placeholder="placeholder"

@@ -80,6 +80,7 @@ docker-rebuild:
 
 docker-restart:
 	docker-compose -f docker-compose-dev.yml restart fittrackee
+	docker-compose -f docker-compose-dev.yml exec -d fittrackee docker/run-workers.sh
 
 docker-revision:
 	docker-compose -f docker-compose-dev.yml exec fittrackee $(DOCKER_FLASK) db revision --directory $(DOCKER_MIGRATIONS) --message $(MIGRATION_MESSAGE)

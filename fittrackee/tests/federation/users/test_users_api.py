@@ -267,7 +267,6 @@ class TestGetRemoteUser(ApiTestCaseMixin):
         with patch(
             'requests.get', return_value=generate_response(status_code=404)
         ):
-
             response = client.get(
                 f'/api/users/@{random_actor.fullname}',
                 content_type='application/json',
@@ -285,7 +284,6 @@ class TestGetRemoteUser(ApiTestCaseMixin):
         with patch(
             'fittrackee.federation.utils.user.update_remote_user',
         ):
-
             response = client.get(
                 f'/api/users/@{remote_user.fullname}',
                 content_type='application/json',
@@ -307,7 +305,6 @@ class TestGetRemoteUser(ApiTestCaseMixin):
         with patch(
             'fittrackee.federation.utils.user.update_remote_user',
         ) as update_remote_user_mock:
-
             client.get(
                 f'/api/users/@{remote_user.fullname}',
                 content_type='application/json',

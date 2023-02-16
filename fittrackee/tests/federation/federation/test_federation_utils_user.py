@@ -78,7 +78,6 @@ class TestGetOrCreateDomainFromActorUrl:
         self, input_desc: str, input_url: str
     ) -> None:
         with pytest.raises(RemoteActorException, match='invalid actor url'):
-
             get_or_create_remote_domain_from_url(input_url)
 
     def test_it_raises_an_error_if_domain_is_local(
@@ -88,7 +87,6 @@ class TestGetOrCreateDomainFromActorUrl:
             RemoteActorException,
             match='the provided account is not a remote account',
         ):
-
             get_or_create_remote_domain_from_url(user_1.actor.activitypub_id)
 
     def test_it_creates_and_returns_remote_domain(
@@ -150,7 +148,6 @@ class TestCreateRemoteUser:
                 'the provided account is not a remote account.'
             ),
         ):
-
             create_remote_user_from_username(
                 random_string(), app_with_federation.config['AP_DOMAIN']
             )
@@ -168,7 +165,6 @@ class TestCreateRemoteUser:
             RemoteActorException,
             match='Invalid remote actor: can not fetch remote actor.',
         ):
-
             create_remote_user_from_username(
                 random_actor.preferred_username, random_actor.domain
             )
@@ -245,7 +241,6 @@ class TestCreateRemoteUser:
             RemoteActorException,
             match='Invalid remote actor: can not fetch remote actor.',
         ):
-
             create_remote_user_from_username(
                 random_actor.preferred_username, random_actor.domain
             )
@@ -268,7 +263,6 @@ class TestCreateRemoteUser:
             RemoteActorException,
             match='Invalid remote actor: invalid remote actor object.',
         ):
-
             create_remote_user_from_username(
                 random_actor.preferred_username, random_actor.domain
             )
@@ -291,7 +285,6 @@ class TestCreateRemoteUser:
             RemoteActorException,
             match='Invalid remote actor: invalid remote actor object.',
         ):
-
             create_remote_user_from_username(
                 random_actor.preferred_username, random_actor.domain
             )
@@ -311,7 +304,6 @@ class TestCreateRemoteUser:
             'fittrackee.federation.utils.user.get_remote_actor_url',
             return_value=random_actor.get_remote_user_object(),
         ):
-
             user = create_remote_user_from_username(
                 random_actor.preferred_username, random_actor.domain
             )
@@ -463,7 +455,6 @@ class TestUpdateRemoteUser:
         self, app_with_federation: Flask, user_1: User
     ) -> None:
         with patch('requests.get') as get_mock:
-
             update_remote_user(user_1.actor)
 
         get_mock.assert_not_called()
@@ -480,7 +471,6 @@ class TestUpdateRemoteUser:
             RemoteActorException,
             match='Invalid remote actor: can not fetch remote actor.',
         ):
-
             update_remote_user(remote_user.actor)
 
     def test_it_updates_user_username(
@@ -496,7 +486,6 @@ class TestUpdateRemoteUser:
                 'manuallyApprovesFollowers': True,
             },
         ):
-
             update_remote_user(remote_user.actor)
 
         assert remote_user.username == expected_name
@@ -513,7 +502,6 @@ class TestUpdateRemoteUser:
                 'manuallyApprovesFollowers': False,
             },
         ):
-
             update_remote_user(remote_user.actor)
 
         assert remote_user.manually_approves_followers is False
@@ -535,7 +523,6 @@ class TestUpdateRemoteUser:
         ), patch(
             'fittrackee.federation.utils.user.store_or_delete_user_picture'
         ) as store_or_delete_user_picture_mock:
-
             update_remote_user(remote_user.actor)
 
         store_or_delete_user_picture_mock.assert_called_with(
@@ -547,7 +534,6 @@ class TestUpdateRemoteUser:
         app_with_federation: Flask,
         remote_user: User,
     ) -> None:
-
         with patch(
             'fittrackee.federation.utils.user.get_remote_actor_url',
             return_value={
@@ -559,7 +545,6 @@ class TestUpdateRemoteUser:
         ), patch(
             'fittrackee.federation.utils.user.update_remote_actor_stats'
         ) as update_remote_actor_stats_mock:
-
             update_remote_user(remote_user.actor)
 
         update_remote_actor_stats_mock.assert_called_with(remote_user.actor)
@@ -708,7 +693,6 @@ class TestStoreOrDeleteUserPicture:
         input_icon: Dict,
     ) -> None:
         with patch('builtins.open') as open_mock:
-
             store_or_delete_user_picture(
                 remote_actor_object={
                     'icon': input_icon,
@@ -727,7 +711,6 @@ class TestStoreOrDeleteUserPicture:
         with patch(
             'requests.get', return_value=generate_response(status_code=404)
         ), patch('builtins.open') as open_mock:
-
             store_or_delete_user_picture(
                 remote_actor_object={
                     'icon': {
@@ -757,7 +740,6 @@ class TestStoreOrDeleteUserPicture:
         with patch(
             'requests.get', return_value=generate_response(status_code=200)
         ), patch('builtins.open') as open_mock:
-
             store_or_delete_user_picture(
                 remote_actor_object={
                     'icon': {
@@ -788,7 +770,6 @@ class TestStoreOrDeleteUserPicture:
         with patch(
             'requests.get', return_value=generate_response(status_code=200)
         ), patch('builtins.open') as open_mock:
-
             store_or_delete_user_picture(
                 remote_actor_object={
                     'icon': {
@@ -811,7 +792,6 @@ class TestStoreOrDeleteUserPicture:
         with patch('os.path.isfile', return_value=True), patch(
             'os.remove'
         ) as os_remove_mock:
-
             store_or_delete_user_picture(
                 remote_actor_object={}, user=remote_user
             )
@@ -829,7 +809,6 @@ class TestUpdateRemoteActorStats:
         with patch(
             'requests.get', return_value=generate_response(status_code=400)
         ):
-
             update_remote_actor_stats(remote_user.actor)
 
         assert remote_user.actor.stats.items == 0
@@ -838,7 +817,6 @@ class TestUpdateRemoteActorStats:
         self, app_with_federation: Flask, user_1: User
     ) -> None:
         with patch('requests.get') as get_mock:
-
             update_remote_actor_stats(user_1.actor)
 
         get_mock.assert_not_called()
@@ -858,7 +836,6 @@ class TestUpdateRemoteActorStats:
             'requests.get',
             return_value=generate_response(content=response_content),
         ):
-
             update_remote_actor_stats(remote_user.actor)
 
         assert remote_user.actor.stats.followers == expected_followers_count
@@ -878,7 +855,6 @@ class TestUpdateRemoteActorStats:
             'requests.get',
             return_value=generate_response(content=response_content),
         ):
-
             update_remote_actor_stats(remote_user.actor)
 
         assert remote_user.actor.stats.following == expected_following_count

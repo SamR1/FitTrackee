@@ -595,7 +595,6 @@ class TestUserUnfollowModel:
         user_1: User,
         user_2: User,
     ) -> None:
-
         with pytest.raises(NotExistingFollowRequestError):
             user_1.unfollows(user_2)
 
