@@ -30,15 +30,6 @@ privacy_levels = ENUM(
 
 
 def upgrade():
-    op.add_column(
-        'app_config',
-        sa.Column(
-            'federation_enabled', sa.Boolean(), nullable=True, default=False
-        ),
-    )
-    op.execute('UPDATE app_config SET federation_enabled = false')
-    op.alter_column('app_config', 'federation_enabled', nullable=False)
-
     domain_table = op.create_table(
         'domains',
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
@@ -353,5 +344,3 @@ def downgrade():
     op.create_unique_constraint('users_username_key', 'users', ['username'])
 
     op.drop_table('domains')
-
-    op.drop_column('app_config', 'federation_enabled')

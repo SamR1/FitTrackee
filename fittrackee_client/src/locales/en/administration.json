@@ -40,7 +40,7 @@
         },
         "TITLE": "Sports administration"
     },
-    "UPDATE_APPLICATION_DESCRIPTION": "Update application configuration (maximum number of registered users, maximum files size).",
+    "UPDATE_APPLICATION_DESCRIPTION": "Update application configuration (maximum number of registered users, maximum files size, admin email).",
     "UPDATE_USER_EMAIL": "Update email",
     "USER": "user | users",
     "USERS": {

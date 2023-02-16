@@ -125,7 +125,7 @@ class Comment(BaseModel):
     ) -> None:
         if (
             text_visibility == PrivacyLevel.FOLLOWERS_AND_REMOTE
-            and not current_app.config['federation_enabled']
+            and not current_app.config['FEDERATION_ENABLED']
         ):
             raise InvalidVisibilityException(
                 "invalid visibility: followers_and_remote_only, "

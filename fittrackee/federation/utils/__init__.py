@@ -62,7 +62,7 @@ def is_invalid_activity_data(activity_data: Dict) -> bool:
 
 
 def sending_activities_allowed(visibility: PrivacyLevel) -> bool:
-    return current_app.config['federation_enabled'] and visibility in (
+    return current_app.config['FEDERATION_ENABLED'] and visibility in (
         PrivacyLevel.PUBLIC,
         PrivacyLevel.FOLLOWERS_AND_REMOTE,
     )

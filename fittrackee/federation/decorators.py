@@ -17,7 +17,7 @@ from .models import Actor, Domain
 def federation_required(f: Callable) -> Callable:
     @wraps(f)
     def decorated_function(*args: Any, **kwargs: Any) -> Callable:
-        if not current_app.config['federation_enabled']:
+        if not current_app.config['FEDERATION_ENABLED']:
             raise FederationDisabledException()
         return f(*args, **kwargs)
 
@@ -27,7 +27,7 @@ def federation_required(f: Callable) -> Callable:
 def federation_required_for_route(f: Callable) -> Callable:
     @wraps(f)
     def decorated_function(*args: Any, **kwargs: Any) -> Callable:
-        if not current_app.config['federation_enabled']:
+        if not current_app.config['FEDERATION_ENABLED']:
             return DisabledFederationErrorResponse()
         app_domain = Domain.query.filter_by(
             name=current_app.config['AP_DOMAIN']

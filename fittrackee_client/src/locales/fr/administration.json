@@ -40,7 +40,7 @@
         },
         "TITLE": "Administration - Sports"
     },
-    "UPDATE_APPLICATION_DESCRIPTION": "Configurer l'application (nombre maximum d'utilisateurs inscrits, taille maximale des fichers).",
+    "UPDATE_APPLICATION_DESCRIPTION": "Configurer l'application (nombre maximum d'utilisateurs inscrits, taille maximale des fichiers, email de de d'administrateur).",
     "UPDATE_USER_EMAIL": "Changer l'email",
     "USER": "utilisateur | utilisateurs",
     "USERS": {

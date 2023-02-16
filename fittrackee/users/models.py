@@ -300,7 +300,7 @@ class User(BaseModel):
             follow_request.updated_at = datetime.utcnow()
         db.session.commit()
 
-        if current_app.config['federation_enabled']:
+        if current_app.config['FEDERATION_ENABLED']:
             # send Follow activity to remote followed user
             if target.actor.is_remote:
                 send_to_remote_inbox.send(
@@ -327,7 +327,7 @@ class User(BaseModel):
         if not existing_follow_request:
             raise NotExistingFollowRequestError()
 
-        if current_app.config['federation_enabled']:
+        if current_app.config['FEDERATION_ENABLED']:
             undo_activity = existing_follow_request.get_activity(undo=True)
 
             # send Undo activity to remote followed user
@@ -366,7 +366,7 @@ class User(BaseModel):
         follow_request.updated_at = datetime.now()
         db.session.commit()
 
-        if current_app.config['federation_enabled'] and user.actor.is_remote:
+        if current_app.config['FEDERATION_ENABLED'] and user.actor.is_remote:
             send_to_remote_inbox.send(
                 sender_id=self.actor.id,
                 activity=follow_request.get_activity(),

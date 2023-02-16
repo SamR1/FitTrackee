@@ -47,7 +47,7 @@ def sending_comment_activities_allowed(
 ) -> bool:
     if deleted_mentioned_users is None:
         deleted_mentioned_users = set()
-    return current_app.config['federation_enabled'] and (
+    return current_app.config['FEDERATION_ENABLED'] and (
         comment.has_remote_mentions
         or len(deleted_mentioned_users) > 0
         or comment.text_visibility

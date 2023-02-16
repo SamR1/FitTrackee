@@ -22,7 +22,6 @@ class AppConfig(BaseModel):
     )
     max_zip_file_size = db.Column(db.Integer, default=10485760, nullable=False)
     admin_contact = db.Column(db.String(255), nullable=True)
-    federation_enabled = db.Column(db.Boolean, default=False, nullable=False)
 
     @property
     def is_registration_enabled(self) -> bool:
@@ -47,7 +46,7 @@ class AppConfig(BaseModel):
         weather_provider = os.getenv('WEATHER_API_PROVIDER', '').lower()
         return {
             'admin_contact': self.admin_contact,
-            'federation_enabled': self.federation_enabled,
+            'federation_enabled': current_app.config['FEDERATION_ENABLED'],
             'gpx_limit_import': self.gpx_limit_import,
             'is_email_sending_enabled': current_app.config['CAN_SEND_EMAILS'],
             'is_registration_enabled': self.is_registration_enabled,

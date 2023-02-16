@@ -110,7 +110,6 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
       }
 
     :<json string admin_contact: email to contact the administrator
-    :<json boolean federation_enabled: is federation enabled?
     :<json integer gpx_limit_import: max number of files in zip archive
     :<json boolean is_registration_enabled: is registration enabled?
     :<json integer max_single_file_size: max size of a single file
@@ -142,8 +141,6 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
 
     try:
         config = AppConfig.query.one()
-        if 'federation_enabled' in config_data:
-            config.federation_enabled = config_data.get('federation_enabled')
         if 'gpx_limit_import' in config_data:
             config.gpx_limit_import = config_data.get('gpx_limit_import')
         if 'max_single_file_size' in config_data:

@@ -111,7 +111,6 @@ class TestUpdateConfig(ApiTestCaseMixin):
             data=json.dumps(
                 dict(
                     admin_contact=admin_email,
-                    federation_enabled=True,
                     gpx_limit_import=20,
                     max_single_file_size=10000,
                     max_zip_file_size=25000,
@@ -125,7 +124,6 @@ class TestUpdateConfig(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert data['data']['admin_contact'] == admin_email
-        assert data['data']['federation_enabled'] is True
         assert data['data']['gpx_limit_import'] == 20
         assert data['data']['is_registration_enabled'] is True
         assert data['data']['max_single_file_size'] == 10000

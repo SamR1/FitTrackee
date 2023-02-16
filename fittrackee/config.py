@@ -72,6 +72,9 @@ class BaseConfig:
     OAUTH2_REFRESH_TOKEN_GENERATOR = True
     VERSION = VERSION
     # ActivityPub
+    FEDERATION_ENABLED = (
+        os.environ.get('FEDERATION_ENABLED', 'false').lower() == 'true'
+    )
     AP_DOMAIN = remove_url_scheme(UI_URL)
 
 

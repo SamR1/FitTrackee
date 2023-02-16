@@ -935,7 +935,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     map_visibility = post_data.get('map_visibility')
     workouts_visibility = post_data.get('workouts_visibility')
 
-    if not current_app.config['federation_enabled'] and (
+    if not current_app.config['FEDERATION_ENABLED'] and (
         map_visibility == PrivacyLevel.FOLLOWERS_AND_REMOTE.value
         or workouts_visibility == PrivacyLevel.FOLLOWERS_AND_REMOTE.value
     ):

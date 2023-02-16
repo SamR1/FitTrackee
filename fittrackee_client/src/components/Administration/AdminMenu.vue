@@ -13,20 +13,20 @@
             </dt>
             <dd class="application-config-details">
               {{ $t('admin.UPDATE_APPLICATION_DESCRIPTION') }}
-              <span class="federation-status">
-                {{
-                  $t(
-                    `admin.FEDERATION_${
-                      appConfig.federation_enabled ? 'ENABLED' : 'DISABLED'
-                    }`
-                  )
-                }}
-              </span>
               <span class="registration-status">
                 {{
                   $t(
                     `admin.REGISTRATION_${
                       appConfig.is_registration_enabled ? 'ENABLED' : 'DISABLED'
+                    }`
+                  )
+                }}
+              </span>
+              <span class="federation-status">
+                {{
+                  $t(
+                    `admin.FEDERATION_${
+                      appConfig.federation_enabled ? 'ENABLED' : 'DISABLED'
                     }`
                   )
                 }}

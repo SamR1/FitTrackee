@@ -1016,7 +1016,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     if not workout_data or workout_data.get('sport_id') is None:
         return InvalidPayloadErrorResponse()
 
-    if not current_app.config['federation_enabled'] and (
+    if not current_app.config['FEDERATION_ENABLED'] and (
         workout_data.get('workout_visibility')
         == PrivacyLevel.FOLLOWERS_AND_REMOTE.value
         or workout_data.get('map_visibility')
@@ -1205,7 +1205,7 @@ def post_workout_no_gpx(
         return InvalidPayloadErrorResponse()
 
     if (
-        not current_app.config['federation_enabled']
+        not current_app.config['FEDERATION_ENABLED']
         and workout_data.get('workout_visibility')
         == PrivacyLevel.FOLLOWERS_AND_REMOTE
     ):
@@ -1386,7 +1386,7 @@ def update_workout(
 
     try:
         old_workout = (
-            copy(workout) if current_app.config['federation_enabled'] else None
+            copy(workout) if current_app.config['FEDERATION_ENABLED'] else None
         )
 
         if not workout.gpx:
