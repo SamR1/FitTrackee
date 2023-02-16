@@ -68,7 +68,7 @@ class TestWorkoutCommentModel(CommentMixin):
         with pytest.raises(
             InvalidVisibilityException,
             match=(
-                f'invalid visibility: {text_visibility}, '
+                f'invalid visibility: {text_visibility.value}, '
                 'federation is disabled.'
             ),
         ):
