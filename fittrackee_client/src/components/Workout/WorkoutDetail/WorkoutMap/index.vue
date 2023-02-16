@@ -13,6 +13,7 @@
             :maxZoom="19"
             :center="center"
             :bounds="bounds"
+            :zoomAnimation="false"
             ref="workoutMap"
             @ready="fitBounds(bounds)"
           >
