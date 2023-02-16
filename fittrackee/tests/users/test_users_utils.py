@@ -438,7 +438,6 @@ class TestDecodeUserToken:
 
     def test_it_raises_error_when_token_is_invalid(self, app: Flask) -> None:
         with pytest.raises(jwt.exceptions.DecodeError):
-
             decode_user_token(random_string())
 
     def test_it_raises_error_when_token_body_is_invalid(
@@ -451,7 +450,6 @@ class TestDecodeUserToken:
             jwt.exceptions.InvalidSignatureError,
             match='Signature verification failed',
         ):
-
             decode_user_token(modified_token)
 
     def test_it_raises_error_when_secret_key_is_invalid(
@@ -471,7 +469,6 @@ class TestDecodeUserToken:
             jwt.exceptions.InvalidSignatureError,
             match='Signature verification failed',
         ):
-
             decode_user_token(token)
 
     def test_it_raises_error_when_algorithm_is_not_hs256(
@@ -494,7 +491,6 @@ class TestDecodeUserToken:
             algorithm="RS256",
         )
         with pytest.raises(jwt.exceptions.InvalidAlgorithmError):
-
             decode_user_token(token)
 
     def test_it_raises_error_when_token_is_expired(self, app: Flask) -> None:
@@ -503,7 +499,6 @@ class TestDecodeUserToken:
         with pytest.raises(
             jwt.exceptions.ExpiredSignatureError, match='Signature has expired'
         ):
-
             decode_user_token(token)
 
     def test_it_returns_user_id(self, app: Flask) -> None:

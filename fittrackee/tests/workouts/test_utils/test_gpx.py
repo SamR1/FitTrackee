@@ -46,7 +46,6 @@ class TestStoppedSpeedThreshold:
             'gpxpy.gpx.GPXTrackSegment.get_moving_data',
             return_value=moving_data,
         ) as gpx_track_segment_mock:
-
             process_files(
                 auth_user=user_1,
                 folders=folders,
@@ -81,7 +80,6 @@ class TestStoppedSpeedThreshold:
             'gpxpy.gpx.GPXTrackSegment.get_moving_data',
             return_value=moving_data,
         ) as gpx_track_segment_mock:
-
             process_files(
                 auth_user=user_1,
                 folders=folders,
@@ -109,7 +107,6 @@ class TestGetGpxInfoStopTime:
         in segments
         """
         with patch('builtins.open', return_value=gpx_file):
-
             gpx_data, _, _ = get_gpx_info(
                 gpx_file=random_string(), stopped_speed_threshold=0.0
             )
@@ -124,7 +121,6 @@ class TestGetGpxInfoStopTime:
         in segments
         """
         with patch('builtins.open', return_value=gpx_file_with_3_segments):
-
             gpx_data, _, _ = get_gpx_info(
                 gpx_file=random_string(), stopped_speed_threshold=0.0
             )
