@@ -139,7 +139,6 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
             'fittrackee.oauth2.client.gen_salt',
             side_effect=[client_id, client_secret],
         ):
-
             response = client.post(
                 self.route,
                 data=json.dumps(TEST_OAUTH_CLIENT_METADATA),
