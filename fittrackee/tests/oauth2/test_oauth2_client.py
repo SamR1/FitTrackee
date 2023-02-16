@@ -33,7 +33,6 @@ class TestCreateOAuth2Client:
         with patch(
             'fittrackee.oauth2.client.gen_salt', return_value=client_id
         ):
-
             oauth_client = create_oauth2_client(TEST_METADATA, user_1)
 
         assert oauth_client.client_id == client_id
@@ -157,7 +156,6 @@ class TestCreateOAuth2Client:
         with patch(
             'fittrackee.oauth2.client.gen_salt', return_value=client_secret
         ):
-
             oauth_client = create_oauth2_client(TEST_METADATA, user_1)
 
         assert oauth_client.client_secret == client_secret

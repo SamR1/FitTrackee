@@ -67,7 +67,6 @@ class TestDarksky(WeatherTestCase):
         with patch(
             'fittrackee.workouts.utils.weather.dark_sky.forecastio'
         ) as forecast_io_mock:
-
             darksky.get_weather(point)
 
         forecast_io_mock.load_forecast.assert_called_with(
@@ -102,7 +101,6 @@ class TestDarksky(WeatherTestCase):
         with patch(
             'fittrackee.workouts.utils.weather.dark_sky.forecastio'
         ) as forecast_io_mock:
-
             darksky.get_weather(point)
 
         forecast_io_mock.load_forecast.assert_called_with(
@@ -189,7 +187,6 @@ class TestVisualCrossingGetWeather(WeatherTestCase, CallArgsMixin):
         point = self.get_gpx_point(time)
         visual_crossing = VisualCrossing(api_key=self.api_key)
         with patch.object(requests, 'get') as get_mock:
-
             visual_crossing.get_weather(point)
 
         args = self.get_args(get_mock.call_args)
@@ -202,7 +199,6 @@ class TestVisualCrossingGetWeather(WeatherTestCase, CallArgsMixin):
     def test_it_calls_api_with_expected_params(self) -> None:
         visual_crossing = VisualCrossing(api_key=self.api_key)
         with patch.object(requests, 'get') as get_mock:
-
             visual_crossing.get_weather(self.get_gpx_point(datetime.utcnow()))
 
         kwargs = self.get_kwargs(get_mock.call_args)
@@ -232,7 +228,6 @@ class TestVisualCrossingGetWeather(WeatherTestCase, CallArgsMixin):
         )
         visual_crossing = VisualCrossing(api_key=self.api_key)
         with patch.object(requests, 'get', return_value=self.get_response()):
-
             weather_data = visual_crossing.get_weather(point)
 
         current_conditions: Dict = VISUAL_CROSSING_RESPONSE[  # type: ignore

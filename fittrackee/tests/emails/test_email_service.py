@@ -90,7 +90,6 @@ class TestEmailServiceUrlParser(CallArgsMixin):
 
 
 class TestEmailServiceSend(CallArgsMixin):
-
     email_data = {
         'expiration_delay': '3 seconds',
         'username': 'test',
@@ -112,7 +111,6 @@ class TestEmailServiceSend(CallArgsMixin):
     def test_it_sends_message(
         self, mock_smtp: Mock, mock_smtp_ssl: Mock, app: Flask
     ) -> None:
-
         email_service.send(
             template='password_reset_request',
             lang='en',
@@ -164,7 +162,6 @@ class TestEmailServiceSend(CallArgsMixin):
     def test_it_sends_message_without_authentication(
         self, mock_smtp: Mock, mock_smtp_ssl: Mock, app_wo_email_auth: Flask
     ) -> None:
-
         email_service.send(
             template='password_reset_request',
             lang='en',
