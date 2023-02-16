@@ -105,11 +105,6 @@ class TestEmailTemplateForEmailUpdateToCurrentEmail:
             'email_update_to_current_email', 'fr', 'body.html', self.EMAIL_DATA
         )
 
-        print('')
-        print(expected_fr_current_email_html_body)
-        print('')
-        print(text_body)
-
         assert expected_fr_current_email_html_body in text_body
 
 

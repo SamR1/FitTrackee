@@ -51,7 +51,7 @@ class TestRegistration:
         }
 
         register(selenium, user)
-        print(selenium.find_element)
+
         message = selenium.find_element(By.CLASS_NAME, 'success-message').text
         assert (
             'A link to activate your account has been '
