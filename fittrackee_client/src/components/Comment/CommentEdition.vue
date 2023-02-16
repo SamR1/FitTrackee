@@ -29,7 +29,7 @@
             >
               {{
                 $t(
-                  `privacy.LEVELS.${getPrivacyLevelForLabel(
+                  `privacy.COMMENT_LEVELS.${getPrivacyLevelForLabel(
                     level,
                     appConfig.federation_enabled
                   )}`
@@ -135,6 +135,7 @@
     }
     .text-visibility {
       display: flex;
+      flex-wrap: wrap;
       gap: $default-padding;
       align-items: center;
       padding-top: $default-padding * 0.5;

@@ -34,7 +34,10 @@
         >
           ({{ $t('common.EDITED') }})
         </div>
-        <VisibilityIcon :visibility="comment.text_visibility" />
+        <VisibilityIcon
+          :visibility="comment.text_visibility"
+          :is-comment="true"
+        />
         <i
           class="fa fa-edit"
           v-if="isCommentOwner(authUser, comment.user)"

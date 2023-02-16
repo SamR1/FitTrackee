@@ -1,4 +1,11 @@
 {
+    "COMMENT_LEVELS": {
+        "followers_and_remote_only": "Abonnées locaux et distants uniquement",
+        "followers_only": "Abonnées uniquement",
+        "local_followers_only": "Abonnées locaux uniquement",
+        "private": "Privé (seulement les utilisateurs mentionnés)",
+        "public": "Public (tout le monde)"
+    },
     "LEVELS": {
         "followers_and_remote_only": "Abonnées locaux et distants uniquement",
         "followers_only": "Abonnées uniquement",

@@ -3,22 +3,25 @@
     <i
       :class="`fa fa-${getPrivacyIcon(visibility)}`"
       aria-hidden="true"
-      :title="$t(`privacy.LEVELS.${visibility}`)"
+      :title="$t(`privacy.${isComment ? 'COMMENT_': ''}LEVELS.${visibility}`)"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { toRefs } from 'vue'
+import { toRefs, withDefaults } from 'vue'
 
 import { TPrivacyLevels } from "@/types/user";
 
 interface Props {
-  visibility: TPrivacyLevels
+  visibility: TPrivacyLevels,
+  isComment?: boolean
 }
 
-const props = defineProps<Props>()
-const { visibility } = toRefs(props)
+const props = withDefaults(defineProps<Props>(), {
+  isComment: false
+})
+const { visibility, isComment } = toRefs(props)
 
 function getPrivacyIcon(privacyLevel: TPrivacyLevels): string {
   switch (privacyLevel) {
