@@ -1,5 +1,17 @@
 # Change log
 
+## Version 0.7.12 (2023/02/16)
+
+### Translations
+
+* [PR#290](https://github.com/SamR1/FitTrackee/pull/290) - Translations update from Hosted Weblate (German, thanks to @qwerty287)
+
+### Misc
+
+* [#294](https://github.com/SamR1/FitTrackee/issues/294) - drop PostgreSQL10 support
+* dependencies update
+
+
 ## Version 0.7.11 (2022/12/31)
 
 ### Features and enhancements
