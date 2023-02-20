@@ -23,6 +23,10 @@ describe('linkifyAndClean (URL is linkified)', () => {
       'link: <a href="http://www.example.com" target="_blank">http://www.example.com</a>'
     )
   })
+
+  it('it does not return user fullname as mailto link', () => {
+    assert.equal(linkifyAndClean('@foo@example.com'), '@foo@example.com')
+  })
 })
 
 describe('linkifyAndClean (input sanitization)', () => {
