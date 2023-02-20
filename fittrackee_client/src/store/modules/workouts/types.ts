@@ -135,6 +135,10 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
     state: S,
     comment: IComment
   ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING](
+    state: S,
+    commentId: string | null
+  ): void
 }
 
 export type TWorkoutsStoreModule<S = IWorkoutsState> = Omit<

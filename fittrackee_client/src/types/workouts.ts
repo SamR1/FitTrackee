@@ -165,6 +165,7 @@ export interface IWorkoutData {
   workout: IWorkout
   chartData: IWorkoutApiChartData[]
   comments: IComment[]
+  comments_loading: string | null
 }
 
 export type TWorkoutDatasetKeys = 'speed' | 'elevation'

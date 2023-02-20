@@ -39,12 +39,17 @@
           </select>
         </div>
         <div class="spacer" />
-        <button class="confirm" type="submit">
-          {{ $t('buttons.SUBMIT') }}
-        </button>
-        <button class="cancel" @click.prevent="onCancel">
-          {{ $t('buttons.CANCEL') }}
-        </button>
+        <div v-if="isLoading">
+          <Loader />
+        </div>
+        <div class="comment-buttons" v-else>
+          <button class="confirm" type="submit">
+            {{ $t('buttons.SUBMIT') }}
+          </button>
+          <button class="cancel" @click.prevent="onCancel">
+            {{ $t('buttons.CANCEL') }}
+          </button>
+        </div>
       </div>
       <ErrorMessage :message="errorMessages" v-if="errorMessages"/>
     </form>
@@ -63,6 +68,7 @@
 
   interface Props {
     workout: IWorkout
+    comments_loading: string | null
     comment?: IComment | null
     replyTo?: string | null
   }
@@ -71,7 +77,7 @@
     comment: null,
     replyTo: null,
   })
-  const { workout, comment, replyTo }  = toRefs(props)
+  const { workout, comment, comments_loading, replyTo }  = toRefs(props)
 
   const store = useStore()
 
@@ -84,6 +90,11 @@
   const commentTextVisibility: Ref<TPrivacyLevels> = ref(comment?.value ? comment.value.text_visibility : workout.value.workout_visibility)
   const errorMessages: ComputedRef<string | string[] | null> = computed(
       () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
+  )
+  const isLoading = computed(
+      () => comment.value ?
+          comment.value.id === comments_loading.value
+          : comments_loading.value === `new${replyTo.value ? `_${replyTo.value}` : ''}`
   )
 
   function updateText(value: string) {
@@ -101,7 +112,6 @@
         workout_id: workout.value.id,
       }
       store.dispatch(WORKOUTS_STORE.ACTIONS.EDIT_WORKOUT_COMMENT, payload)
-      emit('closeEdition')
     } else {
       const payload: ICommentForm = {
         text: commentText.value,
@@ -145,6 +155,16 @@
     }
     .add-comment-label {
       font-style: italic;
+    }
+    .comment-buttons {
+      display: flex;
+      gap: $default-padding;
+    }
+    .loader {
+      border-width: 5px;
+      height: 15px;
+      margin: 0 10px;
+      width: 15px;
     }
   }
 </style>

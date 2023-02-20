@@ -250,6 +250,10 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: ICommentForm
   ): void {
+    context.commit(
+      WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING,
+      `new${payload.reply_to ? `_${payload.reply_to}` : ''}`
+    )
     const data = {
       text: payload.text,
       text_visibility: payload.text_visibility,
@@ -270,6 +274,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       })
       .catch((error) => {
         handleError(context, error)
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, null)
       })
   },
   [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS](
@@ -285,6 +290,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
             WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_COMMENTS,
             res.data.data.comments
           )
+          context.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, null)
         } else {
           handleError(context, null)
         }
@@ -292,12 +298,16 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       .catch((error) => {
         handleError(context, error)
       })
+      .finally(() =>
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, null)
+      )
   },
   [WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT_COMMENT](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: ICommentPayload
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, 'delete')
     authApi
       .delete(`workouts/${payload.workoutId}/comments/${payload.commentId}`)
       .then((res) => {
@@ -317,6 +327,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     payload: ICommentForm
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, payload.id)
     authApi
       .patch(`workouts/${payload.workout_id}/comments/${payload.id}`, {
         text: payload.text,
@@ -331,6 +342,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       })
       .catch((error) => {
         handleError(context, error)
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, null)
       })
   },
 }

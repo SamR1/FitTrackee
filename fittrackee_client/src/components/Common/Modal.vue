@@ -13,7 +13,10 @@
           </div>
           <div class="modal-message" v-else>{{ message }}</div>
           <ErrorMessage :message="errorMessages" v-if="errorMessages" />
-          <div class="modal-buttons">
+          <div v-if="loading">
+            <Loader />
+          </div>
+          <div class="modal-buttons" v-else>
             <button
               class="confirm"
               v-if="!errorMessages"
@@ -41,6 +44,7 @@
     title: string
     message: string
     strongMessage?: string | null
+    loading?: string | null
   }
   const props = withDefaults(defineProps<Props>(), {
     strongMessage: () => null,
@@ -109,6 +113,12 @@
             }
           }
         }
+      }
+      .loader {
+        border-width: 5px;
+        height: 20px;
+        margin-left: 45%;
+        width: 20px;
       }
     }
   }

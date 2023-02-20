@@ -65,6 +65,7 @@
         v-else
         :workout="workout"
         :comment="comment"
+        :comments_loading="comments_loading"
         @closeEdition="() => commentToEdit = null"
       />
       <Comment
@@ -73,6 +74,7 @@
         :comment="reply"
         :workout="workout"
         :authUser="authUser"
+        :comments_loading="comments_loading"
         @deleteComment="deleteComment(reply)"
       />
       <WorkoutCommentEdition
@@ -80,6 +82,7 @@
         class="add-comment-reply"
         :workout="workout"
         :reply-to="comment.id"
+        :comments_loading="comments_loading"
         @closeEdition="() => addReply = null"
       />
     </div>
@@ -107,6 +110,7 @@
     comment: IComment
     workout: IWorkout
     authUser: IAuthUserProfile
+    comments_loading: string | null
   }
 
   const props = defineProps<Props>()
