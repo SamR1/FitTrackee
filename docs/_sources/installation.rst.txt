@@ -24,7 +24,7 @@ Prerequisites
 
 - mandatory
     - Python 3.7+
-    - PostgreSQL 10+
+    - PostgreSQL 11+
 - optional
     - Redis for task queue (if email sending is enabled) and API rate limits
     - SMTP provider (if email sending is enabled)
