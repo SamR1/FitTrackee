@@ -50,15 +50,15 @@ class TestGetMentionedUsers:
     def test_it_returns_text_with_link_when_remote_user_found(
         self, update_mock: Mock, app_with_federation: Flask, remote_user: User
     ) -> None:
-        mention = f"@{remote_user.fullname}"
-        text = f"{mention} {random_string()}"
+        text = f"@{remote_user.fullname} {random_string()}"
 
         linkified_text, _ = handle_mentions(text)
 
         assert linkified_text == text.replace(
-            mention,
+            f"@{remote_user.fullname}",
             f'<a href="{remote_user.actor.profile_url}" target="_blank" '
-            f'rel="noopener noreferrer">{mention}</a>',
+            f'rel="noopener noreferrer">@<span>{remote_user.fullname}</span>'
+            f'</a>',
         )
 
     def test_it_returns_text_when_multiple_users(
@@ -77,9 +77,10 @@ class TestGetMentionedUsers:
         assert linkified_text == text.replace(
             local_mention,
             f'<a href="{user_1.actor.profile_url}" target="_blank" '
-            f'rel="noopener noreferrer">{local_mention}</a>',
+            f'rel="noopener noreferrer">@<span>{user_1.username}</span></a>',
         ).replace(
             remote_mention,
             f'<a href="{remote_user.actor.profile_url}" target="_blank" '
-            f'rel="noopener noreferrer">{remote_mention}</a>',
+            f'rel="noopener noreferrer">@<span>{remote_user.fullname}</span>'
+            f'</a>',
         )

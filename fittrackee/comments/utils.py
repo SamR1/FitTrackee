@@ -9,24 +9,29 @@ from fittrackee.users.exceptions import UserNotFoundException
 if TYPE_CHECKING:
     from fittrackee.users.models import User
 
-MENTION_REGEX = r'(@[\w_\-\.]+)(@[\w_\-\.]+\.[a-z]{2,})?'
+MENTION_REGEX = (
+    r'(@(<span\s*.*>)?([\w_\-\.]+))(@([\w_\-\.]+\.[a-z]{2,}))?(<\/span>)?'
+)
 LINK_TEMPLATE = (
-    '<a href="{url}" target="_blank" rel="noopener noreferrer">{username}</a>'
+    '<a href="{url}" target="_blank" rel="noopener noreferrer">'
+    '@<span>{username}</span></a>'
 )
 
 
 def handle_mentions(text: str) -> Tuple[str, Dict[str, Set['User']]]:
     mentioned_users: Dict[str, Set['User']] = {"local": set(), "remote": set()}
-    for username, domain in re.findall(re.compile(MENTION_REGEX), text):
-        mention = f"{username}{domain}"
+    for _, _, username, _, domain, _ in re.findall(
+        re.compile(MENTION_REGEX), text
+    ):
+        mention = f"{username}{f'@{domain}' if domain else ''}"
         remote_domain = (
-            domain
-            if domain.lstrip('@') != current_app.config['AP_DOMAIN']
+            f"@{domain}"
+            if domain and domain != current_app.config['AP_DOMAIN']
             else ''
         )
         try:
             user = get_user_from_username(
-                user_name=f"{username.lstrip('@')}{remote_domain}",
+                user_name=f"{username}{remote_domain}",
                 with_action="creation",
             )
         except UserNotFoundException:
@@ -37,7 +42,7 @@ def handle_mentions(text: str) -> Tuple[str, Dict[str, Set['User']]]:
             else:
                 mentioned_users["local"].add(user)
             text = text.replace(
-                mention,
+                f"@{mention}",
                 LINK_TEMPLATE.format(
                     url=user.actor.profile_url, username=mention
                 ),

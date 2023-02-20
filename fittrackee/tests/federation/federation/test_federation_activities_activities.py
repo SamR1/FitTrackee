@@ -1300,7 +1300,11 @@ class TestCreateActivityForComment(CommentActivitiesTestCase):
         comment_activity = self.generate_workout_comment_create_activity(
             remote_actor=random_actor,
             workout=workout_cycling_user_1,
-            text=f"@{random_actor.fullname}",
+            text=(
+                f'<a href="{self.random_string()}" target="_blank" '
+                f'rel="noopener noreferrer">@<span>{random_actor.fullname}'
+                f'</span></a>'
+            ),
             visibility=PrivacyLevel.PUBLIC,
         )
         activity = get_activity_instance({'type': comment_activity['type']})(

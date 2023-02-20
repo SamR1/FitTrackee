@@ -61,15 +61,14 @@ class TestGetMentionedUsers:
     def test_it_returns_text_with_link_when_user_found_by_username(
         self, app: Flask, user_1: User
     ) -> None:
-        mention = f"@{user_1.fullname}"
-        text = f"{mention} {random_string()}"
+        text = f"@{user_1.username} {random_string()}"
 
         linkified_text, _ = handle_mentions(text)
 
         assert linkified_text == text.replace(
-            mention,
+            f"@{user_1.username}",
             f'<a href="{user_1.get_user_url()}" target="_blank" '
-            f'rel="noopener noreferrer">{mention}</a>',
+            f'rel="noopener noreferrer">@<span>{user_1.username}</span></a>',
         )
 
     def test_it_returns_user_when_mentioned_by_actor_fullname(
@@ -84,15 +83,14 @@ class TestGetMentionedUsers:
     def test_it_returns_text_with_link_when_user_found_by_actor_fullname(
         self, app: Flask, user_1: User
     ) -> None:
-        mention = f"@{user_1.fullname}"
-        text = f"{mention} {random_string()}"
+        text = f"@{user_1.fullname} {random_string()}"
 
         linkified_text, _ = handle_mentions(text)
 
         assert linkified_text == text.replace(
-            mention,
+            f"@{user_1.fullname}",
             f'<a href="{user_1.get_user_url()}" target="_blank" '
-            f'rel="noopener noreferrer">{mention}</a>',
+            f'rel="noopener noreferrer">@<span>{user_1.fullname}</span></a>',
         )
 
     def test_it_returns_deduplicated_user_when_mentioned_twice(
