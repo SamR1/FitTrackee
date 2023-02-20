@@ -3,12 +3,31 @@ from unittest.mock import Mock, patch
 from flask import Flask
 
 from fittrackee.comments.utils import handle_mentions
+from fittrackee.federation.exceptions import RemoteActorException
+from fittrackee.federation.models import Domain
 from fittrackee.tests.utils import RandomActor, random_string
 from fittrackee.users.models import User
 
 
 @patch('fittrackee.federation.utils.user.update_remote_user')
 class TestGetMentionedUsers:
+    def test_it_does_not_raise_exception_when_fetching_actor_raises_exception(
+        self,
+        update_mock: Mock,
+        app_with_federation: Flask,
+        remote_domain: Domain,
+    ) -> None:
+        text = f"@foo@{remote_domain.name} {random_string()}"
+
+        with patch(
+            "fittrackee.federation.utils.user."
+            "create_remote_user_from_username",
+            side_effect=RemoteActorException(),
+        ):
+            _, mentioned_users = handle_mentions(text)
+
+        assert mentioned_users == {"local": set(), "remote": set()}
+
     def test_it_does_not_return_remote_user_when_mentioned_by_username(
         self, update_mock: Mock, app_with_federation: Flask, remote_user: User
     ) -> None:

@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING, Dict, Set, Tuple
 
 from flask import current_app
 
+from fittrackee import appLog
 from fittrackee.federation.utils.user import get_user_from_username
-from fittrackee.users.exceptions import UserNotFoundException
 
 if TYPE_CHECKING:
     from fittrackee.users.models import User
@@ -34,7 +34,8 @@ def handle_mentions(text: str) -> Tuple[str, Dict[str, Set['User']]]:
                 user_name=f"{username}{remote_domain}",
                 with_action="creation",
             )
-        except UserNotFoundException:
+        except Exception as e:
+            appLog.error(f"Error when getting mentioned user: {str(e)}")
             user = None
         if user:
             if user.is_remote:
