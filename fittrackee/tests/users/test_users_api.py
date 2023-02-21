@@ -183,6 +183,24 @@ class TestGetUserAsUser(ApiTestCaseMixin):
         assert 'not found' in data['status']
         assert 'user does not exist' in data['message']
 
+    def test_it_does_not_get_inactive_user(
+        self, app: Flask, user_1: User, inactive_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/users/{inactive_user.username}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 404
+        data = json.loads(response.data.decode())
+        assert 'not found' in data['status']
+        assert 'user does not exist' in data['message']
+
     def test_it_gets_single_user_without_workouts(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
@@ -253,26 +271,6 @@ class TestGetUserAsUser(ApiTestCaseMixin):
             user_1.serialize(user_1)
         )
 
-    def test_it_gets_inactive_user(
-        self, app: Flask, user_1_admin: User, inactive_user: User
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-
-        response = client.get(
-            f'/api/users/{inactive_user.username}',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        data = json.loads(response.data.decode())
-        assert response.status_code == 200
-        assert data['status'] == 'success'
-        assert len(data['data']['users']) == 1
-        user = data['data']['users'][0]
-        assert user == jsonify_dict(inactive_user.serialize(user_1_admin))
-
 
 class TestGetUserAsUnauthenticatedUser(ApiTestCaseMixin):
     def test_it_returns_error_if_user_does_not_exist(
@@ -284,9 +282,26 @@ class TestGetUserAsUnauthenticatedUser(ApiTestCaseMixin):
             '/api/users/not_existing',
             content_type='application/json',
         )
-        data = json.loads(response.data.decode())
 
         assert response.status_code == 404
+        data = json.loads(response.data.decode())
+        assert 'not found' in data['status']
+        assert 'user does not exist' in data['message']
+
+    def test_it_does_not_get_inactive_user(
+        self, app: Flask, user_1_admin: User, inactive_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            f'/api/users/{inactive_user.username}',
+            content_type='application/json',
+        )
+
+        assert response.status_code == 404
+        data = json.loads(response.data.decode())
         assert 'not found' in data['status']
         assert 'user does not exist' in data['message']
 
@@ -330,7 +345,7 @@ class TestGetUserAsUnauthenticatedUser(ApiTestCaseMixin):
 
 
 class TestGetUsersAsAdmin(ApiTestCaseMixin):
-    def test_it_get_users_list_regardless_their_account_status(
+    def test_it_get_users_list_without_inactive_users(
         self, app: Flask, user_1_admin: User, inactive_user: User, user_3: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -339,6 +354,36 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             '/api/users',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 2
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1_admin.serialize(user_1_admin)
+        )
+        assert data['data']['users'][1] == jsonify_dict(
+            user_3.serialize(user_1_admin)
+        )
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 2,
+        }
+
+    def test_it_get_users_list_regardless_their_account_status(
+        self, app: Flask, user_1_admin: User, inactive_user: User, user_3: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?with_inactive=true',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -842,7 +887,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/users?order_by=is_active',
+            '/api/users?order_by=is_active&with_inactive=true',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -873,7 +918,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/users?order_by=is_active&order=asc',
+            '/api/users?order_by=is_active&order=asc&with_inactive=true',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -904,7 +949,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/users?order_by=is_active&order=desc',
+            '/api/users?order_by=is_active&order=desc&with_inactive=true',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1021,6 +1066,55 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         assert len(data['data']['users']) == 1
         assert 'toto' in data['data']['users'][0]['username']
 
+    def test_it_does_not_return_inactive_user_by_default(
+        self, app: Flask, user_1_admin: User, user_2: User, inactive_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?q=inactive',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 0
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 0,
+            'total': 0,
+        }
+
+    def test_it_returns_inactive_user(
+        self, app: Flask, user_1_admin: User, user_2: User, inactive_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?q=inactive&with_inactive=true',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 1
+        assert 'inactive' in data['data']['users'][0]['username']
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 1,
+        }
+
     @pytest.mark.parametrize(
         'input_desc, input_username',
         [
@@ -1123,15 +1217,29 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
 
 class TestGetUsersAsUser(ApiTestCaseMixin):
-    def test_it_gets_users_list(
-        self, app: Flask, user_1: User, user_2: User, user_3: User
+    @pytest.mark.parametrize(
+        'input_description, input_params',
+        [
+            ("without params", ""),
+            ("only inactive users", "?with_inactive=true"),
+        ],
+    )
+    def test_it_gets_users_list_without_inactive_users(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        inactive_user: User,
+        user_3: User,
+        input_description: str,
+        input_params: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
 
         response = client.get(
-            '/api/users',
+            f'/api/users{input_params}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1200,7 +1308,7 @@ class TestGetUsersAsUser(ApiTestCaseMixin):
         }
 
 
-class TestGetUsers(ApiTestCaseMixin):
+class TestGetUsersAsUnauthenticatedUser(ApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:

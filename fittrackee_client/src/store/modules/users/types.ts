@@ -44,6 +44,10 @@ export interface IUsersActions {
     context: ActionContext<IUsersState, IRootState>,
     payload: TUsersPayload
   ): void
+  [USERS_STORE.ACTIONS.GET_USERS_FOR_ADMIN](
+    context: ActionContext<IUsersState, IRootState>,
+    payload: TUsersPayload
+  ): void
   [USERS_STORE.ACTIONS.UPDATE_USER](
     context: ActionContext<IUsersState, IRootState>,
     payload: IAdminUserPayload

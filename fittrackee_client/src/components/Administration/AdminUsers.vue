@@ -186,7 +186,7 @@
   onBeforeMount(() => loadUsers(query))
 
   function loadUsers(queryParams: TUsersPayload) {
-    store.dispatch(USERS_STORE.ACTIONS.GET_USERS, queryParams)
+    store.dispatch(USERS_STORE.ACTIONS.GET_USERS_FOR_ADMIN, queryParams)
   }
   function searchUsers(username: Ref<string>) {
     reloadUsers('q', username.value)

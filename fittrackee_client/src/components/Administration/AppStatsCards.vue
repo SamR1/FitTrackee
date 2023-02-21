@@ -3,7 +3,7 @@
     <StatCard
       icon="users"
       :value="appStatistics.users"
-      :text="$t('user.USER', appStatistics.users)"
+      :text="$t('user.ACTIVE_USER', appStatistics.users)"
     />
     <StatCard
       icon="tags"

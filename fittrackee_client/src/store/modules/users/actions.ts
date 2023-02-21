@@ -42,6 +42,38 @@ export const deleteUserAccount = (
     .catch((error) => handleError(context, error))
 }
 
+const getUsers = (
+  context:
+    | ActionContext<IAuthUserState, IRootState>
+    | ActionContext<IUsersState, IRootState>,
+  payload: TUsersPayload,
+  forAdmin = false
+): void => {
+  context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+  context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS_LOADING, true)
+  const isRemote = payload.q && payload.q.match(ACCOUNT_REGEX) ? '/remote' : ''
+  if (forAdmin) {
+    payload.with_inactive = 'true'
+  }
+  authApi
+    .get(`users${isRemote}`, { params: payload })
+    .then((res) => {
+      if (res.data.status === 'success') {
+        context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS, res.data.data.users)
+        context.commit(
+          USERS_STORE.MUTATIONS.UPDATE_USERS_PAGINATION,
+          res.data.pagination
+        )
+      } else {
+        handleError(context, null)
+      }
+    })
+    .catch((error) => handleError(context, error))
+    .finally(() =>
+      context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS_LOADING, false)
+    )
+}
+
 export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
   [USERS_STORE.ACTIONS.EMPTY_USER](
     context: ActionContext<IUsersState, IRootState>
@@ -90,30 +122,13 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
     context: ActionContext<IUsersState, IRootState>,
     payload: TUsersPayload
   ): void {
-    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
-    context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS_LOADING, true)
-    const isRemote =
-      payload.q && payload.q.match(ACCOUNT_REGEX) ? '/remote' : ''
-    authApi
-      .get(`users${isRemote}`, { params: payload })
-      .then((res) => {
-        if (res.data.status === 'success') {
-          context.commit(
-            USERS_STORE.MUTATIONS.UPDATE_USERS,
-            res.data.data.users
-          )
-          context.commit(
-            USERS_STORE.MUTATIONS.UPDATE_USERS_PAGINATION,
-            res.data.pagination
-          )
-        } else {
-          handleError(context, null)
-        }
-      })
-      .catch((error) => handleError(context, error))
-      .finally(() =>
-        context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS_LOADING, false)
-      )
+    getUsers(context, payload, false)
+  },
+  [USERS_STORE.ACTIONS.GET_USERS_FOR_ADMIN](
+    context: ActionContext<IUsersState, IRootState>,
+    payload: TUsersPayload
+  ): void {
+    getUsers(context, payload, true)
   },
   [USERS_STORE.ACTIONS.UPDATE_USER](
     context: ActionContext<IUsersState, IRootState>,

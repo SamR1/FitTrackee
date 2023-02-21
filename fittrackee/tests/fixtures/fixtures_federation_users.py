@@ -39,6 +39,7 @@ def generate_remote_user(
     user = User(username=user_name, email=None, password=None, is_remote=True)
     db.session.add(user)
     user.actor_id = actor.id
+    user.is_active = True
     db.session.commit()
     return user
 

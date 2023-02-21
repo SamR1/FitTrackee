@@ -149,6 +149,7 @@ def create_remote_user(remote_domain: Domain, remote_actor_url: str) -> User:
     )
     db.session.add(user)
     user.actor_id = actor.id
+    user.is_active = True
     update_actor_data(actor, remote_actor_object)
     db.session.commit()
     return actor.user

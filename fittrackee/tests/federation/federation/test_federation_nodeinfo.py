@@ -113,10 +113,12 @@ class TestNodeInfo(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data['usage']['localWorkouts'] == 1
 
-    def test_only_local_actors_are_counted(
+    def test_only_local_active_actors_are_counted(
         self,
         app_with_federation: Flask,
         user_1: User,
+        user_2: User,
+        inactive_user: User,
         remote_user: User,
     ) -> None:
         client = app_with_federation.test_client()
@@ -128,7 +130,7 @@ class TestNodeInfo(ApiTestCaseMixin):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
 
-        assert data['usage']['users']['total'] == 1
+        assert data['usage']['users']['total'] == 2
 
     def test_it_displays_if_registration_is_disabled(
         self,

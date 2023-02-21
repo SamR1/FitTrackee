@@ -129,6 +129,8 @@ def inactive_user() -> User:
     )
     user.confirmation_token = random_string()
     db.session.add(user)
+    db.session.flush()
+    user.create_actor()
     db.session.commit()
     return user
 

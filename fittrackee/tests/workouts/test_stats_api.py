@@ -1114,6 +1114,26 @@ class TestGetAllStats(ApiTestCaseMixin):
         assert data['data']['users'] == 2
         assert 'uploads_dir_size' in data['data']
 
+    def test_it_does_not_count_inactive_user(
+        self, app: Flask, user_1_admin: User, inactive_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/stats/all',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert data['data']['workouts'] == 0
+        assert data['data']['sports'] == 0
+        assert data['data']['users'] == 1
+        assert 'uploads_dir_size' in data['data']
+
     def test_it_gets_app_all_stats_with_workouts(
         self,
         app: Flask,

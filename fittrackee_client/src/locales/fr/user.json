@@ -1,6 +1,7 @@
 {
     "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Vous n'avez pas reçu les instructions ?",
     "ACCOUNT_CONFIRMATION_SENT": "Vérifiez vos courriels. Un nouveau courriel de confirmation a été envoyé à l'adresse électronique fournie.",
+    "ACTIVE_USER": "utilisateur actif | utilisateurs actifs",
     "ADMIN": "Admin",
     "ALREADY_HAVE_ACCOUNT": "Vous avez déjà un compte ?",
     "CONFIRM_ACCOUNT_DELETION": "Êtes-vous sûr·e de vouloir supprimer votre compte ? Toutes les données seront définitivement effacés",

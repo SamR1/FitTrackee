@@ -45,6 +45,17 @@ from .utils.admin import UserManagerService
 users_blueprint = Blueprint('users', __name__)
 
 USERS_PER_PAGE = 10
+EMPTY_USERS_RESPONSE = {
+    'status': 'success',
+    'data': {'users': []},
+    'pagination': {
+        'has_next': False,
+        'has_prev': False,
+        'page': 1,
+        'pages': 0,
+        'total': 0,
+    },
+}
 
 
 def get_users_list(auth_user: User, remote: bool = False) -> Dict:
@@ -56,18 +67,10 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
             user = get_user_from_username(query, with_action='creation')
         except Exception as e:  # noqa
             appLog.error(f"Error when searching user '{query}': {e}")
-            return {
-                'status': 'success',
-                'data': {'users': []},
-                'pagination': {
-                    'has_next': False,
-                    'has_prev': False,
-                    'page': 1,
-                    'pages': 0,
-                    'total': 0,
-                },
-            }
+            return EMPTY_USERS_RESPONSE
         if user:
+            if not user.is_active and not auth_user.admin:
+                return EMPTY_USERS_RESPONSE
             return {
                 'status': 'success',
                 'data': {'users': [user.serialize(auth_user)]},
@@ -86,10 +89,16 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
         per_page = 50
     user_column = getattr(User, params.get('order_by', 'username'))
     order = params.get('order', 'asc')
+    with_inactive = params.get('with_inactive', 'false').lower()
+    if not auth_user or not auth_user.admin:
+        with_inactive = 'false'
     users_pagination = (
         User.query.filter(
             User.username.ilike('%' + query + '%') if query else True,
             User.is_remote == remote,
+            True
+            if with_inactive == 'true'
+            else User.is_active == True,  # noqa
         )
         .order_by(asc(user_column) if order == 'asc' else desc(user_column))
         .paginate(page=page, per_page=per_page, error_out=False)
@@ -522,6 +531,8 @@ def get_single_user(
     try:
         user = get_user_from_username(user_name, with_action='refresh')
         if user:
+            if (not auth_user or not auth_user.admin) and not user.is_active:
+                return UserNotFoundErrorResponse()
             return {
                 'status': 'success',
                 'data': {'users': [user.serialize(auth_user)]},

@@ -427,7 +427,9 @@ def get_application_stats(auth_user: User) -> Dict:
     """
 
     nb_workouts = Workout.query.filter().count()
-    nb_users = User.query.filter(User.is_remote == False).count()  # noqa
+    nb_users = User.query.filter(
+        User.is_remote == False, User.is_active == True  # noqa
+    ).count()
     nb_sports = (
         db.session.query(func.count(Workout.sport_id))
         .group_by(Workout.sport_id)

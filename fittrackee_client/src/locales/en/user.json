@@ -1,6 +1,7 @@
 {
     "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Didn't received instructions?",
     "ACCOUNT_CONFIRMATION_SENT": "Check your email. A new confirmation email has been sent to the address provided.",
+    "ACTIVE_USER": "active user | active users",
     "ADMIN": "Admin",
     "ALREADY_HAVE_ACCOUNT": "Already have an account?",
     "CONFIRM_ACCOUNT_DELETION": "Are you sure you want to delete your account? All data will be deleted, this cannot be undone",
