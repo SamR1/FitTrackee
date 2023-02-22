@@ -110,6 +110,14 @@ class Comment(BaseModel):
         lazy="dynamic",
         viewonly=True,
     )
+    likes = db.relationship(
+        "User",
+        secondary="comment_likes",
+        primaryjoin="Comment.id == CommentLike.comment_id",
+        secondaryjoin="CommentLike.user_id == User.id",
+        lazy="dynamic",
+        viewonly=True,
+    )
 
     def __repr__(self) -> str:
         return f'<Comment {self.id}>'
@@ -269,6 +277,39 @@ class Mention(BaseModel):
     ):
         self.comment_id = comment_id
         self.user_id = user_id
+        self.created_at = (
+            datetime.datetime.utcnow() if created_at is None else created_at
+        )
+
+
+class CommentLike(BaseModel):
+    __tablename__ = 'comment_likes'
+    __table_args__ = (
+        db.UniqueConstraint(
+            'user_id', 'comment_id', name='user_id_comment_id_unique'
+        ),
+    )
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    created_at = db.Column(db.DateTime, nullable=False)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id'),
+        nullable=False,
+    )
+    comment_id = db.Column(
+        db.Integer,
+        db.ForeignKey('comments.id', ondelete="CASCADE"),
+        nullable=False,
+    )
+
+    def __init__(
+        self,
+        user_id: int,
+        comment_id: int,
+        created_at: Optional[datetime.datetime] = None,
+    ) -> None:
+        self.user_id = user_id
+        self.comment_id = comment_id
         self.created_at = (
             datetime.datetime.utcnow() if created_at is None else created_at
         )

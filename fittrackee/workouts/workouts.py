@@ -14,6 +14,7 @@ from flask import (
     send_from_directory,
 )
 from sqlalchemy import asc, desc, exc
+from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
@@ -37,7 +38,7 @@ from fittrackee.users.models import User
 from fittrackee.utils import decode_short_id
 
 from .decorators import check_workout
-from .models import Workout
+from .models import Workout, WorkoutLike
 from .utils.convert import convert_in_duration
 from .utils.gpx import (
     WorkoutGPXException,
@@ -1501,3 +1502,43 @@ def delete_workout(
         OSError,
     ) as e:
         return handle_error_and_return_response(e, db=db)
+
+
+@workouts_blueprint.route(
+    '/workouts/<string:workout_short_id>/like', methods=['POST']
+)
+@require_auth(scopes=['workouts:write'])
+@check_workout(check_owner=False)
+def like_workout(
+    auth_user: User, workout: Workout, workout_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    try:
+        like = WorkoutLike(user_id=auth_user.id, workout_id=workout.id)
+        db.session.add(like)
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+    return {
+        'status': 'success',
+        'data': {'workouts': [workout.serialize(auth_user)]},
+    }, 200
+
+
+@workouts_blueprint.route(
+    '/workouts/<string:workout_short_id>/like/undo', methods=['POST']
+)
+@require_auth(scopes=['workouts:write'])
+@check_workout(check_owner=False)
+def unlike_workout(
+    auth_user: User, workout: Workout, workout_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    like = WorkoutLike.query.filter_by(
+        user_id=auth_user.id, workout_id=workout.id
+    ).first()
+    if like:
+        db.session.delete(like)
+        db.session.commit()
+    return {
+        'status': 'success',
+        'data': {'workouts': [workout.serialize(auth_user)]},
+    }, 200

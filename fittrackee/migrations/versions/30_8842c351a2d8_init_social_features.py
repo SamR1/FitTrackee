@@ -295,8 +295,40 @@ def upgrade():
     sa.PrimaryKeyConstraint('comment_id', 'user_id')
     )
 
+    op.create_table('workout_likes',
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('workout_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['workout_id'], ['workouts.id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('id')
+    )
+    with op.batch_alter_table('workout_likes', schema=None) as batch_op:
+        batch_op.create_unique_constraint('user_id_workout_id_unique', ['user_id', 'workout_id'])
+
+    op.create_table('comment_likes',
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('comment_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['comment_id'], ['comments.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    with op.batch_alter_table('comment_likes', schema=None) as batch_op:
+        batch_op.create_unique_constraint('user_id_comment_id_unique', ['user_id', 'comment_id'])
 
 def downgrade():
+
+    with op.batch_alter_table('comment_likes', schema=None) as batch_op:
+        batch_op.drop_constraint('user_id_comment_id_unique', type_='unique')
+    op.drop_table('comment_likes')
+
+    with op.batch_alter_table('workout_likes', schema=None) as batch_op:
+        batch_op.drop_constraint('user_id_workout_id_unique', type_='unique')
+    op.drop_table('workout_likes')
+
     op.drop_table('mentions')
 
     with op.batch_alter_table('comments', schema=None) as batch_op:

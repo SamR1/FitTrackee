@@ -200,6 +200,14 @@ class Workout(BaseModel):
         lazy=True,
         backref=db.backref('workout', lazy='joined', single_parent=True),
     )
+    likes = db.relationship(
+        "User",
+        secondary="workout_likes",
+        primaryjoin="Workout.id == WorkoutLike.workout_id",
+        secondaryjoin="WorkoutLike.user_id == User.id",
+        lazy="dynamic",
+        viewonly=True,
+    )
 
     def __str__(self) -> str:
         return f'<Workout \'{self.sport.label}\' - {self.workout_date}>'
@@ -610,3 +618,36 @@ def on_record_delete(
                 )
                 new_record.value = record_data['record_value']  # type: ignore
                 session.add(new_record)
+
+
+class WorkoutLike(BaseModel):
+    __tablename__ = 'workout_likes'
+    __table_args__ = (
+        db.UniqueConstraint(
+            'user_id', 'workout_id', name='user_id_workout_id_unique'
+        ),
+    )
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    created_at = db.Column(db.DateTime, nullable=False)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id'),
+        nullable=False,
+    )
+    workout_id = db.Column(
+        db.Integer,
+        db.ForeignKey('workouts.id', ondelete="CASCADE"),
+        nullable=False,
+    )
+
+    def __init__(
+        self,
+        user_id: int,
+        workout_id: int,
+        created_at: Optional[datetime.datetime] = None,
+    ) -> None:
+        self.user_id = user_id
+        self.workout_id = workout_id
+        self.created_at = (
+            datetime.datetime.utcnow() if created_at is None else created_at
+        )

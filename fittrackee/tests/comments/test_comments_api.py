@@ -7,12 +7,12 @@ from werkzeug import Response
 
 from fittrackee.comments.models import Comment, Mention
 from fittrackee.privacy_levels import PrivacyLevel
-from fittrackee.tests.comments.utils import CommentMixin
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin, BaseTestMixin
 from ..utils import jsonify_dict
+from .utils import CommentMixin
 
 
 class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):

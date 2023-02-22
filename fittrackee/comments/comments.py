@@ -20,7 +20,7 @@ from fittrackee.utils import clean_input, decode_short_id
 from fittrackee.workouts.models import Workout
 
 from .decorators import check_workout_comment
-from .models import Comment, get_comments
+from .models import Comment, CommentLike, get_comments
 
 comments_blueprint = Blueprint('comments', __name__)
 
@@ -264,3 +264,47 @@ def update_workout_comment(
 
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e)
+
+
+@comments_blueprint.route(
+    '/workouts/<string:workout_short_id>/comments/<string:comment_short_id>'
+    '/like',
+    methods=['POST'],
+)
+@require_auth(scopes=['workouts:write'])
+@check_workout_comment(check_owner=False)
+def like_workout(
+    auth_user: User, comment: Comment
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    try:
+        like = CommentLike(user_id=auth_user.id, comment_id=comment.id)
+        db.session.add(like)
+        db.session.commit()
+    except exc.IntegrityError:
+        db.session.rollback()
+    return {
+        'status': 'success',
+        'comment': comment.serialize(auth_user),
+    }, 200
+
+
+@comments_blueprint.route(
+    '/workouts/<string:workout_short_id>/comments/<string:comment_short_id>'
+    '/like/undo',
+    methods=['POST'],
+)
+@require_auth(scopes=['workouts:write'])
+@check_workout_comment(check_owner=False)
+def unlike_workout(
+    auth_user: User, comment: Comment
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    like = CommentLike.query.filter_by(
+        user_id=auth_user.id, comment_id=comment.id
+    ).first()
+    if like:
+        db.session.delete(like)
+        db.session.commit()
+    return {
+        'status': 'success',
+        'comment': comment.serialize(auth_user),
+    }, 200
