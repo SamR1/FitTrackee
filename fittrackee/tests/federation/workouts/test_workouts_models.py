@@ -1,13 +1,20 @@
 import pytest
 from flask import Flask
 
+from fittrackee import db
 from fittrackee.exceptions import InvalidVisibilityException
+from fittrackee.federation.objects.like import LikeObject
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.tests.workouts.test_workouts_model import WorkoutModelTestCase
 from fittrackee.tests.workouts.utils import add_follower
 from fittrackee.users.models import User
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
-from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
+from fittrackee.workouts.models import (
+    Sport,
+    Workout,
+    WorkoutLike,
+    WorkoutSegment,
+)
 
 from ...utils import random_string
 
@@ -225,3 +232,58 @@ class TestWorkoutModelGetWorkoutDeleteActivity:
         assert delete_workout['type'] == 'Delete'
         assert delete_workout['object']['type'] == 'Tombstone'
         assert delete_workout['object']['id'] == workout_cycling_user_1.ap_id
+
+
+class TestWorkoutLikeActivities:
+    def test_it_returns_like_activity(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        like = WorkoutLike(
+            user_id=user_1.id, workout_id=workout_cycling_user_1.id
+        )
+        db.session.add(like)
+        db.session.commit()
+
+        like_activity = like.get_activity()
+
+        assert (
+            like_activity
+            == LikeObject(
+                target_object_ap_id=workout_cycling_user_1.ap_id,
+                like_id=like.id,
+                actor_ap_id=user_1.actor.activitypub_id,
+            ).get_activity()
+        )
+
+    def test_it_returns_undo_like_activity(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        like = WorkoutLike(
+            user_id=user_1.id, workout_id=workout_cycling_user_1.id
+        )
+        db.session.add(like)
+        db.session.commit()
+
+        like_activity = like.get_activity(is_undo=True)
+
+        assert (
+            like_activity
+            == LikeObject(
+                target_object_ap_id=workout_cycling_user_1.ap_id,
+                like_id=like.id,
+                actor_ap_id=user_1.actor.activitypub_id,
+                is_undo=True,
+            ).get_activity()
+        )

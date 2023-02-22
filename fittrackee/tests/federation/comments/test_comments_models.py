@@ -3,9 +3,11 @@ from unittest.mock import Mock, patch
 import pytest
 from flask import Flask
 
+from fittrackee import db
 from fittrackee.comments.exceptions import CommentForbiddenException
-from fittrackee.comments.models import Mention
+from fittrackee.comments.models import CommentLike, Mention
 from fittrackee.exceptions import InvalidVisibilityException
+from fittrackee.federation.objects.like import LikeObject
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
@@ -336,3 +338,64 @@ class TestWorkoutCommentModelSerializeForMentions(CommentMixin):
 
         assert serialized_comment["text"] == comment.text
         assert serialized_comment["text_html"] == comment.handle_mentions()[0]
+
+
+class TestWorkoutCommentLikeActivities(CommentMixin):
+    def test_it_returns_like_activity(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=remote_user,
+            workout=workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        like = CommentLike(user_id=user_1.id, comment_id=comment.id)
+        db.session.add(like)
+        db.session.commit()
+
+        like_activity = like.get_activity()
+
+        assert (
+            like_activity
+            == LikeObject(
+                target_object_ap_id=comment.ap_id,
+                like_id=like.id,
+                actor_ap_id=user_1.actor.activitypub_id,
+            ).get_activity()
+        )
+
+    def test_it_returns_undo_like_activity(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=remote_user,
+            workout=workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        like = CommentLike(user_id=user_1.id, comment_id=comment.id)
+        db.session.add(like)
+        db.session.commit()
+
+        like_activity = like.get_activity(is_undo=True)
+
+        assert (
+            like_activity
+            == LikeObject(
+                target_object_ap_id=comment.ap_id,
+                like_id=like.id,
+                actor_ap_id=user_1.actor.activitypub_id,
+                is_undo=True,
+            ).get_activity()
+        )

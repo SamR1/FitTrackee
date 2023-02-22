@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from typing import Dict, Tuple
 
 from fittrackee import appLog, db
-from fittrackee.comments.models import Comment
+from fittrackee.comments.models import Comment, CommentLike
 from fittrackee.federation.constants import PUBLIC_STREAM
 from fittrackee.federation.exceptions import (
     ActivityException,
@@ -26,7 +26,7 @@ from fittrackee.users.exceptions import (
 )
 from fittrackee.workouts.constants import WORKOUT_DATE_FORMAT
 from fittrackee.workouts.exceptions import SportNotFoundException
-from fittrackee.workouts.models import Sport, Workout
+from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 from fittrackee.workouts.utils.workouts import create_workout
 
 from ..objects.workout import convert_workout_activity
@@ -164,6 +164,8 @@ class UndoActivity(AbstractActivity):
     def process_activity(self) -> None:
         if self.activity['object']['type'] == 'Follow':
             self.undoes_follow()
+        if self.activity['object']['type'] == 'Like':
+            self.undoes_like()
 
     def undoes_follow(self) -> None:
         follower_actor, followed_actor = self.get_actors()
@@ -174,6 +176,34 @@ class UndoActivity(AbstractActivity):
                 f'{self.activity_name()}: follow request does not exist.'
             )
             raise e
+
+    def undoes_like(self) -> None:
+        like = None
+        actor = self.get_actor(create_remote_actor=True)
+        object_ap_id = self.activity["object"]["object"]
+
+        # check if like is related to a workout
+        target_object = Workout.query.filter_by(ap_id=object_ap_id).first()
+        if target_object:
+            like = WorkoutLike.query.filter_by(
+                user_id=actor.user.id,
+                workout_id=target_object.id,
+            ).first()
+
+        # check if like is related to a comment
+        if not target_object:
+            target_object = Comment.query.filter_by(ap_id=object_ap_id).first()
+            if not target_object:
+                raise ObjectNotFoundException('object', self.activity_name())
+
+            like = CommentLike.query.filter_by(
+                user_id=actor.user.id,
+                comment_id=target_object.id,
+            ).first()
+
+        if like:
+            db.session.delete(like)
+            db.session.commit()
 
 
 def create_comment(
@@ -360,3 +390,31 @@ class UpdateActivity(AbstractActivity):
             self.update_remote_workout(actor)
         if object_type == "Note":
             self.update_remote_workout_comment(actor)
+
+
+class LikeActivity(AbstractActivity):
+    def process_activity(self) -> None:
+        like = None
+        actor = self.get_actor(create_remote_actor=True)
+        object_ap_id = self.activity["object"]
+
+        # check if like is related to a workout
+        target_object = Workout.query.filter_by(ap_id=object_ap_id).first()
+        if target_object:
+            like = WorkoutLike(
+                user_id=actor.user.id, workout_id=target_object.id
+            )
+
+        # check if like is related to a comment
+        else:
+            target_object = Comment.query.filter_by(ap_id=object_ap_id).first()
+            if not target_object:
+                raise ObjectNotFoundException('object', self.activity_name())
+
+            like = CommentLike(
+                user_id=actor.user.id, comment_id=target_object.id
+            )
+
+        if like:
+            db.session.add(like)
+            db.session.commit()

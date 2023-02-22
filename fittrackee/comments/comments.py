@@ -273,13 +273,21 @@ def update_workout_comment(
 )
 @require_auth(scopes=['workouts:write'])
 @check_workout_comment(check_owner=False)
-def like_workout(
+def like_comment(
     auth_user: User, comment: Comment
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     try:
         like = CommentLike(user_id=auth_user.id, comment_id=comment.id)
         db.session.add(like)
         db.session.commit()
+
+        if current_app.config['FEDERATION_ENABLED'] and comment.user.is_remote:
+            like_activity = like.get_activity()
+            send_to_remote_inbox.send(
+                sender_id=auth_user.actor.id,
+                activity=like_activity,
+                recipients=[comment.user.actor.shared_inbox_url],
+            )
     except exc.IntegrityError:
         db.session.rollback()
     return {
@@ -295,7 +303,7 @@ def like_workout(
 )
 @require_auth(scopes=['workouts:write'])
 @check_workout_comment(check_owner=False)
-def unlike_workout(
+def undo_comment_like(
     auth_user: User, comment: Comment
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     like = CommentLike.query.filter_by(
@@ -304,6 +312,15 @@ def unlike_workout(
     if like:
         db.session.delete(like)
         db.session.commit()
+
+        if current_app.config['FEDERATION_ENABLED'] and comment.user.is_remote:
+            undo_activity = like.get_activity(is_undo=True)
+            send_to_remote_inbox.send(
+                sender_id=auth_user.actor.id,
+                activity=undo_activity,
+                recipients=[comment.user.actor.shared_inbox_url],
+            )
+
     return {
         'status': 'success',
         'comment': comment.serialize(auth_user),

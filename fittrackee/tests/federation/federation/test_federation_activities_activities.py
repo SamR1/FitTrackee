@@ -5,7 +5,8 @@ from unittest.mock import patch
 import pytest
 from flask import Flask
 
-from fittrackee.comments.models import Comment, Mention
+from fittrackee import db
+from fittrackee.comments.models import Comment, CommentLike, Mention
 from fittrackee.federation.constants import AP_CTX, DATE_FORMAT, PUBLIC_STREAM
 from fittrackee.federation.enums import ActivityType
 from fittrackee.federation.exceptions import (
@@ -15,6 +16,7 @@ from fittrackee.federation.exceptions import (
     UnsupportedActivityException,
 )
 from fittrackee.federation.models import Actor
+from fittrackee.federation.objects.like import LikeObject
 from fittrackee.federation.objects.workout import (
     convert_duration_string_to_seconds,
 )
@@ -28,11 +30,11 @@ from fittrackee.users.exceptions import (
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.constants import WORKOUT_DATE_FORMAT
 from fittrackee.workouts.exceptions import SportNotFoundException
-from fittrackee.workouts.models import Sport, Workout
+from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 
 from ...comments.utils import CommentMixin
 from ...mixins import RandomMixin
-from ...utils import RandomActor
+from ...utils import RandomActor, random_int, random_string
 
 SUPPORTED_ACTIVITIES = [(f'{a.value} activity', a.value) for a in ActivityType]
 
@@ -1866,3 +1868,335 @@ class TestDeleteActivityForComment(CommentMixin, CommentActivitiesTestCase):
 
         assert Comment.query.filter_by(id=comment_id).first() is None
         assert reply.reply_to is None
+
+
+class TestLikeActivityForWorkout:
+    def test_it_raises_error_if_workout_does_not_exist(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+    ) -> None:
+        like_activity = LikeObject(
+            target_object_ap_id=random_string(),
+            actor_ap_id=remote_user.actor.activitypub_id,
+            like_id=random_int(),
+        ).get_activity()
+        activity = get_activity_instance({'type': like_activity['type']})(
+            activity_dict=like_activity
+        )
+        with pytest.raises(
+            ObjectNotFoundException,
+            match="object not found for LikeActivity",
+        ):
+            activity.process_activity()
+
+    def test_it_creates_like_when_workout_exists(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        like_activity = LikeObject(
+            target_object_ap_id=workout_cycling_user_1.ap_id,
+            actor_ap_id=remote_user.actor.activitypub_id,
+            like_id=random_int(),
+        ).get_activity()
+        activity = get_activity_instance({'type': like_activity['type']})(
+            activity_dict=like_activity
+        )
+
+        activity.process_activity()
+
+        assert (
+            WorkoutLike.query.filter_by(
+                user_id=remote_user.id, workout_id=workout_cycling_user_1.id
+            ).first()
+            is not None
+        )
+
+    def test_it_creates_like_when_workout_exists_and_remote_actor_does_not_exist(  # noqa
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        random_actor: RandomActor,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        like_activity = LikeObject(
+            target_object_ap_id=workout_cycling_user_1.ap_id,
+            actor_ap_id=random_actor.activitypub_id,
+            like_id=random_int(),
+        ).get_activity()
+        activity = get_activity_instance({'type': like_activity['type']})(
+            activity_dict=like_activity
+        )
+
+        with patch(
+            'fittrackee.federation.utils.user.get_remote_actor_url',
+            return_value=random_actor.get_remote_user_object(),
+        ):
+            activity.process_activity()
+
+        remote_user = User.query.filter_by(username=random_actor.name).first()
+        assert (
+            WorkoutLike.query.filter_by(
+                user_id=remote_user.id, workout_id=workout_cycling_user_1.id
+            ).first()
+            is not None
+        )
+
+
+class TestLikeActivityForComment(CommentMixin):
+    def test_it_creates_like_when_workout_exists(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        like_activity = LikeObject(
+            target_object_ap_id=comment.ap_id,
+            actor_ap_id=remote_user.actor.activitypub_id,
+            like_id=random_int(),
+        ).get_activity()
+        activity = get_activity_instance({'type': like_activity['type']})(
+            activity_dict=like_activity
+        )
+
+        activity.process_activity()
+
+        assert (
+            CommentLike.query.filter_by(
+                user_id=remote_user.id, comment_id=comment.id
+            ).first()
+            is not None
+        )
+
+    def test_it_creates_like_when_comment_exists_and_remote_actor_does_not_exist(  # noqa
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        random_actor: RandomActor,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        like_activity = LikeObject(
+            target_object_ap_id=comment.ap_id,
+            actor_ap_id=random_actor.activitypub_id,
+            like_id=random_int(),
+        ).get_activity()
+        activity = get_activity_instance({'type': like_activity['type']})(
+            activity_dict=like_activity
+        )
+
+        with patch(
+            'fittrackee.federation.utils.user.get_remote_actor_url',
+            return_value=random_actor.get_remote_user_object(),
+        ):
+            activity.process_activity()
+
+        remote_user = User.query.filter_by(username=random_actor.name).first()
+        assert (
+            CommentLike.query.filter_by(
+                user_id=remote_user.id, comment_id=comment.id
+            ).first()
+            is not None
+        )
+
+
+class TestUndoLikeActivityForWorkout:
+    def test_it_raises_error_if_workout_does_not_exist(
+        self,
+        app_with_federation: Flask,
+        remote_user: User,
+    ) -> None:
+        like_activity = LikeObject(
+            target_object_ap_id=random_string(),
+            actor_ap_id=remote_user.actor.activitypub_id,
+            like_id=random_int(),
+            is_undo=True,
+        ).get_activity()
+        activity = get_activity_instance({'type': like_activity['type']})(
+            activity_dict=like_activity
+        )
+        with pytest.raises(
+            ObjectNotFoundException,
+            match="object not found for UndoActivity",
+        ):
+            activity.process_activity()
+
+    def test_it_deletes_existing_like(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        like = WorkoutLike(
+            user_id=remote_user.id, workout_id=workout_cycling_user_1.id
+        )
+        db.session.add(like)
+        db.session.commit()
+        like_activity = LikeObject(
+            target_object_ap_id=workout_cycling_user_1.ap_id,
+            actor_ap_id=remote_user.actor.activitypub_id,
+            like_id=like.id,
+            is_undo=True,
+        ).get_activity()
+        activity = get_activity_instance({'type': like_activity['type']})(
+            activity_dict=like_activity
+        )
+
+        activity.process_activity()
+
+        assert (
+            WorkoutLike.query.filter_by(
+                user_id=remote_user.id, workout_id=workout_cycling_user_1.id
+            ).first()
+            is None
+        )
+
+    def test_it_does_not_raise_error_if_like_does_not_exist(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        like_activity = LikeObject(
+            target_object_ap_id=workout_cycling_user_1.ap_id,
+            actor_ap_id=remote_user.actor.activitypub_id,
+            like_id=random_int(),
+        ).get_activity()
+        activity = get_activity_instance({'type': like_activity['type']})(
+            activity_dict=like_activity
+        )
+
+        activity.process_activity()
+
+    def test_it_does_not_raise_error_if_actor_does_not_exist(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        random_actor: RandomActor,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        like_activity = LikeObject(
+            target_object_ap_id=workout_cycling_user_1.ap_id,
+            actor_ap_id=random_actor.activitypub_id,
+            like_id=random_int(),
+        ).get_activity()
+        activity = get_activity_instance({'type': like_activity['type']})(
+            activity_dict=like_activity
+        )
+
+        with patch(
+            'fittrackee.federation.utils.user.get_remote_actor_url',
+            return_value=random_actor.get_remote_user_object(),
+        ):
+            activity.process_activity()
+
+
+class TestUndoLikeActivityForComment(CommentMixin):
+    def test_it_deletes_existing_like(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        like = CommentLike(user_id=remote_user.id, comment_id=comment.id)
+        db.session.add(like)
+        db.session.commit()
+        like_activity = LikeObject(
+            target_object_ap_id=comment.ap_id,
+            actor_ap_id=remote_user.actor.activitypub_id,
+            like_id=like.id,
+            is_undo=True,
+        ).get_activity()
+        activity = get_activity_instance({'type': like_activity['type']})(
+            activity_dict=like_activity
+        )
+
+        activity.process_activity()
+
+        assert (
+            CommentLike.query.filter_by(
+                user_id=remote_user.id, comment_id=comment.id
+            ).first()
+            is None
+        )
+
+    def test_it_does_not_raise_error_if_like_does_not_exist(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        remote_user: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        like_activity = LikeObject(
+            target_object_ap_id=comment.ap_id,
+            actor_ap_id=remote_user.actor.activitypub_id,
+            like_id=random_int(),
+        ).get_activity()
+        activity = get_activity_instance({'type': like_activity['type']})(
+            activity_dict=like_activity
+        )
+
+        activity.process_activity()
+
+    def test_it_does_not_raise_error_if_actor_does_not_exist(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        random_actor: RandomActor,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        like_activity = LikeObject(
+            target_object_ap_id=comment.ap_id,
+            actor_ap_id=random_actor.activitypub_id,
+            like_id=random_int(),
+        ).get_activity()
+        activity = get_activity_instance({'type': like_activity['type']})(
+            activity_dict=like_activity
+        )
+
+        with patch(
+            'fittrackee.federation.utils.user.get_remote_actor_url',
+            return_value=random_actor.get_remote_user_object(),
+        ):
+            activity.process_activity()

@@ -14,6 +14,7 @@ from sqlalchemy.types import JSON, Enum
 from fittrackee import BaseModel, appLog, db
 from fittrackee.comments.models import Comment
 from fittrackee.federation.decorators import federation_required
+from fittrackee.federation.objects.like import LikeObject
 from fittrackee.federation.objects.tombstone import TombstoneObject
 from fittrackee.federation.objects.workout import WorkoutObject
 from fittrackee.files import get_absolute_file_path
@@ -640,6 +641,9 @@ class WorkoutLike(BaseModel):
         nullable=False,
     )
 
+    user = db.relationship("User", lazy=True)
+    workout = db.relationship("Workout", lazy=True)
+
     def __init__(
         self,
         user_id: int,
@@ -651,3 +655,11 @@ class WorkoutLike(BaseModel):
         self.created_at = (
             datetime.datetime.utcnow() if created_at is None else created_at
         )
+
+    def get_activity(self, is_undo: bool = False) -> Dict:
+        return LikeObject(
+            actor_ap_id=self.user.actor.activitypub_id,
+            target_object_ap_id=self.workout.ap_id,
+            like_id=self.id,
+            is_undo=is_undo,
+        ).get_activity()

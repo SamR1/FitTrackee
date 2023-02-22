@@ -6,6 +6,7 @@ class ActivityType(Enum):
     CREATE = 'Create'
     DELETE = 'Delete'
     FOLLOW = 'Follow'
+    LIKE = 'Like'
     REJECT = 'Reject'
     UNDO = 'Undo'
     UPDATE = 'Update'

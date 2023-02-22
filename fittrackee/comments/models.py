@@ -12,6 +12,7 @@ from sqlalchemy.types import Enum
 from fittrackee import BaseModel, db
 from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.federation.objects.comment import CommentObject
+from fittrackee.federation.objects.like import LikeObject
 from fittrackee.federation.objects.tombstone import TombstoneObject
 from fittrackee.privacy_levels import PrivacyLevel, can_view
 from fittrackee.users.utils.following import get_following
@@ -302,6 +303,9 @@ class CommentLike(BaseModel):
         nullable=False,
     )
 
+    user = db.relationship("User", lazy=True)
+    comment = db.relationship("Comment", lazy=True)
+
     def __init__(
         self,
         user_id: int,
@@ -313,3 +317,11 @@ class CommentLike(BaseModel):
         self.created_at = (
             datetime.datetime.utcnow() if created_at is None else created_at
         )
+
+    def get_activity(self, is_undo: bool = False) -> Dict:
+        return LikeObject(
+            actor_ap_id=self.user.actor.activitypub_id,
+            target_object_ap_id=self.comment.ap_id,
+            like_id=self.id,
+            is_undo=is_undo,
+        ).get_activity()
