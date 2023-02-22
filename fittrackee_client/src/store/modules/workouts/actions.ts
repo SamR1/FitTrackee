@@ -16,6 +16,7 @@ import {
   IWorkoutPayload,
   TWorkoutsPayload,
   ICommentPayload,
+  IComment,
 } from '@/types/workouts'
 import { handleError } from '@/utils'
 
@@ -343,6 +344,78 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       .catch((error) => {
         handleError(context, error)
         context.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, null)
+      })
+  },
+  [WORKOUTS_STORE.ACTIONS.LIKE_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    comment: IComment
+  ): void {
+    authApi
+      .post(`workouts/${comment.workout_id}/comments/${comment.id}/like`)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.dispatch(
+            WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
+            comment.workout_id
+          )
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+  },
+  [WORKOUTS_STORE.ACTIONS.UNDO_LIKE_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    comment: IComment
+  ): void {
+    authApi
+      .post(`workouts/${comment.workout_id}/comments/${comment.id}/like/undo`)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.dispatch(
+            WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
+            comment.workout_id
+          )
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+  },
+  [WORKOUTS_STORE.ACTIONS.LIKE_WORKOUT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    workoutId: string
+  ): void {
+    authApi
+      .post(`workouts/${workoutId}/like`)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.SET_WORKOUT,
+            res.data.data.workouts[0]
+          )
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+  },
+  [WORKOUTS_STORE.ACTIONS.UNDO_LIKE_WORKOUT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    workoutId: string
+  ): void {
+    authApi
+      .post(`workouts/${workoutId}/like/undo`)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.SET_WORKOUT,
+            res.data.data.workouts[0]
+          )
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
       })
   },
 }

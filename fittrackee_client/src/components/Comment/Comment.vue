@@ -50,6 +50,10 @@
           aria-hidden="true"
           @click="deleteComment(comment)"
         />
+        <span class="likes" @click="updateLike(comment)">
+          <i class="fa" :class="`fa-heart${comment.liked ? '' : '-o'}`"/>
+          <span class="likes-count" v-if="comment.likes_count > 0">{{ comment.likes_count }}</span>
+        </span>
         <i
           class="fa fa-comment-o"
           v-if="authUser.username && (!addReply || addReply !== comment)"
@@ -97,7 +101,7 @@
   import WorkoutCommentEdition from "@/components/Comment/CommentEdition.vue"
   import Username from "@/components/User/Username.vue"
   import UserPicture from "@/components/User/UserPicture.vue"
-  import { ROOT_STORE } from "@/store/constants"
+  import { ROOT_STORE, WORKOUTS_STORE } from "@/store/constants"
   import { IDisplayOptions } from "@/types/application"
   import { IAuthUserProfile, IUserProfile } from "@/types/user"
   import { IComment, IWorkout } from "@/types/workouts"
@@ -152,6 +156,14 @@
     addReply.value = comment
     focusOnTextArea(comment.id)
   }
+  function updateLike(comment: IComment) {
+    store.dispatch(
+      comment.liked
+        ? WORKOUTS_STORE.ACTIONS.UNDO_LIKE_COMMENT
+        : WORKOUTS_STORE.ACTIONS.LIKE_COMMENT,
+      comment
+    )
+  }
 
 </script>
 
@@ -191,8 +203,14 @@
           font-style: italic;
           white-space: nowrap;
         }
-        .fa-trash, .fa-comment-o {
+        .fa-trash, .fa-comment-o, .fa-heart , .fa-heart-o {
           padding-bottom: 3px;
+        }
+        .fa-heart , .fa-heart-o {
+          font-size: .9em;
+        }
+        .fa-heart {
+          color: #ee2222;
         }
         .fa-edit{
           padding-bottom: 2px;
@@ -204,10 +222,19 @@
       .comment-text {
         border-radius: 5px;
         margin: $default-margin 0;
-        padding-left: $default-padding ;
+        padding-left: $default-padding;
       }
       .add-comment-reply {
         margin: 0 0 40px;
+      }
+      .likes {
+        .likes-count {
+          padding-left: $default-padding *.3;
+          font-size: 0.8em;
+        }
+      }
+      .likes:hover {
+        cursor: pointer;
       }
     }
   }

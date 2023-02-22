@@ -63,6 +63,8 @@ export interface IWorkout {
   distance: number
   duration: string
   id: string
+  liked: boolean
+  likes_count: number
   map: string | null
   map_visibility?: TPrivacyLevels
   max_alt: number | null
@@ -93,6 +95,8 @@ export interface IWorkoutObject {
   descent: number | null
   distance: number
   duration: string
+  liked: boolean
+  likes_count: number
   maxAlt: number | null
   maxSpeed: number
   mapVisibility: TPrivacyLevels | null | undefined
@@ -190,6 +194,8 @@ export interface IWorkoutChartData {
 export interface IComment {
   created_at: string
   id: string
+  liked: boolean
+  likes_count: number
   modification_date: string | null
   replies: IComment[]
   text: string

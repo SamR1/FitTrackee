@@ -32,29 +32,35 @@
             {{ $t('workouts.VIEW_ON_REMOTE_INSTANCE') }}
             <i class="fa fa-external-link-square" aria-hidden="true"></i>
           </a>
-          <i
-            class="fa fa-edit"
-            aria-hidden="true"
-            v-if="isWorkoutOwner"
-            @click="
-              $router.push({
-                name: 'EditWorkout',
-                params: { workoutId: workoutObject.workoutId },
-              })
-            "
-          />
-          <i
-            v-if="workoutObject.with_gpx && isWorkoutOwner"
-            class="fa fa-download"
-            aria-hidden="true"
-            @click.prevent="downloadGpx(workoutObject.workoutId)"
-          />
-          <i
-            class="fa fa-trash"
-            v-if="isWorkoutOwner"
-            aria-hidden="true"
-            @click="emit('displayModal', true)"
-          />
+          <div class="icons">
+            <span class="likes" @click="updateLike(workoutObject)">
+              <i class="fa" :class="`fa-heart${workoutObject.liked ? '' : '-o'}`"/>
+              <span class="likes-count" v-if="workoutObject.likes_count > 0">{{ workoutObject.likes_count }}</span>
+            </span>
+            <i
+              class="fa fa-edit"
+              aria-hidden="true"
+              v-if="isWorkoutOwner"
+              @click="
+                $router.push({
+                  name: 'EditWorkout',
+                  params: { workoutId: workoutObject.workoutId },
+                })
+              "
+            />
+            <i
+              v-if="workoutObject.with_gpx && isWorkoutOwner"
+              class="fa fa-download"
+              aria-hidden="true"
+              @click.prevent="downloadGpx(workoutObject.workoutId)"
+            />
+            <i
+              class="fa fa-trash"
+              v-if="isWorkoutOwner"
+              aria-hidden="true"
+              @click="emit('displayModal', true)"
+            />
+          </div>
         </div>
         <div class="workout-title" v-else>
           {{ workoutObject.title }}
@@ -104,8 +110,10 @@
   import { toRefs } from 'vue'
 
   import authApi from '@/api/authApi'
+  import { WORKOUTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
   import { IWorkoutObject } from '@/types/workouts'
+  import { useStore } from '@/use/useStore'
 
   interface Props {
     sport: ISport
@@ -113,6 +121,8 @@
     isWorkoutOwner: boolean
   }
   const props = defineProps<Props>()
+
+  const store = useStore()
 
   const emit = defineEmits(['displayModal'])
 
@@ -133,6 +143,14 @@
         document.body.appendChild(gpxLink)
         gpxLink.click()
       })
+  }
+  function updateLike(workout: IWorkoutObject) {
+    store.dispatch(
+      workout.liked
+        ? WORKOUTS_STORE.ACTIONS.UNDO_LIKE_WORKOUT
+        : WORKOUTS_STORE.ACTIONS.LIKE_WORKOUT,
+      workout.workoutId
+    )
   }
 </script>
 
@@ -192,16 +210,37 @@
         padding-left: $default-padding;
       }
 
-      .fa {
-        cursor: pointer;
-        padding: 0 $default-padding * 0.3;
-      }
+      .icons {
+        .fa {
+          cursor: pointer;
+          padding: 0 $default-padding * 0.3;
+        }
 
+        .fa-heart {
+          color: #ee2222;
+        }
+
+        .likes {
+          padding-left: $default-padding * 0.3;
+          margin-right: 0;
+          .fa-heart , .fa-heart-o {
+            font-size: .95em;
+          }
+          .likes-count {
+            font-size: .9em;
+            font-weight: bold;
+          }
+        }
+      }
       @media screen and (max-width: $small-limit) {
-        .fa-download,
-        .fa-trash,
-        .fa-edit {
-          padding: 0 $default-padding * 0.7;
+        .icons {
+          .fa-download,
+          .fa-trash,
+          .fa-heart,
+          .fa-heart-o,
+          .fa-edit {
+            padding: 0 $default-padding * 0.7;
+          }
         }
 
         .workout-title {

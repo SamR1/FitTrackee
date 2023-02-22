@@ -158,6 +158,8 @@
       duration: segment ? segment.duration : workout.duration,
       mapVisibility: segment ? null : workout.map_visibility,
       maxAlt: segment ? segment.max_alt : workout.max_alt,
+      liked: workout.liked,
+      likes_count:  workout.likes_count,
       maxSpeed: segment ? segment.max_speed : workout.max_speed,
       minAlt: segment ? segment.min_alt : workout.min_alt,
       moving: segment ? segment.moving : workout.moving,
