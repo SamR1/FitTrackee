@@ -215,6 +215,9 @@ class Comment(BaseModel):
         # return users associated to deleted mention to send delete
         return deleted_mentioned_users
 
+    def liked_by(self, user: 'User') -> bool:
+        return user in self.likes.all()
+
     def serialize(self, user: Optional['User'] = None) -> Dict:
         if not can_view(self, 'text_visibility', user):
             raise CommentForbiddenException
@@ -239,6 +242,8 @@ class Comment(BaseModel):
                     reply_to=self.id,
                 )
             ],
+            'likes_count': self.likes.count(),
+            'liked': self.liked_by(user) if user else False,
         }
 
     def get_activity(self, activity_type: str) -> Dict:

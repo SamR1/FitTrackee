@@ -5,8 +5,9 @@ import pytest
 from flask import Flask
 from freezegun import freeze_time
 
+from fittrackee import db
 from fittrackee.comments.exceptions import CommentForbiddenException
-from fittrackee.comments.models import Comment, Mention
+from fittrackee.comments.models import Comment, CommentLike, Mention
 from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
@@ -141,6 +142,8 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
             'replies': [],
+            'likes_count': 0,
+            'liked': False,
         }
 
 
@@ -218,6 +221,8 @@ class TestWorkoutCommentModelSerializeForFollower(CommentMixin):
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
             'replies': [],
+            'likes_count': 0,
+            'liked': False,
         }
 
 
@@ -273,6 +278,8 @@ class TestWorkoutCommentModelSerializeForUser(CommentMixin):
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
             'replies': [],
+            'likes_count': 0,
+            'liked': False,
         }
 
 
@@ -326,6 +333,8 @@ class TestWorkoutCommentModelSerializeForUnauthenticatedUser(CommentMixin):
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
             'replies': [],
+            'likes_count': 0,
+            'liked': False,
         }
 
 
@@ -364,6 +373,8 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
             'modification_date': parent_comment.modification_date,
             'reply_to': parent_comment.reply_to,
             'replies': [comment.serialize(user_1)],
+            'likes_count': 0,
+            'liked': False,
         }
 
     def test_it_serializes_comment_reply(
@@ -400,6 +411,8 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
             'modification_date': comment.modification_date,
             'reply_to': parent_comment.short_id,
             'replies': [],
+            'likes_count': 0,
+            'liked': False,
         }
 
     def test_it_returns_only_visible_replies_for_a_user(
@@ -469,6 +482,8 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
                 visible_reply.serialize(user_3)
                 for visible_reply in visible_replies
             ],
+            'likes_count': 0,
+            'liked': False,
         }
 
     def test_it_returns_only_visible_replies_for_unauthenticated_user(
@@ -525,6 +540,8 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
             'modification_date': comment.modification_date,
             'reply_to': None,
             'replies': [visible_reply.serialize()],
+            'likes_count': 0,
+            'liked': False,
         }
 
     def test_it_returns_all_replies(
@@ -696,3 +713,98 @@ class TestWorkoutCommentModelSerializeForMentions(CommentMixin):
 
         assert serialized_comment["text"] == comment.text
         assert serialized_comment["text_html"] == comment.handle_mentions()[0]
+
+
+class TestWorkoutCommentModelSerializeWithLikes(CommentMixin):
+    def test_it_returns_like_count(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_2,
+            workout=workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        for user in [user_1, user_3]:
+            like = CommentLike(user_id=user.id, comment_id=comment.id)
+            db.session.add(like)
+        db.session.commit()
+
+        serialized_comment = comment.serialize(user_1)
+
+        assert serialized_comment["likes_count"] == 2
+
+    def test_it_returns_if_user_liked_comment(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        user_2: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_2,
+            workout=workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        like = CommentLike(user_id=user_1.id, comment_id=comment.id)
+        db.session.add(like)
+        db.session.commit()
+
+        serialized_comment = comment.serialize(user_1)
+
+        assert serialized_comment["liked"] is True
+
+    def test_it_returns_if_user_did_not_like_comment(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_3,
+            workout=workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        like = CommentLike(user_id=user_2.id, comment_id=comment.id)
+        db.session.add(like)
+        db.session.commit()
+
+        serialized_comment = comment.serialize(user_1)
+
+        assert serialized_comment["liked"] is False
+
+    def test_it_returns_if_likes_info_for_unauthenticated_user(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_3,
+            workout=workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        like = CommentLike(user_id=user_2.id, comment_id=comment.id)
+        db.session.add(like)
+        db.session.commit()
+
+        serialized_comment = comment.serialize()
+
+        assert serialized_comment["likes_count"] == 1
+        assert serialized_comment["liked"] is False

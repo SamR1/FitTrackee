@@ -235,6 +235,9 @@ class Workout(BaseModel):
     def calculated_map_visibility(self) -> PrivacyLevel:
         return get_map_visibility(self.map_visibility, self.workout_visibility)
 
+    def liked_by(self, user: 'User') -> bool:
+        return user in self.likes.all()
+
     def serialize(
         self, user: Optional['User'] = None, params: Optional[Dict] = None
     ) -> Dict:
@@ -380,6 +383,8 @@ class Workout(BaseModel):
             'weather_end': self.weather_end,
             'notes': self.notes if is_owner else None,
             'workout_visibility': self.workout_visibility.value,
+            'likes_count': self.likes.count(),
+            'liked': self.liked_by(user) if user else False,
         }
         if self.user.is_remote:
             workout['remote_url'] = self.remote_url

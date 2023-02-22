@@ -46,6 +46,8 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
             'replies': [],
+            'liked': False,
+            'likes_count': 0,
         }
 
 
@@ -127,6 +129,8 @@ class TestWorkoutCommentModelSerializeForRemoteFollower(CommentMixin):
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
             'replies': [],
+            'liked': False,
+            'likes_count': 0,
         }
 
 

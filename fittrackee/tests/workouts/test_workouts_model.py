@@ -10,8 +10,9 @@ from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import User
 from fittrackee.utils import encode_uuid
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
-from fittrackee.workouts.models import Sport, Workout
+from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 
+from ..comments.utils import CommentMixin
 from ..utils import random_string
 from .utils import add_follower
 
@@ -32,7 +33,7 @@ class WorkoutModelTestCase:
         return workout
 
 
-class TestWorkoutModelForOwner(WorkoutModelTestCase):
+class TestWorkoutModelForOwner(CommentMixin, WorkoutModelTestCase):
     def test_sport_label_and_date_are_in_string_value(
         self,
         app: Flask,
@@ -75,6 +76,8 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         assert serialized_workout['distance'] == float(workout.distance)
         assert serialized_workout['duration'] == str(workout.duration)
         assert serialized_workout['id'] == workout.short_id
+        assert serialized_workout['likes_count'] == 0
+        assert serialized_workout['liked'] is False
         assert serialized_workout['map'] is None
         assert serialized_workout['max_alt'] is None
         assert serialized_workout['max_speed'] == float(workout.max_speed)
@@ -322,6 +325,63 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             serialized_workout['next_workout']
             == workout_running_user_1.short_id
         )
+
+    def test_it_returns_likes_count(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        for user in [user_2, user_3]:
+            like = WorkoutLike(
+                user_id=user.id, workout_id=workout_cycling_user_1.id
+            )
+            db.session.add(like)
+        db.session.commit()
+
+        serialized_workout = workout_cycling_user_1.serialize(user_1)
+
+        assert serialized_workout['likes_count'] == 2
+
+    def test_it_returns_if_workout_is_not_liked_by_user(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        like = WorkoutLike(
+            user_id=user_2.id, workout_id=workout_cycling_user_1.id
+        )
+        db.session.add(like)
+        db.session.commit()
+
+        serialized_workout = workout_cycling_user_1.serialize(user_1)
+
+        assert serialized_workout['liked'] is False
+
+    def test_it_returns_if_workout_is_liked_by_user(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        workout_running_user_1: Workout,
+    ) -> None:
+        like = WorkoutLike(
+            user_id=user_1.id, workout_id=workout_cycling_user_1.id
+        )
+        db.session.add(like)
+        db.session.commit()
+
+        serialized_workout = workout_cycling_user_1.serialize(user_1)
+
+        assert serialized_workout['liked'] is True
 
 
 class TestWorkoutModelAsFollower(WorkoutModelTestCase):
@@ -732,6 +792,26 @@ class TestWorkoutModelAsUnauthenticatedUser(WorkoutModelTestCase):
         serialized_workout = workout_running_user_1.serialize()
 
         assert serialized_workout['previous_workout'] is None
+
+    def test_it_returns_likes_count(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        like = WorkoutLike(
+            user_id=user_2.id, workout_id=workout_cycling_user_1.id
+        )
+        db.session.add(like)
+        db.session.commit()
+
+        serialized_workout = workout_cycling_user_1.serialize()
+
+        assert serialized_workout['liked'] is False
+        assert serialized_workout['likes_count'] == 1
 
 
 class TestWorkoutModelGetActivity:
