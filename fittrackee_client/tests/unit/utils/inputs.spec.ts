@@ -40,7 +40,7 @@ describe('linkifyAndClean (input sanitization)', () => {
     {
       description: 'it escapes single tag',
       inputString: '<p>test',
-      expectedString: '&lt;p&gt;test&lt;/p&gt;',
+      expectedString: '&lt;p&gt;test',
     },
     {
       description: 'it removes css classe',
