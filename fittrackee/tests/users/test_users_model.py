@@ -78,6 +78,16 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
 
         self.assert_workouts_keys_are_present(serialized_user)
 
+    def test_it_returns_accepted_privacy_policy_date(
+        self, app: Flask, user_1: User
+    ) -> None:
+        serialized_user = user_1.serialize(user_1)
+
+        assert (
+            serialized_user['accepted_policy_date']
+            == user_1.accepted_policy_date
+        )
+
     def test_it_does_not_return_confirmation_token(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
@@ -117,6 +127,13 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin):
         serialized_user = user_2.serialize(user_1_admin)
 
         self.assert_workouts_keys_are_present(serialized_user)
+
+    def test_it_does_not_return_accepted_privacy_policy_date(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1_admin)
+
+        assert 'accepted_policy_date' not in serialized_user
 
     def test_it_does_not_return_confirmation_token(
         self, app: Flask, user_1_admin: User, user_2: User

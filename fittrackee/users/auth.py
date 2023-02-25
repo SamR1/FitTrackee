@@ -115,6 +115,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     :<json string password: password (8 characters required)
     :<json string lang: user language preferences (if not provided or invalid,
                         fallback to 'en' (english))
+    :<json boolean accepted_policy: true if user accepted privacy policy
 
     :statuscode 200: success
     :statuscode 400:
@@ -141,8 +142,16 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
         or post_data.get('username') is None
         or post_data.get('email') is None
         or post_data.get('password') is None
+        or post_data.get('accepted_policy') is None
     ):
         return InvalidPayloadErrorResponse()
+
+    accepted_policy = post_data.get('accepted_policy') is True
+    if not accepted_policy:
+        return InvalidPayloadErrorResponse(
+            'sorry, you must agree privacy policy to register'
+        )
+
     username = post_data.get('username')
     email = post_data.get('email')
     password = post_data.get('password')
@@ -176,6 +185,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
             new_user.date_format = 'MM/dd/yyyy'
             new_user.confirmation_token = secrets.token_urlsafe(30)
             new_user.language = language
+            new_user.accepted_policy_date = datetime.datetime.utcnow()
             db.session.add(new_user)
             db.session.commit()
 
@@ -288,6 +298,7 @@ def get_authenticated_user_profile(
 
       {
         "data": {
+          "accepted_privacy_policy": "Sat, 25 Fev 2023 13:52:58 GMT",
           "admin": false,
           "bio": null,
           "birth_date": null,

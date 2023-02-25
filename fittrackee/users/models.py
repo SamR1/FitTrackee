@@ -52,6 +52,7 @@ class User(BaseModel):
     email_to_confirm = db.Column(db.String(255), nullable=True)
     confirmation_token = db.Column(db.String(255), nullable=True)
     display_ascent = db.Column(db.Boolean, default=True, nullable=False)
+    accepted_policy_date = db.Column(db.DateTime, nullable=True)
 
     def __repr__(self) -> str:
         return f'<User {self.username!r}>'
@@ -191,6 +192,7 @@ class User(BaseModel):
             serialized_user = {
                 **serialized_user,
                 **{
+                    'accepted_policy_date': self.accepted_policy_date,
                     'date_format': self.date_format,
                     'display_ascent': self.display_ascent,
                     'imperial_units': self.imperial_units,

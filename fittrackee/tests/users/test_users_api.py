@@ -1624,7 +1624,7 @@ class TestDeleteUser(ApiTestCaseMixin):
             'you can not delete your account, no other user has admin rights',
         )
 
-    def test_it_enables_registration_after_user_delete(
+    def test_it_enables_registration_after_user_delete_when_users_count_is_below_limit(  # noqa
         self,
         app_with_3_users_max: Flask,
         user_1_admin: User,
@@ -1646,6 +1646,7 @@ class TestDeleteUser(ApiTestCaseMixin):
                     username=self.random_string(),
                     email=self.random_email(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -1653,7 +1654,7 @@ class TestDeleteUser(ApiTestCaseMixin):
 
         assert response.status_code == 200
 
-    def test_it_does_not_enable_registration_on_user_delete(
+    def test_it_does_not_enable_registration_on_user_delete_when_users_count_is_not_below_limit(  # noqa
         self,
         app_with_3_users_max: Flask,
         user_1_admin: User,
@@ -1677,6 +1678,7 @@ class TestDeleteUser(ApiTestCaseMixin):
                     email='test@test.com',
                     password='12345678',
                     password_conf='12345678',
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',

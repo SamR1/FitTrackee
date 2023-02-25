@@ -33,6 +33,48 @@ class TestUserRegistration(ApiTestCaseMixin):
 
         self.assert_400(response)
 
+    def test_it_returns_error_if_accepted_policy_is_missing(
+        self, app: Flask
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/register',
+            data=json.dumps(
+                dict(
+                    username=self.random_string(),
+                    email=self.random_email(),
+                    password=self.random_string(),
+                )
+            ),
+            content_type='application/json',
+        )
+
+        self.assert_400(response)
+
+    def test_it_returns_error_if_accepted_policy_is_false(
+        self, app: Flask
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/register',
+            data=json.dumps(
+                dict(
+                    username=self.random_string(),
+                    email=self.random_email(),
+                    password=self.random_string(),
+                    accepted_policy=False,
+                )
+            ),
+            content_type='application/json',
+        )
+
+        self.assert_400(
+            response,
+            'sorry, you must agree privacy policy to register',
+        )
+
     def test_it_returns_error_if_username_is_missing(self, app: Flask) -> None:
         client = app.test_client()
 
@@ -42,6 +84,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                 dict(
                     email=self.random_email(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -65,6 +108,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username=self.random_string(length=input_username_length),
                     email=self.random_email(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -91,6 +135,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username=input_username,
                     email=self.random_email(),
                     password=self.random_email(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -121,6 +166,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                     ),
                     email=self.random_email(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -137,6 +183,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                 dict(
                     username=self.random_string(),
                     email=self.random_email(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -156,6 +203,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username=self.random_string(),
                     email=self.random_email(),
                     password=self.random_string(length=7),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -172,6 +220,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                 dict(
                     username=self.random_string(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -189,6 +238,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username=self.random_string(),
                     email=self.random_string(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -207,6 +257,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                 dict(
                     username=self.random_string(),
                     email=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -224,6 +275,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username=self.random_string(),
                     email=self.random_email(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -248,6 +300,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username=username,
                     email=self.random_email(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -269,25 +322,30 @@ class TestUserRegistration(ApiTestCaseMixin):
         client = app.test_client()
         username = self.random_string()
         email = self.random_email()
+        accepted_policy_date = datetime.utcnow()
 
-        client.post(
-            '/api/auth/register',
-            data=json.dumps(
-                dict(
-                    username=username,
-                    email=email,
-                    password=self.random_string(),
-                    language=input_language,
-                )
-            ),
-            content_type='application/json',
-        )
+        with patch('fittrackee.users.auth.datetime.datetime') as datetime_mock:
+            datetime_mock.utcnow = Mock(return_value=accepted_policy_date)
+            client.post(
+                '/api/auth/register',
+                data=json.dumps(
+                    dict(
+                        username=username,
+                        email=email,
+                        password=self.random_string(),
+                        language=input_language,
+                        accepted_policy=True,
+                    )
+                ),
+                content_type='application/json',
+            )
 
         new_user = User.query.filter_by(username=username).first()
         assert new_user.email == email
         assert new_user.password is not None
         assert new_user.is_active is False
         assert new_user.language == expected_language
+        assert new_user.accepted_policy_date == accepted_policy_date
 
     @pytest.mark.parametrize(
         'input_language,expected_language',
@@ -314,6 +372,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                         email=email,
                         password='12345678',
                         language=input_language,
+                        accepted_policy=True,
                     )
                 ),
                 content_type='application/json',
@@ -353,6 +412,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username=username,
                     email=email,
                     password='12345678',
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -381,6 +441,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                         else user_1.email.lower()
                     ),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -404,6 +465,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username=self.random_string(),
                     email=user_1.email,
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -1983,6 +2045,7 @@ class TestRegistrationConfiguration(ApiTestCaseMixin):
                     username=self.random_string(),
                     email=self.random_email(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -1995,6 +2058,7 @@ class TestRegistrationConfiguration(ApiTestCaseMixin):
                     username=self.random_string(),
                     email=self.random_email(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -2015,6 +2079,7 @@ class TestRegistrationConfiguration(ApiTestCaseMixin):
                     username=self.random_string(),
                     email=self.random_email(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -2027,6 +2092,7 @@ class TestRegistrationConfiguration(ApiTestCaseMixin):
                     username=self.random_string(),
                     email=self.random_email(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
