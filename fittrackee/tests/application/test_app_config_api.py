@@ -6,6 +6,7 @@ from unittest.mock import Mock, patch
 import pytest
 from flask import Flask
 
+from fittrackee import db
 from fittrackee.application.models import AppConfig
 from fittrackee.users.models import User
 
@@ -340,11 +341,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         response = client.patch(
             '/api/config',
             content_type='application/json',
-            data=json.dumps(
-                dict(
-                    about=about,
-                )
-            ),
+            data=json.dumps(dict(about=about)),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -352,6 +349,28 @@ class TestUpdateConfig(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert data['data']['about'] == about
+
+    def test_it_empties_about_text_when_text_is_an_empty_string(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        app_config = AppConfig.query.first()
+        app_config.about = self.random_string()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            '/api/config',
+            content_type='application/json',
+            data=json.dumps(dict(about='')),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert data['data']['about'] is None
 
     def test_it_updates_privacy_policy(
         self,
@@ -371,11 +390,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
             response = client.patch(
                 '/api/config',
                 content_type='application/json',
-                data=json.dumps(
-                    dict(
-                        privacy_policy=privacy_policy,
-                    )
-                ),
+                data=json.dumps(dict(privacy_policy=privacy_policy)),
                 headers=dict(Authorization=f'Bearer {auth_token}'),
             )
 
@@ -386,6 +401,34 @@ class TestUpdateConfig(ApiTestCaseMixin):
         assert data['data'][
             'privacy_policy_date'
         ] == privacy_policy_date.strftime('%a, %d %b %Y %H:%M:%S GMT')
+
+    @pytest.mark.parametrize('input_privacy_policy', ['', None])
+    def test_it_empties_privacy_policy_date_when_no_privacy_policy(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        input_privacy_policy: Optional[str],
+    ) -> None:
+        app_config = AppConfig.query.first()
+        app_config.privacy_policy = self.random_string()
+        app_config.privacy_policy_date = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            '/api/config',
+            content_type='application/json',
+            data=json.dumps(dict(privacy_policy=input_privacy_policy)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert data['data']['privacy_policy'] is None
+        assert data['data']['privacy_policy_date'] is None
 
     @pytest.mark.parametrize(
         'client_scope, can_access',

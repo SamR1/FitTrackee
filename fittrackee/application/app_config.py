@@ -161,10 +161,15 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
         if 'admin_contact' in config_data:
             config.admin_contact = admin_contact if admin_contact else None
         if 'about' in config_data:
-            config.about = config_data.get('about')
+            config.about = (
+                config_data.get('about') if config_data.get('about') else None
+            )
         if 'privacy_policy' in config_data:
-            config.privacy_policy = config_data.get('privacy_policy')
-            config.privacy_policy_date = datetime.utcnow()
+            privacy_policy = config_data.get('privacy_policy')
+            config.privacy_policy = privacy_policy if privacy_policy else None
+            config.privacy_policy_date = (
+                datetime.utcnow() if privacy_policy else None
+            )
 
         if config.max_zip_file_size < config.max_single_file_size:
             return InvalidPayloadErrorResponse(
