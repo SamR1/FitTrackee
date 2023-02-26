@@ -10,8 +10,10 @@
     "ENTER_PASSWORD": "Enter a password",
     "FILTER_ON_USERNAME": "Filter on username",
     "HIDE_PASSWORD": "hide password",
+    "I_WANT_TO_DELETE_MY_ACCOUNT": "I want to delete my account",
     "INVALID_TOKEN": "Invalid token, please request a new password reset.",
     "LANGUAGE": "Language",
+    "LAST_PRIVACY_POLICY_TO_VALIDATE": "The privacy policy has been updated, please {0} it before proceeding.",
     "LOGIN": "Login",
     "LOGOUT": "Logout",
     "LOG_IN": "log in",
@@ -68,6 +70,7 @@
         "PICTURE_REMOVE": "Remove picture",
         "PICTURE_UPDATE": "Update picture",
         "PREFERENCES_EDITION": "Preferences edition",
+        "PRIVACY-POLICY_EDITION": "Privacy policy",
         "PROFILE_EDITION": "Profile edition",
         "REGISTRATION_DATE": "Registration date",
         "SPORT": {
@@ -89,6 +92,7 @@
             "APPS": "apps",
             "PICTURE": "picture",
             "PREFERENCES": "preferences",
+            "PRIVACY-POLICY": "privacy policy",
             "PROFILE": "profile",
             "SPORTS": "sports"
         },
@@ -104,9 +108,11 @@
     "REGISTER_DISABLED": "Sorry, registration is disabled.",
     "RESENT_ACCOUNT_CONFIRMATION": "Resend account confirmation email",
     "RESET_PASSWORD": "Reset your password",
+    "REVIEW": "review",
     "SHOW_PASSWORD": "show password",
     "THIS_USER_ACCOUNT_IS_INACTIVE": "This user account is inactive.",
     "USERNAME": "Username",
     "USERNAME_INFO": "3 to 30 characters required, only alphanumeric characters and the underscore character \"_\" allowed.",
-    "USER_PICTURE": "user picture"
+    "USER_PICTURE": "user picture",
+    "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "You have accepted the {0}."
 }

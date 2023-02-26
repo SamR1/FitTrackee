@@ -12,6 +12,7 @@ import UserAccountEdition from '@/components/User/ProfileEdition/UserAccountEdit
 import UserInfosEdition from '@/components/User/ProfileEdition/UserInfosEdition.vue'
 import UserPictureEdition from '@/components/User/ProfileEdition/UserPictureEdition.vue'
 import UserPreferencesEdition from '@/components/User/ProfileEdition/UserPreferencesEdition.vue'
+import UserPrivacyPolicyValidation from '@/components/User/ProfileEdition/UserPrivacyPolicyValidation.vue'
 import AddUserApp from '@/components/User/UserApps/AddUserApp.vue'
 import AuthorizeUserApp from '@/components/User/UserApps/AuthorizeUserApp.vue'
 import UserApps from '@/components/User/UserApps/index.vue'
@@ -218,6 +219,11 @@ const routes: Array<RouteRecordRaw> = [
             name: 'UserSportPreferencesEdition',
             component: UserSportPreferences,
             props: { isEdition: true },
+          },
+          {
+            path: 'privacy-policy',
+            name: 'UserPrivacyPolicy',
+            component: UserPrivacyPolicyValidation,
           },
         ],
       },

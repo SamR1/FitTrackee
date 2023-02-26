@@ -36,6 +36,12 @@
         </div>
       </div>
     </div>
+    <div
+      class="container privacy-policy-message"
+      v-if="!authUser.accepted_privacy_policy"
+    >
+      <PrivacyPolicyToAccept />
+    </div>
     <div class="container">
       <UserStatsCards :user="authUser" />
     </div>
@@ -80,6 +86,7 @@
   import UserMonthStats from '@/components/Dashboard/UserMonthStats.vue'
   import UserRecords from '@/components/Dashboard/UserRecords/index.vue'
   import UserStatsCards from '@/components/Dashboard/UserStatsCards/index.vue'
+  import PrivacyPolicyToAccept from '@/components/PrivacyPolicyToAccept.vue'
   import { AUTH_USER_STORE, SPORTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'
@@ -124,6 +131,11 @@
     }
     .mobile-menu {
       display: none;
+    }
+
+    .privacy-policy-message {
+      display: flex;
+      justify-content: center;
     }
 
     @media screen and (max-width: $medium-limit) {

@@ -110,6 +110,11 @@ export interface IAuthUserActions {
   [AUTH_USER_STORE.ACTIONS.DELETE_PICTURE](
     context: ActionContext<IAuthUserState, IRootState>
   ): void
+
+  [AUTH_USER_STORE.ACTIONS.ACCEPT_PRIVACY_POLICY](
+    context: ActionContext<IAuthUserState, IRootState>,
+    acceptedPolicy: boolean
+  ): void
 }
 
 export interface IAuthUserGetters {

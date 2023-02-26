@@ -427,4 +427,24 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
       })
       .catch((error) => handleError(context, error))
   },
+  [AUTH_USER_STORE.ACTIONS.ACCEPT_PRIVACY_POLICY](
+    context: ActionContext<IAuthUserState, IRootState>,
+    acceptedPolicy: boolean
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .post('auth/account/privacy-policy', {
+        accepted_policy: acceptedPolicy,
+      })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context
+            .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+            .then(() => router.push('/profile'))
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+  },
 }

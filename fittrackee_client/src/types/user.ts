@@ -25,6 +25,7 @@ export interface IUserProfile {
 }
 
 export interface IAuthUserProfile extends IUserProfile {
+  accepted_privacy_policy: boolean
   display_ascent: boolean
   imperial_units: boolean
   language: string | null

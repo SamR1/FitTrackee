@@ -10,8 +10,10 @@
     "ENTER_PASSWORD": "Saisissez un mot de passe",
     "FILTER_ON_USERNAME": "Filtrer sur le nom d'utilisateur",
     "HIDE_PASSWORD": "masquer le mot de passe",
+    "I_WANT_TO_DELETE_MY_ACCOUNT": "Je souhaite supprimer mon compte",
     "INVALID_TOKEN": "Jeton invalide, veuillez demander une nouvelle réinitialisation de mot de passe.",
     "LANGUAGE": "Langue",
+    "LAST_PRIVACY_POLICY_TO_VALIDATE": "La politique de confidentialité a été mise à jour. Veuillez l'{0} avant de poursuivre.",
     "LOGIN": "Se connecter",
     "LOGOUT": "Se déconnecter",
     "LOG_IN": "connecter",
@@ -68,6 +70,7 @@
         "PICTURE_REMOVE": "Supprimer",
         "PICTURE_UPDATE": "Mettre à jour l'image",
         "PREFERENCES_EDITION": "Mise à jour des préférences",
+        "PRIVACY-POLICY_EDITION": "Politique de confidentialité",
         "PROFILE_EDITION": "Mise à jour du profil",
         "REGISTRATION_DATE": "Date d'inscription",
         "SPORT": {
@@ -89,6 +92,7 @@
             "APPS": "apps",
             "PICTURE": "image",
             "PREFERENCES": "préférences",
+            "PRIVACY-POLICY": "politique de confidentialité",
             "PROFILE": "profil",
             "SPORTS": "sports"
         },
@@ -104,9 +108,11 @@
     "REGISTER_DISABLED": "Désolé, les inscriptions sont désactivées.",
     "RESENT_ACCOUNT_CONFIRMATION": "Envoyer à nouveau le courriel de confirmation de compte",
     "RESET_PASSWORD": "Réinitialiser votre mot de passe",
+    "REVIEW": "accepter",
     "SHOW_PASSWORD": "afficher le mot de passe",
     "THIS_USER_ACCOUNT_IS_INACTIVE": "Le compte de cet utilisateur est inactif.",
     "USERNAME": "Nom d'utilisateur",
     "USERNAME_INFO": "3 à 30 caractères requis, seuls les caractères alphanumériques et le caractère _ sont autorisés.",
-    "USER_PICTURE": "photo de l'utilisateur"
+    "USER_PICTURE": "photo de l'utilisateur",
+    "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Vous avez accepté la {0}."
 }
