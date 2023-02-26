@@ -37,7 +37,7 @@
         },
         "TITLE": "Amministrazione sport"
     },
-    "UPDATE_APPLICATION_DESCRIPTION": "Aggiorna configurazione applicazione (numero massimo di utenti registrati, dimensione massima dei files).",
+    "UPDATE_APPLICATION_DESCRIPTION": "Aggiorna configurazione applicazione.",
     "UPDATE_USER_EMAIL": "Aggiorna email",
     "USER": "utente | utenti",
     "USERS": {

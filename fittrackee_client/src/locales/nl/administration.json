@@ -37,7 +37,7 @@
         },
         "TITLE": "Beheer sporten"
     },
-    "UPDATE_APPLICATION_DESCRIPTION": "De applicatie configureren (maximum aantal geregistreerde gebruikers, maximum bestandsgrootte).",
+    "UPDATE_APPLICATION_DESCRIPTION": "De applicatie configureren.",
     "UPDATE_USER_EMAIL": "Update email",
     "USER": "gebruiker | gebruikers",
     "USERS": {

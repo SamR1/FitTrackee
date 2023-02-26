@@ -73,6 +73,42 @@
               :disabled="!edition"
             />
           </label>
+          <label  class="about-label" for="about">
+            {{ $t('admin.ABOUT.TEXT') }}:
+          </label>
+          <span class="textarea-description">
+            {{ $t('admin.ABOUT.DESCRIPTION') }}
+          </span>
+          <textarea
+            v-if="edition"
+            id="about"
+            name="about"
+            rows="10"
+            v-model="appData.about"
+          />
+          <div
+            v-else
+            v-html="snarkdown(linkifyAndClean(appData.about ? appData.about : $t('admin.NO_TEXT_ENTERED')))"
+            class="textarea-content"
+          />
+          <label class="privacy-policy-label" for="privacy_policy">
+            {{ capitalize($t('privacy_policy.TITLE')) }}:
+          </label>
+          <span class="textarea-description">
+            {{ $t('admin.PRIVACY_POLICY_DESCRIPTION') }}
+          </span>
+          <textarea
+            v-if="edition"
+            id="privacy_policy"
+            name="privacy_policy"
+            rows="20"
+            v-model="appData.privacy_policy"
+          />
+          <div
+            v-else
+            v-html="snarkdown(linkifyAndClean(appData.privacy_policy ? appData.privacy_policy : $t('admin.NO_TEXT_ENTERED')))"
+            class="textarea-content"
+          />
           <ErrorMessage :message="errorMessages" v-if="errorMessages" />
           <div class="form-buttons" v-if="edition">
             <button class="confirm" type="submit">
@@ -100,8 +136,10 @@
 </template>
 
 <script setup lang="ts">
+  import snarkdown from 'snarkdown'
   import {
     ComputedRef,
+    capitalize,
     computed,
     reactive,
     withDefaults,
@@ -114,6 +152,7 @@
   import { TAppConfig, TAppConfigForm } from '@/types/application'
   import { useStore } from '@/use/useStore'
   import { getFileSizeInMB } from '@/utils/files'
+  import { linkifyAndClean } from '@/utils/inputs'
 
   interface Props {
     appConfig: TAppConfig
@@ -133,6 +172,8 @@
     max_single_file_size: 0,
     max_zip_file_size: 0,
     gpx_limit_import: 0,
+    about: '',
+    privacy_policy: '',
   })
   const errorMessages: ComputedRef<string | string[] | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
@@ -150,9 +191,15 @@
       ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         (appData[key] = getFileSizeInMB(appConfig[key]))
-      : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      : ['about', 'privacy_policy'].includes(key)
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        (appData[key] = appConfig[key])
+        ? appData[key] = appConfig[key]!== null
+            ? appConfig[key]
+            : ''
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        : (appData[key] = appConfig[key])
     })
   }
   function onCancel() {
@@ -171,16 +218,30 @@
 <style lang="scss" scoped>
   @import '~@/scss/vars.scss';
 
-  .user-limit-help {
-    display: flex;
-    span {
+  #admin-app {
+    .user-limit-help {
+      display: flex;
+      span {
+        font-style: italic;
+      }
+      .fa-info-circle {
+        margin-right: $default-margin;
+      }
+    }
+    .no-contact {
       font-style: italic;
     }
-    .fa-info-circle {
-      margin-right: $default-margin;
+
+    textarea  {
+      margin-bottom: $default-padding;
     }
-  }
-  .no-contact {
-    font-style: italic;
+    .textarea-description {
+      font-style: italic;
+    }
+    .textarea-content {
+      margin-bottom: $default-margin;
+      padding: $default-padding;
+    }
+
   }
 </style>

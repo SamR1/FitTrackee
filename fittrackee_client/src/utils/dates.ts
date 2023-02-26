@@ -93,7 +93,7 @@ const availableDateFormats = [
   'yyyy-MM-dd',
   'date_string',
 ]
-const dateStringFormats: Record<string, string> = {
+export const dateStringFormats: Record<string, string> = {
   de: 'do MMM yyyy',
   en: 'MMM. do, yyyy',
   fr: 'd MMM yyyy',

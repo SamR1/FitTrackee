@@ -98,6 +98,27 @@
               @updatePassword="updatePassword"
               @passwordError="invalidateForm"
             />
+            <label
+              v-if="action === 'register'"
+              for="accepted_policy"
+              class="accepted_policy"
+            >
+              <input
+                type="checkbox"
+                id="accepted_policy"
+                :disabled="registration_disabled"
+                required
+                @invalid="invalidateForm"
+                v-model="formData.accepted_policy"
+              />
+              <span>
+                <i18n-t keypath="user.READ_AND_ACCEPT_PRIVACY_POLICY">
+                  <router-link to="/privacy-policy">
+                    {{ $t('privacy_policy.TITLE') }}
+                  </router-link>
+                </i18n-t>
+              </span>
+            </label>
           </div>
           <button
             type="submit"
@@ -176,6 +197,7 @@
     username: '',
     email: '',
     password: '',
+    accepted_policy: false
   })
   const buttonText: ComputedRef<string> = computed(() =>
     getButtonText(props.action)
@@ -261,6 +283,7 @@
     formData.username = ''
     formData.email = ''
     formData.password = ''
+    formData.accepted_policy = false
   }
 
   onUnmounted(() => store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES))
@@ -309,6 +332,12 @@
       }
       .success-message {
         margin: $default-margin;
+      }
+      .accepted_policy {
+        display: flex;
+        align-items: center;
+        font-size: .85em;
+        font-weight: normal;
       }
     }
 

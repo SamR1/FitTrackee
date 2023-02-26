@@ -99,6 +99,7 @@ export interface ILoginRegisterFormData {
   email: string
   password: string
   language?: string
+  accepted_policy?: boolean
 }
 
 export interface ILoginOrRegisterData {

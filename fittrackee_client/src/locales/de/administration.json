@@ -37,7 +37,7 @@
         },
         "TITLE": "Sportarten Administration"
     },
-    "UPDATE_APPLICATION_DESCRIPTION": "Aktualisiere Anwemdungskonfiguration (maximale Anzahl an registrierten Nutzern, maximale Dateigröße).",
+    "UPDATE_APPLICATION_DESCRIPTION": "Aktualisiere Anwemdungskonfiguration.",
     "UPDATE_USER_EMAIL": "Aktualisiere E-Mail",
     "USER": "Nutzer",
     "USERS": {

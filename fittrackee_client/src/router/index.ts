@@ -23,6 +23,7 @@ import { AUTH_USER_STORE } from '@/store/constants'
 import AboutView from '@/views/AboutView.vue'
 import Dashboard from '@/views/Dashboard.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
+import PrivacyPolicyView from '@/views/PrivacyPolicyView.vue'
 import LoginOrRegister from '@/views/user/LoginOrRegister.vue'
 
 const getTabFromPath = (path: string): string => {
@@ -319,6 +320,11 @@ const routes: Array<RouteRecordRaw> = [
     component: AboutView,
   },
   {
+    path: '/privacy-policy',
+    name: 'PrivacyPolicy',
+    component: PrivacyPolicyView,
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: NotFoundView,
@@ -342,7 +348,7 @@ const pathsWithoutAuthentication = [
   '/account-confirmation/email-sent',
 ]
 
-const pathsWithoutChecks = ['/email-update', '/about']
+const pathsWithoutChecks = ['/email-update', '/about', '/privacy-policy']
 
 router.beforeEach((to, from, next) => {
   store

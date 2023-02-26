@@ -99,6 +99,7 @@
             "METRIC": "Metric system (m, km, m/s, °C)"
         }
     },
+    "READ_AND_ACCEPT_PRIVACY_POLICY": "I have read and agree to the {0}.",
     "REGISTER": "Register",
     "REGISTER_DISABLED": "Sorry, registration is disabled.",
     "RESENT_ACCOUNT_CONFIRMATION": "Resend account confirmation email",
