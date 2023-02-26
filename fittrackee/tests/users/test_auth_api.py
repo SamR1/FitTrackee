@@ -1,7 +1,7 @@
 import json
 from datetime import datetime, timedelta
 from io import BytesIO
-from typing import Optional
+from typing import Optional, Union
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
@@ -2749,3 +2749,76 @@ class TestUserLogout(ApiTestCaseMixin):
         )
 
         self.assert_invalid_token(response)
+
+
+class TestUserPrivacyPolicyUpdate(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/profile/edit/preferences',
+            content_type='application/json',
+            data=json.dumps(dict(accepted_policy=True)),
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_error_if_accepted_policy_is_missing(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/account/privacy-policy',
+            content_type='application/json',
+            data=json.dumps(dict()),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response)
+
+    def test_it_updates_accepted_policy(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        accepted_policy_date = datetime.utcnow()
+
+        with patch('fittrackee.users.auth.datetime.datetime') as datetime_mock:
+            datetime_mock.utcnow = Mock(return_value=accepted_policy_date)
+            response = client.post(
+                '/api/auth/account/privacy-policy',
+                content_type='application/json',
+                data=json.dumps(dict(accepted_policy=True)),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        assert response.status_code == 200
+        assert user_1.accepted_policy_date == accepted_policy_date
+
+    @pytest.mark.parametrize('input_accepted_policy', [False, '', None, 'foo'])
+    def test_it_return_error_if_user_has_not_accepted_policy(
+        self,
+        app: Flask,
+        user_1: User,
+        input_accepted_policy: Union[str, bool, None],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/account/privacy-policy',
+            content_type='application/json',
+            data=json.dumps(dict(accepted_policy=input_accepted_policy)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 400

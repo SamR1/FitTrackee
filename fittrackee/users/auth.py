@@ -883,6 +883,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     :<json string language: language preferences
     :<json string timezone: user time zone
     :<json boolean weekm: does week start on Monday?
+    :<json boolean weekm: does week start on Monday?
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1631,3 +1632,55 @@ def logout_user(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         'status': 'success',
         'message': 'successfully logged out',
     }, 200
+
+
+@auth_blueprint.route('/auth/account/privacy-policy', methods=['POST'])
+@require_auth()
+def accept_privacy_policy(auth_user: User) -> Union[Dict, HttpResponse]:
+    """
+    The authenticated user accepts the privacy policy.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /auth/account/privacy-policy HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "status": "success"
+      }
+
+    :<json boolean accepted_policy: true if user accepted privacy policy
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 400:
+        - invalid payload
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 500: internal server error
+    """
+    post_data = request.get_json()
+    if not post_data or not post_data.get('accepted_policy'):
+        return InvalidPayloadErrorResponse()
+
+    try:
+        if post_data.get('accepted_policy') is True:
+            auth_user.accepted_policy_date = datetime.datetime.utcnow()
+            db.session.commit()
+            return {"status": "success"}
+        else:
+            return InvalidPayloadErrorResponse()
+    except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(e, db=db)
