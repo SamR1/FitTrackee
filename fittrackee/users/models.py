@@ -189,10 +189,18 @@ class User(BaseModel):
             'username': self.username,
         }
         if role == UserRole.AUTH_USER:
+            accepted_privacy_policy = False
+            if self.accepted_policy_date:
+                accepted_privacy_policy = (
+                    True
+                    if current_app.config['privacy_policy_date'] is None
+                    else current_app.config['privacy_policy_date']
+                    < self.accepted_policy_date
+                )
             serialized_user = {
                 **serialized_user,
                 **{
-                    'accepted_policy_date': self.accepted_policy_date,
+                    'accepted_privacy_policy': accepted_privacy_policy,
                     'date_format': self.date_format,
                     'display_ascent': self.display_ascent,
                     'imperial_units': self.imperial_units,

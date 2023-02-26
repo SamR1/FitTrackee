@@ -78,15 +78,45 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
 
         self.assert_workouts_keys_are_present(serialized_user)
 
-    def test_it_returns_accepted_privacy_policy_date(
+    def test_it_returns_user_did_not_accept_default_privacy_policy(
         self, app: Flask, user_1: User
     ) -> None:
+        # default privacy policy
+        app.config['privacy_policy_date'] = None
+        user_1.accepted_policy_date = None
         serialized_user = user_1.serialize(user_1)
 
-        assert (
-            serialized_user['accepted_policy_date']
-            == user_1.accepted_policy_date
-        )
+        assert serialized_user['accepted_privacy_policy'] is False
+
+    def test_it_returns_user_did_accept_default_privacy_policy(
+        self, app: Flask, user_1: User
+    ) -> None:
+        # default privacy policy
+        app.config['privacy_policy_date'] = None
+        user_1.accepted_policy_date = datetime.utcnow()
+        serialized_user = user_1.serialize(user_1)
+
+        assert serialized_user['accepted_privacy_policy'] is True
+
+    def test_it_returns_user_did_not_accept_last_policy(
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_1.accepted_policy_date = datetime.utcnow()
+        # custom privacy policy
+        app.config['privacy_policy_date'] = datetime.utcnow()
+        serialized_user = user_1.serialize(user_1)
+
+        assert serialized_user['accepted_privacy_policy'] is False
+
+    def test_it_returns_user_did_accept_last_policy(
+        self, app: Flask, user_1: User
+    ) -> None:
+        # custom privacy policy
+        app.config['privacy_policy_date'] = datetime.utcnow()
+        user_1.accepted_policy_date = datetime.utcnow()
+        serialized_user = user_1.serialize(user_1)
+
+        assert serialized_user['accepted_privacy_policy'] is True
 
     def test_it_does_not_return_confirmation_token(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -133,7 +163,7 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin):
     ) -> None:
         serialized_user = user_2.serialize(user_1_admin)
 
-        assert 'accepted_policy_date' not in serialized_user
+        assert 'accepted_privacy_policy' not in serialized_user
 
     def test_it_does_not_return_confirmation_token(
         self, app: Flask, user_1_admin: User, user_2: User
