@@ -4,12 +4,13 @@ from unittest.mock import Mock, call, patch
 
 from flask import Flask
 
-from fittrackee.users.export_data import UserDataExporter
-from fittrackee.users.models import User
+from fittrackee import db
+from fittrackee.users.export_data import UserDataExporter, export_user_data
+from fittrackee.users.models import User, UserDataExport
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import CallArgsMixin
-from ..utils import random_string
+from ..utils import random_int, random_string
 from ..workouts.utils import post_a_workout
 
 
@@ -333,3 +334,83 @@ class TestUserDataExporterArchive(CallArgsMixin):
         exporter.generate_archive()
 
         assert os.path.isfile(expected_path)
+
+
+@patch('fittrackee.users.export_data.appLog')
+@patch.object(UserDataExporter, 'generate_archive')
+class TestExportUserData:
+    def test_it_logs_error_if_not_request_for_given_id(
+        self,
+        generate_archive: Mock,
+        logger_mock: Mock,
+        app: Flask,
+    ) -> None:
+        request_id = random_int()
+
+        export_user_data(export_request_id=request_id)
+
+        logger_mock.error.assert_called_once_with(
+            f"No export to process for id '{request_id}'"
+        )
+
+    def test_it_logs_error_if_request_already_processed(
+        self,
+        generate_archive: Mock,
+        logger_mock: Mock,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        export_request = UserDataExport(user_id=user_1.id)
+        db.session.add(export_request)
+        export_request.completed = True
+        db.session.commit()
+
+        export_user_data(export_request_id=export_request.id)
+
+        logger_mock.info.assert_called_once_with(
+            f"Export id '{export_request.id}' already processed"
+        )
+
+    def test_it_update_export_request_when_export_is_successful(
+        self,
+        generate_archive_mock: Mock,
+        logger_mock: Mock,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        export_request = UserDataExport(user_id=user_1.id)
+        db.session.add(export_request)
+        db.session.commit()
+        archive_name = random_string()
+        generate_archive_mock.return_value = (random_string(), archive_name)
+        archive_size = random_int()
+
+        with patch(
+            'fittrackee.users.export_data.os.path.getsize',
+            return_value=archive_size,
+        ):
+            export_user_data(export_request_id=export_request.id)
+
+        assert export_request.completed is True
+        assert export_request.updated_at is not None
+        assert export_request.file_name == archive_name
+        assert export_request.file_size == archive_size
+
+    def test_it_update_export_request_when_export_fails(
+        self,
+        generate_archive_mock: Mock,
+        logger_mock: Mock,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        export_request = UserDataExport(user_id=user_1.id)
+        db.session.add(export_request)
+        db.session.commit()
+        generate_archive_mock.return_value = (None, None)
+
+        export_user_data(export_request_id=export_request.id)
+
+        assert export_request.completed is True
+        assert export_request.updated_at is not None
+        assert export_request.file_name is None
+        assert export_request.file_size is None

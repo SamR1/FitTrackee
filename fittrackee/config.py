@@ -69,6 +69,7 @@ class BaseConfig:
         'authorization_code': 864000,  # 10 days
     }
     OAUTH2_REFRESH_TOKEN_GENERATOR = True
+    DATA_EXPORT_EXPIRATION = 24  # hours
 
 
 class DevelopmentConfig(BaseConfig):

@@ -34,6 +34,7 @@ from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport
 
 from .models import BlacklistedToken, User, UserDataExport, UserSportPreference
+from .tasks import export_data
 from .utils.controls import check_password, is_valid_email, register_controls
 from .utils.token import decode_user_token
 
@@ -1735,9 +1736,10 @@ def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
         if not existing_export_request.completed:
             return InvalidPayloadErrorResponse("ongoing request exists")
 
-        if (
-            existing_export_request.created_at
-            > datetime.datetime.utcnow() - datetime.timedelta(hours=24)
+        export_expiration = current_app.config["DATA_EXPORT_EXPIRATION"]
+        if existing_export_request.created_at > (
+            datetime.datetime.utcnow()
+            - datetime.timedelta(hours=export_expiration)
         ):
             return InvalidPayloadErrorResponse(
                 "completed request already exists"
@@ -1750,6 +1752,9 @@ def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
         export_request = UserDataExport(user_id=auth_user.id)
         db.session.add(export_request)
         db.session.commit()
+
+        export_data.send(export_request_id=export_request.id)
+
         return {"status": "success", "request": export_request.serialize()}
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)

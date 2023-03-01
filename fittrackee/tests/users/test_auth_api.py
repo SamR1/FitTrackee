@@ -2829,9 +2829,11 @@ class TestUserPrivacyPolicyUpdate(ApiTestCaseMixin):
         assert response.status_code == 400
 
 
+@patch('fittrackee.users.auth.export_data')
 class TestPostUserDataExportRequest(ApiTestCaseMixin):
     def test_it_returns_data_export_info_when_no_ongoing_request_exists_for_user(  # noqa
         self,
+        export_data_mock: Mock,
         app: Flask,
         user_1: User,
         user_2: User,
@@ -2858,6 +2860,7 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
 
     def test_it_returns_error_if_ongoing_request_exist(
         self,
+        export_data_mock: Mock,
         app: Flask,
         user_1: User,
     ) -> None:
@@ -2875,8 +2878,9 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
 
         self.assert_400(response, "ongoing request exists")
 
-    def test_it_returns_error_if_existing_request_is_completed_for_less_than_24_hours(  # noqa
+    def test_it_returns_error_if_existing_request_has_not_expired(
         self,
+        export_data_mock: Mock,
         app: Flask,
         user_1: User,
     ) -> None:
@@ -2896,14 +2900,16 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
 
         self.assert_400(response, "completed request already exists")
 
-    def test_it_returns_new_request_if_existing_request_is_completed_for_more_than_more_24_hours(  # noqa
+    def test_it_returns_new_request_if_existing_request_has_expired(  # noqa
         self,
+        export_data_mock: Mock,
         app: Flask,
         user_1: User,
     ) -> None:
+        export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
         completed_export_request = UserDataExport(
             user_id=user_1.id,
-            created_at=datetime.utcnow() - timedelta(hours=24),
+            created_at=datetime.utcnow() - timedelta(hours=export_expiration),
         )
         db.session.add(completed_export_request)
         completed_export_request.completed = True
@@ -2926,6 +2932,85 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
         assert data_export_request.id != completed_export_request.id
         assert data["status"] == "success"
         assert data["request"] == jsonify_dict(data_export_request.serialize())
+
+    def test_it_calls_export_data_tasks_when_request_is_created(
+        self,
+        export_data_mock: Mock,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        client.post(
+            '/api/auth/profile/export/request',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data_export_request = UserDataExport.query.filter_by(
+            user_id=user_1.id
+        ).first()
+        export_data_mock.send.assert_called_once_with(
+            export_request_id=data_export_request.id
+        )
+
+    def test_it_does_not_calls_export_data_tasks_when_request_already_exists(
+        self,
+        export_data_mock: Mock,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
+        completed_export_request = UserDataExport(
+            user_id=user_1.id,
+            created_at=datetime.utcnow() - timedelta(hours=export_expiration),
+        )
+        db.session.add(completed_export_request)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        client.post(
+            '/api/auth/profile/export/request',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        export_data_mock.send.assert_not_called()
+
+    def test_it_returns_new_request_if_previous_request_has_expired(
+        self,
+        export_data_mock: Mock,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
+        completed_export_request = UserDataExport(
+            user_id=user_1.id,
+            created_at=datetime.utcnow() - timedelta(hours=export_expiration),
+        )
+        db.session.add(completed_export_request)
+        completed_export_request.completed = True
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        client.post(
+            '/api/auth/profile/export/request',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data_export_request = UserDataExport.query.filter_by(
+            user_id=user_1.id
+        ).first()
+        export_data_mock.send.assert_called_once_with(
+            export_request_id=data_export_request.id
+        )
 
 
 class TestGetUserDataExportRequest(ApiTestCaseMixin):
@@ -2956,9 +3041,10 @@ class TestGetUserDataExportRequest(ApiTestCaseMixin):
         user_1: User,
         user_2: User,
     ) -> None:
+        export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
         completed_export_request = UserDataExport(
             user_id=user_1.id,
-            created_at=datetime.utcnow() - timedelta(hours=24),
+            created_at=datetime.utcnow() - timedelta(hours=export_expiration),
         )
         db.session.add(completed_export_request)
         db.session.commit()

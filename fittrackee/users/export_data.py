@@ -1,12 +1,13 @@
 import json
 import os
 import secrets
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Tuple, Union
 from zipfile import ZipFile
 
+from fittrackee import appLog, db
 from fittrackee.files import get_absolute_file_path
 
-from .models import User
+from .models import User, UserDataExport
 
 
 class UserDataExporter:
@@ -50,7 +51,7 @@ class UserDataExporter:
             export_file.write(json_object)
         return file_path
 
-    def generate_archive(self) -> Optional[str]:
+    def generate_archive(self) -> Tuple[Optional[str], Optional[str]]:
         try:
             user_data_file_name = self.export_data(
                 self.get_user_info(), "user_data"
@@ -81,6 +82,30 @@ class UserDataExporter:
                         )
 
             file_exists = os.path.exists(zip_path)
-            return zip_file if file_exists else None
+            return (zip_path, zip_file) if file_exists else (None, None)
         except Exception:
-            return None
+            return None, None
+
+
+def export_user_data(export_request_id: int) -> None:
+    export_request = UserDataExport.query.filter_by(
+        id=export_request_id
+    ).first()
+
+    if not export_request:
+        appLog.error(f"No export to process for id '{export_request_id}'")
+        return
+
+    if export_request.completed:
+        appLog.info(f"Export id '{export_request_id}' already processed")
+        return
+
+    user = User.query.filter_by(id=export_request.user_id).first()
+    exporter = UserDataExporter(user)
+    archive_file_path, archive_file_name = exporter.generate_archive()
+
+    export_request.completed = True
+    if archive_file_name and archive_file_path:
+        export_request.file_name = archive_file_name
+        export_request.file_size = os.path.getsize(archive_file_path)
+    db.session.commit()
