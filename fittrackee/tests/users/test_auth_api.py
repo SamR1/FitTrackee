@@ -3064,3 +3064,85 @@ class TestGetUserDataExportRequest(ApiTestCaseMixin):
         assert data["request"] == jsonify_dict(
             completed_export_request.serialize()
         )
+
+
+class TestDownloadExportDataArchive(ApiTestCaseMixin):
+    def test_it_returns_404_when_request_export_does_not_exist(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/auth/profile/export/{self.random_string()}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_message(response, 'file not found')
+
+    def test_it_returns_404_when_request_export_from_another_user(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        archive_file_name = self.random_string()
+        export_request = UserDataExport(user_id=user_2.id)
+        db.session.add(export_request)
+        export_request.completed = True
+        export_request.file_name = archive_file_name
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/auth/profile/export/{archive_file_name}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_message(response, 'file not found')
+
+    def test_it_returns_404_when_file_name_does_not_match(
+        self, app: Flask, user_1: User
+    ) -> None:
+        export_request = UserDataExport(user_id=user_1.id)
+        db.session.add(export_request)
+        export_request.completed = True
+        export_request.file_name = self.random_string()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/auth/profile/export/{self.random_string()}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_message(response, 'file not found')
+
+    def test_it_calls_send_from_directory_if_request_exist(
+        self, app: Flask, user_1: User
+    ) -> None:
+        archive_file_name = self.random_string()
+        export_request = UserDataExport(user_id=user_1.id)
+        db.session.add(export_request)
+        export_request.completed = True
+        export_request.file_name = archive_file_name
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        with patch('fittrackee.users.auth.send_from_directory') as mock:
+            mock.return_value = 'file'
+
+            client.get(
+                f'/api/auth/profile/export/{archive_file_name}',
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        mock.assert_called_once_with(
+            f"{app.config['UPLOAD_FOLDER']}/exports/{user_1.id}",
+            archive_file_name,
+            mimetype='application/zip',
+            as_attachment=True,
+        )

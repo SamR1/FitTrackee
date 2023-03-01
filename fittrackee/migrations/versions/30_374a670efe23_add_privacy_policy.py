@@ -37,7 +37,7 @@ def upgrade():
     sa.Column('completed', sa.Boolean(), nullable=False),
     sa.Column('file_name', sa.String(length=100), nullable=True),
     sa.Column('file_size', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     with op.batch_alter_table('users_data_export', schema=None) as batch_op:

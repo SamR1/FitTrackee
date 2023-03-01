@@ -1,14 +1,20 @@
+import os
 from datetime import datetime
-from typing import Dict, Optional, Union
+from typing import Any, Dict, Optional, Union
 
 import jwt
 from flask import current_app
 from sqlalchemy import func
+from sqlalchemy.engine.base import Connection
+from sqlalchemy.event import listens_for
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm.mapper import Mapper
+from sqlalchemy.orm.session import Session
 from sqlalchemy.sql.expression import select
 
-from fittrackee import bcrypt, db
+from fittrackee import appLog, bcrypt, db
+from fittrackee.files import get_absolute_file_path
 from fittrackee.workouts.models import Workout
 
 from .exceptions import UserNotFoundException
@@ -284,7 +290,7 @@ class UserDataExport(BaseModel):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(
         db.Integer,
-        db.ForeignKey('users.id'),
+        db.ForeignKey('users.id', ondelete='CASCADE'),
         index=True,
         unique=True,
     )
@@ -319,3 +325,19 @@ class UserDataExport(BaseModel):
             "file_name": self.file_name if status == "successful" else None,
             "file_size": self.file_size if status == "successful" else None,
         }
+
+
+@listens_for(UserDataExport, 'after_delete')
+def on_users_data_export_delete(
+    mapper: Mapper, connection: Connection, old_record: 'UserDataExport'
+) -> None:
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session: Session, context: Any) -> None:
+        if old_record.file_name:
+            try:
+                file_path = (
+                    f"exports/{old_record.user_id}/{old_record.file_name}"
+                )
+                os.remove(get_absolute_file_path(file_path))
+            except OSError:
+                appLog.error('archive found when deleting export request')

@@ -6,7 +6,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 from flask import Flask
 
-from fittrackee.users.models import User, UserSportPreference
+from fittrackee import db
+from fittrackee.users.models import User, UserDataExport, UserSportPreference
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport, Workout
 
@@ -1532,6 +1533,30 @@ class TestDeleteUser(ApiTestCaseMixin):
     def test_user_with_picture_can_delete_its_own_account(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        client.post(
+            '/api/auth/picture',
+            data=dict(file=(BytesIO(b'avatar'), 'avatar.png')),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        response = client.delete(
+            '/api/users/test',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+
+    def test_user_with_export_request_can_delete_its_own_account(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
+        db.session.add(UserDataExport(user_1.id))
+        db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )

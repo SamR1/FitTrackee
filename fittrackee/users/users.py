@@ -26,7 +26,7 @@ from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
 from .auth import get_language
 from .exceptions import InvalidEmailException, UserNotFoundException
-from .models import User, UserSportPreference
+from .models import User, UserDataExport, UserSportPreference
 from .utils.admin import UserManagerService
 
 users_blueprint = Blueprint('users', __name__)
@@ -667,6 +667,9 @@ def delete_user(
             WorkoutSegment.workout_id == Workout.id, Workout.user_id == user.id
         ).delete(synchronize_session=False)
         db.session.query(Workout).filter(Workout.user_id == user.id).delete()
+        db.session.query(UserDataExport).filter(
+            UserDataExport.user_id == user.id
+        ).delete()
         db.session.flush()
         user_picture = user.picture
         db.session.delete(user)
@@ -675,6 +678,10 @@ def delete_user(
             picture_path = get_absolute_file_path(user.picture)
             if os.path.isfile(picture_path):
                 os.remove(picture_path)
+        shutil.rmtree(
+            get_absolute_file_path(f'exports/{user.id}'),
+            ignore_errors=True,
+        )
         shutil.rmtree(
             get_absolute_file_path(f'workouts/{user.id}'),
             ignore_errors=True,

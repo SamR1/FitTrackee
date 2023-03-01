@@ -5,7 +5,13 @@ import secrets
 from typing import Dict, Optional, Tuple, Union
 
 import jwt
-from flask import Blueprint, current_app, request
+from flask import (
+    Blueprint,
+    Response,
+    current_app,
+    request,
+    send_from_directory,
+)
 from sqlalchemy import exc, func
 from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
@@ -21,6 +27,7 @@ from fittrackee.emails.tasks import (
 from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
+    DataNotFoundErrorResponse,
     ForbiddenErrorResponse,
     HttpResponse,
     InvalidPayloadErrorResponse,
@@ -1818,3 +1825,58 @@ def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
         "status": "success",
         "request": export_request.serialize() if export_request else None,
     }
+
+
+@auth_blueprint.route(
+    '/auth/profile/export/<string:file_name>', methods=['GET']
+)
+@require_auth()
+def download_data_export(
+    auth_user: User, file_name: str
+) -> Union[Response, HttpResponse]:
+    """
+    Download a data export archive
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /auth/profile/export/download/archive_rgjsR3fHr5Yp.zip HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/x-gzip
+
+    :param string file_name: filename
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 404: file not found
+    """
+    export_request = UserDataExport.query.filter_by(
+        user_id=auth_user.id
+    ).first()
+    if (
+        not export_request
+        or not export_request.completed
+        or export_request.file_name != file_name
+    ):
+        return DataNotFoundErrorResponse(
+            data_type="archive", message="file not found"
+        )
+
+    return send_from_directory(
+        f"{current_app.config['UPLOAD_FOLDER']}/exports/{auth_user.id}",
+        export_request.file_name,
+        mimetype='application/zip',
+        as_attachment=True,
+    )

@@ -371,7 +371,7 @@ class TestExportUserData:
             f"Export id '{export_request.id}' already processed"
         )
 
-    def test_it_update_export_request_when_export_is_successful(
+    def test_it_updates_export_request_when_export_is_successful(
         self,
         generate_archive_mock: Mock,
         logger_mock: Mock,
@@ -396,7 +396,7 @@ class TestExportUserData:
         assert export_request.file_name == archive_name
         assert export_request.file_size == archive_size
 
-    def test_it_update_export_request_when_export_fails(
+    def test_it_updates_export_request_when_export_fails(
         self,
         generate_archive_mock: Mock,
         logger_mock: Mock,
