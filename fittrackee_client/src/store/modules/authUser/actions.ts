@@ -447,4 +447,40 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
       })
       .catch((error) => handleError(context, error))
   },
+  [AUTH_USER_STORE.ACTIONS.REQUEST_DATA_EXPORT](
+    context: ActionContext<IAuthUserState, IRootState>
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .post('auth/profile/export/request')
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            AUTH_USER_STORE.MUTATIONS.SET_EXPORT_REQUEST,
+            res.data.request
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+  },
+  [AUTH_USER_STORE.ACTIONS.GET_REQUEST_DATA_EXPORT](
+    context: ActionContext<IAuthUserState, IRootState>
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .get('auth/profile/export')
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            AUTH_USER_STORE.MUTATIONS.SET_EXPORT_REQUEST,
+            res.data.request
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+  },
 }

@@ -15,6 +15,9 @@ export const getters: GetterTree<IAuthUserState, IRootState> &
   [AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]: (state: IAuthUserState) => {
     return state.authUserProfile
   },
+  [AUTH_USER_STORE.GETTERS.EXPORT_REQUEST]: (state: IAuthUserState) => {
+    return state.exportRequest
+  },
   [AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED]: (state: IAuthUserState) => {
     return state.authToken !== null
   },

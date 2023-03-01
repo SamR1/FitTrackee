@@ -108,3 +108,10 @@ export interface ILoginOrRegisterData {
   formData: ILoginRegisterFormData
   redirectUrl?: string | null | LocationQueryValue[]
 }
+
+export interface IExportRequest {
+  created_at: string
+  status: string
+  file_name: string
+  file_size: number
+}

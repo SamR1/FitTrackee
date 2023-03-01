@@ -8,6 +8,15 @@
     "EMAIL": "Email",
     "EMAIL_INFO": "Enter a valid email address.",
     "ENTER_PASSWORD": "Enter a password",
+    "EXPORT_REQUEST": {
+        "DATA_EXPORT": "Data export",
+        "DOWNLOAD_ARCHIVE": "Download archive",
+        "ONLY_ONE_EXPORT_PER_DAY": "You can request an archive by 24 hours",
+        "STATUS": {
+            "errored": "errored (please request another export)",
+            "in_progress": "in progres..."
+        }
+    },
     "FILTER_ON_USERNAME": "Filter on username",
     "HIDE_PASSWORD": "hide password",
     "I_WANT_TO_DELETE_MY_ACCOUNT": "I want to delete my account",
