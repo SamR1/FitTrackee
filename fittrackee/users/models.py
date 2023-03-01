@@ -276,3 +276,46 @@ class BlacklistedToken(BaseModel):
     @classmethod
     def check(cls, auth_token: str) -> bool:
         return cls.query.filter_by(token=str(auth_token)).first() is not None
+
+
+class UserDataExport(BaseModel):
+    __tablename__ = 'users_data_export'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id'),
+        index=True,
+        unique=True,
+    )
+    created_at = db.Column(
+        db.DateTime, nullable=False, default=datetime.utcnow
+    )
+    updated_at = db.Column(
+        db.DateTime, nullable=True, onupdate=datetime.utcnow
+    )
+    completed = db.Column(db.Boolean, nullable=False, default=False)
+    file_name = db.Column(db.String(100), nullable=True)
+    file_size = db.Column(db.Integer, nullable=True)
+
+    def __init__(
+        self,
+        user_id: int,
+        created_at: Optional[datetime] = None,
+    ):
+        self.user_id = user_id
+        self.created_at = (
+            datetime.utcnow() if created_at is None else created_at
+        )
+
+    def serialize(self) -> Dict:
+        if self.completed:
+            status = "successful" if self.file_name else "errored"
+        else:
+            status = "in_progress"
+        return {
+            "created_at": self.created_at,
+            "status": status,
+            "file_name": self.file_name if status == "successful" else None,
+            "file_size": self.file_size if status == "successful" else None,
+        }

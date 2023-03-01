@@ -6,9 +6,14 @@ from flask import Flask
 from freezegun import freeze_time
 
 from fittrackee import db
-from fittrackee.tests.utils import random_string
+from fittrackee.tests.utils import random_int, random_string
 from fittrackee.users.exceptions import UserNotFoundException
-from fittrackee.users.models import BlacklistedToken, User, UserSportPreference
+from fittrackee.users.models import (
+    BlacklistedToken,
+    User,
+    UserDataExport,
+    UserSportPreference,
+)
 from fittrackee.workouts.models import Sport, Workout
 
 
@@ -381,3 +386,44 @@ class TestUserSportModel:
         assert serialized_user_sport['color'] is None
         assert serialized_user_sport['is_active']
         assert serialized_user_sport['stopped_speed_threshold'] == 1
+
+
+class TestUserDataExportSerializer:
+    def test_it_returns_ongoing_export(self, app: Flask, user_1: User) -> None:
+        created_at = datetime.utcnow()
+        data_export = UserDataExport(user_id=user_1.id, created_at=created_at)
+
+        serialized_data_export = data_export.serialize()
+
+        assert serialized_data_export["created_at"] == created_at
+        assert serialized_data_export["status"] == "in_progress"
+        assert serialized_data_export["file_name"] is None
+        assert serialized_data_export["file_size"] is None
+
+    def test_it_returns_successful_export(
+        self, app: Flask, user_1: User
+    ) -> None:
+        created_at = datetime.utcnow()
+        data_export = UserDataExport(user_id=user_1.id, created_at=created_at)
+        data_export.completed = True
+        data_export.file_name = random_string()
+        data_export.file_size = random_int()
+
+        serialized_data_export = data_export.serialize()
+
+        assert serialized_data_export["created_at"] == created_at
+        assert serialized_data_export["status"] == "successful"
+        assert serialized_data_export["file_name"] == data_export.file_name
+        assert serialized_data_export["file_size"] == data_export.file_size
+
+    def test_it_returns_errored_export(self, app: Flask, user_1: User) -> None:
+        created_at = datetime.utcnow()
+        data_export = UserDataExport(user_id=user_1.id, created_at=created_at)
+        data_export.completed = True
+
+        serialized_data_export = data_export.serialize()
+
+        assert serialized_data_export["created_at"] == created_at
+        assert serialized_data_export["status"] == "errored"
+        assert serialized_data_export["file_name"] is None
+        assert serialized_data_export["file_size"] is None
