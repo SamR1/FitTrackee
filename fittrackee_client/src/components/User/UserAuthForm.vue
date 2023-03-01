@@ -113,7 +113,7 @@
               />
               <span>
                 <i18n-t keypath="user.READ_AND_ACCEPT_PRIVACY_POLICY">
-                  <router-link to="/privacy-policy">
+                  <router-link to="/privacy-policy" target="_blank">
                     {{ $t('privacy_policy.TITLE') }}
                   </router-link>
                 </i18n-t>
