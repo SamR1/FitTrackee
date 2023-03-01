@@ -33,7 +33,7 @@ from fittrackee.responses import (
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport
 
-from .models import BlacklistedToken, User, UserSportPreference
+from .models import BlacklistedToken, User, UserDataExport, UserSportPreference
 from .utils.controls import check_password, is_valid_email, register_controls
 from .utils.token import decode_user_token
 
@@ -1684,3 +1684,132 @@ def accept_privacy_policy(auth_user: User) -> Union[Dict, HttpResponse]:
             return InvalidPayloadErrorResponse()
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)
+
+
+@auth_blueprint.route('/auth/profile/export/request', methods=['POST'])
+@require_auth()
+def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
+    """
+    Request a data export for authenticated user.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /auth/profile/export/request HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "status": "success",
+        "request": {
+            "created_at": "Wed, 01 Mar 2023 12:31:17 GMT",
+            "status": "in_progress",
+            "file_name": null,
+            "file_size": null
+        }
+      }
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 400:
+        - ongoing request exists
+        - completed request already exists
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 500: internal server error
+    """
+    existing_export_request = UserDataExport.query.filter_by(
+        user_id=auth_user.id
+    ).first()
+    if existing_export_request:
+        if not existing_export_request.completed:
+            return InvalidPayloadErrorResponse("ongoing request exists")
+
+        if (
+            existing_export_request.created_at
+            > datetime.datetime.utcnow() - datetime.timedelta(hours=24)
+        ):
+            return InvalidPayloadErrorResponse(
+                "completed request already exists"
+            )
+
+    try:
+        if existing_export_request:
+            db.session.delete(existing_export_request)
+            db.session.flush()
+        export_request = UserDataExport(user_id=auth_user.id)
+        db.session.add(export_request)
+        db.session.commit()
+        return {"status": "success", "request": export_request.serialize()}
+    except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(e, db=db)
+
+
+@auth_blueprint.route('/auth/profile/export', methods=['GET'])
+@require_auth()
+def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
+    """
+    Get a data export info for authenticated user if a request exists.
+    It returns:
+    - export creation date
+    - export status ("in_progress", "successful" and "errored")
+    - file name and size (in bytes) when export is successful
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /auth/profile/export HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+    - if a request exists:
+
+      {
+        "status": "success",
+        "request": {
+            "created_at": "Wed, 01 Mar 2023 12:31:17 GMT",
+            "status": "successful",
+            "file_name": "archive_rgjsR3fHt295ywNQr5Yp.zip",
+            "file_size": 924
+        }
+      }
+
+    - if no request:
+
+      {
+        "status": "success",
+        "request": null
+      }
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    """
+    export_request = UserDataExport.query.filter_by(
+        user_id=auth_user.id
+    ).first()
+    return {
+        "status": "success",
+        "request": export_request.serialize() if export_request else None,
+    }

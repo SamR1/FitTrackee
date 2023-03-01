@@ -9,7 +9,12 @@ from flask import Flask
 from freezegun import freeze_time
 
 from fittrackee import db
-from fittrackee.users.models import BlacklistedToken, User, UserSportPreference
+from fittrackee.users.models import (
+    BlacklistedToken,
+    User,
+    UserDataExport,
+    UserSportPreference,
+)
 from fittrackee.users.utils.token import get_user_token
 from fittrackee.workouts.models import Sport
 
@@ -2822,3 +2827,154 @@ class TestUserPrivacyPolicyUpdate(ApiTestCaseMixin):
         )
 
         assert response.status_code == 400
+
+
+class TestPostUserDataExportRequest(ApiTestCaseMixin):
+    def test_it_returns_data_export_info_when_no_ongoing_request_exists_for_user(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        db.session.add(UserDataExport(user_id=user_2.id))
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/profile/export/request',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        data_export_request = UserDataExport.query.filter_by(
+            user_id=user_1.id
+        ).first()
+        assert data["status"] == "success"
+        assert data["request"] == jsonify_dict(data_export_request.serialize())
+
+    def test_it_returns_error_if_ongoing_request_exist(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        db.session.add(UserDataExport(user_id=user_1.id))
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/profile/export/request',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, "ongoing request exists")
+
+    def test_it_returns_error_if_existing_request_is_completed_for_less_than_24_hours(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        completed_export_request = UserDataExport(user_id=user_1.id)
+        db.session.add(completed_export_request)
+        completed_export_request.completed = True
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/profile/export/request',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, "completed request already exists")
+
+    def test_it_returns_new_request_if_existing_request_is_completed_for_more_than_more_24_hours(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        completed_export_request = UserDataExport(
+            user_id=user_1.id,
+            created_at=datetime.utcnow() - timedelta(hours=24),
+        )
+        db.session.add(completed_export_request)
+        completed_export_request.completed = True
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/profile/export/request',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        data_export_request = UserDataExport.query.filter_by(
+            user_id=user_1.id
+        ).first()
+        assert data_export_request.id != completed_export_request.id
+        assert data["status"] == "success"
+        assert data["request"] == jsonify_dict(data_export_request.serialize())
+
+
+class TestGetUserDataExportRequest(ApiTestCaseMixin):
+    def test_it_returns_none_if_no_request(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/auth/profile/export',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["request"] is None
+
+    def test_it_returns_existing_request(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        completed_export_request = UserDataExport(
+            user_id=user_1.id,
+            created_at=datetime.utcnow() - timedelta(hours=24),
+        )
+        db.session.add(completed_export_request)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/auth/profile/export',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["request"] == jsonify_dict(
+            completed_export_request.serialize()
+        )
