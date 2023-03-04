@@ -1,7 +1,8 @@
 {
     "CONTACT_ADMIN": "Contacteer uw administrator",
-    "FITTRACKEE_DESCRIPTION": "<strong>FitTrackee</strong> is zelf-gehoste buitenshuis activiteiten tracker.",
+    "FITTRACKEE_DESCRIPTION": "<strong>FitTrackee</strong> is zelf-gehoste activiteiten tracker.",
     "FITTRACKEE_LICENSE": "Onder {0} licentie ",
     "SOURCE_CODE": "Broncode",
-    "WEATHER_DATA_FROM": "Weer gegevens van:"
+    "WEATHER_DATA_FROM": "Weer gegevens van:",
+    "ABOUT_THIS_INSTANCE": "Over deze instantie"
 }
