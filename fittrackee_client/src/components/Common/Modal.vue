@@ -68,20 +68,17 @@
     background-color: var(--modal-background-color);
     padding: $default-padding;
     z-index: 1240;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     .custom-modal {
       background-color: var(--app-background-color);
       border-radius: $border-radius;
       max-width: 500px;
-      margin: 25% auto;
       z-index: 1250;
 
       @media screen and (max-width: $medium-limit) {
-        margin: 15% auto;
-        width: 100%;
-      }
-      @media screen and (max-width: $small-limit) {
-        margin: 50% 0;
         width: 100%;
       }
 
