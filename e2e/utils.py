@@ -32,6 +32,8 @@ def register(selenium, user):
     email.send_keys(user.get('email'))
     password = selenium.find_element(By.ID, 'password')
     password.send_keys(user.get('password'))
+    accepted_policy = selenium.find_element(By.ID, 'accepted_policy')
+    accepted_policy.click()
     submit_button = selenium.find_element(By.TAG_NAME, 'button')
     submit_button.click()
 

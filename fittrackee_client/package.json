@@ -30,6 +30,7 @@
     "linkifyjs": "^4.0.2",
     "register-service-worker": "^1.7.1",
     "sanitize-html": "^2.10.0",
+    "snarkdown": "^2.0.0",
     "vue": "^3.2.45",
     "vue-chart-3": "3.1.1",
     "vue-fullscreen": "^3.1.1",

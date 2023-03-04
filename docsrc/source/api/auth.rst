@@ -18,4 +18,8 @@ Authentication
     auth.update_user_account,
     auth.update_password,
     auth.update_email,
-    auth.logout_user
+    auth.logout_user,
+    auth.accept_privacy_policy,
+    auth.get_user_data_export,
+    auth.request_user_data_export,
+    auth.download_data_export

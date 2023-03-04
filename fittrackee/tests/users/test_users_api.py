@@ -6,7 +6,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 from flask import Flask
 
-from fittrackee.users.models import User, UserSportPreference
+from fittrackee import db
+from fittrackee.users.models import User, UserDataExport, UserSportPreference
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport, Workout
 
@@ -1551,6 +1552,30 @@ class TestDeleteUser(ApiTestCaseMixin):
 
         assert response.status_code == 204
 
+    def test_user_with_export_request_can_delete_its_own_account(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
+        db.session.add(UserDataExport(user_1.id))
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        client.post(
+            '/api/auth/picture',
+            data=dict(file=(BytesIO(b'avatar'), 'avatar.png')),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        response = client.delete(
+            '/api/users/test',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+
     def test_user_can_not_delete_another_user_account(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
@@ -1624,7 +1649,7 @@ class TestDeleteUser(ApiTestCaseMixin):
             'you can not delete your account, no other user has admin rights',
         )
 
-    def test_it_enables_registration_after_user_delete(
+    def test_it_enables_registration_after_user_delete_when_users_count_is_below_limit(  # noqa
         self,
         app_with_3_users_max: Flask,
         user_1_admin: User,
@@ -1646,6 +1671,7 @@ class TestDeleteUser(ApiTestCaseMixin):
                     username=self.random_string(),
                     email=self.random_email(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -1653,7 +1679,7 @@ class TestDeleteUser(ApiTestCaseMixin):
 
         assert response.status_code == 200
 
-    def test_it_does_not_enable_registration_on_user_delete(
+    def test_it_does_not_enable_registration_on_user_delete_when_users_count_is_not_below_limit(  # noqa
         self,
         app_with_3_users_max: Flask,
         user_1_admin: User,
@@ -1677,6 +1703,7 @@ class TestDeleteUser(ApiTestCaseMixin):
                     email='test@test.com',
                     password='12345678',
                     password_conf='12345678',
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',

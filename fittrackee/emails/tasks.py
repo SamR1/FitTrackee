@@ -51,3 +51,13 @@ def account_confirmation_email(user: Dict, email_data: Dict) -> None:
         recipient=user['email'],
         data=email_data,
     )
+
+
+@dramatiq.actor(queue_name='fittrackee_emails')
+def data_export_email(user: Dict, email_data: Dict) -> None:
+    email_service.send(
+        template='data_export_ready',
+        lang=user['language'],
+        recipient=user['email'],
+        data=email_data,
+    )

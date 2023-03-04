@@ -19,6 +19,7 @@ import {
   IUserSportPreferencesPayload,
   IUserAccountPayload,
   IUserAccountUpdatePayload,
+  IExportRequest,
 } from '@/types/user'
 
 export interface IAuthUserState {
@@ -27,6 +28,7 @@ export interface IAuthUserState {
   isRegistrationSuccess: boolean
   isSuccess: boolean
   loading: boolean
+  exportRequest: IExportRequest | null
 }
 
 export interface IAuthUserActions {
@@ -110,6 +112,19 @@ export interface IAuthUserActions {
   [AUTH_USER_STORE.ACTIONS.DELETE_PICTURE](
     context: ActionContext<IAuthUserState, IRootState>
   ): void
+
+  [AUTH_USER_STORE.ACTIONS.ACCEPT_PRIVACY_POLICY](
+    context: ActionContext<IAuthUserState, IRootState>,
+    acceptedPolicy: boolean
+  ): void
+
+  [AUTH_USER_STORE.ACTIONS.REQUEST_DATA_EXPORT](
+    context: ActionContext<IAuthUserState, IRootState>
+  ): void
+
+  [AUTH_USER_STORE.ACTIONS.GET_REQUEST_DATA_EXPORT](
+    context: ActionContext<IAuthUserState, IRootState>
+  ): void
 }
 
 export interface IAuthUserGetters {
@@ -118,6 +133,10 @@ export interface IAuthUserGetters {
   [AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE](
     state: IAuthUserState
   ): IAuthUserProfile
+
+  [AUTH_USER_STORE.GETTERS.EXPORT_REQUEST](
+    state: IAuthUserState
+  ): IExportRequest | null
 
   [AUTH_USER_STORE.GETTERS.IS_ADMIN](state: IAuthUserState): boolean
 
@@ -134,6 +153,10 @@ export interface IAuthUserGetters {
 
 export type TAuthUserMutations<S = IAuthUserState> = {
   [AUTH_USER_STORE.MUTATIONS.CLEAR_AUTH_USER_TOKEN](state: S): void
+  [AUTH_USER_STORE.MUTATIONS.SET_EXPORT_REQUEST](
+    state: S,
+    exportRequest: IExportRequest | null
+  ): void
   [AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_TOKEN](
     state: S,
     authToken: string

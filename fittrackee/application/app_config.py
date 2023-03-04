@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Dict, Union
 
 from flask import Blueprint, current_app, request
@@ -40,6 +41,7 @@ def get_application_config() -> Union[Dict, HttpResponse]:
 
       {
         "data": {
+          "about": null,
           "admin_contact": "admin@example.com",
           "gpx_limit_import": 10,
           "is_email_sending_enabled": true,
@@ -48,6 +50,8 @@ def get_application_config() -> Union[Dict, HttpResponse]:
           "max_users": 0,
           "max_zip_file_size": 10485760,
           "map_attribution": "&copy; <a href=http://www.openstreetmap.org/copyright>OpenStreetMap</a> contributors",
+          "privacy_policy": null,
+          "privacy_policy_date": null,
           "version": "0.7.12",
           "weather_provider": null
         },
@@ -93,6 +97,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
 
       {
         "data": {
+          "about": null,
           "admin_contact": "admin@example.com",
           "gpx_limit_import": 10,
           "is_email_sending_enabled": true,
@@ -101,18 +106,22 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
           "max_users": 10,
           "max_zip_file_size": 10485760,
           "map_attribution": "&copy; <a href=http://www.openstreetmap.org/copyright>OpenStreetMap</a> contributors",
+          "privacy_policy": null,
+          "privacy_policy_date": null,
           "version": "0.7.12",
           "weather_provider": null
         },
         "status": "success"
       }
 
+    :<json string about: instance information
     :<json string admin_contact: email to contact the administrator
     :<json integer gpx_limit_import: max number of files in zip archive
     :<json boolean is_registration_enabled: is registration enabled?
     :<json integer max_single_file_size: max size of a single file
     :<json integer max_users: max users allowed to register on instance
     :<json integer max_zip_file_size: max size of a zip archive
+    :<json string privacy_policy: instance privacy policy
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -151,6 +160,16 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
             config.max_users = config_data.get('max_users')
         if 'admin_contact' in config_data:
             config.admin_contact = admin_contact if admin_contact else None
+        if 'about' in config_data:
+            config.about = (
+                config_data.get('about') if config_data.get('about') else None
+            )
+        if 'privacy_policy' in config_data:
+            privacy_policy = config_data.get('privacy_policy')
+            config.privacy_policy = privacy_policy if privacy_policy else None
+            config.privacy_policy_date = (
+                datetime.utcnow() if privacy_policy else None
+            )
 
         if config.max_zip_file_size < config.max_single_file_size:
             return InvalidPayloadErrorResponse(

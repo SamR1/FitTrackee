@@ -104,3 +104,39 @@ Modify a user account (admin rights, active status, email and password).
      - Reset user password (a new password will be displayed).
    * - ``--update-email EMAIL``
      - Update user email.
+
+
+``ftcli users clean_archives``
+""""""""""""""""""""""""""""""
+.. versionadded:: 0.7.13
+
+Delete export requests and related archives created more than provided number of days.
+
+.. cssclass:: table-bordered
+.. list-table::
+   :widths: 25 50
+   :header-rows: 1
+
+   * - Options
+     - Description
+   * - ``--days``
+     - Number of days.
+
+
+
+``ftcli users export_archives``
+"""""""""""""""""""""""""""""""
+.. versionadded:: 0.7.13
+
+Process incomplete user export requests.
+Can be used if redis is not set (no dramatiq workers running).
+
+.. cssclass:: table-bordered
+.. list-table::
+   :widths: 25 50
+   :header-rows: 1
+
+   * - Options
+     - Description
+   * - ``--max``
+     - Maximum number of export requests to process.

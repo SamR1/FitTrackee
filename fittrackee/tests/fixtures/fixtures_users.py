@@ -13,6 +13,7 @@ from ..utils import random_string
 def user_1() -> User:
     user = User(username='test', email='test@test.com', password='12345678')
     user.is_active = True
+    user.accepted_policy = datetime.datetime.utcnow()
     db.session.add(user)
     db.session.commit()
     return user
@@ -22,6 +23,7 @@ def user_1() -> User:
 def user_1_upper() -> User:
     user = User(username='TEST', email='TEST@TEST.COM', password='12345678')
     user.is_active = True
+    user.accepted_policy = datetime.datetime.utcnow()
     db.session.add(user)
     db.session.commit()
     return user
@@ -34,6 +36,7 @@ def user_1_admin() -> User:
     )
     admin.admin = True
     admin.is_active = True
+    admin.accepted_policy = datetime.datetime.utcnow()
     db.session.add(admin)
     db.session.commit()
     return admin
@@ -50,6 +53,7 @@ def user_1_full() -> User:
     user.timezone = 'America/New_York'
     user.birth_date = datetime.datetime.strptime('01/01/1980', '%d/%m/%Y')
     user.is_active = True
+    user.accepted_policy = datetime.datetime.utcnow()
     db.session.add(user)
     db.session.commit()
     return user
@@ -60,6 +64,7 @@ def user_1_paris() -> User:
     user = User(username='test', email='test@test.com', password='12345678')
     user.timezone = 'Europe/Paris'
     user.is_active = True
+    user.accepted_policy = datetime.datetime.utcnow()
     db.session.add(user)
     db.session.commit()
     return user
@@ -69,6 +74,7 @@ def user_1_paris() -> User:
 def user_2() -> User:
     user = User(username='toto', email='toto@toto.com', password='12345678')
     user.is_active = True
+    user.accepted_policy = datetime.datetime.utcnow()
     db.session.add(user)
     db.session.commit()
     return user
@@ -79,6 +85,7 @@ def user_2_admin() -> User:
     user = User(username='toto', email='toto@toto.com', password='12345678')
     user.is_active = True
     user.admin = True
+    user.accepted_policy = datetime.datetime.utcnow()
     db.session.add(user)
     db.session.commit()
     return user
@@ -89,6 +96,7 @@ def user_3() -> User:
     user = User(username='sam', email='sam@test.com', password='12345678')
     user.is_active = True
     user.weekm = True
+    user.accepted_policy = datetime.datetime.utcnow()
     db.session.add(user)
     db.session.commit()
     return user
@@ -100,6 +108,7 @@ def inactive_user() -> User:
         username='inactive', email='inactive@example.com', password='12345678'
     )
     user.confirmation_token = random_string()
+    user.accepted_policy = datetime.datetime.utcnow()
     db.session.add(user)
     db.session.commit()
     return user
