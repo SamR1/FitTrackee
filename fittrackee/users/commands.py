@@ -2,9 +2,14 @@ import logging
 from typing import Optional
 
 import click
+from humanize import naturalsize
 
 from fittrackee.cli.app import app
 from fittrackee.users.exceptions import UserNotFoundException
+from fittrackee.users.export_data import (
+    clean_user_data_export,
+    generate_user_data_archives,
+)
 from fittrackee.users.utils.admin import UserManagerService
 from fittrackee.users.utils.token import clean_blacklisted_tokens
 
@@ -80,3 +85,39 @@ def clean(
     with app.app_context():
         deleted_rows = clean_blacklisted_tokens(days)
         logger.info(f'Blacklisted tokens deleted: {deleted_rows}.')
+
+
+@users_cli.command('clean_archives')
+@click.option('--days', type=int, required=True, help='Number of days.')
+def clean_export_archives(
+    days: int,
+) -> None:
+    """
+    Clean user export archives created for more than provided number of days.
+    """
+    with app.app_context():
+        counts = clean_user_data_export(days)
+        logger.info(
+            f'Deleted data export requests: {counts["deleted_requests"]}.'
+        )
+        logger.info(f'Deleted archives: {counts["deleted_archives"]}.')
+        logger.info(f'Freed space: {naturalsize(counts["freed_space"])}.')
+
+
+@users_cli.command('export_archives')
+@click.option(
+    '--max',
+    type=int,
+    required=True,
+    help='Maximum number of archives to generate.',
+)
+def export_archives(
+    max: int,
+) -> None:
+    """
+    Export user data in zip archive if incomplete requests exist.
+    To use in case redis is not set.
+    """
+    with app.app_context():
+        count = generate_user_data_archives(max)
+        logger.info(f'Generated archives: {count}.')

@@ -1,6 +1,7 @@
 import json
 import os
 import secrets
+from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple, Union
 from zipfile import ZipFile
 
@@ -135,3 +136,48 @@ def export_user_data(export_request_id: int) -> None:
             db.session.commit()
     except Exception as e:
         appLog.error(f'Error when exporting user data: {str(e)}')
+
+
+def clean_user_data_export(days: int) -> Dict:
+    counts = {"deleted_requests": 0, "deleted_archives": 0, "freed_space": 0}
+    limit = datetime.now() - timedelta(days=days)
+    export_requests = UserDataExport.query.filter(
+        UserDataExport.created_at < limit,
+        UserDataExport.completed == True,  # noqa
+    ).all()
+
+    if not export_requests:
+        return counts
+
+    archive_directory = get_absolute_file_path("exports")
+    for request in export_requests:
+        if request.file_name:
+            archive_path = os.path.join(
+                archive_directory, f"{request.user_id}", request.file_name
+            )
+            if os.path.exists(archive_path):
+                counts["deleted_archives"] += 1
+                counts["freed_space"] += request.file_size
+        # Archive is deleted when row is deleted
+        db.session.delete(request)
+        counts["deleted_requests"] += 1
+
+    db.session.commit()
+    return counts
+
+
+def generate_user_data_archives(max_count: int) -> int:
+    count = 0
+    export_requests = (
+        db.session.query(UserDataExport)
+        .filter(UserDataExport.completed == False)  # noqa
+        .order_by(UserDataExport.created_at)
+        .limit(max_count)
+        .all()
+    )
+
+    for export_request in export_requests:
+        export_user_data(export_request.id)
+        count += 1
+
+    return count
