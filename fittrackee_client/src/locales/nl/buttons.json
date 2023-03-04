@@ -14,5 +14,6 @@
     "REGISTER": "Registreer",
     "RESET": "Reset",
     "SUBMIT": "Opslaan",
-    "YES": "Ja"
+    "YES": "Ja",
+    "REQUEST_DATA_EXPORT": "Data export aanvragen"
 }
