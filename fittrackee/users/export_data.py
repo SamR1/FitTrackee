@@ -76,18 +76,22 @@ class UserDataExporter:
                         zip_object.write(
                             picture_path, self.user.picture.split('/')[-1]
                         )
-                for file in os.listdir(self.workouts_directory):
-                    if os.path.isfile(
-                        os.path.join(self.workouts_directory, file)
-                    ) and file.endswith('.gpx'):
-                        zip_object.write(
-                            os.path.join(self.workouts_directory, file),
-                            f"gpx/{file}",
-                        )
+                if os.path.exists(self.workouts_directory):
+                    for file in os.listdir(self.workouts_directory):
+                        if os.path.isfile(
+                            os.path.join(self.workouts_directory, file)
+                        ) and file.endswith('.gpx'):
+                            zip_object.write(
+                                os.path.join(self.workouts_directory, file),
+                                f"gpx/{file}",
+                            )
 
             file_exists = os.path.exists(zip_path)
+            os.remove(user_data_file_name)
+            os.remove(workout_data_file_name)
             return (zip_path, zip_file) if file_exists else (None, None)
-        except Exception:
+        except Exception as e:
+            appLog.error(f'Error when generating user data archive: {str(e)}')
             return None, None
 
 
@@ -108,23 +112,26 @@ def export_user_data(export_request_id: int) -> None:
     exporter = UserDataExporter(user)
     archive_file_path, archive_file_name = exporter.generate_archive()
 
-    export_request.completed = True
-    if archive_file_name and archive_file_path:
-        export_request.file_name = archive_file_name
-        export_request.file_size = os.path.getsize(archive_file_path)
-        db.session.commit()
+    try:
+        export_request.completed = True
+        if archive_file_name and archive_file_path:
+            export_request.file_name = archive_file_name
+            export_request.file_size = os.path.getsize(archive_file_path)
+            db.session.commit()
 
-        if current_app.config['CAN_SEND_EMAILS']:
-            ui_url = current_app.config['UI_URL']
-            email_data = {
-                'username': user.username,
-                'fittrackee_url': ui_url,
-                'account_url': f'{ui_url}/profile/edit/account',
-            }
-            user_data = {
-                'language': get_language(user.language),
-                'email': user.email,
-            }
-            data_export_email.send(user_data, email_data)
-    else:
-        db.session.commit()
+            if current_app.config['CAN_SEND_EMAILS']:
+                ui_url = current_app.config['UI_URL']
+                email_data = {
+                    'username': user.username,
+                    'fittrackee_url': ui_url,
+                    'account_url': f'{ui_url}/profile/edit/account',
+                }
+                user_data = {
+                    'language': get_language(user.language),
+                    'email': user.email,
+                }
+                data_export_email.send(user_data, email_data)
+        else:
+            db.session.commit()
+    except Exception as e:
+        appLog.error(f'Error when exporting user data: {str(e)}')
