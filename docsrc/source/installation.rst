@@ -26,7 +26,7 @@ Prerequisites
     - Python 3.7+
     - PostgreSQL 11+
 - optional
-    - Redis for task queue (if email sending is enabled) and API rate limits
+    - Redis for task queue (if email sending is enabled and for data export requests) and API rate limits
     - SMTP provider (if email sending is enabled)
     - API key from a `weather data provider <installation.html#weather-data>`__
     - `Poetry <https://poetry.eustace.io>`__ (for installation from sources only)
@@ -38,6 +38,9 @@ Prerequisites
       on Debian and Arch).
     | On other OS, some issues can be encountered and adaptations may be
       necessary.
+
+.. warning::
+    | If registration is enabled, it is recommended to set Redis and a SMTP provider for email sending and data export requests.
 
 
 Environment variables
@@ -273,11 +276,13 @@ Emails sent by FitTrackee are:
 - password reset request
 - email change (to old and new email adresses)
 - password change
+- when a data export archive is ready to download (*new in 0.7.13*)
 
 .. versionchanged:: 0.6.5
 
-| For single-user instance, it is possible to disable email sending with an empty ``EMAIL_URL`` (in this case, no need to start dramatiq workers).
-| A `CLI <cli.html#ftcli-users-update>`__ is available to activate account and modify email and password.
+For single-user instance, it is possible to disable email sending with an empty ``EMAIL_URL`` (in this case, no need to start dramatiq workers).
+
+A `CLI <cli.html#ftcli-users-update>`__ is available to activate account, modify email and password and handle data export requests.
 
 
 Map tile server

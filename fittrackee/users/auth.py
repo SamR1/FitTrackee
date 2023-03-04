@@ -1766,7 +1766,9 @@ def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
 def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Get a data export info for authenticated user if a request exists.
+
     It returns:
+
     - export creation date
     - export status ("in_progress", "successful" and "errored")
     - file name and size (in bytes) when export is successful
@@ -1780,12 +1782,12 @@ def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
 
     **Example response**:
 
+    - if a request exists
+
     .. sourcecode:: http
 
       HTTP/1.1 200 OK
       Content-Type: application/json
-
-    - if a request exists:
 
       {
         "status": "success",
@@ -1797,7 +1799,12 @@ def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
         }
       }
 
-    - if no request:
+    - if no request
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
 
       {
         "status": "success",

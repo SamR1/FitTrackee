@@ -111,7 +111,7 @@ def clean_export_archives(
     '--max',
     type=int,
     required=True,
-    help='Maximum number of archives to generate.',
+    help='Maximum number of export requests to process.',
 )
 def export_archives(
     max: int,
