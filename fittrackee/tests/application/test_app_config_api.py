@@ -299,7 +299,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_description,input_email', [('input string', ''), ('None', None)]
     )
-    def test_it_empties_contact_if_provided_admin_contact_is_an_empty(
+    def test_it_empties_administator_contact(
         self,
         app: Flask,
         user_1_admin: User,
