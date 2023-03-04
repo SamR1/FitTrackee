@@ -3,7 +3,7 @@
     "ACCOUNT_CONFIRMATION_SENT": "Vérifiez vos courriels. Un nouveau courriel de confirmation a été envoyé à l'adresse électronique fournie.",
     "ADMIN": "Admin",
     "ALREADY_HAVE_ACCOUNT": "Vous avez déjà un compte ?",
-    "CONFIRM_ACCOUNT_DELETION": "Êtes-vous sûr·e de vouloir supprimer votre compte ? Toutes les données seront définitivement effacés",
+    "CONFIRM_ACCOUNT_DELETION": "Êtes-vous sûr·e de vouloir supprimer votre compte ? Toutes les données seront définitivement effacées.",
     "CURRENT_PASSWORD": "Mot de passe actuel",
     "EMAIL": "Courriel",
     "EMAIL_INFO": "Saisissez une adresse électronique valide.",
@@ -15,7 +15,8 @@
         "STATUS": {
             "errored": "en erreur (veuillez demander une nouvelle archive)",
             "in_progress": "en cours..."
-        }
+        },
+        "GENERATING_LINK": "lien en cours de génération..."
     },
     "FILTER_ON_USERNAME": "Filtrer sur le nom d'utilisateur",
     "HIDE_PASSWORD": "masquer le mot de passe",

@@ -14,7 +14,7 @@ from fittrackee.users.utils.admin import UserManagerService
 from fittrackee.users.utils.token import clean_blacklisted_tokens
 
 handler = logging.StreamHandler()
-logger = logging.getLogger('fittrackee_clean_blacklisted_tokens')
+logger = logging.getLogger('fittrackee_users_cli')
 logger.setLevel(logging.INFO)
 logger.addHandler(handler)
 
@@ -100,7 +100,9 @@ def clean_export_archives(
         logger.info(
             f'Deleted data export requests: {counts["deleted_requests"]}.'
         )
-        logger.info(f'Deleted archives: {counts["deleted_archives"]}.')
+        logger.info(
+            f'Deleted data export archives: {counts["deleted_archives"]}.'
+        )
         logger.info(f'Freed space: {naturalsize(counts["freed_space"])}.')
 
 
@@ -120,4 +122,4 @@ def export_archives(
     """
     with app.app_context():
         count = generate_user_data_archives(max)
-        logger.info(f'Generated archives: {count}.')
+        logger.info(f'Generated data export archives: {count}.')

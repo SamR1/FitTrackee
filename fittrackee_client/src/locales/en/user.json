@@ -3,7 +3,7 @@
     "ACCOUNT_CONFIRMATION_SENT": "Check your email. A new confirmation email has been sent to the address provided.",
     "ADMIN": "Admin",
     "ALREADY_HAVE_ACCOUNT": "Already have an account?",
-    "CONFIRM_ACCOUNT_DELETION": "Are you sure you want to delete your account? All data will be deleted, this cannot be undone",
+    "CONFIRM_ACCOUNT_DELETION": "Are you sure you want to delete your account? All data will be deleted, this cannot be undone.",
     "CURRENT_PASSWORD": "Current password",
     "EMAIL": "Email",
     "EMAIL_INFO": "Enter a valid email address.",
@@ -15,7 +15,8 @@
         "STATUS": {
             "errored": "errored (please request another export)",
             "in_progress": "in progres..."
-        }
+        },
+        "GENERATING_LINK": "generating link..."
     },
     "FILTER_ON_USERNAME": "Filter on username",
     "HIDE_PASSWORD": "hide password",

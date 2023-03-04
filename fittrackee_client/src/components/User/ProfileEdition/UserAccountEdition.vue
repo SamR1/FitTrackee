@@ -87,6 +87,10 @@
           <span v-else>
             {{ $t(`user.EXPORT_REQUEST.STATUS.${exportRequest.status}`)}}
           </span>
+          <span v-if="generatingLink">
+            {{ $t(`user.EXPORT_REQUEST.GENERATING_LINK`)}}
+            <i class="fa fa-spinner fa-pulse" aria-hidden="true" />
+          </span>
         </div>
       </div>
     </div>
@@ -149,6 +153,7 @@
   const exportRequestDate: ComputedRef<string | null> = computed(
     () => getExportRequestDate()
   )
+  const generatingLink: Ref<boolean> = ref(false)
 
   onMounted(() => {
     if (props.user) {
@@ -205,6 +210,7 @@
     store.dispatch(AUTH_USER_STORE.ACTIONS.REQUEST_DATA_EXPORT)
   }
   async function downloadArchive(filename: string) {
+    generatingLink.value = true
     await authApi
       .get(`/auth/profile/export/${filename}`, {
         responseType: 'blob',
@@ -219,6 +225,7 @@
         document.body.appendChild(archive_link)
         archive_link.click()
       })
+      .finally(() => generatingLink.value = false)
   }
 
   onUnmounted(() => {

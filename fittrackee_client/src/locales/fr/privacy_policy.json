@@ -6,7 +6,7 @@
         },
         "CHANGES_TO_OUR_PRIVACY_POLICY": {
             "CONTENT": "Si nous décidons de changer notre politique de confidentialité, nous afficherons ces modifications sur cette page.\n\nCe document est sous licence [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/). Adaptée de la politique de confidentialité de [Discourse](https://github.com/discourse/discourse).",
-            "TITLE": "Changes to our Privacy Policy"
+            "TITLE": "Modifications de notre politique de confidentialité"
         },
         "DATA_COLLECTED": {
             "CONTENT": "Les informations suivantes sont collectées :\n- Informations liées au compte (nom d'utilisateur, courriel et mot de passe). Vous pouvez également saisir les informations du profil tel que le prénom, le nom de famille, la date de naissance, la localisation, une biographie et envoyer une image de profil.\n- Fichiers [GPX](https://fr.wikipedia.org/wiki/GPX_(format_de_fichier). Ces fichiers contiennent les données liées à vos activités (coordonnées géographiques, date, distance, durée, vitesses maximale et moyenne, altitude, rythme cardiaque…). Si vous ne souhaitez pas exposer certaines données, nettoyer les fichiers avant de les envoyer ou ajouter des activités sans fichier GPX.\n- Données d'activités (sport, titre, date, durée, distance, dénivelé positif et négatif, notes).\n- Données techniques (nom du navigateur et du système d'exploitation).",
