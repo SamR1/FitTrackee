@@ -3,7 +3,7 @@
     "ACCOUNT_CONFIRMATION_SENT": "Controleer uw email. Een nieuwe bevestigingsmail werd verzonden naar het opgegeven adres.",
     "ADMIN": "Beheer",
     "ALREADY_HAVE_ACCOUNT": "Al een account aangemaakt?",
-    "CONFIRM_ACCOUNT_DELETION": "Weet u zeker dat u uw account wilt verwijderen? Alle data wordt verwijderd, dit kan niet ongedaan worden",
+    "CONFIRM_ACCOUNT_DELETION": "Weet u zeker dat u uw account wilt verwijderen? Alle data wordt verwijderd, dit kan niet ongedaan worden.",
     "CURRENT_PASSWORD": "Huidig wachtwoord",
     "EMAIL": "Email",
     "EMAIL_INFO": "Geef een geldig email adres op.",
@@ -90,14 +90,16 @@
             "PICTURE": "afbeelding",
             "PREFERENCES": "voorkeuren",
             "PROFILE": "profiel",
-            "SPORTS": "sporten"
+            "SPORTS": "sporten",
+            "PRIVACY-POLICY": "Privacybeleid"
         },
         "TIMEZONE": "Tijdzone",
         "UNITS": {
             "IMPERIAL": "Imperialistisch systeem (ft, mi, mph, °F)",
             "LABEL": "Eenheid voor afstand",
             "METRIC": "Metrisch systeem (m, km, m/s, °C)"
-        }
+        },
+        "PRIVACY-POLICY_EDITION": "Privacybeleid"
     },
     "REGISTER": "Registreren",
     "REGISTER_DISABLED": "Sorry, registreren is uitgeschakeld.",
@@ -107,5 +109,20 @@
     "THIS_USER_ACCOUNT_IS_INACTIVE": "Deze account is niet actief.",
     "USERNAME": "Gebruikersnaam",
     "USERNAME_INFO": "3 tot 30 karakters vereist, enkel alfanumerieke karakters en het underscore karakter \"_\" zijn toegestaan.",
-    "USER_PICTURE": "gebruikersafbeelding"
+    "USER_PICTURE": "gebruikersafbeelding",
+    "EXPORT_REQUEST": {
+        "DOWNLOAD_ARCHIVE": "Archief downloaden",
+        "STATUS": {
+            "errored": "fout (gelieve een nieuw archief aan te vragen)",
+            "in_progress": "Bezig met verwerken..."
+        },
+        "GENERATING_LINK": "link aanmaken...",
+        "DATA_EXPORT": "Data exporteren",
+        "ONLY_ONE_EXPORT_PER_DAY": "Je kan 1 keer per 24h een archief aanvragen"
+    },
+    "I_WANT_TO_DELETE_MY_ACCOUNT": "Ik wil mijn account verwijderen",
+    "LAST_PRIVACY_POLICY_TO_VALIDATE": "Het privacybeleid werd aangepast, gelieve te {0} voor verdergaan.",
+    "READ_AND_ACCEPT_PRIVACY_POLICY": "Ik heb het {0} gelezen en goedgekeurd.",
+    "REVIEW": "beoordeling",
+    "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "U hebt het {0} aanvaard."
 }
