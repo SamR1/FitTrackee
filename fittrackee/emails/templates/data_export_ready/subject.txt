@@ -1,0 +1,1 @@
+FitTrackee - {{ _('Your archive is ready to be downloaded') }}

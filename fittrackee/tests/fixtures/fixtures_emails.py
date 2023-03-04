@@ -52,3 +52,9 @@ def user_email_updated_to_new_address_mock() -> Iterator[MagicMock]:
 def account_confirmation_email_mock() -> Iterator[MagicMock]:
     with patch('fittrackee.users.auth.account_confirmation_email') as mock:
         yield mock
+
+
+@pytest.fixture()
+def data_export_email_mock() -> Iterator[MagicMock]:
+    with patch('fittrackee.users.export_data.data_export_email') as mock:
+        yield mock

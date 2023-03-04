@@ -1,0 +1,5 @@
+{% extends "layout.txt" %}{% block content %}{{ _('You have requested an export of your account on FitTrackee.') }}
+{{ _('The archive is now ready to be downloaded from your account.') }}
+
+{{ _('Download your archive') }}: {{ account_url }}
+{{ _('If you did not request the export, please change your password immediately or contact your administrator if your account is locked.') }}{% endblock %}

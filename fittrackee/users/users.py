@@ -24,10 +24,10 @@ from fittrackee.responses import (
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
-from .auth import get_language
 from .exceptions import InvalidEmailException, UserNotFoundException
 from .models import User, UserDataExport, UserSportPreference
 from .utils.admin import UserManagerService
+from .utils.language import get_language
 
 users_blueprint = Blueprint('users', __name__)
 

@@ -2,7 +2,7 @@ import datetime
 import os
 import re
 import secrets
-from typing import Dict, Optional, Tuple, Union
+from typing import Dict, Tuple, Union
 
 import jwt
 from flask import (
@@ -43,19 +43,13 @@ from fittrackee.workouts.models import Sport
 from .models import BlacklistedToken, User, UserDataExport, UserSportPreference
 from .tasks import export_data
 from .utils.controls import check_password, is_valid_email, register_controls
+from .utils.language import get_language
 from .utils.token import decode_user_token
 
 auth_blueprint = Blueprint('auth', __name__)
 
 HEX_COLOR_REGEX = regex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
 NOT_FOUND_MESSAGE = 'the requested URL was not found on the server'
-
-
-def get_language(language: Optional[str]) -> str:
-    # Note: some users may not have language preferences set
-    if not language or language not in current_app.config['LANGUAGES']:
-        language = 'en'
-    return language
 
 
 def send_account_confirmation_email(user: User) -> None:

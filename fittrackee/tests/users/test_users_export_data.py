@@ -375,6 +375,7 @@ class TestExportUserData:
         self,
         generate_archive_mock: Mock,
         logger_mock: Mock,
+        data_export_email_mock: Mock,
         app: Flask,
         user_1: User,
     ) -> None:
@@ -414,3 +415,53 @@ class TestExportUserData:
         assert export_request.updated_at is not None
         assert export_request.file_name is None
         assert export_request.file_size is None
+
+    def test_it_does_not_call_data_export_email_when_export_failed(
+        self,
+        generate_archive_mock: Mock,
+        logger_mock: Mock,
+        data_export_email_mock: Mock,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        export_request = UserDataExport(user_id=user_1.id)
+        db.session.add(export_request)
+        db.session.commit()
+        generate_archive_mock.return_value = (None, None)
+
+        export_user_data(export_request_id=export_request.id)
+
+        data_export_email_mock.send.assert_not_called()
+
+    def test_it_calls_data_export_email_when_export_is_successful(
+        self,
+        generate_archive_mock: Mock,
+        logger_mock: Mock,
+        data_export_email_mock: Mock,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        export_request = UserDataExport(user_id=user_1.id)
+        db.session.add(export_request)
+        db.session.commit()
+        archive_name = random_string()
+        generate_archive_mock.return_value = (random_string(), archive_name)
+        archive_size = random_int()
+
+        with patch(
+            'fittrackee.users.export_data.os.path.getsize',
+            return_value=archive_size,
+        ):
+            export_user_data(export_request_id=export_request.id)
+
+        data_export_email_mock.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': user_1.email,
+            },
+            {
+                'username': user_1.username,
+                'account_url': 'http://0.0.0.0:5000/profile/edit/account',
+                'fittrackee_url': 'http://0.0.0.0:5000',
+            },
+        )

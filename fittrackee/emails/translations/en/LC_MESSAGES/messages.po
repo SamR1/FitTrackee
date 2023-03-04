@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-07-03 07:58+0200\n"
+"POT-Creation-Date: 2023-03-04 10:33+0100\n"
 "PO-Revision-Date: 2022-07-02 18:25+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -83,6 +83,7 @@ msgstr ""
 "email."
 
 #: fittrackee/emails/templates/account_confirmation/body.html:22
+#: fittrackee/emails/templates/data_export_ready/body.html:22
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:22
 #: fittrackee/emails/templates/password_reset_request/body.html:24
 msgid ""
@@ -95,6 +96,39 @@ msgstr ""
 #: fittrackee/emails/templates/account_confirmation/body.txt:2
 msgid "Use the link below to confirm your address email."
 msgstr "Use the link below to confirm your address email."
+
+#: fittrackee/emails/templates/data_export_ready/body.html:2
+#: fittrackee/emails/templates/data_export_ready/subject.txt:1
+msgid "Your archive is ready to be downloaded"
+msgstr "Your archive is ready to be downloaded"
+
+#: fittrackee/emails/templates/data_export_ready/body.html:3
+msgid "A download link is available in your account."
+msgstr "A download link is available in your account."
+
+#: fittrackee/emails/templates/data_export_ready/body.html:4
+#: fittrackee/emails/templates/data_export_ready/body.txt:1
+msgid "You have requested an export of your account on FitTrackee."
+msgstr "You have requested an export of your account on FitTrackee."
+
+#: fittrackee/emails/templates/data_export_ready/body.html:4
+#: fittrackee/emails/templates/data_export_ready/body.txt:2
+msgid "The archive is now ready to be downloaded from your account."
+msgstr "The archive is now ready to be downloaded from your account."
+
+#: fittrackee/emails/templates/data_export_ready/body.html:11
+#: fittrackee/emails/templates/data_export_ready/body.txt:4
+msgid "Download your archive"
+msgstr "Download your archive"
+
+#: fittrackee/emails/templates/data_export_ready/body.html:18
+#: fittrackee/emails/templates/data_export_ready/body.txt:5
+msgid ""
+"If you did not request the export, please change your password "
+"immediately or contact your administrator if your account is locked."
+msgstr ""
+"If you did not request the export, please change your password "
+"immediately or contact your administrator if your account is locked."
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:2
 #: fittrackee/emails/templates/email_update_to_current_email/subject.txt:1

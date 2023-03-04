@@ -4,10 +4,14 @@ import secrets
 from typing import Dict, List, Optional, Tuple, Union
 from zipfile import ZipFile
 
+from flask import current_app
+
 from fittrackee import appLog, db
+from fittrackee.emails.tasks import data_export_email
 from fittrackee.files import get_absolute_file_path
 
 from .models import User, UserDataExport
+from .utils.language import get_language
 
 
 class UserDataExporter:
@@ -108,4 +112,19 @@ def export_user_data(export_request_id: int) -> None:
     if archive_file_name and archive_file_path:
         export_request.file_name = archive_file_name
         export_request.file_size = os.path.getsize(archive_file_path)
-    db.session.commit()
+        db.session.commit()
+
+        if current_app.config['CAN_SEND_EMAILS']:
+            ui_url = current_app.config['UI_URL']
+            email_data = {
+                'username': user.username,
+                'fittrackee_url': ui_url,
+                'account_url': f'{ui_url}/profile/edit/account',
+            }
+            user_data = {
+                'language': get_language(user.language),
+                'email': user.email,
+            }
+            data_export_email.send(user_data, email_data)
+    else:
+        db.session.commit()
