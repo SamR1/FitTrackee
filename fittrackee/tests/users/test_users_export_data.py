@@ -190,6 +190,7 @@ class TestUserDataExporterArchive(CallArgsMixin):
         secrets_mock: Mock,
         app: Flask,
         user_1: User,
+        user_2: User,
     ) -> None:
         exporter = UserDataExporter(user_1)
 
@@ -212,6 +213,7 @@ class TestUserDataExporterArchive(CallArgsMixin):
         secrets_mock: Mock,
         app: Flask,
         user_1: User,
+        user_2: User,
     ) -> None:
         exporter = UserDataExporter(user_1)
         token_urlsafe = random_string()
@@ -237,6 +239,7 @@ class TestUserDataExporterArchive(CallArgsMixin):
         secrets_mock: Mock,
         app: Flask,
         user_1: User,
+        user_2: User,
     ) -> None:
         exporter = UserDataExporter(user_1)
         token_urlsafe = random_string()
@@ -265,6 +268,7 @@ class TestUserDataExporterArchive(CallArgsMixin):
         secrets_mock: Mock,
         app: Flask,
         user_1: User,
+        user_2: User,
         sport_1_cycling: Sport,
         gpx_file: str,
     ) -> None:
@@ -290,6 +294,38 @@ class TestUserDataExporterArchive(CallArgsMixin):
     @patch.object(secrets, 'token_urlsafe')
     @patch.object(UserDataExporter, 'export_data')
     @patch('fittrackee.users.export_data.ZipFile')
+    def test_it_does_not_call_zipfile_for_another_user_gpx_file(
+        self,
+        zipfile_mock: Mock,
+        export_data: Mock,
+        secrets_mock: Mock,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        _, workout_short_id = post_a_workout(app, gpx_file)
+        workout = Workout.query.first()
+        expected_path = os.path.join(
+            app.config['UPLOAD_FOLDER'],
+            workout.gpx,
+        )
+        exporter = UserDataExporter(user_2)
+
+        exporter.generate_archive()
+
+        # fmt: off
+        assert (
+            call(expected_path, f"gpx/{workout.gpx.split('/')[-1]}")
+            not in zipfile_mock.return_value.__enter__.
+            return_value.write.call_args_list
+        )
+        # fmt: on
+
+    @patch.object(secrets, 'token_urlsafe')
+    @patch.object(UserDataExporter, 'export_data')
+    @patch('fittrackee.users.export_data.ZipFile')
     def test_it_calls_zipfile_for_profile_image_when_exists(
         self,
         zipfile_mock: Mock,
@@ -297,6 +333,7 @@ class TestUserDataExporterArchive(CallArgsMixin):
         secrets_mock: Mock,
         app: Flask,
         user_1: User,
+        user_2: User,
         sport_1_cycling: Sport,
         gpx_file: str,
     ) -> None:
@@ -319,6 +356,40 @@ class TestUserDataExporterArchive(CallArgsMixin):
                     call(expected_path, user_1.picture.split('/')[-1]),
                 ]
             )
+        # fmt: on
+
+    @patch.object(secrets, 'token_urlsafe')
+    @patch.object(UserDataExporter, 'export_data')
+    @patch('fittrackee.users.export_data.ZipFile')
+    def test_it_does_not_call_zipfile_for_another_user_profile_image(
+        self,
+        zipfile_mock: Mock,
+        export_data: Mock,
+        secrets_mock: Mock,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        user_1.picture = random_string()
+        expected_path = os.path.join(
+            app.config['UPLOAD_FOLDER'],
+            user_1.picture,
+        )
+        exporter = UserDataExporter(user_2)
+
+        with patch(
+            'fittrackee.users.export_data.os.path.isfile', return_value=True
+        ):
+            exporter.generate_archive()
+
+        # fmt: off
+        assert (
+            call(expected_path, user_1.picture.split('/')[-1])
+            not in zipfile_mock.return_value.__enter__.
+            return_value.write.call_args_list
+        )
         # fmt: on
 
     @patch.object(secrets, 'token_urlsafe')
