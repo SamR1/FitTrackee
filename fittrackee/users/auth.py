@@ -1688,7 +1688,7 @@ def accept_privacy_policy(auth_user: User) -> Union[Dict, HttpResponse]:
         return handle_error_and_return_response(e, db=db)
 
 
-@auth_blueprint.route('/auth/profile/export/request', methods=['POST'])
+@auth_blueprint.route('/auth/account/export/request', methods=['POST'])
 @require_auth()
 def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
     """
@@ -1698,7 +1698,7 @@ def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
 
     .. sourcecode:: http
 
-      POST /auth/profile/export/request HTTP/1.1
+      POST /auth/account/export/request HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -1761,7 +1761,7 @@ def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
         return handle_error_and_return_response(e, db=db)
 
 
-@auth_blueprint.route('/auth/profile/export', methods=['GET'])
+@auth_blueprint.route('/auth/account/export', methods=['GET'])
 @require_auth()
 def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
     """
@@ -1777,7 +1777,7 @@ def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
 
     .. sourcecode:: http
 
-      GET /auth/profile/export HTTP/1.1
+      GET /auth/account/export HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -1829,7 +1829,7 @@ def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route(
-    '/auth/profile/export/<string:file_name>', methods=['GET']
+    '/auth/account/export/<string:file_name>', methods=['GET']
 )
 @require_auth()
 def download_data_export(
@@ -1842,7 +1842,7 @@ def download_data_export(
 
     .. sourcecode:: http
 
-      GET /auth/profile/export/download/archive_rgjsR3fHr5Yp.zip HTTP/1.1
+      GET /auth/account/export/download/archive_rgjsR3fHr5Yp.zip HTTP/1.1
       Content-Type: application/json
 
     **Example response**:

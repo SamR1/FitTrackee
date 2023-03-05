@@ -27,6 +27,13 @@ export const mutations: MutationTree<IRootState> & TRootMutations = {
   ) {
     state.appLoading = loading
   },
+  [ROOT_STORE.MUTATIONS.UPDATE_APPLICATION_PRIVACY_POLICY](
+    state: IRootState,
+    appConfig: TAppConfig
+  ) {
+    state.application.config.privacy_policy = appConfig.privacy_policy
+    state.application.config.privacy_policy_date = appConfig.privacy_policy_date
+  },
   [ROOT_STORE.MUTATIONS.UPDATE_APPLICATION_STATS](
     state: IRootState,
     statistics: IAppStatistics
