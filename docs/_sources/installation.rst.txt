@@ -712,8 +712,12 @@ Examples (to update depending on your application configuration and given distri
     [Install]
     WantedBy=multi-user.target
 
+
 .. note::
-    More information on `Gunicorn documentation <https://docs.gunicorn.org/en/stable/deploy.html>`__
+    To handle large files, a higher value for `timeout <https://docs.gunicorn.org/en/stable/settings.html#timeout>`__ can be set.
+
+.. note::
+    More information on deployment with Gunicorn in its `documentation <https://docs.gunicorn.org/en/stable/deploy.html>`__.
 
 - for task queue workers: ``fittrackee_workers.service``
 

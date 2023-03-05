@@ -1030,7 +1030,11 @@ One way is to use a <strong>systemd</strong> services and <strong>Nginx</strong>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>More information on <a class="reference external" href="https://docs.gunicorn.org/en/stable/deploy.html">Gunicorn documentation</a></p>
+<p>To handle large files, a higher value for <a class="reference external" href="https://docs.gunicorn.org/en/stable/settings.html#timeout">timeout</a> can be set.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>More information on deployment with Gunicorn in its <a class="reference external" href="https://docs.gunicorn.org/en/stable/deploy.html">documentation</a>.</p>
 </div>
 <ul class="simple">
 <li><p>for task queue workers: <code class="docutils literal notranslate"><span class="pre">fittrackee_workers.service</span></code></p></li>
