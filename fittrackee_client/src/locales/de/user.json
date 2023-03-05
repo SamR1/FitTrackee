@@ -3,15 +3,27 @@
     "ACCOUNT_CONFIRMATION_SENT": "Prüfe deine E-Mail. Eine neue Bestätigungs-E-Mail wurde an die angegebene Adresse geschickt.",
     "ADMIN": "Admin",
     "ALREADY_HAVE_ACCOUNT": "Hast du bereits ein Konto?",
-    "CONFIRM_ACCOUNT_DELETION": "Möchtest du dein Konto wirklich löschen? Alle Daten werden gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden",
+    "CONFIRM_ACCOUNT_DELETION": "Möchtest du dein Konto wirklich löschen? Alle Daten werden gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.",
     "CURRENT_PASSWORD": "Aktuelles Passwort",
     "EMAIL": "E-Mail",
     "EMAIL_INFO": "Gebe eine gültige E-Mail-Adresse an.",
     "ENTER_PASSWORD": "Gebe ein Passwort ein",
+    "EXPORT_REQUEST": {
+        "DATA_EXPORT": "Datenexport",
+        "DOWNLOAD_ARCHIVE": "Archiv herunterladen",
+        "GENERATING_LINK": "generiere Link...",
+        "ONLY_ONE_EXPORT_PER_DAY": "Du kannst alle 24 Stunden ein Archiv anfragen",
+        "STATUS": {
+            "errored": "fehlgeschlagen (bitte frage einen anderen Export an)",
+            "in_progress": "in Arbeit..."
+        }
+    },
     "FILTER_ON_USERNAME": "Nach Benutzernamen filtern",
     "HIDE_PASSWORD": "Passwort verbergen",
     "INVALID_TOKEN": "Ungültiges Token, bitte fordere ein neues Passworts an.",
+    "I_WANT_TO_DELETE_MY_ACCOUNT": "Ich möchte meinen Account löschen",
     "LANGUAGE": "Sprache",
+    "LAST_PRIVACY_POLICY_TO_VALIDATE": "Die Datenschutzrichtlinie wurde aktualisiert, bitte {0} sie vor dem Fortfahren.",
     "LOGIN": "Anmeldung",
     "LOGOUT": "Abmelden",
     "LOG_IN": "Anmelden",
@@ -68,6 +80,7 @@
         "PICTURE_REMOVE": "Bild entfernen",
         "PICTURE_UPDATE": "Bild aktualisieren",
         "PREFERENCES_EDITION": "Einstellungsausgabe",
+        "PRIVACY-POLICY_EDITION": "Datenschutzrichtlinie",
         "PROFILE_EDITION": "Profil-Ausgabe",
         "REGISTRATION_DATE": "Registrierungsdatum",
         "SPORT": {
@@ -89,6 +102,7 @@
             "APPS": "Anwendungen",
             "PICTURE": "Bild",
             "PREFERENCES": "Einstellungen",
+            "PRIVACY-POLICY": "Datenschutzrichtlinie",
             "PROFILE": "Profil",
             "SPORTS": "Sportarten"
         },
@@ -99,13 +113,16 @@
             "METRIC": "Metrisches System (m, km, m/s, °C)"
         }
     },
+    "READ_AND_ACCEPT_PRIVACY_POLICY": "Ich habe die {0} gelesen und stimme ihr zu.",
     "REGISTER": "Registrieren",
     "REGISTER_DISABLED": "Entschuldigung, die Registrierung ist deaktiviert.",
     "RESENT_ACCOUNT_CONFIRMATION": "E-Mail zur Kontobestätigung erneut senden",
     "RESET_PASSWORD": "Passwort zurücksetzen",
+    "REVIEW": "überprüfen",
     "SHOW_PASSWORD": "Passwort anzeigen",
     "THIS_USER_ACCOUNT_IS_INACTIVE": "Dieser Account ist inaktiv.",
     "USERNAME": "Nutzername",
     "USERNAME_INFO": "3 bis 30 Zeichen sind erforderlich, nur alphanumerische Zeichen und der Unterstrich _ sind erlaubt.",
-    "USER_PICTURE": "Benutzerbild"
+    "USER_PICTURE": "Benutzerbild",
+    "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Du hast die {0} akzeptiert."
 }

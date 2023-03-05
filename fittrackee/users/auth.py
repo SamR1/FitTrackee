@@ -2,10 +2,16 @@ import datetime
 import os
 import re
 import secrets
-from typing import Dict, Optional, Tuple, Union
+from typing import Dict, Tuple, Union
 
 import jwt
-from flask import Blueprint, current_app, request
+from flask import (
+    Blueprint,
+    Response,
+    current_app,
+    request,
+    send_from_directory,
+)
 from sqlalchemy import exc, func
 from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
@@ -21,6 +27,7 @@ from fittrackee.emails.tasks import (
 from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
+    DataNotFoundErrorResponse,
     ForbiddenErrorResponse,
     HttpResponse,
     InvalidPayloadErrorResponse,
@@ -33,21 +40,16 @@ from fittrackee.responses import (
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport
 
-from .models import BlacklistedToken, User, UserSportPreference
+from .models import BlacklistedToken, User, UserDataExport, UserSportPreference
+from .tasks import export_data
 from .utils.controls import check_password, is_valid_email, register_controls
+from .utils.language import get_language
 from .utils.token import decode_user_token
 
 auth_blueprint = Blueprint('auth', __name__)
 
 HEX_COLOR_REGEX = regex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
 NOT_FOUND_MESSAGE = 'the requested URL was not found on the server'
-
-
-def get_language(language: Optional[str]) -> str:
-    # Note: some users may not have language preferences set
-    if not language or language not in current_app.config['LANGUAGES']:
-        language = 'en'
-    return language
 
 
 def send_account_confirmation_email(user: User) -> None:
@@ -115,6 +117,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     :<json string password: password (8 characters required)
     :<json string lang: user language preferences (if not provided or invalid,
                         fallback to 'en' (english))
+    :<json boolean accepted_policy: true if user accepted privacy policy
 
     :statuscode 200: success
     :statuscode 400:
@@ -141,8 +144,16 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
         or post_data.get('username') is None
         or post_data.get('email') is None
         or post_data.get('password') is None
+        or post_data.get('accepted_policy') is None
     ):
         return InvalidPayloadErrorResponse()
+
+    accepted_policy = post_data.get('accepted_policy') is True
+    if not accepted_policy:
+        return InvalidPayloadErrorResponse(
+            'sorry, you must agree privacy policy to register'
+        )
+
     username = post_data.get('username')
     email = post_data.get('email')
     password = post_data.get('password')
@@ -176,6 +187,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
             new_user.date_format = 'MM/dd/yyyy'
             new_user.confirmation_token = secrets.token_urlsafe(30)
             new_user.language = language
+            new_user.accepted_policy_date = datetime.datetime.utcnow()
             db.session.add(new_user)
             db.session.commit()
 
@@ -288,6 +300,7 @@ def get_authenticated_user_profile(
 
       {
         "data": {
+          "accepted_privacy_policy": "Sat, 25 Fev 2023 13:52:58 GMT",
           "admin": false,
           "bio": null,
           "birth_date": null,
@@ -871,6 +884,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     :<json boolean imperial_units: display distance in imperial units
     :<json string language: language preferences
     :<json string timezone: user time zone
+    :<json boolean weekm: does week start on Monday?
     :<json boolean weekm: does week start on Monday?
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
@@ -1620,3 +1634,250 @@ def logout_user(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         'status': 'success',
         'message': 'successfully logged out',
     }, 200
+
+
+@auth_blueprint.route('/auth/account/privacy-policy', methods=['POST'])
+@require_auth()
+def accept_privacy_policy(auth_user: User) -> Union[Dict, HttpResponse]:
+    """
+    The authenticated user accepts the privacy policy.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /auth/account/privacy-policy HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "status": "success"
+      }
+
+    :<json boolean accepted_policy: true if user accepted privacy policy
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 400:
+        - invalid payload
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 500: internal server error
+    """
+    post_data = request.get_json()
+    if not post_data or not post_data.get('accepted_policy'):
+        return InvalidPayloadErrorResponse()
+
+    try:
+        if post_data.get('accepted_policy') is True:
+            auth_user.accepted_policy_date = datetime.datetime.utcnow()
+            db.session.commit()
+            return {"status": "success"}
+        else:
+            return InvalidPayloadErrorResponse()
+    except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(e, db=db)
+
+
+@auth_blueprint.route('/auth/account/export/request', methods=['POST'])
+@require_auth()
+def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
+    """
+    Request a data export for authenticated user.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /auth/account/export/request HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "status": "success",
+        "request": {
+            "created_at": "Wed, 01 Mar 2023 12:31:17 GMT",
+            "status": "in_progress",
+            "file_name": null,
+            "file_size": null
+        }
+      }
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 400:
+        - ongoing request exists
+        - completed request already exists
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 500: internal server error
+    """
+    existing_export_request = UserDataExport.query.filter_by(
+        user_id=auth_user.id
+    ).first()
+    if existing_export_request:
+        if not existing_export_request.completed:
+            return InvalidPayloadErrorResponse("ongoing request exists")
+
+        export_expiration = current_app.config["DATA_EXPORT_EXPIRATION"]
+        if existing_export_request.created_at > (
+            datetime.datetime.utcnow()
+            - datetime.timedelta(hours=export_expiration)
+        ):
+            return InvalidPayloadErrorResponse(
+                "completed request already exists"
+            )
+
+    try:
+        if existing_export_request:
+            db.session.delete(existing_export_request)
+            db.session.flush()
+        export_request = UserDataExport(user_id=auth_user.id)
+        db.session.add(export_request)
+        db.session.commit()
+
+        export_data.send(export_request_id=export_request.id)
+
+        return {"status": "success", "request": export_request.serialize()}
+    except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(e, db=db)
+
+
+@auth_blueprint.route('/auth/account/export', methods=['GET'])
+@require_auth()
+def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
+    """
+    Get a data export info for authenticated user if a request exists.
+
+    It returns:
+
+    - export creation date
+    - export status (``in_progress``, ``successful`` and ``errored``)
+    - file name and size (in bytes) when export is successful
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /auth/account/export HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    - if a request exists
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "status": "success",
+        "request": {
+            "created_at": "Wed, 01 Mar 2023 12:31:17 GMT",
+            "status": "successful",
+            "file_name": "archive_rgjsR3fHt295ywNQr5Yp.zip",
+            "file_size": 924
+        }
+      }
+
+    - if no request
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "status": "success",
+        "request": null
+      }
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    """
+    export_request = UserDataExport.query.filter_by(
+        user_id=auth_user.id
+    ).first()
+    return {
+        "status": "success",
+        "request": export_request.serialize() if export_request else None,
+    }
+
+
+@auth_blueprint.route(
+    '/auth/account/export/<string:file_name>', methods=['GET']
+)
+@require_auth()
+def download_data_export(
+    auth_user: User, file_name: str
+) -> Union[Response, HttpResponse]:
+    """
+    Download a data export archive
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /auth/account/export/download/archive_rgjsR3fHr5Yp.zip HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/x-gzip
+
+    :param string file_name: filename
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 404: file not found
+    """
+    export_request = UserDataExport.query.filter_by(
+        user_id=auth_user.id
+    ).first()
+    if (
+        not export_request
+        or not export_request.completed
+        or export_request.file_name != file_name
+    ):
+        return DataNotFoundErrorResponse(
+            data_type="archive", message="file not found"
+        )
+
+    return send_from_directory(
+        f"{current_app.config['UPLOAD_FOLDER']}/exports/{auth_user.id}",
+        export_request.file_name,
+        mimetype='application/zip',
+        as_attachment=True,
+    )

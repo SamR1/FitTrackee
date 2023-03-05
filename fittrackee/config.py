@@ -1,14 +1,16 @@
 import os
+from typing import Type, Union
 
 from dramatiq.brokers.redis import RedisBroker
 from dramatiq.brokers.stub import StubBroker
 from flask import current_app
 from sqlalchemy.pool import NullPool
 
-if os.getenv('APP_SETTINGS') == 'fittrackee.config.TestingConfig':
-    broker = StubBroker
-else:
-    broker = RedisBroker
+broker: Union[Type['RedisBroker'], Type['StubBroker']] = (
+    StubBroker
+    if os.getenv("APP_SETTINGS") == "fittrackee.config.TestingConfig"
+    else RedisBroker
+)
 
 XDIST_WORKER = (
     f"_{os.getenv('PYTEST_XDIST_WORKER')}"
@@ -67,6 +69,7 @@ class BaseConfig:
         'authorization_code': 864000,  # 10 days
     }
     OAUTH2_REFRESH_TOKEN_GENERATOR = True
+    DATA_EXPORT_EXPIRATION = 24  # hours
 
 
 class DevelopmentConfig(BaseConfig):

@@ -30,6 +30,9 @@ export interface IRootActions {
   [ROOT_STORE.ACTIONS.GET_APPLICATION_STATS](
     context: ActionContext<IRootState, IRootState>
   ): void
+  [ROOT_STORE.ACTIONS.GET_APPLICATION_PRIVACY_POLICY](
+    context: ActionContext<IRootState, IRootState>
+  ): void
   [ROOT_STORE.ACTIONS.UPDATE_APPLICATION_CONFIG](
     context: ActionContext<IRootState, IRootState>,
     payload: TAppConfigForm
@@ -69,6 +72,10 @@ export type TRootMutations<S = IRootState> = {
   [ROOT_STORE.MUTATIONS.UPDATE_APPLICATION_LOADING](
     state: S,
     loading: boolean
+  ): void
+  [ROOT_STORE.MUTATIONS.UPDATE_APPLICATION_PRIVACY_POLICY](
+    state: S,
+    config: TAppConfig
   ): void
   [ROOT_STORE.MUTATIONS.UPDATE_APPLICATION_STATS](
     state: S,

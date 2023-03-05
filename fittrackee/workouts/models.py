@@ -192,6 +192,33 @@ class Workout(BaseModel):
     def short_id(self) -> str:
         return encode_uuid(self.uuid)
 
+    def get_workout_data(self) -> Dict:
+        return {
+            'id': self.short_id,  # WARNING: client use uuid as id
+            'sport_id': self.sport_id,
+            'title': self.title,
+            'creation_date': self.creation_date,
+            'modification_date': self.modification_date,
+            'workout_date': self.workout_date,
+            'duration': str(self.duration) if self.duration else None,
+            'pauses': str(self.pauses) if self.pauses else None,
+            'moving': str(self.moving) if self.moving else None,
+            'distance': float(self.distance) if self.distance else None,
+            'min_alt': float(self.min_alt) if self.min_alt else None,
+            'max_alt': float(self.max_alt) if self.max_alt else None,
+            'descent': float(self.descent)
+            if self.descent is not None
+            else None,
+            'ascent': float(self.ascent) if self.ascent is not None else None,
+            'max_speed': float(self.max_speed) if self.max_speed else None,
+            'ave_speed': float(self.ave_speed) if self.ave_speed else None,
+            'records': [record.serialize() for record in self.records],
+            'segments': [segment.serialize() for segment in self.segments],
+            'weather_start': self.weather_start,
+            'weather_end': self.weather_end,
+            'notes': self.notes,
+        }
+
     def serialize(self, params: Optional[Dict] = None) -> Dict:
         date_from = params.get('from') if params else None
         date_to = params.get('to') if params else None
@@ -282,41 +309,21 @@ class Workout(BaseModel):
             .order_by(Workout.workout_date.asc())
             .first()
         )
-        return {
-            'id': self.short_id,  # WARNING: client use uuid as id
-            'user': self.user.username,
-            'sport_id': self.sport_id,
-            'title': self.title,
-            'creation_date': self.creation_date,
-            'modification_date': self.modification_date,
-            'workout_date': self.workout_date,
-            'duration': str(self.duration) if self.duration else None,
-            'pauses': str(self.pauses) if self.pauses else None,
-            'moving': str(self.moving) if self.moving else None,
-            'distance': float(self.distance) if self.distance else None,
-            'min_alt': float(self.min_alt) if self.min_alt else None,
-            'max_alt': float(self.max_alt) if self.max_alt else None,
-            'descent': float(self.descent)
-            if self.descent is not None
-            else None,
-            'ascent': float(self.ascent) if self.ascent is not None else None,
-            'max_speed': float(self.max_speed) if self.max_speed else None,
-            'ave_speed': float(self.ave_speed) if self.ave_speed else None,
-            'with_gpx': self.gpx is not None,
-            'bounds': [float(bound) for bound in self.bounds]
-            if self.bounds
-            else [],  # noqa
-            'previous_workout': previous_workout.short_id
-            if previous_workout
-            else None,  # noqa
-            'next_workout': next_workout.short_id if next_workout else None,
-            'segments': [segment.serialize() for segment in self.segments],
-            'records': [record.serialize() for record in self.records],
-            'map': self.map_id if self.map else None,
-            'weather_start': self.weather_start,
-            'weather_end': self.weather_end,
-            'notes': self.notes,
-        }
+
+        workout = self.get_workout_data()
+        workout["next_workout"] = (
+            next_workout.short_id if next_workout else None
+        )
+        workout["previous_workout"] = (
+            previous_workout.short_id if previous_workout else None
+        )
+        workout["bounds"] = (
+            [float(bound) for bound in self.bounds] if self.bounds else []
+        )
+        workout["user"] = self.user.username
+        workout["map"] = self.map_id if self.map else None
+        workout["with_gpx"] = self.gpx is not None
+        return workout
 
     @classmethod
     def get_user_workout_records(

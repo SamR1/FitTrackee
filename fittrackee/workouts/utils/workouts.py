@@ -1,5 +1,5 @@
 import os
-import tempfile
+import secrets
 import zipfile
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple, Union
@@ -272,9 +272,8 @@ def get_new_file_path(
     """
     if not extension and old_filename:
         extension = f".{old_filename.rsplit('.', 1)[1].lower()}"
-    _, new_filename = tempfile.mkstemp(
-        prefix=f'{workout_date}_{sport_id}_', suffix=extension
-    )
+    suffix = secrets.token_urlsafe(8)
+    new_filename = f"{workout_date}_{sport_id}_{suffix}{extension}"
     dir_path = os.path.join('workouts', str(auth_user_id))
     file_path = os.path.join(dir_path, new_filename.split('/')[-1])
     return file_path

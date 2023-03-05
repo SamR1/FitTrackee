@@ -34,7 +34,7 @@
   const store = useStore()
 
   const { user, tab } = toRefs(props)
-  const tabs = ['PROFILE', 'ACCOUNT', 'PICTURE', 'PREFERENCES', 'SPORTS']
+  const tabs = ['PROFILE', 'ACCOUNT', 'PICTURE', 'PREFERENCES', 'SPORTS', 'PRIVACY-POLICY']
   const loading = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
   )

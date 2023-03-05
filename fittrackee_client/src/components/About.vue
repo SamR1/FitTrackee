@@ -46,16 +46,24 @@
           {{ weather_provider.name }}
         </a>
       </div>
+      <template v-if="appConfig.about">
+        <p class="about-instance">{{ $t('about.ABOUT_THIS_INSTANCE') }}</p>
+        <div
+          v-html="snarkdown(linkifyAndClean(appConfig.about))"
+        />
+      </template>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import snarkdown from 'snarkdown'
   import { ComputedRef, computed, capitalize } from 'vue'
 
   import { ROOT_STORE } from '@/store/constants'
   import { TAppConfig } from '@/types/application'
   import { useStore } from '@/use/useStore'
+  import { linkifyAndClean } from '@/utils/inputs'
 
   const store = useStore()
   const appConfig: ComputedRef<TAppConfig> = computed(
@@ -84,11 +92,17 @@
 
   .about-text {
     margin-top: 200px;
+    margin-right: 100px;
     @media screen and (max-width: $small-limit) {
       margin-top: 0;
+      margin-right: 0;
     }
     .fa-padding {
       padding-right: $default-padding;
+    }
+    .about-instance {
+      font-weight: bold;
+      margin-top: $default-margin*3;
     }
   }
 </style>

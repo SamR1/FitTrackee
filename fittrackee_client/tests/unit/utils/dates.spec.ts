@@ -293,6 +293,22 @@ describe('formatDate (w/ default value)', () => {
   })
 })
 
+describe('formatDate with_seconds', () => {
+  it('format date for "Europe/Paris" timezone and "dd/MM/yyyy" format and seconds', () => {
+    assert.deepEqual(
+      formatDate(
+        'Tue, 01 Nov 2022 00:00:00 GMT',
+        'Europe/Paris',
+        'yyyy-MM-dd',
+        true,
+        null,
+        true
+      ),
+      '2022-11-01 01:00:00'
+    )
+  })
+})
+
 describe('getDateFormat', () => {
   const testsParams = [
     {

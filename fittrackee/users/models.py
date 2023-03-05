@@ -1,14 +1,20 @@
+import os
 from datetime import datetime
-from typing import Dict, Optional, Union
+from typing import Any, Dict, Optional, Union
 
 import jwt
 from flask import current_app
 from sqlalchemy import func
+from sqlalchemy.engine.base import Connection
+from sqlalchemy.event import listens_for
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm.mapper import Mapper
+from sqlalchemy.orm.session import Session
 from sqlalchemy.sql.expression import select
 
-from fittrackee import bcrypt, db
+from fittrackee import appLog, bcrypt, db
+from fittrackee.files import get_absolute_file_path
 from fittrackee.workouts.models import Workout
 
 from .exceptions import UserNotFoundException
@@ -52,6 +58,7 @@ class User(BaseModel):
     email_to_confirm = db.Column(db.String(255), nullable=True)
     confirmation_token = db.Column(db.String(255), nullable=True)
     display_ascent = db.Column(db.Boolean, default=True, nullable=False)
+    accepted_policy_date = db.Column(db.DateTime, nullable=True)
 
     def __repr__(self) -> str:
         return f'<User {self.username!r}>'
@@ -188,9 +195,18 @@ class User(BaseModel):
             'username': self.username,
         }
         if role == UserRole.AUTH_USER:
+            accepted_privacy_policy = False
+            if self.accepted_policy_date:
+                accepted_privacy_policy = (
+                    True
+                    if current_app.config['privacy_policy_date'] is None
+                    else current_app.config['privacy_policy_date']
+                    < self.accepted_policy_date
+                )
             serialized_user = {
                 **serialized_user,
                 **{
+                    'accepted_privacy_policy': accepted_privacy_policy,
                     'date_format': self.date_format,
                     'display_ascent': self.display_ascent,
                     'imperial_units': self.imperial_units,
@@ -266,3 +282,62 @@ class BlacklistedToken(BaseModel):
     @classmethod
     def check(cls, auth_token: str) -> bool:
         return cls.query.filter_by(token=str(auth_token)).first() is not None
+
+
+class UserDataExport(BaseModel):
+    __tablename__ = 'users_data_export'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='CASCADE'),
+        index=True,
+        unique=True,
+    )
+    created_at = db.Column(
+        db.DateTime, nullable=False, default=datetime.utcnow
+    )
+    updated_at = db.Column(
+        db.DateTime, nullable=True, onupdate=datetime.utcnow
+    )
+    completed = db.Column(db.Boolean, nullable=False, default=False)
+    file_name = db.Column(db.String(100), nullable=True)
+    file_size = db.Column(db.Integer, nullable=True)
+
+    def __init__(
+        self,
+        user_id: int,
+        created_at: Optional[datetime] = None,
+    ):
+        self.user_id = user_id
+        self.created_at = (
+            datetime.utcnow() if created_at is None else created_at
+        )
+
+    def serialize(self) -> Dict:
+        if self.completed:
+            status = "successful" if self.file_name else "errored"
+        else:
+            status = "in_progress"
+        return {
+            "created_at": self.created_at,
+            "status": status,
+            "file_name": self.file_name if status == "successful" else None,
+            "file_size": self.file_size if status == "successful" else None,
+        }
+
+
+@listens_for(UserDataExport, 'after_delete')
+def on_users_data_export_delete(
+    mapper: Mapper, connection: Connection, old_record: 'UserDataExport'
+) -> None:
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session: Session, context: Any) -> None:
+        if old_record.file_name:
+            try:
+                file_path = (
+                    f"exports/{old_record.user_id}/{old_record.file_name}"
+                )
+                os.remove(get_absolute_file_path(file_path))
+            except OSError:
+                appLog.error('archive found when deleting export request')
