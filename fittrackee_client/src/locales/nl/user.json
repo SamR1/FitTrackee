@@ -8,10 +8,22 @@
     "EMAIL": "Email",
     "EMAIL_INFO": "Geef een geldig email adres op.",
     "ENTER_PASSWORD": "Geef een paswoord in",
+    "EXPORT_REQUEST": {
+        "DATA_EXPORT": "Data exporteren",
+        "DOWNLOAD_ARCHIVE": "Archief downloaden",
+        "GENERATING_LINK": "link aanmaken...",
+        "ONLY_ONE_EXPORT_PER_DAY": "Je kan 1 keer per 24h een archief aanvragen",
+        "STATUS": {
+            "errored": "fout (gelieve een nieuw archief aan te vragen)",
+            "in_progress": "Bezig met verwerken..."
+        }
+    },
     "FILTER_ON_USERNAME": "Filter op gebruikersnaam",
     "HIDE_PASSWORD": "verberg wachtwoord",
     "INVALID_TOKEN": "Ongeldig token, vraag een nieuwe wachtwoord reset aan.",
+    "I_WANT_TO_DELETE_MY_ACCOUNT": "Ik wil mijn account verwijderen",
     "LANGUAGE": "Taal",
+    "LAST_PRIVACY_POLICY_TO_VALIDATE": "Het privacybeleid werd aangepast, gelieve te {0} voor verdergaan.",
     "LOGIN": "Inloggen",
     "LOGOUT": "Uitloggen",
     "LOG_IN": "inloggen",
@@ -68,6 +80,7 @@
         "PICTURE_REMOVE": "Afbeelding verwijderen",
         "PICTURE_UPDATE": "Afbeelding veranderen",
         "PREFERENCES_EDITION": "Voorkeuren aanpassen",
+        "PRIVACY-POLICY_EDITION": "Privacybeleid",
         "PROFILE_EDITION": "Profiel aanpassen",
         "REGISTRATION_DATE": "Datum registratie",
         "SPORT": {
@@ -89,40 +102,27 @@
             "APPS": "apps",
             "PICTURE": "afbeelding",
             "PREFERENCES": "voorkeuren",
+            "PRIVACY-POLICY": "Privacybeleid",
             "PROFILE": "profiel",
-            "SPORTS": "sporten",
-            "PRIVACY-POLICY": "Privacybeleid"
+            "SPORTS": "sporten"
         },
         "TIMEZONE": "Tijdzone",
         "UNITS": {
             "IMPERIAL": "Imperialistisch systeem (ft, mi, mph, °F)",
             "LABEL": "Eenheid voor afstand",
             "METRIC": "Metrisch systeem (m, km, m/s, °C)"
-        },
-        "PRIVACY-POLICY_EDITION": "Privacybeleid"
+        }
     },
+    "READ_AND_ACCEPT_PRIVACY_POLICY": "Ik heb het {0} gelezen en goedgekeurd.",
     "REGISTER": "Registreren",
     "REGISTER_DISABLED": "Sorry, registreren is uitgeschakeld.",
     "RESENT_ACCOUNT_CONFIRMATION": "Opnieuw zenden van account bevestigingsmail",
     "RESET_PASSWORD": "Reset uw wachtwoord",
+    "REVIEW": "beoordeling",
     "SHOW_PASSWORD": "toon wachtwoord",
     "THIS_USER_ACCOUNT_IS_INACTIVE": "Deze account is niet actief.",
     "USERNAME": "Gebruikersnaam",
     "USERNAME_INFO": "3 tot 30 karakters vereist, enkel alfanumerieke karakters en het underscore karakter \"_\" zijn toegestaan.",
     "USER_PICTURE": "gebruikersafbeelding",
-    "EXPORT_REQUEST": {
-        "DOWNLOAD_ARCHIVE": "Archief downloaden",
-        "STATUS": {
-            "errored": "fout (gelieve een nieuw archief aan te vragen)",
-            "in_progress": "Bezig met verwerken..."
-        },
-        "GENERATING_LINK": "link aanmaken...",
-        "DATA_EXPORT": "Data exporteren",
-        "ONLY_ONE_EXPORT_PER_DAY": "Je kan 1 keer per 24h een archief aanvragen"
-    },
-    "I_WANT_TO_DELETE_MY_ACCOUNT": "Ik wil mijn account verwijderen",
-    "LAST_PRIVACY_POLICY_TO_VALIDATE": "Het privacybeleid werd aangepast, gelieve te {0} voor verdergaan.",
-    "READ_AND_ACCEPT_PRIVACY_POLICY": "Ik heb het {0} gelezen en goedgekeurd.",
-    "REVIEW": "beoordeling",
     "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "U hebt het {0} aanvaard."
 }

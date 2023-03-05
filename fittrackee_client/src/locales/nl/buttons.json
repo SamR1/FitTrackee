@@ -12,8 +12,8 @@
     "LOGIN": "Inloggen",
     "NO": "Nee",
     "REGISTER": "Registreer",
+    "REQUEST_DATA_EXPORT": "Data export aanvragen",
     "RESET": "Reset",
     "SUBMIT": "Opslaan",
-    "YES": "Ja",
-    "REQUEST_DATA_EXPORT": "Data export aanvragen"
+    "YES": "Ja"
 }
