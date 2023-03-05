@@ -1,5 +1,42 @@
 # Change log
 
+## Version 0.7.13 (2023/03/05)
+
+This version allows to display the instance privacy policy. A user must agree to the privacy policy to register.  
+A default policy is available and a custom policy can be defined in the administration.  
+**Note:** After **FitTrackee** upgrade, a message will be displayed to all users in order to review the policy.  
+
+A user can now request a data export (containing user info, workout data and uploaded gpx files).
+
+Lastly, additional information that may be useful to users can be displayed in **About** page.
+
+
+### Features and enhancements
+
+* [#301](https://github.com/SamR1/FitTrackee/issues/301) - add privacy policy
+* [#304](https://github.com/SamR1/FitTrackee/issues/304) - add user data export
+* [#305](https://github.com/SamR1/FitTrackee/issues/305) - add additional information in About page
+
+### Bugs Fixed
+
+* [PR#307](https://github.com/SamR1/FitTrackee/pull/307) - Minor fixes
+  * update workout and map files name
+  * fix error message when api is not running
+  * fix modal position
+
+### Translations
+
+* [PR#297](https://github.com/SamR1/FitTrackee/pull/297) - Translations update from Hosted Weblate (Dutch)
+* [PR#308](https://github.com/SamR1/FitTrackee/pull/308) - Translations update from Hosted Weblate (Dutch)
+* [PR#310](https://github.com/SamR1/FitTrackee/pull/310) - Translations update from Hosted Weblate (Dutch and German)
+
+Thanks to the contributors:
+- @bjornclauw
+- @qwerty287
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/installation.html#upgrade))
+
+
 ## Version 0.7.12 (2023/02/16)
 
 ### Translations

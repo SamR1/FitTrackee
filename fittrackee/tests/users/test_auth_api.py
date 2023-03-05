@@ -3035,11 +3035,38 @@ class TestGetUserDataExportRequest(ApiTestCaseMixin):
         assert data["status"] == "success"
         assert data["request"] is None
 
-    def test_it_returns_existing_request(
+    def test_it_does_not_return_another_user_existing_request(
         self,
         app: Flask,
         user_1: User,
         user_2: User,
+    ) -> None:
+        export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
+        completed_export_request = UserDataExport(
+            user_id=user_2.id,
+            created_at=datetime.utcnow() - timedelta(hours=export_expiration),
+        )
+        db.session.add(completed_export_request)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/auth/account/export',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["request"] is None
+
+    def test_it_returns_existing_request_for_authenticated_user(
+        self,
+        app: Flask,
+        user_1: User,
     ) -> None:
         export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
         completed_export_request = UserDataExport(
