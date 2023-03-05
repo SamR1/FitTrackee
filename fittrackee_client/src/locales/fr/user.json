@@ -11,17 +11,17 @@
     "EXPORT_REQUEST": {
         "DATA_EXPORT": "Export des données",
         "DOWNLOAD_ARCHIVE": "Télécharger l'archive",
+        "GENERATING_LINK": "lien en cours de génération...",
         "ONLY_ONE_EXPORT_PER_DAY": "Vous pouvez demander un export par 24h",
         "STATUS": {
             "errored": "en erreur (veuillez demander une nouvelle archive)",
             "in_progress": "en cours..."
-        },
-        "GENERATING_LINK": "lien en cours de génération..."
+        }
     },
     "FILTER_ON_USERNAME": "Filtrer sur le nom d'utilisateur",
     "HIDE_PASSWORD": "masquer le mot de passe",
-    "I_WANT_TO_DELETE_MY_ACCOUNT": "Je souhaite supprimer mon compte",
     "INVALID_TOKEN": "Jeton invalide, veuillez demander une nouvelle réinitialisation de mot de passe.",
+    "I_WANT_TO_DELETE_MY_ACCOUNT": "Je souhaite supprimer mon compte",
     "LANGUAGE": "Langue",
     "LAST_PRIVACY_POLICY_TO_VALIDATE": "La politique de confidentialité a été mise à jour. Veuillez l'{0} avant de poursuivre.",
     "LOGIN": "Se connecter",

@@ -11,17 +11,17 @@
     "EXPORT_REQUEST": {
         "DATA_EXPORT": "Data export",
         "DOWNLOAD_ARCHIVE": "Download archive",
+        "GENERATING_LINK": "generating link...",
         "ONLY_ONE_EXPORT_PER_DAY": "You can request an archive by 24 hours",
         "STATUS": {
             "errored": "errored (please request another export)",
             "in_progress": "in progres..."
-        },
-        "GENERATING_LINK": "generating link..."
+        }
     },
     "FILTER_ON_USERNAME": "Filter on username",
     "HIDE_PASSWORD": "hide password",
-    "I_WANT_TO_DELETE_MY_ACCOUNT": "I want to delete my account",
     "INVALID_TOKEN": "Invalid token, please request a new password reset.",
+    "I_WANT_TO_DELETE_MY_ACCOUNT": "I want to delete my account",
     "LANGUAGE": "Language",
     "LAST_PRIVACY_POLICY_TO_VALIDATE": "The privacy policy has been updated, please {0} it before proceeding.",
     "LOGIN": "Login",

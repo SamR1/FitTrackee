@@ -1,7 +1,7 @@
 {
-    "ABOUT":  {
-        "TEXT": "Information détaillée de l'instance",
-        "DESCRIPTION": "Toute information supplémentaire qui peut être utile à vos utilisateurs. La syntaxe Markdown peut être utilisée."
+    "ABOUT": {
+        "DESCRIPTION": "Toute information supplémentaire qui peut être utile à vos utilisateurs. La syntaxe Markdown peut être utilisée.",
+        "TEXT": "Information détaillée de l'instance"
     },
     "ACTION": "Action",
     "ACTIVATE_USER_ACCOUNT": "Activer le compte",

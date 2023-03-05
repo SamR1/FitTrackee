@@ -1,7 +1,7 @@
 {
-    "ABOUT":  {
-        "TEXT": "Detailed instance information",
-        "DESCRIPTION": "Any additional information that may be useful to your users. Markdown syntax can be used."
+    "ABOUT": {
+        "DESCRIPTION": "Any additional information that may be useful to your users. Markdown syntax can be used.",
+        "TEXT": "Detailed instance information"
     },
     "ACTION": "Action",
     "ACTIVATE_USER_ACCOUNT": "Activate account",

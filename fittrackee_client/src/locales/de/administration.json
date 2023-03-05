@@ -1,4 +1,8 @@
 {
+    "ABOUT": {
+        "DESCRIPTION": "Zusätzliche Informationen, die für deine Nutzer nützlich sein könnten. Markdown-Syntax wird unterstützt.",
+        "TEXT": "Detaillierte Instanz-Informationen"
+    },
     "ACTION": "Aktion",
     "ACTIVATE_USER_ACCOUNT": "Aktiviere Konto",
     "ACTIVE": "Aktiv",
@@ -24,7 +28,9 @@
     "EMAIL_SENDING_DISABLED": "E-Mail-Versand ist deaktiviert.",
     "ENABLE_DISABLE_SPORTS": "Aktivieren/Deaktivieren von Sportarten.",
     "NEW_EMAIL": "Neue E-Mail",
+    "NO_TEXT_ENTERED": "Kein Text eingegeben",
     "PASSWORD_RESET_SUCCESSFUL": "Das wasswort wurde zurückgesetzt.",
+    "PRIVACY_POLICY_DESCRIPTION": "Füge deine eigene Datenschutzrichtlinie hinzu oder leer lassen, um die standardmäßige zu verwenden. Markdown-Syntax wird unterstützt.",
     "REGISTRATION_DISABLED": "Registrierung ist derzeit deaktiviert.",
     "REGISTRATION_ENABLED": "Registrierung ist derzeit aktiviert.",
     "RESET_USER_PASSWORD": "Passwort zurücksetzen",
@@ -55,11 +61,5 @@
             "REMOVE_ADMIN_RIGHTS": "Administratorrechte entfernen"
         }
     },
-    "USER_EMAIL_UPDATE_SUCCESSFUL": "Die E-Mail Adresse wurde aktualisiert.",
-    "ABOUT": {
-        "TEXT": "Detaillierte Instanz-Informationen",
-        "DESCRIPTION": "Zusätzliche Informationen, die für deine Nutzer nützlich sein könnten. Markdown-Syntax wird unterstützt."
-    },
-    "NO_TEXT_ENTERED": "Kein Text eingegeben",
-    "PRIVACY_POLICY_DESCRIPTION": "Füge deine eigene Datenschutzrichtlinie hinzu oder leer lassen, um die standardmäßige zu verwenden. Markdown-Syntax wird unterstützt."
+    "USER_EMAIL_UPDATE_SUCCESSFUL": "Die E-Mail Adresse wurde aktualisiert."
 }
