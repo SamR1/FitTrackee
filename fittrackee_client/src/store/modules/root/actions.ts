@@ -51,6 +51,24 @@ export const actions: ActionTree<IRootState, IRootState> & IRootActions = {
       })
       .catch((error) => handleError(context, error))
   },
+  [ROOT_STORE.ACTIONS.GET_APPLICATION_PRIVACY_POLICY](
+    context: ActionContext<IRootState, IRootState>
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .get('config')
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            ROOT_STORE.MUTATIONS.UPDATE_APPLICATION_PRIVACY_POLICY,
+            res.data.data
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+  },
   [ROOT_STORE.ACTIONS.UPDATE_APPLICATION_CONFIG](
     context: ActionContext<IRootState, IRootState>,
     payload: TAppConfigForm

@@ -129,6 +129,10 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
             AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE,
             res.data.data
           )
+          if (!res.data.data.accepted_privacy_policy) {
+            // refresh privacy policy
+            context.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_PRIVACY_POLICY)
+          }
           if (res.data.data.language) {
             context.dispatch(
               ROOT_STORE.ACTIONS.UPDATE_APPLICATION_LANGUAGE,
