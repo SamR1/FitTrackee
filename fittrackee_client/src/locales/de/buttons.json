@@ -14,5 +14,6 @@
     "REGISTER": "Registrieren",
     "RESET": "Zurücksetzen",
     "SUBMIT": "Speichern",
-    "YES": "Ja"
+    "YES": "Ja",
+    "REQUEST_DATA_EXPORT": "Daten-Export anfragen"
 }

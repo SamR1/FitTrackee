@@ -55,5 +55,11 @@
             "REMOVE_ADMIN_RIGHTS": "Administratorrechte entfernen"
         }
     },
-    "USER_EMAIL_UPDATE_SUCCESSFUL": "Die E-Mail Adresse wurde aktualisiert."
+    "USER_EMAIL_UPDATE_SUCCESSFUL": "Die E-Mail Adresse wurde aktualisiert.",
+    "ABOUT": {
+        "TEXT": "Detaillierte Instanz-Informationen",
+        "DESCRIPTION": "Zusätzliche Informationen, die für deine Nutzer nützlich sein könnten. Markdown-Syntax wird unterstützt."
+    },
+    "NO_TEXT_ENTERED": "Kein Text eingegeben",
+    "PRIVACY_POLICY_DESCRIPTION": "Füge deine eigene Datenschutzrichtlinie hinzu oder leer lassen, um die standardmäßige zu verwenden. Markdown-Syntax wird unterstützt."
 }

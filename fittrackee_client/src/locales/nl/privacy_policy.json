@@ -1,1 +1,38 @@
-{}
+{
+    "CONTENT": {
+        "CHANGES_TO_OUR_PRIVACY_POLICY": {
+            "TITLE": "Aanpassingen aan ons Privacybeleid",
+            "CONTENT": "Eventuele aanpassingen aan het privacybeleid zullen op deze pagina worden weergegeven.\n\nDit document valt onder volgende licentie [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/). Een aanpassing van dit origineel privacybeleid [Discourse](https://github.com/discourse/discourse)."
+        },
+        "DATA_COLLECTED": {
+            "TITLE": "Welke informatie wordt er door ons verzameld?",
+            "CONTENT": "De volgende informatie wordt verzameld:\n- Account informatie (gebruikersnaam, email en wachtwoord). U kan ook bijkomende informatie opgeven zoals: naam, voornaam, geboortedatum, locatie, biografie en een profiel-afbeelding.\n- [GPX](https://en.wikipedia.org/wiki/GPS_Exchange_Format) bestanden. Deze bestanden bevatten gegevens over uw activiteiten (coördinaten, datums, afstand, duur, maximum en minimum snelheden, hoogtegegevens, hartslag, ...). Als u bepaalde gegevens hiervan niet wil delen, verwijder deze dan uit het bestand alvorens deze te uploaden.\n- Sportgerelateerde gegevens (soort sport, titel, datum, duur, afstand, geklommen afstand, gedaalde afstand, notities).\n- Technische informatie (de browsernaam en naam van het besturingssysteem)."
+        },
+        "INFORMATION_DISCLOSURE": {
+            "TITLE": "Wordt er informatie met derden gedeeld?",
+            "CONTENT": "Persoonlijke informatie wordt niet verkocht, geruild of op enige manier doorgegeven aan derden/andere instanties.\n\nDe uitzondering hierop zijn derden die vertrouwd worden en hebben ingestemd om uw gegevens niet te delen. Dit zijn bijvoorbeeld website administrators en vertrouwde applicaties.\n\nWanneer je een app van derden linkt aan je gebruikersaccount, kan het naargelang de toegestane rechten toegang krijgen tot je profiel informatie en activiteiten. Apps hebben nooit toegang tot uw wachtwoord.\n\nMogelijk kan er informatie worden gedeeld wanneer dit nodig is om aan de wetgeving te voldoen, wanneer de regels van ons beleid dienen afgedwongen te worden, of om onze of anderen hun rechten, eigendom of veiligheid te beschermen."
+        },
+        "YOUR_CONSENT": {
+            "CONTENT": "Door deze site te gebruiken, gaat u akkoord met ons privacybeleid.",
+            "TITLE": "Uw toestemming"
+        },
+        "ACCOUNT_DELETION": {
+            "TITLE": "Account verwijderen",
+            "CONTENT": "U kunt uw account op elk moment opzeggen door naar volgend adres te gaan, en na inloggen op de knop \"Verwijder mijn account\" te klikken in uw instellingen."
+        },
+        "INFORMATION_PROTECTION": {
+            "CONTENT": "Er worden verschillende maatregelen gebruikt om de veiligheid van uw persoonlijke informatie te beschermen. Zowel tijdens het ingegeven, uploaden en bekijken van uw informatie.",
+            "TITLE": "Hoe beschermen we uw informatie?"
+        },
+        "INFORMATION_USAGE": {
+            "CONTENT": "De informatie die we verzamelen is nodig voor de basis functionaliteit van **FitTrackee**:\n- GPX worden gebruikt om activiteiten aan te maken, routes te tonen op de map (door [OpenStreetMap](https://www.openstreetmap.org), grafieken te tonen, thumbnails voor de route aan te maken, berekenen van records en weerdata op te vragen (indien geconfigureerd).\n- Profiel informatie en activiteiten zijn niet publiek zichtbaar. Een gebruiker kan enkel zijn eigen activiteiten bekijken.\n- Het opgegeven email adres kan worden gebruikt om informatie met u te delen, of om wijzigingen aan uw account te melden.",
+            "TITLE": "Waarvoor wordt de opgegeven informatie gebruikt?"
+        },
+        "SITE_USAGE_BY_CHILDREN": {
+            "CONTENT": "Als de server zich in de EU of EEA bevindt: Deze site en zijn services zijn gericht op personen van minstens 16 jaar oud. Als u onder de 16 jaar bent, volgens naleving van de [GDPR](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) (General Data Protection Regulation), gelieve deze site niet te gebruiken.\n\nAls de server zich in de USA bevindt: Deze site en zijn services zijn gericht op personen van minstens 13 jaar oud. Als u onder de 13 jaar bent, volgens naleving van de [COPPA](https://en.wikipedia.org/wiki/Children%27s_Online_Privacy_Protection_Act) (Children's Online Privacy Protection Act), gelieve deze site niet te gebruiken.\n\nWetgeving kan verschillen als de server zich op een andere plaats bevindt.",
+            "TITLE": "Gebruik door minderjarigen"
+        }
+    },
+    "TITLE": "privacybeleid",
+    "LAST_UPDATE": "Laatste aanpassing"
+}
