@@ -212,7 +212,7 @@
   async function downloadArchive(filename: string) {
     generatingLink.value = true
     await authApi
-      .get(`/auth/profile/export/${filename}`, {
+      .get(`/auth/account/export/${filename}`, {
         responseType: 'blob',
       })
       .then((response) => {

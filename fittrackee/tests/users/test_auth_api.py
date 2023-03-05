@@ -2845,7 +2845,7 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
         )
 
         response = client.post(
-            '/api/auth/profile/export/request',
+            '/api/auth/account/export/request',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -2871,7 +2871,7 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
         )
 
         response = client.post(
-            '/api/auth/profile/export/request',
+            '/api/auth/account/export/request',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -2893,7 +2893,7 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
         )
 
         response = client.post(
-            '/api/auth/profile/export/request',
+            '/api/auth/account/export/request',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -2919,7 +2919,7 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
         )
 
         response = client.post(
-            '/api/auth/profile/export/request',
+            '/api/auth/account/export/request',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -2944,7 +2944,7 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
         )
 
         client.post(
-            '/api/auth/profile/export/request',
+            '/api/auth/account/export/request',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -2974,7 +2974,7 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
         )
 
         client.post(
-            '/api/auth/profile/export/request',
+            '/api/auth/account/export/request',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -3000,7 +3000,7 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
         )
 
         client.post(
-            '/api/auth/profile/export/request',
+            '/api/auth/account/export/request',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -3025,7 +3025,7 @@ class TestGetUserDataExportRequest(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/auth/profile/export',
+            '/api/auth/account/export',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -3053,7 +3053,7 @@ class TestGetUserDataExportRequest(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/auth/profile/export',
+            '/api/auth/account/export',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
@@ -3075,7 +3075,7 @@ class TestDownloadExportDataArchive(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/auth/profile/export/{self.random_string()}',
+            f'/api/auth/account/export/{self.random_string()}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -3095,7 +3095,7 @@ class TestDownloadExportDataArchive(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/auth/profile/export/{archive_file_name}',
+            f'/api/auth/account/export/{archive_file_name}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -3114,7 +3114,7 @@ class TestDownloadExportDataArchive(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/auth/profile/export/{self.random_string()}',
+            f'/api/auth/account/export/{self.random_string()}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -3136,7 +3136,7 @@ class TestDownloadExportDataArchive(ApiTestCaseMixin):
             mock.return_value = 'file'
 
             client.get(
-                f'/api/auth/profile/export/{archive_file_name}',
+                f'/api/auth/account/export/{archive_file_name}',
                 headers=dict(Authorization=f'Bearer {auth_token}'),
             )
 
