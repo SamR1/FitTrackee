@@ -34,13 +34,13 @@ Prerequisites
     -  Docker and Docker Compose (for development or evaluation purposes)
 
 .. note::
+    | If registration is enabled, it is recommended to set Redis and a SMTP provider for email sending and data export requests.
+
+.. note::
     | The following steps describe an installation on Linux systems (tested
       on Debian and Arch).
     | On other OS, some issues can be encountered and adaptations may be
       necessary.
-
-.. warning::
-    | If registration is enabled, it is recommended to set Redis and a SMTP provider for email sending and data export requests.
 
 
 Environment variables
@@ -276,7 +276,7 @@ Emails sent by FitTrackee are:
 - password reset request
 - email change (to old and new email adresses)
 - password change
-- when a data export archive is ready to download (*new in 0.7.13*)
+- notification when a data export archive is ready to download (*new in 0.7.13*)
 
 .. versionchanged:: 0.6.5
 
@@ -298,7 +298,7 @@ To keep using **ThunderForest Outdoors**, the configuration is:
 - ``MAP_ATTRIBUTION=&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors``
 
 .. note::
-    | Check the terms of service of tile provider for map attribution
+    | Check the terms of service of tile provider for map attribution.
 
 
 .. versionchanged:: 0.6.10
@@ -507,13 +507,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.7.12):
+-  Download the last release (for now, it is the release v0.7.13):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.12.tar.gz
-   $ tar -xzf v0.7.12.tar.gz
-   $ mv FitTrackee-0.7.12 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.13.tar.gz
+   $ tar -xzf v0.7.13.tar.gz
+   $ mv FitTrackee-0.7.13 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -633,13 +633,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.7.12) and overwrite existing files:
+- Download the last release (for now, it is the release v0.7.13) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.12.tar.gz
-   $ tar -xzf v0.7.12.tar.gz
-   $ cp -R FitTrackee-0.7.12/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.13.tar.gz
+   $ tar -xzf v0.7.13.tar.gz
+   $ cp -R FitTrackee-0.7.13/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).

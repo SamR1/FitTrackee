@@ -74,7 +74,7 @@ Workouts
 Account & preferences
 ^^^^^^^^^^^^^^^^^^^^^
 - A user can create, update and deleted his account.
-- The user must accept the privacy policy to register. If the privacy change, a message is displayed on the dashboard to review the new version and validate it (*new in 0.7.13*).
+- The user must agree to the privacy policy to register. If a more recent policy is available, a message is displayed on the dashboard to review the new version (*new in 0.7.13*).
 - On registration, the user account is created with selected language in dropdown as user preference (*new in 0.6.9*).
 - After registration, the user account is inactive and an email with confirmation instructions is sent to activate it.
   A user with an inactive account cannot log in. (*new in 0.6.0*).
@@ -99,7 +99,11 @@ Account & preferences
   | A workout with a disabled sport will still be displayed in the application.
 
 - A user can create `clients <apps.html>`__ for third-party applications (*new in 0.7.0*).
-- A user can request a data export (*new in 0.7.13*).
+- | A user can request a data export (*new in 0.7.13*).
+  | It generates a zip archive containing 2 ``json`` files (user info and workouts data) and all uploaded gpx files.
+
+.. note::
+  For now, it's not possible to import these files into another **FitTrackee** instance.
 
 
 Administration
@@ -138,10 +142,10 @@ The following parameters can be set:
 (*new in 0.7.13*)
 
 | A default privacy policy is available (originally adapted from the `Discourse <https://github.com/discourse/discourse>`__ privacy policy).
-| A custom privacy policy can set if needed (Markdown syntax can be used). A policy update will display a message on users dashboard to review and validate it.
+| A custom privacy policy can set if needed (Markdown syntax can be used). A policy update will display a message on users dashboard to review it.
 
 .. note::
-  Only the default privacy policy is translated (if translation is available).
+  Only the default privacy policy is translated (if the translation is available).
 
 Users
 """""

@@ -1,5 +1,5 @@
-Authentication
-##############
+Authentication and account
+##########################
 
 .. autoflask:: fittrackee:create_app()
    :endpoints:

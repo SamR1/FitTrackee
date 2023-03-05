@@ -1770,7 +1770,7 @@ def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
     It returns:
 
     - export creation date
-    - export status ("in_progress", "successful" and "errored")
+    - export status (``in_progress``, ``successful`` and ``errored``)
     - file name and size (in bytes) when export is successful
 
     **Example request**:
