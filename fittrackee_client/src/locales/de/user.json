@@ -3,7 +3,7 @@
     "ACCOUNT_CONFIRMATION_SENT": "Prüfe deine E-Mail. Eine neue Bestätigungs-E-Mail wurde an die angegebene Adresse geschickt.",
     "ADMIN": "Admin",
     "ALREADY_HAVE_ACCOUNT": "Hast du bereits ein Konto?",
-    "CONFIRM_ACCOUNT_DELETION": "Möchtest du dein Konto wirklich löschen? Alle Daten werden gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden",
+    "CONFIRM_ACCOUNT_DELETION": "Möchtest du dein Konto wirklich löschen? Alle Daten werden gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.",
     "CURRENT_PASSWORD": "Aktuelles Passwort",
     "EMAIL": "E-Mail",
     "EMAIL_INFO": "Gebe eine gültige E-Mail-Adresse an.",
@@ -90,14 +90,16 @@
             "PICTURE": "Bild",
             "PREFERENCES": "Einstellungen",
             "PROFILE": "Profil",
-            "SPORTS": "Sportarten"
+            "SPORTS": "Sportarten",
+            "PRIVACY-POLICY": "Datenschutzrichtlinie"
         },
         "TIMEZONE": "Zeitzone",
         "UNITS": {
             "IMPERIAL": "Imperiales System (ft, mi, mph, °F)",
             "LABEL": "Einheiten für die Distanz",
             "METRIC": "Metrisches System (m, km, m/s, °C)"
-        }
+        },
+        "PRIVACY-POLICY_EDITION": "Datenschutzrichtlinie"
     },
     "REGISTER": "Registrieren",
     "REGISTER_DISABLED": "Entschuldigung, die Registrierung ist deaktiviert.",
@@ -107,5 +109,20 @@
     "THIS_USER_ACCOUNT_IS_INACTIVE": "Dieser Account ist inaktiv.",
     "USERNAME": "Nutzername",
     "USERNAME_INFO": "3 bis 30 Zeichen sind erforderlich, nur alphanumerische Zeichen und der Unterstrich _ sind erlaubt.",
-    "USER_PICTURE": "Benutzerbild"
+    "USER_PICTURE": "Benutzerbild",
+    "READ_AND_ACCEPT_PRIVACY_POLICY": "Ich habe die {0} gelesen und stimme ihr zu.",
+    "EXPORT_REQUEST": {
+        "DATA_EXPORT": "Datenexport",
+        "DOWNLOAD_ARCHIVE": "Archiv herunterladen",
+        "ONLY_ONE_EXPORT_PER_DAY": "Du kannst alle 24 Stunden ein Archiv anfragen",
+        "STATUS": {
+            "errored": "fehlgeschlagen (bitte frage einen anderen Export an)",
+            "in_progress": "in Arbeit..."
+        },
+        "GENERATING_LINK": "generiere Link..."
+    },
+    "I_WANT_TO_DELETE_MY_ACCOUNT": "Ich möchte meinen Account löschen",
+    "LAST_PRIVACY_POLICY_TO_VALIDATE": "Die Datenschutzrichtlinie wurde aktualisiert, bitte {0} sie vor dem Fortfahren.",
+    "REVIEW": "überprüfen",
+    "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Du hast die {0} akzeptiert."
 }
