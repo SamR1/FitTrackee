@@ -55,5 +55,11 @@
             "REMOVE_ADMIN_RIGHTS": "Verwijder admin rechten"
         }
     },
-    "USER_EMAIL_UPDATE_SUCCESSFUL": "Het emailadres werd bijgewerkt."
+    "USER_EMAIL_UPDATE_SUCCESSFUL": "Het emailadres werd bijgewerkt.",
+    "ABOUT": {
+        "TEXT": "Gedetailleerde informatie over deze instantie",
+        "DESCRIPTION": "Extra informatie die nuttig kan zijn voor uw gebruikers. Markdown opmaak kan gebruikt worden."
+    },
+    "NO_TEXT_ENTERED": "Geen tekst ingegeven",
+    "PRIVACY_POLICY_DESCRIPTION": "Voeg uw eigen privacybeleid toe, of laat leeg om het standaard beleid te gebruiken. Markdown opmaak kan gebruikt worden."
 }
