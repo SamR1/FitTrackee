@@ -136,6 +136,7 @@
     .privacy-policy-message {
       display: flex;
       justify-content: center;
+      margin: 0 $default-margin*.5;
     }
 
     @media screen and (max-width: $medium-limit) {
