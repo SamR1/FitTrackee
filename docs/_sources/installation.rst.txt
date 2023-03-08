@@ -290,7 +290,7 @@ Map tile server
 .. versionadded:: 0.4.0
 
 Default tile server is now **OpenStreetMap**'s standard tile layer (if environment variables are not initialized).
-The tile server can be changed by updating ``TILE_SERVER_URL`` and ``MAP_ATTRIBUTION`` variables (`list of tile servers <https://wiki.openstreetmap.org/wiki/Tile_servers>`__).
+The tile server can be changed by updating ``TILE_SERVER_URL`` and ``MAP_ATTRIBUTION`` variables (`list of tile servers <https://wiki.openstreetmap.org/wiki/Raster_tile_providers>`__).
 
 To keep using **ThunderForest Outdoors**, the configuration is:
 
@@ -507,13 +507,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.7.13):
+-  Download the last release (for now, it is the release v0.7.14):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.13.tar.gz
-   $ tar -xzf v0.7.13.tar.gz
-   $ mv FitTrackee-0.7.13 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.14.tar.gz
+   $ tar -xzf v0.7.14.tar.gz
+   $ mv FitTrackee-0.7.14 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -633,13 +633,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.7.13) and overwrite existing files:
+- Download the last release (for now, it is the release v0.7.14) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.13.tar.gz
-   $ tar -xzf v0.7.13.tar.gz
-   $ cp -R FitTrackee-0.7.13/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.14.tar.gz
+   $ tar -xzf v0.7.14.tar.gz
+   $ cp -R FitTrackee-0.7.14/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).

@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Administrator &#8212; FitTrackee 0.7.13
+    <title>Administrator &#8212; FitTrackee 0.7.14
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
@@ -43,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.13
+        <span class="navbar-text navbar-version pull-left"><b>0.7.14
 </b></span>
       </div>
 
@@ -85,6 +85,7 @@
 <li><a class="reference internal" href="#">Administrator</a><ul>
 <li><a class="reference internal" href="#fittrackee-fails-to-start"><cite>FitTrackee fails to start</cite></a></li>
 <li><a class="reference internal" href="#map-images-are-not-displayed-but-map-is-shown-in-workout-detail"><cite>Map images are not displayed but map is shown in Workout detail</cite></a></li>
+<li><a class="reference internal" href="#failed-to-upload-or-download-files"><cite>Failed to upload or download files</cite></a></li>
 </ul>
 </li>
 </ul>
@@ -159,6 +160,13 @@
 <li><p>Check the path in <a class="reference external" href="../installation.html#envvar-UPLOAD_FOLDER">environment variables</a>. <code class="docutils literal notranslate"><span class="pre">UPLOAD_FOLDER</span></code> must be set with an absolute path.</p></li>
 </ul>
 </section>
+<section id="failed-to-upload-or-download-files">
+<h2><cite>Failed to upload or download files</cite><a class="headerlink" href="#failed-to-upload-or-download-files" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Check <code class="docutils literal notranslate"><span class="pre">client_max_body_size</span></code> in <strong>nginx</strong> config. Increase the value to handle larger files (see <strong>nginx</strong> <a class="reference external" href="https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size">documentation</a>).</p></li>
+<li><p>Increase <strong>gunicorn</strong> <a class="reference external" href="https://docs.gunicorn.org/en/stable/settings.html#timeout">timeout</a> value if the following error is displayed in gunicorn log: <code class="docutils literal notranslate"><span class="pre">[CRITICAL]</span> <span class="pre">WORKER</span> <span class="pre">TIMEOUT</span></code>.</p></li>
+</ul>
+</section>
 </section>
 
 
@@ -174,7 +182,7 @@
     </p>
     <p>
         &copy; Copyright 2018 - 2022, SamR1 <a rel="me" href="https://fosstodon.org/@FitTrackee"><i class="fa fa-mastodon" aria-hidden="true"></i></a>.
-      Last updated on Mar 05, 2023.<br/>
+      Last updated on Mar 08, 2023.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br/>
     </p>
   </div>
