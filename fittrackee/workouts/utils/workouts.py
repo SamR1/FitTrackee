@@ -8,7 +8,6 @@ from uuid import UUID
 import gpxpy.gpx
 import pytz
 from flask import current_app
-from sqlalchemy import exc
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
@@ -352,9 +351,9 @@ def process_one_gpx_file(
             db.session.add(new_segment)
         db.session.commit()
         return new_workout
-    except (exc.IntegrityError, ValueError) as e:
+    except Exception as e:
         delete_files(absolute_gpx_filepath, absolute_map_filepath)
-        raise WorkoutException('fail', 'Error during workout save.', e)
+        raise WorkoutException('error', 'error when saving workout', e)
 
 
 def is_gpx_file(filename: str) -> bool:
