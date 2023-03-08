@@ -8,11 +8,10 @@ from uuid import UUID
 import gpxpy.gpx
 import pytz
 from flask import current_app
-from sqlalchemy import exc
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
-from fittrackee import db
+from fittrackee import appLog, db
 from fittrackee.files import get_absolute_file_path
 from fittrackee.privacy_levels import PrivacyLevel, get_map_visibility
 from fittrackee.users.models import User, UserSportPreference
@@ -306,12 +305,26 @@ def get_new_file_path(
     return file_path
 
 
+def delete_files(
+    absolute_gpx_filepath: Optional[str], absolute_map_filepath: Optional[str]
+) -> None:
+    try:
+        if absolute_gpx_filepath and os.path.exists(absolute_gpx_filepath):
+            os.remove(absolute_gpx_filepath)
+        if absolute_map_filepath and os.path.exists(absolute_map_filepath):
+            os.remove(absolute_map_filepath)
+    except Exception:
+        appLog.error('Unable to delete files after processing error.')
+
+
 def process_one_gpx_file(
     params: Dict, filename: str, stopped_speed_threshold: float
 ) -> Workout:
     """
     Get all data from a gpx file to create a workout with map image
     """
+    absolute_gpx_filepath = None
+    absolute_map_filepath = None
     try:
         gpx_data, map_data, weather_data = get_gpx_info(
             params['file_path'], stopped_speed_threshold
@@ -341,8 +354,10 @@ def process_one_gpx_file(
         absolute_map_filepath = get_absolute_file_path(map_filepath)
         generate_map(absolute_map_filepath, map_data)
     except (gpxpy.gpx.GPXXMLSyntaxException, TypeError) as e:
+        delete_files(absolute_gpx_filepath, absolute_map_filepath)
         raise WorkoutException('error', 'error during gpx file parsing', e)
     except Exception as e:
+        delete_files(absolute_gpx_filepath, absolute_map_filepath)
         raise WorkoutException('error', 'error during gpx processing', e)
 
     try:
@@ -363,8 +378,9 @@ def process_one_gpx_file(
             db.session.add(new_segment)
         db.session.commit()
         return new_workout
-    except (exc.IntegrityError, ValueError) as e:
-        raise WorkoutException('fail', 'Error during workout save.', e)
+    except Exception as e:
+        delete_files(absolute_gpx_filepath, absolute_map_filepath)
+        raise WorkoutException('error', 'error when saving workout', e)
 
 
 def is_gpx_file(filename: str) -> bool:

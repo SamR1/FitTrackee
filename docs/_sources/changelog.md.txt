@@ -1,5 +1,15 @@
 # Change log
 
+## Version 0.7.14 (2023/03/08)
+
+### Bugs Fixed
+
+* [#314](https://github.com/SamR1/FitTrackee/issues/314) - GPX file is not deleted when the process fails 
+### Translations
+
+* [PR#315](https://github.com/SamR1/FitTrackee/pull/315) - Translations update from Hosted Weblate (Dutch, thanks to @bjornclauw)
+
+
 ## Version 0.7.13 (2023/03/05)
 
 This version allows to display the instance privacy policy. A user must agree to the privacy policy to register.  

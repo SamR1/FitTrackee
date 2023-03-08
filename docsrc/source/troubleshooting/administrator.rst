@@ -26,3 +26,11 @@ Administrator
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Check the path in `environment variables <../installation.html#envvar-UPLOAD_FOLDER>`__. ``UPLOAD_FOLDER`` must be set with an absolute path.
+
+
+`Failed to upload or download files`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Check ``client_max_body_size`` in **nginx** config. Increase the value to handle larger files (see **nginx** `documentation <https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size>`_).
+
+- Increase **gunicorn** `timeout <https://docs.gunicorn.org/en/stable/settings.html#timeout>`__ value if the following error is displayed in gunicorn log: ``[CRITICAL] WORKER TIMEOUT``.
