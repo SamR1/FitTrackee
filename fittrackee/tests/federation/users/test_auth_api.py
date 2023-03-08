@@ -20,6 +20,7 @@ def assert_actor_is_created(app: Flask) -> None:
                 email='test@test.com',
                 password='12345678',
                 password_conf='12345678',
+                accepted_policy=True,
             )
         ),
         content_type='application/json',
@@ -50,6 +51,7 @@ class TestUserRegistration:
                     email='test@test.com',
                     password='12345678',
                     password_conf='12345678',
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',

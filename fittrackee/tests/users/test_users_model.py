@@ -8,7 +8,7 @@ from freezegun import freeze_time
 
 from fittrackee import db
 from fittrackee.federation.exceptions import FederationDisabledException
-from fittrackee.tests.utils import random_string
+from fittrackee.tests.utils import random_int, random_string
 from fittrackee.users.exceptions import (
     FollowRequestAlreadyProcessedError,
     NotExistingFollowRequestError,
@@ -17,6 +17,7 @@ from fittrackee.users.models import (
     BlacklistedToken,
     FollowRequest,
     User,
+    UserDataExport,
     UserSportPreference,
 )
 from fittrackee.workouts.models import Sport, Workout
@@ -97,6 +98,46 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
 
         self.assert_workouts_keys_are_present(serialized_user)
 
+    def test_it_returns_user_did_not_accept_default_privacy_policy(
+        self, app: Flask, user_1: User
+    ) -> None:
+        # default privacy policy
+        app.config['privacy_policy_date'] = None
+        user_1.accepted_policy_date = None
+        serialized_user = user_1.serialize(user_1)
+
+        assert serialized_user['accepted_privacy_policy'] is False
+
+    def test_it_returns_user_did_accept_default_privacy_policy(
+        self, app: Flask, user_1: User
+    ) -> None:
+        # default privacy policy
+        app.config['privacy_policy_date'] = None
+        user_1.accepted_policy_date = datetime.utcnow()
+        serialized_user = user_1.serialize(user_1)
+
+        assert serialized_user['accepted_privacy_policy'] is True
+
+    def test_it_returns_user_did_not_accept_last_policy(
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_1.accepted_policy_date = datetime.utcnow()
+        # custom privacy policy
+        app.config['privacy_policy_date'] = datetime.utcnow()
+        serialized_user = user_1.serialize(user_1)
+
+        assert serialized_user['accepted_privacy_policy'] is False
+
+    def test_it_returns_user_did_accept_last_policy(
+        self, app: Flask, user_1: User
+    ) -> None:
+        # custom privacy policy
+        app.config['privacy_policy_date'] = datetime.utcnow()
+        user_1.accepted_policy_date = datetime.utcnow()
+        serialized_user = user_1.serialize(user_1)
+
+        assert serialized_user['accepted_privacy_policy'] is True
+
     def test_it_does_not_return_confirmation_token(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
@@ -137,6 +178,13 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin):
         serialized_user = user_2.serialize(user_1_admin)
 
         self.assert_workouts_keys_are_present(serialized_user)
+
+    def test_it_does_not_return_accepted_privacy_policy_date(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1_admin)
+
+        assert 'accepted_privacy_policy' not in serialized_user
 
     def test_it_does_not_return_confirmation_token(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -441,6 +489,47 @@ class TestUserSportModel:
         assert serialized_user_sport['color'] is None
         assert serialized_user_sport['is_active']
         assert serialized_user_sport['stopped_speed_threshold'] == 1
+
+
+class TestUserDataExportSerializer:
+    def test_it_returns_ongoing_export(self, app: Flask, user_1: User) -> None:
+        created_at = datetime.utcnow()
+        data_export = UserDataExport(user_id=user_1.id, created_at=created_at)
+
+        serialized_data_export = data_export.serialize()
+
+        assert serialized_data_export["created_at"] == created_at
+        assert serialized_data_export["status"] == "in_progress"
+        assert serialized_data_export["file_name"] is None
+        assert serialized_data_export["file_size"] is None
+
+    def test_it_returns_successful_export(
+        self, app: Flask, user_1: User
+    ) -> None:
+        created_at = datetime.utcnow()
+        data_export = UserDataExport(user_id=user_1.id, created_at=created_at)
+        data_export.completed = True
+        data_export.file_name = random_string()
+        data_export.file_size = random_int()
+
+        serialized_data_export = data_export.serialize()
+
+        assert serialized_data_export["created_at"] == created_at
+        assert serialized_data_export["status"] == "successful"
+        assert serialized_data_export["file_name"] == data_export.file_name
+        assert serialized_data_export["file_size"] == data_export.file_size
+
+    def test_it_returns_errored_export(self, app: Flask, user_1: User) -> None:
+        created_at = datetime.utcnow()
+        data_export = UserDataExport(user_id=user_1.id, created_at=created_at)
+        data_export.completed = True
+
+        serialized_data_export = data_export.serialize()
+
+        assert serialized_data_export["created_at"] == created_at
+        assert serialized_data_export["status"] == "errored"
+        assert serialized_data_export["file_name"] is None
+        assert serialized_data_export["file_size"] is None
 
 
 class TestFollowRequestModel:

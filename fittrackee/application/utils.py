@@ -35,6 +35,7 @@ def update_app_config_from_database(
     current_app.config[
         'is_registration_enabled'
     ] = db_config.is_registration_enabled
+    current_app.config['privacy_policy_date'] = db_config.privacy_policy_date
 
 
 def verify_app_config(config_data: Dict) -> List:

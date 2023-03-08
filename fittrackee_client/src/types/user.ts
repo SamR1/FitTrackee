@@ -42,6 +42,7 @@ export interface IUserProfile {
 }
 
 export interface IAuthUserProfile extends IUserProfile {
+  accepted_privacy_policy: boolean
   display_ascent: boolean
   email: string
   imperial_units: boolean
@@ -132,12 +133,20 @@ export interface ILoginRegisterFormData {
   email: string
   password: string
   language?: string
+  accepted_policy?: boolean
 }
 
 export interface ILoginOrRegisterData {
   actionType: string
   formData: ILoginRegisterFormData
   redirectUrl?: string | null | LocationQueryValue[]
+}
+
+export interface IExportRequest {
+  created_at: string
+  status: string
+  file_name: string
+  file_size: number
 }
 
 export type TUsersPayload = TPaginationPayload & {

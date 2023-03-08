@@ -1,4 +1,8 @@
 {
+    "ABOUT": {
+        "DESCRIPTION": "Extra informatie die nuttig kan zijn voor uw gebruikers. Markdown opmaak kan gebruikt worden.",
+        "TEXT": "Gedetailleerde informatie over deze instantie"
+    },
     "ACTION": "Actie",
     "ACTIVATE_USER_ACCOUNT": "Activeer account",
     "ACTIVE": "Ingeschakeld",
@@ -24,7 +28,9 @@
     "EMAIL_SENDING_DISABLED": "Emails verzenden is uitgeschakeld.",
     "ENABLE_DISABLE_SPORTS": "Aan- of uitzetten van sporten.",
     "NEW_EMAIL": "Nieuwe email",
+    "NO_TEXT_ENTERED": "Geen tekst ingegeven",
     "PASSWORD_RESET_SUCCESSFUL": "Het wachtwoord werd gereset.",
+    "PRIVACY_POLICY_DESCRIPTION": "Voeg uw eigen privacybeleid toe, of laat leeg om het standaard beleid te gebruiken. Markdown opmaak kan gebruikt worden.",
     "REGISTRATION_DISABLED": "Registratie is momenteel uitgeschakeld.",
     "REGISTRATION_ENABLED": "Registratie is momenteel ingeschakeld.",
     "RESET_USER_PASSWORD": "Reset wachtwoord",
@@ -37,7 +43,7 @@
         },
         "TITLE": "Beheer sporten"
     },
-    "UPDATE_APPLICATION_DESCRIPTION": "De applicatie configureren (maximum aantal geregistreerde gebruikers, maximum bestandsgrootte).",
+    "UPDATE_APPLICATION_DESCRIPTION": "De applicatie configureren.",
     "UPDATE_USER_EMAIL": "Update email",
     "USER": "gebruiker | gebruikers",
     "USERS": {

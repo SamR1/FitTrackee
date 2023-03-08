@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Installation &#8212; FitTrackee 0.7.12
+    <title>Installation &#8212; FitTrackee 0.7.13
  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css" />
@@ -43,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.12
+        <span class="navbar-text navbar-version pull-left"><b>0.7.13
 </b></span>
       </div>
 
@@ -208,7 +208,7 @@
 </li>
 <li><dl class="simple">
 <dt>optional</dt><dd><ul>
-<li><p>Redis for task queue (if email sending is enabled) and API rate limits</p></li>
+<li><p>Redis for task queue (if email sending is enabled and for data export requests) and API rate limits</p></li>
 <li><p>SMTP provider (if email sending is enabled)</p></li>
 <li><p>API key from a <a class="reference external" href="installation.html#weather-data">weather data provider</a></p></li>
 <li><p><a class="reference external" href="https://poetry.eustace.io">Poetry</a> (for installation from sources only)</p></li>
@@ -219,6 +219,12 @@
 </dl>
 </li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">If registration is enabled, it is recommended to set Redis and a SMTP provider for email sending and data export requests.</div>
+</div>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
@@ -574,14 +580,13 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 <li><p>password reset request</p></li>
 <li><p>email change (to old and new email adresses)</p></li>
 <li><p>password change</p></li>
+<li><p>notification when a data export archive is ready to download (<em>new in 0.7.13</em>)</p></li>
 </ul>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.6.5.</span></p>
 </div>
-<div class="line-block">
-<div class="line">For single-user instance, it is possible to disable email sending with an empty <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> (in this case, no need to start dramatiq workers).</div>
-<div class="line">A <a class="reference external" href="cli.html#ftcli-users-update">CLI</a> is available to activate account and modify email and password.</div>
-</div>
+<p>For single-user instance, it is possible to disable email sending with an empty <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> (in this case, no need to start dramatiq workers).</p>
+<p>A <a class="reference external" href="cli.html#ftcli-users-update">CLI</a> is available to activate account, modify email and password and handle data export requests.</p>
 </section>
 <section id="map-tile-server">
 <h3>Map tile server<a class="headerlink" href="#map-tile-server" title="Permalink to this heading">¶</a></h3>
@@ -598,7 +603,7 @@ The tile server can be changed by updating <code class="docutils literal notrans
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">Check the terms of service of tile provider for map attribution</div>
+<div class="line">Check the terms of service of tile provider for map attribution.</div>
 </div>
 </div>
 <div class="versionchanged">
@@ -821,11 +826,11 @@ $<span class="w"> </span>make<span class="w"> </span>install-db
 </div>
 </div>
 <ul class="simple">
-<li><p>Download the last release (for now, it is the release v0.7.12):</p></li>
+<li><p>Download the last release (for now, it is the release v0.7.13):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.12.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.12.tar.gz
-$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.7.12<span class="w"> </span>FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.13.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.13.tar.gz
+$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.7.13<span class="w"> </span>FitTrackee
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -945,11 +950,11 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <ul class="simple">
 <li><p>Stop the application</p></li>
 <li><p>Change to the directory where FitTrackee directory is located</p></li>
-<li><p>Download the last release (for now, it is the release v0.7.12) and overwrite existing files:</p></li>
+<li><p>Download the last release (for now, it is the release v0.7.13) and overwrite existing files:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.12.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.12.tar.gz
-$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.7.12/*<span class="w"> </span>FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.13.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.13.tar.gz
+$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.7.13/*<span class="w"> </span>FitTrackee/
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1025,7 +1030,11 @@ One way is to use a <strong>systemd</strong> services and <strong>Nginx</strong>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>More information on <a class="reference external" href="https://docs.gunicorn.org/en/stable/deploy.html">Gunicorn documentation</a></p>
+<p>To handle large files, a higher value for <a class="reference external" href="https://docs.gunicorn.org/en/stable/settings.html#timeout">timeout</a> can be set.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>More information on deployment with Gunicorn in its <a class="reference external" href="https://docs.gunicorn.org/en/stable/deploy.html">documentation</a>.</p>
 </div>
 <ul class="simple">
 <li><p>for task queue workers: <code class="docutils literal notranslate"><span class="pre">fittrackee_workers.service</span></code></p></li>
@@ -1208,7 +1217,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
     </p>
     <p>
         &copy; Copyright 2018 - 2022, SamR1 <a rel="me" href="https://fosstodon.org/@FitTrackee"><i class="fa fa-mastodon" aria-hidden="true"></i></a>.
-      Last updated on Feb 20, 2023.<br/>
+      Last updated on Mar 05, 2023.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br/>
     </p>
   </div>

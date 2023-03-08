@@ -4,15 +4,27 @@
     "ACTIVE_USER": "active user | active users",
     "ADMIN": "Admin",
     "ALREADY_HAVE_ACCOUNT": "Already have an account?",
-    "CONFIRM_ACCOUNT_DELETION": "Are you sure you want to delete your account? All data will be deleted, this cannot be undone",
+    "CONFIRM_ACCOUNT_DELETION": "Are you sure you want to delete your account? All data will be deleted, this cannot be undone.",
     "CURRENT_PASSWORD": "Current password",
     "EMAIL": "Email",
     "EMAIL_INFO": "Enter a valid email address.",
     "ENTER_PASSWORD": "Enter a password",
+    "EXPORT_REQUEST": {
+        "DATA_EXPORT": "Data export",
+        "DOWNLOAD_ARCHIVE": "Download archive",
+        "GENERATING_LINK": "generating link...",
+        "ONLY_ONE_EXPORT_PER_DAY": "You can request an archive by 24 hours",
+        "STATUS": {
+            "errored": "errored (please request another export)",
+            "in_progress": "in progres..."
+        }
+    },
     "FILTER_ON_USERNAME": "Filter on username",
     "HIDE_PASSWORD": "hide password",
     "INVALID_TOKEN": "Invalid token, please request a new password reset.",
+    "I_WANT_TO_DELETE_MY_ACCOUNT": "I want to delete my account",
     "LANGUAGE": "Language",
+    "LAST_PRIVACY_POLICY_TO_VALIDATE": "The privacy policy has been updated, please {0} it before proceeding.",
     "LOGIN": "Login",
     "LOGOUT": "Logout",
     "LOGOUT_CONFIRMATION": "Are you sure you want to log out?",
@@ -71,6 +83,7 @@
         "PICTURE_REMOVE": "Remove picture",
         "PICTURE_UPDATE": "Update picture",
         "PREFERENCES_EDITION": "Preferences edition",
+        "PRIVACY-POLICY_EDITION": "Privacy policy",
         "PROFILE_EDITION": "Profile edition",
         "REGISTRATION_DATE": "Registration date",
         "SPORT": {
@@ -93,6 +106,7 @@
             "FOLLOW-REQUESTS": "follow requests",
             "PICTURE": "picture",
             "PREFERENCES": "preferences",
+            "PRIVACY-POLICY": "privacy policy",
             "PROFILE": "profile",
             "SPORTS": "sports"
         },
@@ -103,6 +117,7 @@
             "METRIC": "Metric system (m, km, m/s, °C)"
         }
     },
+    "READ_AND_ACCEPT_PRIVACY_POLICY": "I have read and agree to the {0}.",
     "REGISTER": "Register",
     "REGISTER_DISABLED": "Sorry, registration is disabled.",
     "RELATIONSHIPS": {
@@ -118,6 +133,7 @@
     },
     "RESENT_ACCOUNT_CONFIRMATION": "Resend account confirmation email",
     "RESET_PASSWORD": "Reset your password",
+    "REVIEW": "review",
     "SHOW_PASSWORD": "show password",
     "THIS_USER_ACCOUNT_IS_INACTIVE": "This user account is inactive.",
     "USER": "user | users",
@@ -125,5 +141,6 @@
     "USERNAME_INFO": "3 to 30 characters required, only alphanumeric characters and the underscore character \"_\" allowed.",
     "USER_FROM_REMOTE_INSTANCE_ORIGINAL_LINK": "This user is from a remote instance{1} (click {0} to display the original profile).",
     "USER_PICTURE": "user picture",
-    "YOU": "you"
+    "YOU": "you",
+    "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "You have accepted the {0}."
 }

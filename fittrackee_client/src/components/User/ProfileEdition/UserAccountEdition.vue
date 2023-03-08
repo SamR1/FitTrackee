@@ -62,13 +62,43 @@
           <button class="danger" @click.prevent="updateDisplayModal(true)">
             {{ $t('buttons.DELETE_MY_ACCOUNT') }}
           </button>
+          <button class="confirm" v-if="canRequestExport()" @click.prevent="requestExport">
+            {{ $t('buttons.REQUEST_DATA_EXPORT') }}
+          </button>
         </div>
       </form>
+      <div class="data-export">
+        <span class="info-box">
+          <i class="fa fa-info-circle" aria-hidden="true" />
+          {{ $t('user.EXPORT_REQUEST.ONLY_ONE_EXPORT_PER_DAY') }}
+        </span>
+        <div v-if="exportRequest" class="data-export-archive">
+          {{$t('user.EXPORT_REQUEST.DATA_EXPORT')}}
+          ({{ exportRequestDate }}):
+          <span
+            v-if="exportRequest.status=== 'successful'"
+            class="archive-link"
+            @click.prevent="downloadArchive(exportRequest.file_name)"
+          >
+            <i class="fa fa-download" aria-hidden="true" />
+            {{ $t("user.EXPORT_REQUEST.DOWNLOAD_ARCHIVE") }}
+            ({{ getReadableFileSize(exportRequest.file_size) }})
+          </span>
+          <span v-else>
+            {{ $t(`user.EXPORT_REQUEST.STATUS.${exportRequest.status}`)}}
+          </span>
+          <span v-if="generatingLink">
+            {{ $t(`user.EXPORT_REQUEST.GENERATING_LINK`)}}
+            <i class="fa fa-spinner fa-pulse" aria-hidden="true" />
+          </span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+  import { isBefore, subDays } from 'date-fns'
   import {
     ComputedRef,
     Ref,
@@ -81,14 +111,17 @@
     onUnmounted,
   } from 'vue'
 
+  import authApi from "@/api/authApi";
   import PasswordInput from '@/components/Common/PasswordInput.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import { TAppConfig } from '@/types/application'
-  import { IUserProfile, IUserAccountPayload } from '@/types/user'
+  import { IAuthUserProfile, IUserAccountPayload, IExportRequest } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { formatDate } from '@/utils/dates'
+  import { getReadableFileSize } from '@/utils/files'
 
   interface Props {
-    user: IUserProfile
+    user: IAuthUserProfile
   }
   const props = defineProps<Props>()
   const { user } = toRefs(props)
@@ -114,9 +147,17 @@
   )
   const formErrors = ref(false)
   const displayModal: Ref<boolean> = ref(false)
+  const exportRequest: ComputedRef<IExportRequest | null> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.EXPORT_REQUEST]
+  )
+  const exportRequestDate: ComputedRef<string | null> = computed(
+    () => getExportRequestDate()
+  )
+  const generatingLink: Ref<boolean> = ref(false)
 
   onMounted(() => {
     if (props.user) {
+      store.dispatch(AUTH_USER_STORE.ACTIONS.GET_REQUEST_DATA_EXPORT)
       updateUserForm(props.user)
     }
   })
@@ -124,7 +165,7 @@
   function invalidateForm() {
     formErrors.value = true
   }
-  function updateUserForm(user: IUserProfile) {
+  function updateUserForm(user: IAuthUserProfile) {
     userForm.email = user.email
   }
   function updatePassword(password: string) {
@@ -132,6 +173,21 @@
   }
   function updateNewPassword(new_password: string) {
     userForm.new_password = new_password
+  }
+  function getExportRequestDate() {
+    return exportRequest.value ? formatDate(
+      exportRequest.value.created_at,
+      user.value.timezone,
+      user.value.date_format,
+      true,
+        null, true
+    ) : null
+  }
+
+  function canRequestExport() {
+    return exportRequestDate.value
+        ? isBefore(new Date(exportRequestDate.value), subDays(new Date(), 1))
+        : true
   }
   function updateProfile() {
     const payload: IUserAccountPayload = {
@@ -149,6 +205,27 @@
   }
   function deleteAccount(username: string) {
     store.dispatch(AUTH_USER_STORE.ACTIONS.DELETE_ACCOUNT, { username })
+  }
+  function requestExport() {
+    store.dispatch(AUTH_USER_STORE.ACTIONS.REQUEST_DATA_EXPORT)
+  }
+  async function downloadArchive(filename: string) {
+    generatingLink.value = true
+    await authApi
+      .get(`/auth/account/export/${filename}`, {
+        responseType: 'blob',
+      })
+      .then((response) => {
+        const archiveFileUrl = window.URL.createObjectURL(
+          new Blob([response.data], { type: 'application/zip' })
+        )
+        const archive_link = document.createElement('a')
+        archive_link.href = archiveFileUrl
+        archive_link.setAttribute('download', filename)
+        document.body.appendChild(archive_link)
+        archive_link.click()
+      })
+      .finally(() => generatingLink.value = false)
   }
 
   onUnmounted(() => {
@@ -201,6 +278,19 @@
     flex-direction: row;
     @media screen and (max-width: $x-small-limit) {
       flex-direction: column;
+    }
+  }
+
+  .data-export {
+    padding: $default-padding 0;
+    .data-export-archive {
+      padding-top: $default-padding*2;
+      font-size: .9em;
+
+      .archive-link {
+        color: var(--app-a-color);
+        cursor: pointer;
+      }
     }
   }
 </style>

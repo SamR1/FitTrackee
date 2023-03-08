@@ -93,7 +93,7 @@ const availableDateFormats = [
   'yyyy-MM-dd',
   'date_string',
 ]
-const dateStringFormats: Record<string, string> = {
+export const dateStringFormats: Record<string, string> = {
   de: 'do MMM yyyy',
   en: 'MMM. do, yyyy',
   fr: 'd MMM yyyy',
@@ -111,14 +111,16 @@ export const formatDate = (
   timezone: string,
   dateFormat: string,
   withTime = true,
-  language: string | null = null
+  language: string | null = null,
+  withSeconds = false
 ): string => {
   if (!language) {
     language = locale.value
   }
+  const timeFormat = withTime ? (withSeconds ? ' HH:mm:ss' : ' HH:mm') : ''
   return format(
     getDateWithTZ(dateString, timezone),
-    `${getDateFormat(dateFormat, language)}${withTime ? ' HH:mm' : ''}`,
+    `${getDateFormat(dateFormat, language)}${timeFormat}`,
     { locale: localeFromLanguage[language] }
   )
 }

@@ -17,13 +17,9 @@
       </div>
       <div class="footer-item bullet">•</div>
       <div class="footer-item">
-        <a
-          href="https://samr1.github.io/FitTrackee/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {{ $t('common.DOCUMENTATION') }}
-        </a>
+        <router-link to="/privacy-policy">
+          {{ $t('privacy_policy.TITLE') }}
+        </router-link>
       </div>
     </div>
   </div>
@@ -61,6 +57,7 @@
 
     .footer-items {
       display: flex;
+      flex-wrap: wrap;
       align-content: center;
       justify-content: center;
 
@@ -76,14 +73,17 @@
 
     @media screen and (max-width: $x-small-limit) {
       .footer-items {
+        border-top: solid 1px var(--footer-border-color);
         font-size: 0.85em;
+        padding: 0 0 2px;
 
         .footer-item {
-          padding: 5px 5px;
+          border-top: none;
+          padding: 1px 5px;
         }
 
         .bullet {
-          padding: 5px 0;
+          padding: 1px 0;
         }
       }
     }

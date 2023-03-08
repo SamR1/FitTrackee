@@ -1,4 +1,8 @@
 {
+    "ABOUT": {
+        "DESCRIPTION": "Any additional information that may be useful to your users. Markdown syntax can be used.",
+        "TEXT": "Detailed instance information"
+    },
     "ACTION": "Action",
     "ACTIVATE_USER_ACCOUNT": "Activate account",
     "ACTIVE": "Active",
@@ -27,7 +31,9 @@
     "FEDERATION_DISABLED": "Federation is currently disabled.",
     "FEDERATION_ENABLED": "Federation is currently enabled.",
     "NEW_EMAIL": "New email",
+    "NO_TEXT_ENTERED": "No text entered",
     "PASSWORD_RESET_SUCCESSFUL": "The password has been reset.",
+    "PRIVACY_POLICY_DESCRIPTION": "Add your own privacy policy or leave blank to use the default one. Markdown syntax can be used.",
     "REGISTRATION_DISABLED": "Registration is currently disabled.",
     "REGISTRATION_ENABLED": "Registration is currently enabled.",
     "RESET_USER_PASSWORD": "Reset password",
@@ -40,7 +46,7 @@
         },
         "TITLE": "Sports administration"
     },
-    "UPDATE_APPLICATION_DESCRIPTION": "Update application configuration (maximum number of registered users, maximum files size, admin email).",
+    "UPDATE_APPLICATION_DESCRIPTION": "Update application configuration.",
     "UPDATE_USER_EMAIL": "Update email",
     "USER": "user | users",
     "USERS": {

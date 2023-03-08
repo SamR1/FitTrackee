@@ -28,18 +28,18 @@ A command line interface (CLI) is available to manage database, OAuth2 tokens an
 Database
 ~~~~~~~~
 
-``ftcli db upgrade``
-""""""""""""""""""""
-.. versionadded:: 0.6.5
-
-Apply migrations.
-
-
 ``ftcli db drop``
 """""""""""""""""
 .. versionadded:: 0.6.5
 
 Empty database and delete uploaded files, only on development environments.
+
+
+``ftcli db upgrade``
+""""""""""""""""""""
+.. versionadded:: 0.6.5
+
+Apply migrations.
 
 
 OAuth2
@@ -66,6 +66,23 @@ Remove tokens expired for more than provided number of days
 Users
 ~~~~~
 
+``ftcli users clean_archives``
+""""""""""""""""""""""""""""""
+.. versionadded:: 0.7.13
+
+Delete export requests and related archives created more than provided number of days.
+
+.. cssclass:: table-bordered
+.. list-table::
+   :widths: 25 50
+   :header-rows: 1
+
+   * - Options
+     - Description
+   * - ``--days``
+     - Number of days.
+
+
 ``ftcli users clean_tokens``
 """"""""""""""""""""""""""""
 .. versionadded:: 0.7.0
@@ -81,6 +98,24 @@ Remove blacklisted tokens expired for more than provided number of days.
      - Description
    * - ``--days``
      - Number of days.
+
+
+``ftcli users export_archives``
+"""""""""""""""""""""""""""""""
+.. versionadded:: 0.7.13
+
+Process incomplete user export requests.
+Can be used if redis is not set (no dramatiq workers running).
+
+.. cssclass:: table-bordered
+.. list-table::
+   :widths: 25 50
+   :header-rows: 1
+
+   * - Options
+     - Description
+   * - ``--max``
+     - Maximum number of export requests to process.
 
 
 ``ftcli users update``

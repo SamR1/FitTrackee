@@ -47,11 +47,6 @@ describe('linkifyAndClean (input sanitization)', () => {
       expectedString: 'test',
     },
     {
-      description: 'it closes single tag',
-      inputString: '<p>test',
-      expectedString: '<p>test</p>',
-    },
-    {
       description: 'it removes css class',
       inputString: '<p class="active">test</p>',
       expectedString: '<p>test</p>',

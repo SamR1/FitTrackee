@@ -22,6 +22,9 @@ class AppConfig(BaseModel):
     )
     max_zip_file_size = db.Column(db.Integer, default=10485760, nullable=False)
     admin_contact = db.Column(db.String(255), nullable=True)
+    privacy_policy_date = db.Column(db.DateTime, nullable=True)
+    privacy_policy = db.Column(db.Text, nullable=True)
+    about = db.Column(db.Text, nullable=True)
 
     @property
     def is_registration_enabled(self) -> bool:
@@ -45,6 +48,7 @@ class AppConfig(BaseModel):
     def serialize(self) -> Dict:
         weather_provider = os.getenv('WEATHER_API_PROVIDER', '').lower()
         return {
+            'about': self.about,
             'admin_contact': self.admin_contact,
             'federation_enabled': current_app.config['FEDERATION_ENABLED'],
             'gpx_limit_import': self.gpx_limit_import,
@@ -54,6 +58,8 @@ class AppConfig(BaseModel):
             'max_zip_file_size': self.max_zip_file_size,
             'max_users': self.max_users,
             'map_attribution': self.map_attribution,
+            'privacy_policy': self.privacy_policy,
+            'privacy_policy_date': self.privacy_policy_date,
             'version': current_app.config['VERSION'],
             'weather_provider': (
                 weather_provider

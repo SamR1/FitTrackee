@@ -238,6 +238,47 @@ class Workout(BaseModel):
     def liked_by(self, user: 'User') -> bool:
         return user in self.likes.all()
 
+    def get_workout_data(
+        self, user: Optional['User'], can_see_map_data: Optional[bool] = None
+    ) -> Dict:
+        if can_see_map_data is None:
+            can_see_map_data = can_view(
+                self, "calculated_map_visibility", user=user
+            )
+        return {
+            'id': self.short_id,  # WARNING: client use uuid as id
+            'sport_id': self.sport_id,
+            'title': self.title,
+            'creation_date': self.creation_date,
+            'modification_date': self.modification_date,
+            'workout_date': self.workout_date,
+            'duration': str(self.duration) if self.duration else None,
+            'pauses': str(self.pauses) if self.pauses else None,
+            'moving': str(self.moving) if self.moving else None,
+            'distance': float(self.distance) if self.distance else None,
+            'min_alt': float(self.min_alt) if self.min_alt else None,
+            'max_alt': float(self.max_alt) if self.max_alt else None,
+            'descent': (
+                float(self.descent) if self.descent is not None else None
+            ),
+            'ascent': float(self.ascent) if self.ascent is not None else None,
+            'max_speed': float(self.max_speed) if self.max_speed else None,
+            'ave_speed': float(self.ave_speed) if self.ave_speed else None,
+            'records': [record.serialize() for record in self.records],
+            'segments': (
+                [segment.serialize() for segment in self.segments]
+                if can_see_map_data
+                else []
+            ),
+            'weather_start': self.weather_start,
+            'weather_end': self.weather_end,
+            'notes': self.notes if user and user.id == self.user_id else None,
+            'map_visibility': self.calculated_map_visibility.value,
+            'workout_visibility': self.workout_visibility.value,
+            'likes_count': self.likes.count(),
+            'liked': self.liked_by(user) if user else False,
+        }
+
     def serialize(
         self, user: Optional['User'] = None, params: Optional[Dict] = None
     ) -> Dict:
@@ -341,51 +382,21 @@ class Workout(BaseModel):
             next_workout = None
             previous_workout = None
 
-        workout = {
-            'id': self.short_id,  # WARNING: client use uuid as id
-            'user': self.user.serialize(),
-            'sport_id': self.sport_id,
-            'title': self.title,
-            'creation_date': self.creation_date,
-            'modification_date': self.modification_date,
-            'workout_date': self.workout_date,
-            'duration': str(self.duration) if self.duration else None,
-            'pauses': str(self.pauses) if self.pauses else None,
-            'moving': str(self.moving) if self.moving else None,
-            'distance': float(self.distance) if self.distance else None,
-            'min_alt': float(self.min_alt) if self.min_alt else None,
-            'max_alt': float(self.max_alt) if self.max_alt else None,
-            'descent': (
-                float(self.descent) if self.descent is not None else None
-            ),
-            'ascent': float(self.ascent) if self.ascent is not None else None,
-            'max_speed': float(self.max_speed) if self.max_speed else None,
-            'ave_speed': float(self.ave_speed) if self.ave_speed else None,
-            'with_gpx': self.gpx is not None and can_see_map_data,
-            'bounds': (
-                [float(bound) for bound in self.bounds]
-                if self.bounds and can_see_map_data
-                else []
-            ),
-            'previous_workout': previous_workout.short_id
-            if previous_workout
-            else None,  # noqa
-            'next_workout': next_workout.short_id if next_workout else None,
-            'segments': (
-                [segment.serialize() for segment in self.segments]
-                if can_see_map_data
-                else []
-            ),
-            'records': [record.serialize() for record in self.records],
-            'map': self.map_id if self.map and can_see_map_data else None,
-            'map_visibility': self.calculated_map_visibility.value,
-            'weather_start': self.weather_start,
-            'weather_end': self.weather_end,
-            'notes': self.notes if is_owner else None,
-            'workout_visibility': self.workout_visibility.value,
-            'likes_count': self.likes.count(),
-            'liked': self.liked_by(user) if user else False,
-        }
+        workout = self.get_workout_data(user, can_see_map_data)
+        workout["next_workout"] = (
+            next_workout.short_id if next_workout else None
+        )
+        workout["previous_workout"] = (
+            previous_workout.short_id if previous_workout else None
+        )
+        workout["bounds"] = (
+            [float(bound) for bound in self.bounds]
+            if self.bounds and can_see_map_data
+            else []
+        )
+        workout["user"] = self.user.serialize()
+        workout["map"] = self.map_id if self.map and can_see_map_data else None
+        workout["with_gpx"] = self.gpx is not None and can_see_map_data
         if self.user.is_remote:
             workout['remote_url'] = self.remote_url
         return workout

@@ -13,6 +13,7 @@ import UserAccountEdition from '@/components/User/ProfileEdition/UserAccountEdit
 import UserInfosEdition from '@/components/User/ProfileEdition/UserInfosEdition.vue'
 import UserPictureEdition from '@/components/User/ProfileEdition/UserPictureEdition.vue'
 import UserPreferencesEdition from '@/components/User/ProfileEdition/UserPreferencesEdition.vue'
+import UserPrivacyPolicyValidation from '@/components/User/ProfileEdition/UserPrivacyPolicyValidation.vue'
 import AddUserApp from '@/components/User/UserApps/AddUserApp.vue'
 import AuthorizeUserApp from '@/components/User/UserApps/AuthorizeUserApp.vue'
 import UserApps from '@/components/User/UserApps/index.vue'
@@ -25,6 +26,7 @@ import { AUTH_USER_STORE } from '@/store/constants'
 import AboutView from '@/views/AboutView.vue'
 import Dashboard from '@/views/Dashboard.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
+import PrivacyPolicyView from '@/views/PrivacyPolicyView.vue'
 import LoginOrRegister from '@/views/user/LoginOrRegister.vue'
 
 const getTabFromPath = (path: string): string => {
@@ -237,6 +239,11 @@ const routes: Array<RouteRecordRaw> = [
             component: UserSportPreferences,
             props: { isEdition: true },
           },
+          {
+            path: 'privacy-policy',
+            name: 'UserPrivacyPolicy',
+            component: UserPrivacyPolicyValidation,
+          },
         ],
       },
     ],
@@ -359,6 +366,11 @@ const routes: Array<RouteRecordRaw> = [
     component: AboutView,
   },
   {
+    path: '/privacy-policy',
+    name: 'PrivacyPolicy',
+    component: PrivacyPolicyView,
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: NotFoundView,
@@ -382,7 +394,7 @@ const pathsWithoutAuthentication = [
   '/account-confirmation/email-sent',
 ]
 
-const pathNamesWithoutChecks = ['EmailUpdate', 'About', 'User', 'Workout']
+const pathNamesWithoutChecks = ['EmailUpdate', 'About', 'User', 'Workout', 'PrivacyPolicy']
 
 router.beforeEach((to, from, next) => {
   store

@@ -1,4 +1,8 @@
 {
+    "ABOUT": {
+        "DESCRIPTION": "Toute information supplémentaire qui peut être utile à vos utilisateurs. La syntaxe Markdown peut être utilisée.",
+        "TEXT": "Information détaillée de l'instance"
+    },
     "ACTION": "Action",
     "ACTIVATE_USER_ACCOUNT": "Activer le compte",
     "ACTIVE": "Actif",
@@ -27,7 +31,9 @@
     "FEDERATION_DISABLED": "La fédération de l'instance est actuellement désactivée.",
     "FEDERATION_ENABLED": "La fédération de l'instance est actuellement activée.",
     "NEW_EMAIL": "Nouvelle adresse email",
+    "NO_TEXT_ENTERED": "pas de texte saisi",
     "PASSWORD_RESET_SUCCESSFUL": "Le mot de passe a été réinitialisé.",
+    "PRIVACY_POLICY_DESCRIPTION": "Ajouter votre propre politique de confidentialité ou laisser vider pour utiliser la politique par défaut. La syntaxe Markdown peut être utilisée.",
     "REGISTRATION_DISABLED": "Les inscriptions sont actuellement désactivées.",
     "REGISTRATION_ENABLED": "Les inscriptions sont actuellement activées.",
     "RESET_USER_PASSWORD": "Réinit. le mot de passe",
@@ -40,7 +46,7 @@
         },
         "TITLE": "Administration - Sports"
     },
-    "UPDATE_APPLICATION_DESCRIPTION": "Configurer l'application (nombre maximum d'utilisateurs inscrits, taille maximale des fichiers, email de de d'administrateur).",
+    "UPDATE_APPLICATION_DESCRIPTION": "Configurer l'application.",
     "UPDATE_USER_EMAIL": "Changer l'email",
     "USER": "utilisateur | utilisateurs",
     "USERS": {

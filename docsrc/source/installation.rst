@@ -26,12 +26,15 @@ Prerequisites
     - Python 3.7+
     - PostgreSQL 11+
 - optional
-    - Redis for task queue (if email sending is enabled) and API rate limits
+    - Redis for task queue (if email sending is enabled and for data export requests) and API rate limits
     - SMTP provider (if email sending is enabled)
     - API key from a `weather data provider <installation.html#weather-data>`__
     - `Poetry <https://poetry.eustace.io>`__ (for installation from sources only)
     - `Yarn <https://yarnpkg.com>`__ (for development only)
     -  Docker and Docker Compose (for development or evaluation purposes)
+
+.. note::
+    | If registration is enabled, it is recommended to set Redis and a SMTP provider for email sending and data export requests.
 
 .. note::
     | The following steps describe an installation on Linux systems (tested
@@ -273,11 +276,13 @@ Emails sent by FitTrackee are:
 - password reset request
 - email change (to old and new email adresses)
 - password change
+- notification when a data export archive is ready to download (*new in 0.7.13*)
 
 .. versionchanged:: 0.6.5
 
-| For single-user instance, it is possible to disable email sending with an empty ``EMAIL_URL`` (in this case, no need to start dramatiq workers).
-| A `CLI <cli.html#ftcli-users-update>`__ is available to activate account and modify email and password.
+For single-user instance, it is possible to disable email sending with an empty ``EMAIL_URL`` (in this case, no need to start dramatiq workers).
+
+A `CLI <cli.html#ftcli-users-update>`__ is available to activate account, modify email and password and handle data export requests.
 
 
 Map tile server
@@ -293,7 +298,7 @@ To keep using **ThunderForest Outdoors**, the configuration is:
 - ``MAP_ATTRIBUTION=&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors``
 
 .. note::
-    | Check the terms of service of tile provider for map attribution
+    | Check the terms of service of tile provider for map attribution.
 
 
 .. versionchanged:: 0.6.10
@@ -502,13 +507,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.7.12):
+-  Download the last release (for now, it is the release v0.7.13):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.12.tar.gz
-   $ tar -xzf v0.7.12.tar.gz
-   $ mv FitTrackee-0.7.12 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.13.tar.gz
+   $ tar -xzf v0.7.13.tar.gz
+   $ mv FitTrackee-0.7.13 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -628,13 +633,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.7.12) and overwrite existing files:
+- Download the last release (for now, it is the release v0.7.13) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.12.tar.gz
-   $ tar -xzf v0.7.12.tar.gz
-   $ cp -R FitTrackee-0.7.12/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.13.tar.gz
+   $ tar -xzf v0.7.13.tar.gz
+   $ cp -R FitTrackee-0.7.13/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -707,8 +712,12 @@ Examples (to update depending on your application configuration and given distri
     [Install]
     WantedBy=multi-user.target
 
+
 .. note::
-    More information on `Gunicorn documentation <https://docs.gunicorn.org/en/stable/deploy.html>`__
+    To handle large files, a higher value for `timeout <https://docs.gunicorn.org/en/stable/settings.html#timeout>`__ can be set.
+
+.. note::
+    More information on deployment with Gunicorn in its `documentation <https://docs.gunicorn.org/en/stable/deploy.html>`__.
 
 - for task queue workers: ``fittrackee_workers.service``
 

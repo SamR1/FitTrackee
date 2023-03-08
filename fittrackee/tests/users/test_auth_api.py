@@ -1,7 +1,7 @@
 import json
 from datetime import datetime, timedelta
 from io import BytesIO
-from typing import Optional
+from typing import Optional, Union
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
@@ -10,7 +10,12 @@ from freezegun import freeze_time
 
 from fittrackee import db
 from fittrackee.privacy_levels import PrivacyLevel
-from fittrackee.users.models import BlacklistedToken, User, UserSportPreference
+from fittrackee.users.models import (
+    BlacklistedToken,
+    User,
+    UserDataExport,
+    UserSportPreference,
+)
 from fittrackee.users.utils.token import get_user_token
 from fittrackee.workouts.models import Sport
 
@@ -35,6 +40,48 @@ class TestUserRegistration(ApiTestCaseMixin):
 
         self.assert_400(response)
 
+    def test_it_returns_error_if_accepted_policy_is_missing(
+        self, app: Flask
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/register',
+            data=json.dumps(
+                dict(
+                    username=self.random_string(),
+                    email=self.random_email(),
+                    password=self.random_string(),
+                )
+            ),
+            content_type='application/json',
+        )
+
+        self.assert_400(response)
+
+    def test_it_returns_error_if_accepted_policy_is_false(
+        self, app: Flask
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/register',
+            data=json.dumps(
+                dict(
+                    username=self.random_string(),
+                    email=self.random_email(),
+                    password=self.random_string(),
+                    accepted_policy=False,
+                )
+            ),
+            content_type='application/json',
+        )
+
+        self.assert_400(
+            response,
+            'sorry, you must agree privacy policy to register',
+        )
+
     def test_it_returns_error_if_username_is_missing(self, app: Flask) -> None:
         client = app.test_client()
 
@@ -44,6 +91,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                 dict(
                     email=self.random_email(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -67,6 +115,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username=self.random_string(length=input_username_length),
                     email=self.random_email(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -93,6 +142,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username=input_username,
                     email=self.random_email(),
                     password=self.random_email(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -124,6 +174,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                     ),
                     email=self.random_email(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -140,6 +191,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                 dict(
                     username=self.random_string(),
                     email=self.random_email(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -159,6 +211,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username=self.random_string(),
                     email=self.random_email(),
                     password=self.random_string(length=7),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -175,6 +228,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                 dict(
                     username=self.random_string(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -192,6 +246,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username=self.random_string(),
                     email=self.random_string(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -210,6 +265,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                 dict(
                     username=self.random_string(),
                     email=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -227,6 +283,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username=self.random_string(),
                     email=self.random_email(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -251,6 +308,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username=username,
                     email=self.random_email(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -272,25 +330,30 @@ class TestUserRegistration(ApiTestCaseMixin):
         client = app.test_client()
         username = self.random_string()
         email = self.random_email()
+        accepted_policy_date = datetime.utcnow()
 
-        client.post(
-            '/api/auth/register',
-            data=json.dumps(
-                dict(
-                    username=username,
-                    email=email,
-                    password=self.random_string(),
-                    language=input_language,
-                )
-            ),
-            content_type='application/json',
-        )
+        with patch('fittrackee.users.auth.datetime.datetime') as datetime_mock:
+            datetime_mock.utcnow = Mock(return_value=accepted_policy_date)
+            client.post(
+                '/api/auth/register',
+                data=json.dumps(
+                    dict(
+                        username=username,
+                        email=email,
+                        password=self.random_string(),
+                        language=input_language,
+                        accepted_policy=True,
+                    )
+                ),
+                content_type='application/json',
+            )
 
         new_user = User.query.filter_by(username=username).first()
         assert new_user.email == email
         assert new_user.password is not None
         assert new_user.is_active is False
         assert new_user.language == expected_language
+        assert new_user.accepted_policy_date == accepted_policy_date
 
     def test_it_creates_actor_on_user_registration(self, app: Flask) -> None:
         """it must create actor even if federation is disabled"""
@@ -321,6 +384,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                         email=email,
                         password='12345678',
                         language=input_language,
+                        accepted_policy=True,
                     )
                 ),
                 content_type='application/json',
@@ -360,6 +424,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username=username,
                     email=email,
                     password='12345678',
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -388,6 +453,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                         else user_1.email.lower()
                     ),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -411,6 +477,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                     username=self.random_string(),
                     email=user_1.email,
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -2089,6 +2156,7 @@ class TestRegistrationConfiguration(ApiTestCaseMixin):
                     username=self.random_string(),
                     email=self.random_email(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -2101,6 +2169,7 @@ class TestRegistrationConfiguration(ApiTestCaseMixin):
                     username=self.random_string(),
                     email=self.random_email(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -2121,6 +2190,7 @@ class TestRegistrationConfiguration(ApiTestCaseMixin):
                     username=self.random_string(),
                     email=self.random_email(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -2133,6 +2203,7 @@ class TestRegistrationConfiguration(ApiTestCaseMixin):
                     username=self.random_string(),
                     email=self.random_email(),
                     password=self.random_string(),
+                    accepted_policy=True,
                 )
             ),
             content_type='application/json',
@@ -2789,3 +2860,422 @@ class TestUserLogout(ApiTestCaseMixin):
         )
 
         self.assert_401(response)
+
+
+class TestUserPrivacyPolicyUpdate(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/profile/edit/preferences',
+            content_type='application/json',
+            data=json.dumps(dict(accepted_policy=True)),
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_error_if_accepted_policy_is_missing(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/account/privacy-policy',
+            content_type='application/json',
+            data=json.dumps(dict()),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response)
+
+    def test_it_updates_accepted_policy(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        accepted_policy_date = datetime.utcnow()
+
+        with patch('fittrackee.users.auth.datetime.datetime') as datetime_mock:
+            datetime_mock.utcnow = Mock(return_value=accepted_policy_date)
+            response = client.post(
+                '/api/auth/account/privacy-policy',
+                content_type='application/json',
+                data=json.dumps(dict(accepted_policy=True)),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        assert response.status_code == 200
+        assert user_1.accepted_policy_date == accepted_policy_date
+
+    @pytest.mark.parametrize('input_accepted_policy', [False, '', None, 'foo'])
+    def test_it_return_error_if_user_has_not_accepted_policy(
+        self,
+        app: Flask,
+        user_1: User,
+        input_accepted_policy: Union[str, bool, None],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/account/privacy-policy',
+            content_type='application/json',
+            data=json.dumps(dict(accepted_policy=input_accepted_policy)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 400
+
+
+@patch('fittrackee.users.auth.export_data')
+class TestPostUserDataExportRequest(ApiTestCaseMixin):
+    def test_it_returns_data_export_info_when_no_ongoing_request_exists_for_user(  # noqa
+        self,
+        export_data_mock: Mock,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        db.session.add(UserDataExport(user_id=user_2.id))
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/account/export/request',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        data_export_request = UserDataExport.query.filter_by(
+            user_id=user_1.id
+        ).first()
+        assert data["status"] == "success"
+        assert data["request"] == jsonify_dict(data_export_request.serialize())
+
+    def test_it_returns_error_if_ongoing_request_exist(
+        self,
+        export_data_mock: Mock,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        db.session.add(UserDataExport(user_id=user_1.id))
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/account/export/request',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, "ongoing request exists")
+
+    def test_it_returns_error_if_existing_request_has_not_expired(
+        self,
+        export_data_mock: Mock,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        completed_export_request = UserDataExport(user_id=user_1.id)
+        db.session.add(completed_export_request)
+        completed_export_request.completed = True
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/account/export/request',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, "completed request already exists")
+
+    def test_it_returns_new_request_if_existing_request_has_expired(  # noqa
+        self,
+        export_data_mock: Mock,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
+        completed_export_request = UserDataExport(
+            user_id=user_1.id,
+            created_at=datetime.utcnow() - timedelta(hours=export_expiration),
+        )
+        db.session.add(completed_export_request)
+        completed_export_request.completed = True
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/account/export/request',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        data_export_request = UserDataExport.query.filter_by(
+            user_id=user_1.id
+        ).first()
+        assert data_export_request.id != completed_export_request.id
+        assert data["status"] == "success"
+        assert data["request"] == jsonify_dict(data_export_request.serialize())
+
+    def test_it_calls_export_data_tasks_when_request_is_created(
+        self,
+        export_data_mock: Mock,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        client.post(
+            '/api/auth/account/export/request',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data_export_request = UserDataExport.query.filter_by(
+            user_id=user_1.id
+        ).first()
+        export_data_mock.send.assert_called_once_with(
+            export_request_id=data_export_request.id
+        )
+
+    def test_it_does_not_calls_export_data_tasks_when_request_already_exists(
+        self,
+        export_data_mock: Mock,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
+        completed_export_request = UserDataExport(
+            user_id=user_1.id,
+            created_at=datetime.utcnow() - timedelta(hours=export_expiration),
+        )
+        db.session.add(completed_export_request)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        client.post(
+            '/api/auth/account/export/request',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        export_data_mock.send.assert_not_called()
+
+    def test_it_returns_new_request_if_previous_request_has_expired(
+        self,
+        export_data_mock: Mock,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
+        completed_export_request = UserDataExport(
+            user_id=user_1.id,
+            created_at=datetime.utcnow() - timedelta(hours=export_expiration),
+        )
+        db.session.add(completed_export_request)
+        completed_export_request.completed = True
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        client.post(
+            '/api/auth/account/export/request',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data_export_request = UserDataExport.query.filter_by(
+            user_id=user_1.id
+        ).first()
+        export_data_mock.send.assert_called_once_with(
+            export_request_id=data_export_request.id
+        )
+
+
+class TestGetUserDataExportRequest(ApiTestCaseMixin):
+    def test_it_returns_none_if_no_request(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/auth/account/export',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["request"] is None
+
+    def test_it_does_not_return_another_user_existing_request(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
+        completed_export_request = UserDataExport(
+            user_id=user_2.id,
+            created_at=datetime.utcnow() - timedelta(hours=export_expiration),
+        )
+        db.session.add(completed_export_request)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/auth/account/export',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["request"] is None
+
+    def test_it_returns_existing_request_for_authenticated_user(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
+        completed_export_request = UserDataExport(
+            user_id=user_1.id,
+            created_at=datetime.utcnow() - timedelta(hours=export_expiration),
+        )
+        db.session.add(completed_export_request)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/auth/account/export',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["request"] == jsonify_dict(
+            completed_export_request.serialize()
+        )
+
+
+class TestDownloadExportDataArchive(ApiTestCaseMixin):
+    def test_it_returns_404_when_request_export_does_not_exist(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/auth/account/export/{self.random_string()}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_message(response, 'file not found')
+
+    def test_it_returns_404_when_request_export_from_another_user(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        archive_file_name = self.random_string()
+        export_request = UserDataExport(user_id=user_2.id)
+        db.session.add(export_request)
+        export_request.completed = True
+        export_request.file_name = archive_file_name
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/auth/account/export/{archive_file_name}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_message(response, 'file not found')
+
+    def test_it_returns_404_when_file_name_does_not_match(
+        self, app: Flask, user_1: User
+    ) -> None:
+        export_request = UserDataExport(user_id=user_1.id)
+        db.session.add(export_request)
+        export_request.completed = True
+        export_request.file_name = self.random_string()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/auth/account/export/{self.random_string()}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_message(response, 'file not found')
+
+    def test_it_calls_send_from_directory_if_request_exist(
+        self, app: Flask, user_1: User
+    ) -> None:
+        archive_file_name = self.random_string()
+        export_request = UserDataExport(user_id=user_1.id)
+        db.session.add(export_request)
+        export_request.completed = True
+        export_request.file_name = archive_file_name
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        with patch('fittrackee.users.auth.send_from_directory') as mock:
+            mock.return_value = 'file'
+
+            client.get(
+                f'/api/auth/account/export/{archive_file_name}',
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        mock.assert_called_once_with(
+            f"{app.config['UPLOAD_FOLDER']}/exports/{user_1.id}",
+            archive_file_name,
+            mimetype='application/zip',
+            as_attachment=True,
+        )

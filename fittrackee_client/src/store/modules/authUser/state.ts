@@ -7,5 +7,6 @@ export const authUserState: IAuthUserState = {
   isSuccess: false,
   isRegistrationSuccess: false,
   loading: false,
+  exportRequest: null,
   followRequests: [],
 }

@@ -24,7 +24,7 @@ api.interceptors.response.use(
     return response
   },
   (error) => {
-    if (error.message !== 'canceled') {
+    if (error.message !== 'canceled' && error.response) {
       removeRequestIfPending(error.response.config)
     }
     return Promise.reject(error)

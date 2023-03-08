@@ -1,10 +1,9 @@
 import json
 import os
-import re
 from datetime import datetime
 from io import BytesIO
 from typing import Any, Dict, Optional
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 import pytest
 from flask import Flask
@@ -308,23 +307,25 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, BaseTestMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
+        expected_suffix = self.random_string()
 
-        client.post(
-            '/api/workouts',
-            data=dict(
-                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
-                data='{"sport_id": 1}',
-            ),
-            headers=dict(
-                content_type='multipart/form-data',
-                Authorization=f'Bearer {auth_token}',
-            ),
-        )
+        with patch('secrets.token_urlsafe', return_value=expected_suffix):
+            client.post(
+                '/api/workouts',
+                data=dict(
+                    file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                    data='{"sport_id": 1}',
+                ),
+                headers=dict(
+                    content_type='multipart/form-data',
+                    Authorization=f'Bearer {auth_token}',
+                ),
+            )
 
         workout = Workout.query.first()
-        assert re.match(
-            r'^workouts/1/2018-03-13_12-44-45_1_([\w\d_-]*).gpx$',
-            workout.gpx,
+        assert (
+            workout.gpx
+            == f"workouts/1/2018-03-13_12-44-45_1_{expected_suffix}.gpx"
         )
 
     def test_it_creates_workout_with_expecting_map_path(
@@ -333,23 +334,25 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, BaseTestMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
+        expected_suffix = self.random_string()
 
-        client.post(
-            '/api/workouts',
-            data=dict(
-                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
-                data='{"sport_id": 1}',
-            ),
-            headers=dict(
-                content_type='multipart/form-data',
-                Authorization=f'Bearer {auth_token}',
-            ),
-        )
+        with patch('secrets.token_urlsafe', return_value=expected_suffix):
+            client.post(
+                '/api/workouts',
+                data=dict(
+                    file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                    data='{"sport_id": 1}',
+                ),
+                headers=dict(
+                    content_type='multipart/form-data',
+                    Authorization=f'Bearer {auth_token}',
+                ),
+            )
 
         workout = Workout.query.first()
-        assert re.match(
-            r'^workouts/1/2018-03-13_12-44-45_1_([\w\d_-]*).png$',
-            workout.map,
+        assert (
+            workout.map
+            == f"workouts/1/2018-03-13_12-44-45_1_{expected_suffix}.png"
         )
 
     def test_it_adds_a_workout_without_name(

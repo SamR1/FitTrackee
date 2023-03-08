@@ -5,7 +5,7 @@ import {
   IAuthUserState,
   TAuthUserMutations,
 } from '@/store/modules/authUser/types'
-import { IAuthUserProfile, IUserProfile } from '@/types/user'
+import { IAuthUserProfile, IExportRequest, IUserProfile } from '@/types/user'
 
 export const mutations: MutationTree<IAuthUserState> & TAuthUserMutations = {
   [AUTH_USER_STORE.MUTATIONS.CLEAR_AUTH_USER_TOKEN](state: IAuthUserState) {
@@ -47,5 +47,11 @@ export const mutations: MutationTree<IAuthUserState> & TAuthUserMutations = {
     loading: boolean
   ) {
     state.loading = loading
+  },
+  [AUTH_USER_STORE.MUTATIONS.SET_EXPORT_REQUEST](
+    state: IAuthUserState,
+    exportRequest: IExportRequest
+  ) {
+    state.exportRequest = exportRequest
   },
 }

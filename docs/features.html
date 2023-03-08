@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Features &#8212; FitTrackee 0.7.12
+    <title>Features &#8212; FitTrackee 0.7.13
  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css" />
@@ -43,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.12
+        <span class="navbar-text navbar-version pull-left"><b>0.7.13
 </b></span>
       </div>
 
@@ -85,7 +85,12 @@
 <li><a class="reference internal" href="#">Features</a><ul>
 <li><a class="reference internal" href="#workouts">Workouts</a></li>
 <li><a class="reference internal" href="#account-preferences">Account &amp; preferences</a></li>
-<li><a class="reference internal" href="#administration">Administration</a></li>
+<li><a class="reference internal" href="#administration">Administration</a><ul>
+<li><a class="reference internal" href="#application">Application</a></li>
+<li><a class="reference internal" href="#users">Users</a></li>
+<li><a class="reference internal" href="#sports">Sports</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#translations">Translations</a></li>
 <li><a class="reference internal" href="#screenshots">Screenshots</a><ul>
 <li><a class="reference internal" href="#dashboard">Dashboard</a></li>
@@ -253,9 +258,10 @@
 <h2>Account &amp; preferences<a class="headerlink" href="#account-preferences" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>A user can create, update and deleted his account.</p></li>
+<li><p>The user must agree to the privacy policy to register. If a more recent policy is available, a message is displayed on the dashboard to review the new version (<em>new in 0.7.13</em>).</p></li>
 <li><p>On registration, the user account is created with selected language in dropdown as user preference (<em>new in 0.6.9</em>).</p></li>
 <li><p>After registration, the user account is inactive and an email with confirmation instructions is sent to activate it.
-A user with an inactive account cannot log in. (<em>new in 0.6.0</em>)</p></li>
+A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -286,18 +292,28 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>)</p></li>
 <div class="line">A workout with a disabled sport will still be displayed in the application.</div>
 </div>
 </div>
-<ul class="simple">
+<ul>
 <li><p>A user can create <a class="reference external" href="apps.html">clients</a> for third-party applications (<em>new in 0.7.0</em>).</p></li>
+<li><div class="line-block">
+<div class="line">A user can request a data export (<em>new in 0.7.13</em>).</div>
+<div class="line">It generates a zip archive containing 2 <code class="docutils literal notranslate"><span class="pre">json</span></code> files (user info and workouts data) and all uploaded gpx files.</div>
+</div>
+</li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For now, it’s not possible to import these files into another <strong>FitTrackee</strong> instance.</p>
+</div>
 </section>
 <section id="administration">
 <h2>Administration<a class="headerlink" href="#administration" title="Permalink to this heading">¶</a></h2>
 <p>(<em>new in 0.3.0</em>)</p>
-<ul>
-<li><p><strong>Application</strong></p>
+<section id="application">
+<h3>Application<a class="headerlink" href="#application" title="Permalink to this heading">¶</a></h3>
+<p><strong>Configuration</strong></p>
 <p>The following parameters can be set:</p>
 <ul class="simple">
-<li><p>active users limit. If 0, registration is enabled (no limit defined)</p></li>
+<li><p>active users limit. If 0, registration is enabled (no limit defined).</p></li>
 <li><p>maximum size of gpx file (individually uploaded or in a zip archive) (<em>changed in 0.7.4</em>)</p></li>
 <li><p>maximum size of zip archive</p></li>
 <li><p>maximum number of files in the zip archive (<em>changed in 0.7.4</em>)</p></li>
@@ -311,29 +327,44 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>)</p></li>
 <p class="admonition-title">Note</p>
 <p>If email sending is disabled, a warning is displayed.</p>
 </div>
-</li>
-<li><p><strong>Users</strong></p>
+<p><strong>About</strong></p>
+<p>(<em>new in 0.7.13</em>)</p>
+<div class="line-block">
+<div class="line">It is possible displayed additional information that may be useful to users in <strong>About</strong> page.</div>
+<div class="line">Markdown syntax can be used.</div>
+</div>
+<p><strong>Privacy policy</strong></p>
+<p>(<em>new in 0.7.13</em>)</p>
+<div class="line-block">
+<div class="line">A default privacy policy is available (originally adapted from the <a class="reference external" href="https://github.com/discourse/discourse">Discourse</a> privacy policy).</div>
+<div class="line">A custom privacy policy can set if needed (Markdown syntax can be used). A policy update will display a message on users dashboard to review it.</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only the default privacy policy is translated (if the translation is available).</p>
+</div>
+</section>
+<section id="users">
+<h3>Users<a class="headerlink" href="#users" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>display and filter users list</p></li>
-<li><dl class="simple">
-<dt>edit a user to:</dt><dd><ul>
+<li><p>edit a user to:</p>
+<ul>
 <li><p>add/remove administration rights</p></li>
 <li><p>activate his account (<em>new in 0.6.0</em>)</p></li>
 <li><p>update his email (in case his account is locked) (<em>new in 0.6.0</em>)</p></li>
 <li><p>reset his password (in case his account is locked) (<em>new in 0.6.0</em>). If email sending is disabled, it is only possible via CLI.</p></li>
 </ul>
-</dd>
-</dl>
 </li>
 <li><p>delete a user</p></li>
 </ul>
-</li>
-<li><p><strong>Sports</strong></p>
+</section>
+<section id="sports">
+<h3>Sports<a class="headerlink" href="#sports" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>enable or disable a sport (a sport can be disabled even if workout with this sport exists)</p></li>
 </ul>
-</li>
-</ul>
+</section>
 </section>
 <section id="translations">
 <h2>Translations<a class="headerlink" href="#translations" title="Permalink to this heading">¶</a></h2>
@@ -400,7 +431,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>)</p></li>
     </p>
     <p>
         &copy; Copyright 2018 - 2022, SamR1 <a rel="me" href="https://fosstodon.org/@FitTrackee"><i class="fa fa-mastodon" aria-hidden="true"></i></a>.
-      Last updated on Feb 20, 2023.<br/>
+      Last updated on Mar 05, 2023.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br/>
     </p>
   </div>

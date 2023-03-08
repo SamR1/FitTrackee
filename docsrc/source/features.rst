@@ -74,9 +74,10 @@ Workouts
 Account & preferences
 ^^^^^^^^^^^^^^^^^^^^^
 - A user can create, update and deleted his account.
+- The user must agree to the privacy policy to register. If a more recent policy is available, a message is displayed on the dashboard to review the new version (*new in 0.7.13*).
 - On registration, the user account is created with selected language in dropdown as user preference (*new in 0.6.9*).
 - After registration, the user account is inactive and an email with confirmation instructions is sent to activate it.
-  A user with an inactive account cannot log in. (*new in 0.6.0*)
+  A user with an inactive account cannot log in. (*new in 0.6.0*).
 
 .. note::
   In case email sending is not configured, a `command line <cli.html#ftcli-users-update>`__ allows to activate users account.
@@ -98,42 +99,70 @@ Account & preferences
   | A workout with a disabled sport will still be displayed in the application.
 
 - A user can create `clients <apps.html>`__ for third-party applications (*new in 0.7.0*).
+- | A user can request a data export (*new in 0.7.13*).
+  | It generates a zip archive containing 2 ``json`` files (user info and workouts data) and all uploaded gpx files.
+
+.. note::
+  For now, it's not possible to import these files into another **FitTrackee** instance.
 
 
 Administration
 ^^^^^^^^^^^^^^
 (*new in 0.3.0*)
 
-- **Application**
+Application
+"""""""""""
 
-  The following parameters can be set:
+**Configuration**
 
-  - active users limit. If 0, registration is enabled (no limit defined)
-  - maximum size of gpx file (individually uploaded or in a zip archive) (*changed in 0.7.4*)
-  - maximum size of zip archive
-  - maximum number of files in the zip archive (*changed in 0.7.4*)
-  - administrator email for contact (*new in 0.6.0*)
+The following parameters can be set:
 
-  .. warning::
-      Updating server configuration may be necessary to handle large files (like `nginx <https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size>`_ for instance).
+- active users limit. If 0, registration is enabled (no limit defined).
+- maximum size of gpx file (individually uploaded or in a zip archive) (*changed in 0.7.4*)
+- maximum size of zip archive
+- maximum number of files in the zip archive (*changed in 0.7.4*)
+- administrator email for contact (*new in 0.6.0*)
 
-  .. note::
-      If email sending is disabled, a warning is displayed.
+.. warning::
+  Updating server configuration may be necessary to handle large files (like `nginx <https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size>`_ for instance).
+
+.. note::
+  If email sending is disabled, a warning is displayed.
+
+**About**
+
+(*new in 0.7.13*)
+
+| It is possible displayed additional information that may be useful to users in **About** page.
+| Markdown syntax can be used.
 
 
-- **Users**
+**Privacy policy**
 
-  - display and filter users list
-  - edit a user to:
-      - add/remove administration rights
-      - activate his account (*new in 0.6.0*)
-      - update his email (in case his account is locked) (*new in 0.6.0*)
-      - reset his password (in case his account is locked) (*new in 0.6.0*). If email sending is disabled, it is only possible via CLI.
-  - delete a user
+(*new in 0.7.13*)
 
-- **Sports**
+| A default privacy policy is available (originally adapted from the `Discourse <https://github.com/discourse/discourse>`__ privacy policy).
+| A custom privacy policy can set if needed (Markdown syntax can be used). A policy update will display a message on users dashboard to review it.
 
-  - enable or disable a sport (a sport can be disabled even if workout with this sport exists)
+.. note::
+  Only the default privacy policy is translated (if the translation is available).
+
+Users
+"""""
+
+- display and filter users list
+- edit a user to:
+
+  - add/remove administration rights
+  - activate his account (*new in 0.6.0*)
+  - update his email (in case his account is locked) (*new in 0.6.0*)
+  - reset his password (in case his account is locked) (*new in 0.6.0*). If email sending is disabled, it is only possible via CLI.
+- delete a user
+
+
+Sports
+""""""
+- enable or disable a sport (a sport can be disabled even if workout with this sport exists)
 
 
 Translations

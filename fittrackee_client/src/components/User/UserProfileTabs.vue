@@ -37,6 +37,7 @@
     switch (tab) {
       case 'ACCOUNT':
       case 'PICTURE':
+      case 'PRIVACY-POLICY':
         return `/profile/edit/${tab.toLocaleLowerCase()}`
       case 'APPS':
       case 'FOLLOW-REQUESTS':

@@ -132,6 +132,10 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
             AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE,
             res.data.data
           )
+          if (!res.data.data.accepted_privacy_policy) {
+            // refresh privacy policy
+            context.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_PRIVACY_POLICY)
+          }
           context.commit(
             USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS,
             res.data.data
@@ -488,6 +492,62 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
       .then((res) => {
         if (res.data.status === 'success') {
           router.push('/password-reset/password-updated')
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+  },
+  [AUTH_USER_STORE.ACTIONS.ACCEPT_PRIVACY_POLICY](
+    context: ActionContext<IAuthUserState, IRootState>,
+    acceptedPolicy: boolean
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .post('auth/account/privacy-policy', {
+        accepted_policy: acceptedPolicy,
+      })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context
+            .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+            .then(() => router.push('/profile'))
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+  },
+  [AUTH_USER_STORE.ACTIONS.REQUEST_DATA_EXPORT](
+    context: ActionContext<IAuthUserState, IRootState>
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .post('auth/account/export/request')
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            AUTH_USER_STORE.MUTATIONS.SET_EXPORT_REQUEST,
+            res.data.request
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+  },
+  [AUTH_USER_STORE.ACTIONS.GET_REQUEST_DATA_EXPORT](
+    context: ActionContext<IAuthUserState, IRootState>
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .get('auth/account/export')
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            AUTH_USER_STORE.MUTATIONS.SET_EXPORT_REQUEST,
+            res.data.request
+          )
         } else {
           handleError(context, null)
         }

@@ -16,13 +16,15 @@ class TestRegistration:
         selenium.implicitly_wait(1)
 
         inputs = selenium.find_elements(By.TAG_NAME, 'input')
-        assert len(inputs) == 4
+        assert len(inputs) == 5
         assert inputs[0].get_attribute('id') == 'username'
         assert inputs[0].get_attribute('type') == 'text'
         assert inputs[1].get_attribute('id') == 'email'
         assert inputs[1].get_attribute('type') == 'email'
         assert inputs[2].get_attribute('id') == 'password'
         assert inputs[2].get_attribute('type') == 'password'
+        assert inputs[4].get_attribute('id') == 'accepted_policy'
+        assert inputs[4].get_attribute('type') == 'checkbox'
 
         form_infos = selenium.find_elements(By.CLASS_NAME, 'form-info')
         assert len(form_infos) == 3
