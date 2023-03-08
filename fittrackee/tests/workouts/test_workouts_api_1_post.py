@@ -217,7 +217,9 @@ def assert_workout_data_wo_gpx(data: Dict) -> None:
     assert records[3]['value'] == 10.0
 
 
-def assert_files_are_deleted(app: Flask, user: User) -> None:
+def assert_files_are_deleted(
+    app: Flask, user: User, expected_count: Optional[int] = 0
+) -> None:
     upload_directory = os.path.join(
         app.config["UPLOAD_FOLDER"], f"workouts/{user.id}"
     )
@@ -229,7 +231,7 @@ def assert_files_are_deleted(app: Flask, user: User) -> None:
                 if os.path.isfile(os.path.join(upload_directory, name))
             ]
         )
-        == 0
+        == expected_count
     )
 
 
@@ -840,6 +842,46 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             )
 
         assert_files_are_deleted(app, user_1)
+
+    def test_it_deletes_only_errored_file(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        with patch(
+            'fittrackee.workouts.utils.workouts.generate_map',
+            side_effect=Exception(),
+        ):
+            client.post(
+                '/api/workouts',
+                data=dict(
+                    file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                    data='{"sport_id": 2}',
+                ),
+                headers=dict(
+                    content_type='multipart/form-data',
+                    Authorization=f'Bearer {auth_token}',
+                ),
+            )
+
+        assert_files_are_deleted(app, user_1, expected_count=2)
+        upload_directory = os.path.join(app.config["UPLOAD_FOLDER"])
+        workout = Workout.query.first()
+        os.path.exists(os.path.join(upload_directory, workout.gpx))
+        os.path.exists(os.path.join(upload_directory, workout.map))
 
     def test_it_cleans_uploaded_file_and_static_map_on_segments_creation_error(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
