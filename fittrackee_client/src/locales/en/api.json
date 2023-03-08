@@ -8,6 +8,7 @@
         "error during gpx file parsing": "Error during gpx file parsing.",
         "error during gpx processing": "Error during gpx processing.",
         "error on getting configuration": "Error on getting configuration.",
+        "error when saving workout": "Error when saving workout.",
         "error when updating configuration": "Error when updating configuration",
         "error, please try again or contact the administrator": "Error, please try again or contact the administrator.",
         "error, registration is disabled": "Error, registration is disabled.",
