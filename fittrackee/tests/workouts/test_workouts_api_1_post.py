@@ -217,6 +217,22 @@ def assert_workout_data_wo_gpx(data: Dict) -> None:
     assert records[3]['value'] == 10.0
 
 
+def assert_files_are_deleted(app: Flask, user: User) -> None:
+    upload_directory = os.path.join(
+        app.config["UPLOAD_FOLDER"], f"workouts/{user.id}"
+    )
+    assert (
+        len(
+            [
+                name
+                for name in os.listdir(upload_directory)
+                if os.path.isfile(os.path.join(upload_directory, name))
+            ]
+        )
+        == 0
+    )
+
+
 class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: Flask, sport_1_cycling: Sport, gpx_file: str
@@ -799,6 +815,56 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             ),
         )
         assert 'data' not in data
+
+    def test_it_cleans_uploaded_file_on_gpx_processing_error(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        with patch(
+            'fittrackee.workouts.utils.workouts.generate_map',
+            side_effect=Exception(),
+        ):
+            client.post(
+                '/api/workouts',
+                data=dict(
+                    file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                    data='{"sport_id": 1}',
+                ),
+                headers=dict(
+                    content_type='multipart/form-data',
+                    Authorization=f'Bearer {auth_token}',
+                ),
+            )
+
+        assert_files_are_deleted(app, user_1)
+
+    def test_it_cleans_uploaded_file_and_static_map_on_segments_creation_error(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        with patch(
+            'fittrackee.workouts.utils.workouts.create_segment',
+            side_effect=ValueError(),
+        ):
+            client.post(
+                '/api/workouts',
+                data=dict(
+                    file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                    data='{"sport_id": 1}',
+                ),
+                headers=dict(
+                    content_type='multipart/form-data',
+                    Authorization=f'Bearer {auth_token}',
+                ),
+            )
+
+        assert_files_are_deleted(app, user_1)
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
@@ -1398,6 +1464,31 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
                 'fail',
             )
             assert 'data' not in data
+
+    def test_it_cleans_uploaded_file_on_error(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        file_path = os.path.join(app.root_path, 'tests/files/gpx_test.zip')
+        # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
+        with open(file_path, 'rb') as zip_file, patch(
+            'fittrackee.workouts.utils.workouts.generate_map',
+            side_effect=Exception(),
+        ):
+            client.post(
+                '/api/workouts',
+                data=dict(
+                    file=(zip_file, 'gpx_test.zip'), data='{"sport_id": 1}'
+                ),
+                headers=dict(
+                    content_type='multipart/form-data',
+                    Authorization=f'Bearer {auth_token}',
+                ),
+            )
+
+        assert_files_are_deleted(app, user_1)
 
 
 class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
