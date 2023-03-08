@@ -40,5 +40,5 @@ class WeatherService:
         try:
             return self.weather_api.get_weather(point)
         except Exception as e:
-            appLog.error(e)
+            appLog.error(f'error when getting weather data: {e}')
             return None
