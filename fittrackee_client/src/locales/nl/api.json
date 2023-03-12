@@ -8,6 +8,7 @@
         "error during gpx file parsing": "Fout bij het verwerken van het gpx bestand.",
         "error during gpx processing": "Fout bij verwerken van gpx.",
         "error on getting configuration": "Fout bij ophalen van configuratie.",
+        "error when saving workout": "Fout bij het opslaan van de activiteit.",
         "error when updating configuration": "Fout bij het updaten van de configuratie",
         "error, please try again or contact the administrator": "Fout, probeer opnieuw of contacteer de administrator.",
         "error, registration is disabled": "Fout, registratie is uitgeschakeld.",
@@ -31,8 +32,7 @@
         "user does not exist": "Gebruiker bestaat niet.",
         "valid email must be provided for admin contact": "Een geldige email is vereist voor admin contact informatie",
         "you can not delete your account, no other user has admin rights": "U kunt uw account niet verwijderen, geen andere gebruiker heeft admin rechten.",
-        "you do not have permissions": "U hebt geen machtigingen.",
-        "error when saving workout": "Fout bij het opslaan van de activiteit."
+        "you do not have permissions": "U hebt geen machtigingen."
     },
     "PAGINATION": {
         "NEXT": "volgende",
