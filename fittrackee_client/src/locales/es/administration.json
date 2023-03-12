@@ -1,2 +1,12 @@
 {
+    "ABOUT": {
+        "DESCRIPTION": "Cualquier tipo de información adicional que pueda ser útil para tus usuarios. Puedes usar Markdown.",
+        "TEXT": "Información detallada sobre la instancia"
+    },
+    "ACTIVATE_USER_ACCOUNT": "Activar cuenta",
+    "ACTIVE": "Activa",
+    "ADMIN": "Admin",
+    "ADMINISTRATION": "Administración",
+    "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Añadir/Retirar derechos de aministración, eliminar cuenta de usuario.",
+    "ACTION": "Acción"
 }
