@@ -1,2 +1,31 @@
 {
+    "USERS": {
+        "SELECTS": {
+            "ORDER_BY": {
+                "CREATED_AT": "registreringsdato",
+                "ADMIN": "administratorstatus",
+                "IS_ACTIVE": "kontostatus"
+            }
+        }
+    },
+    "SPORTS": {
+        "TABLE": {
+            "IMAGE": "Bilde",
+            "LABEL": "Etikett"
+        }
+    },
+    "ADMINISTRATION": "Administrasjon",
+    "ABOUT": {
+        "TEXT": "Detaljert info om instansen"
+    },
+    "ACTIVE": "Aktiv",
+    "RESET_USER_PASSWORD": "Tilbakestill passord",
+    "ACTION": "Handling",
+    "APPLICATION": "Program",
+    "CONFIRM_USER_PASSWORD_RESET": "Vil du tilbakestille {0} passord?",
+    "CURRENT_EMAIL": "Nåværende e-postadresse",
+    "DELETE_USER": "Slett bruker",
+    "PASSWORD_RESET_SUCCESSFUL": "Passordet har blitt tilbakestilt.",
+    "NO_TEXT_ENTERED": "Ingen tekst innskrevet",
+    "USER": "bruker | brukere"
 }
