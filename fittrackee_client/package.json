@@ -17,6 +17,7 @@
     "@zxcvbn-ts/language-common": "^2.0.1",
     "@zxcvbn-ts/language-de": "^2.1.0",
     "@zxcvbn-ts/language-en": "^2.1.0",
+    "@zxcvbn-ts/language-es-es": "^2.1.1",
     "@zxcvbn-ts/language-fr": "^2.2.0",
     "@zxcvbn-ts/language-it": "^2.1.0",
     "axios": "^1.3.4",

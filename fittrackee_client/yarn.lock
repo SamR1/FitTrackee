@@ -2271,6 +2271,11 @@
   resolved "https://registry.yarnpkg.com/@zxcvbn-ts/language-en/-/language-en-2.1.0.tgz#52c797914380546b191e5b915e0e9843116eae18"
   integrity sha512-I3n4AAbArjPAZtwCrk9MQnSrcj5+9rq8sic2rUU44fP5QaR17Vk8zDt61+R9dnP9ZRsj09aAUYML4Ash05qZjQ==
 
+"@zxcvbn-ts/language-es-es@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@zxcvbn-ts/language-es-es/-/language-es-es-2.1.1.tgz#960b28bf58e537547293d555a36b1c42ef1ce66b"
+  integrity sha512-uDXU/z1df6YGmacFVcFhsvQ2Uu/EbMFCjLeNoM/95vH3GCTb/10eI5IlzjgSP4EG305vd9oNpBy6MODu+9SvNg==
+
 "@zxcvbn-ts/language-fr@^2.2.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@zxcvbn-ts/language-fr/-/language-fr-2.2.0.tgz#0b7dd93ebba0044fbe733836bc7091b76d42afe1"
