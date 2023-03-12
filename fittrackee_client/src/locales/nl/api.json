@@ -31,7 +31,8 @@
         "user does not exist": "Gebruiker bestaat niet.",
         "valid email must be provided for admin contact": "Een geldige email is vereist voor admin contact informatie",
         "you can not delete your account, no other user has admin rights": "U kunt uw account niet verwijderen, geen andere gebruiker heeft admin rechten.",
-        "you do not have permissions": "U hebt geen machtigingen."
+        "you do not have permissions": "U hebt geen machtigingen.",
+        "error when saving workout": "Fout bij het opslaan van de activiteit."
     },
     "PAGINATION": {
         "NEXT": "volgende",
