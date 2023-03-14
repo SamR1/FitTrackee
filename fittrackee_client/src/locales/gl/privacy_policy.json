@@ -1,1 +1,38 @@
-{}
+{
+    "CONTENT": {
+        "INFORMATION_USAGE": {
+            "CONTENT": "Toda a información que recollemos de ti pode ser usada para proporcionar o servizo básico de **FitTrackee**:\n- Os ficheiros GPX úsanse para crear adestramentos, mostrar rutas nun mapa (con OpenStreetMap](https://www.openstreetmap.org) e o servidor de teselas configurado) e gráficos, crear miniaturas do mapa, calcular records e obter datos meteorolóxicos (se está así establecido).\n- A información de perfil e adestramentos non se mostran publicamente. Unha usuaria rexistrada só pode ver os seus propios adestramentos.\n- O enderezo de correo electrónico que nos proporcionas podería ser usado para mandarche información ou confirmar as modificacións na conta.",
+            "TITLE": "Para que usamos a túa información?"
+        },
+        "SITE_USAGE_BY_CHILDREN": {
+            "CONTENT": "Se este servidor está na UE ou no EEA: a nosa web e servizos están dirixidos a persoas a partir dos 16 anos. Non uses esta web se non tes 16 anos, por requerimento da [GDPR](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) (General Data Protection Regulation).\n\nSe este servidor está en EEUU de América: A nosa web, produtos e servizos están dirixidos a persoas a partir dos 13 anos. Se non tes 13 anos, por requerimento da [COPPA](https://en.wikipedia.org/wiki/Children%27s_Online_Privacy_Protection_Act) (Children's Online Privacy Protection Act), non uses esta web.\n\nOs requerimentos legais poderían ser diferentes se este servidor está baixo outra xurisdición.",
+            "TITLE": "Uso da web por menores"
+        },
+        "YOUR_CONSENT": {
+            "CONTENT": "Ao usar esta web, aceptas a política de privacidade desta web.",
+            "TITLE": "O teu consentimento"
+        },
+        "ACCOUNT_DELETION": {
+            "CONTENT": "Podes solicitar en todo momento a eliminación da túa conta indo a este enderezo (con sesión iniciada) e premendo no botón \"Eliminar a miña conta\" nos axustes da túa conta.",
+            "TITLE": "Eliminación da conta"
+        },
+        "CHANGES_TO_OUR_PRIVACY_POLICY": {
+            "CONTENT": "Se decidimos cambiar a nosa política de privacidade, publicaremos os cambios nesta páxina.\n\nEste documento está baixo licenza [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/). Adaptado do orixinal da política de privacidade de [Discourse](https://github.com/discourse/discourse).",
+            "TITLE": "Cambios na nosa Política de Privacidade"
+        },
+        "DATA_COLLECTED": {
+            "CONTENT": "Recollemos a seguinte información:\n- Información da conta (identificador, enderezo de email e contrasinal). Poderías engadir información adicional ao perfil como o nome, apelido, data de nacemento, localización, biografía e subir unha foto de perfil.\n- Ficheiros [GPX](https://en.wikipedia.org/wiki/GPS_Exchange_Format). Estes ficheiros conteñen datos relacionados coas túas actividades (coordenadas xeográficas, data, distancia, duración, velocidades máxima e media, altitude, pulso cardíaco...). Se non queres mostrar algún dos datos, elimínaos antes de subir ou engadir adestramentos con ficheiros GPX.\n- Datos do adestramento (deporte, título, data, duración, distancia, ascenso, descenso, notas).\n- Información técnica (nome do navegador e sistema operativo).",
+            "TITLE": "Que información recollemos?"
+        },
+        "INFORMATION_DISCLOSURE": {
+            "CONTENT": "Non vendemos, comerciamos ou transferimos doutro xeito a terceiras partes externas ningunha información que te identifique persoalmente.\n\nIsto non inclúe a terceiras partes de confianza que non axudan a xestionar e proporcionarche o noso servizo, mentras esas terceiras partes acepten manter confidencial esta información.\n\nPoderiamos liberar esta información sempre que ao facelo sexa acorde co cumprimento da ley, reforce as nosas políticas da web, ou protexa os nosos dereitos e seguridade ou os de outras persoas.\n\nCando autorizas a terceiras partes a usar a túa conta, dependendo dos permisos concedidos, podería acceder á túa información de perfil ou adestramentos. As aplicacións nunca teñen acceso ao teu contrasinal.",
+            "TITLE": "Mostramos algún tipo de información a terceiras partes externas?"
+        },
+        "INFORMATION_PROTECTION": {
+            "CONTENT": "Tomamos varias medidas de seguridade para gardar a túa información persoal cando inicias sesión, envías ou accedes á túa información persoal.",
+            "TITLE": "Como protexemos a túa información?"
+        }
+    },
+    "LAST_UPDATE": "Última actualización",
+    "TITLE": "política de privacidade"
+}
