@@ -62,7 +62,8 @@
             "COLOR": "cor",
             "DISABLED_BY_ADMIN": "desactivado por admin",
             "IS_ACTIVE": "activa",
-            "LABEL": "etiqueta"
+            "LABEL": "etiqueta",
+            "STOPPED_SPEED_THRESHOLD": "limiar para detectar pausa"
         },
         "SPORTS_EDITION": "Edición das preferencias do deporte",
         "SUCCESSFUL_EMAIL_UPDATE": "A conta actualizouse correctamente. Comproba o teu correo para confirmar o novo enderezo de correo electrónico.",
