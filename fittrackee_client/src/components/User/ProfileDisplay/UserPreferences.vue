@@ -19,6 +19,8 @@
       </dd>
       <dt>{{ $t('user.PROFILE.ASCENT_DATA') }}:</dt>
       <dd>{{ $t(`common.${display_ascent}`) }}</dd>
+      <dt>{{ $t('user.PROFILE.START_ELEVATION_AT_ZERO') }}:</dt>
+      <dd>{{ $t(`common.${startElevationAtZero}`) }}</dd>
     </dl>
     <div class="profile-buttons">
       <button @click="$router.push('/profile/edit/preferences')">
@@ -54,6 +56,7 @@
       : languageLabels['en']
   )
   const fistDayOfWeek = computed(() => (props.user.weekm ? 'MONDAY' : 'SUNDAY'))
+  const startElevationAtZero = computed(() => (props.user.start_elevation_at_zero ? 'TRUE' : 'FALSE'))
   const timezone = computed(() =>
     props.user.timezone ? props.user.timezone : 'Europe/Paris'
   )

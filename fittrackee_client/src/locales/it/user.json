@@ -79,6 +79,7 @@
             "STOPPED_SPEED_THRESHOLD": "Limite minimo di velocità"
         },
         "SPORTS_EDITION": "Preferenze sport",
+        "START_ELEVATION_AT_ZERO": "Inizia il grafico dell'elevazione a 0",
         "SUCCESSFUL_EMAIL_UPDATE": "Il tuo account è stato aggiornato con successo. Per favore controlla la tua email per confermare il tuo indirizzo email.",
         "SUCCESSFUL_REGISTRATION": "Il tuo account è stato creato con successo.",
         "SUCCESSFUL_REGISTRATION_WITH_EMAIL": "Un link per attivare il tuo account è stato inviato all'indirizzo specificato.",

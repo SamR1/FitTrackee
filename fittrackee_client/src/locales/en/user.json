@@ -92,6 +92,7 @@
             "STOPPED_SPEED_THRESHOLD": "stopped speed threshold"
         },
         "SPORTS_EDITION": "Sports preferences edition",
+        "START_ELEVATION_AT_ZERO": "Start elevation plots at zero",
         "SUCCESSFUL_EMAIL_UPDATE": "Your account has been updated successfully. Please check your email to confirm your new email address.",
         "SUCCESSFUL_REGISTRATION": "Your account has been created successfully.",
         "SUCCESSFUL_REGISTRATION_WITH_EMAIL": "A link to activate your account has been emailed to the address provided.",

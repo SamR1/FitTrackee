@@ -92,6 +92,7 @@
             "STOPPED_SPEED_THRESHOLD": "seuil de vitesse arrêtée"
         },
         "SPORTS_EDITION": "Mise à jour des préférences des sports",
+        "START_ELEVATION_AT_ZERO": "Démarrer le tracé d'altitude à zéro",
         "SUCCESSFUL_EMAIL_UPDATE": "Votre compte a été modifié avec succès. Veuillez vérifier votre boîte de réception pour valider votre nouvelle adresse électronique.",
         "SUCCESSFUL_REGISTRATION": "Votre compte a été créé avec succès.",
         "SUCCESSFUL_REGISTRATION_WITH_EMAIL": "Un lien pour activer votre compte a été envoyé à l'adresse électronique fournie.",

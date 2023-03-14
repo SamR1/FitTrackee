@@ -78,7 +78,7 @@
   const { t } = useI18n()
 
   const displayDistance = ref(true)
-  const beginElevationAtZero = ref(true)
+  const beginElevationAtZero = ref(props.authUser.start_elevation_at_zero)
   const datasets: ComputedRef<IWorkoutChartData> = computed(() =>
     getDatasets(props.workoutData.chartData, t, props.authUser.imperial_units)
   )
