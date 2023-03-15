@@ -16,7 +16,8 @@
             "workouts:read_DESCRIPTION": "concede permiso de lectura a los puntos de acceso <code>workouts</code>.",
             "workouts:write_DESCRIPTION": "concede permiso de escritura a los puntos de acceso <code>workouts</code>."
         },
-        "URL": "URL de la aplicación"
+        "URL": "URL de la aplicación",
+        "ISSUE_AT": "Edición en"
     },
     "APPS_LIST": "Aplicaciones OAuth2",
     "APP_CREATED_SUCCESSFULLY": "Aplicación creada correctamente. Asegúrate de que copias la clave secreta, no volverá a ser mostrada.",
