@@ -59,7 +59,9 @@ class User(BaseModel):
     confirmation_token = db.Column(db.String(255), nullable=True)
     display_ascent = db.Column(db.Boolean, default=True, nullable=False)
     accepted_policy_date = db.Column(db.DateTime, nullable=True)
-    start_elevation_at_zero = db.Column(db.Boolean, default=True, nullable=False)
+    start_elevation_at_zero = db.Column(
+        db.Boolean, default=True, nullable=False
+    )
 
     def __repr__(self) -> str:
         return f'<User {self.username!r}>'

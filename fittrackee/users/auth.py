@@ -884,7 +884,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     :<json boolean display_ascent: display highest ascent records and total
     :<json boolean imperial_units: display distance in imperial units
     :<json string language: language preferences
-    :<json boolean start_elevation_at_zero: should elevation plots start at zero by default?
+    :<json boolean start_elevation_at_zero: do elevation plots start at zero?
     :<json string timezone: user time zone
     :<json boolean weekm: does week start on Monday?
 
