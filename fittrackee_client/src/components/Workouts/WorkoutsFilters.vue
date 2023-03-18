@@ -1,160 +1,187 @@
 <template>
   <div class="workouts-filters">
     <div class="box">
-      <div class="form">
-        <div class="form-items-group">
-          <div class="form-item">
-            <label> {{ $t('workouts.FROM') }}: </label>
-            <input
-              name="from"
-              type="date"
-              :value="$route.query.from"
-              @change="handleFilterChange"
-            />
+      <form v-on:submit.prevent="onSubmit" class="form">
+        <div class="form">
+          <div class="form-items-group">
+            <div class="form-item">
+              <label> {{ $t('workouts.FROM') }}: </label>
+              <input
+                name="from"
+                type="date"
+                :value="$route.query.from"
+                @change="handleFilterChange"
+              />
+            </div>
+            <div class="form-item">
+              <label> {{ $t('workouts.TO') }}: </label>
+              <input
+                name="to"
+                type="date"
+                :value="$route.query.to"
+                @change="handleFilterChange"
+              />
+            </div>
           </div>
-          <div class="form-item">
-            <label> {{ $t('workouts.TO') }}: </label>
-            <input
-              name="to"
-              type="date"
-              :value="$route.query.to"
-              @change="handleFilterChange"
-            />
-          </div>
-        </div>
 
-        <div class="form-items-group">
-          <div class="form-item">
-            <label> {{ $t('workouts.SPORT', 1) }}:</label>
-            <select
-              name="sport_id"
-              :value="$route.query.sport_id"
-              @change="handleFilterChange"
-            >
-              <option value="" />
-              <option
-                v-for="sport in translatedSports.filter((s) =>
-                  authUser.sports_list.includes(s.id)
-                )"
-                :value="sport.id"
-                :key="sport.id"
+          <div class="form-items-group">
+            <div class="form-item">
+              <label> {{ $t('workouts.SPORT', 1) }}:</label>
+              <select
+                name="sport_id"
+                :value="$route.query.sport_id"
+                @change="handleFilterChange"
               >
-                {{ sport.translatedLabel }}
-              </option>
-            </select>
+                <option value="" />
+                <option
+                  v-for="sport in translatedSports.filter((s) =>
+                    authUser.sports_list.includes(s.id)
+                  )"
+                  :value="sport.id"
+                  :key="sport.id"
+                >
+                  {{ sport.translatedLabel }}
+                </option>
+              </select>
+            </div>
           </div>
-        </div>
 
-        <div class="form-items-group">
-          <div class="form-item">
-            <label> {{ $t('workouts.DISTANCE') }} ({{ toUnit }}): </label>
-            <div class="form-inputs-group">
-              <input
-                name="distance_from"
-                type="number"
-                min="0"
-                step="0.1"
-                :value="$route.query.distance_from"
-                @change="handleFilterChange"
-              />
-              <span>{{ $t('workouts.TO') }}</span>
-              <input
-                name="distance_to"
-                type="number"
-                min="0"
-                step="0.1"
-                :value="$route.query.distance_to"
-                @change="handleFilterChange"
-              />
+          <div class="form-items-group">
+            <div class="form-item">
+              <label> {{ $t('workouts.TITLE', 1) }}:</label>
+              <div class="form-inputs-group">
+                <input
+                  class="title"
+                  name="title"
+                  :value="$route.query.title"
+                  @change="handleFilterChange"
+                  placeholder=""
+                  type="text"
+                  @keyup.enter="submit"
+                />
+                </div>
+            </div>
+          </div>
+
+          <div class="form-items-group">
+            <div class="form-item">
+              <label> {{ $t('workouts.DISTANCE') }} ({{ toUnit }}): </label>
+              <div class="form-inputs-group">
+                <input
+                  name="distance_from"
+                  type="number"
+                  min="0"
+                  step="0.1"
+                  :value="$route.query.distance_from"
+                  @change="handleFilterChange"
+                  @keyup.enter="submit"
+                />
+                <span>{{ $t('workouts.TO') }}</span>
+                <input
+                  name="distance_to"
+                  type="number"
+                  min="0"
+                  step="0.1"
+                  :value="$route.query.distance_to"
+                  @change="handleFilterChange"
+                  @keyup.enter="submit"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-items-group">
+            <div class="form-item">
+              <label> {{ $t('workouts.DURATION') }}: </label>
+              <div class="form-inputs-group">
+                <input
+                  name="duration_from"
+                  :value="$route.query.duration_from"
+                  @change="handleFilterChange"
+                  pattern="^([0-9]*[0-9]):([0-5][0-9])$"
+                  placeholder="hh:mm"
+                  type="text"
+                  @keyup.enter="submit"
+                />
+                <span>{{ $t('workouts.TO') }}</span>
+                <input
+                  name="duration_to"
+                  :value="$route.query.duration_to"
+                  @change="handleFilterChange"
+                  pattern="^([0-9]*[0-9]):([0-5][0-9])$"
+                  placeholder="hh:mm"
+                  type="text"
+                  @keyup.enter="submit"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-items-group">
+            <div class="form-item">
+              <label> {{ $t('workouts.AVE_SPEED') }} ({{ toUnit }}/h): </label>
+              <div class="form-inputs-group">
+                <input
+                  min="0"
+                  name="ave_speed_from"
+                  :value="$route.query.ave_speed_from"
+                  @change="handleFilterChange"
+                  step="0.1"
+                  type="number"
+                  @keyup.enter="submit"
+                />
+                <span>{{ $t('workouts.TO') }}</span>
+                <input
+                  min="0"
+                  name="ave_speed_to"
+                  :value="$route.query.ave_speed_to"
+                  @change="handleFilterChange"
+                  step="0.1"
+                  type="number"
+                  @keyup.enter="submit"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-items-group">
+            <div class="form-item">
+              <label> {{ $t('workouts.MAX_SPEED') }} ({{ toUnit }}/h): </label>
+
+              <div class="form-inputs-group">
+                <input
+                  min="0"
+                  name="max_speed_from"
+                  :value="$route.query.max_speed_from"
+                  @change="handleFilterChange"
+                  step="0.1"
+                  type="number"
+                  @keyup.enter="submit"
+                />
+                <span>{{ $t('workouts.TO') }}</span>
+                <input
+                  min="0"
+                  name="max_speed_to"
+                  :value="$route.query.max_speed_to"
+                  @change="handleFilterChange"
+                  step="0.1"
+                  type="number"
+                  @keyup.enter="submit"
+                />
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="form-items-group">
-          <div class="form-item">
-            <label> {{ $t('workouts.DURATION') }}: </label>
-            <div class="form-inputs-group">
-              <input
-                name="duration_from"
-                :value="$route.query.duration_from"
-                @change="handleFilterChange"
-                pattern="^([0-9]*[0-9]):([0-5][0-9])$"
-                placeholder="hh:mm"
-                type="text"
-              />
-              <span>{{ $t('workouts.TO') }}</span>
-              <input
-                name="duration_to"
-                :value="$route.query.duration_to"
-                @change="handleFilterChange"
-                pattern="^([0-9]*[0-9]):([0-5][0-9])$"
-                placeholder="hh:mm"
-                type="text"
-              />
-            </div>
-          </div>
+        <div class="form-button">
+          <button type="submit" class="confirm" @click="onFilter">
+            {{ $t('buttons.FILTER') }}
+          </button>
+          <button class="confirm" @click="onClearFilter">
+            {{ $t('buttons.CLEAR_FILTER') }}
+          </button>
         </div>
-
-        <div class="form-items-group">
-          <div class="form-item">
-            <label> {{ $t('workouts.AVE_SPEED') }} ({{ toUnit }}/h): </label>
-            <div class="form-inputs-group">
-              <input
-                min="0"
-                name="ave_speed_from"
-                :value="$route.query.ave_speed_from"
-                @change="handleFilterChange"
-                step="0.1"
-                type="number"
-              />
-              <span>{{ $t('workouts.TO') }}</span>
-              <input
-                min="0"
-                name="ave_speed_to"
-                :value="$route.query.ave_speed_to"
-                @change="handleFilterChange"
-                step="0.1"
-                type="number"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div class="form-items-group">
-          <div class="form-item">
-            <label> {{ $t('workouts.MAX_SPEED') }} ({{ toUnit }}/h): </label>
-
-            <div class="form-inputs-group">
-              <input
-                min="0"
-                name="max_speed_from"
-                :value="$route.query.max_speed_from"
-                @change="handleFilterChange"
-                step="0.1"
-                type="number"
-              />
-              <span>{{ $t('workouts.TO') }}</span>
-              <input
-                min="0"
-                name="max_speed_to"
-                :value="$route.query.max_speed_to"
-                @change="handleFilterChange"
-                step="0.1"
-                type="number"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-button">
-        <button class="confirm" @click="onFilter">
-          {{ $t('buttons.FILTER') }}
-        </button>
-        <button class="confirm" @click="onClearFilter">
-          {{ $t('buttons.CLEAR_FILTER') }}
-        </button>
-      </div>
+      </form>
     </div>
   </div>
 </template>
@@ -244,6 +271,9 @@
 
             input {
               width: 34%;
+            }
+            input.title {
+              width: 100%;
             }
             span {
               padding: $default-padding * 0.5;
