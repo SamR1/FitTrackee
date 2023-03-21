@@ -117,6 +117,13 @@ class Sport(BaseModel):
         }
         if is_admin:
             serialized_sport['has_workouts'] = len(self.workouts) > 0
+
+        serialized_sport['default_equipment_id_for_user'] = (
+            None
+            if sport_preferences is None
+            else sport_preferences['default_equipment_id']
+        )
+
         return serialized_sport
 
 

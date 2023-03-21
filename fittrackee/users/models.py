@@ -235,17 +235,22 @@ class UserSportPreference(BaseModel):
     color = db.Column(db.String(50), nullable=True)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     stopped_speed_threshold = db.Column(db.Float, default=1.0, nullable=False)
+    default_equipment_id = db.Column(
+        db.Integer, db.ForeignKey('equipment.id'), nullable=True
+    )
 
     def __init__(
         self,
         user_id: int,
         sport_id: int,
         stopped_speed_threshold: float,
+        default_equipment_id: Optional[int] = None
     ) -> None:
         self.user_id = user_id
         self.sport_id = sport_id
         self.is_active = True
         self.stopped_speed_threshold = stopped_speed_threshold
+        self.default_equipment_id = default_equipment_id
 
     def serialize(self) -> Dict:
         return {
@@ -254,7 +259,109 @@ class UserSportPreference(BaseModel):
             'color': self.color,
             'is_active': self.is_active,
             'stopped_speed_threshold': self.stopped_speed_threshold,
+            'default_equipment_id': self.default_equipment_id,
         }
+
+
+EquipmentWorkout = db.Table(
+    'equipment_workout',
+    db.Column(
+        'equipment_id',
+        db.Integer,
+        db.ForeignKey('equipment.id'),
+        primary_key=True,
+    ),
+    db.Column(
+        'workout_id',
+        db.Integer,
+        db.ForeignKey('workouts.id'),
+        primary_key=True,
+    ),
+)
+
+
+class Equipment(BaseModel):
+    __tablename__ = 'equipment'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(
+        db.Integer, db.ForeignKey('users.id'), index=True, nullable=False
+    )
+    label = db.Column(db.String(50), unique=False, nullable=False)
+    description = db.Column(db.String(200), default=None, nullable=True)
+    equipment_type_id = db.Column(db.Integer, db.ForeignKey('equipment_type.id'))
+    creation_date = db.Column(db.DateTime, default=datetime.utcnow)
+    is_active = db.Column(db.Boolean, default=True, nullable=False)
+    workouts = db.relationship(
+        'Workout', secondary=EquipmentWorkout, backref='equipment'
+    )
+
+    def __repr__(self) -> str:
+        return f'<Equipment {self.label!r}>'
+
+    def __init__(
+        self,
+        label: str,
+        description: str,
+        user_id: int,
+        is_active: bool
+    ) -> None:
+        self.label = label
+        self.description = description
+        self.user_id = user_id
+        self.is_active = is_active
+
+    def serialize(self) -> Dict:
+        serialized_equipment = {
+            'id': self.id,
+            'user_id': self.user_id,
+            'label': self.label,
+            'description': self.description,
+            'creation_date': self.creation_date,
+            'is_active': self.is_active,
+            'total_distance': float(sum([w.distance for w in self.workouts])),
+            'total_duration': str(sum([w.duration for w in self.workouts], datetime.timedelta())),
+            'num_workouts': len(self.workouts),
+
+        }
+        return serialized_equipment
+
+
+class EquipmentType(BaseModel):
+    __tablename__ = 'equipment_type'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    label = db.Column(db.String(50), unique=False, nullable=False)
+    is_active = db.Column(db.Boolean, default=True, nullable=False)
+    equipments = db.relationship(
+        'Equipment',
+        lazy=True,
+        backref=db.backref('equipment_type', lazy='joined', single_parent=True),
+    )
+
+    def __repr__(self) -> str:
+        return f'<EquipmentType {self.label!r}>'
+
+    def __init__(
+        self,
+        label: str,
+        is_active: bool
+    ) -> None:
+        self.label = label
+        self.is_active = is_active
+
+    def serialize(
+        self,
+        is_admin: bool
+    ) -> Dict:
+        serialized_equipment_type = {
+            'id': self.id,
+            'label': self.label,
+            'is_active': self.is_active,
+            'num_equipment': len(self.equipment),
+
+        }
+        if is_admin:
+            serialized_equipment_type['has_equipment'] = len(self.equipment) > 0
+        return serialized_equipment_type
 
 
 class BlacklistedToken(BaseModel):
