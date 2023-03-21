@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2023-03-04 10:33+0100\n"
-"PO-Revision-Date: 2023-03-13 06:43+0000\n"
+"PO-Revision-Date: 2023-03-22 17:40+0000\n"
 "Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/fittrackee/"
 "fittrackee-api-emails/gl/>\n"
@@ -43,7 +43,7 @@ msgstr ""
 #: fittrackee/emails/templates/layout.html:221
 #: fittrackee/emails/templates/layout.txt:5
 msgid "Thanks,"
-msgstr "Grazas."
+msgstr "Grazas,"
 
 #: fittrackee/emails/templates/layout.html:222
 #: fittrackee/emails/templates/layout.txt:6
@@ -101,7 +101,7 @@ msgstr "Usa a ligazón inferior para confirmar o teu enderezo de correo."
 #: fittrackee/emails/templates/data_export_ready/body.html:2
 #: fittrackee/emails/templates/data_export_ready/subject.txt:1
 msgid "Your archive is ready to be downloaded"
-msgstr "O arquivo está listo para descargar."
+msgstr "O arquivo está listo para descargar"
 
 #: fittrackee/emails/templates/data_export_ready/body.html:3
 msgid "A download link is available in your account."
