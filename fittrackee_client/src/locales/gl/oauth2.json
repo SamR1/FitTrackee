@@ -11,11 +11,11 @@
             "LABEL": "Ámbitos",
             "application:write_DESCRIPTION": "concede acceso a escritura na configuración da aplicación.",
             "profile:read_DESCRIPTION": "concede acceso de lectura aos puntos de acceso <code>auth</code>.",
-            "profile:write_DESCRIPTION": "concede acceso de escritura aos puntos de acceso <code>auth</code>,",
+            "profile:write_DESCRIPTION": "concede acceso de escritura aos puntos de acceso <code>auth</code>.",
             "users:read_DESCRIPTION": "concede acceso de lectura aos puntos de acceso <code>users</code>.",
             "users:write_DESCRIPTION": "concede acceso de escritura aos puntos de acceso <code>users</code>.",
             "workouts:read_DESCRIPTION": "concede permiso de lectura aos puntos de acceso <code>workouts</code>.",
-            "workouts:write_DESCRIPTION": "concede permisos de escritura aos puntos de acceso <code>workouts</code>,"
+            "workouts:write_DESCRIPTION": "concede permisos de escritura aos puntos de acceso <code>workouts</code>."
         },
         "URL": "URL da aplicación"
     },
