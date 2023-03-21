@@ -301,11 +301,13 @@ class Equipment(BaseModel):
     def __init__(
         self,
         label: str,
+        equipment_type_id: int,
         description: str,
         user_id: int,
         is_active: bool
     ) -> None:
         self.label = label
+        self.equipment_type_id = equipment_type_id
         self.description = description
         self.user_id = user_id
         self.is_active = is_active
@@ -315,11 +317,12 @@ class Equipment(BaseModel):
             'id': self.id,
             'user_id': self.user_id,
             'label': self.label,
+            'equipment_type': self.equipment_type_id,
             'description': self.description,
             'creation_date': self.creation_date,
             'is_active': self.is_active,
             'total_distance': float(sum([w.distance for w in self.workouts])),
-            'total_duration': str(sum([w.duration for w in self.workouts], datetime.timedelta())),
+            'total_duration': str(sum([w.duration for w in self.workouts], timedelta())),
             'num_workouts': len(self.workouts),
 
         }

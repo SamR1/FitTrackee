@@ -129,6 +129,7 @@ def create_app(init_email: bool = True) -> Flask:
     from .oauth2.routes import oauth2_blueprint  # noqa
     from .users.auth import auth_blueprint  # noqa
     from .users.users import users_blueprint  # noqa
+    from .users.equipment import equipment_blueprint  # noqa
     from .workouts.records import records_blueprint  # noqa
     from .workouts.sports import sports_blueprint  # noqa
     from .workouts.stats import stats_blueprint  # noqa
@@ -137,6 +138,7 @@ def create_app(init_email: bool = True) -> Flask:
     app.register_blueprint(auth_blueprint, url_prefix='/api')
     app.register_blueprint(oauth2_blueprint, url_prefix='/api')
     app.register_blueprint(config_blueprint, url_prefix='/api')
+    app.register_blueprint(equipment_blueprint, url_prefix='/api')
     app.register_blueprint(records_blueprint, url_prefix='/api')
     app.register_blueprint(sports_blueprint, url_prefix='/api')
     app.register_blueprint(stats_blueprint, url_prefix='/api')
