@@ -41,7 +41,7 @@ class Equipment(BaseModel):
     )
 
     def __repr__(self) -> str:
-        return f'<Equipment {self.label!r}>'
+        return f'<Equipment {self.id!r} {self.label!r}>'
 
     def __init__(
         self,
@@ -68,7 +68,7 @@ class Equipment(BaseModel):
             'is_active': self.is_active,
             'total_distance': float(sum([w.distance for w in self.workouts])),
             'total_duration': str(sum([w.duration for w in self.workouts], timedelta())),
-            'num_workouts': len(self.workouts),
+            'workouts': [w.short_id for w in self.workouts],
 
         }
         return serialized_equipment
