@@ -14,6 +14,7 @@ from sqlalchemy.types import JSON, Enum
 
 from fittrackee import appLog, db
 from fittrackee.files import get_absolute_file_path
+from fittrackee.equipment.models import EquipmentWorkout
 
 from .utils.convert import convert_in_duration, convert_value_to_integer
 from .utils.short_id import encode_uuid
@@ -177,6 +178,10 @@ class Workout(BaseModel):
         cascade='all, delete',
         backref=db.backref('workout', lazy='joined', single_parent=True),
     )
+    equipment = db.relationship(
+        'Equipment', secondary=EquipmentWorkout, back_populates='workouts'
+    )
+
 
     def __str__(self) -> str:
         return f'<Workout \'{self.sport.label}\' - {self.workout_date}>'

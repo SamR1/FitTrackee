@@ -15,7 +15,8 @@ from fittrackee.responses import (
 )
 from fittrackee.users.models import User
 
-from ..users.models import Equipment, UserSportPreference
+from ..equipment.models import Equipment
+from ..users.models import UserSportPreference
 
 equipment_blueprint = Blueprint('equipment', __name__)
 
