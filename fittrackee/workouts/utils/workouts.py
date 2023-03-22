@@ -12,6 +12,7 @@ from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db
+from fittrackee.equipment.models import Equipment
 from fittrackee.files import get_absolute_file_path
 from fittrackee.users.models import User, UserSportPreference
 
@@ -219,6 +220,8 @@ def edit_workout(
         workout.title = workout_data.get('title')
     if workout_data.get('notes') is not None:
         workout.notes = workout_data.get('notes')
+    if workout_data.get('equipment_list') is not None:
+        workout.equipment = workout_data.get('equipment_list')
     if not workout.gpx:
         if workout_data.get('workout_date'):
             workout.workout_date, _ = get_workout_datetime(
