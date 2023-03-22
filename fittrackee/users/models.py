@@ -236,7 +236,7 @@ class UserSportPreference(BaseModel):
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     stopped_speed_threshold = db.Column(db.Float, default=1.0, nullable=False)
     default_equipment_id = db.Column(
-        db.Integer, db.ForeignKey('equipment.id'), nullable=True
+        db.Integer, db.ForeignKey('equipment.id', ondelete="SET NULL"), nullable=True
     )
 
     def __init__(

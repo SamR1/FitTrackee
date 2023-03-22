@@ -13,13 +13,19 @@ EquipmentWorkout = db.Table(
     db.Column(
         'equipment_id',
         db.Integer,
-        db.ForeignKey('equipment.id'),
+        db.ForeignKey(
+            'equipment.id',
+            ondelete="CASCADE"
+        ),
         primary_key=True,
     ),
     db.Column(
         'workout_id',
         db.Integer,
-        db.ForeignKey('workouts.id'),
+        db.ForeignKey(
+            'workouts.id',
+            ondelete="CASCADE"
+        ),
         primary_key=True,
     ),
 )

@@ -53,13 +53,13 @@ def upgrade():
     op.create_table('equipment_workout',
     sa.Column('equipment_id', sa.Integer(), nullable=False),
     sa.Column('workout_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['equipment_id'], ['equipment.id'], ),
-    sa.ForeignKeyConstraint(['workout_id'], ['workouts.id'], ),
+    sa.ForeignKeyConstraint(['equipment_id'], ['equipment.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['workout_id'], ['workouts.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('equipment_id', 'workout_id')
     )
     with op.batch_alter_table('users_sports_preferences', schema=None) as batch_op:
         batch_op.add_column(sa.Column('default_equipment_id', sa.Integer(), nullable=True))
-        batch_op.create_foreign_key(None, 'equipment', ['default_equipment_id'], ['id'])
+        batch_op.create_foreign_key(None, 'equipment', ['default_equipment_id'], ['id'], ondelete='SET NULL')
 
     # ### end Alembic commands ###
 
