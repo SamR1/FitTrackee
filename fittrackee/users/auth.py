@@ -24,6 +24,8 @@ from fittrackee.emails.tasks import (
     password_change_email,
     reset_password_email,
 )
+from fittrackee.equipment.models import Equipment
+from fittrackee.equipment.utils import can_view_equipment
 from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
@@ -966,6 +968,7 @@ def edit_user_sport_preferences(
       {
         "data": {
           "color": "#000000",
+          "default_equipment_id": 1,
           "is_active": true,
           "sport_id": 1,
           "stopped_speed_threshold": 1,
@@ -975,9 +978,11 @@ def edit_user_sport_preferences(
         "status": "success"
       }
 
+    :<json int sport_id: the sport preference to add/change
     :<json string color: valid hexadecimal color
     :<json boolean is_active: is sport available when adding a workout
     :<json float stopped_speed_threshold: stopped speed threshold used by gpxpy
+    :<json int default_equipment_id: the default equipment to use for this sport
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1006,6 +1011,16 @@ def edit_user_sport_preferences(
     if not sport:
         return NotFoundErrorResponse('sport does not exist')
 
+    equipment_id = post_data.get('default_equipment_id')
+    if equipment_id is not None:
+      equipment = Equipment.query.filter_by(id=equipment_id).first()
+      if equipment is None:
+          return NotFoundErrorResponse(f'equipment with id {equipment_id} does not exist')
+
+      response_object = can_view_equipment(auth_user.id, equipment.user_id)
+      if response_object:
+          return response_object
+
     color = post_data.get('color')
     is_active = post_data.get('is_active')
     stopped_speed_threshold = post_data.get('stopped_speed_threshold')
@@ -1020,6 +1035,7 @@ def edit_user_sport_preferences(
                 user_id=auth_user.id,
                 sport_id=sport_id,
                 stopped_speed_threshold=sport.stopped_speed_threshold,
+                default_equipment_id=equipment_id
             )
             db.session.add(user_sport)
             db.session.flush()
@@ -1031,6 +1047,8 @@ def edit_user_sport_preferences(
             user_sport.is_active = is_active
         if stopped_speed_threshold:
             user_sport.stopped_speed_threshold = stopped_speed_threshold
+        if equipment_id is not None:
+            user_sport.default_equipment_id = equipment_id
         db.session.commit()
 
         return {
