@@ -110,9 +110,7 @@ class EquipmentType(BaseModel):
             'id': self.id,
             'label': self.label,
             'is_active': self.is_active,
-            'num_equipment': len(self.equipment),
-
         }
         if is_admin:
-            serialized_equipment_type['has_equipment'] = len(self.equipment) > 0
+            serialized_equipment_type['has_equipment'] = len(self.equipments) > 0
         return serialized_equipment_type
