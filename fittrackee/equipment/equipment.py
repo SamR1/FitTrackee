@@ -19,6 +19,7 @@ from ..equipment.models import Equipment
 from ..users.models import UserSportPreference
 
 equipment_blueprint = Blueprint('equipment', __name__)
+equipment_type_blueprint = Blueprint('equipment_type', __name__)
 
 
 @equipment_blueprint.route('/equipment', methods=['GET'])
