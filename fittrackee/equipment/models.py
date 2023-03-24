@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from typing import Dict
 
 from sqlalchemy.ext.declarative import DeclarativeMeta
+from sqlalchemy.schema import UniqueConstraint
 
 from fittrackee import db
 
@@ -44,6 +45,16 @@ class Equipment(BaseModel):
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     workouts = db.relationship(
         'Workout', secondary=EquipmentWorkout, back_populates='equipment'
+    )
+    # a single user can only have one equipment with the 
+    # same label, description, and type
+    __table_args__ = (
+        UniqueConstraint(
+            'label',
+            'description',
+            'user_id',
+            'equipment_type_id', 
+            name='_user_label_description_type_uc'),
     )
 
     def __repr__(self) -> str:

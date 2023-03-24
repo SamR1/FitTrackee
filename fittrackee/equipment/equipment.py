@@ -298,7 +298,7 @@ def post_equipment(
     except (exc.IntegrityError, ValueError) as e:
         return handle_error_and_return_response(
             error=e,
-            message='Error during workout save.',
+            message='Error during equipment save.',
             status='fail',
             db=db,
         )

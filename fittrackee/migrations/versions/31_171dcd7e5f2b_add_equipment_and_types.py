@@ -45,7 +45,8 @@ def upgrade():
     sa.Column('is_active', sa.Boolean(), nullable=False),
     sa.ForeignKeyConstraint(['equipment_type_id'], ['equipment_type.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('label', 'description', 'user_id', 'equipment_type_id', name='_user_label_description_type_uc')
     )
     with op.batch_alter_table('equipment', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_equipment_user_id'), ['user_id'], unique=False)

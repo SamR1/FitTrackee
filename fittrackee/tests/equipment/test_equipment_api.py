@@ -443,3 +443,116 @@ class TestGetEquipmentType(ApiTestCaseMixin):
 
         self.assert_response_scope(response, can_access)
 
+
+class TestPostEquipment(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask,
+        user_1: User,
+        equipment_type_1_shoe: EquipmentType,
+        equipment_type_2_bike: EquipmentType,
+        equipment_1_bike: Equipment
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/equipment',
+            data={
+                "equipment_type_id": 1,
+                "label": "test",
+                "description": "test"
+            }
+        )
+        self.assert_401(response)
+
+    def test_it_adds_an_equipment(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_1_shoe: EquipmentType,
+        equipment_type_2_bike: EquipmentType,
+        equipment_2_shoes: Equipment
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/equipment',
+            json = {
+                "label": "Test shoes",
+                "description": "A piece of equipment for testing",
+                "equipment_type": 1
+            },
+            headers = {
+                "Authorization": f'Bearer {auth_token}'
+            }
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['equipment']) == 1
+        assert 'Test shoes' == data['data']['equipment'][0]['label']
+        assert (
+            'A piece of equipment for testing' 
+            == data['data']['equipment'][0]['description']
+        )
+        assert 1 == data['data']['equipment'][0]['equipment_type']
+        assert 2 == data['data']['equipment'][0]['id']
+
+    def test_invalid_payload_response(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/equipment',
+            json = {
+                "description": "A piece of equipment with missing label",
+                "equipment_type": 1
+            },
+            headers = {
+                "Authorization": f'Bearer {auth_token}'
+            }
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 400
+        assert 'error' in data['status']
+        assert (
+            'The "label" and "equipment_type" parameters must be '
+            'provided in the body of the request'
+        ) in data['message']
+
+
+    def test_integrity_error_response(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_1_shoe: EquipmentType
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        # send the same request twice to violate unique constraint
+        for i in range(2):
+            response = client.post(
+                '/api/equipment',
+                json = {
+                    "label": "Test label",
+                    "description": "A piece of equipment with missing label",
+                    "equipment_type": 1
+                },
+                headers = {
+                    "Authorization": f'Bearer {auth_token}'
+                }
+            )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 500
+        assert 'fail' in data['status']
+        assert 'Error during equipment save.' in data['message']
