@@ -298,7 +298,7 @@ def post_equipment(
     except (exc.IntegrityError, ValueError) as e:
         return handle_error_and_return_response(
             error=e,
-            message='Error during equipment save.',
+            message='Error during equipment save',
             status='fail',
             db=db,
         )
@@ -392,6 +392,12 @@ def update_equipment(
     if not equipment_data:
         return InvalidPayloadErrorResponse('No request data was supplied')
 
+    if not any(
+        i in ['label', 'description', 'equipment_type', 'is_active'] 
+        for i in equipment_data
+    ):
+        return InvalidPayloadErrorResponse('No valid parameters supplied')
+
     try:
         equipment = Equipment.query.filter_by(
             id=equipment_id, user_id=auth_user.id
@@ -416,7 +422,12 @@ def update_equipment(
         }
 
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
-        return handle_error_and_return_response(e, db=db)
+        return handle_error_and_return_response(
+            error=e,
+            db=db,
+            message='Error during equipment update',
+            status='fail',
+        )
 
 
 @equipment_blueprint.route(
@@ -455,9 +466,9 @@ def delete_equipment(
       Content-Type: application/json
 
     :param integer equipment_id: equipment id
-    :query force: if supplied as argument (no value requires), will force
+    :query force: if supplied as argument (no value required), will force
                   deletion of the equipment and remove that equipment
-                  from associated workouts (not yet implemented)
+                  from associated workouts 
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -493,26 +504,10 @@ def delete_equipment(
                 f"(Provide argument 'force' as a query parameter to "
                 f"override this check)"
             )
-        if len(equipment.workouts) > 0 and force_delete:
-            ## this would be how to delete rows from equipment_workout 
-            ## with this equipment id:
-            # equipment.workouts = []
-            # db.session.commit()
- 
-            return GenericErrorResponse(
-                status_code=403,
-                message="Deleting equipment with existing workouts is "
-                        "not yet implemented"
-            )
+        # other condition for deleting attachment to workouts
+        # is handled by database cascading
 
-        # remove as any defaults for user sport preferences
-        prefs_to_fix = db.session.query(UserSportPreference).filter(
-            UserSportPreference.user_id == equipment.user_id,
-            UserSportPreference.default_equipment_id == equipment.id
-        ).all()
-        for up in prefs_to_fix:
-            up.default_equipment_id = None
-        db.session.commit()
+        # NULLing of user sport preferences handled by database cascadeing
 
         # delete equipment row
         db.session.query(Equipment).filter(
@@ -525,5 +520,5 @@ def delete_equipment(
         exc.OperationalError,
         ValueError,
         OSError,
-    ) as e:
+    ) as e:  # pragma: no cover
         return handle_error_and_return_response(e, db=db)

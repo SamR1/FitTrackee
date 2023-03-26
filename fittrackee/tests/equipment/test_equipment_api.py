@@ -555,4 +555,344 @@ class TestPostEquipment(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 500
         assert 'fail' in data['status']
-        assert 'Error during equipment save.' in data['message']
+        assert 'Error during equipment save' in data['message']
+
+
+class TestPatchEquipment(ApiTestCaseMixin):
+    def test_it_updates_equipment(
+            self,
+            app: Flask,
+            user_1: User,
+            equipment_type_1_shoe: EquipmentType,
+            equipment_type_2_bike: EquipmentType,
+            equipment_1_bike: Equipment,
+        ) -> None:
+            client, auth_token = self.get_test_client_and_auth_token(
+                app, user_1.email
+            )
+
+            # test original info
+            response = client.get(
+                '/api/equipment/1',
+                headers = {"Authorization": f'Bearer {auth_token}'}
+            )
+            e = response.json['data']['equipment'][0]
+            assert e['label'] == 'Test bike equipment'
+            assert e['description'] == 'A bike for testing purposes'
+            assert e['equipment_type'] == 2
+            assert e['is_active'] == True
+            
+            new_label = "Updated equipment 1 label"
+            new_description = "Updated equipment 1 description"
+            new_type = 1
+            new_active = False
+
+            response = client.patch(
+                f'/api/equipment/1',
+                json={
+                    'label': new_label,
+                    'description': new_description,
+                    'is_active': new_active,
+                    'equipment_type': new_type
+                },
+                headers = {"Authorization": f'Bearer {auth_token}'}
+            )
+            
+            e = response.json['data']['equipment'][0]
+            assert e['label'] == new_label
+            assert e['description'] == new_description
+            assert e['equipment_type'] == new_type
+            assert e['is_active'] == new_active
+
+            response = client.get(
+                '/api/equipment/1',
+                headers = {"Authorization": f'Bearer {auth_token}'}
+            )
+            
+            e = response.json['data']['equipment'][0]
+            assert e['label'] == new_label
+            assert e['description'] == new_description
+            assert e['equipment_type'] == new_type
+            assert e['is_active'] == new_active
+
+
+    def test_invalid_payload_response_no_payload(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            '/api/equipment/1',
+            json = {},
+            headers = {
+                "Authorization": f'Bearer {auth_token}'
+            }
+        )
+
+        data = response.json
+        assert response.status_code == 400
+        assert 'error' in data['status']
+        assert 'No request data was supplied' in data['message']
+
+    def test_invalid_payload_response_bad_payload(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            '/api/equipment/1',
+            json = {'bogus_param': 1},
+            headers = {
+                "Authorization": f'Bearer {auth_token}'
+            }
+        )
+
+        data = response.json
+        assert response.status_code == 400
+        assert 'error' in data['status']
+        assert 'No valid parameters supplied' in data['message']
+
+    def test_invalid_equipment_id(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            '/api/equipment/1',
+            json = {'is_active': False},
+            headers = {
+                "Authorization": f'Bearer {auth_token}'
+            }
+        )
+
+        data = response.json
+        assert response.status_code == 404
+        assert 'not found' in data['status']
+        assert len(data['data']['equipment']) == 0
+
+    def test_integrity_error_response(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_1_shoe: EquipmentType,
+        equipment_2_shoes: Equipment
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        # Try to change equipment type to one that does not exist in DB
+        response = client.patch(
+            '/api/equipment/1',
+            json = {
+                "equipment_type": 2
+            },
+            headers = {
+                "Authorization": f'Bearer {auth_token}'
+            }
+        )
+
+        data = response.json
+        assert response.status_code == 500
+        assert 'fail' in data['status']
+        assert 'Error during equipment update' in data['message']
+
+class TestDeleteEquipment(ApiTestCaseMixin):
+    def test_simple_delete_one_equipment(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_1_shoe: EquipmentType,
+        equipment_2_shoes: Equipment
+    ):
+        """Tests deleting a piece of equipment with no workouts."""
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        
+        response = client.delete(
+            '/api/equipment/1',
+            headers = {
+                "Authorization": f'Bearer {auth_token}'
+            }
+        )
+
+        assert response.status_code == 204
+        assert len(db.session.query(Equipment).all()) == 0
+
+    def test_delete_error_equipment_does_not_exist(
+        self,
+        app: Flask,
+        user_1: User,
+    ):
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        
+        response = client.delete(
+            '/api/equipment/1',
+            headers = {
+                "Authorization": f'Bearer {auth_token}'
+            }
+        )
+
+        data = response.json
+        assert response.status_code == 404
+        assert 'not found' in data['status']
+        assert len(data['data']['equipment']) == 0
+        assert len(db.session.query(Equipment).all()) == 0
+
+    def test_cannot_delete_equipment_for_other_user(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_1_shoe: EquipmentType,
+        equipment_2_shoes: Equipment,
+        user_2: User
+    ):
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+        # equipment_2_shoes is owned by user_1
+
+        response = client.delete(
+            '/api/equipment/1',
+            headers = {
+                "Authorization": f'Bearer {auth_token}'
+            }
+        )
+
+        data = response.json
+        assert response.status_code == 403
+        assert 'error' in data['status']
+        assert (
+            "Cannot delete another user's equipment "
+            "without admin rights" in data['message']
+        )
+        assert len(db.session.query(Equipment).all()) == 1
+
+    def test_admin_can_delete_other_user_equipment(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        equipment_type_1_shoe: EquipmentType,
+        equipment_2_shoes: Equipment
+    ):
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2_admin.email
+        )
+        
+        response = client.delete(
+            '/api/equipment/1',
+            headers = {
+                "Authorization": f'Bearer {auth_token}'
+            }
+        )
+
+        assert response.status_code == 204
+        assert len(db.session.query(Equipment).all()) == 0
+
+
+    def test_cannot_delete_equipment_with_workout(
+        self,
+        app: Flask,
+        user_1: User,
+        workout_w_equipment: Workout,
+    ):
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        # workout_w_equipment has one equipment
+
+        response = client.delete(
+            '/api/equipment/1',
+            headers = {
+                "Authorization": f'Bearer {auth_token}'
+            }
+        )
+
+        data = response.json
+        assert response.status_code == 403
+        assert 'error' in data['status']
+        assert (
+            "Cannot delete equipment that has associated workouts. "
+            "Equipment id 1 has 1 associated workout. (Provide "
+            "argument 'force' as a query parameter to override "
+            "this check)" in data['message']
+        )
+        assert len(db.session.query(Equipment).all()) == 1
+
+    def test_can_force_delete_equipment_with_workout(
+        self,
+        app: Flask,
+        user_1: User,
+        workout_w_equipment: Workout,
+    ):
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        # workout_w_equipment has one equipment; after delete
+        # the workout should have no equipment
+
+        response = client.delete(
+            '/api/equipment/1',
+            query_string='force', 
+            headers = {
+                "Authorization": f'Bearer {auth_token}'
+            }
+        )
+
+        assert response.status_code == 204
+
+        # check workout has no equipment
+        w = db.session.query(Workout).filter(
+            Workout.id == workout_w_equipment.id
+        ).first()
+        assert w.equipment == []
+
+        # check equipment_workout table is empty
+        assert len(
+            db.session.execute("SELECT * from equipment_workout").all()
+        ) == 0
+        assert len(db.session.query(Equipment).all()) == 0
+        
+    def test_deleting_equipment_sets_user_sport_default_to_null(
+        self,
+        app: Flask,
+        user_1: User,
+        user_sport_1_preference: UserSportPreference,
+    ):
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        # workout_w_equipment has one equipment; after delete
+        # the workout should have no equipment
+
+        response = client.delete(
+            '/api/equipment/1',
+            query_string='force', 
+            headers = {
+                "Authorization": f'Bearer {auth_token}'
+            }
+        )
+
+        assert response.status_code == 204
+
+        # check user sport preference has null equipment
+        up = db.session.query(UserSportPreference).filter(
+            UserSportPreference.user_id == user_sport_1_preference.user_id,
+            UserSportPreference.sport_id == 1
+        ).first()
+        assert up.default_equipment_id is None

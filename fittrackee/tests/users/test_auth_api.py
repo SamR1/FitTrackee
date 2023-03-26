@@ -16,6 +16,7 @@ from fittrackee.users.models import (
     UserSportPreference,
 )
 from fittrackee.users.utils.token import get_user_token
+from fittrackee.equipment.models import Equipment, EquipmentType
 from fittrackee.workouts.models import Sport
 
 from ..mixins import ApiTestCaseMixin
@@ -1658,6 +1659,71 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         assert data['data']['color'] == input_color
         assert data['data']['is_active'] is True
         assert data['data']['stopped_speed_threshold'] == 0.1
+
+    def test_it_updates_default_equipment_for_auth_user(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_1_shoe: EquipmentType,
+        equipment_2_shoes: Equipment,
+        sport_2_running: Sport,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=sport_2_running.id,
+                    default_equipment_id=equipment_2_shoes.id,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'user sport preferences updated'
+        assert response.status_code == 200
+        assert data['data']['user_id'] == user_1.id
+        assert data['data']['sport_id'] == sport_2_running.id
+        assert data['data']['default_equipment_id'] == equipment_2_shoes.id
+        assert data['data']['is_active'] is True
+        assert data['data']['stopped_speed_threshold'] == 0.1
+
+    def test_it_cannot_update_default_equipment_for_other_user_equip(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        equipment_type_1_shoe: EquipmentType,
+        equipment_2_shoes: Equipment,
+        sport_2_running: Sport,
+    ) -> None:
+        # equipment_2_shoes is owned by user 1
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=sport_2_running.id,
+                    default_equipment_id=equipment_2_shoes.id,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'error'
+        assert data['message'] == 'User not authorized for that equipment'
+        assert response.status_code == 403
 
     def test_it_disables_sport_for_auth_user(
         self, app: Flask, user_1: User, sport_1_cycling: Sport

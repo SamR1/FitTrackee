@@ -52,6 +52,11 @@ class User(BaseModel):
         lazy=True,
         backref=db.backref('user', lazy='joined', single_parent=True),
     )
+    equipment = db.relationship(
+        'Equipment',
+        lazy=True,
+        backref=db.backref('user', lazy='joined', single_parent=True),
+    )
     language = db.Column(db.String(50), nullable=True)
     imperial_units = db.Column(db.Boolean, default=False, nullable=False)
     is_active = db.Column(db.Boolean, default=False, nullable=False)
@@ -186,6 +191,7 @@ class User(BaseModel):
             'nb_workouts': self.workouts_count,
             'picture': self.picture is not None,
             'records': [record.serialize() for record in self.records],
+            'equipment': [equipment.serialize() for equipment in self.equipment],
             'sports_list': [
                 sport for sportslist in sports for sport in sportslist
             ],

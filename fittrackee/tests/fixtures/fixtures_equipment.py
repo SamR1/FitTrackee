@@ -1,20 +1,10 @@
-import datetime
-from io import BytesIO
-from typing import Generator, List
-from unittest.mock import Mock, patch
-from uuid import uuid4
-
+from datetime import datetime, timedelta
 import pytest
-from PIL import Image
-from werkzeug.datastructures import FileStorage
 
 from fittrackee import db
 from fittrackee.equipment.models import Equipment, EquipmentType
-from fittrackee.workouts.utils.maps import StaticMap
-
-byte_io = BytesIO()
-Image.new('RGB', (256, 256)).save(byte_io, 'PNG')
-byte_image = byte_io.getvalue()
+from fittrackee.users.models import User
+from fittrackee.workouts.models import Sport, Workout
 
 @pytest.fixture()
 def equipment_type_1_shoe() -> EquipmentType:
@@ -87,3 +77,20 @@ def equipment_2_shoes() -> Equipment:
     db.session.commit()
     return equip
 
+@pytest.fixture()
+def workout_w_equipment(
+    sport_2_running: Sport,
+    user_1: User,
+    equipment_type_1_shoe: EquipmentType,
+    equipment_2_shoes: Equipment
+) -> Workout:
+    workout = Workout(
+        user_id=1,
+        sport_id=1,
+        workout_date=datetime.strptime('20/03/2017', '%d/%m/%Y'),
+        distance=5,
+        duration=timedelta(seconds=1024),
+    )
+    workout.equipment.append(equipment_2_shoes)
+    db.session.commit()
+    return workout

@@ -36,7 +36,10 @@ class Equipment(BaseModel):
     __tablename__ = 'equipment'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(
-        db.Integer, db.ForeignKey('users.id'), index=True, nullable=False
+        db.Integer,
+        db.ForeignKey('users.id'),
+        index=True,
+        nullable=False
     )
     label = db.Column(db.String(50), unique=False, nullable=False)
     description = db.Column(db.String(200), default=None, nullable=True)
@@ -46,6 +49,7 @@ class Equipment(BaseModel):
     workouts = db.relationship(
         'Workout', secondary=EquipmentWorkout, back_populates='equipment'
     )
+    
     # a single user can only have one equipment with the 
     # same label, description, and type
     __table_args__ = (

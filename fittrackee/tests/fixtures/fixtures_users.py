@@ -3,6 +3,7 @@ import datetime
 import pytest
 
 from fittrackee import db
+from fittrackee.equipment.models import Equipment, EquipmentType
 from fittrackee.users.models import User, UserSportPreference
 from fittrackee.workouts.models import Sport
 
@@ -116,12 +117,17 @@ def inactive_user() -> User:
 
 @pytest.fixture()
 def user_sport_1_preference(
-    user_1: User, sport_1_cycling: Sport
+    user_1: User, 
+    sport_1_cycling: Sport,
+    equipment_type_1_shoe: EquipmentType,
+    equipment_type_2_bike: EquipmentType,
+    equipment_1_bike: Equipment,
 ) -> UserSportPreference:
     user_sport = UserSportPreference(
         user_id=user_1.id,
         sport_id=sport_1_cycling.id,
         stopped_speed_threshold=sport_1_cycling.stopped_speed_threshold,
+        default_equipment_id=equipment_1_bike.id
     )
     db.session.add(user_sport)
     db.session.commit()
@@ -130,12 +136,17 @@ def user_sport_1_preference(
 
 @pytest.fixture()
 def user_admin_sport_1_preference(
-    user_1_admin: User, sport_1_cycling: Sport
+    user_1_admin: User,
+    sport_1_cycling: Sport,
+    equipment_type_1_shoe: EquipmentType,
+    equipment_type_2_bike: EquipmentType,
+    equipment_1_bike: Equipment,
 ) -> UserSportPreference:
     user_sport = UserSportPreference(
         user_id=user_1_admin.id,
         sport_id=sport_1_cycling.id,
         stopped_speed_threshold=sport_1_cycling.stopped_speed_threshold,
+        default_equipment_id=equipment_1_bike.id
     )
     db.session.add(user_sport)
     db.session.commit()

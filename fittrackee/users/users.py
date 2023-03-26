@@ -22,6 +22,7 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.utils import get_readable_duration
+from fittrackee.equipment.models import Equipment
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
 from .exceptions import InvalidEmailException, UserNotFoundException
@@ -663,6 +664,8 @@ def delete_user(
             UserSportPreference.user_id == user.id
         ).delete()
         db.session.query(Record).filter(Record.user_id == user.id).delete()
+        # delete all equipment associated with this user
+        db.session.query(Equipment).filter(Equipment.user_id == user.id).delete()
         db.session.query(WorkoutSegment).filter(
             WorkoutSegment.workout_id == Workout.id, Workout.user_id == user.id
         ).delete(synchronize_session=False)
