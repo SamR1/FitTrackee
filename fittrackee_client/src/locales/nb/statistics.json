@@ -1,7 +1,7 @@
 {
+    "STATISTICS": "Statistikk",
     "TIME_FRAMES": {
-        "week": "uke",
-        "month": "måned"
-    },
-    "STATISTICS": "Statistikk"
+        "month": "måned",
+        "week": "uke"
+    }
 }

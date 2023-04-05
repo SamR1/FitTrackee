@@ -1,9 +1,4 @@
 {
-    "SELECTS": {
-        "ORDER_BY": {
-            "LABEL": "sorter etter"
-        }
-    },
     "ABOUT": "om",
     "CONFIRMATION": "Bekreftelse",
     "CONTACT": "kontakt",
@@ -12,5 +7,10 @@
     "DOCUMENTATION": "dokumentasjon",
     "HERE": "her",
     "HIDDEN": "Skjult",
-    "HOME": "Hjem"
+    "HOME": "Hjem",
+    "SELECTS": {
+        "ORDER_BY": {
+            "LABEL": "sorter etter"
+        }
+    }
 }

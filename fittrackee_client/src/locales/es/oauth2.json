@@ -4,6 +4,7 @@
         "CLIENT_ID": "Id",
         "CLIENT_SECRET": "Clave secreta",
         "DESCRIPTION": "Descripción de la aplicación",
+        "ISSUE_AT": "Edición en",
         "NAME": "Nombre de la aplicación",
         "REDIRECT_URL": "URL de redirección",
         "SCOPE": {
@@ -16,21 +17,20 @@
             "workouts:read_DESCRIPTION": "concede permiso de lectura a los puntos de acceso <code>workouts</code>.",
             "workouts:write_DESCRIPTION": "concede permiso de escritura a los puntos de acceso <code>workouts</code>."
         },
-        "URL": "URL de la aplicación",
-        "ISSUE_AT": "Edición en"
+        "URL": "URL de la aplicación"
     },
     "APPS_LIST": "Aplicaciones OAuth2",
     "APP_CREATED_SUCCESSFULLY": "Aplicación creada correctamente. Asegúrate de que copias la clave secreta, no volverá a ser mostrada.",
+    "APP_DELETION_CONFIRMATION": "¿Estás seguro de que quieres eliminar esta app?",
+    "APP_REQUESTING_ACCESS": "La aplicación {0} solicita:",
+    "AUTHORIZE_APP": "¿Autorizar a {0} a usar tu cuenta?",
     "COPY_TO_CLIPBOARD": "copiar al portapapeles",
+    "DELETE_APP": "Eliminar aplicación",
     "NEW_APP": "Añadir una aplicación",
     "NO_APP": "No se encuentra la aplicación!",
     "NO_APPS": "sin aplicaciones",
     "NO_DESCRIPTION": "sin descripción",
     "REVOKE_ALL_TOKENS": "Revocar todas las claves",
     "TOKENS_REVOCATION_CONFIRMATION": "¿Estás seguro de revocar todas las claves?",
-    "TOKENS_REVOKED": "Todas las claves asociadas han sido revocadas.",
-    "APP_DELETION_CONFIRMATION": "¿Estás seguro de que quieres eliminar esta app?",
-    "APP_REQUESTING_ACCESS": "La aplicación {0} solicita:",
-    "AUTHORIZE_APP": "¿Autorizar a {0} a usar tu cuenta?",
-    "DELETE_APP": "Eliminar aplicación"
+    "TOKENS_REVOKED": "Todas las claves asociadas han sido revocadas."
 }

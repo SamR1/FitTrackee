@@ -1,16 +1,4 @@
 {
-    "Rowing": {
-        "LABEL": "Roing"
-    },
-    "Running": {
-        "LABEL": "Løping"
-    },
-    "Snowshoes": {
-        "LABEL": "Truger"
-    },
-    "Mountain Biking (Electric)": {
-        "LABEL": "Fjellsykling (elektrisk)"
-    },
     "Cycling (Sport)": {
         "LABEL": "Sykling (sport)"
     },
@@ -22,5 +10,17 @@
     },
     "Mountain Biking": {
         "LABEL": "Fjellsykling"
+    },
+    "Mountain Biking (Electric)": {
+        "LABEL": "Fjellsykling (elektrisk)"
+    },
+    "Rowing": {
+        "LABEL": "Roing"
+    },
+    "Running": {
+        "LABEL": "Løping"
+    },
+    "Snowshoes": {
+        "LABEL": "Truger"
     }
 }

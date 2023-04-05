@@ -1,6 +1,11 @@
 {
+    "ACCOUNT-CONFIRMATION-RESEND": "Volver a enviar un correo de confirmación",
+    "AUTHORIZE": "Autorizar",
+    "BACK": "Volver",
     "CANCEL": "Cancelar",
+    "CLEAR_FILTER": "Limpar filtros",
     "DELETE_MY_ACCOUNT": "Eliminar a miña conta",
+    "DISABLE": "Desactivar",
     "EDIT": "Editar",
     "ENABLE": "Activar",
     "FILTER": "Filtro",
@@ -10,10 +15,5 @@
     "REQUEST_DATA_EXPORT": "Solicitar exportación dos datos",
     "RESET": "Restablecer",
     "SUBMIT": "Enviar",
-    "ACCOUNT-CONFIRMATION-RESEND": "Volver a enviar un correo de confirmación",
-    "BACK": "Volver",
-    "AUTHORIZE": "Autorizar",
-    "CLEAR_FILTER": "Limpar filtros",
-    "DISABLE": "Desactivar",
     "YES": "Si"
 }
