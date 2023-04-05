@@ -42,7 +42,7 @@
     "PAUSES": "pause",
     "PREVIOUS_SEGMENT": "Segmento precedente",
     "PREVIOUS_WORKOUT": "Workout precedente",
-    "RECORD": "record | records",
+    "RECORD": "record | record",
     "RECORD_AS": "Vel. media",
     "RECORD_FD": "Distanza più lunga",
     "RECORD_HA": "Salita più alta",
@@ -51,7 +51,7 @@
     "REMAINING_CHARS": "caratteri rimanenti",
     "SEGMENT": "segmento | segmenti",
     "SPEED": "velocità",
-    "SPORT": "sport | sports",
+    "SPORT": "sport | sport",
     "START": "inizio",
     "START_AND_FINISH": "Inizio e fine",
     "START_ELEVATION_AT_ZERO": "partenza asse elevazione a 0",
@@ -96,9 +96,10 @@
     },
     "WITHOUT_GPX": "senza file .gpx",
     "WITH_GPX": "con file .gpx",
-    "WORKOUT": "workout | workouts",
+    "WORKOUT": "allenamento / allenamenti",
     "WORKOUT_DATE": "data workout",
     "WORKOUT_DELETION_CONFIRMATION": "Sei sicuro di voler eliminare questo workout?",
     "ZIP_ARCHIVE": "file .zip",
-    "ZIP_ARCHIVE_DESCRIPTION": "o file .zip contenente files .gpx"
+    "ZIP_ARCHIVE_DESCRIPTION": "o file .zip contenente files .gpx",
+    "INVALID_ASCENT_OR_DESCENT": "Entrambi i valori di elevazione devono essere forniti ed essere maggiori o uguali a 0."
 }

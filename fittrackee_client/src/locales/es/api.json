@@ -1,2 +1,41 @@
 {
+    "ERROR": {
+        "Network Error": "Error en la red.",
+        "UNKNOWN": "Error. Inténtalo de nuevo o contacta con la administración.",
+        "invalid token, please log in again": "Token no válido, por favor vuelve a iniciar sesión.",
+        "invalid token, please request a new token": "Token no válido, inicia sesión de nuevo.",
+        "new email must be different than curent email": "El nuevo email tiene que ser diferente al email actual",
+        "no file part": "Sin fichero.",
+        "no selected file": "Sin fichero seleccionado.",
+        "ongoing request exists": "Ya existe una solicitud de exportación.",
+        "password: password and password confirmation do not match": "Contraseña: la contraseña y la confirmación no coinciden.",
+        "provide a valid auth token": "Proporciona un auth token válido.",
+        "signature expired, please log in again": "Firma caducada. Inicia sesión de nuevo.",
+        "sorry, that username is already taken": "Lo sentimos, pero el nombre de usuario ya está en uso.",
+        "sport does not exist": "No existe este deporte.",
+        "at least one file in zip archive exceeds size limit, please check the archive": "Por lo menos uno de los ficheros dentro del archivo zip excede el límite de tamaño, comprueba el archivo.",
+        "completed request already exists": "Ya existe una solicitud de exportación completa.",
+        "email: valid email must be provided": "Email: debes proporcionar un email válido.",
+        "error during gpx file parsing": "Error al procesar el fichero gpx.",
+        "error during gpx processing": "Error en el procesado del gpx.",
+        "error on getting configuration": "Error al obtener la configuración.",
+        "error when saving workout": "Error al guardar el entrenamiento.",
+        "error, please try again or contact the administrator": "Error, inténtalo de nuevo más tarde o contacta con la administración.",
+        "error, registration is disabled": "Error, no se permiten nuevos registros.",
+        "file extension not allowed": "Extensión de fichero no permitida.",
+        "file size is greater than the allowed size": "El tamaño del fichero es mayor del permitido.",
+        "invalid credentials": "Credenciales no válidas.",
+        "invalid payload": "Los datos proporcionados no son válidos.",
+        "successfully registered": "Cuenta creada correctamente.",
+        "the number of files in the archive exceeds the limit": "El número de ficheros en el archivo excede el límite.",
+        "user does not exist": "No existe el usuario.",
+        "valid email must be provided for admin contact": "Debes proporcionar un email válido para el contacto de administración",
+        "you can not delete your account, no other user has admin rights": "No puedes eliminar tu cuenta, ninguna otra tiene permisos de administración.",
+        "you do not have permissions": "No tienes permiso.",
+        "error when updating configuration": "Error al actualizar la configuración"
+    },
+    "PAGINATION": {
+        "NEXT": "siguiente",
+        "PREVIOUS": "anterior"
+    }
 }

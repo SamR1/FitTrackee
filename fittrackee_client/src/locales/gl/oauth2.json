@@ -1,2 +1,36 @@
 {
+    "ADD_A_NEW_APP": "Engadir nova aplicación OAuth2",
+    "APP": {
+        "CLIENT_ID": "id",
+        "CLIENT_SECRET": "Chave secreta",
+        "DESCRIPTION": "Descrición da aplicación",
+        "ISSUE_AT": "Edición en",
+        "NAME": "Noma da aplicación",
+        "REDIRECT_URL": "URL de redirección",
+        "SCOPE": {
+            "LABEL": "Ámbitos",
+            "application:write_DESCRIPTION": "concede acceso a escritura na configuración da aplicación.",
+            "profile:read_DESCRIPTION": "concede acceso de lectura aos puntos de acceso <code>auth</code>.",
+            "profile:write_DESCRIPTION": "concede acceso de escritura aos puntos de acceso <code>auth</code>.",
+            "users:read_DESCRIPTION": "concede acceso de lectura aos puntos de acceso <code>users</code>.",
+            "users:write_DESCRIPTION": "concede acceso de escritura aos puntos de acceso <code>users</code>.",
+            "workouts:read_DESCRIPTION": "concede permiso de lectura aos puntos de acceso <code>workouts</code>.",
+            "workouts:write_DESCRIPTION": "concede permisos de escritura aos puntos de acceso <code>workouts</code>."
+        },
+        "URL": "URL da aplicación"
+    },
+    "APPS_LIST": "Aplicacións OAuth2",
+    "APP_CREATED_SUCCESSFULLY": "Creouse correctamente a aplicación. Pon coidado en gardar agora a chave secreta, non se volverá a mostrar.",
+    "APP_DELETION_CONFIRMATION": "Tes certeza de querer eliminar esta app?",
+    "APP_REQUESTING_ACCESS": "A aplicación {0} solicita:",
+    "AUTHORIZE_APP": "Autorizar a {0} a que use a túa conta?",
+    "COPY_TO_CLIPBOARD": "copiar ao portapapeis",
+    "DELETE_APP": "Eliminar aplicación",
+    "NEW_APP": "Engadir unha aplicación",
+    "NO_APP": "Non se atopa a aplicación!",
+    "NO_APPS": "sen aplicacións",
+    "NO_DESCRIPTION": "sen descrición",
+    "REVOKE_ALL_TOKENS": "Revogar todas as chaves",
+    "TOKENS_REVOCATION_CONFIRMATION": "Tes a certeza de querer eliminar todas as chaves de acceso?",
+    "TOKENS_REVOKED": "Foron revogadas todas as chaves de acceso asociadas."
 }

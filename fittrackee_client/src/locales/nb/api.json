@@ -1,2 +1,15 @@
 {
+    "ERROR": {
+        "Network Error": "Nettverksfeil.",
+        "file extension not allowed": "Filendelsen tillates ikke.",
+        "error when saving workout": "Kunne ikke lagre arbeidsøkt.",
+        "no file part": "Ingen fil angitt.",
+        "no selected file": "Ingen valgt fil.",
+        "sport does not exist": "Sporten finnes ikke.",
+        "user does not exist": "Brukeren finnes ikke."
+    },
+    "PAGINATION": {
+        "NEXT": "neste",
+        "PREVIOUS": "forrige"
+    }
 }

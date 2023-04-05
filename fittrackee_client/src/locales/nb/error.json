@@ -1,2 +1,6 @@
 {
+    "NOT_FOUND": {
+        "WORKOUT": "Fant ikke arbeidsøkten",
+        "PAGE": "Fant ikke siden"
+    }
 }
