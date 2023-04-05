@@ -5,6 +5,9 @@
     "Cycling (Transport)": {
         "LABEL": "Ciclismo (Transporte)"
     },
+    "Cycling (Virtual)": {
+        "LABEL": "Ciclismo (Virtual)"
+    },
     "Hiking": {
         "LABEL": "Sendeirismo"
     },
@@ -26,6 +29,9 @@
     "Skiing (Alpine)": {
         "LABEL": "Esquí (Alpino)"
     },
+    "Skiing (Cross Country)": {
+        "LABEL": "Esquí (de travesía)"
+    },
     "Snowshoes": {
         "LABEL": "Raquetas de neve"
     },
@@ -34,11 +40,5 @@
     },
     "Walking": {
         "LABEL": "Camiñar"
-    },
-    "Cycling (Virtual)": {
-        "LABEL": "Ciclismo (Virtual)"
-    },
-    "Skiing (Cross Country)": {
-        "LABEL": "Esquí (de travesía)"
     }
 }

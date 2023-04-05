@@ -1,6 +1,31 @@
 {
     "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Non recibiches instrucións?",
+    "ACCOUNT_CONFIRMATION_SENT": "Comproba o correo. Enviouse un correo de confirmación ao enderezo proporcionado.",
     "ADMIN": "Admin",
+    "ALREADY_HAVE_ACCOUNT": "Xa tes unha conta?",
+    "CONFIRM_ACCOUNT_DELETION": "Tes a certeza de querer eliminar a conta? Todos os datos serán borrados, e non poderás restablecelos.",
+    "CURRENT_PASSWORD": "Contrasinal actual",
+    "EMAIL": "Email",
+    "EMAIL_INFO": "Escribe un enderezo válido.",
+    "ENTER_PASSWORD": "Escribe un contrasinal",
+    "EXPORT_REQUEST": {
+        "DATA_EXPORT": "Exportar datos",
+        "DOWNLOAD_ARCHIVE": "Descargar arquivo",
+        "GENERATING_LINK": "creando ligazón...",
+        "ONLY_ONE_EXPORT_PER_DAY": "Podes solicitar un arquivo cada 24 horas",
+        "STATUS": {
+            "errored": "fallou (solicita outra exportación)",
+            "in_progress": "en progreso..."
+        }
+    },
+    "FILTER_ON_USERNAME": "Filtrar por identificador",
+    "HIDE_PASSWORD": "agochar contrasinal",
+    "INVALID_TOKEN": "Token non válido, solicita un novo restablecemento de contrasinal.",
+    "I_WANT_TO_DELETE_MY_ACCOUNT": "Quero eliminar a miña conta",
+    "LANGUAGE": "Idioma",
+    "LAST_PRIVACY_POLICY_TO_VALIDATE": "Actualizouse a política de privacidade, podes {0} antes de continuar.",
+    "LOGIN": "Acceso",
+    "LOGOUT": "Pechar sesión",
     "LOG_IN": "acceder",
     "NEW_PASSWORD": "Novo contrasinal",
     "NO_USERS_FOUND": "Non hai usuarias.",
@@ -15,7 +40,6 @@
         "LABEL": "forza do contrasinal",
         "STRONG": "forte",
         "SUGGESTIONS": {
-            "recentYears": "Evita anos recentes.",
             "allUppercase": "Inclúe algunha letra maiúscula, non todas.",
             "anotherWord": "Engade máis palabras pouco comúns.",
             "associatedYears": "Evita os anos que teñan relación contigo.",
@@ -25,6 +49,7 @@
             "longerKeyboardPattern": "Usa patróns longos no teclado e cambia de dirección de escritura varias veces.",
             "noNeed": "Podes crear contrasinais fortes sen usar símbolos, números ou letras maiúsculas.",
             "pwned": "Se usas este contrasinal noutros lugares entón deberías cambialo.",
+            "recentYears": "Evita anos recentes.",
             "repeated": "Evita palabras e caracteres repetidos.",
             "reverseWords": "Evita palabras comúns escritas ao revés.",
             "sequences": "Evita secuencias comúns de caracteres.",
@@ -32,9 +57,8 @@
         },
         "WEAK": "feble"
     },
+    "PASSWORD_UPDATED": "Actualizouse o teu contrasinal. Preme en {0} para acceder.",
     "PROFILE": {
-        "EDIT_SPORTS_PREFERENCES": "Editar preferencias dos deportes",
-        "FIRST_DAY_OF_WEEK": "Primeiro día da semana",
         "ACCOUNT_EDITION": "Edición da conta",
         "ASCENT_DATA": "Datos de ascensión (gravacións, total)",
         "BACK_TO_PROFILE": "Volver ao perfil",
@@ -43,7 +67,9 @@
         "DATE_FORMAT": "Formato para as datas",
         "EDIT": "Editar perfil",
         "EDIT_PREFERENCES": "Editar preferencias",
+        "EDIT_SPORTS_PREFERENCES": "Editar preferencias dos deportes",
         "ERRORED_EMAIL_UPDATE": "{0} para cambiar o enderezo de correo electrónico ou contacta coa administración",
+        "FIRST_DAY_OF_WEEK": "Primeiro día da semana",
         "FIRST_NAME": "Nome",
         "LANGUAGE": "Idioma",
         "LAST_NAME": "Apelido",
@@ -87,6 +113,10 @@
             "METRIC": "Sistema Métrico (m, km, m/s, ºC)"
         }
     },
+    "READ_AND_ACCEPT_PRIVACY_POLICY": "Lin e acepto a {0}.",
+    "REGISTER": "Crear conta",
+    "REGISTER_DISABLED": "Lamentámolo, pero non se permiten novas contas.",
+    "RESENT_ACCOUNT_CONFIRMATION": "Reenviar o correo de confirmación de conta",
     "RESET_PASSWORD": "Restablece o contrasinal",
     "REVIEW": "revisar",
     "SHOW_PASSWORD": "mostrar contrasinal",
@@ -94,35 +124,5 @@
     "USERNAME": "Identificador",
     "USERNAME_INFO": "Require entre 3 e 30 caracteres, só se permiten alfanuméricos e o trazo baixo \"_\".",
     "USER_PICTURE": "foto da usuaria",
-    "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Aceptaches a {0}.",
-    "ACCOUNT_CONFIRMATION_SENT": "Comproba o correo. Enviouse un correo de confirmación ao enderezo proporcionado.",
-    "ALREADY_HAVE_ACCOUNT": "Xa tes unha conta?",
-    "CONFIRM_ACCOUNT_DELETION": "Tes a certeza de querer eliminar a conta? Todos os datos serán borrados, e non poderás restablecelos.",
-    "CURRENT_PASSWORD": "Contrasinal actual",
-    "EMAIL": "Email",
-    "ENTER_PASSWORD": "Escribe un contrasinal",
-    "EXPORT_REQUEST": {
-        "DATA_EXPORT": "Exportar datos",
-        "DOWNLOAD_ARCHIVE": "Descargar arquivo",
-        "GENERATING_LINK": "creando ligazón...",
-        "ONLY_ONE_EXPORT_PER_DAY": "Podes solicitar un arquivo cada 24 horas",
-        "STATUS": {
-            "errored": "fallou (solicita outra exportación)",
-            "in_progress": "en progreso..."
-        }
-    },
-    "FILTER_ON_USERNAME": "Filtrar por identificador",
-    "HIDE_PASSWORD": "agochar contrasinal",
-    "INVALID_TOKEN": "Token non válido, solicita un novo restablecemento de contrasinal.",
-    "I_WANT_TO_DELETE_MY_ACCOUNT": "Quero eliminar a miña conta",
-    "EMAIL_INFO": "Escribe un enderezo válido.",
-    "LANGUAGE": "Idioma",
-    "LAST_PRIVACY_POLICY_TO_VALIDATE": "Actualizouse a política de privacidade, podes {0} antes de continuar.",
-    "LOGIN": "Acceso",
-    "LOGOUT": "Pechar sesión",
-    "PASSWORD_UPDATED": "Actualizouse o teu contrasinal. Preme en {0} para acceder.",
-    "READ_AND_ACCEPT_PRIVACY_POLICY": "Lin e acepto a {0}.",
-    "REGISTER": "Crear conta",
-    "REGISTER_DISABLED": "Lamentámolo, pero non se permiten novas contas.",
-    "RESENT_ACCOUNT_CONFIRMATION": "Reenviar o correo de confirmación de conta"
+    "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Aceptaches a {0}."
 }

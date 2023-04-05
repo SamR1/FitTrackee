@@ -1,10 +1,10 @@
 {
     "APP": {
-        "URL": "Programnettadresse",
         "CLIENT_ID": "ID",
         "CLIENT_SECRET": "Hemmelinghet",
         "DESCRIPTION": "Programbeskrivelse",
-        "NAME": "Programnavn"
+        "NAME": "Programnavn",
+        "URL": "Programnettadresse"
     },
     "COPY_TO_CLIPBOARD": "kopier til utklippstavlen",
     "NO_APPS": "ingen programmer",

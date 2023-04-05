@@ -1,31 +1,31 @@
 {
-    "USERS": {
-        "SELECTS": {
-            "ORDER_BY": {
-                "CREATED_AT": "registreringsdato",
-                "ADMIN": "administratorstatus",
-                "IS_ACTIVE": "kontostatus"
-            }
-        }
+    "ABOUT": {
+        "TEXT": "Detaljert info om instansen"
     },
+    "ACTION": "Handling",
+    "ACTIVE": "Aktiv",
+    "ADMINISTRATION": "Administrasjon",
+    "APPLICATION": "Program",
+    "CONFIRM_USER_PASSWORD_RESET": "Vil du tilbakestille {0} passord?",
+    "CURRENT_EMAIL": "Nåværende e-postadresse",
+    "DELETE_USER": "Slett bruker",
+    "NO_TEXT_ENTERED": "Ingen tekst innskrevet",
+    "PASSWORD_RESET_SUCCESSFUL": "Passordet har blitt tilbakestilt.",
+    "RESET_USER_PASSWORD": "Tilbakestill passord",
     "SPORTS": {
         "TABLE": {
             "IMAGE": "Bilde",
             "LABEL": "Etikett"
         }
     },
-    "ADMINISTRATION": "Administrasjon",
-    "ABOUT": {
-        "TEXT": "Detaljert info om instansen"
-    },
-    "ACTIVE": "Aktiv",
-    "RESET_USER_PASSWORD": "Tilbakestill passord",
-    "ACTION": "Handling",
-    "APPLICATION": "Program",
-    "CONFIRM_USER_PASSWORD_RESET": "Vil du tilbakestille {0} passord?",
-    "CURRENT_EMAIL": "Nåværende e-postadresse",
-    "DELETE_USER": "Slett bruker",
-    "PASSWORD_RESET_SUCCESSFUL": "Passordet har blitt tilbakestilt.",
-    "NO_TEXT_ENTERED": "Ingen tekst innskrevet",
-    "USER": "bruker | brukere"
+    "USER": "bruker | brukere",
+    "USERS": {
+        "SELECTS": {
+            "ORDER_BY": {
+                "ADMIN": "administratorstatus",
+                "CREATED_AT": "registreringsdato",
+                "IS_ACTIVE": "kontostatus"
+            }
+        }
+    }
 }
