@@ -849,7 +849,7 @@ def get_map_tile(s: str, z: str, x: str, y: str) -> Tuple[Response, int]:
         y=secure_filename(y),
     )
     headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:88.0)'}
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers, timeout=30)
     return (
         Response(
             response.content,
