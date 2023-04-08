@@ -19,6 +19,8 @@
       </dd>
       <dt>{{ $t('user.PROFILE.ASCENT_DATA') }}:</dt>
       <dd>{{ $t(`common.${display_ascent}`) }}</dd>
+      <dt>{{ $t('user.PROFILE.ELEVATION_CHART_START.LABEL') }}:</dt>
+      <dd>{{ $t(`user.PROFILE.ELEVATION_CHART_START.${user.start_elevation_at_zero ? 'ZERO' : 'MIN_ALT'}`) }}</dd>
     </dl>
     <div class="profile-buttons">
       <button @click="$router.push('/profile/edit/preferences')">

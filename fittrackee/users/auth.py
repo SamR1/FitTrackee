@@ -869,6 +869,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
               4,
               6
           ],
+          "start_elevation_at_zero": true,
           "timezone": "Europe/Paris",
           "total_distance": 67.895,
           "total_duration": "6:50:27",
@@ -883,8 +884,8 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     :<json boolean display_ascent: display highest ascent records and total
     :<json boolean imperial_units: display distance in imperial units
     :<json string language: language preferences
+    :<json boolean start_elevation_at_zero: do elevation plots start at zero?
     :<json string timezone: user time zone
-    :<json boolean weekm: does week start on Monday?
     :<json boolean weekm: does week start on Monday?
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
@@ -906,6 +907,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         'display_ascent',
         'imperial_units',
         'language',
+        'start_elevation_at_zero',
         'timezone',
         'weekm',
     }
@@ -916,6 +918,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     display_ascent = post_data.get('display_ascent')
     imperial_units = post_data.get('imperial_units')
     language = get_language(post_data.get('language'))
+    start_elevation_at_zero = post_data.get('start_elevation_at_zero')
     timezone = post_data.get('timezone')
     weekm = post_data.get('weekm')
 
@@ -924,6 +927,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.display_ascent = display_ascent
         auth_user.imperial_units = imperial_units
         auth_user.language = language
+        auth_user.start_elevation_at_zero = start_elevation_at_zero
         auth_user.timezone = timezone
         auth_user.weekm = weekm
         db.session.commit()

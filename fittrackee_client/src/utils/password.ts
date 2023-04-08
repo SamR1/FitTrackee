@@ -19,10 +19,10 @@ export const loadLanguagePackage = async (language: string) => {
       return await import(
         /* webpackChunkName: "password.it" */ '@zxcvbn-ts/language-it'
       )
-    // case 'es':
-    //   return await import(
-    //     /* webpackChunkName: "password.es" */ '@zxcvbn-ts/language-es-es'
-    //   )
+    case 'es':
+      return await import(
+        /* webpackChunkName: "password.es" */ '@zxcvbn-ts/language-es-es'
+      )
     default:
       return await import(
         /* webpackChunkName: "password.en" */ '@zxcvbn-ts/language-en'

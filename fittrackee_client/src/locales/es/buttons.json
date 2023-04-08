@@ -1,2 +1,19 @@
 {
+    "ACCOUNT-CONFIRMATION-RESEND": "Reenviar correo de confirmación",
+    "AUTHORIZE": "Autorizar",
+    "BACK": "Volver",
+    "CANCEL": "Cancelar",
+    "CLEAR_FILTER": "Eliminar filtros",
+    "DELETE_MY_ACCOUNT": "Eliminar mi cuenta",
+    "DISABLE": "Desactivar",
+    "EDIT": "Editar",
+    "ENABLE": "Activar",
+    "FILTER": "Filtro",
+    "LOGIN": "Acceder",
+    "NO": "No",
+    "REGISTER": "Crear cuenta",
+    "REQUEST_DATA_EXPORT": "Solicitar exportación de datos",
+    "RESET": "Restablecer",
+    "SUBMIT": "Enviar",
+    "YES": "Si"
 }

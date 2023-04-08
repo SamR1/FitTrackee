@@ -1,2 +1,65 @@
 {
+    "ABOUT": {
+        "DESCRIPTION": "Cualquier tipo de información adicional que pueda ser útil para tus usuarios. Puedes usar Markdown.",
+        "TEXT": "Información detallada sobre la instancia"
+    },
+    "ACTION": "Acción",
+    "ACTIVATE_USER_ACCOUNT": "Activar cuenta",
+    "ACTIVE": "Activa",
+    "ADMIN": "Admin",
+    "ADMINISTRATION": "Administración",
+    "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Añadir/Retirar derechos de aministración, eliminar cuenta de usuario.",
+    "APPLICATION": "Aplicación",
+    "APP_CONFIG": {
+        "ADMIN_CONTACT": "Contacto por email con la administración",
+        "MAX_FILES_IN_ZIP_LABEL": "Núm. máximo de ficheros en el zip",
+        "MAX_USERS_HELP": "Si 0, no hay límite para los registros.",
+        "MAX_USERS_LABEL": "Núm. máximo de usuarios activos",
+        "NO_CONTACT_EMAIL": "sin email de contacto",
+        "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Tamaño máx. de los ficheros subidos (en Mb)",
+        "TITLE": "Configuración de la aplicación",
+        "ZIP_UPLOAD_MAX_SIZE_LABEL": "Tamaño máx. del fichero zip (en Mb)"
+    },
+    "BACK_TO_ADMIN": "Volver a admin",
+    "CONFIRM_USER_ACCOUNT_DELETION": "¿Seguro que quieres eliminar la cuenta {0}? Se borrarán todos los datos y no será reversible.",
+    "CONFIRM_USER_PASSWORD_RESET": "¿Seguro que quieres restablecer la contraseña de {0}?",
+    "CURRENT_EMAIL": "Email actual",
+    "DELETE_USER": "Eliminar usuario",
+    "EMAIL_SENDING_DISABLED": "El envío de email está desactivado.",
+    "ENABLE_DISABLE_SPORTS": "Activar/desactivar deportes.",
+    "NEW_EMAIL": "Nuevo email",
+    "NO_TEXT_ENTERED": "No hay texto",
+    "PASSWORD_RESET_SUCCESSFUL": "Se ha restablecido la contraseña.",
+    "PRIVACY_POLICY_DESCRIPTION": "Añade tu propia política de privacidad o déjalo en blanco para usar una por defecto. Puedes usar Markdown.",
+    "REGISTRATION_DISABLED": "Actualmente está desactivada la creación de cuentas.",
+    "REGISTRATION_ENABLED": "Actualmente está abierta la creación de cuentas.",
+    "RESET_USER_PASSWORD": "Restablecer contraseña",
+    "SPORTS": {
+        "TABLE": {
+            "ACTIVE": "Activa",
+            "HAS_WORKOUTS": "ya existe el entrenamiento",
+            "IMAGE": "Imagen",
+            "LABEL": "Etiqueta"
+        },
+        "TITLE": "Administrar deportes"
+    },
+    "UPDATE_APPLICATION_DESCRIPTION": "Actualizar la configuración de la aplicación.",
+    "UPDATE_USER_EMAIL": "Actualizar email",
+    "USER": "usuario | usuarios",
+    "USERS": {
+        "SELECTS": {
+            "ORDER_BY": {
+                "ADMIN": "estatus de admin",
+                "CREATED_AT": "data de registro",
+                "IS_ACTIVE": "tipo de cuenta",
+                "USERNAME": "identificador",
+                "WORKOUTS_COUNT": "número de entramientos"
+            }
+        },
+        "TABLE": {
+            "ADD_ADMIN_RIGHTS": "Otorgar permiso de admin",
+            "REMOVE_ADMIN_RIGHTS": "Retirar permiso de admin"
+        }
+    },
+    "USER_EMAIL_UPDATE_SUCCESSFUL": "La dirección de email ha sido actualizada."
 }

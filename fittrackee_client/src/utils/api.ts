@@ -102,8 +102,8 @@ export const rangePagination = (
   } else {
     if (
       pagination[pagination.length - 1] !== '...' &&
-      pagination[pagination.length - 1] >= pages - 2 &&
-      pagination[pagination.length - 1] < pages
+      +pagination[pagination.length - 1] >= pages - 2 &&
+      +pagination[pagination.length - 1] < pages
     ) {
       pagination = pagination.concat(
         getRange(pages, +pagination[pagination.length - 1] + 1)

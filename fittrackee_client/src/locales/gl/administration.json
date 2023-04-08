@@ -1,2 +1,65 @@
 {
+    "ABOUT": {
+        "DESCRIPTION": "Calquera información adicional que puidese ser útil para as túas usuarias. Podes usar Markdown.",
+        "TEXT": "Información detallada sobre a instancia"
+    },
+    "ACTION": "Acción",
+    "ACTIVATE_USER_ACCOUNT": "Activar conta",
+    "ACTIVE": "Activa",
+    "ADMIN": "Admin",
+    "ADMINISTRATION": "Administración",
+    "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Engadir/Eliminar permiso de admin, eliminar conta de usuarias.",
+    "APPLICATION": "Aplicación",
+    "APP_CONFIG": {
+        "ADMIN_CONTACT": "Email de contacto da administración",
+        "MAX_FILES_IN_ZIP_LABEL": "Num. máximo ficheiros arquivo zip",
+        "MAX_USERS_HELP": "Se 0, non hai límite de rexistros.",
+        "MAX_USERS_LABEL": "Número máx. de usuarias activas",
+        "NO_CONTACT_EMAIL": "sen correo de contacto",
+        "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Tamaño Máx. dos ficheiros subidos (en MB)",
+        "TITLE": "Configuración da aplicación",
+        "ZIP_UPLOAD_MAX_SIZE_LABEL": "Tamaño Máx. do arquivo zip (en MB)"
+    },
+    "BACK_TO_ADMIN": "Volver a admin",
+    "CONFIRM_USER_ACCOUNT_DELETION": "Tes a certeza de querer eliminar a conta {0}? Borraranse todos os datos, non hai volta atrás.",
+    "CONFIRM_USER_PASSWORD_RESET": "Tes certeza de querer restablecer o contrasinal de {0}?",
+    "CURRENT_EMAIL": "Email actual",
+    "DELETE_USER": "Eliminar usuaria",
+    "EMAIL_SENDING_DISABLED": "O envío de correos está desactivado.",
+    "ENABLE_DISABLE_SPORTS": "Activar/desactivar deportes.",
+    "NEW_EMAIL": "Novo email",
+    "NO_TEXT_ENTERED": "Non escribiches texto",
+    "PASSWORD_RESET_SUCCESSFUL": "Restableceuse o contrasinal.",
+    "PRIVACY_POLICY_DESCRIPTION": "Engade a túa propia política de privacidade ou déixaa baleira para usar unha por defecto. Podes usar Markdown.",
+    "REGISTRATION_DISABLED": "Actualmente non se poden crear máis contas.",
+    "REGISTRATION_ENABLED": "Actualmente pódense crear novas contas.",
+    "RESET_USER_PASSWORD": "Restablecer contrasinal",
+    "SPORTS": {
+        "TABLE": {
+            "ACTIVE": "Activo",
+            "HAS_WORKOUTS": "xa existe o adestramento",
+            "IMAGE": "Imaxe",
+            "LABEL": "Etiqueta"
+        },
+        "TITLE": "Administrar deportes"
+    },
+    "UPDATE_APPLICATION_DESCRIPTION": "Actualizar configuración da aplicación.",
+    "UPDATE_USER_EMAIL": "Actualizar email",
+    "USER": "usuaria | usuarias",
+    "USERS": {
+        "SELECTS": {
+            "ORDER_BY": {
+                "ADMIN": "rol de admin",
+                "CREATED_AT": "data de rexistro",
+                "IS_ACTIVE": "estado da conta",
+                "USERNAME": "identificador",
+                "WORKOUTS_COUNT": "número adestramentos"
+            }
+        },
+        "TABLE": {
+            "ADD_ADMIN_RIGHTS": "Conceder permisos admin",
+            "REMOVE_ADMIN_RIGHTS": "Retirar permisos admin"
+        }
+    },
+    "USER_EMAIL_UPDATE_SUCCESSFUL": "Actualizouse o enderezo de email."
 }

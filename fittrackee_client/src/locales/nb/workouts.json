@@ -1,2 +1,38 @@
 {
+    "ADD_WORKOUT": "Legg til en arbeidsøkt",
+    "ANALYSIS": "analyse",
+    "BACK_TO_WORKOUT": "tilbake til arbeidsøkt",
+    "DATE": "dato",
+    "DISTANCE": "avstand",
+    "EDIT_WORKOUT": "Rediger arbeidsøkten",
+    "FROM": "fra",
+    "INVALID_DISTANCE": "Avstanden må være større enn 0",
+    "MAX_SIZE": "maks. størrelse",
+    "MAX_SPEED": "maks. hastighet",
+    "NEXT_WORKOUT": "Neste arbeidsøkt",
+    "NOTES": "notater",
+    "NO_FILE_PROVIDED": "Ingen fil angitt",
+    "NO_WORKOUTS": "Ingen arbeidsøkter.",
+    "PREVIOUS_SEGMENT": "Forrige segment",
+    "RECORD_LD": "Lengste varighet",
+    "RECORD_MS": "Maks. hastighet",
+    "REMAINING_CHARS": "gjenstående tegn",
+    "SEGMENT": "segment | segmenter",
+    "SPEED": "hastighet",
+    "SPORT": "sport | sporter",
+    "START": "start",
+    "START_AND_FINISH": "Start og slutt",
+    "TO": "til",
+    "TOTAL_DURATION": "total varighet",
+    "WEATHER": {
+        "DARK_SKY": {
+            "clear-day": "tøm dag",
+            "rain": "regn",
+            "snow": "snø",
+            "wind": "vind"
+        },
+        "TEMPERATURE": "temperatur",
+        "WIND": "vind"
+    },
+    "ZIP_ARCHIVE": ".zip-fil"
 }
