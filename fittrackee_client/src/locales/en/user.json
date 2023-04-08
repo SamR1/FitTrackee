@@ -69,6 +69,11 @@
         "EDIT_PREFERENCES": "Edit preferences",
         "EDIT_SPORTS_PREFERENCES": "Edit sports preferences",
         "ERRORED_EMAIL_UPDATE": "Please {0} to change your email address again or contact the administrator",
+        "ELEVATION_CHART_START": {
+            "LABEL": "Elevation chart starts at",
+            "ZERO": "Zero",
+            "MIN_ALT": "Minimum altitude"
+        },
         "FIRST_DAY_OF_WEEK": "First day of week",
         "FIRST_NAME": "First name",
         "LANGUAGE": "Language",

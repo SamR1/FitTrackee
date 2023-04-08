@@ -99,6 +99,26 @@
             </label>
           </div>
         </div>
+        <div class="form-items form-checkboxes">
+          <span class="checkboxes-label">
+            {{ $t('user.PROFILE.ELEVATION_CHART_START.LABEL') }}
+          </span>
+          <div class="checkboxes">
+            <label v-for="status in startElevationAtZeroData" :key="status.label">
+              <input
+                type="radio"
+                :id="status.label"
+                :name="status.label"
+                :checked="status.value === userForm.start_elevation_at_zero"
+                :disabled="loading"
+                @input="updateStartElevationAtZero(status.value)"
+              />
+              <span class="checkbox-label">
+                {{ $t(`user.PROFILE.ELEVATION_CHART_START.${status.label}`) }}
+              </span>
+            </label>
+          </div>
+        </div>
         <div class="form-buttons">
           <button class="confirm" type="submit">
             {{ $t('buttons.SUBMIT') }}
@@ -170,6 +190,16 @@
       value: false,
     },
   ]
+  const startElevationAtZeroData = [
+    {
+      label: 'ZERO',
+      value: true
+    },
+    {
+      label: 'MIN_ALT',
+      value: false
+    }
+  ]
   const loading = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
   )
@@ -192,6 +222,7 @@
 
   function updateUserForm(user: IAuthUserProfile) {
     userForm.display_ascent = user.display_ascent
+    userForm.start_elevation_at_zero = user.start_elevation_at_zero ? user.start_elevation_at_zero : false
     userForm.imperial_units = user.imperial_units ? user.imperial_units : false
     userForm.language = user.language ? user.language : 'en'
     userForm.timezone = user.timezone ? user.timezone : 'Europe/Paris'
@@ -203,6 +234,9 @@
   }
   function updateTZ(value: string) {
     userForm.timezone = value
+  }
+  function updateStartElevationAtZero(value: boolean) {
+    userForm.start_elevation_at_zero = value
   }
   function updateAscentDisplay(value: boolean) {
     userForm.display_ascent = value
