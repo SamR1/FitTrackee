@@ -5,7 +5,6 @@
     "DAY": "day | days",
     "DISPLAYED": "Displayed",
     "DOCUMENTATION": "documentation",
-    "FALSE": "False",
     "HERE": "here",
     "HIDDEN": "Hidden",
     "HOME": "Home",
@@ -22,6 +21,5 @@
             "LABEL": "par page"
         }
     },
-    "TOTAL": "Total",
-    "TRUE": "True"
+    "TOTAL": "Total"
 }

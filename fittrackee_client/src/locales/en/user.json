@@ -69,6 +69,11 @@
         "EDIT_PREFERENCES": "Edit preferences",
         "EDIT_SPORTS_PREFERENCES": "Edit sports preferences",
         "ERRORED_EMAIL_UPDATE": "Please {0} to change your email address again or contact the administrator",
+        "ELEVATION_CHART_START": {
+            "LABEL": "Elevation chart starts at",
+            "ZERO": "Zero",
+            "MIN_ALT": "Minimum altitude"
+        },
         "FIRST_DAY_OF_WEEK": "First day of week",
         "FIRST_NAME": "First name",
         "LANGUAGE": "Language",
@@ -92,7 +97,6 @@
             "STOPPED_SPEED_THRESHOLD": "stopped speed threshold"
         },
         "SPORTS_EDITION": "Sports preferences edition",
-        "START_ELEVATION_AT_ZERO": "Start elevation plots at zero",
         "SUCCESSFUL_EMAIL_UPDATE": "Your account has been updated successfully. Please check your email to confirm your new email address.",
         "SUCCESSFUL_REGISTRATION": "Your account has been created successfully.",
         "SUCCESSFUL_REGISTRATION_WITH_EMAIL": "A link to activate your account has been emailed to the address provided.",

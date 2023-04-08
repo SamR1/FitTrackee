@@ -101,7 +101,7 @@
         </div>
         <div class="form-items form-checkboxes">
           <span class="checkboxes-label">
-            {{ $t('user.PROFILE.START_ELEVATION_AT_ZERO') }}
+            {{ $t('user.PROFILE.ELEVATION_CHART_START.LABEL') }}
           </span>
           <div class="checkboxes">
             <label v-for="status in startElevationAtZeroData" :key="status.label">
@@ -114,7 +114,7 @@
                 @input="updateStartElevationAtZero(status.value)"
               />
               <span class="checkbox-label">
-                {{ $t(`common.${status.label}`) }}
+                {{ $t(`user.PROFILE.ELEVATION_CHART_START.${status.label}`) }}
               </span>
             </label>
           </div>
@@ -192,11 +192,11 @@
   ]
   const startElevationAtZeroData = [
     {
-      label: 'TRUE',
+      label: 'ZERO',
       value: true
     },
     {
-      label: 'FALSE',
+      label: 'MIN_ALT',
       value: false
     }
   ]

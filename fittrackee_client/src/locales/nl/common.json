@@ -5,7 +5,6 @@
     "DAY": "dag | dagen",
     "DISPLAYED": "Weergegeven",
     "DOCUMENTATION": "documentatie",
-    "FALSE": "Waar",
     "HERE": "hier",
     "HIDDEN": "Verborgen",
     "HOME": "Startscherm",
@@ -22,6 +21,5 @@
             "LABEL": "per pagina"
         }
     },
-    "TOTAL": "Totaal",
-    "TRUE": "Onwaar"
+    "TOTAL": "Totaal"
 }

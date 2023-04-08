@@ -5,7 +5,6 @@
     "DAY": "Tag | Tage",
     "DISPLAYED": "Angezeigt",
     "DOCUMENTATION": "Dokumentation (en)",
-    "FALSE": "Falsch",
     "HERE": "hier",
     "HIDDEN": "Versteckt",
     "HOME": "Startseite",
@@ -22,6 +21,5 @@
             "LABEL": "pro Seite"
         }
     },
-    "TOTAL": "Insgesamt",
-    "TRUE": "Wahr"
+    "TOTAL": "Insgesamt"
 }
