@@ -2,7 +2,7 @@
   <div class="workouts-filters">
     <div class="box">
       <form v-on:submit.prevent="onSubmit" class="form">
-        <div class="form">
+        <div class="form-all-items">
           <div class="form-items-group">
             <div class="form-item">
               <label> {{ $t('workouts.FROM') }}: </label>
@@ -44,10 +44,7 @@
                 </option>
               </select>
             </div>
-          </div>
-
-          <div class="form-items-group">
-            <div class="form-item">
+            <div class="form-item form-item-title">
               <label> {{ $t('workouts.TITLE', 1) }}:</label>
               <div class="form-inputs-group">
                 <input
@@ -250,43 +247,48 @@
 
   .workouts-filters {
     .form {
-      display: flex;
-      flex-direction: column;
-      padding-top: 0;
-
-      .form-items-group {
+      .form-all-items {
         display: flex;
         flex-direction: column;
-        padding: $default-padding * 0.5;
+        padding-top: 0;
 
-        .form-item {
+        .form-items-group {
           display: flex;
           flex-direction: column;
+          padding: $default-padding * 0.5;
 
-          .form-inputs-group {
+          .form-item {
             display: flex;
-            flex-direction: row;
-            justify-content: space-around;
-            align-items: center;
+            flex-direction: column;
+
+            .form-inputs-group {
+              display: flex;
+              flex-direction: row;
+              justify-content: space-around;
+              align-items: center;
+
+              input {
+                width: 34%;
+              }
+              span {
+                padding: $default-padding * 0.5;
+              }
+            }
 
             input {
-              width: 34%;
+              height: 16px;
             }
+
+            select {
+              height: 38px;
+              padding: 0 $default-padding * 0.5;
+            }
+          }
+          .form-item-title {
+            padding-top: $default-padding;
             input.title {
               width: 100%;
             }
-            span {
-              padding: $default-padding * 0.5;
-            }
-          }
-
-          input {
-            height: 16px;
-          }
-
-          select {
-            height: 36px;
-            padding: 0 $default-padding * 0.5;
           }
         }
       }
@@ -306,26 +308,35 @@
 
     @media screen and (max-width: $medium-limit) {
       .form {
-        flex-direction: row;
-        padding-top: $default-padding * 0.5;
+        .form-all-items {
+          flex-direction: row;
+          padding-top: $default-padding * 0.5;
 
-        .form-items-group {
-          padding: 0 $default-padding * 0.5;
-          height: 100%;
+          .form-items-group {
+            padding: 0 $default-padding * 0.5;
+            height: 100%;
 
-          .form-item {
-            label {
-              font-size: 0.9em;
+            .form-item {
+              label, span {
+                font-size: 0.9em;
+              }
+
+              .form-inputs-group {
+                flex-direction: column;
+                justify-content: normal;
+                padding: 0;
+
+                input {
+                  width: 85%;
+                }
+                span {
+                  padding: 0;
+                }
+              }
             }
 
-            .form-inputs-group {
-              flex-direction: column;
-              justify-content: normal;
-              padding: 0;
-
-              input {
-                width: 75%;
-              }
+            .form-item-title {
+              padding-top: 0;
             }
           }
         }
@@ -341,26 +352,30 @@
     }
     @media screen and (max-width: $small-limit) {
       .form {
-        flex-direction: column;
-        padding-top: 0;
+        .form-all-items {
+          flex-direction: column;
+          padding-top: 0;
 
-        .form-items-group {
-          padding: $default-padding * 0.5;
+          .form-items-group {
+            padding: $default-padding * 0.5;
 
-          .form-item {
-            label {
-              font-size: 1em;
-            }
-
-            .form-inputs-group {
-              flex-direction: row;
-              justify-content: space-around;
-              align-items: center;
-              input {
-                width: 50%;
+            .form-item {
+              label {
+                font-size: 1em;
               }
-              span {
-                padding: $default-padding * 0.5;
+
+              .form-inputs-group {
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: center;
+
+                input {
+                  width: 50%;
+                }
+
+                span {
+                  padding: $default-padding * 0.5;
+                }
               }
             }
           }
@@ -377,6 +392,20 @@
     @media screen and (max-width: $x-small-limit) {
       .form-button {
         flex-wrap: wrap;
+      }
+      .form {
+        .form-all-items {
+
+          .form-items-group {
+            .form-item-title {
+              padding-top: $default-padding;
+
+              input.title {
+                width: 100%;
+              }
+            }
+          }
+        }
       }
     }
   }
