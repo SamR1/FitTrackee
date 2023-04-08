@@ -972,10 +972,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         workouts = data['data']['workouts']
         assert len(workouts) == 1
         assert 'Workout 3 of 7' == workouts[0]['title']
-        assert (
-            'Mon, 01 Jan 2018 00:00:00 GMT'
-            == workouts[0]['workout_date']
-        )
+        assert 'Mon, 01 Jan 2018 00:00:00 GMT' == workouts[0]['workout_date']
 
     def test_it_gets_no_workouts_with_title_filter(
         self,
@@ -998,7 +995,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         assert 'success' in data['status']
         workouts = data['data']['workouts']
         assert len(workouts) == 0
-        
+
 
 class TestGetWorkoutsWithFiltersAndPagination(ApiTestCaseMixin):
     def test_it_gets_page_2_with_date_filter(
@@ -1073,7 +1070,6 @@ class TestGetWorkoutsWithFiltersAndPagination(ApiTestCaseMixin):
             'total': 7,
         }
 
-
     def test_it_gets_all_workouts_with_title_filter(
         self,
         app: Flask,
@@ -1105,6 +1101,7 @@ class TestGetWorkoutsWithFiltersAndPagination(ApiTestCaseMixin):
             'pages': 2,
             'total': 7,
         }
+
 
 class TestGetWorkout(ApiTestCaseMixin):
     def test_it_gets_a_workout(
