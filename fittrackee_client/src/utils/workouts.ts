@@ -36,7 +36,9 @@ export const getDatasets = (
   const coordinates: TCoordinates[] = []
 
   chartData.map((data) => {
-    distance_labels.push(data.distance)
+    distance_labels.push(
+      convertStatsDistance('km', data.distance, useImperialUnits)
+    )
     duration_labels.push(data.duration)
     datasets.speed.data.push(
       convertStatsDistance('km', data.speed, useImperialUnits)
