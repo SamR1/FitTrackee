@@ -62,6 +62,7 @@ def send_to_inbox(sender: Actor, activity: Dict, inbox_url: str) -> None:
             'Digest': digest,
             'Content-Type': 'application/ld+json',
         },
+        timeout=30,
     )
     if response.status_code >= 400:
         appLog.error(

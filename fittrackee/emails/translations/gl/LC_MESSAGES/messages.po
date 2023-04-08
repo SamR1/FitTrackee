@@ -1,0 +1,260 @@
+# Galician translations for PROJECT.
+# Copyright (C) 2023 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2023-03-04 10:33+0100\n"
+"PO-Revision-Date: 2023-03-22 17:40+0000\n"
+"Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
+"Language-Team: Galician <https://hosted.weblate.org/projects/fittrackee/"
+"fittrackee-api-emails/gl/>\n"
+"Language: gl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.16.2-dev\n"
+"Generated-By: Babel 2.12.1\n"
+
+#: fittrackee/emails/templates/layout.html:215
+#: fittrackee/emails/templates/layout.txt:1
+#, python-format
+msgid "Hi %(username)s,"
+msgstr "Ola %(username)s,"
+
+#: fittrackee/emails/templates/account_confirmation/body.txt:6
+#: fittrackee/emails/templates/email_update_to_current_email/body.txt:3
+#: fittrackee/emails/templates/email_update_to_new_email/body.txt:6
+#: fittrackee/emails/templates/layout.html:218
+#: fittrackee/emails/templates/password_change/body.txt:3
+#: fittrackee/emails/templates/password_reset_request/body.txt:6
+#, python-format
+msgid ""
+"For security, this request was received from a %(operating_system)s "
+"device using %(browser_name)s."
+msgstr ""
+"Por seguridade, recibiuse a solicitude desde un dispositivo "
+"%(operating_system)s usando %(browser_name)s."
+
+#: fittrackee/emails/templates/layout.html:221
+#: fittrackee/emails/templates/layout.txt:5
+msgid "Thanks,"
+msgstr "Grazas,"
+
+#: fittrackee/emails/templates/layout.html:222
+#: fittrackee/emails/templates/layout.txt:6
+msgid "The FitTrackee Team"
+msgstr "O Equipo FitTrackee"
+
+#: fittrackee/emails/templates/account_confirmation/body.html:2
+#: fittrackee/emails/templates/account_confirmation/subject.txt:1
+msgid "Confirm your account"
+msgstr "Confirma a túa conta"
+
+#: fittrackee/emails/templates/account_confirmation/body.html:3
+msgid "Use this link to confirm your account."
+msgstr "Usa esta ligazón para confirmar a conta."
+
+#: fittrackee/emails/templates/account_confirmation/body.html:4
+#: fittrackee/emails/templates/account_confirmation/body.txt:1
+msgid "You have created an account on FitTrackee."
+msgstr "Creaches unha conta en FitTrackee."
+
+#: fittrackee/emails/templates/account_confirmation/body.html:4
+msgid "Use the button below to confirm your address email."
+msgstr "Usa o botón inferior para confirmar o enderezo do teu correo."
+
+#: fittrackee/emails/templates/account_confirmation/body.html:11
+#: fittrackee/emails/templates/account_confirmation/body.txt:4
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:11
+#: fittrackee/emails/templates/email_update_to_new_email/body.txt:4
+msgid "Verify your email"
+msgstr "Verifica o email"
+
+#: fittrackee/emails/templates/account_confirmation/body.html:18
+#: fittrackee/emails/templates/account_confirmation/body.txt:7
+msgid ""
+"If this account creation wasn't initiated by you, please ignore this "
+"email."
+msgstr ""
+"Se non iniciaches ti a creación da conta, ignora este correo electrónico."
+
+#: fittrackee/emails/templates/account_confirmation/body.html:22
+#: fittrackee/emails/templates/data_export_ready/body.html:22
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:22
+#: fittrackee/emails/templates/password_reset_request/body.html:24
+msgid ""
+"If you're having trouble with the button above, copy and paste the URL "
+"below into your web browser."
+msgstr ""
+"Se tes problemas co botón superior, copia e pega o URL inferior no teu "
+"navegador web."
+
+#: fittrackee/emails/templates/account_confirmation/body.txt:2
+msgid "Use the link below to confirm your address email."
+msgstr "Usa a ligazón inferior para confirmar o teu enderezo de correo."
+
+#: fittrackee/emails/templates/data_export_ready/body.html:2
+#: fittrackee/emails/templates/data_export_ready/subject.txt:1
+msgid "Your archive is ready to be downloaded"
+msgstr "O arquivo está listo para descargar"
+
+#: fittrackee/emails/templates/data_export_ready/body.html:3
+msgid "A download link is available in your account."
+msgstr "Tes unha ligazón de descarga dispoñible na túa conta."
+
+#: fittrackee/emails/templates/data_export_ready/body.html:4
+#: fittrackee/emails/templates/data_export_ready/body.txt:1
+msgid "You have requested an export of your account on FitTrackee."
+msgstr "Solicitaches exportar a túa conta de FitTrackee."
+
+#: fittrackee/emails/templates/data_export_ready/body.html:4
+#: fittrackee/emails/templates/data_export_ready/body.txt:2
+msgid "The archive is now ready to be downloaded from your account."
+msgstr "O arquivo está dispoñible na túa conta para ser descargado."
+
+#: fittrackee/emails/templates/data_export_ready/body.html:11
+#: fittrackee/emails/templates/data_export_ready/body.txt:4
+msgid "Download your archive"
+msgstr "Descarga o teu arquivo"
+
+#: fittrackee/emails/templates/data_export_ready/body.html:18
+#: fittrackee/emails/templates/data_export_ready/body.txt:5
+msgid ""
+"If you did not request the export, please change your password "
+"immediately or contact your administrator if your account is locked."
+msgstr ""
+"Se non solicitaches a exportación, cambia agora mesmo o contrasinal ou "
+"contacta coa administración se a conta está bloqueada."
+
+#: fittrackee/emails/templates/email_update_to_current_email/body.html:2
+#: fittrackee/emails/templates/email_update_to_current_email/subject.txt:1
+msgid "Email changed"
+msgstr "Email cambiado"
+
+#: fittrackee/emails/templates/email_update_to_current_email/body.html:3
+msgid "Your email is being updated."
+msgstr "Estase actualizando o enderezo de email."
+
+#: fittrackee/emails/templates/email_update_to_current_email/body.html:4
+#: fittrackee/emails/templates/email_update_to_current_email/body.txt:1
+msgid ""
+"You recently requested to change your email address for your FitTrackee "
+"account to:"
+msgstr ""
+"Recentemente solicitaches cambiar o enderezo de correo da túa conta "
+"FitTrackee a:"
+
+#: fittrackee/emails/templates/email_update_to_current_email/body.html:18
+#: fittrackee/emails/templates/email_update_to_current_email/body.txt:4
+msgid ""
+"If this email change wasn't initiated by you, please change your password"
+" immediately or contact your administrator if your account is locked."
+msgstr ""
+"Se non solicitaches este cambio, cambia agora mesmo o contrasinal ou "
+"contacta coa administración se a conta está bloqueada."
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:2
+#: fittrackee/emails/templates/email_update_to_new_email/subject.txt:1
+msgid "Confirm email change"
+msgstr "Confirma o cambio de email"
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:3
+msgid "Use this link to confirm email change."
+msgstr "Usa esta ligazón para confirmar o cambio."
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:4
+#: fittrackee/emails/templates/email_update_to_new_email/body.txt:1
+msgid ""
+"You recently requested to change your email address for your FitTrackee "
+"account."
+msgstr ""
+"Recentemente solicitaches cambiar o enderezo de correo da túa conta "
+"FitTrackee."
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:4
+msgid "Use the button below to confirm this address."
+msgstr "Usa o botón inferior para confirmar este enderezo."
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:18
+#: fittrackee/emails/templates/email_update_to_new_email/body.txt:7
+msgid "If this email change wasn't initiated by you, please ignore this email."
+msgstr "Se non solicitaches este cambio, podes ignorar este correo."
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.txt:2
+msgid "Use the link below to confirm this address."
+msgstr "Usa a ligazón inferior para confirmar este enderezo."
+
+#: fittrackee/emails/templates/password_change/body.html:2
+#: fittrackee/emails/templates/password_change/subject.txt:1
+msgid "Password changed"
+msgstr "Contrasinal cambiado"
+
+#: fittrackee/emails/templates/password_change/body.html:3
+msgid "Your password has been changed."
+msgstr "Realizouse o cambio de contrasinal."
+
+#: fittrackee/emails/templates/password_change/body.html:4
+#: fittrackee/emails/templates/password_change/body.txt:1
+msgid "The password for your FitTrackee account has been changed."
+msgstr "Realizouse o cambio de contrasinal da túa conta FitTrackee."
+
+#: fittrackee/emails/templates/password_change/body.html:5
+#: fittrackee/emails/templates/password_change/body.txt:4
+msgid ""
+"If this password change wasn't initiated by you, please change your "
+"password immediately or contact your administrator if your account is "
+"locked."
+msgstr ""
+"Se non solicitaches este cambio de contrasinal, cambia agora mesmo o "
+"contrasinal ou contacta coa administración se a conta está bloqueada."
+
+#: fittrackee/emails/templates/password_reset_request/body.html:2
+#: fittrackee/emails/templates/password_reset_request/subject.txt:1
+msgid "Password reset request"
+msgstr "Solicitude para restablecer contrasinal"
+
+#: fittrackee/emails/templates/password_reset_request/body.html:3
+#, python-format
+msgid ""
+"Use this link to reset your password. The link is only valid for "
+"%(expiration_delay)s."
+msgstr ""
+"Usa esta ligazón para restablecer o contrasinal. A ligazón será válida "
+"durante %(expiration_delay)s."
+
+#: fittrackee/emails/templates/password_reset_request/body.html:4
+#: fittrackee/emails/templates/password_reset_request/body.txt:1
+msgid "You recently requested to reset your password for your FitTrackee account."
+msgstr ""
+"Recentemente solicitaches cambiar o contrasinal da túa conta FitTrackee."
+
+#: fittrackee/emails/templates/password_reset_request/body.html:4
+msgid "Use the button below to reset it."
+msgstr "Usa o botón inferior para restablecela."
+
+#: fittrackee/emails/templates/password_reset_request/body.html:5
+#: fittrackee/emails/templates/password_reset_request/body.txt:2
+#, python-format
+msgid "This password reset link is only valid for %(expiration_delay)s."
+msgstr ""
+"A ligazón para restablecer o contrasinal será válido durante "
+"%(expiration_delay)s."
+
+#: fittrackee/emails/templates/password_reset_request/body.html:13
+#: fittrackee/emails/templates/password_reset_request/body.txt:4
+msgid "Reset your password"
+msgstr "Restablece o contrasinal"
+
+#: fittrackee/emails/templates/password_reset_request/body.html:20
+#: fittrackee/emails/templates/password_reset_request/body.txt:7
+msgid "If you did not request a password reset, please ignore this email."
+msgstr "Se non solicitaches restablecer o contrasinal, ignora este correo."
+
+#: fittrackee/emails/templates/password_reset_request/body.txt:1
+msgid "Use the link below to reset it."
+msgstr "Usa a ligazón inferior para restablecelo."

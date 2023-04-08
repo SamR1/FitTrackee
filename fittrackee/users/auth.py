@@ -890,6 +890,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
               4,
               6
           ],
+          "start_elevation_at_zero": true,
           "timezone": "Europe/Paris",
           "total_distance": 67.895,
           "total_duration": "6:50:27",
@@ -907,6 +908,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     :<json string language: language preferences
     :<json string map_visibility: workouts map visibility
                                   ('public', 'followers_only', 'private')
+    :<json boolean start_elevation_at_zero: do elevation plots start at zero?
     :<json string timezone: user time zone
     :<json boolean weekm: does week start on Monday?
     :<json string workouts_visibility: user workouts visibility
@@ -931,6 +933,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         'display_ascent',
         'imperial_units',
         'language',
+        'start_elevation_at_zero',
         'timezone',
         'weekm',
         'map_visibility',
@@ -943,6 +946,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     display_ascent = post_data.get('display_ascent')
     imperial_units = post_data.get('imperial_units')
     language = get_language(post_data.get('language'))
+    start_elevation_at_zero = post_data.get('start_elevation_at_zero')
     timezone = post_data.get('timezone')
     weekm = post_data.get('weekm')
     map_visibility = post_data.get('map_visibility')
@@ -959,6 +963,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.display_ascent = display_ascent
         auth_user.imperial_units = imperial_units
         auth_user.language = language
+        auth_user.start_elevation_at_zero = start_elevation_at_zero
         auth_user.timezone = timezone
         auth_user.weekm = weekm
         auth_user.workouts_visibility = PrivacyLevel(workouts_visibility)

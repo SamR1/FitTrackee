@@ -96,6 +96,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     display_ascent=True,
                     date_format='MM/dd/yyyy',
                     map_visibility=input_map_visibility.value,
+                    start_elevation_at_zero=False,
                     workouts_visibility=input_workout_visibility.value,
                 )
             ),

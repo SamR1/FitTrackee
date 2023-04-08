@@ -155,6 +155,16 @@ class User(BaseModel):
         lazy=True,
         backref=db.backref('user', lazy='joined', single_parent=True),
     )
+    language = db.Column(db.String(50), nullable=True)
+    imperial_units = db.Column(db.Boolean, default=False, nullable=False)
+    is_active = db.Column(db.Boolean, default=False, nullable=False)
+    email_to_confirm = db.Column(db.String(255), nullable=True)
+    confirmation_token = db.Column(db.String(255), nullable=True)
+    display_ascent = db.Column(db.Boolean, default=True, nullable=False)
+    accepted_policy_date = db.Column(db.DateTime, nullable=True)
+    start_elevation_at_zero = db.Column(
+        db.Boolean, default=True, nullable=False
+    )
     actor = db.relationship(Actor, back_populates='user')
     received_follow_requests = db.relationship(
         FollowRequest,
@@ -572,6 +582,7 @@ class User(BaseModel):
                     'display_ascent': self.display_ascent,
                     'imperial_units': self.imperial_units,
                     'language': self.language,
+                    'start_elevation_at_zero': self.start_elevation_at_zero,
                     'timezone': self.timezone,
                     'weekm': self.weekm,
                     'map_visibility': self.map_visibility.value,

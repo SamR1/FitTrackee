@@ -7,7 +7,7 @@ from fittrackee.federation.exceptions import RemoteServerException
 
 def get_remote_server_node_info_url(domain_name: str) -> str:
     response = requests.get(
-        f'https://{domain_name}/.well-known/nodeinfo',
+        f'https://{domain_name}/.well-known/nodeinfo', timeout=30
     )
     if response.status_code >= 400:
         raise RemoteServerException(
@@ -24,7 +24,7 @@ def get_remote_server_node_info_url(domain_name: str) -> str:
 
 
 def get_remote_server_node_info_data(node_info_url: str) -> Dict:
-    response = requests.get(node_info_url)
+    response = requests.get(node_info_url, timeout=30)
     if response.status_code >= 400:
         raise RemoteServerException(
             f"Error when getting node_info data from '{node_info_url}'"

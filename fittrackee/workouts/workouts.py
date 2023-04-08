@@ -221,6 +221,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
     :query integer per_page: number of workouts per page
                              (default: 5, max: 100)
     :query integer sport_id: sport id
+    :quert string title: any part (or all) of the workout title;
+                         title matching is case-insensitive
     :query string from: start date (format: ``%Y-%m-%d``)
     :query string to: end date (format: ``%Y-%m-%d``)
     :query float distance_from: minimal distance
@@ -264,6 +266,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
         )
         order = params.get('order', 'desc')
         sport_id = params.get('sport_id')
+        title = params.get('title')
         per_page = int(params.get('per_page', DEFAULT_WORKOUTS_PER_PAGE))
         if per_page > MAX_WORKOUTS_PER_PAGE:
             per_page = MAX_WORKOUTS_PER_PAGE
@@ -271,6 +274,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
             Workout.query.filter(
                 Workout.user_id == auth_user.id,
                 Workout.sport_id == sport_id if sport_id else True,
+                Workout.title.ilike(f"%{title}%") if title else True,
                 Workout.workout_date >= date_from if date_from else True,
                 Workout.workout_date < date_to + timedelta(seconds=1)
                 if date_to
@@ -869,7 +873,7 @@ def get_map_tile(s: str, z: str, x: str, y: str) -> Tuple[Response, int]:
         y=secure_filename(y),
     )
     headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:88.0)'}
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers, timeout=30)
     return (
         Response(
             response.content,

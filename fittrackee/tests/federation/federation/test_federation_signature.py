@@ -292,7 +292,9 @@ class TestGetActorPublicKey(SignatureVerificationTestCase):
             sig_verification.get_actor_public_key()
 
             requests_mock.assert_called_with(
-                key_id, headers={'Accept': 'application/activity+json'}
+                key_id,
+                headers={'Accept': 'application/activity+json'},
+                timeout=30,
             )
 
     def test_it_returns_none_if_requests_returns_error_status_code(

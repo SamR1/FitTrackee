@@ -227,8 +227,9 @@
         padding: 0 10px;
 
         ::v-deep(.dropdown-list) {
-          margin-left: -95px !important;
-          width: 115px !important;
+          z-index: 1000;
+          margin-left: -110px !important;
+          width: 131px !important;
         }
       }
 

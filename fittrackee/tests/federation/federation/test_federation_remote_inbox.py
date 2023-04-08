@@ -95,6 +95,7 @@ class TestSendToRemoteInbox(BaseTestMixin, RandomMixin):
                 'Signature': signed_header,
                 'Content-Type': 'application/ld+json',
             },
+            timeout=30,
         )
 
     @patch('fittrackee.federation.inbox.generate_signature_header')

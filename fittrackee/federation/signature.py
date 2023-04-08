@@ -104,6 +104,7 @@ class SignatureVerification:
         response = requests.get(
             self.key_id,
             headers={'Accept': 'application/activity+json'},
+            timeout=30,
         )
         if response.status_code >= 400:
             return None

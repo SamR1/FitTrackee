@@ -55,6 +55,9 @@ docker-build-client:
 
 docker-check-all: docker-bandit docker-lint-all docker-type-check docker-test-client docker-test-python
 
+docker-downgrade-db:
+	docker-compose -f docker-compose-dev.yml exec fittrackee $(DOCKER_FLASK) db downgrade --directory $(DOCKER_MIGRATIONS)
+
 docker-init: docker-run docker-init-db docker-restart docker-run-workers
 
 docker-init-db:

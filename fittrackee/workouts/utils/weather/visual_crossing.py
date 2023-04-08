@@ -69,7 +69,7 @@ class VisualCrossing(BaseWeather):
                 self.api_key, '*****'
             )
         )
-        r = requests.get(url, params=self.params)
+        r = requests.get(url, params=self.params, timeout=10)
         r.raise_for_status()
         res = r.json()
         weather = res['currentConditions']

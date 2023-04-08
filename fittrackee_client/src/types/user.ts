@@ -46,6 +46,7 @@ export interface IAuthUserProfile extends IUserProfile {
   display_ascent: boolean
   email: string
   imperial_units: boolean
+  start_elevation_at_zero: boolean
   language: string | null
   map_visibility: TPrivacyLevels
   nb_sports: number
@@ -94,6 +95,7 @@ export interface IUserRelationshipActionPayload {
 
 export interface IUserPreferencesPayload {
   display_ascent: boolean
+  start_elevation_at_zero: boolean
   imperial_units: boolean
   language: string
   map_visibility: TPrivacyLevels

@@ -8,6 +8,7 @@
         "error during gpx file parsing": "Fehler beim Einlesen der GPX-Datei",
         "error during gpx processing": "Fehler bei der GPX-Verarbeitung.",
         "error on getting configuration": "Fehler beim Abrufen der Konfiguration.",
+        "error when saving workout": "Fehler beim Speichern des Workouts.",
         "error when updating configuration": "Fehler beim Aktualisieren der Konfiguration",
         "error, please try again or contact the administrator": "Fehler. Bitte versuche es erneut oder kontaktiere den Administrator.",
         "error, registration is disabled": "Fehler. Die Registrierung ist deaktiviert.",

@@ -118,6 +118,7 @@ def seven_workouts_user_1() -> List[Workout]:
         distance=5,
         duration=datetime.timedelta(seconds=1024),
     )
+    workout_1.title = "Workout 1 of 7"
     update_workout(workout_1)
     workout_1.ascent = 120
     workout_1.descent = 200
@@ -132,6 +133,7 @@ def seven_workouts_user_1() -> List[Workout]:
         distance=10,
         duration=datetime.timedelta(seconds=3456),
     )
+    workout_2.title = "Workout 2 of 7"
     update_workout(workout_2)
     workout_2.ascent = 100
     workout_2.descent = 80
@@ -146,6 +148,7 @@ def seven_workouts_user_1() -> List[Workout]:
         distance=10,
         duration=datetime.timedelta(seconds=1024),
     )
+    workout_3.title = "Workout 3 of 7"
     update_workout(workout_3)
     workout_3.ascent = 80
     workout_3.descent = 100
@@ -162,6 +165,7 @@ def seven_workouts_user_1() -> List[Workout]:
         distance=1,
         duration=datetime.timedelta(seconds=600),
     )
+    workout_4.title = "Workout 4 of 7"
     update_workout(workout_4)
     workout_4.ascent = 120
     workout_4.descent = 180
@@ -176,6 +180,7 @@ def seven_workouts_user_1() -> List[Workout]:
         distance=10,
         duration=datetime.timedelta(seconds=1000),
     )
+    workout_5.title = "Workout 5 of 7"
     update_workout(workout_5)
     workout_5.ascent = 100
     workout_5.descent = 200
@@ -190,6 +195,7 @@ def seven_workouts_user_1() -> List[Workout]:
         distance=8,
         duration=datetime.timedelta(seconds=6000),
     )
+    workout_6.title = "Workout 6 of 7"
     update_workout(workout_6)
     workout_6.ascent = 40
     workout_6.descent = 20
@@ -204,6 +210,7 @@ def seven_workouts_user_1() -> List[Workout]:
         distance=10,
         duration=datetime.timedelta(seconds=3000),
     )
+    workout_7.title = "Workout 7 of 7"
     update_workout(workout_7)
     db.session.add(workout_7)
     db.session.commit()

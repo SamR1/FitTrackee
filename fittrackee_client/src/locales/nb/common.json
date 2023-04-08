@@ -1,2 +1,16 @@
 {
+    "ABOUT": "om",
+    "CONFIRMATION": "Bekreftelse",
+    "CONTACT": "kontakt",
+    "DAY": "dag | dager",
+    "DISPLAYED": "Vist",
+    "DOCUMENTATION": "dokumentasjon",
+    "HERE": "her",
+    "HIDDEN": "Skjult",
+    "HOME": "Hjem",
+    "SELECTS": {
+        "ORDER_BY": {
+            "LABEL": "sorter etter"
+        }
+    }
 }

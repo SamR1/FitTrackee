@@ -1,2 +1,58 @@
 {
+    "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Mottok du ikke noen instruks?",
+    "ADMIN": "Administrator",
+    "ALREADY_HAVE_ACCOUNT": "Har du allerede en konto?",
+    "CURRENT_PASSWORD": "Nåværende passord",
+    "EMAIL": "E-post",
+    "EMAIL_INFO": "Skriv inn en gyldig e-postadresse.",
+    "ENTER_PASSWORD": "Skriv inn et passord",
+    "EXPORT_REQUEST": {
+        "DATA_EXPORT": "Dataeksport",
+        "DOWNLOAD_ARCHIVE": "Last ned arkiv",
+        "GENERATING_LINK": "genererer lenke …",
+        "STATUS": {
+            "in_progress": "underveis …"
+        }
+    },
+    "FILTER_ON_USERNAME": "Filtrer på brukernavn",
+    "HIDE_PASSWORD": "skjul passord",
+    "I_WANT_TO_DELETE_MY_ACCOUNT": "Jeg vil slette kontoen min",
+    "LANGUAGE": "Språk",
+    "LOGIN": "Logg inn",
+    "LOG_IN": "logg inn",
+    "NEW_PASSWORD": "Nytt passord",
+    "NO_USERS_FOUND": "Fant ingen brukere.",
+    "PASSWORD": "Passord",
+    "PASSWORD_FORGOTTEN": "Glemt passordet?",
+    "PASSWORD_STRENGTH": {
+        "AVERAGE": "gjen.",
+        "GOOD": "bra",
+        "LABEL": "passordstyrke",
+        "STRONG": "sterkt",
+        "WEAK": "svakt"
+    },
+    "PROFILE": {
+        "ACCOUNT_EDITION": "Kontoredigering",
+        "BACK_TO_PROFILE": "Tilbake til profil",
+        "BIRTH_DATE": "Fødselsdag",
+        "EDIT": "Rediger profil",
+        "EDIT_PREFERENCES": "Rediger innstillinger",
+        "FIRST_NAME": "Fornavn",
+        "LANGUAGE": "Språk",
+        "LAST_NAME": "Etternavn",
+        "MONDAY": "Mandag",
+        "PICTURE": "Bilde",
+        "PICTURE_REMOVE": "Fjern bilde",
+        "PICTURE_UPDATE": "Oppdater bilde",
+        "TABS": {
+            "PROFILE": "profil"
+        },
+        "TIMEZONE": "Tidssone"
+    },
+    "RESET_PASSWORD": "Tilbakestill passordet ditt",
+    "SHOW_PASSWORD": "vis passord",
+    "THIS_USER_ACCOUNT_IS_INACTIVE": "Denne brukerkontoen er inaktiv.",
+    "USERNAME": "Brukernavn",
+    "USER_PICTURE": "brukerbilde",
+    "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Du har samtykket til {0}."
 }

@@ -71,6 +71,11 @@
         "EDIT": "Modifier le profil",
         "EDIT_PREFERENCES": "Modifier les préférences",
         "EDIT_SPORTS_PREFERENCES": "Modifier les préférences des sports",
+        "ELEVATION_CHART_START": {
+            "LABEL": "Début de l'axe pour le graphe affichant l'altitude",
+            "ZERO": "0",
+            "MIN_ALT": "Altitude minimale"
+        },
         "ERRORED_EMAIL_UPDATE": "Veuillez vous {0} pour changer de nouveau votre adresse électronique ou contacter l'administrateur",
         "FIRST_DAY_OF_WEEK": "Premier jour de la semaine",
         "FIRST_NAME": "Prénom",

@@ -42,7 +42,7 @@ def store_or_delete_user_picture(
             return
 
         picture_url = remote_actor_object['icon']['url']
-        response = requests.get(picture_url)
+        response = requests.get(picture_url, timeout=30)
         if response.status_code >= 400:
             return
 
