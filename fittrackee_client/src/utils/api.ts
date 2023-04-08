@@ -66,6 +66,7 @@ export const workoutsPayloadKeys = [
   'duration_from',
   'duration_to',
   'sport_id',
+  'title'
 ]
 
 const getRange = (stop: number, start = 1): number[] => {
