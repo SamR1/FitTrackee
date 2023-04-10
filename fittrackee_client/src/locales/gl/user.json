@@ -111,6 +111,11 @@
             "IMPERIAL": "Sistema Imperial (ft, mi, mph, ºF)",
             "LABEL": "Unidades de distancia",
             "METRIC": "Sistema Métrico (m, km, m/s, ºC)"
+        },
+        "ELEVATION_CHART_START": {
+            "ZERO": "Cero",
+            "LABEL": "O gráfico de elevación comeza en",
+            "MIN_ALT": "Altitude mínima"
         }
     },
     "READ_AND_ACCEPT_PRIVACY_POLICY": "Lin e acepto a {0}.",
