@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 import gpxpy.gpx
 
-from ..exceptions import WorkoutGPXException
+from ..exceptions import InvalidGPXException, WorkoutGPXException
 from .weather import WeatherService
 
 weather_service = WeatherService()
@@ -77,9 +77,12 @@ def get_gpx_info(
     """
     Parse and return gpx, map and weather data from gpx file
     """
-    gpx = open_gpx_file(gpx_file)
+    try:
+        gpx = open_gpx_file(gpx_file)
+    except Exception:
+        raise InvalidGPXException('error', 'gpx file is invalid')
     if gpx is None:
-        raise WorkoutGPXException('not found', 'No gpx file')
+        raise InvalidGPXException('error', 'no tracks in gpx file')
 
     gpx_data: Dict = {'name': gpx.tracks[0].name, 'segments': []}
     max_speed = 0.0
@@ -95,6 +98,10 @@ def get_gpx_info(
         segment_start: Optional[datetime] = None
         segment_points_nb = len(segment.points)
         for point_idx, point in enumerate(segment.points):
+            if point.time is None:
+                raise InvalidGPXException(
+                    'error', '<time> is missing in gpx file'
+                )
             if point_idx == 0:
                 segment_start = point.time
                 # first gpx point => get weather

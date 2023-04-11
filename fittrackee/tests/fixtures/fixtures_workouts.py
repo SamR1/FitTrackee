@@ -591,6 +591,56 @@ def gpx_file_invalid_xml() -> str:
         '<?xml version=\'1.0\' encoding=\'UTF-8\'?>'
         '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
         '  <metadata/>'
+        '  <trk>'
+        '    <name>just a workout</name>'
+    )
+
+
+@pytest.fixture()
+def gpx_file_without_time() -> str:
+    return (
+        '<?xml version=\'1.0\' encoding=\'UTF-8\'?>'
+        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
+        '  <metadata/>'
+        '  <trk>'
+        '    <name>just a workout</name>'
+        '    <trkseg>'
+        '      <trkpt lat="44.68095" lon="6.07367">'
+        '        <ele>998</ele>'
+        '      </trkpt>'
+        '      <trkpt lat="44.68091" lon="6.07367">'
+        '        <ele>998</ele>'
+        '      </trkpt>'
+        '      <trkpt lat="44.6808" lon="6.07364">'
+        '        <ele>994</ele>'
+        '      </trkpt>'
+        '      <trkpt lat="44.68075" lon="6.07364">'
+        '        <ele>994</ele>'
+        '      </trkpt>'
+        '      <trkpt lat="44.68071" lon="6.07364">'
+        '        <ele>994</ele>'
+        '      </trkpt>'
+        '      <trkpt lat="44.68049" lon="6.07361">'
+        '        <ele>993</ele>'
+        '      </trkpt>'
+        '      <trkpt lat="44.68019" lon="6.07356">'
+        '        <ele>992</ele>'
+        '      </trkpt>'
+        '      <trkpt lat="44.68014" lon="6.07355">'
+        '        <ele>992</ele>'
+        '      </trkpt>'
+        '      <trkpt lat="44.67995" lon="6.07358">'
+        '        <ele>987</ele>'
+        '      </trkpt>'
+        '      <trkpt lat="44.67977" lon="6.07364">'
+        '        <ele>987</ele>'
+        '      </trkpt>'
+        '      <trkpt lat="44.67972" lon="6.07367">'
+        '        <ele>987</ele>'
+        '      </trkpt>'
+        '    </trkseg>'
+        '  </trk>'
+        '</gpx>'
     )
 
 
