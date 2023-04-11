@@ -674,7 +674,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             ),
         )
 
-        data = self.assert_500(response, 'error during gpx processing')
+        data = self.assert_500(response, 'no tracks in gpx file')
         assert 'data' not in data
 
     def test_it_returns_500_if_gpx_has_invalid_xml(
@@ -703,7 +703,36 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             ),
         )
 
-        data = self.assert_500(response, 'error during gpx file parsing')
+        data = self.assert_500(response, 'gpx file is invalid')
+        assert 'data' not in data
+
+    def test_it_returns_500_if_gpx_has_no_time(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file_without_time: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(
+                    BytesIO(str.encode(gpx_file_without_time)),
+                    'example.gpx',
+                ),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        data = self.assert_500(response, '<time> is missing in gpx file')
         assert 'data' not in data
 
     def test_it_returns_400_if_workout_gpx_has_invalid_extension(
@@ -1405,7 +1434,7 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
                 ),
             )
 
-            data = self.assert_500(response, 'error during gpx processing')
+            data = self.assert_500(response, 'no tracks in gpx file')
             assert 'data' not in data
 
     def test_it_returns_400_when_files_in_archive_exceed_limit(

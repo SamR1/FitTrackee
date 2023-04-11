@@ -1,5 +1,6 @@
 {
     "ERROR": {
+        "<time> is missing in gpx file": "<time> element is missing in .gpx file.",
         "Network Error": "Network Error.",
         "UNKNOWN": "Error. Please try again or contact the administrator.",
         "at least one file in zip archive exceeds size limit, please check the archive": "At least one file in zip archive exceeds size limit, please check the archive.",
@@ -14,6 +15,7 @@
         "error, registration is disabled": "Error, registration is disabled.",
         "file extension not allowed": "File extension not allowed.",
         "file size is greater than the allowed size": "File size is greater than the allowed size.",
+        "gpx file is invalid": "The .gpx file is invalid.",
         "invalid credentials": "Invalid credentials.",
         "invalid payload": "Provided data are invalid.",
         "invalid token, please log in again": "Invalid token, please log in again.",
@@ -21,6 +23,7 @@
         "new email must be different than curent email": "The new email must be different than curent email",
         "no file part": "No file provided.",
         "no selected file": "No selected file.",
+        "no tracks in gpx file": "No track (<trk>) in .gpx file.",
         "ongoing request exists": "A data export request already exists.",
         "password: password and password confirmation do not match": "Password: password and password confirmation don't match.",
         "provide a valid auth token": "Provide a valid auth token.",
