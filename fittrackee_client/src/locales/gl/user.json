@@ -68,6 +68,11 @@
         "EDIT": "Editar perfil",
         "EDIT_PREFERENCES": "Editar preferencias",
         "EDIT_SPORTS_PREFERENCES": "Editar preferencias dos deportes",
+        "ELEVATION_CHART_START": {
+            "LABEL": "O gráfico de elevación comeza en",
+            "MIN_ALT": "Altitude mínima",
+            "ZERO": "Cero"
+        },
         "ERRORED_EMAIL_UPDATE": "{0} para cambiar o enderezo de correo electrónico ou contacta coa administración",
         "FIRST_DAY_OF_WEEK": "Primeiro día da semana",
         "FIRST_NAME": "Nome",
@@ -111,11 +116,6 @@
             "IMPERIAL": "Sistema Imperial (ft, mi, mph, ºF)",
             "LABEL": "Unidades de distancia",
             "METRIC": "Sistema Métrico (m, km, m/s, ºC)"
-        },
-        "ELEVATION_CHART_START": {
-            "ZERO": "Cero",
-            "LABEL": "O gráfico de elevación comeza en",
-            "MIN_ALT": "Altitude mínima"
         }
     },
     "READ_AND_ACCEPT_PRIVACY_POLICY": "Lin e acepto a {0}.",

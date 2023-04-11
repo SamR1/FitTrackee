@@ -68,6 +68,11 @@
         "EDIT": "Editar perfil",
         "EDIT_PREFERENCES": "Editar preferencias",
         "EDIT_SPORTS_PREFERENCES": "Editar preferencias de los deportes",
+        "ELEVATION_CHART_START": {
+            "LABEL": "La elevación del gráfico empieza en",
+            "MIN_ALT": "Altitud mínima",
+            "ZERO": "Cero"
+        },
         "ERRORED_EMAIL_UPDATE": "Por favor, {0} para cambiar su dirección de correo electrónico de nuevo o póngase en contacto con el administrador",
         "FIRST_DAY_OF_WEEK": "Primer día de la semana",
         "FIRST_NAME": "Nombre",
@@ -111,11 +116,6 @@
             "IMPERIAL": "Sistema Imperial (ft, mi, mph, ºF)",
             "LABEL": "Unidades de distancia",
             "METRIC": "Sistema Métrico (m, km, m/s, ºC)"
-        },
-        "ELEVATION_CHART_START": {
-            "LABEL": "La elevación del gráfico empieza en",
-            "ZERO": "Cero",
-            "MIN_ALT": "Altitud mínima"
         }
     },
     "READ_AND_ACCEPT_PRIVACY_POLICY": "He leído y aceptado la {0}.",
