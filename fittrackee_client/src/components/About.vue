@@ -75,10 +75,6 @@
 
   function get_weather_provider() {
     const weather_provider: Record<string, string> = {}
-    if (appConfig.value.weather_provider === 'darksky') {
-      weather_provider['name'] = 'Dark Sky'
-      weather_provider['url'] = 'https://darksky.net'
-    }
     if (appConfig.value.weather_provider === 'visualcrossing') {
       weather_provider['name'] = 'Visual Crossing'
       weather_provider['url'] = 'https://www.visualcrossing.com'

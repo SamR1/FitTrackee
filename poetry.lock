@@ -1945,21 +1945,6 @@ files = [
 six = ">=1.5"
 
 [[package]]
-name = "python-forecastio"
-version = "1.4.0"
-description = "A thin Python Wrapper for the Dark Sky (formerly Forecast.io) weather API"
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "python-forecastio-1.4.0.tar.gz", hash = "sha256:144419d65e3b46961f38853f959a91f6e6cfa9e6d5b6f47aa9dc5e431471d454"},
-]
-
-[package.dependencies]
-requests = ">=1.6"
-responses = "*"
-
-[[package]]
 name = "pytz"
 version = "2023.3"
 description = "World timezone definitions, modern and historical"
@@ -1975,7 +1960,7 @@ files = [
 name = "pyyaml"
 version = "6.0"
 description = "YAML parser and emitter for Python"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -2080,28 +2065,6 @@ urllib3 = ">=1.21.1,<1.27"
 [package.extras]
 socks = ["PySocks (>=1.5.6,!=1.5.7)"]
 use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
-
-[[package]]
-name = "responses"
-version = "0.23.1"
-description = "A utility library for mocking out the `requests` Python library."
-category = "main"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "responses-0.23.1-py3-none-any.whl", hash = "sha256:8a3a5915713483bf353b6f4079ba8b2a29029d1d1090a503c70b0dc5d9d0c7bd"},
-    {file = "responses-0.23.1.tar.gz", hash = "sha256:c4d9aa9fc888188f0c673eff79a8dadbe2e75b7fe879dc80a221a06e0a68138f"},
-]
-
-[package.dependencies]
-pyyaml = "*"
-requests = ">=2.22.0,<3.0"
-types-PyYAML = "*"
-typing-extensions = {version = "*", markers = "python_version < \"3.8\""}
-urllib3 = ">=1.25.10"
-
-[package.extras]
-tests = ["coverage (>=6.0.0)", "flake8", "mypy", "pytest (>=7.0.0)", "pytest-asyncio", "pytest-cov", "pytest-httpserver", "tomli", "tomli-w", "types-requests"]
 
 [[package]]
 name = "rich"
@@ -2651,18 +2614,6 @@ files = [
 ]
 
 [[package]]
-name = "types-pyyaml"
-version = "6.0.12.9"
-description = "Typing stubs for PyYAML"
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "types-PyYAML-6.0.12.9.tar.gz", hash = "sha256:c51b1bd6d99ddf0aa2884a7a328810ebf70a4262c292195d3f4f9a0005f9eeb6"},
-    {file = "types_PyYAML-6.0.12.9-py3-none-any.whl", hash = "sha256:5aed5aa66bd2d2e158f75dda22b059570ede988559f030cf294871d3b647e3e8"},
-]
-
-[[package]]
 name = "types-redis"
 version = "4.5.4.1"
 description = "Typing stubs for redis"
@@ -2886,4 +2837,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.7"
-content-hash = "a2bb6c51cd1e0e3cc88e09ec8c598109b2fab9b1cfbdccf73e95496577959710"
+content-hash = "2a735d57527529962e3b55820d8e236d14399f077247ff208a8507838d1bcbec"
