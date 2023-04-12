@@ -1,5 +1,6 @@
 {
     "ERROR": {
+        "<time> is missing in gpx file": "<time>-Element fehlt in der .gpx-Datei.",
         "Network Error": "Netzwerkfehler.",
         "UNKNOWN": "Fehler. Bitte versuche es erneut oder kontaktiere den Administrator.",
         "at least one file in zip archive exceeds size limit, please check the archive": "Mindestens eine Datei im ZIP-Archiv überschreitet das Größenlimit, bitte überprüfe das Archiv.",
@@ -8,11 +9,13 @@
         "error during gpx file parsing": "Fehler beim Einlesen der GPX-Datei",
         "error during gpx processing": "Fehler bei der GPX-Verarbeitung.",
         "error on getting configuration": "Fehler beim Abrufen der Konfiguration.",
+        "error when saving workout": "Fehler beim Speichern des Workouts.",
         "error when updating configuration": "Fehler beim Aktualisieren der Konfiguration",
         "error, please try again or contact the administrator": "Fehler. Bitte versuche es erneut oder kontaktiere den Administrator.",
         "error, registration is disabled": "Fehler. Die Registrierung ist deaktiviert.",
         "file extension not allowed": "Dateierweiterung ist nicht erlaubt.",
         "file size is greater than the allowed size": "Die Datei ist größer als erlaubt.",
+        "gpx file is invalid": "Die .gpx-Datei ist ungültig.",
         "invalid credentials": "Ungültige Anmeldedaten.",
         "invalid payload": "Die bereitgestellten Daten sind ungültig.",
         "invalid token, please log in again": "Ungültiges Token, bitte erneut anmelden.",
@@ -20,6 +23,7 @@
         "new email must be different than curent email": "Die neue E-Mail muss sich von der aktuellen E-Mail unterscheiden",
         "no file part": "Keine Datei angegeben.",
         "no selected file": "Keine Datei ausgewählt.",
+        "no tracks in gpx file": "Kein Track (<trk>) in der .gpx-Datei.",
         "ongoing request exists": "Eine Anfrage zum Datenexport existiert bereits.",
         "password: password and password confirmation do not match": "Passwort: Passwort und Passwortbestätigung stimmen nicht überein.",
         "provide a valid auth token": "Gebe ein gültiges Authentifizierungstoken an.",

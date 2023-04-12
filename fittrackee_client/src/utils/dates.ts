@@ -96,9 +96,11 @@ const availableDateFormats = [
 export const dateStringFormats: Record<string, string> = {
   de: 'do MMM yyyy',
   en: 'MMM. do, yyyy',
+  es: 'd MMM yyyy',
   fr: 'd MMM yyyy',
+  gl: 'd MMM yyyy',
   it: 'd MMM yyyy',
-  // nb: 'do MMM yyyy',
+  nb: 'do MMM yyyy',
   nl: 'd MMM yyyy',
 }
 

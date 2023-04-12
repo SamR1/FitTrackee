@@ -1482,6 +1482,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     language=input_language,
                     imperial_units=True,
                     display_ascent=False,
+                    start_elevation_at_zero=False,
                     date_format='yyyy-MM-dd',
                 )
             ),
@@ -1493,6 +1494,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert data['message'] == 'user preferences updated'
         assert data['data']['display_ascent'] is False
+        assert data['data']['start_elevation_at_zero'] is False
         assert data['data']['imperial_units'] is True
         assert data['data']['language'] == expected_language
         assert data['data']['timezone'] == 'America/New_York'

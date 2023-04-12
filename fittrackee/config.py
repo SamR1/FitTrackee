@@ -62,8 +62,10 @@ class BaseConfig:
         'fr',
         'de',
         'it',
-        # 'nb',  # disabled for now
+        'nb',
         'nl',
+        'es',
+        'gl',
     ]
     OAUTH2_TOKEN_EXPIRES_IN = {
         'authorization_code': 864000,  # 10 days

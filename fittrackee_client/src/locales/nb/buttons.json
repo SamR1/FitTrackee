@@ -1,2 +1,13 @@
 {
+    "BACK": "Tilbake",
+    "CANCEL": "Avbryt",
+    "CLEAR_FILTER": "Tøm filtre",
+    "DELETE_MY_ACCOUNT": "Slett kontoen min",
+    "DISABLE": "Skru av",
+    "EDIT": "Rediger",
+    "FILTER": "Filter",
+    "LOGIN": "Logg inn",
+    "NO": "Nei",
+    "REGISTER": "Registrer",
+    "RESET": "Tilbakestill"
 }
