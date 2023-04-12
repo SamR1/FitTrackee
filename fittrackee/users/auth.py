@@ -289,13 +289,15 @@ def get_authenticated_user_profile(
 
       {
         "data": {
-          "accepted_privacy_policy": "Sat, 25 Fev 2023 13:52:58 GMT",
+          "accepted_privacy_policy": true,
           "admin": false,
           "bio": null,
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+          "date_format": "dd/MM/yyyy",
           "display_ascent": true,
           "email": "sam@example.com",
+          "email_to_confirm": null,
           "first_name": null,
           "imperial_units": false,
           "is_active": true,
@@ -357,7 +359,9 @@ def get_authenticated_user_profile(
               4,
               6
           ],
+          "start_elevation_at_zero": false,
           "timezone": "Europe/Paris",
+          "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
           "username": "sam",
@@ -401,12 +405,15 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
 
       {
         "data": {
+          "accepted_privacy_policy": true,
           "admin": false,
           "bio": null,
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+          "date_format": "dd/MM/yyyy",
           "display_ascent": true,
           "email": "sam@example.com",
+          "email_to_confirm": null,
           "first_name": null,
           "imperial_units": false,
           "is_active": true,
@@ -468,7 +475,9 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
               4,
               6
           ],
+          "start_elevation_at_zero": false,
           "timezone": "Europe/Paris",
+          "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
           "username": "sam"
@@ -568,12 +577,15 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
 
       {
         "data": {
+          "accepted_privacy_policy": true,
           "admin": false,
           "bio": null,
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+          "date_format": "dd/MM/yyyy",
           "display_ascent": true,
           "email": "sam@example.com",
+          "email_to_confirm": null,
           "first_name": null,
           "imperial_units": false,
           "is_active": true,
@@ -635,7 +647,9 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
               4,
               6
           ],
+          "start_elevation_at_zero": false,
           "timezone": "Europe/Paris",
+          "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
           "username": "sam"
@@ -769,8 +783,8 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     - ``date_string``, corresponding on client to:
 
       - ``MMM. do, yyyy`` for ``en`` locale
-      - ``d MMM yyyy`` for ``fr`` locale
-      - ``do MMM yyyy`` for ``de`` locale
+      - ``d MMM yyyy`` for ``es``, ``fr``, ``gl``, ``it`` and ``nl`` locales
+      - ``do MMM yyyy`` for ``de`` and ``nb`` locales
 
     **Scope**: ``profile:write``
 
@@ -790,6 +804,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
 
       {
         "data": {
+          "accepted_privacy_policy": true,
           "admin": false,
           "bio": null,
           "birth_date": null,
@@ -797,6 +812,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "date_format": "MM/dd/yyyy",
           "display_ascent": true,
           "email": "sam@example.com",
+          "email_to_confirm": null,
           "first_name": null,
           "imperial_units": false,
           "is_active": true,
@@ -860,6 +876,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           ],
           "start_elevation_at_zero": true,
           "timezone": "Europe/Paris",
+          "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
           "username": "sam"

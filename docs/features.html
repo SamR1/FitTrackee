@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Features &#8212; FitTrackee 0.7.14
+    <title>Features &#8212; FitTrackee 0.7.15
  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css" />
@@ -19,7 +19,7 @@
     <script src="_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Third-party applications" href="apps.html" />
+    <link rel="next" title="OAuth 2.0" href="oauth.html" />
     <link rel="prev" title="FitTrackee" href="index.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -43,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.14
+        <span class="navbar-text navbar-version pull-left"><b>0.7.15
 </b></span>
       </div>
 
@@ -63,9 +63,10 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="apps.html">Third-party applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="oauth.html">OAuth 2.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cli.html">Command line interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="third_party_tools.html">Third-party tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/index.html">API documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting/index.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Change log</a></li>
@@ -115,7 +116,7 @@
     </a>
   </li>
   <li>
-    <a href="apps.html" title="Next Chapter: Third-party applications"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Third-party a... &raquo;</span>
+    <a href="oauth.html" title="Next Chapter: OAuth 2.0"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">OAuth 2.0 &raquo;</span>
     </a>
   </li>
               
@@ -197,9 +198,18 @@
 <p class="admonition-title">Note</p>
 <p>It can be overridden in user preferences.</p>
 </div>
-<ul>
+<ul class="simple">
 <li><p>Dashboard with month calendar displaying workouts and record. The week can start on Sunday or Monday (which can be changed in the user preferences). The calendar displays up to 100 workouts.</p></li>
-<li><p>Workout creation by uploading a gpx file (related data are stored in database with metric system).</p></li>
+<li><p>Workout creation by uploading a gpx file (related data are stored in database in metric system).</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Only gpx files with time are supported.</div>
+<div class="line">Calculated values may differ from values calculated by the application that originally generated the gpx files, in particular the maximum speed.</div>
+</div>
+</div>
+<ul>
 <li><div class="line-block">
 <div class="line">A workout can even be created without gpx (the user must enter date, time, duration and distance).</div>
 <div class="line">Ascent and descent can also be provided (<em>new in 0.7.10</em>).</div>
@@ -211,8 +221,8 @@
 </div>
 </li>
 <li><div class="line-block">
-<div class="line">If <strong>DarkSky API</strong> or <strong>Visual Crossing</strong> (<em>new in 0.7.11</em>) API key is provided, weather is displayed in workout detail. Data source is displayed in About page.</div>
-<div class="line">Wind is displayed, with arrow indicating direction (a tooltip can be displayed with the direction that the wind is coming <strong>from</strong>) (<em>new in 0.5.5</em>).</div>
+<div class="line">If <strong>Visual Crossing</strong> (<em>new in 0.7.11</em>) API key is provided, weather is displayed in workout detail. Data source is displayed in <strong>About</strong> page.</div>
+<div class="line">Wind is displayed, with an arrow indicating the direction (a tooltip can be displayed with the direction that the wind is coming <strong>from</strong>) (<em>new in 0.5.5</em>).</div>
 </div>
 </li>
 <li><p>Segments can be displayed.</p></li>
@@ -247,7 +257,35 @@
 <p>Records may differ from records displayed by the application that originally generated the gpx files.</p>
 </div>
 <ul class="simple">
-<li><p>Workouts list and filter. Only sports with workouts are displayed in sport dropdown.</p></li>
+<li><dl class="simple">
+<dt>Workouts list.</dt><dd><ul>
+<li><dl class="simple">
+<dt>The user can filter workouts on:</dt><dd><ul>
+<li><p>date</p></li>
+<li><p>sports (only sports with workouts are displayed in sport dropdown)</p></li>
+<li><p>title (<em>new in 0.7.15</em>)</p></li>
+<li><p>distance</p></li>
+<li><p>duration</p></li>
+<li><p>average speed</p></li>
+<li><p>maximum speed</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Workouts can be sorted by:</dt><dd><ul>
+<li><p>date</p></li>
+<li><p>distance</p></li>
+<li><p>duration</p></li>
+<li><p>average speed</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -274,6 +312,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <li><p>A user can choose between metric system and imperial system for distance, elevation and speed display (<em>new in 0.5.0</em>)</p></li>
 <li><p>A user can choose to display or hide ascent records and total on Dashboard (<em>new in 0.6.11</em>)</p></li>
 <li><p>A user can choose format used to display dates (<em>new in 0.7.3</em>)</p></li>
+<li><p>A user can choose elevation chart axis start: zero or minimum altitude (<em>new in 0.7.15</em>)</p></li>
 <li><dl class="simple">
 <dt>A user can set sport preferences (<em>new in 0.5.0</em>):</dt><dd><ul>
 <li><p>change sport color (used for sport image and charts)</p></li>
@@ -375,8 +414,11 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <li><p>German (<em>new in 0.6.9</em>)</p></li>
 <li><p>Dutch (<em>new in 0.7.8</em>)</p></li>
 <li><p>Italian (<em>new in 0.7.10</em>)</p></li>
+<li><p>Galician (<em>new in 0.7.15</em>)</p></li>
+<li><p>Spanish (<em>new in 0.7.15</em>)</p></li>
+<li><p>Norwegian Bokmål (<em>new in 0.7.15</em>)</p></li>
 </ul>
-<p>Translations status on <a class="reference external" href="https://hosted.weblate.org/engage/fittrackee/">Weblate</a>:</p>
+<p>Translations status on <a class="reference external" href="https://hosted.weblate.org/engage/fittrackee/">Weblate</a> (may differ from the released version):</p>
 <figure class="align-default">
 <img alt="https://hosted.weblate.org/widgets/fittrackee/-/multi-auto.svg" src="https://hosted.weblate.org/widgets/fittrackee/-/multi-auto.svg" /></figure>
 </section>
@@ -430,8 +472,8 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
       
     </p>
     <p>
-        &copy; Copyright 2018 - 2022, SamR1 <a rel="me" href="https://fosstodon.org/@FitTrackee"><i class="fa fa-mastodon" aria-hidden="true"></i></a>.
-      Last updated on Mar 08, 2023.<br/>
+        &copy; Copyright 2018 - 2023, SamR1 <a rel="me" href="https://fosstodon.org/@FitTrackee"><i class="fa fa-mastodon" aria-hidden="true"></i></a>.
+      Last updated on Apr 12, 2023.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br/>
     </p>
   </div>

@@ -1,10 +1,69 @@
 # Change log
 
+## Version 0.7.15 (2023/04/12)
+
+Among enhancements and fixes, **FitTrackee** is now available in Galician, Spanish and partially in Norwegian Bokmål (see translation status below).
+
+**Note**: **DarkSky** API support is removed, since the service shut down on March 31, 2023.
+
+
+### Features and enhancements
+
+* [#319](https://github.com/SamR1/FitTrackee/issues/319) - Add cli to create users
+* [#329](https://github.com/SamR1/FitTrackee/issues/329) - Make "start elevation axis at zero" sticky
+* [#333](https://github.com/SamR1/FitTrackee/issues/333) - Feature request: filter workouts by title
+* [#338](https://github.com/SamR1/FitTrackee/issues/338) - Display relevant error message when <time> is missing in GPX file
+
+### Bugs Fixed
+
+* [#328](https://github.com/SamR1/FitTrackee/issues/328) - GPX speed and altitude track has incorrect units on x-axis when imperial
+* [b29ed7a](https://github.com/SamR1/FitTrackee/commit/b29ed7a31daaf40b149ed33cdb1ddc0144f56161) - fix privacy policy message display on dashboard
+
+### Translations
+
+* [#250](https://github.com/SamR1/FitTrackee/issues/250) - [Translation Request] Norwegian Bokmål
+* [#320](https://github.com/SamR1/FitTrackee/issues/320) - [Translation Request] Spanish
+* [#323](https://github.com/SamR1/FitTrackee/issues/323) - [Translation Request] Galician
+* [06ba975](https://github.com/SamR1/FitTrackee/commit/06ba975302af222089392c424edf95e91d645437), [bcc568e](https://github.com/SamR1/FitTrackee/commit/bcc568ef59ab99f3c164c6231ab3759fc8a30038), [ea0ac99](https://github.com/SamR1/FitTrackee/commit/ea0ac99bdf1dbe645ada7ddd35b4b94815eca775) - Translations update (German)
+* [a458f5f](https://github.com/SamR1/FitTrackee/commit/a458f5f275f51b2f9311de0ed51b0a9b537db94e) - Translations update (Dutch)
+* [075aeb9](https://github.com/SamR1/FitTrackee/commit/075aeb95e620c06f3ac324d2534d9c9f6660b596) - Translations update (French)
+* [60e164d](https://github.com/SamR1/FitTrackee/commit/60e164d7201fc520cd051f2858860a83783443a7) - Translations update (Italian)
+
+Translation status:
+- Dutch: 98%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 87%
+- Norwegian Bokmål: 35%
+- Spanish: 100%
+
+### Misc
+
+* [#318](https://github.com/SamR1/FitTrackee/issues/318) - Remove DarkSky Weather provider
+
+
+Thanks to the contributors:
+- @bjornclauw
+- @comradekingu
+- @jat255
+- @gallegonovato 
+- @qwerty287
+- @xmgz
+- J. Lavoie from Weblate
+- mondstern from Weblate
+
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/installation.html#upgrade))
+
+
 ## Version 0.7.14 (2023/03/08)
 
 ### Bugs Fixed
 
-* [#314](https://github.com/SamR1/FitTrackee/issues/314) - GPX file is not deleted when the process fails 
+* [#314](https://github.com/SamR1/FitTrackee/issues/314) - GPX file is not deleted when the process fails
+
 ### Translations
 
 * [PR#315](https://github.com/SamR1/FitTrackee/pull/315) - Translations update from Hosted Weblate (Dutch, thanks to @bjornclauw)

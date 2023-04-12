@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Authentication and account &#8212; FitTrackee 0.7.14
+    <title>Authentication and account &#8212; FitTrackee 0.7.15
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
@@ -43,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.14
+        <span class="navbar-text navbar-version pull-left"><b>0.7.15
 </b></span>
       </div>
 
@@ -63,9 +63,10 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../features.html">Features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../apps.html">Third-party applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../oauth.html">OAuth 2.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cli.html">Command line interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../third_party_tools.html">Third-party tools</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">API documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../troubleshooting/index.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change log</a></li>
@@ -348,13 +349,15 @@ character “_” allowed</p></li>
 
 <span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;accepted_privacy_policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sat, 25 Fev 2023 13:52:58 GMT&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;accepted_privacy_policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;admin&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;bio&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;birth_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sun, 14 Jul 2019 14:09:58 GMT&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;date_format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dd/MM/yyyy&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;display_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sam@example.com&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;email_to_confirm&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;first_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;imperial_units&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;is_active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
@@ -416,7 +419,9 @@ character “_” allowed</p></li>
 <span class="w">        </span><span class="mi">4</span><span class="p">,</span>
 <span class="w">        </span><span class="mi">6</span>
 <span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;start_elevation_at_zero&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;timezone&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Europe/Paris&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;total_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">720.35</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;total_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">67.895</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;total_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;6:50:27&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sam&quot;</span><span class="p">,</span>
@@ -462,12 +467,15 @@ character “_” allowed</p></li>
 
 <span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;accepted_privacy_policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;admin&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;bio&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;birth_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sun, 14 Jul 2019 14:09:58 GMT&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;date_format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dd/MM/yyyy&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;display_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sam@example.com&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;email_to_confirm&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;first_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;imperial_units&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;is_active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
@@ -529,7 +537,9 @@ character “_” allowed</p></li>
 <span class="w">        </span><span class="mi">4</span><span class="p">,</span>
 <span class="w">        </span><span class="mi">6</span>
 <span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;start_elevation_at_zero&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;timezone&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Europe/Paris&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;total_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">720.35</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;total_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">67.895</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;total_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;6:50:27&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="nt">&quot;sam&quot;</span>
@@ -586,8 +596,8 @@ character “_” allowed</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">date_string</span></code>, corresponding on client to:</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">MMM.</span> <span class="pre">do,</span> <span class="pre">yyyy</span></code> for <code class="docutils literal notranslate"><span class="pre">en</span></code> locale</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">d</span> <span class="pre">MMM</span> <span class="pre">yyyy</span></code> for <code class="docutils literal notranslate"><span class="pre">fr</span></code> locale</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">do</span> <span class="pre">MMM</span> <span class="pre">yyyy</span></code> for <code class="docutils literal notranslate"><span class="pre">de</span></code> locale</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">d</span> <span class="pre">MMM</span> <span class="pre">yyyy</span></code> for <code class="docutils literal notranslate"><span class="pre">es</span></code>, <code class="docutils literal notranslate"><span class="pre">fr</span></code>, <code class="docutils literal notranslate"><span class="pre">gl</span></code>, <code class="docutils literal notranslate"><span class="pre">it</span></code> and <code class="docutils literal notranslate"><span class="pre">nl</span></code> locales</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">do</span> <span class="pre">MMM</span> <span class="pre">yyyy</span></code> for <code class="docutils literal notranslate"><span class="pre">de</span></code> and <code class="docutils literal notranslate"><span class="pre">nb</span></code> locales</p></li>
 </ul>
 </li>
 </ul>
@@ -603,6 +613,7 @@ character “_” allowed</p></li>
 
 <span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;accepted_privacy_policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;admin&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;bio&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;birth_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
@@ -610,6 +621,7 @@ character “_” allowed</p></li>
 <span class="w">    </span><span class="nt">&quot;date_format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MM/dd/yyyy&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;display_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sam@example.com&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;email_to_confirm&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;first_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;imperial_units&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;is_active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
@@ -671,7 +683,9 @@ character “_” allowed</p></li>
 <span class="w">        </span><span class="mi">4</span><span class="p">,</span>
 <span class="w">        </span><span class="mi">6</span>
 <span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;start_elevation_at_zero&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;timezone&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Europe/Paris&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;total_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">720.35</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;total_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">67.895</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;total_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;6:50:27&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="nt">&quot;sam&quot;</span>
@@ -689,9 +703,9 @@ character “_” allowed</p></li>
 <li><p><strong>display_ascent</strong> (<em>boolean</em>) – display highest ascent records and total</p></li>
 <li><p><strong>imperial_units</strong> (<em>boolean</em>) – display distance in imperial units</p></li>
 <li><p><strong>language</strong> (<em>string</em>) – language preferences</p></li>
+<li><p><strong>start_elevation_at_zero</strong> (<em>boolean</em>) – do elevation plots start at zero?</p></li>
 <li><p><strong>timezone</strong> (<em>string</em>) – user time zone</p></li>
 <li><p><strong>weekm</strong> (<em>boolean</em>) – does week start on Monday?</p></li>
-<li><p><strong>weekm</strong> – does week start on Monday?</p></li>
 </ul>
 </dd>
 <dt class="field-even">Request Headers<span class="colon">:</span></dt>
@@ -980,12 +994,15 @@ character “_” allowed</p></li>
 
 <span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;accepted_privacy_policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;admin&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;bio&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;birth_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sun, 14 Jul 2019 14:09:58 GMT&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;date_format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dd/MM/yyyy&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;display_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sam@example.com&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;email_to_confirm&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;first_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;imperial_units&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;is_active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
@@ -1047,7 +1064,9 @@ character “_” allowed</p></li>
 <span class="w">        </span><span class="mi">4</span><span class="p">,</span>
 <span class="w">        </span><span class="mi">6</span>
 <span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;start_elevation_at_zero&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;timezone&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Europe/Paris&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;total_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">720.35</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;total_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">67.895</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;total_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;6:50:27&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="nt">&quot;sam&quot;</span>
@@ -1444,8 +1463,8 @@ for other reasons.</p></li>
       
     </p>
     <p>
-        &copy; Copyright 2018 - 2022, SamR1 <a rel="me" href="https://fosstodon.org/@FitTrackee"><i class="fa fa-mastodon" aria-hidden="true"></i></a>.
-      Last updated on Mar 08, 2023.<br/>
+        &copy; Copyright 2018 - 2023, SamR1 <a rel="me" href="https://fosstodon.org/@FitTrackee"><i class="fa fa-mastodon" aria-hidden="true"></i></a>.
+      Last updated on Apr 12, 2023.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br/>
     </p>
   </div>

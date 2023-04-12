@@ -105,7 +105,11 @@ Remove blacklisted tokens expired for more than provided number of days.
 .. versionadded:: 0.7.15
 
 Create a user account.
-**Note**: the newly created account is active.
+
+.. note::
+  - the newly created account is already active.
+  - the CLI allows to create users when registration is disabled.
+
 
 .. cssclass:: table-bordered
 .. list-table::

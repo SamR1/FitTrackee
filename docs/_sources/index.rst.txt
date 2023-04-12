@@ -33,9 +33,10 @@ Table of contents
    :maxdepth: 1
 
    features
-   apps
+   oauth
    installation
    cli
+   third_party_tools
    api/index
    troubleshooting/index
    changelog
