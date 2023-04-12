@@ -111,6 +111,11 @@
             "IMPERIAL": "Imperiales System (ft, mi, mph, °F)",
             "LABEL": "Einheiten für die Distanz",
             "METRIC": "Metrisches System (m, km, m/s, °C)"
+        },
+        "ELEVATION_CHART_START": {
+            "MIN_ALT": "Minimale Höhe",
+            "ZERO": "Null",
+            "LABEL": "Höhendiagramm startet bei"
         }
     },
     "READ_AND_ACCEPT_PRIVACY_POLICY": "Ich habe die {0} gelesen und stimme ihr zu.",
