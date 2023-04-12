@@ -32,7 +32,10 @@
         "user does not exist": "Non existe a usuaria.",
         "valid email must be provided for admin contact": "Hai que proporcionar un correo electrónico válido para contacto de administración",
         "you can not delete your account, no other user has admin rights": "Non podes eliminar a túa conta, non hai outra usuaria con permisos de administración.",
-        "you do not have permissions": "Non tes permisos."
+        "you do not have permissions": "Non tes permisos.",
+        "no tracks in gpx file": "Non hai ruta (<trk>) no ficheiro .gpx.",
+        "<time> is missing in gpx file": "falta o elemento <time> no ficheiro .gpx.",
+        "gpx file is invalid": "O ficheiro .gpx non é válido."
     },
     "PAGINATION": {
         "NEXT": "seguinte",
