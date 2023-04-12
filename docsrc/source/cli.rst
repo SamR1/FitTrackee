@@ -100,6 +100,29 @@ Remove blacklisted tokens expired for more than provided number of days.
      - Number of days.
 
 
+``ftcli users create``
+""""""""""""""""""""""
+.. versionadded:: 0.7.15
+
+Create a user account.
+**Note**: the newly created account is active.
+
+.. cssclass:: table-bordered
+.. list-table::
+   :widths: 25 50
+   :header-rows: 1
+
+   * - Arguments/options
+     - Description
+   * - ``USERNAME``
+     - Username.
+   * - ``--email EMAIL``
+     - User email (mandatory).
+   * - ``--password PASSWORD``
+     - User password (if not provided, a random password is generated).
+
+
+
 ``ftcli users export_archives``
 """""""""""""""""""""""""""""""
 .. versionadded:: 0.7.13
@@ -129,8 +152,10 @@ Modify a user account (admin rights, active status, email and password).
    :widths: 25 50
    :header-rows: 1
 
-   * - Options
+   * - Arguments/options
      - Description
+   * - ``USERNAME``
+     - Username.
    * - ``--set-admin BOOLEAN``
      - Add/remove admin rights (when adding admin rights, it also activates user account if not active).
    * - ``--activate``
