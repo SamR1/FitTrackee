@@ -68,6 +68,11 @@
         "EDIT": "Profil bearbeiten",
         "EDIT_PREFERENCES": "Einstellungen ändern",
         "EDIT_SPORTS_PREFERENCES": "Einstellungen für Sportarten ändern",
+        "ELEVATION_CHART_START": {
+            "LABEL": "Höhendiagramm startet bei",
+            "MIN_ALT": "Minimale Höhe",
+            "ZERO": "Null"
+        },
         "ERRORED_EMAIL_UPDATE": "Bitte {0} um Deine E-Mail Adresse nochmals zu ändern oder kontaktiere den Administrator",
         "FIRST_DAY_OF_WEEK": "Erster Tag der Woche",
         "FIRST_NAME": "Vorname",
@@ -111,11 +116,6 @@
             "IMPERIAL": "Imperiales System (ft, mi, mph, °F)",
             "LABEL": "Einheiten für die Distanz",
             "METRIC": "Metrisches System (m, km, m/s, °C)"
-        },
-        "ELEVATION_CHART_START": {
-            "MIN_ALT": "Minimale Höhe",
-            "ZERO": "Null",
-            "LABEL": "Höhendiagramm startet bei"
         }
     },
     "READ_AND_ACCEPT_PRIVACY_POLICY": "Ich habe die {0} gelesen und stimme ihr zu.",

@@ -1,5 +1,6 @@
 {
     "ERROR": {
+        "<time> is missing in gpx file": "Falta el elemento <time> en el archivo .gpx.",
         "Network Error": "Error en la red.",
         "UNKNOWN": "Error. Inténtalo de nuevo o contacta con la administración.",
         "at least one file in zip archive exceeds size limit, please check the archive": "Por lo menos uno de los ficheros dentro del archivo zip excede el límite de tamaño, comprueba el archivo.",
@@ -14,6 +15,7 @@
         "error, registration is disabled": "Error, no se permiten nuevos registros.",
         "file extension not allowed": "Extensión de fichero no permitida.",
         "file size is greater than the allowed size": "El tamaño del fichero es mayor del permitido.",
+        "gpx file is invalid": "El archivo .gpx no es válido.",
         "invalid credentials": "Credenciales no válidas.",
         "invalid payload": "Los datos proporcionados no son válidos.",
         "invalid token, please log in again": "Token no válido, por favor vuelve a iniciar sesión.",
@@ -21,6 +23,7 @@
         "new email must be different than curent email": "El nuevo email tiene que ser diferente al email actual",
         "no file part": "Sin fichero.",
         "no selected file": "Sin fichero seleccionado.",
+        "no tracks in gpx file": "No hay pista (<trk>) en el archivo .gpx.",
         "ongoing request exists": "Ya existe una solicitud de exportación.",
         "password: password and password confirmation do not match": "Contraseña: la contraseña y la confirmación no coinciden.",
         "provide a valid auth token": "Proporciona un auth token válido.",
@@ -32,10 +35,7 @@
         "user does not exist": "No existe el usuario.",
         "valid email must be provided for admin contact": "Debes proporcionar un email válido para el contacto de administración",
         "you can not delete your account, no other user has admin rights": "No puedes eliminar tu cuenta, ninguna otra tiene permisos de administración.",
-        "you do not have permissions": "No tienes permiso.",
-        "gpx file is invalid": "El archivo .gpx no es válido.",
-        "no tracks in gpx file": "No hay pista (<trk>) en el archivo .gpx.",
-        "<time> is missing in gpx file": "Falta el elemento <time> en el archivo .gpx."
+        "you do not have permissions": "No tienes permiso."
     },
     "PAGINATION": {
         "NEXT": "siguiente",
