@@ -1,5 +1,5 @@
-Third-party applications
-########################
+OAuth 2.0
+#########
 (*new in 0.7.0*)
 
 FitTrackee provides a REST API (see `documentation <api/index.html>`__) whose

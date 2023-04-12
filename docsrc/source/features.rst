@@ -38,13 +38,18 @@ Workouts
   It can be overridden in user preferences.
 
 - Dashboard with month calendar displaying workouts and record. The week can start on Sunday or Monday (which can be changed in the user preferences). The calendar displays up to 100 workouts.
-- Workout creation by uploading a gpx file (related data are stored in database with metric system).
+- Workout creation by uploading a gpx file (related data are stored in database in metric system).
+
+.. note::
+  | Only gpx files with time are supported.
+  | Calculated values may differ from values calculated by the application that originally generated the gpx files, in particular the maximum speed.
+
 - | A workout can even be created without gpx (the user must enter date, time, duration and distance).
   | Ascent and descent can also be provided (*new in 0.7.10*).
 - | A workout with a gpx file can be displayed with map and charts (speed and elevation).
   | Controls allow full screen view and position reset (*new in 0.5.5*).
-- | If **DarkSky API** or **Visual Crossing** (*new in 0.7.11*) API key is provided, weather is displayed in workout detail. Data source is displayed in About page.
-  | Wind is displayed, with arrow indicating direction (a tooltip can be displayed with the direction that the wind is coming **from**) (*new in 0.5.5*).
+- | If **Visual Crossing** (*new in 0.7.11*) API key is provided, weather is displayed in workout detail. Data source is displayed in **About** page.
+  | Wind is displayed, with an arrow indicating the direction (a tooltip can be displayed with the direction that the wind is coming **from**) (*new in 0.5.5*).
 - Segments can be displayed.
 - Workout gpx file can be downloaded (*new in 0.5.1*)
 - Workout edition and deletion. User can add a note.
@@ -65,7 +70,20 @@ Workouts
 .. note::
   Records may differ from records displayed by the application that originally generated the gpx files.
 
-- Workouts list and filter. Only sports with workouts are displayed in sport dropdown.
+- Workouts list.
+    - The user can filter workouts on:
+        - date
+        - sports (only sports with workouts are displayed in sport dropdown)
+        - title (*new in 0.7.15*)
+        - distance
+        - duration
+        - average speed
+        - maximum speed
+    - Workouts can be sorted by:
+        - date
+        - distance
+        - duration
+        - average speed
 
 .. note::
     For now, only the owner of the workout can see it.
@@ -88,6 +106,7 @@ Account & preferences
 - A user can choose between metric system and imperial system for distance, elevation and speed display (*new in 0.5.0*)
 - A user can choose to display or hide ascent records and total on Dashboard (*new in 0.6.11*)
 - A user can choose format used to display dates (*new in 0.7.3*)
+- A user can choose elevation chart axis start: zero or minimum altitude (*new in 0.7.15*)
 - A user can set sport preferences (*new in 0.5.0*):
      - change sport color (used for sport image and charts)
      - can override stopped speed threshold (for next uploaded gpx files)
@@ -174,8 +193,11 @@ FitTrackee is available in the following languages (which can be saved in the us
 - German (*new in 0.6.9*)
 - Dutch (*new in 0.7.8*)
 - Italian (*new in 0.7.10*)
+- Galician (*new in 0.7.15*)
+- Spanish (*new in 0.7.15*)
+- Norwegian Bokmål (*new in 0.7.15*)
 
-Translations status on `Weblate <https://hosted.weblate.org/engage/fittrackee/>`__:
+Translations status on `Weblate <https://hosted.weblate.org/engage/fittrackee/>`__ (may differ from the released version):
 
 .. figure:: https://hosted.weblate.org/widgets/fittrackee/-/multi-auto.svg
 

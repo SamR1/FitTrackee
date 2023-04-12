@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Command line interface &#8212; FitTrackee 0.7.14
+    <title>Command line interface &#8212; FitTrackee 0.7.15
  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css" />
@@ -19,7 +19,7 @@
     <script src="_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="API documentation" href="api/index.html" />
+    <link rel="next" title="Third-party tools" href="third_party_tools.html" />
     <link rel="prev" title="Installation" href="installation.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -43,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.14
+        <span class="navbar-text navbar-version pull-left"><b>0.7.15
 </b></span>
       </div>
 
@@ -63,9 +63,10 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="apps.html">Third-party applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="oauth.html">OAuth 2.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Command line interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="third_party_tools.html">Third-party tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/index.html">API documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting/index.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Change log</a></li>
@@ -95,6 +96,7 @@
 <li><a class="reference internal" href="#users">Users</a><ul>
 <li><a class="reference internal" href="#ftcli-users-clean-archives"><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">clean_archives</span></code></a></li>
 <li><a class="reference internal" href="#ftcli-users-clean-tokens"><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">clean_tokens</span></code></a></li>
+<li><a class="reference internal" href="#ftcli-users-create"><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">create</span></code></a></li>
 <li><a class="reference internal" href="#ftcli-users-export-archives"><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">export_archives</span></code></a></li>
 <li><a class="reference internal" href="#ftcli-users-update"><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">update</span></code></a></li>
 </ul>
@@ -114,7 +116,7 @@
     </a>
   </li>
   <li>
-    <a href="api/index.html" title="Next Chapter: API documentation"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">API documentation &raquo;</span>
+    <a href="third_party_tools.html" title="Next Chapter: Third-party tools"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Third-party tools &raquo;</span>
     </a>
   </li>
               
@@ -265,6 +267,42 @@ Commands:
 </tbody>
 </table>
 </section>
+<section id="ftcli-users-create">
+<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">create</span></code><a class="headerlink" href="#ftcli-users-create" title="Permalink to this heading">¶</a></h3>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.15.</span></p>
+</div>
+<p>Create a user account.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>the newly created account is already active.</p></li>
+<li><p>the CLI allows to create users when registration is disabled.</p></li>
+</ul>
+</div>
+<table class="table-bordered docutils align-default">
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 66.7%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Arguments/options</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">USERNAME</span></code></p></td>
+<td><p>Username.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--email</span> <span class="pre">EMAIL</span></code></p></td>
+<td><p>User email (mandatory).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--password</span> <span class="pre">PASSWORD</span></code></p></td>
+<td><p>User password (if not provided, a random password is generated).</p></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="ftcli-users-export-archives">
 <h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">export_archives</span></code><a class="headerlink" href="#ftcli-users-export-archives" title="Permalink to this heading">¶</a></h3>
 <div class="versionadded">
@@ -301,21 +339,24 @@ Can be used if redis is not set (no dramatiq workers running).</p>
 <col style="width: 66.7%" />
 </colgroup>
 <thead>
-<tr class="row-odd"><th class="head"><p>Options</p></th>
+<tr class="row-odd"><th class="head"><p>Arguments/options</p></th>
 <th class="head"><p>Description</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--set-admin</span> <span class="pre">BOOLEAN</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">USERNAME</span></code></p></td>
+<td><p>Username.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--set-admin</span> <span class="pre">BOOLEAN</span></code></p></td>
 <td><p>Add/remove admin rights (when adding admin rights, it also activates user account if not active).</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--activate</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--activate</span></code></p></td>
 <td><p>Activate user account.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--reset-password</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--reset-password</span></code></p></td>
 <td><p>Reset user password (a new password will be displayed).</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--update-email</span> <span class="pre">EMAIL</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--update-email</span> <span class="pre">EMAIL</span></code></p></td>
 <td><p>Update user email.</p></td>
 </tr>
 </tbody>
@@ -336,8 +377,8 @@ Can be used if redis is not set (no dramatiq workers running).</p>
       
     </p>
     <p>
-        &copy; Copyright 2018 - 2022, SamR1 <a rel="me" href="https://fosstodon.org/@FitTrackee"><i class="fa fa-mastodon" aria-hidden="true"></i></a>.
-      Last updated on Mar 08, 2023.<br/>
+        &copy; Copyright 2018 - 2023, SamR1 <a rel="me" href="https://fosstodon.org/@FitTrackee"><i class="fa fa-mastodon" aria-hidden="true"></i></a>.
+      Last updated on Apr 12, 2023.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br/>
     </p>
   </div>

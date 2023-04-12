@@ -7,7 +7,6 @@ This application is written in Python (API) and Typescript (client):
     - Flask
     - `gpxpy <https://github.com/tkrajina/gpxpy>`_ to parse gpx files
     - `staticmap <https://github.com/komoot/staticmap>`_ to generate a static map image from gpx coordinates
-    - `python-forecast.io <https://github.com/ZeevG/python-forecast.io>`_ to fetch weather data from `Dark Sky <https://darksky.net>`__ (former forecast.io)
     - `dramatiq <https://flask-dramatiq.readthedocs.io/en/latest/>`_ for task queue
     - `Authlib <https://docs.authlib.org/en/latest/>`_ for OAuth 2.0 Authorization support
     - `Flask-Limiter <https://flask-limiter.readthedocs.io/en/stable>`_ for API rate limits
@@ -356,13 +355,16 @@ Weather data
 
 The following weather data providers are supported by **FitTrackee**:
 
-- `Dark Sky <https://darksky.net>`__ (deprecated, will stop on March 31st, 2023)
 - `Visual Crossing <https://www.visualcrossing.com>`__ (**note**: historical data are provided on hourly period)
 
 To configure a weather provider, set the following environment variables:
 
-- ``WEATHER_API_PROVIDER``: ``darksky`` for **Dark Sky** or ``visualcrossing`` for **Visual Crossing**
 - ``WEATHER_API_KEY``: the key to the corresponding weather provider
+
+
+.. versionchanged:: 0.7.15
+
+**DarkSky** support is discontinued, since the service shut down on March 31, 2023.
 
 
 Installation
@@ -507,13 +509,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.7.14):
+-  Download the last release (for now, it is the release v0.7.15):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.14.tar.gz
-   $ tar -xzf v0.7.14.tar.gz
-   $ mv FitTrackee-0.7.14 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.15.tar.gz
+   $ tar -xzf v0.7.15.tar.gz
+   $ mv FitTrackee-0.7.15 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -633,13 +635,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.7.14) and overwrite existing files:
+- Download the last release (for now, it is the release v0.7.15) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.14.tar.gz
-   $ tar -xzf v0.7.14.tar.gz
-   $ cp -R FitTrackee-0.7.14/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.15.tar.gz
+   $ tar -xzf v0.7.15.tar.gz
+   $ cp -R FitTrackee-0.7.15/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -883,3 +885,9 @@ Open http://localhost:3000
     $ make docker-test-client  # run unit tests on Client
     $ make docker-lint-python  # run type check and lint on python files
     $ make docker-test-python  # run unit tests on API
+
+
+Yunohost
+~~~~~~~~
+
+A package is available, see https://github.com/YunoHost-Apps/fittrackee_ynh.
