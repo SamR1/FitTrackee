@@ -136,7 +136,6 @@
     .privacy-policy-message {
       display: flex;
       justify-content: center;
-      margin: 0 $default-margin*.5;
     }
 
     @media screen and (max-width: $medium-limit) {
@@ -186,6 +185,13 @@
       }
       .is-hidden {
         display: none;
+      }
+    }
+
+
+    @media screen and (max-width: $small-limit) {
+      .privacy-policy-message {
+        margin: 0 $default-margin*.5;
       }
     }
   }
