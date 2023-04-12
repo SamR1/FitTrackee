@@ -40,9 +40,11 @@ from fittrackee.responses import (
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport
 
+from .exceptions import UserControlsException, UserCreationException
 from .models import BlacklistedToken, User, UserDataExport, UserSportPreference
 from .tasks import export_data
-from .utils.controls import check_password, is_valid_email, register_controls
+from .utils.admin import UserManagerService
+from .utils.controls import check_password, is_valid_email
 from .utils.language import get_language
 from .utils.token import decode_user_token
 
@@ -160,32 +162,12 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     language = get_language(post_data.get('language'))
 
     try:
-        ret = register_controls(username, email, password)
-    except TypeError as e:
-        return handle_error_and_return_response(e, db=db)
-
-    if ret != '':
-        return InvalidPayloadErrorResponse(ret)
-
-    try:
-        user = User.query.filter(
-            func.lower(User.username) == func.lower(username)
-        ).first()
-        if user:
-            return InvalidPayloadErrorResponse(
-                'sorry, that username is already taken'
-            )
-
-        # if a user exists with same email address, no error is returned
-        # since a user has to confirm his email to activate his account
-        user = User.query.filter(
-            func.lower(User.email) == func.lower(email)
-        ).first()
-        if not user:
-            new_user = User(username=username, email=email, password=password)
-            new_user.timezone = 'Europe/Paris'
-            new_user.date_format = 'MM/dd/yyyy'
-            new_user.confirmation_token = secrets.token_urlsafe(30)
+        user_manager_service = UserManagerService(username=username)
+        new_user, _ = user_manager_service.create_user(email, password)
+        # if a user exists with same email address (returned new_user is None),
+        # no error is returned since a user has to confirm his email to
+        # activate his account
+        if new_user:
             new_user.language = language
             new_user.accepted_policy_date = datetime.datetime.utcnow()
             db.session.add(new_user)
@@ -195,7 +177,14 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
 
         return {'status': 'success'}, 200
     # handler errors
-    except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
+    except (UserControlsException, UserCreationException) as e:
+        return InvalidPayloadErrorResponse(str(e))
+    except (
+        exc.IntegrityError,
+        exc.OperationalError,
+        TypeError,
+        ValueError,
+    ) as e:
         return handle_error_and_return_response(e, db=db)
 
 
