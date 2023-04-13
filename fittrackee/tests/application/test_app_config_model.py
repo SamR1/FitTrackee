@@ -14,7 +14,7 @@ class TestConfigModel:
     def test_application_config(
         self, app: Flask, monkeypatch: pytest.MonkeyPatch
     ) -> None:
-        monkeypatch.setenv('WEATHER_API_PROVIDER', 'darksky')
+        monkeypatch.setenv('WEATHER_API_PROVIDER', 'visualcrossing')
         app_config = AppConfig.query.first()
         app_config.admin_contact = 'admin@example.com'
 
@@ -49,7 +49,7 @@ class TestConfigModel:
             == app_config.map_attribution
         )
         assert serialized_app_config['version'] == VERSION
-        assert serialized_app_config['weather_provider'] == 'darksky'
+        assert serialized_app_config['weather_provider'] == 'visualcrossing'
 
     def test_it_returns_registration_disabled_when_users_count_exceeds_limit(
         self, app: Flask, user_1: User, user_2: User
@@ -72,7 +72,7 @@ class TestConfigModel:
     @pytest.mark.parametrize(
         'input_weather_api_provider, expected_weather_provider',
         [
-            ('darksky', 'darksky'),
+            ('darksky', None),  # removed provider
             ('Visualcrossing', 'visualcrossing'),
             ('invalid_provider', None),
             ('', None),

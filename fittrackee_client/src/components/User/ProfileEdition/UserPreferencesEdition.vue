@@ -203,12 +203,13 @@
   const store = useStore()
 
   const userForm: IUserPreferencesPayload = reactive({
+    date_format: 'dd/MM/yyyy',
     display_ascent: true,
     imperial_units: false,
     language: '',
     map_visibility: 'private',
+    start_elevation_at_zero: false,
     timezone: 'Europe/Paris',
-    date_format: 'dd/MM/yyyy',
     weekm: false,
     workouts_visibility: 'private',
   })

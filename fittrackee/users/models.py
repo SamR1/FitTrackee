@@ -134,6 +134,9 @@ class User(BaseModel):
     is_remote = db.Column(db.Boolean, default=False, nullable=False)
     display_ascent = db.Column(db.Boolean, default=True, nullable=False)
     accepted_policy_date = db.Column(db.DateTime, nullable=True)
+    start_elevation_at_zero = db.Column(
+        db.Boolean, default=True, nullable=False
+    )
     workouts_visibility = db.Column(
         Enum(PrivacyLevel, name='privacy_levels'),
         server_default='PRIVATE',
@@ -155,17 +158,6 @@ class User(BaseModel):
         lazy=True,
         backref=db.backref('user', lazy='joined', single_parent=True),
     )
-    language = db.Column(db.String(50), nullable=True)
-    imperial_units = db.Column(db.Boolean, default=False, nullable=False)
-    is_active = db.Column(db.Boolean, default=False, nullable=False)
-    email_to_confirm = db.Column(db.String(255), nullable=True)
-    confirmation_token = db.Column(db.String(255), nullable=True)
-    display_ascent = db.Column(db.Boolean, default=True, nullable=False)
-    accepted_policy_date = db.Column(db.DateTime, nullable=True)
-    start_elevation_at_zero = db.Column(
-        db.Boolean, default=True, nullable=False
-    )
-    actor = db.relationship(Actor, back_populates='user')
     received_follow_requests = db.relationship(
         FollowRequest,
         backref='to_user',
@@ -209,6 +201,7 @@ class User(BaseModel):
         lazy=True,
         backref=db.backref('user', lazy='joined', single_parent=True),
     )
+    actor = db.relationship(Actor, back_populates='user')
 
     def __repr__(self) -> str:
         return f'<User {self.username!r}>'

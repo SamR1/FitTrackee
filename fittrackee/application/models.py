@@ -63,7 +63,7 @@ class AppConfig(BaseModel):
             'version': current_app.config['VERSION'],
             'weather_provider': (
                 weather_provider
-                if weather_provider in ['darksky', 'visualcrossing']
+                if weather_provider in ['visualcrossing']
                 else None
             ),
         }
