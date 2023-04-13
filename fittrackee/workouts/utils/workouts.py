@@ -17,7 +17,7 @@ from fittrackee.privacy_levels import PrivacyLevel, get_map_visibility
 from fittrackee.users.models import User, UserSportPreference
 
 from ..constants import WORKOUT_DATE_FORMAT
-from ..exceptions import WorkoutException
+from ..exceptions import InvalidGPXException, WorkoutException
 from ..models import Sport, Workout, WorkoutSegment
 from .gpx import get_gpx_info
 from .maps import generate_map, get_map_hash
@@ -356,6 +356,9 @@ def process_one_gpx_file(
     except (gpxpy.gpx.GPXXMLSyntaxException, TypeError) as e:
         delete_files(absolute_gpx_filepath, absolute_map_filepath)
         raise WorkoutException('error', 'error during gpx file parsing', e)
+    except InvalidGPXException as e:
+        delete_files(absolute_gpx_filepath, absolute_map_filepath)
+        raise WorkoutException('error', str(e))
     except Exception as e:
         delete_files(absolute_gpx_filepath, absolute_map_filepath)
         raise WorkoutException('error', 'error during gpx processing', e)

@@ -1,12 +1,19 @@
 import secrets
 from typing import Optional, Tuple
 
+from sqlalchemy import func
+
 from fittrackee import db
 from fittrackee.federation.utils.user import get_user_from_username
 
-from ..exceptions import InvalidEmailException, InvalidUserException
+from ..exceptions import (
+    InvalidEmailException,
+    InvalidUserException,
+    UserControlsException,
+    UserCreationException,
+)
 from ..models import User
-from ..utils.controls import is_valid_email
+from ..utils.controls import is_valid_email, register_controls
 
 
 class UserManagerService:
@@ -81,3 +88,64 @@ class UserManagerService:
 
         db.session.commit()
         return user, user_updated, new_password
+
+    def create_user(
+        self,
+        email: str,
+        password: Optional[str] = None,
+        check_email: bool = False,
+    ) -> Tuple[Optional[User], Optional[str]]:
+        if not password:
+            password = secrets.token_urlsafe(30)
+
+        ret = register_controls(self.username, email, password)
+
+        if ret != '':
+            raise UserControlsException(ret)
+
+        user = User.query.filter(
+            User.is_remote == False,  # noqa
+            func.lower(User.username) == func.lower(self.username),
+        ).first()
+        if user:
+            raise UserCreationException(
+                'sorry, that username is already taken'
+            )
+
+        # if a user exists with same email address, no error is returned
+        # since a user has to confirm his email to activate his account
+        user = User.query.filter(
+            User.is_remote == False,  # noqa
+            func.lower(User.email) == func.lower(email),
+        ).first()
+        if user:
+            if check_email:
+                raise UserCreationException(
+                    'This user already exists. No action done.'
+                )
+            return None, None
+
+        new_user = User(username=self.username, email=email, password=password)
+        new_user.timezone = 'Europe/Paris'
+        new_user.date_format = 'MM/dd/yyyy'
+        new_user.confirmation_token = secrets.token_urlsafe(30)
+        db.session.add(new_user)
+        db.session.flush()
+
+        return new_user, password
+
+    def create(
+        self,
+        email: str,
+        password: Optional[str] = None,
+    ) -> Tuple[Optional[User], Optional[str]]:
+        try:
+            new_user, password = self.create_user(
+                email, password, check_email=True
+            )
+            if new_user:
+                new_user.language = 'en'
+                db.session.commit()
+        except UserControlsException as e:
+            raise UserCreationException(str(e))
+        return new_user, password

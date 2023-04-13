@@ -68,6 +68,11 @@
         "EDIT": "Profil bearbeiten",
         "EDIT_PREFERENCES": "Einstellungen ändern",
         "EDIT_SPORTS_PREFERENCES": "Einstellungen für Sportarten ändern",
+        "ELEVATION_CHART_START": {
+            "LABEL": "Höhendiagramm startet bei",
+            "MIN_ALT": "Minimale Höhe",
+            "ZERO": "Null"
+        },
         "ERRORED_EMAIL_UPDATE": "Bitte {0} um Deine E-Mail Adresse nochmals zu ändern oder kontaktiere den Administrator",
         "FIRST_DAY_OF_WEEK": "Erster Tag der Woche",
         "FIRST_NAME": "Vorname",

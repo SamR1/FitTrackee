@@ -97,7 +97,7 @@
     },
     "WITHOUT_GPX": "senza file .gpx",
     "WITH_GPX": "con file .gpx",
-    "WORKOUT": "allenamento / allenamenti",
+    "WORKOUT": "allenamento | allenamenti",
     "WORKOUT_DATE": "data workout",
     "WORKOUT_DELETION_CONFIRMATION": "Sei sicuro di voler eliminare questo workout?",
     "ZIP_ARCHIVE": "file .zip",

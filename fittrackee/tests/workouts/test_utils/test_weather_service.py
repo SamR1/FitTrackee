@@ -9,7 +9,6 @@ from gpxpy.gpx import GPXTrackPoint
 
 from fittrackee.tests.mixins import BaseTestMixin
 from fittrackee.tests.utils import random_string
-from fittrackee.workouts.utils.weather.dark_sky import DarkSky
 from fittrackee.workouts.utils.weather.visual_crossing import VisualCrossing
 from fittrackee.workouts.utils.weather.weather_service import WeatherService
 
@@ -53,82 +52,6 @@ class WeatherTestCase(BaseTestMixin):
     @staticmethod
     def get_gpx_point(time: Optional[datetime] = None) -> GPXTrackPoint:
         return GPXTrackPoint(latitude=48.866667, longitude=2.333333, time=time)
-
-
-class TestDarksky(WeatherTestCase):
-    def test_it_calls_forecast_io_with_datetime_in_utc_when_naive_datetime_is_provided(  # noqa
-        self,
-    ) -> None:
-        naive_point_time = datetime(
-            year=2022, month=6, day=11, hour=10, minute=23, second=00
-        )
-        point = self.get_gpx_point(naive_point_time)
-        darksky = DarkSky(api_key=self.api_key)
-        with patch(
-            'fittrackee.workouts.utils.weather.dark_sky.forecastio'
-        ) as forecast_io_mock:
-            darksky.get_weather(point)
-
-        forecast_io_mock.load_forecast.assert_called_with(
-            self.api_key,
-            point.latitude,
-            point.longitude,
-            time=datetime(
-                year=2022,
-                month=6,
-                day=11,
-                hour=10,
-                minute=23,
-                second=00,
-                tzinfo=pytz.utc,
-            ),
-            units='si',
-        )
-
-    def test_it_calls_forecast_io_with_provided_datetime_when_with_timezone(
-        self,
-    ) -> None:
-        paris_point_time = datetime(
-            year=2022,
-            month=6,
-            day=11,
-            hour=10,
-            minute=23,
-            second=00,
-        ).astimezone(pytz.timezone('Europe/Paris'))
-        point = self.get_gpx_point(paris_point_time)
-        darksky = DarkSky(api_key=self.api_key)
-        with patch(
-            'fittrackee.workouts.utils.weather.dark_sky.forecastio'
-        ) as forecast_io_mock:
-            darksky.get_weather(point)
-
-        forecast_io_mock.load_forecast.assert_called_with(
-            self.api_key,
-            point.latitude,
-            point.longitude,
-            time=paris_point_time,
-            units='si',
-        )
-
-    def test_it_returns_forecast_currently_data(self) -> None:
-        darksky = DarkSky(api_key=self.api_key)
-        with patch(
-            'fittrackee.workouts.utils.weather.dark_sky.forecastio'
-        ) as forecast_io_mock:
-            forecast_io_mock.load_forecast().currently.return_value = sentinel
-
-            weather_data = darksky.get_weather(
-                self.get_gpx_point(datetime.utcnow())
-            )
-
-        assert weather_data == {
-            'icon': sentinel.icon,
-            'temperature': sentinel.temperature,
-            'humidity': sentinel.humidity,
-            'wind': sentinel.windSpeed,
-            'windBearing': sentinel.windBearing,
-        }
 
 
 class TestVisualCrossingGetTimestamp(WeatherTestCase):
@@ -246,9 +169,10 @@ class TestWeatherService(WeatherTestCase):
     @pytest.mark.parametrize(
         'input_api_key,input_provider',
         [
-            ('', 'darksky'),
+            ('', 'visualcrossing'),
             ('valid_api_key', ''),
             ('valid_api_key', 'invalid_provider'),
+            ('valid_api_key', 'darksky'),  # removed provider
         ],
     )
     def test_weather_api_is_none_when_configuration_is_invalid(
@@ -263,22 +187,6 @@ class TestWeatherService(WeatherTestCase):
         weather_service = WeatherService()
 
         assert weather_service.weather_api is None
-
-    @pytest.mark.parametrize(
-        'input_provider',
-        ['darksky', 'DARKSKY'],
-    )
-    def test_weather_api_is_darksky_when_configured(
-        self,
-        monkeypatch: pytest.MonkeyPatch,
-        input_provider: str,
-    ) -> None:
-        monkeypatch.setenv('WEATHER_API_KEY', 'valid_api_key')
-        monkeypatch.setenv('WEATHER_API_PROVIDER', input_provider)
-
-        weather_service = WeatherService()
-
-        assert isinstance(weather_service.weather_api, DarkSky)
 
     @pytest.mark.parametrize(
         'input_provider',
@@ -307,7 +215,7 @@ class TestWeatherService(WeatherTestCase):
 
     def test_it_returns_none_when_point_time_is_none(self) -> None:
         weather_service = WeatherService()
-        weather_service.weather_api = DarkSky('api_key')
+        weather_service.weather_api = VisualCrossing('api_key')
         point = self.get_gpx_point(None)
 
         weather_data = weather_service.get_weather(point)

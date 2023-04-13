@@ -12,7 +12,7 @@ from flask import (
     request,
     send_from_directory,
 )
-from sqlalchemy import exc, func, or_
+from sqlalchemy import exc, func
 from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
@@ -41,9 +41,11 @@ from fittrackee.responses import (
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport
 
+from .exceptions import UserControlsException, UserCreationException
 from .models import BlacklistedToken, User, UserDataExport, UserSportPreference
 from .tasks import export_data
-from .utils.controls import check_password, is_valid_email, register_controls
+from .utils.admin import UserManagerService
+from .utils.controls import check_password, is_valid_email
 from .utils.language import get_language
 from .utils.token import decode_user_token
 
@@ -161,39 +163,14 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     language = get_language(post_data.get('language'))
 
     try:
-        ret = register_controls(username, email, password)
-    except TypeError as e:
-        return handle_error_and_return_response(e, db=db)
-
-    if ret != '':
-        return InvalidPayloadErrorResponse(ret)
-
-    try:
-        user = User.query.filter(
-            User.is_remote == False,  # noqa
-            or_(
-                func.lower(User.username) == func.lower(username),
-            ),
-        ).first()
-        if user:
-            return InvalidPayloadErrorResponse(
-                'sorry, that username is already taken'
-            )
-
-        # if a user exists with same email address, no error is returned
-        # since a user has to confirm his email to activate his account
-        user = User.query.filter(
-            User.is_remote == False,  # noqa
-            func.lower(User.email) == func.lower(email),
-        ).first()
-        if not user:
-            new_user = User(username=username, email=email, password=password)
-            new_user.timezone = 'Europe/Paris'
-            new_user.date_format = 'MM/dd/yyyy'
-            new_user.confirmation_token = secrets.token_urlsafe(30)
+        user_manager_service = UserManagerService(username=username)
+        new_user, _ = user_manager_service.create_user(email, password)
+        # if a user exists with same email address (returned new_user is None),
+        # no error is returned since a user has to confirm his email to
+        # activate his account
+        if new_user:
             new_user.language = language
             new_user.accepted_policy_date = datetime.datetime.utcnow()
-            db.session.add(new_user)
             db.session.commit()
             # create actor even if federation is disabled
             new_user.create_actor()
@@ -202,7 +179,14 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
 
         return {'status': 'success'}, 200
     # handler errors
-    except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
+    except (UserControlsException, UserCreationException) as e:
+        return InvalidPayloadErrorResponse(str(e))
+    except (
+        exc.IntegrityError,
+        exc.OperationalError,
+        TypeError,
+        ValueError,
+    ) as e:
         return handle_error_and_return_response(e, db=db)
 
 
@@ -307,13 +291,15 @@ def get_authenticated_user_profile(
 
       {
         "data": {
-          "accepted_privacy_policy": "Sat, 25 Fev 2023 13:52:58 GMT",
+          "accepted_privacy_policy": true,
           "admin": false,
           "bio": null,
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+          "date_format": "dd/MM/yyyy",
           "display_ascent": true,
           "email": "sam@example.com",
+          "email_to_confirm": null,
           "first_name": null,
           "followers": 0,
           "following": 0,
@@ -379,7 +365,9 @@ def get_authenticated_user_profile(
               4,
               6
           ],
+          "start_elevation_at_zero": false,
           "timezone": "Europe/Paris",
+          "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
           "username": "sam",
@@ -424,12 +412,15 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
 
       {
         "data": {
+          "accepted_privacy_policy": true,
           "admin": false,
           "bio": null,
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+          "date_format": "dd/MM/yyyy",
           "display_ascent": true,
           "email": "sam@example.com",
+          "email_to_confirm": null,
           "first_name": null,
           "followers": 0,
           "following": 0,
@@ -495,7 +486,9 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
               4,
               6
           ],
+          "start_elevation_at_zero": false,
           "timezone": "Europe/Paris",
+          "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
           "username": "sam"
@@ -596,12 +589,15 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
 
       {
         "data": {
+          "accepted_privacy_policy": true,
           "admin": false,
           "bio": null,
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+          "date_format": "dd/MM/yyyy",
           "display_ascent": true,
           "email": "sam@example.com",
+          "email_to_confirm": null,
           "first_name": null,
           "imperial_units": false,
           "is_active": true,
@@ -663,7 +659,9 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
               4,
               6
           ],
+          "start_elevation_at_zero": false,
           "timezone": "Europe/Paris",
+          "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
           "username": "sam"
@@ -797,8 +795,8 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     - ``date_string``, corresponding on client to:
 
       - ``MMM. do, yyyy`` for ``en`` locale
-      - ``d MMM yyyy`` for ``fr`` locale
-      - ``do MMM yyyy`` for ``de`` locale
+      - ``d MMM yyyy`` for ``es``, ``fr``, ``gl``, ``it`` and ``nl`` locales
+      - ``do MMM yyyy`` for ``de`` and ``nb`` locales
 
     **Scope**: ``profile:write``
 
@@ -818,6 +816,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
 
       {
         "data": {
+          "accepted_privacy_policy": true,
           "admin": false,
           "bio": null,
           "birth_date": null,
@@ -825,6 +824,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "date_format": "MM/dd/yyyy",
           "display_ascent": true,
           "email": "sam@example.com",
+          "email_to_confirm": null,
           "first_name": null,
           "followers": 0,
           "following": 0,
@@ -892,6 +892,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           ],
           "start_elevation_at_zero": true,
           "timezone": "Europe/Paris",
+          "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
           "username": "sam",
