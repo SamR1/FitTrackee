@@ -12,15 +12,26 @@ from ..utils import jsonify_dict
 
 
 class TestGetSports(ApiTestCaseMixin):
-    def test_it_returns_error_if_user_is_not_authenticated(
+    def test_test_it_gets_all_sports_when_not_authenticated(
         self,
         app: Flask,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
     ) -> None:
         client = app.test_client()
 
         response = client.get('/api/sports')
 
-        self.assert_401(response)
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['sports']) == 2
+        assert data['data']['sports'][0] == jsonify_dict(
+            sport_1_cycling.serialize()
+        )
+        assert data['data']['sports'][1] == jsonify_dict(
+            sport_2_running.serialize()
+        )
 
     def test_it_gets_all_sports(
         self,
@@ -143,6 +154,8 @@ class TestGetSports(ApiTestCaseMixin):
         'client_scope, can_access',
         [
             ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', False),
             ('profile:read', False),
             ('profile:write', False),
             ('users:read', False),
@@ -283,6 +296,8 @@ class TestGetSport(ApiTestCaseMixin):
         'client_scope, can_access',
         [
             ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', False),
             ('profile:read', False),
             ('profile:write', False),
             ('users:read', False),
@@ -522,6 +537,8 @@ class TestUpdateSport(ApiTestCaseMixin):
         'client_scope, can_access',
         [
             ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', False),
             ('profile:read', False),
             ('profile:write', False),
             ('users:read', False),

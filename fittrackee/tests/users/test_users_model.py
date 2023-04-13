@@ -7,9 +7,13 @@ from freezegun import freeze_time
 
 from fittrackee import db
 from fittrackee.tests.utils import random_int, random_string
-from fittrackee.users.exceptions import UserNotFoundException
+from fittrackee.users.exceptions import (
+    FollowRequestAlreadyProcessedError,
+    NotExistingFollowRequestError,
+)
 from fittrackee.users.models import (
     BlacklistedToken,
+    FollowRequest,
     User,
     UserDataExport,
     UserSportPreference,
@@ -28,9 +32,17 @@ class UserModelAssertMixin:
     @staticmethod
     def assert_user_account(serialized_user: Dict, user: User) -> None:
         assert serialized_user['admin'] == user.admin
-        assert serialized_user['email_to_confirm'] == user.email_to_confirm
         assert serialized_user['is_active'] == user.is_active
         assert serialized_user['username'] == user.username
+
+    @staticmethod
+    def assert_user_follow_infos(
+        serialized_user: Dict, user: User, follows: bool, is_followed_by: bool
+    ) -> None:
+        assert serialized_user['followers'] == user.followers
+        assert serialized_user['following'] == user.following
+        assert serialized_user['follows'] == follows
+        assert serialized_user['is_followed_by'] == is_followed_by
 
     @staticmethod
     def assert_user_profile(serialized_user: Dict, user: User) -> None:
@@ -59,6 +71,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         serialized_user = user_1.serialize(user_1)
 
         self.assert_user_account(serialized_user, user_1)
+        assert serialized_user['email_to_confirm'] == user_1.email_to_confirm
 
     def test_it_returns_user_profile_infos(
         self, app: Flask, user_1: User
@@ -138,6 +151,7 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin):
         serialized_user = user_2.serialize(user_1_admin)
 
         self.assert_user_account(serialized_user, user_2)
+        assert serialized_user['email_to_confirm'] == user_2.email_to_confirm
 
     def test_it_returns_user_profile_infos(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -178,6 +192,88 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin):
         assert 'confirmation_token' not in serialized_user
 
 
+class TestUserSerializeAsUser(UserModelAssertMixin):
+    def test_it_returns_user_account_infos(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1)
+
+        self.assert_user_account(serialized_user, user_2)
+        assert 'email_to_confirm' not in serialized_user
+
+    def test_it_returns_user_profile_infos(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1)
+
+        self.assert_user_profile(serialized_user, user_1)
+
+    def test_it_does_return_user_preferences(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1)
+
+        assert 'imperial_units' not in serialized_user
+        assert 'language' not in serialized_user
+        assert 'timezone' not in serialized_user
+        assert 'weekm' not in serialized_user
+
+    def test_it_returns_workouts_infos(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1_admin)
+
+        self.assert_workouts_keys_are_present(serialized_user)
+
+    def test_it_does_not_return_confirmation_token(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1_admin)
+
+        assert 'confirmation_token' not in serialized_user
+
+
+class TestUserSerializeAsUnauthenticatedUser(UserModelAssertMixin):
+    def test_it_returns_user_account_infos(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1)
+
+        self.assert_user_account(serialized_user, user_2)
+        assert 'email_to_confirm' not in serialized_user
+
+    def test_it_returns_user_profile_infos(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1)
+
+        self.assert_user_profile(serialized_user, user_1)
+
+    def test_it_does_return_user_preferences(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1)
+
+        assert 'imperial_units' not in serialized_user
+        assert 'language' not in serialized_user
+        assert 'timezone' not in serialized_user
+        assert 'weekm' not in serialized_user
+
+    def test_it_returns_workouts_infos(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1_admin)
+
+        self.assert_workouts_keys_are_present(serialized_user)
+
+    def test_it_does_not_return_confirmation_token(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(user_1_admin)
+
+        assert 'confirmation_token' not in serialized_user
+
+
 class TestInactiveUserSerialize(UserModelAssertMixin):
     def test_it_returns_is_active_to_false_for_inactive_user(
         self,
@@ -187,14 +283,6 @@ class TestInactiveUserSerialize(UserModelAssertMixin):
         serialized_user = inactive_user.serialize(inactive_user)
 
         assert serialized_user['is_active'] is False
-
-
-class TestUserSerializeAsRegularUser(UserModelAssertMixin):
-    def test_user_model_as_regular_user(
-        self, app: Flask, user_1: User, user_2: User
-    ) -> None:
-        with pytest.raises(UserNotFoundException):
-            user_2.serialize(user_1)
 
 
 class TestUserRecords(UserModelAssertMixin):
@@ -211,20 +299,33 @@ class TestUserRecords(UserModelAssertMixin):
         self,
         app: Flask,
         user_1: User,
+        user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
         serialized_user = user_1.serialize(user_1)
         assert len(serialized_user['records']) == 4
-        assert serialized_user['records'][0]['record_type'] == 'AS'
-        assert serialized_user['records'][0]['sport_id'] == sport_1_cycling.id
-        assert serialized_user['records'][0]['user'] == user_1.username
-        assert serialized_user['records'][0]['value'] > 0
-        assert (
-            serialized_user['records'][0]['workout_id']
-            == workout_cycling_user_1.short_id
+        records = sorted(
+            serialized_user['records'], key=lambda r: r['record_type']
         )
-        assert serialized_user['records'][0]['workout_date']
+        assert records[0]['record_type'] == 'AS'
+        assert records[0]['sport_id'] == sport_1_cycling.id
+        assert records[0]['user'] == user_1.username
+        assert records[0]['value'] > 0
+        assert records[0]['workout_id'] == workout_cycling_user_1.short_id
+        assert records[0]['workout_date']
+
+    def test_it_returns_user_1_and_user_2_dont_not_follow_each_other(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        serialized_user = user_2.serialize(user_1)
+        assert serialized_user['followers'] == 0
+        assert serialized_user['following'] == 0
+        assert serialized_user['follows'] == 'false'
+        assert serialized_user['is_followed_by'] == 'false'
 
     def test_it_returns_totals_when_user_has_workout_without_ascent(
         self,
@@ -353,7 +454,7 @@ class TestUserModelToken:
     ) -> None:
         auth_token = user_1.encode_auth_token(user_1.id)
         now = datetime.utcnow()
-        with freeze_time(now + timedelta(seconds=4)):
+        with freeze_time(now + timedelta(seconds=11)):
             assert (
                 User.decode_auth_token(auth_token)
                 == 'signature expired, please log in again'
@@ -427,3 +528,232 @@ class TestUserDataExportSerializer:
         assert serialized_data_export["status"] == "errored"
         assert serialized_data_export["file_name"] is None
         assert serialized_data_export["file_size"] is None
+
+
+class TestFollowRequestModel:
+    def test_follow_request_model(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        assert '<FollowRequest from user \'1\' to user \'2\'>' == str(
+            follow_request_from_user_1_to_user_2
+        )
+
+        serialized_follow_request = (
+            follow_request_from_user_1_to_user_2.serialize()
+        )
+        assert serialized_follow_request['from_user'] == user_1.serialize()
+        assert serialized_follow_request['to_user'] == user_2.serialize()
+
+
+class TestUserFollowingModel:
+    def test_user_2_sends_follow_requests_to_user_1(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        follow_request = user_2.send_follow_request_to(user_1)
+
+        assert follow_request in user_2.sent_follow_requests.all()
+
+    def test_user_1_receives_follow_requests_from_user_2(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        follow_request = user_2.send_follow_request_to(user_1)
+
+        assert follow_request in user_1.received_follow_requests.all()
+
+    def test_user_has_pending_follow_request(
+        self,
+        app: Flask,
+        user_1: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        assert (
+            follow_request_from_user_2_to_user_1
+            in user_1.pending_follow_requests
+        )
+
+    def test_user_has_no_pending_follow_request(
+        self,
+        app: Flask,
+        user_1: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        follow_request_from_user_2_to_user_1.updated_at = datetime.now()
+        assert user_1.pending_follow_requests == []
+
+    def test_user_approves_follow_request(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+        follow_request_from_user_3_to_user_1: FollowRequest,
+    ) -> None:
+        follow_request = user_1.approves_follow_request_from(user_2)
+
+        assert follow_request.is_approved
+        assert user_1.pending_follow_requests == [
+            follow_request_from_user_3_to_user_1
+        ]
+
+    def test_user_refuses_follow_request(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        follow_request = user_1.rejects_follow_request_from(user_2)
+
+        assert not follow_request.is_approved
+        assert user_1.pending_follow_requests == []
+
+    def test_it_raises_error_if_follow_request_does_not_exist(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        with pytest.raises(NotExistingFollowRequestError):
+            user_1.approves_follow_request_from(user_2)
+
+    def test_it_raises_error_if_user_approves_follow_request_already_processed(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        follow_request_from_user_2_to_user_1.updated_at = datetime.now()
+
+        with pytest.raises(FollowRequestAlreadyProcessedError):
+            user_1.approves_follow_request_from(user_2)
+
+    def test_follow_request_is_automatically_accepted_if_manually_approved_if_false(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        user_1.manually_approves_followers = False
+        follow_request = user_2.send_follow_request_to(user_1)
+
+        assert follow_request in user_2.sent_follow_requests.all()
+        assert follow_request.is_approved is True
+        assert follow_request.updated_at is not None
+
+
+class TestUserUnfollowModel:
+    def test_it_raises_error_if_follow_request_does_not_exist(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        with pytest.raises(NotExistingFollowRequestError):
+            user_1.unfollows(user_2)
+
+    def test_user_1_unfollows_user_2(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        follow_request_from_user_1_to_user_2.is_approved = True
+        follow_request_from_user_1_to_user_2.updated_at = datetime.utcnow()
+
+        user_1.unfollows(user_2)
+
+        assert user_1.following.count() == 0
+        assert user_2.followers.count() == 0
+
+    def test_it_removes_pending_follow_request(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_1.unfollows(user_2)
+
+        assert user_1.sent_follow_requests.all() == []
+
+
+class TestUserFollowers:
+    def test_it_returns_empty_list_if_no_followers(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        assert user_1.followers.all() == []
+
+    def test_it_returns_empty_list_if_follow_request_is_not_approved(
+        self,
+        app: Flask,
+        user_1: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        assert user_1.followers.all() == []
+
+    def test_it_returns_follower_if_follow_request_is_approved(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        follow_request_from_user_2_to_user_1.is_approved = True
+        follow_request_from_user_2_to_user_1.updated_at = datetime.now()
+
+        assert user_1.followers.all() == [user_2]
+
+
+class TestUserFollowing:
+    def test_it_returns_empty_list_if_no_followers(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        assert user_1.following.all() == []
+
+    def test_it_returns_empty_list_if_follow_request_is_not_approved(
+        self,
+        app: Flask,
+        user_1: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        assert user_1.following.all() == []
+
+    def test_it_returns_follower_if_follow_request_is_approved(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        follow_request_from_user_1_to_user_2.is_approved = True
+        follow_request_from_user_1_to_user_2.updated_at = datetime.now()
+
+        assert user_1.following.all() == [user_2]
+
+
+class TestUserLinkifyMention:
+    def test_it_returns_linkified_mention_with_username(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        assert user_1.linkify_mention() == (
+            f'<a href="{user_1.get_user_url()}" target="_blank" '
+            f'rel="noopener noreferrer">@{user_1.username}</a>'
+        )

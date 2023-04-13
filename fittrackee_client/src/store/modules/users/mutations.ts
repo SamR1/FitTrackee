@@ -20,6 +20,23 @@ export const mutations: MutationTree<IUsersState> & TUsersMutations = {
       return user
     })
   },
+  [USERS_STORE.MUTATIONS.UPDATE_USER_IN_RELATIONSHIPS](
+    state: IUsersState,
+    updatedUser: IUserProfile
+  ) {
+    state.user_relationships = state.user_relationships.map((user) => {
+      if (user.username === updatedUser.username) {
+        return updatedUser
+      }
+      return user
+    })
+  },
+  [USERS_STORE.MUTATIONS.UPDATE_USER_RELATIONSHIPS](
+    state: IUsersState,
+    relationships: IUserProfile[]
+  ) {
+    state.user_relationships = relationships
+  },
   [USERS_STORE.MUTATIONS.UPDATE_USERS](
     state: IUsersState,
     users: IUserProfile[]

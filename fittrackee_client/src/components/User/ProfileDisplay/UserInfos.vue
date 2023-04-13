@@ -101,15 +101,25 @@
         >
           {{ $t('admin.RESET_USER_PASSWORD') }}
         </button>
+        <UserRelationshipActions
+          v-if="authUser?.username"
+          :authUser="authUser"
+          :user="user"
+          from="userInfos"
+        />
         <button @click="$router.go(-1)">{{ $t('buttons.BACK') }}</button>
       </div>
       <div class="profile-buttons" v-else>
-        <button @click="$router.push('/profile/edit')">
+        <button
+          v-if="$route.path === '/profile' || user.username === authUser.username"
+          @click="$router.push('/profile/edit')"
+        >
           {{ $t('user.PROFILE.EDIT') }}
         </button>
-        <button @click="$router.push('/')">{{ $t('common.HOME') }}</button>
+        <button @click="$router.go(-1)">{{ $t('buttons.BACK') }}</button>
       </div>
     </div>
+    <ErrorMessage :message="errorMessages" v-if="errorMessages" />
   </div>
 </template>
 
@@ -126,8 +136,9 @@
     onUnmounted,
   } from 'vue'
 
-  import { AUTH_USER_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
-  import { TAppConfig } from '@/types/application'
+  import UserRelationshipActions from '@/components/User/UserRelationshipActions.vue'
+  import { ROOT_STORE, USERS_STORE } from '@/store/constants'
+  import { IDisplayOptions, TAppConfig } from '@/types/application'
   import { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatDate, getDateFormat } from '@/utils/dates'
@@ -135,7 +146,8 @@
 
   interface Props {
     user: IUserProfile
-    fromAdmin?: boolean
+    authUser?: IAuthUserProfile
+    fromAdmin?: false
   }
   const props = withDefaults(defineProps<Props>(), {
     fromAdmin: false,
@@ -143,27 +155,30 @@
 
   const store = useStore()
 
-  const { user, fromAdmin } = toRefs(props)
+  const { authUser, user, fromAdmin } = toRefs(props)
   const language: ComputedRef<string> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
+  const displayOptions: ComputedRef<IDisplayOptions> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.DISPLAY_OPTIONS]
   )
   const registrationDate = computed(() =>
     props.user.created_at
       ? formatDate(
           props.user.created_at,
-          authUser.value.timezone,
-          authUser.value.date_format
-        )
+          displayOptions.value.timezone,
+          displayOptions.value.dateFormat
+      )
       : ''
   )
   const birthDate = computed(() =>
     props.user.birth_date
       ? format(
           new Date(props.user.birth_date),
-          `${getDateFormat(authUser.value.date_format, language.value)}`,
+          `${getDateFormat(
+            displayOptions.value.dateFormat,
+            language.value
+          )}`,
           { locale: localeFromLanguage[language.value] }
         )
       : ''
@@ -244,6 +259,7 @@
 
 <style lang="scss" scoped>
   @import '~@/scss/vars.scss';
+
   #user-infos {
     .user-bio {
       white-space: pre-wrap;

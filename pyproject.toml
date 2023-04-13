@@ -44,6 +44,7 @@ shortuuid = "^1.0.11"
 staticmap = "^0.5.5"
 sqlalchemy = "=1.4.47"
 ua-parser = "^0.16.1"
+nh3 = "^0.2.7"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.7.5"
@@ -86,6 +87,11 @@ multi_line_output = 3
 include_trailing_comma = true
 force_grid_wrap = 0
 combine_as_imports = true
+
+[tool.pytest.ini_options]
+markers = [
+    "disable_autouse_generate_keys: disable patch for keys generation",
+]
 
 [tool.bandit]
 exclude_dirs = ["fittrackee/tests/*", "fittrackee/migrations/*"]

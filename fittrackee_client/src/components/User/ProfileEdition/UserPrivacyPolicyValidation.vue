@@ -52,7 +52,7 @@
   import { ComputedRef, computed, ref, onUnmounted, toRefs } from 'vue'
 
   import PrivacyPolicy from '@/components/PrivacyPolicy.vue'
-  import {AUTH_USER_STORE, ROOT_STORE} from '@/store/constants'
+  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 

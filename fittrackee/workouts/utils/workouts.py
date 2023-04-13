@@ -13,8 +13,10 @@ from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db
 from fittrackee.files import get_absolute_file_path
+from fittrackee.privacy_levels import PrivacyLevel, get_map_visibility
 from fittrackee.users.models import User, UserSportPreference
 
+from ..constants import WORKOUT_DATE_FORMAT
 from ..exceptions import InvalidGPXException, WorkoutException
 from ..models import Sport, Workout, WorkoutSegment
 from .gpx import get_gpx_info
@@ -113,7 +115,7 @@ def create_workout(
         workout_date=gpx_data['start']
         if gpx_data
         else workout_data['workout_date'],
-        date_str_format=None if gpx_data else '%Y-%m-%d %H:%M',
+        date_str_format=None if gpx_data else WORKOUT_DATE_FORMAT,
         user_timezone=user.timezone,
         with_timezone=True,
     )
@@ -134,6 +136,16 @@ def create_workout(
         duration=duration,
     )
     new_workout.notes = workout_data.get('notes')
+
+    new_workout.workout_visibility = PrivacyLevel(
+        workout_data.get('workout_visibility', user.workouts_visibility.value)
+    )
+    new_workout.map_visibility = get_map_visibility(
+        PrivacyLevel(
+            workout_data.get('map_visibility', user.map_visibility.value)
+        ),
+        new_workout.workout_visibility,
+    )
 
     if title is not None and title != '':
         new_workout.title = title
@@ -219,11 +231,15 @@ def edit_workout(
         workout.title = workout_data.get('title')
     if workout_data.get('notes') is not None:
         workout.notes = workout_data.get('notes')
+    if workout_data.get('workout_visibility') is not None:
+        workout.workout_visibility = PrivacyLevel(
+            workout_data.get('workout_visibility')
+        )
     if not workout.gpx:
         if workout_data.get('workout_date'):
             workout.workout_date, _ = get_workout_datetime(
                 workout_date=workout_data.get('workout_date', ''),
-                date_str_format='%Y-%m-%d %H:%M',
+                date_str_format=WORKOUT_DATE_FORMAT,
                 user_timezone=auth_user.timezone,
             )
 
@@ -246,6 +262,13 @@ def edit_workout(
 
         if 'descent' in workout_data:
             workout.descent = workout_data.get('descent')
+
+    else:
+        if workout_data.get('map_visibility') is not None:
+            map_visibility = PrivacyLevel(workout_data.get('map_visibility'))
+            workout.map_visibility = get_map_visibility(
+                map_visibility, workout.workout_visibility
+            )
     return workout
 
 
@@ -481,3 +504,9 @@ def get_average_speed(
         / nb_workouts,
         2,
     )
+
+
+def get_ordered_workouts(workouts: List[Workout], limit: int) -> List[Workout]:
+    return sorted(
+        workouts, key=lambda workout: workout.workout_date, reverse=True
+    )[:limit]

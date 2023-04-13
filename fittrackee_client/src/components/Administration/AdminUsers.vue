@@ -1,7 +1,7 @@
 <template>
   <div id="admin-users" class="admin-card">
     <Card>
-      <template #title>{{ capitalize($t('admin.USER', 0)) }}</template>
+      <template #title>{{ capitalize($t('user.USER', 0)) }}</template>
       <template #content>
         <button class="top-button" @click.prevent="$router.push('/admin')">
           {{ $t('admin.BACK_TO_ADMIN') }}
@@ -149,7 +149,7 @@
   import UsersNameFilter from '@/components/Users/UsersNameFilter.vue'
   import { AUTH_USER_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
   import { IPagination, TPaginationPayload } from '@/types/api'
-  import { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import { IAuthUserProfile, IUserProfile, TUsersPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList } from '@/utils/api'
   import { formatDate } from '@/utils/dates'
@@ -184,8 +184,8 @@
 
   onBeforeMount(() => loadUsers(query))
 
-  function loadUsers(queryParams: TPaginationPayload) {
-    store.dispatch(USERS_STORE.ACTIONS.GET_USERS, queryParams)
+  function loadUsers(queryParams: TUsersPayload) {
+    store.dispatch(USERS_STORE.ACTIONS.GET_USERS_FOR_ADMIN, queryParams)
   }
   function searchUsers(username: Ref<string>) {
     reloadUsers('q', username.value)

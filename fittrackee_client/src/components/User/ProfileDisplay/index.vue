@@ -2,7 +2,12 @@
   <div id="user-profile">
     <UserHeader :user="user" />
     <div class="box">
-      <UserProfileTabs :tabs="tabs" :selectedTab="tab" :edition="false" />
+      <UserProfileTabs
+        v-if="tabs.includes(tab)"
+        :tabs="tabs"
+        :selectedTab="tab"
+        :edition="false"
+      />
       <router-view :user="user"></router-view>
     </div>
   </div>
@@ -22,7 +27,7 @@
   const props = defineProps<Props>()
 
   const { user, tab } = toRefs(props)
-  const tabs = ['PROFILE', 'PREFERENCES', 'SPORTS', 'APPS']
+  const tabs = ['PROFILE', 'PREFERENCES', 'SPORTS', 'FOLLOW-REQUESTS', 'APPS']
 </script>
 
 <style lang="scss" scoped>

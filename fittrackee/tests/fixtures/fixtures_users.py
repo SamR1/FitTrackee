@@ -3,10 +3,10 @@ import datetime
 import pytest
 
 from fittrackee import db
-from fittrackee.users.models import User, UserSportPreference
+from fittrackee.users.models import FollowRequest, User, UserSportPreference
 from fittrackee.workouts.models import Sport
 
-from ..utils import random_string
+from ..utils import generate_follow_request, random_string
 
 
 @pytest.fixture()
@@ -103,6 +103,16 @@ def user_3() -> User:
 
 
 @pytest.fixture()
+def user_4() -> User:
+    user = User(username='john', email='john@doe.com', password='12345678')
+    user.is_active = True
+    user.weekm = True
+    db.session.add(user)
+    db.session.commit()
+    return user
+
+
+@pytest.fixture()
 def inactive_user() -> User:
     user = User(
         username='inactive', email='inactive@example.com', password='12345678'
@@ -140,3 +150,31 @@ def user_admin_sport_1_preference(
     db.session.add(user_sport)
     db.session.commit()
     return user_sport
+
+
+@pytest.fixture()
+def follow_request_from_user_1_to_user_2(
+    user_1: User, user_2: User
+) -> FollowRequest:
+    return generate_follow_request(user_1, user_2)
+
+
+@pytest.fixture()
+def follow_request_from_user_2_to_user_1(
+    user_1: User, user_2: User
+) -> FollowRequest:
+    return generate_follow_request(user_2, user_1)
+
+
+@pytest.fixture()
+def follow_request_from_user_3_to_user_1(
+    user_1: User, user_3: User
+) -> FollowRequest:
+    return generate_follow_request(user_3, user_1)
+
+
+@pytest.fixture()
+def follow_request_from_user_3_to_user_2(
+    user_2: User, user_3: User
+) -> FollowRequest:
+    return generate_follow_request(user_3, user_2)

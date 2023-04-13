@@ -12,6 +12,7 @@ from fittrackee.workouts.models import Sport, Workout
 from fittrackee.workouts.utils.workouts import (
     create_segment,
     get_average_speed,
+    get_ordered_workouts,
     get_workout_datetime,
 )
 
@@ -148,3 +149,47 @@ class TestCreateSegment:
         )
 
         assert segment.duration.microseconds == 0
+
+
+class TestGetOrderedWorkouts:
+    def test_it_returns_empty_list_when_no_workouts_provided(
+        self,
+        app: Flask,
+    ) -> None:
+        ordered_workouts = get_ordered_workouts([], limit=3)
+
+        assert ordered_workouts == []
+
+    def test_it_returns_last_workouts_depending_on_limit(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_workouts_user_1: List[Workout],
+    ) -> None:
+        ordered_workouts = get_ordered_workouts(seven_workouts_user_1, limit=3)
+
+        assert ordered_workouts == [
+            seven_workouts_user_1[6],
+            seven_workouts_user_1[5],
+            seven_workouts_user_1[3],
+        ]
+
+    def test_it_returns_all_workouts_when_below_limit(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1: Workout,
+        workout_running_user_1: Workout,
+    ) -> None:
+        ordered_workouts = get_ordered_workouts(
+            [workout_cycling_user_1, workout_running_user_1], limit=3
+        )
+
+        assert ordered_workouts == [
+            workout_running_user_1,
+            workout_cycling_user_1,
+        ]

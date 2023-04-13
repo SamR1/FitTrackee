@@ -5,7 +5,7 @@ import {
   IAuthUserState,
   TAuthUserMutations,
 } from '@/store/modules/authUser/types'
-import { IAuthUserProfile, IExportRequest } from '@/types/user'
+import { IAuthUserProfile, IExportRequest, IUserProfile } from '@/types/user'
 
 export const mutations: MutationTree<IAuthUserState> & TAuthUserMutations = {
   [AUTH_USER_STORE.MUTATIONS.CLEAR_AUTH_USER_TOKEN](state: IAuthUserState) {
@@ -35,6 +35,12 @@ export const mutations: MutationTree<IAuthUserState> & TAuthUserMutations = {
     isSuccess: boolean
   ) {
     state.isSuccess = isSuccess
+  },
+  [AUTH_USER_STORE.MUTATIONS.UPDATE_FOLLOW_REQUESTS](
+    state: IAuthUserState,
+    followRequests: IUserProfile[]
+  ) {
+    state.followRequests = followRequests
   },
   [AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING](
     state: IAuthUserState,

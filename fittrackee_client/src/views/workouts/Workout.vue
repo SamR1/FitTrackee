@@ -3,12 +3,14 @@
     <div class="container">
       <div class="workout-container" v-if="sports.length > 0">
         <div v-if="workoutData.workout.id">
+          <WorkoutUser :user="workoutData.workout.user"></WorkoutUser>
           <WorkoutDetail
             :workoutData="workoutData"
             :sports="sports"
             :authUser="authUser"
             :markerCoordinates="markerCoordinates"
             :displaySegment="displaySegment"
+            :isWorkoutOwner="isWorkoutOwner"
           />
           <WorkoutChart
             v-if="
@@ -22,12 +24,13 @@
           <WorkoutSegments
             v-if="!displaySegment && workoutData.workout.segments.length > 1"
             :segments="workoutData.workout.segments"
-            :useImperialUnits="authUser.imperial_units"
+            :useImperialUnits="authUser ? authUser.imperial_units : false"
           />
           <WorkoutNotes
-            v-if="!displaySegment"
+            v-if="!displaySegment && isWorkoutOwner"
             :notes="workoutData.workout.notes"
           />
+          <Comments :workoutData="workoutData" :auth-user="authUser"/>
           <div id="bottom" />
         </div>
         <div v-else>
@@ -51,16 +54,14 @@
   } from 'vue'
   import { useRoute } from 'vue-router'
 
+  import Comments from '@/components/Comment/Comments.vue'
   import NotFound from '@/components/Common/NotFound.vue'
   import WorkoutDetail from '@/components/Workout/WorkoutDetail/index.vue'
   import WorkoutChart from '@/components/Workout/WorkoutDetail/WorkoutChart/index.vue'
   import WorkoutNotes from '@/components/Workout/WorkoutDetail/WorkoutNotes.vue'
   import WorkoutSegments from '@/components/Workout/WorkoutDetail/WorkoutSegments.vue'
-  import {
-    AUTH_USER_STORE,
-    SPORTS_STORE,
-    WORKOUTS_STORE,
-  } from '@/store/constants'
+  import WorkoutUser from '@/components/Workout/WorkoutDetail/WorkoutUser.vue'
+  import { AUTH_USER_STORE, SPORTS_STORE, WORKOUTS_STORE } from '@/store/constants'
   import { ISport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'
   import { IWorkoutData, IWorkoutPayload, TCoordinates } from '@/types/workouts'
@@ -88,6 +89,11 @@
     latitude: null,
     longitude: null,
   })
+  const isWorkoutOwner = computed(
+    () =>
+      authUser.value.username ===
+      workoutData.value.workout.user.username
+  )
 
   onBeforeMount(() => {
     const payload: IWorkoutPayload = { workoutId: route.params.workoutId }
@@ -95,6 +101,9 @@
       payload.segmentId = route.params.segmentId
     }
     store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, payload)
+    if (sports.value.length === 0) {
+      store.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
+    }
   })
 
   onUnmounted(() => {
@@ -143,6 +152,22 @@
       padding: 0;
       .workout-container {
         width: 100%;
+
+        .user-header {
+          align-items: center;
+          ::v-deep(.user-picture) {
+            img {
+              height: 50px;
+              width: 50px;
+            }
+            .no-picture {
+              font-size: 3em;
+            }
+          }
+          ::v-deep(.user-details) {
+            flex-direction: row;
+          }
+        }
       }
       .workout-loading {
         height: $app-height;

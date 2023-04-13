@@ -1,58 +1,30 @@
 <template>
   <div class="box user-header">
+    <div class="follows-you" v-if="user.follows === 'true'">
+      {{ $t('user.RELATIONSHIPS.FOLLOWS_YOU') }}
+    </div>
     <UserPicture :user="user" />
     <div class="user-details">
       <div class="user-name">{{ user.username }}</div>
-      <div class="user-stats">
-        <div class="user-stat">
-          <span class="stat-number">{{ user.nb_workouts }}</span>
-          <span class="stat-label">
-            {{ $t('workouts.WORKOUT', user.nb_workouts) }}
-          </span>
-        </div>
-        <div class="user-stat">
-          <Distance
-            :distance="user.total_distance"
-            unitFrom="km"
-            :digits="0"
-            :displayUnit="false"
-            :useImperialUnits="authUser.imperial_units"
-          />
-          <span class="stat-label">
-            {{ authUser.imperial_units ? 'miles' : 'km' }}
-          </span>
-        </div>
-        <div class="user-stat hide-small">
-          <span class="stat-number">{{ user.nb_sports }}</span>
-          <span class="stat-label">
-            {{ $t('workouts.SPORT', user.nb_sports) }}
-          </span>
-        </div>
-      </div>
+      <UserStats :user="user" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { computed, ComputedRef, toRefs } from 'vue'
+  import { toRefs } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
-  import { AUTH_USER_STORE } from '@/store/constants'
+  import UserStats from '@/components/User/UserStats.vue'
   import { IAuthUserProfile, IUserProfile } from '@/types/user'
-  import { useStore } from '@/use/useStore'
 
   interface Props {
     user: IUserProfile
+    authUser?: IAuthUserProfile
   }
   const props = defineProps<Props>()
 
   const { user } = toRefs(props)
-
-  const store = useStore()
-
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
 </script>
 
 <style lang="scss" scoped>
@@ -61,6 +33,17 @@
   .user-header {
     display: flex;
     align-items: stretch;
+    position: relative;
+
+    .follows-you {
+      position: absolute;
+      margin-top: -$default-margin;
+      margin-left: -$default-margin;
+    }
+
+    ::v-deep(.user-picture) {
+      min-width: 20%;
+    }
 
     .user-details {
       flex-grow: 1;
@@ -74,42 +57,68 @@
         height: 60%;
       }
 
-      .user-stats {
-        display: flex;
+      ::v-deep(.user-stats) {
+        flex-wrap: nowrap;
         gap: $default-padding * 4;
         .user-stat {
-          display: flex;
           flex-direction: column;
           align-items: center;
           padding-top: $default-padding;
-          .stat-number,
-          .stat-label {
-            padding: 0 $default-padding * 0.5;
-          }
-          ::v-deep(.distance),
+
+          .distance,
           .stat-number {
-            font-weight: bold;
             font-size: 1.5em;
           }
         }
       }
+    }
 
-      @media screen and (max-width: $x-small-limit) {
+    @media screen and (max-width: $small-limit) {
+      .user-details {
         .user-name {
           font-size: 1.5em;
         }
 
-        .user-stats {
-          gap: $default-padding * 2;
+        ::v-deep(.user-stats) {
+          margin-top: $default-margin * 0.5;
+          align-content: space-between;
+          flex-wrap: wrap;
+          gap: $default-padding;
+
           .user-stat {
-            ::v-deep(.distance),
+            padding: 0;
+            flex-direction: row;
+            .distance,
             .stat-number {
-              font-weight: bold;
               font-size: 1.2em;
             }
+          }
+        }
+      }
+    }
 
-            &.hide-small {
-              display: none;
+    @media screen and (max-width: $x-small-limit) {
+      ::v-deep(.user-picture) {
+        img {
+          height: 50px;
+          width: 50px;
+        }
+        .no-picture {
+          font-size: 3em;
+        }
+      }
+      .user-details {
+        .user-name {
+          font-size: 1.5em;
+        }
+
+        ::v-deep(.user-stats) {
+          gap: $default-padding * 0.5;
+
+          .user-stat {
+            .distance,
+            .stat-number {
+              font-size: 1em;
             }
           }
         }

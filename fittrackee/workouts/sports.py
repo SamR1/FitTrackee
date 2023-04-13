@@ -19,7 +19,7 @@ sports_blueprint = Blueprint('sports', __name__)
 
 
 @sports_blueprint.route('/sports', methods=['GET'])
-@require_auth(scopes=['workouts:read'])
+@require_auth(scopes=['workouts:read'], optional_auth_user=True)
 def get_sports(auth_user: User) -> Dict:
     """
     Get all sports
@@ -179,12 +179,16 @@ def get_sports(auth_user: User) -> Dict:
     sports = Sport.query.order_by(Sport.id).all()
     sports_data = []
     for sport in sports:
-        sport_preferences = UserSportPreference.query.filter_by(
-            user_id=auth_user.id, sport_id=sport.id
-        ).first()
+        sport_preferences = (
+            UserSportPreference.query.filter_by(
+                user_id=auth_user.id, sport_id=sport.id
+            ).first()
+            if auth_user
+            else None
+        )
         sports_data.append(
             sport.serialize(
-                is_admin=auth_user.admin,
+                is_admin=auth_user.admin if auth_user else False,
                 sport_preferences=sport_preferences.serialize()
                 if sport_preferences
                 else None,

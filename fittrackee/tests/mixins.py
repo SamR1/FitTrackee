@@ -1,6 +1,8 @@
 import json
 import time
+from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Union
+from unittest.mock import Mock
 from urllib.parse import parse_qs
 
 from flask import Flask
@@ -19,10 +21,42 @@ from .custom_asserts import (
 )
 from .utils import (
     TEST_OAUTH_CLIENT_METADATA,
+    get_date_string,
     random_email,
     random_int,
+    random_short_id,
     random_string,
 )
+
+
+class BaseTestMixin:
+    """call args are returned differently between Python 3.7 and 3.7+"""
+
+    @staticmethod
+    def get_args(call_args: Tuple) -> Tuple:
+        if len(call_args) == 2:
+            args, _ = call_args
+        else:
+            _, args, _ = call_args
+        return args
+
+    @staticmethod
+    def get_kwargs(call_args: Tuple) -> Dict:
+        if len(call_args) == 2:
+            _, kwargs = call_args
+        else:
+            _, _, kwargs = call_args
+        return kwargs
+
+    def assert_call_args_keys_equal(
+        self, mock: Mock, expected_keys: List
+    ) -> None:
+        args_list = self.get_kwargs(mock.call_args)
+        assert list(args_list.keys()) == expected_keys
+
+    @staticmethod
+    def assert_dict_contains_subset(container: Dict, subset: Dict) -> None:
+        assert subset.items() <= container.items()
 
 
 class RandomMixin:
@@ -43,8 +77,19 @@ class RandomMixin:
         return random_email()
 
     @staticmethod
-    def random_int(min_val: int = 0, max_val: int = 999999) -> int:
-        return random_int(min_val, max_val)
+    def random_int(min_value: int = 0, max_value: int = 999999) -> int:
+        return random_int(min_value, max_value)
+
+    @staticmethod
+    def random_short_id() -> str:
+        return random_short_id()
+
+    @staticmethod
+    def get_date_string(
+        date_format: str,
+        date: Optional[datetime] = None,
+    ) -> str:
+        return get_date_string(date_format, date)
 
 
 class OAuth2Mixin(RandomMixin):
@@ -299,22 +344,24 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
         else:
             self.assert_insufficient_scope(response)
 
-
-class CallArgsMixin:
-    """call args are returned differently between Python 3.7 and 3.7+"""
-
     @staticmethod
-    def get_args(call_args: Tuple) -> Tuple:
-        if len(call_args) == 2:
-            args, _ = call_args
-        else:
-            _, args, _ = call_args
-        return args
+    def assert_return_not_found(
+        url: str, client: FlaskClient, auth_token: str, message: str
+    ) -> None:
+        response = client.post(
+            url,
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
 
-    @staticmethod
-    def get_kwargs(call_args: Tuple) -> Dict:
-        if len(call_args) == 2:
-            _, kwargs = call_args
-        else:
-            _, _, kwargs = call_args
-        return kwargs
+        assert response.status_code == 404
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'not found'
+        assert data['message'] == message
+
+    def assert_return_user_not_found(
+        self, url: str, client: FlaskClient, auth_token: str
+    ) -> None:
+        self.assert_return_not_found(
+            url, client, auth_token, 'user does not exist'
+        )

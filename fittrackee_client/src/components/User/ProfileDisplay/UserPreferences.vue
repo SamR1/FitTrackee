@@ -21,6 +21,22 @@
       <dd>{{ $t(`common.${display_ascent}`) }}</dd>
       <dt>{{ $t('user.PROFILE.ELEVATION_CHART_START.LABEL') }}:</dt>
       <dd>{{ $t(`user.PROFILE.ELEVATION_CHART_START.${user.start_elevation_at_zero ? 'ZERO' : 'MIN_ALT'}`) }}</dd>
+      <dt>{{ $t('privacy.WORKOUTS_VISIBILITY') }}:</dt>
+      <dd>
+        {{
+          $t(
+            `privacy.LEVELS.${user.workouts_visibility}`
+          )
+        }}
+      </dd>
+      <dt>{{ $t('privacy.MAP_VISIBILITY') }}:</dt>
+      <dd>
+        {{
+          $t(
+            `privacy.LEVELS.${user.map_visibility}`
+          )
+        }}
+      </dd>
     </dl>
     <div class="profile-buttons">
       <button @click="$router.push('/profile/edit/preferences')">
@@ -32,19 +48,19 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ComputedRef } from 'vue'
+  import { ComputedRef, computed, toRefs } from 'vue'
 
   import { ROOT_STORE } from '@/store/constants'
   import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getDateFormat } from '@/utils/dates'
   import { languageLabels } from '@/utils/locales'
-
   interface Props {
     user: IAuthUserProfile
   }
   const props = defineProps<Props>()
 
+  const { user } = toRefs(props)
   const store = useStore()
 
   const appLanguage: ComputedRef<string> = computed(

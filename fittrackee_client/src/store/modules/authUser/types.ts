@@ -9,6 +9,8 @@ import { AUTH_USER_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
 import {
   IAuthUserProfile,
+  IFollowRequestsActionPayload,
+  IFollowRequestsPayload,
   ILoginOrRegisterData,
   IUserDeletionPayload,
   IUserEmailPayload,
@@ -16,6 +18,7 @@ import {
   IUserPayload,
   IUserPicturePayload,
   IUserPreferencesPayload,
+  IUserProfile,
   IUserSportPreferencesPayload,
   IUserAccountPayload,
   IUserAccountUpdatePayload,
@@ -29,6 +32,7 @@ export interface IAuthUserState {
   isSuccess: boolean
   loading: boolean
   exportRequest: IExportRequest | null
+  followRequests: IUserProfile[]
 }
 
 export interface IAuthUserActions {
@@ -50,6 +54,11 @@ export interface IAuthUserActions {
     context: ActionContext<IAuthUserState, IRootState>
   ): void
 
+  [AUTH_USER_STORE.ACTIONS.GET_FOLLOW_REQUESTS](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IFollowRequestsPayload
+  ): void
+
   [AUTH_USER_STORE.ACTIONS.LOGIN_OR_REGISTER](
     context: ActionContext<IAuthUserState, IRootState>,
     data: ILoginOrRegisterData
@@ -62,6 +71,11 @@ export interface IAuthUserActions {
   [AUTH_USER_STORE.ACTIONS.UPDATE_USER_PROFILE](
     context: ActionContext<IAuthUserState, IRootState>,
     payload: IUserPayload
+  ): void
+
+  [AUTH_USER_STORE.ACTIONS.UPDATE_FOLLOW_REQUESTS](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IFollowRequestsActionPayload
   ): void
 
   [AUTH_USER_STORE.ACTIONS.UPDATE_USER_ACCOUNT](
@@ -138,6 +152,10 @@ export interface IAuthUserGetters {
     state: IAuthUserState
   ): IExportRequest | null
 
+  [AUTH_USER_STORE.GETTERS.FOLLOW_REQUESTS](
+    state: IAuthUserState
+  ): IUserProfile[]
+
   [AUTH_USER_STORE.GETTERS.IS_ADMIN](state: IAuthUserState): boolean
 
   [AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED](state: IAuthUserState): boolean
@@ -164,6 +182,10 @@ export type TAuthUserMutations<S = IAuthUserState> = {
   [AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE](
     state: S,
     authUserProfile: IAuthUserProfile
+  ): void
+  [AUTH_USER_STORE.MUTATIONS.UPDATE_FOLLOW_REQUESTS](
+    state: S,
+    followRequests: IUserProfile[]
   ): void
   [AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS](
     state: S,

@@ -140,7 +140,7 @@ def app_with_3_users_max(monkeypatch: pytest.MonkeyPatch) -> Generator:
 
 
 @pytest.fixture
-def app_no_config() -> Generator:
+def app_no_config(monkeypatch: pytest.MonkeyPatch) -> Generator:
     yield from get_app(with_config=False)
 
 
@@ -169,11 +169,6 @@ def app_wo_email_auth(monkeypatch: pytest.MonkeyPatch) -> Generator:
 @pytest.fixture
 def app_wo_email_activation(monkeypatch: pytest.MonkeyPatch) -> Generator:
     monkeypatch.setenv('EMAIL_URL', '')
-    yield from get_app(with_config=True)
-
-
-@pytest.fixture
-def app_wo_domain() -> Generator:
     yield from get_app(with_config=True)
 
 

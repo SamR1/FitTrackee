@@ -170,12 +170,12 @@
 
   import { AUTH_USER_STORE, ROOT_STORE, SPORTS_STORE } from '@/store/constants'
   import { ISport, ITranslatedSport } from '@/types/sports'
-  import { IUserProfile, IUserSportPreferencesPayload } from '@/types/user'
+  import { IAuthUserProfile, IUserSportPreferencesPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { translateSports } from '@/utils/sports'
 
   interface Props {
-    user: IUserProfile
+    user: IAuthUserProfile
     isEdition: boolean
   }
   const props = defineProps<Props>()

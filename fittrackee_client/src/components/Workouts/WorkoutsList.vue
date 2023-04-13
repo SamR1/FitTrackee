@@ -166,11 +166,11 @@
   import {
     ComputedRef,
     Ref,
+    capitalize,
     computed,
     ref,
     toRefs,
     watch,
-    capitalize,
     onBeforeMount,
   } from 'vue'
   import { LocationQuery, useRoute, useRouter } from 'vue-router'

@@ -1,19 +1,18 @@
 import json
 from io import BytesIO
 from typing import Optional, Tuple
-from uuid import uuid4
 
 from flask import Flask
 
-from fittrackee.workouts.utils.short_id import encode_uuid
-
-
-def get_random_short_id() -> str:
-    return encode_uuid(uuid4())
+from fittrackee.privacy_levels import PrivacyLevel
+from fittrackee.users.models import User
 
 
 def post_a_workout(
-    app: Flask, gpx_file: str, notes: Optional[str] = None
+    app: Flask,
+    gpx_file: str,
+    notes: Optional[str] = None,
+    workout_visibility: Optional[PrivacyLevel] = None,
 ) -> Tuple[str, str]:
     client = app.test_client()
     resp_login = client.post(
@@ -25,6 +24,8 @@ def post_a_workout(
     workout_data = '{"sport_id": 1'
     if notes is not None:
         workout_data += f', "notes": "{notes}"'
+    if workout_visibility is not None:
+        workout_data += f', "workout_visibility": "{workout_visibility.value}"'
     workout_data += '}'
     response = client.post(
         '/api/workouts',
@@ -38,3 +39,8 @@ def post_a_workout(
     )
     data = json.loads(response.data.decode())
     return token, data['data']['workouts'][0]['id']
+
+
+def add_follower(user: User, follower: User) -> None:
+    follower.send_follow_request_to(user)
+    user.approves_follow_request_from(follower)

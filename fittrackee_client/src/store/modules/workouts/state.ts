@@ -12,5 +12,7 @@ export const workoutsState: IWorkoutsState = {
     loading: false,
     workout: <IWorkout>{},
     chartData: [],
+    comments: [],
+    comments_loading: null,
   },
 }

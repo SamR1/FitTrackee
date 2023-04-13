@@ -12,7 +12,7 @@
               </router-link>
             </dt>
             <dd class="application-config-details">
-              {{ $t('admin.UPDATE_APPLICATION_DESCRIPTION') }}<br />
+              {{ $t('admin.UPDATE_APPLICATION_DESCRIPTION') }}
               <span class="registration-status">
                 {{
                   $t(
@@ -40,7 +40,7 @@
             </dd>
             <dt>
               <router-link to="/admin/users">
-                {{ capitalize($t('admin.USER', 0)) }}
+                {{ capitalize($t('user.USER', 0)) }}
               </router-link>
             </dt>
             <dd>
@@ -54,21 +54,26 @@
 </template>
 
 <script setup lang="ts">
-  import { capitalize, toRefs, withDefaults } from 'vue'
+  import { ComputedRef, capitalize, computed, onBeforeMount, toRefs } from 'vue'
 
   import AppStatsCards from '@/components/Administration/AppStatsCards.vue'
   import Card from '@/components/Common/Card.vue'
+  import { ROOT_STORE } from '@/store/constants'
   import { IAppStatistics, TAppConfig } from '@/types/application'
+  import { useStore } from '@/use/useStore'
 
   interface Props {
     appConfig: TAppConfig
-    appStatistics?: IAppStatistics
   }
-  const props = withDefaults(defineProps<Props>(), {
-    appStatistics: () => ({} as IAppStatistics),
-  })
+  const props = defineProps<Props>()
+  const { appConfig } = toRefs(props)
 
-  const { appConfig, appStatistics } = toRefs(props)
+  const store = useStore()
+  const appStatistics: ComputedRef<IAppStatistics> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.APP_STATS]
+  )
+
+  onBeforeMount(() => store.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_STATS))
 </script>
 
 <style lang="scss" scoped>

@@ -244,4 +244,8 @@
     }
 
   }
+
+  .no-contact {
+    font-style: italic;
+  }
 </style>

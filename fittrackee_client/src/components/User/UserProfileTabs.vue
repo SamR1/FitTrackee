@@ -40,6 +40,7 @@
       case 'PRIVACY-POLICY':
         return `/profile/edit/${tab.toLocaleLowerCase()}`
       case 'APPS':
+      case 'FOLLOW-REQUESTS':
       case 'PREFERENCES':
       case 'SPORTS':
         return `/profile${
@@ -60,5 +61,16 @@
     justify-content: center;
     flex-wrap: wrap;
     gap: $default-margin * 0.5;
+  }
+  @media screen and (max-width: $small-limit) {
+    .profile-tabs-checkboxes {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+
+      .profile-tab {
+        padding-bottom: $default-padding * 0.5;
+      }
+    }
   }
 </style>

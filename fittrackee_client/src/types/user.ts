@@ -1,21 +1,32 @@
 import { LocationQueryValue } from 'vue-router'
 
+import { TPaginationPayload } from '@/types/api'
 import { IRecord } from '@/types/workouts'
+
+export type TPrivacyLevels = 'private' | 'followers_only' | 'public'
+export type TRelationshipAction = 'follow' | 'unfollow'
+export type TRelationships = 'followers' | 'following'
+export type TFollowRequestAction = 'accept' | 'reject'
 
 export interface IUserProfile {
   admin: boolean
   bio: string | null
   birth_date: string | null
   created_at: string
-  email: string
+  email?: string
   email_to_confirm?: string
   is_active: boolean
   first_name: string | null
+  followers: IUserProfile[]
+  following: IUserProfile[]
+  follows: string
+  is_followed_by: string
   last_name: string | null
   location: string | null
-  nb_sports: number
+  nb_sports?: number
   nb_workouts: number
   picture: string | boolean
+  profile_link?: string
   records: IRecord[]
   sports_list: number[]
   total_ascent: number
@@ -27,12 +38,20 @@ export interface IUserProfile {
 export interface IAuthUserProfile extends IUserProfile {
   accepted_privacy_policy: boolean
   display_ascent: boolean
+  email: string
   imperial_units: boolean
   start_elevation_at_zero: boolean
   language: string | null
+  map_visibility: TPrivacyLevels
+  nb_sports: number
+  records: IRecord[]
+  sports_list: number[]
   timezone: string
   date_format: string
+  total_distance: number
+  total_duration: string
   weekm: boolean
+  workouts_visibility: TPrivacyLevels
 }
 
 export interface IUserPayload {
@@ -62,14 +81,22 @@ export interface IAdminUserPayload {
   new_email?: string
 }
 
+export interface IUserRelationshipActionPayload {
+  username: string
+  action: TRelationshipAction
+  from: string
+}
+
 export interface IUserPreferencesPayload {
   display_ascent: boolean
   start_elevation_at_zero: boolean
   imperial_units: boolean
   language: string
+  map_visibility: TPrivacyLevels
   timezone: string
   date_format: string
   weekm: boolean
+  workouts_visibility: TPrivacyLevels
 }
 
 export interface IUserSportPreferencesPayload {
@@ -116,4 +143,24 @@ export interface IExportRequest {
   status: string
   file_name: string
   file_size: number
+}
+
+export type TUsersPayload = TPaginationPayload & {
+  q?: string
+  username?: string
+}
+
+export interface IUserRelationshipsPayload {
+  username: string
+  relationship: TRelationships
+  page: number
+}
+
+export interface IFollowRequestsPayload {
+  page: number
+}
+
+export interface IFollowRequestsActionPayload {
+  username: string
+  action: TFollowRequestAction
 }

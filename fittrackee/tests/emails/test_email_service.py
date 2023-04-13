@@ -7,7 +7,7 @@ from fittrackee import email_service
 from fittrackee.emails.email import EmailMessage
 from fittrackee.emails.exceptions import InvalidEmailUrlScheme
 
-from ..mixins import CallArgsMixin
+from ..mixins import BaseTestMixin
 from .template_results.password_reset_request import expected_en_text_body
 
 
@@ -34,7 +34,7 @@ class TestEmailMessage:
         assert 'Hello !' in message_string
 
 
-class TestEmailServiceUrlParser(CallArgsMixin):
+class TestEmailServiceUrlParser(BaseTestMixin):
     def test_it_raises_error_if_url_scheme_is_invalid(self) -> None:
         url = 'stmp://username:password@localhost:587'
         with pytest.raises(InvalidEmailUrlScheme):
@@ -89,7 +89,7 @@ class TestEmailServiceUrlParser(CallArgsMixin):
         assert parsed_email['use_ssl'] is True
 
 
-class TestEmailServiceSend(CallArgsMixin):
+class TestEmailServiceSend(BaseTestMixin):
     email_data = {
         'expiration_delay': '3 seconds',
         'username': 'test',

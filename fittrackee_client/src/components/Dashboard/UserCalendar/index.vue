@@ -1,5 +1,6 @@
 <template>
   <div id="user-calendar">
+    <div class="section-title">{{ $t('workouts.MY_WORKOUTS') }}</div>
     <div class="calendar-card box">
       <CalendarHeader
         :day="day"

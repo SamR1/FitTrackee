@@ -23,14 +23,15 @@ class TestGetConfig(ApiTestCaseMixin):
 
         response = client.get('/api/config')
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert data['data'] == jsonify_dict(app_config.serialize())
 
     def test_it_gets_application_config(
         self, app: Flask, user_1: User
     ) -> None:
+        app_config = AppConfig.query.first()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -40,9 +41,10 @@ class TestGetConfig(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
+        assert data['data'] == jsonify_dict(app_config.serialize())
 
     def test_it_returns_error_if_application_has_no_config(
         self, app_no_config: Flask, user_1_admin: User
@@ -434,6 +436,8 @@ class TestUpdateConfig(ApiTestCaseMixin):
         'client_scope, can_access',
         [
             ('application:write', True),
+            ('follow:read', False),
+            ('follow:write', False),
             ('profile:read', False),
             ('profile:write', False),
             ('users:read', False),

@@ -7,15 +7,19 @@ import {
 
 import { USERS_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
-import { IPagination, TPaginationPayload } from '@/types/api'
+import { IPagination } from '@/types/api'
 import {
   IAdminUserPayload,
   IUserDeletionPayload,
   IUserProfile,
+  IUserRelationshipActionPayload,
+  IUserRelationshipsPayload,
+  TUsersPayload,
 } from '@/types/user'
 
 export interface IUsersState {
   user: IUserProfile
+  user_relationships: IUserProfile[]
   users: IUserProfile[]
   loading: boolean
   isSuccess: boolean
@@ -29,17 +33,32 @@ export interface IUsersActions {
   [USERS_STORE.ACTIONS.EMPTY_USERS](
     context: ActionContext<IUsersState, IRootState>
   ): void
+  [USERS_STORE.ACTIONS.EMPTY_RELATIONSHIPS](
+    context: ActionContext<IUsersState, IRootState>
+  ): void
   [USERS_STORE.ACTIONS.GET_USER](
     context: ActionContext<IUsersState, IRootState>,
     username: string
   ): void
   [USERS_STORE.ACTIONS.GET_USERS](
     context: ActionContext<IUsersState, IRootState>,
-    payload: TPaginationPayload
+    payload: TUsersPayload
+  ): void
+  [USERS_STORE.ACTIONS.GET_USERS_FOR_ADMIN](
+    context: ActionContext<IUsersState, IRootState>,
+    payload: TUsersPayload
   ): void
   [USERS_STORE.ACTIONS.UPDATE_USER](
     context: ActionContext<IUsersState, IRootState>,
     payload: IAdminUserPayload
+  ): void
+  [USERS_STORE.ACTIONS.UPDATE_RELATIONSHIP](
+    context: ActionContext<IUsersState, IRootState>,
+    payload: IUserRelationshipActionPayload
+  ): void
+  [USERS_STORE.ACTIONS.GET_RELATIONSHIPS](
+    context: ActionContext<IUsersState, IRootState>,
+    payload: IUserRelationshipsPayload
   ): void
   [USERS_STORE.ACTIONS.DELETE_USER_ACCOUNT](
     context: ActionContext<IUsersState, IRootState>,
@@ -49,6 +68,7 @@ export interface IUsersActions {
 
 export interface IUsersGetters {
   [USERS_STORE.GETTERS.USER](state: IUsersState): IUserProfile
+  [USERS_STORE.GETTERS.USER_RELATIONSHIPS](state: IUsersState): IUserProfile[]
   [USERS_STORE.GETTERS.USERS](state: IUsersState): IUserProfile[]
   [USERS_STORE.GETTERS.USERS_IS_SUCCESS](state: IUsersState): boolean
   [USERS_STORE.GETTERS.USERS_LOADING](state: IUsersState): boolean
@@ -60,6 +80,14 @@ export type TUsersMutations<S = IUsersState> = {
   [USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS](
     state: S,
     updatedUser: IUserProfile
+  ): void
+  [USERS_STORE.MUTATIONS.UPDATE_USER_IN_RELATIONSHIPS](
+    state: S,
+    updatedUser: IUserProfile
+  ): void
+  [USERS_STORE.MUTATIONS.UPDATE_USER_RELATIONSHIPS](
+    state: S,
+    relationship: IUserProfile[]
   ): void
   [USERS_STORE.MUTATIONS.UPDATE_USERS](state: S, users: IUserProfile[]): void
   [USERS_STORE.MUTATIONS.UPDATE_USERS_LOADING](state: S, loading: boolean): void

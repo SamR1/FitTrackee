@@ -5,20 +5,26 @@ from uuid import uuid4
 import pytest
 from flask import Flask
 
-from fittrackee.users.models import User
+from fittrackee.privacy_levels import PrivacyLevel
+from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin
-from .utils import get_random_short_id, post_a_workout
+from ..utils import jsonify_dict
+from .utils import post_a_workout
 
 
-def assert_workout_data_with_gpx(data: Dict, sport_id: int) -> None:
+def assert_workout_data_with_gpx(
+    data: Dict, sport_id: int, user: User
+) -> None:
     assert 'creation_date' in data['data']['workouts'][0]
     assert (
         'Tue, 13 Mar 2018 12:44:45 GMT'
         == data['data']['workouts'][0]['workout_date']
     )
-    assert 'test' == data['data']['workouts'][0]['user']
+    assert data['data']['workouts'][0]['user'] == jsonify_dict(
+        user.serialize()
+    )
     assert '0:04:10' == data['data']['workouts'][0]['duration']
     assert data['data']['workouts'][0]['ascent'] == 0.4
     assert data['data']['workouts'][0]['ave_speed'] == 4.61
@@ -84,7 +90,7 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         assert len(data['data']['workouts']) == 1
         assert sport_2_running.id == data['data']['workouts'][0]['sport_id']
         assert data['data']['workouts'][0]['title'] == 'Workout test'
-        assert_workout_data_with_gpx(data, sport_2_running.id)
+        assert_workout_data_with_gpx(data, sport_2_running.id, user_1)
 
     @pytest.mark.parametrize(
         'input_description,input_notes',
@@ -146,16 +152,73 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0]['notes'] == ''
 
-    def test_it_raises_403_when_editing_a_workout_from_different_user(
+    @pytest.mark.parametrize(
+        'input_desc,input_workout_visibility,expected_status_code',
+        [
+            ('workout visibility: private', PrivacyLevel.PRIVATE, 404),
+            (
+                'workout visibility: followers_only',
+                PrivacyLevel.FOLLOWERS,
+                403,
+            ),
+            ('workout visibility: public', PrivacyLevel.PUBLIC, 403),
+        ],
+    )
+    def test_it_returns_error_when_deleting_workout_from_followed_user_user(
         self,
+        input_desc: str,
+        input_workout_visibility: PrivacyLevel,
+        expected_status_code: int,
         app: Flask,
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
-        sport_2_running: Sport,
+        gpx_file: str,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.approves_follow_request_from(user_2)
+        _, workout_short_id = post_a_workout(
+            app, gpx_file, workout_visibility=input_workout_visibility
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            data=json.dumps(dict(sport_id=2, title='Workout test')),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == expected_status_code
+
+    @pytest.mark.parametrize(
+        'input_desc,input_workout_visibility,expected_status_code',
+        [
+            ('workout visibility: private', PrivacyLevel.PRIVATE, 404),
+            (
+                'workout visibility: followers_only',
+                PrivacyLevel.FOLLOWERS,
+                404,
+            ),
+            ('workout visibility: public', PrivacyLevel.PUBLIC, 403),
+        ],
+    )
+    def test_it_returns_error_when_deleting_workout_from_different_user(
+        self,
+        input_desc: str,
+        input_workout_visibility: PrivacyLevel,
+        expected_status_code: int,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
         gpx_file: str,
     ) -> None:
-        _, workout_short_id = post_a_workout(app, gpx_file)
+        _, workout_short_id = post_a_workout(
+            app, gpx_file, workout_visibility=input_workout_visibility
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
         )
@@ -167,7 +230,40 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_403(response)
+        assert response.status_code == expected_status_code
+
+    @pytest.mark.parametrize(
+        'input_desc,input_workout_visibility',
+        [
+            ('workout visibility: private', PrivacyLevel.PRIVATE),
+            (
+                'workout visibility: followers_only',
+                PrivacyLevel.FOLLOWERS,
+            ),
+            ('workout visibility: public', PrivacyLevel.PUBLIC),
+        ],
+    )
+    def test_it_returns_401_when_no_authenticated(
+        self,
+        input_desc: str,
+        input_workout_visibility: PrivacyLevel,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        _, workout_short_id = post_a_workout(
+            app, gpx_file, workout_visibility=input_workout_visibility
+        )
+        client = app.test_client()
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            data=json.dumps(dict(sport_id=2, title="Workout test")),
+        )
+
+        assert response.status_code == 401
 
     def test_it_updates_sport(
         self,
@@ -193,7 +289,7 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         assert len(data['data']['workouts']) == 1
         assert sport_2_running.id == data['data']['workouts'][0]['sport_id']
         assert data['data']['workouts'][0]['title'] == 'just a workout'
-        assert_workout_data_with_gpx(data, sport_2_running.id)
+        assert_workout_data_with_gpx(data, sport_2_running.id, user_1)
 
     def test_it_returns_400_if_payload_is_empty(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
@@ -210,7 +306,7 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
 
         self.assert_400(response)
 
-    def test_it_raises_500_if_sport_does_not_exists(
+    def test_it_raises_500_if_sport_does_not_exist(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
         token, workout_short_id = post_a_workout(app, gpx_file)
@@ -229,6 +325,8 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         'client_scope, can_access',
         [
             ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', False),
             ('profile:read', False),
             ('profile:write', False),
             ('users:read', False),
@@ -304,7 +402,9 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
             data['data']['workouts'][0]['workout_date']
             == 'Tue, 15 May 2018 15:05:00 GMT'
         )
-        assert data['data']['workouts'][0]['user'] == 'test'
+        assert data['data']['workouts'][0]['user'] == jsonify_dict(
+            user_1.serialize()
+        )
         assert data['data']['workouts'][0]['sport_id'] == sport_2_running.id
         assert data['data']['workouts'][0]['duration'] == '1:00:00'
         assert data['data']['workouts'][0]['title'] == 'Workout test'
@@ -407,14 +507,32 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0]['notes'] == ''
 
-    def test_returns_403_when_editing_a_workout_wo_gpx_from_different_user(
+    @pytest.mark.parametrize(
+        'input_desc,input_workout_visibility,expected_status_code',
+        [
+            ('workout visibility: private', PrivacyLevel.PRIVATE, 404),
+            (
+                'workout visibility: followers_only',
+                PrivacyLevel.FOLLOWERS,
+                403,
+            ),
+            ('workout visibility: public', PrivacyLevel.PUBLIC, 403),
+        ],
+    )
+    def test_returns_403_when_editing_a_workout_wo_gpx_from_followed_user(
         self,
+        input_desc: str,
+        input_workout_visibility: PrivacyLevel,
+        expected_status_code: int,
         app: Flask,
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        workout_cycling_user_2.workout_visibility = input_workout_visibility
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -434,7 +552,90 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_403(response)
+        assert response.status_code == expected_status_code
+
+    @pytest.mark.parametrize(
+        'input_desc,input_workout_visibility,expected_status_code',
+        [
+            ('workout visibility: private', PrivacyLevel.PRIVATE, 404),
+            (
+                'workout visibility: followers_only',
+                PrivacyLevel.FOLLOWERS,
+                404,
+            ),
+            ('workout visibility: public', PrivacyLevel.PUBLIC, 403),
+        ],
+    )
+    def test_returns_403_when_editing_a_workout_wo_gpx_from_different_user(
+        self,
+        input_desc: str,
+        input_workout_visibility: PrivacyLevel,
+        expected_status_code: int,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = input_workout_visibility
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f'/api/workouts/{workout_cycling_user_2.short_id}',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=2,
+                    duration=3600,
+                    workout_date='2018-05-15 15:05',
+                    distance=8,
+                    title='Workout test',
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == expected_status_code
+
+    @pytest.mark.parametrize(
+        'input_desc,input_workout_visibility',
+        [
+            ('workout visibility: private', PrivacyLevel.PRIVATE),
+            (
+                'workout visibility: followers_only',
+                PrivacyLevel.FOLLOWERS,
+            ),
+            ('workout visibility: public', PrivacyLevel.PUBLIC),
+        ],
+    )
+    def test_it_returns_401_when_no_authenticated(
+        self,
+        input_desc: str,
+        input_workout_visibility: PrivacyLevel,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        client = app.test_client()
+
+        response = client.patch(
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=2,
+                    duration=3600,
+                    workout_date='2018-05-15 15:05',
+                    distance=8,
+                    title='Workout test',
+                )
+            ),
+        )
+
+        assert response.status_code == 401
 
     def test_it_updates_a_workout_wo_gpx_with_timezone(
         self,
@@ -473,7 +674,9 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
             data['data']['workouts'][0]['workout_date']
             == 'Tue, 15 May 2018 13:05:00 GMT'
         )
-        assert data['data']['workouts'][0]['user'] == 'test'
+        assert data['data']['workouts'][0]['user'] == jsonify_dict(
+            user_1_paris.serialize()
+        )
         assert data['data']['workouts'][0]['sport_id'] == sport_2_running.id
         assert data['data']['workouts'][0]['duration'] == '1:00:00'
         assert data['data']['workouts'][0]['title'] == 'Workout test'
@@ -540,7 +743,9 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
             data['data']['workouts'][0]['workout_date']
             == 'Mon, 01 Jan 2018 00:00:00 GMT'
         )
-        assert data['data']['workouts'][0]['user'] == 'test'
+        assert data['data']['workouts'][0]['user'] == jsonify_dict(
+            user_1.serialize()
+        )
         assert data['data']['workouts'][0]['sport_id'] == sport_2_running.id
         assert data['data']['workouts'][0]['duration'] == '1:00:00'
         assert data['data']['workouts'][0]['title'] is None
@@ -718,7 +923,7 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
             app, user_1.email
         )
         response = client.patch(
-            f'/api/workouts/{get_random_short_id()}',
+            f'/api/workouts/{self.random_short_id()}',
             content_type='application/json',
             data=json.dumps(
                 dict(
@@ -794,3 +999,206 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         )
 
         self.assert_400(response)
+
+
+class TestUpdateVisibility(ApiTestCaseMixin):
+    @pytest.mark.parametrize(
+        'input_description,input_workout_visibility',
+        [
+            ('private', PrivacyLevel.PRIVATE),
+            ('followers_only', PrivacyLevel.FOLLOWERS),
+            ('public', PrivacyLevel.PUBLIC),
+        ],
+    )
+    def test_it_updates_workout_visibility_for_workout_without_gpx(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_description: str,
+        input_workout_visibility: PrivacyLevel,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
+            content_type='application/json',
+            data=json.dumps(
+                dict(workout_visibility=input_workout_visibility.value)
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert (
+            data['data']['workouts'][0]['workout_visibility']
+            == input_workout_visibility.value
+        )
+
+    @pytest.mark.parametrize(
+        'input_description,input_map_visibility',
+        [
+            ('private', PrivacyLevel.PRIVATE),
+            ('followers_only', PrivacyLevel.FOLLOWERS),
+            ('public', PrivacyLevel.PUBLIC),
+        ],
+    )
+    def test_it_does_not_update_map_visibility_for_workout_without_gpx(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_description: str,
+        input_map_visibility: PrivacyLevel,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
+            content_type='application/json',
+            data=json.dumps(dict(map_visibility=input_map_visibility.value)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert (
+            data['data']['workouts'][0]['map_visibility']
+            == workout_cycling_user_1.map_visibility.value
+        )
+
+    @pytest.mark.parametrize(
+        'input_description,input_workout_visibility',
+        [
+            ('private', PrivacyLevel.PRIVATE),
+            ('followers_only', PrivacyLevel.FOLLOWERS),
+            ('public', PrivacyLevel.PUBLIC),
+        ],
+    )
+    def test_it_updates_workout_visibility_for_workout_with_gpx(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_description: str,
+        input_workout_visibility: PrivacyLevel,
+    ) -> None:
+        workout_cycling_user_1.gpx = 'file.gpx'
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
+            content_type='application/json',
+            data=json.dumps(
+                dict(workout_visibility=input_workout_visibility.value)
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert (
+            data['data']['workouts'][0]['workout_visibility']
+            == input_workout_visibility.value
+        )
+
+    @pytest.mark.parametrize(
+        'input_description,input_map_visibility',
+        [
+            ('private', PrivacyLevel.PRIVATE),
+            ('followers_only', PrivacyLevel.FOLLOWERS),
+            ('public', PrivacyLevel.PUBLIC),
+        ],
+    )
+    def test_it_updates_map_visibility_for_workout_with_gpx(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_description: str,
+        input_map_visibility: PrivacyLevel,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = input_map_visibility
+        workout_cycling_user_1.gpx = 'file.gpx'
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
+            content_type='application/json',
+            data=json.dumps(dict(map_visibility=input_map_visibility.value)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert (
+            data['data']['workouts'][0]['map_visibility']
+            == input_map_visibility.value
+        )
+        assert (
+            workout_cycling_user_1.map_visibility.value
+            == input_map_visibility.value
+        )
+
+    @pytest.mark.parametrize(
+        'input_map_visibility,input_workout_visibility',
+        [
+            (PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE),
+            (PrivacyLevel.PUBLIC, PrivacyLevel.FOLLOWERS),
+        ],
+    )
+    def test_it_updates_valid_map_visibility_for_workout_with_gpx(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_map_visibility: PrivacyLevel,
+        input_workout_visibility: PrivacyLevel,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = input_workout_visibility
+        workout_cycling_user_1.gpx = 'file.gpx'
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
+            content_type='application/json',
+            data=json.dumps(dict(map_visibility=input_map_visibility.value)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert (
+            data['data']['workouts'][0]['map_visibility']
+            == input_workout_visibility.value
+        )
+        assert (
+            workout_cycling_user_1.map_visibility.value
+            == input_workout_visibility.value
+        )

@@ -115,7 +115,7 @@
   import PasswordInput from '@/components/Common/PasswordInput.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import { TAppConfig } from '@/types/application'
-  import {IAuthUserProfile, IUserAccountPayload, IExportRequest} from '@/types/user'
+  import { IAuthUserProfile, IUserAccountPayload, IExportRequest } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
   import { getReadableFileSize } from '@/utils/files'

@@ -1,5 +1,12 @@
 <template>
   <div id="nav">
+    <Modal
+      v-if="displayModal"
+      :title="$t('common.CONFIRMATION')"
+      :message="$t('user.LOGOUT_CONFIRMATION')"
+      @confirmAction="logout"
+      @cancelAction="updateDisplayModal(false)"
+    />
     <div class="nav-container">
       <div class="nav-app-name">
         <div class="nav-item app-name" @click="$router.push('/')">
@@ -29,6 +36,9 @@
             <router-link class="nav-item" to="/statistics">
               {{ $t('statistics.STATISTICS') }}
             </router-link>
+            <router-link class="nav-item" to="/users">
+              {{ capitalize($t('user.USER', 0)) }}
+            </router-link>
             <router-link class="nav-item" to="/workouts/add">
               {{ $t('workouts.ADD_WORKOUT') }}
             </router-link>
@@ -44,13 +54,26 @@
         </div>
         <div class="nav-items-user-menu">
           <div class="nav-items-group" v-if="isAuthenticated">
-            <div class="nav-item nav-profile-img">
+            <router-link
+              class="nav-item nav-profile-img"
+              to="/profile"
+              @click="closeMenu"
+              :title="authUser.username"
+            >
               <UserPicture :user="authUser" />
-            </div>
-            <router-link class="nav-item" to="/profile" @click="closeMenu">
-              {{ authUser.username }}
+              <span class="user-name">{{ authUser.username }}</span>
             </router-link>
-            <div class="nav-item nav-link" @click="logout">
+            <div
+              class="nav-item nav-link logout-fa"
+              @click="updateDisplayModal(true)"
+              :title="$t('user.LOGOUT')"
+            >
+              <i class="fa fa-sign-out" aria-hidden="true" />
+            </div>
+            <div
+              class="nav-item nav-link logout-text"
+              @click="updateDisplayModal(true)"
+            >
               {{ $t('user.LOGOUT') }}
             </div>
           </div>
@@ -78,7 +101,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, ref, capitalize } from 'vue'
+  import { ComputedRef, computed, ref, capitalize, Ref } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
@@ -91,6 +114,7 @@
 
   const store = useStore()
 
+  const displayModal: Ref<boolean> = ref(false)
   const authUser: ComputedRef<IAuthUserProfile> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
   )
@@ -118,6 +142,10 @@
   }
   function logout() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.LOGOUT)
+    displayModal.value = false
+  }
+  function updateDisplayModal(value: boolean) {
+    displayModal.value = value
   }
 </script>
 
@@ -193,6 +221,7 @@
 
       .nav-items-group {
         display: flex;
+        align-items: flex-start;
       }
       .nav-item {
         padding: 0 10px;
@@ -210,8 +239,12 @@
       }
 
       .nav-profile-img {
+        display: flex;
+        gap: $default-padding;
+        align-items: flex-start;
         margin-bottom: -$default-padding;
         ::v-deep(.user-picture) {
+          min-width: auto;
           img {
             height: 32px;
             width: 32px;
@@ -219,11 +252,24 @@
           }
           .no-picture {
             font-size: 1.7em;
+            padding: 0;
           }
+        }
+        .user-name {
+          max-width: 180px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
       }
 
       .nav-separator {
+        display: none;
+      }
+      .logout-fa {
+        display: block;
+      }
+      .logout-text {
         display: none;
       }
     }
@@ -286,6 +332,13 @@
         .nav-items-group {
           display: flex;
           flex-direction: column;
+
+          .logout-fa {
+            display: none;
+          }
+          .logout-text {
+            display: block;
+          }
         }
 
         .nav-item {
@@ -297,15 +350,12 @@
           }
         }
 
-        .nav-profile-img {
-          display: none;
-        }
-
         .nav-separator {
           display: flex;
           border-top: solid 1px var(--nav-border-color);
           margin: 0 $default-margin * 2;
-          padding: 0;
+          padding: 0 0 $default-padding;
+          width: 88%;
         }
       }
     }

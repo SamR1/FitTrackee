@@ -5,6 +5,8 @@
       :name="name"
       :maxLength="charLimit"
       :disabled="disabled"
+      :required="required"
+      :placeholder="placeholder"
       v-model="text"
       @input="updateText"
     />
@@ -22,16 +24,20 @@
     charLimit?: number
     disabled?: boolean
     input?: string | null
+    required?: boolean
+    placeholder? : string
   }
   const props = withDefaults(defineProps<Props>(), {
     charLimit: 500,
     disabled: false,
     input: '',
+    required: false,
+    placeholder: '',
   })
 
   const emit = defineEmits(['updateValue'])
 
-  const text = ref('')
+  const text = ref(props.input)
 
   function updateText(event: Event & { target: HTMLInputElement }) {
     emit('updateValue', event.target.value)

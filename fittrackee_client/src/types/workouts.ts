@@ -1,5 +1,6 @@
 import { TPaginationPayload } from '@/types/api'
 import { IChartDataset } from '@/types/chart'
+import { IUserProfile, TPrivacyLevels } from '@/types/user'
 
 export interface IWorkoutSegment {
   ascent: number
@@ -62,7 +63,10 @@ export interface IWorkout {
   distance: number
   duration: string
   id: string
+  liked: boolean
+  likes_count: number
   map: string | null
+  map_visibility?: TPrivacyLevels
   max_alt: number | null
   max_speed: number
   min_alt: number | null
@@ -76,11 +80,12 @@ export interface IWorkout {
   segments: IWorkoutSegment[]
   sport_id: number
   title: string
-  user: string
+  user: IUserProfile
   weather_end: IWeather | null
   weather_start: IWeather | null
   with_gpx: boolean
   workout_date: string
+  workout_visibility?: TPrivacyLevels
 }
 
 export interface IWorkoutObject {
@@ -89,8 +94,11 @@ export interface IWorkoutObject {
   descent: number | null
   distance: number
   duration: string
+  liked: boolean
+  likes_count: number
   maxAlt: number | null
   maxSpeed: number
+  mapVisibility: TPrivacyLevels | null | undefined
   minAlt: number | null
   moving: string
   nextUrl: string | null
@@ -106,6 +114,7 @@ export interface IWorkoutObject {
   with_gpx: boolean
   workoutId: string
   workoutTime: string
+  workoutVisibility: TPrivacyLevels | null | undefined
 }
 
 export interface IWorkoutForm {
@@ -118,6 +127,8 @@ export interface IWorkoutForm {
   file?: Blob
   ascent?: number | null
   descent?: number | null
+  map_visibility?: TPrivacyLevels
+  workout_visibility: TPrivacyLevels
 }
 
 export interface IWorkoutPayload {
@@ -155,6 +166,8 @@ export interface IWorkoutData {
   loading: boolean
   workout: IWorkout
   chartData: IWorkoutApiChartData[]
+  comments: IComment[]
+  comments_loading: string | null
 }
 
 export type TWorkoutDatasetKeys = 'speed' | 'elevation'
@@ -174,4 +187,32 @@ export interface IWorkoutChartData {
   duration_labels: unknown[]
   datasets: TWorkoutDatasets
   coordinates: TCoordinates[]
+}
+
+export interface IComment {
+  created_at: string
+  id: string
+  liked: boolean
+  likes_count: number
+  modification_date: string | null
+  replies: IComment[]
+  text: string
+  text_html: string
+  text_visibility: TPrivacyLevels
+  user: IUserProfile
+  workout_id: string
+}
+
+export interface ICommentForm {
+  id?: string
+  reply_to?: string
+  text: string
+  text_visibility?: TPrivacyLevels
+  workout_id: string
+}
+
+export interface ICommentPayload {
+  workoutId: string
+
+  commentId: string
 }

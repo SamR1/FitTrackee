@@ -4,6 +4,7 @@ import AdminApplication from '@/components/Administration/AdminApplication.vue'
 import AdminMenu from '@/components/Administration/AdminMenu.vue'
 import AdminSports from '@/components/Administration/AdminSports.vue'
 import AdminUsers from '@/components/Administration/AdminUsers.vue'
+import UserFollowRequests from '@/components/User/ProfileDisplay/FollowRequests.vue'
 import Profile from '@/components/User/ProfileDisplay/index.vue'
 import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
 import UserPreferences from '@/components/User/ProfileDisplay/UserPreferences.vue'
@@ -18,6 +19,7 @@ import AuthorizeUserApp from '@/components/User/UserApps/AuthorizeUserApp.vue'
 import UserApps from '@/components/User/UserApps/index.vue'
 import UserApp from '@/components/User/UserApps/UserApp.vue'
 import UserAppsList from '@/components/User/UserApps/UserAppsList.vue'
+import UserRelationships from '@/components/User/UserRelationships.vue'
 import UserSportPreferences from '@/components/User/UserSportPreferences.vue'
 import store from '@/store'
 import { AUTH_USER_STORE } from '@/store/constants'
@@ -184,6 +186,23 @@ const routes: Array<RouteRecordRaw> = [
               },
             ],
           },
+          {
+            path: 'follow-requests',
+            name: 'FollowRequests',
+            component: UserFollowRequests,
+          },
+          {
+            path: 'followers',
+            name: 'AuthUserFollowers',
+            component: UserRelationships,
+            props: { relationship: 'followers' },
+          },
+          {
+            path: 'following',
+            name: 'AuthUserFollowing',
+            component: UserRelationships,
+            props: { relationship: 'following' },
+          },
         ],
       },
       {
@@ -236,10 +255,31 @@ const routes: Array<RouteRecordRaw> = [
       import(/* webpackChunkName: 'statistics' */ '@/views/StatisticsView.vue'),
   },
   {
+    path: '/users',
+    name: 'Users',
+    component: () =>
+      import(/* webpackChunkName: 'users' */ '@/views/UsersView.vue'),
+  },
+  {
     path: '/users/:username',
     name: 'User',
+    props: { fromAdmin: false },
     component: () =>
-      import(/* webpackChunkName: 'profile' */ '@/views/user/UserView.vue'),
+      import(/* webpackChunkName: 'users' */ '@/views/user/UserView.vue'),
+    children: [
+      {
+        path: 'followers',
+        name: 'UserFollowers',
+        component: UserRelationships,
+        props: { relationship: 'followers' },
+      },
+      {
+        path: 'following',
+        name: 'UserFollowing',
+        component: UserRelationships,
+        props: { relationship: 'following' },
+      },
+    ],
   },
   {
     path: '/workouts',
@@ -354,21 +394,23 @@ const pathsWithoutAuthentication = [
   '/account-confirmation/email-sent',
 ]
 
-const pathsWithoutChecks = ['/email-update', '/about', '/privacy-policy']
+const pathNamesWithoutChecks = ['EmailUpdate', 'About', 'User', 'Workout', 'PrivacyPolicy']
 
 router.beforeEach((to, from, next) => {
   store
     .dispatch(AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER)
     .then(() => {
-      if (pathsWithoutChecks.includes(to.path)) {
+      if (to.name && pathNamesWithoutChecks.includes(to.name.toString())) {
         return next()
       }
+
       if (
         store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED] &&
         pathsWithoutAuthentication.includes(to.path)
       ) {
         return next('/')
       }
+
       if (
         !store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED] &&
         !pathsWithoutAuthentication.includes(to.path)

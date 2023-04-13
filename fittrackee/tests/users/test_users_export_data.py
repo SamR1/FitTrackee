@@ -16,7 +16,6 @@ from fittrackee.users.export_data import (
 from fittrackee.users.models import User, UserDataExport
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import CallArgsMixin
 from ..utils import random_int, random_string
 from ..workouts.utils import post_a_workout
 
@@ -79,6 +78,14 @@ class TestUserDataExporterGetData:
                 'weather_start': None,
                 'weather_end': None,
                 'notes': workout_cycling_user_1.notes,
+                'liked': workout_cycling_user_1.liked_by(user_1),
+                'likes_count': workout_cycling_user_1.likes.count(),
+                'map_visibility': (
+                    workout_cycling_user_1.calculated_map_visibility.value
+                ),
+                'workout_visibility': (
+                    workout_cycling_user_1.workout_visibility.value
+                ),
             }
         ]
 
@@ -122,6 +129,10 @@ class TestUserDataExporterGetData:
                 'weather_start': None,
                 'weather_end': None,
                 'notes': workout.notes,
+                'liked': workout.liked_by(user_1),
+                'likes_count': workout.likes.count(),
+                'map_visibility': workout.calculated_map_visibility.value,
+                'workout_visibility': workout.workout_visibility.value,
             }
         ]
 
@@ -179,7 +190,7 @@ class TestUserDataExporterGetData:
         assert file_path == os.path.join(user_directory, f"{file_name}.json")
 
 
-class TestUserDataExporterArchive(CallArgsMixin):
+class TestUserDataExporterArchive:
     @patch.object(secrets, 'token_urlsafe')
     @patch.object(UserDataExporter, 'export_data')
     @patch('fittrackee.users.export_data.ZipFile')
@@ -539,8 +550,8 @@ class TestExportUserData:
             },
             {
                 'username': user_1.username,
-                'account_url': 'http://0.0.0.0:5000/profile/edit/account',
-                'fittrackee_url': 'http://0.0.0.0:5000',
+                'account_url': 'https://example.com/profile/edit/account',
+                'fittrackee_url': 'https://example.com',
             },
         )
 

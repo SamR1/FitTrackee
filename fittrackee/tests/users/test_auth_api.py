@@ -9,6 +9,7 @@ from flask import Flask
 from freezegun import freeze_time
 
 from fittrackee import db
+from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import (
     BlacklistedToken,
     User,
@@ -160,6 +161,7 @@ class TestUserRegistration(ApiTestCaseMixin):
         self, app: Flask, user_1: User, text_transformation: str
     ) -> None:
         client = app.test_client()
+
         response = client.post(
             '/api/auth/register',
             data=json.dumps(
@@ -391,11 +393,11 @@ class TestUserRegistration(ApiTestCaseMixin):
             },
             {
                 'username': username,
-                'fittrackee_url': 'http://0.0.0.0:5000',
+                'fittrackee_url': app.config["UI_URL"],
                 'operating_system': 'Linux',
                 'browser_name': 'Firefox',
                 'account_confirmation_url': (
-                    'http://0.0.0.0:5000/account-confirmation'
+                    f'{app.config["UI_URL"]}/account-confirmation'
                     f'?token={expected_token}'
                 ),
             },
@@ -624,6 +626,8 @@ class TestUserProfile(ApiTestCaseMixin):
         'client_scope, can_access',
         [
             ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', False),
             ('profile:read', True),
             ('profile:write', False),
             ('users:read', False),
@@ -721,6 +725,8 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
         'client_scope, can_access',
         [
             ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', False),
             ('profile:read', False),
             ('profile:write', True),
             ('users:read', False),
@@ -1055,7 +1061,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             },
             {
                 'username': user_1.username,
-                'fittrackee_url': 'http://0.0.0.0:5000',
+                'fittrackee_url': app.config["UI_URL"],
                 'operating_system': 'Linux',
                 'browser_name': 'Firefox',
                 'new_email_address': new_email,
@@ -1097,11 +1103,12 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             },
             {
                 'username': user_1.username,
-                'fittrackee_url': 'http://0.0.0.0:5000',
+                'fittrackee_url': app.config["UI_URL"],
                 'operating_system': 'Linux',
                 'browser_name': 'Firefox',
                 'email_confirmation_url': (
-                    f'http://0.0.0.0:5000/email-update?token={expected_token}'
+                    f'{app.config["UI_URL"]}/email-update'
+                    f'?token={expected_token}'
                 ),
             },
         )
@@ -1257,7 +1264,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             },
             {
                 'username': user_1.username,
-                'fittrackee_url': 'http://0.0.0.0:5000',
+                'fittrackee_url': app.config["UI_URL"],
                 'operating_system': 'Linux',
                 'browser_name': 'Firefox',
             },
@@ -1391,6 +1398,8 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
         'client_scope, can_access',
         [
             ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', False),
             ('profile:read', False),
             ('profile:write', True),
             ('users:read', False),
@@ -1484,6 +1493,8 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     display_ascent=False,
                     start_elevation_at_zero=False,
                     date_format='yyyy-MM-dd',
+                    map_visibility='followers_only',
+                    workouts_visibility='public',
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -1502,9 +1513,56 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert data['data']['weekm'] is True
 
     @pytest.mark.parametrize(
+        'input_map_visibility,input_workout_visibility',
+        [
+            (PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE),
+            (PrivacyLevel.PUBLIC, PrivacyLevel.FOLLOWERS),
+        ],
+    )
+    def test_it_updates_user_preferences_with_valid_map_visibility(
+        self,
+        app: Flask,
+        user_1: User,
+        input_map_visibility: PrivacyLevel,
+        input_workout_visibility: PrivacyLevel,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/profile/edit/preferences',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    timezone='America/New_York',
+                    weekm=True,
+                    language='fr',
+                    imperial_units=True,
+                    display_ascent=True,
+                    date_format='MM/dd/yyyy',
+                    map_visibility=input_map_visibility.value,
+                    start_elevation_at_zero=False,
+                    workouts_visibility=input_workout_visibility.value,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['data']['map_visibility'] == input_workout_visibility.value
+        assert (
+            data['data']['workouts_visibility']
+            == input_workout_visibility.value
+        )
+
+    @pytest.mark.parametrize(
         'client_scope, can_access',
         [
             ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', False),
             ('profile:read', False),
             ('profile:write', True),
             ('users:read', False),
@@ -1723,6 +1781,8 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         'client_scope, can_access',
         [
             ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', False),
             ('profile:read', False),
             ('profile:write', True),
             ('users:read', False),
@@ -1814,6 +1874,8 @@ class TestUserSportPreferencesReset(ApiTestCaseMixin):
         'client_scope, can_access',
         [
             ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', False),
             ('profile:read', False),
             ('profile:write', True),
             ('users:read', False),
@@ -1981,6 +2043,8 @@ class TestUserPicture(ApiTestCaseMixin):
         'client_scope, can_access',
         [
             ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', False),
             ('profile:read', False),
             ('profile:write', True),
             ('users:read', False),
@@ -2182,12 +2246,12 @@ class TestPasswordResetRequest(ApiTestCaseMixin):
                 'email': user_1.email,
             },
             {
-                'expiration_delay': '3 seconds',
+                'expiration_delay': '10 seconds',
                 'username': user_1.username,
                 'password_reset_url': (
-                    f'http://0.0.0.0:5000/password-reset?token={token}'
+                    f'{app.config["UI_URL"]}/password-reset?token={token}'
                 ),
-                'fittrackee_url': 'http://0.0.0.0:5000',
+                'fittrackee_url': app.config["UI_URL"],
                 'operating_system': 'Linux',
                 'browser_name': 'Firefox',
             },
@@ -2289,7 +2353,7 @@ class TestPasswordUpdate(ApiTestCaseMixin):
         token = get_user_token(user_1.id, password_reset=True)
         client = app.test_client()
 
-        with freeze_time(now + timedelta(seconds=4)):
+        with freeze_time(now + timedelta(seconds=11)):
             response = client.post(
                 '/api/auth/password/update',
                 data=json.dumps(
@@ -2400,7 +2464,7 @@ class TestPasswordUpdate(ApiTestCaseMixin):
             },
             {
                 'username': user_1.username,
-                'fittrackee_url': 'http://0.0.0.0:5000',
+                'fittrackee_url': app.config["UI_URL"],
                 'operating_system': 'Linux',
                 'browser_name': 'Firefox',
             },
@@ -2651,11 +2715,11 @@ class TestResendAccountConfirmationEmail(ApiTestCaseMixin):
             },
             {
                 'username': inactive_user.username,
-                'fittrackee_url': 'http://0.0.0.0:5000',
+                'fittrackee_url': app.config["UI_URL"],
                 'operating_system': 'Linux',
                 'browser_name': 'Firefox',
                 'account_confirmation_url': (
-                    'http://0.0.0.0:5000/account-confirmation'
+                    f'{app.config["UI_URL"]}/account-confirmation'
                     f'?token={expected_token}'
                 ),
             },
@@ -2694,7 +2758,7 @@ class TestUserLogout(ApiTestCaseMixin):
             '/api/auth/logout', headers=dict(Authorization='Bearer invalid')
         )
 
-        self.assert_invalid_token(response)
+        self.assert_401(response)
 
     def test_it_returns_error_when_token_is_expired(
         self, app: Flask, user_1: User
@@ -2703,13 +2767,13 @@ class TestUserLogout(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        with freeze_time(now + timedelta(seconds=4)):
+        with freeze_time(now + timedelta(seconds=11)):
             response = client.post(
                 '/api/auth/logout',
                 headers=dict(Authorization=f'Bearer {auth_token}'),
             )
 
-            self.assert_invalid_token(response)
+            self.assert_401(response)
 
     def test_user_can_logout(self, app: Flask, user_1: User) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -2755,7 +2819,7 @@ class TestUserLogout(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_invalid_token(response)
+        self.assert_401(response)
 
 
 class TestUserPrivacyPolicyUpdate(ApiTestCaseMixin):

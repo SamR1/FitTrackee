@@ -105,6 +105,7 @@
           }
         }
       ],
+      "object-curly-spacing": [ "error", "always" ],
       "vue/multi-word-component-names": "off"
     },
     "overrides": [

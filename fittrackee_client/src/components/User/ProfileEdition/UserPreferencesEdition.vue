@@ -119,6 +119,43 @@
             </label>
           </div>
         </div>
+        <label class="form-items">
+          {{ $t('privacy.WORKOUTS_VISIBILITY') }}
+          <select
+            id="workouts_visibility"
+            v-model="userForm.workouts_visibility"
+            :disabled="loading"
+            @change="updateMapVisibility"
+          >
+            <option v-for="level in privacyLevels" :value="level" :key="level">
+              {{
+                $t(
+                  `privacy.LEVELS.${level}`
+                )
+              }}
+            </option>
+          </select>
+        </label>
+        <label class="form-items">
+          {{ $t('privacy.MAP_VISIBILITY') }}
+          <select
+            id="map_visibility"
+            v-model="userForm.map_visibility"
+            :disabled="loading"
+          >
+            <option
+              v-for="level in mapPrivacyLevels"
+              :value="level"
+              :key="level"
+            >
+              {{
+                $t(
+                  `privacy.LEVELS.${level}`
+                )
+              }}
+            </option>
+          </select>
+        </label>
         <div class="form-buttons">
           <button class="confirm" type="submit">
             {{ $t('buttons.SUBMIT') }}
@@ -144,6 +181,11 @@
   import { useStore } from '@/use/useStore'
   import { availableDateFormatOptions } from '@/utils/dates'
   import { availableLanguages } from '@/utils/locales'
+  import {
+    getPrivacyLevels,
+    getMapVisibilityLevels,
+    getUpdatedMapVisibility,
+  } from '@/utils/privacy'
 
   interface Props {
     user: IAuthUserProfile
@@ -153,12 +195,15 @@
   const store = useStore()
 
   const userForm: IUserPreferencesPayload = reactive({
+    date_format: 'dd/MM/yyyy',
     display_ascent: true,
     imperial_units: false,
     language: '',
+    map_visibility: 'private',
+    start_elevation_at_zero: false,
     timezone: 'Europe/Paris',
-    date_format: 'dd/MM/yyyy',
     weekm: false,
+    workouts_visibility: 'private'
   })
   const weekStart = [
     {
@@ -213,6 +258,12 @@
       userForm.language
     )
   )
+  const privacyLevels = computed(() =>
+    getPrivacyLevels()
+  )
+  const mapPrivacyLevels = computed(() =>
+    getMapVisibilityLevels(userForm.workouts_visibility)
+  )
 
   onMounted(() => {
     if (props.user) {
@@ -225,9 +276,15 @@
     userForm.start_elevation_at_zero = user.start_elevation_at_zero ? user.start_elevation_at_zero : false
     userForm.imperial_units = user.imperial_units ? user.imperial_units : false
     userForm.language = user.language ? user.language : 'en'
+    userForm.map_visibility = user.map_visibility
+      ? user.map_visibility
+      : 'private'
     userForm.timezone = user.timezone ? user.timezone : 'Europe/Paris'
     userForm.date_format = user.date_format ? user.date_format : 'dd/MM/yyyy'
     userForm.weekm = user.weekm ? user.weekm : false
+    userForm.workouts_visibility = user.workouts_visibility
+      ? user.workouts_visibility
+      : 'private'
   }
   function updateProfile() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PREFERENCES, userForm)
@@ -246,6 +303,12 @@
   }
   function updateWeekM(value: boolean) {
     userForm.weekm = value
+  }
+  function updateMapVisibility() {
+    userForm.map_visibility = getUpdatedMapVisibility(
+      userForm.map_visibility,
+      userForm.workouts_visibility
+    )
   }
 
   onUnmounted(() => {
@@ -278,7 +341,9 @@
     }
 
     #language,
-    #date_format {
+    #date_format,
+    #map_visibility,
+    #workouts_visibility {
       padding: $default-padding * 0.5;
     }
   }

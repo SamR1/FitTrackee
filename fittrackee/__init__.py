@@ -20,6 +20,7 @@ from flask_limiter.util import get_remote_address
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import ProgrammingError
+from sqlalchemy.ext.declarative import DeclarativeMeta
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from fittrackee.emails.email import EmailService
@@ -39,6 +40,7 @@ logging.basicConfig(
 appLog = logging.getLogger('fittrackee')
 
 db = SQLAlchemy()
+BaseModel: DeclarativeMeta = db.Model
 bcrypt = Bcrypt()
 migrate = Migrate()
 email_service = EmailService()
@@ -126,22 +128,28 @@ def create_app(init_email: bool = True) -> Flask:
                 pass
 
     from .application.app_config import config_blueprint  # noqa
+    from .comments.comments import comments_blueprint  # noqa
     from .oauth2.routes import oauth2_blueprint  # noqa
     from .users.auth import auth_blueprint  # noqa
+    from .users.follow_requests import follow_requests_blueprint  # noqa
     from .users.users import users_blueprint  # noqa
     from .workouts.records import records_blueprint  # noqa
     from .workouts.sports import sports_blueprint  # noqa
     from .workouts.stats import stats_blueprint  # noqa
+    from .workouts.timeline import timeline_blueprint  # noqa
     from .workouts.workouts import workouts_blueprint  # noqa
 
     app.register_blueprint(auth_blueprint, url_prefix='/api')
     app.register_blueprint(oauth2_blueprint, url_prefix='/api')
+    app.register_blueprint(comments_blueprint, url_prefix='/api')
     app.register_blueprint(config_blueprint, url_prefix='/api')
     app.register_blueprint(records_blueprint, url_prefix='/api')
     app.register_blueprint(sports_blueprint, url_prefix='/api')
     app.register_blueprint(stats_blueprint, url_prefix='/api')
     app.register_blueprint(users_blueprint, url_prefix='/api')
     app.register_blueprint(workouts_blueprint, url_prefix='/api')
+    app.register_blueprint(follow_requests_blueprint, url_prefix='/api')
+    app.register_blueprint(timeline_blueprint, url_prefix='/api')
 
     if app.debug:
         logging.getLogger('sqlalchemy').setLevel(logging.WARNING)
