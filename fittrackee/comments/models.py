@@ -58,7 +58,10 @@ class Comment(BaseModel):
         nullable=False,
     )
     user_id = db.Column(
-        db.Integer, db.ForeignKey('users.id'), index=True, nullable=False
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='CASCADE'),
+        index=True,
+        nullable=False,
     )
     workout_id = db.Column(
         db.Integer,
@@ -240,7 +243,7 @@ class CommentLike(BaseModel):
     created_at = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(
         db.Integer,
-        db.ForeignKey('users.id'),
+        db.ForeignKey('users.id', ondelete='CASCADE'),
         nullable=False,
     )
     comment_id = db.Column(

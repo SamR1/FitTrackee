@@ -129,12 +129,14 @@ class User(BaseModel):
         backref='to_user',
         primaryjoin=id == FollowRequest.followed_user_id,
         lazy='dynamic',
+        cascade='all, delete-orphan',
     )
     sent_follow_requests = db.relationship(
         FollowRequest,
         backref='from_user',
         primaryjoin=id == FollowRequest.follower_user_id,
         lazy='dynamic',
+        cascade='all, delete-orphan',
     )
     followers = db.relationship(
         'User',
@@ -165,7 +167,12 @@ class User(BaseModel):
     comments = db.relationship(
         'Comment',
         lazy=True,
-        backref=db.backref('user', lazy='joined', single_parent=True),
+        backref=db.backref(
+            'user',
+            lazy='joined',
+            single_parent=True,
+        ),
+        cascade='all, delete-orphan',
     )
 
     def __repr__(self) -> str:

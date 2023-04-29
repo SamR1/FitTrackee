@@ -3,6 +3,7 @@ from datetime import datetime
 from flask import Flask
 from freezegun import freeze_time
 
+from fittrackee import db
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 
@@ -46,3 +47,23 @@ class TestWorkoutLikeModel:
         assert like.user_id == user_2.id
         assert like.workout_id == workout_cycling_user_1.id
         assert like.created_at == now
+
+    def test_it_deletes_workout_like_on_user_delete(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        like = WorkoutLike(
+            user_id=user_2.id,
+            workout_id=workout_cycling_user_1.id,
+        )
+        db.session.add(like)
+        db.session.commit()
+        like_id = like.id
+
+        db.session.delete(user_2)
+
+        assert WorkoutLike.query.filter_by(id=like_id).first() is None

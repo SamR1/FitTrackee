@@ -548,6 +548,44 @@ class TestFollowRequestModel:
         assert serialized_follow_request['from_user'] == user_1.serialize()
         assert serialized_follow_request['to_user'] == user_2.serialize()
 
+    def test_it_deletes_follow_request_on_followed_user_delete(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        followed_user_id = user_2.id
+
+        db.session.delete(user_2)
+
+        assert (
+            FollowRequest.query.filter_by(
+                follower_user_id=user_1.id,
+                followed_user_id=followed_user_id,
+            ).first()
+            is None
+        )
+
+    def test_it_deletes_follow_request_on_follower_user_delete(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        follower_user_id = user_1.id
+
+        db.session.delete(user_1)
+
+        assert (
+            FollowRequest.query.filter_by(
+                follower_user_id=follower_user_id,
+                followed_user_id=user_2.id,
+            ).first()
+            is None
+        )
+
 
 class TestUserFollowingModel:
     def test_user_2_sends_follow_requests_to_user_1(

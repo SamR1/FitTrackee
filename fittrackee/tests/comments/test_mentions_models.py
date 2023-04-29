@@ -4,6 +4,7 @@ import pytest
 from flask import Flask
 from freezegun import freeze_time
 
+from fittrackee import db
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.comments.models import Mention
 from fittrackee.privacy_levels import PrivacyLevel
@@ -57,6 +58,56 @@ class TestMentionModel(CommentMixin):
             mention = Mention(comment_id=comment.id, user_id=user_1.id)
 
         assert mention.created_at == now
+
+    def test_it_deletes_mention_on_user_delete(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.create_comment(
+            user=user_1, workout=workout_cycling_user_1
+        )
+        mention = Mention(comment_id=comment.id, user_id=user_1.id)
+        db.session.add(mention)
+        db.session.commit()
+        deleted_user_id = user_2.id
+
+        db.session.delete(user_2)
+
+        assert (
+            Mention.query.filter_by(
+                user_id=deleted_user_id, comment_id=comment.id
+            ).first()
+            is None
+        )
+
+    def test_it_deletes_mention_on_comment_delete(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.create_comment(
+            user=user_1, workout=workout_cycling_user_1
+        )
+        mention = Mention(comment_id=comment.id, user_id=user_1.id)
+        db.session.add(mention)
+        db.session.commit()
+        deleted_comment_id = comment.id
+
+        db.session.delete(comment)
+
+        assert (
+            Mention.query.filter_by(
+                user_id=user_2.id, comment_id=deleted_comment_id
+            ).first()
+            is None
+        )
 
 
 class TestCommentWithMentionSerializeVisibility(CommentMixin):

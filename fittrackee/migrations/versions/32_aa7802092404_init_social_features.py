@@ -59,8 +59,7 @@ def upgrade():
             ['reply_to'], ['comments.id'], ondelete='SET NULL'
         ),
         sa.ForeignKeyConstraint(
-            ['user_id'],
-            ['users.id'],
+            ['user_id'], ['users.id'], ondelete='CASCADE'
         ),
         sa.ForeignKeyConstraint(
             ['workout_id'], ['workouts.id'], ondelete='SET NULL'
@@ -97,8 +96,7 @@ def upgrade():
         sa.Column('user_id', sa.Integer(), nullable=False),
         sa.Column('workout_id', sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(
-            ['user_id'],
-            ['users.id'],
+            ['user_id'], ['users.id'], ondelete='CASCADE'
         ),
         sa.ForeignKeyConstraint(
             ['workout_id'], ['workouts.id'], ondelete='CASCADE'
@@ -118,8 +116,7 @@ def upgrade():
             ['comment_id'], ['comments.id'], ondelete='CASCADE'
         ),
         sa.ForeignKeyConstraint(
-            ['user_id'],
-            ['users.id'],
+            ['user_id'], ['users.id'], ondelete='CASCADE'
         ),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint(

@@ -625,7 +625,7 @@ class WorkoutLike(BaseModel):
     created_at = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(
         db.Integer,
-        db.ForeignKey('users.id'),
+        db.ForeignKey('users.id', ondelete='CASCADE'),
         nullable=False,
     )
     workout_id = db.Column(

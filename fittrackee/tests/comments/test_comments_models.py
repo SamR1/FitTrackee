@@ -6,7 +6,7 @@ from freezegun import freeze_time
 
 from fittrackee import db
 from fittrackee.comments.exceptions import CommentForbiddenException
-from fittrackee.comments.models import CommentLike, Mention
+from fittrackee.comments.models import Comment, CommentLike, Mention
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.utils import encode_uuid
@@ -82,6 +82,42 @@ class TestWorkoutCommentModel(CommentMixin):
         )
 
         assert str(comment) == f'<Comment {comment.id}>'
+
+    def test_it_deletes_comment_on_user_delete(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.create_comment(
+            user=user_2,
+            workout=workout_cycling_user_1,
+        )
+        comment_id = comment.id
+
+        db.session.delete(user_2)
+
+        assert Comment.query.filter_by(id=comment_id).first() is None
+
+    def test_it_does_not_delete_comment_on_workout_delete(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.create_comment(
+            user=user_2,
+            workout=workout_cycling_user_1,
+        )
+        comment_id = comment.id
+
+        db.session.delete(workout_cycling_user_1)
+
+        assert Comment.query.filter_by(id=comment_id).first() is not None
 
 
 class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
