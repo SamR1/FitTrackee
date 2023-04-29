@@ -756,6 +756,48 @@ class TestWorkoutCommentModelSerializeForMentions(CommentMixin):
         assert user_3.serialize() in serialized_comment["mentions"]
 
 
+class TestWorkoutCommentModelSerializeForMentionedUser(CommentMixin):
+    @pytest.mark.parametrize(
+        'input_visibility',
+        [PrivacyLevel.PUBLIC, PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE],
+    )
+    def test_it_serializes_comment(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_visibility: PrivacyLevel,
+    ) -> None:
+        # user_2 does not follow user_1
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_1,
+            workout=workout_cycling_user_1,
+            text=f"@{user_2.username} {self.random_string()}",
+            text_visibility=input_visibility,
+        )
+
+        serialized_comment = comment.serialize(user_2)
+
+        assert serialized_comment == {
+            'id': comment.short_id,
+            'user': user_1.serialize(),
+            'workout_id': workout_cycling_user_1.short_id,
+            'text': comment.text,
+            'text_html': comment.handle_mentions()[0],
+            'text_visibility': comment.text_visibility,
+            'created_at': comment.created_at,
+            'mentions': [user_2.serialize()],
+            'modification_date': comment.modification_date,
+            'reply_to': comment.reply_to,
+            'replies': [],
+            'likes_count': 0,
+            'liked': False,
+        }
+
+
 class TestWorkoutCommentModelSerializeWithLikes(CommentMixin):
     def test_it_returns_like_count(
         self,
