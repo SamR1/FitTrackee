@@ -186,6 +186,9 @@ class Comment(BaseModel):
             'text_visibility': self.text_visibility,
             'created_at': self.created_at,
             'modification_date': self.modification_date,
+            'mentions': [
+                mentioned_user.serialize() for mentioned_user in self.mentions
+            ],
             'reply_to': (
                 self.parent_comment.short_id if self.reply_to else None
             ),
