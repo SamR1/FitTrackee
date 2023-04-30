@@ -14,7 +14,7 @@ from .utils import CommentMixin
 
 
 class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
-    route = '/api/workouts/{workout_uuid}/comments/{comment_uuid}/like'
+    route = '/api/comments/{comment_uuid}/like'
 
     def test_it_returns_error_if_user_is_not_authenticated(
         self,
@@ -33,10 +33,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         response = client.post(
-            self.route.format(
-                workout_uuid=workout_cycling_user_2.short_id,
-                comment_uuid=comment.short_id,
-            )
+            self.route.format(comment_uuid=comment.short_id)
         )
 
         self.assert_401(response)
@@ -51,10 +48,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         response = client.post(
-            self.route.format(
-                workout_uuid=self.random_short_id(),
-                comment_uuid=self.random_short_id(),
-            ),
+            self.route.format(comment_uuid=self.random_short_id()),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -73,10 +67,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         response = client.post(
-            self.route.format(
-                workout_uuid=workout_cycling_user_2.short_id,
-                comment_uuid=self.random_short_id(),
-            ),
+            self.route.format(comment_uuid=self.random_short_id()),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -103,10 +94,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         response = client.post(
-            self.route.format(
-                workout_uuid=workout_cycling_user_1.short_id,
-                comment_uuid=comment.short_id,
-            ),
+            self.route.format(comment_uuid=comment.short_id),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -132,10 +120,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         response = client.post(
-            self.route.format(
-                workout_uuid=workout_cycling_user_2.short_id,
-                comment_uuid=comment.short_id,
-            ),
+            self.route.format(comment_uuid=comment.short_id),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -173,10 +158,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         response = client.post(
-            self.route.format(
-                workout_uuid=workout_cycling_user_2.short_id,
-                comment_uuid=comment.short_id,
-            ),
+            self.route.format(comment_uuid=comment.short_id),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -217,10 +199,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         db.session.commit()
 
         response = client.post(
-            self.route.format(
-                workout_uuid=workout_cycling_user_2.short_id,
-                comment_uuid=comment.short_id,
-            ),
+            self.route.format(comment_uuid=comment.short_id),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -274,10 +253,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         response = client.post(
-            self.route.format(
-                workout_uuid=workout_cycling_user_1.short_id,
-                comment_uuid=comment.short_id,
-            ),
+            self.route.format(comment_uuid=comment.short_id),
             headers=dict(Authorization=f'Bearer {access_token}'),
         )
 
@@ -285,7 +261,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
 
 class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
-    route = '/api/workouts/{workout_uuid}/comments/{comment_uuid}/like/undo'
+    route = '/api/comments/{comment_uuid}/like/undo'
 
     def test_it_returns_error_if_user_is_not_authenticated(
         self,
@@ -303,10 +279,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         client = app.test_client()
 
         response = client.post(
-            self.route.format(
-                workout_uuid=workout_cycling_user_1.short_id,
-                comment_uuid=comment.short_id,
-            )
+            self.route.format(comment_uuid=comment.short_id)
         )
 
         self.assert_401(response)
@@ -343,10 +316,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         response = client.post(
-            self.route.format(
-                workout_uuid=workout_cycling_user_2.short_id,
-                comment_uuid=self.random_short_id(),
-            ),
+            self.route.format(comment_uuid=self.random_short_id()),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -373,10 +343,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         response = client.post(
-            self.route.format(
-                workout_uuid=workout_cycling_user_1.short_id,
-                comment_uuid=comment.short_id,
-            ),
+            self.route.format(comment_uuid=comment.short_id),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -402,10 +369,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         response = client.post(
-            self.route.format(
-                workout_uuid=workout_cycling_user_2.short_id,
-                comment_uuid=comment.short_id,
-            ),
+            self.route.format(comment_uuid=comment.short_id),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -446,10 +410,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         db.session.commit()
 
         response = client.post(
-            self.route.format(
-                workout_uuid=workout_cycling_user_2.short_id,
-                comment_uuid=comment.short_id,
-            ),
+            self.route.format(comment_uuid=comment.short_id),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -488,10 +449,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         response = client.post(
-            self.route.format(
-                workout_uuid=workout_cycling_user_2.short_id,
-                comment_uuid=comment.short_id,
-            ),
+            self.route.format(comment_uuid=comment.short_id),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -545,10 +503,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         response = client.post(
-            self.route.format(
-                workout_uuid=workout_cycling_user_1.short_id,
-                comment_uuid=comment.short_id,
-            ),
+            self.route.format(comment_uuid=comment.short_id),
             headers=dict(Authorization=f'Bearer {access_token}'),
         )
 

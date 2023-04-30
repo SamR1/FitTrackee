@@ -88,10 +88,9 @@ def add_workout_comment(
 
 
 @comments_blueprint.route(
-    "/workouts/<string:workout_short_id>/comments/<string:comment_short_id>",
-    methods=["GET"],
+    "/comments/<string:comment_short_id>", methods=["GET"]
 )
-@require_auth(scopes=['workouts:read'], optional_auth_user=True)
+@require_auth(scopes=["workouts:read"], optional_auth_user=True)
 @check_workout_comment(check_owner=False)
 def get_workout_comment(
     auth_user: Optional[User], comment: Comment
@@ -99,7 +98,7 @@ def get_workout_comment(
     return (
         {
             'status': 'success',
-            'comment': comment.serialize(auth_user),
+            'comment': comment.serialize(auth_user, get_parent_comment=True),
         },
         200,
     )
@@ -137,10 +136,9 @@ def get_workout_comments(
 
 
 @comments_blueprint.route(
-    "/workouts/<string:workout_short_id>/comments/<string:comment_short_id>",
-    methods=["DELETE"],
+    "/comments/<string:comment_short_id>", methods=["DELETE"]
 )
-@require_auth(scopes=['workouts:write'])
+@require_auth(scopes=["workouts:write"])
 @check_workout_comment()
 def delete_workout_comment(
     auth_user: User, comment: Comment
@@ -159,10 +157,9 @@ def delete_workout_comment(
 
 
 @comments_blueprint.route(
-    "/workouts/<string:workout_short_id>/comments/<string:comment_short_id>",
-    methods=['PATCH'],
+    "/comments/<string:comment_short_id>", methods=["PATCH"]
 )
-@require_auth(scopes=['workouts:write'])
+@require_auth(scopes=["workouts:write"])
 @check_workout_comment()
 def update_workout_comment(
     auth_user: User, comment: Comment
@@ -186,11 +183,9 @@ def update_workout_comment(
 
 
 @comments_blueprint.route(
-    '/workouts/<string:workout_short_id>/comments/<string:comment_short_id>'
-    '/like',
-    methods=['POST'],
+    "/comments/<string:comment_short_id>/like", methods=["POST"]
 )
-@require_auth(scopes=['workouts:write'])
+@require_auth(scopes=["workouts:write"])
 @check_workout_comment(check_owner=False)
 def like_comment(
     auth_user: User, comment: Comment
@@ -208,11 +203,10 @@ def like_comment(
 
 
 @comments_blueprint.route(
-    '/workouts/<string:workout_short_id>/comments/<string:comment_short_id>'
-    '/like/undo',
-    methods=['POST'],
+    "/comments/<string:comment_short_id>/like/undo",
+    methods=["POST"],
 )
-@require_auth(scopes=['workouts:write'])
+@require_auth(scopes=["workouts:write"])
 @check_workout_comment(check_owner=False)
 def undo_comment_like(
     auth_user: User, comment: Comment

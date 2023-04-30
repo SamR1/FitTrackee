@@ -310,7 +310,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     context.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, 'delete')
     authApi
-      .delete(`workouts/${payload.workoutId}/comments/${payload.commentId}`)
+      .delete(`comments/${payload.commentId}`)
       .then((res) => {
         if (res.status === 204) {
           context.dispatch(
@@ -330,7 +330,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     context.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, payload.id)
     authApi
-      .patch(`workouts/${payload.workout_id}/comments/${payload.id}`, {
+      .patch(`comments/${payload.id}`, {
         text: payload.text,
       })
       .then((res) => {
@@ -351,7 +351,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     comment: IComment
   ): void {
     authApi
-      .post(`workouts/${comment.workout_id}/comments/${comment.id}/like`)
+      .post(`comments/${comment.id}/like`)
       .then((res) => {
         if (res.data.status === 'success') {
           context.dispatch(
@@ -369,7 +369,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     comment: IComment
   ): void {
     authApi
-      .post(`workouts/${comment.workout_id}/comments/${comment.id}/like/undo`)
+      .post(`comments/${comment.id}/like/undo`)
       .then((res) => {
         if (res.data.status === 'success') {
           context.dispatch(

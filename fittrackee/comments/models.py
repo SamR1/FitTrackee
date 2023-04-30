@@ -173,9 +173,25 @@ class Comment(BaseModel):
     def liked_by(self, user: 'User') -> bool:
         return user in self.likes.all()
 
-    def serialize(self, user: Optional['User'] = None) -> Dict:
+    def serialize(
+        self,
+        user: Optional['User'] = None,
+        with_replies: bool = True,
+        get_parent_comment: bool = False,
+    ) -> Dict:
         if not can_view(self, 'text_visibility', user):
             raise CommentForbiddenException
+
+        try:
+            reply_to = (
+                None
+                if self.reply_to is None
+                else self.parent_comment.serialize(user, with_replies=False)
+                if get_parent_comment
+                else self.parent_comment.short_id
+            )
+        except CommentForbiddenException:
+            reply_to = None
 
         return {
             'id': self.short_id,
@@ -190,17 +206,19 @@ class Comment(BaseModel):
                 mentioned_user.serialize()
                 for mentioned_user in self.mentioned_users
             ],
-            'reply_to': (
-                self.parent_comment.short_id if self.reply_to else None
+            'reply_to': reply_to,
+            'replies': (
+                [
+                    reply.serialize(user)
+                    for reply in get_comments(
+                        workout_id=self.workout_id,
+                        user=user,
+                        reply_to=self.id,
+                    )
+                ]
+                if with_replies
+                else []
             ),
-            'replies': [
-                reply.serialize(user)
-                for reply in get_comments(
-                    workout_id=self.workout_id,
-                    user=user,
-                    reply_to=self.id,
-                )
-            ],
             'likes_count': self.likes.count(),
             'liked': self.liked_by(user) if user else False,
         }
