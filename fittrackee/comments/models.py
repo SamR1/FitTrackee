@@ -87,7 +87,7 @@ class Comment(BaseModel):
     parent_comment = db.relationship(
         'Comment', remote_side=[id], lazy='joined'
     )
-    mentions = db.relationship(
+    mentioned_users = db.relationship(
         "User",
         secondary="mentions",
         primaryjoin="Comment.id == Mention.comment_id",
@@ -187,7 +187,8 @@ class Comment(BaseModel):
             'created_at': self.created_at,
             'modification_date': self.modification_date,
             'mentions': [
-                mentioned_user.serialize() for mentioned_user in self.mentions
+                mentioned_user.serialize()
+                for mentioned_user in self.mentioned_users
             ],
             'reply_to': (
                 self.parent_comment.short_id if self.reply_to else None
