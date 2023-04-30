@@ -44,10 +44,11 @@
     title: string
     message: string
     strongMessage?: string | null
-    loading?: string | null
+    loading?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
     strongMessage: () => null,
+    loading: false,
   })
 
   const emit = defineEmits(['cancelAction', 'confirmAction'])
