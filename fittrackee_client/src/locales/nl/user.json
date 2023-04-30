@@ -111,6 +111,11 @@
             "IMPERIAL": "Imperialistisch systeem (ft, mi, mph, °F)",
             "LABEL": "Eenheid voor afstand",
             "METRIC": "Metrisch systeem (m, km, m/s, °C)"
+        },
+        "ELEVATION_CHART_START": {
+            "LABEL": "Hoogte grafiek begint op",
+            "ZERO": "Nul",
+            "MIN_ALT": "Minimum hoogte"
         }
     },
     "READ_AND_ACCEPT_PRIVACY_POLICY": "Ik heb het {0} gelezen en goedgekeurd.",
