@@ -296,6 +296,41 @@ class TestWorkoutCommentModelSerializeForUser(CommentMixin):
             'liked': False,
         }
 
+    def test_it_serializes_comment_when_workout_is_deleted(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_1,
+            workout=workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        db.session.delete(workout_cycling_user_1)
+        db.session.commit()
+
+        serialized_comment = comment.serialize(user_2)
+
+        assert serialized_comment == {
+            'id': comment.short_id,
+            'user': user_1.serialize(),
+            'workout_id': None,
+            'text': comment.text,
+            'text_html': comment.text,  # no mention
+            'text_visibility': comment.text_visibility,
+            'created_at': comment.created_at,
+            'mentions': [],
+            'modification_date': comment.modification_date,
+            'reply_to': comment.reply_to,
+            'replies': [],
+            'likes_count': 0,
+            'liked': False,
+        }
+
 
 class TestWorkoutCommentModelSerializeForUnauthenticatedUser(CommentMixin):
     @pytest.mark.parametrize(
@@ -420,6 +455,47 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
             'id': comment.short_id,
             'user': user_2.serialize(),
             'workout_id': workout_cycling_user_1.short_id,
+            'text': comment.text,
+            'text_html': comment.text,  # no mention
+            'text_visibility': comment.text_visibility,
+            'created_at': comment.created_at,
+            'mentions': [],
+            'modification_date': comment.modification_date,
+            'reply_to': parent_comment.short_id,
+            'replies': [],
+            'likes_count': 0,
+            'liked': False,
+        }
+
+    def test_it_serializes_comment_reply_when_workout_is_deleted(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        user_2: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        parent_comment = self.create_comment(
+            user=user_1,
+            workout=workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        comment = self.create_comment(
+            user=user_2,
+            workout=workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+            parent_comment=parent_comment,
+        )
+        db.session.delete(workout_cycling_user_1)
+        db.session.commit()
+
+        serialized_comment = comment.serialize(user_1)
+
+        assert serialized_comment == {
+            'id': comment.short_id,
+            'user': user_2.serialize(),
+            'workout_id': None,
             'text': comment.text,
             'text_html': comment.text,  # no mention
             'text_visibility': comment.text_visibility,

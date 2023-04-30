@@ -180,7 +180,7 @@ class Comment(BaseModel):
         return {
             'id': self.short_id,
             'user': self.user.serialize(),
-            'workout_id': self.workout.short_id,
+            'workout_id': self.workout.short_id if self.workout else None,
             'text': self.text,
             'text_html': self.handle_mentions()[0],
             'text_visibility': self.text_visibility,
