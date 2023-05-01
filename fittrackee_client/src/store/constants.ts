@@ -4,6 +4,11 @@ import {
   AuthUserMutations,
 } from '@/store/modules/authUser/enums'
 import {
+  NotificationsActions,
+  NotificationsGetters,
+  NotificationsMutations,
+} from '@/store/modules/notifications/enums'
+import {
   OAuth2Actions,
   OAuth2Getters,
   OAuth2Mutations,
@@ -57,10 +62,17 @@ export const AUTH_USER_STORE = {
   GETTERS: AuthUserGetters,
   MUTATIONS: AuthUserMutations,
 }
+
 export const OAUTH2_STORE = {
   ACTIONS: OAuth2Actions,
   GETTERS: OAuth2Getters,
   MUTATIONS: OAuth2Mutations,
+}
+
+export const NOTIFICATIONS_STORE = {
+  ACTIONS: NotificationsActions,
+  GETTERS: NotificationsGetters,
+  MUTATIONS: NotificationsMutations,
 }
 
 export const USERS_STORE = {

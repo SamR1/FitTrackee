@@ -54,6 +54,18 @@
         </div>
         <div class="nav-items-user-menu">
           <div class="nav-items-group" v-if="isAuthenticated">
+            <router-link class="nav-item nav-profile-img" to="/notifications">
+              <i
+                class="notifications-icons"
+                :class="`fa fa-bell${
+                  hasUnreadNotifications ? '-ringing' : ''
+                }-o`"
+                aria-hidden="true"
+              />
+              <span class="hidden-content">
+                {{ capitalize($t('notifications.NOTIFICATIONS', 0)) }}
+              </span>
+            </router-link>
             <router-link
               class="nav-item nav-profile-img"
               to="/profile"
@@ -104,7 +116,11 @@
   import { ComputedRef, computed, ref, capitalize, Ref } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
-  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import {
+    AUTH_USER_STORE,
+    NOTIFICATIONS_STORE,
+    ROOT_STORE,
+  } from '@/store/constants'
   import { IDropdownOption } from '@/types/forms'
   import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -123,6 +139,9 @@
   )
   const language: ComputedRef<string> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
+  )
+  const hasUnreadNotifications: ComputedRef<string> = computed(
+    () => store.getters[NOTIFICATIONS_STORE.GETTERS.UNREAD_STATUS]
   )
   const isMenuOpen = ref(false)
 
@@ -190,6 +209,11 @@
 
     .fa {
       font-size: 1.2em;
+    }
+
+    .notifications-icons {
+      font-size: 1.1em;
+      padding-top: 5px;
     }
 
     .nav-icon-open {
@@ -286,7 +310,9 @@
       .nav-icon-open.menu-open {
         display: none;
       }
-
+      .notifications-icons {
+        padding: 0 0 5px 2px;
+      }
       .close-icon {
         display: block;
       }

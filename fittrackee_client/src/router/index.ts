@@ -22,7 +22,7 @@ import UserAppsList from '@/components/User/UserApps/UserAppsList.vue'
 import UserRelationships from '@/components/User/UserRelationships.vue'
 import UserSportPreferences from '@/components/User/UserSportPreferences.vue'
 import store from '@/store'
-import { AUTH_USER_STORE } from '@/store/constants'
+import { AUTH_USER_STORE, NOTIFICATIONS_STORE } from '@/store/constants'
 import AboutView from '@/views/AboutView.vue'
 import Dashboard from '@/views/Dashboard.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
@@ -394,7 +394,13 @@ const pathsWithoutAuthentication = [
   '/account-confirmation/email-sent',
 ]
 
-const pathNamesWithoutChecks = ['EmailUpdate', 'About', 'User', 'Workout', 'PrivacyPolicy']
+const pathNamesWithoutChecks = [
+  'EmailUpdate',
+  'About',
+  'User',
+  'Workout',
+  'PrivacyPolicy',
+]
 
 router.beforeEach((to, from, next) => {
   store
@@ -402,6 +408,10 @@ router.beforeEach((to, from, next) => {
     .then(() => {
       if (to.name && pathNamesWithoutChecks.includes(to.name.toString())) {
         return next()
+      }
+
+      if (store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED]) {
+        store.dispatch(NOTIFICATIONS_STORE.ACTIONS.GET_UNREAD_STATUS)
       }
 
       if (
