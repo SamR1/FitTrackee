@@ -648,3 +648,44 @@ class WorkoutLike(BaseModel):
         self.created_at = (
             datetime.datetime.utcnow() if created_at is None else created_at
         )
+
+
+@listens_for(WorkoutLike, 'after_insert')
+def on_workout_like_insert(
+    mapper: Mapper, connection: Connection, new_workout_like: WorkoutLike
+) -> None:
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session: Session, context: Connection) -> None:
+        from fittrackee.users.models import Notification
+
+        workout = Workout.query.filter_by(
+            id=new_workout_like.workout_id
+        ).first()
+        if new_workout_like.user_id != workout.user_id:
+            notification = Notification(
+                from_user_id=new_workout_like.user_id,
+                to_user_id=workout.user_id,
+                created_at=new_workout_like.created_at,
+                event_type='workout_like',
+                event_object_id=workout.id,
+            )
+            session.add(notification)
+
+
+@listens_for(WorkoutLike, 'after_delete')
+def on_workout_like_delete(
+    mapper: Mapper, connection: Connection, old_workout_like: WorkoutLike
+) -> None:
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session: Session, context: Any) -> None:
+        from fittrackee.users.models import Notification
+
+        workout = Workout.query.filter_by(
+            id=old_workout_like.workout_id
+        ).first()
+        Notification.query.filter_by(
+            from_user_id=old_workout_like.user_id,
+            to_user_id=workout.user_id,
+            event_type='workout_like',
+            event_object_id=workout.id,
+        ).delete()

@@ -197,8 +197,30 @@ def upgrade():
     op.alter_column('workouts', 'workout_visibility', nullable=False)
     op.alter_column('workouts', 'map_visibility', nullable=False)
 
+    op.create_table('notifications',
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('from_user_id', sa.Integer(), nullable=True),
+    sa.Column('to_user_id', sa.Integer(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('marked_as_read', sa.Boolean(), nullable=False),
+    sa.Column('event_object_id', sa.Integer(), nullable=True),
+    sa.Column('event_type', sa.String(length=50), nullable=False),
+    sa.ForeignKeyConstraint(['from_user_id'], ['users.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['to_user_id'], ['users.id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('from_user_id', 'to_user_id', 'event_type', 'event_object_id', name='users_event_unique')
+    )
+    with op.batch_alter_table('notifications', schema=None) as batch_op:
+        batch_op.create_index(batch_op.f('ix_notifications_from_user_id'), ['from_user_id'], unique=False)
+        batch_op.create_index(batch_op.f('ix_notifications_to_user_id'), ['to_user_id'], unique=False)
+
 
 def downgrade():
+    with op.batch_alter_table('notifications', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_notifications_to_user_id'))
+        batch_op.drop_index(batch_op.f('ix_notifications_from_user_id'))
+    op.drop_table('notifications')
+
     with op.batch_alter_table('workouts', schema=None) as batch_op:
         batch_op.drop_column('map_visibility')
         batch_op.drop_column('workout_visibility')

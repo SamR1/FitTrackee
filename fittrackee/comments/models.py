@@ -1,9 +1,13 @@
 import datetime
-from typing import TYPE_CHECKING, Dict, List, Optional, Set, Tuple
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple
 from uuid import uuid4
 
 from sqlalchemy import and_, or_
 from sqlalchemy.dialects import postgresql
+from sqlalchemy.engine.base import Connection
+from sqlalchemy.event import listens_for
+from sqlalchemy.orm.mapper import Mapper
+from sqlalchemy.orm.session import Session
 from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, db
@@ -86,6 +90,12 @@ class Comment(BaseModel):
 
     parent_comment = db.relationship(
         'Comment', remote_side=[id], lazy='joined'
+    )
+    mentions = db.relationship(
+        "Mention",
+        lazy=True,
+        cascade="all, delete",
+        backref=db.backref("comment", lazy="joined", single_parent=True),
     )
     mentioned_users = db.relationship(
         "User",
@@ -254,6 +264,136 @@ class Mention(BaseModel):
         )
 
 
+@listens_for(Comment, 'after_insert')
+def on_comment_insert(
+    mapper: Mapper, connection: Connection, new_comment: Comment
+) -> None:
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session: Session, context: Connection) -> None:
+        from fittrackee.users.models import FollowRequest, Notification
+        from fittrackee.workouts.models import Workout
+
+        # it creates notification on comment creation only when:
+        # - the comment author (notification.from_user_id) is not the recipient
+        #   (notification.to_user)
+        # - the comment is public
+        # - the recipient is mentioned (regardless comment privacy level)
+        # - the recipient follows the comment author if privacy level is only
+        #   followers
+
+        create_notification = False
+        if new_comment.text_visibility == PrivacyLevel.PUBLIC:
+            create_notification = True
+
+        workout = Workout.query.filter_by(id=new_comment.workout_id).first()
+        if new_comment.reply_to is None:
+            to_user_id = workout.user_id
+        else:
+            comment = Comment.query.filter_by(id=new_comment.reply_to).first()
+            to_user_id = comment.user_id
+
+        if new_comment.user_id == to_user_id:
+            return
+
+        if not create_notification:
+            user_is_mentioned = Mention.query.filter_by(
+                comment_id=new_comment.id, user_id=to_user_id
+            ).first()
+
+            if user_is_mentioned:
+                create_notification = True
+            elif PrivacyLevel.FOLLOWERS:
+                create_notification = (
+                    FollowRequest.query.filter_by(
+                        follower_user_id=to_user_id,
+                        followed_user_id=new_comment.user_id,
+                    ).first()
+                    is not None
+                )
+
+        if not create_notification:
+            return
+
+        notification = Notification(
+            from_user_id=new_comment.user_id,
+            to_user_id=to_user_id,
+            created_at=new_comment.created_at,
+            event_type=(
+                'workout_comment'
+                if new_comment.reply_to is None
+                else 'comment_reply'
+            ),
+            event_object_id=new_comment.id,
+        )
+        session.add(notification)
+
+
+@listens_for(Comment, 'after_delete')
+def on_comment_delete(
+    mapper: Mapper, connection: Connection, old_comment: Comment
+) -> None:
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session: Session, context: Any) -> None:
+        from fittrackee.users.models import Notification
+        from fittrackee.workouts.models import Workout
+
+        workout = Workout.query.filter_by(id=old_comment.workout_id).first()
+        comment = (
+            None
+            if old_comment.reply_to is None
+            else Comment.query.filter_by(id=old_comment.reply_to).first()
+        )
+        Notification.query.filter_by(
+            from_user_id=old_comment.user_id,
+            to_user_id=(
+                workout.user_id
+                if old_comment.reply_to is None
+                else comment.id  # type: ignore
+            ),
+            event_type=(
+                'workout_comment'
+                if old_comment.reply_to is None
+                else 'comment_reply'
+            ),
+            event_object_id=old_comment.id,
+        ).delete()
+
+
+@listens_for(Mention, 'after_insert')
+def on_mention_insert(
+    mapper: Mapper, connection: Connection, new_mention: Mention
+) -> None:
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session: Session, context: Connection) -> None:
+        from fittrackee.users.models import Notification
+
+        comment = Comment.query.filter_by(id=new_mention.comment_id).first()
+        if new_mention.user_id != comment.user_id:
+            notification = Notification(
+                from_user_id=comment.user_id,
+                to_user_id=new_mention.user_id,
+                created_at=new_mention.created_at,
+                event_type='mention',
+                event_object_id=comment.id,
+            )
+            session.add(notification)
+
+
+@listens_for(Mention, 'after_delete')
+def on_mention_delete(
+    mapper: Mapper, connection: Connection, old_mention: Mention
+) -> None:
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session: Session, context: Any) -> None:
+        from fittrackee.users.models import Notification
+
+        Notification.query.filter_by(
+            to_user_id=old_mention.user_id,
+            event_type='mention',
+            event_object_id=old_mention.comment_id,
+        ).delete()
+
+
 class CommentLike(BaseModel):
     __tablename__ = 'comment_likes'
     __table_args__ = (
@@ -288,3 +428,44 @@ class CommentLike(BaseModel):
         self.created_at = (
             datetime.datetime.utcnow() if created_at is None else created_at
         )
+
+
+@listens_for(CommentLike, 'after_insert')
+def on_comment_like_insert(
+    mapper: Mapper, connection: Connection, new_comment_like: CommentLike
+) -> None:
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session: Session, context: Connection) -> None:
+        from fittrackee.users.models import Notification
+
+        comment = Comment.query.filter_by(
+            id=new_comment_like.comment_id
+        ).first()
+        if new_comment_like.user_id != comment.user_id:
+            notification = Notification(
+                from_user_id=new_comment_like.user_id,
+                to_user_id=comment.user_id,
+                created_at=new_comment_like.created_at,
+                event_type='comment_like',
+                event_object_id=comment.id,
+            )
+            session.add(notification)
+
+
+@listens_for(CommentLike, 'after_delete')
+def on_comment_like_delete(
+    mapper: Mapper, connection: Connection, old_comment_like: CommentLike
+) -> None:
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session: Session, context: Any) -> None:
+        from fittrackee.users.models import Notification
+
+        comment = Comment.query.filter_by(
+            id=old_comment_like.comment_id
+        ).first()
+        Notification.query.filter_by(
+            from_user_id=old_comment_like.user_id,
+            to_user_id=comment.user_id,
+            event_type='comment_like',
+            event_object_id=comment.id,
+        ).delete()

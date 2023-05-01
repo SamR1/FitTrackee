@@ -10,6 +10,10 @@ class InvalidEmailException(Exception):
     ...
 
 
+class InvalidNotificationTypeException(Exception):
+    ...
+
+
 class UserControlsException(Exception):
     ...
 

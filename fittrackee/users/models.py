@@ -9,18 +9,20 @@ from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm.mapper import Mapper
-from sqlalchemy.orm.session import Session
+from sqlalchemy.orm.session import Session, object_session
 from sqlalchemy.sql.expression import select
 from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, appLog, bcrypt, db
+from fittrackee.comments.models import Comment
 from fittrackee.files import get_absolute_file_path
 from fittrackee.privacy_levels import PrivacyLevel
-from fittrackee.workouts.models import Workout
+from fittrackee.workouts.models import Workout, WorkoutLike
 
 from .exceptions import (
     FollowRequestAlreadyProcessedError,
     FollowRequestAlreadyRejectedError,
+    InvalidNotificationTypeException,
     NotExistingFollowRequestError,
 )
 from .roles import UserRole
@@ -30,6 +32,16 @@ USER_LINK_TEMPLATE = (
     '<a href="{profile_url}" target="_blank" rel="noopener noreferrer">'
     '{username}</a>'
 )
+
+NOTIFICATION_TYPES = [
+    'comment_like',
+    'comment_reply',
+    'follow',
+    'follow_request',
+    'mention',
+    'workout_comment',
+    'workout_like',
+]
 
 
 class FollowRequest(BaseModel):
@@ -70,6 +82,73 @@ class FollowRequest(BaseModel):
             'from_user': self.from_user.serialize(),
             'to_user': self.to_user.serialize(),
         }
+
+
+@listens_for(FollowRequest, 'after_insert')
+def on_follow_request_insert(
+    mapper: Mapper, connection: Connection, new_follow_request: FollowRequest
+) -> None:
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session: Session, context: Connection) -> None:
+        notification = Notification(
+            from_user_id=new_follow_request.follower_user_id,
+            to_user_id=new_follow_request.followed_user_id,
+            created_at=new_follow_request.created_at,
+            event_type=(
+                'follow'
+                if new_follow_request.is_approved
+                else 'follow_request'
+            ),
+        )
+        session.add(notification)
+
+
+@listens_for(FollowRequest, 'after_update')
+def on_follow_request_update(
+    mapper: Mapper, connection: Connection, follow_request: FollowRequest
+) -> None:
+    if object_session(follow_request).is_modified(follow_request):
+
+        @listens_for(db.Session, 'after_flush', once=True)
+        def receive_after_flush(session: Session, context: Connection) -> None:
+            if follow_request.is_approved:
+                notification_table = Notification.__table__
+                connection.execute(
+                    notification_table.update()
+                    .where(
+                        notification_table.c.from_user_id
+                        == follow_request.follower_user_id,
+                        notification_table.c.to_user_id
+                        == follow_request.followed_user_id,
+                        notification_table.c.event_type == 'follow_request',
+                    )
+                    .values(
+                        event_type='follow',
+                        marked_as_read=False,
+                    )
+                )
+            if (
+                not follow_request.is_approved
+                and follow_request.updated_at is not None
+            ):
+                Notification.query.filter_by(
+                    from_user_id=follow_request.follower_user_id,
+                    to_user_id=follow_request.followed_user_id,
+                    event_type='follow_request',
+                ).delete()
+
+
+@listens_for(FollowRequest, 'after_delete')
+def on_follow_request_delete(
+    mapper: Mapper, connection: Connection, old_follow_request: FollowRequest
+) -> None:
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session: Session, context: Any) -> None:
+        Notification.query.filter(
+            Notification.from_user_id == old_follow_request.follower_user_id,
+            Notification.to_user_id == old_follow_request.followed_user_id,
+            Notification.event_type.in_(['follow', 'follow_request']),
+        ).delete()
 
 
 class User(BaseModel):
@@ -578,3 +657,118 @@ def on_users_data_export_delete(
                 os.remove(get_absolute_file_path(file_path))
             except OSError:
                 appLog.error('archive found when deleting export request')
+
+
+class Notification(BaseModel):
+    __tablename__ = 'notifications'
+    __table_args__ = (
+        db.UniqueConstraint(
+            'from_user_id',
+            'to_user_id',
+            'event_type',
+            'event_object_id',
+            name='users_event_unique',
+        ),
+    )
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    from_user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='CASCADE'),
+        index=True,
+    )
+    to_user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='CASCADE'),
+        index=True,
+    )
+    created_at = db.Column(db.DateTime, nullable=False)
+    marked_as_read = db.Column(db.Boolean, nullable=False, default=False)
+    event_object_id = db.Column(db.Integer, nullable=True)
+    event_type = db.Column(db.String(50), nullable=False)
+
+    def __init__(
+        self,
+        from_user_id: int,
+        to_user_id: int,
+        created_at: datetime,
+        event_type: str,
+        event_object_id: Optional[int] = None,
+    ):
+        if event_type not in NOTIFICATION_TYPES:
+            raise InvalidNotificationTypeException()
+        self.from_user_id = from_user_id
+        self.to_user_id = to_user_id
+        self.created_at = created_at
+        self.event_type = event_type
+        self.event_object_id = event_object_id
+
+    def serialize(self) -> Dict:
+        serialized_notification = {
+            "created_at": self.created_at,
+            "id": self.id,
+            "marked_as_read": self.marked_as_read,
+            "type": self.event_type,
+        }
+
+        if self.event_type in ["follow", "follow_request"]:
+            follow_request = (
+                FollowRequest.query.filter_by(
+                    follower_user_id=self.from_user_id,
+                    followed_user_id=self.to_user_id,
+                )
+                .first()
+                .serialize()
+            )
+
+            return {
+                **serialized_notification,
+                "from": follow_request["from_user"],
+            }
+
+        from_user = User.query.filter_by(id=self.from_user_id).first()
+        to_user = User.query.filter_by(id=self.to_user_id).first()
+        serialized_notification = {
+            **serialized_notification,
+            "from": from_user.serialize(current_user=to_user),
+        }
+
+        if self.event_type in ["workout_like"]:
+            like = WorkoutLike.query.filter_by(id=self.event_object_id).first()
+            workout = Workout.query.filter_by(id=like.workout_id).first()
+            serialized_notification["workout"] = workout.serialize(
+                user=to_user
+            )
+
+        if self.event_type in ["workout_comment"]:
+            comment = Comment.query.filter_by(id=self.event_object_id).first()
+            workout = Workout.query.filter_by(id=comment.workout_id).first()
+            serialized_notification["workout"] = workout.serialize(
+                user=to_user
+            )
+            serialized_notification["comment"] = comment.serialize(
+                user=to_user
+            )
+
+        if self.event_type in ["comment_reply"]:
+            reply = Comment.query.filter_by(id=self.event_object_id).first()
+            comment = Comment.query.filter_by(
+                id=reply.reply_to, workout_id=reply.workout_id
+            ).first()
+            serialized_notification["comment"] = comment.serialize(
+                user=to_user
+            )
+            serialized_notification["reply"] = reply.serialize(user=to_user)
+
+        if self.event_type in ["comment_like"]:
+            comment = Comment.query.filter_by(id=self.event_object_id).first()
+            serialized_notification["comment"] = comment.serialize(
+                user=to_user
+            )
+
+        if self.event_type in ["mention"]:
+            comment = Comment.query.filter_by(id=self.event_object_id).first()
+            serialized_notification["comment"] = comment.serialize(
+                user=to_user
+            )
+
+        return serialized_notification
