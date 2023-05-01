@@ -328,9 +328,7 @@ class User(BaseModel):
 
     @staticmethod
     def follow_request_status(follow_request: FollowRequest) -> str:
-        if follow_request is None or (
-            follow_request.updated_at and not follow_request.is_approved
-        ):
+        if follow_request is None:
             return 'false'
         if follow_request.is_approved:
             return 'true'
