@@ -17,6 +17,7 @@ from fittrackee import BaseModel, appLog, bcrypt, db
 from fittrackee.comments.models import Comment
 from fittrackee.files import get_absolute_file_path
 from fittrackee.privacy_levels import PrivacyLevel
+from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Workout, WorkoutLike
 
 from .exceptions import (
@@ -735,16 +736,22 @@ class Notification(BaseModel):
         if self.event_type in ["workout_like"]:
             like = WorkoutLike.query.filter_by(id=self.event_object_id).first()
             workout = Workout.query.filter_by(id=like.workout_id).first()
-            serialized_notification["workout"] = workout.serialize(
-                user=to_user
-            )
+            try:
+                serialized_notification["workout"] = workout.serialize(
+                    user=to_user
+                )
+            except WorkoutForbiddenException:
+                serialized_notification["workout"] = None
 
         if self.event_type in ["workout_comment"]:
             comment = Comment.query.filter_by(id=self.event_object_id).first()
             workout = Workout.query.filter_by(id=comment.workout_id).first()
-            serialized_notification["workout"] = workout.serialize(
-                user=to_user
-            )
+            try:
+                serialized_notification["workout"] = workout.serialize(
+                    user=to_user
+                )
+            except WorkoutForbiddenException:
+                serialized_notification["workout"] = None
             serialized_notification["comment"] = comment.serialize(
                 user=to_user
             )
@@ -754,6 +761,13 @@ class Notification(BaseModel):
             comment = Comment.query.filter_by(
                 id=reply.reply_to, workout_id=reply.workout_id
             ).first()
+            workout = Workout.query.filter_by(id=reply.workout_id).first()
+            try:
+                serialized_notification["workout"] = workout.serialize(
+                    user=to_user
+                )
+            except WorkoutForbiddenException:
+                serialized_notification["workout"] = None
             serialized_notification["comment"] = comment.serialize(
                 user=to_user
             )
@@ -767,8 +781,15 @@ class Notification(BaseModel):
 
         if self.event_type in ["mention"]:
             comment = Comment.query.filter_by(id=self.event_object_id).first()
+            workout = Workout.query.filter_by(id=comment.workout_id).first()
             serialized_notification["comment"] = comment.serialize(
                 user=to_user
             )
+            try:
+                serialized_notification["workout"] = workout.serialize(
+                    user=to_user
+                )
+            except WorkoutForbiddenException:
+                serialized_notification["workout"] = None
 
         return serialized_notification
