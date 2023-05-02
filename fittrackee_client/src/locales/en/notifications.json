@@ -1,3 +1,20 @@
 {
-    "NOTIFICATIONS": "notification | notifications"
+    "COMMENTED_YOUR_WORKOUT": "commented your workout",
+    "LIKED_YOUR_COMMENT": "liked your comment",
+    "LIKED_YOUR_WORKOUT": "liked your workout",
+    "MENTIONED_YOU": "mentioned you",
+    "NOTIFICATIONS": "notification | notifications",
+    "NO_NOTIFICATIONS": "No notifications.",
+    "REPLIED_YOUR_COMMENT": "replied to your comment",
+    "SEND_FOLLOW_REQUEST_TO_YOU": "send a follow request to you",
+    "TYPES": {
+        "LABEL": "type",
+        "comment_like": "likes on comments",
+        "comment_reply": "comments replies",
+        "follow": "follow",
+        "follow_request": "follow requests",
+        "mention": "mentions",
+        "workout_comment": "comments on workouts",
+        "workout_like": "likes on workouts"
+    }
 }

@@ -75,6 +75,7 @@
     store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_FOLLOW_REQUESTS, {
       username,
       action,
+      getFollowRequests: true,
     })
   }
   function getQuery(query: LocationQuery): IFollowRequestsPayload {

@@ -249,6 +249,14 @@ const routes: Array<RouteRecordRaw> = [
     ],
   },
   {
+    path: '/notifications',
+    name: 'Notifications',
+    component: () =>
+      import(
+        /* webpackChunkName: 'notifications' */ '@/views/user/NotificationsView.vue'
+      ),
+  },
+  {
     path: '/statistics',
     name: 'Statistics',
     component: () =>

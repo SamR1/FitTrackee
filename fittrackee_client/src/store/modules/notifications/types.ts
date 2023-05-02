@@ -8,7 +8,7 @@ import {
 import { NOTIFICATIONS_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
 import { IPagination } from '@/types/api'
-import { INotification } from '@/types/notifications'
+import { INotification, INotificationPayload } from '@/types/notifications'
 
 export interface INotificationsState {
   notifications: INotification[]
@@ -17,18 +17,36 @@ export interface INotificationsState {
 }
 
 export interface INotificationsActions {
+  [NOTIFICATIONS_STORE.ACTIONS.GET_NOTIFICATIONS](
+    context: ActionContext<INotificationsState, IRootState>,
+    payload: INotificationPayload
+  ): void
   [NOTIFICATIONS_STORE.ACTIONS.GET_UNREAD_STATUS](
     context: ActionContext<INotificationsState, IRootState>
   ): void
 }
 
 export interface INotificationsGetters {
+  [NOTIFICATIONS_STORE.GETTERS.NOTIFICATIONS](
+    state: INotificationsState
+  ): INotification[]
+  [NOTIFICATIONS_STORE.GETTERS.PAGINATION](
+    state: INotificationsState
+  ): IPagination
   [NOTIFICATIONS_STORE.GETTERS.UNREAD_STATUS](
     state: INotificationsState
   ): boolean
 }
 
 export type TNotificationsMutations<S = INotificationsState> = {
+  [NOTIFICATIONS_STORE.MUTATIONS.UPDATE_NOTIFICATIONS](
+    state: S,
+    notifications: INotification[]
+  ): void
+  [NOTIFICATIONS_STORE.MUTATIONS.UPDATE_PAGINATION](
+    state: S,
+    pagination: IPagination
+  ): void
   [NOTIFICATIONS_STORE.MUTATIONS.UPDATE_UNREAD_STATUS](
     state: S,
     unread: boolean

@@ -163,4 +163,5 @@ export interface IFollowRequestsPayload {
 export interface IFollowRequestsActionPayload {
   username: string
   action: TFollowRequestAction
+  getFollowRequests?: boolean
 }

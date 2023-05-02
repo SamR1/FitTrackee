@@ -3,15 +3,17 @@
     <UserPicture :user="comment.user" />
     <div class="comment-detail">
       <div class="comment-info">
-        <Username :user="comment.user"/>
-        <div class="spacer"/>
+        <Username :user="comment.user" />
+        <div class="spacer" />
         <div
           class="comment-date"
-          :title="formatDate(
-            comment.created_at,
-            displayOptions.timezone,
-            displayOptions.dateFormat
-          )"
+          :title="
+            formatDate(
+              comment.created_at,
+              displayOptions.timezone,
+              displayOptions.dateFormat
+            )
+          "
         >
           {{
             formatDistance(new Date(comment.created_at), new Date(), {
@@ -23,11 +25,13 @@
         <div
           class="comment-edited"
           v-if="comment.modification_date"
-          :title="formatDate(
-            comment.modification_date,
-            displayOptions.timezone,
-            displayOptions.dateFormat
-          )"
+          :title="
+            formatDate(
+              comment.modification_date,
+              displayOptions.timezone,
+              displayOptions.dateFormat
+            )
+          "
         >
           ({{ $t('common.EDITED') }})
         </div>
@@ -37,23 +41,33 @@
         />
         <i
           class="fa fa-edit"
-          v-if="isCommentOwner(authUser, comment.user)"
+          v-if="isCommentOwner(authUser, comment.user) && !forNotification"
           aria-hidden="true"
           @click="() => displayCommentEdition(comment)"
         />
         <i
           class="fa fa-trash"
-          v-if="isCommentOwner(authUser, comment.user)"
+          v-if="isCommentOwner(authUser, comment.user) && !forNotification"
           aria-hidden="true"
           @click="deleteComment(comment)"
         />
-        <span class="likes" @click="updateLike(comment)">
-          <i class="fa" :class="`fa-heart${comment.liked ? '' : '-o'}`"/>
-          <span class="likes-count" v-if="comment.likes_count > 0">{{ comment.likes_count }}</span>
+        <span
+          class="likes"
+          :class="{ 'for-notifications': forNotification }"
+          @click="forNotification ? null : updateLike(comment)"
+        >
+          <i class="fa" :class="`fa-heart${comment.liked ? '' : '-o'}`" />
+          <span class="likes-count" v-if="comment.likes_count > 0">
+            {{ comment.likes_count }}
+          </span>
         </span>
         <i
           class="fa fa-comment-o"
-          v-if="authUser.username && (!addReply || addReply !== comment)"
+          v-if="
+            authUser.username &&
+            (!addReply || addReply !== comment) &&
+            !forNotification
+          "
           @click="() => displayReplyTextArea(comment)"
         />
       </div>
@@ -67,53 +81,57 @@
         :workout="workout"
         :comment="comment"
         :comments_loading="comments_loading"
-        @closeEdition="() => commentToEdit = null"
+        @closeEdition="() => (commentToEdit = null)"
       />
-      <Comment
-        v-for="reply in comment.replies"
-        :key="reply.id"
-        :comment="reply"
-        :workout="workout"
-        :authUser="authUser"
-        :comments_loading="comments_loading"
-        @deleteComment="deleteComment(reply)"
-      />
-      <WorkoutCommentEdition
-        v-if="addReply === comment"
-        class="add-comment-reply"
-        :workout="workout"
-        :reply-to="comment.id"
-        :comments_loading="comments_loading"
-        @closeEdition="() => addReply = null"
-      />
+      <template v-if="!forNotification">
+        <Comment
+          v-for="reply in comment.replies"
+          :key="reply.id"
+          :comment="reply"
+          :workout="workout"
+          :authUser="authUser"
+          :comments_loading="comments_loading"
+          @deleteComment="deleteComment(reply)"
+        />
+        <WorkoutCommentEdition
+          v-if="addReply === comment"
+          class="add-comment-reply"
+          :workout="workout"
+          :reply-to="comment.id"
+          :comments_loading="comments_loading"
+          @closeEdition="() => (addReply = null)"
+        />
+      </template>
     </div>
-
   </div>
 </template>
 
 <script setup lang="ts">
-  import { Locale, formatDistance } from "date-fns"
-  import { ComputedRef, Ref, computed, ref, toRefs } from "vue"
+  import { Locale, formatDistance } from 'date-fns'
+  import { ComputedRef, Ref, computed, ref, toRefs, withDefaults } from 'vue'
 
-  import WorkoutCommentEdition from "@/components/Comment/CommentEdition.vue"
-  import Username from "@/components/User/Username.vue"
-  import UserPicture from "@/components/User/UserPicture.vue"
-  import { ROOT_STORE, WORKOUTS_STORE } from "@/store/constants"
-  import { IDisplayOptions } from "@/types/application"
-  import { IAuthUserProfile, IUserProfile } from "@/types/user"
-  import { IComment, IWorkout } from "@/types/workouts"
-  import { useStore } from "@/use/useStore"
-  import { formatDate } from "@/utils/dates"
-  import { linkifyAndClean } from "@/utils/inputs"
+  import WorkoutCommentEdition from '@/components/Comment/CommentEdition.vue'
+  import Username from '@/components/User/Username.vue'
+  import UserPicture from '@/components/User/UserPicture.vue'
+  import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import { IDisplayOptions } from '@/types/application'
+  import { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import { IComment, IWorkout } from '@/types/workouts'
+  import { useStore } from '@/use/useStore'
+  import { formatDate } from '@/utils/dates'
+  import { linkifyAndClean } from '@/utils/inputs'
 
   interface Props {
     comment: IComment
     workout: IWorkout
     authUser: IAuthUserProfile
     comments_loading: string | null
+    forNotification?: boolean
   }
 
-  const props = defineProps<Props>()
+  const props = withDefaults(defineProps<Props>(), {
+    forNotification: false,
+  })
   const { authUser, comment, workout } = toRefs(props)
 
   const emit = defineEmits(['deleteComment'])
@@ -128,7 +146,10 @@
   const commentToEdit: Ref<IComment | null> = ref(null)
   const addReply: Ref<IComment | null> = ref(null)
 
-  function isCommentOwner(authUser: IAuthUserProfile | null, commentUser: IUserProfile) {
+  function isCommentOwner(
+    authUser: IAuthUserProfile | null,
+    commentUser: IUserProfile
+  ) {
     return authUser && authUser.username === commentUser.username
   }
   function deleteComment(comment: IComment) {
@@ -160,7 +181,6 @@
       comment
     )
   }
-
 </script>
 
 <style scoped lang="scss">
@@ -194,25 +214,30 @@
         .spacer {
           flex-grow: 3;
         }
-        .comment-date, .comment-edited {
+        .comment-date,
+        .comment-edited {
           font-size: 0.85em;
           font-style: italic;
           white-space: nowrap;
         }
-        .fa-trash, .fa-comment-o, .fa-heart , .fa-heart-o {
+        .fa-trash,
+        .fa-comment-o,
+        .fa-heart,
+        .fa-heart-o {
           padding-bottom: 3px;
         }
-        .fa-heart , .fa-heart-o {
-          font-size: .9em;
+        .fa-heart,
+        .fa-heart-o {
+          font-size: 0.9em;
         }
         .fa-heart {
           color: #ee2222;
         }
-        .fa-edit{
+        .fa-edit {
           padding-bottom: 2px;
         }
         ::v-deep(.fa-users) {
-          font-size: .8em;
+          font-size: 0.8em;
         }
       }
       .comment-text {
@@ -225,12 +250,15 @@
       }
       .likes {
         .likes-count {
-          padding-left: $default-padding *.3;
+          padding-left: $default-padding * 0.3;
           font-size: 0.8em;
         }
       }
       .likes:hover {
         cursor: pointer;
+        &.for-notifications {
+          cursor: default;
+        }
       }
     }
   }

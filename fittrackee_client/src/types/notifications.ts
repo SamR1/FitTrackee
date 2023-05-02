@@ -23,6 +23,6 @@ export interface INotification {
 export interface INotificationPayload {
   page?: number
   order?: string
-  read_status: boolean
+  read_status?: boolean
   type?: TNotificationType
 }
