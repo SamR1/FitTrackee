@@ -32,7 +32,10 @@
         "user does not exist": "Gebruiker bestaat niet.",
         "valid email must be provided for admin contact": "Een geldige email is vereist voor admin contact informatie",
         "you can not delete your account, no other user has admin rights": "U kunt uw account niet verwijderen, geen andere gebruiker heeft admin rechten.",
-        "you do not have permissions": "U hebt geen machtigingen."
+        "you do not have permissions": "U hebt geen machtigingen.",
+        "<time> is missing in gpx file": "<time> gedeelte ontbreekt in het .gpx bestand.",
+        "gpx file is invalid": "Het .gpx bestand is ongeldig.",
+        "no tracks in gpx file": "Geen route (<trk>) aanwezig in het .gpx bestand."
     },
     "PAGINATION": {
         "NEXT": "volgende",
