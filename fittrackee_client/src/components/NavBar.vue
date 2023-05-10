@@ -388,5 +388,8 @@
         }
       }
     }
+    .fa-language {
+      cursor: pointer;
+    }
   }
 </style>
