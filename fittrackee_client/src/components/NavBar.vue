@@ -64,8 +64,9 @@
               <span class="user-name">{{ authUser.username }}</span>
             </router-link>
             <router-link
-              class="nav-item nav-profile-img"
+              class="nav-item nav-profile-img notifications"
               to="/notifications?unread=true"
+              @click="closeMenu"
             >
               <i
                 class="notifications-icons"
@@ -74,7 +75,7 @@
                 }-o`"
                 aria-hidden="true"
               />
-              <span class="hidden-content">
+              <span class="notifications-label">
                 {{ capitalize($t('notifications.NOTIFICATIONS', 0)) }}
               </span>
             </router-link>
@@ -258,6 +259,12 @@
           margin-left: -110px !important;
           width: 131px !important;
         }
+
+        &.notifications {
+          .notifications-label {
+            display: none;
+          }
+        }
       }
 
       .nav-link {
@@ -314,7 +321,7 @@
         display: none;
       }
       .notifications-icons {
-        padding: 0 0 5px 2px;
+        padding: 6px 0 0 4px;
       }
       .close-icon {
         display: block;
@@ -376,6 +383,12 @@
           ::v-deep(.dropdown-list) {
             margin-left: initial !important;
             width: auto !important;
+          }
+          &.notifications {
+            padding-top: $default-padding;
+            .notifications-label {
+              display: block;
+            }
           }
         }
 
