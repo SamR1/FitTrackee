@@ -16,12 +16,14 @@
         @click="updateFollowRequest(notification.from.username, 'accept')"
       >
         <i class="fa fa-check" aria-hidden="true" />
+        {{ $t('user.RELATIONSHIPS.ACCEPT') }}
       </button>
       <button
         @click="updateFollowRequest(notification.from.username, 'reject')"
         class="danger"
       >
         <i class="fa fa-times" aria-hidden="true" />
+        {{ $t('user.RELATIONSHIPS.REJECT') }}
       </button>
     </div>
   </div>
@@ -85,7 +87,11 @@
       gap: $default-padding;
 
       button {
-        width: 60px;
+        display: flex;
+        gap: $default-padding;
+        .fa {
+          line-height: 20px;
+        }
       }
     }
   }

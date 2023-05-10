@@ -15,12 +15,14 @@
         <div class="follow-requests-actions">
           <button @click="updateFollowRequest(user.username, 'accept')">
             <i class="fa fa-check" aria-hidden="true" />
+            {{ $t('user.RELATIONSHIPS.ACCEPT') }}
           </button>
           <button
             @click="updateFollowRequest(user.username, 'reject')"
             class="danger"
           >
             <i class="fa fa-times" aria-hidden="true" />
+            {{ $t('user.RELATIONSHIPS.REJECT') }}
           </button>
         </div>
       </div>
@@ -130,22 +132,19 @@
         gap: $default-padding;
 
         button {
-          width: 60px;
+          display: flex;
+          gap: $default-padding;
+          .fa {
+            line-height: 20px;
+          }
         }
       }
     }
 
     @media screen and (max-width: $small-limit) {
       .follow-request {
-        flex-direction: column;
         .user-name {
-          padding-bottom: $default-padding;
-        }
-        .follow-requests-actions {
-          flex-direction: row;
-          button {
-            flex-grow: 1;
-          }
+          padding-left: $default-padding;
         }
       }
     }

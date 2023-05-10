@@ -71,12 +71,12 @@
         "EDIT": "Edit profile",
         "EDIT_PREFERENCES": "Edit preferences",
         "EDIT_SPORTS_PREFERENCES": "Edit sports preferences",
-        "ERRORED_EMAIL_UPDATE": "Please {0} to change your email address again or contact the administrator",
         "ELEVATION_CHART_START": {
             "LABEL": "Elevation chart starts at",
-            "ZERO": "Zero",
-            "MIN_ALT": "Minimum altitude"
+            "MIN_ALT": "Minimum altitude",
+            "ZERO": "Zero"
         },
+        "ERRORED_EMAIL_UPDATE": "Please {0} to change your email address again or contact the administrator",
         "FIRST_DAY_OF_WEEK": "First day of week",
         "FIRST_NAME": "First name",
         "LANGUAGE": "Language",
@@ -126,6 +126,7 @@
     "REGISTER": "Register",
     "REGISTER_DISABLED": "Sorry, registration is disabled.",
     "RELATIONSHIPS": {
+        "ACCEPT": "accept",
         "CANCEL_FOLLOW_REQUEST": "Cancel follow request",
         "FOLLOW": "follow",
         "FOLLOWER": "follower | followers",
@@ -134,6 +135,7 @@
         "NO_FOLLOWERS": "No followers yet.",
         "NO_FOLLOWING": "No following yet.",
         "NO_FOLLOW_REQUESTS": "No follow requests to check.",
+        "REJECT": "reject",
         "UNFOLLOW": "unfollow"
     },
     "RESENT_ACCOUNT_CONFIRMATION": "Resend account confirmation email",

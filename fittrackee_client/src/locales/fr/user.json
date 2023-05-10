@@ -73,8 +73,8 @@
         "EDIT_SPORTS_PREFERENCES": "Modifier les préférences des sports",
         "ELEVATION_CHART_START": {
             "LABEL": "Début de l'axe pour le graphe affichant l'altitude",
-            "ZERO": "0",
-            "MIN_ALT": "Altitude minimale"
+            "MIN_ALT": "Altitude minimale",
+            "ZERO": "0"
         },
         "ERRORED_EMAIL_UPDATE": "Veuillez vous {0} pour changer de nouveau votre adresse électronique ou contacter l'administrateur",
         "FIRST_DAY_OF_WEEK": "Premier jour de la semaine",
@@ -126,15 +126,17 @@
     "REGISTER": "S'inscrire",
     "REGISTER_DISABLED": "Désolé, les inscriptions sont désactivées.",
     "RELATIONSHIPS": {
-      "CANCEL_FOLLOW_REQUEST": "Annuler la demande",
-      "FOLLOW": "s'abonner",
-      "FOLLOWER": "abonné | abonnés",
-      "FOLLOWING": "abonnement | abonnements",
-      "FOLLOWS_YOU": "vous suit",
-      "NO_FOLLOWERS": "Pas d'abonnés pour le moment.",
-      "NO_FOLLOWING": "Pas d'abonnements pour le moment.",
-      "NO_FOLLOW_REQUESTS": "Pas de demandes d'abonnement à valider.",
-      "UNFOLLOW": "se désabonner"
+        "ACCEPT": "accepter",
+        "CANCEL_FOLLOW_REQUEST": "Annuler la demande",
+        "FOLLOW": "s'abonner",
+        "FOLLOWER": "abonné | abonnés",
+        "FOLLOWING": "abonnement | abonnements",
+        "FOLLOWS_YOU": "vous suit",
+        "NO_FOLLOWERS": "Pas d'abonnés pour le moment.",
+        "NO_FOLLOWING": "Pas d'abonnements pour le moment.",
+        "NO_FOLLOW_REQUESTS": "Pas de demandes d'abonnement à valider.",
+        "REJECT": "refuser",
+        "UNFOLLOW": "se désabonner"
     },
     "RESENT_ACCOUNT_CONFIRMATION": "Envoyer à nouveau le courriel de confirmation de compte",
     "RESET_PASSWORD": "Réinitialiser votre mot de passe",
