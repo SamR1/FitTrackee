@@ -1,12 +1,18 @@
 <template>
-  <div class="workout-comment">
+  <div class="workout-comment" :id="comment.id">
     <UserPicture :user="comment.user" />
     <div class="comment-detail">
-      <div class="comment-info">
+      <div
+        class="comment-info"
+        :class="{ highlight: comment.id === paramsCommentId }"
+      >
         <Username :user="comment.user" />
         <div class="spacer" />
-        <div
+        <router-link
           class="comment-date"
+          :to="`${
+            comment.workout_id ? `/workouts/${comment.workout_id}` : ''
+          }/comments/${comment.id}`"
           :title="
             formatDate(
               comment.created_at,
@@ -21,7 +27,7 @@
               locale,
             })
           }}
-        </div>
+        </router-link>
         <div
           class="comment-edited"
           v-if="comment.modification_date"
@@ -53,8 +59,12 @@
         />
         <span
           class="likes"
-          :class="{ 'for-notifications': forNotification }"
-          @click="forNotification ? null : updateLike(comment)"
+          :class="{
+            disabled: forNotification || !comment.workout_id,
+          }"
+          @click="
+            forNotification || !comment.workout_id ? null : updateLike(comment)
+          "
         >
           <i class="fa" :class="`fa-heart${comment.liked ? '' : '-o'}`" />
           <span class="likes-count" v-if="comment.likes_count > 0">
@@ -65,6 +75,7 @@
           class="fa fa-comment-o"
           v-if="
             authUser.username &&
+            comment.workout_id &&
             (!addReply || addReply !== comment) &&
             !forNotification
           "
@@ -74,6 +85,7 @@
       <span
         v-if="commentToEdit !== comment"
         class="comment-text"
+        :class="{ highlight: comment.id === paramsCommentId }"
         v-html="linkifyAndClean(comment.text_html)"
       />
       <WorkoutCommentEdition
@@ -109,6 +121,7 @@
 <script setup lang="ts">
   import { Locale, formatDistance } from 'date-fns'
   import { ComputedRef, Ref, computed, ref, toRefs, withDefaults } from 'vue'
+  import { useRoute } from 'vue-router'
 
   import WorkoutCommentEdition from '@/components/Comment/CommentEdition.vue'
   import Username from '@/components/User/Username.vue'
@@ -138,6 +151,8 @@
   const emit = defineEmits(['deleteComment'])
 
   const store = useStore()
+  const route = useRoute()
+
   const locale: ComputedRef<Locale> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LOCALE]
   )
@@ -146,6 +161,9 @@
   )
   const commentToEdit: Ref<IComment | null> = ref(null)
   const addReply: Ref<IComment | null> = ref(null)
+  const paramsCommentId: ComputedRef<string | null> = computed(
+    () => route.params.commentId
+  )
 
   function isCommentOwner(
     authUser: IAuthUserProfile | null,
@@ -188,9 +206,11 @@
   @import '~@/scss/vars.scss';
   .workout-comment {
     display: flex;
+    background-color: var(--comment-background);
     ::v-deep(.user-picture) {
       min-width: min-content;
       align-items: flex-start;
+      background-color: var(--comment-background);
       img {
         height: 25px;
         width: 25px;
@@ -208,6 +228,12 @@
         gap: $default-padding;
         flex-wrap: wrap;
         align-items: flex-end;
+        padding-right: $default-padding * 0.5;
+        &.highlight {
+          border-top-left-radius: 5px;
+          border-top-right-radius: 5px;
+          background-color: var(--comment-background-highlight);
+        }
         .user-name {
           font-weight: bold;
           padding-left: $default-padding;
@@ -220,6 +246,9 @@
           font-size: 0.85em;
           font-style: italic;
           white-space: nowrap;
+        }
+        .comment-date:hover {
+          text-decoration: underline;
         }
         .fa-trash,
         .fa-comment-o,
@@ -242,9 +271,12 @@
         }
       }
       .comment-text {
-        border-radius: 5px;
-        margin: $default-margin 0;
-        padding-left: $default-padding;
+        padding: $default-margin;
+        &.highlight {
+          border-bottom-left-radius: 5px;
+          border-bottom-right-radius: 5px;
+          background-color: var(--comment-background-highlight);
+        }
       }
       .add-comment-reply {
         margin: 0 0 40px;
@@ -257,7 +289,7 @@
       }
       .likes:hover {
         cursor: pointer;
-        &.for-notifications {
+        &.disabled {
           cursor: default;
         }
       }

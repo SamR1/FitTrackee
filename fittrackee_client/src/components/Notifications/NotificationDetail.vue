@@ -16,34 +16,37 @@
         </router-link>
         {{ $t(getUserAction(notification.type)) }}
       </div>
-      <button
-        class="mark-action"
-        :title="
-          $t(
-            `notifications.MARK_AS_${
-              notification.marked_as_read ? 'UN' : ''
-            }READ`
-          )
-        "
-        @click="
-          () => updateReadStatus(notification.id, !notification.marked_as_read)
-        "
-      >
-        <span class="hidden-content">
-          {{
+      <div>
+        <button
+          class="mark-action"
+          :title="
             $t(
               `notifications.MARK_AS_${
                 notification.marked_as_read ? 'UN' : ''
               }READ`
             )
-          }}
-        </span>
-        <i
-          class="fa"
-          :class="`fa-eye${notification.marked_as_read ? '-slash' : ''}`"
-          aria-hidden="true"
-        />
-      </button>
+          "
+          @click="
+            () =>
+              updateReadStatus(notification.id, !notification.marked_as_read)
+          "
+        >
+          <span class="hidden-content">
+            {{
+              $t(
+                `notifications.MARK_AS_${
+                  notification.marked_as_read ? 'UN' : ''
+                }READ`
+              )
+            }}
+          </span>
+          <i
+            class="fa"
+            :class="`fa-eye${notification.marked_as_read ? '-slash' : ''}`"
+            aria-hidden="true"
+          />
+        </button>
+      </div>
     </template>
     <template #content>
       <Comment

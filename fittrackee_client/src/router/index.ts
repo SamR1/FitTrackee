@@ -320,6 +320,21 @@ const routes: Array<RouteRecordRaw> = [
     props: { displaySegment: true },
   },
   {
+    path: '/workouts/:workoutId/comments/:commentId',
+    name: 'WorkoutComment',
+    component: () =>
+      import(/* webpackChunkName: 'workouts' */ '@/views/workouts/Workout.vue'),
+    props: { displaySegment: false },
+  },
+  {
+    path: '/comments/:commentId',
+    name: 'Comment',
+    component: () =>
+      import(
+        /* webpackChunkName: 'workouts' */ '@/views/workouts/CommentView.vue'
+      ),
+  },
+  {
     path: '/workouts/add',
     name: 'AddWorkout',
     component: () =>

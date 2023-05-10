@@ -28,4 +28,10 @@ export const mutations: MutationTree<INotificationsState> &
   ) {
     state.unread = unread
   },
+  [NOTIFICATIONS_STORE.MUTATIONS.EMPTY_NOTIFICATIONS](
+    state: INotificationsState
+  ) {
+    state.notifications = []
+    state.pagination = <IPagination>{}
+  },
 }

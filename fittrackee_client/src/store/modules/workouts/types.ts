@@ -73,6 +73,10 @@ export interface IWorkoutsActions {
     context: ActionContext<IWorkoutsState, IRootState>,
     workoutId: string
   ): void
+  [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    commentId: string
+  ): void
   [WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT_COMMENT](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: ICommentPayload

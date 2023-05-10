@@ -59,6 +59,7 @@ export type TNotificationsMutations<S = INotificationsState> = {
     state: S,
     unread: boolean
   ): void
+  [NOTIFICATIONS_STORE.MUTATIONS.EMPTY_NOTIFICATIONS](state: S): void
 }
 
 export type TNotificationsStoreModule<S = INotificationsState> = Omit<

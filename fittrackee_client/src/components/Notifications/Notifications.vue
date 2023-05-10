@@ -23,7 +23,14 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, reactive, onBeforeMount, watch } from 'vue'
+  import {
+    ComputedRef,
+    computed,
+    reactive,
+    onBeforeMount,
+    onUnmounted,
+    watch,
+  } from 'vue'
   import { LocationQuery, useRoute } from 'vue-router'
 
   import Pagination from '@/components/Common/Pagination.vue'
@@ -92,6 +99,10 @@
       loadNotifications(query)
     }
   )
+
+  onUnmounted(() => {
+    store.commit(NOTIFICATIONS_STORE.MUTATIONS.EMPTY_NOTIFICATIONS)
+  })
 </script>
 
 <style lang="scss" scoped>
