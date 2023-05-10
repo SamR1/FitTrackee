@@ -54,7 +54,19 @@
         </div>
         <div class="nav-items-user-menu">
           <div class="nav-items-group" v-if="isAuthenticated">
-            <router-link class="nav-item nav-profile-img" to="/notifications">
+            <router-link
+              class="nav-item nav-profile-img"
+              to="/profile"
+              @click="closeMenu"
+              :title="authUser.username"
+            >
+              <UserPicture :user="authUser" />
+              <span class="user-name">{{ authUser.username }}</span>
+            </router-link>
+            <router-link
+              class="nav-item nav-profile-img"
+              to="/notifications?unread=true"
+            >
               <i
                 class="notifications-icons"
                 :class="`fa fa-bell${
@@ -65,15 +77,6 @@
               <span class="hidden-content">
                 {{ capitalize($t('notifications.NOTIFICATIONS', 0)) }}
               </span>
-            </router-link>
-            <router-link
-              class="nav-item nav-profile-img"
-              to="/profile"
-              @click="closeMenu"
-              :title="authUser.username"
-            >
-              <UserPicture :user="authUser" />
-              <span class="user-name">{{ authUser.username }}</span>
             </router-link>
             <div
               class="nav-item nav-link logout-fa"
@@ -212,7 +215,7 @@
     }
 
     .notifications-icons {
-      font-size: 1.1em;
+      font-size: 1em;
       padding-top: 5px;
     }
 

@@ -8,7 +8,11 @@ import {
 import { NOTIFICATIONS_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
 import { IPagination } from '@/types/api'
-import { INotification, INotificationPayload } from '@/types/notifications'
+import {
+  INotification,
+  INotificationPayload,
+  INotificationsPayload,
+} from '@/types/notifications'
 
 export interface INotificationsState {
   notifications: INotification[]
@@ -19,10 +23,14 @@ export interface INotificationsState {
 export interface INotificationsActions {
   [NOTIFICATIONS_STORE.ACTIONS.GET_NOTIFICATIONS](
     context: ActionContext<INotificationsState, IRootState>,
-    payload: INotificationPayload
+    payload: INotificationsPayload
   ): void
   [NOTIFICATIONS_STORE.ACTIONS.GET_UNREAD_STATUS](
     context: ActionContext<INotificationsState, IRootState>
+  ): void
+  [NOTIFICATIONS_STORE.ACTIONS.UPDATE_STATUS](
+    context: ActionContext<INotificationsState, IRootState>,
+    payload: INotificationPayload
   ): void
 }
 

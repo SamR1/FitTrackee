@@ -4,6 +4,29 @@
       <form @submit.prevent="onFilter" class="form">
         <div class="form-all-items">
           <div class="form-items-group">
+            <span class="status-title">{{ $t('notifications.STATUS') }}</span>
+            <div class="status-radio">
+              <label>
+                <input
+                  type="radio"
+                  name="duration"
+                  :checked="onlyUnread"
+                  @click="updateOnlyUnread"
+                />
+                {{ $t('notifications.UNREAD') }}
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="all"
+                  :checked="!onlyUnread"
+                  @click="updateOnlyUnread"
+                />
+                {{ $t('notifications.ALL') }}
+              </label>
+            </div>
+          </div>
+          <div class="form-items-group">
             <div class="form-item">
               <label> {{ $t('notifications.TYPES.LABEL') }}:</label>
               <select
@@ -13,11 +36,11 @@
               >
                 <option value="" />
                 <option
-                  v-for="type in notificationTypes"
-                  :value="type"
-                  :key="type"
+                  v-for="option in getNotificationsOptions()"
+                  :value="option.value"
+                  :key="option.value"
                 >
-                  {{ $t(`notifications.TYPES.${type}`) }}
+                  {{ option.label }}
                 </option>
               </select>
             </div>
@@ -37,7 +60,8 @@
 </template>
 
 <script setup lang="ts">
-  import { watch } from 'vue'
+  import { ref, watch } from 'vue'
+  import { useI18n } from 'vue-i18n'
   import { LocationQuery, useRoute, useRouter } from 'vue-router'
 
   import { TNotificationType } from '@/types/notifications'
@@ -46,6 +70,7 @@
 
   const route = useRoute()
   const router = useRouter()
+  const { t } = useI18n()
 
   const notificationTypes: TNotificationType[] = [
     'follow',
@@ -57,12 +82,21 @@
     'workout_like',
   ]
   let params: LocationQuery = Object.assign({}, route.query)
+  const onlyUnread = ref('unread' in params ? params.unread : false)
 
   function handleFilterChange(event: Event & { target: HTMLInputElement }) {
     if (event.target.value === '') {
       delete params[event.target.name]
     } else {
       params[event.target.name] = event.target.value
+    }
+  }
+  function updateOnlyUnread() {
+    onlyUnread.value = !onlyUnread.value
+    if (onlyUnread.value) {
+      params.unread = null
+    } else {
+      delete params.unread
     }
   }
   function onFilter() {
@@ -74,7 +108,23 @@
   }
   function onClearFilter() {
     emit('filter')
-    router.push({ path: '/notifications', query: {} })
+    router.push({ path: '/notifications', query: { unread: true } })
+  }
+  function sortOptions(
+    a: Record<string, string>,
+    b: Record<string, string>
+  ): number {
+    return a.label > b.label ? 1 : a.label < b.label ? -1 : 0
+  }
+  function getNotificationsOptions() {
+    const options = []
+    notificationTypes.map((type) => {
+      options.push({
+        label: t(`notifications.TYPES.${type}`),
+        value: type,
+      })
+    })
+    return options.sort(sortOptions)
   }
 
   watch(
@@ -147,6 +197,15 @@
         margin-top: $default-margin;
         width: 100%;
       }
+    }
+
+    .status-title {
+      font-weight: bold;
+    }
+    .status-radio {
+      display: flex;
+      justify-content: space-around;
+      padding-top: 5px;
     }
 
     @media screen and (max-width: $medium-limit) {

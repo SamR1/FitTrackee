@@ -20,9 +20,15 @@ export interface INotification {
   workout?: IWorkout
 }
 
-export interface INotificationPayload {
+export interface INotificationsPayload {
   page?: number
   order?: string
   read_status?: boolean
   type?: TNotificationType
+}
+
+export interface INotificationPayload {
+  notificationId: number
+  markedAsRead: boolean
+  currentQuery: INotificationsPayload
 }

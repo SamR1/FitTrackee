@@ -1,15 +1,49 @@
 <template>
-  <Card class="notification-card" v-if="notification.id">
+  <Card
+    class="notification-card"
+    :class="{ read: notification.marked_as_read }"
+    v-if="notification.id"
+  >
     <template #title>
-      <i
-        :class="`fa-${notification.type === 'mention' ? 'at' : 'comment'}`"
-        class="fa notification-icon"
-        aria-hidden="true"
-      />
-      <router-link :to="`/users/${notification.from.username}`">
-        {{ notification.from.username }}
-      </router-link>
-      {{ $t(getUserAction(notification.type)) }}
+      <div>
+        <i
+          :class="`fa-${notification.type === 'mention' ? 'at' : 'comment'}`"
+          class="fa notification-icon"
+          aria-hidden="true"
+        />
+        <router-link :to="`/users/${notification.from.username}`">
+          {{ notification.from.username }}
+        </router-link>
+        {{ $t(getUserAction(notification.type)) }}
+      </div>
+      <button
+        class="mark-action"
+        :title="
+          $t(
+            `notifications.MARK_AS_${
+              notification.marked_as_read ? 'UN' : ''
+            }READ`
+          )
+        "
+        @click="
+          () => updateReadStatus(notification.id, !notification.marked_as_read)
+        "
+      >
+        <span class="hidden-content">
+          {{
+            $t(
+              `notifications.MARK_AS_${
+                notification.marked_as_read ? 'UN' : ''
+              }READ`
+            )
+          }}
+        </span>
+        <i
+          class="fa"
+          :class="`fa-eye${notification.marked_as_read ? '-slash' : ''}`"
+          aria-hidden="true"
+        />
+      </button>
     </template>
     <template #content>
       <Comment
@@ -79,10 +113,13 @@
   const dateFormat = computed(() =>
     getDateFormat(authUser.value.date_format, appLanguage.value)
   )
-  const emit = defineEmits(['reload'])
+  const emit = defineEmits(['reload', 'updateReadStatus'])
 
   function emitReload() {
     emit('reload')
+  }
+  function updateReadStatus(notificationId, markedAsRead) {
+    emit('updateReadStatus', { notificationId, markedAsRead })
   }
   function displayCommentCard(notificationType: TNotificationType) {
     return [
@@ -120,13 +157,46 @@
   @import '~@/scss/vars';
 
   .notification-card {
-    .notification-icon {
-      padding-right: 5px;
+    ::v-deep(.card-title) {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      flex-wrap: wrap;
+
+      .notification-icon {
+        padding-right: 5px;
+      }
+
+      .mark-action {
+        font-weight: initial;
+        font-style: italic;
+        border: none;
+        box-shadow: none;
+        cursor: pointer;
+      }
+
+      ::v-deep(.workout-card) {
+        margin: 0;
+
+        .box {
+          margin: $default-margin 0;
+        }
+      }
     }
-    ::v-deep(.workout-card) {
-      margin: 0;
-      .box {
-        margin: $default-margin 0;
+
+    &.read {
+      color: var(--app-color-lighter);
+
+      ::v-deep(a) {
+        color: var(--app-color-lighter);
+      }
+
+      .mark-action {
+        color: var(--app-color-lighter);
+        &:hover {
+          background: var(--app-color-lighter);
+          color: var(--button-confirm-bg-color);
+        }
       }
     }
   }

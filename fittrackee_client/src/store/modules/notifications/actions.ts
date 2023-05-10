@@ -7,7 +7,10 @@ import {
   INotificationsState,
 } from '@/store/modules/notifications/types'
 import { IRootState } from '@/store/modules/root/types'
-import { INotificationPayload } from '@/types/notifications'
+import {
+  INotificationPayload,
+  INotificationsPayload,
+} from '@/types/notifications'
 import { handleError } from '@/utils'
 
 export const actions: ActionTree<INotificationsState, IRootState> &
@@ -29,7 +32,7 @@ export const actions: ActionTree<INotificationsState, IRootState> &
   },
   [NOTIFICATIONS_STORE.ACTIONS.GET_NOTIFICATIONS](
     context: ActionContext<INotificationsState, IRootState>,
-    payload: INotificationPayload
+    payload: INotificationsPayload
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     authApi
@@ -44,6 +47,32 @@ export const actions: ActionTree<INotificationsState, IRootState> &
             NOTIFICATIONS_STORE.MUTATIONS.UPDATE_PAGINATION,
             res.data.pagination
           )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        if (error.message !== 'canceled') {
+          handleError(context, error)
+        }
+      })
+  },
+  [NOTIFICATIONS_STORE.ACTIONS.UPDATE_STATUS](
+    context: ActionContext<INotificationsState, IRootState>,
+    payload: INotificationPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .patch(`notifications/${payload.notificationId}`, {
+        read_status: payload.markedAsRead,
+      })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.dispatch(
+            NOTIFICATIONS_STORE.ACTIONS.GET_NOTIFICATIONS,
+            payload.currentQuery
+          )
+          context.dispatch(NOTIFICATIONS_STORE.ACTIONS.GET_UNREAD_STATUS)
         } else {
           handleError(context, null)
         }

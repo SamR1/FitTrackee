@@ -1,6 +1,6 @@
 <template>
   <div id="notifications" v-if="authUser.username">
-    <div class="no-notifications" v-if="notifications.length === 0">
+    <div class="no-notifications box" v-if="notifications.length === 0">
       {{ $t('notifications.NO_NOTIFICATIONS') }}
     </div>
     <template v-else>
@@ -10,6 +10,7 @@
         :auth-user="authUser"
         :notification="notification"
         @reload="reload"
+        @updateReadStatus="updateNotificationReadStatus"
       />
       <Pagination
         v-if="pagination.page"
@@ -28,7 +29,7 @@
   import Pagination from '@/components/Common/Pagination.vue'
   import NotificationDetail from '@/components/Notifications/NotificationDetail.vue'
   import { AUTH_USER_STORE, NOTIFICATIONS_STORE } from '@/store/constants'
-  import { INotification, INotificationPayload } from '@/types/notifications'
+  import { INotification, INotificationsPayload } from '@/types/notifications'
   import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
@@ -44,19 +45,27 @@
   const pagination: ComputedRef<INotification[]> = computed(
     () => store.getters[NOTIFICATIONS_STORE.GETTERS.PAGINATION]
   )
-  let query: INotificationPayload = reactive(getNotificationsQuery(route.query))
+  let query: INotificationsPayload = reactive(
+    getNotificationsQuery(route.query)
+  )
 
   onBeforeMount(() => loadNotifications(query))
 
   function getNotificationsQuery(
     newQuery: LocationQuery
-  ): INotificationPayload {
-    const payload: INotificationPayload = {}
+  ): INotificationsPayload {
+    const payload: INotificationsPayload = {}
     if ('page' in newQuery) {
       payload.page = +newQuery.page
     }
     if ('type' in newQuery) {
       payload.type = newQuery.type
+    }
+    if ('unread' in newQuery) {
+      payload.read_status =
+        newQuery.unread === null || newQuery.unread === ''
+          ? false
+          : !newQuery.unread
     }
     return payload
   }
@@ -66,8 +75,14 @@
       loadNotifications(query)
     }, 500)
   }
-  function loadNotifications(queryParams: INotificationPayload) {
+  function loadNotifications(queryParams: INotificationsPayload) {
     store.dispatch(NOTIFICATIONS_STORE.ACTIONS.GET_NOTIFICATIONS, queryParams)
+  }
+  function updateNotificationReadStatus(payload) {
+    store.dispatch(NOTIFICATIONS_STORE.ACTIONS.UPDATE_STATUS, {
+      ...payload,
+      currentQuery: query,
+    })
   }
 
   watch(
@@ -84,6 +99,7 @@
   #notifications {
     .no-notifications {
       padding: $default-padding;
+      text-align: center;
     }
   }
 </style>

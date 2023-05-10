@@ -1,14 +1,18 @@
 {
+    "ALL": "All",
     "COMMENTED_YOUR_WORKOUT": "commented your workout",
     "LIKED_YOUR_COMMENT": "liked your comment",
     "LIKED_YOUR_WORKOUT": "liked your workout",
+    "MARK_AS_READ": "mark as read",
+    "MARK_AS_UNREAD": "mark as unread",
     "MENTIONED_YOU": "mentioned you",
     "NOTIFICATIONS": "notification | notifications",
     "NO_NOTIFICATIONS": "No notifications.",
     "REPLIED_YOUR_COMMENT": "replied to your comment",
     "SEND_FOLLOW_REQUEST_TO_YOU": "send a follow request to you",
+    "STATUS": "Status",
     "TYPES": {
-        "LABEL": "type",
+        "LABEL": "Type",
         "comment_like": "likes on comments",
         "comment_reply": "comments replies",
         "follow": "follow",
@@ -16,5 +20,6 @@
         "mention": "mentions",
         "workout_comment": "comments on workouts",
         "workout_like": "likes on workouts"
-    }
+    },
+    "UNREAD": "Unread"
 }

@@ -1,6 +1,7 @@
 export enum NotificationsActions {
   GET_UNREAD_STATUS = 'GET_UNREAD_STATUS',
   GET_NOTIFICATIONS = 'GET_NOTIFICATIONS',
+  UPDATE_STATUS = 'UPDATE_STATUS',
 }
 export enum NotificationsGetters {
   NOTIFICATIONS = 'NOTIFICATIONS',
