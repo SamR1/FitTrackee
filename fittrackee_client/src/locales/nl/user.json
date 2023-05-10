@@ -68,6 +68,11 @@
         "EDIT": "Profiel aanpassen",
         "EDIT_PREFERENCES": "Voorkeuren wijzigen",
         "EDIT_SPORTS_PREFERENCES": "Sport voorkeuren wijzigen",
+        "ELEVATION_CHART_START": {
+            "LABEL": "Hoogte grafiek begint op",
+            "MIN_ALT": "Minimum hoogte",
+            "ZERO": "Nul"
+        },
         "ERRORED_EMAIL_UPDATE": "Gelieve {0} om uw email adres opnieuw te wijzigen of contacteer uw administrator",
         "FIRST_DAY_OF_WEEK": "Eerste dag van de week",
         "FIRST_NAME": "Voornaam",
