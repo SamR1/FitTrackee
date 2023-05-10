@@ -692,6 +692,63 @@ class TestNotificationForMention(NotificationForCommentTestCase):
         assert notification.marked_as_read is False
         assert notification.event_type == 'mention'
 
+    def test_it_does_not_create_notification_when_mentioned_user_is_workout_owner(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.comment_workout(
+            user_2,
+            workout_cycling_user_1,
+            text=f"@{user_1.username}",
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        self.create_mention(user_1, comment)
+
+        notifications = Notification.query.filter_by(
+            from_user_id=comment.user_id,
+            to_user_id=user_1.id,
+        ).all()
+        assert len(notifications) == 1
+        assert notifications[0].created_at == comment.created_at
+        assert notifications[0].marked_as_read is False
+        assert notifications[0].event_type == 'workout_comment'
+
+    def test_it_does_not_create_notification_when_mentioned_user_is_parent_comment_owner(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        parent_comment = self.comment_workout(
+            user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+        )
+        comment = self.comment_workout(
+            user_3,
+            workout_cycling_user_1,
+            reply_to=parent_comment.id,
+            text=f"@{user_2.username}",
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        self.create_mention(user_2, comment)
+
+        notifications = Notification.query.filter_by(
+            from_user_id=comment.user_id,
+            to_user_id=user_2.id,
+        ).all()
+        assert len(notifications) == 1
+        assert notifications[0].created_at == comment.created_at
+        assert notifications[0].marked_as_read is False
+        assert notifications[0].event_type == 'comment_reply'
+
     def test_it_deletes_notification_on_mention_delete(
         self,
         app: Flask,

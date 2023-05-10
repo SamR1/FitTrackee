@@ -366,17 +366,39 @@ def on_mention_insert(
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session: Session, context: Connection) -> None:
         from fittrackee.users.models import Notification
+        from fittrackee.workouts.models import Workout
 
         comment = Comment.query.filter_by(id=new_mention.comment_id).first()
-        if new_mention.user_id != comment.user_id:
-            notification = Notification(
-                from_user_id=comment.user_id,
-                to_user_id=new_mention.user_id,
-                created_at=new_mention.created_at,
-                event_type='mention',
-                event_object_id=comment.id,
-            )
-            session.add(notification)
+        if new_mention.user_id == comment.user_id:
+            return
+
+        # `mention` notification is not created:
+        # - when mentioned user is workout owner
+        # (`workout_comment' notification already exists)
+        workout = Workout.query.filter_by(id=comment.workout_id).first()
+        if workout and workout.user_id == new_mention.user_id:
+            return
+
+        # - when mentioned user is parent comment owner
+        # (`comment_reply' notification already exists)
+        if comment.reply_to:
+            parent_comment = Comment.query.filter_by(
+                id=comment.reply_to
+            ).first()
+            if (
+                parent_comment
+                and parent_comment.user_id == new_mention.user_id
+            ):
+                return
+
+        notification = Notification(
+            from_user_id=comment.user_id,
+            to_user_id=new_mention.user_id,
+            created_at=new_mention.created_at,
+            event_type='mention',
+            event_object_id=comment.id,
+        )
+        session.add(notification)
 
 
 @listens_for(Mention, 'after_delete')
