@@ -123,7 +123,7 @@
 
   interface Props {
     comment: IComment
-    workout: IWorkout
+    workout?: IWorkout
     authUser: IAuthUserProfile
     comments_loading: string | null
     forNotification?: boolean
@@ -131,6 +131,7 @@
 
   const props = withDefaults(defineProps<Props>(), {
     forNotification: false,
+    workout: null,
   })
   const { authUser, comment, workout } = toRefs(props)
 

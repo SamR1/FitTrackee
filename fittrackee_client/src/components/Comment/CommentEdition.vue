@@ -5,7 +5,9 @@
         <div class="form-item add-comment-label">
           <CustomTextArea
             class="comment"
-            :name="`text${comment ? `-${comment.id}` : replyTo ? `-${replyTo}` : ''}`"
+            :name="`text${
+              comment ? `-${comment.id}` : replyTo ? `-${replyTo}` : ''
+            }`"
             :input="commentText"
             :required="true"
             :placeholder="$t('workouts.COMMENTS.ADD')"
@@ -14,12 +16,9 @@
         </div>
       </div>
       <div class="form-select-buttons">
-        <div class="form-item text-visibility" v-if="!comment">
+        <div class="form-item text-visibility" v-if="!comment && workout">
           <label> {{ $t('privacy.VISIBILITY') }}: </label>
-          <select
-            id="text_visibility"
-            v-model="commentTextVisibility"
-          >
+          <select id="text_visibility" v-model="commentTextVisibility">
             <option
               v-for="level in getCommentVisibilityLevels(
                 workout.workout_visibility
@@ -27,11 +26,7 @@
               :value="level"
               :key="level"
             >
-              {{
-                $t(
-                  `privacy.COMMENT_LEVELS.${level}`
-                )
-              }}
+              {{ $t(`privacy.COMMENT_LEVELS.${level}`) }}
             </option>
           </select>
         </div>
@@ -48,7 +43,7 @@
           </button>
         </div>
       </div>
-      <ErrorMessage :message="errorMessages" v-if="errorMessages"/>
+      <ErrorMessage :message="errorMessages" v-if="errorMessages" />
     </form>
   </div>
 </template>
@@ -56,14 +51,14 @@
 <script setup lang="ts">
   import { ComputedRef, Ref, computed, ref, toRefs } from 'vue'
 
-  import { ROOT_STORE, WORKOUTS_STORE } from "@/store/constants"
-  import { TPrivacyLevels } from "@/types/user";
-  import { IComment, ICommentForm, IWorkout } from "@/types/workouts"
-  import { useStore } from "@/use/useStore"
-  import { getCommentVisibilityLevels } from "@/utils/privacy"
+  import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import { TPrivacyLevels } from '@/types/user'
+  import { IComment, ICommentForm, IWorkout } from '@/types/workouts'
+  import { useStore } from '@/use/useStore'
+  import { getCommentVisibilityLevels } from '@/utils/privacy'
 
   interface Props {
-    workout: IWorkout
+    workout: IWorkout | null
     comments_loading: string | null
     comment?: IComment | null
     replyTo?: string | null
@@ -73,21 +68,26 @@
     comment: null,
     replyTo: null,
   })
-  const { workout, comment, comments_loading, replyTo }  = toRefs(props)
+  const { workout, comment, comments_loading, replyTo } = toRefs(props)
 
   const store = useStore()
 
   const emit = defineEmits(['closeEdition'])
 
   const commentText: Ref<string> = ref(comment?.value ? comment.value.text : '')
-  const commentTextVisibility: Ref<TPrivacyLevels> = ref(comment?.value ? comment.value.text_visibility : workout.value.workout_visibility)
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-      () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
+  const commentTextVisibility: Ref<TPrivacyLevels> = ref(
+    comment?.value
+      ? comment.value.text_visibility
+      : workout.value.workout_visibility
   )
-  const isLoading = computed(
-      () => comment.value ?
-          comment.value.id === comments_loading.value
-          : comments_loading.value === `new${replyTo.value ? `_${replyTo.value}` : ''}`
+  const errorMessages: ComputedRef<string | string[] | null> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
+  )
+  const isLoading = computed(() =>
+    comment.value
+      ? comment.value.id === comments_loading.value
+      : comments_loading.value ===
+        `new${replyTo.value ? `_${replyTo.value}` : ''}`
   )
 
   function updateText(value: string) {

@@ -15,7 +15,6 @@ export interface INotification {
   created_at: string
   from: IUserProfile
   marked_as_read: boolean
-  reply?: IComment
   type: TNotificationType
   workout?: IWorkout
 }

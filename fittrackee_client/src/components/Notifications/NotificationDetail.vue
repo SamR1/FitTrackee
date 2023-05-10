@@ -48,12 +48,7 @@
     <template #content>
       <Comment
         v-if="displayCommentCard(notification.type)"
-        :comment="
-          notification.type === 'comment_reply'
-            ? notification.reply
-            : notification.comment
-        "
-        :workout="notification.workout"
+        :comment="notification.comment"
         :authUser="authUser"
         :comments_loading="null"
         :for-notification="true"

@@ -265,7 +265,6 @@ class TestNotificationForWorkoutLike:
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
         like = self.like_workout(user_2, workout_cycling_user_1)
         notification = Notification.query.filter_by(
             event_object_id=like.id,
@@ -440,9 +439,6 @@ class TestNotificationForWorkoutComment(NotificationForCommentTestCase):
         assert serialized_notification["id"] == notification.id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["type"] == "workout_comment"
-        assert serialized_notification[
-            "workout"
-        ] == workout_cycling_user_1.serialize(user_1)
 
 
 class TestNotificationForCommentReply(NotificationForCommentTestCase):
@@ -547,14 +543,13 @@ class TestNotificationForCommentReply(NotificationForCommentTestCase):
 
         serialized_notification = notification.serialize()
 
-        assert serialized_notification["comment"] == comment.serialize(user_1)
+        assert serialized_notification["comment"] == reply.serialize(user_1)
         assert serialized_notification["created_at"] == notification.created_at
         assert serialized_notification["from"] == user_2.serialize(
             current_user=user_1
         )
         assert serialized_notification["id"] == notification.id
         assert serialized_notification["marked_as_read"] is False
-        assert serialized_notification["reply"] == reply.serialize(user_1)
         assert serialized_notification["type"] == "comment_reply"
 
 
@@ -766,6 +761,7 @@ class TestNotificationForMention(NotificationForCommentTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
         comment = self.comment_workout(
             user_1, workout_cycling_user_1, text=f"@{user_2.username}"
         )
