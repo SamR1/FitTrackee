@@ -158,7 +158,11 @@ class TestNotificationForFollowRequest:
         serialized_notification = notification.serialize()
 
         assert serialized_notification["created_at"] == notification.created_at
-        assert serialized_notification["from"] == user_1.serialize()
+        assert serialized_notification["from"] == {
+            **user_1.serialize(),
+            "follows": user_1.follows(user_2),
+            "is_followed_by": user_1.is_followed_by(user_2),
+        }
         assert serialized_notification["id"] == notification.id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["type"] == "follow_request"
@@ -176,7 +180,11 @@ class TestNotificationForFollowRequest:
         serialized_notification = notification.serialize()
 
         assert serialized_notification["created_at"] == notification.created_at
-        assert serialized_notification["from"] == user_1.serialize()
+        assert serialized_notification["from"] == {
+            **user_1.serialize(),
+            "follows": user_1.follows(user_2),
+            "is_followed_by": user_1.is_followed_by(user_2),
+        }
         assert serialized_notification["id"] == notification.id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["type"] == "follow"

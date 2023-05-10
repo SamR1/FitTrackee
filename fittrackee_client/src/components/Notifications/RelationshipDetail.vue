@@ -26,23 +26,34 @@
         {{ $t('user.RELATIONSHIPS.REJECT') }}
       </button>
     </div>
+    <div class="follow-request-actions" v-else>
+      <UserRelationshipActions
+        :authUser="authUser"
+        :user="notification.from"
+        from="notifications"
+        :displayFollowsYou="true"
+        @updatedUser="() => emit('updatedUserRelationship')"
+      />
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
   import { toRefs } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
+  import UserRelationshipActions from '@/components/User/UserRelationshipActions.vue'
   import { AUTH_USER_STORE } from '@/store/constants'
   import { INotification } from '@/types/notifications'
-  import { TFollowRequestAction } from '@/types/user'
+  import { IAuthUserProfile, TFollowRequestAction } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   interface Props {
+    authUser: IAuthUserProfile
     notification: INotification
   }
 
   const props = defineProps<Props>()
-  const { notification } = toRefs(props)
+  const { authUser, notification } = toRefs(props)
 
   const store = useStore()
 

@@ -711,18 +711,19 @@ class Notification(BaseModel):
         }
 
         if self.event_type in ["follow", "follow_request"]:
-            follow_request = (
-                FollowRequest.query.filter_by(
-                    follower_user_id=self.from_user_id,
-                    followed_user_id=self.to_user_id,
-                )
-                .first()
-                .serialize()
-            )
-
+            follow_request = FollowRequest.query.filter_by(
+                follower_user_id=self.from_user_id,
+                followed_user_id=self.to_user_id,
+            ).first()
+            from_user = follow_request.from_user
+            to_user = follow_request.to_user
             return {
                 **serialized_notification,
-                "from": follow_request["from_user"],
+                "from": {
+                    **from_user.serialize(),
+                    "follows": from_user.follows(to_user),
+                    "is_followed_by": from_user.is_followed_by(to_user),
+                },
             }
 
         from_user = User.query.filter_by(id=self.from_user_id).first()

@@ -59,6 +59,7 @@
       <RelationshipDetail
         v-else-if="displayRelationshipCard"
         :notification="notification"
+        :authUser="authUser"
         @updatedUserRelationship="emitReload"
       />
       <WorkoutCard
