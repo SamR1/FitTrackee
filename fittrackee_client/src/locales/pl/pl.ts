@@ -5,7 +5,9 @@ import ButtonsTranslations from './buttons.json'
 import CommonTranslations from './common.json'
 import DashboardTranslations from './dashboard.json'
 import ErrorTranslations from './error.json'
+import NotificationsTranslations from './notifications.json'
 import OAuth2Translations from './oauth2.json'
+import PrivacyLevelsTranslations from './privacy.json'
 import PrivacyPolicyTranslations from './privacy_policy.json'
 import SportsTranslations from './sports.json'
 import StatisticsTranslations from './statistics.json'
@@ -20,7 +22,9 @@ export default {
   common: CommonTranslations,
   dashboard: DashboardTranslations,
   error: ErrorTranslations,
+  notifications: NotificationsTranslations,
   oauth2: OAuth2Translations,
+  privacy: PrivacyLevelsTranslations,
   privacy_policy: PrivacyPolicyTranslations,
   sports: SportsTranslations,
   statistics: StatisticsTranslations,
