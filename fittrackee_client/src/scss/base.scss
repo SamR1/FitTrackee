@@ -56,6 +56,7 @@ button {
   box-shadow: 2px 2px 2px var(--app-shadow-color);
   color: var(--app-color);
   padding: 6px 14px;
+  cursor: pointer;
 
   &:hover {
     background: var(--app-color);
