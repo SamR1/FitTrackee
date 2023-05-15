@@ -62,6 +62,9 @@ class User(BaseModel):
     start_elevation_at_zero = db.Column(
         db.Boolean, default=True, nullable=False
     )
+    use_raw_gpx_speed = db.Column(
+        db.Boolean, default=False, nullable=False
+    )
 
     def __repr__(self) -> str:
         return f'<User {self.username!r}>'
@@ -216,6 +219,7 @@ class User(BaseModel):
                     'language': self.language,
                     'start_elevation_at_zero': self.start_elevation_at_zero,
                     'timezone': self.timezone,
+                    'use_raw_gpx_speed': self.use_raw_gpx_speed,
                     'weekm': self.weekm,
                 },
             }
