@@ -13,6 +13,7 @@
     "STATUS": "Status",
     "TYPES": {
         "LABEL": "Type",
+        "ALL": "toutes",
         "comment_like": "likes sur un commentaire",
         "comment_reply": "réponses à un commentaire",
         "follow": "abonnements",

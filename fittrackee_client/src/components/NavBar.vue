@@ -65,7 +65,7 @@
             </router-link>
             <router-link
               class="nav-item nav-profile-img notifications"
-              to="/notifications?unread=true"
+              to="/notifications?status=unread"
               @click="closeMenu"
             >
               <i

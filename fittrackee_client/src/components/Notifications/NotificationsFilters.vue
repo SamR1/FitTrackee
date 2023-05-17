@@ -1,7 +1,7 @@
 <template>
   <div class="notifications-filters">
     <div class="box">
-      <form @submit.prevent="onFilter" class="form">
+      <form class="form">
         <div class="form-all-items">
           <div class="form-items-group">
             <span class="status-title">{{ $t('notifications.STATUS') }}</span>
@@ -10,8 +10,8 @@
                 <input
                   type="radio"
                   name="duration"
-                  :checked="onlyUnread"
-                  @click="updateOnlyUnread"
+                  :checked="notificationsStatus === 'unread'"
+                  @click="filterOnStatus('unread')"
                 />
                 {{ $t('notifications.UNREAD') }}
               </label>
@@ -19,8 +19,8 @@
                 <input
                   type="radio"
                   name="all"
-                  :checked="!onlyUnread"
-                  @click="updateOnlyUnread"
+                  :checked="notificationsStatus !== 'unread'"
+                  @click="filterOnStatus('all')"
                 />
                 {{ $t('notifications.ALL') }}
               </label>
@@ -32,9 +32,12 @@
               <select
                 name="type"
                 :value="$route.query.type"
-                @change="handleFilterChange"
+                @change="filterOnType"
               >
-                <option value="" />
+                <option :value="''">
+                  {{ $t('notifications.TYPES.ALL') }}
+                </option>
+                <option disabled>──────</option>
                 <option
                   v-for="option in getNotificationsOptions()"
                   :value="option.value"
@@ -45,14 +48,6 @@
               </select>
             </div>
           </div>
-        </div>
-        <div class="form-button">
-          <button type="submit" class="confirm">
-            {{ $t('buttons.FILTER') }}
-          </button>
-          <button class="confirm" @click="onClearFilter">
-            {{ $t('buttons.CLEAR_FILTER') }}
-          </button>
         </div>
       </form>
     </div>
@@ -65,8 +60,6 @@
   import { LocationQuery, useRoute, useRouter } from 'vue-router'
 
   import { TNotificationType } from '@/types/notifications'
-
-  const emit = defineEmits(['filter'])
 
   const route = useRoute()
   const router = useRouter()
@@ -82,33 +75,28 @@
     'workout_like',
   ]
   let params: LocationQuery = Object.assign({}, route.query)
-  const onlyUnread = ref('unread' in params ? params.unread : false)
-
-  function handleFilterChange(event: Event & { target: HTMLInputElement }) {
+  const notificationsStatus = ref(getStatusFromQuery(route.query))
+  function getStatusFromQuery(query) {
+    return 'status' in query ? query.status : null
+  }
+  function filterOnStatus(value) {
+    notificationsStatus.value = value
+    params['status'] = value
+    filterNotifications()
+  }
+  function filterOnType(event: Event & { target: HTMLInputElement }) {
     if (event.target.value === '') {
       delete params[event.target.name]
     } else {
       params[event.target.name] = event.target.value
     }
+    filterNotifications()
   }
-  function updateOnlyUnread() {
-    onlyUnread.value = !onlyUnread.value
-    if (onlyUnread.value) {
-      params.unread = null
-    } else {
-      delete params.unread
-    }
-  }
-  function onFilter() {
-    emit('filter')
+  function filterNotifications() {
     if ('page' in params) {
       params['page'] = '1'
     }
     router.push({ path: '/notifications', query: params })
-  }
-  function onClearFilter() {
-    emit('filter')
-    router.push({ path: '/notifications', query: { unread: true } })
   }
   function sortOptions(
     a: Record<string, string>,
@@ -131,6 +119,7 @@
     () => route.query,
     (newQuery) => {
       params = Object.assign({}, newQuery)
+      notificationsStatus.value = getStatusFromQuery(newQuery)
     }
   )
 </script>
@@ -187,18 +176,6 @@
       }
     }
 
-    .form-button {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin: $default-margin * 0.5;
-
-      button {
-        margin-top: $default-margin;
-        width: 100%;
-      }
-    }
-
     .status-title {
       font-weight: bold;
     }
@@ -244,14 +221,6 @@
           }
         }
       }
-
-      .form-button {
-        flex-wrap: initial;
-        button {
-          margin: $default-padding $default-padding * 0.5;
-          width: 100%;
-        }
-      }
     }
     @media screen and (max-width: $small-limit) {
       .form {
@@ -284,18 +253,9 @@
           }
         }
       }
-      .form-button {
-        flex-wrap: initial;
-        button {
-          margin: $default-padding $default-padding * 0.5;
-        }
-      }
     }
 
     @media screen and (max-width: $x-small-limit) {
-      .form-button {
-        flex-wrap: wrap;
-      }
       .form {
         .form-all-items {
           .form-items-group {

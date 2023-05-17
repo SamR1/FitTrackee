@@ -2,7 +2,7 @@
   <div id="notifications" class="view items-list-view">
     <div class="container items-list-container">
       <div class="filters-container" :class="{ hidden: hiddenFilters }">
-        <notificationsFilters @filter="toggleFilters" />
+        <NotificationsFilters />
       </div>
       <div class="display-filters">
         <div @click="toggleFilters">

@@ -68,11 +68,8 @@
     if ('type' in newQuery) {
       payload.type = newQuery.type
     }
-    if ('unread' in newQuery) {
-      payload.read_status =
-        newQuery.unread === null || newQuery.unread === ''
-          ? false
-          : !newQuery.unread
+    if ('status' in newQuery && newQuery.status === 'unread') {
+      payload.read_status = false
     }
     return payload
   }

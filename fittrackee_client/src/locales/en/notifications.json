@@ -13,6 +13,7 @@
     "STATUS": "Status",
     "TYPES": {
         "LABEL": "Type",
+        "ALL": "all",
         "comment_like": "likes on comments",
         "comment_reply": "comments replies",
         "follow": "follow",
