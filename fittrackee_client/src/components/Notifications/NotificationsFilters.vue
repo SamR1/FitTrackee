@@ -28,7 +28,7 @@
           </div>
           <div class="form-items-group">
             <div class="form-item">
-              <label> {{ $t('notifications.TYPES.LABEL') }}:</label>
+              <label> {{ $t('notifications.TYPES.LABEL') }}</label>
               <select
                 name="type"
                 :value="$route.query.type"

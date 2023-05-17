@@ -4,6 +4,9 @@
       {{ $t('notifications.NO_NOTIFICATIONS') }}
     </div>
     <template v-else>
+      <button class="mark-all-action" @click="markAllAsRead">
+        {{ $t('notifications.MARK_ALL_AS_READ') }}
+      </button>
       <NotificationDetail
         v-for="notification in notifications"
         :key="notification"
@@ -88,6 +91,9 @@
       currentQuery: query,
     })
   }
+  function markAllAsRead() {
+    store.dispatch(NOTIFICATIONS_STORE.ACTIONS.MARK_ALL_AS_READ, query)
+  }
 
   watch(
     () => route.query,
@@ -108,6 +114,19 @@
     .no-notifications {
       padding: $default-padding;
       text-align: center;
+    }
+    .mark-all-action {
+      border: none;
+      box-shadow: none;
+      font-style: italic;
+      font-weight: initial;
+      margin-top: $default-margin;
+      padding-top: 0;
+      &:hover {
+        background-color: initial;
+        color: var(--app-color);
+        text-decoration: underline;
+      }
     }
   }
 </style>

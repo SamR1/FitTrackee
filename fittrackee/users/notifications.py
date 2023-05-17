@@ -104,3 +104,26 @@ def get_status(auth_user: User) -> Dict:
         "status": "success",
         "unread": unread_notifications > 0,
     }
+
+
+@notifications_blueprint.route(
+    "/notifications/mark-all-as-read", methods=["POST"]
+)
+@require_auth(scopes=["notifications:write"])
+def mark_all_as_read(auth_user: User) -> Union[Dict, HttpResponse]:
+    params = request.get_json(silent=True)
+    event_type = params.get('type') if params else None
+    try:
+        Notification.query.filter(
+            Notification.to_user_id == auth_user.id,
+            Notification.marked_as_read == False,  # noqa
+            (Notification.event_type == event_type)
+            if event_type is not None
+            else True,
+        ).update(
+            {Notification.marked_as_read: True}, synchronize_session=False
+        )
+        db.session.commit()
+    except Exception as e:
+        return handle_error_and_return_response(e, db=db)
+    return {"status": "success"}

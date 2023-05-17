@@ -28,6 +28,10 @@ export interface INotificationsActions {
   [NOTIFICATIONS_STORE.ACTIONS.GET_UNREAD_STATUS](
     context: ActionContext<INotificationsState, IRootState>
   ): void
+  [NOTIFICATIONS_STORE.ACTIONS.MARK_ALL_AS_READ](
+    context: ActionContext<INotificationsState, IRootState>,
+    payload: INotificationsPayload
+  ): void
   [NOTIFICATIONS_STORE.ACTIONS.UPDATE_STATUS](
     context: ActionContext<INotificationsState, IRootState>,
     payload: INotificationPayload

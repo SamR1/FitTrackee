@@ -645,3 +645,212 @@ class TestUserNotificationsStatus(ApiTestCaseMixin):
         )
 
         self.assert_response_scope(response, can_access)
+
+
+class TestUserNotificationsMarkAllAsRead(ApiTestCaseMixin):
+    route = "/api/notifications/mark-all-as-read"
+
+    @staticmethod
+    def assert_follow_notification_status(
+        follow_request: FollowRequest, status: bool
+    ) -> None:
+        follow_request_notification = Notification.query.filter_by(
+            from_user_id=follow_request.follower_user_id,
+            to_user_id=follow_request.followed_user_id,
+            event_type="follow_request",
+        ).first()
+        assert follow_request_notification.marked_as_read is status
+
+    @staticmethod
+    def assert_workout_like_notification_status(
+        like: WorkoutLike, status: bool
+    ) -> None:
+        like_notification = Notification.query.filter_by(
+            from_user_id=like.user_id,
+            to_user_id=like.workout.user_id,
+            event_type="workout_like",
+        ).first()
+        assert like_notification.marked_as_read is status
+
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(self.route, content_type="application/json")
+
+        self.assert_401(response)
+
+    def test_it_does_not_return_error_when_no_notifications(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+
+    def test_it_marks_all_user_notifications_as_read(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+        follow_request_from_user_3_to_user_1: FollowRequest,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        follow_request_from_user_3_notification = Notification.query.filter_by(
+            from_user_id=user_3.id,
+            to_user_id=user_1.id,
+            event_type="follow_request",
+        ).first()
+        follow_request_from_user_3_notification.marked_as_read = True
+        like = WorkoutLike(
+            user_id=user_2.id, workout_id=workout_cycling_user_1.id
+        )
+        db.session.add(like)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        self.assert_follow_notification_status(
+            follow_request_from_user_2_to_user_1, status=True
+        )
+        self.assert_follow_notification_status(
+            follow_request_from_user_1_to_user_2, status=False
+        )
+        self.assert_follow_notification_status(
+            follow_request_from_user_3_to_user_1, status=True
+        )
+        self.assert_workout_like_notification_status(like, status=True)
+
+    def test_it_marks_as_read_only_user_notifications_matching_provided_type(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        like = WorkoutLike(
+            user_id=user_2.id, workout_id=workout_cycling_user_1.id
+        )
+        db.session.add(like)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(dict(type="workout_like")),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        self.assert_follow_notification_status(
+            follow_request_from_user_2_to_user_1, status=False
+        )
+        self.assert_workout_like_notification_status(like, status=True)
+
+    @pytest.mark.parametrize('input_type', ['invalid_type', ''])
+    def test_it_does_not_mark_as_read_when_provided_type_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+        input_type: str,
+    ) -> None:
+        like = WorkoutLike(
+            user_id=user_2.id, workout_id=workout_cycling_user_1.id
+        )
+        db.session.add(like)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(dict(type=input_type)),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        self.assert_follow_notification_status(
+            follow_request_from_user_2_to_user_1, status=False
+        )
+        self.assert_workout_like_notification_status(like, status=False)
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        [
+            ('application:write', False),
+            ('follow:read', False),
+            ('follow:write', False),
+            ('notifications:read', False),
+            ('notifications:write', True),
+            ('profile:read', False),
+            ('profile:write', False),
+            ('users:read', False),
+            ('users:write', False),
+            ('workouts:read', False),
+            ('workouts:write', False),
+        ],
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.post(
+            self.route,
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)

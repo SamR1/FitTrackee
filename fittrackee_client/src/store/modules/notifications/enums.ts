@@ -1,6 +1,7 @@
 export enum NotificationsActions {
   GET_UNREAD_STATUS = 'GET_UNREAD_STATUS',
   GET_NOTIFICATIONS = 'GET_NOTIFICATIONS',
+  MARK_ALL_AS_READ = 'MARK_ALL_AS_READ',
   UPDATE_STATUS = 'UPDATE_STATUS',
 }
 export enum NotificationsGetters {

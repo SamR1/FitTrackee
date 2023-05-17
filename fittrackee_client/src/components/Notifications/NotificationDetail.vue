@@ -171,7 +171,6 @@
         font-style: italic;
         border: none;
         box-shadow: none;
-        cursor: pointer;
       }
 
       ::v-deep(.workout-card) {
