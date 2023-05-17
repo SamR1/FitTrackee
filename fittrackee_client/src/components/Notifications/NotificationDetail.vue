@@ -186,6 +186,17 @@
     &.read {
       color: var(--app-color-lighter);
 
+      ::v-deep(.workout-comment),
+      ::v-deep(.follow-request) {
+        .no-picture {
+          color: var(--app-color-lighter);
+        }
+      }
+      ::v-deep(.workout-comment) {
+        .fa-heart {
+          color: var(--app-color-lighter);
+        }
+      }
       ::v-deep(a) {
         color: var(--app-color-lighter);
       }
