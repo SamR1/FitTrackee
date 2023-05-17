@@ -206,7 +206,12 @@ class Comment(BaseModel):
         return {
             'id': self.short_id,
             'user': self.user.serialize(),
-            'workout_id': self.workout.short_id if self.workout else None,
+            'workout_id': (
+                self.workout.short_id
+                if self.workout
+                and can_view(self.workout, 'workout_visibility', user)
+                else None
+            ),
             'text': self.text,
             'text_html': self.handle_mentions()[0],
             'text_visibility': self.text_visibility,

@@ -158,6 +158,69 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
             'liked': False,
         }
 
+    def test_it_serializes_owner_comment_when_workout_is_deleted(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_1, workout=workout_cycling_user_2
+        )
+        db.session.delete(workout_cycling_user_2)
+
+        serialized_comment = comment.serialize(user_1)
+
+        assert serialized_comment == {
+            'id': comment.short_id,
+            'user': user_1.serialize(),
+            'workout_id': None,
+            'text': comment.text,
+            'text_html': comment.text,  # no mention
+            'text_visibility': comment.text_visibility,
+            'created_at': comment.created_at,
+            'mentions': [],
+            'modification_date': comment.modification_date,
+            'reply_to': comment.reply_to,
+            'replies': [],
+            'likes_count': 0,
+            'liked': False,
+        }
+
+    def test_it_serializes_owner_comment_when_workout_is_not_visible(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PRIVATE
+        comment = self.create_comment(
+            user=user_1, workout=workout_cycling_user_2
+        )
+
+        serialized_comment = comment.serialize(user_1)
+
+        assert serialized_comment == {
+            'id': comment.short_id,
+            'user': user_1.serialize(),
+            'workout_id': None,
+            'text': comment.text,
+            'text_html': comment.text,  # no mention
+            'text_visibility': comment.text_visibility,
+            'created_at': comment.created_at,
+            'mentions': [],
+            'modification_date': comment.modification_date,
+            'reply_to': comment.reply_to,
+            'replies': [],
+            'likes_count': 0,
+            'liked': False,
+        }
+
 
 class TestWorkoutCommentModelSerializeForFollower(CommentMixin):
     def test_it_raises_error_when_user_does_not_follow_comment_owner(
@@ -226,6 +289,42 @@ class TestWorkoutCommentModelSerializeForFollower(CommentMixin):
             'id': comment.short_id,
             'user': user_1.serialize(),
             'workout_id': workout_cycling_user_1.short_id,
+            'text': comment.text,
+            'text_html': comment.text,  # no mention
+            'text_visibility': comment.text_visibility,
+            'created_at': comment.created_at,
+            'mentions': [],
+            'modification_date': comment.modification_date,
+            'reply_to': comment.reply_to,
+            'replies': [],
+            'likes_count': 0,
+            'liked': False,
+        }
+
+    def test_it_serializes_comment_when_workout_is_not_visible(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.approves_follow_request_from(user_2)
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PRIVATE
+        comment = self.create_comment(
+            user=user_1,
+            workout=workout_cycling_user_1,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+        db.session.delete(workout_cycling_user_1)
+
+        serialized_comment = comment.serialize(user_2)
+
+        assert serialized_comment == {
+            'id': comment.short_id,
+            'user': user_1.serialize(),
+            'workout_id': None,
             'text': comment.text,
             'text_html': comment.text,  # no mention
             'text_visibility': comment.text_visibility,
@@ -331,6 +430,39 @@ class TestWorkoutCommentModelSerializeForUser(CommentMixin):
             'liked': False,
         }
 
+    def test_it_serializes_comment_when_workout_is_not_visible(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PRIVATE
+        comment = self.create_comment(
+            user=user_1,
+            workout=workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+
+        serialized_comment = comment.serialize(user_2)
+
+        assert serialized_comment == {
+            'id': comment.short_id,
+            'user': user_1.serialize(),
+            'workout_id': None,
+            'text': comment.text,
+            'text_html': comment.text,  # no mention
+            'text_visibility': comment.text_visibility,
+            'created_at': comment.created_at,
+            'mentions': [],
+            'modification_date': comment.modification_date,
+            'reply_to': comment.reply_to,
+            'replies': [],
+            'likes_count': 0,
+            'liked': False,
+        }
+
 
 class TestWorkoutCommentModelSerializeForUnauthenticatedUser(CommentMixin):
     @pytest.mark.parametrize(
@@ -375,6 +507,38 @@ class TestWorkoutCommentModelSerializeForUnauthenticatedUser(CommentMixin):
             'id': comment.short_id,
             'user': user_1.serialize(),
             'workout_id': workout_cycling_user_1.short_id,
+            'text': comment.text,
+            'text_html': comment.text,  # no mention
+            'text_visibility': comment.text_visibility,
+            'created_at': comment.created_at,
+            'mentions': [],
+            'modification_date': comment.modification_date,
+            'reply_to': comment.reply_to,
+            'replies': [],
+            'likes_count': 0,
+            'liked': False,
+        }
+
+    def test_it_serializes_comment_when_workout_is_not_visible(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PRIVATE
+        comment = self.create_comment(
+            user=user_1,
+            workout=workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+
+        serialized_comment = comment.serialize()
+
+        assert serialized_comment == {
+            'id': comment.short_id,
+            'user': user_1.serialize(),
+            'workout_id': None,
             'text': comment.text,
             'text_html': comment.text,  # no mention
             'text_visibility': comment.text_visibility,
