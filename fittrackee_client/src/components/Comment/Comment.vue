@@ -46,29 +46,33 @@
           :is-comment="true"
         />
         <i
-          class="fa fa-edit"
+          class="fa fa-edit comment-action"
           v-if="isCommentOwner(authUser, comment.user) && !forNotification"
           aria-hidden="true"
           @click="() => displayCommentEdition(comment)"
         />
         <i
-          class="fa fa-trash"
+          class="fa fa-trash comment-action"
           v-if="isCommentOwner(authUser, comment.user) && !forNotification"
           aria-hidden="true"
           @click="deleteComment(comment)"
         />
-        <span
-          class="likes"
-          :class="{ disabled: forNotification }"
-          @click="forNotification ? null : updateLike(comment)"
-        >
-          <i class="fa" :class="`fa-heart${comment.liked ? '' : '-o'}`" />
+        <span class="likes">
+          <i
+            class="fa comment-action"
+            :class="{
+              disabled: forNotification,
+              'fa-heart': comment.liked,
+              'fa-heart-o': !comment.liked,
+            }"
+            @click="forNotification ? null : updateLike(comment)"
+          />
           <span class="likes-count" v-if="comment.likes_count > 0">
             {{ comment.likes_count }}
           </span>
         </span>
         <i
-          class="fa fa-comment-o"
+          class="fa fa-comment-o comment-action"
           v-if="
             authUser.username &&
             comment.workout_id &&
@@ -283,7 +287,7 @@
           font-size: 0.8em;
         }
       }
-      .likes:hover {
+      .comment-action:hover {
         cursor: pointer;
         &.disabled {
           cursor: default;
