@@ -59,12 +59,8 @@
         />
         <span
           class="likes"
-          :class="{
-            disabled: forNotification || !comment.workout_id,
-          }"
-          @click="
-            forNotification || !comment.workout_id ? null : updateLike(comment)
-          "
+          :class="{ disabled: forNotification }"
+          @click="forNotification ? null : updateLike(comment)"
         >
           <i class="fa" :class="`fa-heart${comment.liked ? '' : '-o'}`" />
           <span class="likes-count" v-if="comment.likes_count > 0">

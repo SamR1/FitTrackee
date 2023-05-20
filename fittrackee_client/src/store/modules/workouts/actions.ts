@@ -338,10 +338,12 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       .delete(`comments/${payload.commentId}`)
       .then((res) => {
         if (res.status === 204) {
-          context.dispatch(
-            WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
-            payload.workoutId
-          )
+          payload.workoutId
+            ? context.dispatch(
+                WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
+                payload.workoutId
+              )
+            : router.push('/')
         }
       })
       .catch((error) => {
@@ -360,10 +362,15 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       })
       .then((res) => {
         if (res.data.status === 'success') {
-          context.dispatch(
-            WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
-            payload.workout_id
-          )
+          payload.workout_id
+            ? context.dispatch(
+                WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
+                payload.workout_id
+              )
+            : context.dispatch(
+                WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENT,
+                payload.id
+              )
         }
       })
       .catch((error) => {
@@ -379,10 +386,15 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       .post(`comments/${comment.id}/like`)
       .then((res) => {
         if (res.data.status === 'success') {
-          context.dispatch(
-            WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
-            comment.workout_id
-          )
+          comment.workout_id
+            ? context.dispatch(
+                WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
+                comment.workout_id
+              )
+            : context.dispatch(
+                WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENT,
+                comment.id
+              )
         }
       })
       .catch((error) => {
@@ -397,10 +409,15 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       .post(`comments/${comment.id}/like/undo`)
       .then((res) => {
         if (res.data.status === 'success') {
-          context.dispatch(
-            WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
-            comment.workout_id
-          )
+          comment.workout_id
+            ? context.dispatch(
+                WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
+                comment.workout_id
+              )
+            : context.dispatch(
+                WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENT,
+                comment.id
+              )
         }
       })
       .catch((error) => {
