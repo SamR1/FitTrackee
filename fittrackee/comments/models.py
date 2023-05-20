@@ -340,26 +340,9 @@ def on_comment_delete(
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session: Session, context: Any) -> None:
         from fittrackee.users.models import Notification
-        from fittrackee.workouts.models import Workout
 
-        workout = Workout.query.filter_by(id=old_comment.workout_id).first()
-        comment = (
-            None
-            if old_comment.reply_to is None
-            else Comment.query.filter_by(id=old_comment.reply_to).first()
-        )
+        # delete all notifications related to deleted comment
         Notification.query.filter_by(
-            from_user_id=old_comment.user_id,
-            to_user_id=(
-                workout.user_id
-                if old_comment.reply_to is None
-                else comment.id  # type: ignore
-            ),
-            event_type=(
-                'workout_comment'
-                if old_comment.reply_to is None
-                else 'comment_reply'
-            ),
             event_object_id=old_comment.id,
         ).delete()
 

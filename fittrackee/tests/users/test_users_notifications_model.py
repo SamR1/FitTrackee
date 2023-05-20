@@ -14,6 +14,50 @@ from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 from ..utils import random_int, random_string
 
 
+class NotificationTestCase:
+    @staticmethod
+    def create_mention(user: User, comment: Comment) -> Mention:
+        mention = Mention(comment.id, user.id)
+        db.session.add(mention)
+        db.session.commit()
+        return mention
+
+    @staticmethod
+    def comment_workout(
+        user: User,
+        workout: Workout,
+        reply_to: Optional[int] = None,
+        text: Optional[str] = None,
+        text_visibility: Optional[PrivacyLevel] = None,
+    ) -> Comment:
+        comment = Comment(
+            user_id=user.id,
+            workout_id=workout.id,
+            text=random_string() if text is None else text,
+            text_visibility=(
+                text_visibility if text_visibility else PrivacyLevel.PUBLIC
+            ),
+        )
+        db.session.add(comment)
+        comment.reply_to = reply_to
+        db.session.commit()
+        return comment
+
+    @staticmethod
+    def like_comment(user: User, comment: Comment) -> CommentLike:
+        like = CommentLike(user_id=user.id, comment_id=comment.id)
+        db.session.add(like)
+        db.session.commit()
+        return like
+
+    @staticmethod
+    def like_workout(user: User, workout: Workout) -> WorkoutLike:
+        like = WorkoutLike(user_id=user.id, workout_id=workout.id)
+        db.session.add(like)
+        db.session.commit()
+        return like
+
+
 class TestNotification:
     def test_it_raises_exception_when_type_is_invalid(
         self,
@@ -190,14 +234,7 @@ class TestNotificationForFollowRequest:
         assert serialized_notification["type"] == "follow"
 
 
-class TestNotificationForWorkoutLike:
-    @staticmethod
-    def like_workout(user: User, workout: Workout) -> WorkoutLike:
-        like = WorkoutLike(user_id=user.id, workout_id=workout.id)
-        db.session.add(like)
-        db.session.commit()
-        return like
-
+class TestNotificationForWorkoutLike(NotificationTestCase):
     def test_it_creates_notification_on_workout_like(
         self,
         app: Flask,
@@ -293,30 +330,7 @@ class TestNotificationForWorkoutLike:
         ] == workout_cycling_user_1.serialize(user_1)
 
 
-class NotificationForCommentTestCase:
-    @staticmethod
-    def comment_workout(
-        user: User,
-        workout: Workout,
-        reply_to: Optional[int] = None,
-        text: Optional[str] = None,
-        text_visibility: Optional[PrivacyLevel] = None,
-    ) -> Comment:
-        comment = Comment(
-            user_id=user.id,
-            workout_id=workout.id,
-            text=random_string() if text is None else text,
-            text_visibility=(
-                text_visibility if text_visibility else PrivacyLevel.PUBLIC
-            ),
-        )
-        db.session.add(comment)
-        comment.reply_to = reply_to
-        db.session.commit()
-        return comment
-
-
-class TestNotificationForWorkoutComment(NotificationForCommentTestCase):
+class TestNotificationForWorkoutComment(NotificationTestCase):
     def test_it_creates_notification_on_workout_comment(
         self,
         app: Flask,
@@ -449,7 +463,7 @@ class TestNotificationForWorkoutComment(NotificationForCommentTestCase):
         assert serialized_notification["type"] == "workout_comment"
 
 
-class TestNotificationForCommentReply(NotificationForCommentTestCase):
+class TestNotificationForCommentReply(NotificationTestCase):
     def test_it_creates_notification_on_comment_reply(
         self,
         app: Flask,
@@ -561,14 +575,7 @@ class TestNotificationForCommentReply(NotificationForCommentTestCase):
         assert serialized_notification["type"] == "comment_reply"
 
 
-class TestNotificationForCommentLike(NotificationForCommentTestCase):
-    @staticmethod
-    def like_comment(user: User, comment: Comment) -> CommentLike:
-        like = CommentLike(user_id=user.id, comment_id=comment.id)
-        db.session.add(like)
-        db.session.commit()
-        return like
-
+class TestNotificationForCommentLike(NotificationTestCase):
     def test_it_creates_notification_on_comment_like(
         self,
         app: Flask,
@@ -669,14 +676,7 @@ class TestNotificationForCommentLike(NotificationForCommentTestCase):
         assert serialized_notification["type"] == "comment_like"
 
 
-class TestNotificationForMention(NotificationForCommentTestCase):
-    @staticmethod
-    def create_mention(user: User, comment: Comment) -> Mention:
-        mention = Mention(comment.id, user.id)
-        db.session.add(mention)
-        db.session.commit()
-        return mention
-
+class TestNotificationForMention(NotificationTestCase):
     def test_it_creates_notification_on_mention(
         self,
         app: Flask,
@@ -803,21 +803,6 @@ class TestNotificationForMention(NotificationForCommentTestCase):
         ).first()
         assert notification is None
 
-    def test_it_does_not_raise_error_when_user_unlikes_on_his_own_comment(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-    ) -> None:
-        comment = self.comment_workout(
-            user_2, workout_cycling_user_1, text=f"@{user_2.username}"
-        )
-        mention = self.create_mention(user_2, comment)
-
-        db.session.delete(mention)
-
     def test_serialize_mention_notification(
         self,
         app: Flask,
@@ -848,3 +833,116 @@ class TestNotificationForMention(NotificationForCommentTestCase):
         assert serialized_notification["id"] == notification.id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["type"] == "mention"
+
+
+class TestMultipleNotificationsForComment(NotificationTestCase):
+    def test_it_deletes_all_notifications_on_comment_with_mention_and_like_delete(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.comment_workout(
+            user_2, workout_cycling_user_1, text=f"@{user_3.username}"
+        )
+        comment_id = comment.id
+        self.create_mention(user_3, comment)
+        self.like_comment(user_3, comment)
+
+        db.session.delete(comment)
+
+        # workout_comment notification is deleted
+        assert (
+            Notification.query.filter_by(
+                from_user_id=user_2.id,
+                to_user_id=user_1.id,
+                event_object_id=comment_id,
+                event_type="workout_comment",
+            ).first()
+            is None
+        )
+        # mention notification is deleted
+        assert (
+            Notification.query.filter_by(
+                from_user_id=user_2.id,
+                to_user_id=user_3.id,
+                event_object_id=comment_id,
+                event_type="mention",
+            ).first()
+            is None
+        )
+        # like notification is deleted
+        assert (
+            Notification.query.filter_by(
+                from_user_id=user_2.id,
+                to_user_id=user_3.id,
+                event_object_id=comment_id,
+                event_type="comment_like",
+            ).first()
+            is None
+        )
+
+    def test_it_deletes_all_notifications_on_reply_with_mention_and_like_delete(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.comment_workout(
+            user_2, workout_cycling_user_1, text=f"@{user_3.username}"
+        )
+        comment_id = comment.id
+        self.create_mention(user_3, comment)
+        self.like_comment(user_3, comment)
+        reply = self.comment_workout(
+            user_1, workout_cycling_user_1, comment.id
+        )
+
+        db.session.delete(comment)
+
+        # workout_comment notification is deleted
+        assert (
+            Notification.query.filter_by(
+                from_user_id=user_2.id,
+                to_user_id=user_1.id,
+                event_object_id=comment_id,
+                event_type="workout_comment",
+            ).first()
+            is None
+        )
+        # mention notification is deleted
+        assert (
+            Notification.query.filter_by(
+                from_user_id=user_2.id,
+                to_user_id=user_3.id,
+                event_object_id=comment_id,
+                event_type="mention",
+            ).first()
+            is None
+        )
+        # like notification is deleted
+        assert (
+            Notification.query.filter_by(
+                from_user_id=user_2.id,
+                to_user_id=user_3.id,
+                event_object_id=comment_id,
+                event_type="comment_like",
+            ).first()
+            is None
+        )
+        # comment_reply notification is not deleted
+        assert (
+            Notification.query.filter_by(
+                from_user_id=user_1.id,
+                to_user_id=user_2.id,
+                event_object_id=reply.id,
+                event_type="comment_reply",
+            ).first()
+            is not None
+        )
