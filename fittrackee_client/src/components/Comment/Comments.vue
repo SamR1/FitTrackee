@@ -10,7 +10,7 @@
     />
     <Card>
       <template #title>
-        {{ $t('workouts.COMMENTS.LABEL', 0) }}
+        {{ capitalize($t('workouts.COMMENTS.LABEL', 0)) }}
       </template>
       <template v-if="isLoading" #content>
         <Loader />
@@ -22,7 +22,7 @@
           :comment="comment"
           :workout="workoutData.workout"
           :authUser="authUser"
-          :comments_loading="workoutData.comments_loading"
+          comments-loading="workoutData.commentsLoading"
           @deleteComment="(c) => (commentToDelete = c)"
         />
         <div class="no-comments" v-if="workoutData.comments.length === 0">
@@ -32,7 +32,7 @@
           <WorkoutCommentEdition
             v-if="authUser.username"
             :workout="workoutData.workout"
-            :comments_loading="workoutData.comments_loading"
+            comments-loading="workoutData.commentsLoading"
             @closeEdition="displayAddComment = false"
           />
         </div>
@@ -50,6 +50,7 @@
   import {
     ComputedRef,
     Ref,
+    capitalize,
     computed,
     nextTick,
     onMounted,
@@ -85,10 +86,10 @@
   const commentToDelete: Ref<IComment | null> = ref(null)
   const displayAddComment: Ref<boolean> = ref(false)
   const isLoading: ComputedRef<boolean> = computed(
-    () => workoutData.value.comments_loading === 'all'
+    () => workoutData.value.commentsLoading === 'all'
   )
   const isDeleting: ComputedRef<boolean> = computed(
-    () => workoutData.value.comments_loading === 'delete'
+    () => workoutData.value.commentsLoading === 'delete'
   )
   const commentId: ComputedRef<string | null> = computed(
     () => route.params.commentId
@@ -96,7 +97,6 @@
   const timer = ref<number | undefined>()
 
   onMounted(() => {
-    store.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, 'all')
     nextTick(() => {
       if (commentId.value) {
         scrollToComment(commentId.value)

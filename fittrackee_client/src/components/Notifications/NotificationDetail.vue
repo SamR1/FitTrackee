@@ -53,7 +53,7 @@
         v-if="displayCommentCard(notification.type)"
         :comment="notification.comment"
         :authUser="authUser"
-        :comments_loading="null"
+        comments-loading="null"
         :for-notification="true"
       />
       <RelationshipDetail

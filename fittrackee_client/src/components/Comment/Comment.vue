@@ -2,10 +2,7 @@
   <div class="workout-comment" :id="comment.id">
     <UserPicture :user="comment.user" />
     <div class="comment-detail">
-      <div
-        class="comment-info"
-        :class="{ highlight: comment.id === paramsCommentId }"
-      >
+      <div class="comment-info">
         <Username :user="comment.user" />
         <div class="spacer" />
         <router-link
@@ -92,7 +89,7 @@
         v-else
         :workout="workout"
         :comment="comment"
-        :comments_loading="comments_loading"
+        :comments-loading="commentsLoading"
         @closeEdition="() => (commentToEdit = null)"
       />
       <template v-if="!forNotification">
@@ -102,7 +99,7 @@
           :comment="reply"
           :workout="workout"
           :authUser="authUser"
-          :comments_loading="comments_loading"
+          :comments-loading="commentsLoading"
           @deleteComment="deleteComment(reply)"
         />
         <WorkoutCommentEdition
@@ -110,7 +107,7 @@
           class="add-comment-reply"
           :workout="workout"
           :reply-to="comment.id"
-          :comments_loading="comments_loading"
+          :comments-loading="commentsLoading"
           @closeEdition="() => (addReply = null)"
         />
       </template>
@@ -138,7 +135,7 @@
     comment: IComment
     workout?: IWorkout
     authUser: IAuthUserProfile
-    comments_loading: string | null
+    commentsLoading: string | null
     forNotification?: boolean
   }
 
@@ -229,11 +226,6 @@
         flex-wrap: wrap;
         align-items: flex-end;
         padding-right: $default-padding * 0.5;
-        &.highlight {
-          border-top-left-radius: 5px;
-          border-top-right-radius: 5px;
-          background-color: var(--comment-background-highlight);
-        }
         .user-name {
           font-weight: bold;
           padding-left: $default-padding;
@@ -271,11 +263,11 @@
         }
       }
       .comment-text {
-        padding: $default-margin;
+        margin: $default-margin * 0.5 0;
+        padding: $default-padding;
         &.highlight {
-          border-bottom-left-radius: 5px;
-          border-bottom-right-radius: 5px;
-          background-color: var(--comment-background-highlight);
+          border-radius: 5px;
+          background-image: var(--comment-background-highlight);
         }
       }
       .add-comment-reply {

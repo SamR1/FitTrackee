@@ -78,7 +78,7 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
       workout: <IWorkout>{},
       chartData: [],
       comments: [],
-      comments_loading: null,
+      commentsLoading: null,
     }
   },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_COMMENTS](
@@ -97,6 +97,6 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
     state: IWorkoutsState,
     commentId: string | null
   ) {
-    state.workoutData.comments_loading = commentId
+    state.workoutData.commentsLoading = commentId
   },
 }

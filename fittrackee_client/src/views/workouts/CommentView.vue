@@ -4,7 +4,7 @@
       <div class="comments-container">
         <div v-if="workoutData.comments.length > 0">
           <div class="box no-workout">
-            {{ $t('workouts.NO_WORKOUTS', 1) }}
+            {{ $t('workouts.NO_WORKOUT_AVAILABLE') }}
           </div>
           <Comments
             :workoutData="workoutData"
@@ -14,7 +14,7 @@
           <div id="bottom" />
         </div>
         <div v-else>
-          <NotFound v-if="!workoutData.comments_loading" target="COMMENT" />
+          <NotFound v-if="!workoutData.commentsLoading" target="COMMENT" />
         </div>
       </div>
     </div>

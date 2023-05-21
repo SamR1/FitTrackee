@@ -13,6 +13,6 @@ export const workoutsState: IWorkoutsState = {
     workout: <IWorkout>{},
     chartData: [],
     comments: [],
-    comments_loading: null,
+    commentsLoading: null,
   },
 }

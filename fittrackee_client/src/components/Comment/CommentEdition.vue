@@ -59,7 +59,7 @@
 
   interface Props {
     workout: IWorkout | null
-    comments_loading: string | null
+    commentsLoading: string | null
     comment?: IComment | null
     replyTo?: string | null
   }
@@ -68,7 +68,7 @@
     comment: null,
     replyTo: null,
   })
-  const { workout, comment, comments_loading, replyTo } = toRefs(props)
+  const { workout, comment, commentsLoading, replyTo } = toRefs(props)
 
   const store = useStore()
 
@@ -85,8 +85,8 @@
   )
   const isLoading = computed(() =>
     comment.value
-      ? comment.value.id === comments_loading.value
-      : comments_loading.value ===
+      ? comment.value.id === commentsLoading.value
+      : commentsLoading.value ===
         `new${replyTo.value ? `_${replyTo.value}` : ''}`
   )
 
