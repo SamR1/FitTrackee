@@ -116,6 +116,11 @@
             "IMPERIAL": "Système impérial (ft, mi, mph, °F)",
             "LABEL": "Unités pour les distances",
             "METRIC": "Système métrique (m, km, m/s, °C)"
+        },
+        "USE_RAW_GPX_SPEED": {
+            "LABEL": "Stratégie de vitesse maximale",
+            "RAW_SPEED": "Brut",
+            "FILTERED_SPEED": "Filtré"
         }
     },
     "READ_AND_ACCEPT_PRIVACY_POLICY": "J'ai lu et accepte la {0}.",

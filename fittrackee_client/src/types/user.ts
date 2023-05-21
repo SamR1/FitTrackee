@@ -29,6 +29,7 @@ export interface IAuthUserProfile extends IUserProfile {
   display_ascent: boolean
   imperial_units: boolean
   start_elevation_at_zero: boolean
+  use_raw_gpx_speed: boolean
   language: string | null
   timezone: string
   date_format: string
@@ -65,6 +66,7 @@ export interface IAdminUserPayload {
 export interface IUserPreferencesPayload {
   display_ascent: boolean
   start_elevation_at_zero: boolean
+  use_raw_gpx_speed: boolean
   imperial_units: boolean
   language: string
   timezone: string

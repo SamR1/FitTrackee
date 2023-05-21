@@ -119,6 +119,26 @@
             </label>
           </div>
         </div>
+        <div class="form-items form-checkboxes">
+          <span class="checkboxes-label">
+            {{ $t('user.PROFILE.USE_RAW_GPX_SPEED.LABEL') }}
+          </span>
+          <div class="checkboxes">
+            <label v-for="status in useRawGpxSpeed" :key="status.label">
+              <input
+                type="radio"
+                :id="status.label"
+                :name="status.label"
+                :checked="status.value === userForm.use_raw_gpx_speed"
+                :disabled="loading"
+                @input="updateUseRawGpxSpeed(status.value)"
+              />
+              <span class="checkbox-label">
+                {{ $t(`user.PROFILE.USE_RAW_GPX_SPEED.${status.label}`) }}
+              </span>
+            </label>
+          </div>
+        </div>
         <div class="form-buttons">
           <button class="confirm" type="submit">
             {{ $t('buttons.SUBMIT') }}
@@ -200,6 +220,16 @@
       value: false
     }
   ]
+  const useRawGpxSpeed = [
+    {
+      label: 'RAW_SPEED',
+      value: true
+    },
+    {
+      label: 'FILTERED_SPEED',
+      value: false
+    }
+  ]
   const loading = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
   )
@@ -223,6 +253,7 @@
   function updateUserForm(user: IAuthUserProfile) {
     userForm.display_ascent = user.display_ascent
     userForm.start_elevation_at_zero = user.start_elevation_at_zero ? user.start_elevation_at_zero : false
+    userForm.use_raw_gpx_speed = user.use_raw_gpx_speed ? user.use_raw_gpx_speed : false
     userForm.imperial_units = user.imperial_units ? user.imperial_units : false
     userForm.language = user.language ? user.language : 'en'
     userForm.timezone = user.timezone ? user.timezone : 'Europe/Paris'
@@ -237,6 +268,9 @@
   }
   function updateStartElevationAtZero(value: boolean) {
     userForm.start_elevation_at_zero = value
+  }
+  function updateUseRawGpxSpeed(value: boolean) {
+    userForm.use_raw_gpx_speed = value
   }
   function updateAscentDisplay(value: boolean) {
     userForm.display_ascent = value
