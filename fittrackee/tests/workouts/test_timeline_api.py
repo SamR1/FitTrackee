@@ -9,6 +9,7 @@ from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin
+from ..utils import OAUTH_SCOPES
 
 
 class TestGetUserTimeline(ApiTestCaseMixin):
@@ -271,18 +272,7 @@ class TestGetUserTimeline(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('profile:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', True),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self, app: Flask, user_1: User, client_scope: str, can_access: bool

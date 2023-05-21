@@ -10,7 +10,7 @@ from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
 
 from ..mixins import ApiTestCaseMixin
-from ..utils import jsonify_dict
+from ..utils import OAUTH_SCOPES, jsonify_dict
 
 
 class GetWorkoutGpxAsFollowerMixin:
@@ -1615,17 +1615,7 @@ class TestGetWorkoutMap(ApiTestCaseMixin):
 class TestWorkoutScope(ApiTestCaseMixin):
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', True),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
     )
     @pytest.mark.parametrize(
         'endpoint',
@@ -1721,17 +1711,7 @@ class TestDownloadWorkoutGpxAsWorkoutOwner(DownloadWorkoutGpxTestCase):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', True),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,

@@ -12,7 +12,7 @@ from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin, BaseTestMixin
-from ..utils import jsonify_dict
+from ..utils import OAUTH_SCOPES, jsonify_dict
 from .utils import CommentMixin
 
 
@@ -365,17 +365,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', True),
-        ],
+        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -734,17 +724,7 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', True),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1071,17 +1051,7 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', True),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1633,17 +1603,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', True),
-        ],
+        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1963,17 +1923,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', True),
-        ],
+        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,

@@ -92,6 +92,10 @@ TEST_OAUTH_CLIENT_METADATA = {
 
 OAUTH_SCOPES = {
     "application:write": False,
+    "follow:read": False,
+    "follow:write": False,
+    "notifications:read": False,
+    "notifications:write": False,
     "profile:read": False,
     "profile:write": False,
     "users:read": False,

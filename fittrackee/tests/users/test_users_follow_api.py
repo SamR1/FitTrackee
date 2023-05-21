@@ -7,7 +7,7 @@ from flask import Flask
 from fittrackee.users.models import FollowRequest, User
 
 from ..mixins import ApiTestCaseMixin
-from ..utils import random_string
+from ..utils import OAUTH_SCOPES, random_string
 
 
 class TestFollow(ApiTestCaseMixin):
@@ -101,18 +101,7 @@ class TestFollow(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', True),
-            ('profile:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'follow:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -205,18 +194,7 @@ class TestUnfollow(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', True),
-            ('profile:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'follow:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,

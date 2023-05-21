@@ -9,7 +9,7 @@ from flask.testing import FlaskClient
 from fittrackee.users.models import FollowRequest, User
 
 from ..mixins import ApiTestCaseMixin
-from ..utils import random_string
+from ..utils import OAUTH_SCOPES, random_string
 
 
 class TestGetFollowRequest(ApiTestCaseMixin):
@@ -59,18 +59,7 @@ class TestGetFollowRequest(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', True),
-            ('follow:write', False),
-            ('profile:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'follow:read': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self, app: Flask, user_1: User, client_scope: str, can_access: bool
@@ -386,18 +375,7 @@ class TestAcceptFollowRequest(FollowRequestTestCase):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', True),
-            ('profile:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'follow:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -486,18 +464,7 @@ class TestRejectFollowRequest(FollowRequestTestCase):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', True),
-            ('profile:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'follow:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,

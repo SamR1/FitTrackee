@@ -9,6 +9,7 @@ from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 
 from ..mixins import ApiTestCaseMixin, BaseTestMixin
+from ..utils import OAUTH_SCOPES
 
 
 class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
@@ -174,17 +175,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', True),
-        ],
+        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -375,17 +366,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', True),
-        ],
+        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,

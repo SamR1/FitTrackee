@@ -9,7 +9,7 @@ from fittrackee.users.models import FollowRequest, Notification, User
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 
 from ..mixins import ApiTestCaseMixin
-from ..utils import jsonify_dict
+from ..utils import OAUTH_SCOPES, jsonify_dict
 
 
 class TestUserNotifications(ApiTestCaseMixin):
@@ -331,19 +331,7 @@ class TestUserNotifications(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('notifications:read', True),
-            ('notifications:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'notifications:read': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -491,19 +479,7 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('notifications:read', False),
-            ('notifications:write', True),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'notifications:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -608,19 +584,7 @@ class TestUserNotificationsStatus(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('notifications:read', True),
-            ('notifications:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'notifications:read': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -817,19 +781,7 @@ class TestUserNotificationsMarkAllAsRead(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('notifications:read', False),
-            ('notifications:write', True),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'notifications:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
