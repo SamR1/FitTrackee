@@ -11,7 +11,7 @@ from fittrackee.application.models import AppConfig
 from fittrackee.users.models import User
 
 from ..mixins import ApiTestCaseMixin
-from ..utils import jsonify_dict
+from ..utils import OAUTH_SCOPES, jsonify_dict
 
 
 class TestGetConfig(ApiTestCaseMixin):
@@ -434,17 +434,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', True),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'application:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,

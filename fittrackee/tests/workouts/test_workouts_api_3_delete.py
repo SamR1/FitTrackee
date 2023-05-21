@@ -8,6 +8,7 @@ from fittrackee.workouts.models import Sport, Workout
 
 from ..comments.utils import CommentMixin
 from ..mixins import ApiTestCaseMixin
+from ..utils import OAUTH_SCOPES
 from .utils import post_a_workout
 
 
@@ -220,17 +221,7 @@ class TestDeleteWorkoutWithGpx(CommentMixin, ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', True),
-        ],
+        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
