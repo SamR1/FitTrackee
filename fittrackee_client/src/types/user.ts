@@ -52,6 +52,7 @@ export interface IAuthUserProfile extends IUserProfile {
   total_duration: string
   weekm: boolean
   workouts_visibility: TPrivacyLevels
+  manually_approves_followers: boolean
 }
 
 export interface IUserPayload {

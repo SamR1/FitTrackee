@@ -81,6 +81,15 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         assert serialized_user['timezone'] == user_1.timezone
         assert serialized_user['weekm'] == user_1.weekm
         assert serialized_user['display_ascent'] == user_1.display_ascent
+        assert (
+            serialized_user['workouts_visibility']
+            == user_1.workouts_visibility
+        )
+        assert serialized_user['map_visibility'] == user_1.map_visibility
+        assert (
+            serialized_user['manually_approves_followers']
+            == user_1.manually_approves_followers
+        )
 
     def test_it_returns_workouts_infos(self, app: Flask, user_1: User) -> None:
         serialized_user = user_1.serialize(user_1)
@@ -160,6 +169,9 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin):
         assert 'language' not in serialized_user
         assert 'timezone' not in serialized_user
         assert 'weekm' not in serialized_user
+        assert 'workouts_visibility' not in serialized_user
+        assert 'map_visibility' not in serialized_user
+        assert 'manually_approves_followers' not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -208,6 +220,9 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
         assert 'language' not in serialized_user
         assert 'timezone' not in serialized_user
         assert 'weekm' not in serialized_user
+        assert 'workouts_visibility' not in serialized_user
+        assert 'map_visibility' not in serialized_user
+        assert 'manually_approves_followers' not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -249,6 +264,9 @@ class TestUserSerializeAsUnauthenticatedUser(UserModelAssertMixin):
         assert 'language' not in serialized_user
         assert 'timezone' not in serialized_user
         assert 'weekm' not in serialized_user
+        assert 'workouts_visibility' not in serialized_user
+        assert 'map_visibility' not in serialized_user
+        assert 'manually_approves_followers' not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User

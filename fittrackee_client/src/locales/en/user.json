@@ -79,6 +79,11 @@
         "ERRORED_EMAIL_UPDATE": "Please {0} to change your email address again or contact the administrator",
         "FIRST_DAY_OF_WEEK": "First day of week",
         "FIRST_NAME": "First name",
+        "FOLLOW_REQUESTS_APPROVAL": {
+            "AUTOMATICALLY": "Automatically",
+            "LABEL": "Follow requests approval",
+            "MANUALLY": "Manually"
+        },
         "LANGUAGE": "Language",
         "LAST_NAME": "Last name",
         "LOCATION": "Location",

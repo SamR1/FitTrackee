@@ -1465,6 +1465,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     date_format='yyyy-MM-dd',
                     map_visibility='followers_only',
                     workouts_visibility='public',
+                    manually_approves_followers=False,
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -1481,6 +1482,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert data['data']['timezone'] == 'America/New_York'
         assert data['data']['date_format'] == 'yyyy-MM-dd'
         assert data['data']['weekm'] is True
+        assert data['data']['manually_approves_followers'] is False
 
     @pytest.mark.parametrize(
         'input_map_visibility,input_workout_visibility',
@@ -1514,6 +1516,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     map_visibility=input_map_visibility.value,
                     start_elevation_at_zero=False,
                     workouts_visibility=input_workout_visibility.value,
+                    manually_approves_followers=True,
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),

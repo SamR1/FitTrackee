@@ -104,7 +104,10 @@
             {{ $t('user.PROFILE.ELEVATION_CHART_START.LABEL') }}
           </span>
           <div class="checkboxes">
-            <label v-for="status in startElevationAtZeroData" :key="status.label">
+            <label
+              v-for="status in startElevationAtZeroData"
+              :key="status.label"
+            >
               <input
                 type="radio"
                 :id="status.label"
@@ -128,11 +131,7 @@
             @change="updateMapVisibility"
           >
             <option v-for="level in privacyLevels" :value="level" :key="level">
-              {{
-                $t(
-                  `privacy.LEVELS.${level}`
-                )
-              }}
+              {{ $t(`privacy.LEVELS.${level}`) }}
             </option>
           </select>
         </label>
@@ -148,14 +147,35 @@
               :value="level"
               :key="level"
             >
-              {{
-                $t(
-                  `privacy.LEVELS.${level}`
-                )
-              }}
+              {{ $t(`privacy.LEVELS.${level}`) }}
             </option>
           </select>
         </label>
+        <div class="form-items form-checkboxes">
+          <span class="checkboxes-label">
+            {{ $t('user.PROFILE.FOLLOW_REQUESTS_APPROVAL.LABEL') }}
+          </span>
+          <div class="checkboxes">
+            <label
+              v-for="status in manuallyApprovesFollowersValues"
+              :key="status.label"
+            >
+              <input
+                type="radio"
+                :id="status.label"
+                :name="status.label"
+                :checked="status.value === userForm.manually_approves_followers"
+                :disabled="loading"
+                @input="updateManuallyApprovesFollowersValues(status.value)"
+              />
+              <span class="checkbox-label">
+                {{
+                  $t(`user.PROFILE.FOLLOW_REQUESTS_APPROVAL.${status.label}`)
+                }}
+              </span>
+            </label>
+          </div>
+        </div>
         <div class="form-buttons">
           <button class="confirm" type="submit">
             {{ $t('buttons.SUBMIT') }}
@@ -199,11 +219,12 @@
     display_ascent: true,
     imperial_units: false,
     language: '',
+    manually_approves_followers: true,
     map_visibility: 'private',
     start_elevation_at_zero: false,
     timezone: 'Europe/Paris',
     weekm: false,
-    workouts_visibility: 'private'
+    workouts_visibility: 'private',
   })
   const weekStart = [
     {
@@ -238,12 +259,22 @@
   const startElevationAtZeroData = [
     {
       label: 'ZERO',
-      value: true
+      value: true,
     },
     {
       label: 'MIN_ALT',
-      value: false
-    }
+      value: false,
+    },
+  ]
+  const manuallyApprovesFollowersValues = [
+    {
+      label: 'MANUALLY',
+      value: true,
+    },
+    {
+      label: 'AUTOMATICALLY',
+      value: false,
+    },
   ]
   const loading = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
@@ -258,9 +289,7 @@
       userForm.language
     )
   )
-  const privacyLevels = computed(() =>
-    getPrivacyLevels()
-  )
+  const privacyLevels = computed(() => getPrivacyLevels())
   const mapPrivacyLevels = computed(() =>
     getMapVisibilityLevels(userForm.workouts_visibility)
   )
@@ -273,7 +302,9 @@
 
   function updateUserForm(user: IAuthUserProfile) {
     userForm.display_ascent = user.display_ascent
-    userForm.start_elevation_at_zero = user.start_elevation_at_zero ? user.start_elevation_at_zero : false
+    userForm.start_elevation_at_zero = user.start_elevation_at_zero
+      ? user.start_elevation_at_zero
+      : false
     userForm.imperial_units = user.imperial_units ? user.imperial_units : false
     userForm.language = user.language ? user.language : 'en'
     userForm.map_visibility = user.map_visibility
@@ -309,6 +340,9 @@
       userForm.map_visibility,
       userForm.workouts_visibility
     )
+  }
+  function updateManuallyApprovesFollowersValues(value: boolean) {
+    userForm.manually_approves_followers = value
   }
 
   onUnmounted(() => {

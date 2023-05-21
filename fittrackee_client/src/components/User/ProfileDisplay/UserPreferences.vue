@@ -20,20 +20,30 @@
       <dt>{{ $t('user.PROFILE.ASCENT_DATA') }}:</dt>
       <dd>{{ $t(`common.${display_ascent}`) }}</dd>
       <dt>{{ $t('user.PROFILE.ELEVATION_CHART_START.LABEL') }}:</dt>
-      <dd>{{ $t(`user.PROFILE.ELEVATION_CHART_START.${user.start_elevation_at_zero ? 'ZERO' : 'MIN_ALT'}`) }}</dd>
-      <dt>{{ $t('privacy.WORKOUTS_VISIBILITY') }}:</dt>
       <dd>
         {{
           $t(
-            `privacy.LEVELS.${user.workouts_visibility}`
+            `user.PROFILE.ELEVATION_CHART_START.${
+              user.start_elevation_at_zero ? 'ZERO' : 'MIN_ALT'
+            }`
           )
         }}
       </dd>
+      <dt>{{ $t('privacy.WORKOUTS_VISIBILITY') }}:</dt>
+      <dd>
+        {{ $t(`privacy.LEVELS.${user.workouts_visibility}`) }}
+      </dd>
       <dt>{{ $t('privacy.MAP_VISIBILITY') }}:</dt>
+      <dd>
+        {{ $t(`privacy.LEVELS.${user.map_visibility}`) }}
+      </dd>
+      <dt>{{ $t('user.PROFILE.FOLLOW_REQUESTS_APPROVAL.LABEL') }}:</dt>
       <dd>
         {{
           $t(
-            `privacy.LEVELS.${user.map_visibility}`
+            `user.PROFILE.FOLLOW_REQUESTS_APPROVAL.${
+              user.manually_approves_followers ? 'MANUALLY' : 'AUTOMATICALLY'
+            }`
           )
         }}
       </dd>

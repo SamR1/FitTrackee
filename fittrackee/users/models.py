@@ -523,6 +523,9 @@ class User(BaseModel):
                     'weekm': self.weekm,
                     'map_visibility': self.map_visibility.value,
                     'workouts_visibility': self.workouts_visibility.value,
+                    'manually_approves_followers': (
+                        self.manually_approves_followers
+                    ),
                 },
             }
 

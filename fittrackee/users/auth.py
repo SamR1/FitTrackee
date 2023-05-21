@@ -305,6 +305,7 @@ def get_authenticated_user_profile(
           "language": "en",
           "last_name": null,
           "location": null,
+          "manually_approves_followers": false,
           "map_visibility": "private",
           "nb_sports": 3,
           "nb_workouts": 6,
@@ -425,6 +426,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "language": "en",
           "last_name": null,
           "location": null,
+          "manually_approves_followers": false,
           "map_visibility": "private",
           "nb_sports": 3,
           "nb_workouts": 6,
@@ -599,6 +601,8 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "language": "en",
           "last_name": null,
           "location": null,
+          "manually_approves_followers": false,
+          "map_visibility": "followers_only",
           "nb_sports": 3,
           "nb_workouts": 6,
           "picture": false,
@@ -661,6 +665,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "total_duration": "6:50:27",
           "username": "sam"
           "weekm": true,
+          "workouts_visibility": "private"
         },
         "message": "user account updated",
         "status": "success"
@@ -828,6 +833,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "language": "en",
           "last_name": null,
           "location": null,
+          "manually_approves_followers": false,
           "map_visibility": "followers_only",
           "nb_sports": 3,
           "nb_workouts": 6,
@@ -903,6 +909,8 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     :<json string language: language preferences
     :<json string map_visibility: workouts map visibility
                                   ('public', 'followers_only', 'private')
+    :<json boolean manually_approves_followers: if false, follow requests are
+                        automatically approved
     :<json boolean start_elevation_at_zero: do elevation plots start at zero?
     :<json string timezone: user time zone
     :<json boolean weekm: does week start on Monday?
@@ -933,6 +941,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         'weekm',
         'map_visibility',
         'workouts_visibility',
+        'manually_approves_followers',
     }
     if not post_data or not post_data.keys() >= user_mandatory_data:
         return InvalidPayloadErrorResponse()
@@ -946,6 +955,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     weekm = post_data.get('weekm')
     map_visibility = post_data.get('map_visibility')
     workouts_visibility = post_data.get('workouts_visibility')
+    manually_approves_followers = post_data.get('manually_approves_followers')
 
     try:
         auth_user.date_format = date_format
@@ -959,6 +969,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.map_visibility = get_map_visibility(
             PrivacyLevel(map_visibility), auth_user.workouts_visibility
         )
+        auth_user.manually_approves_followers = manually_approves_followers
         db.session.commit()
 
         return {
