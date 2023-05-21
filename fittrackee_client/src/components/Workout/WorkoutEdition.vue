@@ -249,11 +249,7 @@
                     :value="level"
                     :key="level"
                   >
-                    {{
-                      $t(
-                        `privacy.LEVELS.${level}`
-                      )
-                    }}
+                    {{ $t(`privacy.LEVELS.${level}`) }}
                   </option>
                 </select>
               </div>
@@ -269,11 +265,7 @@
                     :value="level"
                     :key="level"
                   >
-                    {{
-                      $t(
-                        `privacy.LEVELS.${level}`
-                      )
-                    }}
+                    {{ $t(`privacy.LEVELS.${level}`) }}
                   </option>
                 </select>
               </div>
@@ -324,6 +316,7 @@
 
   import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import { TAppConfig } from '@/types/application'
+  import { ICustomTextareaData } from '@/types/forms'
   import { ISport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'
   import { IWorkout, IWorkoutForm } from '@/types/workouts'
@@ -367,9 +360,7 @@
   const appConfig: ComputedRef<TAppConfig> = computed(
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
   )
-  const privacyLevels = computed(() =>
-    getPrivacyLevels()
-  )
+  const privacyLevels = computed(() => getPrivacyLevels())
   const fileSizeLimit = appConfig.value.max_single_file_size
     ? getReadableFileSize(appConfig.value.max_single_file_size)
     : ''
@@ -411,8 +402,8 @@
     }
   })
 
-  function updateNotes(value: string) {
-    workoutForm.notes = value
+  function updateNotes(textareaData: ICustomTextareaData) {
+    workoutForm.notes = textareaData.value
   }
   function updateWithGpx() {
     withGpx.value = !withGpx.value

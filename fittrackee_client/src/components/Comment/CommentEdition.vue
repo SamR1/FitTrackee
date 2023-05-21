@@ -5,14 +5,29 @@
         <div class="form-item add-comment-label">
           <CustomTextArea
             class="comment"
-            :name="`text${
-              comment ? `-${comment.id}` : replyTo ? `-${replyTo}` : ''
-            }`"
+            :name="name"
             :input="commentText"
             :required="true"
             :placeholder="$t('workouts.COMMENTS.ADD')"
             @updateValue="updateText"
           />
+          <ul class="users-suggestions" v-if="matchingUsers.length > 0">
+            <li
+              v-for="user in matchingUsers"
+              :key="user.username"
+              @click="
+                selectUser(
+                  user,
+                  `text${
+                    comment ? `-${comment.id}` : replyTo ? `-${replyTo}` : ''
+                  }`
+                )
+              "
+            >
+              <UserPicture :user="user" />
+              <span>{{ user.username }}</span>
+            </li>
+          </ul>
         </div>
       </div>
       <div class="form-select-buttons">
@@ -49,30 +64,50 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, Ref, computed, ref, toRefs } from 'vue'
+  import { ComputedRef, Ref, computed, onUnmounted, ref, toRefs } from 'vue'
 
-  import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
-  import { TPrivacyLevels } from '@/types/user'
+  import UserPicture from '@/components/User/UserPicture.vue'
+  import { ROOT_STORE, USERS_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import { ICustomTextareaData } from '@/types/forms'
+  import { IAuthUserProfile, IUserProfile, TPrivacyLevels } from '@/types/user'
   import { IComment, ICommentForm, IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
+  import { getUsernameQuery, replaceUsername } from '@/utils/inputs'
   import { getCommentVisibilityLevels } from '@/utils/privacy'
 
+  interface ISuggestion {
+    position: number | null
+    usernameQuery: string | null
+  }
   interface Props {
     workout: IWorkout | null
     commentsLoading: string | null
+    authUser: IAuthUserProfile
     comment?: IComment | null
     replyTo?: string | null
+    name?: string | null
+    mentions?: string[]
   }
 
   const props = withDefaults(defineProps<Props>(), {
     comment: null,
     replyTo: null,
+    name: 'text',
+    mentions: () => [],
   })
-  const { workout, comment, commentsLoading, replyTo } = toRefs(props)
+  const {
+    authUser,
+    comment,
+    commentsLoading,
+    mentions,
+    name,
+    replyTo,
+    workout,
+  } = toRefs(props)
 
   const store = useStore()
 
-  const commentText: Ref<string> = ref(comment?.value ? comment.value.text : '')
+  const commentText: Ref<string> = ref(getText())
   const commentTextVisibility: Ref<TPrivacyLevels> = ref(
     comment?.value
       ? comment.value.text_visibility
@@ -87,12 +122,64 @@
       : commentsLoading.value ===
         `new${replyTo.value ? `_${replyTo.value}` : ''}`
   )
+  const matchingUsers: ComputedRef<IUserProfile[]> = computed(
+    () => store.getters[USERS_STORE.GETTERS.USERS]
+  )
+  let suggestion: ISuggestion = { position: null, usernameQuery: null }
 
-  function updateText(value: string) {
-    commentText.value = value
+  function getText(): string {
+    // comment edition
+    if (comment?.value) {
+      return comment.value.text
+    }
+    // reply w/ mention
+    if (mentions.value.length > 0) {
+      const filteredMentions = mentions.value.filter(
+        (m) => m.username !== authUser.value.username
+      )
+      if (filteredMentions.length > 0) {
+        return filteredMentions.map((m) => `@${m.username}`).join(' ') + ' '
+      }
+    }
+    // new comment or no mentions in reply
+    return ''
+  }
+  function searchUsers(usernameQuery: string) {
+    store.dispatch(USERS_STORE.ACTIONS.GET_USERS, {
+      per_page: 5,
+      q: usernameQuery,
+    })
+  }
+  function updateText(textareaData: ICustomTextareaData) {
+    commentText.value = textareaData.value
+    suggestion = getUsernameQuery(textareaData)
+    if (suggestion.usernameQuery) {
+      searchUsers(suggestion.usernameQuery)
+    } else {
+      store.dispatch(USERS_STORE.ACTIONS.EMPTY_USERS)
+    }
+  }
+  function selectUser(user: IUserProfile, textAreaId: string) {
+    if (suggestion.position !== null && suggestion.usernameQuery) {
+      const updatedText = replaceUsername(
+        commentText.value,
+        suggestion.position,
+        suggestion.usernameQuery,
+        user.username
+      )
+      const textarea: HTMLTextAreaElement | null =
+        document.getElementById(textAreaId)
+      if (textarea) {
+        textarea.value = updatedText
+        textarea.focus()
+        textarea.selectionStart = updatedText.length
+        commentText.value = updatedText
+      }
+    }
+    store.dispatch(USERS_STORE.ACTIONS.EMPTY_USERS)
   }
   function onCancel() {
-    updateText('')
+    updateText({ value: '', selectionStart: 0 })
     store.commit(WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION, {})
   }
   function submitComment() {
@@ -113,9 +200,13 @@
         payload.reply_to = replyTo.value
       }
       store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_COMMENT, payload)
-      updateText('')
+      updateText({ value: '', selectionStart: 0 })
     }
   }
+
+  onUnmounted(() => {
+    store.dispatch(USERS_STORE.ACTIONS.EMPTY_USERS)
+  })
 </script>
 
 <style scoped lang="scss">
@@ -146,6 +237,48 @@
     }
     .add-comment-label {
       font-style: italic;
+      position: relative;
+
+      .users-suggestions {
+        list-style-type: none;
+        background-color: white;
+        margin-top: 0;
+        padding: 0;
+        border: 1px solid var(--input-border-color);
+        border-radius: $border-radius;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.25);
+        max-width: 200px;
+        top: 30px;
+
+        li {
+          display: flex;
+          gap: $default-padding;
+          padding: $default-padding;
+
+          ::v-deep(.user-picture) {
+            min-width: min-content;
+            align-items: flex-start;
+            background-color: var(--comment-background);
+            img {
+              height: 25px;
+              width: 25px;
+            }
+            .no-picture {
+              font-size: 1.5em;
+            }
+          }
+
+          &:hover {
+            background-color: var(--dropdown-hover-color);
+            font-weight: bold;
+            cursor: pointer;
+
+            ::v-deep(.user-picture) {
+              background-color: var(--dropdown-hover-color);
+            }
+          }
+        }
+      }
     }
     .comment-buttons {
       display: flex;

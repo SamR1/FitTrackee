@@ -90,6 +90,8 @@
         :workout="workout"
         :comment="comment"
         :comments-loading="commentsLoading"
+        :name="`text-${comment.id}`"
+        :authUser="authUser"
       />
       <template v-if="!forNotification">
         <WorkoutCommentEdition
@@ -98,6 +100,9 @@
           :workout="workout"
           :reply-to="comment.id"
           :comments-loading="commentsLoading"
+          :name="`text-${comment.id}`"
+          :authUser="authUser"
+          :mentions="comment.mentions"
         />
         <Comment
           v-for="reply in comment.replies"

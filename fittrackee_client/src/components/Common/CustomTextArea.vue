@@ -25,7 +25,7 @@
     disabled?: boolean
     input?: string | null
     required?: boolean
-    placeholder? : string
+    placeholder?: string
   }
   const props = withDefaults(defineProps<Props>(), {
     charLimit: 500,
@@ -40,7 +40,10 @@
   const text = ref(props.input)
 
   function updateText(event: Event & { target: HTMLInputElement }) {
-    emit('updateValue', event.target.value)
+    emit('updateValue', {
+      value: event.target.value,
+      selectionStart: event.target.selectionStart,
+    })
   }
 
   watch(

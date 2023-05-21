@@ -33,6 +33,7 @@
             v-if="authUser.username"
             :workout="workoutData.workout"
             comments-loading="workoutData.commentsLoading"
+            :auth-user="authUser"
           />
         </div>
         <div class="add-comment-button" v-else-if="workoutData.workout.id">
@@ -107,15 +108,20 @@
   })
 
   function getComments(): IComment[] {
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, 'all')
+    let allComments = []
     if (!withParent.value || !workoutData.value.comments[0].reply_to) {
-      return workoutData.value.comments
+      allComments = workoutData.value.comments
+    } else {
+      const replyToComment = Object.assign(
+        {},
+        workoutData.value.comments[0].reply_to
+      )
+      replyToComment.replies = workoutData.value.comments
+      allComments = [replyToComment]
     }
-    const replyToComment = Object.assign(
-      {},
-      workoutData.value.comments[0].reply_to
-    )
-    replyToComment.replies = workoutData.value.comments
-    return [replyToComment]
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, null)
+    return allComments
   }
 
   function deleteComment() {
@@ -139,6 +145,7 @@
       const textarea = document.getElementById('text')
       if (textarea) {
         textarea.focus()
+        textarea.scrollIntoView({ behavior: 'smooth' })
       }
     }, 100)
   }

@@ -65,6 +65,7 @@
   import { ComputedRef, computed, reactive, onMounted, onUnmounted } from 'vue'
 
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import { ICustomTextareaData } from '@/types/forms'
   import { IUserProfile, IUserPayload, IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
@@ -114,8 +115,8 @@
     userForm.location = user.location ? user.location : ''
     userForm.bio = user.bio ? user.bio : ''
   }
-  function updateBio(value: string) {
-    userForm.bio = value
+  function updateBio(textareaData: ICustomTextareaData) {
+    userForm.bio = textareaData.value
   }
   function updateProfile() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PROFILE, userForm)
