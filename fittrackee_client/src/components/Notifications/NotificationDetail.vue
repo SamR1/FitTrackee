@@ -187,8 +187,13 @@
 
       ::v-deep(.workout-comment),
       ::v-deep(.follow-request) {
-        .no-picture {
-          color: var(--app-color-lighter);
+        .user-picture {
+          img {
+            opacity: 0.5;
+          }
+          .no-picture {
+            color: var(--app-color-lighter);
+          }
         }
       }
       ::v-deep(.workout-comment) {
