@@ -241,6 +241,7 @@ class TestNotificationForWorkoutLike(NotificationTestCase):
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
         workout_cycling_user_1: Workout,
     ) -> None:
         like = self.like_workout(user_2, workout_cycling_user_1)
@@ -248,7 +249,7 @@ class TestNotificationForWorkoutLike(NotificationTestCase):
         notification = Notification.query.filter_by(
             from_user_id=like.user_id,
             to_user_id=workout_cycling_user_1.user_id,
-            event_object_id=like.id,
+            event_object_id=workout_cycling_user_1.id,
         ).first()
         assert notification.created_at == like.created_at
         assert notification.marked_as_read is False
@@ -260,17 +261,17 @@ class TestNotificationForWorkoutLike(NotificationTestCase):
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
         workout_cycling_user_1: Workout,
     ) -> None:
         like = self.like_workout(user_2, workout_cycling_user_1)
-        like_id = like.id
 
         db.session.delete(like)
 
         notification = Notification.query.filter_by(
             from_user_id=user_2.id,
             to_user_id=workout_cycling_user_1.user_id,
-            event_object_id=like_id,
+            event_object_id=workout_cycling_user_1.id,
             event_type='workout_like',
         ).first()
         assert notification is None
@@ -279,15 +280,17 @@ class TestNotificationForWorkoutLike(NotificationTestCase):
         self,
         app: Flask,
         user_1: User,
+        user_2: User,
         sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
         workout_cycling_user_1: Workout,
     ) -> None:
-        like = self.like_workout(user_1, workout_cycling_user_1)
+        self.like_workout(user_1, workout_cycling_user_1)
 
         notification = Notification.query.filter_by(
-            from_user_id=like.user_id,
+            from_user_id=user_1.id,
             to_user_id=workout_cycling_user_1.user_id,
-            event_object_id=like.id,
+            event_object_id=workout_cycling_user_1.id,
         ).first()
         assert notification is None
 
@@ -295,7 +298,9 @@ class TestNotificationForWorkoutLike(NotificationTestCase):
         self,
         app: Flask,
         user_1: User,
+        user_2: User,
         sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
         workout_cycling_user_1: Workout,
     ) -> None:
         like = self.like_workout(user_1, workout_cycling_user_1)
@@ -308,11 +313,12 @@ class TestNotificationForWorkoutLike(NotificationTestCase):
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
         workout_cycling_user_1: Workout,
     ) -> None:
-        like = self.like_workout(user_2, workout_cycling_user_1)
+        self.like_workout(user_2, workout_cycling_user_1)
         notification = Notification.query.filter_by(
-            event_object_id=like.id,
+            event_object_id=workout_cycling_user_1.id,
             event_type='workout_like',
         ).first()
 

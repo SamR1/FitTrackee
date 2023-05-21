@@ -17,7 +17,7 @@ from fittrackee import BaseModel, appLog, bcrypt, db
 from fittrackee.comments.models import Comment
 from fittrackee.files import get_absolute_file_path
 from fittrackee.privacy_levels import PrivacyLevel
-from fittrackee.workouts.models import Workout, WorkoutLike
+from fittrackee.workouts.models import Workout
 
 from .exceptions import (
     FollowRequestAlreadyProcessedError,
@@ -734,8 +734,7 @@ class Notification(BaseModel):
         }
 
         if self.event_type == "workout_like":
-            like = WorkoutLike.query.filter_by(id=self.event_object_id).first()
-            workout = Workout.query.filter_by(id=like.workout_id).first()
+            workout = Workout.query.filter_by(id=self.event_object_id).first()
             serialized_notification["workout"] = workout.serialize(
                 user=to_user
             )
