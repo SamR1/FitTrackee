@@ -12,7 +12,7 @@ from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin
-from ..utils import jsonify_dict
+from ..utils import OAUTH_SCOPES, jsonify_dict
 
 
 class TestGetUser(ApiTestCaseMixin):
@@ -135,15 +135,7 @@ class TestGetUser(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', True),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'users:read': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -925,15 +917,7 @@ class TestGetUsers(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', True),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'users:read': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1436,15 +1420,7 @@ class TestUpdateUser(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', True),
-            ('workouts:read', False),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'users:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1713,15 +1689,7 @@ class TestDeleteUser(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', True),
-            ('workouts:read', False),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'users:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
