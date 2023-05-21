@@ -73,7 +73,7 @@ def get_gpx_info(
     stopped_speed_threshold: float,
     update_map_data: Optional[bool] = True,
     update_weather_data: Optional[bool] = True,
-    use_raw_gpx_speed: Optional[bool] = False,
+    use_raw_gpx_speed: bool = False,
 ) -> Tuple:
     """
     Parse and return gpx, map and weather data from gpx file
