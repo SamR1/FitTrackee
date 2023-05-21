@@ -72,8 +72,6 @@
 
   const store = useStore()
 
-  const emit = defineEmits(['closeEdition'])
-
   const commentText: Ref<string> = ref(comment?.value ? comment.value.text : '')
   const commentTextVisibility: Ref<TPrivacyLevels> = ref(
     comment?.value
@@ -95,7 +93,7 @@
   }
   function onCancel() {
     updateText('')
-    emit('closeEdition')
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION, {})
   }
   function submitComment() {
     if (comment?.value && comment.value.id) {

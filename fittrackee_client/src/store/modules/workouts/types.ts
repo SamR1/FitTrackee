@@ -18,6 +18,7 @@ import {
   IWorkoutForm,
   IComment,
   ICommentPayload,
+  ICurrentCommentEdition,
 } from '@/types/workouts'
 
 export interface IWorkoutsState {
@@ -158,6 +159,10 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
   [WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING](
     state: S,
     commentId: string | null
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION](
+    state: S,
+    currentCommentEdition: ICurrentCommentEdition
   ): void
 }
 

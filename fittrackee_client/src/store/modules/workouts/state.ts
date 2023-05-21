@@ -1,6 +1,6 @@
 import { IWorkoutsState } from '@/store/modules/workouts/types'
 import { IPagination } from '@/types/api'
-import { IWorkout } from '@/types/workouts'
+import { ICurrentCommentEdition, IWorkout } from '@/types/workouts'
 
 export const workoutsState: IWorkoutsState = {
   calendar_workouts: [],
@@ -14,5 +14,6 @@ export const workoutsState: IWorkoutsState = {
     chartData: [],
     comments: [],
     commentsLoading: null,
+    currentCommentEdition: <ICurrentCommentEdition>{},
   },
 }

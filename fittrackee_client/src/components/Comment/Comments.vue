@@ -5,8 +5,8 @@
       :title="$t('common.CONFIRMATION')"
       :message="$t('workouts.COMMENTS.DELETION_CONFIRMATION')"
       :loading="isDeleting"
-      @confirmAction="deleteComment(commentToDelete)"
-      @cancelAction="() => (commentToDelete = null)"
+      @confirmAction="deleteComment"
+      @cancelAction="cancelDelete"
     />
     <Card>
       <template #title>
@@ -21,9 +21,9 @@
           :key="comment.id"
           :comment="comment"
           :workout="workoutData.workout"
+          :current-comment-edition="workoutData.currentCommentEdition"
           :authUser="authUser"
           comments-loading="workoutData.commentsLoading"
-          @deleteComment="(c) => (commentToDelete = c)"
         />
         <div class="no-comments" v-if="workoutData.comments.length === 0">
           {{ $t('workouts.COMMENTS.NO_COMMENTS') }}
@@ -33,7 +33,6 @@
             v-if="authUser.username"
             :workout="workoutData.workout"
             comments-loading="workoutData.commentsLoading"
-            @closeEdition="displayAddComment = false"
           />
         </div>
         <div class="add-comment-button" v-else-if="workoutData.workout.id">
@@ -49,7 +48,6 @@
 <script setup lang="ts">
   import {
     ComputedRef,
-    Ref,
     capitalize,
     computed,
     nextTick,
@@ -83,8 +81,12 @@
   const store = useStore()
 
   const comments: ComputedRef<IComment[]> = computed(() => getComments())
-  const commentToDelete: Ref<IComment | null> = ref(null)
-  const displayAddComment: Ref<boolean> = ref(false)
+  const commentToDelete: ComputedRef<boolean> = computed(
+    () => workoutData.value.currentCommentEdition.type === 'delete'
+  )
+  const displayAddComment: ComputedRef<boolean> = computed(
+    () => workoutData.value.currentCommentEdition.type === 'new'
+  )
   const isLoading: ComputedRef<boolean> = computed(
     () => workoutData.value.commentsLoading === 'all'
   )
@@ -116,14 +118,23 @@
     return [replyToComment]
   }
 
-  function deleteComment(comment: IComment) {
-    store.dispatch(WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT_COMMENT, {
-      workoutId: comment.workout_id,
-      commentId: comment.id,
-    })
+  function deleteComment() {
+    const commentToDelete: IComment | null =
+      workoutData.value.currentCommentEdition.comment
+    if (commentToDelete) {
+      store.dispatch(WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT_COMMENT, {
+        workoutId: commentToDelete.workout_id,
+        commentId: commentToDelete.id,
+      })
+    }
+  }
+  function cancelDelete() {
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION, {})
   }
   function displayCommentTextArea() {
-    displayAddComment.value = true
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION, {
+      type: 'new',
+    })
     timer.value = setTimeout(() => {
       const textarea = document.getElementById('text')
       if (textarea) {
@@ -142,7 +153,7 @@
   watch(
     () => workoutData.value.comments,
     () => {
-      commentToDelete.value = null
+      store.commit(WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION, {})
     }
   )
 

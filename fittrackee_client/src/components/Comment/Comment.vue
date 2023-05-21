@@ -46,7 +46,7 @@
           class="fa fa-edit comment-action"
           v-if="isCommentOwner(authUser, comment.user) && !forNotification"
           aria-hidden="true"
-          @click="() => displayCommentEdition(comment)"
+          @click="() => displayCommentEdition('edit')"
         />
         <i
           class="fa fa-trash comment-action"
@@ -70,19 +70,19 @@
         </span>
         <i
           class="fa fa-comment-o comment-action"
-          v-if="
-            authUser.username &&
-            comment.workout_id &&
-            (!addReply || addReply !== comment) &&
-            !forNotification
-          "
-          @click="() => displayReplyTextArea(comment)"
+          v-if="displayCommentIcon()"
+          @click="() => displayCommentEdition('add')"
         />
       </div>
       <span
-        v-if="commentToEdit !== comment"
+        v-if="!isCommentEdited()"
         class="comment-text"
-        :class="{ highlight: comment.id === paramsCommentId }"
+        :class="{
+          highlight:
+            comment.id === paramsCommentId ||
+            (currentCommentEdition.type === 'delete' &&
+              currentCommentEdition.comment.id === comment.id),
+        }"
         v-html="linkifyAndClean(comment.text_html)"
       />
       <WorkoutCommentEdition
@@ -90,9 +90,15 @@
         :workout="workout"
         :comment="comment"
         :comments-loading="commentsLoading"
-        @closeEdition="() => (commentToEdit = null)"
       />
       <template v-if="!forNotification">
+        <WorkoutCommentEdition
+          v-if="isNewReply()"
+          class="add-comment-reply"
+          :workout="workout"
+          :reply-to="comment.id"
+          :comments-loading="commentsLoading"
+        />
         <Comment
           v-for="reply in comment.replies"
           :key="reply.id"
@@ -100,15 +106,8 @@
           :workout="workout"
           :authUser="authUser"
           :comments-loading="commentsLoading"
+          :current-comment-edition="currentCommentEdition"
           @deleteComment="deleteComment(reply)"
-        />
-        <WorkoutCommentEdition
-          v-if="addReply === comment"
-          class="add-comment-reply"
-          :workout="workout"
-          :reply-to="comment.id"
-          :comments-loading="commentsLoading"
-          @closeEdition="() => (addReply = null)"
         />
       </template>
     </div>
@@ -117,7 +116,7 @@
 
 <script setup lang="ts">
   import { Locale, formatDistance } from 'date-fns'
-  import { ComputedRef, Ref, computed, ref, toRefs, withDefaults } from 'vue'
+  import { ComputedRef, computed, toRefs, withDefaults } from 'vue'
   import { useRoute } from 'vue-router'
 
   import WorkoutCommentEdition from '@/components/Comment/CommentEdition.vue'
@@ -126,7 +125,7 @@
   import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import { IDisplayOptions } from '@/types/application'
   import { IAuthUserProfile, IUserProfile } from '@/types/user'
-  import { IComment, IWorkout } from '@/types/workouts'
+  import { IComment, ICurrentCommentEdition, IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
   import { linkifyAndClean } from '@/utils/inputs'
@@ -136,16 +135,17 @@
     workout?: IWorkout
     authUser: IAuthUserProfile
     commentsLoading: string | null
+    currentCommentEdition?: ICurrentCommentEdition
     forNotification?: boolean
   }
 
   const props = withDefaults(defineProps<Props>(), {
+    currentCommentEdition: {},
     forNotification: false,
     workout: null,
   })
-  const { authUser, comment, workout } = toRefs(props)
-
-  const emit = defineEmits(['deleteComment'])
+  const { authUser, comment, currentCommentEdition, forNotification, workout } =
+    toRefs(props)
 
   const store = useStore()
   const route = useRoute()
@@ -156,8 +156,6 @@
   const displayOptions: ComputedRef<IDisplayOptions> = computed(
     () => store.getters[ROOT_STORE.GETTERS.DISPLAY_OPTIONS]
   )
-  const commentToEdit: Ref<IComment | null> = ref(null)
-  const addReply: Ref<IComment | null> = ref(null)
   const paramsCommentId: ComputedRef<string | null> = computed(
     () => route.params.commentId
   )
@@ -168,26 +166,42 @@
   ) {
     return authUser && authUser.username === commentUser.username
   }
-  function deleteComment(comment: IComment) {
-    emit('deleteComment', comment)
+  function isCommentEdited() {
+    return (
+      currentCommentEdition.value.type === 'edit' &&
+      currentCommentEdition.value.comment.id === comment.value.id
+    )
   }
-  function focusOnTextArea(commentId: string) {
+  function isNewReply() {
+    return (
+      currentCommentEdition.value.type === 'add' &&
+      currentCommentEdition.value.comment.id === comment.value.id
+    )
+  }
+  function displayCommentIcon() {
+    return (
+      authUser.value.username &&
+      comment.value.workout_id &&
+      !forNotification.value
+    )
+  }
+  function deleteComment() {
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION, {
+      type: 'delete',
+      comment: comment.value,
+    })
+  }
+  function displayCommentEdition(actionType: string) {
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION, {
+      type: actionType,
+      comment: comment.value,
+    })
     setTimeout(() => {
-      const textarea = document.getElementById(`text-${commentId}`)
+      const textarea = document.getElementById(`text-${comment.value.id}`)
       if (textarea) {
         textarea.focus()
       }
     }, 100)
-  }
-  function displayCommentEdition(comment: IComment) {
-    commentToEdit.value = comment
-    addReply.value = null
-    focusOnTextArea(comment.id)
-  }
-  function displayReplyTextArea(comment: IComment) {
-    commentToEdit.value = null
-    addReply.value = comment
-    focusOnTextArea(comment.id)
   }
   function updateLike(comment: IComment) {
     store.dispatch(

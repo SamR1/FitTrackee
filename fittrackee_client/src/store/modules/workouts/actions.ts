@@ -316,6 +316,10 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
             WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
             payload.workout_id
           )
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION,
+            {}
+          )
         } else {
           handleError(context, null)
         }
@@ -410,6 +414,10 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       .then((res) => {
         if (res.data.status === 'success') {
           reloadComment(context, payload.id, payload.workout_id)
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION,
+            {}
+          )
         }
       })
       .catch((error) => {
