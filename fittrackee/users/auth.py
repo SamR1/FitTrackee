@@ -893,7 +893,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     :<json string language: language preferences
     :<json boolean start_elevation_at_zero: do elevation plots start at zero?
     :<json string timezone: user time zone
-    :<json boolean use_raw_gpx_speed: Use raw (unfiltered) gpx data to calculate speeds
+    :<json boolean use_raw_gpx_speed: Use unfiltered gpx to calculate speeds
     :<json boolean weekm: does week start on Monday?
 
     :reqheader Authorization: OAuth 2.0 Bearer Token

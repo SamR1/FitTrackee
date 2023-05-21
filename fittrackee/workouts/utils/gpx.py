@@ -73,7 +73,7 @@ def get_gpx_info(
     stopped_speed_threshold: float,
     update_map_data: Optional[bool] = True,
     update_weather_data: Optional[bool] = True,
-    use_raw_gpx_speed: Optional[bool] = False
+    use_raw_gpx_speed: Optional[bool] = False,
 ) -> Tuple:
     """
     Parse and return gpx, map and weather data from gpx file
@@ -130,7 +130,7 @@ def get_gpx_info(
                 map_data.append([point.longitude, point.latitude])
         moving_data = segment.get_moving_data(
             stopped_speed_threshold=stopped_speed_threshold,
-            raw=use_raw_gpx_speed
+            raw=use_raw_gpx_speed,
         )
         if moving_data:
             calculated_max_speed = moving_data.max_speed

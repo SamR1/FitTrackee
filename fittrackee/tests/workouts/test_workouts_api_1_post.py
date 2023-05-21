@@ -279,7 +279,11 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert_workout_data_with_gpx(data)
 
     def test_it_adds_a_workout_with_gpx_file_raw_speed(
-        self, app: Flask, user_1_raw_speed: User, sport_1_cycling: Sport, gpx_file: str
+        self,
+        app: Flask,
+        user_1_raw_speed: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_raw_speed.email
@@ -301,7 +305,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert response.status_code == 201
         assert 'created' in data['status']
         assert len(data['data']['workouts']) == 1
-        # max speed should be slightly higher than that tested in 
+        # max speed should be slightly higher than that tested in
         # assert_workout_data_with_gpx
         assert data['data']['workouts'][0]['max_speed'] == pytest.approx(5.25)
 

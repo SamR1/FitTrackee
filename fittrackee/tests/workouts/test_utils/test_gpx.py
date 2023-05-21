@@ -54,8 +54,7 @@ class TestStoppedSpeedThreshold:
             )
 
         assert gpx_track_segment_mock.call_args_list[0] == call(
-            stopped_speed_threshold=expected_threshold,
-            raw=False
+            stopped_speed_threshold=expected_threshold, raw=False
         )
         gpx_track_segment_mock.assert_called_with(
             expected_threshold,  # stopped_speed_threshold
@@ -89,8 +88,7 @@ class TestStoppedSpeedThreshold:
             )
 
         assert gpx_track_segment_mock.call_args_list[0] == call(
-            stopped_speed_threshold=expected_threshold,
-            raw=False
+            stopped_speed_threshold=expected_threshold, raw=False
         )
         gpx_track_segment_mock.assert_called_with(
             expected_threshold,  # stopped_speed_threshold

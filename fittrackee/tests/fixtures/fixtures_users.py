@@ -76,6 +76,7 @@ def user_1_raw_speed() -> User:
     db.session.commit()
     return user
 
+
 @pytest.fixture()
 def user_1_paris() -> User:
     user = User(username='test', email='test@test.com', password='12345678')
