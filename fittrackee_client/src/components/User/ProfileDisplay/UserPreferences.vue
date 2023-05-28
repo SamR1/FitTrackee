@@ -108,3 +108,13 @@
     props.user.display_ascent ? 'DISPLAYED' : 'HIDDEN'
   )
 </script>
+
+<style lang="scss" scoped>
+  @import '~@/scss/vars.scss';
+  #user-preferences {
+    .raw-speed-help {
+      margin-top: -$default-margin * 0.5;
+      margin-bottom: $default-margin;
+    }
+  }
+</style>
