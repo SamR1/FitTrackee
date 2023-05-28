@@ -98,6 +98,43 @@ class TestStoppedSpeedThreshold:
         )
 
 
+class TestUseRawGpxSpeed:
+    @pytest.mark.parametrize('input_use_raw_gpx_speed', [True, False])
+    def test_it_calls_get_moving_data_with_user_use_raw_gpx_speed_preference(
+        self,
+        app: Flask,
+        user_1: User,
+        gpx_file_storage: FileStorage,
+        sport_1_cycling: Sport,
+        input_use_raw_gpx_speed: bool,
+    ) -> None:
+        user_1.use_raw_gpx_speed = input_use_raw_gpx_speed
+        with patch(
+            'fittrackee.workouts.utils.workouts.get_new_file_path',
+            return_value='/tmp/fitTrackee/uploads/test.png',
+        ), patch(
+            'gpxpy.gpx.GPXTrackSegment.get_moving_data',
+            return_value=moving_data,
+        ) as gpx_track_segment_mock:
+            process_files(
+                auth_user=user_1,
+                folders=folders,
+                workout_data={'sport_id': sport_1_cycling.id},
+                workout_file=gpx_file_storage,
+            )
+
+        assert gpx_track_segment_mock.call_args_list[0] == call(
+            stopped_speed_threshold=sport_1_cycling.stopped_speed_threshold,
+            raw=input_use_raw_gpx_speed,
+        )
+        gpx_track_segment_mock.assert_called_with(
+            sport_1_cycling.stopped_speed_threshold,  # stopped_speed_threshold
+            False,  # raw
+            IGNORE_TOP_SPEED_PERCENTILES,  # speed_extreemes_percentiles
+            True,  # ignore_nonstandard_distances
+        )
+
+
 class TestGetGpxInfoStopTime:
     def test_stop_time_equals_to_0_when_gpx_file_contains_one_segment(
         self, gpx_file: str
