@@ -47,7 +47,12 @@
         "TABS": {
             "PROFILE": "profil"
         },
-        "TIMEZONE": "Tidssone"
+        "TIMEZONE": "Tidssone",
+        "USE_RAW_GPX_SPEED": {
+            "FILTERED_SPEED": "Filtrert",
+            "LABEL": "Maks hastighet strategi",
+            "RAW_SPEED": "Rå"
+        }
     },
     "RESET_PASSWORD": "Tilbakestill passordet ditt",
     "SHOW_PASSWORD": "vis passord",

@@ -20,7 +20,31 @@
       <dt>{{ $t('user.PROFILE.ASCENT_DATA') }}:</dt>
       <dd>{{ $t(`common.${display_ascent}`) }}</dd>
       <dt>{{ $t('user.PROFILE.ELEVATION_CHART_START.LABEL') }}:</dt>
-      <dd>{{ $t(`user.PROFILE.ELEVATION_CHART_START.${user.start_elevation_at_zero ? 'ZERO' : 'MIN_ALT'}`) }}</dd>
+      <dd>
+        {{
+          $t(
+            `user.PROFILE.ELEVATION_CHART_START.${
+              user.start_elevation_at_zero ? 'ZERO' : 'MIN_ALT'
+            }`
+          )
+        }}
+      </dd>
+      <dt>{{ $t('user.PROFILE.USE_RAW_GPX_SPEED.LABEL') }}:</dt>
+      <dd>
+        {{
+          $t(
+            `user.PROFILE.USE_RAW_GPX_SPEED.${
+              user.use_raw_gpx_speed ? 'RAW_SPEED' : 'FILTERED_SPEED'
+            }`
+          )
+        }}
+      </dd>
+      <div class="info-box raw-speed-help">
+        <span>
+          <i class="fa fa-info-circle" aria-hidden="true" />
+          {{ $t('user.PROFILE.USE_RAW_GPX_SPEED.HELP') }}
+        </span>
+      </div>
     </dl>
     <div class="profile-buttons">
       <button @click="$router.push('/profile/edit/preferences')">
