@@ -118,9 +118,9 @@
             "METRIC": "Metrisch systeem (m, km, m/s, °C)"
         },
         "USE_RAW_GPX_SPEED": {
+            "FILTERED_SPEED": "Gefilterd",
             "LABEL": "Strategie voor maximale snelheid",
-            "RAW_SPEED": "Rauw",
-            "FILTERED_SPEED": "Gefilterd"
+            "RAW_SPEED": "Rauw"
         }
     },
     "READ_AND_ACCEPT_PRIVACY_POLICY": "Ik heb het {0} gelezen en goedgekeurd.",

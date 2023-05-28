@@ -99,9 +99,9 @@
             "METRIC": "Sistema metrico (m, km, m/s, °C)"
         },
         "USE_RAW_GPX_SPEED": {
+            "FILTERED_SPEED": "Filtrato",
             "LABEL": "Strategia di massima velocità",
-            "RAW_SPEED": "Greggio",
-            "FILTERED_SPEED": "Filtrato"
+            "RAW_SPEED": "Greggio"
         }
     },
     "REGISTER": "Registra",

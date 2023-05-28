@@ -118,9 +118,9 @@
             "METRIC": "Sistema Métrico (m, km, m/s, ºC)"
         },
         "USE_RAW_GPX_SPEED": {
+            "FILTERED_SPEED": "Filtrado",
             "LABEL": "Estrategia de velocidad máxima",
-            "RAW_SPEED": "Crudo",
-            "FILTERED_SPEED": "Filtrado"
+            "RAW_SPEED": "Crudo"
         }
     },
     "READ_AND_ACCEPT_PRIVACY_POLICY": "He leído y aceptado la {0}.",
