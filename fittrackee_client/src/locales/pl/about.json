@@ -1,1 +1,7 @@
-{ }
+{
+    "WEATHER_DATA_FROM": "Dane pogodowe z:",
+    "ABOUT_THIS_INSTANCE": "O tej instancji",
+    "CONTACT_ADMIN": "Skontaktuj się z administratorem",
+    "FITTRACKEE_LICENSE": "na licencji {0} ",
+    "SOURCE_CODE": "Kod źródłowy"
+}
