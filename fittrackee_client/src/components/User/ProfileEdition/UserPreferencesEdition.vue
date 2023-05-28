@@ -346,6 +346,10 @@
       : false
     userForm.imperial_units = user.imperial_units ? user.imperial_units : false
     userForm.language = user.language ? user.language : 'en'
+    userForm.manually_approves_followers =
+      'manually_approves_followers' in user
+        ? user.manually_approves_followers
+        : true
     userForm.map_visibility = user.map_visibility
       ? user.map_visibility
       : 'private'

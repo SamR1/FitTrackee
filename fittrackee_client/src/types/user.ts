@@ -95,6 +95,7 @@ export interface IUserPreferencesPayload {
   use_raw_gpx_speed: boolean
   imperial_units: boolean
   language: string
+  manually_approves_followers: boolean
   map_visibility: TPrivacyLevels
   timezone: string
   date_format: string
