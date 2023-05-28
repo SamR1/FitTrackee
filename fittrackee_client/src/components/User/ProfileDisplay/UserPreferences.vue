@@ -29,6 +29,22 @@
           )
         }}
       </dd>
+      <dt>{{ $t('user.PROFILE.USE_RAW_GPX_SPEED.LABEL') }}:</dt>
+      <dd>
+        {{
+          $t(
+            `user.PROFILE.USE_RAW_GPX_SPEED.${
+              user.use_raw_gpx_speed ? 'RAW_SPEED' : 'FILTERED_SPEED'
+            }`
+          )
+        }}
+      </dd>
+      <div class="info-box raw-speed-help">
+        <span>
+          <i class="fa fa-info-circle" aria-hidden="true" />
+          {{ $t('user.PROFILE.USE_RAW_GPX_SPEED.HELP') }}
+        </span>
+      </div>
       <dt>{{ $t('privacy.WORKOUTS_VISIBILITY') }}:</dt>
       <dd>
         {{ $t(`privacy.LEVELS.${user.workouts_visibility}`) }}

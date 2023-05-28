@@ -895,7 +895,8 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
-          "username": "sam",
+          "use_raw_gpx_speed": true,
+          "username": "sam"
           "weekm": true,
           "workouts_visibility": "public"
         },
@@ -913,6 +914,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
                         automatically approved
     :<json boolean start_elevation_at_zero: do elevation plots start at zero?
     :<json string timezone: user time zone
+    :<json boolean use_raw_gpx_speed: Use unfiltered gpx to calculate speeds
     :<json boolean weekm: does week start on Monday?
     :<json string workouts_visibility: user workouts visibility
                                       ('public', 'followers_only', 'private')
@@ -938,6 +940,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         'language',
         'start_elevation_at_zero',
         'timezone',
+        'use_raw_gpx_speed',
         'weekm',
         'map_visibility',
         'workouts_visibility',
@@ -951,6 +954,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     imperial_units = post_data.get('imperial_units')
     language = get_language(post_data.get('language'))
     start_elevation_at_zero = post_data.get('start_elevation_at_zero')
+    use_raw_gpx_speed = post_data.get('use_raw_gpx_speed')
     timezone = post_data.get('timezone')
     weekm = post_data.get('weekm')
     map_visibility = post_data.get('map_visibility')
@@ -964,6 +968,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.language = language
         auth_user.start_elevation_at_zero = start_elevation_at_zero
         auth_user.timezone = timezone
+        auth_user.use_raw_gpx_speed = use_raw_gpx_speed
         auth_user.weekm = weekm
         auth_user.workouts_visibility = PrivacyLevel(workouts_visibility)
         auth_user.map_visibility = get_map_visibility(

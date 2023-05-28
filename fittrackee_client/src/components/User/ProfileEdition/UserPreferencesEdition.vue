@@ -122,6 +122,32 @@
             </label>
           </div>
         </div>
+        <div class="form-items form-checkboxes">
+          <span class="checkboxes-label">
+            {{ $t('user.PROFILE.USE_RAW_GPX_SPEED.LABEL') }}
+          </span>
+          <div class="checkboxes">
+            <label v-for="status in useRawGpxSpeed" :key="status.label">
+              <input
+                type="radio"
+                :id="status.label"
+                :name="status.label"
+                :checked="status.value === userForm.use_raw_gpx_speed"
+                :disabled="loading"
+                @input="updateUseRawGpxSpeed(status.value)"
+              />
+              <span class="checkbox-label">
+                {{ $t(`user.PROFILE.USE_RAW_GPX_SPEED.${status.label}`) }}
+              </span>
+            </label>
+          </div>
+          <div class="info-box raw-speed-help">
+            <span>
+              <i class="fa fa-info-circle" aria-hidden="true" />
+              {{ $t('user.PROFILE.USE_RAW_GPX_SPEED.HELP') }}
+            </span>
+          </div>
+        </div>
         <label class="form-items">
           {{ $t('privacy.WORKOUTS_VISIBILITY') }}
           <select
@@ -266,6 +292,16 @@
       value: false,
     },
   ]
+  const useRawGpxSpeed = [
+    {
+      label: 'FILTERED_SPEED',
+      value: false,
+    },
+    {
+      label: 'RAW_SPEED',
+      value: true,
+    },
+  ]
   const manuallyApprovesFollowersValues = [
     {
       label: 'MANUALLY',
@@ -305,6 +341,9 @@
     userForm.start_elevation_at_zero = user.start_elevation_at_zero
       ? user.start_elevation_at_zero
       : false
+    userForm.use_raw_gpx_speed = user.use_raw_gpx_speed
+      ? user.use_raw_gpx_speed
+      : false
     userForm.imperial_units = user.imperial_units ? user.imperial_units : false
     userForm.language = user.language ? user.language : 'en'
     userForm.map_visibility = user.map_visibility
@@ -325,6 +364,9 @@
   }
   function updateStartElevationAtZero(value: boolean) {
     userForm.start_elevation_at_zero = value
+  }
+  function updateUseRawGpxSpeed(value: boolean) {
+    userForm.use_raw_gpx_speed = value
   }
   function updateAscentDisplay(value: boolean) {
     userForm.display_ascent = value

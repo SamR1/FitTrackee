@@ -322,10 +322,12 @@ def process_one_gpx_file(
     absolute_gpx_filepath = None
     absolute_map_filepath = None
     try:
-        gpx_data, map_data, weather_data = get_gpx_info(
-            params['file_path'], stopped_speed_threshold
-        )
         auth_user = params['auth_user']
+        gpx_data, map_data, weather_data = get_gpx_info(
+            gpx_file=params['file_path'],
+            stopped_speed_threshold=stopped_speed_threshold,
+            use_raw_gpx_speed=auth_user.use_raw_gpx_speed,
+        )
         workout_date, _ = get_workout_datetime(
             workout_date=gpx_data['start'],
             date_str_format=None if gpx_data else '%Y-%m-%d %H:%M',

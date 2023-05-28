@@ -125,6 +125,12 @@
             "IMPERIAL": "Système impérial (ft, mi, mph, °F)",
             "LABEL": "Unités pour les distances",
             "METRIC": "Système métrique (m, km, m/s, °C)"
+        },
+        "USE_RAW_GPX_SPEED": {
+            "FILTERED_SPEED": "Filtré",
+            "HELP": "Si filtré, les valeurs extrêmes (qui peuvent être des erreurs GPS) sont exclues lors du calcul de la vitesse maximale.",
+            "LABEL": "Stratégie de vitesse maximale",
+            "RAW_SPEED": "Brut"
         }
     },
     "READ_AND_ACCEPT_PRIVACY_POLICY": "J'ai lu et accepte la {0}.",

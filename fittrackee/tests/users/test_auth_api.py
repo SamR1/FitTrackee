@@ -1462,6 +1462,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     imperial_units=True,
                     display_ascent=False,
                     start_elevation_at_zero=False,
+                    use_raw_gpx_speed=True,
                     date_format='yyyy-MM-dd',
                     map_visibility='followers_only',
                     workouts_visibility='public',
@@ -1477,6 +1478,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert data['message'] == 'user preferences updated'
         assert data['data']['display_ascent'] is False
         assert data['data']['start_elevation_at_zero'] is False
+        assert data['data']['use_raw_gpx_speed'] is True
         assert data['data']['imperial_units'] is True
         assert data['data']['language'] == expected_language
         assert data['data']['timezone'] == 'America/New_York'
@@ -1515,6 +1517,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     date_format='MM/dd/yyyy',
                     map_visibility=input_map_visibility.value,
                     start_elevation_at_zero=False,
+                    use_raw_gpx_speed=False,
                     workouts_visibility=input_workout_visibility.value,
                     manually_approves_followers=True,
                 )

@@ -125,6 +125,12 @@
             "IMPERIAL": "Imperial system (ft, mi, mph, °F)",
             "LABEL": "Units for distance",
             "METRIC": "Metric system (m, km, m/s, °C)"
+        },
+        "USE_RAW_GPX_SPEED": {
+            "FILTERED_SPEED": "Filtered",
+            "HELP": "If filtered, it excludes extreme values (which may be GPS errors) when calculating the maximum speed.",
+            "LABEL": "GPX max speed strategy",
+            "RAW_SPEED": "Raw"
         }
     },
     "READ_AND_ACCEPT_PRIVACY_POLICY": "I have read and agree to the {0}.",
