@@ -104,7 +104,10 @@
             {{ $t('user.PROFILE.ELEVATION_CHART_START.LABEL') }}
           </span>
           <div class="checkboxes">
-            <label v-for="status in startElevationAtZeroData" :key="status.label">
+            <label
+              v-for="status in startElevationAtZeroData"
+              :key="status.label"
+            >
               <input
                 type="radio"
                 :id="status.label"
@@ -137,6 +140,12 @@
                 {{ $t(`user.PROFILE.USE_RAW_GPX_SPEED.${status.label}`) }}
               </span>
             </label>
+          </div>
+          <div class="info-box raw-speed-help">
+            <span>
+              <i class="fa fa-info-circle" aria-hidden="true" />
+              {{ $t('user.PROFILE.USE_RAW_GPX_SPEED.HELP') }}
+            </span>
           </div>
         </div>
         <div class="form-buttons">
@@ -213,22 +222,22 @@
   const startElevationAtZeroData = [
     {
       label: 'ZERO',
-      value: true
+      value: true,
     },
     {
       label: 'MIN_ALT',
-      value: false
-    }
+      value: false,
+    },
   ]
   const useRawGpxSpeed = [
     {
-      label: 'RAW_SPEED',
-      value: true
+      label: 'FILTERED_SPEED',
+      value: false,
     },
     {
-      label: 'FILTERED_SPEED',
-      value: false
-    }
+      label: 'RAW_SPEED',
+      value: true,
+    },
   ]
   const loading = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
@@ -252,8 +261,12 @@
 
   function updateUserForm(user: IAuthUserProfile) {
     userForm.display_ascent = user.display_ascent
-    userForm.start_elevation_at_zero = user.start_elevation_at_zero ? user.start_elevation_at_zero : false
-    userForm.use_raw_gpx_speed = user.use_raw_gpx_speed ? user.use_raw_gpx_speed : false
+    userForm.start_elevation_at_zero = user.start_elevation_at_zero
+      ? user.start_elevation_at_zero
+      : false
+    userForm.use_raw_gpx_speed = user.use_raw_gpx_speed
+      ? user.use_raw_gpx_speed
+      : false
     userForm.imperial_units = user.imperial_units ? user.imperial_units : false
     userForm.language = user.language ? user.language : 'en'
     userForm.timezone = user.timezone ? user.timezone : 'Europe/Paris'
