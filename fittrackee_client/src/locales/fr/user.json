@@ -84,6 +84,7 @@
             "LABEL": "Approbation des demandes d'abonnements",
             "MANUALLY": "Manuelle"
         },
+        "INTERFACE": "Interface",
         "LANGUAGE": "Langue",
         "LAST_NAME": "Nom",
         "LOCATION": "Lieu",

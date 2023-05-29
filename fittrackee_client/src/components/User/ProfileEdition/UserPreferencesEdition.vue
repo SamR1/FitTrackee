@@ -3,6 +3,7 @@
     <div class="profile-form form-box">
       <ErrorMessage :message="errorMessages" v-if="errorMessages" />
       <form @submit.prevent="updateProfile">
+        <p class="preferences-section">{{ $t('user.PROFILE.INTERFACE') }}</p>
         <label class="form-items">
           {{ $t('user.PROFILE.LANGUAGE') }}
           <select id="language" v-model="userForm.language" :disabled="loading">
@@ -59,6 +60,33 @@
             </label>
           </div>
         </div>
+        <p class="preferences-section">{{ $t('user.PROFILE.TABS.ACCOUNT') }}</p>
+        <div class="form-items form-checkboxes">
+          <span class="checkboxes-label">
+            {{ $t('user.PROFILE.FOLLOW_REQUESTS_APPROVAL.LABEL') }}
+          </span>
+          <div class="checkboxes">
+            <label
+              v-for="status in manuallyApprovesFollowersValues"
+              :key="status.label"
+            >
+              <input
+                type="radio"
+                :id="status.label"
+                :name="status.label"
+                :checked="status.value === userForm.manually_approves_followers"
+                :disabled="loading"
+                @input="updateManuallyApprovesFollowersValues(status.value)"
+              />
+              <span class="checkbox-label">
+                {{
+                  $t(`user.PROFILE.FOLLOW_REQUESTS_APPROVAL.${status.label}`)
+                }}
+              </span>
+            </label>
+          </div>
+        </div>
+        <p class="preferences-section">{{ $t('workouts.WORKOUT') }}</p>
         <div class="form-items form-checkboxes">
           <span class="checkboxes-label">
             {{ $t('user.PROFILE.UNITS.LABEL') }}
@@ -177,31 +205,6 @@
             </option>
           </select>
         </label>
-        <div class="form-items form-checkboxes">
-          <span class="checkboxes-label">
-            {{ $t('user.PROFILE.FOLLOW_REQUESTS_APPROVAL.LABEL') }}
-          </span>
-          <div class="checkboxes">
-            <label
-              v-for="status in manuallyApprovesFollowersValues"
-              :key="status.label"
-            >
-              <input
-                type="radio"
-                :id="status.label"
-                :name="status.label"
-                :checked="status.value === userForm.manually_approves_followers"
-                :disabled="loading"
-                @input="updateManuallyApprovesFollowersValues(status.value)"
-              />
-              <span class="checkbox-label">
-                {{
-                  $t(`user.PROFILE.FOLLOW_REQUESTS_APPROVAL.${status.label}`)
-                }}
-              </span>
-            </label>
-          </div>
-        </div>
         <div class="form-buttons">
           <button class="confirm" type="submit">
             {{ $t('buttons.SUBMIT') }}
@@ -418,6 +421,13 @@
           font-weight: normal;
         }
       }
+    }
+
+    .preferences-section {
+      font-weight: bold;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--card-border-color);
+      margin-bottom: $default-padding * 0.5;
     }
 
     #language,

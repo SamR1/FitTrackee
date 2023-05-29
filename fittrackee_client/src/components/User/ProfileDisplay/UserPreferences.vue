@@ -1,5 +1,6 @@
 <template>
   <div id="user-preferences" class="description-list">
+    <p class="preferences-section">{{ $t('user.PROFILE.INTERFACE') }}</p>
     <dl>
       <dt>{{ $t('user.PROFILE.LANGUAGE') }}:</dt>
       <dd>{{ userLanguage }}</dd>
@@ -9,6 +10,22 @@
       <dd>{{ getDateFormat(date_format, appLanguage) }}</dd>
       <dt>{{ $t('user.PROFILE.FIRST_DAY_OF_WEEK') }}:</dt>
       <dd>{{ $t(`user.PROFILE.${fistDayOfWeek}`) }}</dd>
+    </dl>
+    <p class="preferences-section">{{ $t('user.PROFILE.TABS.ACCOUNT') }}</p>
+    <dl>
+      <dt>{{ $t('user.PROFILE.FOLLOW_REQUESTS_APPROVAL.LABEL') }}:</dt>
+      <dd>
+        {{
+          $t(
+            `user.PROFILE.FOLLOW_REQUESTS_APPROVAL.${
+              user.manually_approves_followers ? 'MANUALLY' : 'AUTOMATICALLY'
+            }`
+          )
+        }}
+      </dd>
+    </dl>
+    <p class="preferences-section">{{ $t('workouts.WORKOUT') }}</p>
+    <dl>
       <dt>{{ $t('user.PROFILE.UNITS.LABEL') }}:</dt>
       <dd>
         {{
@@ -45,6 +62,8 @@
           {{ $t('user.PROFILE.USE_RAW_GPX_SPEED.HELP') }}
         </span>
       </div>
+    </dl>
+    <dl>
       <dt>{{ $t('privacy.WORKOUTS_VISIBILITY') }}:</dt>
       <dd>
         {{ $t(`privacy.LEVELS.${user.workouts_visibility}`) }}
@@ -52,16 +71,6 @@
       <dt>{{ $t('privacy.MAP_VISIBILITY') }}:</dt>
       <dd>
         {{ $t(`privacy.LEVELS.${user.map_visibility}`) }}
-      </dd>
-      <dt>{{ $t('user.PROFILE.FOLLOW_REQUESTS_APPROVAL.LABEL') }}:</dt>
-      <dd>
-        {{
-          $t(
-            `user.PROFILE.FOLLOW_REQUESTS_APPROVAL.${
-              user.manually_approves_followers ? 'MANUALLY' : 'AUTOMATICALLY'
-            }`
-          )
-        }}
       </dd>
     </dl>
     <div class="profile-buttons">
@@ -112,9 +121,13 @@
 <style lang="scss" scoped>
   @import '~@/scss/vars.scss';
   #user-preferences {
+    .preferences-section {
+      font-weight: bold;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--card-border-color);
+    }
     .raw-speed-help {
       margin-top: -$default-margin * 0.5;
-      margin-bottom: $default-margin;
     }
   }
 </style>

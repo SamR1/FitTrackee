@@ -84,6 +84,7 @@
             "LABEL": "Follow requests approval",
             "MANUALLY": "Manually"
         },
+        "INTERFACE": "Interface",
         "LANGUAGE": "Language",
         "LAST_NAME": "Last name",
         "LOCATION": "Location",
