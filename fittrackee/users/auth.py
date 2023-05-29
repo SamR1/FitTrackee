@@ -367,6 +367,7 @@ def get_authenticated_user_profile(
           "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
+          "use_raw_gpx_speed": false,
           "username": "sam",
           "weekm": false,
           "workouts_visibility": "private"
@@ -488,6 +489,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
+          "use_raw_gpx_speed": false,
           "username": "sam"
           "weekm": true,
           "workouts_visibility": "private"
@@ -663,6 +665,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
+          "use_raw_gpx_speed": false,
           "username": "sam"
           "weekm": true,
           "workouts_visibility": "private"
