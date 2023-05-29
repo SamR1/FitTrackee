@@ -41,10 +41,10 @@ export const setZxcvbnOptions = async (language: string) => {
   )
   const zxcvbnLanguagePackage = await loadLanguagePackage(language)
   const options = {
-    graphs: zxcvbnCommonPackage.default.adjacencyGraphs,
+    graphs: zxcvbnCommonPackage.adjacencyGraphs,
     dictionary: {
-      ...zxcvbnCommonPackage.default.dictionary,
-      ...zxcvbnLanguagePackage.default.dictionary,
+      ...zxcvbnCommonPackage.dictionary,
+      ...zxcvbnLanguagePackage.dictionary,
     },
   }
   zxcvbnOptions.setOptions(options)
