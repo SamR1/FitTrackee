@@ -53,3 +53,13 @@ TEST_OAUTH_CLIENT_METADATA = {
     'redirect_uris': [random_domain()],
     'scope': 'profile:read workouts:read',
 }
+
+OAUTH_SCOPES = {
+    "application:write": False,
+    "profile:read": False,
+    "profile:write": False,
+    "users:read": False,
+    "users:write": False,
+    "workouts:read": False,
+    "workouts:write": False,
+}

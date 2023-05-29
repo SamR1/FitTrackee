@@ -1,0 +1,9 @@
+{
+    "APP_ERROR": "Wygląda na to, że aplikacja napotkała pewne problemy.<br />Spróbuj ponownie później lub skontaktuj się z administratorem.",
+    "UNKNOWN": "Błąd. Proszę spróbować ponownie lub skontaktować się z administratorem.",
+    "NOT_FOUND": {
+        "PAGE": "Nie znaleziono strony",
+        "WORKOUT": "Nie znaleziono treningu"
+    },
+    "SOMETHING_WRONG": "Coś poszło nie tak"
+}

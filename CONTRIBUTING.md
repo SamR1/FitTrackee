@@ -40,6 +40,8 @@ see [Installations instructions](https://samr1.github.io/FitTrackee/installation
 
 ### Pull Requests
 
+Before starting, please open an issue to discuss implementation if the feature requires major changes or involves the addition of a new sport or language.
+
 Please make your changes from the development branch (`dev`).
 
 * Fork the repository (see [GitHub instructions](https://docs.github.com/en/get-started/quickstart/contributing-to-projects))

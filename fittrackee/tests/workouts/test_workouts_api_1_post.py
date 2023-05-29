@@ -13,6 +13,7 @@ from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin, CallArgsMixin
+from ..utils import OAUTH_SCOPES
 
 
 def assert_workout_data_with_gpx(data: Dict) -> None:
@@ -277,6 +278,37 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert len(data['data']['workouts']) == 1
         assert 'just a workout' == data['data']['workouts'][0]['title']
         assert_workout_data_with_gpx(data)
+
+    def test_it_adds_a_workout_with_gpx_file_raw_speed(
+        self,
+        app: Flask,
+        user_1_raw_speed: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_raw_speed.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        # max speed should be slightly higher than that tested in
+        # assert_workout_data_with_gpx
+        assert data['data']['workouts'][0]['max_speed'] == pytest.approx(5.25)
 
     def test_it_returns_ha_record_when_a_workout_without_gpx_exists(
         self,
@@ -939,15 +971,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', True),
-        ],
+        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1280,15 +1304,7 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', True),
-        ],
+        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,

@@ -116,6 +116,12 @@
             "IMPERIAL": "Sistema Imperial (ft, mi, mph, ºF)",
             "LABEL": "Unidades de distancia",
             "METRIC": "Sistema Métrico (m, km, m/s, ºC)"
+        },
+        "USE_RAW_GPX_SPEED": {
+            "FILTERED_SPEED": "Filtrado",
+            "LABEL": "Estrategia de velocidad máxima",
+            "RAW_SPEED": "Crudo",
+            "HELP": "Si se filtra, excluye los valores extremos (que pueden ser errores del GPS) al calcular la velocidad máxima."
         }
     },
     "READ_AND_ACCEPT_PRIVACY_POLICY": "He leído y aceptado la {0}.",

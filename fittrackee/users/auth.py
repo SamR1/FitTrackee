@@ -364,6 +364,7 @@ def get_authenticated_user_profile(
           "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
+          "use_raw_gpx_speed": false,
           "username": "sam",
           "weekm": false
         },
@@ -480,6 +481,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
+          "use_raw_gpx_speed": false,
           "username": "sam"
           "weekm": true,
         },
@@ -652,6 +654,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
+          "use_raw_gpx_speed": false,
           "username": "sam"
           "weekm": true,
         },
@@ -879,6 +882,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
+          "use_raw_gpx_speed": true,
           "username": "sam"
           "weekm": true,
         },
@@ -892,6 +896,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     :<json string language: language preferences
     :<json boolean start_elevation_at_zero: do elevation plots start at zero?
     :<json string timezone: user time zone
+    :<json boolean use_raw_gpx_speed: Use unfiltered gpx to calculate speeds
     :<json boolean weekm: does week start on Monday?
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
@@ -915,6 +920,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         'language',
         'start_elevation_at_zero',
         'timezone',
+        'use_raw_gpx_speed',
         'weekm',
     }
     if not post_data or not post_data.keys() >= user_mandatory_data:
@@ -925,6 +931,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     imperial_units = post_data.get('imperial_units')
     language = get_language(post_data.get('language'))
     start_elevation_at_zero = post_data.get('start_elevation_at_zero')
+    use_raw_gpx_speed = post_data.get('use_raw_gpx_speed')
     timezone = post_data.get('timezone')
     weekm = post_data.get('weekm')
 
@@ -935,6 +942,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.language = language
         auth_user.start_elevation_at_zero = start_elevation_at_zero
         auth_user.timezone = timezone
+        auth_user.use_raw_gpx_speed = use_raw_gpx_speed
         auth_user.weekm = weekm
         db.session.commit()
 

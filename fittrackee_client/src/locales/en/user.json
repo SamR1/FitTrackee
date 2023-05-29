@@ -68,12 +68,12 @@
         "EDIT": "Edit profile",
         "EDIT_PREFERENCES": "Edit preferences",
         "EDIT_SPORTS_PREFERENCES": "Edit sports preferences",
-        "ERRORED_EMAIL_UPDATE": "Please {0} to change your email address again or contact the administrator",
         "ELEVATION_CHART_START": {
             "LABEL": "Elevation chart starts at",
-            "ZERO": "Zero",
-            "MIN_ALT": "Minimum altitude"
+            "MIN_ALT": "Minimum altitude",
+            "ZERO": "Zero"
         },
+        "ERRORED_EMAIL_UPDATE": "Please {0} to change your email address again or contact the administrator",
         "FIRST_DAY_OF_WEEK": "First day of week",
         "FIRST_NAME": "First name",
         "LANGUAGE": "Language",
@@ -116,6 +116,12 @@
             "IMPERIAL": "Imperial system (ft, mi, mph, °F)",
             "LABEL": "Units for distance",
             "METRIC": "Metric system (m, km, m/s, °C)"
+        },
+        "USE_RAW_GPX_SPEED": {
+            "FILTERED_SPEED": "Filtered",
+            "HELP": "If filtered, it excludes extreme values (which may be GPS errors) when calculating the maximum speed.",
+            "LABEL": "GPX max speed strategy",
+            "RAW_SPEED": "Raw"
         }
     },
     "READ_AND_ACCEPT_PRIVACY_POLICY": "I have read and agree to the {0}.",
