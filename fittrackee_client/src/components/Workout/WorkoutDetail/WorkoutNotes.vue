@@ -33,7 +33,6 @@
 <style lang="scss" scoped>
   #workout-note {
     ::v-deep(.card-content) {
-      font-style: italic;
       white-space: pre-wrap;
     }
   }

@@ -11,6 +11,11 @@ describe('linkifyAndClean (clean input remains unchanged)', () => {
     'just a text\nfor "test"',
     'link: <a href="http://www.example.com">example</a>',
     'link: <a href="http://www.example.com" target="_blank">example</a>',
+    'just a <em>test</em>',
+    'just a <strong>test</strong>',
+    '<img src="http://www.example.com/pictures.png" alt="Image" title="icon" />',
+    ':)',
+    '😀',
   ]
 
   testInputs.map((testInput) => {
@@ -68,6 +73,42 @@ describe('linkifyAndClean (input sanitization)', () => {
   ]
 
   testsParams.map((testParams) => {
+    it(testParams.description, () => {
+      assert.equal(
+        linkifyAndClean(testParams.inputString),
+        testParams.expectedString
+      )
+    })
+  })
+})
+
+describe('linkifyAndClean with markdown', () => {
+  const testsParams = [
+    {
+      description: 'it returns text with <strong> attribute',
+      inputString: 'just a **test**',
+      expectedString: 'just a <strong>test</strong>',
+    },
+    {
+      description: 'it returns text with <em> attribute',
+      inputString: 'just a _test_',
+      expectedString: 'just a <em>test</em>',
+    },
+    {
+      description: 'it returns link',
+      inputString: 'just a [link](http://www.example.com)',
+      expectedString: 'just a <a href="http://www.example.com">link</a>',
+    },
+    {
+      description: 'it returns image',
+      inputString: '![Image](http://www.example.com/pictures.png "icon")',
+      expectedString:
+        '<img src="http://www.example.com/pictures.png" alt="Image" title="icon" />',
+    },
+  ]
+
+  testsParams.map((testParams) => {
+    console.log(linkifyAndClean(testParams.inputString))
     it(testParams.description, () => {
       assert.equal(
         linkifyAndClean(testParams.inputString),

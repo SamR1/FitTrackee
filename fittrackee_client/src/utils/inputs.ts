@@ -1,18 +1,27 @@
 import linkifyHtml from 'linkify-html'
+import { marked } from 'marked'
 import sanitizeHtml from 'sanitize-html'
 
 import { ICustomTextareaData, IUsernameSuggestion } from '@/types/forms'
 
 export const linkifyAndClean = (input: string): string => {
   return sanitizeHtml(
-    linkifyHtml(input, {
-      target: '_blank',
-      validate: {
-        email: () => false,
-      },
-    }),
+    linkifyHtml(
+      marked.parseInline(input, {
+        mangle: false,
+        headerIds: false,
+        headerPrefix: '',
+        pedantic: true,
+      }),
+      {
+        target: '_blank',
+        validate: {
+          email: () => false,
+        },
+      }
+    ),
     {
-      allowedTags: ['a', 'p', 'span'],
+      allowedTags: ['a', 'p', 'span', 'strong', 'em', 'img'],
     }
   )
 }

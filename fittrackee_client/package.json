@@ -29,6 +29,7 @@
     "leaflet": "^1.9.4",
     "linkify-html": "^4.1.1",
     "linkifyjs": "^4.1.1",
+    "marked": "^5.0.3",
     "register-service-worker": "^1.7.1",
     "sanitize-html": "^2.10.0",
     "snarkdown": "^2.0.0",
@@ -42,6 +43,7 @@
   "devDependencies": {
     "@intlify/vue-i18n-loader": "^4.2.0",
     "@types/chai": "^4.3.5",
+    "@types/marked": "^5.0.0",
     "@types/mocha": "^10.0.1",
     "@types/sanitize-html": "^2.9.0",
     "@typescript-eslint/eslint-plugin": "^5.59.7",
@@ -105,7 +107,10 @@
           }
         }
       ],
-      "object-curly-spacing": [ "error", "always" ],
+      "object-curly-spacing": [
+        "error",
+        "always"
+      ],
       "vue/multi-word-component-names": "off"
     },
     "overrides": [

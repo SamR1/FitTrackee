@@ -284,6 +284,7 @@
       .comment-text {
         margin: $default-margin * 0.5 0;
         padding: $default-padding;
+        white-space: pre-wrap;
         &.highlight {
           border-radius: 5px;
           background-image: var(--comment-background-highlight);
